@@ -58,6 +58,39 @@ import org.springframework.web.servlet.mvc.Controller;
 public abstract class JahiaController implements Controller {
 
     /**
+     * Simple utility method to retrieve an integer parameter from a request and throws an {@link JahiaBadRequestException} (results in a 400 error)
+     * in case the parameter is not found.
+     * 
+     * @param request
+     *            The current HttpServletRequest
+     * @param name
+     *            The parameter name
+     * @return an integer value of the given parameter
+     * @throws JahiaBadRequestException
+     *             in case the parameter is not found in the request or a parsing exception occurs
+     */
+    protected final static int getIntParameter(final HttpServletRequest request, final String name)
+            throws JahiaBadRequestException {
+        return JahiaControllerUtils.getIntParameter(request, name);
+    }
+
+    /**
+     * Retrieves the integer value of the specified request parameter. If it does not exist, returns the provided default value.
+     * 
+     * @param request
+     *            The current HttpServletRequest
+     * @param name
+     *            The parameter name
+     * @param defaultValue
+     *            the default parameter value
+     * @return the value of the specified request parameter. If it does not exist, returns the provided default value
+     */
+    protected final static int getIntParameter(final HttpServletRequest request, final String name,
+            int defaultValue) {
+        return JahiaControllerUtils.getIntParameter(request, name, defaultValue);
+    }
+
+    /**
      * Simple utility method to retrieve a parameter from a request and throws an {@link JahiaBadRequestException} (results in a 400 error)
      * in case the parameter is not found.
      * 

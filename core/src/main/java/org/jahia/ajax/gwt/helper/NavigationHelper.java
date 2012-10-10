@@ -223,12 +223,14 @@ public class NavigationHelper {
             boolean matchNodeType = matchesNodeType(childNode, nodeTypes);
             if (logger.isDebugEnabled()) {
                 logger.debug("----------");
-                for (String s : nodeTypes) {
-                    logger.debug(
+                if(nodeTypes != null) {
+                	for (String s : nodeTypes) {
+                		logger.debug(
                             "Node " + childNode.getPath() + " match with " + s + "? " + childNode.isNodeType(s) + "[" +
                                     matchNodeType + "]");
+                	}
                 }
-                logger.debug("----------");
+                logger.debug("----------"); 
             }
             boolean mimeTypeFilter = matchesMimeTypeFilters(childNode, mimeTypes);
             boolean nameFilter = matchesFilters(childNode.getName(), nameFilters);
@@ -1037,7 +1039,7 @@ public class NavigationHelper {
         }
         try {
             if (fields.contains(GWTJahiaNode.PUBLICATION_INFO) && supportsPublication && node.getSession().getLocale() != null) {
-                n.setAggregatedPublicationInfos(publication.getAggregatedPublicationInfosByLanguage(node.getIdentifier(),
+                n.setAggregatedPublicationInfos(publication.getAggregatedPublicationInfosByLanguage(node,
                         Collections.singleton(node.getSession().getLocale().toString()), node.getSession()));
             }
         } catch (UnsupportedRepositoryOperationException e) {
@@ -1055,7 +1057,7 @@ public class NavigationHelper {
                 if (siteNode != null) {
                     JCRSessionWrapper session = node.getSession();
 
-                    n.setAggregatedPublicationInfos(publication.getAggregatedPublicationInfosByLanguage(node.getIdentifier(),
+                    n.setAggregatedPublicationInfos(publication.getAggregatedPublicationInfosByLanguage(node,
                             siteNode.getLanguages(), session));
                     n.setFullPublicationInfos(publication.getFullPublicationInfosByLanguage(Arrays.asList(node.getIdentifier()), siteNode.getLanguages(),
                                         session, false));
@@ -1456,6 +1458,7 @@ public class NavigationHelper {
         Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);
         RenderContext renderContext = new RenderContext(null, null, node.getSession().getUser());
         renderContext.setMainResource(resource);
+        renderContext.setServletPath("/cms/"+servlet);
         Template template = RenderService.getInstance().resolveTemplate(resource, renderContext);
         if (template != null) {
             url += node.getPath() + ".html";

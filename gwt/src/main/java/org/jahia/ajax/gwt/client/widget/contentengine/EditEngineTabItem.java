@@ -78,6 +78,10 @@ public abstract class EditEngineTabItem implements Serializable {
         tab.setLayout(new FitLayout());
         tab.setStyleName("x-panel-mc");
         tab.setData("item", this);
+        
+        tab.setId("JahiaGxtEditEnginePanel-"+engineTab.getId());
+        
+        
         return tab;
     }
 

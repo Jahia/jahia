@@ -50,6 +50,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.jcr.*;
 import javax.jcr.query.InvalidQueryException;
@@ -93,6 +94,7 @@ import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.services.search.SearchCriteria.Term.SearchFields;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.utils.DateUtils;
+import org.jahia.utils.Patterns;
 
 import com.google.common.collect.Sets;
 
@@ -111,11 +113,21 @@ import com.google.common.collect.Sets;
  *
  */
 public class JahiaJCRSearchProvider implements SearchProvider {
+    
+    private static final Pattern AND_PATTERN = Pattern.compile(" AND ");
+
+    private static final Pattern MULTIPLE_SPACES_PATTERN = Pattern.compile("\\s{2,}");
+
+    private static final Pattern NOT_PATTERN = Pattern.compile(" NOT ");
+
+    private static final Pattern OR_PATTERN = Pattern.compile(" OR ");
 
     private static Logger logger = LoggerFactory.getLogger(JahiaJCRSearchProvider.class);
 
     private TaggingService taggingService = null;
-    
+
+    private Set<String> typesToHideFromSearchResults;
+
     /* (non-Javadoc)
      * @see org.jahia.services.search.SearchProvider#search(org.jahia.services.search.SearchCriteria, org.jahia.params.ProcessingContext)
      */
@@ -162,11 +174,11 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     Row row = it.nextRow();
                     try {
                         JCRNodeWrapper node = (JCRNodeWrapper) row.getNode();
-                        if (node.isNodeType(Constants.JAHIANT_TRANSLATION)
-                                || Constants.JCR_CONTENT.equals(node.getName())) {
+                        if (node != null && (node.isNodeType(Constants.JAHIANT_TRANSLATION)
+                                || Constants.JCR_CONTENT.equals(node.getName()))) {
                             node = node.getParent();
                         }
-                        if (addedNodes.add(node.getIdentifier())) {
+                        if (node != null && addedNodes.add(node.getIdentifier())) {
                             boolean skipNode = isNodeToSkip(node, criteria, languages);
                                     
                             Hit<?> hit = !skipNode ? buildHit(row, node, context, usageFilterSites) : null;
@@ -221,7 +233,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     private boolean isNodeToSkip(JCRNodeWrapper node, SearchCriteria criteria, Set<String> languages) {
         boolean skipNode = false;
         try {
-            if (!languages.isEmpty() 
+            if (typesToHideFromSearchResults.contains(node.getPrimaryNodeTypeName())) {
+                return true;
+            }
+            if (!languages.isEmpty()
                     && (node.isFile() || node.isNodeType(Constants.NT_FOLDER))) {
                 // if just site-search and no file-search, then skip the node unless it is referred
                 // by a node in the wanted language - unreferenced files are skipped
@@ -271,7 +286,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     String r = "";
                     String separator = "";
                     String type = "";
-                    for (String s : excerpt.getString().split(",")) {
+                    for (String s : Patterns.COMMA.split(excerpt.getString())) {
                         String s2 = s.contains(JahiaExcerptProvider.TAG_TYPE)? JahiaResourceBundle.getJahiaInternalResource("label.tags",context.getRequest().getLocale()):
                                 JahiaResourceBundle.getJahiaInternalResource("label.category",context.getRequest().getLocale());
                         String s1 = s.substring(s.indexOf("###"), s.lastIndexOf("###"));
@@ -317,8 +332,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             includeChildren = params.getPagePath().isIncludeChildren();
         }
         if (path != null) {
-            String[] pathTokens = path != null ? StringEscapeUtils
-                    .unescapeHtml(path).split("/") : ArrayUtils.EMPTY_STRING_ARRAY;
+            String[] pathTokens = path != null ? Patterns.SLASH.split(StringEscapeUtils
+                    .unescapeHtml(path)) : ArrayUtils.EMPTY_STRING_ARRAY;
             String lastFolder = null;
             StringBuilder jcrPath = new StringBuilder(64);
             jcrPath.append("/jcr:root/");
@@ -678,7 +693,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     String[] terms = null;
                     String constraint = "or";
                     if (textSearch.getMatch() == MatchType.ANY_WORD || textSearch.getMatch() == MatchType.ALL_WORDS || textSearch.getMatch() == MatchType.WITHOUT_WORDS) {
-                        terms = cleanMultipleWhiteSpaces(textSearch.getTerm()).split(" ");
+                        terms = Patterns.SPACE.split(cleanMultipleWhiteSpaces(textSearch.getTerm()));
                         if (textSearch.getMatch() == MatchType.ALL_WORDS || textSearch.getMatch() == MatchType.WITHOUT_WORDS) {
                             constraint = "and";
                         }
@@ -778,8 +793,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         }
             
         if (Term.MatchType.AS_IS != matchType) {
-            term = QueryParser.escape(term.replaceAll(" AND ", " and ").replaceAll(
-                    " OR ", " or ").replaceAll(" NOT ", " not "));
+            term = QueryParser.escape(NOT_PATTERN.matcher(OR_PATTERN.matcher(AND_PATTERN.matcher(term).replaceAll(" and ")).replaceAll(
+                    " or ")).replaceAll(" not "));
         }
 
         if (MatchType.ANY_WORD == matchType) {
@@ -1004,7 +1019,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     
 
     private String cleanMultipleWhiteSpaces(String term) {
-        return term.replaceAll("\\s{2,}", " ");
+        return MULTIPLE_SPACES_PATTERN.matcher(term).replaceAll(" ");
     }
 
     /* (non-Javadoc)
@@ -1093,4 +1108,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         this.taggingService = taggingService;
     }
 
+    public void setTypesToHideFromSearchResults(Set<String> typesToHideFromSearchResults) {
+        this.typesToHideFromSearchResults = typesToHideFromSearchResults;
+    }
 }

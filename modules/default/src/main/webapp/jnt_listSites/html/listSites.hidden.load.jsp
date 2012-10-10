@@ -17,7 +17,28 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
 
-<query:definition var="result"
-         statement="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites') and localname(site) <> 'systemsite'"/>
+<c:if test="${empty currentNode.properties['typeOfContent'] or currentNode.properties['typeOfContent'].string eq 'website'}">
+    <c:set var="query" value="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites') and localname(site) <> 'systemsite'" />
+</c:if>
+<c:if test="${not empty currentNode.properties['typeOfContent'] and currentNode.properties['typeOfContent'].string ne 'website'}">
+    <c:set var="query" value="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites')" />
+</c:if>
+<jcr:nodeProperty node="${currentNode}" name="templatesSets" var="templatesSets"/>
+<c:forEach items="${templatesSets}" var="templatesSet" varStatus="status">
+    <c:choose>
+        <c:when test="${status.first}">
+            <c:set var="query" value="${query} and (site.[j:templatesSet] = '${templatesSet.node.name}'" />
+        </c:when>
+        <c:otherwise>
+            <c:set var="query" value="${query} or site.[j:templatesSet] = '${templatesSet.node.name}'" />
+        </c:otherwise>
+    </c:choose>
+    <c:if test="${status.last}">
+        <c:set var="query" value="${query})" />
+    </c:if>
+</c:forEach>
+<c:set var="query" value="${query} order by site.[jcr:created] desc" />
 
+<query:definition var="result" statement="${query}"
+                  limit="${currentNode.properties['numberMaxOfSitesDisplayed'].string}"/>
 <c:set target="${moduleMap}" property="listQuery" value="${result}"/>

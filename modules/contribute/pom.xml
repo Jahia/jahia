@@ -44,7 +44,7 @@
     <parent>
         <artifactId>jahia-modules</artifactId>
         <groupId>org.jahia.modules</groupId>
-        <version>6.6.1.0</version>
+        <version>6.6.1.0-SNAPSHOT</version>
     </parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>contribute</artifactId>
@@ -57,15 +57,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>${war.plugin.version}</version>
                 <configuration>
-                    <warSourceExcludes>resources/*.properties</warSourceExcludes>
-                    <webResources>
-                        <resource>
-                          <directory>${project.build.directory}/native2ascii</directory>
-                          <targetPath>resources</targetPath>
-                        </resource>
-                    </webResources>
                     <archive>
                         <manifestEntries>
 		                	<Implementation-Title>${project.name}</Implementation-Title>

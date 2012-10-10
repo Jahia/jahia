@@ -53,6 +53,7 @@ import org.apache.commons.io.IOCase;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +66,9 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -164,7 +168,7 @@ final class JahiaTemplatesPackageHandler {
             if (new File(file, "resources/" + rbName + ".properties").exists()) {
                 templatePackage.setResourceBundleName("resources." + rbName);
             } else {
-                rbName = templatePackage.getName().replace(" ", "");
+                rbName = Patterns.SPACE.matcher(templatePackage.getName()).replaceAll("");
                 if (new File(file, "resources/" + rbName + ".properties")
                         .exists()) {
                     templatePackage
@@ -174,18 +178,23 @@ final class JahiaTemplatesPackageHandler {
         }
 
         if (templatePackage.getInitialImports().isEmpty()) {
-            File[] files = file.listFiles((FilenameFilter) new WildcardFileFilter(new String[]{
-                    "import.xml", "import.zip", "import-*.xml", "import-*.zip"}, IOCase.INSENSITIVE));
-            Arrays.sort(files);
+            List<File> files = Arrays.asList(file.listFiles((FilenameFilter) new WildcardFileFilter(new String[]{
+                    "import*.xml", "import*.zip"}, IOCase.INSENSITIVE)));
+            Comparator<File> c = new Comparator<File>() {
+                public int compare(File o1, File o2) {
+                    return StringUtils.substringBeforeLast(o1.getName(), ".").compareTo(StringUtils.substringBeforeLast(o2.getName(), "."));
+                }
+            };
+            Collections.sort(files, c);
             for (File importFile : files) {
                 templatePackage.addInitialImport(importFile.getName());
                 warnMetaInf("importFile.getName()", templatePackage.getRootFolder());
             }
             File metaInf = new File(file, "META-INF");
             if (metaInf.exists()) {
-                files = metaInf.listFiles((FilenameFilter) new WildcardFileFilter(new String[]{
-                        "import.xml", "import.zip", "import-*.xml", "import-*.zip"}, IOCase.INSENSITIVE));
-                Arrays.sort(files);
+                files = Arrays.asList(metaInf.listFiles((FilenameFilter) new WildcardFileFilter(new String[]{
+                        "import*.xml", "import*.zip"}, IOCase.INSENSITIVE)));
+                Collections.sort(files, c);
                 for (File importFile : files) {
                     templatePackage.addInitialImport("META-INF/" + importFile.getName());
                 }
@@ -225,8 +234,8 @@ final class JahiaTemplatesPackageHandler {
                 }
 
                 String depends = (String) manifest.getMainAttributes().get(new Attributes.Name("depends"));
-                if (depends != null) {
-                    String[] dependencies = depends.split(",");
+                if (depends != null && !StringUtils.isEmpty(depends.trim())) {
+                    String[] dependencies = Patterns.COMMA.split(depends);
                     for (String dependency : dependencies) {
                         templatePackage.setDepends(dependency.trim());
                     }
@@ -234,7 +243,7 @@ final class JahiaTemplatesPackageHandler {
 
                 String definitions = (String) manifest.getMainAttributes().get(new Attributes.Name("definitions"));
                 if (definitions != null) {
-                    String[] defs = definitions.split(",");
+                    String[] defs = Patterns.COMMA.split(definitions);
                     for (String defFile : defs) {
                         templatePackage.getDefinitionsFiles().add(defFile.trim());
                     }
@@ -242,7 +251,7 @@ final class JahiaTemplatesPackageHandler {
 
                 String imports = (String) manifest.getMainAttributes().get(new Attributes.Name("initial-imports"));
                 if (imports != null) {
-                    String[] importFiles = imports.split(",");
+                    String[] importFiles = Patterns.COMMA.split(imports);
                     for (String imp : importFiles) {
                         templatePackage.addInitialImport(imp.trim());
                     }
@@ -252,7 +261,10 @@ final class JahiaTemplatesPackageHandler {
                 if (StringUtils.isNotBlank(resourceBundle)) {
                     templatePackage.setResourceBundleName(resourceBundle.trim());
                 }
-
+                String autoDeployOnSite = (String) manifest.getMainAttributes().get(new Attributes.Name("deploy-on-site"));
+                if(autoDeployOnSite != null && autoDeployOnSite.matches("systemsite|all")){
+                    templatePackage.setAutoDeployOnSite(autoDeployOnSite);
+                }
                 templatePackage.setName(packageName);
                 templatePackage.setRootFolder(rootFolder);
                 templatePackage.setModuleType(moduleType);

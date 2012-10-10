@@ -40,13 +40,26 @@
 
 package org.jahia.services.importexport;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.nodetype.xml.NodeTypeReader;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRObservationManager;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.render.RenderService;
+import org.jahia.services.render.View;
 import org.jahia.settings.SettingsBean;
+import org.mvel.TemplateRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
@@ -54,18 +67,17 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.zip.ZipEntry;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -90,12 +102,16 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     private int maxBatch = SettingsBean.getInstance().getImportMaxBatch();
     private int batchCount = 0;
 
+    private Locator documentLocator;
     private File archive;
     private NoCloseZipInputStream zis;
     private ZipEntry nextEntry;
     private List<String> fileList = new ArrayList<String>();
     private String baseFilesPath = "/content";
     private Stack<JCRNodeWrapper> nodes = new Stack<JCRNodeWrapper>();
+
+    private JCRSiteNode site;
+    private List<String> dependencies;
 
     private Map<String, String> uuidMapping;
     private Map<String, String> pathMapping;
@@ -127,6 +143,11 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
     private List<String> uuids = new ArrayList<String>();
 
+    private boolean expandImportedFilesOnDisk = SettingsBean.getInstance().isExpandImportedFilesOnDisk();
+    private String expandImportedFilesOnDiskPath = SettingsBean.getInstance().getExpandImportedFilesOnDiskPath();
+
+    private Set<String> missingDependencies = new HashSet<String>();
+
     public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath) throws IOException {
         this(session, rootPath, null, null);
     }
@@ -147,7 +168,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 placeHoldersMap.put("$user", "u:" + node.getPath().substring(node.getPath().lastIndexOf("/") + 1));
             }
         } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+            logger.error(e.getMessage()+ getLocation(), e);
             throw new IOException();
         }
         nodes.add(node);
@@ -167,7 +188,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         // do a session.save each maxBatch
         if (batchCount > maxBatch) {
             try {
-                session.save();
+                session.save(JCRObservationManager.IMPORT);
                 batchCount = 0;
             } catch (ConstraintViolationException e) {
                 // save on the next node when next node is needed (like content node for files)
@@ -360,6 +381,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         if (!isValid) {
                             session.checkout(nodes.peek());
                             try {
+                                checkDependencies(path, pt, atts);
                                 child = nodes.peek().addNode(decodedQName, pt, uuid, created, createdBy, lastModified, lastModifiedBy);
                             } catch (ConstraintViolationException e) {
                                 if (pathes.size() <= 2 && nodes.peek().getName().equals(decodedQName) && nodes.peek().getPrimaryNodeTypeName().equals(pt)) {
@@ -372,19 +394,62 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         }
 
                         addMixins(child, atts);
+                        if (!expandImportedFilesOnDisk) {
+                            boolean contentFound = findContent();
 
-                        boolean contentFound = findContent();
+                            if (contentFound) {
+                                if (child.isFile()) {
+                                    String mime = atts.getValue(Constants.JCR_MIMETYPE);
+                                    if (mime == null) {
+                                        if (logger.isWarnEnabled()) {
+                                            mime = JCRContentUtils.getMimeType(decodedQName);
+                                            if (mime != null) {
+                                                logger.warn("Legacy or invalid import detected for node " + path +
+                                                        ", file should be in same named path. Mime type cannot be resolved from file node, it should come from jcr:content node. Resolved mime type using servlet context instead=" +
+                                                        mime + ".");
+                                            } else {
+                                                logger.warn("Legacy or invalid import detected for node " + path +
+                                                        ", file should be in same named path. Mime type cannot be resolved from file node, it should come from jcr:content node. Tried resolving mime type using servlet context but it isn't registered!");
+                                            }
+                                        }
+                                    }
+                                    child.getFileContent().uploadFile(zis, mime);
+                                    zis.close();
+                                } else {
+                                    child.setProperty(Constants.JCR_DATA, session.getValueFactory().createBinary(zis));
+                                    child.setProperty(Constants.JCR_MIMETYPE, atts.getValue(Constants.JCR_MIMETYPE));
+                                    child.setProperty(Constants.JCR_LASTMODIFIED, Calendar.getInstance());
+                                    zis.close();
+                                }
+                            }
+                        } else {
+                            String contentInExpandedPath = findContentInExpandedPath();
 
-                        if (contentFound) {
-                            if (child.isFile()) {
-                                String mime = atts.getValue(Constants.JCR_MIMETYPE);
-                                child.getFileContent().uploadFile(zis, mime);
-                                zis.close();
-                            } else {
-                                child.setProperty(Constants.JCR_DATA, session.getValueFactory().createBinary(zis));
-                                child.setProperty(Constants.JCR_MIMETYPE, atts.getValue(Constants.JCR_MIMETYPE));
-                                child.setProperty(Constants.JCR_LASTMODIFIED, Calendar.getInstance());
-                                zis.close();
+                            if (contentInExpandedPath != null) {
+                                final InputStream is = FileUtils.openInputStream(new File(
+                                        expandImportedFilesOnDiskPath + contentInExpandedPath));
+                                if (child.isFile()) {
+                                    String mime = atts.getValue(Constants.JCR_MIMETYPE);
+                                    if (mime == null) {
+                                        if (logger.isWarnEnabled()) {
+                                            mime = JCRContentUtils.getMimeType(decodedQName);
+                                            if (mime != null) {
+                                                logger.warn("Legacy or invalid import detected for node " + path +
+                                                        ", mime type cannot be resolved from file node, it should come from jcr:content node. Resolved mime type using servlet context instead=" +
+                                                        mime + ".");
+                                            } else {
+                                                logger.warn("Legacy or invalid import detected for node " + path +
+                                                        ", mime type cannot be resolved from file node, it should come from jcr:content node. Tried resolving mime type using servlet context but it isn't registered!");
+                                            }
+                                        }
+                                    }
+                                    child.getFileContent().uploadFile(is, mime);
+                                } else {
+                                    child.setProperty(Constants.JCR_DATA, session.getValueFactory().createBinary(is));
+                                    child.setProperty(Constants.JCR_MIMETYPE, atts.getValue(Constants.JCR_MIMETYPE));
+                                    child.setProperty(Constants.JCR_LASTMODIFIED, Calendar.getInstance());
+                                }
+                                is.close();
                             }
                         }
 
@@ -423,10 +488,51 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             }
             error++;
         } catch (RepositoryException re) {
-            logger.error("Cannot import " + pathes.pop(), re);
+            logger.error("Cannot import " + pathes.pop() + getLocation(), re);
             error++;
         } catch (Exception re) {
             throw new SAXException(re);
+        }
+    }
+
+    private void checkDependencies(String path, String pt, Attributes atts) throws RepositoryException {
+        if (path.startsWith("/templateSets/")) {
+            List<ExtendedNodeType> nodeTypes = new ArrayList<ExtendedNodeType>();
+            nodeTypes.add(NodeTypeRegistry.getInstance().getNodeType(pt));
+            if (atts.getValue(Constants.JCR_MIXINTYPES) != null) {
+                for (String mixin : atts.getValue(Constants.JCR_MIXINTYPES).split(" ")) {
+                    nodeTypes.add(NodeTypeRegistry.getInstance().getNodeType(mixin));
+                }
+            }
+            JCRSiteNode currentSite = nodes.peek().getResolveSite();
+            if (site == null || !currentSite.getIdentifier().equals(site.getIdentifier())) {
+                dependencies = null;
+                site = currentSite;
+                if (site.hasProperty("j:dependencies")) {
+                    dependencies = new ArrayList<String>();
+                    dependencies.add(site.getName());
+                    for (int i = 0; i < dependencies.size(); i++) {
+                        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(dependencies.get(i));
+                        if (aPackage == null) {
+                            continue;
+                        }
+                        for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
+                            if (!dependencies.contains(depend.getRootFolder())) {
+                                dependencies.add(depend.getRootFolder());
+                            }
+                        }
+                    }
+                }
+            }
+            for (ExtendedNodeType type : nodeTypes) {
+                if (type.getTemplatePackage() != null && dependencies != null && !dependencies.contains(type.getTemplatePackage().getFileName())) {
+                    String fileName = type.getTemplatePackage().getFileName();
+                    logger.debug("Missing dependency : " + path + " (" + type.getName() + ") requires " + fileName + getLocation());
+                    if (!missingDependencies.contains(fileName)) {
+                        missingDependencies.add(fileName);
+                    }
+                }
+            }
         }
     }
 
@@ -489,14 +595,14 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 ExtendedPropertyDefinition propDef;
                 propDef = child.getApplicablePropertyDefinition(attrName);
                 if (propDef == null) {
-                    logger.error("Couldn't find definition for property " + attrName);
+                    logger.error("Couldn't find definition for property " + attrName + " in " + child.getPrimaryNodeTypeName() + getLocation());
                     continue;
                 }
 
                 if (propDef.getRequiredType() == PropertyType.REFERENCE || propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
                     if (attrValue.length() > 0) {
                         String decodedValue = ISO9075.decode(attrValue);
-                        String[] values = propDef.isMultiple() ? ISO9075.decode(decodedValue).split(" ") : new String[]{decodedValue};
+                        String[] values = propDef.isMultiple() ? Patterns.SPACE.split(ISO9075.decode(decodedValue)) : new String[]{decodedValue};
                         for (String value : values) {
                             if (!StringUtils.isEmpty(value)) {
                                 if (value.startsWith("$currentSite")) {
@@ -507,7 +613,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                                     if (!rootPath.equals("/")) {
                                         value = rootPath + value;
                                     }
-                                } 
+                                }
                                 for (Map.Entry<String, String> entry : pathMapping.entrySet()) {
                                     if (value.startsWith(entry.getKey())) {
                                         value = entry.getValue() + StringUtils.substringAfter(value, entry.getKey());
@@ -527,7 +633,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     }
                 } else {
                     if (propDef.isMultiple()) {
-                        String[] s = "".equals(attrValue) ? new String[0] : attrValue.split(" ");
+                        String[] s = "".equals(attrValue) ? new String[0] : Patterns.SPACE.split(attrValue);
                         Value[] v = new Value[s.length];
                         for (int j = 0; j < s.length; j++) {
                             v[j] = child.getRealNode().getSession().getValueFactory().createValue(s[j]);
@@ -551,7 +657,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         }
         String path = pathes.peek();
         if (path.endsWith("/jcr:content")) {
-            String[] p = path.split("/");
+            String[] p = Patterns.SLASH.split(path);
             path = path.replace("/jcr:content", "/" + p[p.length - 2]);
         } else {
             path =JCRContentUtils.replaceColon(path);
@@ -576,13 +682,44 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         return false;
     }
 
+    private String findContentInExpandedPath() throws IOException {
+        if (archive == null) {
+            return null;
+        }
+        String path = pathes.peek();
+        if (path.endsWith("/jcr:content")) {
+            String[] p = Patterns.SLASH.split(path);
+            path = path.replace("/jcr:content", "/" + p[p.length - 2]);
+        } else {
+            path =JCRContentUtils.replaceColon(path);
+        }
+        int fileIndex = fileList.indexOf(baseFilesPath + path);
+        if (fileIndex == -1 && path.startsWith("/content")) {
+            // Case of root node export - root node has been renamed to "content" during export
+            path = path.substring("/content".length());
+            fileIndex = fileList.indexOf(baseFilesPath + path);
+        }
+        if (fileIndex != -1) {
+            return baseFilesPath + path;
+        }
+        return null;
+    }
+
     private String mapAclAttributes(JCRNodeWrapper node, String aclValue) {
         Set<String> roles = new HashSet<String>();
         if (aclValue.contains("jcr:read")) {
-            roles.addAll(LegacyImportHandler.READ_ROLES);
+            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_FILES_READ_ROLES)) {
+                roles.addAll(LegacyImportHandler.READ_ROLES);
+            } else {
+                roles.addAll(LegacyImportHandler.CUSTOM_FILES_READ_ROLES);
+            }
         }
         if (aclValue.contains("jcr:write")) {
-            roles.addAll(LegacyImportHandler.WRITE_ROLES);
+            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_FILES_WRITE_ROLES)) {
+                roles.addAll(LegacyImportHandler.WRITE_ROLES);
+            } else {
+                roles.addAll(LegacyImportHandler.CUSTOM_FILES_WRITE_ROLES);
+            }
         }
         String s = "";
         for (String role : roles) {
@@ -725,5 +862,20 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
     public void setBaseFilesPath(String baseFilesPath) {
         this.baseFilesPath = baseFilesPath;
+    }
+
+    public String getLocation() {
+        if (documentLocator != null) {
+            return " (line " + documentLocator.getLineNumber() + ", column "+documentLocator.getColumnNumber()+")";
+        }
+        return "";
+    }
+
+    public Set<String> getMissingDependencies() {
+        return missingDependencies;
+    }
+
+    public void setDocumentLocator(Locator documentLocator) {
+        this.documentLocator = documentLocator;
     }
 }

@@ -45,6 +45,8 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.cache.CacheImplementation;
 import org.jahia.services.cache.CacheProvider;
+import org.jahia.services.channels.Channel;
+import org.jahia.services.channels.ChannelService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -124,12 +126,18 @@ public class RenderService {
 
     private JahiaTemplateManagerService templateManagerService;
 
+    private ChannelService channelService;
+
     private Collection<ScriptResolver> scriptResolvers;
 
     private List<RenderFilter> filters = new LinkedList<RenderFilter>();
 
     public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
         this.templateManagerService = templateManagerService;
+    }
+
+    public void setChannelService(ChannelService channelService) {
+        this.channelService = channelService;
     }
 
     public void setScriptResolvers(Collection<ScriptResolver> scriptResolvers) {
@@ -176,7 +184,7 @@ public class RenderService {
      */
     public Script resolveScript(Resource resource, RenderContext context) throws RepositoryException, TemplateNotFoundException {
         for (ScriptResolver scriptResolver : scriptResolvers) {
-            Script s = scriptResolver.resolveScript(resource);
+            Script s = scriptResolver.resolveScript(resource, context);
             if (s != null) {
                 return s;
             }
@@ -185,13 +193,13 @@ public class RenderService {
     }
 
 
-    public boolean hasView(JCRNodeWrapper node, String key) {
+    public boolean hasView(JCRNodeWrapper node, String key, String templateType) {
         try {
-            if (hasView(node.getPrimaryNodeType(), key, node.getResolveSite())) {
+            if (hasView(node.getPrimaryNodeType(), key, node.getResolveSite(), templateType)) {
                 return true;
             }
             for (ExtendedNodeType type : node.getMixinNodeTypes()) {
-                if (hasView(type, key, node.getResolveSite())) {
+                if (hasView(type, key, node.getResolveSite(), templateType)) {
                     return true;
                 }
             }
@@ -201,9 +209,9 @@ public class RenderService {
         return false;
     }
 
-    public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site) {
+    public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site, String templateType) {
         for (ScriptResolver scriptResolver : scriptResolvers) {
-            if (scriptResolver.hasView(nt, key, site)) {
+            if (scriptResolver.hasView(nt, key, site, templateType)) {
                 return true;
             }
         }
@@ -219,10 +227,10 @@ public class RenderService {
         return new RenderChain(filters, templateManagerService.getRenderFilters());
     }
 
-    public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site) {
+    public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType) {
         SortedSet<View> set = new TreeSet<View>();
         for (ScriptResolver scriptResolver : scriptResolvers) {
-            set.addAll(scriptResolver.getViewsSet(nt, site));
+            set.addAll(scriptResolver.getViewsSet(nt, site, templateType));
         }
         return set;
     }
@@ -269,7 +277,7 @@ public class RenderService {
                     JCRNodeWrapper parent = current.getParent();
                     while (!(parent.isNodeType("jnt:templatesFolder"))) {
                         template = new org.jahia.services.render.Template(parent.hasProperty("j:view") ? parent.getProperty("j:view").getString() :
-                                templateName, parent.getIdentifier(), template);
+                                templateName, parent.getIdentifier(), template, parent.getName());
                         parent = parent.getParent();
                     }
                     template = addContextualTemplates(node, templateName, template, parent);
@@ -289,7 +297,7 @@ public class RenderService {
                         throw new AccessDeniedException(resource.getTemplate());
                     }
                     template = new org.jahia.services.render.Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                            templateName, templateNode.getIdentifier(), template);
+                            templateName, templateNode.getIdentifier(), template, templateNode.getName());
                 } else if (templatesNode != null) {
                     template = addTemplates(resource, renderContext, templatesNode);
                 }
@@ -304,7 +312,7 @@ public class RenderService {
                     JCRNodeWrapper templateNode = resource.getNode().getSession().getNodeByIdentifier(template.getNode()).getParent();
                     while (!(templateNode.isNodeType("jnt:templatesFolder"))) {
                         template = new org.jahia.services.render.Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                                null, templateNode.getIdentifier(), template);
+                                null, templateNode.getIdentifier(), template, templateNode.getName());
                         templateNode = templateNode.getParent();
                     }
                 } else {
@@ -326,7 +334,7 @@ public class RenderService {
                     template = addContextualTemplates(node, templateName, template, parent);
                 }
             } else {
-                template = new Template(null,null,null);
+                template = new Template(null,null,null, null);
             }
 
         } catch (AccessDeniedException e) {
@@ -341,11 +349,18 @@ public class RenderService {
         if (parent.isNodeType("jnt:templatesFolder") && parent.hasProperty("j:rootTemplatePath")) {
             String rootTemplatePath = parent.getProperty("j:rootTemplatePath").getString();
             JCRNodeWrapper systemSite = node.getSession().getNode(JCRContentUtils.getSystemSitePath());
-            parent = systemSite.getNode("templates"+ rootTemplatePath);
-            while (!(parent.isNodeType("jnt:templatesFolder"))) {
-                template = new Template(parent.hasProperty("j:view") ? parent.getProperty("j:view").getString() :
-                        templateName, parent.getIdentifier(), template);
-                parent = parent.getParent();
+            if (parent.hasProperty("j:templateSetContext")) {
+                systemSite = (JCRNodeWrapper) parent.getProperty("j:templateSetContext").getNode();
+            }
+            if (systemSite.hasNode("templates"+ rootTemplatePath)) {
+                parent = systemSite.getNode("templates"+ rootTemplatePath);
+                while (!(parent.isNodeType("jnt:templatesFolder"))) {
+                    template = new Template(parent.hasProperty("j:view") ? parent.getProperty("j:view").getString() :
+                            templateName, parent.getIdentifier(), template, parent.getName());
+                    parent = parent.getParent();
+                }
+            } else {
+                logger.warn("Cannot find template : " + systemSite + "/templates" + rootTemplatePath);
             }
         }
         return template;
@@ -354,6 +369,28 @@ public class RenderService {
     private CacheImplementation<String,Template> templatesCache;
 
     private DefaultCacheKeyGenerator cacheKeyGenerator;
+
+/*    private String resolveTemplateType(Resource resource , Channel channel) {
+        boolean doFallBack = false;
+        String r = resource.getTemplateType();
+        if (!channel.hasCapabilityValue("template-type-mapping")) {
+            doFallBack = true;
+        }
+        if (channel.hasCapabilityValue("template-type-mapping") && hasView(resource.getNode(), resource.getTemplate(), resource.getTemplateType())) {
+            if (!resource.getTemplateType().contains("-")) {
+                String baseType = resource.getTemplateType();
+                r = baseType+"-" + channel.getCapability("template-type-mapping");
+
+            }
+        } else {
+            doFallBack = true;
+        }
+
+        if (doFallBack && channel.getFallBack() != null && !channel.getFallBack().equals("root")) {
+            resolveTemplateType(resource, channelService.getChannel(channel.getFallBack()));
+        }
+        return r;
+    }*/
 
     private org.jahia.services.render.Template addTemplates(Resource resource, RenderContext renderContext,
                                                             JCRNodeWrapper templateNode) throws RepositoryException {
@@ -365,7 +402,7 @@ public class RenderService {
 
         String key = new StringBuffer(templateNode.getPath()).append(type).append(
                 isNotDefaultTemplate ? resource.getTemplate() : "default").toString() + renderContext.getServletPath() + resource.getWorkspace() + renderContext.isLoggedIn() +
-                     resource.getNode().getPrimaryNodeTypeName()+cacheKeyGenerator.appendAcls(resource, renderContext, false);
+                resource.getNode().getNodeTypes()+cacheKeyGenerator.appendAcls(resource, renderContext, false);
 
         Template template = templatesCache.get(key);
 
@@ -389,7 +426,7 @@ public class RenderService {
                 addTemplate(resource, renderContext, contentTemplateNode, templates);
             }
             if (templates.isEmpty()) {
-                templatesCache.put(key, null, new EmptyTemplate(null,null,null));
+                templatesCache.put(key, null, new EmptyTemplate(null,null,null,null));
                 return null;
             } else {
                 templatesCache.put(key,null, templates.get(0));
@@ -416,28 +453,24 @@ public class RenderService {
                 ok = true;
             }
         }
+
         if (!checkTemplatePermission(resource, renderContext, templateNode)) return;
 
         if (ok) {
             templates.add(new Template(
                     templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                            null, templateNode.getIdentifier(), null));
+                            null, templateNode.getIdentifier(), null, templateNode.getName()));
         }
     }
 
     private boolean checkTemplatePermission(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode) throws RepositoryException {
+        boolean invert = templateNode.hasProperty("j:invertCondition") && templateNode.getProperty("j:invertCondition").getBoolean();
+
         if (templateNode.hasProperty("j:requiredMode")) {
             String req = templateNode.getProperty("j:requiredMode").getString();
-            if (!renderContext.isContributionMode() && req.equals("contribute")) {
-                return false;
-            } else if (!renderContext.isEditMode() && req.equals("edit")) {
-                return false;
-            } else if (!renderContext.isLiveMode() && req.equals("live")) {
-                return false;
-            } else if (!renderContext.isPreviewMode() && !renderContext.isLiveMode() && req.equals("live-or-preview")) {
-                return false;
+            if (!renderContext.getMode().equals(req)) {
+                return invert;
             }
-
         }
         if (templateNode.hasProperty("j:requiredPermissions")) {
             final Value[] values = templateNode.getProperty("j:requiredPermissions").getValues();
@@ -463,21 +496,21 @@ public class RenderService {
             }
             for (String perm : perms) {
                 if (!contextNode.hasPermission(perm)) {
-                    return false;
+                    return invert;
                 }
             }
         }
         if (templateNode.hasProperty("j:requireLoggedUser") && templateNode.getProperty("j:requireLoggedUser").getBoolean()) {
             if (!renderContext.isLoggedIn()) {
-                return false;
+                return invert;
             }
         }
         if (templateNode.hasProperty("j:requirePrivilegedUser") && templateNode.getProperty("j:requirePrivilegedUser").getBoolean()) {
             if (!renderContext.getUser().isMemberOfGroup(0,JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
-                return false;
+                return invert;
             }
         }
-        return true;
+        return !invert;
     }
     
     public void flushCache() {

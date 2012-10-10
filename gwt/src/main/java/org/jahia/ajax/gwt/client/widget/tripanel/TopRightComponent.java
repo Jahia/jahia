@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget.tripanel;
 
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.content.AbstractView;
 
@@ -54,6 +55,9 @@ import java.util.List;
  * @version 19 juin 2008 - 10:43:58
  */
 public abstract class TopRightComponent extends LinkableComponent {
+
+    final PagingToolBar toolBar = new PagingToolBar(50);
+
 
     public abstract void setContent(Object root);
 
@@ -79,5 +83,9 @@ public abstract class TopRightComponent extends LinkableComponent {
 
 
     public void clearSelection() {
+    }
+
+    public PagingToolBar getToolBar() {
+        return toolBar;
     }
 }

@@ -40,12 +40,15 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.collections.functors.NOPTransformer;
+import org.apache.commons.collections.map.LazySortedMap;
+import org.apache.commons.collections.map.TransformedSortedMap;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.bin.Edit;
 import org.jahia.bin.Render;
-import org.jahia.bin.Studio;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.channels.Channel;
+import org.jahia.services.channels.ChannelService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -72,12 +75,17 @@ public class TemplateHelper {
     private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TemplateHelper.class);
 
     private RenderService renderService;
+    private ChannelService channelService;
     public static final int LIVE = 0;
     public static final int PREVIEW = 1;
     public static final int EDIT = 2;
 
     public void setRenderService(RenderService renderService) {
         this.renderService = renderService;
+    }
+
+    public void setChannelService(ChannelService channelService) {
+        this.channelService = channelService;
     }
 
     /**
@@ -93,11 +101,14 @@ public class TemplateHelper {
      * @param response
      * @param currentUserSession
      * @param uiLocale
+     * @param channelIdentifier
+     * @param channelVariant
      */
     public GWTRenderResult getRenderedContent(String path, String template, String configuration,
                                               final Map<String, List<String>> contextParams, boolean editMode, String configName,
                                               HttpServletRequest request, HttpServletResponse response,
-                                              JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
+                                              JCRSessionWrapper currentUserSession,
+                                              Locale uiLocale, String channelIdentifier, String channelVariant) throws GWTJahiaServiceException {
         GWTRenderResult result = null;
         try {
             JCRNodeWrapper node = currentUserSession.getNode(path);
@@ -142,9 +153,6 @@ public class TemplateHelper {
 
             RenderContext renderContext = new RenderContext(request, response, currentUserSession.getUser());
             renderContext.setEditMode(editMode);
-            if(!editMode) {
-                renderContext.setPreviewMode(true);
-            }
             renderContext.setEditModeConfigName(configName);
             renderContext.setMainResource(r);
 
@@ -174,8 +182,27 @@ public class TemplateHelper {
 
             JCRSiteNode site = node.getResolveSite();
             renderContext.setSite(site);
+            if (channelIdentifier != null) {
+                Channel activeChannel = channelService.getChannel(channelIdentifier);
+                if (activeChannel != null) {
+                    renderContext.setChannel(activeChannel);
+                }
+            }
+
             String res = renderService.render(r, renderContext);
             Map<String, Map<String,Map<String,String>>> map = (Map<String, Map<String,Map<String,String>>>) renderContext.getRequest().getAttribute("staticAssets");
+
+            if (channelIdentifier != null && !channelIdentifier.equals("generic")) {
+                Map<String,Map<String,String>> css  = map.get("css");
+                SortedMap<String,Map<String,String>> cssWithParam  = new TreeMap<String, Map<String, String>>();
+                for (Map.Entry<String, Map<String, String>> entry : css.entrySet()) {
+                    String k = entry.getKey() + "?channel="+channelIdentifier+(channelVariant!=null?"&variant="+channelVariant:"");
+                    cssWithParam.put(k, entry.getValue());
+                }
+                map.put("css",cssWithParam);
+            }
+
+
             String constraints = ConstraintsHelper.getConstraints(node);
             if (constraints == null) {
                 constraints = "";
@@ -256,7 +283,7 @@ public class TemplateHelper {
 //                set.addAll(getTemplatesSet(c));
 //            }
 //        } else {
-        set = renderService.getViewsSet(nt, node.getResolveSite());
+        set = renderService.getViewsSet(nt, node.getResolveSite(), "html");
 //        }
         for (View view : set) {
             final String key = view.getKey();

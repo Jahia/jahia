@@ -107,7 +107,7 @@ public class CookieAuthValveImpl extends BaseAuthValve {
                     getJahiaUserManagerService().searchUsers(searchCriterias);
             if (foundUsers.size() == 1) {
                 jahiaUser = (JahiaUser) foundUsers.iterator().next();
-                if (isAccountLocked(jahiaUser)) {
+                if (jahiaUser.isAccountLocked()) {
                     jahiaUser = null;
                 } else {
                     HttpSession session = authContext.getRequest().getSession(false);

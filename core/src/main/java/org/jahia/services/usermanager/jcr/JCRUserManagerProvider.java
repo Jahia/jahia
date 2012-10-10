@@ -54,7 +54,7 @@ import org.jahia.services.templates.TemplatePackageApplicationContextLoader.Cont
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerProvider;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.springframework.context.ApplicationEvent;
+import org.jahia.utils.Patterns;
 import org.springframework.context.ApplicationListener;
 import org.springframework.web.context.ServletContextAware;
 
@@ -128,9 +128,9 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
         try {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
                 public JCRUser doInJCR(JCRSessionWrapper jcrSessionWrapper) throws RepositoryException {
-                    String jcrUsernamePath[] = StringUtils.substringAfter(
+                    String jcrUsernamePath[] = Patterns.SLASH.split(StringUtils.substringAfter(
                             ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(
-                                    name), "/").split("/");
+                                    name), "/"));
                     JCRNodeWrapper startNode = jcrSessionWrapper.getNode("/" + jcrUsernamePath[0]);
                     Node usersFolderNode = startNode;
                     int length = jcrUsernamePath.length;
@@ -230,6 +230,15 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                             session.checkout(next);
                             next.remove();
                         }
+
+                        PropertyIterator pi = node.getWeakReferences("j:member");
+                        while (pi.hasNext()) {
+                            JCRPropertyWrapper propertyWrapper  = (JCRPropertyWrapper) pi.next();
+                            propertyWrapper.getParent().remove();
+                        }
+
+                        JCRGroupManagerProvider.getInstance().flushCache();
+
                         session.checkout(node.getParent());
                         session.checkout(node);
                         node.remove();
@@ -278,9 +287,11 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                         RowIterator rows = qr.getRows();
                         while (rows.hasNext()) {
                             Row usersFolderNode = rows.nextRow();
-                            String userName = "{jcr}" + usersFolderNode.getNode().getName();
-                            if (!users.contains(userName)) {
-                                users.add(userName);
+                            if (usersFolderNode.getNode() != null) {
+                                String userName = "{jcr}" + usersFolderNode.getNode().getName();
+                                if (!users.contains(userName)) {
+                                    users.add(userName);
+                                }
                             }
                         }
                     }
@@ -468,6 +479,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
         try {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Set<JahiaUser>>() {
                 public Set<JahiaUser> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    int limit = 0;
                     Set<JahiaUser> users = new HashSet<JahiaUser>();
                     if (session.getWorkspace().getQueryManager() != null) {
                         StringBuilder query = new StringBuilder(128);
@@ -477,13 +489,26 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                         if (providerKey != null) {
                             query.append(query.length() > 0 ? " AND " : "").append(" u.[" + JCRUser.J_EXTERNAL_SOURCE + "] = '").append(providerKey).append("'");
                         }
-                        
                         if (searchCriterias != null && searchCriterias.size() > 0) {
+                            Properties filters = (Properties) searchCriterias.clone();
+                            String operation = " OR ";
+                            if(filters.containsKey(JahiaUserManagerService.MULTI_CRITERIA_SEARCH_OPERATION)) {
+                                if(((String) filters.get(JahiaUserManagerService.MULTI_CRITERIA_SEARCH_OPERATION)).trim().toLowerCase().equals(
+                                        "and")) {
+                                    operation = " AND ";
+                                }
+                                filters.remove(JahiaUserManagerService.MULTI_CRITERIA_SEARCH_OPERATION);
+                            }
+                            if (filters.containsKey(JahiaUserManagerService.COUNT_LIMIT)) {
+                                limit = Integer.parseInt((String) filters.get(JahiaUserManagerService.COUNT_LIMIT));
+                                logger.debug("Limit of results has be set to " + limit);
+                                filters.remove(JahiaUserManagerService.COUNT_LIMIT);
+                            }
                             // Avoid wildcard attribute
-                            if (!(searchCriterias.containsKey(
-                                    "*") && searchCriterias.size() == 1 && searchCriterias.getProperty("*").equals(
+                            if (!(filters.containsKey(
+                                    "*") && filters.size() == 1 && filters.getProperty("*").equals(
                                     "*"))) {
-                                Iterator<Map.Entry<Object, Object>> objectIterator = searchCriterias.entrySet().iterator();
+                                Iterator<Map.Entry<Object, Object>> objectIterator = filters.entrySet().iterator();
                                 if (objectIterator.hasNext()) {
                                     query.append(query.length() > 0 ? " AND " : "").append(" (");
                                     while (objectIterator.hasNext()) {
@@ -497,21 +522,21 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                                             propertyValue = "%";
                                         } else {
                                             if (propertyValue.contains("*")) {
-                                                propertyValue = propertyValue.replaceAll("\\*", "%");
+                                                propertyValue = Patterns.STAR.matcher(propertyValue).replaceAll("%");
                                             } else {
                                                 propertyValue = propertyValue + "%";
                                             }
                                         }
                                         if ("*".equals(propertyKey)) {
-                                            query.append("(CONTAINS(u.*,'" + propertyValue.replaceAll("%", "")
+                                            query.append("(CONTAINS(u.*,'" + Patterns.PERCENT.matcher(propertyValue).replaceAll("")
                                                     + "') OR LOWER(u.[j:nodename]) LIKE '")
                                                     .append(propertyValue.toLowerCase()).append("') ");
                                         } else {
-                                            query.append("LOWER(u.[" + propertyKey.replaceAll("\\.", "\\\\.") + "])").append(
+                                            query.append("LOWER(u.[" + Patterns.DOT.matcher(propertyKey).replaceAll("\\\\.") + "])").append(
                                                     " LIKE '").append(propertyValue.toLowerCase()).append("'");
                                         }
                                         if (objectIterator.hasNext()) {
-                                            query.append(" OR ");
+                                            query.append(operation);
                                         }
                                     }
                                     query.append(")");
@@ -528,6 +553,9 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                         }
                         Query q = session.getWorkspace().getQueryManager().createQuery(query.toString(),
                                 Query.JCR_SQL2);
+                        if (limit > 0) {
+                            q.setLimit(limit);
+                        }
                         QueryResult qr = q.execute();
                         NodeIterator ni = qr.getNodes();
                         while (ni.hasNext()) {

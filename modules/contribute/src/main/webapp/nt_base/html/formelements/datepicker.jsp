@@ -41,10 +41,10 @@
 <template:addResources>
 <script>
     $(document).ready(function() {
-        $("#${jsNodeName}${scriptTypeName}").bind('form-pre-serialize',function() {
+        $("\#${jsNodeName}${scriptTypeName}").bind('form-pre-serialize',function() {
             var datePicked = $("#datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val().replace(/^\s+|\s+$/g, '').replace(" ",
                     "T");
-            $("#${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val(datePicked);
+            $("\#${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val(datePicked);
             return false;
         })
     });

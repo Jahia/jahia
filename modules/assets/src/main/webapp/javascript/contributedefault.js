@@ -1,3 +1,4 @@
+$.ajaxSetup({traditional: true, cache:false});
 var richTextEditors = {};
 var contributionI18n = {
     'ok': 'OK',
@@ -41,8 +42,19 @@ function errorOnSave(thisField) {
 }
 
 function initEditFields(id, escapeTextValue) {
+    initEditFields(id, escapeTextValue, null)
+}
+function initEditFields(id, escapeTextValue, callback) {
     $(".edit" + id).editable(function (value, settings) {
-        var data = {'jcrMethodToCall':'put'};
+        var data;
+        var initData = $(this).attr('init:data');
+        if (initData != null) {
+            data = $.parseJSON(initData);
+        }
+        if (data == null) {
+            data = {};
+        }
+        data['jcrMethodToCall'] = 'put';
         var submitId = $(this).attr('jcr:id');
         data[submitId] = value;
         var thisField = this;
@@ -51,8 +63,13 @@ function initEditFields(id, escapeTextValue) {
             url: $(this).attr('jcr:url'),
             data: data,
             dataType: "json",
-            error:errorOnSave(thisField)
-        });
+            error:errorOnSave(thisField),
+            traditional: true
+        }).done(function() {
+                if (callback != null) {
+                    callback(submitId);
+                }
+            });
 
         return escapeTextValue ? $('<div/>').text(value).html() : value;
     }, {
@@ -61,20 +78,34 @@ function initEditFields(id, escapeTextValue) {
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
         cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
+        placeholder:contributionI18n['edit']
     });
 
     $(".ckeditorEdit" + id).editable(function (value, settings) {
+        var data;
+        var initData = $(this).attr('init:data');
+        if (initData != null) {
+            data = $.parseJSON(initData);
+        }
+        if (data == null) {
+            data = {};
+        }
+        data['jcrMethodToCall'] = 'put';
         var submitId = $(this).attr('jcr:id');
-        var data = {'jcrMethodToCall':'put'};
         data[submitId] = value;
         var thisField = this;
         $.ajax({
-          type: 'POST',
-          url: $(this).attr('jcr:url'),
-          data: data,
-          dataType: "json",
-          error:errorOnSave(thisField)
-        });
+            type: 'POST',
+            url: $(this).attr('jcr:url'),
+            data: data,
+            dataType: "json",
+            error:errorOnSave(thisField),
+            traditional: true
+        }).done(function() {
+                if (callback != null) {
+                    callback(submitId);
+                }
+            });
 
         return(value);
     }, {
@@ -83,6 +114,7 @@ function initEditFields(id, escapeTextValue) {
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
         cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
+        placeholder:contributionI18n['edit'],
         ckeditorToolbar : $(".ckeditorEdit" + id).attr('jcr:ckeditorToolbar'),
         onreset: function (settings, original) {
             $('#wcag-' + $(original).attr('id') + '_ckeditor').remove();
@@ -94,17 +126,30 @@ function initEditFields(id, escapeTextValue) {
     });
 
     $(".dateEdit" + id).editable(function (value, settings) {
+        var data;
+        var initData = $(this).attr('init:data');
+        if (initData != null) {
+            data = $.parseJSON(initData);
+        }
+        if (data == null) {
+            data = {};
+        }
+        data['jcrMethodToCall'] = 'put';
         var submitId = $(this).attr('jcr:id');
-        var data = {'jcrMethodToCall':'put'};
         data[submitId] = value;
         var thisField = this;
         $.ajax({
-          type: 'POST',
-          url: $(this).attr('jcr:url'),
-          data: data,
-          dataType: "json",
-          error:errorOnSave(thisField)
-        });
+            type: 'POST',
+            url: $(this).attr('jcr:url'),
+            data: data,
+            dataType: "json",
+            error:errorOnSave(thisField),
+            traditional: true
+        }).done(function() {
+                if (callback != null) {
+                    callback(submitId);
+                }
+            });
 
         return(value.replace("T", " "));
     }, {
@@ -113,21 +158,35 @@ function initEditFields(id, escapeTextValue) {
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
         cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
+        placeholder:contributionI18n['edit'],
         loaddata : {defaultValue:($(".dateEdit" + id).attr('jcr:valuems') != null ? $(".dateEdit" + id).attr('jcr:valuems') : $(".dateEdit" + id).attr('jcr:value'))}
     });
 
     $(".dateTimeEdit" + id).editable(function (value, settings) {
+        var data;
+        var initData = $(this).attr('init:data');
+        if (initData != null) {
+            data = $.parseJSON(initData);
+        }
+        if (data == null) {
+            data = {};
+        }
+        data['jcrMethodToCall'] = 'put';
         var submitId = $(this).attr('jcr:id');
-        var data = {'jcrMethodToCall':'put'};
         data[submitId] = value;
         var thisField = this;
         $.ajax({
-          type: 'POST',
-          url: $(this).attr('jcr:url'),
-          data: data,
-          dataType: "json",
-          error:errorOnSave(thisField)
-        });
+            type: 'POST',
+            url: $(this).attr('jcr:url'),
+            data: data,
+            dataType: "json",
+            error:errorOnSave(thisField),
+            traditional: true
+        }).done(function() {
+                if (callback != null) {
+                    callback(submitId);
+                }
+            });
 
         return(value.replace("T", " "));
     }, {
@@ -136,25 +195,42 @@ function initEditFields(id, escapeTextValue) {
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
         cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
+        placeholder:contributionI18n['edit'],
         loaddata : {defaultValue:($(".dateTimeEdit" + id).attr('jcr:valuems') != null ? $(".dateTimeEdit" + id).attr('jcr:valuems') : $(".dateTimeEdit" + id).attr('jcr:value'))}
     });
-    setChoiceListEdit(id);
-    setFileEdit(id);
+    setChoiceListEdit(id, callback);
+    setFileEdit(id, callback);
 }
 
 function setChoiceListEdit(id) {
+    setChoiceListEdit(id, null)
+}
+function setChoiceListEdit(id, callback) {
     $(".choicelistEdit" + id).editable(function (value, settings) {
+        var data;
+        var initData = $(this).attr('init:data');
+        if (initData != null) {
+            data = $.parseJSON(initData);
+        }
+        if (data == null) {
+            data = {};
+        }
+        data['jcrMethodToCall'] = 'put';
         var submitId = $(this).attr('jcr:id').replace("_", ":");
-        var data = {'jcrMethodToCall':'put'};
         data[submitId] = value;
         var thisField = this;
         $.ajax({
-          type: 'POST',
-          url: $(this).attr('jcr:url'),
-          data: data,
-          dataType: "json",
-            error:errorOnSave(thisField)
-        });
+            type: 'POST',
+            url: $(this).attr('jcr:url'),
+            data: data,
+            dataType: "json",
+            error:errorOnSave(thisField),
+            traditional: true
+        }).done(function() {
+                if (callback != null) {
+                    callback(submitId);
+                }
+            });
 
         return eval("values=" + $(this).attr('jcr:options'))[value];
     }, {
@@ -165,11 +241,15 @@ function setChoiceListEdit(id) {
         onblur : 'ignore',
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
         cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
-        tooltip : contributionI18n['edit']
+        tooltip : contributionI18n['edit'],
+        placeholder:contributionI18n['edit']
     });
 }
 
 function setFileEdit(id) {
+    setFileEdit(id, null)
+}
+function setFileEdit(id, callback) {
     $(".file" + id).editable('', {
         type : 'ajaxupload',
         onblur : 'ignore',
@@ -177,9 +257,18 @@ function setFileEdit(id) {
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
         cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
+        placeholder:contributionI18n['edit'],
         target:$(".file" + id).attr('jcr:url')+"?jcrContributePost=true",
         callback : function (data, status,original) {
-            var datas = {'jcrMethodToCall':'put'};
+            var datas;
+            var initData = $(original).attr('init:data');
+            if (initData != null) {
+                datas = $.parseJSON(initData);
+            }
+            if (datas == null) {
+                datas = {};
+            }
+            datas['jcrMethodToCall'] = 'put';
             var callableUrl = $(original).attr('jcr:url');
             datas[$(original).attr('jcr:id').replace("_", ":")] = data.uuids[0];
             $.post($(original).attr('jcr:url'), datas, function(result) {
@@ -190,12 +279,16 @@ function setFileEdit(id) {
                     var file = result[$(".fileSelector"+id).attr("jcr:id").replace(":","_")];
                     $("#renderingOfFile" + id).html("<a href=" + file + ">" + file.substring(file.lastIndexOf("/") + 1,file.length) + "</a>" );
                 } else {
-                $.get(result[$(".fileSelector"+id).attr("jcr:id").replace(":","_")] +".ajax",
-                    function(data) {
-                        $("#renderingOfFile" + id).html(data);
-                    });
+                    $.get(result[$(".fileSelector"+id).attr("jcr:id").replace(":","_")] +".ajax",
+                        function(data) {
+                            $("#renderingOfFile" + id).html(data);
+                        });
                 }
-                $(".file"+id).html(decodeURI(result[$(".fileSelector"+id).attr("jcr:id").replace(":","_")]));
+                var submitId = $(".fileSelector"+id).attr("jcr:id");
+                $(".file"+id).html(decodeURI(result[submitId.replace(":","_")]));
+                if (callback != null) {
+                    callback(submitId);
+                }
             }, "json");
         }
     });
@@ -203,8 +296,19 @@ function setFileEdit(id) {
 }
 
 function setFileSelector(id) {
+    setFileSelector(id, null)
+}
+function setFileSelector(id, callback) {
     $(".fileSelector" + id).editable(function (value, settings) {
-        var data = {'jcrMethodToCall':'put'};
+        var data;
+        var initData = $(this).attr('init:data');
+        if (initData != null) {
+            data = $.parseJSON(initData);
+        }
+        if (data == null) {
+            data = {};
+        }
+        data['jcrMethodToCall'] = 'put';
         var submitId = $(this).attr('jcr:id');
         data[submitId] = value;
         var callableUrl = $(this).attr('jcr:url');
@@ -216,12 +320,16 @@ function setFileSelector(id) {
                 var file = result[$(".fileSelector"+id).attr("jcr:id").replace(":","_")];
                 $("#renderingOfFile" + id).html("<a href=" + file + ">" + file.substring(file.lastIndexOf("/") + 1,file.length) + "</a>" );
             } else {
-            $.get(result[$(".fileSelector"+id).attr("jcr:id").replace(":","_")] +".ajax",
-                function(data) {
-                    $("#renderingOfFile" + id).html(data);
-                });
+                $.get(result[$(".fileSelector"+id).attr("jcr:id").replace(":","_")] +".ajax",
+                    function(data) {
+                        $("#renderingOfFile" + id).html(data);
+                    });
             }
-            $(".fileSelector"+id).html(decodeURI(result[$(".fileSelector"+id).attr("jcr:id").replace(":","_")]));
+            var submitId = $(".fileSelector"+id).attr("jcr:id");
+            $(".fileSelector"+id).html(decodeURI(result[submitId.replace(":","_")]));
+            if (callback != null) {
+                callback(submitId);
+            }
         }, "json");
         return(value);
     }, {
@@ -230,6 +338,7 @@ function setFileSelector(id) {
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
         cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
+        placeholder:contributionI18n['edit'],
         nodeTypes : $(".fileSelector" + id).attr('jeditabletreeselector:nodetypes'),
         selectableNodeTypes : $(".fileSelector" + id).attr('jeditabletreeselector:selectablenodetypes'),
         baseURL : $(".fileSelector" + id).attr('jeditabletreeselector:baseURL'),
@@ -249,72 +358,76 @@ function wcagCompliant(id, richTextElement, userTriggered) {
         }
     }
     var wcagOk = false;
-    $.ajax({
-        async: false,
-        type: 'POST',
-        url:  ctx + '/cms/wcag/validate',
-        data: {'text':CKEDITOR.instances[id].getData()},
-        error: function (xhr, textStatus, errorThrown) {
-            wcagOk = true;
-        },
-        success: function (data, textStatus) {
-            var ignore = $('#wcag-ignore-' + id);
-            if ((userTriggered || ignore.length == 0 || ignore.attr('checked') == false) && (data.errors.length + data.warnings.length + data.infos.length > 0)) {
-                if (ignore.length > 0) {
-                    $('#wcag-' + id).remove();
-                }
-                var myDiv = $('<div class="wcag-warnings" id="wcag-' + id + '">' +
-                    '<div class="wcag-warnings-ignore"><input type="checkbox" id="wcag-ignore-' + id + '" value="true" name="ignore"/>&nbsp;<label for="wcag-ignore-' + id + '">' + (userTriggered ? contributionI18n['wcag.close'] : contributionI18n['wcag.ignore']) + '</label></div>' +
-                    '<table class="table" width="100%" border="1" cellpadding="0" cellspacing="3">' +
-                    '<thead><tr><th width="5%">#</th><th width="5%"> </th><th width="75%">' +
-                    contributionI18n['wcag.description'] + '</th>' +
-                    /*
-                     '<th width="10%">' + contributionI18n['wcag.context'] + '</th>' +
-                     */
-                    '<th width="10%">' + contributionI18n['wcag.example'] + '</th></tr></thead>' +
-                    '<tbody id="wcag-violations-' + id + '">' +
-                    '</tbody>' +
-                    '</table>' +
-                    '</div>');
-                $(richTextElement).before(myDiv);
-                if (userTriggered) {
-                    $('#wcag-ignore-' + id).click(function() {
-                        $('#wcag-' + id).remove();
-                    })
-                }
-                var placeholder = $('#wcag-violations-' + id);
-                var count = 0;
-                $.each($.merge([], $.merge($.merge([], data.errors), data.warnings), data.infos), function(index, violation) {
-                    var violationType = violation.type.toLowerCase();
-                    var row = '<tr><td align="center">' + (++count) + '</td>';
-                    row = row + '<td align="center"><img src="' + ctx + '/modules/default/images/icons/' +
-                        violationType + '.png" height="16" width="16" alt="' + contributionI18n['wcag.' + violationType] + '"' +
-                        ' title="' + contributionI18n['wcag.' + violationType] + '"/></td>';
-                    row = row + '<td>' + violation.message + '</td>';
-                    /*
-                     row = row + '<td align="center">' +
-                     '<a href="#wcag-context-' + id + '-' + count + '" class="wcag-context">' +
-                     '<img src="' + ctx + '/modules/default/images/icons/about.png" height="16" width="16" alt="' + contributionI18n['wcag.context'] + '"' +
-                     ' title="' + contributionI18n['wcag.context'] + '"/></a>' +
-                     '<div style="display:none"><div id="wcag-context-' + id + '-' + count + '">' + 'ctx' + '</div></div>' +
-                     '</td>';
-                     */
-
-                    row = row + '<td align="center">' + violation.example + '</td></tr>';
-                    placeholder.append($(row));
-                });
-                $('a.wcag-context').fancybox({'titleShow': false, 'autoDimensions' : false, 'width' : 500, 'height' : 300});
-                wcagOk = false;
-            } else {
+    if (CKEDITOR.instances[id] != null) {
+        $.ajax({
+            async: false,
+            type: 'POST',
+            url:  ctx + '/cms/wcag/validate',
+            data: {'text':CKEDITOR.instances[id].getData()},
+            error: function (xhr, textStatus, errorThrown) {
                 wcagOk = true;
-                $('#wcag-' + id).remove();
-                if (userTriggered && (data.errors.length + data.warnings.length + data.infos.length == 0)) {
-                    alert(contributionI18n['wcag.ok']);
+            },
+            success: function (data, textStatus) {
+                var ignore = $('#wcag-ignore-' + id);
+                if ((userTriggered || ignore.length == 0 || ignore.attr('checked') == false) && (data.errors.length + data.warnings.length + data.infos.length > 0)) {
+                    if (ignore.length > 0) {
+                        $('#wcag-' + id).remove();
+                    }
+                    var myDiv = $('<div class="wcag-warnings" id="wcag-' + id + '">' +
+                        '<div class="wcag-warnings-ignore"><input type="checkbox" id="wcag-ignore-' + id + '" value="true" name="ignore"/>&nbsp;<label for="wcag-ignore-' + id + '">' + (userTriggered ? contributionI18n['wcag.close'] : contributionI18n['wcag.ignore']) + '</label></div>' +
+                        '<table class="table" width="100%" border="1" cellpadding="0" cellspacing="3">' +
+                        '<thead><tr><th width="5%">#</th><th width="5%"> </th><th width="75%">' +
+                        contributionI18n['wcag.description'] + '</th>' +
+                        /*
+                         '<th width="10%">' + contributionI18n['wcag.context'] + '</th>' +
+                         */
+                        '<th width="10%">' + contributionI18n['wcag.example'] + '</th></tr></thead>' +
+                        '<tbody id="wcag-violations-' + id + '">' +
+                        '</tbody>' +
+                        '</table>' +
+                        '</div>');
+                    $(richTextElement).before(myDiv);
+                    if (userTriggered) {
+                        $('#wcag-ignore-' + id).click(function() {
+                            $('#wcag-' + id).remove();
+                        })
+                    }
+                    var placeholder = $('#wcag-violations-' + id);
+                    var count = 0;
+                    $.each($.merge([], $.merge($.merge([], data.errors), data.warnings), data.infos), function(index, violation) {
+                        var violationType = violation.type.toLowerCase();
+                        var row = '<tr><td align="center">' + (++count) + '</td>';
+                        row = row + '<td align="center"><img src="' + ctx + '/modules/default/images/icons/' +
+                            violationType + '.png" height="16" width="16" alt="' + contributionI18n['wcag.' + violationType] + '"' +
+                            ' title="' + contributionI18n['wcag.' + violationType] + '"/></td>';
+                        row = row + '<td>' + violation.message + '</td>';
+                        /*
+                         row = row + '<td align="center">' +
+                         '<a href="#wcag-context-' + id + '-' + count + '" class="wcag-context">' +
+                         '<img src="' + ctx + '/modules/default/images/icons/about.png" height="16" width="16" alt="' + contributionI18n['wcag.context'] + '"' +
+                         ' title="' + contributionI18n['wcag.context'] + '"/></a>' +
+                         '<div style="display:none"><div id="wcag-context-' + id + '-' + count + '">' + 'ctx' + '</div></div>' +
+                         '</td>';
+                         */
+
+                        row = row + '<td align="center">' + violation.example + '</td></tr>';
+                        placeholder.append($(row));
+                    });
+                    $('a.wcag-context').fancybox({'titleShow': false, 'autoDimensions' : false, 'width' : 500, 'height' : 300});
+                    wcagOk = false;
+                } else {
+                    wcagOk = true;
+                    $('#wcag-' + id).remove();
+                    if (userTriggered && (data.errors.length + data.warnings.length + data.infos.length == 0)) {
+                        alert(contributionI18n['wcag.ok']);
+                    }
                 }
-            }
-        },
-        dataType: 'json'
-    });
+            },
+            dataType: 'json'
+        });
+    } else {
+        wcagOk = true;
+    }
     return wcagOk;
 }
 
@@ -334,11 +447,11 @@ function checkWCAGCompliace(richTexts) {
 function invert(source, target, urlbase, callbackId, callbackUrl,callbackJS) {
     $.post(urlbase + source + ".move.do", {"action":"moveBefore", "target":target, "source":source},
         function(result) {
-			if (callbackUrl!=null) {
-	            jreplace(callbackId, callbackUrl,null, callbackJS);
-			} else {
-				window.location.reload();
-			}
+            if (callbackUrl!=null) {
+                jreplace(callbackId, callbackUrl,null, callbackJS);
+            } else {
+                window.location.reload();
+            }
         },
         'json'
     );

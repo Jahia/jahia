@@ -43,38 +43,88 @@ package org.jahia.services.content.nodetypes;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Help to find allowed sub node types and references
  */
 public class ConstraintsHelper {
+
     public static String getConstraints(JCRNodeWrapper node) throws RepositoryException {
-        List<ExtendedNodeType> list = new ArrayList<ExtendedNodeType>(Arrays.asList(node.getMixinNodeTypes()));
-        list.add(node.getPrimaryNodeType());
-        return getConstraints(list);
+        return getConstraints(node, null);
     }
 
-    public static String getConstraints(List<ExtendedNodeType> nodeType) {
+    public static String getConstraints(JCRNodeWrapper node, String targetChildName) throws RepositoryException {
+        List<ExtendedNodeType> list = new ArrayList<ExtendedNodeType>(Arrays.asList(node.getMixinNodeTypes()));
+        list.add(node.getPrimaryNodeType());
+        return getConstraints(list, targetChildName);
+    }
+
+    public static String getConstraints(List<ExtendedNodeType> nodeType, String targetChildName) {
         String constraints = "";
-        for (ExtendedNodeType type : nodeType) {
-            Set<String> cons = type.getUnstructuredChildNodeDefinitions().keySet();
-            for (String s : cons) {
-                if (!s.equals(Constants.JAHIANT_TRANSLATION) && !s.equals(Constants.JAHIANT_REFERENCEINFIELD)) {
-                    constraints = (StringUtils.isEmpty(constraints)) ? s : constraints + " " + s;
+        Set<String> nodeTypeNames = new HashSet<String>();
+
+        if (targetChildName == null) {
+            // first let's retrieve the child node types for unstructured node definitions
+            for (ExtendedNodeType type : nodeType) {
+                Set<String> cons = type.getUnstructuredChildNodeDefinitions().keySet();
+                for (String s : cons) {
+                    if (!s.equals(Constants.JAHIANT_TRANSLATION) &&
+                            !s.equals(Constants.JAHIANT_REFERENCEINFIELD) &&
+                            !nodeTypeNames.contains(s)) {
+                        constraints = (StringUtils.isEmpty(constraints)) ? s : constraints + " " + s;
+                        nodeTypeNames.add(s);
+                    }
                 }
             }
+        }
 
+        if (targetChildName != null) {
+            // now let's retrieve the structured child node definitions
+            for (ExtendedNodeType type : nodeType) {
+                Map<String, ExtendedNodeDefinition> nodeDefinitions = type.getChildNodeDefinitionsAsMap();
+                for (Map.Entry<String, ExtendedNodeDefinition> nodeDefinitionEntry : nodeDefinitions.entrySet()) {
+                    String childName = nodeDefinitionEntry.getKey();
+                    boolean useCurrentChild = true;
+                    if (targetChildName != null && !targetChildName.equals("*")) {
+                        if (!childName.equals(targetChildName)) {
+                            useCurrentChild = false;
+                        }
+                    }
+                    if (useCurrentChild) {
+                        String[] typeNames = nodeDefinitionEntry.getValue().getRequiredPrimaryTypeNames();
+                        for (String typeName : typeNames) {
+                            if (!typeName.equals("jnt:conditionalVisibility") &&
+                                    !typeName.equals("jnt:vanityUrls") &&
+                                    !typeName.equals("jnt:acl") &&
+                                    !nodeTypeNames.contains(typeName)) {
+                                constraints = (StringUtils.isEmpty(constraints)) ? typeName : constraints + " " + typeName;
+                                nodeTypeNames.add(typeName);
+                            }
+                        }
+                    }
+                }
+            }
         }
         return constraints;
     }
 
+    /**
+     * Builds a list of usable reference types for the specified node types and constraints. If the no node types
+     * were specified it will default to the nt:base node type.
+     * <p/>
+     * This method will also inspect all the value constraints that are set on all reference nodes and if there
+     * are none it will use the default jmix:droppableContent type.
+     *
+     * @param constraints
+     * @param nodeTypes
+     * @return
+     * @throws NoSuchNodeTypeException
+     */
     public static String getReferenceTypes(String constraints, String nodeTypes) throws NoSuchNodeTypeException {
         StringBuffer buffer = new StringBuffer();
         List<ExtendedNodeType> refs =
@@ -84,9 +134,9 @@ public class ConstraintsHelper {
         if (StringUtils.isEmpty(nodeTypes)) {
             nodeTypesArray = new String[]{"nt:base"};
         } else {
-            nodeTypesArray = nodeTypes.split(" ");
+            nodeTypesArray = Patterns.SPACE.split(nodeTypes);
         }
-        final String[] constraintsArray = constraints.split(" ");
+        final String[] constraintsArray = Patterns.SPACE.split(constraints);
         for (ExtendedNodeType ref : refs) {
             if (ref.getPropertyDefinitionsAsMap().get("j:node") != null) {
                 for (String s : constraintsArray) {
@@ -101,8 +151,10 @@ public class ConstraintsHelper {
                         List<String> finalConstraints = new ArrayList<String>();
                         for (String refConstraint : refConstraints) {
                             for (String nt : nodeTypesArray) {
+                                // if a node type is descending from a reference constraint, then use the node type
                                 if (NodeTypeRegistry.getInstance().getNodeType(nt).isNodeType(refConstraint)) {
                                     finalConstraints.add(nt);
+                                    // otherwise if the reference constraint is descending from a node type, use the constraint
                                 } else if (NodeTypeRegistry.getInstance().getNodeType(refConstraint).isNodeType(nt)) {
                                     finalConstraints.add(refConstraint);
                                 }

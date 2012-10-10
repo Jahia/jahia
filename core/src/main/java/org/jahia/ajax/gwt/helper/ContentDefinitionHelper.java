@@ -116,6 +116,7 @@ public class ContentDefinitionHelper {
         GWTJahiaNodeType gwt = new GWTJahiaNodeType();
         gwt.setName(nodeType.getName());
         gwt.setMixin(nodeType.isMixin());
+        gwt.setAbstract(nodeType.isAbstract());
         gwt.setDescription(nodeType.getDescription(uiLocale));
         String label = nodeType.getLabel(uiLocale);
         gwt.setLabel(label);
@@ -178,7 +179,7 @@ public class ContentDefinitionHelper {
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>();
                     for (Value value : epd.getDefaultValues()) {
                         try {
-                            GWTJahiaNodePropertyValue convertedValue = convertValue(value, epd.getRequiredType());
+                            GWTJahiaNodePropertyValue convertedValue = convertValue(value, epd);
                             if (convertedValue != null) {
                                 gwtValues.add(convertedValue);
                             }
@@ -365,7 +366,10 @@ public class ContentDefinitionHelper {
         try {
             List<GWTJahiaNodeType> list = new ArrayList<GWTJahiaNodeType>();
             for (String name : names) {
-                list.add(getNodeType(name, uiLocale));
+                GWTJahiaNodeType nodeType = getNodeType(name, uiLocale);
+                if (nodeType != null) {
+                    list.add(nodeType);
+                }
             }
             return list;
         } catch (Exception e) {
@@ -528,6 +532,7 @@ public class ContentDefinitionHelper {
                 for (ExtendedNodeType extension : m.get(nodeType)) {
 //                        ctx.put("contextType", realType);
                     if (installedModules == null || extension.getTemplatePackage() == null ||
+                            extension.getTemplatePackage().getModuleType().equalsIgnoreCase("system") ||
                             installedModules.contains(extension.getTemplatePackage().getRootFolder())) {
                         res.add(extension);
                         foundTypes.add(extension.getName());
@@ -539,11 +544,11 @@ public class ContentDefinitionHelper {
         return res;
     }
 
-    public GWTJahiaNodePropertyValue convertValue(Value val, int requiredType) throws RepositoryException {
+    public GWTJahiaNodePropertyValue convertValue(Value val, ExtendedPropertyDefinition def) throws RepositoryException {
         String theValue;
         int type;
 
-        switch (requiredType) {
+        switch (def.getRequiredType()) {
             case PropertyType.BINARY:
                 type = GWTJahiaNodePropertyType.BINARY;
                 theValue = val.getString();
@@ -588,6 +593,11 @@ public class ContentDefinitionHelper {
             case PropertyType.STRING:
                 type = GWTJahiaNodePropertyType.STRING;
                 theValue = val.getString();
+                if (def.getSelector() == GWTJahiaNodeSelectorType.PICKER) {
+                    JCRValueWrapper value = val instanceof JCRValueWrapper ? (JCRValueWrapper) val : new JCRValueWrapperImpl(val, def,
+                            JCRSessionFactory.getInstance().getCurrentUserSession());
+                    return new GWTJahiaNodePropertyValue(theValue, navigation.getGWTJahiaNode((JCRNodeWrapper) value.getNode()), type);
+                } 
                 break;
             case PropertyType.UNDEFINED:
                 type = GWTJahiaNodePropertyType.UNDEFINED;
@@ -807,7 +817,7 @@ public class ContentDefinitionHelper {
 
                 for (int j = 0; j < list.size(); j++) {
                     GWTJahiaNode child = list.get(j);
-                    if (session.getNodeByIdentifier(child.getUUID()).hasPermission("useComponent")) {
+                    if (session.getNodeByIdentifier(child.getUUID()).hasPermission("useComponentForCreate")) {
                         GWTJahiaNodeType type = getNodeType(child.getName(), uiLocale);
                         child.set("componentNodeType", type);
                         if (child.getInheritedNodeTypes().contains("jnt:component") && nodeTypes != null && type != null) {
@@ -844,8 +854,8 @@ public class ContentDefinitionHelper {
                     GWTJahiaNode node = allNodes.get(i);
                     if (node.getInheritedNodeTypes().contains("jnt:component") || node.get("hasDescendants") != null) {
                         node.getParent().set("hasDescendants", Boolean.TRUE);
-                    } else  if (!node.getInheritedNodeTypes().contains("jnt:component") && node.get("hasDescendants") == null) {
-                        node.getParent().remove(node);
+//                    } else  if (!node.getInheritedNodeTypes().contains("jnt:component") && node.get("hasDescendants") == null) {
+//                        node.getParent().remove(node);
                     }
                 }
                 return new ArrayList(root.getChildren());

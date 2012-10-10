@@ -757,6 +757,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getVersionInfos();
     }
 
+    public List<VersionInfo> getLinearVersionInfos() throws RepositoryException {
+        return node.getLinearVersionInfos();
+    }
+
     /**
      * Gets a list of all versions for this node as Version object
      *
@@ -768,6 +772,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public String getDisplayableName() {
         return node.getDisplayableName();
+    }
+    
+    public String getUnescapedName() {
+        return node.getUnescapedName();
     }
 
     public AccessControlManager getAccessControlManager() throws RepositoryException {
@@ -807,5 +815,9 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     
     public int hashCode() {
         return node.hashCode();
+    }
+
+    public JCRNodeWrapper getDecoratedNode() {
+        return node;
     }
 }

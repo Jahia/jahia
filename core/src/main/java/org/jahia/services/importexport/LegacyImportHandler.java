@@ -59,6 +59,7 @@ import org.jahia.services.importexport.DefinitionsMapping.AddMixin;
 import org.jahia.services.importexport.DefinitionsMapping.AddNode;
 import org.jahia.services.importexport.DefinitionsMapping.SetProperties;
 import org.jahia.services.textextraction.TextExtractionService;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,6 +125,13 @@ public class LegacyImportHandler extends DefaultHandler {
     public static Set<String> READ_ROLES = new HashSet<String>(Arrays.asList("reader"));
     public static Set<String> WRITE_ROLES = new HashSet<String>(Arrays.asList("editor", "contributor"));
     public static Set<String> ADMIN_ROLES = new HashSet<String>(Arrays.asList("reviewer", "owner"));
+
+    public static Set<String> CUSTOM_CONTENT_READ_ROLES;
+    public static Set<String> CUSTOM_CONTENT_WRITE_ROLES;
+    public static Set<String> CUSTOM_CONTENT_ADMIN_ROLES;
+
+    public static Set<String> CUSTOM_FILES_READ_ROLES;
+    public static Set<String> CUSTOM_FILES_WRITE_ROLES;
 
     private String currentNode;
     private int level = 0;
@@ -424,7 +432,7 @@ public class LegacyImportHandler extends DefaultHandler {
             }
 
             if (pageKey == null) {
-                pageKey = JCRContentUtils.generateNodeName(title, 32);
+                pageKey = JCRContentUtils.generateNodeName(title);
             }
 
             // remove all unsupported characters
@@ -807,20 +815,44 @@ public class LegacyImportHandler extends DefaultHandler {
                         Set<String> grantedRoles = new HashSet<String>();
                         Set<String> removedRoles = new HashSet<String>();
                         if (perm.charAt(0) == 'r') {
-                            grantedRoles.addAll(READ_ROLES);
+                            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_CONTENT_READ_ROLES)) {
+                                grantedRoles.addAll(LegacyImportHandler.READ_ROLES);
+                            } else {
+                                grantedRoles.addAll(LegacyImportHandler.CUSTOM_CONTENT_READ_ROLES);
+                            }
                         } else {
-                            removedRoles.addAll(READ_ROLES);
+                            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_CONTENT_READ_ROLES)) {
+                                removedRoles.addAll(LegacyImportHandler.READ_ROLES);
+                            } else {
+                                removedRoles.addAll(LegacyImportHandler.CUSTOM_CONTENT_READ_ROLES);
+                            }
                         }
                         if (perm.charAt(1) == 'w') {
-                            grantedRoles.addAll(WRITE_ROLES);
+                            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_CONTENT_WRITE_ROLES)) {
+                                grantedRoles.addAll(LegacyImportHandler.WRITE_ROLES);
+                            } else {
+                                grantedRoles.addAll(LegacyImportHandler.CUSTOM_CONTENT_WRITE_ROLES);
+                            }
                         } else {
-                            removedRoles.addAll(WRITE_ROLES);
+                            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_CONTENT_WRITE_ROLES)) {
+                                removedRoles.addAll(LegacyImportHandler.WRITE_ROLES);
+                            } else {
+                                removedRoles.addAll(LegacyImportHandler.CUSTOM_CONTENT_WRITE_ROLES);
+                            }
                         }
 
                         if (perm.charAt(2) == 'a') {
-                            grantedRoles.addAll(ADMIN_ROLES);
+                            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_CONTENT_ADMIN_ROLES)) {
+                                grantedRoles.addAll(LegacyImportHandler.ADMIN_ROLES);
+                            } else {
+                                grantedRoles.addAll(LegacyImportHandler.CUSTOM_CONTENT_ADMIN_ROLES);
+                            }
                         } else {
-                            removedRoles.addAll(ADMIN_ROLES);
+                            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_CONTENT_ADMIN_ROLES)) {
+                                removedRoles.addAll(LegacyImportHandler.ADMIN_ROLES);
+                            } else {
+                                removedRoles.addAll(LegacyImportHandler.CUSTOM_CONTENT_ADMIN_ROLES);
+                            }
                         }
 
                         String principal = ace.substring(0, colonIndex);
@@ -976,7 +1008,7 @@ public class LegacyImportHandler extends DefaultHandler {
                 case PropertyType.REFERENCE:
                 case PropertyType.WEAKREFERENCE:
                     if (propertyDefinition.isMultiple()) {
-                        String[] strings = value.split("\\$\\$\\$");
+                        String[] strings = Patterns.TRIPPLE_DOLLAR.split(value);
                         List<Value> values = new ArrayList<Value>();
                         for (String s : strings) {
                             createReferenceValue(s, propertyDefinition.getSelector(), n, propertyName);
@@ -1073,7 +1105,7 @@ public class LegacyImportHandler extends DefaultHandler {
                                     logger.error("Impossible to set property " + propertyName + " due to some constraint error");
                                 }
                             } else {
-                                String[] strings = value.split("\\$\\$\\$");
+                                String[] strings = Patterns.TRIPPLE_DOLLAR.split(value);
                                 List<Value> values = new ArrayList<Value>();
                                 for (int i = 0; i < strings.length; i++) {
                                     String string = strings[i];

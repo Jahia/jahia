@@ -51,6 +51,7 @@ import org.jahia.services.render.RenderException;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.*;
+import org.jahia.utils.Patterns;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -165,7 +166,7 @@ public class FindPrincipal extends BaseFindController {
         Set<String> criteriasToInclude = new HashSet<String>();
         if (includeCriteriaNames != null) {
             if (includeCriteriaNames.indexOf(",") >= 0) {
-                String[] criteriaNamesArray = includeCriteriaNames.split(",");
+                String[] criteriaNamesArray = Patterns.COMMA.split(includeCriteriaNames);
                 List<String> criteriaNamesList = Arrays.asList(criteriaNamesArray);
                 criteriasToInclude.addAll(criteriaNamesList);
             } else {
@@ -294,6 +295,7 @@ public class FindPrincipal extends BaseFindController {
     }
 
 
+    @Override
     protected void handle(HttpServletRequest request, HttpServletResponse response) throws RenderException,
             IOException, RepositoryException, JahiaForbiddenAccessException {
         
@@ -355,39 +357,6 @@ public class FindPrincipal extends BaseFindController {
             logger.error("Invalid argument", e);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
-    }
-
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        long startTime = System.currentTimeMillis();
-        String sessionId = null;
-        try {
-            if (logger.isInfoEnabled()) {
-                sessionId = request.getSession().getId();
-            }
-            if (request.getMethod().equals("GET") || request.getMethod().equals("POST")) {
-                handle(request, response);
-            } else if (request.getMethod().equals("OPTIONS")) {
-                response.setHeader("Allow", "GET, OPTIONS, POST");
-            } else {
-                response.sendError(SC_METHOD_NOT_ALLOWED);
-            }
-        } catch (Exception e) {
-            DefaultErrorHandler.getInstance().handle(e, request, response);
-        } finally {
-            if (logger.isInfoEnabled()) {
-                StringBuilder sb = new StringBuilder(100);
-                sb.append("Rendered [").append(request.getRequestURI());
-                JahiaUser user = JCRTemplate.getInstance().getSessionFactory().getCurrentUser();
-                if (user != null) {
-                    sb.append("] user=[").append(user.getUsername());
-                }
-                sb.append("] ip=[").append(request.getRemoteAddr()).append("] sessionID=[").append(
-                        sessionId).append("] in [").append(
-                        System.currentTimeMillis() - startTime).append("ms]");
-                logger.info(sb.toString());
-            }
-        }
-        return null;
     }
 
     public static String getFindPrincipalServletPath() {

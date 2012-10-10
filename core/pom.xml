@@ -98,10 +98,6 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <repository>
-            <id>cedarsoft-thirdparty</id>
-            <url>http://maven.cedarsoft.com/content/repositories/thirdparty/</url>
-        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -350,6 +346,25 @@
             <artifactId>exolabcore</artifactId>
             <version>0.3.7</version>
         </dependency>
+        <dependency>
+            <groupId>com.phloc</groupId>
+            <artifactId>phloc-css</artifactId>
+            <version>3.0.0</version>
+            <classifier>jdk5</classifier>
+            <exclusions>
+                <exclusion>
+                    <artifactId>phloc-commons</artifactId>
+                    <groupId>com.phloc</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.phloc</groupId>
+            <artifactId>phloc-commons</artifactId>
+            <version>3.6.0</version>
+            <classifier>jdk5</classifier>
+        </dependency>
+        
         <!--Hibernate dependencies-->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -448,19 +463,15 @@
             <artifactId>metadata-extractor</artifactId>
             <version>2.4.0-beta-1</version>
         </dependency>
-        <!--
-            todo : plan migration to 1.4 will need to migrate class org.jahia.tools.imageprocess.ImageProcess
-            http://rsbweb.nih.gov/ij/download.html
-        -->
         <dependency>
             <groupId>imagej</groupId>
             <artifactId>ij</artifactId>
-            <version>1.35</version>
+            <version>1.45</version>
         </dependency>
         <dependency>
-            <groupId>im4java</groupId>
+            <groupId>org.im4java</groupId>
             <artifactId>im4java</artifactId>
-            <version>1.1.0</version>
+            <version>1.3.1</version>
             <classifier>1.5</classifier>
         </dependency>
         <dependency>
@@ -529,7 +540,7 @@
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>1.2.16</version>
+            <version>1.2.17</version>
         </dependency>
 
         <dependency>
@@ -1027,26 +1038,8 @@
         <dependency>
         	<groupId>org.artofsolving.jodconverter</groupId>
         	<artifactId>jodconverter-core</artifactId>
-        	<version>3.0-beta-3</version>
-            <classifier>jahia</classifier>
+        	<version>3.0-beta-4-jahia3</version>
         </dependency>
-        <!-- JODConverter dependencies -->
-	    <dependency>
-	      <groupId>org.openoffice</groupId>
-	      <artifactId>juh</artifactId>
-	      <version>3.1.0</version>
-	    </dependency>
-	    <dependency>
-	      <groupId>org.openoffice</groupId>
-	      <artifactId>ridl</artifactId>
-	      <version>3.1.0</version>
-	    </dependency>
-	    <dependency>
-	      <groupId>org.openoffice</groupId>
-	      <artifactId>unoil</artifactId>
-	      <version>3.1.0</version>
-	    </dependency>
-        <!-- end of JODConverter dependencies -->
         
         <dependency>
             <groupId>com.google.guava</groupId>

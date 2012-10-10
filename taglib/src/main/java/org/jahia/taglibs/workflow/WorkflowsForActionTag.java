@@ -10,6 +10,7 @@ import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Gets all possible definitions for an action
@@ -23,11 +24,13 @@ public class WorkflowsForActionTag extends AbstractJahiaTag {
 
     private int scope = PageContext.PAGE_SCOPE;
 
+    private Locale locale;
+
     @Override
     public int doEndTag() throws JspException {
         List<WorkflowDefinition> defs = null;
         try {
-            defs = WorkflowService.getInstance().getWorkflowDefinitionsForType(workflowAction, getUILocale());
+            defs = WorkflowService.getInstance().getWorkflowDefinitionsForType(workflowAction, locale != null ? locale : getUILocale());
         } catch (RepositoryException e) {
             logger.error("Could not retrieve workflows", e);
         }
@@ -50,5 +53,9 @@ public class WorkflowsForActionTag extends AbstractJahiaTag {
 
     public void setScope(String scope) {
         this.scope = Util.getScope(scope);
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
     }
 }

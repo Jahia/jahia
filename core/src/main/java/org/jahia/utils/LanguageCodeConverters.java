@@ -63,6 +63,9 @@ import javax.servlet.http.HttpServletRequest;
 public class LanguageCodeConverters {
 
     private static List<Locale> availableBundleLocales;
+    
+    private static Map<String, Locale> locales = new HashMap<String, Locale>();
+    
     /**
      * Converts string such as
      *   en_US, fr_CH_unix, fr, en, _GB, fr__UNIX
@@ -78,6 +81,11 @@ public class LanguageCodeConverters {
         if ( languageCode == null ){
         	return null;
         }
+        Locale loc = locales.get(languageCode);
+        if (loc != null) {
+            return loc;
+        }
+
         StringTokenizer codeTokens = new StringTokenizer(languageCode,"_");
         String language = "";
         String country = "";
@@ -93,7 +101,10 @@ public class LanguageCodeConverters {
             variant = codeTokens.nextToken();
         }
 
-        return newLocale(language, country, variant);
+        loc = newLocale(language, country, variant);
+        locales.put(languageCode, loc);
+        
+        return loc;
     }
 
     /**
@@ -112,7 +123,7 @@ public class LanguageCodeConverters {
             return Locale.ENGLISH ;
         }
         Locale loc ;
-        String[] codes = code.split("_") ;
+        String[] codes = Patterns.UNDERSCORE.split(code) ;
         if (codes.length == 0) {
             return Locale.ENGLISH ;
         } else if (codes.length == 1) {

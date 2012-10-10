@@ -44,7 +44,7 @@
         <table align="center" width="100%" cellspacing="5">
           <tr>
               <td class="alignCenter" colspan="2">
-                <label for="rememberme"><fmt:message key="label.rememberme"/></label><ui:loginRememberMe id="rememberme"/>
+                <label for="rememberme"><fmt:message key="label.rememberme"/></label><ui:loginRememberMe id="rememberme" tabindex="3" />
               </td>
             </tr>
         </table>

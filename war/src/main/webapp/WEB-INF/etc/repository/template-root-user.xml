@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content jcr:primaryType="jnt:systemFolder"
+         jcr:mixinTypes="jmix:accessControlled jmix:workflowRulesable"
+         xmlns:jcr="http://www.jcp.org/jcr/1.0"
+         xmlns:j="http://www.jahia.org/jahia/1.0"
+         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+
+    <users jcr:primaryType="jnt:usersFolder">
+        <ROOT_NAME_PLACEHOLDER jcr:primaryType="jnt:user" j:password="@ROOT_PASSWORD@" j:external="false"
+                               jcr:uuid="b32d306a-6c74-11de-b3ef-001e4fead50b">
+            <files jcr:primaryType="jnt:folder">
+                <private jcr:primaryType="jnt:folder">
+                    <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
+                        <GRANT_u_root j:protected="false" j:principal="" j:roles="owner" j:aceType="GRANT"
+                                      jcr:primaryType="jnt:ace"/>
+                    </j:acl>
+                    <imports jcr:primaryType="jnt:importDropBox"/>
+                </private>
+                <profile jcr:primaryType="jnt:folder"/>
+            </files>
+
+            <portlets jcr:primaryType="jnt:portletFolder"/>
+
+            <contents jcr:primaryType="jnt:contentFolder"/>
+
+            <preferences jcr:primaryType="jnt:preferences">
+            </preferences>
+        </ROOT_NAME_PLACEHOLDER>
+    </users>
+
+    <groups jcr:primaryType="jnt:groupsFolder">
+        <administrators jcr:primaryType="jnt:group" jcr:mixinTypes="jmix:systemNode" j:hidden="false">
+            <j:members jcr:primaryType="jnt:members">
+                <root jcr:primaryType="jnt:member" j:member="b32d306a-6c74-11de-b3ef-001e4fead50b"/>
+            </j:members>
+        </administrators>
+        <privileged jcr:primaryType="jnt:group" jcr:mixinTypes="jmix:systemNode" j:hidden="true">
+            <j:members jcr:primaryType="jnt:members">
+                <root jcr:primaryType="jnt:member" j:member="b32d306a-6c74-11de-b3ef-001e4fead50b"/>
+            </j:members>
+        </privileged>
+    </groups>
+
+</content>

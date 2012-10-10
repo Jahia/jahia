@@ -40,16 +40,24 @@
 
 package org.jahia.services.content.rules;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.drools.ObjectFilter;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.image.Image;
 import org.jahia.services.image.JahiaImageService;
+import org.jahia.settings.SettingsBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+
 import java.io.File;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -62,6 +70,9 @@ import java.util.Iterator;
  * Time: 5:25:31 PM
  */
 public class ImageService {
+    
+    private static final Logger logger = LoggerFactory.getLogger(ImageService.class);
+    
     private JahiaImageService imageService;
 
     public void setImageService(JahiaImageService imageService) {
@@ -69,10 +80,20 @@ public class ImageService {
     }
 
     private static ImageService instance;
+    
+    private static File contentTempFolder;
 
-    public static synchronized ImageService getInstance() {
+    public static ImageService getInstance() {
         if (instance == null) {
-            instance = new ImageService();
+            synchronized (ImageService.class) {
+                if (instance == null) {
+                    instance = new ImageService();
+                    contentTempFolder = new File(SettingsBean.getInstance().getTmpContentDiskPath());
+                    if (!contentTempFolder.exists()) {
+                        contentTempFolder.mkdirs();
+                    }
+                }
+            }
         }
         return instance;
     }
@@ -95,6 +116,9 @@ public class ImageService {
             return (Image) it.next();
         }
         Image iw = imageService.getImage(imageNode.getNode());
+        if (iw == null) {
+            return null;
+        }
         drools.insertLogical(iw);
         return iw;
     }
@@ -103,6 +127,7 @@ public class ImageService {
         addThumbnail(imageNode, name, size,false, drools);
     }
     public void addThumbnail(AddedNodeFact imageNode, String name, int size,boolean square, KnowledgeHelper drools) throws Exception {
+        long timer = System.currentTimeMillis();
         if (imageNode.getNode().hasNode(name)) {
             JCRNodeWrapper node = imageNode.getNode().getNode(name);
             Calendar thumbDate = node.getProperty("jcr:lastModified").getDate();
@@ -110,11 +135,17 @@ public class ImageService {
             if (contentDate.after(thumbDate)) {
                 AddedNodeFact thumbNode = new AddedNodeFact(node);
                 File f = getThumbFile(imageNode, size,square, drools);
+                if (f == null) {
+                    return;
+                }
                 drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_DATA, f, drools));
                 drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_LASTMODIFIED, new GregorianCalendar(), drools));
             }
         } else {
             File f = getThumbFile(imageNode, size,square, drools);
+            if (f == null) {
+                return;
+            }
 
             AddedNodeFact thumbNode = new AddedNodeFact(imageNode, name, "jnt:resource", drools);
             if (thumbNode.getNode() != null) {
@@ -123,6 +154,10 @@ public class ImageService {
                 drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_MIMETYPE, imageNode.getMimeType(), drools));
                 drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_LASTMODIFIED, new GregorianCalendar(), drools));
             }
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("{}px thumbnail for node {} created in {} ms", new Object[] { size,
+                    imageNode.getNode().getPath(), System.currentTimeMillis() - timer });
         }
     }
 
@@ -140,45 +175,98 @@ public class ImageService {
         addThumbnail(new AddedNodeFact(node),name, size, true, drools);
     }
 
+    protected boolean isSmallerThan(JCRNodeWrapper node, int size) {
+        long width = 0;
+        long height = 0;
+
+        try {
+            width = node.getProperty("j:width").getLong();
+            height = node.getProperty("j:height").getLong();
+        } catch (PathNotFoundException e) {
+            // no size properties found
+        } catch (RepositoryException e) {
+            if (logger.isDebugEnabled()) {
+                logger.warn("Error reading j:width/j:height properties on node " + node.getPath(),
+                        e);
+            } else {
+                logger.warn("Error reading j:width/j:height properties on node " + node.getPath()
+                        + ". Casue: " + e.getMessage());
+            }
+        }
+
+        return width > 0 && height > 0 && width <= size && height <= size;
+    }
+
     protected File getThumbFile(AddedNodeFact imageNode, int size,boolean square,KnowledgeHelper drools) throws Exception {
-        String savePath = org.jahia.settings.SettingsBean.getInstance().getTmpContentDiskPath();
-        File Ftemp = new File(savePath);
-        if (!Ftemp.exists()) Ftemp.mkdirs();
-        final File f = File.createTempFile("thumb","jpg", Ftemp);
+        String fileExtension = FilenameUtils.getExtension(imageNode.getName());
 
+        if (!square && isSmallerThan(imageNode.getNode(), size)) {
+            // no need to resize the small image for thumbnail
+            final File f = File.createTempFile("thumb", StringUtils.isNotEmpty(fileExtension) ? "." + fileExtension : null, contentTempFolder);
+            JCRContentUtils.downloadFileContent(imageNode.getNode(), f);
+            f.deleteOnExit();
+            
+            return f;
+        }
+        
         Image iw = getImageWrapper(imageNode, drools);
+        if (iw == null) {
+            return null;
+        }
 
-        imageService.createThumb(iw, f, size, square);
-        f.deleteOnExit();
-        return f;
+        final File f = File.createTempFile("thumb", StringUtils.isNotEmpty(fileExtension) ? "." + fileExtension : null, contentTempFolder);
+
+        if (imageService.createThumb(iw, f, size, square)) {
+            f.deleteOnExit();
+            return f;
+        } else {
+            f.deleteOnExit();
+            return null;
+        }
     }
 
     public void setHeight(AddedNodeFact imageNode, String propertyName, KnowledgeHelper drools) throws Exception {
-        if (!imageNode.getNode().hasProperty(propertyName)) {
-            Image iw = getImageWrapper(imageNode, drools);
-            if (iw == null) {
-                return;
-            }
-            int height = imageService.getHeight(iw);
-            if (height == -1 ) {
-                return;
-            }
-            drools.insert(new ChangedPropertyFact(imageNode, propertyName, height, drools));
+        Image iw = getImageWrapper(imageNode, drools);
+        if (iw == null) {
+            return;
         }
+        int height = imageService.getHeight(iw);
+        if (height == -1) {
+            return;
+        }
+        drools.insert(new ChangedPropertyFact(imageNode, propertyName, height, drools));
     }
 
     public void setWidth(AddedNodeFact imageNode, String propertyName, KnowledgeHelper drools) throws Exception {
-        if (!imageNode.getNode().hasProperty(propertyName)) {
-            Image iw = getImageWrapper(imageNode, drools);
-            if (iw == null) {
-                return;
+        Image iw = getImageWrapper(imageNode, drools);
+        if (iw == null) {
+            return;
+        }
+        int width = imageService.getWidth(iw);
+        if (width == -1) {
+            return;
+        }
+        drools.insert(new ChangedPropertyFact(imageNode, propertyName, width, drools));
+    }
+    
+    public void disposeImageForNode(final AddedNodeFact imageNode, KnowledgeHelper drools) throws Exception {
+        Iterator<?> it = drools.getWorkingMemory().iterateObjects(new ObjectFilter() {
+            public boolean accept(Object o) {
+                if (o instanceof Image) {
+                    try {
+                        return (((Image) o).getPath().equals(imageNode.getPath()));
+                    } catch (RepositoryException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return false;
             }
-            int width = imageService.getWidth(iw);
-            if (width == -1 ) {
-                return;
-            }
-            drools.insert(new ChangedPropertyFact(imageNode, propertyName, width, drools));
+        });
+        for (; it.hasNext();) {
+            Image img = (Image) it.next();
+            drools.retract(img);
+            img.dispose();
+            img = null;
         }
     }
-
 }

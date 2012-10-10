@@ -53,6 +53,7 @@ import org.slf4j.Logger;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -110,7 +111,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
         if (renderContext.isEditMode()) {
             try {
                 constraints = ConstraintsHelper
-                        .getConstraints(Arrays.asList(NodeTypeRegistry.getInstance().getNodeType(areaType)));
+                        .getConstraints(Arrays.asList(NodeTypeRegistry.getInstance().getNodeType(areaType)), null);
             } catch (RepositoryException e) {
                 logger.error("Error when getting list constraints", e);
             }
@@ -125,8 +126,11 @@ public class AreaTag extends ModuleTag implements ParamParent {
             }
 
             String additionalParameters = "missingList=\"true\"";
-            if (renderContext.getEditModeConfigName().equals("lighteditmode")) {
-                additionalParameters += " editable=\"false\"";
+            if (renderContext.getEditModeConfigName().equals("contributemode")) {
+                JCRNodeWrapper contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("areaListResource");
+                if (contributeNode == null || !contributeNode.hasProperty("j:contributeTypes")) {
+                    additionalParameters += " editable=\"false\"";
+                }
             }
             if (mockupStyle != null) {
                 additionalParameters += " mockupStyle=\"" + mockupStyle + "\"";
@@ -162,7 +166,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
         }
         renderContext.getRequest().removeAttribute("skipWrapper");
         renderContext.getRequest().removeAttribute("inArea");
-
+        pageContext.setAttribute("org.jahia.emptyArea",Boolean.TRUE, PageContext.PAGE_SCOPE);
         try {
             // path is null in main resource display
             Template t = (Template) renderContext.getRequest().getAttribute("previousTemplate");
@@ -189,6 +193,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                                      " saved template = "+templateNode.serialize()+", previousTemplate set to null");
                     }
                     node = node.getNode(path);
+                    pageContext.setAttribute("org.jahia.emptyArea",Boolean.FALSE, PageContext.PAGE_SCOPE);
                 } catch (RepositoryException e) {
                     if (node != null) {
                         path = node.getPath() + "/" + path;
@@ -242,6 +247,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                                 this.node = null;
                             } else {
                                 found = true;
+                                pageContext.setAttribute("org.jahia.emptyArea",Boolean.FALSE, PageContext.PAGE_SCOPE);
                                 break;
                             }
                         }
@@ -275,14 +281,17 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     }
                     try {
                         node = (JCRNodeWrapper) session.getItem(path);
+                        pageContext.setAttribute("org.jahia.emptyArea",Boolean.FALSE, PageContext.PAGE_SCOPE);
                     } catch (PathNotFoundException e) {
                         missingResource(renderContext, currentResource);
                     }
                 }
                 renderContext.getRequest().setAttribute("skipWrapper", Boolean.TRUE);
             } else {
+                renderContext.getRequest().setAttribute("previousTemplate", null);
                 renderContext.getRequest().removeAttribute("skipWrapper");
                 node = mainResource.getNode();
+                pageContext.setAttribute("org.jahia.emptyArea",Boolean.FALSE, PageContext.PAGE_SCOPE);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

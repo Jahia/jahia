@@ -280,8 +280,7 @@ public final class UserPreferencesHelper {
             }
     
             if (siteLocales == null || siteLocales.size() == 0) {
-                return JCRSessionFactory.getInstance().getCurrentLocale()!=null?JCRSessionFactory.getInstance().getCurrentLocale():LanguageCodeConverters
-                .languageCodeToLocale(SettingsBean.getInstance().getDefaultLanguageCode());
+                return JCRSessionFactory.getInstance().getCurrentLocale()!=null?JCRSessionFactory.getInstance().getCurrentLocale():SettingsBean.getInstance().getDefaultLocale();
             }
     
             List<Locale> availableBundleLocales = LanguageCodeConverters.getAvailableBundleLocales();

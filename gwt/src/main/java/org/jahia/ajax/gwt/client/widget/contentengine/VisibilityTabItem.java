@@ -76,6 +76,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
@@ -113,20 +114,25 @@ public class VisibilityTabItem extends EditEngineTabItem {
         tab.setLayout(new RowLayout());
         tab.setProcessed(true);
 
+        final boolean editable = (!engine.isExistingNode() || (PermissionsUtils.isPermitted("jcr:modifyProperties", engine.getNode()) && !engine.getNode().isLocked()));
+
         LayoutContainer top = new LayoutContainer(new FillLayout(Style.Orientation.VERTICAL));
         tab.add(top, new RowData(1, 60, new Margins(5)));
 
         final HorizontalPanel statusPanel = new HorizontalPanel();
         statusPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
         top.add(statusPanel);
-        statusBar = new StatusBar(node, statusPanel);
+        statusBar = new StatusBar(node, statusPanel, editable);
 
         HorizontalPanel addPanel = new HorizontalPanel();
         addPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
-        top.add(addPanel);
+        if (editable) {
+            top.add(addPanel);
+        }
 
         addPanel.add(new Text(Messages.get("label.visibility.allConditionsMatch", "All conditions should match")+": &nbsp;"));
         allConditionsMatch = new CheckBox();
+        allConditionsMatch.setEnabled(editable);
         allConditionsMatch.addListener(Events.Change, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent event) {
                 statusBar.update();
@@ -144,6 +150,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
         types.setForceSelection(true);
         types.setEditable(false);
         types.setWidth(250);
+        types.setEnabled(editable);
         addPanel.add(types);
 
         final Map<String, GWTJahiaNodeType> typesMap = new HashMap<String, GWTJahiaNodeType>();
@@ -189,35 +196,37 @@ public class VisibilityTabItem extends EditEngineTabItem {
         });
         configs.add(conditionStatus);
 
-        ColumnConfig remove = new ColumnConfig("remove", Messages.get("label.remove"), 100);
-        remove.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-            public Object render(final GWTJahiaNode condition, String property, com.extjs.gxt.ui.client.widget.grid.ColumnData config, final int rowIndex, final int colIndex, ListStore<GWTJahiaNode> listStore, final Grid<GWTJahiaNode> grid) {
-                final Button button;
-                if (condition.get("node-removed") == null || condition.getNodeTypes().contains("jmix:markedForDeletion")) {
-                    button = new Button(Messages.get("label.remove"));
-                    button.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
-                } else {
-                    button = new Button(Messages.get("label.undelete"));
-                    button.setIcon(StandardIconsProvider.STANDARD_ICONS.restore());
-                }
-                button.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                    @Override
-                    public void componentSelected(ButtonEvent buttonEvent) {
-                        conditionsStore.remove(condition);
-                        propertiesEditorMap.remove(condition.getPath());
-                        if (condition.get("new-node") == null) {
-                            deleted.add(condition);
-                            condition.set("node-removed", Boolean.TRUE);
-                        }
-                        changed = true;
-                        refreshConditionsList();
-                        statusBar.update();
+        if (editable) {
+            ColumnConfig remove = new ColumnConfig("remove", Messages.get("label.remove"), 100);
+            remove.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
+                public Object render(final GWTJahiaNode condition, String property, com.extjs.gxt.ui.client.widget.grid.ColumnData config, final int rowIndex, final int colIndex, ListStore<GWTJahiaNode> listStore, final Grid<GWTJahiaNode> grid) {
+                    final Button button;
+                    if (condition.get("node-removed") == null || condition.getNodeTypes().contains("jmix:markedForDeletion")) {
+                        button = new Button(Messages.get("label.remove"));
+                        button.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
+                    } else {
+                        button = new Button(Messages.get("label.undelete"));
+                        button.setIcon(StandardIconsProvider.STANDARD_ICONS.restore());
                     }
-                });
-                return button;
-            }
-        });
-        configs.add(remove);
+                    button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                        @Override
+                        public void componentSelected(ButtonEvent buttonEvent) {
+                            conditionsStore.remove(condition);
+                            propertiesEditorMap.remove(condition.getPath());
+                            if (condition.get("new-node") == null) {
+                                deleted.add(condition);
+                                condition.set("node-removed", Boolean.TRUE);
+                            }
+                            changed = true;
+                            refreshConditionsList();
+                            statusBar.update();
+                        }
+                    });
+                    return button;
+                }
+            });
+            configs.add(remove);
+        }
 
 //        ColumnConfig publicationInfo = new ColumnConfig("publish", Messages.get("label.publish"), 100);
 //        publicationInfo.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
@@ -268,6 +277,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
         tab.add(conditions, new RowData(1, 0.5));
 
         final LayoutContainer form = new LayoutContainer(new FitLayout());
+        form.setEnabled(editable);
         tab.add(form, new RowData(1, 0.5));
 
         final GridSelectionModel<GWTJahiaNode> selectionModel = conditions.getSelectionModel();
@@ -288,7 +298,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
                                     node.getPath(), null, new BaseAsyncCallback<GWTJahiaCreateEngineInitBean>() {
                                 public void onSuccess(GWTJahiaCreateEngineInitBean result) {
                                     PropertiesEditor pe = new PropertiesEditor(Arrays.asList(type), new HashMap<String, GWTJahiaNodeProperty>(), Arrays.asList("content"));
-                                    pe.setInitializersValues(result.getInitializersValues());                                    
+                                    pe.setInitializersValues(result.getInitializersValues());
                                     pe.renderNewFormPanel();
                                     propertiesEditorMap.put(conditionNode.getPath(), pe);
                                     form.add(pe);
@@ -300,7 +310,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
                             JahiaContentManagementService.App.getInstance().initializeEditEngine(conditionNode.getPath(), false, new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
                                 public void onSuccess(GWTJahiaEditEngineInitBean result) {
                                     PropertiesEditor pe = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), Arrays.asList("content"));
-                                    pe.setInitializersValues(result.getInitializersValues());                                    
+                                    pe.setInitializersValues(result.getInitializersValues());
                                     pe.renderNewFormPanel();
                                     propertiesEditorMap.put(conditionNode.getPath(), pe);
                                     form.add(pe);
@@ -334,13 +344,14 @@ public class VisibilityTabItem extends EditEngineTabItem {
             }
         });
 
-        types.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNodeType>() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent<GWTJahiaNodeType> se) {
-                add.enable();
-            }
-        });
-
+        if (editable) {
+            types.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNodeType>() {
+                @Override
+                public void selectionChanged(SelectionChangedEvent<GWTJahiaNodeType> se) {
+                    add.enable();
+                }
+            });
+        }
 
         JahiaContentManagementService.App.getInstance().getVisibilityInformation(node.getPath(), new BaseAsyncCallback<ModelData>() {
             public void onSuccess(ModelData result) {
@@ -472,15 +483,16 @@ public class VisibilityTabItem extends EditEngineTabItem {
     class StatusBar {
         private GWTJahiaNode node;
         private HorizontalPanel statusPanel;
-
+        private boolean editable;
         private GWTJahiaPublicationInfo info;
         private LayoutContainer statusContainer;
         private CheckBox checkbox;
         private LayoutContainer publicationInfoContainer;
 
-        StatusBar(GWTJahiaNode node, HorizontalPanel statusPanel) {
+        StatusBar(GWTJahiaNode node, HorizontalPanel statusPanel, boolean editable) {
             this.node = node;
             this.statusPanel = statusPanel;
+            this.editable = editable;
             statusPanel.add(new Text(Messages.get("label.visibility.currentStatusInLive", "Current status in live") + ": &nbsp;"));
         }
 
@@ -508,6 +520,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
                 statusPanel.add(new Text("&nbsp;&nbsp;" + Messages.get("label.visibility.publishOnSave", "Publish conditions on save") + ": &nbsp;"));
 
                 checkbox = new CheckBox();
+                checkbox.setEnabled(editable);
                 checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
                     public void handleEvent(ComponentEvent event) {
                         node.set("conditions-published", checkbox.getValue());

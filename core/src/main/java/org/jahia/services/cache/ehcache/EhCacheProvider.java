@@ -40,7 +40,6 @@
 
 package org.jahia.services.cache.ehcache;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.services.cache.CacheProvider;
 import org.jahia.services.cache.CacheService;
@@ -52,7 +51,6 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.management.ManagementService;
 
 import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
 import java.lang.management.ManagementFactory;
 
 /**

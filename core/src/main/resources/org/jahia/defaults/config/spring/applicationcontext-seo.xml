@@ -17,21 +17,31 @@
         <property name="confReloadCheckIntervalSeconds" value="300" />
         <property name="configurationResources">
             <list>
-                <value>WEB-INF/etc/config/urlrewrite.xml</value><!-- these are core rules that should not be removed -->
-                
-                <value>WEB-INF/etc/config/urlrewrite-*.xml</value>
+                <value>classpath*:org/jahia/services/seo/urlrewrite/urlrewrite.xml</value><!-- these are core rules that should not be removed -->
+                <value>WEB-INF/etc/config/urlrewrite*.xml</value>
                 <value>modules/**/META-INF/urlrewrite*.xml</value>
             </list>
         </property>
         <property name="seoRulesEnabled" value="${urlRewriteSeoRulesEnabled}"/>
+        <property name="seoRemoveCmsPrefix" value="${urlRewriteRemoveCmsPrefix}"/>
         <property name="seoConfigurationResources">
             <list>
                 <value>WEB-INF/etc/config/seo-urlrewrite*.xml</value>
                 <value>modules/**/META-INF/seo-urlrewrite*.xml</value>
             </list>
         </property>
+        <property name="lastConfigurationResources">
+            <list>
+                <value>classpath*:org/jahia/services/seo/urlrewrite/last-urlrewrite.xml</value><!-- these are core rules that should not be removed -->
+                <value>WEB-INF/etc/config/last-urlrewrite*.xml</value>
+                <value>modules/**/META-INF/last-urlrewrite*.xml</value>
+            </list>
+        </property>
         <property name="vanityUrlService" ref="org.jahia.services.seo.jcr.VanityUrlService"/>
         <property name="urlResolverFactory" ref="urlResolverFactory" />
+        <property name="siteService" ref="JahiaSitesService" />
+        <property name="settingsBean" ref="settingsBean" />
+        <property name="reservedUrlPrefixes" value="${seoReservedUrlPrefixes:administration,cms,error,files,gadgets,gwt,initializationCompleted,oauth,PlutoInvoker,repository,rest,rpc,social,start,tools,validateTicket,welcome,admin,css,engines,errors,favicon.ico,gwt,icons,iphone,javascript,modules,ping.jsp,resources,tools}"/>
     </bean>
                         
     <bean class="org.jahia.services.render.filter.URLFilter">

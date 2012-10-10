@@ -62,7 +62,9 @@ import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.PathResolver;
 import org.jahia.bin.Jahia;
 import org.jahia.configuration.deployers.ServerDeploymentFactory;
@@ -82,8 +84,7 @@ import java.util.*;
 
 public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware {
 
-    private static final transient Logger logger =
-            org.slf4j.LoggerFactory.getLogger (SettingsBean.class);
+    private static final transient Logger logger = LoggerFactory.getLogger (SettingsBean.class);
     
     public static final String JAHIA_PROPERTIES_FILE_PATH = "/WEB-INF/etc/config/jahia.properties";
     
@@ -165,12 +166,15 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private boolean dumpErrorsToFiles = true;
     private int fileDumpMaxRegroupingOfPreviousException = 500;
     private boolean useJstackForThreadDumps;  
+    private boolean urlRewriteRemoveCmsPrefix;
     private boolean urlRewriteSeoRulesEnabled;
     private boolean urlRewriteUseAbsoluteUrls;
 
     private ServerDeploymentInterface serverDeployer = null;
 
 	private boolean maintenanceMode;
+	
+	private int sessionExpiryTime;
 
     private ServletContext servletContext;
 
@@ -191,7 +195,15 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     
     private boolean fileServletStatisticsEnabled;
 
+    private Locale defaultLocale;
+
     private int importMaxBatch;
+    private int maxNameSize;
+
+    private boolean expandImportedFilesOnDisk;
+    private String expandImportedFilesOnDiskPath;
+
+    private int accessManagerPathPermissionCacheMaxSize = 100;
 
     /**
      * Default constructor.
@@ -249,6 +261,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             
             maintenanceMode = getBoolean("maintenanceMode", false);
             
+            sessionExpiryTime = getInt("sessionExpiryTime", 60);
+            
             jahiaTemplatesDiskPath = pathResolver.resolvePath ("/modules/");
             classDiskPath = pathResolver.resolvePath ("/WEB-INF/classes/");
             jahiaFilesDiskPath = convertContexted (getString("jahiaFilesDiskPath"), pathResolver);
@@ -266,7 +280,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             jahiaImportsDiskPath = convertContexted (getString("jahiaImportsDiskPath"), pathResolver);
             jahiaSharedTemplatesDiskPath = convertContexted (getString("jahiaSharedTemplatesDiskPath"), pathResolver);
             jahiaDatabaseScriptsPath = jahiaVarDiskPath + File.separator + "db";
-
+            
             // jahia real path...
             File jahiaContextFolder = new File (pathResolver.resolvePath("." + File.separator));
             File parent = jahiaContextFolder.getAbsoluteFile().getParentFile ();
@@ -308,16 +322,13 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             // multi language default language code property.
             defaultLanguageCode = getString ("org.jahia.multilang.default_language_code", "en");
+            defaultLocale = LanguageCodeConverters.languageCodeToLocale(defaultLanguageCode);
 
             considerDefaultJVMLocale = getBoolean("considerDefaultJVMLocale", false);
                 
             considerPreferredLanguageAfterLogin = getBoolean("considerPreferredLanguageAfterLogin", false);
 
-            // mail settings...
-            mail_service_activated = getBoolean("mail_service_activated", false);
-            mail_server = getString("mail_server");
-            mail_administrator = getString("mail_administrator");
-            mail_from = getString("mail_from");
+            // mail notification settings...
             mail_maxRegroupingOfPreviousException = getInt("mail_maxRegroupingOfPreviousException", 500);
 
             // paranoia settings...
@@ -342,6 +353,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             useJstackForThreadDumps = getBoolean("useJstackForThreadDumps", false);
 
             urlRewriteSeoRulesEnabled = getBoolean("urlRewriteSeoRulesEnabled", false);
+            urlRewriteRemoveCmsPrefix = getBoolean("urlRewriteRemoveCmsPrefix", false);
             urlRewriteUseAbsoluteUrls = getBoolean("urlRewriteUseAbsoluteUrls", true);
 
             disableJsessionIdParameter = getBoolean("disableJsessionIdParameter", true);
@@ -356,6 +368,13 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             fileServletStatisticsEnabled = getBoolean("jahia.fileServlet.statisticsEnabled", false);
 
             importMaxBatch = getInt("importMaxBatch", 500);
+
+            maxNameSize = getInt("jahia.jcr.maxNameSize", 32);
+
+            expandImportedFilesOnDisk = getBoolean("expandImportedFilesOnDisk",false);
+            expandImportedFilesOnDiskPath = getString("expandImportedFilesOnDiskPath","/tmp");
+
+            accessManagerPathPermissionCacheMaxSize = getInt("accessManagerPathPermissionCacheMaxSize", 100);
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
@@ -390,7 +409,13 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             System.setProperty("jahia.jackrabbit.consistencyCheck", String.valueOf(getBoolean("jahia.jackrabbit.consistencyCheck", false)));
             System.setProperty("jahia.jackrabbit.consistencyFix", String.valueOf(getBoolean("jahia.jackrabbit.consistencyFix", false)));
             System.setProperty("jahia.jackrabbit.onWorkspaceInconsistency", getString("jahia.jackrabbit.onWorkspaceInconsistency", "log"));
-
+            
+            System.setProperty("jahia.jackrabbit.searchIndex.enableConsistencyCheck", getString("jahia.jackrabbit.searchIndex.enableConsistencyCheck", "false"));
+            System.setProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", getString("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "false"));
+            System.setProperty("jahia.jackrabbit.searchIndex.autoRepair", getString("jahia.jackrabbit.searchIndex.autoRepair", "false"));
+            
+            checkIndexConsistencyIfNeeded();
+            
             reindexIfNeeded();
             
         } catch (NullPointerException npe) {
@@ -400,6 +425,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         }
     } // end load
 
+
     public File getRepositoryHome() throws IOException {
         Resource repoHome = applicationContext.getResource(getString("jahia.jackrabbit.home",
                 "WEB-INF/var/repository"));
@@ -407,23 +433,57 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         return repoHome != null && repoHome.exists() ? repoHome.getFile() : null;
     }
 
+    private void checkIndexConsistencyIfNeeded() {
+        File repoHome = null;
+
+        try {
+            repoHome = getRepositoryHome();
+            if (repoHome != null) {
+                File check = new File(repoHome, "index-check");
+                File repair = new File(repoHome, "index-fix");
+                if (check.exists()) {
+                    System.setProperty("jahia.jackrabbit.searchIndex.enableConsistencyCheck", "true");
+                    System.setProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "true");
+                    System.setProperty("jahia.jackrabbit.searchIndex.autoRepair", "false");
+                    FileUtils.deleteQuietly(check);
+                }
+                if (repair.exists()) {
+                    System.setProperty("jahia.jackrabbit.searchIndex.enableConsistencyCheck", "true");
+                    System.setProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "true");
+                    System.setProperty("jahia.jackrabbit.searchIndex.autoRepair", "true");
+                    FileUtils.deleteQuietly(repair);
+                } 
+            }
+        } catch (IOException e) {
+            logger.error("Unable to delete JCR repository index folders in home " + repoHome, e);
+        }
+    }
+
     private void reindexIfNeeded() {
         File repoHome = null;
 
         try {
             repoHome = getRepositoryHome();
-            if (repoHome != null
-                    && (getBoolean("jahia.jackrabbit.reindexOnStartup", false) || new File(
-                            repoHome, "reindex").exists())) {
-                File reindexFile = new File(repoHome, "reindex");
-                if (reindexFile.exists()) {
-                    FileUtils.deleteQuietly(reindexFile);
+            if (repoHome != null) {
+                boolean doReindex = getBoolean("jahia.jackrabbit.reindexOnStartup", false);
+                if (!doReindex) {
+                    File reindex = new File(repoHome, "reindex");
+                    if (reindex.exists()) {
+                        doReindex = true;
+                        FileUtils.deleteQuietly(reindex);
+                    }
                 }
-                JCRContentUtils.deleteJackrabbitIndexes(repoHome);
+                if (doReindex) {
+                    JCRContentUtils.deleteJackrabbitIndexes(repoHome);
+                }
             }
         } catch (IOException e) {
             logger.error("Unable to delete JCR repository index folders in home " + repoHome, e);
         }
+    }
+
+    public Locale getDefaultLocale() {
+        return defaultLocale;
     }
 
     private boolean getBoolean (String propertyName)
@@ -699,15 +759,19 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     public String getJahiaImportsDiskPath() {
         return jahiaImportsDiskPath;
     }
+    @Deprecated
     public String getMail_administrator() {
         return mail_administrator;
     }
+    @Deprecated
     public String getMail_from() {
         return mail_from;
     }
+    @Deprecated
     public String getMail_paranoia() {
         return mail_paranoia;
     }
+    @Deprecated
     public String getMail_server() {
         return mail_server;
     }
@@ -841,7 +905,15 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 	public boolean isMaintenanceMode() {
 		return maintenanceMode;
 	}
-
+	
+	public int getSessionExpiryTime() {
+		return sessionExpiryTime;
+	}
+	
+	public void setSessionExpiryTime(int sessionExpiryTime) {
+		this.sessionExpiryTime = sessionExpiryTime;
+	}
+	
     public boolean isDisableJsessionIdParameter() {
         return disableJsessionIdParameter;
     }
@@ -987,8 +1059,28 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     public boolean isUrlRewriteUseAbsoluteUrls() {
         return urlRewriteUseAbsoluteUrls;
     }
+
+    public boolean isUrlRewriteRemoveCmsPrefix() {
+        return urlRewriteRemoveCmsPrefix;
+    }
+
     public int getImportMaxBatch() {
         return importMaxBatch;
     }
 
+    public int getMaxNameSize() {
+        return maxNameSize;
+    }
+
+    public boolean isExpandImportedFilesOnDisk() {
+        return expandImportedFilesOnDisk;
+    }
+
+    public String getExpandImportedFilesOnDiskPath() {
+        return expandImportedFilesOnDiskPath;
+    }
+
+    public int getAccessManagerPathPermissionCacheMaxSize() {
+        return accessManagerPathPermissionCacheMaxSize;
+    }
 }

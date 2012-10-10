@@ -69,6 +69,10 @@ public class TemplatePackageApplicationContextLoader implements ServletContextAw
         public ContextInitializedEvent(Object source) {
             super(source);
         }
+        
+        public XmlWebApplicationContext getContext() {
+            return ((TemplatePackageApplicationContextLoader)getSource()).getContext();
+        }
     }
 
     private static final Logger logger = LoggerFactory.getLogger(TemplatePackageApplicationContextLoader.class);
@@ -100,7 +104,7 @@ public class TemplatePackageApplicationContextLoader implements ServletContextAw
         logger.info("Jahia modules application context reload completed in "
                 + (System.currentTimeMillis() - startTime) + " ms");
 
-        context.getParent().publishEvent(new ContextInitializedEvent(this));
+        context.publishEvent(new ContextInitializedEvent(this));
     }
 
     public void setContextConfigLocation(String contextConfigLocation) {
@@ -120,8 +124,7 @@ public class TemplatePackageApplicationContextLoader implements ServletContextAw
         logger.info("Jahia modules application context initialization completed in "
                 + (System.currentTimeMillis() - startTime) + " ms");
 
-        context.getParent().publishEvent(new ContextInitializedEvent(this));
-
+        context.publishEvent(new ContextInitializedEvent(this));
     }
 
     public void stop() {

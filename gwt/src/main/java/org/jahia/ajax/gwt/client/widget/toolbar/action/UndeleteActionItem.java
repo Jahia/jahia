@@ -47,12 +47,14 @@ import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
 import java.util.ArrayList;
@@ -62,7 +64,7 @@ import java.util.Map;
 /**
  * Action item to undelete a node by removing locks and mixins
  */
-public class UndeleteActionItem extends BaseActionItem {
+public class UndeleteActionItem extends NodeTypeAwareBaseActionItem {
     @Override
     public void onComponentSelection() {
         final LinkerSelectionContext lh = linker.getSelectionContext();
@@ -121,7 +123,12 @@ public class UndeleteActionItem extends BaseActionItem {
         LinkerSelectionContext lh = linker.getSelectionContext();
         List<GWTJahiaNode> selection = lh.getMultipleSelection();
         boolean canUndelete = false;
-        if (selection != null && selection.size() > 0 && hasPermission(lh.getSelectionPermissions()) && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())) {
+        if (selection != null
+                && selection.size() > 0
+                && hasPermission(lh.getSelectionPermissions())
+                && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())
+                && isNodeTypeAllowed(selection)
+                ) {
             canUndelete = true;
             for (GWTJahiaNode gwtJahiaNode : selection) {
                 canUndelete &= gwtJahiaNode.getNodeTypes().contains("jmix:markedForDeletionRoot");
@@ -140,5 +147,17 @@ public class UndeleteActionItem extends BaseActionItem {
                 && !lockInfos.get(null).isEmpty()
                 && lockInfos.get(null).size() == 1
                 && lockInfos.get(null).get(0).equals("label.locked.by.deletion");
+    }
+    @Override
+    protected boolean isNodeTypeAllowed(GWTJahiaNode selectedNode) {
+        GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(selectedNode.getNodeTypes().get(0));
+        if (nodeType != null) {
+            Boolean canUseComponentForCreate = (Boolean) nodeType.get("canUseComponentForCreate");
+            if (canUseComponentForCreate != null && !canUseComponentForCreate) {
+                return false;
+            }
+        }
+
+        return super.isNodeTypeAllowed(selectedNode);
     }
 }

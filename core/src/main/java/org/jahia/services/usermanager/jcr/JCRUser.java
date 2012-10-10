@@ -492,4 +492,7 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
 		return pwdHistory.size() > 0 ? pwdHistory.get(0).getModificationDate().getTime() : 0;
 	}
 
+    public boolean isAccountLocked() {
+        return !isRoot() && Boolean.valueOf(getProperty("j:accountLocked"));
+    }
 }

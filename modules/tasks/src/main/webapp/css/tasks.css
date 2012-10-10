@@ -100,24 +100,24 @@ padding:0;
 /******************************************************************************
 *  Planning tasks
 ******************************************************************************/
-.bodywrapper ul.planningtasks  {
+.bodywrapper ul.scheduletasks  {
 	position:relative;
 	margin:0;
 	list-style:none;
 	padding:0;
     margin-bottom:1em;
 }
-.bodywrapper .planningtasks li {
+.bodywrapper .scheduletasks li {
 	padding:10px;
 	margin:0;
-	margin-bottom:0px;
+	margin-bottom:0;
 	list-style:none;
     border-bottom:1px solid #e5e5e5;
 }
-.bodywrapper .planningtasks li:last-child {
+.bodywrapper .scheduletasks li:last-child {
 
 }
-.bodywrapper .planningtasks li.now {
+.bodywrapper .scheduletasks li.now {
     background-color:#ffffd7;
     text-align:right;
     color: #333;
@@ -126,12 +126,278 @@ padding:0;
     text-transform: uppercase;
     font-size:0.8em;
 }
-.bodywrapper .planningtasks .date {
+.bodywrapper .scheduletasks .date {
     font-weight:bold;
 }
-.bodywrapper .planningtasks li.finishedTask {
-    border-left:4px solid #66cc66
+.bodywrapper .scheduletasks li.finishedTask {
+    border-left:4px solid #339933
 }
-.bodywrapper .planningtasks li.unfinishedTask {
+.bodywrapper .scheduletasks li.unfinishedTask {
     border-left:4px solid #cc3333
+}
+
+/******************************************************************************
+* tasks List show description
+******************************************************************************/
+
+.bodywrapper span.opentask{
+	background:none;
+    color: #666;
+    font-weight:bold;
+    text-transform:uppercase;
+    font-size:0.8em;
+}
+.bodywrapper span.opentask:hover {
+	text-decoration:none;
+	color: #000;
+	background:none;
+	cursor: pointer;
+}
+.bodywrapper .taskdetail  {
+    margin-left:25px;
+    margin-right:1em;
+    line-height:1.2em;
+}
+.bodywrapper .task-info-p{
+	font-size:0.8em;
+	padding:0;
+	margin:0;
+}
+.bodywrapper .task-priority-p{
+	font-size:0.8em;
+	padding:0;
+	margin:0;
+}
+.bodywrapper .task-status-p{
+	font-size:0.8em;
+	padding:0;
+	margin:0;
+}
+/******************************************************************************
+*  task icon
+******************************************************************************/
+.bodywrapper span.icon-task {
+	display:inline-block;
+	width:18px;
+	height:18px;
+	margin-right:5px;
+	vertical-align:text-bottom;
+}
+
+.bodywrapper span.icon-task-low {
+	display:inline-block;
+	width:18px;
+	height:18px;
+	background: url(img/task-low.png) no-repeat top left;
+	margin-right:5px;
+	vertical-align:text-bottom;
+}
+.bodywrapper span.icon-task-normal {
+	display:inline-block;
+	width:18px;
+	height:18px;
+	margin-right:5px;
+	vertical-align:text-bottom;
+}
+.bodywrapper span.icon-task-high {
+	display:inline-block;
+	width:18px;
+	height:18px;
+	background: url(img/task-high.png) no-repeat top left;
+	margin-right:5px;
+	vertical-align:text-bottom;
+}
+
+.task-priority {
+    background-color: #000;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    color: #333;
+    font-size: 9.75px;
+    font-weight: bold;
+    padding-bottom: 1px;
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-top: 1px;
+    text-transform: uppercase;
+    margin-right:0.5em;
+}
+
+
+.task-low {
+    background-color: #c8e9fe;
+}
+.task-normal {
+    background-color: #fff;
+}
+.task-high {
+    background-color: #ff0000;
+}
+
+
+/******************************************************************************
+*  task actions list
+******************************************************************************/
+
+.bodywrapper ul.taskactionslist  {
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	margin:0.2em 0;
+	padding:0;
+	border-bottom:none;
+	overflow:hidden;
+}
+
+.bodywrapper .taskactionslist li {
+	list-style-type:none;
+	margin:0;
+	border:none;
+	padding:0;
+	margin-right:2px;
+    margin-bottom:2px;
+	float:left;
+}
+.bodywrapper .taskactionslist li.taskactions-right {
+	float:right;
+	margin-right:0;
+	margin-left:10px;
+}
+.bodywrapper a.taskaction,
+.bodywrapper a.taskaction:link,
+.bodywrapper a.taskaction:visited
+{
+	color:#fff;
+	padding:4px 2px 4px 22px;
+    -moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+    background-color:#0099ff;
+    background-image:url(img/start.png);
+    background-position: 2px 50%;
+    background-repeat:no-repeat;
+    display:block;
+}
+.bodywrapper a.taskaction:hover,
+.bodywrapper a.taskaction:active {
+	text-decoration:none;
+	color:#fff;
+	background-color:#008ae5;
+}
+
+.bodywrapper a.taskaction-refuse,
+.bodywrapper a.taskaction-refuse:link,
+.bodywrapper a.taskaction-refuse:visited
+{
+	background-image:url(img/refuse.png);
+}
+.bodywrapper a.taskaction-suspend,
+.bodywrapper a.taskaction-suspend:link,
+.bodywrapper a.taskaction-suspend:visited
+{
+	background-image:url(img/suspend.png);
+}
+.bodywrapper a.taskaction-start,
+.bodywrapper a.taskaction-start:link,
+.bodywrapper a.taskaction-start:visited
+{
+	background-image:url(img/start.png);
+}
+.bodywrapper a.taskaction-continue,
+.bodywrapper a.taskaction-continue:link,
+.bodywrapper a.taskaction-continue:visited
+{
+	background-image:url(img/continue.png);
+}
+.bodywrapper a.taskaction-assign,
+.bodywrapper a.taskaction-assign:link,
+.bodywrapper a.taskaction-assign:visited
+{
+	background-image:url(img/assign.png);
+}
+
+.bodywrapper a.taskaction-iCalendar,
+.bodywrapper a.taskaction-iCalendar:link,
+.bodywrapper a.taskaction-iCalendar:visited
+{
+	background-image:url(img/icalendar.png);
+}
+.bodywrapper a.taskaction-preview,
+.bodywrapper a.taskaction-preview:link,
+.bodywrapper a.taskaction-preview:visited
+{
+	background-image:url(img/preview.png);
+}
+
+.bodywrapper div.taskaction-complete {
+	color:#fff;
+	padding:4px 2px 4px 22px;
+    -moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+    background-color:#0099ff;
+    background-image:url(img/complete.png);
+    background-position: 2px 50%;
+    background-repeat:no-repeat;
+    display:block;
+}
+.bodywrapper div.taskaction-complete label {
+    font-weight:normal !important;
+}
+.bodywrapper div.taskaction-complete input {
+    vertical-align: bottom;
+}
+.bodywrapper div.taskaction-button:hover{
+	text-decoration:none;
+	color:#fff;
+	background-color:#008ae5;
+}
+.bodywrapper a.taskaction-disabled, .bodywrapper div.taskaction-disabled {
+    background-color:#aaaaaa !important;
+}
+/******************************************************************************
+*  task status
+******************************************************************************/
+.bodywrapper .task-status {
+    background-color: #000;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    color: #FFFFFF;
+    font-size: 9.75px;
+    font-weight: bold;
+    padding-bottom: 1px;
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-top: 1px;
+    text-transform: uppercase;
+    margin-right:0.5em;
+}
+
+.bodywrapper .task-status-active {
+    background-color: #cc3333;
+}
+.bodywrapper .task-status-started {
+    background-color: #ff6600;
+}
+.bodywrapper .task-status-suspended {
+    background-color: #000;
+}
+.bodywrapper .task-status-finished {
+    background-color: #339933;
+}
+/******************************************************************************
+*  task style
+******************************************************************************/
+.bodywrapper .docspace {
+    background-color: #fff;
+}
+.bodywrapper .docspace-task-on-file {
+    background-color: #c8e9fe;
+}
+.bodywrapper .workflowtask {
+    background-color: #eaeaea;
 }

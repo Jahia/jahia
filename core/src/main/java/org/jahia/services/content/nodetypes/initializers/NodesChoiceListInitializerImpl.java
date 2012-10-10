@@ -51,6 +51,7 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
@@ -77,7 +78,7 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                                                      Map<String, Object> context) {
         final ArrayList<ChoiceListValue> listValues = new ArrayList<ChoiceListValue>();
         if (param != null) {
-            String[] s = param.split(";");
+            String[] s = Patterns.SEMICOLON.split(param);
             String nodetype = null;
             if (s.length > 1) {
                 nodetype = s[1];

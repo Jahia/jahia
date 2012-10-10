@@ -6,6 +6,7 @@
     Set<String> inactiveLiveLanguageSet = (Set<String>) request.getAttribute("inactiveLiveLanguageSet");
     Set<String> mandatoryLanguageSet = (Set<String>) request.getAttribute("mandatoryLanguageSet");
     Boolean mixLanguages = (Boolean) request.getAttribute("mixLanguages");
+    Boolean allowsUnlistedLanguages = (Boolean) request.getAttribute("allowsUnlistedLanguages");
     String defaultLanguage = (String) request.getAttribute("defaultLanguage");
     Locale currentLocale = Jahia.getThreadParamBean().getUILocale();
 %>
@@ -152,6 +153,10 @@
                                 <input type="checkbox" name="mixLanguages" id="mixLanguages" value="true"${mixLanguages ? ' checked="checked"' : ''} />
                                 <label for="mixLanguages">&nbsp;<fmt:message
                                         key="org.jahia.admin.languages.ManageSiteLanguages.mixLanguages.label"/></label>
+                                <br>
+                                <input type="checkbox" name="allowsUnlistedLanguages" id="allowsUnlistedLanguages" value="true"${allowsUnlistedLanguages ? ' checked="checked"' : ''} />
+                                <label for="allowsUnlistedLanguages">&nbsp;<fmt:message
+                                        key="org.jahia.admin.languages.ManageSiteLanguages.allowsUnlistedLanguages.label"/></label>
                                 <br>
                                 <% if (request.getAttribute("jahiaErrorMessage") != null) { %>
                                 <br>

@@ -130,7 +130,8 @@ Workflow Integration
    An optional resource bundle file can be created along with the jpdl file to internationalize the name and labels
    of the process - the resource bundle must be named with the key of the jBPM process. If the process has the key
    "translation-workflow", the file need to be named translation-workflow.properties . This file can include
-   resources for process name, actions, and action outcomes.
+   resources for process name, actions, and action outcomes. You can also specified a key for completed tasks, add
+   ".completed" to the task key.
 
 ** Sending mail with jBPM
 

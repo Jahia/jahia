@@ -58,6 +58,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -99,15 +100,20 @@ public class AreaModule extends SimpleModule {
 
         this.moduleType = moduleType;
         String headerText;
+        String areaTitle;
         if (path.contains("/")) {
-            headerText = Messages.get("label."+moduleType) + " : " + path.substring(path.lastIndexOf('/') + 1);
+            areaTitle = path.substring(path.lastIndexOf('/') + 1);
         } else {
-            headerText = Messages.get("label."+moduleType)+" : " + path;
+            areaTitle = path;
         }
+        headerText = Messages.get("label."+moduleType)+" : " + areaTitle;
+        head.setId("JahiaGxtArea__" + areaTitle);
+        
         head.setText(headerText);
 //        setBodyBorder(false);
         head.addStyleName("x-panel-header");
         head.addStyleName("x-panel-header-"+moduleType+"module");
+        
         html = new HTML(divElement.getInnerHTML());
         add(html);
     }
@@ -117,7 +123,14 @@ public class AreaModule extends SimpleModule {
     @Override public void onParsed() {
         super.onParsed();
         String headerText = head.getText();
-
+        
+        String areaTitle;
+        if (path.contains("/")) {
+            areaTitle = path.substring(path.lastIndexOf('/') + 1);
+        } else {
+            areaTitle = path;
+        }
+        
         if (missingList && editable) {
 //            addStyleName("area-notcreated");
 //            addStyleName(moduleType);
@@ -127,10 +140,8 @@ public class AreaModule extends SimpleModule {
             }
             removeAll();
 
-            LayoutContainer dash = new LayoutContainer();
-            dash.addStyleName("dashedArea");
-
             ctn = new LayoutContainer();
+            ctn.setId("JahiaGxtArea__" + areaTitle);
 //            ctn.addStyleName(moduleType+"Template");
             ctn.addText(headerText);
 
@@ -149,6 +160,7 @@ public class AreaModule extends SimpleModule {
             removeAll();
 
             LayoutContainer dash = new LayoutContainer();
+            dash.setId("JahiaGxtArea__" + areaTitle);
             dash.addStyleName("dashedArea");
 
             ctn = new LayoutContainer();
@@ -157,7 +169,6 @@ public class AreaModule extends SimpleModule {
 
             dash.add(ctn);
             dash.add(html);
-
             add(dash);
         } else {
             setBorders(false);
@@ -215,12 +226,18 @@ public class AreaModule extends SimpleModule {
             if (getNodeTypes() != null) {
                 String[] nodeTypesArray = getNodeTypes().split(" ");
                 for (final String s : nodeTypesArray) {
-
-                    icon = ContentModelIconProvider.getInstance().getIcon(ModuleHelper.getNodeType(s));
+                    GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(s);
+                    if (nodeType != null) {
+                        Boolean canUseComponentForCreate = (Boolean) nodeType.get("canUseComponentForCreate");
+                        if (canUseComponentForCreate != null && !canUseComponentForCreate) {
+                            continue;
+                        }
+                    }
+                    icon = ContentModelIconProvider.getInstance().getIcon(nodeType);
                     p = new HorizontalPanel();
                     p.add(icon.createImage());
                     if (getWidth() > 150) {
-                        p.add(new Text(ModuleHelper.getNodeType(s) != null ? ModuleHelper.getNodeType(s).getLabel() : s));
+                        p.add(new Text(nodeType != null ? nodeType.getLabel() : s));
                     }
                     p.sinkEvents(Event.ONCLICK);
                     p.addStyleName("button-placeholder");

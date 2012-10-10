@@ -43,6 +43,7 @@ package org.jahia.ajax.gwt.client.data;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -67,6 +68,14 @@ public class GWTJahiaSearchQuery implements Serializable {
     private List<String> sites;
     private String originSiteUuid;
     private String basePath;
+    private Date startPublicationDate;
+    private Date endPublicationDate;
+    private Date startCreationDate;
+    private Date endCreationDate;
+    private Date startEditionDate;
+    private Date endEditionDate;
+    private String timeInDays;
+
 
     public String getQuery() {
         return query;
@@ -192,5 +201,61 @@ public class GWTJahiaSearchQuery implements Serializable {
 
     public void setBasePath(String basePath) {
         this.basePath = basePath;
+    }
+
+    public Date getStartPublishedDate() {
+        return startPublicationDate;
+    }
+
+    public void setStartPublicationDate(Date startPublicationDate) {
+        this.startPublicationDate = startPublicationDate;
+    }
+
+    public Date getEndPublishedDate() {
+        return endPublicationDate;
+    }
+
+    public void setEndPublicationDate(Date endPublicationDate) {
+        this.endPublicationDate = endPublicationDate;
+    }
+
+    public Date getStartCreatedDate() {
+        return startCreationDate;
+    }
+
+    public void setStartCreationDate(Date startCreationDate) {
+        this.startCreationDate = startCreationDate;
+    }
+
+    public Date getEndCreatedDate() {
+        return endCreationDate;
+    }
+
+    public void setEndCreationDate(Date endCreationDate) {
+        this.endCreationDate = endCreationDate;
+    }
+
+    public Date getStartLastModifiedDate() {
+        return startEditionDate;
+    }
+
+    public void setStartEditionDate(Date startEditionDate) {
+        this.startEditionDate = startEditionDate;
+    }
+
+    public Date getEndLastModifiedDate() {
+        return endEditionDate;
+    }
+
+    public void setEndEditionDate(Date endEditionDate) {
+        this.endEditionDate = endEditionDate;
+    }
+
+    public String getTimeInDays() {
+        return timeInDays;
+    }
+
+    public void setTimeInDays(String timeInDays) {
+        this.timeInDays = timeInDays;
     }
 }

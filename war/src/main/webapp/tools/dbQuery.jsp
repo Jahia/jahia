@@ -33,7 +33,7 @@
         </span>
         <br/>
         <input type="submit" name="action" value="Execute update" title="Use this button to execute any DB data/structure modifications queries, i.e. INSERT, UPDATE, DELETE, CREATE, ALTER etc." />
-    </form> 
+    </form>
 </fieldset>
 
 <c:if test="${not empty param.query}">
@@ -84,9 +84,6 @@
         </fieldset>
     </c:if>
 </c:if>
-<p>
-    <img src="<c:url value='/engines/images/icons/home_on.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;
-    <a href="<c:url value='/tools/index.jsp'/>">to Jahia Tools overview</a>
-</p>
+<%@ include file="gotoIndex.jspf" %>
 </body>
 </html>

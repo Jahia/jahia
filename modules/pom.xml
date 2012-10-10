@@ -160,11 +160,13 @@
             </activation>
             <modules>
                 <module>assets</module>
+                <module>channels</module>
                 <module>default</module>
                 <module>facets</module>
                 <module>grid</module>
                 <module>macros</module>
                 <module>search</module>
+                <module>seo</module>
                 <module>skins</module>
                 <module>tasks</module>
                 <module>templates-system</module>
@@ -180,14 +182,16 @@
             </activation>
             <modules>
                 <module>assets</module>
+                <module>channels</module>
                 <module>contentRetrieval</module>
-                <module>contribute</module>
                 <module>default</module>
+                <module>default-skins</module>
                 <module>facets</module>
                 <module>grid</module>
                 <module>macros</module>
                 <module>profile</module>
                 <module>search</module>
+                <module>seo</module>
                 <module>skins</module>
                 <module>tabularList</module>
                 <module>tags</module>
@@ -237,9 +241,33 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>classes</classifier>
+                            <skipIfEmpty>true</skipIfEmpty>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <warSourceExcludes>resources/*.properties</warSourceExcludes>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.jahia.server</groupId>
                 <artifactId>maven-jahia-plugin</artifactId>
-                <version>${jahia.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>native2ascii</id>
@@ -249,7 +277,9 @@
                         <configuration>
                             <encoding>ISO-8859-1</encoding>
                             <src>${basedir}/src/main/webapp/resources</src>
+                            <dest>${project.build.directory}/${project.build.finalName}/resources</dest>
                             <addToProjectResources>false</addToProjectResources>
+                            <defaultPropertiesFileLocale>en</defaultPropertiesFileLocale>
                         </configuration>
                     </execution>
                     <execution>

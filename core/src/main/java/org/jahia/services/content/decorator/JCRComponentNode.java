@@ -39,16 +39,16 @@
  */
 package org.jahia.services.content.decorator;
 
-import javax.jcr.RepositoryException;
-
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 
+import javax.jcr.RepositoryException;
+
 /**
  * Decorator for the nodes, representing components and component folders.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class JCRComponentNode extends JCRNodeDecorator {
@@ -65,11 +65,12 @@ public class JCRComponentNode extends JCRNodeDecorator {
         } catch (RepositoryException e) {
             // lookup the corresponding node type
             String name = getName();
-            if (!"components".equals(name)) {
+            if (!"components".equals(name) && !"nonDroppableComponents".equals(name)) {
                 try {
-                    title = JCRContentUtils.getDisplayLabel(
-                            NodeTypeRegistry.getInstance().getNodeType(name), getSession()
-                                    .getLocale(), null);
+                    if (getSession().getLocale() != null) {
+                        title = JCRContentUtils.getDisplayLabel(NodeTypeRegistry.getInstance().getNodeType(name),
+                                getSession().getLocale(), null);
+                    }
                 } catch (RepositoryException e1) {
                     title = null;
                 }

@@ -167,7 +167,7 @@ public class WelcomeServlet extends HttpServlet {
                 }
             } else {
                 if (home != null) {
-                    base = request.getContextPath() + Render.getRenderServletPath() + "/"
+                    base = request.getContextPath() + "/cms/render/"
                             + Constants.LIVE_WORKSPACE + "/" + language + home.getPath();
                 } else if (!SettingsBean.getInstance().isDistantPublicationServerMode()) {
                     JCRSiteNode defSite = null;
@@ -179,9 +179,18 @@ public class WelcomeServlet extends HttpServlet {
                         return;
                     }
                     if (defSite.getHome() != null) {
-                        base = request.getContextPath() + Edit.getEditServletPath() + "/"
-                                + Constants.EDIT_WORKSPACE + "/" + language
-                                + defSite.getHome().getPath();
+                        if (defSite.getHome().hasPermission("editModeAccess")) {
+                            base = request.getContextPath() + "/cms/edit/"
+                                    + Constants.EDIT_WORKSPACE + "/" + language
+                                    + defSite.getHome().getPath();
+                        } else if (defSite.getHome().hasPermission("contributeModeAccess")) {
+                            base = request.getContextPath() + "/cms/contribute/"
+                                    + Constants.EDIT_WORKSPACE + "/" + language
+                                    + defSite.getHome().getPath();
+                        } else {
+                            redirect(request.getContextPath()+"/start", response);
+                            return;
+                        }
                     } else {
                         redirect(request.getContextPath()+"/start", response);
                         return;

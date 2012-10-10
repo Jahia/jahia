@@ -87,12 +87,48 @@
     	<property name="camelContext" ref="jahiaNotificationContext"/>
     </bean>
 
+    <bean class="org.jahia.modules.defaultmodule.actions.MultipleDeleteAction">
+        <property name="name" value="deleteNodes"/>
+    </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.MultipleCopyAction">
+        <property name="name" value="copy"/>
+    </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.MultipleCutAction">
+        <property name="name" value="cut"/>
+    </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.MultiplePasteAction">
+        <property name="name" value="paste"/>
+    </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.CheckClipboardAction">
+        <property name="name" value="checkclipboard"/>
+    </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.CleanClipboardAction">
+        <property name="name" value="emptyclipboard"/>
+    </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.MultiplePublishAction">
+        <property name="name" value="publishNodes"/>
+        <property name="workflowService" ref="workflowService"/>
+        <property name="publicationHelper" ref="PublicationHelper"/>
+    </bean>
+
     <bean class="org.jahia.modules.defaultmodule.actions.AddComment" >
         <property name="name" value="addComment"/>
         <property name="requiredPermission" value="addComment" />
     </bean>
 
     <bean class="org.jahia.modules.defaultmodule.actions.PublishAction">
+        <property name="publicationService" ref="jcrPublicationService"/>
+        <property name="requiredPermission" value="publish"/>
+        <property name="requiredWorkspace" value="default"/>
+    </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.AutoPublicationAction">
         <property name="publicationService" ref="jcrPublicationService"/>
         <property name="requiredPermission" value="publish"/>
         <property name="requiredWorkspace" value="default"/>
@@ -111,6 +147,27 @@
         <property name="jahiaGroupManagerService" ref="JahiaGroupManagerService"/>
         <property name="jahiaUserManagerService" ref="JahiaUserManagerService"/>
         <property name="requiredPermission" value="addPrincipalsInRoles" />
+    </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.admin.AdminEditSiteAction">
+        <property name="sitesService" ref="JahiaSitesService"/>
+        <property name="requiredPermission" value="adminVirtualSites" />
+    </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.admin.AdminDeleteSiteAction">
+        <property name="sitesService" ref="JahiaSitesService"/>
+        <property name="requiredPermission" value="adminVirtualSites" />
+    </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.admin.AdminCreateSiteAction">
+        <property name="sitesService" ref="JahiaSitesService"/>
+        <property name="requiredPermission" value="adminVirtualSites" />
+    </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.AddMemberToAcl" />
+
+    <bean class="org.jahia.modules.defaultmodule.actions.GetWorkflowTasksAction">
+        <property name="name" value="getWorkflowTasks"/>
     </bean>
 
 </beans>

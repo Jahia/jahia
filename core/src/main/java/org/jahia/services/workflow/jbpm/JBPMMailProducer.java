@@ -70,6 +70,7 @@ import javax.mail.internet.MimeMultipart;
 import javax.script.*;
 import java.io.StringWriter;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * @author : rincevent
@@ -79,6 +80,7 @@ import java.util.*;
 public class JBPMMailProducer extends MailProducerImpl {
     private static final long serialVersionUID = -5084848266010688683L;
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JBPMMailProducer.class);
+    private static final Pattern ACTORS_PATTERN = Pattern.compile("[,;\\s]+");
     ScriptEngine scriptEngine;
     private Bindings bindings;
 
@@ -250,7 +252,7 @@ public class JBPMMailProducer extends MailProducerImpl {
     }
 
     private String[] tokenizeActors(String recipients, Execution execution, JCRSessionWrapper session) throws RepositoryException, ScriptException{
-        String[] actors = evaluateExpression(execution, recipients, session).split("[,;\\s]+");
+        String[] actors = ACTORS_PATTERN.split(evaluateExpression(execution, recipients, session));
         if (actors.length == 0) throw new JbpmException("recipient list is empty: " + recipients);
         return actors;
     }
@@ -332,13 +334,15 @@ public class JBPMMailProducer extends MailProducerImpl {
 
     private String evaluateExpression(Execution execution, String scriptToExecute, JCRSessionWrapper session)
             throws RepositoryException, ScriptException {
-        ScriptContext scriptContext = scriptEngine.getContext();
+        ScriptContext scriptContext = new SimpleScriptContext();
         if (bindings == null) {
             bindings = getBindings(execution, session);
         }
         scriptContext.setWriter(new StringWriter());
         scriptContext.setErrorWriter(new StringWriter());
-        scriptEngine.eval(scriptToExecute, bindings);
+        scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+        scriptContext.setBindings(scriptContext.getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
+        scriptEngine.eval(scriptToExecute, scriptContext);
         String error = scriptContext.getErrorWriter().toString();
         if (error.length() > 0) {
             logger.error("Scripting error : " + error);

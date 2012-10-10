@@ -48,6 +48,7 @@ import java.net.URLDecoder;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.jackrabbit.util.Text;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.settings.SettingsBean;
 
@@ -58,6 +59,23 @@ import org.jahia.settings.SettingsBean;
  */
 public final class WebUtils {
 
+    
+    /**
+     * Does a URL encoding of the <code>path</code>. The characters that don't need encoding are those defined 'unreserved' in section 2.3
+     * of the 'URI generic syntax' RFC 2396. Not the entire path string is escaped, but every individual part (i.e. the slashes are not
+     * escaped).
+     * 
+     * @param path
+     *            the path to encode
+     * @return the escaped path
+     * @throws NullPointerException
+     *             if <code>path</code> is <code>null</code>.
+     * @see Text#escapePath(String)
+     */
+    public static String escapePath(String path) {
+        return path != null ? Text.escapePath(path) : null;
+    }
+    
     /**
      * Loads the content of the specified servlet context resource as text.
      * 
@@ -80,6 +98,26 @@ public final class WebUtils {
         }
 
         return content;
+    }
+
+    /**
+     * Loads the content of the servlet context resource as text looking up the specified paths until the first resource is found.
+     * 
+     * @param lookupPaths
+     *            the resource paths to lookup (context relative)
+     * @return the text of the specified resource content or <code>null</code> if the corresponding resource does not exist
+     * @throws IOException
+     *             in case of a problem reading resource content
+     */
+    public static String lookupResourceAsString(String... lookupPaths) throws IOException {
+        String text = null;
+        for (String path : lookupPaths) {
+            text = getResourceAsString(path);
+            if (text != null) {
+                break;
+            }
+        }
+        return text;
     }
 
     /**
@@ -121,6 +159,7 @@ public final class WebUtils {
             throw new IllegalArgumentException(e);
         }
     }
+
 
     /**
      * Initializes an instance of this class.

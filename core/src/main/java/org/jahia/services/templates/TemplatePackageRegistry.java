@@ -69,9 +69,10 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Workspace;
-import javax.jcr.observation.ObservationManager;
+import javax.jcr.observation.*;
 import java.io.File;
 import java.util.*;
+import java.util.EventListener;
 
 /**
  * Template packages registry service.
@@ -175,7 +176,18 @@ class TemplatePackageRegistry {
 	                            final Workspace workspace = session.getWorkspace();
 	
 	                            ObservationManager observationManager = workspace.getObservationManager();
-	                            observationManager.addEventListener(eventListener, eventListener.getEventTypes(), eventListener.getPath(), eventListener.isDeep(), eventListener.getUuids(), eventListener.getNodeTypes(), false);
+                                //first remove existing listener of same type
+                                final EventListenerIterator registeredEventListeners = observationManager.getRegisteredEventListeners();
+                                javax.jcr.observation.EventListener toBeRemoved = null;
+                                while (registeredEventListeners.hasNext()) {
+                                    javax.jcr.observation.EventListener next = registeredEventListeners.nextEventListener();
+                                    if(next.getClass().equals(eventListener.getClass())) {
+                                        toBeRemoved = next;
+                                        break;
+                                    }
+                                }
+                                observationManager.removeEventListener(toBeRemoved);
+                                observationManager.addEventListener(eventListener, eventListener.getEventTypes(), eventListener.getPath(), eventListener.isDeep(), eventListener.getUuids(), eventListener.getNodeTypes(), false);
 	                            return null;
 	                        }
 	                    });
@@ -370,8 +382,7 @@ class TemplatePackageRegistry {
      */
     public JahiaTemplatesPackage lookup(String packageName) {
         if (packageName == null || registry == null) return null;
-        return registry.containsKey(packageName) ? registry.get(packageName)
-                : null;
+        return registry.get(packageName);
     }
 
     /**
@@ -563,6 +574,11 @@ class TemplatePackageRegistry {
 
     public Map<String, BackgroundAction> getBackgroundActions() {
         return backgroundActions;
+    }
+
+    public void computeDependencies(JahiaTemplatesPackage pack) {
+        pack.getDependencies().clear();
+        computeDependencies(pack.getDependencies(), pack);
     }
 
     private void computeDependencies(Set<JahiaTemplatesPackage> dependencies,  JahiaTemplatesPackage pack) {

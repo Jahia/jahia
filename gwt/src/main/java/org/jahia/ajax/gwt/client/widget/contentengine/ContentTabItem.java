@@ -51,14 +51,24 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
 
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.Formatter;
+import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: toto
@@ -66,7 +76,7 @@ import java.util.List;
  * Time: 8:10:21 PM
  */
 public class ContentTabItem extends PropertiesTabItem {
-    private int maxLength = 32;
+    private int maxNameSize = 32;
 
     private transient boolean isNodeNameFieldDisplayed = false;
     private transient Field name;
@@ -77,7 +87,7 @@ public class ContentTabItem extends PropertiesTabItem {
     private boolean nameEditable = true;
 
     private List<String> nameNotEditableForTypes;
-    
+
     public Field<String> getName() {
         return nameText;
     }
@@ -105,6 +115,10 @@ public class ContentTabItem extends PropertiesTabItem {
             if (adapterField != null) {
                 ((FieldSet) adapterField.getParent()).insert(name, 0);
                 titleField = adapterField.getField();
+                FieldSet titleFieldSet = propertiesEditor.getFieldSetsMap().get(adapterField.getDefinition().getDeclaringNodeType());
+                propertiesEditor.remove(titleFieldSet);
+                propertiesEditor.insert(titleFieldSet, 0);
+
             } else {
                 propertiesEditor.insert(nameFieldSet, 0);
                 titleField = null;
@@ -121,7 +135,7 @@ public class ContentTabItem extends PropertiesTabItem {
                 boolean autoUpdate = true;
 
                 boolean nameEditingAllowed = isNameEditableForType(engine);
-                
+
                 if (nameEditingAllowed && autoUpdateName != null) {
                     if (engine.isExistingNode()) {
                         if (titleField != null && titleField.getValue() != null) {
@@ -201,8 +215,9 @@ public class ContentTabItem extends PropertiesTabItem {
                 nameFieldSet.setLayout(fl);
 
                 nameText = new TextField<String>();
+                nameText.setId("JahiaGxtField_systemName");
                 nameText.setWidth("250");
-                nameText.setMaxLength(maxLength);
+                nameText.setMaxLength(maxNameSize);
                 nameText.setAllowBlank(false);
                 nameText.setStyleAttribute("padding-left", "0");
 //                nameText.setValue(engine.getNodeName());
@@ -228,6 +243,7 @@ public class ContentTabItem extends PropertiesTabItem {
                 panel.add(autoUpdateLabel, new HBoxLayoutData(0,5,0,5));
                 if (titleField != null) {
                     autoUpdateName = new CheckBox();
+                    autoUpdateName.setId("JahiaGxtCheckbox_syncSystemNameWithTitle");
                     autoUpdateName.setWidth(10);
                     panel.add(autoUpdateName, new HBoxLayoutData(0,5,5,5));
                 }
@@ -261,6 +277,85 @@ public class ContentTabItem extends PropertiesTabItem {
         }
 
         // attach properties node
+        // Add information field
+        FieldSet fieldSet = new FieldSet();
+        final FormLayout fl = new FormLayout();
+        fl.setLabelWidth(0);
+        fieldSet.setLayout(fl);
+        fieldSet.setHeading(Messages.get("label.information", "Information"));
+        FormData fd = new FormData("98%");
+        fd.setMargins(new Margins(0));
+        final GWTJahiaNode selectedNode = engine.getNode();
+
+        Grid g = new Grid(1, 2);
+        g.setCellSpacing(10);
+        FlowPanel flowPanel = new FlowPanel();
+
+
+        if (selectedNode != null) {
+            String preview = selectedNode.getReferencedNode() != null ? selectedNode.getReferencedNode().getPreview() : selectedNode.getPreview();
+            if (preview != null) {
+                g.setWidget(0, 0, new Image(URL.appendTimestamp(preview)));
+            }
+
+            if (JahiaGWTParameters.isDevelopmentMode()) {
+                String path = selectedNode.getPath();
+                if (path != null) {
+                    flowPanel.add(new HTML("<b>" + Messages.get("label.path") + ":</b> " + path));
+                }
+                String id = selectedNode.getUUID();
+                if (id != null) {
+                    flowPanel.add(new HTML("<b>" + Messages.get("label.id", "ID") + ":</b> " + id));
+                }
+                if (selectedNode.isFile() != null &&selectedNode.isFile()) {
+                    Long s = selectedNode.getSize();
+                    if (s != null) {
+                        flowPanel.add(new HTML("<b>" + Messages.get("label.size") + ":</b> " +
+                                Formatter.getFormattedSize(s.longValue()) + " (" + s.toString() + " bytes)"));
+                    }
+                }
+                Date date = selectedNode.get("jcr:lastModified");
+                if (date != null) {
+                    flowPanel.add(new HTML("<b>" + Messages.get("label.lastModif") + ":</b> " +
+                            org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate(date, "d/MM/y")));
+                }
+                if (selectedNode.isLocked() != null && selectedNode.isLocked() && selectedNode.getLockInfos() != null) {
+                    String infos = "";
+                    if (selectedNode.getLockInfos().containsKey(null) && selectedNode.getLockInfos().size() == 1) {
+                        for (String s : selectedNode.getLockInfos().get(null)) {
+                            infos = Formatter.getLockLabel(s);
+                        }
+                    } else {
+                        for (Map.Entry<String, List<String>> entry : selectedNode.getLockInfos().entrySet()) {
+                            if (entry.getKey() != null) {
+                                if (infos.length() > 0) {
+                                    infos += "; ";
+                                }
+                                infos += entry.getKey() + " : ";
+                                int i = 0;
+                                for (String s : entry.getValue()) {
+                                    if (i > 0) {
+                                        infos += ", ";
+                                    }
+                                    infos += Formatter.getLockLabel(s);
+                                    i++;
+                                }
+                            }
+                        }
+                    }
+                    flowPanel.add(new HTML(
+                            "<b>" + Messages.get("info.lock.label") + ":</b> " + infos));
+                }
+
+                flowPanel.add(new HTML("<b>" + Messages.get("nodes.label", "Types") + ":</b> " + selectedNode.getNodeTypes()));
+                flowPanel.add(new HTML("<b>" + Messages.get("org.jahia.jcr.edit.tags.tab", "Tags") + ":</b> " + selectedNode.getTags() != null ? selectedNode.getTags() : ""));
+                g.setWidget(0, 1, flowPanel);
+            }
+            if (preview != null || JahiaGWTParameters.isDevelopmentMode()) {
+                fieldSet.add(g,fd);
+                propertiesEditor.add(fieldSet);
+            }
+        }
         super.attachPropertiesEditor(engine, tab);
     }
 
@@ -312,14 +407,18 @@ public class ContentTabItem extends PropertiesTabItem {
             }
         }
         nodeName = new String(newChars, 0, j).trim().replaceAll(" ", "-").toLowerCase();
-        if (nodeName.length() > maxLength) {
-            nodeName = nodeName.substring(0, maxLength);
+        if (nodeName.length() > maxNameSize) {
+            nodeName = nodeName.substring(0, maxNameSize);
             if (nodeName.endsWith("-") && nodeName.length() > 2) {
                 nodeName = nodeName.substring(0, nodeName.length() - 1);
             }
         }
 
         return nodeName;
+    }
+
+    public void setMaxNameSize(int maxNameSize) {
+        this.maxNameSize = maxNameSize;
     }
 
     @Override
@@ -334,7 +433,7 @@ public class ContentTabItem extends PropertiesTabItem {
     public void setNameNotEditableForTypes(List<String> nameNotEditableForTypes) {
         this.nameNotEditableForTypes = nameNotEditableForTypes;
     }
-    
+
     private boolean isNameEditableForType(NodeHolder engine) {
         return nameNotEditableForTypes == null || nameNotEditableForTypes.isEmpty()
                 || engine == null || !engine.isExistingNode()

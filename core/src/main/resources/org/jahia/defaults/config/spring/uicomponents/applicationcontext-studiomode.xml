@@ -229,6 +229,7 @@
                 <ref bean="Engine.Tab.Options"/>
                 <ref bean="Engine.Tab.RequiredPermissions"/>
                 <ref bean="Engine.Tab.Usages"/>
+                <ref bean="Engine.Tab.ContributeMode"/>
             </list>
         </property>
 
@@ -297,7 +298,7 @@
                                         <property name="titleKey" value="label.newTemplate"/>
                                         <property name="icon" value="newTemplate"/>
                                     </bean>
-                                    <ref bean="Toolbar.Item.EditContent"/>
+                                    <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Undelete"/>
                                     <ref bean="Toolbar.Item.DeletePermanently"/>
@@ -314,7 +315,7 @@
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
                                 <list>
-                                    <ref bean="Toolbar.Item.EditContent"/>
+                                    <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Undelete"/>
                                     <ref bean="Toolbar.Item.DeletePermanently"/>
@@ -576,7 +577,9 @@
                     <property name="requiredPermission" value="sitemapSelector"/>
                 </bean>
                 <ref bean="sidePanelTab.search"/>
+
             </list>
+
         </property>
 
     </bean>

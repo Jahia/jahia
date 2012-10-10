@@ -41,6 +41,7 @@
 package org.jahia.ajax.gwt.client.data.toolbar;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.io.Serializable;
@@ -59,6 +60,7 @@ public class GWTConfiguration implements IsSerializable, Serializable {
     private GWTJahiaNode siteNode;
     private String sitesLocation;
     private Map<String, GWTJahiaNode> sitesMap;
+    private List<GWTJahiaChannel> channels;
 
     public GWTConfiguration() {
     	super();
@@ -110,5 +112,13 @@ public class GWTConfiguration implements IsSerializable, Serializable {
 
     public void setSitesMap(Map<String, GWTJahiaNode> sitesMap) {
         this.sitesMap = sitesMap;
+    }
+
+    public List<GWTJahiaChannel> getChannels() {
+        return channels;
+    }
+
+    public void setChannels(List<GWTJahiaChannel> channels) {
+        this.channels = channels;
     }
 }

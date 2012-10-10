@@ -47,6 +47,7 @@ import java.util.Map;
 
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.*;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGViolation;
@@ -58,6 +59,7 @@ import org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
+import com.extjs.gxt.ui.client.Style.HideMode;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.core.Template;
 import com.extjs.gxt.ui.client.fx.FxConfig;
@@ -72,7 +74,9 @@ import com.extjs.gxt.ui.client.widget.grid.RowNumberer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
@@ -102,6 +106,7 @@ public class CKEditorField extends Field<String> {
     private boolean ignoreWcagWarnings;
     private String lastValidatedContent;
     private boolean allowBlank = true;
+    private String blankText = GXT.MESSAGES.textField_blankText();
     /**
      * Creates a new adapter field.
      */
@@ -186,9 +191,12 @@ public class CKEditorField extends Field<String> {
         onLoad();
     }
 
-    @Override
-    protected void onBlur(ComponentEvent ce) {
+    public void onBlur() {
+        super.onBlur(null);
+    }
 
+    public void onFocus() {
+        super.onFocus(null);
     }
 
     @Override
@@ -211,11 +219,6 @@ public class CKEditorField extends Field<String> {
     protected void onEnable() {
         super.onEnable();
         getComponent().enable();
-    }
-
-    @Override
-    protected void onFocus(ComponentEvent ce) {
-
     }
 
     @Override
@@ -252,7 +255,49 @@ public class CKEditorField extends Field<String> {
     @Override
     public void markInvalid(String msg) {
         getInputEl().getParent().addStyleName(invalidStyle);
-        super.markInvalid(msg);
+        if (!"side".equals(getMessageTarget())) {
+            super.markInvalid(msg);
+        } else {
+            if (errorIcon == null) {
+                errorIcon = new WidgetComponent(getImages().getInvalid().createImage());
+                Element p = el().getParent().getParent().dom;
+                errorIcon.render(p, 0);
+                errorIcon.setHideMode(HideMode.VISIBILITY);
+                errorIcon.hide();
+                errorIcon.setStyleAttribute("display", "block");
+                errorIcon.setStyleAttribute("float", "right");
+                errorIcon.getAriaSupport().setRole("alert");
+                if (GXT.isAriaEnabled()) {
+                    setAriaState("aria-describedby", errorIcon.getId());
+                    errorIcon.setTitle(getErrorMessage());
+                }
+
+            } else if (!errorIcon.el().isConnected()) {
+                Element p = el().getParent().getParent().dom;
+                p.insertFirst(errorIcon.getElement());
+            }
+            if (!errorIcon.isAttached()) {
+                ComponentHelper.doAttach(errorIcon);
+            }
+
+            // needed to prevent flickering
+            DeferredCommand.addCommand(new Command() {
+                public void execute() {
+                    if (errorIcon.isAttached()) {
+                        errorIcon.show();
+                    }
+                }
+            });
+            errorIcon.setToolTip(msg);
+            errorIcon.getToolTip().addStyleName("x-form-invalid-tip");
+            el().repaint();
+            setMessageTarget("none");
+            try {
+                super.markInvalid(msg);
+            } finally {
+                setMessageTarget("side");
+            }
+        }
     }
 
     @Override
@@ -263,7 +308,7 @@ public class CKEditorField extends Field<String> {
             clearInvalid();
             return true;
           } else {
-            markInvalid(forceInvalidText);
+            markInvalid(blankText);
             return false;
           }
         }
@@ -531,5 +576,10 @@ public class CKEditorField extends Field<String> {
 
     public static CKEditorField getInstance(String editorInstanceId) {
         return instances.get(editorInstanceId);
+    }
+
+    @Override
+    public void focus() {
+        ckeditor.focus();
     }
 }

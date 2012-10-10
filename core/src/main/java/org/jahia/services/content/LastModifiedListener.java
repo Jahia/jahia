@@ -42,15 +42,12 @@ package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import java.util.*;
@@ -169,7 +166,7 @@ public class LastModifiedListener extends DefaultEventListener {
 
             if (autoPublishedIds != null && !autoPublishedIds.isEmpty()) {
                 synchronized (this) {
-                    JCRPublicationService.getInstance().publish(autoPublishedIds, "default", "live", null);
+                    JCRPublicationService.getInstance().publish(autoPublishedIds, "default", "live", false, null);
                 }
             }
 
@@ -193,26 +190,30 @@ public class LastModifiedListener extends DefaultEventListener {
 
         if (type != JCRObservationManager.IMPORT || isAutoPublished) {
             if (!n.isCheckedOut()) {
-                n.checkout();
+                n.getSession().getWorkspace().getVersionManager().checkout(n.getPath());
             }
             n.setProperty(JCR_LASTMODIFIED,c);
             n.setProperty(JCR_LASTMODIFIEDBY, userId);
             if (n.isNodeType("nt:resource")) {
-                JCRNodeWrapper file = n.getParent();
-                file.setProperty(JCR_LASTMODIFIED, c);
-                file.setProperty(JCR_LASTMODIFIEDBY, userId);
+                JCRNodeWrapper parent = n.getParent();
+                if (parent.isNodeType(MIX_LAST_MODIFIED)) {
+                    parent.setProperty(JCR_LASTMODIFIED, c);
+                    parent.setProperty(JCR_LASTMODIFIEDBY, userId);
+                }
             }
         }
     }
 
     private boolean addAutoPublish(JCRNodeWrapper n, List<String> autoPublished) throws RepositoryException {
         if (autoPublished != null) {
-            if (!autoPublished.contains(n.getIdentifier()) && n.isNodeType("jmix:autoPublish")) {
-                autoPublished.add(n.getIdentifier());
-                return true;
-            } else if (!autoPublished.contains(n.getIdentifier()) && n.isNodeType(JAHIANT_TRANSLATION) && n.getParent().isNodeType("jmix:autoPublish")) {
-                autoPublished.add(n.getIdentifier());
-                return true;
+            if (!n.getPath().startsWith("/templateSets")) {
+                if (!autoPublished.contains(n.getIdentifier()) && n.isNodeType("jmix:autoPublish")) {
+                    autoPublished.add(n.getIdentifier());
+                    return true;
+                } else if (!autoPublished.contains(n.getIdentifier()) && n.isNodeType(JAHIANT_TRANSLATION) && n.getParent().isNodeType("jmix:autoPublish")) {
+                    autoPublished.add(n.getIdentifier());
+                    return true;
+                }
             }
         }
         return false;

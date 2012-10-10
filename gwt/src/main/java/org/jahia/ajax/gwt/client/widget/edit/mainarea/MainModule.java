@@ -45,12 +45,12 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.DOM;
@@ -62,6 +62,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -98,9 +99,10 @@ public class MainModule extends Module {
 
     Map<Element, Module> m;
     protected LayoutContainer scrollContainer;
+    protected LayoutContainer center;
 
     public MainModule(final String html, final String path, final String template, String nodeTypes, GWTEditConfiguration config) {
-        super("main", path, template, nodeTypes, new FlowLayout());
+        super("main", path, template, nodeTypes, new BorderLayout());
         setScrollMode(Style.Scroll.NONE);
 
         this.id = "main";
@@ -116,12 +118,20 @@ public class MainModule extends Module {
             head.addStyleName("x-panel-header");
             head.setStyleAttribute("z-index", "999");
             head.setStyleAttribute("position", "relative");
-            add(head);
+            LayoutContainer c = new LayoutContainer(new FitLayout());
+            c.add(head);
+            add(c, new BorderLayoutData(Style.LayoutRegion.NORTH, 32));
         }
-        
+
         scrollContainer = new LayoutContainer(new FlowLayout());
-        add(scrollContainer);
         scrollContainer.addStyleName("gwt-body-edit");
+        scrollContainer.setStyleAttribute("position","relative");
+
+        center = new LayoutContainer(new FitLayout());
+        center.setScrollMode(Style.Scroll.NONE);
+
+        add(center,new BorderLayoutData(Style.LayoutRegion.CENTER));
+
         Hover.getInstance().setMainModule(this);
         Selection.getInstance().setMainModule(this);
 
@@ -132,14 +142,16 @@ public class MainModule extends Module {
     public void initWithLinker(EditLinker linker) {
         this.editLinker = linker;
 
+
+
         if (head != null) {
             for (GWTJahiaToolbarItem item : config.getMainModuleToolbar().getGwtToolbarItems()) {
-                ((ToolbarHeader)head).addItem(linker, item);
+                ((ToolbarHeader) head).addItem(linker, item);
             }
 
             head.addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
                 public void componentSelected(IconButtonEvent event) {
-                    mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
+                    mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
                     refresh(EditLinker.REFRESH_MAIN);
                 }
             }));
@@ -186,6 +198,79 @@ public class MainModule extends Module {
         infoLayers.initWithLinker(linker);
     }
 
+    private void layoutChannel() {
+
+        center.removeAll();
+
+
+        GWTJahiaChannel activeChannel = editLinker.getActiveChannel();
+        int activeChannelVariantIndex = 0;
+
+        if (activeChannel == null || "default".equals(activeChannel.getValue())) {
+            scrollContainer.setPosition(0,0);
+            center.setLayout(new FitLayout());
+            center.setScrollMode(Style.Scroll.NONE);
+            center.add(scrollContainer);
+        } else {
+            activeChannelVariantIndex = editLinker.getActiveChannelVariantIndex();
+            // first let setup the device decorator layout container
+            LayoutContainer deviceDecoratorContainer = new LayoutContainer(new AbsoluteLayout());
+            deviceDecoratorContainer.setBorders(false);
+            int[] decoratorImageSize = activeChannel.getVariantDecoratorImageSize(activeChannelVariantIndex);
+            if (decoratorImageSize.length == 0) {
+                decoratorImageSize = new int[]{-1, -1};
+            }
+            deviceDecoratorContainer.setSize(decoratorImageSize[0], decoratorImageSize[1]);
+            deviceDecoratorContainer.setStyleAttribute("margin-left", "auto");
+            deviceDecoratorContainer.setStyleAttribute("margin-right", "auto");
+            AbsoluteData deviceOuterData = new AbsoluteData(0, 0);
+            deviceOuterData.setMargins(new Margins(0, 0, 0, 0));
+            if (activeChannel.getVariantDecoratorImage(activeChannelVariantIndex) != null) {
+                deviceDecoratorContainer.add(new Image(JahiaGWTParameters.getContextPath()+activeChannel.getVariantDecoratorImage(activeChannelVariantIndex)), deviceOuterData);
+            }
+
+            int[] usableResolution = getUsableDeviceResolution(activeChannel, activeChannelVariantIndex);
+            scrollContainer.setSize(usableResolution[0], usableResolution[1]);
+            scrollContainer.setScrollMode(Style.Scroll.AUTO);
+
+            int[] screenPosition = null;
+            screenPosition = activeChannel.getVariantDecoratorScreenPosition(activeChannelVariantIndex);
+            if (screenPosition == null || screenPosition.length == 0) {
+                screenPosition = new int[]{0, 0};
+            }
+
+            AbsoluteData deviceData = new AbsoluteData(screenPosition[0], screenPosition[1]);
+            deviceData.setMargins(new Margins(0, 0, 0, 0));
+            deviceDecoratorContainer.add(scrollContainer, deviceData);
+
+            center.setLayout(new FlowLayout());
+            center.setScrollMode(Style.Scroll.AUTO);
+            center.add(deviceDecoratorContainer);
+        }
+
+//        layout();
+
+    }
+
+    private int[] getUsableDeviceResolution(GWTJahiaChannel activeChannel, int activeChannelIndex) {
+        int[] usableResolution;
+        if (activeChannel != null) {
+            usableResolution = editLinker.getActiveChannel().getVariantUsableResolution(activeChannelIndex);
+            if (usableResolution.length == 0) {
+                usableResolution = new int[]{
+                        -1,
+                        -1
+                };
+            }
+        } else {
+            usableResolution = new int[]{
+                    getWidth(),
+                    getHeight() - (head != null ? head.getOffsetHeight() : 0)
+            };
+        }
+        return usableResolution;
+    }
+
     /**
      * select current module
      */
@@ -209,40 +294,41 @@ public class MainModule extends Module {
     private void refresh(final String previousPath, final String previousTemplate, final boolean forceImageRefresh) {
         JahiaContentManagementService.App.getInstance()
                 .getRenderedContent(path, null, editLinker.getLocale(), template, "gwt", moduleParams, true,
-                        config.getName(), new BaseAsyncCallback<GWTRenderResult>() {
-                            public void onSuccess(GWTRenderResult result) {
-                                int i = scrollContainer.getVScrollPosition();
-                                if (head != null) {
-                                    head.setText("Page : " + path);
-                                }
-                                nodeTypes = result.getNodeTypes();
-                                Selection.getInstance().hide();
-                                Hover.getInstance().removeAll();
-                                infoLayers.removeAll();
+                        config.getName(), editLinker.getActiveChannelIdentifier(), editLinker.getActiveChannelVariant(), new BaseAsyncCallback<GWTRenderResult>() {
+                    public void onSuccess(GWTRenderResult result) {
+                        int i = scrollContainer.getVScrollPosition();
+                        if (head != null) {
+                            head.setText(Messages.get("label.page", "Page") + ": " + path);
+                        }
+                        nodeTypes = result.getNodeTypes();
+                        Selection.getInstance().hide();
+                        Hover.getInstance().removeAll();
+                        infoLayers.removeAll();
 
-                                display(result.getResult(), forceImageRefresh);
+                        display(result.getResult(), forceImageRefresh);
 
-                                scrollContainer.setVScrollPosition(i);
-                                List<String> list = new ArrayList<String>(1);
-                                list.add(path);
-                                editLinker.getMainModule().unmask();
-                                editLinker.onModuleSelection(MainModule.this);
-                                switchStaticAssets(result.getStaticAssets());
-                            }
+                        scrollContainer.setVScrollPosition(i);
+                        List<String> list = new ArrayList<String>(1);
+                        list.add(path);
+                        editLinker.getMainModule().unmask();
+                        editLinker.onModuleSelection(MainModule.this);
+                        switchStaticAssets(result.getStaticAssets());
+                    }
 
-                            @Override public void onApplicationFailure(Throwable caught) {
-                                if (!previousPath.equals(path)) {
-                                    path = previousPath;
-                                    template = previousTemplate;
-                                    editLinker.onMainSelection(previousPath, previousTemplate, null);
-                                }
-                                editLinker.getMainModule().unmask();
-                            }
-                        });
+                    @Override
+                    public void onApplicationFailure(Throwable caught) {
+                        if (!previousPath.equals(path)) {
+                            path = previousPath;
+                            template = previousTemplate;
+                            editLinker.onMainSelection(previousPath, previousTemplate, null);
+                        }
+                        editLinker.getMainModule().unmask();
+                    }
+                });
 
     }
 
-    private Map<String,Integer> maxValues = new HashMap<String, Integer>();
+    private Map<String, Integer> maxValues = new HashMap<String, Integer>();
 
     private void switchStaticAssets(Map<String, List<String>> assets) {
         switchStaticAssets(assets, "css", "link", "href");
@@ -269,7 +355,7 @@ public class MainModule extends Module {
         Element lastElement = null;
         String oldValue = null;
 
-        for (; newValues != null && (!newValues.isEmpty() || j<oldValues.size()) ; j++) {
+        for (; newValues != null && (!newValues.isEmpty() || j < oldValues.size()); j++) {
             while (j < oldValues.size()) {
                 oldElement = (Element) oldValues.get(j);
                 oldValue = DOM.getElementAttribute(oldElement, tagAttribute);
@@ -319,12 +405,12 @@ public class MainModule extends Module {
         Element newElem = null;
         if (filetype.equals("javascript")) {
             newElem = DOM.createElement("script");
-            newElem.setAttribute("id","staticAsset"+filetype+j);
+            newElem.setAttribute("id", "staticAsset" + filetype + j);
             newElem.setAttribute("type", "text/javascript");
             newElem.setAttribute("src", newValue);
         } else if (filetype.equals("css")) { //if filename is an external CSS file
             newElem = DOM.createElement("link");
-            newElem.setAttribute("id","staticAsset"+filetype+j);
+            newElem.setAttribute("id", "staticAsset" + filetype + j);
             newElem.setAttribute("rel", "stylesheet");
             newElem.setAttribute("type", "text/css");
             newElem.setAttribute("href", newValue);
@@ -336,8 +422,8 @@ public class MainModule extends Module {
     private native int getAssets(String tagname, String attrname, List results) /*-{
         var links = $doc.getElementsByTagName(tagname);
         if (links != null) {
-            for (var i=0; i<links.length; i++){
-                if (links[i] && links[i].getAttribute("id")!=null && links[i].getAttribute("id").indexOf("staticAsset")==0) {
+            for (var i = 0; i < links.length; i++) {
+                if (links[i] && links[i].getAttribute("id") != null && links[i].getAttribute("id").indexOf("staticAsset") == 0) {
                     results.@java.util.List::add(Ljava/lang/Object;)(links[i])
                 }
             }
@@ -356,7 +442,7 @@ public class MainModule extends Module {
     public static native void evalScripts(Element element) /*-{
         var scripts = element.getElementsByTagName("script");
 
-        for (i=0; i < scripts.length; i++) {
+        for (i = 0; i < scripts.length; i++) {
             // if src, eval it, otherwise eval the body
             if (!scripts[i].hasAttribute("src")) {
                 var src = scripts[i].getAttribute("src");
@@ -373,12 +459,14 @@ public class MainModule extends Module {
         $doc.title = title;
     }-*/;
 
-
     private void display(String result) {
         display(result, false);
     }
 
     private void display(String result, boolean forceImageReload) {
+
+        layoutChannel();
+
         scrollContainer.removeAll();
         scrollContainer.setScrollMode(Style.Scroll.AUTO);
         html = new HTML(result);
@@ -391,8 +479,12 @@ public class MainModule extends Module {
         ModuleHelper.buildTree(this);
         long start = System.currentTimeMillis();
         parse();
-        Log.info("Parse : "+(System.currentTimeMillis() - start));
-        layout();
+        Log.info("Parse : " + (System.currentTimeMillis() - start));
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+            public void execute() {
+                layout();
+            }
+        });
     }
 
     private void refreshImages(HTML html) {
@@ -420,12 +512,28 @@ public class MainModule extends Module {
         }
         scrollContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
         scrollContainer.setWidth(getWidth());
+
+        GWTJahiaChannel activeChannel = editLinker.getActiveChannel();
+        if (activeChannel != null && !"default".equals(activeChannel.getValue())) {
+            int[] usableResolution = getUsableDeviceResolution(editLinker.getActiveChannel(), editLinker.getActiveChannelVariantIndex());
+            scrollContainer.setSize(usableResolution[0], usableResolution[1]);
+        }
+        //scrollContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
     }
 
     protected void onResize(int width, int height) {
         super.onResize(width, height);
         scrollContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
         scrollContainer.setWidth(getWidth());
+
+        GWTJahiaChannel activeChannel = editLinker.getActiveChannel();
+        if (activeChannel != null && !"default".equals(activeChannel.getValue())) {
+            int[] usableResolution = getUsableDeviceResolution(editLinker.getActiveChannel(), editLinker.getActiveChannelVariantIndex());
+            scrollContainer.setSize(usableResolution[0], usableResolution[1]);
+        }
+
+        //scrollContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
+        //scrollContainer.setWidth(getWidth());
         if (editLinker.getSelectedModule() != null) {
             Selection.getInstance().hide();
             Selection.getInstance().show();
@@ -451,24 +559,31 @@ public class MainModule extends Module {
     private static void setUrlMarker(String path, String template, String param) {
         String currentHref = Window.Location.getHref();
         if (currentHref.indexOf("#") > 0) {
-            currentHref = currentHref.substring(0,currentHref.indexOf("#"));
+            currentHref = currentHref.substring(0, currentHref.indexOf("#"));
         }
-        Window.Location.assign(currentHref+"#"+ path + ":" + (template == null ? "" : template) + ":"+(param == null ? "" : param));
+        Window.Location.assign(currentHref + "#" + path + ":" + (template == null ? "" : template) + ":" + (param == null ? "" : param));
     }
 
     private void goToHashMarker(String hash) {
         int index = hash.indexOf(":");
         String url = hash.substring(1, index);
         int index2 = hash.indexOf(":", index + 1);
-        String template = hash.substring(index+1, index2);
-        String param = hash.substring(index2+1);
+        String template = hash.substring(index + 1, index2);
+        String param = hash.substring(index2 + 1);
         staticGoTo(url, template, param);
     }
 
     public void switchLanguage(GWTJahiaLanguage language) {
-        mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
+        mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
         editLinker.setLocale(language);
         editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
+    }
+
+    public void switchChannel(GWTJahiaChannel channel, String variant) {
+        mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
+        editLinker.setActiveChannelVariant(variant);
+        editLinker.setActiveChannel(channel);
+        editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_CHANNELS);
     }
 
     public void setNode(GWTJahiaNode node) {
@@ -489,7 +604,7 @@ public class MainModule extends Module {
             }
         }
 
-        setDocumentTitle(Messages.get("label."+config.getName().substring(0,config.getName().length()-4), config.getName()) + " - " + node.getDisplayName());
+        setDocumentTitle(Messages.get("label." + config.getName().substring(0, config.getName().length() - 4), config.getName()) + " - " + node.getDisplayName());
 
         editLinker.handleNewMainNodeLoaded();
     }
@@ -506,16 +621,16 @@ public class MainModule extends Module {
             l.show();
         }
         if (head != null) {
-            ((ToolbarHeader)head).handleNewModuleSelection(selectedModule);
+            ((ToolbarHeader) head).handleNewModuleSelection(selectedModule);
         }
 
         l.layout();
     }
 
     public void handleNewMainSelection(String path, String template, String param) {
-        Map<String,List<String>> params = null;
+        Map<String, List<String>> params = null;
         if (param != null && param.length() > 0) {
-            params = new HashMap<String,List<String>>();
+            params = new HashMap<String, List<String>>();
             for (String s : param.split("&")) {
                 final String[] key = s.split("=");
                 String decodedKey = URL.decode(key[0]);
@@ -540,7 +655,7 @@ public class MainModule extends Module {
 
         moduleParams = params;
 
-        module.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
+        module.mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
         setUrlMarker(path, template, param);
         module.refresh(previousPath, previousTemplate, false);
 
@@ -588,7 +703,7 @@ public class MainModule extends Module {
                                     }
 
                                     if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED ||
-                                        info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                                            info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                                         lastUnpublished = currentNode.getPath();
                                         if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                                             AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
@@ -610,7 +725,7 @@ public class MainModule extends Module {
                                         layoutContainer.add(icon.createImage());
                                         images.add(layoutContainer);
                                     } else if (info.getStatus() ==
-                                               GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
+                                            GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
                                         AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
                                                 "publication/mandatorylanguageunpublishable");
                                         LayoutContainer layoutContainer = new LayoutContainer(new CenterLayout());
@@ -637,8 +752,8 @@ public class MainModule extends Module {
                                         Set<Map.Entry<GWTJahiaNode, ModelData>> entries = visibility.entrySet();
                                         String toolTip = "";
                                         for (Map.Entry<GWTJahiaNode, ModelData> entry : entries) {
-                                            if(!"".equals(toolTip)) {
-                                                toolTip+="<br/>";
+                                            if (!"".equals(toolTip)) {
+                                                toolTip += "<br/>";
                                             }
                                             XTemplate tpl = XTemplate.create((String) entry.getValue().get(
                                                     "xtemplate"));
@@ -655,8 +770,8 @@ public class MainModule extends Module {
                                         Set<Map.Entry<GWTJahiaNode, ModelData>> entries = visibility.entrySet();
                                         String toolTip = "";
                                         for (Map.Entry<GWTJahiaNode, ModelData> entry : entries) {
-                                            if(!"".equals(toolTip)) {
-                                                toolTip+="<br/>";
+                                            if (!"".equals(toolTip)) {
+                                                toolTip += "<br/>";
                                             }
                                             XTemplate tpl = XTemplate.create((String) entry.getValue().get(
                                                     "xtemplate"));
@@ -684,8 +799,8 @@ public class MainModule extends Module {
     }
 
     public static native void exportStaticMethod() /*-{
-        $wnd.goTo = function(path,template,params) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::staticGoTo(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(path,template,params);
+        $wnd.goTo = function (path, template, params) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::staticGoTo(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(path, template, params);
         }
     }-*/;
 

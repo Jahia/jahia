@@ -45,6 +45,7 @@ import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.jackrabbit.value.ValueFactoryImpl;
+import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
@@ -113,6 +114,7 @@ public class JCRSessionWrapper implements Session {
     private Map<String, JCRNodeWrapper> sessionCacheByPath = new HashMap<String, JCRNodeWrapper>();
     private Map<String, JCRNodeWrapper> sessionCacheByIdentifier = new HashMap<String, JCRNodeWrapper>();
     private Map<String, JCRNodeWrapper> newNodes = new HashMap<String, JCRNodeWrapper>();
+    private Map<String, JCRNodeWrapper> changedNodes = new HashMap<String, JCRNodeWrapper>();
 
     private Map<String, String> nsToPrefix = new HashMap<String, String>();
     private Map<String, String> prefixToNs = new HashMap<String, String>();
@@ -358,7 +360,7 @@ public class JCRSessionWrapper implements Session {
         JCRNodeWrapper wrapper;
         Node referencedNode = ((JCRNodeWrapper) parent.getProperty("j:node").getNode()).getRealNode();
         String fullPath = parent.getPath() + DEREF_SEPARATOR + refPath;
-        if (parent.getPath().startsWith(referencedNode.getPath())) {
+        if (parent.getPath().startsWith(referencedNode.getPath()+ "/")) {
             throw new PathNotFoundException(fullPath);
         }
         String refRootName = StringUtils.substringBefore(refPath, "/");
@@ -402,6 +404,14 @@ public class JCRSessionWrapper implements Session {
             throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException,
             LockException, RepositoryException {
         getWorkspace().move(source, dest, true);
+        if (sessionCacheByPath.containsKey(source)) {
+            JCRNodeWrapper n = sessionCacheByPath.get(source);
+            if (n instanceof JCRNodeDecorator) {
+                n = ((JCRNodeDecorator)n).getDecoratedNode();
+            }
+            ((JCRNodeWrapperImpl)n).localPath = dest;
+            ((JCRNodeWrapperImpl)n).localPathInProvider = dest;
+        }
         flushCaches();
     }
 
@@ -415,9 +425,14 @@ public class JCRSessionWrapper implements Session {
         newNodes.put(node.getPath(), node);
     }
 
+    void registerChangedNode(JCRNodeWrapper node) {
+        changedNodes.put(node.getPath(), node);
+    }
+
     void unregisterNewNode(JCRNodeWrapper node) {
-        if (!newNodes.isEmpty()) {
+        if (!newNodes.isEmpty() || !changedNodes.isEmpty() ) {
             newNodes.remove(node.getPath());
+            changedNodes.remove(node.getPath());
             try {
                 if (node.hasNodes()) {
                     NodeIterator it = node.getNodes();
@@ -436,20 +451,48 @@ public class JCRSessionWrapper implements Session {
             VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
         if (!isSystem() && getLocale() != null) {
             for (JCRNodeWrapper node : newNodes.values()) {
-                for (String s : node.getNodeTypes()) {
-                    Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
-                    for (ExtendedPropertyDefinition propDef : propDefs) {
-                        if (propDef.isMandatory() &&
-                                propDef.getRequiredType() != PropertyType.WEAKREFERENCE &&
-                                propDef.getRequiredType() != PropertyType.REFERENCE &&
-                                !propDef.isProtected() && !node.hasProperty(propDef.getName())) {
-                            throw new ConstraintViolationException("Mandatory field : "+propDef.getName());
+                try {
+                    for (String s : node.getNodeTypes()) {
+                        Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
+                        for (ExtendedPropertyDefinition propDef : propDefs) {
+                            if (propDef.isMandatory() &&
+                                    propDef.getRequiredType() != PropertyType.WEAKREFERENCE &&
+                                    propDef.getRequiredType() != PropertyType.REFERENCE &&
+                                    !propDef.isProtected() && !node.hasProperty(propDef.getName())) {
+                                throw new ConstraintViolationException("Mandatory field : "+propDef.getName());
+                            }
                         }
                     }
+                } catch (InvalidItemStateException e) {
+                    logger.warn("A new node can no longer be accessed to run validation checks", e);
+                }
+            }
+            for (JCRNodeWrapper node : changedNodes.values()) {
+                try {
+                    for (String s : node.getNodeTypes()) {
+                        Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
+                        for (ExtendedPropertyDefinition propDef : propDefs) {
+                            if (propDef.isMandatory() &&
+                                propDef.getRequiredType() != PropertyType.WEAKREFERENCE &&
+                                propDef.getRequiredType() != PropertyType.REFERENCE &&
+                                !propDef.isProtected() &&
+                                (
+                                        !node.hasProperty(propDef.getName()) ||
+                                        (!propDef.isMultiple() &&
+                                        StringUtils.isEmpty(node.getProperty(propDef.getName()).getString()))
+
+                                )) {
+                                throw new ConstraintViolationException("Mandatory field : "+propDef.getName());
+                            }
+                        }
+                    }
+                } catch (InvalidItemStateException e) {
+                    logger.warn("A new node can no longer be accessed to run validation checks", e);
                 }
             }
         }
         newNodes.clear();
+        changedNodes.clear();
 
         JCRObservationManager.doWorkspaceWriteCall(this, operationType, new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper thisSession) throws RepositoryException {
@@ -464,6 +507,11 @@ public class JCRSessionWrapper implements Session {
     public void refresh(boolean b) throws RepositoryException {
         for (Session session : sessions.values()) {
             session.refresh(b);
+        }
+        if (!b) {
+            newNodes.clear();
+            changedNodes.clear();
+            flushCaches();
         }
     }
 

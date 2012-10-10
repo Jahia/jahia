@@ -45,7 +45,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -54,9 +57,13 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import javax.script.SimpleScriptContext;
+import javax.servlet.ServletContext;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOCase;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaAfterInitializationService;
@@ -66,7 +73,9 @@ import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.web.context.ServletContextAware;
 
 /**
  * Simple patch service that monitors specified folder (by default <code>WEB-INF/var/patches/groovy/</code>) for Groovy scripts, executes
@@ -74,7 +83,11 @@ import org.springframework.core.io.Resource;
  * 
  * @author Sergiy Shyrkov
  */
-public class GroovyPatcher implements JahiaAfterInitializationService, DisposableBean {
+public class GroovyPatcher implements JahiaAfterInitializationService, DisposableBean, ServletContextAware {
+
+    private static final Logger logger = LoggerFactory.getLogger(GroovyPatcher.class);
+
+    private static final String PATCHES_BASE = "/WEB-INF/var/patches/groovy";
 
     private static final Comparator<Resource> RESOURCE_COMPARATOR = new Comparator<Resource>() {
         public int compare(Resource o1, Resource o2) {
@@ -86,26 +99,11 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
             return 0;
         }
     };
+    private ServletContext servletContext;
 
-    private static final Logger logger = LoggerFactory.getLogger(GroovyPatcher.class);
-
-    private long interval = 5 * 60000L; // 5 minutes interval by default
-
-    private String patchesLookup = "/WEB-INF/var/patches/groovy/**/*.groovy";
-
-    private Timer watchdog;
-
-    public void destroy() throws Exception {
-        if (watchdog != null) {
-            watchdog.cancel();
-        }
-    }
-
-    protected void executeScripts(Resource[] scripts) {
+    public static void executeScripts(Resource[] scripts) {
         long timer = System.currentTimeMillis();
-        if (logger.isInfoEnabled()) {
-            logger.info("Found new patch scripts {}. Executing...", StringUtils.join(scripts));
-        }
+        logger.info("Found new patch scripts {}. Executing...", StringUtils.join(scripts));
 
         for (Resource script : scripts) {
             try {
@@ -123,7 +121,8 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
                     ScriptContext ctx = new SimpleScriptContext();
                     ctx.setWriter(new StringWriter());
                     Bindings bindings = engine.createBindings();
-                    bindings.put("log", new LoggerWrapper(logger, logger.getName(), ctx.getWriter()));
+                    bindings.put("log",
+                            new LoggerWrapper(logger, logger.getName(), ctx.getWriter()));
                     ctx.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
                     engine.eval(scriptContent, ctx);
@@ -139,7 +138,8 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
                 rename(script, ".installed");
             } catch (Exception e) {
                 logger.error(
-                        "Execution of script " + script + " failed with error: " + e.getMessage(), e);
+                        "Execution of script " + script + " failed with error: " + e.getMessage(),
+                        e);
                 rename(script, ".failed");
             }
         }
@@ -147,7 +147,45 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
         logger.info("Execution took {} ms", (System.currentTimeMillis() - timer));
     }
 
-    protected ScriptEngine getEngine() throws ScriptException {
+    public static void executeScripts(ServletContext ctx, String lifecyclePhase) {
+        try {
+            String realPath = ctx.getRealPath(PATCHES_BASE);
+            File lookupFolder = realPath != null ? new File(realPath) : null;
+            if (lookupFolder == null || !lookupFolder.isDirectory()) {
+                return;
+            }
+
+            if (logger.isTraceEnabled()) {
+                logger.trace("Looking up patches in the folder {}", lookupFolder);
+            }
+            List<File> patches = new LinkedList<File>(FileUtils.listFiles(lookupFolder,
+                    new SuffixFileFilter(new String[] { "." + lifecyclePhase + ".groovy" },
+                            IOCase.INSENSITIVE), TrueFileFilter.INSTANCE));
+
+            if (patches == null || patches.isEmpty()) {
+                if (logger.isTraceEnabled()) {
+                    logger.trace("No patches were found");
+                }
+                return;
+            }
+            Collections.sort(patches);
+
+            Resource[] resources = new Resource[patches.size()];
+            for (int i = 0; i < patches.size(); i++) {
+                resources[i] = new FileSystemResource(patches.get(i));
+            }
+
+            executeScripts(resources);
+        } catch (Exception e) {
+            logger.error("Error executing patches", e);
+        }
+    }
+
+    public void executeScripts(String lifecyclePhase) {
+        executeScripts(servletContext, lifecyclePhase);
+    }
+
+    protected static ScriptEngine getEngine() throws ScriptException {
         try {
             return ScriptEngineUtils.getInstance().scriptEngine("groovy");
         } catch (ScriptException e) {
@@ -157,6 +195,36 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
             } else {
                 throw e;
             }
+        }
+    }
+
+    protected static void rename(Resource script, String suffix) {
+        File scriptFile;
+        try {
+            scriptFile = script.getFile();
+            File dest = new File(scriptFile.getParentFile(), scriptFile.getName() + suffix);
+            if (dest.exists()) {
+                FileUtils.deleteQuietly(dest);
+            }
+            if (!scriptFile.renameTo(dest)) {
+                logger.warn("Unable to rename script file {} to {}. Skip renaming.", script
+                        .getFile().getPath(), dest.getPath());
+            }
+        } catch (IOException e) {
+            logger.warn("Unable to rename the script file for resurce " + script
+                    + " due to an error: " + e.getMessage(), e);
+        }
+    }
+
+    private long interval = 5 * 60000L; // 5 minutes interval by default
+
+    private String patchesLookup = PATCHES_BASE + "/**/*.groovy";
+
+    private Timer watchdog;
+
+    public void destroy() throws Exception {
+        if (watchdog != null) {
+            watchdog.cancel();
         }
     }
 
@@ -215,24 +283,6 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
         }, 0, interval);
     }
 
-    protected void rename(Resource script, String suffix) {
-        File scriptFile;
-        try {
-            scriptFile = script.getFile();
-            File dest = new File(scriptFile.getParentFile(), scriptFile.getName() + suffix);
-            if (dest.exists()) {
-                FileUtils.deleteQuietly(dest);
-            }
-            if (!scriptFile.renameTo(dest)) {
-                logger.warn("Unable to rename script file {} to {}. Skip renaming.", script
-                        .getFile().getPath(), dest.getPath());
-            }
-        } catch (IOException e) {
-            logger.warn("Unable to rename the script file for resurce " + script
-                    + " due to an error: " + e.getMessage(), e);
-        }
-    }
-
     public void setInterval(long interval) {
         this.interval = interval;
     }
@@ -241,4 +291,7 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
         this.patchesLookup = patchesLookup;
     }
 
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
 }

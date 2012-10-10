@@ -126,7 +126,7 @@ public class PropertiesHelper {
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>(values.length);
 
                     for (Value val : values) {
-                        GWTJahiaNodePropertyValue convertedValue = contentDefinition.convertValue(val, def.getRequiredType());
+                        GWTJahiaNodePropertyValue convertedValue = contentDefinition.convertValue(val, (ExtendedPropertyDefinition)def);
                         if (convertedValue != null) {
                             gwtValues.add(convertedValue);
                         }
@@ -248,6 +248,24 @@ public class PropertiesHelper {
                                 }
                             }
                             objectNode.removeMixin(mixin.getName());
+                        }
+                    }
+                    for (ExtendedNodeType mixin : objectNode.getPrimaryNodeType().getDeclaredSupertypes()) {
+                        if (removedTypes.contains(mixin.getName())) {
+                            List<ExtendedItemDefinition> items = mixin.getItems();
+                            for (ExtendedItemDefinition item : items) {
+                                if (item.isNode()) {
+                                    if (objectNode.hasNode(item.getName())) {
+                                        currentUserSession.checkout(objectNode);
+                                        objectNode.getNode(item.getName()).remove();
+                                    }
+                                } else {
+                                    if (objectNode.hasProperty(item.getName())) {
+                                        currentUserSession.checkout(objectNode);
+                                        objectNode.getProperty(item.getName()).remove();
+                                    }
+                                }
+                            }
                         }
                     }
                 }

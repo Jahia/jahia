@@ -52,8 +52,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Map;
 import java.util.Set;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
@@ -133,11 +131,14 @@ public class Url {
             return nodeURL;
         }
         
-        if (!isLocalhost(request.getServerName()) &&
-                !isLocalhost(node.getResolveSite().getServerName()) &&
-                !StringUtils.isEmpty(node.getResolveSite().getServerName()) &&
-                !request.getServerName().equals(node.getResolveSite().getServerName())
-                ) {
+        String requestServerName = request.getServerName();
+        if (isLocalhost(requestServerName)) {
+            return nodeURL;
+        }
+        
+        String serverName = node.getResolveSite().getServerName();
+        if (!StringUtils.isEmpty(serverName) && !isLocalhost(serverName)
+                && !requestServerName.equals(serverName)) {
             int serverPort = SettingsBean.getInstance().getSiteURLPortOverride();
 
             if (serverPort == 0) {
@@ -146,7 +147,7 @@ public class Url {
             if (serverPort == 80 && "http".equals(request.getScheme()) || serverPort == 443 && "https".equals(request.getScheme())) {
                 serverPort = -1;
             }
-            nodeURL = new URL(request.getScheme(), node.getResolveSite().getServerName(), serverPort, nodeURL).toString();
+            nodeURL = new URL(request.getScheme(), serverName, serverPort, nodeURL).toString();
         }
         return nodeURL;
     }
@@ -160,20 +161,24 @@ public class Url {
      * @return the server URL, including scheme, host and port
      */
     public static String getServer(HttpServletRequest request) {
+        return getServer(request.getScheme(), request.getServerName(), request.getServerPort());
+    }
+
+    public static String getServer(HttpServletRequest request, String servername) {
+        return getServer(request.getScheme(), servername, request.getServerPort());
+    }
+
+    public static String getServer(String scheme, String host, int port) {
         StringBuilder url = new StringBuilder();
-        String scheme = request.getScheme();
-        String host = request.getServerName();
 
-        int port = SettingsBean.getInstance().getSiteURLPortOverride();
-
-        if (port == 0) {
-            port = request.getServerPort();
+        int portOverride = SettingsBean.getInstance().getSiteURLPortOverride();
+        if (portOverride != 0) {
+            port = portOverride;
         }
 
         url.append(scheme).append("://").append(host);
 
-        if (!(("http".equals(scheme) && (port == 80)) ||
-              ("https".equals(scheme) && (port == 443)))) {
+        if (!(port == 80 && "http".equals(scheme) || port == 443 && "https".equals(scheme))) {
             url.append(":").append(port);
         }
 

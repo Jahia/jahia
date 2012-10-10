@@ -57,6 +57,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
@@ -91,12 +92,16 @@ public class PagesTabItem extends SidePanelTabItem {
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         tab.setLayout(new FitLayout());
+        tab.setId("JahiaGxtPagesTab");
         return tab;
     }
 
     private void initPageTree() {
         GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(paths);
         factory.setNodeTypes(folderTypes);
+        for (GWTColumn c : config.getTreeColumns()) {
+            c.setSortable(false);
+        }
         factory.setFields(config.getTreeColumnKeys());
         this.pageFactory = factory;
         this.pageFactory.setSelectedPath(path);

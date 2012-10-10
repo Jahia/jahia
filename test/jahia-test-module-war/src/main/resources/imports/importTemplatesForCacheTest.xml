@@ -8,8 +8,8 @@
 		</pagecontent>
 		<content-col1 jcr:primaryType="jnt:contentList">
 			<maincontent j:allowedTypes="" j:canDeleteInContribution="true"
-				j:canOrderInContribution="true" j:contributeTypes="jnt:mainContent jnt:bigText"
-				j:editableInContribution="true" jcr:mixinTypes="jmix:contributeMode"
+				j:contributeTypes="jnt:mainContent jnt:bigText"
+				jcr:mixinTypes="jmix:contributeMode"
 				jcr:primaryType="jnt:area" />
 		</content-col1>
 	</subpagetemplate>

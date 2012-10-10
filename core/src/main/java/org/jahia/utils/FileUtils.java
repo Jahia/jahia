@@ -50,6 +50,7 @@ package org.jahia.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -224,6 +225,36 @@ public final class FileUtils {
         return list;
     }
     
+    public static String humanReadableByteCount(long bytes) {
+        return humanReadableByteCount(bytes, false);
+    }
+
+    public static String humanReadableByteCount(long bytes, boolean withDetails) {
+        if (bytes < org.apache.commons.io.FileUtils.ONE_KB) {
+            return bytes + " bytes";
+        }
+
+        StringBuilder display = new StringBuilder();
+
+        long divider = org.apache.commons.io.FileUtils.ONE_KB;
+        if (bytes / org.apache.commons.io.FileUtils.ONE_GB > 0) {
+            divider = org.apache.commons.io.FileUtils.ONE_GB;
+            display.append(" GB");
+        } else if (bytes / org.apache.commons.io.FileUtils.ONE_MB > 0) {
+            divider = org.apache.commons.io.FileUtils.ONE_MB;
+            display.append(" MB");
+        } else {
+            display.append(" KB");
+        }
+
+        display.insert(0, new DecimalFormat("###,###,###,###,###,###,###.##").format((double) bytes / (double) divider));
+        if (withDetails) {
+            display.append(" (").append(new DecimalFormat("###,###,###,###,###,###,###").format(bytes)).append(" bytes)");
+        }
+
+        return display.toString();
+    }
+
     private FileUtils () {
         super();
     }

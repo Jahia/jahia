@@ -91,9 +91,10 @@ public class Publish implements ExternalActivityBehaviour {
         jobDataMap.put(PublicationJob.SOURCE, workspace);
         jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);
         jobDataMap.put(PublicationJob.LOCK, "publication-process-" + execution.getProcessInstance().getId());
+        jobDataMap.put(PublicationJob.CHECK_PERMISSIONS, false);
 
         ServicesRegistry.getInstance().getSchedulerService().scheduleJobAtEndOfRequest(jobDetail);
-        execution.take("to end");
+        execution.takeDefaultTransition();
     }
 
     public void signal(ActivityExecution execution, String signalName, Map<String, ?> parameters) throws Exception {

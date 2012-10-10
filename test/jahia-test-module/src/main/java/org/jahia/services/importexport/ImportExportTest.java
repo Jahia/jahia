@@ -879,6 +879,12 @@ public class ImportExportTest {
                         targetValue = ((Value)targetValue).getString().replace(targetRootPath, "");
                         sourceValue = ((String)sourceValue).replace(TESTSITE_NAME, "");
                         targetValue = ((String)targetValue).replace(TARGET_TESTSITE_NAME, "");
+                    } else if ("jcr:createdBy".equals(sourceEntry.getKey()) && sourceProperty.getPath().contains("/components/")) {
+                        sourceValue = ((Value)sourceValue).getString().replace(sourceRootPath, "");
+                        targetValue = ((Value)targetValue).getString().replace(targetRootPath, "");
+                        if (sourceValue.equals("root") && targetValue.equals("system") || sourceValue.equals("system") && targetValue.equals("root")) {
+                            sourceValue = targetValue;
+                        }
                     } else if (isReference) {
                         try {
                             sourceReferencePath = sourceSiteNode.getSession().getNodeByUUID(sourceProperty.getValue().getString())
@@ -887,7 +893,7 @@ public class ImportExportTest {
                             sourceValue = ((String)sourceValue).replace(sourceRootPath, "");
                             sourceValue = ((String)sourceValue).replace(TESTSITE_NAME, "");
                         } catch (Exception e) {
-                            logger.warn(sourceProperty.getPath() + "'s value leads to an exception");
+                            logger.warn(sourceProperty.getPath() + "'s value leads to an exception: " + e.toString());
                             sourceReferencePath = ILLEGAL_STATE;
                             sourceValue = ILLEGAL_STATE;
                         }
@@ -899,7 +905,7 @@ public class ImportExportTest {
                             targetValue = ((String)targetValue).replace(targetRootPath, "");
                             targetValue = ((String)targetValue).replace(TARGET_TESTSITE_NAME, "");
                         } catch (Exception e) {
-                            logger.warn(targetProperty.getPath() + "'s value leads to an exception");
+                            logger.warn(targetProperty.getPath() + "'s value leads to an exception: " + e.toString());
                             targetReferencePath = ILLEGAL_STATE;
                             targetValue = ILLEGAL_STATE;
                         }

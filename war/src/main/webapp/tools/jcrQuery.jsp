@@ -1,6 +1,8 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" 
-%><?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@page import="org.jahia.services.history.NodeVersionHistoryHelper"%>
+<%@page import="javax.jcr.query.Row"%>
+<%@page contentType="text/html;charset=UTF-8" language="java"%>
 <%@page import="java.io.PrintWriter"%>
 <%@page import="java.io.StringWriter"%>
 <%@page import="java.util.Locale"%>
@@ -56,6 +58,7 @@
 <c:set var="lang" value="${functions:default(fn:escapeXml(param.lang), 'JCR-SQL2')}"/>
 <c:set var="limit" value="${functions:default(fn:escapeXml(param.limit), '20')}"/>
 <c:set var="offset" value="${functions:default(fn:escapeXml(param.offset), '0')}"/>
+<c:set var="displayLimit" value="${functions:default(fn:escapeXml(param.displayLimit), '100')}"/>
 <c:set var="showActions" value="${functions:default(fn:escapeXml(param.showActions), 'false')}"/>
 <%
 Locale currentLocale = LanguageCodeConverters.languageCodeToLocale((String) pageContext.getAttribute("locale"));
@@ -104,20 +107,29 @@ pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(L
         </select>
         &nbsp;Offset:
         <input type="text" size="2" name="offset" id="offset" value="${offset}"/>
+        Display limit:
+        <select name="displayLimit" id="displayLimit">
+            <option value="-1"${displayLimit == '-1' ? 'selected="selected"' : ''}>none</option>
+            <option value="100"${displayLimit == '100' ? 'selected="selected"' : ''}>100</option>
+            <option value="200"${displayLimit == '200' ? 'selected="selected"' : ''}>200</option>
+            <option value="500"${displayLimit == '500' ? 'selected="selected"' : ''}>500</option>
+            <option value="1000"${displayLimit == '1000' ? 'selected="selected"' : ''}>1000</option>
+            <option value="0"${displayLimit == '0' ? 'selected="selected"' : ''}>all</option>
+        </select>
         <input type="submit" value="Execute query ([Ctrl+Enter])" />
         </span>
-    </form> 
+    </form>
 </fieldset>
 <%
 JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
 JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"), currentLocale, Locale.ENGLISH);
 %>
 <c:if test="${param.action == 'delete' && not empty param.target}">
-	<% 
+	<%
        try {
            JCRNodeWrapper target = jcrSession.getNodeByIdentifier(request.getParameter("target"));
            pageContext.setAttribute("target", target);
-           jcrSession.checkout(target.getParent());    
+           jcrSession.checkout(target.getParent());
            target.remove();
            jcrSession.save();
        } catch (ItemNotFoundException e) {
@@ -132,15 +144,17 @@ JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSes
     </c:if>
 </c:if>
 <c:if test="${param.action == 'deleteAll' && not empty param.query}">
-    <% 
+    <%
        try {
            Query q = jcrSession.getWorkspace().getQueryManager().createQuery(request.getParameter("query"), (String) pageContext.getAttribute("lang"));
+           q.setLimit(Long.valueOf((String) pageContext.getAttribute("limit")));
+           q.setOffset(Long.valueOf((String) pageContext.getAttribute("offset")));
            QueryResult result = q.execute();
            int count = 0;
            for (NodeIterator it = result.getNodes(); it.hasNext();) {
                Node target = it.nextNode();
                try {
-                   jcrSession.checkout(target.getParent());    
+                   jcrSession.checkout(target.getParent());
                    target.remove();
                    count++;
                } catch (Exception e) {
@@ -155,11 +169,22 @@ JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSes
     %>
     <p style="color: blue">${deletedCount} nodes were deleted</p>
 </c:if>
+<c:if test="${param.action == 'purgeHistory' && not empty param.query}">
+    <pre><%
+       out.flush();
+       long actionTime = System.currentTimeMillis();
+       Query q = jcrSession.getWorkspace().getQueryManager().createQuery(request.getParameter("query"), (String) pageContext.getAttribute("lang"));
+       q.setLimit(Long.valueOf((String) pageContext.getAttribute("limit")));
+       q.setOffset(Long.valueOf((String) pageContext.getAttribute("offset")));
+       pageContext.setAttribute("purgeStatus", NodeVersionHistoryHelper.purgeVersionHistoryForNodes(q.execute().getNodes(), out));
+       pageContext.setAttribute("took", Long.valueOf(System.currentTimeMillis() - actionTime));
+    %>
+    </pre>
+    <p style="color: blue">Finished purging unused versions for nodes in ${took} ms: ${purgeStatus}</p>
+</c:if>
 <%
 try {
     String query = request.getParameter("query");
-    Long limit = Long.valueOf(StringUtils.defaultIfEmpty(request.getParameter("limit"), "20"));
-    Long offset = Long.valueOf(StringUtils.defaultIfEmpty(request.getParameter("offset"), "0"));
     if (StringUtils.isNotEmpty(query)) {
         long actionTime = System.currentTimeMillis();
         Query q = jcrSession.getWorkspace().getQueryManager().createQuery(query, (String) pageContext.getAttribute("lang"));
@@ -167,20 +192,30 @@ try {
         q.setOffset(Long.valueOf((String) pageContext.getAttribute("offset")));
         QueryResult result = q.execute();
         pageContext.setAttribute("count", JCRContentUtils.size(result.getNodes()));
-        pageContext.setAttribute("nodes", result.getNodes());
+        if (result.getSelectorNames().length == 1) {
+            pageContext.setAttribute("nodes", result.getNodes());
+        } else {
+            pageContext.setAttribute("selectorNames", result.getSelectorNames());
+            pageContext.setAttribute("rows", result.getRows());
+        }
         pageContext.setAttribute("took", Long.valueOf(System.currentTimeMillis() - actionTime));
     }
 %>
 <c:if test="${not empty param.query}">
 <fieldset>
-    <legend>Displaying <strong>${count} nodes</strong> (query took ${took} ms)</legend>
+    <legend>Found ${count} results. Displaying ${displayLimit == -1 ? 'none' : (displayLimit == 0 || displayLimit > count ? 'all' : displayLimit)}. Query took ${took} ms.</legend>
     <c:if test="${showActions}">
         <div style="position: absolute; right: 20px;">
-            <a href="#delete" onclick='if (!confirm("You are about to permanently delete ALL the nodes this query is matching. Continue?")) return false; go("action", "deleteAll"); return false;' title="Delete All"><img src="<c:url value='/icons/delete.png'/>" height="16" width="16" title="Delete All" border="0"/> Delete ALL</a>
+            <a href="#delete" onclick='if (!confirm("You are about to permanently delete ALL the nodes this query is matching (considering limit and offset). Continue?")) return false; go("action", "deleteAll"); return false;' title="Permanently delete ALL the nodes this query is matching (considering limit and offset)"><img src="<c:url value='/icons/delete.png'/>" height="16" width="16" title="Permanently delete ALL the nodes this query is matching (considering limit and offset)" border="0"/> Delete ALL</a><br/>
+            <a href="#history" onclick='if (!confirm("You are about to purge unused versions for all nodes this query is matching (considering limit and offset). Continue?")) return false; go("action", "purgeHistory"); return false;' title="Purge unused versions for all nodes (considering limit and offset)"><img src="<c:url value='/icons/tab-templates.png'/>" height="16" width="16" title="Purge unused versions for all nodes (considering limit and offset)" border="0"/> Purge unused versions for all nodes</a>
         </div>
     </c:if>
+<c:if test="${displayLimit != -1}">
+<% pageContext.setAttribute("maxIntValue", Integer.MAX_VALUE); %>
 <ol start="${offset + 1}">
-<c:forEach var="node" items="${nodes}" varStatus="status">
+<c:choose>
+<c:when test="${empty rows}">
+<c:forEach var="node" items="${nodes}" varStatus="status" end="${displayLimit != 0 ? displayLimit - 1 : maxIntValue}">
     <li>
         <a title="Open in JCR Browser" href="<c:url value='/tools/jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true'/>" target="_blank"><strong>${fn:escapeXml(not empty node.displayableName ? node.name : '<root>')}</strong></a> (${fn:escapeXml(node.nodeTypes)})
         <a title="Open in Repository Explorer" href="<c:url value='/engines/manager.jsp?selectedPaths=${node.path}&workspace=${workspace}'/>" target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16" height="16" alt="open" title="Open in Repository Explorer"></a>
@@ -202,7 +237,43 @@ try {
         </c:if>
     </li>
 </c:forEach>
+</c:when>
+<c:otherwise>
+<c:forEach var="row" items="${rows}" varStatus="status" end="${displayLimit != 0 ? displayLimit - 1 : maxIntValue}">
+    <li>
+      <c:forEach var="selectorName" items="${selectorNames}" varStatus="nodestatus">
+        <c:set var="node" value="${row.nodes[selectorName]}"/>
+        <a title="Open in JCR Browser" href="<c:url value='/tools/jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true'/>" target="_blank"><strong>${fn:escapeXml(not empty node.displayableName ? node.name : '<root>')}</strong></a> (${fn:escapeXml(node.nodeTypes)})
+        <a title="Open in Repository Explorer" href="<c:url value='/engines/manager.jsp?selectedPaths=${node.path}&workspace=${workspace}'/>" target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16" height="16" alt="open" title="Open in Repository Explorer"></a>
+        <c:if test="${showActions}">
+        	&nbsp;<a href="#delete" onclick='var nodeName="${node.name}"; if (!confirm("You are about to delete the node \"" + nodeName + "\" with all child nodes. Continue?")) return false; go("action", "delete", "target", "${node.identifier}"); return false;' title="Delete"><img src="<c:url value='/icons/delete.png'/>" height="16" width="16" title="Delete" border="0"/></a>
+        </c:if>
+        <br/>
+        <strong>Path: </strong>${fn:escapeXml(node.path)}<br/>
+        <strong>ID: </strong>${fn:escapeXml(node.identifier)}<br/>
+		<jcr:nodeProperty node="${node}" name="jcr:created" var="created"/>
+		<jcr:nodeProperty node="${node}" name="jcr:createdBy" var="createdBy"/>
+		<jcr:nodeProperty node="${node}" name="jcr:lastModified" var="lastModified"/>
+		<jcr:nodeProperty node="${node}" name="jcr:lastModifiedBy" var="lastModifiedBy"/>
+        <c:if test="${not empty created}">
+        <strong>created on </strong><fmt:formatDate value="${created.time}" pattern="yyyy-MM-dd HH:mm" /><strong> by </strong>${not empty createdBy.string ? fn:escapeXml(createdBy.string) : 'n.a.'},
+        </c:if>
+        <c:if test="${not empty lastModified}">
+        <strong> last modified on </strong><fmt:formatDate value="${lastModified.time}" pattern="yyyy-MM-dd HH:mm" /><strong> by </strong>${not empty lastModifiedBy.string ? fn:escapeXml(lastModifiedBy.string) : 'n.a.'}
+        </c:if>
+        <c:if test="${not nodestatus.last}">
+          <br/>
+        </c:if>
+      </c:forEach>
+    </li>
+</c:forEach>
+</c:otherwise>
+</c:choose>
 </ol>
+</c:if>
+<c:if test="${displayLimit == -1}">
+<br/><br/>
+</c:if>
 </fieldset>
 </c:if>
 <%} catch (Exception e) {
@@ -218,10 +289,7 @@ try {
 <%} finally {
     JCRSessionFactory.getInstance().setCurrentUser(null);
 }%>
-<p>
-    <img src="<c:url value='/engines/images/icons/home_on.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;
-    <a href="<c:url value='/tools/index.jsp'/>">to Jahia Tools overview</a>
-</p>
+<%@ include file="gotoIndex.jspf" %>
 <div style="display: none;">
     <div id="helpArea">
         <h3>Query examples</h3>

@@ -56,6 +56,7 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -201,6 +202,9 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
         public Object render(GWTJahiaNode node, String property, ColumnData config, int rowIndex, int colIndex,
                              ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
             Object v = node.get(property);
+            if (v != null) {
+                v = SafeHtmlUtils.htmlEscape(v.toString());
+            }
             if (node.getNodeTypes().contains("jmix:markedForDeletion")) {
                 v = "<span class=\"markedForDeletion\">" + v + "</span>";
             }
@@ -212,6 +216,9 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
         @Override
         protected String getText(TreeGrid<GWTJahiaNode> gwtJahiaNodeTreeGrid, GWTJahiaNode node, String property, int rowIndex, int colIndex) {
             String v = super.getText(gwtJahiaNodeTreeGrid, node, property, rowIndex, colIndex);
+            if (v != null) {
+                v = SafeHtmlUtils.htmlEscape(v);
+            }
             if (node.getNodeTypes().contains("jmix:markedForDeletion")) {
                 v = "<span class=\"markedForDeletion\">" + v + "</span>";
             }

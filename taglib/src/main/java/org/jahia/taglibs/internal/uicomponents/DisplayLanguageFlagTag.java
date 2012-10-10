@@ -79,6 +79,7 @@
 package org.jahia.taglibs.internal.uicomponents;
 
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Patterns;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.http.HttpServletRequest;
@@ -230,7 +231,7 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
                 str.append("<!----------------------------------------------------------------------------->\n");
             }
             // Resolve file name
-            String flagName = LanguageCodeConverters.languageCodeToLocale(_code).getDisplayCountry(Locale.ENGLISH).toLowerCase().replace(" ","_");
+            String flagName = Patterns.SPACE.matcher(LanguageCodeConverters.languageCodeToLocale(_code).getDisplayCountry(Locale.ENGLISH).toLowerCase()).replaceAll("_");
             
             String flagOnPath;
             if ("".equals(_resourceOn)) {

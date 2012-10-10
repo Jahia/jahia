@@ -97,7 +97,7 @@ public class JCRUserNode extends JCRNodeDecorator {
     @Override
     public PropertyIterator getProperties() throws RepositoryException {
         final Locale locale = getSession().getLocale();
-        return new LazyPropertyIterator(node, locale, null,null) {
+        return new LazyPropertyIterator(this, locale, null,null) {
             @Override
             protected PropertyIterator getPropertiesIterator() {
                 if (propertyIterator == null) {
@@ -154,8 +154,19 @@ public class JCRUserNode extends JCRNodeDecorator {
 
     @Override
     public boolean hasProperty(String s) throws RepositoryException {
-        boolean b = super.hasProperty(s);
-        return b&canGetProperty(s);
+        if (user == null) {
+            user = lookupUser();
+        }
+        if (user == null || user instanceof JCRUser) {
+            boolean b = super.hasProperty(s);
+            return b&canGetProperty(s);
+        } else {
+            String property = (user instanceof JahiaExternalUser) ? ((JahiaExternalUser) user).getExternalProperties().getProperty(s) : user.getProperty(s);
+            if(property==null && user instanceof JahiaExternalUser) {
+                property = ((JahiaExternalUser) user).getUserProperties().getProperty(s);
+            }
+            return null != property&canGetProperty(s);
+        }
     }
 
     @Override
@@ -178,6 +189,33 @@ public class JCRUserNode extends JCRNodeDecorator {
             }
         }
         return map;
+    }
+
+    @Override
+    public String getPropertyAsString(String name) {
+        try {
+            if (JCRUser.J_EXTERNAL.equals(name) || Constants.CHECKIN_DATE.equals(name)) {
+                return super.getPropertyAsString(name);
+            }
+            if (!canGetProperty(name)) {
+                return null;
+            }
+            if (user == null) {
+                user = lookupUser();
+            }
+            if (user == null || user instanceof JCRUser) {
+                return super.getPropertyAsString(name);
+            } else {
+                String property = (user instanceof JahiaExternalUser) ? ((JahiaExternalUser) user).getExternalProperties().getProperty(
+                        name) : user.getProperty(name);
+                if (null == property) {
+                    return super.getPropertyAsString(name);
+                }
+                return property;
+            }
+        } catch (RepositoryException e) {
+            return null;
+        }
     }
 
     @Override
@@ -204,6 +242,28 @@ public class JCRUserNode extends JCRNodeDecorator {
 
             }
             return prop;
+        }
+    }
+
+    public boolean isPropertyEditable(String name) {
+        try {
+            if (JCRUser.J_EXTERNAL.equals(name) || Constants.CHECKIN_DATE.equals(name)) {
+                return false;
+            }
+            if (!canGetProperty(name)) {
+                return false;
+            }
+            if (user == null) {
+                user = lookupUser();
+            }
+            if (user == null || user instanceof JCRUser) {
+                return true;
+            } else {
+                return user instanceof JahiaExternalUser &&
+                       !((JahiaExternalUser) user).getExternalProperties().hasProperty(name);
+            }
+        } catch (RepositoryException e) {
+            return false;
         }
     }
 

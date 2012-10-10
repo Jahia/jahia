@@ -191,10 +191,19 @@
         <priority value="info"/>
     </category>
 
+    <category name="com.phloc.css.handler.CSSHandler">
+        <priority value="fatal"/>
+    </category>
+
     <category name="org.jahia.tools.patches.GroovyPatcher">
         <priority value="debug"/>
     </category>
+
     <category name="org.jahia.tools.groovyConsole">
+        <priority value="debug"/>
+    </category>
+
+    <category name="org.jgroups.protocols.pbcast.GMS">
         <priority value="debug"/>
     </category>
 

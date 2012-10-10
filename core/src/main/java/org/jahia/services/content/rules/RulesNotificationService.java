@@ -42,6 +42,8 @@ package org.jahia.services.content.rules;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.Jahia;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
 import org.drools.spi.KnowledgeHelper;
@@ -55,6 +57,7 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.script.*;
 import java.io.*;
 import java.util.Locale;
@@ -105,7 +108,6 @@ public class RulesNotificationService {
         JCRNodeWrapper userNode = node.getNode();
         if (userNode.hasProperty("j:email") && !userNode.getProperty("j:external").getBoolean()) {
             String toMail = userNode.getProperty("j:email").getString();
-            String fromMail = SettingsBean.getInstance().getMail_from();
             String ccList = null;
             String bcclist = null;
             Locale locale;
@@ -113,10 +115,9 @@ public class RulesNotificationService {
                 locale = LanguageCodeConverters.languageCodeToLocale(userNode.getProperty(
                         "preferredLanguage").getString());
             } catch (RepositoryException e) {
-                locale = LanguageCodeConverters.languageCodeToLocale(
-                        SettingsBean.getInstance().getDefaultLanguageCode());
+                locale = SettingsBean.getInstance().getDefaultLocale();
             }
-            sendMail(template, userNode, toMail, fromMail, ccList, bcclist, locale);
+            sendMail(template, userNode, toMail, null, ccList, bcclist, locale, drools);
 
         }
     }
@@ -132,7 +133,7 @@ public class RulesNotificationService {
             String toMail = userNode.getProperty("j:email");
             Locale locale = getLocale(userNode);
 
-            sendMail(template, userNode, toMail, fromMail, ccList, bccList, locale);
+            sendMail(template, userNode, toMail, fromMail, ccList, bccList, locale, drools);
         }
     }
 
@@ -145,7 +146,7 @@ public class RulesNotificationService {
         if (userNode.getProperty("j:email") != null) {
             String toMail = userNode.getProperty("j:email");
             Locale locale = getLocale(userNode);
-            sendMail(template, userNode, toMail, fromMail, null, null, locale);
+            sendMail(template, userNode, toMail, fromMail, null, null, locale, drools);
         }
     }
 
@@ -155,8 +156,7 @@ public class RulesNotificationService {
         if (property != null) {
             locale = LanguageCodeConverters.languageCodeToLocale(property);
         } else {
-            locale = LanguageCodeConverters.languageCodeToLocale(
-                    SettingsBean.getInstance().getDefaultLanguageCode());
+            locale = SettingsBean.getInstance().getDefaultLocale();
         }
         return locale;
     }
@@ -167,9 +167,21 @@ public class RulesNotificationService {
             return;
         }
         JahiaUser userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
-        if (userNode.getProperty("j:email") != null) {
+        if (userNode!=null && userNode.getProperty("j:email") != null) {
             String toMail = userNode.getProperty("j:email");
-            sendMail(template, userNode, toMail, fromMail, null, null, getLocale(userNode));
+            sendMail(template, userNode, toMail, fromMail, null, null, getLocale(userNode), drools);
+        }
+    }
+
+    public void notifyUser(String user, final String template, final ChangedPropertyFact fromMail, KnowledgeHelper drools)
+            throws RepositoryException, ScriptException, IOException {
+        if (!notificationService.isEnabled()) {
+            return;
+        }
+        JahiaUser userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
+        if (userNode!=null && userNode.getProperty("j:email") != null) {
+            String toMail = userNode.getProperty("j:email");
+            sendMail(template, userNode, toMail, fromMail.getStringValue(), null, null, getLocale(userNode), drools);
         }
     }
 
@@ -182,12 +194,12 @@ public class RulesNotificationService {
         JahiaUser userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
         if (userNode.getProperty("j:email") != null) {
             String toMail = userNode.getProperty("j:email");
-            sendMail(template, userNode, toMail, fromMail, ccList, bccList, getLocale(userNode));
+            sendMail(template, userNode, toMail, fromMail, ccList, bccList, getLocale(userNode), drools);
         }
     }
 
     private void sendMail(String template, Object user, String toMail, String fromMail, String ccList, String bcclist,
-                          Locale locale) throws RepositoryException, ScriptException {
+                          Locale locale, KnowledgeHelper drools) throws RepositoryException, ScriptException {
         if (!notificationService.isEnabled()) {
             return;
         }
@@ -203,22 +215,45 @@ public class RulesNotificationService {
         // Resolve template :
         String extension = StringUtils.substringAfterLast(template, ".");
         ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(extension);
-        ScriptContext scriptContext = scriptEngine.getContext();
+        ScriptContext scriptContext = new SimpleScriptContext();
         final Bindings bindings = new SimpleBindings();
         bindings.put("currentUser", user);
+        bindings.put("contextPath", Jahia.getContextPath());
+        final Object object = drools.getActivation().getTuple().getFactHandles()[0].getObject();
+        JCRNodeWrapper node = null;
+        if (object instanceof AbstractNodeFact) {
+            node = ((AbstractNodeFact) object).getNode();
+            bindings.put("currentNode", node);
+            final int siteURLPortOverride = SettingsBean.getInstance().getSiteURLPortOverride();
+            bindings.put("servername",
+                    "http" + (siteURLPortOverride == 443 ? "s" : "") + "://" + node.getResolveSite().getServerName() +
+                    ((siteURLPortOverride != 0 && siteURLPortOverride != 80 && siteURLPortOverride != 443) ?
+                     ":" + siteURLPortOverride : ""));
+        }
         InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(template);
         if (scriptInputStream != null) {
-            String resourceBundleName = StringUtils.substringBeforeLast(StringUtils.substringAfter(template.replaceAll("/WEB-INF",""),
-                                                                                                   "/").replaceAll("/",
-                                                                                                                   "."),
-                                                                        ".");
+            String resourceBundleName = StringUtils.substringBeforeLast(
+                    Patterns.SLASH.matcher(
+                            StringUtils.substringAfter(Patterns.WEB_INF.matcher(template)
+                                    .replaceAll(""), "/")).replaceAll("."), ".");
             String subject = "";
             try {
                 ResourceBundle resourceBundle = JahiaResourceBundle.lookupBundle(resourceBundleName, locale);
                 bindings.put("bundle", resourceBundle);
                 subject = resourceBundle.getString("subject");
             } catch (MissingResourceException e) {
-                // No RB
+                if(node!=null){
+                    final Value[] values = node.getResolveSite().getProperty("j:installedModules").getValues();
+                    for (Value value : values) {
+                        try {
+                            ResourceBundle resourceBundle = new JahiaResourceBundle(null,locale,ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(value.getString()).getName());
+                            subject = resourceBundle.getString(drools.getRule().getName().toLowerCase().replaceAll(" ",".")+".subject");
+                            bindings.put("bundle", resourceBundle);
+                        } catch (MissingResourceException ee) {
+                            // Do nothing
+                        }
+                    }
+                }
             }
             Reader scriptContent = null;
             try {
@@ -226,7 +261,9 @@ public class RulesNotificationService {
                 scriptContext.setWriter(new StringWriter());
                 // The following binding is necessary for Javascript, which doesn't offer a console by default.
                 bindings.put("out", new PrintWriter(scriptContext.getWriter()));
-                scriptEngine.eval(scriptContent, bindings);
+                scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+                scriptContext.setBindings(scriptContext.getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
+                scriptEngine.eval(scriptContent, scriptContext);
                 StringWriter writer = (StringWriter) scriptContext.getWriter();
                 String body = writer.toString();
                 notificationService.sendMessage(fromMail, toMail, ccList, bcclist, subject, null, body);

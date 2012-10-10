@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
@@ -80,7 +81,13 @@ public class ImageHelper {
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
             Image image = imageService.getImage(node);
-            File f = File.createTempFile("image", null);
+            String fileExtension = FilenameUtils.getExtension(node.getName());
+            if ((fileExtension != null) && (!"".equals(fileExtension))) {
+                fileExtension += "." + fileExtension;
+            } else {
+                fileExtension = null;
+            }
+            File f = File.createTempFile("image", fileExtension);
             imageService.cropImage(image, f, top, left, width, height);
 
             InputStream fis = new BufferedInputStream(new FileInputStream(f));
@@ -108,7 +115,13 @@ public class ImageHelper {
                 throw new ExistingFileException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("file.already.exists", uiLocale), target));
             }
             Image image = imageService.getImage(node);
-            File f = File.createTempFile("image", null);
+            String fileExtension = FilenameUtils.getExtension(node.getName());
+            if ((fileExtension != null) && (!"".equals(fileExtension))) {
+                fileExtension += "." + fileExtension;
+            } else {
+                fileExtension = null;
+            }
+            File f = File.createTempFile("image", fileExtension);
             imageService.resizeImage(image, f, width, height);
 
             InputStream fis = new BufferedInputStream(new FileInputStream(f));
@@ -136,7 +149,13 @@ public class ImageHelper {
                 throw new ExistingFileException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("file.already.exists", uiLocale), target));
             }
             Image image = imageService.getImage(node);
-            File f = File.createTempFile("image", null);
+            String fileExtension = FilenameUtils.getExtension(node.getName());
+            if ((fileExtension != null) && (!"".equals(fileExtension))) {
+                fileExtension += "." + fileExtension;
+            } else {
+                fileExtension = null;
+            }
+            File f = File.createTempFile("image", fileExtension);
             imageService.rotateImage(image, f, clockwise);
 
             InputStream fis = new BufferedInputStream(new FileInputStream(f));

@@ -62,7 +62,7 @@ public class NewTemplatesSetActionItem extends BaseActionItem {
     @Override public void onComponentSelection() {
         String name = Window.prompt(Messages.get("newPackageName.label"), "New package name");
         if (name != null) {
-            linker.loading("Creating template set...");
+            linker.loading(Messages.get("statusbar.creatingTemplateSet.label"));
             JahiaContentManagementService.App.getInstance().createTemplateSet(name, null, siteType, new BaseAsyncCallback<GWTJahiaNode>() {
                 public void onSuccess(GWTJahiaNode result) {
                     linker.loaded();

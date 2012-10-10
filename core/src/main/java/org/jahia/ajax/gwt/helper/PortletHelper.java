@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
@@ -59,6 +60,7 @@ import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.applications.PortletEntryPointDefinition;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.applications.ApplicationsManagerService;
+import org.jahia.services.applications.ApplicationsManagerServiceImpl;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -72,6 +74,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * Portlet management helper.
@@ -81,7 +84,7 @@ import java.util.Locale;
  */
 public class PortletHelper {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(PortletHelper.class);
-
+    
     private ApplicationsManagerService applicationsManager;
 
     private NavigationHelper navigation;
@@ -178,7 +181,7 @@ public class PortletHelper {
             String name = gwtJahiaNewPortletInstance.getInstanceName();
 
             if (name == null) {
-                name = gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName().replaceAll("/", "___") + Math.round(Math.random() * 1000000l);
+                name = Patterns.SLASH.matcher(gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName()).replaceAll("___") + Math.round(Math.random() * 1000000l);
             }
             if (contentManager.checkExistence(parentPath + "/" + name, currentUserSession, uiLocale)) {
                 throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.already.exists.with.name",uiLocale), name));

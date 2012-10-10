@@ -49,6 +49,7 @@ import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.RepositoryException;
 import java.util.List;
@@ -73,7 +74,7 @@ public class JCRPortletNode extends JCRNodeDecorator {
             context = getProperty("j:applicationRef").getNode().getProperty("j:context").getString();
         } catch (RepositoryException e) {
             // Is it an old portlet instance ?
-            final String[] strings = getProperty("j:application").getString().split("!");
+            final String[] strings = Patterns.EXCLAMATION_MARK.split(getProperty("j:application").getString());
             context = strings[0];
             if (context.startsWith("$context")) {
                 context = Jahia.getContextPath() + context.substring("$context".length());

@@ -52,24 +52,25 @@
                         </c:if>
                     </c:forEach>
                 </query:or>
-            </query:definition>             
+            </query:definition>
         </c:when>
         <c:when test="${jcr:isNodeType(boundComponent, 'jnt:query')}">
             <jcr:nodeProperty node="${boundComponent}" name="jcr:statement" var="query"/>
             <jcr:nodeProperty node="${boundComponent}" name="jcr:language" var="lang"/>
             <c:if test="${lang.string == 'JCR-SQL2'}">
                 <query:definition var="mainQuery" statement="${query.string}" scope="page"/>
-            </c:if>     
+            </c:if>
         </c:when>
-        <c:otherwise>            
+        <c:otherwise>
+            <jcr:nodeProperty node="${currentNode}" name="j:type" var="wantedNodeType"/>
             <query:definition var="mainQuery" scope="page">
-                <query:selector nodeTypeName="nt:base"/>
+                <query:selector nodeTypeName="${not empty wantedNodeType and not empty wantedNodeType.string ? wantedNodeType.string : 'nt:base'}"/>
                 <c:set var="descendantNode" value="${fn:substringAfter(boundComponent.path,'/sites/')}"/>
                 <c:set var="descendantNode" value="${fn:substringAfter(descendantNode,'/')}"/>
                 <query:descendantNode path="/sites/${renderContext.site.name}/${descendantNode}"/>
-            </query:definition>    
-        </c:otherwise>            
-    </c:choose> 
+            </query:definition>
+        </c:otherwise>
+    </c:choose>
     <query:definition var="listQuery" qom="${mainQuery}" scope="request">
         <c:forEach items="${jcr:getNodes(currentNode, 'jnt:facet')}" var="facet">
             <jcr:nodeProperty node="${facet}" name="facet" var="currentFacetGroup"/>
@@ -89,12 +90,20 @@
             </c:if>
 
             <jcr:nodeProperty node="${facet}" name="label" var="currentFacetLabel"/>
-            <c:if test="${not empty currentFacetLabel.string and not empty facetPropertyName}">
-                <c:set target="${facetLabels}" property="${facetPropertyName}" value="${currentFacetLabel.string}"/>
+            <c:if test="${not empty facetPropertyName}">
+                <c:choose>
+                    <c:when test="${not empty currentFacetLabel.string}">
+                        <c:set target="${facetLabels}" property="${facetPropertyName}" value="${currentFacetLabel.string}"/>
+                    </c:when>
+                    <c:otherwise>
+                        <fmt:message var="translatedFacetProperty" key="${fn:replace(facetNodeTypeName,':','_')}.${fn:replace(facetPropertyName,':','_')}"/>
+                        <c:set target="${facetLabels}" property="${facetPropertyName}" value="${translatedFacetProperty}"/>
+                    </c:otherwise>
+                </c:choose>
             </c:if>
 
             <c:choose>
-                <c:when test="${jcr:isNodeType(facet, 'jnt:fieldFacet') or jcr:isNodeType(facet, 'jnt:dateFacet')}">
+                <c:when test="${jcr:isNodeType(facet, 'jnt:fieldFacet') or jcr:isNodeType(facet, 'jnt:fieldHierarchicalFacet') or jcr:isNodeType(facet, 'jnt:dateFacet')}">
                     <c:choose>
                         <c:when test="${jcr:isNodeType(facet, 'jnt:dateFacet')}">
                             <jcr:nodeProperty node="${facet}" name="labelFormat" var="currentFacetValueFormat" />
@@ -111,23 +120,35 @@
                     </c:choose>
                     <c:if test="${not empty currentField and not facet:isFacetApplied(facetPropertyName, activeFacetsVars[activeFacetMapVarName], facetNodeType.propertyDefinitionsAsMap[facetPropertyName])}">
                         <c:set var="facetQuery" value="nodetype=${facetNodeTypeName}&key=${facetPropertyName}${minCountParam}"/>
-                        <c:set var="facetPrefix" value="${jcr:isNodeType(facet, 'jnt:dateFacet') ? 'date.' : ''}"/>
+                        <c:set var="paramPrefix" value="${jcr:isNodeType(facet, 'jnt:dateFacet') ? 'date.' : ''}"/>
                         <c:if test="${not empty currentFacetValueRenderer.string}">
-                            <c:set var="facetQuery" value="${facetQuery}&${facetPrefix}labelRenderer=${currentFacetValueRenderer.string}"/>
-                        </c:if>    
-                        <c:forEach items="${facet.primaryNodeType.declaredPropertyDefinitions}" var="propertyDefinition">
+                            <c:set var="facetQuery" value="${facetQuery}&${paramPrefix}labelRenderer=${currentFacetValueRenderer.string}"/>
+                        </c:if>
+                        <c:forEach items="${facet:getPropertyDefinitions(facet)}" var="propertyDefinition">
                             <jcr:nodeProperty node="${facet}" name="${propertyDefinition.name}" var="facetPropValue"/>
                             <c:choose>
                                 <c:when test="${functions:isIterable(facetPropValue)}">
                                     <c:forEach items="${facetPropValue}" var="facetPropValueItem">
                                         <c:if test="${not empty facetPropValueItem.string}">
-                                            <c:set var="facetQuery" value="${facetQuery}&${facetPrefix}${propertyDefinition.name}=${facetPropValueItem.string}"/>
+                                            <c:set var="facetQuery" value="${facetQuery}&${paramPrefix}${propertyDefinition.name}=${facetPropValueItem.string}"/>
                                         </c:if>
                                     </c:forEach>
                                 </c:when>
                                 <c:otherwise>
                                     <c:if test="${not empty facetPropValue.string}">
-                                        <c:set var="facetQuery" value="${facetQuery}&${facetPrefix}${propertyDefinition.name}=${facetPropValue.string}"/>
+                                        <c:set var="paramValue" value="${facetPropValue.string}" />
+                                        <c:if test="${jcr:isNodeType(facet, 'jnt:fieldHierarchicalFacet') and propertyDefinition.name == 'prefix'}">
+                                            <c:set var="currentActiveFacets" value="${activeFacetsVars[activeFacetMapVarName][facetPropertyName]}" />
+                                            <c:choose>
+                                                <c:when test="${not empty currentActiveFacets}">
+                                                    <c:set var="paramValue" value="${facet:getDrillDownPrefix(currentActiveFacets[fn:length(currentActiveFacets) - 1].key)}" />
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <c:set var="paramValue" value="${facet:getIndexPrefixedPath(facetPropValue.string)}" />
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:if>
+                                        <c:set var="facetQuery" value="${facetQuery}&${paramPrefix}${propertyDefinition.name}=${paramValue}"/>
                                     </c:if>
                                 </c:otherwise>
                             </c:choose>
@@ -224,7 +245,7 @@
         </c:if>
     </div>
 </c:if>
-<c:if test="${renderContext.editMode}">
+<c:if test="${editableModule}">
     <fmt:message key="facets.facetsSet"/> :
     <c:forEach items="${jcr:getNodes(currentNode, 'jnt:facet')}" var="facet">
         <template:module node="${facet}"/>

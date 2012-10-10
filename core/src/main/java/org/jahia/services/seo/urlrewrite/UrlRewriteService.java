@@ -42,10 +42,7 @@ package org.jahia.services.seo.urlrewrite;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletContext;
@@ -55,11 +52,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.FileUtils;
 import org.slf4j.Logger;
@@ -93,11 +90,15 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     private Map<Integer, Long> lastModified = new HashMap<Integer, Long>(1);
 
+    private Resource[] lastConfigurationResources;
+
     private List<SimpleUrlHandlerMapping> renderMapping;
 
     private Resource[] seoConfigurationResources;
 
     private boolean seoRulesEnabled;
+    
+    private boolean seoRemoveCmsPrefix;
 
     private ServletContext servletContext;
 
@@ -107,9 +108,17 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     private URLResolverFactory urlResolverFactory;
 
+    private Set<String> reservedUrlPrefixSet;
+    
+    private JahiaSitesService siteService;
+    
+    private SettingsBean settingsBean;
+
     public void afterPropertiesSet() throws Exception {
         long timer = System.currentTimeMillis();
         Log.setLevel("SLF4J");
+
+        // add SEO rules if provided and SEO URL rewriting is enabled 
         if (seoRulesEnabled && seoConfigurationResources != null
                 && seoConfigurationResources.length > 0) {
             if (configurationResources != null) {
@@ -121,6 +130,20 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                 configurationResources = cfg;
             } else {
                 configurationResources = seoConfigurationResources;
+            }
+        }
+        
+        // add rules which are executed as last, if provided
+        if (lastConfigurationResources != null && lastConfigurationResources.length > 0) {
+            if (configurationResources != null) {
+                Resource[] cfg = new Resource[configurationResources.length
+                        + lastConfigurationResources.length];
+                System.arraycopy(configurationResources, 0, cfg, 0, configurationResources.length);
+                System.arraycopy(lastConfigurationResources, 0, cfg, configurationResources.length,
+                        lastConfigurationResources.length);
+                configurationResources = cfg;
+            } else {
+                configurationResources = lastConfigurationResources;
             }
         }
 
@@ -149,8 +172,6 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     /**
      * Initializes an instance of this class.
      *
-     * @param configs
-     *            the URL rewriter configuration resource location
      */
     public UrlRewriteEngine getEngine() {
         try {
@@ -161,6 +182,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                 urlRewriteEngine = new UrlRewriteEngine(servletContext, configurationResources);
                 urlRewriteEngine.setUrlResolverFactory(urlResolverFactory);
                 urlRewriteEngine.setVanityUrlService(vanityUrlService);
+                urlRewriteEngine.setUrlRewriteSeoRulesEnabled(isSeoRulesEnabled());
             }
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
@@ -174,10 +196,12 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
             LinkedList<SimpleUrlHandlerMapping> mapping = new LinkedList<SimpleUrlHandlerMapping>();
             ApplicationContext ctx = (ApplicationContext) servletContext.getAttribute(
                     "org.springframework.web.servlet.FrameworkServlet.CONTEXT.RendererDispatcherServlet");
-            mapping.addAll(ctx.getBeansOfType(SimpleUrlHandlerMapping.class).values());
-            mapping.addAll(ctx.getParent().getBeansOfType(SimpleUrlHandlerMapping.class)
-                    .values());
-            renderMapping = mapping;
+            if (ctx != null) {
+                mapping.addAll(ctx.getBeansOfType(SimpleUrlHandlerMapping.class).values());
+                mapping.addAll(ctx.getParent().getBeansOfType(SimpleUrlHandlerMapping.class)
+                        .values());
+                renderMapping = mapping;
+            }
         }
 
         return renderMapping;
@@ -185,6 +209,10 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     public boolean isSeoRulesEnabled() {
         return seoRulesEnabled;
+    }
+    
+    public boolean isResrvedPrefix(String prefix) {
+        return reservedUrlPrefixSet.contains(prefix);
     }
 
     protected boolean needsReloading() throws IOException {
@@ -215,11 +243,36 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         return false;
     }
 
-    public boolean prepareInbound(HttpServletRequest request, HttpServletResponse response) {
-        if ("/cms".equals(request.getServletPath())) {
-            String path = request.getPathInfo() != null ? request.getPathInfo() : "";
-            try{
-                List<SimpleUrlHandlerMapping> mappings = getRenderMapping();
+    public boolean prepareInbound(final HttpServletRequest request, HttpServletResponse response) {
+        resetState(request);
+
+        String input = request.getRequestURI();
+        if (request.getContextPath().length() > 0) {
+            input = StringUtils.substringAfter(input, request.getContextPath());
+        }
+        if (input.contains(";")) {
+            input = StringUtils.substringBefore(input, ";");
+        }
+        
+        String prefix = StringUtils.EMPTY;
+        if (isSeoRemoveCmsPrefix() && input.length() > 1 && input.indexOf('/') == 0) {
+            int end = input.indexOf('/', 1);
+            prefix = end != -1 ? input.substring(1, end) : input.substring(1); 
+        } 
+        if (prefix.length() > 1) {
+            boolean contains = reservedUrlPrefixSet.contains(prefix);
+            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_ADD_CMS_PREFIX, !contains);
+            if (contains && !"cms".equals(prefix) && !"files".equals(prefix)) {
+                return false;
+            }
+        } else {
+            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_ADD_CMS_PREFIX, false);
+        }
+
+        String path = request.getPathInfo() != null ? request.getPathInfo() : input;
+        try{
+            List<SimpleUrlHandlerMapping> mappings = getRenderMapping();
+            if (mappings != null) {
                 for (SimpleUrlHandlerMapping mapping : mappings) {
                     for (String registeredPattern : mapping.getUrlMap().keySet()) {
                         if (mapping.getPathMatcher().match(registeredPattern, path)) {
@@ -228,42 +281,58 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                         }
                     }
                 }
-            }catch(Exception ex) {
-                logger.warn("Unable to load the SimpleUrlHandlerMapping", ex);
             }
-            String targetSiteKey = ServerNameToSiteMapper.getSiteKeyByServerName(request);
-            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_KEY, targetSiteKey);
-            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG, StringUtils.EMPTY);
-            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH, StringUtils.EMPTY);
-            if (!StringUtils.isEmpty(targetSiteKey)) {
-                try {
-                    List<VanityUrl> vanityUrls = vanityUrlService.findExistingVanityUrls(path,
-                            targetSiteKey, "live");
-                    if (!vanityUrls.isEmpty()) {
-                        vanityUrls.get(0).getLanguage();
-                        request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG,
-                                vanityUrls.get(0).getLanguage());
-                        path = StringUtils.substringBefore(vanityUrls.get(0).getPath(), "/"
-                                + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/")
-                                + ".html";
-                        request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH, path);
-                    }
-                } catch (RepositoryException e) {
-                    logger.error("Cannot get vanity Url", e);
-                }
-                try {
-                    String defaultLanguage = ServicesRegistry.getInstance().getJahiaSitesService()
-                            .getSiteByKey(targetSiteKey).getDefaultLanguage();
-                    request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG,
-                            defaultLanguage);
-                } catch (JahiaException e) {
-                    logger.error("Cannot get site", e);
-                }
-            }
-
+        }catch(Exception ex) {
+            logger.warn("Unable to load the SimpleUrlHandlerMapping", ex);
         }
+        String targetSiteKey = ServerNameToSiteMapper.getSiteKeyByServerName(request);
+        request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG, StringUtils.EMPTY);
+        request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH, StringUtils.EMPTY);
+        if (StringUtils.isNotEmpty(targetSiteKey)) {
+            try {
+                List<VanityUrl> vanityUrls = vanityUrlService.findExistingVanityUrls(path,
+                        targetSiteKey, "live");
+                if (!vanityUrls.isEmpty()) {
+                    vanityUrls.get(0).getLanguage();
+                    request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG,
+                            vanityUrls.get(0).getLanguage());
+                    path = StringUtils.substringBefore(vanityUrls.get(0).getPath(), "/"
+                            + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/")
+                            + ".html";
+                    request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH, path);
+                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get vanity Url", e);
+            }
+        } else if (path.startsWith("/sites/")) {
+            targetSiteKey = StringUtils.substringBetween(path, "/sites/", "/");
+        }
+        
+        if (StringUtils.isNotEmpty(targetSiteKey)) {
+            try {
+                request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG, siteService
+                        .getSiteByKey(targetSiteKey).getDefaultLanguage());
+            } catch (JahiaException e) {
+                logger.error("Cannot get site for key " + targetSiteKey, e);
+            }
+        } 
 
         return true;
+    }
+
+    private void resetState(HttpServletRequest request) {
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_CMS_TOKEN);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG_MATCHES);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_LANG_TOKEN);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_ADD_CMS_PREFIX);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_KEY);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_KEY_FOR_LINK);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_SERVERNAME_FOR_LINK);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_KEY_MATCHES);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_SKIP_INBOUND_SEO_RULES);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH);
     }
 
     public RewrittenUrl rewriteInbound(HttpServletRequest request, HttpServletResponse response)
@@ -291,6 +360,9 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     public void setSeoRulesEnabled(boolean seoRulesEnabled) {
         this.seoRulesEnabled = seoRulesEnabled;
+        if (urlRewriteEngine != null) {
+            urlRewriteEngine.setUrlRewriteSeoRulesEnabled(seoRulesEnabled);
+        }
     }
 
     public void setServletContext(ServletContext servletContext) {
@@ -305,4 +377,29 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         this.urlResolverFactory = urlResolverFactory;
     }
 
+    public void setReservedUrlPrefixes(String reservedUrlPrefixes) {
+        this.reservedUrlPrefixSet = StringUtils.isNotBlank(reservedUrlPrefixes) ? new HashSet<String>(
+                Arrays.asList(StringUtils.split(reservedUrlPrefixes, ", "))) : Collections
+                .<String> emptySet();
+    }
+
+    public void setSiteService(JahiaSitesService siteService) {
+        this.siteService = siteService;
+    }
+
+    public void setSettingsBean(SettingsBean settingsBean) {
+        this.settingsBean = settingsBean;
+    }
+
+    public void setLastConfigurationResources(Resource[] postSeoConfigurationResources) {
+        this.lastConfigurationResources = postSeoConfigurationResources;
+    }
+
+    public boolean isSeoRemoveCmsPrefix() {
+        return seoRemoveCmsPrefix;
+    }
+
+    public void setSeoRemoveCmsPrefix(boolean seoRemoveCmsPrefix) {
+        this.seoRemoveCmsPrefix = seoRemoveCmsPrefix;
+    }
 }

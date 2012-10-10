@@ -49,6 +49,7 @@
     <artifactId>jahia-test-parent</artifactId>
     <name>Jahia Test Parent Package</name>
     <packaging>pom</packaging>
+
     <modules>
         <module>jahia-test-module</module>
         <module>jahia-test-module-war</module>

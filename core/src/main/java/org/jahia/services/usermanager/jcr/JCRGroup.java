@@ -51,6 +51,7 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerRoutingService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerRoutingService;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
@@ -349,7 +350,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                                         + "'");
                             }
                         } else {
-                            String s = member.getName().replace("___", ":");
+                            String s = Patterns.TRIPPLE_UNDERSCORE.matcher(member.getName()).replaceAll(":");
                             JahiaGroup g = JahiaGroupManagerRoutingService.getInstance().lookupGroup(s);
                             if (g != null) {
                                 principalMap.add(g);

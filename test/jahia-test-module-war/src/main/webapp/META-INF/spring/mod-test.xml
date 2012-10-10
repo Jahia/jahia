@@ -37,6 +37,7 @@
                 <value>org.jahia.services.htmlvalidator.WAIValidatorTest</value>
                 <value>org.jahia.services.importexport.ImportExportTest</value>
                 <value>org.jahia.services.logging.ServiceLoggingTest</value>
+                <value>org.jahia.services.logout.LogoutTest</value>
                 <value>org.jahia.services.notification.CamelNotificationServiceTest</value>
                 <value>org.jahia.services.notification.HtmlExternalizationServiceTest</value>
                 <value>org.jahia.services.publication.PublicationTest</value>
@@ -49,15 +50,16 @@
                 <value>org.jahia.services.render.filter.EmailObfuscatorFilterTest</value>
                 <value>org.jahia.services.render.filter.URLFilterTest</value>
                 <value>org.jahia.services.render.filter.cache.CacheFilterTest</value>
+                <value>org.jahia.services.render.filter.channels.ChannelResolutionAndExclusionTest</value>                
                 <value>org.jahia.services.search.SimpleSearchTest</value>
                 <value>org.jahia.services.seo.urlrewrite.UrlRewriteTest</value>
                 <value>org.jahia.services.tags.TaggingTest</value>
+                <value>org.jahia.services.templates.JahiaTemplateManagerServiceTest</value>                
                 <value>org.jahia.services.usermanager.JahiaGroupManagerServiceTest</value>
                 <value>org.jahia.services.versioning.VersioningTest</value>
                 <value>org.jahia.services.visibility.VisibilityServiceTest</value>
                 <value>org.jahia.services.workflow.StateSequenceTest</value>
                 <value>org.jahia.services.workflow.WorkflowServiceTest</value>
-                <value>org.jahia.services.templates.JahiaTemplateManagerServiceTest</value>
             </list>
         </property>
 
@@ -288,6 +290,7 @@
                 <value>testStringConstraintViolationExceptionBecauseOfInvalidTypeParameter(org.apache.jackrabbit.test.api.SetPropertyAssumeTypeTest)</value>
                 <value>testRemoveItem2(org.apache.jackrabbit.test.api.SessionRemoveItemTest)</value>
                 <value>testNoSuchWorkspaceException(org.apache.jackrabbit.test.api.RepositoryLoginTest)</value>
+                <value>testNodeMoved(org.apache.jackrabbit.test.api.observation.GetIdentifierTest)</value>
                 <value>testGetSize(org.apache.jackrabbit.test.api.observation.GetRegisteredEventListenersTest)</value>
                 <value>testRemoveEventListener(org.apache.jackrabbit.test.api.observation.GetRegisteredEventListenersTest)</value>
                 <value>testAddLockToNode(org.apache.jackrabbit.test.api.observation.LockingTest)</value>
@@ -351,7 +354,10 @@
                 <value>testBaseVersionAfterCheckinJcr2(org.apache.jackrabbit.test.api.version.CheckinTest)</value>
                 <value>testGetUUID(org.apache.jackrabbit.test.api.version.VersionTest)</value>
                 <value>testInitialNodePredecessors(org.apache.jackrabbit.test.api.version.VersionGraphTest)</value>
-                <value>testInitialNodePredecessorsJcr2(org.apache.jackrabbit.test.api.version.VersionGraphTest)</value></list>
+                <value>testInitialNodePredecessorsJcr2(org.apache.jackrabbit.test.api.version.VersionGraphTest)</value>
+                
+                <value>testPublishUnpublishPageWithContent(org.jahia.services.publication.PublicationTest)</value>
+            </list>   
         </property>
 
     </bean>

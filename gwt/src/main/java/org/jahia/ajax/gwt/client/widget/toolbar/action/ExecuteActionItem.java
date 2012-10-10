@@ -61,41 +61,46 @@ import java.util.Set;
  */
 public class ExecuteActionItem extends BaseActionItem {
     private static final long serialVersionUID = -1317342305404063292L;
-	public static final int STATUS_CODE_OK = 200;
-    private String action;
-    private String confirmationMessageKey;
+    public static final int STATUS_CODE_OK = 200;
+    protected String action;
+    protected String confirmationMessageKey;
     private Set<String> requiredNodeTypes;
 
     public void onComponentSelection() {
-		if (confirmationMessageKey != null) {
-			MessageBox.confirm(
-			        Messages.get("label.information", "Information"),
-			        Messages.get(confirmationMessageKey, "You are about to execute action "
-			                + action + ". Do you want to continue?"),
-			        new Listener<MessageBoxEvent>() {
-				        public void handleEvent(MessageBoxEvent be) {
-					        if (Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getText())) {
-						        doAction();
-					        }
-				        }
-			        });
-		} else {
-			doAction();
-		}
+        if (confirmationMessageKey != null) {
+            MessageBox.confirm(
+                    Messages.get("label.information", "Information"),
+                    Messages.get(confirmationMessageKey, "You are about to execute action "
+                            + action + ". Do you want to continue?"),
+                    new Listener<MessageBoxEvent>() {
+                        public void handleEvent(MessageBoxEvent be) {
+                            if (Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getText())) {
+                                doAction();
+                            }
+                        }
+                    });
+        } else {
+            doAction();
+        }
     }
 
-    private void doAction() {
+    protected void doAction() {
         final List<GWTJahiaNode> gwtJahiaNodes = linker.getSelectionContext().getMultipleSelection();
         for (GWTJahiaNode gwtJahiaNode : gwtJahiaNodes) {
             String baseURL = org.jahia.ajax.gwt.client.util.URL.getAbsoluteURL(JahiaGWTParameters.getContextPath() + "/cms/render");
             String localURL = baseURL + "/default/" + JahiaGWTParameters.getLanguage() + gwtJahiaNode.getPath();
-            linker.loading("Executing action ...");
+            linker.loading(Messages.get("label.executing", "Executing action ..."));
             RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, localURL + "." + action + ".do");
             try {
-                builder.sendRequest(null, new RequestCallback() {
+                String requestData = getRequestData();
+                if (requestData != null) {
+                    builder.setHeader("Content-type", "application/x-www-form-urlencoded");
+                }
+                builder.sendRequest(requestData, new RequestCallback() {
                     public void onError(Request request, Throwable exception) {
                         com.google.gwt.user.client.Window.alert("Cannot create connection");
                         linker.loaded();
+                        actionExecuted(500);
                     }
 
                     public void onResponseReceived(Request request, Response response) {
@@ -103,6 +108,7 @@ public class ExecuteActionItem extends BaseActionItem {
                             com.google.gwt.user.client.Window.alert("Cannot contact remote server : error "+response.getStatusCode());
                         }
                         linker.loaded();
+                        actionExecuted(response.getStatusCode());
                     }
                 });
 
@@ -111,6 +117,14 @@ public class ExecuteActionItem extends BaseActionItem {
                 // Code omitted for clarity
             }
         }
+    }
+
+    protected void actionExecuted(int statusCode) {
+        // do nothing
+    }
+
+    protected String getRequestData() {
+        return null;
     }
 
     public void handleNewLinkerSelection() {

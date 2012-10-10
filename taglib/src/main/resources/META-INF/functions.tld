@@ -73,6 +73,17 @@
 
     <function>
         <description>
+            Does a URL encoding of the <code>path</code>. The characters that don't need encoding are those defined 'unreserved' in section 2.3
+            of the 'URI generic syntax' RFC 2396. Not the entire path string is escaped, but every individual part (i.e. the slashes are not
+            escaped).         
+        </description>
+        <name>escapePath</name>
+        <function-class>org.jahia.utils.WebUtils</function-class>
+        <function-signature>java.lang.String escapePath(java.lang.String)</function-signature>
+    </function>
+
+    <function>
+        <description>
             Escapes the characters in a String using JavaScript String rules.
             Escapes any values it finds into their JavaScript String form.
             Deals correctly with quotes and control-chars (tab, backslash, cr, ff, etc.)         
@@ -97,11 +108,13 @@
     </function>
 
     <function>
-        <description>Returns true if the current user is member of the specified group name or comma-separated list of
+        <description>
+            DEPRECATED: Use user taglib instead
+            Returns true if the current user is member of the specified group name or comma-separated list of
             group names
         </description>
         <name>memberOf</name>
-        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-class>org.jahia.taglibs.user.User</function-class>
         <function-signature>java.lang.Boolean memberOf(java.lang.String)</function-signature>
         <example>
             &lt;c:if test="${functions:memberOf('administrators')}"&gt;
@@ -111,12 +124,14 @@
     </function>
 
     <function>
-        <description>Returns true if the current user is NOT member of the specified group name or any of the specified
+        <description>
+            DEPRECATED: Use user taglib instead
+            Returns true if the current user is NOT member of the specified group name or any of the specified
             groups
             (comma-separated list of group names)
         </description>
         <name>notMemberOf</name>
-        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-class>org.jahia.taglibs.user.User</function-class>
         <function-signature>java.lang.Boolean notMemberOf(java.lang.String)</function-signature>
         <example>
             &lt;c:if test="${functions:notMemberOf('administrators,editors')}"&gt;
@@ -361,10 +376,11 @@
 
     <function>
 		<description>
+            DEPRECATED: Use user taglib instead
 			Lookup the user by the user key (with provider prefix) or username.
 		</description>
 		<name>lookupUser</name>
-		<function-class>org.jahia.taglibs.functions.Functions</function-class>
+		<function-class>org.jahia.taglibs.user.User</function-class>
 		<function-signature>org.jahia.services.usermanager.JahiaUser lookupUser(java.lang.String)</function-signature>
 		<example>
 			${functions:lookupUser('sergiy')} or ${functions:lookupUser('{ldap}john')}
@@ -373,6 +389,7 @@
 
     <function>
 		<description>
+            DEPRECATED: Use user taglib instead
 			Retrieve the displayable name for a principal object. For the moment this implementation only changes
             the guest user and guest group names to be localized using resource bundle entries (see jahia.properties
             for configuration of resource bundle name and key).
@@ -387,6 +404,7 @@
 
     <function>
 		<description>
+            DEPRECATED: Use user taglib instead
 			Retrieve the full name or displayable for a principal object.
             Builds the full user name, which is build the following way :
             - for a JahiaGroup, simply calls getDisplayName(p)
@@ -429,5 +447,58 @@
         <function-signature>java.lang.Boolean
             hasScriptView(org.jahia.services.content.JCRNodeWrapper,java.lang.String,org.jahia.services.render.RenderContext)</function-signature>
         <example>${functions:hasScriptView(node,"basic",renderContext)}</example>
+    </function>
+
+    <function>
+        <description>Return the default vanity URL for a node</description>
+        <name>getDefaultVanityUrl</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>org.jahia.services.seo.VanityUrl getDefaultVanityUrl(org.jahia.services.content.JCRNodeWrapper)</function-signature>
+        <example>${functions:getDefaultVanityUrl(node)}</example>
+    </function>
+
+    <function>
+        <description>
+            Return all or limited number of ACL entries associated to a node.
+            Optionally the entries list can be limited in size and also sorted.
+            Following values are supported for the sorting type:
+             - latestFirst: sorts the entries by latest added descending
+             - displayName: a ascending case-insensitive alphabetical ordering by display name   
+        </description>
+        <name>getRolesForNode</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.util.List getRolesForNode(org.jahia.services.content.JCRNodeWrapper,boolean,boolean,java.lang.String,int,java.lang.String)</function-signature>
+        <example>${functions:getRolesForNode(node,true,null,5,"latestFirst")}</example>
+    </function>
+
+    <function>
+        <description>
+            Encode string so that they can be used in a JCR-SQL2 query
+        </description>
+        <name>sqlencode</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.lang.String sqlEncode(java.lang.String)</function-signature>
+        <example>select * from [jnt:task] as t where isdescendantnode(t,['${functions:sqlencode(path)}'])</example>
+    </function>
+
+    <function>
+        <description>
+            Get the URL path to a module root directory
+        </description>
+        <name>modulePath</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.lang.String modulePath(javax.servlet.http.HttpServletRequest,java.lang.String)</function-signature>
+        <example>${functions:modulePath(pageContext.request, 'default')}</example>
+    </function>
+    
+    <function>
+        <description>
+            Returns the first parent of the current node, which has the ACL inheritance broken,
+            i.e. node.getAclInheritanceBreak() returns true.
+        </description>
+        <name>getParentWithAclInheritanceBroken</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>org.jahia.services.content.JCRNodeWrapper getParentWithAclInheritanceBroken(org.jahia.services.content.JCRNodeWrapper)</function-signature>
+        <example>${functions:getParentWithAclInheritanceBroken(node)}</example>
     </function>
 </taglib>

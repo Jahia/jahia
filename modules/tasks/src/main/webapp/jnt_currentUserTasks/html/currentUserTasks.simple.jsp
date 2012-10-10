@@ -22,7 +22,7 @@
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
-<template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>
+<template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.UILocale}.js"/>
 
 <template:addResources type="javascript" resources="jquery.form.js"/>
 
@@ -34,150 +34,88 @@
 <c:if test="${empty user or not jcr:isNodeType(user, 'jnt:user')}">
     <jcr:node var="user" path="${renderContext.user.localPath}"/>
 </c:if>
-
-
-<form name="myform" method="post">
-    <input type="hidden" name="jcrNodeType" value="jnt:task">
-    <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${currentNode.path}.html${ps}'/>">
-    <input type="hidden" name="state">
-</form>
-
+<template:tokenizedForm>
+    <form name="myform" method="post" action="">
+        <input type="hidden" name="jcrNodeType" value="jnt:task">
+        <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${currentNode.path}.html${ps}'/>">
+        <input type="hidden" name="state">
+    </form>
+</template:tokenizedForm>
 
 <script type="text/javascript">
-    function send(task, state) {
-        form = document.forms['myform'];
-        form.action = '<c:url value="${url.base}"/>' + task;
-        form.elements.state.value = state;
-        form.submit();
+    var ready = true;
+    function sendNewStatus(uuid, task, state, finalOutcome) {
+        if (ready) {
+            ready = false;
+            $(".taskaction-complete").addClass("taskaction-disabled");
+            $(".taskaction").addClass("taskaction-disabled");
+            $.post('<c:url value="${url.base}"/>' + task,
+                    {"jcrMethodToCall":"put", "state":state, "finalOutcome":finalOutcome, "form-token":document.forms['tokenForm_' +
+                                                                                                                      uuid].elements['form-token'].value},
+                    function(){
+                        location.reload();
+                    }, "json");
+        }
     }
+    ;
 </script>
+<template:include view="hidden.header"/>
 <div id="tasklist">
     <div id="${user.UUID}">
 
         <ul>
+            <c:forEach items="${moduleMap.currentList}" var="task" varStatus="status" begin="${moduleMap.begin}"
+                       end="${moduleMap.end}">
+                <template:tokenizedForm>
+                    <form id="tokenForm_${task.identifier}" name="tokenform_${task.identifier}" method="post"
+                          action="<c:url value='${url.base}'/>${task.path}">
+                    </form>
+                </template:tokenizedForm>
+                <li>
+                    <a href="<c:url value='${url.base}${task.path}.html'/>">${fn:escapeXml(task.displayableName)}</a>
 
-            <jcr:sql var="tasks"
-                     sql="select * from [jnt:task] as task where task.assignee='${user.identifier}'"/>
-            <c:set var="nodes" value="${tasks.nodes}"/>
-            <%--<c:set value="${jcr:getNodes(currentNode,'jnt:task')}" var="tasks"/>--%>
-
-            <c:if test="${currentNode.properties['viewUserTasks'].boolean}">
-                <c:forEach items="${nodes}" var="task"
-                           begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
-                    <li>
-                        <a href="<c:url value='${url.base}${task.path}.html'/>>">${fn:escapeXml(task.propertiesAsString['jcr:title'])}</a>
-
-                        <c:choose>
-                            <c:when test="${task.propertiesAsString.state == 'active'}">
-                                <span><img alt="" src="<c:url value='${url.currentModule}/images/right_16.png'/>" height="16" width="16"/></span>
+                    <c:choose>
+                        <c:when test="${task.propertiesAsString.state == 'active'}">
+                                <span><img alt="" src="<c:url value='${url.currentModule}/images/right_16.png'/>"
+                                           height="16" width="16"/></span>
                 <span>
-                    <a href="javascript:send('${task.path}','suspended')"><fmt:message
-                            key="jnt_task.suspended"/></a>&nbsp;
-                    <a href="javascript:send('${task.path}','cancelled')"><fmt:message
-                            key="jnt_task.cancel"/></a>&nbsp;
-                    <a href="javascript:send('${task.path}','finished')"><fmt:message
-                            key="jnt_task.complete"/></a>
+                    <a href="javascript:sendNewStatus('${task.identifier}','${task.path}','suspended')"><fmt:message
+                            key="jnt_task.state.suspended"/></a>&nbsp;
+                    <fmt:setBundle basename="${task.properties['taskBundle'].string}" var="taskBundle"/>
+                                        <c:if test="${not empty task.properties['possibleOutcomes']}">
+                                            <c:forEach items="${task.properties['possibleOutcomes']}" var="outcome"
+                                                       varStatus="status">
+                                                <fmt:message bundle="${taskBundle}" var="outcomeLabel"
+                                                             key="${fn:replace(task.properties['taskName'].string,' ','.')}.${fn:replace(outcome.string,' ','.')}"/>
+                                                <c:if test="${fn:startsWith(outcomeLabel, '???')}"><fmt:message
+                                                        bundle="${taskBundle}" var="outcomeLabel"
+                                                        key="${fn:replace(task.properties['taskName'].string,' ','.')}.${fn:replace(fn:toLowerCase(outcome.string),' ','.')}"/></c:if>
+                                                <a class="taskaction taskaction-start"
+                                                   href="javascript:sendNewStatus('${task.identifier}','${task.path}','finished','${outcome.string}')"
+                                                   title="${outcome.string}">${outcomeLabel}</a>
+                                            </c:forEach>
+                                        </c:if>
+                                        <c:if test="${empty task.properties['possibleOutcomes']}">
+
+                                            <a href="javascript:send('${task.path}','finished')"><fmt:message key="jnt_task.complete"/></a>
+                                        </c:if>
                 </span>
-                            </c:when>
-                            <c:when test="${task.propertiesAsString.state == 'finished'}">
-                                <img alt="" src="<c:url value='${url.currentModule}/images/tick_16.png'/>" height="16" width="16"/>
-                            </c:when>
-                            <c:when test="${task.propertiesAsString.state == 'suspended'}">
+                        </c:when>
+                        <c:when test="${task.propertiesAsString.state == 'finished'}">
+                            <img alt="" src="<c:url value='${url.currentModule}/images/tick_16.png'/>" height="16"
+                                 width="16"/>
+                        </c:when>
+                        <c:when test="${task.propertiesAsString.state == 'suspended'}">
                 <span><img alt="" src="<c:url value='${url.currentModule}/images/bubble_16.png'/>" height="16"
                            width="16"/></span>
                 <span>
-                    <a href="javascript:send('${task.path}','cancelled')"><fmt:message
-                            key="jnt_task.cancel"/></a>&nbsp;
-                    <a href="javascript:send('${task.path}','active')"><fmt:message
+                    <a href="javascript:sendNewStatus('${task.identifier}','${task.path}','active')"><fmt:message
                             key="jnt_task.continue"/></a>
                 </span>
-                            </c:when>
-                            <c:when test="${task.propertiesAsString.state == 'canceled'}">
-                                <img alt="" src="<c:url value='${url.currentModule}/images/warning_16.png'/>" height="16" width="16"/>
-                            </c:when>
-                        </c:choose>
-                    </li>
-                </c:forEach>
-            </c:if>
-            <c:if test="${currentNode.properties['viewWorkflowTasks'].boolean}">
-                <jcr:nodeProperty node="${currentNode}" name="workflowTypes" var="workflowTypes"/>
-                <workflow:tasksForNode var="wfTasks" user="${renderContext.user}"/>
-                <c:forEach items="${wfTasks}" var="task" varStatus="status">
-                    <workflow:workflow id="${task.processId}" provider="${task.provider}" var="wf"/>
-                    <c:set var="found" value="false"/>
-
-                    <c:forEach items="${workflowTypes}" var="type">
-                        <c:set var="currentType">${wf.workflowDefinition.provider}:${wf.workflowDefinition.key}</c:set>
-                        <c:if test="${type.string eq currentType}">
-                            <c:set var="found" value="true"/>
-                        </c:if>
-
-                    </c:forEach>
-
-                    <c:if test="${empty workflowTypes or found}">
-                        <jcr:node var="node" uuid="${task.variables.nodeId}"/>
-                        <c:if test="${node!=null}">
-                        <li>
-                            <c:set var="taskTitle"
-                                   value="${not empty task.displayName ? task.displayName : task.name} - ${task.variables['jcr:title'][0].value}"/>
-                            <c:set var="path" value="${jcr:findDisplayableNode(node, renderContext).path}"/>
-                            <c:if test="${not empty path}">
-                                <c:url var="preview" value="${renderContext.servletPath}/${task.variables.workspace}/${task.variables.locale}${path}.html"/>
-                                <a target="_blank" href="${preview}">${fn:escapeXml(taskTitle)}</a>
-                            </c:if>
-                            <c:if test="${empty path}">
-                                ${fn:escapeXml(taskTitle)}
-                            </c:if>
-                            <div class="listEditToolbar">
-                                <c:choose>
-                                    <c:when test="${not empty task.formResourceName}">
-                                        <input class="workflowaction" type="button" value="${task.name}"
-                                               onclick="$.toggle('task${node.identifier}-${task.id}');$('#taskrow${node.identifier}-${task.id}').toggleClass('hidden');"/>
-                                        <c:if test="${!empty preview}">
-                                            <input class="workflowaction"  type="button" onclick="window.open('${preview}','<fmt:message key="label.preview"/>')" value="<fmt:message key='label.preview'/>">
-                                        </c:if>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:forEach items="${task.outcomes}" var="outcome">
-                                            <input class="workflowaction" type="button" value="${outcome}"
-                                                   onclick="executeTask('${node.path}', '${task.provider}:${task.id}', '${outcome}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.current}.ajax"/>','window.location=window.location;')"/>
-                                        </c:forEach>
-                                    </c:otherwise>
-                                </c:choose>
-                                    <%--
-                                    <template:addResources>
-                                        <script type="text/javascript">
-                                            animatedcollapse.addDiv('comments${node.identifier}-${task.id}', 'fade=1,speed=100');
-                                        </script>
-                                    </template:addResources>
-                                    <input class="workflowaction" type="button" value="<fmt:message key="jnt_task.comments"/>"
-                                           onclick="animatedcollapse.toggle('comments${node.identifier}-${task.id}');$('#commentsrow${node.identifier}-${task.id}').toggleClass('hidden');"/>
-                                    --%>
-                            </div>
-                        </li>
-                        <c:if test="${not empty task.formResourceName}">
-                            <div class="hidden" id="taskrow${node.identifier}-${task.id}">
-                                <div style="display:none;" id="task${node.identifier}-${task.id}" class="taskformdiv">
-                                    <c:set var="workflowTaskFormTask" value="${task}" scope="request"/>
-                                    <c:url var="myUrl" value="${url.current}.ajax"/>
-                                    <template:include view="contribute.workflow">
-                                        <template:param name="resourceNodeType" value="${task.formResourceName}"/>
-                                        <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
-                                        <template:param name="workflowTaskFormTaskName" value="${task.name}"/>
-                                        <template:param name="workflowTaskFormCallbackId" value="${currentNode.UUID}"/>
-                                        <template:param name="workflowTaskFormCallbackURL" value="${myUrl}"/>
-                                        <template:param name="workflowTaskFormCallbackJS"
-                                                        value=""/>
-                                        <template:param name="workflowTaskNodeUuid" value="${node.identifier}"/>
-                                    </template:include>
-                                </div>
-                            </div>
-                        </c:if>
-                            </c:if>
-                    </c:if>
-                </c:forEach>
-            </c:if>
-
+                        </c:when>
+                    </c:choose>
+                </li>
+            </c:forEach>
         </ul>
     </div>
     <div class="clear"></div>

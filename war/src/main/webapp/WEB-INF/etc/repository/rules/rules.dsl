@@ -2,6 +2,8 @@
 [condition][]A new node "{name}" is created=node : AddedNodeFact ( name == "{name}")
 [condition][]A new node is created=node : AddedNodeFact ( )
 [condition][]A node is deleted=node : DeletedNodeFact ( )
+[condition][]A node is moved=node : MovedNodeFact ( )
+[condition][]A node is published=node : PublishedNodeFact ( )
 [condition][]A property has been set on a node=property : ChangedPropertyFact ( propertyName : name, propertyValue : stringValues , node : node )
 [condition][]A property has been removed from a node=property : DeletedPropertyFact ( propertyName : name, node : node )
 [condition][]A property {property} has been set on a node=property : ChangedPropertyFact ( name == "{property}" , propertyValue : stringValues , propertyValueAsString : stringValue , node : node )
@@ -30,6 +32,7 @@
 [condition][]- the mimetype is not {mimetype}=mimeType != "{mimetype}"
 [condition][]- the mimetype is {mimetype}=mimeType == "{mimetype}"
 [condition][]- the mimetype matches {mimetype}=mimeType matches "{mimetype}"
+[condition][]- the mimetype group is "{typeGroups}" = eval(org.jahia.services.content.JCRContentUtils.isMimeTypeGroup(mimeType, "{typeGroups}"))
 [condition][]- the node has the type {type}=node.types contains "{type}"
 [condition][]- the parent has the type {type}=parent.types contains "{type}"
 [condition][]- the value is not "{value}"=stringValue != "{value}"
@@ -37,8 +40,14 @@
 [condition][]- in {workspaceName} workspace=node.workspace == "{workspaceName}"
 [condition][]- not in operation {operation}=operationType != "{operation}"
 [condition][]- in operation {operation}=operationType == "{operation}"
+[condition][]- installed modules contains {module}=installedModules contains "{module}"
 [condition][]A search result hit is present=searchHit : JCRNodeHit ( )
 [condition][]- the node is of type {type}=type == "{type}"
+[condition][]The {node} has not been added=not AddedNodeFact ( path == ({node}.getPath()) )
+[condition][]The {node} has not been moved=not MovedNodeFact ( path == ({node}.getPath()) )
+[condition][]The {node} is not moved=not MovedNodeFact ( originalPath == ({node}.getPath()) )
+[condition][]Not in operation {operation}=not OperationTypeFact( operationType == "{operation}")
+[condition][]In operation {operation}=OperationTypeFact( operationType == "{operation}")
 [consequence][]Append URL query-parameter "{parameterName}" with {parameterValue}=urlService.addURLQueryParameter(searchHit, "{parameterName}", {parameterValue});
 [consequence][]Add the type {type}=node.addType ( "{type}", drools );
 [consequence][]Remove the type {type}=node.removeType ( "{type}", drools );
@@ -49,6 +58,7 @@
 [consequence][]Create a square thumbnail on reference "{name}" of size {size}=imageService.addSquareThumbnail(property, "{name}",{size}, drools);
 [consequence][]Create a thumbnail on reference "{name}" of size {size}=imageService.addThumbnail(property, "{name}",{size}, drools);
 [consequence][]Create an image "{name}" of size {size}=imageService.addThumbnail(node, "{name}",{size}, drools);
+[consequence][]Dispose image=imageService.disposeImageForNode(node, drools);
 [consequence][]Extract properties from the file=extractionService.extractProperties(node, drools);
 [consequence][]Get the ancestor "{name}" of type {type}=AddedNodeFact {name} = node.getAncestor("{type}");
 [consequence][]Import the node=service.importNode(node,drools);
@@ -92,6 +102,7 @@
 [consequence][]Notify current user with mail template "{template}" from "{fromMail}"=notificationService.notifyCurrentUser(user,"{template}","{fromMail}",drools);
 [consequence][]Notify {user} with mail template "{template}" from "{fromMail}" copy to "{ccList}" blind copy to "{bccList}"=notificationService.notifyUser({user},"{template}","{fromMail}","{ccList}","{bccList}",drools);
 [consequence][]Notify {user} user with mail template "{template}" from "{fromMail}"=notificationService.notifyUser({user},"{template}","{fromMail}",drools);
+[consequence][]Notify {user} user with mail template "{template}" from {fromMail}=notificationService.notifyUser({user},"{template}",{fromMail},drools);
 [consequence][]Store password history for user {user}=service.storeUserPasswordHistory({user}, drools);
 [consequence][]Deploy module {module} on site {site}=service.deployModule("{module}",{site}, drools);
 [consequence][]Grant role {role} on the {node} to the current user=service.grantRoleToUser({node}, user.getName(), "{role}", drools);
@@ -100,3 +111,5 @@
 [consequence][]Revoke role {role} from everybody on the {node}=service.revokeRoleFromEverybody({node}, "{role}", drools);
 [consequence][]Create a permission in {path} named {name}=service.createPermission("{path}",{name}, drools);
 [consequence][]Update the privileged users=service.updatePrivileges(node);
+[consequence][]Update dependencies for module=service.updateDependencies(node);
+[consequence][]Delete nodes of type {type} with property {property} referencing the {node}=service.deleteNodesWithReference("{type}", "{property}", {node} );

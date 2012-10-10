@@ -1,5 +1,5 @@
 <%@page import="java.io.StringWriter"%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" 
+<%@ page contentType="text/html;charset=UTF-8" language="java"
 %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@page import="java.io.PrintWriter"%>
@@ -28,9 +28,6 @@ pageContext.setAttribute("info", s.toString().replace("\n", "<br/>"));
 &nbsp;
 <a href="?action=gc"><img src="<c:url value='/icons/showTrashboard.png'/>" height="16" width="16" alt=" " align="top"/>Run Garbage Collector</a></p>
 <br/>
-<p>
-<img src="<c:url value='/engines/images/icons/home_on.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;
-<a href="<c:url value='/tools/index.jsp'/>">to Jahia Tools overview</a>
-</p>
+<%@ include file="gotoIndex.jspf" %>
 </body>
 </html>

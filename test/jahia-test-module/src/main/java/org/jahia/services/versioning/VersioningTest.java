@@ -86,6 +86,7 @@ public class VersioningTest {
     JCRSessionWrapper liveSession;
     private SimpleDateFormat yyyy_mm_dd_hh_mm_ss;
     private Set<String> languagesStringSet;
+    private String lastLabelForPublication = null;
 
 
     @Before
@@ -221,9 +222,9 @@ public class VersioningTest {
                 languagesStringSet, true, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
         jcrService.publishByInfoList(publicationInfo, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
                 Collections.<String>emptyList());
-        String label = "published_at_" + yyyy_mm_dd_hh_mm_ss.format(GregorianCalendar.getInstance().getTime());
+
         List<String> uuids = getUuids(publicationInfo);
-        jcrVersionService.addVersionLabel(uuids, label, Constants.LIVE_WORKSPACE);
+        jcrVersionService.addVersionLabel(uuids, getPublicationLabel(), Constants.LIVE_WORKSPACE);
         for (int i = 1; i < NUMBER_OF_VERSIONS; i++) {
 
             for (int j = 0; j < 2; j++) {
@@ -246,9 +247,9 @@ public class VersioningTest {
                     true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
             jcrService.publishByInfoList(publicationInfo, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
                     Collections.<String>emptyList());
-            label = "published_at_" + yyyy_mm_dd_hh_mm_ss.format(GregorianCalendar.getInstance().getTime());
+
             uuids = getUuids(publicationInfo);
-            jcrVersionService.addVersionLabel(uuids, label, Constants.LIVE_WORKSPACE);
+            jcrVersionService.addVersionLabel(uuids, getPublicationLabel(), Constants.LIVE_WORKSPACE);
             editSession.checkout(stagedSubSubPage);
             stagedSubSubPage.setProperty("jcr:title", "subtitle" + i);
             editSession.save();
@@ -256,12 +257,12 @@ public class VersioningTest {
                     true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
             jcrService.publishByInfoList(publicationInfo, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
                     Collections.<String>emptyList());
-            label = "published_at_" + yyyy_mm_dd_hh_mm_ss.format(GregorianCalendar.getInstance().getTime());
+
             uuids = new LinkedList<String>();
             for (PublicationInfo info : publicationInfo) {
                 uuids.addAll(info.getAllUuids());
             }
-            jcrVersionService.addVersionLabel(uuids, label, Constants.LIVE_WORKSPACE);
+            jcrVersionService.addVersionLabel(uuids, getPublicationLabel(), Constants.LIVE_WORKSPACE);
             Thread.sleep(5000);
         }
 
@@ -474,7 +475,7 @@ public class VersioningTest {
             } catch (RepositoryException e) {
                 assertTrue(e instanceof ItemNotFoundException);
             }
-            String labelForFifthPublication = publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier);
+            publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier);
             logger.info("Versions after fifth publication (restore version from simple subpage removed)");
             displayVersions(editSession, stageNode, liveSession);
             try {
@@ -508,7 +509,7 @@ public class VersioningTest {
                 logger.error(e.getMessage(), e);
             }
             // Add a new double sub page in the home
-            String labelForSixthPublication = publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier);
+            publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier);
             JCRNodeWrapper newSubPageLiveNode = liveSession.getNodeByUUID(newSubPageEditNodeIdentifier);
             assertEquals("subPageLiveNode title should be my double page", "my double page",
                     newSubPageLiveNode.getProperty("jcr:title").getString());
@@ -597,13 +598,25 @@ public class VersioningTest {
                 true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
         jcrPublicationService.publishByInfoList(infoList, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
                 Collections.<String>emptyList());
-        String labelForPublication = "published_at_" + yyyy_mm_dd_hh_mm_ss.format(
-                GregorianCalendar.getInstance().getTime());
+        String labelForPublication = getPublicationLabel();
         for (PublicationInfo info : infoList) {
             jcrVersionService.addVersionLabel(info.getAllUuids(), labelForPublication,
                     Constants.LIVE_WORKSPACE);
         }
         return Constants.LIVE_WORKSPACE+"_"+labelForPublication;
+    }
+    
+    private String getPublicationLabel() {
+        String labelForPublication = null;
+        do {
+            labelForPublication = "published_at_"
+                    + yyyy_mm_dd_hh_mm_ss.format(GregorianCalendar
+                            .getInstance().getTime());
+
+        } while (labelForPublication.equals(lastLabelForPublication));
+        
+        lastLabelForPublication = labelForPublication;
+        return labelForPublication;
     }
 
 }

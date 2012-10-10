@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
@@ -11,7 +11,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
  * Every TEXTAREA, DIV and P elements can be converted to working editor.
  *
  * Plugin exposes some of editor's event to jQuery event system. All of those are namespaces inside
- * ".ckeditor" namespace and can be bound/listened on supported textarea, div and p nodes.
+ * ".ckeditor" namespace and can be binded/listened on supported textarea, div and p nodes.
  *
  * Available jQuery events:
  * - instanceReady.ckeditor( editor, rootNode )
@@ -258,7 +258,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 			/**
 			 * CKEditor-aware val() method.
 			 *
-			 * Acts same as original jQuery val(), but for textareas which have CKEditor instances bound to them, method
+			 * Acts same as original jQuery val(), but for textareas which have CKEditor instances binded to them, method
 			 * returns editor's content. It also works for settings values.
 			 *
 			 * @param oldValMethod

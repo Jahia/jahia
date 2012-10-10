@@ -41,6 +41,7 @@
 package org.jahia.services.render;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.Patterns;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -59,18 +60,21 @@ public class Template implements Serializable {
     
     public String view;
     public String node;
+    public String name;
     public Template next;
 
-    public Template(String view, String node, Template next) {
+    public Template(String view, String node, Template next, String name) {
         this.view = view;
         this.node = node;
+        this.name = name;
         this.next = next;
     }
 
     public Template(String serialized) {
-        String[] s = StringUtils.substringBefore(serialized, "|").split("/");
+        String[] s = Patterns.SLASH.split(StringUtils.substringBefore(serialized, "|"));
         this.view = s[0].equals("null") ? null : s[0];
         this.node = s[1];
+        this.name = s[2].equals("null") ? null : s[2];
         String n = StringUtils.substringAfter(serialized, "|");
         if (!StringUtils.isEmpty(n)) {
             this.next = new Template(n);
@@ -79,7 +83,7 @@ public class Template implements Serializable {
 
     @Override
     public String toString() {
-        return view + " for node " + node;
+        return "template " + name +  " with view " + view + " for node " + node;
     }
 
     public String getView() {
@@ -91,6 +95,10 @@ public class Template implements Serializable {
 
     public String getNode() {
         return node;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Template getNext() {
@@ -109,7 +117,7 @@ public class Template implements Serializable {
     }
 
     public String serialize() {
-        String r = view+"/"+node;
+        String r = view+"/"+node+"/"+name;
         if (next != null) {
             r += "|" + next.serialize();
         }

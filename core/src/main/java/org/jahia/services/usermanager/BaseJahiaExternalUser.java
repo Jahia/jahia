@@ -343,5 +343,9 @@ public abstract class BaseJahiaExternalUser implements JahiaExternalUser {
 
     protected boolean verifyPasswordExternal(String password) {
         return getProvider().login(getUserKey(), password);
-    } 
+    }
+
+    public boolean isAccountLocked() {
+        return !isRoot() && Boolean.valueOf(getProperty("j:accountLocked"));
+    }
 }

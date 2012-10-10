@@ -8,7 +8,8 @@
 
 	<bean id="RenderService" class="org.jahia.services.render.RenderService" factory-method="getInstance">
 		<property name="templateManagerService" ref="JahiaTemplateManagerService" />
-		<property name="scriptResolvers">
+        <property name="channelService" ref="ChannelService" />
+        <property name="scriptResolvers">
 			<list>
 				<bean class="org.jahia.services.render.scripting.FileSystemScriptResolver">
 					<property name="scriptExtensionsOrdering">
@@ -41,7 +42,7 @@
         <property name="description" value="HTML output formatting filter"/>
 		<property name="applyOnModes" value="live,preview" />
 		<property name="applyOnConfigurations" value="page" />
-		<property name="applyOnTemplateTypes" value="html,edit,html-iphone" />
+		<property name="applyOnTemplateTypes" value="html,edit,html-iphone,html-ipad" />
 	</bean>
 	-->
 	<bean class="org.jahia.services.render.filter.ExternalizeHtmlFilter">
@@ -55,14 +56,13 @@
 		<property name="priority" value="0" />
         <property name="description" value="Render filter that 'injects' the static assets into the HEAD section of the rendered HTML document."/>
 		<property name="applyOnConfigurations" value="page,gwt" />
-		<property name="applyOnTemplateTypes" value="html,edit,html-iphone" />
+		<property name="applyOnTemplateTypes" value="html,edit,html-.*" />
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
         <property name="ajaxTemplate" value="/modules/assets/WEB-INF/scripts/ajaxResources.groovy"/>
         <property name="template" value="/modules/assets/WEB-INF/scripts/resources.groovy"/>
         <property name="aggregateAndCompress" value="${aggregateAndCompressAssets:true}"/>
         <property name="excludesFromAggregateAndCompress">
             <list>
-                <value>/modules/assets/javascript/ckeditor/ckeditor.js</value>
             </list>
         </property>
 	</bean>
@@ -70,7 +70,7 @@
 		<property name="priority" value="3" />
         <property name="description" value="Calls the logging service to log the display of a resource. Also initializes profiling information"/>
 		<property name="loggingService" ref="loggingService" />
-		<property name="skipOnConfiguration" value="include,wrapper" />
+		<property name="skipOnConfigurations" value="include,wrapper" />
 	</bean>
     <bean
         class="org.jahia.services.render.filter.AreaResourceFilter">
@@ -80,20 +80,21 @@
         <property name="priority" value="4" />
     </bean>
 
-	<bean class="org.jahia.services.render.filter.UserAgentFilter">
+	<bean class="org.jahia.services.channels.filters.ChannelResolutionFilter">
 		<property name="priority" value="6" />
-        <property name="description" value="Set templateType depending of the user agent"/>
-		<property name="applyOnModes" value="live,preview" />
-		<property name="applyOnConfigurations" value="page" />
-		<property name="userAgentMatchingRules">
-			<map>
-				<entry key=".*iPhone.*" value="iphone" />
-				<entry key=".*iPod.*" value="iphone" />
-                <entry key=".*iPad.*" value="iphone" />
-                <entry key=".*Android.*" value="iphone" />
-			</map>
-		</property>
+        <property name="description" value="Set channel depending of the user agent"/>
+        <property name="channelService" ref="ChannelService" />
+        <property name="renderService" ref="RenderService"/>
 	</bean>
+
+    <bean class="org.jahia.services.channels.filters.ChannelPreviewFilter">
+        <property name="description" value="Adds channel device image decoration"/>
+        <property name="channelService" ref="ChannelService" />
+        <property name="priority" value="2"/>
+        <property name="applyOnTemplateTypes" value="html,html-.+" />
+        <property name="skipOnModes" value="live,edit,studio" />
+        <property name="applyOnConfigurations" value="page"/>
+    </bean>
 
     <bean class="org.jahia.services.render.filter.MarkedForDeletionFilter">
         <property name="priority" value="10" />
@@ -106,7 +107,7 @@
 		<property name="priority" value="15" />
         <property name="description" value="Stores the required request parameters before evaluating the template and restores original after."/>
 	</bean>
-    
+
     <bean id="markedForDeletionEditModeFilter" class="org.jahia.services.render.filter.MarkedForDeletionEditModeFilter">
         <property name="priority" value="17" />
         <property name="description" value="Adds overlays for modules in edit mode that are marked for deletion"/>
@@ -119,20 +120,23 @@
                 </div>{1}]]></value>
         </property>
     </bean>
-    
+
 	<bean
 		class="org.jahia.services.render.filter.URLSystemAttributesAppenderFilter">
 		<property name="priority" value="20" />
         <property name="description" value="Defines attributes to keep in the links of a rendering when met in the urls"/>
 		<property name="applyOnConfigurations" value="page" />
-		<property name="applyOnTemplateTypes" value="html,edit,html-iphone" />
+		<property name="applyOnTemplateTypes" value="html,edit,html-.*" />
 		<property name="skipOnAjaxRequest" value="true" />
 		<property name="attributesToKeep">
 			<list>
 				<value type="java.lang.String">v</value>
 				<value type="java.lang.String">l</value>
 				<value type="java.lang.String">alias</value>
-			</list>
+                <value type="java.lang.String">channel</value>
+                <value type="java.lang.String">variant</value>
+                <value type="java.lang.String">noembed</value>
+            </list>
 		</property>
 		<property name="traverser"
 			ref="org.jahia.services.render.filter.URLTraverser" />
@@ -144,7 +148,9 @@
 		<property name="applyOnConfigurations" value="page,gwt,module,wrappedcontent" />
 		<property name="handlers">
 			<list>
-				<bean class="org.jahia.services.render.filter.ContextPlaceholdersReplacer" />
+				<bean class="org.jahia.services.render.filter.ContextPlaceholdersReplacer">
+            <property name="urlRewriteService" ref="UrlRewriteService" />
+				</bean>
                 <bean class="org.jahia.services.render.filter.cache.CacheUrlDependenciesParserFilter">
                     <property name="urlResolverFactory" ref="urlResolverFactory" />
 				</bean>
@@ -154,7 +160,7 @@
                     <property name="urlResolverFactory" ref="urlResolverFactory" />
 				</bean>
                 <bean class="org.jahia.services.render.filter.SiteParameterAdder" />
-                
+
 			</list>
 		</property>
 	</bean>
@@ -163,7 +169,7 @@
 		<property name="priority" value="22" />
         <property name="description" value=" Looks for all registered wrappers in the resource and calls the associated scripts around the output. Output is made available to the wrapper script through the 'wrappedContent' request attribute."/>
 		<property name="applyOnConfigurations" value="wrappedcontent,page,gwt" />
-		<property name="applyOnTemplateTypes" value="html,edit,html-iphone" />
+		<property name="applyOnTemplateTypes" value="html,html-.+" />
 	</bean>
 
 	<bean class="org.jahia.services.render.filter.TemplatePermissionCheckFilter">
@@ -177,8 +183,7 @@
 	<bean class="org.jahia.services.render.filter.WrapperFilter">
 		<property name="priority" value="40" />
         <property name="description" value="Adds a wrapper to a content"/>
-		<property name="skipOnConfiguration" value="include,wrapper" />
-		<property name="skipOnAjaxRequest" value="true" />
+		<property name="skipOnConfigurations" value="include,wrapper" />
 	</bean>
 	<bean class="org.jahia.services.render.filter.TemplateScriptFilter">
 		<property name="priority" value="99" />
@@ -210,10 +215,10 @@
         </constructor-arg>
     </bean>
 
-    <bean id="gwtCssStyles" class="org.springframework.beans.factory.config.ListFactoryBean">
-        <property name="sourceList">
+    <bean id="GWTResourceConfig" class="org.jahia.ajax.gwt.utils.GWTResourceConfig">
+        <property name="cssStyles">
             <list>
-                <value>/gwt/resources/css/gwt-1.1.min.css</value>
+                <value>/gwt/resources/css/gwt-1.3.min.css</value>
             </list>
             <!-- comment out gwt.css and uncomment the following CSS if you are in dev mode and are working on modifying those CSSs
             <list>
@@ -225,6 +230,12 @@
             </list>
             -->
         </property>
+        <property name="javaScripts">
+            <list>
+                <value>/modules/assets/javascript/ckeditor/ckeditor.js</value>
+            </list>
+        </property>
+        <property name="detectCustomCKEditorConfig" value="${detectCustomCKEditorConfig:true}"/>
     </bean>
 
     <bean id="urlResolverFactory" class="org.jahia.services.render.URLResolverFactory">
@@ -238,4 +249,25 @@
         <property name="applyOnModes" value="preview"/>
         <property name="priority" value="29"/>
     </bean>
+
+    <bean name="abstractRender" class="org.jahia.bin.Render">
+        <property name="loggingService" ref="loggingService"/>
+        <property name="templateService" ref="JahiaTemplateManagerService"/>
+        <property name="defaultPostAction" >
+            <bean class="org.jahia.bin.DefaultPostAction">
+                <property name="loggingService" ref="loggingService"/>
+            </bean>
+        </property>
+        <property name="defaultPutAction" >
+            <bean class="org.jahia.bin.DefaultPutAction">
+                <property name="loggingService" ref="loggingService"/>
+            </bean>
+        </property>
+        <property name="settingsBean" ref="settingsBean" />
+        <property name="renderService" ref="RenderService" />
+        <property name="jcrSessionFactory" ref="jcrSessionFactory" />
+        <property name="cookieExpirationInDays" value="1"/>
+        <property name="urlResolverFactory" ref="urlResolverFactory" />
+    </bean>
+
 </beans>

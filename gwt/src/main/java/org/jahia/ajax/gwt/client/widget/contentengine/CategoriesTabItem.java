@@ -57,9 +57,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
-import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Label;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -114,19 +112,8 @@ public class CategoriesTabItem extends EditEngineTabItem {
         treeGridFactory.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
         ColumnConfig name = new ColumnConfig("displayName", Messages.get("label.title"), 500);
         name.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>() {
-            public Object render(GWTJahiaNode model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GWTJahiaNode> store,
-                                 Grid<GWTJahiaNode> grid) {
-                config.css = "x-treegrid-column";
-                assert grid instanceof TreeGrid : "TreeGridCellRenderer can only be used in a TreeGrid";
-                TreeGrid tree = (TreeGrid) grid;
-                TreeStore ts = tree.getTreeStore();
-                int level = ts.getDepth(model);
-                String id = getId(tree, model, property, rowIndex, colIndex);
-                String text = getText(tree, model, property, rowIndex, colIndex);
-                AbstractImagePrototype icon = calculateIconStyle(tree, model, property, rowIndex, colIndex);
-                TreePanel.Joint j = calcualteJoint(tree, model, property, rowIndex, colIndex);
-                id = "JahiaGxtCategory_"+model.getName().replace(":","_");
-                return tree.getTreeView().getTemplate(model, id, text, icon, false, j, level - 1);
+            public String getId(TreeGrid<GWTJahiaNode> grid, GWTJahiaNode model, String property, int rowIndex, int colIndex) {
+                return "JahiaGxtCategory_"+model.getName().replace(":","_");
             }
         });
         name.setFixed(true);
@@ -209,19 +196,8 @@ public class CategoriesTabItem extends EditEngineTabItem {
         ColumnConfig columnConfig = new ColumnConfig("displayName", Messages.get("label.title"), 500);
         columnConfig.setFixed(true);
         columnConfig.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>() {
-            public Object render(GWTJahiaNode model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GWTJahiaNode> store,
-                                 Grid<GWTJahiaNode> grid) {
-                config.css = "x-treegrid-column";
-                assert grid instanceof TreeGrid : "TreeGridCellRenderer can only be used in a TreeGrid";
-                TreeGrid tree = (TreeGrid) grid;
-                TreeStore ts = tree.getTreeStore();
-                int level = ts.getDepth(model);
-                String id = getId(tree, model, property, rowIndex, colIndex);
-                String text = getText(tree, model, property, rowIndex, colIndex);
-                AbstractImagePrototype icon = calculateIconStyle(tree, model, property, rowIndex, colIndex);
-                TreePanel.Joint j = calcualteJoint(tree, model, property, rowIndex, colIndex);
-                id = "JahiaGxtCategorySelected_"+model.getName().replace(":","_");
-                return tree.getTreeView().getTemplate(model, id, text, icon, false, j, level - 1);
+            public String getId(TreeGrid<GWTJahiaNode> grid, GWTJahiaNode model, String property, int rowIndex, int colIndex) {
+                return "JahiaGxtCategorySelected_"+model.getName().replace(":","_");
             }
         });
 

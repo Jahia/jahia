@@ -46,7 +46,6 @@
         <groupId>org.jahia.modules</groupId>
         <version>6.6.1.0</version>
     </parent>
-    <groupId>org.jahia.modules</groupId>
     <artifactId>templates-system</artifactId>
     <name>Jahia System Templates</name>
     <packaging>war</packaging>
@@ -57,9 +56,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>${war.plugin.version}</version>
                 <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
                     <archive>
                         <manifestEntries>
 		                	<Implementation-Title>${project.name}</Implementation-Title>
@@ -71,7 +68,7 @@
 		                    <Specification-Version>${project.version}</Specification-Version>
 		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
-                            <depends>default,grid,skins</depends>
+                            <depends>default,grid,skins,default-skins,tabularList,tags,profile,tasks,facets</depends>
                             <root-folder>${project.artifactId}</root-folder>
                             <module-type>templatesSet</module-type>
                         </manifestEntries>
@@ -96,6 +93,22 @@
                             </cssSourceFiles>
                             <cssFinalFile>${project.artifactId}.css</cssFinalFile>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jahia.server</groupId>
+                <artifactId>maven-jahia-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>package-importsite</id>
+                        <configuration>
+                            <src>${basedir}/src/main/importsite-systemsite</src>
+                            <archiveName>importsite-systemsite.zip</archiveName>
+                        </configuration>
+                        <goals>
+                            <goal>package-imports</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

@@ -47,6 +47,8 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.SelectorType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -56,13 +58,12 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 /**
- * * This class describe a property change event for the drools engine.
+ * This class describe a property change event for the drools engine.
  * User: toto
  */
 
 public class ChangedPropertyFact implements Updateable {
-    private static org.slf4j.Logger logger =
-            org.slf4j.LoggerFactory.getLogger(ChangedPropertyFact.class);
+    private static Logger logger = LoggerFactory.getLogger(ChangedPropertyFact.class);
 
     private String path;
     private JCRPropertyWrapper property;
@@ -159,7 +160,9 @@ public class ChangedPropertyFact implements Updateable {
                     node.getProperty(name);
                     return;
                 } catch (RepositoryException e) {
-                    logger.debug("Create new property "+name+" on node "+node.getPath());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Create new property "+name+" on node "+node.getPath());
+                    }
                 }
             }
             // deal with versioning. this method is called at restore(...)
@@ -206,7 +209,9 @@ public class ChangedPropertyFact implements Updateable {
                     }
                 }
 
-                logger.debug("Property set" + nodePath + " / " + name);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Property set " + nodePath + " / " + name);
+                }
                 if (property != null) {
                     path = property.getPath();
                 }
@@ -320,5 +325,9 @@ public class ChangedPropertyFact implements Updateable {
      */
     public String getOperationType() {
         return operationType;
+    }
+
+    public List<String> getInstalledModules() {
+        return nodeWrapper.getInstalledModules();
     }
 }

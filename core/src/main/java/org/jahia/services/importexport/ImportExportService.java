@@ -201,6 +201,12 @@ public interface ImportExportService {
      */
     ValidationResults validateImportFile(JCRSessionWrapper session, InputStream is, String contentType, List<String> installedModules);
 
+    void importSiteZip(JCRNodeWrapper nodeWrapper) throws RepositoryException, IOException, JahiaException;
+
+    void importSiteZip(File nodeWrapper) throws RepositoryException, IOException, JahiaException;
+
+    void importSiteZip(File nodeWrapper, JCRSessionWrapper session) throws RepositoryException, IOException, JahiaException;
+
     /**
      * Import a full site zip into a newly created site.
      *

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content jcr:primaryType="jnt:systemFolder"
+         jcr:mixinTypes="jmix:accessControlled jmix:workflowRulesable"
+         xmlns:jcr="http://www.jcp.org/jcr/1.0"
+         xmlns:j="http://www.jahia.org/jahia/1.0"
+         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+
+    <permissions jcr:primaryType="jnt:permission" jcr:mixinTypes="mix:versionable">
+        <editMode jcr:primaryType="jnt:permission">
+            <engineTabs jcr:primaryType="jnt:permission">
+                <viewContributeModeTab jcr:primaryType="jnt:permission"/>
+            </engineTabs>
+            <editModeActions jcr:primaryType="jnt:permission">
+                <createPageAction jcr:primaryType="jnt:permission"/>
+            </editModeActions>
+        </editMode>
+    </permissions>
+    
+</content>

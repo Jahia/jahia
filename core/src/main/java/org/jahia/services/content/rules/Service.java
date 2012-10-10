@@ -43,6 +43,7 @@ package org.jahia.services.content.rules;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
@@ -171,51 +172,11 @@ public class Service extends JahiaService {
                 logger.info("Import site " + uri);
                 //String sitename = st.nextToken() + "_" + st.nextToken();
 
-                ZipEntry z;
-                Node contentNode = node.getNode().getNode(Constants.JCR_CONTENT);
-                ZipInputStream zis2 = new ZipInputStream(contentNode.getProperty(Constants.JCR_DATA).getBinary().getStream());
-
-                Properties infos = new Properties();
-                while ((z = zis2.getNextEntry()) != null) {
-                    if ("site.properties".equals(z.getName())) {
-                        infos.load(zis2);
-                        zis2.closeEntry();
-
-                        boolean siteKeyEx = sitesService.getSiteByKey((String) infos.get("sitekey")) != null || "".equals(
-                                infos.get("sitekey"));
-                        String serverName = (String) infos.get("siteservername");
-                        boolean serverNameEx = (sitesService.getSite(serverName) != null && !Url.isLocalhost(serverName)) || "".equals(serverName);
-                        if (!user.getJahiaUser().isRoot()) {
-                            return;
-                        }
-                        if (!siteKeyEx && !serverNameEx) {
-                            // site import
-                            String tpl = (String) infos.get("templatePackageName");
-                            if ("".equals(tpl)) {
-                                tpl = null;
-                            }
-                            try {
-                                Locale locale = null;
-                                for (Object obj : infos.keySet()) {
-                                    String s = (String) obj;
-                                    if (s.startsWith("language.") && s.endsWith(".rank")) {
-                                        String code = s.substring(s.indexOf('.') + 1, s.lastIndexOf('.'));
-                                        String rank = infos.getProperty(s);
-                                        if (rank.equals("1")) {
-                                            locale = LanguageCodeConverters.languageCodeToLocale(code);
-                                        }
-                                    }
-                                }
-                                sitesService.addSite(user.getJahiaUser(), infos.getProperty("sitetitle"), infos.getProperty(
-                                        "siteservername"), infos.getProperty("sitekey"), infos.getProperty(
-                                        "description"), locale, tpl, "importRepositoryFile", null, uri, true,
-                                        false, infos.getProperty("originatingJahiaRelease"));
-                            } catch (Exception e) {
-                                logger.error("Cannot create site " + infos.get("sitetitle"), e);
-                            }
-                        }
-                    }
+                if (!user.getJahiaUser().isRoot()) {
+                    return;
                 }
+
+                ImportExportBaseService.getInstance().importSiteZip(node.getNode());
             } catch (Exception e) {
                 logger.error("Error during import of file " + uri, e);
                 cacheService.flushAllCaches();
@@ -750,6 +711,21 @@ public class Service extends JahiaService {
         });
     }
 
+    public void updateDependencies(AddedNodeFact node) throws RepositoryException {
+        JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getName());
+        if (pack != null) {
+            Value[] dependencies = node.getNode().getProperty("j:dependencies").getValues();
+            List<String> depends = new ArrayList<String>();
+            for (Value dependency : dependencies) {
+                depends.add(dependency.getString());
+            }
+            if (!depends.equals(pack.getDepends())) {
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().updateDependencies(pack, depends);
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateManifest(pack.getFileName(), node.getNode().getSession());
+            }
+        }
+    }
+
     public void updatePrivileges(NodeFact node) throws RepositoryException {
         final JCRSiteNode site = node.getParent().getNode().getResolveSite();
         String principal = StringUtils.substringAfter(StringUtils.substringAfterLast(node.getPath(), "/"), "_").replaceFirst("_", ":");
@@ -830,5 +806,22 @@ public class Service extends JahiaService {
                 action.executeBackgroundAction(node.getParent().getNode());
             }
         }
+    }
+
+    public void deleteNodesWithReference(final String nodetype, final String propertyName, final NodeFact node) throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                QueryManager q = session.getWorkspace().getQueryManager();
+                String sql = "select * from [" + nodetype + "] where [" + propertyName + "] = '" + node.getIdentifier() + "'";
+                QueryResult qr = q.createQuery(sql, Query.JCR_SQL2).execute();
+                NodeIterator ni = qr.getNodes();
+                while (ni.hasNext()) {
+                    JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
+                    next.remove();
+                }
+                session.save();
+                return null;
+            }
+        });
     }
 }

@@ -49,6 +49,7 @@ import org.jahia.services.render.scripting.Script;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
@@ -76,27 +77,28 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
             }
             if (requirePermissions != null) {
                 chain.pushAttribute(renderContext.getRequest(),"cache.dynamicRolesAcls",Boolean.TRUE);
-                String[] perms = requirePermissions.split(" ");
-                for (String perm : perms) {
-                    if (!node.hasPermission(perm)) {
-                        return "";
+                if (requirePermissions.indexOf(' ') != -1) {
+                    String[] perms = Patterns.SPACE.split(requirePermissions);
+                    for (String perm : perms) {
+                        if (!hasPermission(node, perm)) {
+                            return "";
+                        }
                     }
+                } else if (!hasPermission(node, requirePermissions)) {
+                    return "";
                 }
             }
         } else {
             throw new TemplateNotFoundException("Unable to resolve script: "+resource.getResolvedTemplate());
         }
+
+        boolean invert = node.hasProperty("j:invertCondition") && node.getProperty("j:invertCondition").getBoolean();
+
         if (!renderContext.isEditMode()) {
             if (node.hasProperty("j:requiredMode")) {
                 String req = node.getProperty("j:requiredMode").getString();
-                if (!renderContext.isContributionMode() && req.equals("contribute")) {
-                    throw new AccessDeniedException("Content can only be accessed in contribute");
-                } else if (!renderContext.isEditMode() && req.equals("edit")) {
-                    throw new AccessDeniedException("Content can only be accessed in edit");
-                } else if (!renderContext.isLiveMode() && req.equals("live")) {
-                    throw new AccessDeniedException("Content can only be accessed in live");
-                } else if (!renderContext.isPreviewMode() && !renderContext.isLiveMode() && req.equals("live-or-preview")) {
-                    throw new AccessDeniedException("Content can only be accessed in live");
+                if (!renderContext.getMode().equals(req) && !invert) {
+                    throw new AccessDeniedException("Content can only be accessed in "+req);
                 }
             }
         }
@@ -116,7 +118,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                         return permissionNames;
                     }
                 });
-                JCRNodeWrapper contextNode = renderContext.getMainResource().getNode();
+                JCRNodeWrapper contextNode = renderContext.getAjaxResource() != null ? renderContext.getAjaxResource().getNode() : renderContext.getMainResource().getNode();
                 try {
                     if (node.hasProperty("j:contextNodePath")) {
                         String contextPath = node.getProperty("j:contextNodePath").getString();
@@ -129,11 +131,11 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                         }
                     }
                 } catch (PathNotFoundException e) {
-                    return "";
+                    return invert ? null : "";
                 }
                 for (String perm : perms) {
                     if (!contextNode.hasPermission(perm)) {
-                        return "";
+                        return invert ? null : "";
                     }
                 }
 
@@ -151,33 +153,48 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                                 }
                             }
                     )) {
-                        return "";
+                        return invert ? null : "";
                     }
                 }
 
             }
             if (node.hasProperty("j:requireLoggedUser") && node.getProperty("j:requireLoggedUser").getBoolean()) {
                 if (!renderContext.isLoggedIn()) {
-                    return "";
+                    return invert ? null : "";
                 }
                 if (aliasedUser != null) {
                     if (JahiaUserManagerService.isGuest(aliasedUser)) {
-                        return "";
+                        return invert ? null : "";
                     }
                 }
             }
             if (node.hasProperty("j:requirePrivilegedUser") && node.getProperty("j:requirePrivilegedUser").getBoolean()) {
                 if (!renderContext.getUser().isMemberOfGroup(0,JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
-                    return "";
+                    return invert ? null : "";
                 }
                 if (aliasedUser != null) {
                     if (!aliasedUser.isMemberOfGroup(0, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
-                        return "";
+                        return invert ? null : "";
                     }
                 }
             }
         }
-        return null;
+        return invert ? "" : null;
+    }
+
+    private boolean hasPermission(JCRNodeWrapper node, String perm) {
+        if (perm.indexOf('|') == -1) {
+            return node.hasPermission(perm);
+        } else {
+            String[] perms = Patterns.PIPE.split(perm);
+            for (String p : perms) {
+                if (node.hasPermission(p)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     @Override

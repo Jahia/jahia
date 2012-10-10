@@ -29,9 +29,9 @@ max_allowed_packet = 100M
 # Make sure that you have enough free disk space.
 innodb_data_file_path = ibdata1:100M:autoextend
 #
-# Set buffer pool size to 50-80% of your computer's memory
+# Can be set to 70-80% of memory for dedicated InnoDB-Only MySQL
 innodb_buffer_pool_size=1024M
-innodb_additional_mem_pool_size=256M
+innodb_additional_mem_pool_size=24M
 #
 # Set the log file size to about 25% of the buffer pool size
 innodb_log_file_size=256M
@@ -46,3 +46,9 @@ innodb_flush_log_at_trx_commit=1
  Please note that for MySQL versions from 5.5.9 to 5.5.12 on MacOSX, you must set the value
  of lower_case_table_names to 1 ({{http://bugs.mysql.com/bug.php?id=60309}}).
 
+* MySQL on Unix
+
+ According to ({{http://dev.mysql.com/doc/refman/5.0/en/innodb-tuning.html}}) in some versions of GNU/Linux and Unix, 
+ flushing files to disk with the Unix fsync() call (which InnoDB uses by default) and other similar methods is 
+ surprisingly slow. If you are dissatisfied with database write performance, you might try setting the <<<innodb_flush_method>>> 
+ parameter to <<<O_DSYNC>>>. The <<<O_DSYNC>>> flush method seems to perform slower on most systems, but yours might not be one of them.

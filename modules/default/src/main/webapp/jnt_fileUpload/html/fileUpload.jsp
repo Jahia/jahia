@@ -17,13 +17,13 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="jquery.fileupload.css"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.fileupload.js,jquery.fileupload-ui.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.fileupload-with-ui.min.js"/>
 <fmt:message key="label.dropHere.ie" var="i18nDropHereIE"/>
 <template:addResources type="inlinejavascript">
 <script type="text/javascript">
 $(document).ready(function() {
 	if (jQuery.browser.msie) {
-		$('#drop-box-file-upload-${currentNode.identifier}').empty().append('${functions:escapeJavaScript(i18nDropHereIE)}');
+		$("#drop-box-file-upload-${currentNode.identifier}").empty().append("${functions:escapeJavaScript(i18nDropHereIE)}");
 	}
 });
 </script>
@@ -62,7 +62,7 @@ $(document).ready(function() {
                     handler.formData = {
                         'jcrNodeType':"jnt:file",
                         'jcrReturnContentType':"json",
-                        'jcrReturnContentTypeOverride':$.browser.msie ? 'text/plain' : 'application/json',
+                        'jcrReturnContentTypeOverride':$.browser.msie ? 'text/plain; charset=UTF-8' : 'application/json; charset=UTF-8',
                         'jcrRedirectTo':"<c:url value='${url.base}${renderContext.mainResource.node.path}'/>",
                         'jcrNewNodeOutputFormat':"${renderContext.mainResource.template}.html",
                         'form-token': $('#file_upload${currentNode.identifier} input[name=form-token]').val()

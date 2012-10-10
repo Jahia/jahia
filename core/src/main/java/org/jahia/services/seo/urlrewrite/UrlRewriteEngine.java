@@ -43,9 +43,7 @@ package org.jahia.services.seo.urlrewrite;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -55,7 +53,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.taglibs.standard.tag.common.core.OutSupport;
 import org.jahia.bin.Render;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
@@ -84,6 +81,8 @@ class UrlRewriteEngine extends UrlRewriter {
     private URLResolverFactory urlResolverFactory;
 
     private VanityUrlService vanityUrlService;
+    
+    private boolean urlRewriteSeoRulesEnabled;
 
     public void setUrlResolverFactory(URLResolverFactory urlResolverFactory) {
         this.urlResolverFactory = urlResolverFactory;
@@ -159,9 +158,10 @@ class UrlRewriteEngine extends UrlRewriter {
     @Override
     protected RewrittenOutboundUrl processEncodeURL(HttpServletResponse hsResponse, HttpServletRequest hsRequest, boolean encodeUrlHasBeenRun, String outboundUrl) {
         try {
-            if (outboundUrl.startsWith(hsRequest.getContextPath()+ Render.getRenderServletPath())) {
+            String ctx = StringUtils.defaultIfEmpty(hsRequest.getContextPath(), null);
+            if (outboundUrl.startsWith(ctx != null ? (ctx + Render.getRenderServletPath()) : Render.getRenderServletPath())) {
                 if (StringUtils.isNotEmpty(outboundUrl) && !Url.isLocalhost(hsRequest.getServerName())) {
-                    String url = StringUtils.substringAfter(outboundUrl,hsRequest.getContextPath()+"/cms");
+                    String url = StringUtils.substringAfter(outboundUrl, ctx != null ? (ctx + "/cms") : "/cms");
                     url = StringUtils.substringBefore(url,"?");
                     url = StringUtils.substringBefore(url,"#");
                     url = StringUtils.substringBefore(url,";");
@@ -176,7 +176,7 @@ class UrlRewriteEngine extends UrlRewriter {
                                             node,
                                             urlResolver.getWorkspace(),
                                             urlResolver.getLocale(), context != null ? context.getSite().getSiteKey() : null);
-                            if (vanityUrl != null) {
+                            if (vanityUrl != null && vanityUrl.isActive()) {
                                 outboundUrl = outboundUrl.replace("/" + urlResolver.getLocale()
                                         + urlResolver.getPath(), vanityUrl.getUrl());
                             }
@@ -184,7 +184,7 @@ class UrlRewriteEngine extends UrlRewriter {
                             logger.debug("Error when trying to obtain vanity url", e);
                         }
                     }
-                    if (!SettingsBean.getInstance().isUrlRewriteSeoRulesEnabled()) {
+                    if (!isUrlRewriteSeoRulesEnabled()) {
                         // Just in case the SEO is not activated, switch the servername anyway to avoid crosscontext pages
                         try {
                             // Switch to correct site for links
@@ -200,5 +200,13 @@ class UrlRewriteEngine extends UrlRewriter {
         }
 
         return super.processEncodeURL(hsResponse, hsRequest, encodeUrlHasBeenRun, outboundUrl);
+    }
+
+    public boolean isUrlRewriteSeoRulesEnabled() {
+        return urlRewriteSeoRulesEnabled;
+    }
+
+    public void setUrlRewriteSeoRulesEnabled(boolean urlRewriteSeoRulesEnabled) {
+        this.urlRewriteSeoRulesEnabled = urlRewriteSeoRulesEnabled;
     }
 }

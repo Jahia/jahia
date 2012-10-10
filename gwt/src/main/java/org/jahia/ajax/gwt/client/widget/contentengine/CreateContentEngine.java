@@ -206,8 +206,8 @@ public class CreateContentEngine extends AbstractContentEngine {
                 nodeName = result.getDefaultName();
 
                 fillCurrentTab();
-                
-                unmask();                
+
+                unmask();
             }
 
             public void onApplicationFailure(Throwable caught) {

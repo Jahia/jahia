@@ -92,12 +92,13 @@ public class PublishAction extends Action {
         } else {
             JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);
             JobDataMap jobDataMap = jobDetail.getJobDataMap();
-            List uuidList = new ArrayList();
+            List<String> uuidList = new ArrayList<String>(1);
             uuidList.add(resource.getNode().getIdentifier());
             jobDataMap.put(BackgroundJob.JOB_USERKEY, renderContext.getUser().getUserKey());
             jobDataMap.put(PublicationJob.PUBLICATION_UUIDS, uuidList);
             jobDataMap.put(PublicationJob.SOURCE, Constants.EDIT_WORKSPACE);
             jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);
+            jobDataMap.put(PublicationJob.CHECK_PERMISSIONS, true);
 
             ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
 

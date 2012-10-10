@@ -44,30 +44,27 @@ import java.util.*;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.cfg.Settings;
 import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.settings.SettingsBean;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.jcr.PathNotFoundException;
-import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Base handler for content actions.
@@ -75,6 +72,28 @@ import javax.servlet.http.HttpServletResponse;
  * @author Sergiy Shyrkov
  */
 public abstract class Action {
+
+    /**
+     * Returns a single value for the specified parameter. If the parameter is not present throws the {@link JahiaBadRequestException}.
+     * 
+     * @param parameters
+     *            the map of action parameters
+     * @param paramName
+     *            the name of the parameter in question
+     * @return a single value for the specified parameter. If the parameter is not present throws the {@link JahiaBadRequestException}
+     * @throws JahiaBadRequestException
+     *             if the specified parameter is not present in the request
+     * 
+     */
+    protected static String getRequiredParameter(Map<String, List<String>> parameters,
+            String paramName) throws JahiaBadRequestException {
+        if (parameters.get(paramName) == null) {
+            throw new JahiaBadRequestException("Missing required '" + paramName
+                    + "' parameter in request.");
+        }
+
+        return getParameter(parameters, paramName, null);
+    }
 
     /**
      * Returns a single value for the specified parameter. If the parameter is
@@ -88,6 +107,7 @@ public abstract class Action {
     protected static String getParameter(Map<String, List<String>> parameters, String paramName) {
         return getParameter(parameters, paramName, null);
     }
+    
     /**
      * Returns a single value for the specified parameter. If the parameter is
      * not present or its value is empty, returns the provided default value.
@@ -124,16 +144,18 @@ public abstract class Action {
                 nodeNameProperty = parameters.get(Render.NODE_NAME_PROPERTY).get(0);
             }
             if (parameters.get(nodeNameProperty) != null) {
-                nodeName = JCRContentUtils.generateNodeName(parameters.get(nodeNameProperty).get(0), 32);
+                nodeName = JCRContentUtils.generateNodeName(parameters.get(nodeNameProperty).get(0));
             } else {
                 nodeName = nodeType.substring(nodeType.lastIndexOf(":") + 1);
             }
             if (isNodeNameToBeNormalized) {
-                nodeName = JCRContentUtils.generateNodeName(nodeName, 255);
+                nodeName = JCRContentUtils.generateNodeName(nodeName);
             }
             nodeName = JCRContentUtils.findAvailableNodeName(node, nodeName);
         } else if (isNodeNameToBeNormalized) {
-            nodeName = JCRContentUtils.generateNodeName(nodeName, 255);
+            nodeName = JCRContentUtils.generateNodeName(nodeName);
+        } else {
+            nodeName = JCRContentUtils.escapeLocalNodeName(nodeName);
         }
         if(forceCreation) {
             nodeName = JCRContentUtils.findAvailableNodeName(node, nodeName);

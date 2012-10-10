@@ -68,7 +68,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
  */
 public class ImageCrop extends Window {
 
-    private Linker linker;
+    private Linker linker;    
 
     public ImageCrop(final Linker linker, final GWTJahiaNode n) {
         super();
@@ -105,14 +105,20 @@ public class ImageCrop extends Window {
         left.setVisible(false);
         form.add(left);
         final NumberField width = new NumberField();
+        width.setFieldLabel(Messages.get("label.width", "Width"));
+        width.setStyleName("stylewidth");
         width.setName("width");
         width.setId("width");
-        width.setVisible(false);
+        width.setVisible(true);
+        width.setEnabled(false);
         form.add(width);
         final NumberField height = new NumberField();
+        height.setFieldLabel(Messages.get("label.height", "Height"));
+        height.setStyleName("stylehight");
         height.setName("height");
         height.setId("height");
-        height.setVisible(false);
+        height.setVisible(true);
+        height.setEnabled(false);
         form.add(height);
         
         final Image image = new Image();

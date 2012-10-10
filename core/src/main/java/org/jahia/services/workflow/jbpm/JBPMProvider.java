@@ -40,17 +40,18 @@
 
 package org.jahia.services.workflow.jbpm;
 
-import com.ctc.wstx.evt.WDTD;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
+import org.jahia.services.content.*;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
 import org.jahia.utils.FileUtils;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jbpm.api.*;
 import org.jbpm.api.activity.ActivityBehaviour;
@@ -75,12 +76,12 @@ import org.jbpm.pvm.internal.model.EventImpl;
 import org.jbpm.pvm.internal.model.EventListenerReference;
 import org.jbpm.pvm.internal.svc.HistoryServiceImpl;
 import org.jbpm.pvm.internal.task.TaskDefinitionImpl;
-import org.jbpm.pvm.internal.task.TaskImpl;
 import org.jbpm.pvm.internal.wire.usercode.UserCodeActivityBehaviour;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
+import javax.jcr.RepositoryException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -484,7 +485,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                 WorkflowTask action = convertToWorkflowTask(task, locale);
                 availableActions.add(action);
             } catch (Exception e) {
-                logger.debug("Cannot get task " + task.getName() + "for user", e);
+                logger.debug("Cannot get task " + task.getName() + " for user", e);
             }
         }
         taskList = taskService.findGroupTasks(user.getUserKey());
@@ -493,7 +494,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                 WorkflowTask action = convertToWorkflowTask(task, locale);
                 availableActions.add(action);
             } catch (Exception e) {
-                logger.debug("Cannot get task " + task.getName() + "for user", e);
+                logger.debug("Cannot get task " + task.getName() + " for user", e);
             }
         }
         return availableActions;
@@ -611,25 +612,109 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
         return action;
     }
 
-    public void assignTask(String taskId, JahiaUser user) {
-        Task task = taskService.getTask(taskId);
-        if (user == null) {
-            taskService.assignTask(task.getId(), null);
-        } else {
-            if (user.getUserKey().equals(task.getAssignee())) {
-                return;
-            }
-            taskService.takeTask(task.getId(), user.getUserKey());
+    private ThreadLocal loop = new ThreadLocal();
+
+    public void assignTask(String taskId, final JahiaUser user) {
+        if (loop.get() != null) {
+            return;
         }
-        Map<String, Object> vars = taskService.getVariables(taskId,taskService.getVariableNames(taskId));
-        if (user != null) {
-            vars.put("currentUser",user.getUserKey());
-            taskService.setVariables(taskId,vars);
+        try {
+            loop.set(Boolean.TRUE);
+            Map<String, Object> vars = taskService.getVariables(taskId,taskService.getVariableNames(taskId));
+            Task task = taskService.getTask(taskId);
+            if (user == null) {
+                taskService.assignTask(task.getId(), null);
+            } else {
+                if (user.getUserKey().equals(task.getAssignee())) {
+                    return;
+                }
+
+                if (!checkParticipation(task, user)) {
+                    logger.error("Cannot assign task "+task.getId()+" to user "+user.getName() + ", user is not candidate");
+                    return;
+                }
+
+                taskService.takeTask(task.getId(), user.getUserKey());
+            }
+            if (user != null) {
+                vars.put("currentUser",user.getUserKey());
+                taskService.setVariables(taskId,vars);
+            }
+
+            final String uuid = (String) vars.get("task-"+taskId);
+            if (uuid != null) {
+                try {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            JCRNodeWrapper nodeByUUID = session.getNodeByUUID(uuid);
+                            if (user != null) {
+                                if (!nodeByUUID.hasProperty("assigneeUserKey") ||
+                                        !nodeByUUID.getProperty("assigneeUserKey").getString().equals(user.getName())) {
+                                    nodeByUUID.setProperty("assigneeUserKey", user.getName());
+                                    session.save();
+                                }
+                            } else {
+                                if (nodeByUUID.hasProperty("assigneeUserKey")) {
+                                    nodeByUUID.getProperty("assigneeUserKey").remove();
+                                    session.save();
+                                }
+                            }
+                            return null;
+                        }
+                    });
+                } catch (RepositoryException e) {
+                    e.printStackTrace();
+                }
+            }
+        } finally {
+            loop.set(null);
         }
     }
 
-    public void completeTask(String taskId, String outcome, Map<String, Object> args) {
-        taskService.completeTask(taskId, outcome, args);
+    private boolean checkParticipation(Task task, JahiaUser user) {
+        List<Participation> p = taskService.getTaskParticipations(task.getId());
+        if (p == null || p.isEmpty()) {
+            return true;
+        }
+        for (Participation participation : p) {
+            if ((participation.getUserId() != null && user.getUserKey().equals(participation.getUserId())) ||
+                    (participation.getGroupId() != null && groupManager.getUserMembership(user).contains(participation.getGroupId()))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void completeTask(String taskId, final String outcome, Map<String, Object> args) {
+        if (loop.get() != null) {
+            return;
+        }
+        try {
+            loop.set(Boolean.TRUE);
+            final String uuid = (String) taskService.getVariable(taskId, "task-" + taskId);
+            if (uuid != null) {
+                String workspace = (String) taskService.getVariable(taskId, "workspace");
+                try {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(null,workspace,new  JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            if (!session.getNodeByUUID(uuid).hasProperty("state") ||
+                                    !session.getNodeByUUID(uuid).getProperty("state").getString().equals("finished")) {
+                                session.getNodeByUUID(uuid).setProperty("finalOutcome",outcome);
+                                session.getNodeByUUID(uuid).setProperty("state","finished");
+                                session.save();
+                            }
+                            return null;
+                        }
+                    });
+                } catch (RepositoryException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            taskService.completeTask(taskId, outcome, args);
+        } finally {
+            loop.set(null);
+        }
     }
 
     public void addParticipatingGroup(String taskId, JahiaGroup group, String role) {
@@ -876,9 +961,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                     "History task records for process instance with ID '" + processId + "' cannot be found. Cause: " +
                             e.getMessage(), e);
         }
-        if (jbpmTasks == null) {
-            return Collections.emptyList();
-        }
+
         for (HistoryTask jbpmHistoryTask : jbpmTasks) {
             final Task task = taskService.getTask(jbpmHistoryTask.getId());
             String name = "";
@@ -886,18 +969,11 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                 name = task != null ? task.getName() : "";
             } else {
                 // So nice !
-                List<HistoryActivityInstance> l = new ArrayList<HistoryActivityInstance>();
-                for (String id : executionIds) {
-                    l.addAll(historyService.createHistoryActivityInstanceQuery().processInstanceId(id).list());
-                }
-                for (HistoryActivityInstance activityInstance : l) {
-                    if (activityInstance.getStartTime().equals(jbpmHistoryTask.getCreateTime())
-                            && ((activityInstance.getEndTime() == null && jbpmHistoryTask.getEndTime() == null) || (activityInstance
-                            .getEndTime() != null && activityInstance.getEndTime().equals(jbpmHistoryTask.getEndTime())))) {
-                        name = activityInstance.getActivityName();
-                        break;
-                    }
-                }
+                HistoryActivityInstanceByHistoryTaskQuery q = new HistoryActivityInstanceByHistoryTaskQuery();
+                q.setCommandService(((HistoryServiceImpl) historyService).getCommandService());
+                q.historyTaskId(jbpmHistoryTask.getId());
+                HistoryActivityInstance activityInstance = q.uniqueResult();
+                name = activityInstance.getActivityName();
             }
             historyItems
                     .add(new HistoryWorkflowTask(jbpmHistoryTask.getId(), jbpmHistoryTask.getExecutionId(), name,
@@ -912,15 +988,16 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                 resourceBundle = getResourceBundle(locale, def.getKey());
                 try {
                     task.setDisplayName(
-                            resourceBundle.getString(task.getName().replaceAll(" ", ".").trim().toLowerCase()));
+                            resourceBundle.getString(Patterns.SPACE.matcher(task.getName()).replaceAll(".").trim().toLowerCase()));
                 } catch (Exception e) {
                     task.setDisplayName(task.getName());
                 }
             }
             String outcome = task.getOutcome();
             if (outcome != null) {
-                String key = task.getName().replaceAll(" ", ".").trim().toLowerCase() + "." +
-                        outcome.replaceAll(" ", ".").trim().toLowerCase();
+                String key = Patterns.SPACE.matcher(task.getName()).replaceAll(".").trim().toLowerCase() + "." +
+                        Patterns.SPACE.matcher(outcome).replaceAll(".").trim().toLowerCase();
+                key = task.isCompleted()?key + ".completed":key;
                 if (locale != null) {
                     String displayOutcome;
                     try {
@@ -945,7 +1022,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     private ResourceBundle getResourceBundle(Locale locale, final String definitionKey) {
         try {
             return JahiaResourceBundle
-                    .lookupBundle(WorkflowService.class.getPackage().getName() + "." + definitionKey.replaceAll(" ", ""),
+                    .lookupBundle(WorkflowService.class.getPackage().getName() + "." + Patterns.SPACE.matcher(definitionKey).replaceAll(""),
                             locale);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -960,8 +1037,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
             resourceBundle = getResourceBundle(displayLocale, definitionKey);
         }
         if (resourceBundle != null) {
-            String key = workflowAction.getName().replaceAll(" ",
-                    ".").trim().toLowerCase();
+            String key = Patterns.SPACE.matcher(workflowAction.getName()).replaceAll(".").trim().toLowerCase();
             try {
                 rbActionName = resourceBundle.getString(key);
             } catch (MissingResourceException e) {
@@ -975,8 +1051,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
             List<String> displayOutcomes = new LinkedList<String>();
             List<String> outcomeIcons = new LinkedList<String>();
             for (String outcome : outcomes) {
-                String key = workflowAction.getName().replaceAll(" ", ".").trim().toLowerCase() + "." +
-                        outcome.replaceAll(" ", ".").trim().toLowerCase();
+                String key = Patterns.SPACE.matcher(workflowAction.getName()).replaceAll(".").trim().toLowerCase() + "." +
+                        Patterns.SPACE.matcher(outcome).replaceAll(".").trim().toLowerCase();
                 String s = outcome;
                 if (resourceBundle != null) {
                     try {

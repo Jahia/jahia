@@ -53,6 +53,8 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
 
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.map.LazyMap;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.commons.iterator.NodeIteratorAdapter;
 import org.apache.jackrabbit.commons.iterator.RangeIteratorAdapter;
@@ -85,7 +87,7 @@ public class QueryResultWrapper implements QueryResult {
      */
     public class RowDecorator implements Row {
         private Node node;
-        private Map<String, Node> nodesBySelector = new HashMap<String, Node>(1);
+        private Map<String, Node> nodesBySelector;
         private Row row;
 
         /**
@@ -107,12 +109,24 @@ public class QueryResultWrapper implements QueryResult {
         }
 
         public Node getNode(String selectorName) throws RepositoryException {
-            Node targetNode = nodesBySelector.get(selectorName);
-            if (targetNode == null) {
-                targetNode = wrap(row.getNode(selectorName));
-                nodesBySelector.put(selectorName, targetNode);
+            return getNodes().get(selectorName);
+        }
+        
+        @SuppressWarnings("unchecked")
+        public Map<String, Node> getNodes() throws RepositoryException {
+            if (nodesBySelector == null) {
+                nodesBySelector = LazyMap.decorate(new HashMap<String, Node>(), new Transformer() {
+                    public Object transform(Object selector) {
+                        try {
+                            return wrap(row.getNode((String)selector));
+                        } catch (RepositoryException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
             }
-            return targetNode;
+            
+            return nodesBySelector;
         }
 
         private String getDerivedPath(String originalPath) throws RepositoryException {
@@ -146,7 +160,7 @@ public class QueryResultWrapper implements QueryResult {
                 JCRPropertyWrapper property = null;
                 if (!columnName.startsWith("rep:spellcheck(")
                         && !columnName.startsWith("rep:excerpt(")
-                        && !row.getNode().hasProperty(columnName)) {
+                        && !(row.getNode() != null && row.getNode().hasProperty(columnName))) {
                     JCRNodeWrapper node = (JCRNodeWrapper) getNode();
                     try {
                         property = node.getProperty(columnName);
@@ -168,7 +182,7 @@ public class QueryResultWrapper implements QueryResult {
 
         private Node wrap(Node node) throws RepositoryException {
             JCRSessionWrapper session = getSession();
-            if (session.getLocale() != null && node.hasProperty(Constants.JCR_LANGUAGE)) {
+            if (node != null && session.getLocale() != null && node.hasProperty(Constants.JCR_LANGUAGE)) {
                 String language = node.getProperty(Constants.JCR_LANGUAGE).getString();
                 if (!getSessionLanguage().equals(language)) {
                     session = ServicesRegistry

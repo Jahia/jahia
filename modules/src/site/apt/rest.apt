@@ -4,13 +4,11 @@ Basic Jahia REST API
 
  Jahia provides a REST API, mostly for rendering, but some other services are available as well such: login,
  logout, content creation & updating and searching.
-
-* Examples
-
- You can find an example of some REST API calls in the file modules/test/rest/jqueryfind.html. To test this
- file, make sure you start & configure your Jahia, and then point your browser to the following URL :
-
- http://localhost:8080/modules/test/rest/jqueryfind.html
+ 
+ Note please, when using the REST API from your client-side code (browser side) in your external Web application,
+ e.g. using jQuery library, you can run into a cross-domain restriction for Ajax requests as they are not allowed by default
+ due to security concerns. In contrary, using REST API from a server side code in your external
+ application does not have this restriction.
 
 * Login
 
@@ -32,11 +30,11 @@ Basic Jahia REST API
 |                |             |authentication. If you are using AJAX calls     |
 |                |             |you should set this to "false".                 |
 *----------------+-------------+------------------------------------------------+
-|doLogin         |yes          |Should always be set to "true" otherwise login  |
-|                |             | will not work                                  |
-*----------------+-------------+------------------------------------------------+
 |redirect        |no           |Allows you to specify another URL to redirect   |
 |                |             |after successful login                          |
+*----------------+-------------+------------------------------------------------+
+|restMode        |no           |Set this to true if you are performing a login  |
+|                |             |from an AJAX call ogin                          |
 *----------------+-------------+------------------------------------------------+
 
 * Logout
@@ -57,8 +55,6 @@ Basic Jahia REST API
 |                |             |after successful login                          |
 *----------------+-------------+------------------------------------------------+
 
- TBD
-
 * Render
 
  The render servlet can either be used to render content by accessing it with a GET method, or can also be used to add
@@ -66,6 +62,99 @@ Basic Jahia REST API
  method, or update content using POST or PUT.
 
 ** HTTP Get Request
+
+ You can simply render a node by calling it in the following form :
+
+ URL : /cms/render/WORKSPACE/LANGUAGE/CONTENT_PATH(.VIEW).TEMPLATETYPE
+
+ where:
+ * WORKSPACE : 'default' for the edit workspace, 'live' for the live (production) workspace
+ * LANGUAGE : any language defined on the site
+ * CONTENT_PATH : the full path to the content object to be rendered
+ * VIEW : this is optional, specified the (alternative) view to render the content node. This depends on the available
+ views for the content node.
+ * TEMPLATE-TYPE : usually 'html' but you might want to use other template types such as 'json' (see more below)
+
+*** JSON rendering
+
+ Jahia comes with a few default views for JSON rendering, but here we will detail the two most important ones : 'full'
+  and 'nodetype'. The 'full' view will generate a JSON view of a content node, along with all it's properties and child
+ node names. It also takes optional query string parameters to expand the output:
+
+ * depthLimit : (default value = 1). The depth of children to output with the current node. You can use this value to
+ output deeper tree of children, but be aware that this will make your HTTP requests slower as more data will be output
+ and transmitted over the network.
+
+ * escapeColon : (default value = false) If activated, this will replace the colon (':') character present in property
+ names with an underscore, making it a lot easier to use Javascript code that accesses properties.
+
+ * withType : (default value = false) If activated, it will, along with the property data and child nodes, also output
+ the node type information for the node. As this will generate a lot more data for this request, it is also possible to
+ use the 'nodetype' view to generate this output seperately. Also, the 'nodetype' view also takes parameters that can be
+ directly called on the 'full' view but we will not repeat them here for the sake of brievety (see below for the query
+ string parameters and their documentation).
+
+ * prettyPrint : (default value = false) By default the JSON rendering will be as compact as possible, which makes it
+ difficult to read by a human, by enabling this setting it will render a nicely indented output.
+
+**** Full JSON View example query:
+
++-----------------------------------------
+  http://localhost:8080/cms/wise/default/en/sites/docspaces.full.json?withType=true&depthLimit=0&escapeColon=true&withHidden=true&withProtected=true
++-----------------------------------------
+
+**** Nodetype view
+
+ The 'nodetype' view will generate a JSON output of the node type's information, making it possible for example to
+ dynamically generate forms to create a new node. By default it will not output any hidden or protected properties
+ or child node definitions, but this may be overridden with the following query string parameters:
+
+    * withHidden : (default value = false) If activated, it will also output the hidden properties and child node
+      definitions for the node
+
+    * withProtected : (default value = false) If activated, it will also output the protected properties and child
+      node definitions for the node
+
+    * depthLimit : (default value = 1) By default the JSON view will render the current node's nodetype, along with the
+      child definitiond and their nodetypes, but you can change the depth limit to either 0 to output only the nodetype of
+      the current node, or to a higher value to recursively output the types of the children of children, and so on. Of
+      course the deeper the depth and the larger the result tree, so be careful not setting this value too high if not
+      really needed.
+
+    * nodeType : (default value = none) By default the rendered node type (and mixin types) will be of the node specified
+      in the path, but it might be interesting to be able to query any node type registered in the system. You can do this
+      by specified this query parameter, in which case the node type and mixin types of the node specified in the path will
+      simply be ignored and the node type generated will be the one specified in the query string parameter instead. Be
+      careful with the encoding of the parameter, you will have to URL encode the colon (':') character with it's URL
+      equivalent, so for example :
+
++-----------------------------------------
+ nt:base
++-----------------------------------------
+
+      will become
+
++-----------------------------------------
+ nt%3Abase
++-----------------------------------------
+
+      * prettyPrint : (default value = false) By default the JSON rendering will be as compact as possible, which makes
+        it difficult to read by a human, by enabling this setting it will render a nicely indented output.
+
+**** Full JSON View examples query
+
+ Basic example requesting the node type of the 'docspaces' node including all the hidden and protected properties
+ and child definitions:
+
++-----------------------------------------
+  http://localhost:8080/cms/wise/default/en/sites/docspaces.nodetype.json?withHidden=true&withProtected=true
++-----------------------------------------
+
+ Requesting a specific nodetype, ignoring the 'docspaces' node type and mixin types:
+
++-----------------------------------------
+  http://localhost:8080/cms/wise/default/en/sites/docspaces.nodetype.json?nodeType=nt%3Abase
++-----------------------------------------
 
 ** HTTP Post Request
 

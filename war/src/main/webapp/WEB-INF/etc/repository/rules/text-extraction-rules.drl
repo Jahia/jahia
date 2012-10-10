@@ -22,7 +22,7 @@ rule "Properties extraction"
     when
         A file content has been modified
     then
-        Log "Properties extraction fired for node " + contentnode.getPath() 
+        LogDebug "Properties extraction fired for node " + contentnode.getPath() 
         Extract properties from the file
 end
 
@@ -32,6 +32,6 @@ rule "Set corresponding property with the value of the extracted metadata"
         A file content has been modified
         A well known metadata field has been extracted
     then
-        Log "Setting extracted metadata field '" + metadata.getName() + "' with value '" + metadata.getValue() + "' as the property [" + metadata.getCorrespondingNodeTypeName() + "].[" + metadata.getCorrespondingPropertyName() + "] for node " + node.getPath()   
+        LogDebug "Setting extracted metadata field '" + metadata.getName() + "' with value '" + metadata.getValue() + "' as the property [" + metadata.getCorrespondingNodeTypeName() + "].[" + metadata.getCorrespondingPropertyName() + "] for node " + node.getPath()   
         Set corresponding property with the value of the extracted metadata
 end

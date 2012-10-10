@@ -43,14 +43,9 @@ package org.jahia.taglibs.jcr.node;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
-import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.services.content.JCRContentUtils;
@@ -58,6 +53,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.templates.ComponentRegistry;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -278,25 +274,8 @@ public class JCRTagUtils {
         return matchingParent;
     }
 
-    public static Map<String, JahiaGroup> getUserMembership(JCRNodeWrapper user) {
-        Map<String, JahiaGroup> map = new LinkedHashMap<String, JahiaGroup>();
-        final JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(
-                user.getName());
-        final JahiaGroupManagerService managerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        final List<String> userMembership = managerService.getUserMembership(
-                jahiaUser);
-        for (String groupName : userMembership) {
-            final JahiaGroup group = managerService.lookupGroup(groupName);
-            if(!groupName.equals(JahiaGroupManagerService.GUEST_GROUPNAME) &&
-               !groupName.equals(JahiaGroupManagerService.USERS_GROUPNAME)) {
-                map.put(groupName,group);
-            }
-        }
-        return map;
-    }
-
     public static boolean hasPermission(JCRNodeWrapper node,String permission) {
-        return node.hasPermission(permission);
+        return node != null && node.hasPermission(permission);
     }
 
     public static String humanReadableFileLength(JCRNodeWrapper node) {
@@ -345,7 +324,7 @@ public class JCRTagUtils {
 
     public static String getConstraints(JCRNodeWrapper node) {
         try {
-            return ConstraintsHelper.getConstraints(node).replace(" ", ",");
+            return Patterns.SPACE.matcher(ConstraintsHelper.getConstraints(node)).replaceAll(",");
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             return "";
@@ -359,36 +338,6 @@ public class JCRTagUtils {
         return Text.escapeIllegalJcrChars(inputString);
     }
     
-    /**
-     * Returns the full user name, including first and last name. If those are
-     * not available, returns the username.
-     * 
-     * @param userNode the user JCR node
-     * @return the full user name, including first and last name. If those are
-     *         not available, returns the username
-     */
-    public static String userFullName(JCRNodeWrapper userNode) {
-        StringBuilder name = new StringBuilder();
-        String value = userNode.getPropertyAsString("j:firstName");
-        if (StringUtils.isNotEmpty(value)) {
-            name.append(value);
-        }
-        value = userNode.getPropertyAsString("j:lastName");
-        if (StringUtils.isNotEmpty(value)) {
-            if (name.length() > 0) {
-                name.append(" ");
-            }
-            name.append(value);
-        }
-
-        if (name.length() == 0) {
-            name.append(PrincipalViewHelper.getUserDisplayName(userNode.getName()));
-        }
-
-        return name.toString();
-    }
-
-
     public static List<ExtendedNodeType> getContributeTypes(JCRNodeWrapper node, JCRNodeWrapper areaNode, Value[] typelistValues) throws Exception {
         List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
 
@@ -405,7 +354,7 @@ public class JCRTagUtils {
                         JCRNodeWrapper next = (JCRNodeWrapper) nodeIterator.next();
                         components.add(next);
                     }
-                } else if (n.isNodeType("jnt:simpleComponent") && n.hasPermission("useComponent")) {
+                } else if (n.isNodeType("jnt:simpleComponent") && n.hasPermission("useComponentForCreate")) {
                     ExtendedNodeType t = NodeTypeRegistry.getInstance().getNodeType(n.getName());
                     for (String s : typeList) {
                         if (t.isNodeType(s)) {
@@ -417,7 +366,7 @@ public class JCRTagUtils {
             }
         }
         
-        String[] constraints = ConstraintsHelper.getConstraints(node).split(" ");
+        String[] constraints = Patterns.SPACE.split(ConstraintsHelper.getConstraints(node));
         List<ExtendedNodeType> finaltypes = new ArrayList<ExtendedNodeType>();
         for (ExtendedNodeType type : types) {
             for (String s : constraints) {
@@ -445,7 +394,7 @@ public class JCRTagUtils {
 
     private static List<String> getContributeTypesAsString(JCRNodeWrapper node, JCRNodeWrapper areaNode, Value[] typelistValues) throws RepositoryException {
         if ((typelistValues == null || typelistValues.length == 0) && !node.isNodeType("jnt:contentList") && !node.isNodeType("jnt:contentFolder")) {
-            return Arrays.asList(ConstraintsHelper.getConstraints(node).split(" "));
+            return Arrays.asList(Patterns.SPACE.split(ConstraintsHelper.getConstraints(node)));
         }
         if (typelistValues == null && node.hasProperty("j:contributeTypes")) {
             typelistValues = node.getProperty("j:contributeTypes").getValues();
@@ -534,5 +483,63 @@ public class JCRTagUtils {
             logger.error(e.getMessage(), e);
         }
         return results;
+    }
+
+    
+    /**
+     * Returns a string with comma-separated keywords, found on the current node (or the parent one, if inheritance is considered), or an
+     * empty string if no keywords are present.
+     * 
+     * @param node
+     *            the node to retrieve keywords from
+     * @param considerInherted
+     *            if set to <code>true</code> the keywords are also looked up to the parent nodes, if not found on the current one
+     * @return a string with comma-separated keywords, found on the current node (or the parent one, if inheritance is considered), or an
+     *         empty string if no keywords are present
+     */
+    public static String getKeywords(JCRNodeWrapper node, boolean considerInherted) {
+        if (node == null) {
+            return StringUtils.EMPTY;
+        }
+        String keywords = null;
+        try {
+            JCRNodeWrapper current = node;
+            while (current != null) {
+                JCRPropertyWrapper property = current.hasProperty("j:keywords") ? current
+                        .getProperty("j:keywords") : null;
+                        
+                if (property != null) {
+                    if (property.getDefinition().isMultiple()) {
+                        StringBuilder buff = new StringBuilder(64);
+                        for (Value val : property.getValues()) {
+                            String keyword = val.getString();
+                            if (StringUtils.isNotEmpty(keyword)) {
+                                if (buff.length() > 0) {
+                                    buff.append(", ");
+                                }
+                                buff.append(keyword);
+                            }
+                        }
+                        keywords = buff.toString();
+                    } else {
+                        keywords = property.getString();
+                    }
+                    break;
+                } else if (considerInherted && !"/".equals(current.getPath())) {
+                    current = current.getParent();
+                } else {
+                    break;
+                }
+            }
+        } catch (RepositoryException e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(e.getMessage(), e);
+            } else {
+                logger.warn("Unable to get keyworkds for node " + node.getPath() + ". Cause: "
+                        + e.getMessage());
+            }
+        }
+
+        return StringUtils.defaultString(keywords);
     }
 }

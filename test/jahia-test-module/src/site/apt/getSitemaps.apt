@@ -1,14 +1,14 @@
 Create Acme Sites and Get Sitemaps jmeter test
 
-this test create ACME web sites, with call the TestCreateSiteServlet Servlet, do Get with this Url :
+ this test create ACME web sites, with call the TestCreateSiteServlet Servlet, do Get with this Url :
 
 +----------------------------------------------------------------------------
 /cms/createsite?site=ACME
 +----------------------------------------------------------------------------
 
-there are more parameters you can set for the site creation for ACME sites:
+ there are more parameters you can set for the site creation for ACME sites:
  you can add (parents,childs and subchilds) to the request for add "news" page on 3 levels of the site.
-sample:
+ sample:
 
 +------------------------------------------------------------------------------------------------------
   http://localhost:8080/jahia/cms/createsite?site=ACME&parents=5&childs=5&subchilds=5
@@ -16,10 +16,10 @@ sample:
 +-----------------------------------------------------------------------------------------------------
 
 
-after the creation, the test do get on the home.sitemap.txt of the site.
+ after the creation, the test do get on the home.sitemap.txt of the site.
 
-a regex extractor grep all urls in the doget response, after a script beanshell work the variable return by the regexExtractor
-and save it into a file:
+ a regex extractor grep all urls in the doget response, after a script beanshell work the variable return by the regexExtractor
+ and save it into a file:
 
 +-----------------------------------------------------------------------------
 if (prev.isSuccessful()) \{

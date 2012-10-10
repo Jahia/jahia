@@ -43,9 +43,7 @@ package org.jahia.services.image;
 import ij.ImagePlus;
 
 /**
-* User: toto
-* Date: 3/11/11
-* Time: 14:41
+ * ImageJ image
 */
 public class ImageJImage implements Image {
     private String path;
@@ -78,4 +76,13 @@ public class ImageJImage implements Image {
             ip.close();
         }
     }
+
+    public void dispose() {
+        if (ip != null) {
+            ip.close();
+            ip.flush();
+            ip = null;
+        }
+    }
+
 }

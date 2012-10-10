@@ -39,20 +39,12 @@
  */
 package org.jahia.services.content.impl.jackrabbit;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Connection;
+import java.io.*;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.jcr.RepositoryException;
-import javax.sql.DataSource;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -62,9 +54,9 @@ import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.RepositoryCopier;
 import org.apache.jackrabbit.core.RepositoryImpl;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.DatabaseUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -91,7 +83,7 @@ public class RepositoryMigrator {
         try {
             is = new BufferedInputStream(new FileInputStream(scriptFile));
             for (String line : IOUtils.readLines(is)) {
-                if (StringUtils.isBlank(line) || line.trim().startsWith("#")) {
+                if (StringUtils.isBlank(line) || line.trim().startsWith("#") || line.trim().startsWith("--")) {
                     continue;
                 }
                 line = line.trim();
@@ -158,8 +150,6 @@ public class RepositoryMigrator {
     }
 
     private File configFile;
-
-    private DataSource datasource;
 
     private boolean keepBackup;
 
@@ -283,57 +273,18 @@ public class RepositoryMigrator {
 
         List<String> statements = getScriptStatements(scriptFile);
 
-        executeStatements(statements);
+        DatabaseUtils.executeStatements(statements);
 
         logger.info(description);
     }
 
     private void dbInitSettings() throws IOException, JDOMException {
-        datasource = (DataSource) SpringContextSingleton.getBean("dataSource");
         settingsBean = SettingsBean.getInstance();
 
         scriptsDir = new File(settingsBean.getJahiaDatabaseScriptsPath(), "sql/migration/"
                 + getDbType());
 
         logger.info("Migration SQL scripts will be looked up in folder {}", scriptsDir);
-    }
-
-    private void executeStatements(List<String> statements) throws SQLException {
-        Connection conn = null;
-        Statement stmt = null;
-        try {
-            conn = datasource.getConnection();
-            stmt = conn.createStatement();
-            for (String query : statements) {
-                try {
-                    stmt.execute(query);
-                } catch (SQLException e) {
-                    String lcLine = query.toLowerCase();
-                    if (!lcLine.contains("drop table") && !lcLine.contains("drop trigger")
-                            && !lcLine.contains("drop sequence")) {
-                        logger.error(
-                                "Unable to execute query: " + query + ". Cause: " + e.getMessage(),
-                                e);
-                        throw e;
-                    }
-                }
-            }
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (Exception e) {
-                    // ignore
-                }
-            }
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (Exception e) {
-                    // ignore
-                }
-            }
-        }
     }
 
     private String getDbType() throws JDOMException, IOException {
@@ -391,9 +342,8 @@ public class RepositoryMigrator {
 
                     performMigration(sourceCfg, targetCfg);
 
-                    swapRepositoryHome(tempRepoHome);
-
                     JCRContentUtils.deleteJackrabbitIndexes(repoHome);
+                    JCRContentUtils.deleteJackrabbitIndexes(tempRepoHome);
 
                     // swap configuration with the target one
                     File target = new File(tempConfigFile.getParentFile(),
@@ -417,9 +367,9 @@ public class RepositoryMigrator {
                         FileUtils.deleteQuietly(target);
                     }
 
-                    File workspaceConfig = new File(repoHome, "workspaces/default/workspace.xml");
+                    File workspaceConfig = new File(tempRepoHome, "workspaces/default/workspace.xml");
                     removeCopyPrefix(workspaceConfig, workspaceConfig);
-                    workspaceConfig = new File(repoHome, "workspaces/live/workspace.xml");
+                    workspaceConfig = new File(tempRepoHome, "workspaces/live/workspace.xml");
                     removeCopyPrefix(workspaceConfig, workspaceConfig);
 
                     dbExecute("jackrabbit-migration-2-drop-original-tables.sql",
@@ -427,6 +377,8 @@ public class RepositoryMigrator {
 
                     dbExecute("jackrabbit-migration-3-rename-temp-tables.sql",
                             "Temporary DB tables renamed");
+
+                    swapRepositoryHome(tempRepoHome);
 
                     logger.info("Complete repository migration took {} ms", (System.currentTimeMillis() - timer));
                 } catch (Exception e) {
@@ -469,15 +421,40 @@ public class RepositoryMigrator {
     }
 
     private void swapRepositoryHome(File repoHomeCopy) throws IOException {
-        if (keepBackup) {
-            File backupDir = new File(repoHome.getParentFile(), "repository-original");
-            FileUtils.moveDirectory(repoHome, backupDir);
-            logger.info("Backup of the source repository folder at {}", backupDir);
-        } else {
-            FileUtils.deleteDirectory(repoHome);
-        }
+        String repoHomePath = repoHome.getAbsolutePath();
+        try {
+            if (keepBackup) {
+                File backupDir = new File(repoHome.getParentFile(), "repository-original");
+                FileUtils.moveDirectory(repoHome, backupDir);
+                logger.info("Backup of the source repository folder at {}", backupDir);
+            } else {
+                try {
+                    FileUtils.deleteDirectory(repoHome);
+                } catch (IOException e) {
+                    logger.warn("Issue while deleting the " + repoHomePath
+                            + " directory, we will try to empty it");
+                    FileUtils.cleanDirectory(repoHome);                    
+                }
+            }
 
-        FileUtils.moveDirectory(repoHomeCopy, repoHome);
+            FileUtils.moveDirectory(repoHomeCopy, repoHome);
+        } catch (IOException e) {
+            logger.error(
+                    "The migration was successful, except the last step: we are unable to delete directory {}."
+                            + " Jahia server will be stopped now.", repoHomePath);
+            String repoHomeCopyPath = repoHomeCopy.getAbsolutePath();
+            logger.error(
+                    "Please delete the directory {} manually (perhaps an OS reboot is required to free the file locks)"
+                            + " and copy the content of {} to {}", new String[] { repoHomePath,
+                            repoHomeCopyPath, repoHomePath });
+            logger.error(
+                    "Also delete the following folders if they are present:\n{}\\index\n{}\\workspaces\\default\\index\n{}\\workspaces\\live\\index",
+                    new String[] { repoHomePath, repoHomePath, repoHomePath });
+
+            logger.error("Start Jahia server afterwards.", new String[] { repoHomePath,
+                    repoHomeCopyPath, repoHomePath });
+            System.exit(1);
+        }
 
         logger.info("Replaced repository with the migrated copy");
     }

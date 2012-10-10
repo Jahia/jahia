@@ -41,6 +41,7 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.comparator.NumericStringComparator;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
@@ -54,6 +55,7 @@ import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionIterator;
 import javax.jcr.version.VersionManager;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -104,11 +106,22 @@ public class JCRVersionService extends JahiaService {
         VersionHistory versionHistory = session.getWorkspace().getVersionManager().getVersionHistory(node.getPath());
 
         VersionIterator versions = versionHistory.getAllVersions();
+        return getVersionsInfos(versionHistory, versions);
+    }
+
+    public List<VersionInfo> getLinearVersionInfos(Session session, JCRNodeWrapper node) throws RepositoryException {
+        VersionHistory versionHistory = session.getWorkspace().getVersionManager().getVersionHistory(node.getPath());
+
+        VersionIterator versions = versionHistory.getAllLinearVersions();
+        return getVersionsInfos(versionHistory, versions);
+    }
+
+    private List<VersionInfo> getVersionsInfos(VersionHistory versionHistory, VersionIterator versions) throws RepositoryException {
         if (versions.hasNext()) {
             versions.nextVersion();
             // the first is the root version, which has no properties, so we will ignore it.
         }
-        Set<VersionInfo> versionList = new TreeSet<VersionInfo>();
+        List<VersionInfo> versionList = new ArrayList<VersionInfo>();
         while (versions.hasNext()) {
             Version v = versions.nextVersion();
             String[] versionLabels = versionHistory.getVersionLabels(v);
@@ -119,7 +132,8 @@ public class JCRVersionService extends JahiaService {
                 }
             }
         }
-        return new ArrayList<VersionInfo>(versionList);
+        Collections.sort(versionList,new NumericStringComparator<VersionInfo>(((JCRSessionWrapper) versionHistory.getSession()).getLocale()));
+        return versionList;
     }
 
 
@@ -139,6 +153,15 @@ public class JCRVersionService extends JahiaService {
             String[] labels = vh.getVersionLabels();
             for (String label : labels) {
                 if (label.startsWith(vh.getSession().getWorkspace().getName()+"_removed")) {
+                    try {
+                        Date removedAt = Constants.DATE_FORMAT.parse(StringUtils.substringAfter(label, vh.getSession().getWorkspace().getName() + "_removed_at_"));
+                        if (removedAt.before(versionDate)) {
+                            return null;
+                        }
+                    } catch (ParseException e1) {
+                        logger.error("Cannot parse deletion date for label "+label ,e1);
+                        return null;
+                    }
                     Version base = vh.getVersionByLabel(label);
                     LinkedList<Version> versions = new LinkedList<Version>();
                     while (base != null) {
@@ -407,8 +430,10 @@ public class JCRVersionService extends JahiaService {
                         String labelWithWs = node.getSession().getWorkspace().getName() + "_" + label;
                         if (!versionHistory.hasVersionLabel(labelWithWs)) {
                             Version version = versionManager.getBaseVersion(node.getPath());
-                            logger.debug("Add version label " + labelWithWs + " on " + node.getPath() + " for version " +
-                                    version.getName());
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Add version label " + labelWithWs + " on " + node.getPath() + " for version " +
+                                        version.getName());
+                            }
                             if (nodeWrapper.isVersioned()) {
                                 versionHistory.addVersionLabel(version.getName(), labelWithWs, true);
                             }
@@ -416,7 +441,6 @@ public class JCRVersionService extends JahiaService {
                         return null;
                     }
                 });
-
     }
 
     public void addVersionLabel(final List<String> allUuids, final String label, final String workspace)
@@ -431,8 +455,10 @@ public class JCRVersionService extends JahiaService {
                         String labelWithWs = workspace + "_" + label;
                         if (!versionHistory.hasVersionLabel(labelWithWs)) {
                             Version version = versionManager.getBaseVersion(nodeWrapper.getPath());
-                            logger.debug("Add version label " + labelWithWs + " on " + nodeWrapper.getPath() + " for version " +
-                                    version.getName());
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Add version label " + labelWithWs + " on " + nodeWrapper.getPath() + " for version " +
+                                        version.getName());
+                            }
                             if (nodeWrapper.isVersioned()) {
                                 versionHistory.addVersionLabel(version.getName(), labelWithWs, true);
                             }

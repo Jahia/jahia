@@ -42,25 +42,28 @@ package org.jahia.taglibs.functions;
 
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.TextExtractor;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.Jahia;
-import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
+import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
-import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.seo.VanityUrl;
+import org.jahia.services.seo.jcr.VanityUrlService;
 import org.jahia.utils.Url;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.jcr.AccessDeniedException;
 import javax.jcr.RangeIterator;
 import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
+import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -70,6 +73,18 @@ import java.util.regex.Pattern;
  * @author Sergiy Shyrkov
  */
 public class Functions {
+    
+    private static final Comparator<Map<String, Object>> DISPLAY_NAME_COMPARATOR = new Comparator<Map<String, Object>>() {
+        public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+            return StringUtils
+                    .defaultString((String) o1.get("displayName"))
+                    .toLowerCase()
+                    .compareTo(
+                            StringUtils.defaultString((String) o2.get("displayName")).toLowerCase());
+        }
+    };
+
+    private static final Logger logger = LoggerFactory.getLogger(Functions.class);
 
     public static String attributes(Map<String, Object> attributes) {
         StringBuilder out = new StringBuilder();
@@ -81,85 +96,6 @@ public class Functions {
         }
 
         return out.toString();
-    }
-
-    public static Object defaultValue(Object value, Object defaultValue) {
-        return (value != null && (!(value instanceof String) || (((String) value)
-                .length() > 0))) ? value : defaultValue;
-    }
-
-    public static String removeHtmlTags(String value) {
-        Source source = new Source(value);
-        TextExtractor textExtractor = source.getTextExtractor();
-        textExtractor.setExcludeNonHTMLElements(true);
-        textExtractor.setConvertNonBreakingSpaces(false);
-        textExtractor.setIncludeAttributes(false);
-        return textExtractor.toString();
-    }
-
-    public static Boolean memberOf(String groups) {
-        boolean result = false;
-        final ProcessingContext jParams = Jahia.getThreadParamBean();
-        final String[] groupArray = StringUtils.split(groups, ',');
-        for (String aGroupArray : groupArray) {
-            final String groupName = aGroupArray.trim();
-            if (JCRSessionFactory.getInstance().getCurrentUser().isMemberOfGroup(jParams.getSiteID(), groupName)) {
-                return true;
-            }
-        }
-
-        return result;
-    }
-
-    public static Boolean notMemberOf(String groups) {
-        boolean result = true;
-        final ProcessingContext jParams = Jahia.getThreadParamBean();
-        final String[] groupArray = StringUtils.split(groups, ',');
-        for (String aGroupArray : groupArray) {
-            String groupName = aGroupArray.trim();
-            if (JCRSessionFactory.getInstance().getCurrentUser().isMemberOfGroup(jParams.getSiteID(),
-                    groupName)) {
-                return false;
-            }
-        }
-
-        return result;
-    }
-
-    public static String stringConcatenation(String value, String appendix1, String appendix2) {
-        final StringBuffer buff = new StringBuffer();
-        if (value != null) {
-            buff.append(value);
-        }
-        if (appendix1 != null) {
-            buff.append(appendix1);
-        }
-        if (appendix2 != null) {
-            buff.append(appendix2);
-        }
-        return buff.toString();
-    }
-
-
-    public static String removeDuplicates(String initString, String separator) {
-        final String[] fullString = initString.split(separator);
-        StringBuilder finalString = new StringBuilder();
-        String tmpString = initString;
-        for (String s : fullString) {
-            if (tmpString.contains(s)) {
-                finalString.append(s);
-                if (finalString.length() > 0) {
-                    finalString.append(separator);
-                }
-                tmpString = tmpString.replaceAll(s, "");
-            }
-        }
-        return finalString.toString();
-    }
-
-    public static int countOccurences(String initString, String searchString) {
-        final String[] fullString = ("||||" + initString + "||||").split(searchString);
-        return fullString.length - 1;
     }
 
     /**
@@ -187,31 +123,79 @@ public class Functions {
         return found;
     }
 
-    public static long length(Object obj) throws JspTagException {
-        return (obj != null && obj instanceof RangeIterator) ? JCRContentUtils.size((RangeIterator) obj)
-                : org.apache.taglibs.standard.functions.Functions.length(obj);
+    public static int countOccurences(String initString, String searchString) {
+        final String[] fullString = ("||||" + initString + "||||").split(searchString);
+        return fullString.length - 1;
     }
 
     /**
-     * Reverse the content of a list. Only works with some List.
-     *
-     * @param list List<T> list to be reversed.
-     * @return <code>java.util.List</code> the reversed list.
+     * Decode facet filter URL parameter
+     * @param inputString enocded facet filter URL query parameter
+     * @return decoded facet filter parameter
      */
-    public static <T> List<T> reverse(Collection<T> list) {
-        List<T> copy = new ArrayList<T>();
-        copy.addAll(list);
-        Collections.reverse(copy);
-        return copy;
+    public static String decodeUrlParam(String inputString) {
+        return Url.decodeUrlParam(inputString);
     }
 
-    public static <T> Iterator<T> reverse(Iterator<T> it) {
-        List<T> copy = new ArrayList<T>();
-        while (it.hasNext()) {
-            copy.add(it.next());
+    public static Object defaultValue(Object value, Object defaultValue) {
+        return (value != null && (!(value instanceof String) || (((String) value)
+                .length() > 0))) ? value : defaultValue;
+    }
+
+
+    public static java.lang.String displayLocaleNameWith(Locale localeToDisplay, Locale localeUsedForRendering) {
+        return localeToDisplay.getDisplayName(localeUsedForRendering);
+    }
+
+    /**
+     * Encode facet filter URL parameter
+     * @param inputString facet filter parameter
+     * @return filter encoded for URL query parameter usage
+     */
+    public static String encodeUrlParam(String inputString) {
+        return Url.encodeUrlParam(inputString);
+    }
+
+    public static VanityUrl getDefaultVanityUrl(JCRNodeWrapper node) {
+        try {
+            VanityUrlService vanityUrlService = (VanityUrlService) SpringContextSingleton.getBean(VanityUrlService.class.getName());
+            List<VanityUrl> l = vanityUrlService.getVanityUrls(node, node.getSession().getLocale().toString(), node.getSession());
+            VanityUrl vanityUrl = null;
+            for (VanityUrl v : l) {
+                if (v.isDefaultMapping()) {
+                    vanityUrl =  v;
+                }
+            }
+            return vanityUrl;
+        } catch (RepositoryException e) {
+
         }
-        Collections.reverse(copy);
-        return copy.iterator();
+        return null;
+    }
+
+    public static List<Map<String, Object>> getRolesForNode(JCRNodeWrapper node, boolean includeInherited, boolean expandGroups, String roles, int limit, String sortType) {
+        List<Map<String, Object>> results;
+
+        boolean sortByDisplayName = sortType != null && sortType.equalsIgnoreCase("displayName");
+        results = JCRContentUtils.getRolesForNode(node, includeInherited, expandGroups, roles, limit,sortType != null && sortType.equalsIgnoreCase("latestFirst"));
+        if (sortByDisplayName) {
+            for (Map<String, Object> result : results) {
+                result.put("displayName", PrincipalViewHelper.getFullName((Principal) result.get("principal")));
+            }
+            Collections.sort(results, DISPLAY_NAME_COMPARATOR);
+        }
+        return results;
+    }
+
+    public static Boolean hasScriptView(JCRNodeWrapper node, String viewName, RenderContext renderContext) {
+        try {
+            return RenderService.getInstance().resolveScript(new org.jahia.services.render.Resource(node, renderContext.getMainResource().getTemplateType(), viewName, renderContext.getMainResource().getContextConfiguration()), renderContext) != null;
+        } catch (TemplateNotFoundException e) {
+            //Do nothing
+        } catch (RepositoryException e) {
+           //Do nothing
+        }
+        return false;
     }
 
     /**
@@ -234,61 +218,125 @@ public class Functions {
         return isIt;
     }
 
-
-    public static java.lang.String displayLocaleNameWith(Locale localeToDisplay, Locale localeUsedForRendering) {
-        return localeToDisplay.getDisplayName(localeUsedForRendering);
+    public static long length(Object obj) throws JspTagException {
+        return (obj != null && obj instanceof RangeIterator) ? JCRContentUtils.size((RangeIterator) obj)
+                : org.apache.taglibs.standard.functions.Functions.length(obj);
     }
 
-    /**
-     * Looks up the user by the specified user key (with provider prefix) or username.
-     *
-     * @param user the key or the name of the user to perform lookup for
-     * @return the user for the specified user key or name or <code>null</code> if the corresponding user cannot be found
-     * @throws IllegalArgumentException in case the specified user key is <code>null</code>
-     */
-    public static JahiaUser lookupUser(String user) throws IllegalArgumentException {
-        if (user == null) {
-            throw new IllegalArgumentException("Specified user key is null");
-        }
-        return user.startsWith("{") ? ServicesRegistry.getInstance().getJahiaUserManagerService()
-                .lookupUserByKey(user) : ServicesRegistry.getInstance()
-                .getJahiaUserManagerService().lookupUser(user);
+
+
+    public static boolean matches(String pattern, String str) {
+        return Pattern.compile(pattern).matcher(str).matches();
     }
 
     public static String removeCacheTags(String txt) {
         return AggregateCacheFilter.removeEsiTags(txt);
     }
 
-    public static boolean matches(String pattern, String str) {
-        return Pattern.compile(pattern).matcher(str).matches();
-    }
-
-    /**
-     * Encode facet filter URL parameter
-     * @param inputString facet filter parameter
-     * @return filter encoded for URL query parameter usage
-     */
-    public static String encodeUrlParam(String inputString) {
-        return Url.encodeUrlParam(inputString);
-    }
-
-    /**
-     * Decode facet filter URL parameter
-     * @param inputString enocded facet filter URL query parameter
-     * @return decoded facet filter parameter
-     */
-    public static String decodeUrlParam(String inputString) {
-        return Url.decodeUrlParam(inputString);
-    }
-
-    public static Boolean hasScriptView(JCRNodeWrapper node, String viewName, RenderContext renderContext) {
-        try {
-            return RenderService.getInstance().resolveScript(new org.jahia.services.render.Resource(node, renderContext.getMainResource().getTemplateType(), viewName, renderContext.getMainResource().getContextConfiguration()), renderContext) != null;
-        } catch (TemplateNotFoundException e) {
-            //Do nothing
-        } catch (RepositoryException e) {
-           //Do nothing
+    public static String removeDuplicates(String initString, String separator) {
+        final String[] fullString = initString.split(separator);
+        StringBuilder finalString = new StringBuilder();
+        String tmpString = initString;
+        for (String s : fullString) {
+            if (tmpString.contains(s)) {
+                finalString.append(s);
+                if (finalString.length() > 0) {
+                    finalString.append(separator);
+                }
+                tmpString = tmpString.replaceAll(s, "");
+            }
         }
-        return false;
+        return finalString.toString();
+    }
+
+    public static String removeHtmlTags(String value) {
+        Source source = new Source(value);
+        TextExtractor textExtractor = source.getTextExtractor();
+        textExtractor.setExcludeNonHTMLElements(true);
+        textExtractor.setConvertNonBreakingSpaces(false);
+        textExtractor.setIncludeAttributes(false);
+        return textExtractor.toString();
+    }
+    
+    /**
+     * Reverse the content of a list. Only works with some List.
+     *
+     * @param list List<T> list to be reversed.
+     * @return <code>java.util.List</code> the reversed list.
+     */
+    public static <T> List<T> reverse(Collection<T> list) {
+        List<T> copy = new ArrayList<T>();
+        copy.addAll(list);
+        Collections.reverse(copy);
+        return copy;
+    }
+    
+    public static <T> Iterator<T> reverse(Iterator<T> it) {
+        List<T> copy = new ArrayList<T>();
+        while (it.hasNext()) {
+            copy.add(it.next());
+        }
+        Collections.reverse(copy);
+        return copy.iterator();
+    }
+
+    public static <T> Map<String, T> reverse(Map<String, T> orderedMap) {
+        if (orderedMap == null || orderedMap.isEmpty()) {
+            return orderedMap;
+        }
+        LinkedHashMap<String, T> reversed = new LinkedHashMap<String, T>(orderedMap.size());
+        ListIterator<String> li = new LinkedList<String>(orderedMap.keySet())
+                .listIterator(orderedMap.size());
+        while (li.hasPrevious()) {
+            String key = li.previous();
+            reversed.put(key, orderedMap.get(key));
+        }
+        return reversed;
+    }
+
+    public static String stringConcatenation(String value, String appendix1, String appendix2) {
+        final StringBuffer buff = new StringBuffer();
+        if (value != null) {
+            buff.append(value);
+        }
+        if (appendix1 != null) {
+            buff.append(appendix1);
+        }
+        if (appendix2 != null) {
+            buff.append(appendix2);
+        }
+        return buff.toString();
+    }
+    
+    public static String sqlEncode(String s) {
+        return JCRContentUtils.sqlEncode(s);
+    }
+
+    public static String modulePath(HttpServletRequest req, String moduleName) {
+        return req.getContextPath() + "/modules/" + moduleName;
+    }
+    
+    /**
+     * Returns the first parent of the specified node, which has the ACL inheritance broken. If not found, null<code>null</code> is
+     * returned.
+     * 
+     * @param node
+     *            the node to search parent for
+     * 
+     * @return the first parent of the specified node, which has the ACL inheritance broken. If not found, null<code>null</code> is returned
+     */
+    public static JCRNodeWrapper getParentWithAclInheritanceBroken(JCRNodeWrapper node) {
+        try {
+            return JCRContentUtils.getParentWithAclInheritanceBroken(node);
+        } catch (RepositoryException e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(e.getMessage(), e);
+            } else {
+                logger.warn("Unable to get parent of a node " + node.getPath()
+                        + " with ACL inheritance break. Cause: " + e.getMessage());
+            }
+        }
+
+        return null;
     }
 }

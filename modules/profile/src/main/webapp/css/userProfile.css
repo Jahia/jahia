@@ -1,4 +1,17 @@
-
+/******************************************************************************
+*  jeditable
+******************************************************************************/
+.bodywrapper .inline-editable {
+   padding-bottom: 1px;
+   border-bottom: 1px dotted #0099FF;
+   color: #0099ff;
+}
+.bodywrapper .inline-editable-block {
+   padding: 5px;
+   border: 1px dotted #0099FF;
+   background-color:#C8E9FE;
+   display: block;
+}
 /******************************************************************************
 *  userDetails full
 ******************************************************************************/
@@ -44,6 +57,12 @@
 	padding:2px 5px;
 	margin:0;
 	list-style:none
+}
+.bodywrapper .user-profile-list li {
+	padding:2px 5px;
+	margin:0;
+	list-style:none;
+    overflow:hidden;
 }
 .bodywrapper .user-profile-list .label {
 	font-weight:bold;

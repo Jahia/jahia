@@ -26,9 +26,10 @@
         <ui:langBar display="horizontal" linkDisplay="flag" flagType="shadow" activeLanguagesOnly="${renderContext.liveMode}"/>
     </c:when>
     <c:otherwise>
+        <ui:initLangBarAttributes activeLanguagesOnly="${renderContext.liveMode}"/>
         <div id="languages">
             <ul>
-                <c:forEach items="${renderContext.liveMode ? renderContext.site.activeLanguagesAsLocales : renderContext.site.languagesAsLocales}" var="language">
+                <c:forEach items="${requestScope.languageCodes}" var="language">
                     <ui:displayLanguageSwitchLink languageCode="${language}" display="false" urlVar="switchUrl"
                                                   var="renderedLanguage"
                                                   linkKind="${currentNode.properties.typeOfDisplay.string}"/>

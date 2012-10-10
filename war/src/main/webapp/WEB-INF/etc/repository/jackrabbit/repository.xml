@@ -90,6 +90,9 @@
             <!--param name="cacheSize" value="100000" /-->
             
             <param name="onWorkspaceInconsistency" value="${jahia.jackrabbit.onWorkspaceInconsistency}"/>
+            <param name="enableConsistencyCheck" value="${jahia.jackrabbit.searchIndex.enableConsistencyCheck}"/>
+            <param name="forceConsistencyCheck" value="${jahia.jackrabbit.searchIndex.forceConsistencyCheck}"/>
+            <param name="autoRepair" value="${jahia.jackrabbit.searchIndex.autoRepair}"/>
         </SearchIndex>
 
         <NodeTypeInstanceHandler class="org.apache.jackrabbit.core.JahiaNodeTypeInstanceHandlerFactory">
@@ -151,6 +154,9 @@
         <param name="textFilterClasses" value=""/>
         
         <param name="onWorkspaceInconsistency" value="${jahia.jackrabbit.onWorkspaceInconsistency}"/>
+        <param name="enableConsistencyCheck" value="${jahia.jackrabbit.searchIndex.enableConsistencyCheck}"/>
+        <param name="forceConsistencyCheck" value="${jahia.jackrabbit.searchIndex.forceConsistencyCheck}"/>
+        <param name="autoRepair" value="${jahia.jackrabbit.searchIndex.autoRepair}"/>
     </SearchIndex>
 
     <DataStore class="org.apache.jackrabbit.core.data.FileDataStore">

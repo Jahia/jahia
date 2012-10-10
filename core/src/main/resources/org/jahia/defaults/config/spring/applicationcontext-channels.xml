@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="ChannelService" class="org.jahia.services.channels.ChannelService" factory-method="getInstance"/>
+
+    <bean id="GenericUserAgentChannelProvider" class="org.jahia.services.channels.providers.UserAgentChannelProvider">
+        <property name="priority" value="-99"/>
+        <property name="channelService" ref="ChannelService"/>
+        <property name="channelList">
+            <list>
+                <bean class="org.jahia.services.channels.Channel">
+                    <property name="identifier" value="generic"/>
+                    <property name="fallBack" value="root"/>
+                    <property name="capabilities">
+                        <map>
+                            <entry key="display-name" value="Generic"/>
+                            <entry key="device-image" value="/engines/images/devices/generic-small.png"/>
+                        </map>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+</beans>

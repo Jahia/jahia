@@ -869,8 +869,7 @@ public class ManageSites extends AbstractAdministrationModule {
             }
             Locale selectedLocale = (Locale) session.getAttribute(CLASS_NAME + "selectedLocale");
             if (selectedLocale == null) {
-                selectedLocale =
-                        LanguageCodeConverters.languageCodeToLocale(Jahia.getSettings().getDefaultLanguageCode());
+                selectedLocale = Jahia.getSettings().getDefaultLocale();
             }
             session.setAttribute(CLASS_NAME + "selectedLocale", selectedLocale);
             request.setAttribute("selectedLocale", selectedLocale);
@@ -951,8 +950,9 @@ public class ManageSites extends AbstractAdministrationModule {
                     JahiaSiteTools.getAdminGroup(site).addMember(adminSiteUser);
                 }
 
-                // set as current site if the session site is null
-                if (session.getAttribute(ProcessingContext.SESSION_SITE) == null) {
+                // set as current site if the session site is null or systemsite
+                JahiaSite sessionSite = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
+                if (sessionSite == null || sessionSite.getSiteKey().equals(JahiaSitesBaseService.SYSTEM_SITE_KEY)) {
                     session.setAttribute(ProcessingContext.SESSION_SITE, site);
                     session.setAttribute(JahiaAdministration.CLASS_NAME + "manageSiteID", new Integer(site.getID()));
                 }
@@ -1283,8 +1283,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
             Locale selectedLocale = (Locale) session.getAttribute(CLASS_NAME + "selectedLocale");
             if (selectedLocale == null) {
-                selectedLocale = LanguageCodeConverters
-                        .languageCodeToLocale(org.jahia.settings.SettingsBean.getInstance().getDefaultLanguageCode());
+                selectedLocale = SettingsBean.getInstance().getDefaultLocale();
             }
 
 
@@ -1932,11 +1931,15 @@ public class ManageSites extends AbstractAdministrationModule {
                                     .validateImportFile(
                                             JCRSessionFactory.getInstance().getCurrentUserSession(),
                                             zis2, "application/xml", installedModules);
-                            logger.info(
-                                    "Import {}/{} validated in {} ms: {}",
-                                    new String[] { filename, z.getName(),
-                                            String.valueOf((System.currentTimeMillis() - timer)),
-                                            validationResults.toString() });
+                            if (!validationResults.isSuccessful()) {
+                                logger.error("Failed Import {}/{} validated in {} ms: {}",
+                                        new String[]{filename, z.getName(), String.valueOf(
+                                                (System.currentTimeMillis() - timer)), validationResults.toString()});
+                            } else {
+                                logger.info("Successful Import {}/{} validated in {} ms: {}",
+                                        new String[]{filename, z.getName(), String.valueOf(
+                                                (System.currentTimeMillis() - timer)), validationResults.toString()});
+                            }
                             if (!validationResults.isSuccessful()) {
                                 if (importInfos.containsKey("validationResult")) {
                                     // merge results

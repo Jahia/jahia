@@ -42,6 +42,7 @@ package org.jahia.services.uicomponents.bean.contentmanager;
 
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.Patterns;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditorSupport;
@@ -57,7 +58,7 @@ public class ColumnPropertyEditor extends PropertyEditorSupport {
 
     public void setAsText(String text) throws IllegalArgumentException {
         Column c = new Column();
-        String[] values = text.split(",");
+        String[] values = Patterns.COMMA.split(text);
         if (values[0].contains(".")) {
             c.setKey(StringUtils.substringAfter(values[0],"."));
             c.setDeclaringNodeType(StringUtils.substringBefore(values[0],"."));

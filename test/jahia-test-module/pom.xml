@@ -125,7 +125,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>${project.version}</version>
+            <version>6.6.1.0</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -137,7 +137,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-gwt</artifactId>
-            <version>${project.version}</version>
+            <version>6.6.1.0</version>
             <scope>provided</scope>
         </dependency>
     	<dependency>

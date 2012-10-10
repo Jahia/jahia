@@ -44,10 +44,7 @@ import java.io.IOException;
 import java.util.*;
 
 import javax.jcr.RepositoryException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
@@ -64,11 +61,13 @@ import org.jahia.services.seo.urlrewrite.UrlRewriteService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
+import org.tuckey.web.filters.urlrewrite.RewrittenUrl;
 
 /**
  * Logout controller.
@@ -159,6 +158,34 @@ public class Logout implements Controller {
             }
         }
         if (StringUtils.isNotEmpty(redirect)) {
+            UrlRewriteService rewriteService = (UrlRewriteService) SpringContextSingleton.getBean("UrlRewriteService");
+            try {
+                final String r = redirect;
+                HttpServletRequestWrapper wrapper = new HttpServletRequestWrapper(request) {
+                    @Override
+                    public String getRequestURI() {
+                        return r;
+                    }
+
+                    @Override
+                    public String getPathInfo() {
+                        if (r.startsWith(getContextPath() + "/cms/")) {
+                            return StringUtils.substringAfter(r,getContextPath() + "/cms");
+                        }
+                        return null;
+                    }
+                };
+
+                if (rewriteService.prepareInbound(wrapper, response)) {
+                    RewrittenUrl restored = rewriteService.rewriteInbound(wrapper, response);
+                    if (restored != null) {
+                        redirect = request.getContextPath() + restored.getTarget();
+                    }
+                }
+            } catch (Exception e) {
+                logger.error("Cannot rewrite redirection url",e);
+            }
+
             String prefix = request.getContextPath() + "/cms/";
             if (redirect.startsWith(prefix)) {
                 String url = "/" + StringUtils.substringAfter(redirect, prefix);
@@ -178,11 +205,9 @@ public class Logout implements Controller {
                 } else if (url.startsWith("/contribute/")) {
                     url = "/render/" + StringUtils.substringAfter(url,"/contribute/");
                     urls.add(url);
-                } else if (url.startsWith("/render/default/")) {
+                }
+                if (url.startsWith("/render/default/")) {
                     url = "/render/live/" + StringUtils.substringAfter(url,"/render/default/");
-                    urls.add(url);
-                } else if (!url.startsWith("/render/live")) {
-                    url = "/render/live/" + StringUtils.substringAfter(url,"/");
                     urls.add(url);
                 }
                 for (String currentUrl : urls) {
@@ -195,12 +220,14 @@ public class Logout implements Controller {
                         } else {
                             redirect = request.getContextPath() + "/";
                         }
+                        redirect = rewriteService.rewriteOutbound(redirect, request, response);
                         response.sendRedirect(response.encodeRedirectURL(redirect));
                         return;
                     } catch (Exception e) {
+                        logger.debug("Cannot redirect to "+currentUrl, e);
                     }
                 }
-                response.sendRedirect(response.encodeRedirectURL(prefix + StringUtils.substringAfter(urls.get(0), "/")));
+                response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/"));
                 return;
             }
         }
@@ -320,7 +347,7 @@ public class Logout implements Controller {
         if ((preserveSessionAttributes != null) &&
             (httpServletRequest.getSession(false) != null) &&
                 (preserveSessionAttributes.length() > 0)) {
-            String[] sessionAttributeNames = preserveSessionAttributes.split("###");
+            String[] sessionAttributeNames = Patterns.TRIPLE_HASH.split(preserveSessionAttributes);
             HttpSession session = httpServletRequest.getSession(false);
             for (String sessionAttributeName : sessionAttributeNames) {
                 Object attributeValue = session.getAttribute(sessionAttributeName);

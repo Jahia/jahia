@@ -54,6 +54,7 @@ import javax.servlet.jsp.PageContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * User: toto
@@ -65,6 +66,7 @@ public class WorkflowTag extends AbstractJahiaTag {
     private String id;
     private String var;
     private int scope = PageContext.PAGE_SCOPE;
+    private Locale locale;
 
     public void setProvider(String provider) {
         this.provider = provider;
@@ -84,7 +86,7 @@ public class WorkflowTag extends AbstractJahiaTag {
 
     @Override
     public int doEndTag() throws JspException {
-        Workflow workflow = WorkflowService.getInstance().getWorkflow(provider, id, getUILocale() );
+        Workflow workflow = WorkflowService.getInstance().getWorkflow(provider, id, locale != null ? locale : getUILocale() );
 
         pageContext.setAttribute(var, workflow, scope);
 
@@ -94,4 +96,7 @@ public class WorkflowTag extends AbstractJahiaTag {
         return super.doEndTag();
     }
 
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
 }

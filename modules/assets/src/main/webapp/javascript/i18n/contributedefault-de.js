@@ -1,6 +1,6 @@
 ﻿contributionI18n = $.extend(contributionI18n,{
     'cancel': 'Abbrechen',
-    'edit': 'Klicken Sie auf Bearbeiten um Inhalte zu ändern',
+    'edit': 'Klicken Sie zum Bearbeiten',
     'uploaded': 'Datei wurde hochgeladen. Klicken Sie auf Vorschau um neue Datei zu sehen.',
     'wcag.close': 'Schließen',
     'wcag.context': 'Kontext',

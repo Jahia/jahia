@@ -116,7 +116,10 @@
     </tag>
     <!--Groups and user search -->
     <tag>
-        <description>Displays a limited list of groups names</description>
+        <description>
+            DEPRECATED
+            Displays a limited list of groups names
+        </description>
         <name>groupList</name>
         <tag-class>org.jahia.taglibs.uicomponents.user.GroupListTag</tag-class>
         <body-content>JSP</body-content>
@@ -176,7 +179,10 @@
         </attribute>
     </tag>
     <tag>
-        <description>Displays a limited list of users names</description>
+        <description>
+            DEPRECATED
+            Displays a limited list of users names
+        </description>
         <name>userList</name>
         <tag-class>org.jahia.taglibs.uicomponents.user.UserListTag</tag-class>
         <body-content>JSP</body-content>
@@ -456,18 +462,18 @@
         <function-signature>org.jahia.services.content.JCRNodeWrapper getBindedComponent(org.jahia.services.content.JCRNodeWrapper, org.jahia.services.render.RenderContext, java.lang.String)
         </function-signature>
         <example>
-            ${facet:getAppliedFacetFilters(facet:decodeFacetUrlParam(param[facetParamVarName])[facetParamVarName])}
+            ${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}
         </example>
     </function>
 
     <function>
-        <description>Get the bound component node</description>
+        <description>Get the path of the bound component node</description>
         <name>getBindedComponentPath</name>
         <function-class>org.jahia.taglibs.uicomponents.Functions</function-class>
         <function-signature>java.lang.String getBindedComponentPath(org.jahia.services.content.JCRNodeWrapper, org.jahia.services.render.RenderContext, java.lang.String)
         </function-signature>
         <example>
-            ${facet:getAppliedFacetFilters(facet:decodeFacetUrlParam(param[facetParamVarName])[facetParamVarName])}
+            ${uiComponents:getBindedComponentPath(currentNode, renderContext, 'j:bindedComponent')}
         </example>
     </function>
 

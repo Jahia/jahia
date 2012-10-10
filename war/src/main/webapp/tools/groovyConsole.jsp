@@ -77,9 +77,6 @@ pageContext.setAttribute("took", System.currentTimeMillis() - timer);
     onkeyup="if ((event || window.event).keyCode == 13 && (event || window.event).ctrlKey && confirm('WARNING: You are about to execute a script, which can manipulate the repository data or execute services in Jahia. Are you sure, you want to continue?')) document.getElementById('groovyForm').submit();">${param.script}</textarea></p>
 <p><input type="submit" value="Execute ([Ctrl+Enter])" onclick="if (!confirm('WARNING: You are about to execute a script, which can manipulate the repository data or execute services in Jahia. Are you sure, you want to continue?')) { return false; }" /></p>
 </form>
-<p>
-    <img src="<c:url value='/engines/images/icons/home_on.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;
-    <a href="<c:url value='/tools/index.jsp'/>">to Jahia Tools overview</a>
-</p>
+<%@ include file="gotoIndex.jspf" %>
 </body>
 </html>

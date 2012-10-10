@@ -40,8 +40,6 @@
 
 package org.jahia.bin;
 
-import static javax.servlet.http.HttpServletResponse.SC_METHOD_NOT_ALLOWED;
-
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -62,19 +60,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.lucene.queryParser.QueryParser;
 import org.jahia.api.Constants;
-import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.URLResolver;
-import org.jahia.services.usermanager.JahiaUser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  * A small servlet to allow us to perform queries on the JCR.
@@ -187,6 +181,7 @@ public class Find extends BaseFindController {
         return result;
     }
 
+    @Override
     protected void handle(HttpServletRequest request, HttpServletResponse response) throws RenderException,
             IOException, RepositoryException {
         URLResolver urlResolver = urlResolverFactory.createURLResolver(request.getPathInfo(), request.getServerName(), request);
@@ -207,39 +202,6 @@ public class Find extends BaseFindController {
             logger.error("Invalid query", e);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
-    }
-
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        long startTime = System.currentTimeMillis();
-        String sessionId = null;
-        try {
-            if (logger.isInfoEnabled()) {
-                sessionId = request.getSession().getId();
-            }
-            if (request.getMethod().equals("GET") || request.getMethod().equals("POST")) {
-                handle(request, response);
-            } else if (request.getMethod().equals("OPTIONS")) {
-                response.setHeader("Allow", "GET, OPTIONS, POST");
-            } else {
-                response.sendError(SC_METHOD_NOT_ALLOWED);
-            }
-        } catch (Exception e) {
-            DefaultErrorHandler.getInstance().handle(e, request, response);
-        } finally {
-            if (logger.isInfoEnabled()) {
-                StringBuilder sb = new StringBuilder(100);
-                sb.append("Rendered [").append(request.getRequestURI());
-                JahiaUser user = JCRTemplate.getInstance().getSessionFactory().getCurrentUser();
-                if (user != null) {
-                    sb.append("] user=[").append(user.getUsername());
-                }
-                sb.append("] ip=[").append(request.getRemoteAddr()).append("] sessionID=[").append(
-                        sessionId).append("] in [").append(
-                        System.currentTimeMillis() - startTime).append("ms]");
-                logger.info(sb.toString());
-            }
-        }
-        return null;
     }
 
     private JSONObject serializeNode(Node currentNode, int depthLimit, boolean escapeColon, Pattern propertyMatchRegexp, Map<String, String> alreadyIncludedPropertyValues) throws RepositoryException,
@@ -430,10 +392,10 @@ public class Find extends BaseFindController {
             if (removeDuplicatePropertyValues) {
                 alreadyIncludedPropertyValues = new HashMap<String, String>();
             }
+            int resultCount = 0;
             if (serializeRows) {
                 logger.debug("Serializing rows into JSON result structure...");
                 RowIterator rows = result.getRows();
-                int resultCount = 0;
                 while (rows.hasNext()) {
                     Row row = rows.nextRow();
                     JSONObject serializedRow = serializeRow(row, columns, depth, escape, alreadyIncludedIdentifiers, propertyMatchRegexp, alreadyIncludedPropertyValues);
@@ -442,11 +404,9 @@ public class Find extends BaseFindController {
                         resultCount++;
                     }
                 }
-                logger.debug("Found " + resultCount + " results.");
             } else {
                 logger.debug("Serializing nodes into JSON result structure...");
                 NodeIterator nodes = result.getNodes();
-                int resultCount = 0;
                 while (nodes.hasNext()) {
                     Node nextNode = nodes.nextNode();
                     JSONObject serializedNode = serializeNode(nextNode, depth, escape, propertyMatchRegexp, alreadyIncludedPropertyValues);
@@ -455,8 +415,8 @@ public class Find extends BaseFindController {
                         resultCount++;
                     }
                 }
-                logger.debug("Found " + resultCount + " results.");
             }
+            logger.debug("Found {} results.", resultCount);
             results.write(response.getWriter());
         } catch (JSONException e) {
             throw new RenderException(e);

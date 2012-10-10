@@ -64,6 +64,9 @@
             <c:if test="${nbNames != nbAreas}">
                 <template:area path="${currentNode.name}-${col.key}" areaAsSubNode="true"/>
             </c:if>
+            <c:if test="${pageScope['org.jahia.emptyArea']}">
+                &nbsp;&nbsp;
+            </c:if>
             <div class='clear'></div>
         </div>
         <!--stop grid_${column}-->

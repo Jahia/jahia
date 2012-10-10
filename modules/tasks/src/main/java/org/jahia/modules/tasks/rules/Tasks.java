@@ -40,14 +40,26 @@
 
 package org.jahia.modules.tasks.rules;
 
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.rules.AddedNodeFact;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.workflow.WorkflowVariable;
 import org.slf4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.bin.Jahia;
 import org.jahia.services.tasks.Task;
 import org.jahia.services.tasks.TaskService;
 
+import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * 
@@ -104,4 +116,63 @@ public class Tasks {
     public void setTaskService(TaskService taskService) {
         this.taskService = taskService;
     }
+    
+    public void assignTask(AddedNodeFact node, String username) {
+        JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
+        try {
+            JCRNodeWrapper jcrNodeWrapper = node.getNode();
+            String taskId = jcrNodeWrapper.getProperty("taskId").getString();
+            String provider = jcrNodeWrapper.getProperty("provider").getString();
+            WorkflowService.getInstance().assignTask(taskId, provider, user);
+        } catch (RepositoryException e) {
+            logger.error("cannot assign task",e);
+        }
+    }
+
+    public void completeTask(AddedNodeFact node) {
+        try {
+            JCRNodeWrapper jcrNodeWrapper = node.getNode();
+            String taskId = jcrNodeWrapper.getProperty("taskId").getString();
+            String provider = jcrNodeWrapper.getProperty("provider").getString();
+            String outcome = jcrNodeWrapper.getProperty("finalOutcome").getString();
+
+            HashMap<String, Object> map = null;
+            if (jcrNodeWrapper.hasNode("taskData")) {
+                map = new HashMap<String, Object>();
+
+                JCRNodeWrapper data = jcrNodeWrapper.getNode("taskData");
+                PropertyIterator pi = data.getProperties();
+                while (pi.hasNext()) {
+                    JCRPropertyWrapper property = (JCRPropertyWrapper) pi.next();
+                    if (!property.getDefinition().getDeclaringNodeType().getName().equals("nt:base") && !property.getDefinition().getName().equals("jcr:uuid")) {
+                        Value[] propertyValues;
+                        if (property.isMultiple()) {
+                            propertyValues = property.getValues();
+                        } else {
+                            propertyValues = new Value[] { property.getValue() };
+                        }
+                        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(propertyValues.length);
+                        boolean toBeAdded = false;
+                        for (Value value : propertyValues) {
+                            String s = value.getString();
+                            if(s!=null && !"".equals(s)) {
+                                values.add(new WorkflowVariable(s, value.getType()));
+                                toBeAdded=true;
+                            }
+                        }
+                        if(toBeAdded) {
+                            map.put(property.getName(), values);
+                        } else {
+                            map.put(property.getName(),new ArrayList<WorkflowVariable>());
+                        }
+                    }
+                }
+            }
+
+            WorkflowService.getInstance().completeTask(taskId, provider, outcome, map);
+        } catch (RepositoryException e) {
+            logger.error("cannot complete task",e);
+        }
+    }
+    
 }

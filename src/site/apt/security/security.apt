@@ -23,7 +23,8 @@ Security aspects
 
   The Jahia Tool Manager password is specified in the <<<jahia.properties>>> (also SHA-1 + Base64 encoded).
   Due to security considerations this password can be only reset manually directly in the <<<jahia.properties>>> file.
-  Jahia Tools Area provides a utility JSP for encrypting clear text passwords: {{{http://localhost:8080/tools/pwdEncrypt.jsp}http://localhost:8080/tools/pwdEncrypt.jsp}}
+  After you do that, you need to restart the server. Jahia Tools Area provides a utility JSP for encrypting 
+  clear text passwords: {{{http://localhost:8080/tools/pwdEncrypt.jsp}http://localhost:8080/tools/pwdEncrypt.jsp}}
     
 
 ** Resetting root user password

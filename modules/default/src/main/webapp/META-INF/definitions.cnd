@@ -18,7 +18,7 @@
 [jmix:listOrdered] > jmix:templateMixin mixin
  extends = jmix:list,jnt:area
  itemtype = layout
-- j:className (string, choicelist[resourceBundle]) indexed=no < '','simple','filesList'
+- j:className (string) indexed=no
 
 [jmix:columns] > jmix:templateMixin mixin
  extends = jmix:list, jnt:area
@@ -35,7 +35,7 @@
  - displayPager (boolean) = true autocreated
  - nbOfPages (long) = 10 autocreated
  - displayNbOfItemsPerPage (boolean) = true autocreated
- - displayNbOfItemsPerPageValues (string) = '5,10,25,50,100' indexed=no 
+ - displayNbOfItemsPerPageValues (string) = '5,10,25,50,100' indexed=no < '[0-9,]*'
 
 [jnt:fileList] > jnt:content, jmix:listContent, jmix:editorialContent, jmix:bindedComponent
  - folder (weakreference, picker[type='folder'])
@@ -162,24 +162,31 @@
 
 [jnt:gotoEdit] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
 
-[jnt:gotoLightEdit] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
-
 [jnt:gotoContribute] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
 
-[jnt:gotoAdmin] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
+[jnt:gotoAdmin] > jnt:content, mix:title, jmix:link, jmix:siteComponent, jmix:studioOnly
+- toAdminComponent (string, choicelist[resourceBundle]) = all indexed=no < all,users,groups
+- buttonClass (string) indexed=no
 
 [jnt:gotoManager] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
  - type (string, choicelist[resourceBundle]) = content indexed=no < content,document,unitedContent,roles
 
 [jnt:listSites] > jnt:content, mix:title, jmix:siteComponent, jmix:list, jmix:studioOnly
  - edit (boolean)
- - lightedit (boolean)
  - contribute (boolean)
  - preview (boolean)
  - live (boolean)
+ - administrationlink (boolean)
+ - editproperties (boolean)
+ - details (boolean)
+ - detailsLabel (string) i18n nofulltext
+ - detailsTemplate (string)
+ - export (boolean)
+ - delete (boolean)
  - typeOfContent (string,choicelist[resourceBundle]) = website indexed=no < website,contents,files
- - numberOfSitesPerPage (long) = 10 mandatory
+ - numberOfSitesPerPage (long) hidden
  - numberMaxOfSitesDisplayed (long)
+ - templatesSets (weakreference,choicelist[nodes='/templateSets;jnt:virtualsite']) multiple
 
 [jmix:gadget] mixin
 
@@ -203,3 +210,33 @@
 [jnt:categorizing] > jnt:content, mix:title, jmix:socialComponent, jmix:bindedComponent
 
 [jnt:displayCurrentLanguage] > jnt:content, jmix:siteComponent
+
+[jnt:workflowMonitor] > jnt:content, jmix:siteComponent, jmix:bindedComponent, jmix:studioOnly
+ - workflowType (string,choicelist[workflowTypes])
+
+[jnt:modeDispatcher] > jnt:content, jmix:siteComponent, jmix:studioOnly
+ orderable
+ - mode (string,choicelist[renderModes])
+ + * (jmix:droppableContent) = jmix:droppableContent version
+
+[jnt:createWebProject] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
+ - useServerName (boolean)
+ - useDescription (boolean)
+ - useTemplatesSet (boolean)
+ - mixLanguage (boolean)
+ - allowsUnlistedLanguages (boolean)
+ - forceLanguage (string)
+ - class (string) indexed=no
+ - defaultTemplatesSet (weakreference,choicelist[nodes='/templateSets;jnt:virtualsite'])
+ - buttonLabel (string) i18n nofulltext
+
+[jnt:openInPopup] > jnt:content, jmix:siteComponent, jmix:studioOnly
+ + * (jmix:droppableContent) = jmix:droppableContent version
+ - popupClass (string) indexed=no
+ - buttonClass (string) indexed=no
+ - buttonLabel (string) i18n nofulltext
+
+[jnt:toggleMobileDisplay] > jnt:content, jmix:siteComponent, jmix:studioOnly
+
+[jnt:siblingNavigation] > jnt:content, jmix:siteComponent
+- displayLinktoParent (boolean) indexed=no

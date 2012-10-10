@@ -109,6 +109,11 @@
                         <value>application/java-archive</value>
                     </list>
                 </entry>
+                <entry key="video">
+                    <list>
+                        <value>video/*</value>
+                    </list>
+                </entry>
             </map>
         </constructor-arg>
         <constructor-arg index="1" ref="fileExtensionIcons"/>
@@ -131,6 +136,8 @@
                 <value>jnt:remotePublication</value>
             </set>
         </property>
+        
+        <property name="handleFallbackLocaleForPath" value="${jahia.jcr.handleFallbackLocaleForPath:/sites/.+/templates/.+}"/>
     </bean>
 
     <bean id="fileExtensionIcons" class="org.springframework.beans.factory.config.MapFactoryBean">

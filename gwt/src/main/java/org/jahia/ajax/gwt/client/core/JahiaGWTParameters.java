@@ -41,6 +41,7 @@
 package org.jahia.ajax.gwt.client.core;
 
 import com.google.gwt.i18n.client.Dictionary;
+import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -68,6 +69,8 @@ public class JahiaGWTParameters {
     public static final String UI_LANGUAGE_DISPLAY_NAME = "uilangdisplayname";
     public static final String LANGUAGE = "lang";
     public static final String LANGUAGE_DISPLAY_NAME = "langdisplayname";
+    public static final String CHANNEL_IDENTIFIER = "channelIdentifier";
+    public static final String CHANNEL_ORIENTATION = "channelOrientation";
     public static final String SITE_UUID = "siteUuid";
     public static final String SITE_KEY = "siteKey";
     public static final String WORKSPACE = "workspace";
@@ -77,6 +80,7 @@ public class JahiaGWTParameters {
     public static final String QUERY_STRING = "queryString";
     public static final String STUDIO_URL = "studioUrl";
     public static final String BASE_URL = "baseUrl";
+    public static final String DEVELOPMENT_MODE = "developmentMode";
 
     public static final String SYSTEM_USER = " system "; // org.jahia.jaas.JahiaLoginModule.SYSTEM
 
@@ -87,6 +91,9 @@ public class JahiaGWTParameters {
     private static String siteUUID;
     private static String siteKey;
     private static String workspace;
+    private static String channelIdentifier;
+    private static String channelOrientation;
+    private static List<GWTJahiaChannel> channels;
 
     private static String sitesLocation;
     private static Map<String, GWTJahiaNode> sitesMap;
@@ -98,6 +105,10 @@ public class JahiaGWTParameters {
 
     public static String getCurrentUser() {
         return jahiaParamDictionary.get(CURRENT_USER_NAME);
+    }
+
+    public static boolean isDevelopmentMode() {
+        return "true".equals(jahiaParamDictionary.get(DEVELOPMENT_MODE));
     }
 
     public static String getPathInfo() {
@@ -153,7 +164,34 @@ public class JahiaGWTParameters {
         }
     }-*/;
 
+    public static String getChannelIdentifier() {
+        if (channelIdentifier == null) {
+            channelIdentifier = jahiaParamDictionary.get(CHANNEL_IDENTIFIER);
+        }
+        return channelIdentifier;
+    }
 
+    public static String getChannelOrientation() {
+        if (channelOrientation == null) {
+            channelOrientation = jahiaParamDictionary.get(CHANNEL_ORIENTATION);
+        }
+        return channelOrientation;
+    }
+
+    public static void setChannel(String newChannelIdentifier, String newChannelOrientation) {
+        channelIdentifier = newChannelIdentifier;
+        channelOrientation = newChannelOrientation;
+        setNativeChannel(channelIdentifier, channelOrientation);
+    }
+
+    private static native void setNativeChannel(String newChannelIdentifier, String newChannelOrientation) /*-{
+        $wnd.jahiaGWTParameters.channelIdentifier  = newChannelIdentifier;
+        $wnd.jahiaGWTParameters.channelOrientation  = newChannelOrientation;
+        if ($wnd.contextJsParameters) {
+            $wnd.contextJsParameters.channelIdentifier = newChannelIdentifier;
+            $wnd.contextJsParameters.channelOrientation = newChannelOrientation;
+        }
+    }-*/;
 
     public static String getSiteUUID() {
         if (siteUUID == null) {
@@ -299,6 +337,14 @@ public class JahiaGWTParameters {
     }
 
     static List<UrlUpdater> updaters = new ArrayList<UrlUpdater>();
+
+    public static void setChannels(List<GWTJahiaChannel> channels) {
+        JahiaGWTParameters.channels = channels;
+    }
+
+    public static List<GWTJahiaChannel> getChannels() {
+        return channels;
+    }
 
     public static interface UrlUpdater {
         void updateEntryPointUrl();

@@ -36,7 +36,7 @@
 [jmix:categorized] mixin
  extends = nt:hierarchyNode, jnt:content, jnt:page
  itemtype = classification
- - j:defaultCategory (weakreference, category[autoSelectParent=false]) facetable multiple
+ - j:defaultCategory (weakreference, category[autoSelectParent=false]) facetable hierarchical multiple
 
 [jmix:description] mixin
  itemtype = metadata
@@ -110,6 +110,10 @@
  - j:roles (name) mandatory multiple
  - j:protected (boolean) mandatory
 
+[jnt:externalAce] > jnt:ace
+ - j:sourceAce (reference) multiple < jnt:ace
+ - j:externalPermissionsName (name) mandatory
+
 [jnt:acl] > nt:base, jmix:observable
  orderable
  + * (jnt:ace) = jnt:ace
@@ -130,6 +134,11 @@
  - j:privilegedAccess (boolean)
  - j:hidden (boolean) protected hidden
  - j:roleGroup (string,choicelist[resourceBundle]) < 'live-role','edit-role'
+ + * (jnt:externalPermissions)
+
+[jnt:externalPermissions]
+ - j:path (string)
+ - j:permissions (weakreference) protected hidden multiple < jnt:permission
 
 [jnt:roles] > nt:base, mix:versionable, jmix:autoPublish, jmix:observable
  + * (jnt:role)
@@ -145,7 +154,7 @@
 
 [jmix:publication] mixin
 
-[jnt:simpleWorkflow] > mix:title, nt:base
+[jnt:simpleWorkflow] > mix:title, nt:base, jmix:i18n
 
 //---------------------------------------------------------
 // Locks
@@ -251,6 +260,20 @@
 - j:readOnly (boolean)
 - j:values (string) multiple
 
+//---------------------------------------------------------
+// Global settings
+//---------------------------------------------------------
+[jnt:globalSettings] > nt:base
+ - * (string)
+ + * (nt:base)
+
+[jnt:mailServerSettings] > nt:base
+ - j:activated (boolean) = false indexed=no
+ - j:uri (string) indexed=no
+ - j:from (string) indexed=no
+ - j:to (string) indexed=no
+ - j:notificationLevel (string,choicelist[resourceBundle]) = 'Disabled' indexed=no < 'Disabled','Standard','Wary','Paranoid'
+ 
 //---------------------------------------------------------
 // Users and groups
 //---------------------------------------------------------
@@ -369,9 +392,10 @@
  itemtype = permissions
  - j:requireLoggedUser (boolean)
  - j:requirePrivilegedUser (boolean)
- - j:requiredMode (string, choicelist[resourceBundle]) nofulltext < 'live', 'edit', 'contribute', 'live-or-preview'
+ - j:requiredMode (string, choicelist[renderModes]) nofulltext
  - j:requiredPermissions (weakreference, choicelist[nodes='/permissions//*;jnt:permission']) nofulltext multiple
  - j:contextNodePath (string)
+ - j:invertCondition (boolean)
 
 [jnt:pageTemplate] > jnt:template
 
@@ -452,6 +476,7 @@
  - j:mandatoryLanguages (string) multiple nofulltext protected
  - j:defaultLanguage (string) protected nofulltext
  - j:mixLanguage (boolean) = false protected
+ - j:allowsUnlistedLanguages (boolean) = false protected
  - j:templatesSet (string) protected
  - j:siteType (string) protected hidden
  - j:dependencies (string) protected multiple nofulltext
@@ -522,7 +547,8 @@
  + * (jnt:componentFolder)
 
 // @since Jahia 6.6
-[jnt:component] > nt:base, jmix:nodenameInfo, jmix:basemetadata, mix:title
+[jnt:component] > nt:base, jmix:nodenameInfo, mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:i18n, jmix:originWS, jmix:description, mix:title, jmix:lastPublished
+ - j:moduleName (string) hidden nofulltext
 
 // @since Jahia 6.6
 [jnt:simpleComponent] > jnt:component
@@ -672,6 +698,7 @@ extends = jnt:content
 
 [jnt:templatesFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list, jmix:publication
  - j:rootTemplatePath (string)
+ - j:templateSetContext (weakreference, choicelist[nodes='/templateSets;jnt:virtualsite'])
  + * (jnt:template)
  + * (jnt:contentFolder)
  + * (jnt:folder)
@@ -688,15 +715,16 @@ extends = jnt:content
 //---------------------------------------------------------
 
 [jmix:contributeMode] mixin
+ itemtype=contributeMode
  extends = jnt:contentList, jnt:folder, jnt:contentFolder, jnt:area, jnt:mainResourceDisplay
- - j:editableInContribution (boolean)
- - j:canOrderInContribution (boolean)
- - j:canDeleteInContribution (boolean)
+ - j:editableInContribution (boolean) = true autocreated
+ - j:canOrderInContribution (boolean) hidden
+ - j:canDeleteInContribution (boolean) hidden
  - j:contributeTypes (string, choicelist[componenttypes = 'jmix:editorialContent,jnt:file,jnt:folder,jnt:contentFolder']) multiple nofulltext
 
 [jmix:listRestrictions] mixin
  - j:allowedTypes (string, choicelist[componenttypes = 'jmix:droppableContent,jnt:file,jnt:folder']) multiple nofulltext
- - j:numberOfItems (long)
+ - j:numberOfItems (long) < '[0,]'
 
 //---------------------------------------------------------
 // Portlets

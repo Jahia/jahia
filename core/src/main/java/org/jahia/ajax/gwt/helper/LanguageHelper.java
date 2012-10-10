@@ -45,10 +45,10 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -144,7 +144,7 @@ public class LanguageHelper {
         if("".equals(locale.getCountry()))
             return contextPath + "/css/images/flags/" + locale.getLanguage().toLowerCase() + "_on.png";
         else
-            return contextPath + "/css/images/flags/plain/flag_" + locale.getDisplayCountry(Locale.ENGLISH).toLowerCase().replaceAll(" ","_") + ".png";
+            return contextPath + "/css/images/flags/plain/flag_" + Patterns.SPACE.matcher(locale.getDisplayCountry(Locale.ENGLISH).toLowerCase()).replaceAll("_") + ".png";
     }
 
     /**
@@ -157,7 +157,7 @@ public class LanguageHelper {
         if (langCode == null) {
             return "";
         }
-        langCode = langCode.replace("-", "_");
+        langCode = Patterns.DASH.matcher(langCode).replaceAll("_");
         Locale currentLocale = LanguageCodeConverters.getLocaleFromCode(langCode);
         return StringUtils.capitalize(currentLocale.getDisplayName(currentLocale));
 

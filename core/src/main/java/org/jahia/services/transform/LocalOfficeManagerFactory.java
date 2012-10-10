@@ -46,6 +46,11 @@ import org.artofsolving.jodconverter.office.DefaultOfficeManagerConfiguration;
 import org.artofsolving.jodconverter.office.OfficeConnectionProtocol;
 import org.artofsolving.jodconverter.office.OfficeManager;
 import org.artofsolving.jodconverter.process.ProcessManager;
+import org.artofsolving.jodconverter.process.ProcessQuery;
+import org.artofsolving.jodconverter.process.WindowsProcessManager;
+import org.artofsolving.jodconverter.util.PlatformUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
 /**
@@ -56,7 +61,15 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
  */
 public class LocalOfficeManagerFactory extends AbstractFactoryBean<OfficeManager> {
 
+    private static final Logger logger = LoggerFactory.getLogger(LocalOfficeManagerFactory.class);
+    
     private DefaultOfficeManagerConfiguration cfg;
+    
+    private boolean killExistingOfficeProcessOnWindows = true;
+
+    private OfficeConnectionProtocol connectionProtocol = OfficeConnectionProtocol.SOCKET;
+
+    private int[] portNumbers = new int[] { 2002 };
 
     /**
      * Initializes an instance of this class.
@@ -75,6 +88,24 @@ public class LocalOfficeManagerFactory extends AbstractFactoryBean<OfficeManager
      */
     @Override
     protected OfficeManager createInstance() throws Exception {
+        if (killExistingOfficeProcessOnWindows && PlatformUtils.isWindows()
+                && connectionProtocol == OfficeConnectionProtocol.SOCKET
+                && WindowsProcessManager.isSupported()) {
+            WindowsProcessManager mgr = new WindowsProcessManager();
+            for (int port : portNumbers) {
+                ProcessQuery q = new ProcessQuery("soffice.bin", "socket,host=127.0.0.1,port="
+                        + port);
+                long pid = mgr.findPid(q);
+                if (pid > 0) {
+                    try {
+                        mgr.kill(null, pid);
+                    } catch (Exception e) {
+                        logger.error("Error killing existing office process with pid " + pid, e);
+                    }
+                }
+            }
+        }
+
         return cfg.buildOfficeManager();
     }
 
@@ -91,6 +122,7 @@ public class LocalOfficeManagerFactory extends AbstractFactoryBean<OfficeManager
     }
 
     public void setConnectionProtocol(OfficeConnectionProtocol connectionProtocol) throws NullPointerException {
+        this.connectionProtocol  = connectionProtocol;
         cfg.setConnectionProtocol(connectionProtocol);
     }
 
@@ -115,10 +147,12 @@ public class LocalOfficeManagerFactory extends AbstractFactoryBean<OfficeManager
     }
 
     public void setPortNumber(int portNumber) {
+        this.portNumbers = new int[] {portNumber};
         cfg.setPortNumber(portNumber);
     }
 
     public void setPortNumbers(int... portNumbers) throws NullPointerException, IllegalArgumentException {
+        this.portNumbers = portNumbers;
         cfg.setPortNumbers(portNumbers);
     }
 
@@ -136,5 +170,9 @@ public class LocalOfficeManagerFactory extends AbstractFactoryBean<OfficeManager
 
     public void setTemplateProfileDir(File templateProfileDir) throws IllegalArgumentException {
         cfg.setTemplateProfileDir(templateProfileDir);
+    }
+
+    public void setKillExistingOfficeProcessOnWindows(boolean killExistingOfficeProcessOnWindows) {
+        this.killExistingOfficeProcessOnWindows = killExistingOfficeProcessOnWindows;
     }
 }

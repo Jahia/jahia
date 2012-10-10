@@ -66,6 +66,8 @@ import org.jahia.services.usermanager.jcr.JCRGroup;
 import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.settings.SettingsBean;
+import org.jahia.tools.patches.GroovyPatcher;
+import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -150,6 +152,8 @@ public class JCRStoreProvider {
 
     private long sessionKeepAliveCheckInterval = 5000L;
 
+    private GroovyPatcher groovyPatcher;
+
     public String getKey() {
         return key;
     }
@@ -183,7 +187,7 @@ public class JCRStoreProvider {
         if (defaultProvider) {
             return 0;
         }
-        return mountPoint.split("/").length - 1;
+        return Patterns.SLASH.split(mountPoint).length - 1;
     }
 
     public void setWebdavPath(String webdavPath) {
@@ -194,7 +198,7 @@ public class JCRStoreProvider {
         if (httpPath == null) {
             httpPath = Jahia.getContextPath() + "/files";
         }
-        
+
         return httpPath;
     }
 
@@ -313,6 +317,14 @@ public class JCRStoreProvider {
         this.sessionKeepAliveCheckInterval = sessionKeepAliveCheckInterval;
     }
 
+    public GroovyPatcher getGroovyPatcher() {
+        return groovyPatcher;
+    }
+
+    public void setGroovyPatcher(GroovyPatcher groovyPatcher) {
+        this.groovyPatcher = groovyPatcher;
+    }
+
     public void start() throws JahiaInitializationException {
         try {
             String tmpAuthenticationType = authenticationType;
@@ -337,6 +349,9 @@ public class JCRStoreProvider {
             }
 
             authenticationType = tmpAuthenticationType;
+            if (groovyPatcher != null) {
+                groovyPatcher.executeScripts("jcrStoreProviderStarted");
+            }
         } catch (Exception e) {
             logger.error("Repository init error", e);
             throw new JahiaInitializationException("Repository init error", e);
@@ -347,7 +362,7 @@ public class JCRStoreProvider {
 //        JahiaUser root = getGroupManagerService().getAdminUser(0);
         if (canRegisterCustomNodeTypes()) {
 
-            File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath()+"/definitions.properties");
+            File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/definitions.properties");
             Properties p = new Properties();
 
             JCRSessionWrapper session = getSystemSession();
@@ -424,7 +439,7 @@ public class JCRStoreProvider {
                     if (running && logger != null) logger.info("System session closed, deregister listeners");
                 }
             };
-            t.setDaemon(true); 
+            t.setDaemon(true);
             t.start();
         }
     }
@@ -436,7 +451,7 @@ public class JCRStoreProvider {
                 JCRNodeWrapper rootNode = session.getRootNode();
                 if (!rootNode.hasNode("sites")) {
                     rootNode.addMixin("mix:referenceable");
-                    
+
                     JCRContentUtils.importSkeletons("WEB-INF/etc/repository/root.xml,WEB-INF/etc/repository/root-*.xml", "/", session, ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW, null);
 
                     JahiaPrivilegeRegistry.init(session);
@@ -511,7 +526,7 @@ public class JCRStoreProvider {
 
     public void deployDefinitions(String systemId) {
         try {
-            File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath()+"/definitions.properties");
+            File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/definitions.properties");
             Properties p = new Properties();
             if (f.exists()) {
                 InputStream stream = new BufferedInputStream(new FileInputStream(f));
@@ -531,7 +546,7 @@ public class JCRStoreProvider {
                 }
             }
         } catch (IOException e) {
-            logger.error("Cannot save definitions timestamps",e);
+            logger.error("Cannot save definitions timestamps", e);
         }
     }
 
@@ -570,21 +585,21 @@ public class JCRStoreProvider {
     public Repository getRepository() {
         if (repo == null) {
             synchronized (syncRepoInit) {
-        if (repo == null) {
-            if (repositoryName != null) {
-                repo = getRepositoryByJNDI();
-                if (rmibind != null) {
-                    try {
-                        Naming.rebind(rmibind, new ServerAdapterFactory().getRemoteRepository(repo));
-                    } catch (MalformedURLException e) {
-                    } catch (RemoteException e) {
+                if (repo == null) {
+                    if (repositoryName != null) {
+                        repo = getRepositoryByJNDI();
+                        if (rmibind != null) {
+                            try {
+                                Naming.rebind(rmibind, new ServerAdapterFactory().getRemoteRepository(repo));
+                            } catch (MalformedURLException e) {
+                            } catch (RemoteException e) {
+                            }
+                        }
+                        return repo;
+                    } else if (factory != null && url != null) {
+                        repo = getRepositoryByRMI();
                     }
                 }
-                return repo;
-            } else if (factory != null && url != null) {
-                repo = getRepositoryByRMI();
-            }
-        }
             }
         }
         return repo;
@@ -592,8 +607,8 @@ public class JCRStoreProvider {
 
     public void setRepository(Repository repo) {
         synchronized (syncRepoInit) {
-        this.repo = repo;
-    }
+            this.repo = repo;
+        }
     }
 
     protected Repository getRepositoryByJNDI() {
@@ -686,14 +701,14 @@ public class JCRStoreProvider {
                 !sessionFactory.getCurrentAliasedUser().equals(session.getUser())) {
             JCRTemplate.getInstance().doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser().getUsername(),
                     session.getWorkspace().getName(), session.getLocale(), new JCRCallback<Object>() {
-                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            try {
-                                return session.getNodeByUUID(objectNode.getIdentifier());
-                            } catch (ItemNotFoundException e) {
-                                throw new PathNotFoundException();
-                            }
-                        }
-                    });
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    try {
+                        return session.getNodeByUUID(objectNode.getIdentifier());
+                    } catch (ItemNotFoundException e) {
+                        throw new PathNotFoundException();
+                    }
+                }
+            });
         }
         final JCRNodeWrapper w = createWrapper(objectNode, null, null, session);
         if (w.checkValidity()) {
@@ -708,14 +723,14 @@ public class JCRStoreProvider {
                 !sessionFactory.getCurrentAliasedUser().equals(session.getUser())) {
             JCRTemplate.getInstance().doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser().getUsername(),
                     session.getWorkspace().getName(), session.getLocale(), new JCRCallback<Object>() {
-                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            try {
-                                return session.getNodeByUUID(objectNode.getIdentifier());
-                            } catch (ItemNotFoundException e) {
-                                throw new PathNotFoundException();
-                            }
-                        }
-                    });
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    try {
+                        return session.getNodeByUUID(objectNode.getIdentifier());
+                    } catch (ItemNotFoundException e) {
+                        throw new PathNotFoundException();
+                    }
+                }
+            });
         }
         final JCRNodeWrapper w = createWrapper(objectNode, path, parent, session);
         if (objectNode.isNew() || w.checkValidity()) {
@@ -727,7 +742,7 @@ public class JCRStoreProvider {
 
     private JCRNodeWrapper createWrapper(Node objectNode, String path, JCRNodeWrapper parent, JCRSessionWrapper session) throws RepositoryException {
         if (path == null || !path.contains(JCRSessionWrapper.DEREF_SEPARATOR)) {
-            JCRNodeWrapper wrapper =  objectNode != null ? session.getCachedNode(objectNode.getIdentifier()) : null;
+            JCRNodeWrapper wrapper = objectNode != null ? session.getCachedNode(objectNode.getIdentifier()) : null;
             if (wrapper != null) {
                 return wrapper;
             }
@@ -779,46 +794,53 @@ public class JCRStoreProvider {
         String username = jahiaUser.getUsername();
         JCRSessionWrapper session = sessionFactory.getSystemSession(username, null);
         try {
-            String jcrUsernamePath[] = StringUtils.substringAfter(jahiaUser.getLocalPath(), "/").split("/");
+            String jcrUsernamePath[] = Patterns.SLASH.split(StringUtils.substringAfter(jahiaUser.getLocalPath(), "/"));
             try {
                 Node startNode = session.getNode("/" + jcrUsernamePath[0]);
                 Node usersFolderNode = startNode;
                 int length = jcrUsernamePath.length;
                 for (int i = 1; i < length; i++) {
-                        try {
+                    try {
                         startNode = startNode.getNode(jcrUsernamePath[i]);
-                        } catch (PathNotFoundException e) {
-                                try {
+                    } catch (PathNotFoundException e) {
+                        try {
                             session.getWorkspace().getVersionManager().checkout(startNode.getPath());
                             if (i == (length - 1)) {
                                 Node userNode = startNode.addNode(jcrUsernamePath[i], Constants.JAHIANT_USER);
-                                        if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
-                                        	String skeletons = usersFolderNode.getProperty("j:usersFolderSkeleton").getString();
-                                        	try {
+                                if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
+                                    String skeletons = usersFolderNode.getProperty("j:usersFolderSkeleton").getString();
+                                    try {
                                         JCRContentUtils.importSkeletons(skeletons,
                                                 startNode.getPath() + "/" + jcrUsernamePath[i], session,
                                                 new HashMap<String, String>());
-                                        	} catch (Exception importEx) {
+                                    } catch (Exception importEx) {
                                         logger.error("Unable to import data using user skeletons " + skeletons,
                                                 importEx);
-                                        	}
-                                        }
+                                    }
+                                }
 
-                                        userNode.setProperty(JCRUser.J_EXTERNAL, true);
+                                userNode.setProperty(JCRUser.J_EXTERNAL, true);
                                 userNode.setProperty(JCRUser.J_EXTERNAL_SOURCE, jahiaUser.getProviderName());
-                                        ((JCRNodeWrapper)userNode).grantRoles("u:" + username, Collections.singleton("owner"));
+                                ValueFactory valueFactory = session.getValueFactory();
+                                List<Value> properties = new ArrayList<Value>();
+                                for (Object o : jahiaUser.getProperties().keySet()) {
+                                    properties.add(valueFactory.createValue((String) o));
+                                }
+                                userNode.setProperty("j:publicProperties",properties.toArray(new Value[properties.size()]));
+                                
+                                ((JCRNodeWrapper) userNode).grantRoles("u:" + username, Collections.singleton("owner"));
                             } else {
                                 // Simply create a folder
                                 startNode = startNode.addNode(jcrUsernamePath[i], "jnt:usersFolder");
                             }
-                                        session.save();
-                                    } catch (RepositoryException e1) {
-                                        logger.error("Cannot save", e1);
-                                    }
-                                }
-                            }
-            } catch (PathNotFoundException e) {
+                            session.save();
+                        } catch (RepositoryException e1) {
+                            logger.error("Cannot save", e1);
                         }
+                    }
+                }
+            } catch (PathNotFoundException e) {
+            }
         } finally {
             session.logout();
         }
@@ -827,7 +849,7 @@ public class JCRStoreProvider {
     /**
      * Create an entry in the JCR for an external group.
      *
-     * @param group        the unique name for the group
+     * @param group the unique name for the group
      * @return a reference on a group object on success, or if the group name
      *         already exists or another error occurred, null is returned.
      */
@@ -840,7 +862,6 @@ public class JCRStoreProvider {
             groupManagerService.createGroup(0, group.getName(), properties, true);
         }
     }
-
 
 
     public JCRNodeWrapper getUserFolder(JahiaUser user) throws RepositoryException {
@@ -968,7 +989,7 @@ public class JCRStoreProvider {
 
     public JCRSessionWrapper getSystemSession() throws RepositoryException {
         return sessionFactory.getSystemSession();
-        }
+    }
 
     public JCRSessionWrapper getSystemSession(String user, String workspace) throws RepositoryException {
         return sessionFactory.getSystemSession(user, workspace);

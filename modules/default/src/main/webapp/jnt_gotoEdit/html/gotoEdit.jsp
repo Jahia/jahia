@@ -21,27 +21,29 @@
 and renderContext.mainResource.node.properties['j:originWS'].string ne 'live'
 and not jcr:isNodeType(renderContext.mainResource.node.resolveSite, 'jmix:remotelyPublished')
 }">
-    <c:if test="${not renderContext.editMode}">
-    <img src="${url.context}/icons/editMode.png" width="16" height="16" alt=" " role="presentation"
-         style="position:relative; top: 4px; margin-right:2px; " />
-    <a href="<c:url value='${url.edit}'/>">
-    <c:if test="${!empty currentNode.properties['jcr:title']}">
-        ${fn:escapeXml(currentNode.properties["jcr:title"].string)}
-    </c:if>
-    <c:if test="${empty currentNode.properties['jcr:title']}">
-        <fmt:message key="label.editMode"/>
-    </c:if>
-    </a>
-    </c:if>
-    <c:if test="${renderContext.editMode}">
-        <img src="${url.context}/icons/editMode.png" width="16" height="16" alt=" " role="presentation"
-             style="position:relative; top: 4px; margin-right:2px; " />
-        <c:if test="${!empty currentNode.properties['jcr:title']}">
-            ${fn:escapeXml(currentNode.properties["jcr:title"].string)}
-        </c:if>
-        <c:if test="${empty currentNode.properties['jcr:title']}">
-            <fmt:message key="label.editMode"/>
-        </c:if>
-    </c:if>
+    <c:choose>
+        <c:when test="${renderContext.editMode and renderContext.editModeConfigName eq 'editmode' }">
+            <img src="${url.context}/icons/editMode.png" width="16" height="16" alt=" " role="presentation"
+                 style="position:relative; top: 4px; margin-right:2px; "/>
+            <c:if test="${!empty currentNode.properties['jcr:title']}">
+                ${fn:escapeXml(currentNode.properties["jcr:title"].string)}
+            </c:if>
+            <c:if test="${empty currentNode.properties['jcr:title']}">
+                <fmt:message key="label.editMode"/>
+            </c:if>
+        </c:when>
+        <c:otherwise>
+            <img src="${url.context}/icons/editMode.png" width="16" height="16" alt=" " role="presentation"
+                 style="position:relative; top: 4px; margin-right:2px; "/>
+            <a href="<c:url value='${url.edit}'/>">
+                <c:if test="${!empty currentNode.properties['jcr:title']}">
+                    ${fn:escapeXml(currentNode.properties["jcr:title"].string)}
+                </c:if>
+                <c:if test="${empty currentNode.properties['jcr:title']}">
+                    <fmt:message key="label.editMode"/>
+                </c:if>
+            </a>
+        </c:otherwise>
+    </c:choose>
 </c:if>
 

@@ -43,11 +43,11 @@ package org.jahia.services.render;
 import static org.jahia.api.Constants.LIVE_WORKSPACE;
 
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
@@ -59,6 +59,7 @@ import org.jahia.services.cache.Cache;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.Url;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaNotFoundException;
@@ -92,12 +93,14 @@ import org.jahia.utils.LanguageCodeConverters;
 public class URLResolver {
 
     private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
-
+    
     private static final String DEFAULT_WORKSPACE = LIVE_WORKSPACE;
 
     private static final String VANITY_URL_NODE_PATH_SEGMENT = "/" + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/";
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(URLResolver.class);
+    private static final Pattern LANGUAGE_PATTERN = Pattern.compile("[a-z]{2}(_[A-Z]{2})?");
+    
+    private static Logger logger = LoggerFactory.getLogger(URLResolver.class);
 
     private static String[] servletsAllowingUrlMapping = new String[] {
             StringUtils.substringAfterLast(Render.getRenderServletPath(), "/")
@@ -128,6 +131,10 @@ public class URLResolver {
     private Cache<String, String> nodePathCache;
     private Cache<String, SiteInfo> siteInfoCache;
 
+    protected URLResolver(String urlPathInfo, String serverName, HttpServletRequest request, Cache<String, String> nodePathCache, Cache<String, SiteInfo> siteInfoCache) {
+        this(urlPathInfo, serverName, null, request, nodePathCache, siteInfoCache);
+    }
+
     /**
      * Initializes an instance of this class. This constructor is mainly used when
      * resolving URLs of incoming requests.
@@ -136,10 +143,11 @@ public class URLResolver {
      * @param serverName  the server name (usually obtained with @link javax.servlet.http.HttpServletRequest.getServerName())
      * @param request  the current HTTP servlet request object 
      */
-    protected URLResolver(String urlPathInfo, String serverName, HttpServletRequest request, Cache<String, String> nodePathCache, Cache<String, SiteInfo> siteInfoCache) {
+    protected URLResolver(String urlPathInfo, String serverName, String workspace, HttpServletRequest request, Cache<String, String> nodePathCache, Cache<String, SiteInfo> siteInfoCache) {
         super();
         this.nodePathCache = nodePathCache;
         this.siteInfoCache = siteInfoCache;
+        this.workspace = workspace;
 
         this.urlPathInfo = urlPathInfo;
         if (urlPathInfo != null) {
@@ -149,7 +157,7 @@ public class URLResolver {
                     getUrlPathInfo().length());
         } 
         if (!resolveUrlMapping(serverName)) {
-            init(request);
+            init();
             if (!Url.isLocalhost(serverName) && isMappable()
                     && SettingsBean.getInstance().isPermanentMoveForVanityURL()) {
                 try {
@@ -195,55 +203,15 @@ public class URLResolver {
 
         if (!StringUtils.isEmpty(urlPathInfo)) {
             path = getUrlPathInfo().substring(1);
-            init(context.getRequest());
+            init();
         }
     }
  
-    private boolean isValidLocale(String value) {
-        Locale []locales = Locale.getAvailableLocales();
-        for (Locale l : locales) {
-          if (value.equals(l.toString())) {
-            return true;
-          }
-        }
-        return false;
-      }
-    
-    private void init(HttpServletRequest request) {
+    private void init() {
         workspace = verifyWorkspace(StringUtils.substringBefore(path, "/"));
         path = StringUtils.substringAfter(path, "/");
-        String langCode = StringUtils.substringBefore(path, "/");
-
-        if(isValidLocale(langCode)) {
-            locale = StringUtils.isEmpty(langCode) ? DEFAULT_LOCALE
-                : LanguageCodeConverters.languageCodeToLocale(langCode);
-            path = "/" + StringUtils.substringAfter(path, "/");
-        } else {
-             locale = DEFAULT_LOCALE;
-             try{
-                 if(getSiteKey() != null) {
-                     boolean localeInSite = false;
-                     JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(getSiteKey());
-                     Enumeration<Locale> browserLocales = request.getLocales();
-                     while(!localeInSite && browserLocales.hasMoreElements()) {
-                         locale = browserLocales.nextElement();
-                         List<Locale> sitelocales = site.getLanguagesAsLocales();
-                         for(Locale sl : sitelocales) {
-                             if(!localeInSite && sl.getDisplayName().equals(locale.getDisplayName())) {
-                                 localeInSite = true;
-                                 break;
-                             }
-                         }
-                     }
-                     if(!localeInSite) 
-                       locale = site.getLanguagesAsLocales().get(0);
-                 }
-             }catch(JahiaException ex) {
-                 locale = request.getLocale();
-                 logger.info("Cannot get JahiaSite to get Locales, default Browser locale will be used", ex);
-             }
-             path = "/" + path;
-        }
+        locale = verifyLanguage(StringUtils.substringBefore(path, "/"));
+        path = "/" + (locale != null ? StringUtils.substringAfter(path, "/") : path);
 
         // TODO: this is perhaps a temporary limitation as URL points to special templates, when 
         // there are more than one dots - and the path needs to end with .html
@@ -497,9 +465,9 @@ public class URLResolver {
     }
 
     private String getCacheKey(final String workspace, final Locale locale, final String path) {
-        StringBuilder builder = new StringBuilder(workspace);
+        StringBuilder builder = new StringBuilder(workspace != null ? workspace : "null");
         builder.append(CACHE_KEY_SEPARATOR);
-        builder.append(locale.toString());
+        builder.append(locale != null ? locale.toString() : "null");
         builder.append(CACHE_KEY_SEPARATOR);
         builder.append(path);
         return builder.toString();
@@ -527,6 +495,9 @@ public class URLResolver {
             logger.debug("Resolving resource for workspace '" + workspace
                     + "' locale '" + locale + "' and path '" + path + "'");
         }
+        if (locale == null) {
+            throw new PathNotFoundException("Unknown locale");
+        }
         final URLResolver urlResolver = this;
         return JCRTemplate.getInstance().doExecuteWithSystemSession(null,
                 workspace, locale, new JCRCallback<Resource>() {
@@ -546,10 +517,13 @@ public class URLResolver {
                                         if (renderContext != null) {
                                             renderContext.setAjaxRequest(true);
                                             HttpServletRequest req = renderContext.getRequest();
-                                            if (req.getParameter("mainResource") != null) {
-                                                Resource resource = urlResolver.getResource(req.getParameter(
-                                                        "mainResource"));
-                                                renderContext.setAjaxResource(resource);
+                                            if (req.getParameter("mainResource") != null && !req.getParameter("mainResource").equals(path)) {
+                                                try {
+                                                    Resource resource = urlResolver.getResource(req.getParameter(
+                                                            "mainResource"));
+                                                    renderContext.setAjaxResource(resource);
+                                                } catch (PathNotFoundException e) {
+                                                }
                                             }
                                         }
                                     }
@@ -695,12 +669,33 @@ public class URLResolver {
         this.vanityUrl = vanityUrl;
     }
     
+    protected Locale verifyLanguage(String lang) {
+        if (StringUtils.isEmpty(lang)) {
+            return DEFAULT_LOCALE;
+        }
+        
+        if (!LANGUAGE_PATTERN.matcher(lang).matches()) {
+            return null;
+        }
+        
+        return LanguageCodeConverters.languageCodeToLocale(lang);
+    }
+    
     protected String verifyWorkspace(String workspace) {
         if (StringUtils.isEmpty(workspace)) {
-            workspace = DEFAULT_WORKSPACE;
+            if (workspace == null) {
+                workspace = DEFAULT_WORKSPACE;
+            }
         } else {
-            if (!JCRContentUtils.isValidWorkspace(workspace)) {
+            if (!JCRContentUtils.isValidWorkspace(workspace) && this.workspace == null) {
                 throw new JahiaNotFoundException("Unknown workspace '" + workspace + "'");
+            }
+            if (JCRContentUtils.isValidWorkspace(workspace) && this.workspace != null && !workspace.equals(this.workspace)) {
+                throw new JahiaNotFoundException("Invalid workspace '" + workspace + "'");
+            }
+            if (!JCRContentUtils.isValidWorkspace(workspace) && this.workspace != null) {
+                workspace = this.workspace;
+                path = this.workspace + "/" + path;
             }
         }
         

@@ -90,6 +90,9 @@ public class JcrSessionFilter implements Filter {
                     logger.error("Error while authorizing user", pe);
                 }
             }
+            if (sessionFactory.getCurrentUser() != null && sessionFactory.getCurrentUser().isAccountLocked()) {
+                sessionFactory.setCurrentUser(null);
+            }
 
             if (sessionFactory.getCurrentUser() == null) {
                 sessionFactory

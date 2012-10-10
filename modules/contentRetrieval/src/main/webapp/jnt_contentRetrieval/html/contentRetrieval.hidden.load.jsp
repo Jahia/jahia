@@ -31,11 +31,17 @@
 <c:if test="${not empty title and not empty title.string}">
      <h3>${title.string}</h3>
 </c:if>
+<c:if test="${not empty startNode}">
+    <c:set var="startNode" value="${startNode.node}"/>
+</c:if>
+<c:if test="${empty startNode}">
+    <c:set var="startNode" value="${jcr:getMeAndParentsOfType(renderContext.mainResource.node, 'jnt:page')[0]}"/>
+</c:if>
 
 <%-- Define the query, depending on the selected criteria --%>
 <query:definition var="listQuery" limit="${nbOfResult.long}">
     <query:selector nodeTypeName="${type.string}"/>
-    <query:descendantNode path="${not empty startNode and not empty startNode.node ? startNode.node.path : renderContext.site.path}"/>
+    <query:descendantNode path="${startNode.path}"/>
     <query:or>
         <c:forEach var="filter" items="${filters}">
             <c:if test="${not empty filter.string}">
@@ -63,4 +69,4 @@
 </c:choose>
 </c:set>
 <c:set target="${moduleMap}" property="subNodesView" value="${subNodesView.string}" />
-<template:addCacheDependency flushOnPathMatchingRegexp="\Q${not empty startNode and not empty startNode.node ? startNode.node.path : renderContext.site.path}\E/.*"/>
+<template:addCacheDependency flushOnPathMatchingRegexp="\Q${startNode.path}\E/.*"/>

@@ -40,31 +40,35 @@
 
 package org.jahia.services.content.interceptor;
 
-import static org.jahia.api.Constants.JAHIAMIX_REFERENCES_IN_FIELD;
-import static org.jahia.api.Constants.JAHIA_REFERENCE_IN_FIELD_PREFIX;
-
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
+import org.jahia.utils.Url;
 import org.jahia.utils.WebUtils;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
-
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.jahia.api.Constants.JAHIAMIX_REFERENCES_IN_FIELD;
+import static org.jahia.api.Constants.JAHIA_REFERENCE_IN_FIELD_PREFIX;
 
 /**
  * URL Interceptor catches internal URLs inside richtext, and transform them to store references to the pointed nodes
@@ -85,15 +89,16 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
     private String dmsContext;
     private String cmsContext;
 
-    private static String DOC_CONTEXT_PLACEHOLDER = "##doc-context##/";
-    private static String CMS_CONTEXT_PLACEHOLDER = "##cms-context##/";
+    private static final String DOC_CONTEXT_PLACEHOLDER = "##doc-context##/";
+    private static final String CMS_CONTEXT_PLACEHOLDER = "##cms-context##/";
+    private static final Pattern CMS_CONTEXT_PLACEHOLDER_PATTERN = Pattern.compile(CMS_CONTEXT_PLACEHOLDER, Pattern.LITERAL);
 
     private Pattern cmsPattern;
     private Pattern cmsPatternWithContextPlaceholder;
     private Pattern refPattern;
 
     private HtmlTagAttributeTraverser urlTraverser;
-    
+
     private String escape(String s) {
         s = s.replace("{","\\{");
         s = s.replace("}","\\}");
@@ -149,7 +154,8 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
      */
     public Value beforeSetValue(final JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         String content = originalValue.getString();
-
+        // if the node is a translated node, then take the parent to have the references
+        JCRNodeWrapper nodeWithReferences = node.isNodeType(Constants.JAHIANT_TRANSLATION)?node.getParent():node;
         if (definition.isInternationalized()) {
             Locale locale = node.getSession().getLocale();
             if(locale==null) {
@@ -168,8 +174,8 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
             logger.debug("Intercept setValue for "+node.getPath()+"/"+name);
         }
 
-        if (node.isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
-            NodeIterator ni = node.getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
+        if (nodeWithReferences.isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
+            NodeIterator ni = nodeWithReferences.getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
                 if (name.equals(ref.getProperty("j:fieldName").getString())) {
@@ -203,13 +209,13 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
         }
 
         if (!newRefs.equals(refs)) {
-            if (!newRefs.isEmpty() && !node.isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
-                node.addMixin(JAHIAMIX_REFERENCES_IN_FIELD);
+            if (!newRefs.isEmpty() && !nodeWithReferences.isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
+                nodeWithReferences.addMixin(JAHIAMIX_REFERENCES_IN_FIELD);
             }
             if (logger.isDebugEnabled()) {
                 logger.debug("New references : "+newRefs);
             }
-            NodeIterator ni = node.getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
+            NodeIterator ni = nodeWithReferences.getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
                 if (name.equals(ref.getProperty("j:fieldName").getString()) && !newRefs.containsKey(ref.getProperty("j:reference").getString())) {
@@ -219,7 +225,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
 
             for (Map.Entry<String,Long> entry : newRefs.entrySet()) {
                 if (!refs.containsKey(entry.getKey())) {
-                    JCRNodeWrapper ref = node.addNode("j:referenceInField_"+name+"_"+entry.getValue(), "jnt:referenceInField");
+                    JCRNodeWrapper ref = nodeWithReferences.addNode("j:referenceInField_" + name + "_" + entry.getValue(), "jnt:referenceInField");
                     ref.setProperty("j:fieldName",name);
                     ref.setProperty("j:reference", entry.getKey());
                 }
@@ -310,11 +316,10 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                 public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
                     if (StringUtils.isNotEmpty(value)) {
                         try {
-                            value = replacePlaceholdersByRefs(value, refs, property.getSession().getWorkspace().getName(), property.getSession().getLocale());
+                            value = replacePlaceholdersByRefs(value, refs, property.getSession().getWorkspace().getName(), property.getSession().getLocale(), property.getParent());
                             if ("#".equals(value) && attrName.toLowerCase().equals("src") && tagName.toLowerCase().equals("img")) {
                                 value = "/missing-image.png";
                             }
-                            
                         } catch (RepositoryException e) {
                             throw new RuntimeException(e);
                         }
@@ -457,7 +462,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
     }
 
 
-    private String replacePlaceholdersByRefs(final String originalValue, final Map<Long, String> refs, final String workspaceName, Locale locale) throws RepositoryException {
+    private String replacePlaceholdersByRefs(final String originalValue, final Map<Long, String> refs, final String workspaceName,final Locale locale, final JCRNodeWrapper parent) throws RepositoryException {
 
         String pathPart = originalValue;
         if (logger.isDebugEnabled()) {
@@ -483,8 +488,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
         }
 
         final String path = "/" + pathPart;
-
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspaceName, locale, new JCRCallback<String>() {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspaceName, null, new JCRCallback<String>() {
             public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 String value = originalValue;
                 try {
@@ -497,18 +501,33 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                     String ext = matcher.group(2);
                     String uuid = refs.get(new Long(id));
                     String nodePath = null;
+                    JCRNodeWrapper node;
                     try {
-                        nodePath = session.getNodeByUUID(uuid).getPath();
+                        node = session.getNodeByUUID(uuid);
                     } catch (ItemNotFoundException infe) {
                         logger.warn("Cannot find referenced item : "+uuid);
                         return "#";
                     }
+                    nodePath = node.getPath();
                     value = originalValue.replace(path, nodePath + ext);
+                    JCRSiteNode site = node.getResolveSite();
+                    if (!site.getLanguagesAsLocales().contains(locale)) {
+                        value = ContextPlaceholdersReplacer.LANG_PATTERN.matcher(value).replaceAll(site.getDefaultLanguage());
+                    }
+                    String serverUrl = "";
+                    if (site != null) {
+                        JCRSiteNode currentSite = parent.getResolveSite();
+                        String serverName = site.getServerName();
+                        if (currentSite != null && !currentSite.getServerName().equals(serverName)) {
+                            serverUrl = "{server:" + serverName + "}";
+                        }
+                    }
                     if (isCmsContext) {
-                        value = value.replace(CMS_CONTEXT_PLACEHOLDER, cmsContext);
+                        value = CMS_CONTEXT_PLACEHOLDER_PATTERN.matcher(value).replaceAll(serverUrl + cmsContext);
                         value = value.replace("/"+session.getWorkspace().getName(),"/"+workspaceName);
                     } else {
-                        StringBuilder builder = new StringBuilder(dmsContext);
+                        StringBuilder builder = new StringBuilder(serverUrl);
+                        builder.append(dmsContext);
                         builder.append(workspaceName).append(nodePath).append(ext);
                         value = builder.toString();
                     }

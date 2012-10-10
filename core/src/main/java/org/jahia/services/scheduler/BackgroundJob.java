@@ -94,7 +94,10 @@ public abstract class BackgroundJob implements StatefulJob {
         jobDataMap.put(JOB_CREATED, new Date()); // creation date
         jobDataMap.put(JOB_STATUS, STATUS_ADDED); // status "added"
         final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
-        jobDataMap.put(JOB_USERKEY, sessionFactory.getCurrentUser().getUserKey());
+        JahiaUser currentUser = sessionFactory.getCurrentUser();
+        if (currentUser != null) {
+            jobDataMap.put(JOB_USERKEY, sessionFactory.getCurrentUser().getUserKey());
+        }
         jobDataMap.put(JOB_CURRENT_LOCALE, sessionFactory.getCurrentLocale() != null ? sessionFactory
                 .getCurrentLocale().toString() : null);
 

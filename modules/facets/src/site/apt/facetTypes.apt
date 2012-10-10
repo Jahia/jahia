@@ -54,6 +54,9 @@ Facet types and their parameters
   indexed for that field. Notice that in most cases you will need to add the attribute <<<facetable>>> in the property definition, so that the values
   will be indexed in a way, which is required for faceting.
   
+  Since Jahia 6.6.1 we also support hierarchical field value faceting. With categories for instance it is thus possible to drill
+  down a category tree.
+  
   In addition to the common parameters, field value faceting also supports the following parameters:
 
 ** sort
@@ -69,9 +72,11 @@ Facet types and their parameters
   API or setting up facet queries yourself, you need to use <<true>> or <<false>> until we upgrade to a newer Solr version,
   where this has been changed.
 
-** prefix
+** prefix / Root path
 
-  Limits the terms on which to facet to those starting with the given string prefix. 
+  Limits the terms on which to facet to those starting with the given string prefix.
+
+  On field hierarchical facets, this parameter is used to drill down on the levels of a hierarchy.
 
 ** limit
   

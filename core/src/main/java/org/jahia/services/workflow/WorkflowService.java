@@ -51,6 +51,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.usermanager.*;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Patterns;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
@@ -112,8 +113,8 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         }
         if(!list.contains(definition)) {
             list.add(definition);
-            workflowTypeByDefinition.put(definition,type);
         }
+        workflowTypeByDefinition.put(definition,type);
         this.workflowPermissions.put(definition, perms);
     }
 
@@ -142,7 +143,7 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
                         Set<String> tasks = definition.getTasks();
                         for (String task : tasks) {
                             if (!map.containsKey(task)) {
-                                String permissionName = definition.getKey().replace(" ","-") + "-" + task.replace(" ","-");
+                                String permissionName = Patterns.SPACE.matcher(definition.getKey()).replaceAll("-") + "-" + Patterns.SPACE.matcher(task).replaceAll("-");
                                 if (!session.itemExists("/permissions/workflow-tasks/"+permissionName)) {
                                     logger.info("Create workflow permission : "+permissionName);
                                     JCRNodeWrapper perms = session.getNode("/permissions/workflow-tasks");
@@ -235,7 +236,7 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
             throws RepositoryException {
         final Set<WorkflowDefinition> workflows = new LinkedHashSet<WorkflowDefinition>();
 
-        Collection<WorkflowRule> rules = getWorkflowRulesForType(node, checkPermission, type, null);
+        Collection<WorkflowRule> rules = getWorkflowRulesForType(node, checkPermission, type, locale);
         for (WorkflowRule ruledef : rules) {
             WorkflowDefinition definition =
                     lookupProvider(ruledef.getProviderKey()).getWorkflowDefinitionByKey(ruledef.getWorkflowDefinitionKey(), locale);
@@ -249,84 +250,86 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<List<JahiaPrincipal>>() {
             public List<JahiaPrincipal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
 
-                List<JahiaPrincipal> principals = new ArrayList<JahiaPrincipal>();
-                JahiaUserManagerService userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
-                JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
+                List<JahiaPrincipal> principals = Collections.emptyList();
+                Map<String, String> perms = workflowPermissions.get(definition.getKey());
+                String permName = perms != null ? perms.get(activityName) : null;
+                if (permName == null) {
+                    return principals;
+                }
 
-                JCRSiteNode site = node.getResolveSite();
-
-                Map<String, List<String[]>> m = node.getAclEntries();
-
-                Collection<WorkflowRule> rules = getWorkflowRules(node, null);
-                for (WorkflowRule rule : rules) {
-                    if (rule.getProviderKey().equals(definition.getProvider()) &&
-                        rule.getWorkflowDefinitionKey().equals(definition.getKey())) {
-                        Map<String, String> perms = workflowPermissions.get(rule.getWorkflowDefinitionKey());
-                        if (perms != null) {
-                            String permName = perms.get(activityName);
-                            if (permName != null) {
-                                if (permName.indexOf("$") > -1) {
-                                    Workflow w = getWorkflow(definition.getProvider(), processId, null);
-                                    if (w != null) {
-                                        for (Map.Entry<String, Object> entry : w.getVariables().entrySet()) {
-                                            if (entry.getValue() instanceof List) {
-                                                @SuppressWarnings("unchecked")
-                                                List<Object> variable = (List<Object>) entry.getValue();
-                                                for (Object workflowVariable : variable) {
-                                                    if (workflowVariable instanceof WorkflowVariable) {
-                                                        String v = ((WorkflowVariable) workflowVariable).getValue();
-                                                        permName = permName.replace("$" + entry.getKey(), v);
-                                                    }
-                                                }
-                                            }
-                                        }
+                if (permName.indexOf("$") > -1) {
+                    Workflow w = getWorkflow(definition.getProvider(), processId, null);
+                    if (w != null) {
+                        for (Map.Entry<String, Object> entry : w.getVariables().entrySet()) {
+                            if (entry.getValue() instanceof List) {
+                                @SuppressWarnings("unchecked")
+                                List<Object> variable = (List<Object>) entry.getValue();
+                                for (Object workflowVariable : variable) {
+                                    if (workflowVariable instanceof WorkflowVariable) {
+                                        String v = ((WorkflowVariable) workflowVariable).getValue();
+                                        permName = permName.replace("$" + entry.getKey(), v);
                                     }
-                                }
-                                try {
-                                    Set<String> s = new HashSet<String>();
-
-                                    try {
-                                        String path = "/permissions" + permName;
-                                        while (path.length() >= "/permissions".length()) {
-                                            JCRNodeWrapper permissionNode = session.getNode(path);
-                                            for (PropertyIterator iterator = permissionNode.getWeakReferences(
-                                                    "j:permissions"); iterator.hasNext();) {
-                                                Property prop = iterator.nextProperty();
-                                                Node roleNode = prop.getParent();
-                                                s.add(roleNode.getName());
-                                            }
-                                            path = StringUtils.substringBeforeLast(path, "/");
-                                        }
-                                    } catch (PathNotFoundException e) {
-                                        logger.warn("Unable to find the node for the permission " + permName);
-                                    }
-
-                                    for (Map.Entry<String, List<String[]>> entry : m.entrySet()) {
-                                        for (String[] strings : entry.getValue()) {
-                                            if (strings[1].equals("GRANT")) {
-                                                if (s.contains(strings[2])) {
-                                                    String principal = entry.getKey();
-                                                    final String principalName = principal.substring(2);
-                                                    if (principal.charAt(0) == 'u') {
-                                                        JahiaUser jahiaUser = userService.lookupUser(principalName);
-                                                        principals.add(jahiaUser);
-                                                    } else if (principal.charAt(0) == 'g') {
-                                                        JahiaGroup group = groupService.lookupGroup(site.getID(),
-                                                                principalName);
-                                                        principals.add(group);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                } catch (RepositoryException e) {
-                                    logger.error(e.getMessage(), e);
-                                } catch (BeansException e) {
-                                    logger.error(e.getMessage(), e);
                                 }
                             }
                         }
                     }
+                }
+                try {
+                    Set<String> s = new HashSet<String>();
+
+                    try {
+                        String path = "/permissions" + permName;
+                        while (path.length() >= "/permissions".length()) {
+                            JCRNodeWrapper permissionNode = session.getNode(path);
+                            for (PropertyIterator iterator = permissionNode
+                                    .getWeakReferences("j:permissions"); iterator.hasNext();) {
+                                Property prop = iterator.nextProperty();
+                                Node roleNode = prop.getParent();
+                                s.add(roleNode.getName());
+                            }
+                            path = StringUtils.substringBeforeLast(path, "/");
+                        }
+                    } catch (PathNotFoundException e) {
+                        logger.warn("Unable to find the node for the permission " + permName);
+                    }
+
+                    Map<String, List<String[]>> m = node.getAclEntries();
+                    principals = new LinkedList<JahiaPrincipal>();
+                    JahiaUserManagerService userService = ServicesRegistry.getInstance()
+                            .getJahiaUserManagerService();
+                    JahiaGroupManagerService groupService = ServicesRegistry.getInstance()
+                            .getJahiaGroupManagerService();
+
+                    JCRSiteNode site = null;
+
+                    for (Map.Entry<String, List<String[]>> entry : m.entrySet()) {
+                        for (String[] strings : entry.getValue()) {
+                            if (strings[1].equals("GRANT")) {
+                                if (s.contains(strings[2])) {
+                                    String principal = entry.getKey();
+                                    final String principalName = principal.substring(2);
+                                    if (principal.charAt(0) == 'u') {
+                                        JahiaUser jahiaUser = userService.lookupUser(principalName);
+                                        principals.add(jahiaUser);
+                                    } else if (principal.charAt(0) == 'g') {
+                                        if (site == null) {
+                                            site = node.getResolveSite();
+                                        }
+                                        JahiaGroup group = groupService.lookupGroup(site.getID(),
+                                                principalName);
+                                        if (group == null) {
+                                            group = groupService.lookupGroup(0, principalName);
+                                        }
+                                        principals.add(group);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                } catch (BeansException e) {
+                    logger.error(e.getMessage(), e);
                 }
                 return principals;
             }
@@ -582,7 +585,7 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         lookupProvider(provider).assignTask(taskId, user);
     }
 
-    public void completeTask(String taskId, String provider, String outcome, Map<String, Object> args, JahiaUser user) {
+    public void completeTask(String taskId, String provider, String outcome, Map<String, Object> args) {
         lookupProvider(provider).completeTask(taskId, outcome, args);
     }
 
@@ -600,7 +603,7 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
 
     public void assignAndCompleteTask(String taskId, String provider, String outcome, Map<String, Object> args, JahiaUser user) {
         assignTask(taskId, provider,  user);
-        completeTask(taskId, provider, outcome, args, user);
+        completeTask(taskId, provider, outcome, args);
     }
 
     public void addParticipatingGroup(String taskId, String provider, JahiaGroup group, String role) {

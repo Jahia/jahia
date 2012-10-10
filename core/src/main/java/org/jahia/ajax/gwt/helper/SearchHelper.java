@@ -40,17 +40,13 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import org.jahia.services.content.*;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchCriteria.Term.SearchFields;
@@ -103,7 +99,7 @@ public class SearchHelper {
     public List<GWTJahiaNode> search(String searchString, int limit, JCRSiteNode site, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
             Query q = createQuery(formatQuery(searchString), currentUserSession);
-            return navigation.executeQuery(q, null,null,null, Arrays.asList(site.getSiteKey()));
+            return navigation.executeQuery(q, null,null,null, (site != null ? Arrays.asList(site.getSiteKey()): null));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -130,8 +126,8 @@ public class SearchHelper {
             if (logger.isDebugEnabled()) {
                 logger.debug("Executing query: " + q.getStatement());
             }
-            return navigation.executeQuery(q, search.getNodeTypes(), search.getMimeTypes(), search.getFilters(), Arrays.asList(GWTJahiaNode.ICON,
-                    GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.PRIMARY_TYPE_LABEL), search.getSites(), showOnlyNodesWithTemplates);
+            return navigation.executeQuery(q, search.getNodeTypes(), search.getMimeTypes(), search.getFilters(), Arrays.asList(GWTJahiaNode.ICON, "jcr:created", "jcr:createdBy",
+                    GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.PRIMARY_TYPE_LABEL, GWTJahiaNode.PERMISSIONS), search.getSites(), showOnlyNodesWithTemplates);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -154,7 +150,7 @@ public class SearchHelper {
     public List<GWTJahiaNode> search(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, JCRSiteNode site, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
             Query q = createQuery(formatQuery(searchString), currentUserSession);
-            return navigation.executeQuery(q, nodeTypes, mimeTypes, filters, Arrays.asList(site.getSiteKey()));
+            return navigation.executeQuery(q, nodeTypes, mimeTypes, filters, (site != null ? Arrays.asList(site.getSiteKey()): null));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -177,9 +173,15 @@ public class SearchHelper {
     public List<GWTJahiaNode> searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes,
                                         List<String> filters, List<String> fields, JCRSiteNode site, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
+            if(searchString.contains("$site") && site!=null) {
+                searchString = searchString.replace("$site", site.getPath());
+            }
+            if(searchString.contains("$systemsite") && site!=null) {
+                searchString = searchString.replace("$systemsite", JCRContentUtils.getSystemSitePath());
+            }
             Query q = currentUserSession.getWorkspace().getQueryManager().createQuery(searchString,Query.JCR_SQL2);
             q.setLimit(limit);
-            return navigation.executeQuery(q, nodeTypes, mimeTypes, filters,fields, Arrays.asList(site.getSiteKey()), false);
+            return navigation.executeQuery(q, nodeTypes, mimeTypes, filters,fields, (site != null ? Arrays.asList(site.getSiteKey()): null), false);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -197,10 +199,17 @@ public class SearchHelper {
      */
     public List<GWTJahiaNode> getSavedSearch(JCRSiteNode site, JCRSessionWrapper currentUserSession) {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
+        JCRNodeWrapper user;
         try {
-            String s = "select * from [nt:query]";
+            user = jcrService.getUserFolder(currentUserSession.getUser());
+        } catch (Exception e) {
+            logger.error("no user folder for site " + site.getSiteKey() + " and user " + currentUserSession.getUser().getUsername());
+            return result;
+        }
+        try {
+            String s = "select * from [nt:query] as q where isdescendantnode(q, ['" + user.getPath() + "'])";
             Query q = currentUserSession.getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
-            return navigation.executeQuery(q, null,null,null, (site != null ? Arrays.asList(site.getSiteKey()): null));
+            return navigation.executeQuery(q, null,null,null,null);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -410,7 +419,64 @@ public class SearchHelper {
             fields.setKeywords(gwtQuery.isInMetadatas());
             fields.setTags(gwtQuery.isInTags());
         }
-        
+
+        Date startDate = null;
+        SearchCriteria.DateValue creationDate = new SearchCriteria.DateValue();
+        creationDate.setType(SearchCriteria.DateValue.Type.RANGE);
+        SearchCriteria.DateValue lastModifiedDate = new SearchCriteria.DateValue();
+        lastModifiedDate.setType(SearchCriteria.DateValue.Type.RANGE);
+        SearchCriteria.DateValue lastPublished = criteria.getProperties().get("jmix:lastPublished").get("j:lastPublished").getDateValue();
+        criteria.getProperties().get("jmix:lastPublished").get("j:lastPublished").setType(SearchCriteria.NodeProperty.Type.DATE);
+        criteria.getProperties().get("jmix:lastPublished").get("j:lastPublished").setName("j:lastPublished");
+        lastPublished.setType(SearchCriteria.DateValue.Type.RANGE);
+
+        if (gwtQuery.getTimeInDays() != null) {
+            // compute startDate
+            int timeInDays = Integer.parseInt(gwtQuery.getTimeInDays());
+            Calendar cal = Calendar.getInstance();
+            if (timeInDays < 30) {
+                cal.add(Calendar.DATE,-timeInDays);
+            } else if (timeInDays < 365) {
+                cal.add(Calendar.MONTH, -(timeInDays / 30));
+            } else {
+                cal.add(Calendar.YEAR, -(timeInDays / 365));
+            }
+            startDate = cal.getTime();
+        }
+
+        if (gwtQuery.getEndLastModifiedDate() != null) {
+            lastModifiedDate.setToAsDate(gwtQuery.getEndLastModifiedDate());
+            if (startDate != null) {
+                lastModifiedDate.setFromAsDate(startDate);
+                criteria.setLastModified(lastModifiedDate);
+            }
+        } else if (gwtQuery.getEndCreatedDate() != null) {
+            creationDate.setToAsDate(gwtQuery.getEndCreatedDate());
+            if (startDate != null) {
+                creationDate.setFromAsDate(startDate);
+                criteria.setCreated(creationDate);
+            }
+        } else if (gwtQuery.getEndPublishedDate() != null) {
+            lastPublished.setToAsDate(gwtQuery.getEndPublishedDate());
+            if (startDate != null) {
+                lastPublished.setFromAsDate(startDate);
+            }
+        }
+
+        if (gwtQuery.getStartCreatedDate() != null) {
+            creationDate.setFromAsDate(gwtQuery.getStartCreatedDate());
+            criteria.setCreated(creationDate);
+        }
+
+        if (gwtQuery.getStartLastModifiedDate() != null ) {
+            lastModifiedDate.setFromAsDate(gwtQuery.getStartLastModifiedDate());
+            criteria.setLastModified(lastModifiedDate);
+        }
+
+        if (gwtQuery.getStartPublishedDate() != null) {
+            lastPublished.setFromAsDate(gwtQuery.getStartPublishedDate());
+        }
+
         if (gwtQuery.getOriginSiteUuid() != null) {
             String siteKey = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
                 public String doInJCR(JCRSessionWrapper session) throws RepositoryException {

@@ -46,11 +46,14 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
+
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
@@ -73,13 +76,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class creates fields for a GXT form panel based on available jcr types and a specific mapping.
  */
 public class FormFieldCreator {
 
+    private static final int DUAL_LIST_ITEM_COUNT_TO_FILTER = 5;
+
     public static final DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd.MM.yyyy HH:mm");
+
+    private static final int FILTER_FIELD_HEIGHT = 22;
 
     /**
      * Create Field
@@ -123,17 +131,13 @@ public class FormFieldCreator {
                     break;
                 case GWTJahiaNodeSelectorType.TEXTAREA:
                     field = new TextArea();
+                    final String height = propDefinition.getSelectorOptions().get("height");
+                    if (height != null) {
+                        field.setSize(Integer.toString(field.getWidth()), height);
+                    }
                     break;
                 case GWTJahiaNodeSelectorType.RICHTEXT:
-                    CKEditorConfig config = new CKEditorConfig();
-                    if (PermissionsUtils.isPermitted("view-full-wysiwyg-editor",permissions) || PermissionsUtils.isPermitted("studioModeAccess",permissions)) {
-                        config.setToolbarSet("Full");
-                    } else if (PermissionsUtils.isPermitted("view-basic-wysiwyg-editor" ,permissions)) {
-                        config.setToolbarSet("Basic");
-                    } else {
-                        config.setToolbarSet("Light");
-                    }
-                    field = new CKEditorField(config);
+                    field = new CKEditorField(getCKEditorConfig(propDefinition, permissions));
                     field.setAutoWidth(false);
                     field.setAutoHeight(false);
                     field.setHeight(300);
@@ -201,6 +205,21 @@ public class FormFieldCreator {
                         from.setDisplayField("display");
                         store.setSortDir(Style.SortDir.ASC);
                         store.setSortField("display");
+                        if (store.getCount() > DUAL_LIST_ITEM_COUNT_TO_FILTER) {
+                            StoreFilterField<GWTJahiaValueDisplayBean> filterField = new StoreFilterField<GWTJahiaValueDisplayBean>() {
+                                @Override
+                                protected boolean doSelect(Store<GWTJahiaValueDisplayBean> store, GWTJahiaValueDisplayBean parent,
+                                        GWTJahiaValueDisplayBean record, String property, String filter) {
+
+                                    String s = filter.toLowerCase();
+                                    return record.getValue().toLowerCase().contains(s)
+                                            || record.getDisplay().toLowerCase().contains(s);
+                                }
+                            };
+                            filterField.bind(store);
+                            filterField.setHeight(FILTER_FIELD_HEIGHT);
+                            lists.setFilterField(filterField);
+                        }
                         ListField<GWTJahiaValueDisplayBean> to = lists.getToList();
                         to.setDisplayField("display");
                         ListStore<GWTJahiaValueDisplayBean> tostore = new ListStore<GWTJahiaValueDisplayBean>();
@@ -248,9 +267,9 @@ public class FormFieldCreator {
                     }
                     break;
             }
-            // moved here due to IE problem reported in BOUYGUES-40 
+            // moved here due to IE problem reported in BOUYGUES-40
             field.setEmptyText(emptyText); // todo: allow to set the default value
-			
+
             if (propDefinition.isInternationalized()) {
                 field.setLabelSeparator(" <img width='11px' height='11px' src='" + JahiaGWTParameters.getContextPath() +
                         "/css/images/sharedLang.gif'/>");
@@ -275,6 +294,37 @@ public class FormFieldCreator {
         }
         field.setId("JahiaGxtField"+ "_" + field.getName().replace(":","_")+"_"+locale);
         return field;
+    }
+
+    private static CKEditorConfig getCKEditorConfig(GWTJahiaPropertyDefinition propDefinition,
+            GWTBitSet permissions) {
+        CKEditorConfig config = new CKEditorConfig();
+        boolean toolbarDefined = false;
+        for (Map.Entry<String, String> option : propDefinition.getSelectorOptions()
+                .entrySet()) {
+            if (!option.getKey().startsWith("ckeditor.")) {
+                continue;
+            }
+            String key = option.getKey().substring("ckeditor.".length());
+            String value = option.getValue();
+            if (value != null && value.contains("$context")) {
+                value = value.replace("$context", JahiaGWTParameters.getContextPath());
+            }
+            config.set(key, value);
+            if ("toolbar".equals(key) || "customConfig".equals(key) ) {
+                toolbarDefined = true;
+            }
+        }
+        if (!toolbarDefined) {
+            String toolbar = "Light";
+            if (PermissionsUtils.isPermitted("view-full-wysiwyg-editor",permissions) || PermissionsUtils.isPermitted("studioModeAccess",permissions)) {
+                toolbar = "Full";
+            } else if (PermissionsUtils.isPermitted("view-basic-wysiwyg-editor" ,permissions)) {
+                toolbar = "Basic";
+            }
+            config.setDefaultToolbar(toolbar);
+        }
+        return config;
     }
 
     private static List<String> getSelectorOptionAsList(GWTJahiaItemDefinition definition, String name) {
@@ -446,8 +496,16 @@ public class FormFieldCreator {
                     case GWTJahiaNodePropertyType.PATH:
                     case GWTJahiaNodePropertyType.URI:
                     case GWTJahiaNodePropertyType.UNDEFINED:
-                        if (values.get(0).getString() != null) {
-                            field.setValue(join(values));
+                        if (propDefinition.getSelector() == GWTJahiaNodeSelectorType.PICKER) {
+                            List<GWTJahiaNode> v = new ArrayList<GWTJahiaNode>();
+                            for (GWTJahiaNodePropertyValue value : values) {
+                                v.add(value.getNode());
+                            }
+                            field.setValue(v);
+                        } else {
+                            if (values.get(0).getString() != null) {
+                                field.setValue(join(values));
+                            }
                         }
                         break;
                     case GWTJahiaNodePropertyType.REFERENCE:
@@ -546,8 +604,10 @@ public class FormFieldCreator {
         ].join("");
     }-*/;
 
-    private static class CustomDualListField<D extends ModelData> extends DualListField<D> {
+    public static class CustomDualListField<D extends ModelData> extends DualListField<D> {
         private List<D> originalValue = new ArrayList<D>();
+
+        private StoreFilterField<D> filterField;
 
         public void setCustomOriginalValue(List<D> originalValue) {
             this.originalValue = originalValue;
@@ -594,6 +654,27 @@ public class FormFieldCreator {
             super.onComponentEvent(ce);
             getToList().getStore().sort("display", Style.SortDir.ASC);
             getFromList().getStore().sort("display", Style.SortDir.ASC);
+        }
+
+        public StoreFilterField<D> getFilterField() {
+            return filterField;
+        }
+
+        public void setFilterField(StoreFilterField<D> filterField) {
+            this.filterField = filterField;
+            VerticalPanel vp = new VerticalPanel();
+            vp.add(filterField);
+            vp.add(fields.remove(0));
+            fields.add(0, new AdapterField(vp));
+        }
+
+        @Override
+        protected void onResize(int width, int height) {
+            super.onResize(width, height);
+            if (filterField != null) {
+                fromField.setHeight(fromField.getHeight() - (FILTER_FIELD_HEIGHT / 2));
+                filterField.setWidth(fromField.getWidth());
+            }
         }
     }
 }

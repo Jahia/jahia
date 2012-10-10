@@ -125,6 +125,8 @@
             </bean>
         </property>
         -->
+        <property name="expandImportedFilesOnDisk" value="${expandImportedFilesOnDisk:false}"/>
+        <property name="expandImportedFilesOnDiskPath" value="${expandImportedFilesOnDiskPath:/tmp}"/>
 	</bean>
 
     <bean id="org.jahia.services.templates.TemplatePackageRegistry"
@@ -171,6 +173,12 @@
     <bean id="org.jahia.services.search.jcr.JahiaJCRSearchProvider"
           class="org.jahia.services.search.jcr.JahiaJCRSearchProvider">
         <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
+        <property name="typesToHideFromSearchResults">
+            <set>
+                <value>jnt:acl</value>
+                <value>jnt:ace</value>
+            </set>
+        </property>
     </bean>
 
     <bean id="org.jahia.services.seo.jcr.VanityUrlManager" class="org.jahia.services.seo.jcr.VanityUrlManager"/>
@@ -228,8 +236,14 @@
 
     <bean id="ImageJImageService" class="org.jahia.services.image.ImageJImageService"  factory-method="getInstance" />
 
+    <bean id="ImageJAndJava2DImageService" class="org.jahia.services.image.ImageJAndJava2DImageService"  factory-method="getInstance" />
+    
     <bean id="ImageMagickImageService" class="org.jahia.services.image.ImageMagickImageService" factory-method="getInstance" init-method="init">
         <property name="imageMagickPath" value="${imageMagickPath}"/>
+    </bean>
+
+    <bean id="imageService" class="org.springframework.beans.factory.config.BeanReferenceFactoryBean" depends-on="ImageJImageService,ImageJAndJava2DImageService,ImageMagickImageService">
+        <property name="targetBeanName" value="#{jahiaProperties['imageService'].trim()}"/>
     </bean>
 
     <bean id="visibilityService" class="org.jahia.services.visibility.VisibilityService" factory-method="getInstance">
@@ -238,5 +252,5 @@
         </property>
     </bean>
     
-    <bean class="org.jahia.tools.patches.GroovyPatcher"/>
+    <bean id="groovyPatcher" class="org.jahia.tools.patches.GroovyPatcher"/>
 </beans>

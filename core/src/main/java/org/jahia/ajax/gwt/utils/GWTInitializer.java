@@ -42,8 +42,10 @@ package org.jahia.ajax.gwt.utils;
 
 import org.apache.commons.lang.WordUtils;
 import org.drools.util.StringUtils;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaException;
@@ -69,8 +71,8 @@ import java.util.*;
  * @version 10 mars 2008 - 10:46:13
  */
 public class GWTInitializer {
-    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(GWTInitializer.class);
-    private static List<String> gwtCssStyles;
+    private final static Logger logger = LoggerFactory.getLogger(GWTInitializer.class);
+    private static GWTResourceConfig config;
 
     public static String generateInitializerStructure(HttpServletRequest request, HttpSession session) {
         return generateInitializerStructure(request, session, null, null);
@@ -112,7 +114,7 @@ public class GWTInitializer {
         params.put(JahiaGWTParameters.SERVLET_PATH, request.getServletPath());
         params.put(JahiaGWTParameters.PATH_INFO, request.getPathInfo());
         params.put(JahiaGWTParameters.QUERY_STRING, request.getQueryString());
-
+        params.put(JahiaGWTParameters.DEVELOPMENT_MODE, SettingsBean.getInstance().isDevelopmentMode()?"true":"false");
         JahiaUser user = (JahiaUser) session.getAttribute(ParamBean.SESSION_USER);
         if (user != null) {
             String name = user.getUsername();
@@ -178,23 +180,50 @@ public class GWTInitializer {
         buf.append("<script type=\"text/javascript\">\n");
         buf.append(getJahiaGWTConfig(params));
         buf.append("\n</script>\n");
+        
+        addJavaScript(buf, request);
+        
+        if (getConfig().isDetectCustomCKEditorConfig()) {
+            addCustomCKEditorConfig(buf, request);
+        }
 
         return buf.toString();
     }
 
     private static void addCss(StringBuilder buf, HttpServletRequest request) {
         String context = request.getContextPath();
-        for (String css : gwtCssStyles()) {
-            buf.append("<link type=\"text/css\" href=\"").append(context).append(css).append("\" rel=\"stylesheet\"/>\n");
+        for (String css : getConfig().getCssStyles()) {
+            buf.append("<link type=\"text/css\" href=\"").append(context).append(css)
+                    .append("\" rel=\"stylesheet\"/>\n");
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private static List<String> gwtCssStyles() {
-        if (gwtCssStyles == null) {
-            gwtCssStyles = (List<String>) SpringContextSingleton.getBean("gwtCssStyles");
+    private static void addJavaScript(StringBuilder buf, HttpServletRequest request) {
+        String context = request.getContextPath();
+        for (String js : getConfig().getJavaScripts()) {
+            buf.append("<script id=\"jahia-ckeditor-js\" type=\"text/javascript\" src=\"")
+                    .append(context).append(js).append("\"></script>\n");
         }
-        return gwtCssStyles;
+    }
+
+    private static void addCustomCKEditorConfig(StringBuilder buf, HttpServletRequest request) {
+        RenderContext ctx = (RenderContext) request.getAttribute("renderContext");
+        if (ctx == null) {
+            return;
+        }
+        String templateSetFolder = ctx.getSite().getTemplateFolder();
+        if (getConfig().exists(templateSetFolder, "/javascript/ckeditor_config.js")) {
+            buf.append("<script id=\"jahia-ckeditor-config-js\" type=\"text/javascript\" src=\"")
+                    .append(request.getContextPath()).append("/modules/").append(templateSetFolder)
+                    .append("/javascript/ckeditor_config.js").append("\"></script>\n");
+        }
+    }
+
+    private static GWTResourceConfig getConfig() {
+        if (config == null) {
+            config = (GWTResourceConfig) SpringContextSingleton.getBean("GWTResourceConfig");
+        }
+        return config;
     }
 
     /**

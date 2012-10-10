@@ -231,11 +231,11 @@ public class PrincipalViewHelper implements Serializable {
         } else if (p instanceof JahiaUser) {
             JahiaUser jahiaUser = (JahiaUser) p;
             StringBuilder fullName = new StringBuilder();
-            String value = jahiaUser.getProperty("firstname");
+            String value = jahiaUser.getProperty("j:firstName");
             if (StringUtils.isNotEmpty(value)) {
                 fullName.append(value);
             }
-            value = jahiaUser.getProperty("lastname");
+            value = jahiaUser.getProperty("j:lastName");
             if (StringUtils.isNotEmpty(value)) {
                 if (fullName.length() > 0) {
                     fullName.append(" ");
@@ -243,10 +243,7 @@ public class PrincipalViewHelper implements Serializable {
                 fullName.append(value);
             }
 
-            if (fullName.length() == 0) {
-                fullName.append(getDisplayName(jahiaUser));
-            }
-            return fullName.toString();
+            return fullName.length() == 0 ? getDisplayName(jahiaUser) : fullName.toString();
         } else {
             return p.getName();
         }
@@ -795,7 +792,7 @@ public class PrincipalViewHelper implements Serializable {
             locale = Jahia.getThreadParamBean() != null ? Jahia.getThreadParamBean().getUILocale() : null;
         }
         if (locale == null) {
-            locale = LanguageCodeConverters.languageCodeToLocale(SettingsBean.getInstance().getDefaultLanguageCode());
+            locale = SettingsBean.getInstance().getDefaultLocale();
         }
         if (locale == null) {
             locale = Locale.ENGLISH;

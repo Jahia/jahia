@@ -40,10 +40,12 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
 /**
  * 
@@ -51,20 +53,28 @@ import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 * Date: Sep 25, 2009
 * Time: 6:59:03 PM
 */
-public class EditContentActionItem extends BaseActionItem {
+public class EditContentActionItem extends NodeTypeAwareBaseActionItem {
     
     private static final long serialVersionUID = 1899385924986263120L;
     
     private boolean allowRootNodeEditing;
-    
+    private boolean useMainNode = false;
+
     public void onComponentSelection() {
-        EngineLoader.showEditEngine(linker, linker.getSelectionContext().getSingleSelection());
+        GWTJahiaNode singleSelection;
+        if (useMainNode) {
+            singleSelection = linker.getSelectionContext().getMainNode();
+        }   else {
+            singleSelection = linker.getSelectionContext().getSingleSelection();
+        }
+        EngineLoader.showEditEngine(linker, singleSelection);
     }
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        final GWTJahiaNode singleSelection = lh.getSingleSelection();
+        GWTJahiaNode singleSelection = lh.getSingleSelection();
         setEnabled(singleSelection != null
+                && isNodeTypeAllowed(singleSelection)
                 && hasPermission(lh.getSelectionPermissions())
                 && (allowRootNodeEditing || !lh.isRootNode())
                 && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions()));
@@ -72,5 +82,22 @@ public class EditContentActionItem extends BaseActionItem {
 
     public void setAllowRootNodeEditing(boolean allowRootNodeEditing) {
         this.allowRootNodeEditing = allowRootNodeEditing;
+    }
+
+    public void setUseMainNode(boolean useMainNode) {
+        this.useMainNode = useMainNode;
+    }
+
+    @Override
+    protected boolean isNodeTypeAllowed(GWTJahiaNode selectedNode) {
+        GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(selectedNode.getNodeTypes().get(0));
+        if (nodeType != null) {
+            Boolean canUseComponentForCreate = (Boolean) nodeType.get("canUseComponentForEdit");
+            if (canUseComponentForCreate != null && !canUseComponentForCreate) {
+                return false;
+            }
+        }
+
+        return super.isNodeTypeAllowed(selectedNode);
     }
 }

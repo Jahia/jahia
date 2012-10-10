@@ -48,6 +48,8 @@
                             <util:map map-class="java.util.LinkedHashMap" key-type="java.lang.String" value-type="java.lang.Long">
                                 <entry key="ActionJob\..*" value="3600000"/><!-- 1 hour -->
                                 <entry key="TextExtractorJob\..*" value="3600000"/><!-- 1 hour -->
+                                <entry key="DocumentThumbnailJob\..*" value="1800000"/><!-- 30 minutes -->
+                                <entry key="VideoThumbnailJob\..*" value="1800000"/><!-- 30 minutes -->
                                 <entry key=".*\..*" value="86400000"/><!-- 1 day -->
                             </util:map>
                         </entry>

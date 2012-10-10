@@ -255,13 +255,13 @@ public class QueryModificationTest {
             QueryManager queryManager = session.getWorkspace().getQueryManager();
 
             if (queryManager != null) {
-                String query = "SELECT * FROM [jnt:news] as news INNER JOIN [jmix:tagged] AS tags ON news.[j.tags] = tags.[jcr:uuid] WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags)='test' ORDER BY news.[jcr:title]";
+                String query = "SELECT * FROM [jnt:news] as news INNER JOIN [jnt:tag] AS tags ON news.[j:tags] = tags.[jcr:uuid] WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags)='test' ORDER BY news.[jcr:title]";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertEquals("SELECT news.*, tags.* FROM [jnt:news] AS news INNER JOIN [jmix:tagged] AS tags ON news.[j.tags] = tags.[jcr:uuid] WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags) = 'test' AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
+                assertEquals("SELECT news.*, tags.* FROM [jnt:news] AS news INNER JOIN [jnt:tag] AS tags ON news.[j:tags] = tags.[jcr:uuid] WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags) = 'test' AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
                 
-                query = "SELECT news.*, tags.* FROM [jnt:news] AS news INNER JOIN [jmix:tagged] AS tags ON news.[j.tags] = tags.[jcr:uuid] WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags) = 'test' AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]";
+                query = "SELECT news.*, tags.* FROM [jnt:news] AS news INNER JOIN [jnt:tag] AS tags ON news.[j:tags] = tags.[jcr:uuid] WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags) = 'test' AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertEquals("SELECT news.*, tags.* FROM [jnt:news] AS news INNER JOIN [jmix:tagged] AS tags ON news.[j.tags] = tags.[jcr:uuid] WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags) = 'test' AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
+                assertEquals("SELECT news.*, tags.* FROM [jnt:news] AS news INNER JOIN [jnt:tag] AS tags ON news.[j:tags] = tags.[jcr:uuid] WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags) = 'test' AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
             }
 
         } catch (Exception ex) {

@@ -40,7 +40,19 @@
 
 package org.jahia.bin;
 
+import static javax.servlet.http.HttpServletResponse.SC_METHOD_NOT_ALLOWED;
+
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.jahia.bin.errors.DefaultErrorHandler;
+import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.usermanager.JahiaUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Base class for controllers, exposing repository nodes via JCR Query API.
@@ -73,6 +85,8 @@ public abstract class BaseFindController extends JahiaController {
             this.includes = includes != null && includes.size() == 0 ? null : includes;
         }
     }
+    
+    private static final Logger logger = LoggerFactory.getLogger(BaseFindController.class);
 
     protected int defaultLimit = 20;
 
@@ -98,4 +112,43 @@ public abstract class BaseFindController extends JahiaController {
     public void setHardLimit(int hardLimit) {
         this.hardLimit = hardLimit;
     }
+
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        long startTime = System.currentTimeMillis();
+        String sessionId = null;
+        try {
+            if (logger.isInfoEnabled()) {
+                sessionId = request.getSession().getId();
+            }
+            if (request.getMethod().equals("GET") || request.getMethod().equals("POST")) {
+                handle(request, response);
+            } else if (request.getMethod().equals("OPTIONS")) {
+                response.setHeader("Allow", "GET, OPTIONS, POST");
+            } else {
+                response.sendError(SC_METHOD_NOT_ALLOWED);
+            }
+        } catch (Exception e) {
+            DefaultErrorHandler.getInstance().handle(e, request, response);
+        } finally {
+            if (logger.isInfoEnabled()) {
+                StringBuilder sb = new StringBuilder(100);
+                sb.append("Rendered [").append(request.getRequestURI());
+                JahiaUser user = JCRTemplate.getInstance().getSessionFactory().getCurrentUser();
+                if (user != null) {
+                    sb.append("] user=[").append(user.getUsername());
+                }
+                sb.append("] ip=[").append(request.getRemoteAddr()).append("] sessionID=[").append(
+                        sessionId).append("] in [").append(
+                        System.currentTimeMillis() - startTime).append("ms]");
+                logger.info(sb.toString());
+            }
+        }
+        return null;
+    }
+
+    protected void handle(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        // implemented in subclasses
+    }
+
 }

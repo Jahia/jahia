@@ -1,22 +1,44 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
 [jnt:task] > jnt:content, mix:title
- - assignee (weakreference, choicelist[users]) < jnt:user
+ - jcr:title (string)
+ - assignee (weakreference, choicelist[users]) protected hidden < jnt:user
+ - assigneeUserKey (string)
+ - candidates (string) multiple
  - description (string)
- - priority (string, choicelist[resourceBundle]) = 'medium' nofulltext analyzer='keyword' < 'very_low', 'low', 'medium', 'high', 'very_high'
- - dueDate (date, datepicker) = now('1000*60*60*24')
- - state (string, choicelist[resourceBundle]) = 'active' nofulltext analyzer='keyword' < 'active', 'finished', 'suspended', 'cancelled'
+ - priority (string, choicelist[resourceBundle]) = 'normal' nofulltext analyzer='keyword' < 'low', 'normal', 'high'
+ - dueDate (date, datetimepicker) = now('1000*60*60*24')
+ - state (string, choicelist[resourceBundle]) = 'active' nofulltext analyzer='keyword' < 'active', 'started', 'finished', 'suspended'
  - type (string)
+ - possibleOutcomes (string) multiple
+ - finalOutcome (string)
+ + taskData (nt:base)
+
+[jnt:workflowTask] > jnt:task
+ - taskName (string)
+ - taskBundle (string)
+ - taskId (string)
+ - provider (string)
+ - targetNode (weakreference)
 
 [jnt:tasks] > jnt:content, mix:title
  orderable
+ + * (jnt:tasks)
  + * (jnt:task)
 
 
-[jnt:currentUserTasks] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly
- - viewUserTasks (boolean)
- - viewWorkflowTasks (boolean)
- - workflowTypes (string, choicelist[workflow]) multiple nofulltext
+[jnt:currentUserTasks] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly, jmix:list
+ - filterOnTypes (string) nofulltext
+ - filterOnStates (string, choicelist[resourceBundle]) multiple < 'active', 'started', 'finished', 'suspended'
+ - filterOnAssignee (string, choicelist[resourceBundle]) < 'assignedToMe','unassigned','assignedToMeOrUnassigned'
+ - filterOnCreator (string, choicelist[resourceBundle]) < 'createdByMe'
+ - displayState (boolean)
+ - displayDueDate (boolean)
+ - displayAssignee (boolean)
+ - displayCreator (boolean)
+ - displayLastModifiedDate (boolean)
+ - sortBy (string,choicelist) < 'jcr:created','dueDate','jcr:lastModified'
+ - sortOrder (string, choicelist) < 'asc', 'desc'
 
 [jnt:createTaskForm] > jnt:content, mix:title, jmix:formContent, jmix:bindedComponent, jmix:studioOnly
  - useDescription (boolean)
@@ -24,11 +46,13 @@
  - usePriority (boolean)
  - useDueDate (boolean)
  - taskType (string)
+ - checkRolesOnMainResource (boolean)
+ - rolesList (weakreference,choicelist[nodes='/roles;jnt:role']) multiple nofulltext
 
 [jnt:taskList] > jnt:content, mix:title, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly, jmix:list
  - filterOnTypes (string)
 
-[jnt:taskPlanning] > jnt:content, mix:title, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly
+[jnt:taskSchedule] > jnt:content, mix:title, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly
 // - filterOnCurrentUser (boolean)
 // - filterOnTypes (string)
 // - filterOnPriority (string,choicelist) multiple < 'very_low', 'low', 'medium', 'high', 'very_high'

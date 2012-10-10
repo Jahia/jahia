@@ -1,0 +1,41 @@
+/******************************************************************************
+*  inbox Management Form
+******************************************************************************/
+.bodywrapper .webProjectCreation {
+    margin-bottom:1em;
+    padding:1em;
+}
+
+.bodywrapper .webProjectCreation legend {
+     display:none;
+}
+
+.bodywrapper .webProjectCreation fieldset {
+	padding:0;
+	border:none;
+}
+.bodywrapper .webProjectCreation p {
+	padding:0.2em 0 0.5em 0;
+	border:none;
+	margin:0 ;
+}
+.bodywrapper .webProjectCreation label {
+    display:block;
+    padding-bottom: 0.2em;
+}
+.bodywrapper .webProjectCreation label.label-inline {
+    display:inline;
+    padding-bottom: 0.2em;
+}
+.bodywrapper .webProjectCreation select {
+   width:215px
+}
+.bodywrapper .webProjectCreation input.inputsize1 {
+   width:200px;
+}
+.bodywrapper .webProjectCreation input.inputsize2 {
+   width:90%
+}
+.bodywrapper .webProjectCreation textarea.inputsize2 {
+   width:90%
+}

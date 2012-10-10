@@ -77,6 +77,7 @@ import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -145,22 +146,20 @@ public class ContentManagerHelper {
                     new StringBuilder(parentNode.getPath()).append(" - ACCESS DENIED").toString());
         }
         JCRNodeWrapper childNode = null;
-        if (!parentNode.isFile() && parentNode.hasPermission("jcr:addChildNodes") && !parentNode.isLocked()) {
-            try {
-                if (!parentNode.isCheckedOut()) {
-                    parentNode.getSession().getWorkspace().getVersionManager().checkout(parentNode.getPath());
-                }
-                childNode = parentNode.addNode(name, nodeType);
-                if (mixin != null) {
-                    for (String m : mixin) {
-                        childNode.addMixin(m);
-                    }
-                }
-                properties.setProperties(childNode, props);
-            } catch (Exception e) {
-                logger.error("Exception", e);
-                throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.cannot.get.node",uiLocale)+ e.getMessage());
+        try {
+            if (!parentNode.isCheckedOut()) {
+                parentNode.getSession().getWorkspace().getVersionManager().checkout(parentNode.getPath());
             }
+            childNode = parentNode.addNode(name, nodeType);
+            if (mixin != null) {
+                for (String m : mixin) {
+                    childNode.addMixin(m);
+                }
+            }
+            properties.setProperties(childNode, props);
+        } catch (Exception e) {
+            logger.error("Exception", e);
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.cannot.get.node", uiLocale) + e.getMessage());
         }
         if (childNode == null) {
             throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.creation.failed", uiLocale));
@@ -210,7 +209,7 @@ public class ContentManagerHelper {
                 final List<GWTJahiaNodePropertyValue> propertyValues = property.getValues();
                 if (property.getName().equals("jcr:title") && propertyValues != null && propertyValues.size() > 0 &&
                         propertyValues.get(0).getString() != null) {
-                    nodeName = JCRContentUtils.generateNodeName(propertyValues.get(0).getString(), 32);
+                    nodeName = JCRContentUtils.generateNodeName(propertyValues.get(0).getString());
                 }
             } else {
                 logger.error("found a null property");
@@ -465,7 +464,7 @@ public class ContentManagerHelper {
             } else {
                 uuids = callback.doInJCR(currentUserSession);
             }
-        
+
             if (missedPaths.size() > 0) {
                 StringBuilder errors = new StringBuilder("The following files could not have their reference pasted:");
                 for (String err : missedPaths) {
@@ -546,7 +545,7 @@ public class ContentManagerHelper {
                         nodeToDelete.unmarkForDeletion();
                     } else {
                         missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - locked by ")
-                            .append(nodeToDelete.getLockOwner()).toString());
+                                .append(nodeToDelete.getLockOwner()).toString());
                     }
                 }
                 if (!nodeToDelete.hasPermission(Privilege.JCR_REMOVE_NODE)) {
@@ -859,7 +858,15 @@ public class ContentManagerHelper {
                             if (g != null) {
                                 ace.setHidden(g.isHidden());
                                 String groupName = PrincipalViewHelper.getDisplayName(g, uiLocale);
+                                ace.setPrincipalKey(g.getGroupKey());
                                 ace.setPrincipalDisplayName(groupName);
+                            }
+                        } else {
+                            JahiaUser u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(ace.getPrincipal());
+                            if (u != null) {
+                                ace.setPrincipalKey(u.getUserKey());
+                                String userName = PrincipalViewHelper.getDisplayName(u, uiLocale);
+                                ace.setPrincipalDisplayName(userName);
                             }
                         }
                         ace.setPermissions(new HashMap<String, Boolean>());
@@ -910,22 +917,35 @@ public class ContentManagerHelper {
             return;
         }
         try {
-            node.revokeAllRoles();
+            Map<String, GWTJahiaNodeACE> oldPrincipals = new HashMap<String, GWTJahiaNodeACE>();
+            for (GWTJahiaNodeACE ace : oldAcl.getAce()) {
+                if (!ace.getPermissions().isEmpty()) {
+                    oldPrincipals.put(ace.getPrincipalType() + ":" + ace.getPrincipal(), ace);
+                }
+            }
             for (GWTJahiaNodeACE ace : acl.getAce()) {
                 String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
-                for (Map.Entry<String, Boolean> entry : ace.getPermissions().entrySet()) {
-                    if (!entry.getValue().equals(ace.getInheritedPermissions().get(entry.getKey()))) {
-                        if (entry.getValue().equals(Boolean.TRUE) && !Boolean.TRUE.equals(ace.getInheritedPermissions().get(entry.getKey()))) {
-                            node.grantRoles(user, Collections.singleton(entry.getKey()));
-                        } else if (entry.getValue().equals(Boolean.FALSE) && Boolean.TRUE.equals(ace.getInheritedPermissions().get(entry.getKey()))) {
-                            node.denyRoles(user, Collections.singleton(entry.getKey()));
+                if (!ace.getPermissions().isEmpty()) {
+                    Map<String,String> perms = new HashMap<String, String>();
+                    GWTJahiaNodeACE oldAce = oldPrincipals.remove(user);
+                    if (!ace.equals(oldAce)) {
+                        for (Map.Entry<String, Boolean> entry : ace.getPermissions().entrySet()) {
+                            if (entry.getValue().equals(Boolean.TRUE) && ( !Boolean.TRUE.equals(ace.getInheritedPermissions().get(entry.getKey())) || acl.isBreakAllInheritance())) {
+                                perms.put(entry.getKey(), "GRANT");
+                            } else if (entry.getValue().equals(Boolean.FALSE) && (Boolean.TRUE.equals(ace.getInheritedPermissions().get(entry.getKey())) || acl.isBreakAllInheritance())) {
+                                perms.put(entry.getKey(), "DENY");
+                            } else {
+                                perms.put(entry.getKey(), "REMOVE");
+                            }
                         }
+                        node.changeRoles(user, perms);
                     }
                 }
             }
-            if (acl.isBreakAllInheritance()) {
-                node.setAclInheritanceBreak(acl.isBreakAllInheritance());
+            for (String oldPrincipal : oldPrincipals.keySet()) {
+                node.revokeRolesForPrincipal(oldPrincipal);
             }
+            node.setAclInheritanceBreak(acl.isBreakAllInheritance());
             currentUserSession.save();
         } catch (RepositoryException e) {
             logger.error("error", e);
@@ -1086,7 +1106,7 @@ public class ContentManagerHelper {
                     InputStream is = null;
                     try {
                         is = item.getStream();
-                        parent.uploadFile(newName, is, item.getContentType());
+                        parent.uploadFile(newName, is, JCRContentUtils.getMimeType(newName, item.getContentType()));
                     } catch (FileNotFoundException e) {
                         logger.error(e.getMessage(), e);
                     } finally {
@@ -1112,7 +1132,7 @@ public class ContentManagerHelper {
     }
 
     public GWTJahiaNode createTemplateSet(String key, String baseSet,final String siteType, JCRSessionWrapper session) throws GWTJahiaServiceException {
-        String shortName = JCRContentUtils.generateNodeName(key, 50);
+        String shortName = JCRContentUtils.generateNodeName(key);
         if (baseSet == null) {
             try {
                 JCRNodeWrapper node = session.getNode("/templateSets");
@@ -1122,6 +1142,7 @@ public class ContentManagerHelper {
                 templateSet.setProperty("j:siteType", siteType);
                 templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(shortName)});
                 templateSet.setProperty("j:title", key);
+                templateSet.setProperty("j:dependencies", new String[] {"default"});
                 session.save();
                 final String s = shortName;
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<Object>>() {
@@ -1187,7 +1208,7 @@ public class ContentManagerHelper {
 
     public GWTJahiaNode generateWar(String moduleName, JCRSessionWrapper session) {
         try {
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateManifest(moduleName);
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateManifest(moduleName, session);
             ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateImportFile(moduleName);
 
             File f = File.createTempFile("templateSet", ".war");
@@ -1232,7 +1253,7 @@ public class ContentManagerHelper {
         File[] files = dir.listFiles();
         for (File file : files) {
             if (file.isFile()) {
-                ZipEntry ze = new ZipEntry(file.getPath().substring(rootDir.getPath().length() + 1).replace("\\", "/"));
+                ZipEntry ze = new ZipEntry(Patterns.BACKSLASH.matcher(file.getPath().substring(rootDir.getPath().length() + 1)).replaceAll("/"));
                 zos.putNextEntry(ze);
                 final InputStream input = new BufferedInputStream(new FileInputStream(file));
                 try {
@@ -1243,7 +1264,7 @@ public class ContentManagerHelper {
             }
 
             if (file.isDirectory()) {
-                ZipEntry ze = new ZipEntry(file.getPath().substring(rootDir.getPath().length() + 1).replace("\\", "/") + "/");
+                ZipEntry ze = new ZipEntry(Patterns.BACKSLASH.matcher(file.getPath().substring(rootDir.getPath().length() + 1)).replaceAll("/") + "/");
                 zos.putNextEntry(ze);
                 zip(file, rootDir, zos);
             }

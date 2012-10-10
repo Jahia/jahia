@@ -41,47 +41,63 @@
 package org.jahia.services.image;
 
 import ij.ImagePlus;
+import ij.WindowManager;
+import ij.io.FileSaver;
 import ij.io.Opener;
+import ij.plugin.PlugIn;
+import ij.process.Blitter;
 import ij.process.ImageProcessor;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.tools.imageprocess.ImageProcess;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+
+import java.awt.image.BufferedImage;
 import java.io.*;
 
 /**
- * User: toto
- * Date: 3/11/11
- * Time: 11:33
+ * ImageJ application operation implementation
  */
-public class ImageJImageService  implements JahiaImageService {
+public class ImageJImageService extends AbstractImageService {
     private static ImageJImageService instance;
 
-    protected ImageJImageService() {
+    private static final Logger logger = LoggerFactory.getLogger(ImageJImageService.class);
 
+    protected ImageJImageService() {
+        super();
     }
 
     public void init() {
     }
 
-    public static synchronized ImageJImageService getInstance() {
+    public static ImageJImageService getInstance() {
         if (instance == null) {
-            instance = new ImageJImageService();
+            synchronized (ImageJImageService.class) {
+                if (instance == null) {
+                    instance = new ImageJImageService();
+                }
+            }
         }
         return instance;
     }
-
-
 
     public Image getImage(JCRNodeWrapper node) throws IOException, RepositoryException {
         File tmp = null;
         OutputStream os = null;
         try {
-            tmp = File.createTempFile("image", null);
+            String fileExtension = FilenameUtils.getExtension(node.getName());
+            if ((fileExtension != null) && (!"".equals(fileExtension))) {
+                fileExtension += "." + fileExtension;
+            } else {
+                fileExtension = null;
+            }
+            tmp = File.createTempFile("image", fileExtension);
             Node contentNode = node.getNode(Constants.JCR_CONTENT);
             os = new BufferedOutputStream(new FileOutputStream(tmp));
             InputStream is = contentNode.getProperty(Constants.JCR_DATA).getBinary().getStream();
@@ -91,39 +107,19 @@ public class ImageJImageService  implements JahiaImageService {
                 IOUtils.closeQuietly(os);
                 IOUtils.closeQuietly(is);
             }
+            ImagePlus ip = null;
             Opener op = new Opener();
-            ImagePlus ip = op.openImage(tmp.getPath());
-            return new ImageJImage(node.getPath(), ip, op.getFileType(tmp.getPath()));
+            int fileType = op.getFileType(tmp.getPath());
+            ip = op.openImage(tmp.getPath());
+            if (ip == null) {
+                logger.error("Couldn't open file " + tmp.getPath() + " for node " + node.getPath() + " with ImageJ !");
+                return null;
+            }
+            return new ImageJImage(node.getPath(), ip, fileType);
         } finally {
             IOUtils.closeQuietly(os);
             FileUtils.deleteQuietly(tmp);
         }
-    }
-
-
-    /**
-     * Creates a JPEG thumbnail from inputFile and saves it to disk in
-     * outputFile. scaleWidth is the width to scale the image to
-     */
-    public boolean createThumb(Image iw, File outputFile, int size, boolean square) throws IOException {
-        ImagePlus ip = ((ImageJImage)iw).getImagePlus();
-        // Load the input image.
-        if (ip == null) {
-            return false;
-        }
-        ip = new ImagePlus(ip.getTitle(), ip.getImageStack());
-        ImageProcessor processor = ip.getProcessor();
-        if(square) {
-            processor = processor.resize(size, size);
-        } else if (ip.getWidth() > ip.getHeight()) {
-            processor = processor.resize(size, ip.getHeight()*size/ip.getWidth());
-        } else {
-            processor = processor.resize(ip.getWidth()*size/ip.getHeight(), size);
-        }
-        ip.setProcessor(null,processor);
-        int type = ((ImageJImage) iw).getImageType();
-
-        return ImageProcess.save(type, ip, outputFile);
     }
 
     public int getHeight(Image i) {
@@ -142,28 +138,25 @@ public class ImageJImageService  implements JahiaImageService {
         return -1;
     }
 
-    public boolean cropImage(Image i, File outputFile, int top, int left, int width, int height) {
-        ImagePlus ip = ((ImageJImage)i).getImagePlus();
+    public boolean cropImage(Image i, File outputFile, int top, int left, int width, int height) throws IOException {
+
+        ImageJImage imageJImage = (ImageJImage) i;
+
+        ImagePlus ip = imageJImage.getImagePlus();
         ImageProcessor processor = ip.getProcessor();
 
         processor.setRoi(left, top, width, height);
         processor = processor.crop();
         ip.setProcessor(null, processor);
 
-        return ImageProcess.save(((ImageJImage) i).getImageType(), ip, outputFile);
+        return save(imageJImage.getImageType(), ip, outputFile);
     }
 
-    public boolean resizeImage(Image i, File outputFile, int width, int height) {
-        ImagePlus ip = ((ImageJImage)i).getImagePlus();
-        ImageProcessor processor = ip.getProcessor();
-        processor = processor.resize(width, height);
-        ip.setProcessor(null, processor);
+    public boolean rotateImage(Image i, File outputFile, boolean clockwise) throws IOException {
 
-        return ImageProcess.save(((ImageJImage) i).getImageType(), ip, outputFile);
-    }
+        ImageJImage imageJImage = (ImageJImage) i;
 
-    public boolean rotateImage(Image i, File outputFile, boolean clockwise) {
-        ImagePlus ip = ((ImageJImage)i).getImagePlus();
+        ImagePlus ip = imageJImage.getImagePlus();
         ImageProcessor processor = ip.getProcessor();
         if (clockwise) {
             processor = processor.rotateRight();
@@ -172,7 +165,95 @@ public class ImageJImageService  implements JahiaImageService {
         }
         ip.setProcessor(null, processor);
 
-        return ImageProcess.save(((ImageJImage) i).getImageType(), ip, outputFile);
+        return save(imageJImage.getImageType(), ip, outputFile);
+    }
+
+    public boolean resizeImage(Image i, File outputFile, int width, int height, ResizeType resizeType) throws IOException {
+
+        ImageJImage imageJImage = (ImageJImage) i;
+
+        ImagePlus ip = imageJImage.getImagePlus();
+        
+        resizeImage(ip, width, height, resizeType);
+
+        return save(imageJImage.getImageType(), ip, outputFile);
+    }
+
+    public BufferedImage resizeImage(BufferedImage image, int width, int height,
+            ResizeType resizeType) throws IOException {
+        ImagePlus ip = new ImagePlus(null, image);
+
+        resizeImage(ip, width, height, resizeType);
+
+        return ip.getBufferedImage();
+    }
+
+    protected void resizeImage(ImagePlus ip, int width, int height, ResizeType resizeType) throws IOException {
+        ImageProcessor processor = ip.getProcessor();
+
+        int originalWidth = ip.getWidth();
+        int originalHeight = ip.getHeight();
+        ResizeCoords resizeCoords = getResizeCoords(resizeType, originalWidth, originalHeight, width, height);
+
+        if (ResizeType.SCALE_TO_FILL.equals(resizeType)) {
+            processor.setInterpolationMethod(ImageProcessor.BICUBIC);
+            processor = processor.resize(width, height, true);
+        } else if (ResizeType.ADJUST_SIZE.equals(resizeType)) {
+            width = resizeCoords.getTargetWidth();
+            height = resizeCoords.getTargetHeight();
+            processor.setInterpolationMethod(ImageProcessor.BICUBIC);
+            processor = processor.resize(width, height, true);
+        } else if (ResizeType.ASPECT_FILL.equals(resizeType)) {
+            processor.setRoi(resizeCoords.getSourceStartPosX(), resizeCoords.getSourceStartPosY(), resizeCoords.getSourceWidth(), resizeCoords.getSourceHeight());
+            processor = processor.crop();
+            processor.setInterpolationMethod(ImageProcessor.BICUBIC);
+            processor = processor.resize(resizeCoords.getTargetWidth(), resizeCoords.getTargetHeight(), true);
+        } else if (ResizeType.ASPECT_FIT.equals(resizeType)) {
+            processor.setInterpolationMethod(ImageProcessor.BICUBIC);
+            processor = processor.resize(resizeCoords.getTargetWidth(), resizeCoords.getTargetHeight(), true);
+            ImageProcessor newProcessor = processor.createProcessor(width, height);
+            newProcessor.copyBits(processor, resizeCoords.getTargetStartPosX(), resizeCoords.getTargetStartPosY(), Blitter.ADD);
+            processor = newProcessor;
+        }
+        ip.setProcessor(null, processor);
+    }
+
+    protected static boolean save(int type, ImagePlus ip, File outputFile) {
+        switch (type) {
+            case Opener.TIFF:
+                return new FileSaver(ip).saveAsTiff(outputFile.getPath());
+            case Opener.GIF:
+                return new FileSaver(ip).saveAsGif(outputFile.getPath());
+            case Opener.JPEG:
+                return new FileSaver(ip).saveAsJpeg(outputFile.getPath());
+            case Opener.TEXT:
+                return new FileSaver(ip).saveAsText(outputFile.getPath());
+            case Opener.LUT:
+                return new FileSaver(ip).saveAsLut(outputFile.getPath());
+            case Opener.ZIP:
+                return new FileSaver(ip).saveAsZip(outputFile.getPath());
+            case Opener.BMP:
+                return new FileSaver(ip).saveAsBmp(outputFile.getPath());
+            case Opener.PNG:
+                ImagePlus tempImage = WindowManager.getTempCurrentImage();
+                WindowManager.setTempCurrentImage(ip);
+                PlugIn p =null;
+                try {
+                    p = (PlugIn) Class.forName("ij.plugin.PNG_Writer").newInstance();
+                } catch (InstantiationException e) {
+                    logger.error(e.getMessage(), e);
+                } catch (IllegalAccessException e) {
+                    logger.error(e.getMessage(), e);
+                } catch (ClassNotFoundException e) {
+                    logger.error(e.getMessage(), e);
+                }
+                p.run(outputFile.getPath());
+                WindowManager.setTempCurrentImage(tempImage);
+                return true;
+            case Opener.PGM:
+                return new FileSaver(ip).saveAsPgm(outputFile.getPath());
+        }
+        return false;
     }
 
 }

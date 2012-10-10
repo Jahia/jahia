@@ -60,6 +60,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.WebUtils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -94,6 +95,14 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     };
 
     private static final FastHashMap RANK;
+    
+    private static final Pattern URL_PATTERN_1 = Pattern.compile("url( ", Pattern.LITERAL);
+
+    private static final Pattern URL_PATTERN_2 = Pattern.compile("url(\"", Pattern.LITERAL);
+
+    private static final Pattern URL_PATTERN_3 = Pattern.compile("url('", Pattern.LITERAL);
+
+    private static final Pattern URL_PATTERN_4 = Pattern.compile("url\\(([^'\"])");
 
     static {
         RANK = new FastHashMap();
@@ -172,7 +181,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             String condition = esiResourceTag.getAttributeValue("condition");
             path = URLDecoder.decode(path, "UTF-8");
             Boolean insert = Boolean.parseBoolean(esiResourceTag.getAttributeValue("insert"));
-            String resourceS = esiResourceTag.getAttributeValue("resource");
             String title = esiResourceTag.getAttributeValue("title");
             String key = esiResourceTag.getAttributeValue("key");
             Map<String, String> optionsMap = new HashMap<String, String>();
@@ -236,7 +244,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                         outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + staticsAsset + "\n<");
                         out = outputDocument.toString();
                     } else {
-                        out = previousOut + "\n" + staticsAsset;
+                        out = staticsAsset + "\n" + previousOut;
                     }
                 }
             }
@@ -250,6 +258,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 }
                 javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/jquery.min.js", null);
                 javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/jquery.Jcrop.js", null);
+                javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/clippy/jquery.clippy.min.js", null);
 
                 if (bodyElementList.size() > 0) {
                     Element bodyElement = bodyElementList.get(bodyElementList.size() - 1);
@@ -287,9 +296,22 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
                     if (resource.getWorkspace().equals("live") && aggregateAndCompress) {
                         assets.put("css", aggregate(assets.get("css"), "css"));
-                        assets.put("javascript", aggregate(assets.get("javascript"), "js"));
+                        Map<String, Map<String, String>> scripts = new HashMap<String, Map<String, String>>(assets.get("javascript"));
+                        Map<String, Map<String, String>> newScripts = aggregate(assets.get("javascript"), "js");
+                        assets.put("javascript", newScripts);
+                        scripts.keySet().removeAll(newScripts.keySet());
+                        assets.put("aggregatedjavascript", scripts);
                     }
 
+//                    if (renderContext.getRequest().getParameter("channel") != null) {
+//                        Map<String,Map<String,String>> css  = assets.get("css");
+//                        Map<String,Map<String,String>> cssWithParam  = new LinkedHashMap<String, Map<String, String>>();
+//                        for (Map.Entry<String, Map<String, String>> entry : css.entrySet()) {
+//                            String k = entry.getKey() + "?channel="+renderContext.getRequest().getParameter("channel");
+//                            cssWithParam.put(k, entry.getValue());
+//                        }
+//                        assets.put("css",cssWithParam);
+//                    }
                     bindings.put("renderContext", renderContext);
                     bindings.put("resource", resource);
                     bindings.put("contextPath", renderContext.getRequest().getContextPath());
@@ -306,17 +328,19 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     }
                 }
                 String header = renderContext.getRequest().getHeader("user-agent");
-                if (!renderContext.isPreviewMode() && !renderContext.isLiveMode() && header != null && header.contains("MSIE")) {
+                // workaround for ie9 in gxt/gwt
+                // renderContext.isEditMode() means that gwt is loaded, for contribute, edit or studio
+                if (renderContext.isEditMode() && header != null && header.contains("MSIE")) {
                     int idx = element.getBegin() + element.toString().indexOf(">");
                     String str = ">\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=8\">";
                     outputDocument.replace(idx, idx + 1, str);
                 }
-                if (renderContext.isContributionMode() || renderContext.isPreviewMode()) {
+                if ((renderContext.isPreviewMode()) && !Boolean.valueOf((String) renderContext.getRequest().getAttribute(
+                                "org.jahia.StaticAssetFilter.doNotModifyDocumentTitle"))) {
                     for (Element title : element.getAllElements(HTMLElementName.TITLE)) {
                         int idx = title.getBegin() + title.toString().indexOf(">");
-                        String str = renderContext.isContributionMode() ? JahiaResourceBundle.getJahiaInternalResource("label.contribute", renderContext.getUILocale()) :
-                                JahiaResourceBundle.getJahiaInternalResource("label.preview", renderContext.getUILocale());
-                        str = "> " + str + " - ";
+                        String str = JahiaResourceBundle.getJahiaInternalResource("label.preview", renderContext.getUILocale());
+                        str = ">" + str + " - ";
                         outputDocument.replace(idx, idx + 1, str);
                     }
                 }
@@ -345,13 +369,11 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             ServletContext context = JahiaContextLoaderListener.getServletContext();
 
             List<String> pathsToAggregate = new ArrayList<String>();
-            Vector<InputStream> files = new Vector<InputStream>();
             for (; i < entries.size(); i++) {
                 Map.Entry<String, Map<String, String>> entry = entries.get(i);
                 File file = new File(context.getRealPath(entry.getKey()));
-                if (file.exists() && entry.getValue().isEmpty() && !excludesFromAggregateAndCompress.contains(entry.getKey())) {
+                if (entry.getValue().isEmpty() && !excludesFromAggregateAndCompress.contains(entry.getKey()) && file.exists()) {
                     pathsToAggregate.add(entry.getKey());
-                    files.add(new FileInputStream(file));
                     long lastModified = file.lastModified();
                     if (filesDates < lastModified) {
                         filesDates = lastModified;
@@ -374,21 +396,24 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     List<String> minifiedPaths = new ArrayList<String>();
                     for (String path : pathsToAggregate) {
                         File f = new File(context.getRealPath(path));
-                        String minifiedPath = "/resources/" + path.replace('/','_') + ".min." + type;
+                        String minifiedPath = "/resources/" + Patterns.SLASH.matcher(path).replaceAll("_") + ".min." + type;
                         File minifiedFile = new File(context.getRealPath(minifiedPath));
                         if (!minifiedFile.exists() || minifiedFile.lastModified() < f.lastModified()) {
                             Reader reader = new InputStreamReader(new FileInputStream(f), "UTF-8");
                             Writer writer = new OutputStreamWriter(new FileOutputStream(context.getRealPath(minifiedPath)), "UTF-8");
-                        
-                            if (type.equals("css")) {
+                            boolean compress = true;
+                            if (compress && type.equals("css")) {
                                 CssCompressor compressor = new CssCompressor(reader);
                                 compressor.compress(writer, -1);
-                            } else if (type.equals("js")) {
+                            } else if (compress && type.equals("js")) {
                                 JavaScriptCompressor compressor = null;
                                 try {
                                     compressor = new JavaScriptCompressor(reader, new ErrorReporter() {
                                         public void warning(String message, String sourceName,
                                                             int line, String lineSource, int lineOffset) {
+                                            if (!logger.isDebugEnabled()) {
+                                                return;
+                                            }
                                             if (line < 0) {
                                                 logger.debug(message);
                                             } else {
@@ -421,7 +446,15 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                     IOUtils.copy(reader, writer);
                                 }
                             } else {
-                                IOUtils.copy(reader, writer);
+                                BufferedWriter bw = new BufferedWriter(writer);
+                                BufferedReader br = new BufferedReader(reader);
+                                String s = null;
+                                while ((s = br.readLine()) != null) {
+                                    bw.write(s);
+                                    bw.write("\n");
+                                }
+                                IOUtils.closeQuietly(bw);
+                                IOUtils.closeQuietly(br);
                             }
                             IOUtils.closeQuietly(reader);
                             IOUtils.closeQuietly(writer);
@@ -430,27 +463,39 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     }
 
                     try {
-                        OutputStream outMerged = new FileOutputStream(minifiedAggregatedRealPath);
-                        for (String minifiedFile : minifiedPaths) {
-                            InputStream is = new FileInputStream(context.getRealPath(minifiedFile));
-                            if (type.equals("css")) {
-                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                IOUtils.copy(is, stream);
+                        OutputStream outMerged = new BufferedOutputStream(new FileOutputStream(minifiedAggregatedRealPath));
+                        try { 
+                            for (String minifiedFile : minifiedPaths) {
+                                if (type.equals("js")) {
+                                    outMerged.write("//".getBytes());
+                                    outMerged.write(minifiedFile.getBytes());
+                                    outMerged.write("\n".getBytes());
+                                }
+                                InputStream is = new FileInputStream(context.getRealPath(minifiedFile));
+                                if (type.equals("css")) {
+                                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                    IOUtils.copy(is, stream);
+                                    IOUtils.closeQuietly(is);
+                                    String s = stream.toString("UTF-8");
+    
+                                    String url = StringUtils.substringBeforeLast(pathsToAggregate.get(minifiedPaths.indexOf(minifiedFile)), "/");
+                                    s = URL_PATTERN_1.matcher(s).replaceAll("url(");
+                                    s = URL_PATTERN_2.matcher(s).replaceAll("url(\".." + url + "/");
+                                    s = URL_PATTERN_3.matcher(s).replaceAll("url('.." + url + "/");
+                                    s = URL_PATTERN_4.matcher(s).replaceAll("url(.." + url + "/$1");
+                                    is = new ByteArrayInputStream(s.getBytes("UTF-8"));
+                                }
+                                IOUtils.copy(is, outMerged);
+                                if (type.equals("js")) {
+                                    outMerged.write(";\n".getBytes());
+                                }
                                 IOUtils.closeQuietly(is);
-                                String s = stream.toString("UTF-8");
-
-                                s = s.replace("url( ", "url(");
-                                s = s.replace("url(\"", "url(\".." + StringUtils.substringBeforeLast(pathsToAggregate.get(minifiedPaths.indexOf(minifiedFile)), "/") + "/");
-                                s = s.replace("url('", "url('.." + StringUtils.substringBeforeLast(pathsToAggregate.get(minifiedPaths.indexOf(minifiedFile)), "/") + "/");
-                                s = s.replaceAll("url\\(([^'\"])", "url(.." + StringUtils.substringBeforeLast(pathsToAggregate.get(minifiedPaths.indexOf(minifiedFile)), "/") + "/$1");
-                                is = new ByteArrayInputStream(s.getBytes("UTF-8"));
                             }
-                            IOUtils.copy(is, outMerged);
-                            IOUtils.closeQuietly(is);
+                        } finally {
+                            IOUtils.closeQuietly(outMerged);
                         }
-                        IOUtils.closeQuietly(outMerged);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage(), e);
                     }
                 }
 

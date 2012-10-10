@@ -83,6 +83,7 @@
 
     <bean name="TemplateHelper" class="org.jahia.ajax.gwt.helper.TemplateHelper">
         <property name="renderService" ref="RenderService"/>
+        <property name="channelService" ref="ChannelService"/>
     </bean>
 
     <bean name="VersioningHelper" class="org.jahia.ajax.gwt.helper.VersioningHelper">
@@ -113,8 +114,12 @@
     </bean>
 
     <bean name="ImageHelper" class="org.jahia.ajax.gwt.helper.ImageHelper">
-        <property name="imageService" ref="${imageService}"/>
+        <property name="imageService" ref="imageService"/>
         <property name="contentManager" ref="ContentManagerHelper"/>
+    </bean>
+
+    <bean name="ChannelHelper" class="org.jahia.ajax.gwt.helper.ChannelHelper">
+        <property name="channelService" ref="ChannelService" />
     </bean>
 
 </beans>

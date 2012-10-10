@@ -70,6 +70,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Jahia Multi Sites Management Service
@@ -78,6 +79,8 @@ import java.util.*;
  */
 public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAfterInitializationService {
     private static Logger logger = LoggerFactory.getLogger(JahiaSitesBaseService.class);
+
+    private static final Pattern JCR_KEY_PATTERN = Pattern.compile("{jcr}", Pattern.LITERAL);
 
     protected static JahiaSitesBaseService instance = null;
 
@@ -220,6 +223,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         site.setInstalledModules(installedModules);
 
         site.setMixLanguagesActive(node.getProperty(SitesSettings.MIX_LANGUAGES_ACTIVE).getBoolean());
+        site.setAllowsUnlistedLanguages(node.hasProperty("j:allowsUnlistedLanguages") ? node.getProperty("j:allowsUnlistedLanguages").getBoolean() : Boolean.FALSE);
         site.setDefaultLanguage(node.getProperty(SitesSettings.DEFAULT_LANGUAGE).getString());
         Value[] languages = node.getProperty(SitesSettings.LANGUAGES).getValues();
         Set<String> languagesList = new LinkedHashSet<String>();
@@ -436,6 +440,12 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                              Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy,  String firstImport, File fileImport, String fileImportName,
                              Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease,String legacyMappingFilePath,String legacyDefinitionsFilePath) throws JahiaException, IOException {
+        return addSite(currentUser,title, serverName, siteKey, descr, selectedLocale, selectTmplSet, modulesToDeploy, firstImport, fileImport, fileImportName, asAJob, doImportServerPermissions, originatingJahiaRelease, legacyMappingFilePath, legacyDefinitionsFilePath, null);
+    }
+
+    public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
+                             Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy,  String firstImport, File fileImport, String fileImportName,
+                             Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease,String legacyMappingFilePath,String legacyDefinitionsFilePath, JCRSessionWrapper session) throws JahiaException, IOException {
         JahiaSite site = new JahiaSite(-1, title, serverName, siteKey, descr, null, "/sites/"+siteKey);
 
         if (selectTmplSet != null) {
@@ -445,6 +455,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         site.setDefaultLanguage(selectedLocale.toString());
         site.setLanguages(new LinkedHashSet<String>(Arrays.asList(selectedLocale.toString())));
         site.setMandatoryLanguages(site.getLanguages());
+        site.setAllowsUnlistedLanguages(false);
         site.setMixLanguagesActive(false);
         // check there is no site with same server name before adding
         boolean importingSystemSite = false;
@@ -471,7 +482,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                 final int siteId = id;
                 site.setID(id);
                 final JahiaSite finalSite = site;
-                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                JCRCallback<Object> callback = new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:virtualsitesFolder]", Query.JCR_SQL2);
                         QueryResult qr = q.execute();
@@ -511,7 +522,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                                 siteNode.setProperty(SitesSettings.MANDATORY_LANGUAGES, mandatoryLanguages.toArray(new String[mandatoryLanguages
                                         .size()]));
                                 siteNode.setProperty("j:templatesSet", templatePackage);
-                                siteNode.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(templatePackage)} );
+                                siteNode.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(templatePackage)});
 
                                 Set<String> modules = new LinkedHashSet<String>(
                                         2 + (modulesToDeploy != null ? modulesToDeploy.length : 0));
@@ -533,6 +544,23 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                                                 + target + ". Cause: " + re.getMessage(), re);
                                     }
                                 }
+                                //Auto deploy all modules that define this behavior on site creation
+                                final List<JahiaTemplatesPackage> availableTemplatePackages = templateService.getAvailableTemplatePackages();
+                                for (JahiaTemplatesPackage availableTemplatePackage : availableTemplatePackages) {
+                                    if (availableTemplatePackage.getAutoDeployOnSite() != null) {
+                                        if ("all".equals(availableTemplatePackage.getAutoDeployOnSite()) || siteKey1.equals(availableTemplatePackage.getAutoDeployOnSite())) {
+                                            String source = "/templateSets/" + availableTemplatePackage.getRootFolder();
+                                            String target = "/sites/" + siteKey1;
+                                            try {
+                                                logger.info("Deploying module {} to {}", source, target);
+                                                templateService.deployModule(source, target, session);
+                                            } catch (RepositoryException re) {
+                                                logger.error("Unable to deploy module " + source + " to "
+                                                        + target + ". Cause: " + re.getMessage(), re);
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
 
@@ -540,7 +568,12 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
                         return null;
                     }
-                });
+                };
+                if (session != null) {
+                    callback.doInJCR(session);
+                } else {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(callback);
+                }
 
                 if (site.getID() == -1) {
                     return null;
@@ -554,7 +587,9 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                 throw new IOException("site already exists");
             }
 
-            JCRSessionWrapper session = sessionFactory.getCurrentUserSession(null, selectedLocale);
+            if (session == null) {
+                session = sessionFactory.getCurrentUserSession(null, selectedLocale);
+            }
 
             // continue if the site is added correctly...
             if (site.getID() != -1) {
@@ -592,7 +627,9 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                     }
 
                     // attach superadmin user (current) to administrators group...
-                    adminGroup.addMember(currentUser);
+                    if (currentUser != null) {
+                        adminGroup.addMember(currentUser);
+                    }
 
                     if (!siteKey.equals(SYSTEM_SITE_KEY)) {
                         JahiaGroup sitePrivGroup = jgms.lookupGroup(site.getID(),
@@ -680,7 +717,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     public synchronized void removeSite(final JahiaSite site) throws JahiaException {
         List<String> groups = groupService.getGroupList(site.getID());
         for (String group : groups) {
-            groupService.deleteGroup(groupService.lookupGroup(group.replace("{jcr}", "")));
+            groupService.deleteGroup(groupService.lookupGroup(JCR_KEY_PATTERN.matcher(group).replaceAll("")));
         }
         try {
             JCRCallback<Boolean> deleteCallback = new JCRCallback<Boolean>() {
@@ -750,6 +787,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         if (defaultLanguage != null)
             siteNode.setProperty(SitesSettings.DEFAULT_LANGUAGE, defaultLanguage);
         siteNode.setProperty(SitesSettings.MIX_LANGUAGES_ACTIVE, site.isMixLanguagesActive());
+        siteNode.setProperty("j:allowsUnlistedLanguages", site.isAllowsUnlistedLanguages());
         siteNode.setProperty(SitesSettings.LANGUAGES, site.getLanguages().toArray(
                 new String[site.getLanguages().size()]));
         siteNode.setProperty(SitesSettings.INACTIVE_LANGUAGES, site.getInactiveLanguages().toArray(
@@ -859,6 +897,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                 JahiaSite site = addSite(jahiaUser, systemSiteTitle, systemSiteServername, SYSTEM_SITE_KEY, "", selectedLocale,
                         systemSiteTemplateSetName,null, "noImport", null, null, false, false, null);
                 site.setMixLanguagesActive(true);
+                site.setAllowsUnlistedLanguages(true);
                 site.setLanguages(systemSiteLanguages);
                 updateSite(site);
                 final LinkedHashSet<String> languages = new LinkedHashSet<String>();
@@ -875,7 +914,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                             uuids.addAll(publicationInfo.getAllUuids());
                         }
                     }
-                    JCRPublicationService.getInstance().publish(uuids, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null);
+                    JCRPublicationService.getInstance().publish(uuids, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, false, null);
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 } finally {

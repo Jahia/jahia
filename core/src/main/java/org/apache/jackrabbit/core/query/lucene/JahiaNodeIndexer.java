@@ -41,10 +41,7 @@
 package org.apache.jackrabbit.core.query.lucene;
 
 import java.io.ByteArrayInputStream;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Executor;
 
 import javax.jcr.NamespaceRegistry;
@@ -53,9 +50,12 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.HierarchyManager;
+import org.apache.jackrabbit.core.id.ItemId;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.id.PropertyId;
 import org.apache.jackrabbit.core.query.QueryHandlerContext;
+import org.apache.jackrabbit.core.state.ChildNodeEntry;
 import org.apache.jackrabbit.core.state.ItemStateException;
 import org.apache.jackrabbit.core.state.ItemStateManager;
 import org.apache.jackrabbit.core.state.NoSuchItemStateException;
@@ -98,6 +98,18 @@ public class JahiaNodeIndexer extends NodeIndexer {
     public static final String TRANSLATED_NODE_PARENT = "_:TRANSLATED_PARENT".intern();
     public static final String TRANSLATION_LANGUAGE = "_:TRANSLATION_LANGUAGE".intern();
 
+    public static final String ACL_UUID = "_:ACL_UUID".intern();
+    public static final Name J_ACL = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "acl");
+    public static final Name J_ACL_INHERITED = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "inherit");
+
+    public static final String CHECK_VISIBILITY = "_:CHECK_VISIBILITY".intern();
+    public static final Name J_VISIBILITY = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "conditionalVisibility");
+    
+    public static final String PUBLISHED = "_:PUBLISHED".intern();
+    public static final Name J_PUBLISHED = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "published");
+    
+    public static final String FACET_HIERARCHY = "_:FACET_HIERARCHY".intern();
+
     /**
      * The persistent node type registry
      */
@@ -107,6 +119,11 @@ public class JahiaNodeIndexer extends NodeIndexer {
      * The persistent namespace registry
      */
     protected final NamespaceRegistry namespaceRegistry;
+    
+    /**
+     * The hierarchy manager
+     */
+    protected final HierarchyManager hierarchyMgr;    
 
     /**
      * The <code>ExtendedNodeType</code> of the node to index
@@ -146,6 +163,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
         super(node, stateProvider, mappings, executor, parser);
         this.nodeTypeRegistry = NodeTypeRegistry.getInstance();
         this.namespaceRegistry = context.getNamespaceRegistry();
+        this.hierarchyMgr = context.getHierarchyManager();
         try {
             Name nodeTypeName = node.getNodeTypeName();
             nodeType = nodeTypeRegistry != null ? nodeTypeRegistry.getNodeType(namespaceRegistry
@@ -492,7 +510,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
      */
     protected void addFacetValue(Document doc, String fieldName, Object internalValue) {
         // simple String
-        String stringValue = (String) internalValue;
+        String stringValue = internalValue.toString();
         if (stringValue.length() == 0) {
             return;
         }
@@ -503,6 +521,63 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 Field.TermVector.NO);
         doc.add(f);
 
+    }
+
+    /**
+     * Adds the value to the document both as faceted field which will be indexed with a keyword analyzer which does not modify the term.
+     *
+     * @param doc
+     *            The document to which to add the field
+     * @param fieldName
+     *            The name of the field to add
+     * @param internalValue
+     *            The value for the field to add to the document.
+     */
+    protected void addHierarchicalFacetValue(Document doc, String fieldName, Object internalValue) {
+        final String stringValue = (String) internalValue.toString();
+        if (stringValue.length() == 0) {
+            return;
+        }
+        ItemId itemId = (ItemId)internalValue;
+        int idx = fieldName.indexOf(':');
+        fieldName = fieldName.substring(0, idx + 1) + FACET_PREFIX + fieldName.substring(idx + 1);
+
+        final List<String> hierarchyPaths = new ArrayList<String>();
+        final List<String> parentIds = new ArrayList<String>(); 
+        try {
+            NodeState node = (NodeState) stateProvider.getItemState(itemId);
+            Name typeName = node.getNodeTypeName();
+            NodeState parent = (NodeState) stateProvider.getItemState(node
+                    .getParentId());
+
+            while (typeName.equals(parent.getNodeTypeName())) {
+                hierarchyPaths.add(StringUtils.remove(resolver.getJCRPath(hierarchyMgr
+                        .getPath(node.getNodeId())), "0:"));
+                parentIds.add(node.getNodeId().toString());
+                node = parent;
+                parent = (NodeState) stateProvider.getItemState(node
+                        .getParentId());
+            }
+            while (!"/".equals(resolver.getJCRPath(hierarchyMgr.getPath(node
+                    .getNodeId())))) {
+                parentIds.add(node.getNodeId().toString());
+                node = (NodeState) stateProvider.getItemState(node
+                        .getParentId());
+            }
+        } catch (ItemStateException e) {
+            logger.error(e.getMessage(), e);
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        int hierarchyIndex = hierarchyPaths.size();
+        for (String path : hierarchyPaths) {
+            doc.add(new Field(fieldName, hierarchyIndex + path, Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.NO));
+            hierarchyIndex--;
+        }
+        for (String id : parentIds) {
+            doc.add(new Field(FACET_HIERARCHY, id, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
+        }
     }
 
     /**
@@ -549,6 +624,11 @@ public class JahiaNodeIndexer extends NodeIndexer {
     }    
     
     @Override
+    protected void addBinaryValue(Document doc, String fieldName, InternalValue internalValue) {
+        // we disable the binary indexing by Jackrabbit
+    }
+    
+    @Override
     protected void addBooleanValue(Document doc, String fieldName, Object internalValue) {
         super.addBooleanValue(doc, fieldName, internalValue);
         ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, getPropertyNameFromFieldname(fieldName));
@@ -581,7 +661,11 @@ public class JahiaNodeIndexer extends NodeIndexer {
         super.addReferenceValue(doc, fieldName, internalValue, weak);
         ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, getPropertyNameFromFieldname(fieldName));
         if (definition != null && definition.isFacetable()) {
-            addFacetValue(doc, fieldName, internalValue.toString());
+            if (definition.isHierarchical()) {
+                addHierarchicalFacetValue(doc, fieldName, internalValue);
+            } else {
+                addFacetValue(doc, fieldName, internalValue);
+            }
         }                                
     }
 
@@ -602,14 +686,6 @@ public class JahiaNodeIndexer extends NodeIndexer {
             try {
                 NodeState parentNode = (NodeState) stateProvider.getItemState(node.getParentId());
 
-//                /// Move translation node on its parent place
-//                doc.removeField(FieldNames.UUID);
-//                doc.add(new Field(
-//                    FieldNames.UUID, parentNode.getNodeId().toString(),
-//                    Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-
-                /// add direct parent for translation
-//                doc.removeField(FieldNames.PARENT);
                 doc.add(new Field(
                         TRANSLATED_NODE_PARENT, parentNode.getParentId().toString(),
                         Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
@@ -651,6 +727,12 @@ public class JahiaNodeIndexer extends NodeIndexer {
                         throwRepositoryException(e);
                     }
                 }
+                
+                if (isIndexed(J_VISIBILITY) && parentNode.hasChildNodeEntry(J_VISIBILITY)) {
+                    doc.add(new Field(CHECK_VISIBILITY, "1",
+                            Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
+                            Field.TermVector.NO));
+                }
 
                 // now add fields that are not used in excerpt (must go at the end)
                 for (Fieldable field : doNotUseInExcerpt) {
@@ -660,6 +742,62 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 logger.error(e.getMessage(), e);
             }
         }
+        if (isIndexed(J_ACL)) {
+            addAclUuid(doc);
+        }
+        if (isIndexed(J_VISIBILITY) && node.hasChildNodeEntry(J_VISIBILITY)) {
+            doc.add(new Field(CHECK_VISIBILITY, "1",
+                    Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
+                    Field.TermVector.NO));
+        }
+        if (isIndexed(J_PUBLISHED) && node.getPropertyNames().contains(J_PUBLISHED)) {
+            PropertyId id = new PropertyId(node.getNodeId(), J_PUBLISHED);
+            try {
+                PropertyState propState = (PropertyState) stateProvider.getItemState(id);
+                
+                doc.add(new Field(PUBLISHED, propState.getValues()[0].getString(),
+                        Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
+                        Field.TermVector.NO));
+            } catch (ItemStateException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
         return doc;
+    }
+    
+    protected void addAclUuid(Document doc) throws RepositoryException {
+        List<String> acls = new ArrayList<String>();
+        try {
+            NodeState currentNode = node;
+            while (currentNode != null) {
+                ChildNodeEntry aclChildNode = currentNode.getChildNodeEntry(J_ACL, 1);
+                if (aclChildNode != null) {
+                    acls.add(0,currentNode.getId().toString());
+                    PropertyId propId = new PropertyId(aclChildNode.getId(), J_ACL_INHERITED);
+                    try {
+                        PropertyState ps = (PropertyState) stateProvider.getItemState(propId);
+                        if (ps.getValues().length == 1) {
+                            if (!ps.getValues()[0].getBoolean()) {
+                                break;
+                            }
+                        }
+                    } catch (ItemStateException e) {
+
+                    }
+                }
+                if (currentNode.getParentId() != null) {
+                    currentNode = (NodeState) stateProvider.getItemState(currentNode.getParentId());
+                } else {
+                    currentNode = null;
+                }
+            }
+        } catch (NoSuchItemStateException e) {
+            throwRepositoryException(e);
+        } catch (ItemStateException e) {
+            throwRepositoryException(e);
+        }
+        doc.add(new Field(ACL_UUID, StringUtils.join(acls, " "),
+                Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
+                Field.TermVector.NO));
     }
 }

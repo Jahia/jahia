@@ -74,6 +74,7 @@ public class CompareEngine extends Window {
     private String workspace = null;
     private String versionLabel = null;
     private boolean refreshOpener = false;
+    private VersionViewer rightPanel;
 
     /**
      * Initializes an instance of this class.
@@ -117,11 +118,11 @@ public class CompareEngine extends Window {
         setResizable(true);
         setModal(true);
         setMaximizable(true);
-
+        String title = Messages.get("label.compare","Compare ");
         if (node != null) {
-            setHeading(Messages.get("label_compare " + node.getPath(), "Compare " + node.getPath()));
+            setHeading(title + node.getPath());
         } else {
-            setHeading(Messages.get("label_compare " + path, "Compare " + path));
+            setHeading(title + path);
         }
         //live version
         if (node != null) {
@@ -133,8 +134,6 @@ public class CompareEngine extends Window {
 
         add(leftPanel, new RowData(displayTwoPanels ? 0.5 : 1,1));
         if (displayTwoPanels) {
-            // staging version
-            VersionViewer rightPanel;
             if (node != null) {
                 rightPanel = new VersionViewer(node, linker.getSelectionContext().getSingleSelection().getLanguageCode(),
                         linker, displayVersionSelector ? "live" : "default", true, displayVersionSelector, this) {
@@ -179,6 +178,14 @@ public class CompareEngine extends Window {
 
     public void setRefreshOpener(boolean refreshOpener) {
         this.refreshOpener = refreshOpener;
+    }
+    
+    protected VersionViewer getLeftPanel() {
+        return leftPanel;
+    }
+    
+    protected VersionViewer getRightPanel() {
+        return rightPanel;
     }
 }
 

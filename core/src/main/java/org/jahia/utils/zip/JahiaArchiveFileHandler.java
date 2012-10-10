@@ -50,6 +50,7 @@
 package org.jahia.utils.zip;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaArchiveFileException;
 import org.jahia.exceptions.JahiaException;
 
@@ -78,6 +79,8 @@ public class JahiaArchiveFileHandler {
 
     /** The JarFile object **/
     private JarFile m_JarFile;
+
+    private String basePath;
 
     /**
      * Constructor
@@ -108,6 +111,11 @@ public class JahiaArchiveFileHandler {
             throw new IOException(CLASS_NAME + " source file is null");
         }
 
+    }
+
+    public JahiaArchiveFileHandler(String path, String basePath) throws IOException {
+        this(path);
+        this.basePath = basePath;
     }
 
     /**
@@ -223,7 +231,11 @@ public class JahiaArchiveFileHandler {
 
                     if (pathFilter.accept(pathPrefix != null ? pathPrefix + "/"
                             + zeName : zeName)) {
-                        unzippedFiles.put(filePath, fo.getAbsolutePath());
+                        String loggedPath = fo.getAbsolutePath();
+                        if (basePath != null) {
+                            loggedPath = StringUtils.substringAfter(loggedPath, basePath);
+                        }
+                        unzippedFiles.put(filePath, loggedPath);
                         long lastModified = ze.getTime();
                         if (lastModified > 0) {
                             timestamps.put(fo, lastModified);

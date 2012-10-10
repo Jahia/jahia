@@ -83,9 +83,9 @@ public class IndexOptionsTest {
             JCRSessionWrapper session = jcrService.getSessionFactory()
                     .getCurrentUserSession();
             InputStream importStream = IndexOptionsTest.class.getClassLoader()
-                    .getResourceAsStream("jahia-test-module-war/src/main/resources/imports/importIndexOptionNodes.xml");
+                    .getResourceAsStream("imports/importIndexOptionNodes.xml");
             session.importXML(SITECONTENT_ROOT_NODE + "/home", importStream,
-                    ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
+                    ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING);
             importStream.close();
             session.save();
         } catch (Exception ex) {

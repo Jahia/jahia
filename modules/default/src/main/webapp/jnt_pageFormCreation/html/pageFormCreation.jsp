@@ -47,7 +47,7 @@
             <fmt:message key="label.noTitle" var="i18nNoTitle"/>
             <input type="submit" class="button"
                    value="${currentNode.properties['buttonLabel'].string}" tabindex="28"
-                   onclick="if (document.${formid}.elements['jcr:title'].value == '') { alert('${functions:escapeJavaScript(i18nNoTitle)}'); return false; } else { return true; }" ${disabled}/>
+                   onclick='if (document.${formid}.elements["jcr:title"].value == "") { alert("${functions:escapeJavaScript(i18nNoTitle)}"); return false; } else { return true; }' ${disabled}/>
         </div>
     </fieldset>
 </form>

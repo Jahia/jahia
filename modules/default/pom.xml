@@ -66,14 +66,8 @@
           <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-war-plugin</artifactId>
-              <version>${war.plugin.version}</version>
               <configuration>
-                <warSourceExcludes>resources/*.properties</warSourceExcludes>
                 <webResources>
-                    <resource>
-                      <directory>${project.build.directory}/native2ascii</directory>
-                      <targetPath>resources</targetPath>
-                    </resource>
                     <resource>
                         <directory>${project.build.directory}</directory>
                         <includes>

@@ -401,7 +401,7 @@ public class ErrorFileDumper {
 
     private static void outputSystemInfoConsiderLoad(PrintWriter strOut) {
         boolean highLoad = isHighLoad();
-        outputSystemInfo(strOut, !highLoad, !highLoad, !highLoad, !highLoad, !highLoad, !highLoad, true);
+        outputSystemInfo(strOut, !highLoad, !highLoad, !highLoad, !highLoad, !highLoad, !highLoad, !highLoad, true);
     }
 
     private static boolean isHighLoad() {
@@ -419,12 +419,31 @@ public class ErrorFileDumper {
     }
 
     public static void outputSystemInfo(PrintWriter strOut, boolean systemProperties, boolean jahiaSettings, boolean memory, boolean caches, boolean threads, boolean deadlocks, boolean loadAverage) {
+        outputSystemInfo(strOut, systemProperties, false, jahiaSettings, memory, caches, threads, deadlocks, loadAverage);
+    }
+    
+    public static void outputSystemInfo(PrintWriter strOut, boolean systemProperties, boolean environmentVariables, boolean jahiaSettings, boolean memory, boolean caches, boolean threads, boolean deadlocks, boolean loadAverage) {
         if (systemProperties) {
             // now let's output the system properties.
             strOut.println();
             strOut.println("System properties:");
             strOut.println("-------------------");
             Map orderedProperties = new TreeMap(System.getProperties());
+            Iterator entrySetIter = orderedProperties.entrySet().iterator();
+            while (entrySetIter.hasNext()) {
+                Map.Entry curEntry = (Map.Entry) entrySetIter.next();
+                String curPropertyName = (String) curEntry.getKey();
+                String curPropertyValue = (String) curEntry.getValue();
+                strOut.println("   " + curPropertyName + " : " + curPropertyValue);
+            }
+        }
+        
+        if (environmentVariables) {
+            // now let's output the environment variables.
+            strOut.println();
+            strOut.println("Environment variables:");
+            strOut.println("-------------------");
+            Map orderedProperties = new TreeMap(System.getenv());
             Iterator entrySetIter = orderedProperties.entrySet().iterator();
             while (entrySetIter.hasNext()) {
                 Map.Entry curEntry = (Map.Entry) entrySetIter.next();
@@ -466,12 +485,22 @@ public class ErrorFileDumper {
         }
         
         if (memory) {
+            long free = Runtime.getRuntime().freeMemory();
+            long total = Runtime.getRuntime().totalMemory();
+            long max = Runtime.getRuntime().maxMemory();
             strOut.println();
-            strOut.println("Memory status:");
+            strOut.print("Memory status: ");
+            strOut.print(100 - Math.round((float) free / (float) max * 100f));
+            strOut.println("% used");
             strOut.println("---------------");
-            strOut.println("Max memory   : " + Runtime.getRuntime().maxMemory() + " bytes");
-            strOut.println("Free memory  : " + Runtime.getRuntime().freeMemory() + " bytes");
-            strOut.println("Total memory : " + Runtime.getRuntime().totalMemory() + " bytes");
+            strOut.print("Used memory  : ");
+            strOut.println(org.jahia.utils.FileUtils.humanReadableByteCount(max - free, true));
+            strOut.print("Free memory  : ");
+            strOut.println(org.jahia.utils.FileUtils.humanReadableByteCount(free, true));
+            strOut.print("Total memory : ");
+            strOut.println(org.jahia.utils.FileUtils.humanReadableByteCount(total, true));
+            strOut.print("Max memory   : ");
+            strOut.println(org.jahia.utils.FileUtils.humanReadableByteCount(max, true));
         }
 
         if (caches) {

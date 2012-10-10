@@ -88,6 +88,7 @@
         </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="false"/>
@@ -200,6 +201,7 @@
         </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="false"/>
@@ -296,6 +298,7 @@
         </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="false"/>
@@ -359,6 +362,7 @@
         </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="true"/>
@@ -438,6 +442,7 @@
         </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="false"/>
@@ -500,6 +505,7 @@
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
         <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="true"/>
         <property name="searchInFile" value="false"/>   
@@ -511,11 +517,17 @@
             </list>
         </property>
 
+        <property name="treeColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>displayName</value>
+            </list>
+        </property>        
+        
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>icon,40,empty</value>
-                <value>name,*,label.name</value>
+                <value>displayName,*,label.name</value>
                 <value>publicationInfo,40</value>
             </list>
         </property>
@@ -536,6 +548,7 @@
         <property name="folderTypes">
             <list>
                 <value>jnt:page</value>
+                <value>jnt:navMenuText</value>
                 <value>jnt:virtualsite</value>
                 <value>jnt:contentList</value>
                 <value>jnt:contentFolder</value>
@@ -576,6 +589,7 @@
         </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="true"/>
@@ -602,85 +616,8 @@
         </property>
     </bean>
 
-    <bean id="editoriallinkpicker" parent="abstractmanager">
-        <property name="nodeTypes">
-            <list>
-                <value>jnt:page</value>
-                <value>jmix:editorialContent</value>
-                <value>jnt:contentFolder</value>
-                <value>jnt:contentList</value>
-                <value>nt:folder</value>
-            </list>
-        </property>
-
-        <property name="folderTypes">
-            <list>
-                <value>jnt:page</value>
-                <value>jnt:virtualsite</value>
-                <value>jnt:contentList</value>
-                <value>jnt:contentFolder</value>
-                <value>nt:folder</value>
-            </list>
-        </property>
-        <!-- table columns-->
-        <property name="treeColumns">
-            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>displayName</value>
-            </list>
-        </property>
-
-        <property name="toolbars">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                <property name="items">
-                    <list>
-                        <ref bean="Toolbar.Item.Copy"/>
-                        <ref bean="Toolbar.Item.Cut"/>
-                        <ref bean="Toolbar.Item.Paste"/>
-                        <ref bean="Toolbar.Item.PasteReference"/>
-                        <ref bean="Toolbar.ItemsGroup.NodeTypeFiltering"/>
-                    </list>
-                </property>
-            </bean>
-        </property>
-        <property name="contextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                <property name="items">
-                    <list>
-                        <ref bean="Toolbar.Item.Copy"/>
-                        <ref bean="Toolbar.Item.Cut"/>
-                        <ref bean="Toolbar.Item.Paste"/>
-                        <ref bean="Toolbar.Item.PasteReference"/>
-                    </list>
-                </property>
-            </bean>
-        </property>
-        <property name="displaySearchInPage" value="false"/>
-        <property name="displaySearchInContent" value="false"/>
-        <property name="displaySearchInFile" value="false"/>
-        <property name="displaySearchInTag" value="true"/>
-        <property name="searchInContent" value="true"/>
-        <property name="searchInFile" value="true"/>   
-        <property name="allowsMultipleSelection" value="false"/>
+    <bean id="editoriallinkpicker" parent="editorialpicker">
         <property name="showOnlyNodesWithTemplates" value="true"/>
-        <!-- accordion panels-->
-        <property name="repositories">
-            <list>
-                <ref bean="repository.templateContents"/>
-                <ref bean="repository.site"/>
-                <ref bean="repository.sitesPicker"/>
-                <ref bean="repository.mycontent"/>
-            </list>
-        </property>
-
-        <!-- table columns-->
-        <property name="tableColumns">
-            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>icon,40,empty</value>
-                <value>displayName,*,label.title</value>
-                <value>primaryTypeLabel,140,label.type</value>
-                <value>publicationInfo,40</value>
-            </list>
-        </property>
     </bean>
 
     <!-- categorypicker -->
@@ -723,10 +660,11 @@
         </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="false"/>
-        <property name="searchInFile" value="false"/>   
+        <property name="searchInFile" value="false"/>
         <property name="hideLeftPanel" value="true"/>
         <property name="defaultView" value="detailed"/>
 
@@ -748,10 +686,16 @@
             </list>
         </property>
 
+        <property name="treeColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>displayName,*,label.title</value>
+            </list>
+        </property>
+
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name,*,label.name</value>
+                <value>displayName,*,label.name</value>
             </list>
         </property>
 
@@ -783,6 +727,7 @@
         </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="true"/>

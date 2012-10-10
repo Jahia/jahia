@@ -173,6 +173,10 @@
                                     <ref bean="Toolbar.Item.ClearLock"/>
                                     <ref bean="Toolbar.Item.ClearAllLocks"/>
                                     <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.Publish"/>
+                                    <ref bean="Toolbar.Item.PublishAll"/>
+                                    <ref bean="Toolbar.Item.Unpublish"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.OpenInContentManager"/>
@@ -205,6 +209,9 @@
                         <ref bean="Toolbar.Item.Unlock"/>
                         <ref bean="Toolbar.Item.ClearLock"/>
                         <ref bean="Toolbar.Item.ClearAllLocks"/>
+                        <ref bean="Toolbar.Item.Publish"/>
+                        <ref bean="Toolbar.Item.PublishAll"/>
+                        <ref bean="Toolbar.Item.Unpublish"/>
                         <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
                         <ref bean="Toolbar.Item.OpenInContentManager"/>
                     </list>
@@ -230,6 +237,7 @@
                 <ref bean="Engine.Tab.History"/>
                 <ref bean="Engine.Tab.Versioning"/>
                 <ref bean="Engine.Tab.Visibility"/>
+                <ref bean="Engine.Tab.ContributeMode"/>
             </list>
         </property>
 
@@ -459,7 +467,7 @@
                     </property>
                     <property name="requiredPermission" value="filesAndImagesSelector"/>
                 </bean>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+                <!--<bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="portlets"/>
                     <property name="icon" value="tab-portlets"/>
                     <property name="tabItem">
@@ -515,7 +523,7 @@
                         </bean>
                     </property>
                     <property name="requiredPermission" value="portletsSelector"/>
-                </bean>
+                </bean>-->
                 <ref bean="sidePanelTab.search"/>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="categories"/>
@@ -536,15 +544,39 @@
                         </list>
                     </property>
                     <property name="requiredPermission" value="categoriesSelector"/>
+                  <property name="tableContextMenu">
+                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                      <property name="items">
+                        <list>
+                          <ref bean="Toolbar.Item.EditContent"/>
+                          <ref bean="Toolbar.Item.Delete"/>
+                          <ref bean="Toolbar.Item.Undelete"/>
+                          <ref bean="Toolbar.Item.DeletePermanently"/>
+                          <ref bean="Toolbar.Item.Copy"/>
+                          <ref bean="Toolbar.Item.Cut"/>
+                          <ref bean="Toolbar.Item.Paste"/>
+                          <ref bean="Toolbar.Item.PasteReference"/>
+                          <ref bean="Toolbar.Item.TranslateMenu"/>
+                          <ref bean="Toolbar.Item.Export"/>
+                          <ref bean="Toolbar.Item.Lock"/>
+                          <ref bean="Toolbar.Item.Unlock"/>
+                          <ref bean="Toolbar.Item.ClearLock"/>
+                          <ref bean="Toolbar.Item.ClearAllLocks"/>
+                          <ref bean="Toolbar.Item.OpenInContentManager"/>
+                        </list>
+                      </property>
+                    </bean>
+                  </property>
                 </bean>
-                <!--<bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+                <!--
+                <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="lastContent"/>
                     <property name="icon" value="tab-lastcontent"/>
                     <property name="tabItem">
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.LastContentBrowseTabItem">
                             <property name="search"
-                                      value="select * from [jnt:content] as content where not content.[jcr:primaryType] = 'jnt:socialActivity' order by content.['jcr:lastModified'] desc"/>
-                            <property name="limit" value="100"/>
+                                      value="select * from [jmix:editorialContent] as content where isdescendantnode(content,['$site']) order by content.['jcr:lastModified'] desc"/>
+                            <property name="limit" value="25"/>
                             <property name="cssWrapper" value="bodywrapper"/>
                         </bean>
                     </property>
@@ -581,7 +613,8 @@
                         </bean>
                     </property>
                     <property name="requiredPermission" value="latestSelector"/>
-                </bean>-->
+                </bean>
+                -->
             </list>
         </property>
 
@@ -651,6 +684,7 @@
         <property name="requiredPermission" value="viewContentTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ContentTabItem">
+                <property name="maxNameSize" value="${jahia.jcr.maxNameSize}"/>
                 <property name="nameNotEditableForTypes">
                     <list>
                         <value>jnt:group</value>
@@ -695,10 +729,10 @@
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.LayoutTabItem">
                 <property name="hideForTypes">
                     <list>
-                        <value>jnt:page</value>
+                        <value>jnt:page</value><!--
                         <value>jnt:area</value>
                         <value>jnt:absoluteArea</value>
-                        <value>jnt:levelAbsoluteArea</value>
+                        <value>jnt:levelAbsoluteArea</value>-->
                         <value>jnt:mainResourceDisplay</value>
                         <value>jnt:template</value>
                         <value>jnt:pageTemplate</value>
@@ -950,4 +984,29 @@
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.RolePermissionsTabItem"/>
         </property>
     </bean>
+
+    <bean id="Engine.Tab.ContributeMode" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="contributeMode"/>
+        <property name="titleKey" value="jmix_contributeMode"/>
+        <property name="requiredPermission" value="viewContributeModeTab"/>
+        <property name="tabItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PropertiesTabItem">
+                <property name="dataType">
+                    <list>
+                        <value>contributeMode</value>
+                    </list>
+                </property>
+                <property name="showForTypes">
+                    <list value-type="java.lang.String">
+                        <value>jnt:contentList</value>
+                        <value>jnt:folder</value>
+                        <value>jnt:contentFolder</value>
+                        <value>jnt:area</value>
+                        <value>jnt:mainResourceDisplay</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
 </beans>

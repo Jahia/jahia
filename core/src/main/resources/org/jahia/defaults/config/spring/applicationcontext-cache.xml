@@ -60,12 +60,12 @@ when we flush this entry we will flush the whole cache
     </bean>
 
     <bean id="cacheFilter" class="org.jahia.services.render.filter.cache.AggregateCacheFilter">
-        <property name="disabled" value="false"/>
+        <property name="disabled" value="${disableOutputCache:false}"/>
         <property name="priority" value="16" />
         <property name="description" value="Module content caching filter." />
     	<property name="cacheProvider" ref="ModuleCacheProvider"/>
     	<property name="skipOnTemplateTypes" value="json"/>
-        <property name="skipOnConfiguration" value="include,wrapper,option"/>
+        <property name="skipOnConfigurations" value="include,wrapper,option"/>
         <property name="applyOnModes" value="live"/>
         <property name="generatorQueue" ref="moduleGeneratorQueue"/>
         <property name="moduleParamsProperties">
@@ -73,6 +73,7 @@ when we flush this entry we will flush the whole cache
                 <entry key="j:subNodesView" value="subNodesView"/>
             </map>
         </property>
+        <property name="dependenciesLimit" value="1000"/>
     </bean>
 
     <bean name="cacheMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
@@ -90,6 +91,15 @@ when we flush this entry we will flush the whole cache
 
     <bean id="abstractFlushCacheOnNodeBackgroundAction" class="org.jahia.services.content.rules.FlushCacheOnNodeBackgroundAction" abstract="true">
         <property name="cacheProvider" ref="ModuleCacheProvider"/>
+    </bean>
+
+    <bean id="HibernateEhcacheManagerMBeanRegistrator" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" depends-on="sessionFactory">
+        <property name="staticMethod" value="org.jahia.services.cache.CacheHelper.registerMBeans"/>
+        <property name="arguments">
+            <list>
+                <value>org.jahia.hibernate.ehcachemanager</value>
+            </list>
+        </property>
     </bean>
 
 </beans>

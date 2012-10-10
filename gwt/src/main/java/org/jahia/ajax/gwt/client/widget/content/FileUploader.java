@@ -55,7 +55,6 @@ import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -141,7 +140,7 @@ public class FileUploader extends Window {
     public FileUploader(final Linker linker, final GWTJahiaNode location) {
         super();
         setHeading(Messages.get("uploadFile.label"));
-        setSize(500, 250);
+        setSize(500, 500);
         setResizable(false);
 
         ButtonBar buttons = new ButtonBar();
@@ -188,6 +187,7 @@ public class FileUploader extends Window {
             public void handleEvent(ComponentEvent ce){
                 String r = ((FormEvent)ce).getResultHtml();
                 if (r != null && r.contains("UPLOAD-ISSUE:")) {
+                    unmask();
                     final Dialog dl = new Dialog();
                     dl.setModal(true);
                     dl.setHeading(Messages.get("label.error"));
@@ -209,8 +209,10 @@ public class FileUploader extends Window {
         final Button submit = new Button(Messages.get("label.ok"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 try {
+                    mask(Messages.get("message.uploading", "Uploading..."), "x-mask-loading");
                     form.submit();
                 } catch (Exception e) {
+                    unmask();
                     bar.reset();
                     bar.setVisible(false);
                     com.google.gwt.user.client.Window.alert(Messages.get("checkUploads.label"));
@@ -237,15 +239,7 @@ public class FileUploader extends Window {
         form.addListener(Events.Submit, new Listener<FormEvent>() {
             public void handleEvent(FormEvent formEvent) {
                 bar.reset();
-                String filename = p.getUpload().getFilename();
-                int beginIndex = filename.lastIndexOf("/");
-                if(beginIndex>0)
-                filename = filename.substring(beginIndex);
-                beginIndex = filename.lastIndexOf("\\");
-                if(beginIndex>0)
-                filename = filename.substring(beginIndex+1).replaceAll("\\\\","");
-                linker.setSelectPathAfterDataUpdate(Arrays.asList(location.getPath() + "/" + filename));
-
+                String selectFileAfterDataUpdate = null;
                 String result = formEvent.getResultHtml();
            
                 removeAll();
@@ -256,7 +250,9 @@ public class FileUploader extends Window {
                 for (int i = 0; i < results.length; i++) {
                     String s = new HTML(results[i]).getText();
                     if (s.startsWith("OK:")) {
-
+                        if (selectFileAfterDataUpdate == null) {
+                            selectFileAfterDataUpdate = s.substring("OK: ".length()); 
+                        }
                     } else if (s.startsWith("EXISTS:")) {
                         int i1 = s.indexOf(' ');
                         int i2 = s.indexOf(' ', i1 + 1);
@@ -272,6 +268,7 @@ public class FileUploader extends Window {
                     submit.removeAllListeners();
                     submit.addSelectionListener(new SelectionListener<ButtonEvent>() {
                         public void componentSelected(ButtonEvent event) {
+                            mask(Messages.get("message.uploading", "Uploading..."), "x-mask-loading");
                             submit.setEnabled(false);
                             final List<Field[]> list = new ArrayList<Field[]>(exists);
                             final List<Field[]> list2 = new ArrayList<Field[]>(exists);
@@ -296,6 +293,9 @@ public class FileUploader extends Window {
 
                     layout();
                 } else {
+                    if (selectFileAfterDataUpdate != null) {
+                        linker.setSelectPathAfterDataUpdate(Arrays.asList(location.getPath() + "/" + selectFileAfterDataUpdate));
+                    }
                     endUpload(unzip, linker);
                 }
             }
@@ -312,11 +312,12 @@ public class FileUploader extends Window {
         } else {
             linker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_FOLDERS);
         }
-
+        unmask();
         hide();
     }
 
     private void addExistingToForm(List<Field[]> exists, String key, String tmp, final String name) {
+        unmask();
         final TextField<String> textField = new TextField<String>();
         textField.setFieldLabel("rename");
         textField.setName(key + "_name");

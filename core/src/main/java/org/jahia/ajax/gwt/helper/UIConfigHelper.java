@@ -288,6 +288,7 @@ public class UIConfigHelper {
                 gwtConfig.setSearchInCurrentSiteOnly(config.isSearchInCurrentSiteOnly());
                 gwtConfig.setSearchBasePath(config.getSearchBasePath());
                 gwtConfig.setShowOnlyNodesWithTemplates(config.isShowOnlyNodesWithTemplates());
+                gwtConfig.setDisplaySearchInDateMeta(config.isDisplaySearchInDateMeta());
                 // set toolbar
                 gwtConfig.setToolbars(createGWTToolbarSet(contextNode, site, jahiaUser, locale, uiLocale, request, config.getToolbars()));
                 gwtConfig.setContextMenu(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getContextMenu()));
@@ -510,6 +511,7 @@ public class UIConfigHelper {
         }
         gwtToolbarItem.setLayout(getLayoutAsInt(item.getLayout()));
         gwtToolbarItem.setRequiredPermission(item.getRequiredPermission());
+        gwtToolbarItem.setHideWhenDisabled(item.isHideWhenDisabled());
         gwtToolbarItem.setProperties(pMap);
 
         ActionItem actionItem = item.getActionItem();
@@ -625,6 +627,7 @@ public class UIConfigHelper {
 
     private GWTEngineTab createGWTEngineTab(EngineTab engineTab, JCRSiteNode site, Locale locale, Locale uiLocale) {
         GWTEngineTab gwtTab = new GWTEngineTab();
+        gwtTab.setId(engineTab.getId());
 
         if (engineTab.getTitleKey() != null) {
             gwtTab.setTitle(getResources(engineTab.getTitleKey(), uiLocale != null ? uiLocale : locale, site, null));
@@ -668,13 +671,15 @@ public class UIConfigHelper {
         if (value.contains("${")) {
             try {
                 ScriptEngine byName = scriptEngineUtils.getEngineByName("velocity");
-                ScriptContext scriptContext = byName.getContext();
+                ScriptContext scriptContext = new SimpleScriptContext();
                 final Bindings bindings = new SimpleBindings();
                 bindings.put("currentSite", site);
                 bindings.put("currentUser", jahiaUser);
+                scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+                scriptContext.setBindings(scriptContext.getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
                 scriptContext.setWriter(new StringWriter());
                 scriptContext.setErrorWriter(new StringWriter());
-                byName.eval(value, bindings);
+                byName.eval(value, scriptContext);
                 //String error = scriptContext.getErrorWriter().toString();
                 return scriptContext.getWriter().toString().trim();
             } catch (ScriptException e) {

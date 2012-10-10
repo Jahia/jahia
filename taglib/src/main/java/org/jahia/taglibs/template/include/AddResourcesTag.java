@@ -40,21 +40,24 @@
 
 package org.jahia.taglibs.template.include;
 
-import org.slf4j.Logger;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.render.RenderContext;
-import org.jahia.taglibs.AbstractJahiaTag;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.render.RenderContext;
+import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.utils.Patterns;
+import org.slf4j.Logger;
 
 /**
  * Add some resources to the head tag of the HTML.
@@ -85,34 +88,42 @@ public class AddResourcesTag extends AbstractJahiaTag {
     @Override
     public int doEndTag() throws JspException {
         JahiaTemplatesPackage templatesPackage = (JahiaTemplatesPackage) pageContext.getAttribute("currentModule", PageContext.REQUEST_SCOPE);
-        addResources(getRenderContext(), templatesPackage);
+        JahiaTemplatesPackage templatesSetPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(getRenderContext().getSite().getTemplatePackageName());
+        if (!addResources(getRenderContext(), templatesSetPackage, false)) {
+            addResources(getRenderContext(), templatesPackage, true);
+        }
+
         resetState();
         return super.doEndTag();
     }
 
-    protected void addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage) {
-        logger.debug("Package : " + aPackage.getName() + " type : " + type + " resources : " + resources);
+    protected boolean addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage, boolean checkDependencies) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Package : " + aPackage.getName() + " type : " + type + " resources : " + resources);
+        }
         if (bodyContent != null) {
             try {
                 pageContext.getOut().print(bodyContent.getString());
-                return;
+                return true;
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
             }
         }
         if (renderContext == null) {
             logger.warn("No render context found. Unable to add a resoure");
-            return;
+            return false;
         }
 
         final Map<String, String> mapping = getStaticAssetMapping();
 
-        String[] strings = resources.split(",");
+        String[] strings = Patterns.COMMA.split(resources);
 
         List<String> lookupPaths = new LinkedList<String>();
         lookupPaths.add(aPackage.getRootFolderPath() + "/" + type + "/");
-        for (JahiaTemplatesPackage pack : aPackage.getDependencies()) {
-            lookupPaths.add(pack.getRootFolderPath() + "/" + type + "/");
+        if (checkDependencies) {
+            for (JahiaTemplatesPackage pack : aPackage.getDependencies()) {
+                lookupPaths.add(pack.getRootFolderPath() + "/" + type + "/");
+            }
         }
         StringBuilder builder = new StringBuilder();
         for (String resource : strings) {
@@ -120,8 +131,14 @@ public class AddResourcesTag extends AbstractJahiaTag {
             resource = resource.trim();
             if (resource.startsWith("/") || resource.startsWith("http://") || resource.startsWith("https://")) {
                 found = true;
+                if (mapping.containsKey(resource)) {
+                    for (String mappedResource : mapping.get(resource).split(" ")) {
+                        writeResourceTag(type, mappedResource, mappedResource);
+                    }
+                } else {
+                    writeResourceTag(type, resource, resource);
+                }
                 resource = mapping.containsKey(resource) ? mapping.get(resource) : resource;
-                writeResourceTag(type, resource, resource);
             } else {
                 for (String lookupPath : lookupPaths) {
                     String path = lookupPath + resource;
@@ -132,10 +149,15 @@ public class AddResourcesTag extends AbstractJahiaTag {
 
                             // apply mapping
                             if (mapping.containsKey(path)) {
-                                path = mapping.get(path);
-                                pathWithContext = !path.startsWith("http://") && !path.startsWith("https://") ? renderContext.getRequest().getContextPath() + path : path;
+                                for (String mappedResource : mapping.get(path).split(" ")) {
+                                    path = mappedResource;
+                                    pathWithContext = !path.startsWith("http://") && !path.startsWith("https://") ? renderContext.getRequest().getContextPath() + path : path;
+                                    writeResourceTag(type, pathWithContext, resource);
+                                }
+                            } else {
+                                writeResourceTag(type, pathWithContext, resource);
                             }
-                            writeResourceTag(type, pathWithContext, resource);
+
                             found = true;
                             if (builder.length() > 0) {
                                 builder.append(",");
@@ -149,12 +171,13 @@ public class AddResourcesTag extends AbstractJahiaTag {
                 }
             }
             if (!found) {
-                logger.warn("Unable to find resource '" + resource + "' in: " + lookupPaths);
+                return false;
             }
         }
         if (var != null && !"".equals(var.trim())) {
             pageContext.setAttribute(var, builder.toString());
         }
+        return true;
     }
 
     public void setType(String type) {

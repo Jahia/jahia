@@ -47,6 +47,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.scripting.Script;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.RepositoryException;
 import java.util.LinkedList;
@@ -78,7 +79,7 @@ public abstract class AbstractFilter implements RenderFilter {
         public boolean matches(RenderContext renderContext, Resource resource) {
             return renderContext.isAjaxRequest();
         }
-        
+
         @Override
         public String toString() {
             return "is Ajax request";
@@ -109,7 +110,7 @@ public abstract class AbstractFilter implements RenderFilter {
             }
             return matches;
         }
-        
+
         @Override
         public String toString() {
             StringBuilder out = new StringBuilder();
@@ -163,7 +164,7 @@ public abstract class AbstractFilter implements RenderFilter {
         public boolean matches(RenderContext renderContext, Resource resource) {
             return (renderContext.getMainResource().getNode().getPath().equals(resource.getNode().getPath()));
         }
-        
+
         @Override
         public String toString() {
             return "is main resource";
@@ -179,21 +180,13 @@ public abstract class AbstractFilter implements RenderFilter {
     public static class ModeCondition implements ExecutionCondition {
 
         public static boolean matches(RenderContext renderContext, String mode) {
-            boolean matches = false;
-            if ("live".equals(mode)) {
-                matches = renderContext.isLiveMode();
-            } else if ("preview".equals(mode)) {
-                matches = renderContext.isPreviewMode();
-            } else if ("edit".equals(mode)) {
-                matches = renderContext.isEditMode();
-            } else if ("contribution".equals(mode)) {
-                matches = renderContext.isContributionMode();
-            } else {
-                throw new IllegalArgumentException("Unsupported mode '" + mode + "'");
+            if (mode.equals("contribution")) {
+                mode = "contribute"; // Legacy compatibility
             }
-            return matches;
+
+            return renderContext.getMode() != null && renderContext.getMode().equals(mode);
         }
-        
+
         private String mode;
 
         /**
@@ -209,7 +202,7 @@ public abstract class AbstractFilter implements RenderFilter {
         public boolean matches(RenderContext renderContext, Resource resource) {
             return matches(renderContext, mode);
         }
-        
+
         @Override
         public String toString() {
             return "mode == " + mode;
@@ -272,7 +265,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
             return matches;
         }
-    
+
         @Override
         public String toString() {
             return "nodeTypeName == " + nodeTypeName;
@@ -346,7 +339,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
     /**
      * Filter execution condition that evaluates to true if the specified request attribute matches the specified value.
-     * 
+     *
      * @author Sergiy Shyrkov
      * @since Jahia 6.6
      */
@@ -361,7 +354,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
     /**
      * Filter execution condition that evaluates to true if the specified request item matches the specified value.
-     * 
+     *
      * @author Sergiy Shyrkov
      * @since Jahia 6.6
      */
@@ -382,7 +375,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
     /**
      * Filter execution condition that evaluates to true if the specified request header matches the specified value.
-     * 
+     *
      * @author Sergiy Shyrkov
      * @since Jahia 6.6
      */
@@ -396,7 +389,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
     /**
      * Filter execution condition that evaluates to true if the specified request parameter matches the specified value.
-     * 
+     *
      * @author Sergiy Shyrkov
      * @since Jahia 6.6
      */
@@ -410,7 +403,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
     /**
      * Evaluates to <code>true</code> if the current resource's template matches the provided one.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static class TemplateCondition extends PatternCondition {
@@ -459,14 +452,44 @@ public abstract class AbstractFilter implements RenderFilter {
         }
     }
 
+    /**
+     * Evaluates to <code>true</code> if the current site's template set matches the specified one
+     *
+     * @author Sergiy Shyrkov
+     * @since 6.6.1.0
+     */
+    public static class SiteTemplateSetCondition implements ExecutionCondition {
+
+        private String templateSet;
+
+        /**
+         * Initializes an instance of this class.
+         *
+         * @param templateSet the template set name to match
+         */
+        public SiteTemplateSetCondition(String templateSet) {
+            super();
+            this.templateSet = templateSet;
+        }
+
+        public boolean matches(RenderContext renderContext, Resource resource) {
+            return renderContext.getSite() != null && templateSet.equals(renderContext.getSite().getTemplatePackageName());
+        }
+
+        @Override
+        public String toString() {
+            return "siteTemplateSet == " + templateSet;
+        }
+    }
+
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(AbstractFilter.class);
 
     private List<ExecutionCondition> conditions = new LinkedList<ExecutionCondition>();
-    
+
     private String description;
-    
+
     private boolean disabled;
-    
+
     private int priority = 99;
 
     protected RenderService service;
@@ -512,7 +535,7 @@ public abstract class AbstractFilter implements RenderFilter {
         if (disabled) {
             return false;
         }
-        
+
         boolean matches = true;
         for (ExecutionCondition condition : conditions) {
             if (!condition.matches(renderContext, resource)) {
@@ -533,7 +556,7 @@ public abstract class AbstractFilter implements RenderFilter {
         if(this.getClass().getName().equals(obj.getClass().getName())) {
             return this.getPriority()==((AbstractFilter)obj).getPriority();
         }
-        return false; 
+        return false;
     }
 
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
@@ -547,7 +570,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
     /**
      * Returns a text-based representation of filter conditions.
-     * 
+     *
      * @return a text-based representation of filter conditions
      */
     public String getConditionsSummary() {
@@ -570,7 +593,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
     /**
      * Returns a human-readable description of this filter.
-     * 
+     *
      * @return a human-readable description of this filter
      */
     public String getDescription() {
@@ -584,6 +607,10 @@ public abstract class AbstractFilter implements RenderFilter {
      */
     public int getPriority() {
         return priority;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
     }
 
     public void handleError(RenderContext renderContext, Resource resource, RenderChain renderChain, Exception e) {
@@ -606,7 +633,7 @@ public abstract class AbstractFilter implements RenderFilter {
     public void setApplyOnConfigurations(String configurations) {
         if (configurations.contains(",")) {
             AnyOfCondition condition = new AnyOfCondition();
-            for (String conf : configurations.split(",")) {
+            for (String conf : Patterns.COMMA.split(configurations)) {
                 condition.add(new ConfigurationCondition(conf.trim()));
             }
             addCondition(0, condition);
@@ -638,7 +665,7 @@ public abstract class AbstractFilter implements RenderFilter {
     public void setApplyOnModes(String modes) {
         if (modes.contains(",")) {
             AnyOfCondition condition = new AnyOfCondition();
-            for (String mode : modes.split(",")) {
+            for (String mode : Patterns.COMMA.split(modes)) {
                 condition.add(new ModeCondition(mode.trim()));
             }
             addCondition(0, condition);
@@ -657,7 +684,7 @@ public abstract class AbstractFilter implements RenderFilter {
     public void setApplyOnModules(String modules) {
         if (modules.contains(",")) {
             AnyOfCondition condition = new AnyOfCondition();
-            for (String module : modules.split(",")) {
+            for (String module : Patterns.COMMA.split(modules)) {
                 condition.add(new ModuleCondition(module.trim()));
             }
             addCondition(condition);
@@ -676,7 +703,7 @@ public abstract class AbstractFilter implements RenderFilter {
     public void setApplyOnNodeTypes(String nodeTypes) {
         if (nodeTypes.contains(",")) {
             AnyOfCondition condition = new AnyOfCondition();
-            for (String nodeType : nodeTypes.split(",")) {
+            for (String nodeType : Patterns.COMMA.split(nodeTypes)) {
                 condition.add(new NodeTypeCondition(nodeType.trim()));
             }
             addCondition(condition);
@@ -695,7 +722,7 @@ public abstract class AbstractFilter implements RenderFilter {
     public void setApplyOnTemplates(String templates) {
         if (templates.contains(",")) {
             AnyOfCondition condition = new AnyOfCondition();
-            for (String template : templates.split(",")) {
+            for (String template : Patterns.COMMA.split(templates)) {
                 condition.add(new TemplateCondition(template.trim()));
             }
             addCondition(condition);
@@ -714,12 +741,31 @@ public abstract class AbstractFilter implements RenderFilter {
     public void setApplyOnTemplateTypes(String templateTypes) {
         if (templateTypes.contains(",")) {
             AnyOfCondition condition = new AnyOfCondition();
-            for (String templateType : templateTypes.split(",")) {
-                condition.add(new TemplateTypeCondition(templateType.trim()));
+            for (String templateType : Patterns.COMMA.split(templateTypes)) {
+                condition.add(new TemplateTypeCondition(templateType.trim(),true));
             }
             addCondition(condition);
         } else {
-            addCondition(new TemplateTypeCondition(templateTypes));
+            addCondition(new TemplateTypeCondition(templateTypes,true));
+        }
+    }
+
+    /**
+     * Comma-separated list of template set names this filter will be executed for (all others are skipped).
+     *
+     * @param templateSets
+     *            comma-separated list of template type names this filter will be executed for (all others are skipped)
+     * @since 6.6.1.0
+     */
+    public void setApplyOnSiteTemplateSets(String templateSets) {
+        if (templateSets.contains(",")) {
+            AnyOfCondition condition = new AnyOfCondition();
+            for (String templateSet : Patterns.COMMA.split(templateSets)) {
+                condition.add(new SiteTemplateSetCondition(templateSet.trim()));
+            }
+            addCondition(condition);
+        } else {
+            addCondition(new SiteTemplateSetCondition(templateSets));
         }
     }
 
@@ -736,7 +782,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
     /**
      * Sets a human-readable description of this filter.
-     * 
+     *
      * @param description
      *            a human-readable description of this filter
      */
@@ -762,6 +808,11 @@ public abstract class AbstractFilter implements RenderFilter {
         }
     }
 
+    @Deprecated
+    public void setSkipOnConfiguration(String configurations) {
+        setSkipOnConfigurations(configurations);
+    }
+
     /**
      * Comma-separated list of configuration names this filter won't be executed
      * for.
@@ -769,11 +820,11 @@ public abstract class AbstractFilter implements RenderFilter {
      * @param configurations comma-separated list of node type names this filter
      *                       won't be executed for
      */
-    public void setSkipOnConfiguration(String configurations) {
+    public void setSkipOnConfigurations(String configurations) {
         ExecutionCondition condition = null;
         if (configurations.contains(",")) {
             AnyOfCondition anyOf = new AnyOfCondition();
-            for (String configuration : configurations.split(",")) {
+            for (String configuration : Patterns.COMMA.split(configurations)) {
                 anyOf.add(new ConfigurationCondition(configuration.trim()));
             }
             condition = anyOf;
@@ -805,7 +856,7 @@ public abstract class AbstractFilter implements RenderFilter {
         ExecutionCondition condition = null;
         if (modes.contains(",")) {
             AnyOfCondition anyOf = new AnyOfCondition();
-            for (String mode : modes.split(",")) {
+            for (String mode : Patterns.COMMA.split(modes)) {
                 anyOf.add(new ModeCondition(mode.trim()));
             }
             condition = anyOf;
@@ -825,7 +876,7 @@ public abstract class AbstractFilter implements RenderFilter {
         ExecutionCondition condition = null;
         if (modules.contains(",")) {
             AnyOfCondition anyOf = new AnyOfCondition();
-            for (String module : modules.split(",")) {
+            for (String module : Patterns.COMMA.split(modules)) {
                 anyOf.add(new ModuleCondition(module.trim()));
             }
             condition = anyOf;
@@ -846,7 +897,7 @@ public abstract class AbstractFilter implements RenderFilter {
         ExecutionCondition condition = null;
         if (nodeTypes.contains(",")) {
             AnyOfCondition anyOf = new AnyOfCondition();
-            for (String nodeType : nodeTypes.split(",")) {
+            for (String nodeType : Patterns.COMMA.split(nodeTypes)) {
                 anyOf.add(new NodeTypeCondition(nodeType.trim()));
             }
             condition = anyOf;
@@ -866,7 +917,7 @@ public abstract class AbstractFilter implements RenderFilter {
         ExecutionCondition condition = null;
         if (templates.contains(",")) {
             AnyOfCondition anyOf = new AnyOfCondition();
-            for (String template : templates.split(",")) {
+            for (String template : Patterns.COMMA.split(templates)) {
                 anyOf.add(new TemplateCondition(template.trim()));
             }
             condition = anyOf;
@@ -887,12 +938,12 @@ public abstract class AbstractFilter implements RenderFilter {
         ExecutionCondition condition = null;
         if (templateTypes.contains(",")) {
             AnyOfCondition anyOf = new AnyOfCondition();
-            for (String templateType : templateTypes.split(",")) {
-                anyOf.add(new TemplateTypeCondition(templateType.trim()));
+            for (String templateType : Patterns.COMMA.split(templateTypes)) {
+                anyOf.add(new TemplateTypeCondition(templateType.trim(),true));
             }
             condition = anyOf;
         } else {
-            condition = new TemplateTypeCondition(templateTypes);
+            condition = new TemplateTypeCondition(templateTypes,true);
         }
         addCondition(new NotCondition(condition));
     }

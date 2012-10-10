@@ -107,19 +107,23 @@ public class InitPagerTag extends TagSupport {
             String beginStr = pageContext.getRequest().getParameter("begin"+id);
             String endStr = pageContext.getRequest().getParameter("end"+id);
 
-            if(pageContext.getRequest().getParameter("pagesize"+id)!=null) {
+            if (pageContext.getRequest().getParameter("pagesize"+id) != null) {
                 pageSize = Integer.parseInt(pageContext.getRequest().getParameter("pagesize"+id));
             }
 
             int begin = beginStr == null ? 0 : Integer.parseInt(beginStr);
             int end = endStr == null ? pageSize - 1 : Integer.parseInt(endStr);
-            if(totalSize < pageSize) {
-                begin = 0;
-            }
             long nbPages = totalSize / pageSize;
             if (nbPages * pageSize < totalSize) {
                 nbPages++;
             }
+            if (totalSize < pageSize) {
+                begin = 0;
+            } else if (begin > totalSize) {
+                begin = (int) ((nbPages-1) * pageSize);
+                end = begin + pageSize - 1;
+            }
+
             moduleMap.put("begin", begin);
             moduleMap.put("end", end);
             moduleMap.put("pageSize", pageSize);
@@ -132,7 +136,8 @@ public class InitPagerTag extends TagSupport {
             pageContext.setAttribute("end_"+id,end,PageContext.REQUEST_SCOPE);
         } catch (Exception e) {
             throw new JspException(e);
-        }        return super.doStartTag();
+        }        
+        return super.doStartTag();
     }
 
     @Override

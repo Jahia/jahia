@@ -51,12 +51,8 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.nodetype.NodeTypeIterator;
-import javax.jcr.query.InvalidQueryException;
 
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -69,6 +65,7 @@ import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +74,7 @@ import com.google.common.collect.Ordering;
 
 /**
  * Components service.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class ComponentRegistry {
@@ -85,7 +82,7 @@ public class ComponentRegistry {
     private static final Ordering<String> CASE_INSENSITIVE_ORDERING = Ordering.from(String.CASE_INSENSITIVE_ORDER);
 
     private static final String JMIX_DROPPABLE_CONTENT = "jmix:droppableContent";
-    
+
     protected static final String JMIX_STUDIO_ONLY = "jmix:studioOnly";
 
     protected static final String JNT_COMPONENT = "jnt:component";
@@ -99,7 +96,7 @@ public class ComponentRegistry {
     private static final String NODE_COMPONENTS = "components";
 
     private static boolean allowType(ExtendedNodeType t, List<String> includeTypeList,
-            List<String> excludeTypeList) {
+                                     List<String> excludeTypeList) {
         boolean include = true;
         String typeName = t.getName();
 
@@ -136,7 +133,7 @@ public class ComponentRegistry {
     }
 
     private static Map<String, String> getComponentTypes(JCRNodeWrapper node,
-            List<String> includeTypeList, List<String> excludeTypeList)
+                                                         List<String> includeTypeList, List<String> excludeTypeList)
             throws PathNotFoundException, RepositoryException {
 
         Map<ExtendedNodeType, JCRNodeWrapper> typeComponentMap = new HashMap<ExtendedNodeType, JCRNodeWrapper>();
@@ -163,7 +160,7 @@ public class ComponentRegistry {
                     JCRNodeWrapper next = (JCRNodeWrapper) nodeIterator.next();
                     components.add(next);
                 }
-            } else if (n.isNodeType("jnt:simpleComponent") && n.hasPermission("useComponent")) {
+            } else if (n.isNodeType("jnt:simpleComponent") /*&& n.hasPermission("useComponentForCreate")*/) {
                 ExtendedNodeType t = NodeTypeRegistry.getInstance().getNodeType(n.getName());
                 if (allowType(t, includeTypeList, excludeTypeList)) {
                     typeComponentMap.put(t, n);
@@ -171,7 +168,7 @@ public class ComponentRegistry {
             }
         }
 
-        String[] constraints = ConstraintsHelper.getConstraints(node).split(" ");
+        String[] constraints = Patterns.SPACE.split(ConstraintsHelper.getConstraints(node));
         Set<ExtendedNodeType> finaltypes = new HashSet<ExtendedNodeType>();
         for (ExtendedNodeType type : typeComponentMap.keySet()) {
             for (String s : constraints) {
@@ -199,8 +196,8 @@ public class ComponentRegistry {
     }
 
     public static Map<String, String> getComponentTypes(final JCRNodeWrapper node,
-            final List<String> includeTypeList, final List<String> excludeTypeList,
-            Locale displayLocale) throws PathNotFoundException, RepositoryException {
+                                                        final List<String> includeTypeList, final List<String> excludeTypeList,
+                                                        Locale displayLocale) throws PathNotFoundException, RepositoryException {
 
         long timer = System.currentTimeMillis();
 
@@ -228,17 +225,17 @@ public class ComponentRegistry {
 
         return sortedComponents;
     }
-    
+
     private TemplatePackageRegistry templatePackageRegistry;
-    
-    private JCRNodeWrapper findComponent(JCRNodeWrapper components, String name,
-            JCRSessionWrapper session) throws InvalidQueryException, RepositoryException {
+
+    private JCRNodeWrapper findComponent(JCRNodeWrapper components, String name)
+            throws RepositoryException {
         if (components.hasNode(name)) {
             return components.getNode(name);
         }
         JCRNodeWrapper found = null;
-        for (NodeIterator ni = components.getNodes(); ni.hasNext();) {
-            found = findComponent((JCRNodeWrapper) ni.nextNode(), name, session);
+        for (NodeIterator ni = components.getNodes(); ni.hasNext(); ) {
+            found = findComponent((JCRNodeWrapper) ni.nextNode(), name);
             if (found != null) {
                 break;
             }
@@ -256,124 +253,124 @@ public class ComponentRegistry {
     }
 
     private boolean registerComponent(JCRSessionWrapper session, boolean newDeployment, JCRNodeWrapper components, ExtendedNodeType nt) throws RepositoryException {
-        boolean created = false;
+        boolean updated = false;
 
-        List<Locale> locales = LanguageCodeConverters.getAvailableBundleLocales();
-
+        JCRNodeWrapper comp = findComponent(components, nt.getName());
+        JCRNodeWrapper folder = null;
         if (!nt.isMixin() && !nt.isAbstract() && !JMIX_DROPPABLE_CONTENT.equals(nt.getName())
                 && nt.isNodeType(JMIX_DROPPABLE_CONTENT)) {
-            String name = nt.getName();
             if (logger.isDebugEnabled()) {
-                logger.debug("Detected component type {}", name);
+                logger.debug("Detected component type {}", nt.getName());
             }
-            if (newDeployment || findComponent(components, name, session) == null) {
-                JCRNodeWrapper folder = components;
-                for (ExtendedNodeType st : nt.getSupertypes()) {
-                    if (st.isMixin() && !st.getName().equals(JMIX_DROPPABLE_CONTENT)
-                            && st.isNodeType(JMIX_DROPPABLE_CONTENT)) {
-                        if (components.hasNode(st.getName())) {
-                            folder = components.getNode(st.getName());
-                        } else {
-                            folder = components.addNode(st.getName(),JNT_COMPONENT_FOLDER);
-                            for (Locale locale : locales) {
-                                String label = st.getLabel(locale);
-                                if (label != null) {
-                                    folder.getOrCreateI18N(locale).setProperty("jcr:title", label);
-                                }
-                                String description = st.getDescription(locale);
-                                if (description != null) {
-                                    folder.getOrCreateI18N(locale).setProperty("jcr:description", description);
-                                }
-                            }
-                        }
-                        break;
-                    }
-                }
-                if (!folder.hasNode(name)) {
-                    JCRNodeWrapper comp = folder.addNode(name, JNT_SIMPLE_COMPONENT);
 
-                    for (Locale locale : locales) {
-                        String label = nt.getLabel(locale);
-                        if (label != null) {
-                            comp.getOrCreateI18N(locale).setProperty("jcr:title", label);
-                        }
-                        String description = nt.getDescription(locale);
-                        if (description != null) {
-                            folder.getOrCreateI18N(locale).setProperty("jcr:description", description);
-                        }
+            folder = components;
+            ExtendedNodeType[] supertypes = nt.getSupertypes();
+            for (int i = supertypes.length - 1; i >= 0; i--) {
+                ExtendedNodeType st = supertypes[i];
+                if (st.isMixin() && !st.getName().equals(JMIX_DROPPABLE_CONTENT)
+                        && st.isNodeType(JMIX_DROPPABLE_CONTENT)) {
+                    if (components.hasNode(st.getName())) {
+                        folder = components.getNode(st.getName());
+                        updated |= setTitle(folder, st);
+                    } else {
+                        folder = components.addNode(st.getName(), JNT_COMPONENT_FOLDER);
+                        updated = true;
                     }
-                    if (nt.isNodeType(JMIX_STUDIO_ONLY)) {
-                        comp.addMixin(JMIX_STUDIO_ONLY);
-                    }
-                    created = true;
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Created component node {}", comp.getPath());
-                    }
-                }
-            } else {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Component {} already exists", name);
+                    break;
                 }
             }
         } else if (!nt.isMixin() && !nt.isAbstract()) {
-            JCRNodeWrapper folder = components.hasNode("nonDroppableComponents") ?
-                    components.getNode("nonDroppableComponents") : components.addNode("nonDroppableComponents",
-                    JNT_COMPONENT_FOLDER);
-            folder.addMixin(Constants.JAHIAMIX_HIDDEN_NODE);
-            if (!folder.hasNode(nt.getName())) {
-                folder.addNode(nt.getName(), JNT_SIMPLE_COMPONENT);
-                created = true;
+            if (components.hasNode("nonDroppableComponents")) {
+                folder = components.getNode("nonDroppableComponents");
+            } else {
+                folder = components.addNode("nonDroppableComponents",JNT_COMPONENT_FOLDER);
+                folder.addMixin(Constants.JAHIAMIX_HIDDEN_NODE);
             }
         }
-        return created;
+        if (folder != null) {
+            if (!folder.hasNode(nt.getName())) {
+                if (comp != null) {
+                    String newPath = folder.getPath() + "/" + comp.getName();
+                    session.move(comp.getPath(), newPath);
+                    session.save();
+                    comp = session.getNode(newPath);
+                } else {
+                    comp = folder.addNode(nt.getName(), JNT_SIMPLE_COMPONENT);
+                }
+                updated = true;
+            }
+
+            updated |= setTitle(comp, nt);
+
+            if (nt.isNodeType(JMIX_STUDIO_ONLY) && !comp.isNodeType(JMIX_STUDIO_ONLY)) {
+                comp.addMixin(JMIX_STUDIO_ONLY);
+                updated = true;
+            } else if (!nt.isNodeType(JMIX_STUDIO_ONLY) && comp.isNodeType(JMIX_STUDIO_ONLY)) {
+                comp.removeMixin(JMIX_STUDIO_ONLY);
+                updated = true;
+            }
+            if (logger.isDebugEnabled()) {
+                logger.debug("Created component node {}", comp.getPath());
+            }
+        }
+
+        return updated;
+    }
+
+    private boolean setTitle(JCRNodeWrapper folder, ExtendedNodeType st) throws RepositoryException {
+        boolean updated = false;
+        for (Locale locale : LanguageCodeConverters.getAvailableBundleLocales()) {
+            String label = st.getLabel(locale);
+            Node i18N = folder.getOrCreateI18N(locale);
+            if (label != null && (!i18N.hasProperty("jcr:title") || !i18N.getProperty("jcr:title").getString().equals(label))) {
+                i18N.setProperty("jcr:title", label);
+                updated = true;
+            }
+            String description = st.getDescription(locale);
+            if (description != null && (!i18N.hasProperty("jcr:description") || !i18N.getProperty("jcr:description").getString().equals(description))) {
+                i18N.setProperty("jcr:description", description);
+                updated = true;
+            }
+        }
+        return updated;
     }
 
     /**
      * Performs the registration of the components from modules into JCR tree.
      */
-    protected void registerComponents() {
+    protected void registerComponents(List<JahiaTemplatesPackage> packages, JCRSessionWrapper session) {
         long timer = System.currentTimeMillis();
         logger.info("Start registering UI droppable components...");
         int newComponents = 0;
         try {
-            newComponents = JCRTemplate.getInstance().doExecuteWithSystemSession(
-                    new JCRCallback<Integer>() {
-                        public Integer doInJCR(JCRSessionWrapper session)
-                                throws RepositoryException {
-                            int count = 0;
-                            for (JahiaTemplatesPackage pkg : templatePackageRegistry
-                                    .getAvailablePackages()) {
-                                count = count + registerComponents(pkg, session);
-                            }
-                            if (count > 0) {
-                                session.save();
-                            }
-                            return count;
-                        }
-                    });
+            int count = 0;
+            for (JahiaTemplatesPackage pkg : packages) {
+                count = count + registerComponents(pkg, session);
+            }
+            if (count > 0) {
+                session.save();
+            }
+            newComponents = count;
         } catch (Exception e) {
             logger.error("Error registering components. Cause: " + e.getMessage(), e);
         }
         if (newComponents > 0) {
-            logger.info("Registered {} new component(s) in {} ms.", newComponents,
+            logger.info("Registered {} component(s) in {} ms.", newComponents,
                     (System.currentTimeMillis() - timer));
         } else {
-            logger.info("No new components detected. Done in {} ms.",
+            logger.info("No changes in components detected. Done in {} ms.",
                     (System.currentTimeMillis() - timer));
         }
     }
-    
+
     /**
      * Performs the registration of the components from the specified module into JCR tree.
-     * 
-     * @param pkg
-     *            the module package
-     * @param session
-     *            current JCR session
-     * @throws RepositoryException
-     *             in case of a JCR error
+     *
+     * @param pkg     the module package
+     * @param session current JCR session
+     * @throws RepositoryException in case of a JCR error
      */
-    private int registerComponents(JahiaTemplatesPackage pkg, JCRSessionWrapper session)
+    public int registerComponents(JahiaTemplatesPackage pkg, JCRSessionWrapper session)
             throws RepositoryException {
         int count = 0;
         JCRNodeWrapper modules = null;
@@ -391,7 +388,7 @@ public class ComponentRegistry {
 
             if (pkg.getRootFolder().equals("default")) {
                 for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes("system-jahia"); nti
-                        .hasNext();) {
+                        .hasNext(); ) {
                     if (registerComponent(session, newDeployment, components, (ExtendedNodeType) nti.nextNodeType())) {
                         count++;
                     }
@@ -399,7 +396,7 @@ public class ComponentRegistry {
             }
 
             for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(pkg.getName()); nti
-                    .hasNext();) {
+                    .hasNext(); ) {
                 if (registerComponent(session, newDeployment, components, (ExtendedNodeType) nti.nextNodeType())) {
                     count++;
                 }
@@ -409,7 +406,7 @@ public class ComponentRegistry {
                     + " Skip registering components for module {}.",
                     modules.getPath() + "/" + pkg.getRootFolder(), pkg.getName());
         }
-
+        session.save();
         return count;
     }
 

@@ -94,6 +94,7 @@ import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Url;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -111,6 +112,7 @@ import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * GWT server code implementation for the DMS repository services.
@@ -121,6 +123,8 @@ import java.util.*;
 public class JahiaContentManagementServiceImpl extends JahiaRemoteService implements JahiaContentManagementService {
 
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaContentManagementServiceImpl.class);
+    
+    private static final Pattern VERSION_AT_PATTERN = Pattern.compile("_at_");
 
     private NavigationHelper navigation;
     private ContentManagerHelper contentManager;
@@ -145,6 +149,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private SchedulerHelper schedulerHelper;
     private UIConfigHelper uiConfigHelper;
     private JCRContentUtils jcrContentUtils;
+    private ChannelHelper channelHelper;
 
     public void setAcl(ACLHelper acl) {
         this.acl = acl;
@@ -237,6 +242,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         this.jcrContentUtils = jcrContentUtils;
     }
 
+    public void setChannelHelper(ChannelHelper channelHelper) {
+        this.channelHelper = channelHelper;
+    }
 // ------------------------ INTERFACE METHODS ------------------------
 
 
@@ -278,7 +286,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             config.setSiteNode(navigation.getGWTJahiaNode(getSite(), GWTJahiaNode.DEFAULT_SITE_FIELDS));
 
             List<GWTJahiaNode> sites = getRoot(Arrays.asList(config.getSitesLocation()), Arrays.asList("jnt:virtualsite"), null, null, GWTJahiaNode.DEFAULT_SITE_FIELDS, null, null, false, false, null, null);
-            String permission = ((EditConfiguration) SpringContextSingleton.getBean(name)).getRequiredPermission();
+            String permission = ((EditConfiguration)SpringContextSingleton.getBean(name)).getRequiredPermission();
             Map<String, GWTJahiaNode> sitesMap = new HashMap<String, GWTJahiaNode>();
             for (GWTJahiaNode site : sites) {
                 if (session.getNodeByUUID(site.getUUID()).hasPermission(permission)) {
@@ -288,6 +296,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             config.setSitesMap(sitesMap);
 
             setAvailablePermissions(config);
+
+            config.setChannels(channelHelper.getChannels());
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -360,8 +370,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public Map<String,List<? extends ModelData>> getNodesAndTypes(List<String> paths, List<String> fields, List<String> types) throws GWTJahiaServiceException {
         Map<String,List<? extends ModelData>> m = new HashMap<String,List<? extends ModelData>>();
-        m.put("nodes",getNodes(paths, fields));
+        List<GWTJahiaNode> nodes = getNodes(paths, fields);
+        m.put("nodes", nodes);
+        for (GWTJahiaNode node : nodes) {
+            if (!types.contains(node.getNodeTypes().get(0))) {
+                types.add(node.getNodeTypes().get(0));
+            }
+        }
         m.put("types", getNodeTypes(types));
+
         return m;
     }
 
@@ -952,8 +969,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
         Collections.sort(versions, new Comparator<GWTJahiaNodeVersion>() {
             public int compare(GWTJahiaNodeVersion o1, GWTJahiaNodeVersion o2) {
-                String[] strings1 = o1.getLabel().split("_at_");
-                String[] strings2 = o2.getLabel().split("_at_");
+                String[] strings1 = VERSION_AT_PATTERN.split(o1.getLabel());
+                String[] strings2 = VERSION_AT_PATTERN.split(o2.getLabel());
                 if (strings1.length == 2 && strings2.length == 2) {
                     try {
 
@@ -1020,8 +1037,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template,
-                                              String configuration,final Map<String, List<String>> contextParams, boolean editMode,
-                                              String configName) throws GWTJahiaServiceException {
+                                              String configuration, final Map<String, List<String>> contextParams,
+                                              boolean editMode, String configName, String channelIdentifier,
+                                              String channelVariant) throws GWTJahiaServiceException {
         Locale localValue = getLocale();
         if (locale != null) {
             localValue = LanguageCodeConverters.languageCodeToLocale(locale);
@@ -1031,7 +1049,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         return this.template
                 .getRenderedContent(path, template, configuration, contextParams, editMode, configName, getRequest(),
-                        getResponse(), retrieveCurrentSession(workspace, localValue, true), getUILocale());
+                        getResponse(), retrieveCurrentSession(workspace, localValue, true), getUILocale(), channelIdentifier,
+                        channelVariant);
     }
 
     public String getNodeURL(String servlet, String path, Date versionDate, String versionLabel, String workspace,
@@ -1043,8 +1062,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             String nodeURL = this.navigation.getNodeURL(servlet, node, versionDate, versionLabel, session.getWorkspace().getName(),
                     session.getLocale());
-
-            if ("live".equals(workspace)) {
+            
+            if ("live".equals(workspace) && !SettingsBean.getInstance().isUrlRewriteSeoRulesEnabled()) {
                 nodeURL = Url.appendServerNameIfNeeded(node, nodeURL, getRequest());
             }
 
@@ -1061,6 +1080,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         List<GWTJahiaJobDetail> details = schedulerHelper.getActiveJobs(getUILocale());
         contentManager.importContent(parentPath, fileKey, replaceContent, retrieveCurrentSession(), getUILocale());
         return details;
+    }
+
+    public List<GWTJahiaChannel> getChannels() throws GWTJahiaServiceException {
+        return channelHelper.getChannels();
     }
 
     public Map<String,GWTJahiaWorkflowDefinition> getWorkflowDefinitions(List<String> workflowDefinitionIds) throws GWTJahiaServiceException {
@@ -1141,7 +1164,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         JCRSessionWrapper session = retrieveCurrentSession();
         publication.unpublish(uuids, Collections.singleton(session.getLocale().toString()),
                 session.getUser());
-        logger.debug("-->" + (System.currentTimeMillis() - l));
+        if (logger.isDebugEnabled()) {
+            logger.debug("-->" + (System.currentTimeMillis() - l));
+        }
     }
 
     /**
@@ -1281,20 +1306,26 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             Long date = (Long) session.getAttribute("lastPoll");
             long lastAccessed = session.getLastAccessedTime();
             long now = System.currentTimeMillis();
+            boolean invalidated = false;
             if (date != null && (date / 1000 == lastAccessed / 1000)) {
                 // last call was (probably) a poll call
                 long first = (Long) session.getAttribute("firstPoll");
-                logger.debug("Inactive since : " + (now - first));
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Inactive since : " + (now - first));
+                }
                 if (now - first < session.getMaxInactiveInterval() * 1000) {
                     session.setMaxInactiveInterval(session.getMaxInactiveInterval() - (int) ((now - first) / 1000));
                 } else {
                     session.invalidate();
+                    invalidated = true;
                 }
             } else {
                 session.setAttribute("firstPoll", now);
             }
 
-            session.setAttribute("lastPoll", now);
+            if (!invalidated) {
+                session.setAttribute("lastPoll", now);
+            }
             return sessionPollingFrequency;
         } else {
             return 0;
@@ -1880,7 +1911,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         gwtProps.add(new GWTJahiaNodeProperty("node", props.get("node")));
         gwtProps.add(new GWTJahiaNodeProperty("schedule", props.get("schedule")));
 
-        createNode("/remotePublications", JCRContentUtils.generateNodeName(nodeName, 255),
+        createNode("/remotePublications", JCRContentUtils.generateNodeName(nodeName),
                 "jnt:remotePublication", null, null, gwtProps,
                 new HashMap<String, List<GWTJahiaNodeProperty>>());
 
@@ -1921,7 +1952,41 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public List<GWTJahiaNodeType> getNodeTypes(List<String> names) throws GWTJahiaServiceException {
-        return contentDefinition.getNodeTypes(names, getUILocale());
+        List<GWTJahiaNodeType> types = contentDefinition.getNodeTypes(names, getUILocale());
+
+        JCRSessionWrapper s = retrieveCurrentSession();
+
+        Map<String, JCRNodeWrapper> nodesForTypes = new HashMap<String, JCRNodeWrapper>();
+        try {
+            if (getSite().getPath().startsWith("/sites")) {
+                Query q = s.getWorkspace().getQueryManager().createQuery("select * from [jnt:component] as c " +
+                        "where isdescendantnode(c,'"+getSite().getPath()+"')", Query.JCR_SQL2);
+                QueryResult qr = q.execute();
+                NodeIterator ni = qr.getNodes();
+                while (ni.hasNext()) {
+                    JCRNodeWrapper node  = (JCRNodeWrapper) ni.next();
+                    if (names.contains(node.getName())) {
+                        nodesForTypes.put(node.getName(), node);
+                    }
+                }
+
+                for (GWTJahiaNodeType type : types) {
+                    if (!type.isMixin() && !type.isAbstract()) {
+                        JCRNodeWrapper n = nodesForTypes.get(type.getName());
+                        if (n != null) {
+                            type.set("canUseComponentForCreate",n.hasPermission("useComponentForCreate"));
+                            type.set("canUseComponentForEdit",n.hasPermission("useComponentForEdit"));
+                        } else {
+                            type.set("canUseComponentForCreate",false);
+                            type.set("canUseComponentForEdit",false);
+                        }
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot get components",e);
+        }
+        return types;
     }
 
     public List<GWTJahiaNodeType> getSubNodeTypes(List<String> names) throws GWTJahiaServiceException {
@@ -2004,7 +2069,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 JCRNodeWrapper conditionalVisibilityNode = node.getNode(VisibilityService.NODE_NAME);
                 result.set("j:forceMatchAllConditions", conditionalVisibilityNode.getProperty("j:forceMatchAllConditions").getValue().getBoolean());
                 String locale = node.getSession().getLocale().toString();
-                result.set("publicationInfo", publication.getAggregatedPublicationInfosByLanguage(conditionalVisibilityNode.getIdentifier(),
+                result.set("publicationInfo", publication.getAggregatedPublicationInfosByLanguage(conditionalVisibilityNode,
                         Collections.singleton(locale), retrieveCurrentSession()).get(locale));
             } else {
                 result.set("j:forceMatchAllConditions",false);

@@ -59,19 +59,21 @@ public class CKEditor extends Component {
     private String instanceId;
     private CKEditorConfig config;
     private boolean isLoaded;
+    private boolean isDetached = false;
 	private CKEditorField field;
+    private boolean focus=false;
 
     public CKEditor(CKEditorConfig config, CKEditorField field) {
     	super();
         if (config == null) {
             config = new CKEditorConfig();
+            String toolbar = "Light";
             if (PermissionsUtils.isPermitted("wysiwyg-editor-toolbar/full") || PermissionsUtils.isPermitted("studioModeAccess")) {
-                config.setToolbarSet("Full");
+                toolbar = "Full";
             } else if (PermissionsUtils.isPermitted("wysiwyg-editor-toolbar/basic")) {
-                config.setToolbarSet("Basic");
-            } else {
-                config.setToolbarSet("Light");
+                toolbar = "Basic";
             }
+            config.setDefaultToolbar(toolbar);
         }
         this.config = config;
         this.field = field;
@@ -91,6 +93,9 @@ public class CKEditor extends Component {
                 initEditor();
                 isLoaded = true;
                 field.afterCKEditorInstanceReady();
+                if (focus) {
+                    focusCK();
+                }
 			}
 		});
 
@@ -100,7 +105,18 @@ public class CKEditor extends Component {
     @Override
     protected void onDetach() {
         destroyEditor();
+        isDetached = true;
         super.onDetach();
+    }
+
+    @Override
+    protected void onAttach() {
+        // added to a gwt panel, not rendered
+        if (isDetached) {
+            initEditor();
+            isDetached = false;
+        }
+        super.onAttach();
     }
 
     /**
@@ -169,6 +185,29 @@ public class CKEditor extends Component {
       }-*/;
 
 
+    @Override
+    public void focus() {
+        focus=true;
+    }
+
+    public void onFocus() {
+        field.onFocus();
+    }
+    public void onBlur() {
+        field.onBlur();
+    }
+
+    public String getInstanceId() {
+        return instanceId;
+    }
+
+    public void checkWCAGCompliance(String editorId) {
+        CKEditorField fld = CKEditorField.getInstance(editorId);
+        if (fld != null) {
+            fld.checkWCAGCompliance();
+        }
+    }
+
     /**
      * init editior
      *
@@ -177,20 +216,32 @@ public class CKEditor extends Component {
 
     private native boolean initEditor()/*-{
         var config = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::config;
-        var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId,{
-            width : config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getWidth()(),
-            height : config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getHeight()(),
-            toolbar : config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getToolbarSet()()
-        });
-        
+        var cfg = {};
+        if ((typeof $wnd.CKEDITOR.customConfig) != 'undefined') {
+            $wnd.CKEDITOR.tools.extend(cfg,  $wnd.CKEDITOR.customConfig, true);
+        } 
+        eval("var overrideOptions=" + config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::toString()());
+        if ((typeof cfg.toolbar == 'undefined') && (typeof overrideOptions.toolbar == 'undefined') && (typeof overrideOptions.defaultToolbar != 'undefined')) {
+            overrideOptions.toolbar = overrideOptions.defaultToolbar;
+        } 
+        $wnd.CKEDITOR.tools.extend(cfg, overrideOptions, true);
+        var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId, cfg);
         oCKeditor.checkWCAGCompliance = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::checkWCAGCompliance(Ljava/lang/String;);
-        
+        thisck = this;
+        oCKeditor.on('blur', function(event) {
+            thisck.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::onBlur()()
+        });
+        oCKeditor.on('focus', function(event) {
+            thisck.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::onFocus()()
+        });
+
         return true;
       }-*/;
 
     private native void destroyEditor()/*-{
         var instance = $wnd.CKEDITOR.instances[this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId];
         if(instance) {
+            instance.destroy();
             $wnd.CKEDITOR.remove(instance);
         }
     }-*/;
@@ -204,15 +255,12 @@ public class CKEditor extends Component {
         return $wnd.CKEDITOR.instances[this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId].checkDirty();
       }-*/;
 
+    private native void focusCK()/*-{
+        var instance = $wnd.CKEDITOR.instances[this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId];
+        if (instance)  {
+            instance.config.startupFocus = true;
 
-    public void checkWCAGCompliance(String editorId) {
-    	CKEditorField fld = CKEditorField.getInstance(editorId);
-    	if (fld != null) {
-    		fld.checkWCAGCompliance();
-    	}
-    }
+        }
+    }-*/;
 
-	public String getInstanceId() {
-    	return instanceId;
-    }
 }

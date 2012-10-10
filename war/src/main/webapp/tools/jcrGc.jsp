@@ -15,23 +15,22 @@
 <c:if test="${param.action == 'gc'}">
 <%
 long timer = System.currentTimeMillis();
+int deleted = 0;
 try {
-    JCRContentUtils.callDataStoreGarbageCollector();
+    deleted = JCRContentUtils.callDataStoreGarbageCollector();
 } catch (Exception e) {
-    
+
 } finally {
     pageContext.setAttribute("took", System.currentTimeMillis() - timer);
+    pageContext.setAttribute("deleted", deleted);
 }
 %>
-<p style="color: blue">Successfully executed in <strong>${took}</strong> ms</p>
+<p style="color: blue">Successfully executed in <strong>${took}</strong> ms. <strong>${deleted}</strong> data record(s) deleted.</p>
 </c:if>
 <p>Available actions:</p>
 <ul>
     <li><a href="?action=gc" onclick="return confirm('You are about to start the DataStore Garbage Collector. All unused files in the data store will be permanently deleted. Do you want to continue?');">Run JCR DataStore garbage collector now</a></li>
 </ul>
-<p>
-    <img src="<c:url value='/engines/images/icons/home_on.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;
-    <a href="<c:url value='/tools/index.jsp'/>">to Jahia Tools overview</a>
-</p>
+<%@ include file="gotoIndex.jspf" %>
 </body>
 </html>

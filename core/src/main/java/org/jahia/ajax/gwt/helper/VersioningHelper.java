@@ -41,11 +41,15 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.services.cache.CacheService;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRVersionService;
@@ -57,20 +61,56 @@ import javax.jcr.version.VersionManager;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
+ * Versioning helper class for GWT services.
  * User: toto
  * Date: Feb 2, 2009
  * Time: 7:03:31 PM
- * 
  */
 public class VersioningHelper implements InitializingBean {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(VersioningHelper.class);
+    private static final FastDateFormat DF = FastDateFormat.getInstance("yyyy_MM_dd_HH_mm_ss");
 
+    private static Logger logger = LoggerFactory.getLogger(VersioningHelper.class);
+
+    /**
+     * Returns the formatted timestamp for the version label.
+     * @param timestamp the time stamp for the label
+     * @return the formatted timestamp for the version label
+     */
+    public static String formatForLabel(long timestamp) {
+        return DF.format(timestamp);
+    }
+    
+    /**
+     * Returns the label for the new version of the file with the timestamp.
+     * @param timestamp the time stamp for the label
+     * @return the label for the new version of the file with the timestamp
+     */
+    public static String getVersionLabel(long timestamp) {
+        return "uploaded_at_" + formatForLabel(timestamp);
+    }
+    
+    /**
+     * Returns the label for the new version of the file with the current timestamp.
+     * @param timestamp the time stamp for the label
+     * @return the label for the new version of the file with the current timestamp
+     */
+    public static String getVersionLabelCurrent() {
+        return getVersionLabel(System.currentTimeMillis());
+    }
+    
+    /**
+     * Returns the label for the restored version of the file with the timestamp.
+     * @param timestamp the time stamp for the label
+     * @return the label for the restored version of the file with the timestamp
+     */
+    public static String getRestoreVersionLabel(long timestamp) {
+        return "restored_at_" + formatForLabel(timestamp);
+    }
+    
     private CacheService cacheService;
     private JCRVersionService versionService;
     private FileCacheManager cacheManager;
@@ -126,15 +166,19 @@ public class VersioningHelper implements InitializingBean {
                 if(allVersions.getSize()==1) {
                     // First version ever apart root version
                     versionManager.checkpoint(node.getPath());
-                    String label = "uploaded_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(node.getProperty("jcr:created").getDate().getTime());
-                    versionService.addVersionLabel(node,label);
+                    versionService.addVersionLabel(node, getVersionLabel(node.getProperty("jcr:created").getDate().getTime().getTime()));
                 }
                 versionManager.checkout(node.getPath());
                 GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(tmpName);
                 InputStream is = null;
                 try {
                     is = item.getStream();
-                    node.getFileContent().uploadFile(is, item.getContentType());
+                    node.getFileContent().uploadFile(
+                            is,
+                            JCRContentUtils.getMimeType(
+                                    StringUtils.isNotEmpty(item.getOriginalFileName()) ? item
+                                            .getOriginalFileName() : node.getName(), item
+                                            .getContentType()));
                 } catch (FileNotFoundException e) {
                     throw new GWTJahiaServiceException(e.getMessage());
                 } finally {
@@ -144,8 +188,7 @@ public class VersioningHelper implements InitializingBean {
                 
                 session.save();
                 versionManager.checkpoint(node.getPath());
-                String label = "uploaded_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
-                versionService.addVersionLabel(node,label);
+                versionService.addVersionLabel(node, getVersionLabelCurrent());
                 cacheManager.invalidate(session.getWorkspace().getName(), node.getPath());
                 if (logger.isDebugEnabled()) {
                     logger.debug("Number of version: " + node.getVersions().size());
@@ -166,9 +209,8 @@ public class VersioningHelper implements InitializingBean {
             JCRNodeWrapper node = currentUserSession.getNodeByUUID(nodeUuid);
             versionService.restoreVersionLabel(node, versionDate, versionLabel, allSubTree);
             currentUserSession.save();
-            String label = "restored_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
-            versionService.addVersionLabel(node,label);
-            // fluch caches: Todo: flush only the nested cache
+            versionService.addVersionLabel(node, getRestoreVersionLabel(System.currentTimeMillis()));
+            // flush caches: Todo: flush only the nested cache
             cacheService.flushAllCaches();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

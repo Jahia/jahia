@@ -43,6 +43,7 @@ package org.jahia.services.content.rules;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
 import org.drools.RuleBase;
@@ -111,7 +112,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     public int getEventTypes() {
         return Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED +
-                Event.PROPERTY_REMOVED;
+                Event.PROPERTY_REMOVED + Event.NODE_MOVED;
     }
 
     private StatelessSession getStatelessSession(Map<String, Object> globals) {
@@ -304,7 +305,13 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                         AddedNodeFact rn = eventsMap.get(identifier);
                                         if (rn == null) {
                                             rn = new AddedNodeFact(n);
-                                            setNodeFactOperationType(rn, operationType);
+                                            rn.setOperationType(getNodeFactOperationType(operationType));
+                                            final JCRSiteNode resolveSite = n.getResolveSite();
+                                            if (resolveSite != null) {
+                                                rn.setInstalledModules(resolveSite.getAllInstalledModules());
+                                            } else {
+                                                rn.setInstalledModules(new ArrayList<String>());
+                                            }
                                             eventsMap.put(identifier, rn);
                                         }
                                         list.add(rn);
@@ -338,12 +345,24 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                                     rn = eventsMap.get(identifier);
                                                     if (rn == null) {
                                                         rn = new AddedNodeFact(parent);
-                                                        setNodeFactOperationType(rn, operationType);
+                                                        rn.setOperationType(getNodeFactOperationType(operationType));
+                                                        final JCRSiteNode resolveSite = parent.getResolveSite();
+                                                        if (resolveSite != null) {
+                                                            rn.setInstalledModules(resolveSite.getAllInstalledModules());
+                                                        } else {
+                                                            rn.setInstalledModules(new ArrayList<String>());
+                                                        }
                                                         eventsMap.put(identifier, rn);
                                                     }
                                                 } else {
                                                     rn = new AddedNodeFact(parent);
-                                                    setNodeFactOperationType(rn, operationType);
+                                                    rn.setOperationType(getNodeFactOperationType(operationType));
+                                                    final JCRSiteNode resolveSite = parent.getResolveSite();
+                                                    if (resolveSite != null) {
+                                                        rn.setInstalledModules(resolveSite.getAllInstalledModules());
+                                                    } else {
+                                                        rn.setInstalledModules(new ArrayList<String>());
+                                                    }
                                                 }
                                                 list.add(new ChangedPropertyFact(rn, p));
                                             }
@@ -351,7 +370,20 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                             if (logger.isDebugEnabled()) {
                                                 logger.debug("Path " + path + " not found, might be normal if using VFS", pnfe);
                                             }
-                                            logger.warn("Couldn't access path " + path + ", ignoring it since it's not supported on some external repositories... ");
+                                            logger.warn("Couldn't access path " + path + ", ignoring it. If not an external repository need to be investigated. ");
+                                        }
+                                    } else if (propertyName.equals("j:published")) {
+                                        JCRNodeWrapper n = eventUuid != null ? s.getNodeByIdentifier(eventUuid) : s.getNode(path);
+                                        if (n.isNodeType("jmix:observable") && !n.isNodeType("jnt:translation")) {
+                                            final PublishedNodeFact e = new PublishedNodeFact(n);
+                                            e.setOperationType(getNodeFactOperationType(operationType));
+                                            final JCRSiteNode resolveSite = n.getResolveSite();
+                                            if (resolveSite != null) {
+                                                e.setInstalledModules(resolveSite.getAllInstalledModules());
+                                            } else {
+                                                e.setInstalledModules(new ArrayList<String>());
+                                            }
+                                            list.add(e);
                                         }
                                     }
                                 } else if (type == Event.NODE_REMOVED) {
@@ -363,14 +395,20 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                         AddedNodeFact w = eventsMap.get(identifier);
                                         if (w == null) {
                                             w = new AddedNodeFact(parent);
-                                            setNodeFactOperationType(w, operationType);
+                                            w.setOperationType(getNodeFactOperationType(operationType));
+                                            final JCRSiteNode resolveSite = parent.getResolveSite();
+                                            if (resolveSite != null) {
+                                                w.setInstalledModules(resolveSite.getAllInstalledModules());
+                                            } else {
+                                                w.setInstalledModules(new ArrayList<String>());
+                                            }
                                             eventsMap.put(identifier, w);
                                         }
 
                                         final DeletedNodeFact e = new DeletedNodeFact(w, path);
                                         e.setIdentifier(eventUuid);
                                         e.setSession(s);
-                                        setNodeFactOperationType(e,operationType);
+                                        e.setOperationType(getNodeFactOperationType(operationType));
                                         list.add(e);
                                     } catch (PathNotFoundException e) {
                                     }
@@ -386,13 +424,32 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                             AddedNodeFact rn = eventsMap.get(key);
                                             if (rn == null) {
                                                 rn = new AddedNodeFact(n);
-                                                setNodeFactOperationType(rn, operationType);
+                                                rn.setOperationType(getNodeFactOperationType(operationType));
+                                                final JCRSiteNode resolveSite = n.getResolveSite();
+                                                if (resolveSite != null) {
+                                                    rn.setInstalledModules(resolveSite.getAllInstalledModules());
+                                                } else {
+                                                    rn.setInstalledModules(new ArrayList<String>());
+                                                }
                                                 eventsMap.put(key, rn);
                                             }
                                             list.add(new DeletedPropertyFact(rn, propertyName));
                                         } catch (PathNotFoundException e) {
                                             // ignore if parent has also been deleted ?
                                         }
+                                    }
+                                } else if (type == Event.NODE_MOVED) {
+                                    JCRNodeWrapper n = eventUuid != null ? s.getNodeByIdentifier(eventUuid) : s.getNode(path);
+                                    if (n.isNodeType("jmix:observable") && !n.isNodeType("jnt:translation")) {
+                                        final MovedNodeFact e = new MovedNodeFact(n,(String) event.getInfo().get("srcAbsPath"));
+                                        e.setOperationType(getNodeFactOperationType(operationType));
+                                        final JCRSiteNode resolveSite = n.getResolveSite();
+                                        if (resolveSite != null) {
+                                            e.setInstalledModules(resolveSite.getAllInstalledModules());
+                                        } else {
+                                            e.setInstalledModules(new ArrayList<String>());
+                                        }
+                                        list.add(e);
                                     }
                                 }
                             }
@@ -421,7 +478,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
                         try {
                             inRules.set(Boolean.TRUE);
-
+                            list.add(new OperationTypeFact(getNodeFactOperationType(operationType)));
                             executeRules(list, globals);
 
                             if (list.size() > 3) {
@@ -547,14 +604,15 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         return operationTypes;
     }
 
-    void setNodeFactOperationType(NodeFact nodeFact,int operationType) {
+    String getNodeFactOperationType(int operationType) {
         if(operationType==JCRObservationManager.IMPORT) {
-            nodeFact.setOperationType("import");
+            return("import");
         } else if(operationType==JCRObservationManager.SESSION_SAVE) {
-            nodeFact.setOperationType("session");
+            return("session");
         } else if(operationType==JCRObservationManager.WORKSPACE_CLONE) {
-            nodeFact.setOperationType("clone");
+            return("clone");
         }
+        return null;
     }
 
     public void destroy() throws Exception {

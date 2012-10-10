@@ -43,6 +43,7 @@ package org.jahia.services.content.nodetypes;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.PropertyType;
 import javax.jcr.Value;
@@ -347,6 +348,14 @@ public class JahiaCndReader {
             lexer.fail("Missing > in namespace decl.");
         }
 
+        if (registry.getNamespaces().containsKey(prefix) && !registry.getNamespaces().get(prefix).equals(uri)) {
+            lexer.fail("Invalid namespace declaration : prefix already declared");
+        }
+
+        if (!registry.getNamespaces().containsKey(prefix) && registry.getNamespaces().containsValue(uri)) {
+            lexer.fail("Invalid namespace declaration : uri already declared");
+        }
+
         registry.getNamespaces().put(prefix, uri);
 
         nextToken();
@@ -630,6 +639,8 @@ public class JahiaCndReader {
                 pdi.setQueryOrderable(true);
             } else if (currentTokenEquals(Lexer.FACETABLE)) {
                 pdi.setFacetable(true);
+            } else if (currentTokenEquals(Lexer.HIERARCHICAL)) {
+                pdi.setHierarchical(true);
             } else if (currentTokenEquals(Lexer.FULLTEXTSEARCHABLE)) {
                 // deprecated , use NOFULLTEXT
                 nextToken();
@@ -695,7 +706,7 @@ public class JahiaCndReader {
         }
         nextToken();
 
-        String[] ops = currentToken.split(",");
+        String[] ops = Patterns.COMMA.split(currentToken);
         List<String> queryOps = new LinkedList<String>();
         for (String op : ops) {
             String s = op.trim();
@@ -926,7 +937,7 @@ public class JahiaCndReader {
                 nextToken();
             }
             if (key.equals("addListMixin") || key.equals("addMixin") || key.equals("availableTypes")) {
-                for (String s : value.split(",")) {
+                for (String s : Patterns.COMMA.split(value)) {
                     try {
                         registry.getNodeType(s);
                     } catch (NoSuchNodeTypeException e) {

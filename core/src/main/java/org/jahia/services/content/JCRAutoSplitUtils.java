@@ -54,6 +54,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
+import org.jahia.utils.Patterns;
 
 /**
  * Utility class for auto-splitting child nodes of a node, based on the provided
@@ -95,8 +96,11 @@ public final class JCRAutoSplitUtils {
      * @throws RepositoryException in case of an error when relocating node
      */
     public static JCRNodeWrapper applyAutoSplitRules(JCRNodeWrapper node) throws RepositoryException {
+        return applyAutoSplitRules(node, node.getParent());
+    }
+
+    public static JCRNodeWrapper applyAutoSplitRules(JCRNodeWrapper node, JCRNodeWrapper parent) throws RepositoryException {
         try {
-            Node parent = node.getParent();
             String splitConfig = parent.getProperty(Constants.SPLIT_CONFIG).getString();
             String splitType = parent.getProperty(Constants.SPLIT_NODETYPE).getString();
             if (node.isNodeType(splitType)) {
@@ -113,9 +117,9 @@ public final class JCRAutoSplitUtils {
                 logger.warn("Node has already been moved in this session, will not move again !");
                 return null;
             }
-            String[] config = splitConfig.split(";");
+            String[] config = Patterns.SEMICOLON.split(splitConfig);
             for (String s : config) {
-                String[] folderConfig = s.split(",");
+                String[] folderConfig = Patterns.COMMA.split(s);
 
                 String type = folderConfig[0];
                 String propertyName = folderConfig[1];
@@ -150,7 +154,7 @@ public final class JCRAutoSplitUtils {
                         } else if (node.hasProperty(propertyName)) {
                             key = node.getProperty(propertyName).getString();
                         }
-                        String[] indexes = folderConfig[2].split("-");
+                        String[] indexes = Patterns.DASH.split(folderConfig[2]);
                         final int startIndex = Integer.parseInt(indexes[0]);
                         final int endIndex = Integer.parseInt(indexes[1]);
                         if (key != null && key.length() > endIndex) {
@@ -295,9 +299,9 @@ public final class JCRAutoSplitUtils {
         if (logger.isDebugEnabled()) {
             logger.debug("Adding node with auto-splitting (name="+nodeName+", parent path=" + parentNode.getPath() + ") with split config " + splitConfig + " and split node type " + splitNodeType);
         }
-        String[] config = splitConfig.split(";");
+        String[] config = Patterns.SEMICOLON.split(splitConfig);
         for (String s : config) {
-            String[] folderConfig = s.split(",");
+            String[] folderConfig = Patterns.COMMA.split(s);
 
             String type = folderConfig[0];
             String propertyName = folderConfig[1];
@@ -332,7 +336,7 @@ public final class JCRAutoSplitUtils {
                     } else if (PropertyUtils.getSimpleProperty(valueBean, propertyName) != null) {
                         key = PropertyUtils.getSimpleProperty(valueBean, propertyName).toString();
                     }
-                    String[] indexes = folderConfig[2].split("-");
+                    String[] indexes = Patterns.DASH.split(folderConfig[2]);
                     final int startIndex = Integer.parseInt(indexes[0]);
                     final int endIndex = Integer.parseInt(indexes[1]);
                     if (key != null && key.length() > endIndex) {

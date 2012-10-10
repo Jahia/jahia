@@ -1,12 +1,12 @@
 Core Module - ChoiceList Initializers
 
-  ChoiceList initializers allow developers to extendsthe way you populate dropdown list (or combobox) for end users when editing or creating content.
+  ChoiceList initializers allow developers to extends the way you populate a dropdown list (or combobox) for end users when editing or creating content.
   Jahia allows you to define in your definitions, that a property must use a choicelist (will be rendered by a dropdown list) to specify its value.
 
   The simplest example is to use choicelist for the selector and to list the allowed values in the constraint of the definition :
 
 +------------------------------------
-- contract (string, choicelist) < contract1, contract2, contract3, contract4  
+- contract (string, choicelist) < contract1, contract2, contract3, contract4
 +------------------------------------
 
   This will give you a dropdown list like that :
@@ -27,7 +27,7 @@ Core Module - ChoiceList Initializers
 * How ChoiceList Initializers {work} ?
 
   ChoiceList Initializers are implementations of the <<<ChoiceListInitializer>>> interface. All implementations are managed by the <<<ChoiceListInitializerService>>>.
-  This service is defined in the <<<applicationcontext-jcr.xml>>> file :
+  This service is defined in the <<<applicationcontext-jcr.xml>>> file.
 
 +-------------------------------------
     <bean id="rbInitializer" class="org.jahia.services.content.nodetypes.initializers.ResourceBundleChoiceListInitializerImpl"/>
@@ -40,7 +40,7 @@ Core Module - ChoiceList Initializers
     </bean>
 +-------------------------------------
 
-  When initializing the <<<ChoiceListInitializerService>>> we pass a map of initializers we want to used in the system. Each Initializer will be associated to a keyword.
+  When initializing the <<<ChoiceListInitializerService>>> we pass a map of initializers we want to use in the system. Each Initializer will be associated to a keyword.
   Here the <<<ResourceBundleChoiceListInitializerImpl>>> will be attached to the keyword <<<resourceBundle>>>.
   When writing your definition you can chain your Initializers to make complex stuff. Each initializer will receive the list of values from its predecessors.
   This way you can have one initializer that fill the values, and other in the pipe that change some of those values or add properties to them.
@@ -55,6 +55,26 @@ Core Module - ChoiceList Initializers
   Then this list of values is passed to the <<<resourceBundle>>> initializer which will try to replace the label displayed in the dropdown list
   by one found in the resource bundles if available. Then all this updated values will go to the <<<image>>> initializer that will add an image to be
   associated with each value.
+
+
+* How to develop your own choicelist initializers?
+
+  You have also the possibility to develop your own initializers. Those custom initializers have to implement the <<<ModuleChoiceListInitializer>>> interface.
+
++-------------------------------------
+    public class MyCustomInitializer implements ModuleChoiceListInitializer {
++-------------------------------------
+
+    Then, in your module's spring configuration file, declare a bean for this initializer:
+
++-------------------------------------
+    <bean id="dogChoiceList" class="com.mycompany.initializers.MyCustomInitializer" >
+        <property name="key" value="customChoiceList"/>
+    </bean>
++-------------------------------------
+
+    As a <<<ModuleChoiceListInitializer>>>, this initializer will be automatically detected by the system, and registered in the <<<ChoiceListInitializerService>>>,
+    with the key specified in the spring file. You can then use this new initilizer in your <<<definitions.cnd>>> file.
 
 * Rendering of ChoiceList in GWT
 

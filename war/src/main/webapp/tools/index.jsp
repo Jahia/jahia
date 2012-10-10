@@ -2,6 +2,7 @@
 %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+<%@page import="org.jahia.bin.Jahia"%>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" href="tools.css" type="text/css" />
@@ -20,6 +21,7 @@
         <li><a href="memoryInfo.jsp">Memory information</a></li>
         <li><a href="maintenance.jsp">System maintenance</a></li>
         <li><a href="precompileServlet">JSP pre-compilation</a></li>
+        <li><a href="benchmarks.jsp">System benchmarks</a></li>
     </ul>
 </fieldset>
 <fieldset>
@@ -38,17 +40,26 @@
         <li><a href="groovyConsole.jsp">Groovy console</a></li>
     </ul>
 </fieldset>
+<% if (Jahia.isEnterpriseEdition()) { %>
+<jsp:include page="indexEnterprise.jsp" />
+<% } %>
         </td>
 
         <td width="50%" valign="top">
 <fieldset>
-    <legend>JCR Data and Rendering</legend>
+    <legend>JCR Data</legend>
     <ul>
         <li><a href="jcrBrowser.jsp">JCR repository browser</a></li>
         <li><a href="jcrQuery.jsp">JCR query tool</a></li>
         <li><a href="jcrConsole.jsp">JCR console</a></li>
         <li><a href="jcrGc.jsp">JCR DataStore garbage collection</a></li>
         <li><a href="jcrVersionHistory.jsp">JCR version history management</a></li>
+        <li><a href="jcrIntegrityTools.jsp">JCR integrity tools</a></li>
+    </ul>
+</fieldset>
+<fieldset>
+    <legend>JCR Rendering</legend>
+    <ul>
         <li><a href="modulesBrowser.jsp">Installed modules browser</a></li>
         <li><a href="definitionsBrowser.jsp">Installed definitions browser</a></li>
         <li><a href="renderFilters.jsp">Render filters</a></li>
@@ -72,6 +83,7 @@
         <li><a href="docConverter.jsp">Document converter</a></li>
         <li><a href="textExtractor.jsp">Document text extractor</a></li>
         <li><a href="wcagChecker.jsp">WCAG checker</a></li>
+        <li><a href="rewrite-status">URL rewriting rules</a></li>
     </ul>
 </fieldset>
         </td>

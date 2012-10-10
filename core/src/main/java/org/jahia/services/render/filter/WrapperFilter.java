@@ -64,9 +64,6 @@ public class WrapperFilter extends AbstractFilter {
 
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
-        if (renderContext.isAjaxRequest()) {
-            return previousOut;
-        }
         JCRNodeWrapper node = resource.getNode();
         if (wrapper == null) {
             while (resource.hasWrapper()) {
@@ -86,7 +83,7 @@ public class WrapperFilter extends AbstractFilter {
             Resource wrapperResource = new Resource(node, resource.getTemplateType(),
                     wrapper,
                     Resource.CONFIGURATION_WRAPPER);
-            if (service.hasView(node, wrapper)) {
+            if (service.hasView(node, wrapper, resource.getTemplateType())) {
                 Object wrappedContent = renderContext.getRequest().getAttribute("wrappedContent");
                 try {
                     renderContext.getRequest().setAttribute("wrappedContent", output);

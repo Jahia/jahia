@@ -50,6 +50,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -58,6 +59,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAs
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
 import java.util.ArrayList;
@@ -135,7 +137,6 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
             }
         }
         boolean enabled = selection != null && selection.size() > 0
-                && !lh.isSecondarySelection()
                 && !lh.isRootNode()
                 && hasPermission(lh.getSelectionPermissions()) && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())
                 && isNodeTypeAllowed(selection);
@@ -292,4 +293,18 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
     public void setReferenceTitleKey(String referenceTitleKey) {
         this.referenceTitleKey = referenceTitleKey;
     }
+
+    @Override
+    protected boolean isNodeTypeAllowed(GWTJahiaNode selectedNode) {
+        GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(selectedNode.getNodeTypes().get(0));
+        if (nodeType != null) {
+            Boolean canUseComponentForCreate = (Boolean) nodeType.get("canUseComponentForCreate");
+            if (canUseComponentForCreate != null && !canUseComponentForCreate) {
+                return false;
+            }
+        }
+
+        return super.isNodeTypeAllowed(selectedNode);
+    }
+
 }

@@ -53,6 +53,7 @@ import javax.servlet.jsp.PageContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 
@@ -73,19 +74,21 @@ public class WorkflowsForNodeTag extends AbstractJahiaTag {
 
     private boolean checkPermission = true;
 
+    private Locale locale;
+
     @Override
     public int doEndTag() throws JspException {
         List<WorkflowDefinition> defs = null;
         try {
             if (workflowAction != null) {
-                WorkflowDefinition workflowForAction = WorkflowService.getInstance().getPossibleWorkflowForType(node, checkPermission, workflowAction, getUILocale());
+                WorkflowDefinition workflowForAction = WorkflowService.getInstance().getPossibleWorkflowForType(node, checkPermission, workflowAction, locale != null ? locale : getUILocale());
                 if (workflowForAction != null) {
                     defs = Collections.singletonList(workflowForAction);
                 } else {
                     defs = Collections.emptyList();
                 }
             } else {
-                defs = new ArrayList<WorkflowDefinition>(WorkflowService.getInstance().getPossibleWorkflows(node, checkPermission, getUILocale()).values());
+                defs = new ArrayList<WorkflowDefinition>(WorkflowService.getInstance().getPossibleWorkflows(node, checkPermission, locale != null ? locale : getUILocale()).values());
             }
         } catch (RepositoryException e) {
             logger.error("Could not retrieve workflows", e);
@@ -119,5 +122,9 @@ public class WorkflowsForNodeTag extends AbstractJahiaTag {
 
     public void setScope(String scope) {
         this.scope = Util.getScope(scope);
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
     }
 }

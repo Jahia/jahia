@@ -134,4 +134,8 @@ public class JahiaUserAliasing implements JahiaUser {
     public String getLocalPath() {
         return user.getLocalPath();
     }
+
+    public boolean isAccountLocked() {
+        return user.isAccountLocked();
+    }
 }

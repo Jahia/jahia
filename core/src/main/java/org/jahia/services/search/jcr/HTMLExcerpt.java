@@ -113,10 +113,9 @@ public class HTMLExcerpt extends AbstractExcerpt {
 
             } else {
                 final String excerpt = super.getExcerpt(id, maxFragments, maxFragmentSize);
-                if(excerpt!=null && !"".equals(excerpt.trim())) {
-                    return APOS.matcher(excerpt).replaceAll("&#39;");
-                } else
-                    return excerpt;
+                if(excerpt!=null){
+                return APOS.matcher(excerpt).replaceAll("&#39;");
+                } else return "";
             }
         } finally {
             Util.closeOrRelease(reader);

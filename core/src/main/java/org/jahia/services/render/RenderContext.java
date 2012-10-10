@@ -50,8 +50,10 @@ import java.util.Stack;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.services.channels.Channel;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
@@ -80,6 +82,7 @@ public class RenderContext {
     private boolean isEditMode = false;
     private String editModeConfigName;
     private String servletPath;
+    private String workspace = "default";
 
     private Set<String> displayedModules = new HashSet<String>();
     
@@ -88,11 +91,12 @@ public class RenderContext {
     private String contentType;
 
     private Map<String,Map <String, Integer>> templatesCacheExpiration = new HashMap<String, Map<String,Integer>>();
-    private boolean liveMode = false;
 
-    private boolean previewMode = false;
     private boolean ajaxRequest = false;
     private Resource ajaxResource = null;
+
+    // the current rendering channel, for example "iphone", "ipad", "android", etc...
+    private Channel channel = null;
 
     public RenderContext(HttpServletRequest request, HttpServletResponse response, JahiaUser user) {
         this.request = request;
@@ -144,6 +148,19 @@ public class RenderContext {
         isEditMode = editMode;
     }
 
+    public String getMode() {
+        String mode = StringUtils.substringAfterLast(getServletPath(), "/");
+        if ("render".equals(mode)) {
+            if (workspace.equals("live")) {
+                return "live";
+            } else {
+                return "preview";
+            }
+        }
+
+        return mode;
+    }
+
     public String getEditModeConfigName() {
         return editModeConfigName;
     }
@@ -159,6 +176,14 @@ public class RenderContext {
     public void setServletPath(String servletPath) {
         this.servletPath = servletPath;
         JCRSessionFactory.getInstance().setCurrentServletPath(servletPath);
+    }
+
+    public String getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(String workspace) {
+        this.workspace = workspace;
     }
 
     public boolean isContributionMode() {
@@ -223,20 +248,12 @@ public class RenderContext {
         return null;
     }
 
-    public void setLiveMode(boolean liveMode) {
-        this.liveMode = liveMode;
-    }
-
     public boolean isLiveMode() {
-        return liveMode;
-    }
-
-    public void setPreviewMode(boolean previewMode) {
-        this.previewMode = previewMode;
+        return getMode().equals("live");
     }
 
     public boolean isPreviewMode() {
-        return previewMode;
+        return getMode().equals("preview");
     }
 
     public void setAjaxRequest(boolean ajaxRequest) {
@@ -275,5 +292,21 @@ public class RenderContext {
 
     public SettingsBean getSettings() {
         return SettingsBean.getInstance();
+    }
+
+    /**
+     * Returns the currently active channel
+     * @return
+     */
+    public Channel getChannel() {
+        return channel;
+    }
+
+    /**
+     * Sets the currently active channel.
+     * @param channel a Channel containing the value for the currently active channel
+     */
+    public void setChannel(Channel channel) {
+        this.channel = channel;
     }
 }

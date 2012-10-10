@@ -88,7 +88,7 @@ public class HttpBasicAuthValveImpl extends BaseAuthValve {
                         if (logger.isDebugEnabled()) {
                             logger.debug("User " + user + " authenticated.");
                         }
-                        if (isAccountLocked(jahiaUser)) {
+                        if (jahiaUser.isAccountLocked()) {
                             logger.debug("Login failed. Account is locked for user " + user);
                             return;
                         }

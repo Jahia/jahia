@@ -63,6 +63,7 @@ import javax.servlet.jsp.JspTagException;
 
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.Patterns;
 
 /**
  * Creates a query constraint, using comparison.
@@ -202,7 +203,7 @@ public class ComparisonTag extends ConstraintTag {
         List<OperandType> types = new LinkedList<OperandType>();
         appliedOperandsSequence = appliedOperandsSequence.toUpperCase();
         if (appliedOperandsSequence.contains(",")) {
-            for (String op : appliedOperandsSequence.split(",")) {
+            for (String op : Patterns.COMMA.split(appliedOperandsSequence)) {
                 types.add(OperandType.valueOf(op.trim()));
             }
         } else {

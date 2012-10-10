@@ -19,7 +19,7 @@
 <c:set var="boundComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty boundComponent}">
-    <c:set var="nodeLocked" value="${jcr:isLockedAndCannotBeEdited(boundComponent)}"/>
+    <c:set var="nodeLocked" value="${not jcr:hasPermission(boundComponent, 'jcr:modifyProperties_default') or jcr:isLockedAndCannotBeEdited(boundComponent)}"/>
     <div id="tagThisPage${boundComponent.identifier}" class="tagthispage">
 
         <jcr:nodeProperty node="${boundComponent}" name="j:tags" var="assignedTags"/>

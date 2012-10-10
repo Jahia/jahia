@@ -131,6 +131,8 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
     private void displayLanguageList(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws IOException, ServletException {
         request.setAttribute("mixLanguages", site.isMixLanguagesActive());
+        request.setAttribute("allowsUnlistedLanguages", site.isAllowsUnlistedLanguages());
+
         Set<String> allLangs = new HashSet<String>(site.getLanguages());
         allLangs.addAll(site.getInactiveLanguages());
         request.setAttribute("languageSet", allLangs);
@@ -158,6 +160,13 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
         site.setMixLanguagesActive(mixLanguages != null);
         logger.debug("Setting language mix for site to "
                 + (mixLanguages != null ? "active" : "disabled"));
+
+        String allowsUnlistedLanguages = request.getParameter("allowsUnlistedLanguages");
+        flushCache = allowsUnlistedLanguages == null && site.isAllowsUnlistedLanguages() ||
+                allowsUnlistedLanguages != null && !site.isAllowsUnlistedLanguages();
+        site.setAllowsUnlistedLanguages(allowsUnlistedLanguages != null);
+        logger.debug("Setting allow unlisted languages for site to "
+                + (allowsUnlistedLanguages != null ? "active" : "disabled"));
 
         final String[] new_languages = request.getParameterValues("language_list");
         if (new_languages != null && new_languages.length > 0) {

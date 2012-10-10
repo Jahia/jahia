@@ -65,10 +65,16 @@ import org.apache.commons.io.filefilter.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.JahiaAfterInitializationService;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
+import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.zip.ExclusionWildcardFilter;
 import org.jahia.utils.zip.JahiaArchiveFileHandler;
@@ -257,6 +263,18 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 // reload the Spring application context for modules
                 templatePackageRegistry.resetBeanModules();
                 contextLoader.reload();
+                if (SpringContextSingleton.getInstance().getModuleContext() != null) {
+                    Map map = SpringContextSingleton.getInstance().getModuleContext().getBeansOfType(
+                            JahiaAfterInitializationService.class);
+                    for (Object o : map.values()) {
+                        JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
+                        try {
+                            initializationService.initAfterAllServicesAreStarted();
+                        } catch (JahiaInitializationException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                }
             }
         }
 
@@ -371,11 +389,17 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         private File referenceDir;
         private File sourceDir;
         private File destDir;
+        private String basePath;
 
         public TracingFileFilter(File sourceDir, File destDir, File referenceDir) {
             this.sourceDir = sourceDir;
             this.destDir = destDir;
             this.referenceDir = referenceDir;
+        }
+        
+        public TracingFileFilter(File sourceDir, File destDir, File referenceDir, String basePath) {
+            this(sourceDir, destDir, referenceDir);
+            this.basePath = basePath;
         }
 
         public boolean accept(File file) {
@@ -387,6 +411,9 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 String referencePath = fileRelativePath;
                 if (file.getAbsolutePath().startsWith(referenceDirPath)) {
                     referencePath = file.getAbsolutePath().substring(referenceDirPath.length());
+                }
+                if (basePath != null) {
+                    fileDestPath = StringUtils.substringAfter(fileDestPath, basePath);
                 }
                 copiedFiles.put(referencePath, fileDestPath);
             }
@@ -415,9 +442,14 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             long manifestTime = jarFile.getEntry("META-INF/MANIFEST.MF").getTime();
             packageTimestamp.setTimeInMillis(manifestTime);
             implementationVersionStr = (String) jarFile.getManifest().getMainAttributes().get(new Attributes.Name("Implementation-Version"));
-            jarFile.close();
         } catch (IOException e) {
             logger.warn("Cannot read MANIFEST file from " + templateWar, e);
+        } finally {
+            try {
+                jarFile.close();
+            } catch (IOException e) {
+                logger.warn("Error closing JAR file " + jarFile, e);
+            }
         }
         if (packageName == null) {
             packageName = StringUtils.substringBeforeLast(templateWar.getName(), ".");
@@ -443,13 +475,18 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
 
             tmplRootFolder.mkdirs();
 
+            JahiaArchiveFileHandler archiveFileHandler = null;
             try {
-                JahiaArchiveFileHandler archiveFileHandler = new JahiaArchiveFileHandler(templateWar.getPath());
+                archiveFileHandler = new JahiaArchiveFileHandler(templateWar.getPath(), servletContext.getRealPath("/"));
                 Map<String,String> unzippedFiles = archiveFileHandler.unzip(tmplRootFolder.getAbsolutePath(), TEMPLATE_FILTER);
                 deployedFiles.putAll(unzippedFiles);
             } catch (Exception e) {
                 logger.error("Cannot unzip file: " + templateWar, e);
                 return null;
+            } finally {
+                if (archiveFileHandler != null) {
+                    archiveFileHandler.closeArchiveFile();
+                }
             }
 
             // deploy classes
@@ -458,7 +495,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 if (classesFolder.exists()) {
                     if (classesFolder.list().length > 0) {
                         logger.info("Deploying classes for module " + packageName);
-                        TracingFileFilter tracingFileFilter = new TracingFileFilter(classesFolder, new File(settingsBean.getClassDiskPath()), tmplRootFolder);
+                        TracingFileFilter tracingFileFilter = new TracingFileFilter(classesFolder, new File(settingsBean.getClassDiskPath()), tmplRootFolder, servletContext.getRealPath("/"));
                         FileUtils.copyDirectory(classesFolder, new File(settingsBean.getClassDiskPath()), tracingFileFilter);
                         deployedFiles.putAll(tracingFileFilter.getCopiedFiles());
                     }
@@ -474,7 +511,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 if (libFolder.exists()) {
                     if (libFolder.list().length > 0) {
                         logger.info("Deploying JARs for module " + packageName);
-                        TracingFileFilter tracingFileFilter = new TracingFileFilter(libFolder, new File(servletContext.getRealPath("/WEB-INF/lib")), tmplRootFolder);
+                        TracingFileFilter tracingFileFilter = new TracingFileFilter(libFolder, new File(servletContext.getRealPath("/WEB-INF/lib")), tmplRootFolder, servletContext.getRealPath("/"));
                         FileUtils.copyDirectory(libFolder, new File(servletContext.getRealPath("/WEB-INF/lib")), tracingFileFilter);
                         deployedFiles.putAll(tracingFileFilter.getCopiedFiles());
                     }
@@ -540,7 +577,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         moduleElement.addContent(new Element("deployment-timestamp").setText(iso8601DeploymentTimestamp));
         Element packageElement = new Element("package");
         packageElement.setAttribute("name", packageWar.getName());
-        packageElement.setAttribute("path", packageWar.getAbsolutePath());
+        packageElement.setAttribute("path", StringUtils.substringAfter(packageWar.getAbsolutePath(), servletContext.getRealPath("/")));
         moduleElement.addContent(packageElement);
 
         Element installedFiles = new Element("deployed");
@@ -557,48 +594,57 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
     }
 
 
-    private boolean performInitialImport(final JahiaTemplatesPackage pack) {
+    public boolean performInitialImport(final JahiaTemplatesPackage pack, JCRSessionWrapper session) {
         try {
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
-                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    initRepository(session, pack);
-                    if (!pack.getInitialImports().isEmpty()) {
-                        logger.info("Starting import for the module package '" + pack.getName() + "' including: "
-                                + pack.getInitialImports());
-                        cleanTemplates(pack.getRootFolder(), session);
-                        for (String imp : pack.getInitialImports()) {
-                            String targetPath = "/" + StringUtils.substringAfter(StringUtils.substringBeforeLast(imp, "."), "import-").replace('-', '/');
-                            File importFile = new File(pack.getFilePath(), imp);
-                            logger.info("... importing " + importFile + " into " + targetPath);
+            initRepository(session, pack);
+            if (!pack.getInitialImports().isEmpty()) {
+                logger.info("Starting import for the module package '" + pack.getName() + "' including: "
+                        + pack.getInitialImports());
+                cleanTemplates(pack.getRootFolder(), session);
+                for (String imp : pack.getInitialImports()) {
+                    String targetPath = "/" + StringUtils.substringAfter(StringUtils.substringBeforeLast(imp, "."), "import-").replace('-', '/');
+                    File importFile = new File(pack.getFilePath(), imp);
+                    logger.info("... importing " + importFile + " into " + targetPath);
+                    try {
+                        if (imp.toLowerCase().endsWith(".xml")) {
+                            InputStream is = null;
                             try {
-                                if (imp.toLowerCase().endsWith(".xml")) {
-                                    InputStream is = null;
-                                    try {
-                                        is = new BufferedInputStream(new FileInputStream(importFile));
-                                        session.importXML(targetPath, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE);
-                                    } finally {
-                                        IOUtils.closeQuietly(is);
-                                    }
-                                } else {
-                                    importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE,session);
-                                }
-                                importFile.delete();
-                                session.save(JCRObservationManager.IMPORT);
-                            } catch (Exception e) {
-                                logger.error("Unable to import content for package '" + pack.getName() + "' from file " + imp
-                                        + ". Cause: " + e.getMessage(), e);
+                                is = new BufferedInputStream(new FileInputStream(importFile));
+                                session.importXML(targetPath, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE);
+                            } finally {
+                                IOUtils.closeQuietly(is);
                             }
+                        } else if (imp.toLowerCase().contains("/importsite")) {
+                            JCRUser user = null;
+                            try {
+                                user = JCRUserManagerProvider.getInstance().lookupRootUser();
+                                JCRSessionFactory.getInstance().setCurrentUser(user);
+                                importExportService.importSiteZip(importFile,session);
+                            } finally {
+                                JCRSessionFactory.getInstance().setCurrentUser(user);
+                            }
+
+                        } else {
+                            importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session);
                         }
-                        resetModuleAttributes(session, pack);
-                        session.save();
-                        logger.info("... finished initial import for module package '" + pack.getName() + "'.");
-                        return true;
+
+                        importFile.delete();
+                        session.save(JCRObservationManager.IMPORT);
+                    } catch (Exception e) {
+                        logger.error("Unable to import content for package '" + pack.getName() + "' from file " + imp
+                                + ". Cause: " + e.getMessage(), e);
                     }
-                    resetModuleAttributes(session, pack);
-                    session.save();
-                    return false;
                 }
-            });
+                resetModuleAttributes(session, pack);
+                session.save();
+                autoDeployModulesToSites(session, pack);
+                logger.info("... finished initial import for module package '" + pack.getName() + "'.");
+                return true;
+            }
+            resetModuleAttributes(session, pack);
+            session.save();
+            autoDeployModulesToSites(session, pack);
+            return false;
         } catch (RepositoryException e) {
             logger.error("Unable to import content for package '" + pack.getName()
                     + "'. Cause: " + e.getMessage(), e);
@@ -606,11 +652,26 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         }
     }
 
+    private void autoDeployModulesToSites(JCRSessionWrapper session, JahiaTemplatesPackage pack)
+            throws RepositoryException {
+        if(pack.getAutoDeployOnSite()!=null) {
+            if("system".equals(pack.getAutoDeployOnSite())) {
+                if(session.nodeExists("/sites/systemsite")) {
+                    ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployModule("/templateSets/"+pack.getRootFolder(),"/sites/systemsite",session);
+                }
+            } else if ("all".equals(pack.getAutoDeployOnSite())) {
+                if(session.nodeExists("/sites/systemsite")) {
+                    ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployModuleToAllSites("/templateSets/"+pack.getRootFolder(),false,session, null);
+                }
+            }
+        }
+    }
+
     private void resetModuleAttributes(JCRSessionWrapper session, JahiaTemplatesPackage pack) throws RepositoryException {
         JCRNodeWrapper modules = session.getNode("/templateSets");
         JCRNodeWrapper m = modules.getNode(pack.getRootFolder());
         m.setProperty("j:title", pack.getName());
-        m.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(pack.getName())});
+        m.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(pack.getFileName())});
         if (pack.getModuleType() != null) {
             m.setProperty("j:siteType",pack.getModuleType());
         }
@@ -634,6 +695,10 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
 
         if (pack.getModuleType() != null) {
             m.setProperty("j:siteType",pack.getModuleType());
+        }
+        JCRNodeWrapper tpls = m.getNode("templates");
+        if (!tpls.hasProperty("j:rootTemplatePath") && JahiaTemplateManagerService.MODULE_TYPE_MODULE.equals(pack.getModuleType())){
+            tpls.setProperty("j:rootTemplatePath","/base");
         }
     }
 
@@ -672,6 +737,9 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             m.addNode("files", "jnt:folder");
             m.addNode("contents", "jnt:contentFolder");
             JCRNodeWrapper tpls = m.addNode("templates", "jnt:templatesFolder");
+            if (JahiaTemplateManagerService.MODULE_TYPE_MODULE.equals(pack.getModuleType())){
+                tpls.setProperty("j:rootTemplatePath","/base");
+            }
             tpls.addNode("files", "jnt:folder");
             tpls.addNode("contents", "jnt:contentFolder");
         } else {
@@ -691,8 +759,12 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 modified = true;
             }
         } else {
-            v.setProperty("j:version", pack.getVersion().toString());
-            modified = true;
+            if (pack.getVersion() != null) {
+                v.setProperty("j:version", pack.getVersion().toString());
+                modified = true;
+            } else {
+                logger.warn("no version set for Package : " + pack.getFileName());
+            }
         }
         if (updateDeploymentDate) {
             v.setProperty("j:deployementDate", new GregorianCalendar());
@@ -702,16 +774,8 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         return modified;
     }
 
-    public List<JahiaTemplatesPackage> performInitialImport() {
-        List<JahiaTemplatesPackage> results = new ArrayList<JahiaTemplatesPackage>();
-        if (!initialImports.isEmpty()) {
-            while (!initialImports.isEmpty()) {
-                JahiaTemplatesPackage pack = initialImports.remove(0);
-                performInitialImport(pack);
-                results.add(pack);
-            }
-        }
-        return results;
+    public List<JahiaTemplatesPackage> getInitialImports() {
+        return initialImports;
     }
 
     private void cleanTemplates(String moduleName, JCRSessionWrapper session) throws RepositoryException {
@@ -741,6 +805,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
     private Map<String, JahiaTemplatesPackage> getOrderedPackages(LinkedHashSet<JahiaTemplatesPackage> remaining) {
         LinkedHashMap<String, JahiaTemplatesPackage> toDeploy = new LinkedHashMap<String, JahiaTemplatesPackage>();
         Set<String> folderNames = new HashSet<String>();
+        boolean systemTemplatesDeployed = templatePackageRegistry.containsFileName("templates-system");
         while (!remaining.isEmpty()) {
             LinkedHashSet<JahiaTemplatesPackage> newRemaining = new LinkedHashSet<JahiaTemplatesPackage>();
             for (JahiaTemplatesPackage pack : remaining) {
@@ -749,9 +814,22 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 allDeployed.addAll(toDeploy.keySet());
                 allDeployed.addAll(folderNames);
 
-                if (pack.getDepends().isEmpty() || allDeployed.containsAll(pack.getDepends())) {
+                boolean requireSystemTemplates = false;
+                if (!systemTemplatesDeployed && !pack.getFileName().equals("templates-system")) {
+                    for (String s : pack.getInitialImports()) {
+                        if (s.startsWith("META-INF/importsite") && !systemTemplatesDeployed) {
+                            requireSystemTemplates = true;
+                            break;
+                        }
+                    }
+                }
+
+                if ((pack.getDepends().isEmpty() || allDeployed.containsAll(pack.getDepends())) && !requireSystemTemplates) {
                     toDeploy.put(pack.getName(), pack);
                     folderNames.add(pack.getRootFolder());
+                    if (pack.getFileName().equals("templates-system")) {
+                        systemTemplatesDeployed = true;
+                    }
                 } else {
                     newRemaining.add(pack);
                 }

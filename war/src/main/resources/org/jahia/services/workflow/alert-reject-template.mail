@@ -20,7 +20,7 @@ The publication of the following items has been rejected on ${date.format("short
     <ul>
 #foreach( $node in $nodes )
     #if( $velocityCount <= 10)
-    <li>${node.getDisplayableName()}</li>
+    <li>${node.getDisplayableName()} (${node.getPath()})</li>
     #end
 #end
     </ul>

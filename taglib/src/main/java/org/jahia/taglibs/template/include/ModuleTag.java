@@ -40,10 +40,13 @@
 
 package org.jahia.taglibs.template.include;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.render.filter.AbstractFilter;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.bin.Studio;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -72,11 +75,17 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     private static final long serialVersionUID = -8968618483176483281L;
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ModuleTag.class);
+    private static Logger logger = LoggerFactory.getLogger(ModuleTag.class);
+    
+    private static AbstractFilter exclusionFilter = null;
+    
+    private static boolean exclusionFilterChecked;
 
     protected String path;
 
     protected JCRNodeWrapper node;
+
+    protected JCRSiteNode contextSite;
 
     protected String nodeName;
 
@@ -164,6 +173,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         this.var = var;
     }
 
+    public void setContextSite(JCRSiteNode contextSite) {
+        this.contextSite = contextSite;
+    }
+
     @Override
     public int doStartTag() throws JspException {
         Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
@@ -198,7 +211,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 } catch (RepositoryException e) {
                     logger.error("Error when getting list constraints", e);
                 }
-                if (checkConstraints) {
+                if (checkConstraints && (path == null || path.equals("*"))) {
                     String constrainedNodeTypes = null;
                     if (currentLevel != null) {
                         constrainedNodeTypes = (String) pageContext.getAttribute(
@@ -253,7 +266,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 }
 
                 try {
-                    final boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext, resource.getNode());
+                    boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext, resource.getNode()) && !isExcluded(renderContext, resource);
+
                     pageContext.getRequest().setAttribute("editableModule", canEdit);
                     if (canEdit) {
                         String type = getModuleType(renderContext);
@@ -296,7 +310,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             throw new JspException(ex);
         } finally {
             if (var != null) {
-                pageContext.setAttribute(var, buffer);
+                pageContext.setAttribute(var, buffer.toString());
             }
             path = null;
             node = null;
@@ -308,6 +322,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             constraints = null;
             var = null;
             buffer = null;
+            contextSite = null;
 
             if (!(this instanceof IncludeTag)) {
                 Integer level =
@@ -322,8 +337,34 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         return EVAL_PAGE;
     }
 
+    private boolean isExcluded(RenderContext renderContext, Resource resource) throws RepositoryException {
+        AbstractFilter filter = getExclusionFilter();
+        if (filter == null) {
+            return false;
+        }
+
+        try {
+            return filter.prepare(renderContext, resource, null) != null;
+        } catch (Exception e) {
+            logger.error("Cannot evaluate exclude filter", e);
+        }
+
+        return false;
+    }
+    
+    private AbstractFilter getExclusionFilter() {
+        if (!exclusionFilterChecked) {
+            exclusionFilter = SpringContextSingleton.getInstance().getModuleContext()
+                    .containsBean("ChannelExclusionFilter") ? (AbstractFilter) SpringContextSingleton
+                    .getInstance().getModuleContext().getBean("ChannelExclusionFilter")
+                    : null;
+            exclusionFilterChecked = true;
+        }
+        return exclusionFilter;
+    }
+
     private List<String> contributeTypes(RenderContext renderContext, JCRNodeWrapper node) {
-        if (!"lighteditmode".equals(renderContext.getEditModeConfigName())) {
+        if (!"contributemode".equals(renderContext.getEditModeConfigName())) {
             return null;
         }
         JCRNodeWrapper contributeNode = null;
@@ -369,7 +410,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         return null;
     }
     private boolean contributeAccess(RenderContext renderContext, JCRNodeWrapper node) {
-        if (!"lighteditmode".equals(renderContext.getEditModeConfigName())) {
+        if (!"contributemode".equals(renderContext.getEditModeConfigName())) {
             return true;
         }
         JCRNodeWrapper contributeNode = null;
@@ -448,9 +489,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             buffer.append(" listlimit=\"" + listLimit + "\"");
         }
 
-        if (constraints != null) {
+        if (!StringUtils.isEmpty(constraints)) {
             String referenceTypes = ConstraintsHelper.getReferenceTypes(constraints, nodeTypes);
-            buffer.append((referenceTypes != null) ? " referenceTypes=\"" + referenceTypes + "\"" : "");
+            buffer.append((!StringUtils.isEmpty(referenceTypes)) ? " referenceTypes=\"" + referenceTypes + "\"" : " referenceTypes=\"none\"");
         }
 
         if (additionalParameters != null) {
@@ -525,7 +566,15 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 pageContext.setAttribute("areaNodeTypesRestriction" + level, restriction, PageContext.REQUEST_SCOPE);
             }
 
+            JCRSiteNode previousSite = renderContext.getSite();
+            if (contextSite != null) {
+                renderContext.setSite(contextSite);
+            }
+
             buffer.append(RenderService.getInstance().render(resource, renderContext));
+
+            renderContext.setSite(previousSite);
+
             if (var == null) {
                 pageContext.getOut().print(buffer);
                 buffer.delete(0, buffer.length());
@@ -576,8 +625,18 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             currentResource.getMissingResources().add(path);
         }
 
+        if (!"*".equals(path) && (path.indexOf("/") == -1)) {
+            // we have a named path that is missing, let's see if we can figure out it's node type.
+            constraints = ConstraintsHelper.getConstraints(currentResource.getNode(), path);
+        }
+
+
         if (canEdit(renderContext) && contributeAccess(renderContext, currentResource.getNode())) {
             if (currentResource.getNode().hasPermission("jcr:addChildNodes")) {
+                List<String> contributeTypes = contributeTypes(renderContext, currentResource.getNode());
+                if (contributeTypes != null) {
+                    nodeTypes = StringUtils.join(contributeTypes, " ");
+                }
                 printModuleStart("placeholder", path, null, null, null);
                 printModuleEnd();
             }

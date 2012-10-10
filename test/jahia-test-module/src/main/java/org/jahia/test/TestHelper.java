@@ -86,6 +86,10 @@ public class TestHelper {
         return createSite(name, "localhost" + System.currentTimeMillis(), WEB_TEMPLATES, null, null, null);
     }
 
+    public static JahiaSite createSite(String name, String templateSet) throws Exception {
+        return createSite(name, "localhost" + System.currentTimeMillis(), templateSet, null, null, null);
+    }
+
     public static JahiaSite createSite(String name, Set<String> languages, Set<String> mandatoryLanguages, boolean mixLanguagesActive) throws Exception {
         JahiaSite site = createSite(name, "localhost" + System.currentTimeMillis(), WEB_TEMPLATES, null, null, null);
         JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();

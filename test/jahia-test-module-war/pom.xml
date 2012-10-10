@@ -295,6 +295,7 @@
 		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
                             <depends>Default Jahia Templates</depends>
+                            <deploy-on-site>all</deploy-on-site>                            
                             <root-folder>${project.artifactId}</root-folder>
                             <module-type>system</module-type>
                         </manifestEntries>

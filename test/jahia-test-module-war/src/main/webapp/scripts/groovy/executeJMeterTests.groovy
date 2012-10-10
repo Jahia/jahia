@@ -15,21 +15,28 @@ new File(project.properties['jahia.test.jmeter.path']+"/bin/testPlan").eachDir {
                 final def file = new File(d.getAbsolutePath() + "/test.properties");
                 def jmeterExe;
                 def jmeterPath;
-                //if not windows
+
                 jmeterPath = project.properties['jahia.test.jmeter.path'];
 
                 def params = "";
 
                 project.properties.each() { key, value -> params += " -J${key}=${value}"}
 
-                if (jmeterPath.toString().count("/") != 0) {
-                    jmeterPath = project.properties['jahia.test.jmeter.path'] + "/bin/jmeter.sh -n -t "
+                if (System.properties['os.name'].toLowerCase().contains('windows')) {
+                    jmeterPath = project.properties['jahia.test.jmeter.path'] + "\\bin\\jmeter.bat -n -t "				
                 } else {
-                    // if windows
-                    jmeterPath = project.properties['jahia.test.jmeter.path'] + "\\bin\\jmeter.bat -n -t "
+                    jmeterPath = project.properties['jahia.test.jmeter.path'] + "/bin/jmeter.sh -n -t "
                 }
-                if (file.exists()) jmeterExe = jmeterPath + f + " " + evaluate(file) else
+                if (file.exists()) 
+				    jmeterExe = jmeterPath + f + " " + evaluate(file) 
+			    else
                     jmeterExe = jmeterPath + f + params
+					
+                if (System.properties['os.name'].toLowerCase().contains('windows')) {
+				    // add this to deactivate the pause in jmeter.bat as otherwise process would never end on error
+				    jmeterExe = ["cmd", "/c", "\"cd /d " + project.properties['jahia.test.jmeter.path'] + "\\bin && " + jmeterExe + "\"", "< nul"]
+				}
+				
                 println "Executing test : " + jmeterExe
                 def proc = jmeterExe.execute()
                 proc.waitFor()

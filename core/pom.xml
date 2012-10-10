@@ -43,6 +43,7 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
+<<<<<<< .working
         <version>6.7.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -1398,6 +1399,9 @@
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
         <version>6.6.1.0</version>
+=======
+        <version>6.6.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r43344
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-impl</artifactId>
@@ -1471,12 +1475,12 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-api</artifactId>
-            <version>6.6.1.0</version>
+            <version>6.6.1.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-gwt</artifactId>
-            <version>6.6.1.0</version>
+            <version>6.6.1.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jahia.configuration</groupId>

@@ -6,6 +6,7 @@
     <artifactId>jahia-root</artifactId>
     <name>Jahia Project Root</name>
     <groupId>org.jahia.server</groupId>
+<<<<<<< .working
     <version>6.7.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <inceptionYear>2004</inceptionYear>
@@ -673,6 +674,9 @@
     <name>Jahia Project Root</name>
     <groupId>org.jahia.server</groupId>
     <version>6.6.1.0</version>
+=======
+    <version>6.6.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r43344
     <packaging>pom</packaging>
     <inceptionYear>2004</inceptionYear>
     <!--
@@ -766,9 +770,9 @@
     </properties>
 
     <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_0</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_0</developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_0</url>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH</developerConnection>
+        <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH</url>
     </scm>
     <developers>
         <developer>

@@ -62,22 +62,22 @@ public class TestValidatedNodeDecorator extends JCRNodeDecorator {
     }
 
     @NotNull
-    public String getNotNull() {
+    public String getTest_notNull() {
         return node.getPropertyAsString("test:notNull");
     }
 
     @Size(min = 6, max = 20)
-    public String getSizeBetween6And20() {
+    public String getTest_sizeBetween6And20() {
         return node.getPropertyAsString("test:sizeBetween6And20");
     }
 
     @Email
-    public String getEmail() {
+    public String getTest_email() {
         return node.getPropertyAsString("test:email");
     }
 
     @Future
-    public Calendar getFutureDate() {
+    public Calendar getTest_futureDate() {
         try {
             JCRPropertyWrapper property = node.getProperty("test:futureDate");
             if (property != null) {
@@ -90,7 +90,7 @@ public class TestValidatedNodeDecorator extends JCRNodeDecorator {
     }
 
     @Min(3)
-    public Long getGreaterThan2() {
+    public Long getTest_greaterThan2() {
         try {
             JCRPropertyWrapper property = node.getProperty("test:greaterThan2");
             if (property != null) {

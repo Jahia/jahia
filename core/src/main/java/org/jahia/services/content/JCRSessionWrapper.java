@@ -54,6 +54,7 @@ import org.jahia.services.importexport.DocumentViewExporter;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -63,6 +64,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.lock.LockManager;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.retention.RetentionManager;
 import javax.jcr.security.AccessControlManager;
 import javax.jcr.version.Version;
@@ -70,6 +72,7 @@ import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
 import javax.validation.ConstraintViolation;
+import javax.validation.Path;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.OutputKeys;
@@ -446,26 +449,42 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
+    protected void validateNodes(Collection<JCRNodeWrapper> nodes) throws ConstraintViolationException {
+        for (JCRNodeWrapper node : nodes) {
+            if (node instanceof JCRNodeDecorator) {
+                Set<ConstraintViolation<JCRNodeWrapper>> constraintViolations = sessionFactory.getValidatorFactoryBean().validate(node);
+                for (ConstraintViolation<JCRNodeWrapper> constraintViolation : constraintViolations) {
+                    String propertyPath = constraintViolation.getPropertyPath().toString();
+                    String message = "";
+                    if (StringUtils.isNotBlank(propertyPath)) {
+                        try {
+                            ExtendedPropertyDefinition propertyDefinition = node.getApplicablePropertyDefinition(propertyPath);
+                            if (propertyDefinition == null) {
+                                propertyDefinition = node.getApplicablePropertyDefinition(propertyPath.replaceFirst("_", ":"));
+                            }
+                            if (propertyDefinition == null) {
+                                message = propertyPath;
+                            } else {
+                                message = propertyDefinition.getLabel(LocaleContextHolder.getLocale(), node.getPrimaryNodeType());
+                            }
+                        } catch (RepositoryException e) {
+                            message = propertyPath;
+                        }
+                        message += ": ";
+                    }
+                    message += constraintViolation.getMessage();
+                    throw new ConstraintViolationException(message);
+                }
+            }
+        }
+    }
+
     public void save(final int operationType)
             throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException,
             VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
         if (!isSystem()) {
-            for (JCRNodeWrapper node : newNodes.values()) {
-                if (node instanceof JCRNodeDecorator) {
-                    Set<ConstraintViolation<JCRNodeWrapper>> constraintViolations = sessionFactory.getValidatorFactoryBean().validate(node);
-                    for (ConstraintViolation<JCRNodeWrapper> constraintViolation : constraintViolations) {
-                        throw new ConstraintViolationException(constraintViolation.getPropertyPath() + " " + constraintViolation.getMessage());
-                    }
-                }
-            }
-            for (JCRNodeWrapper node : changedNodes.values()) {
-                if (node instanceof JCRNodeDecorator) {
-                    Set<ConstraintViolation<JCRNodeWrapper>> constraintViolations = sessionFactory.getValidatorFactoryBean().validate(node);
-                    for (ConstraintViolation<JCRNodeWrapper> constraintViolation : constraintViolations) {
-                        throw new ConstraintViolationException(constraintViolation.getPropertyPath() + " "  + constraintViolation.getMessage());
-                    }
-                }
-            }
+            validateNodes(newNodes.values());
+            validateNodes(changedNodes.values());
 
             if (getLocale() != null) {
                 for (JCRNodeWrapper node : newNodes.values()) {

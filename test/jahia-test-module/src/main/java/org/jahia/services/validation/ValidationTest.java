@@ -96,7 +96,7 @@ public class ValidationTest {
         } catch (ConstraintViolationException e) {
             contraintViolationMessage = e.getMessage();
         }
-        Assert.assertEquals("notNull may not be null", contraintViolationMessage);
+        Assert.assertEquals("Field not null: may not be null", contraintViolationMessage);
     }
 
     @Test
@@ -111,7 +111,7 @@ public class ValidationTest {
         } catch (ConstraintViolationException e) {
             contraintViolationMessage = e.getMessage();
         }
-        Assert.assertEquals("sizeBetween6And20 size must be between 6 and 20", contraintViolationMessage);
+        Assert.assertEquals("Field with size between 6 and 20: size must be between 6 and 20", contraintViolationMessage);
     }
 
     @Test
@@ -127,7 +127,7 @@ public class ValidationTest {
         } catch (ConstraintViolationException e) {
             contraintViolationMessage = e.getMessage();
         }
-        Assert.assertEquals("email not a well-formed email address", contraintViolationMessage);
+        Assert.assertEquals("Email field: not a well-formed email address", contraintViolationMessage);
     }
 
     @Test
@@ -144,7 +144,7 @@ public class ValidationTest {
         } catch (ConstraintViolationException e) {
             contraintViolationMessage = e.getMessage();
         }
-        Assert.assertEquals("futureDate must be in the future", contraintViolationMessage);
+        Assert.assertEquals("Future date field: must be in the future", contraintViolationMessage);
     }
 
     @Test
@@ -164,7 +164,7 @@ public class ValidationTest {
         } catch (ConstraintViolationException e) {
             contraintViolationMessage = e.getMessage();
         }
-        Assert.assertEquals("greaterThan2 must be greater than or equal to 3", contraintViolationMessage);
+        Assert.assertEquals("Field with value greater than 2: must be greater than or equal to 3", contraintViolationMessage);
     }
 
     @Test

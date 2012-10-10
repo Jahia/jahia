@@ -69,6 +69,6 @@ public class AlertChannelPublisherSubscriber {
     @POST
     @Broadcast
     public Broadcastable publish(@FormParam("message") String message) {
-        return new Broadcastable(message+"\n", "", topic);
+        return new Broadcastable(message+"\n", topic);
     }
 }

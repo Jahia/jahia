@@ -115,6 +115,23 @@ public class ValidationTest {
     }
 
     @Test
+    public void testFieldMatchCustomConstraint() throws Exception {
+        String contraintViolationMessage = null;
+        try {
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+            JCRNodeWrapper testFieldMatch = session.getNode(SITE_CONTENT_ROOT_NODE).addNode("testFieldMatch", TEST_NODE_TYPE);
+            testFieldMatch.setProperty("test:notNull", "something");
+            testFieldMatch.setProperty("test:sizeBetween6And20", "abcdefghijklm");
+            testFieldMatch.setProperty("test:email", "mail@one.com");
+            testFieldMatch.setProperty("test:confirmEmail", "mail@two.com");
+            session.save();
+        } catch (ConstraintViolationException e) {
+            contraintViolationMessage = e.getMessage();
+        }
+        Assert.assertEquals("Fields test_email and test_confirmEmail don't match", contraintViolationMessage);
+    }
+
+    @Test
     public void testEmailConstraint() throws Exception {
         String contraintViolationMessage = null;
         try {
@@ -123,6 +140,7 @@ public class ValidationTest {
             testEmail.setProperty("test:notNull", "something");
             testEmail.setProperty("test:sizeBetween6And20", "abcdefghijklm");
             testEmail.setProperty("test:email", "wrongmail");
+            testEmail.setProperty("test:confirmEmail", "wrongmail");
             session.save();
         } catch (ConstraintViolationException e) {
             contraintViolationMessage = e.getMessage();
@@ -139,6 +157,7 @@ public class ValidationTest {
             testFutureDate.setProperty("test:notNull", "something");
             testFutureDate.setProperty("test:sizeBetween6And20", "abcdefghijklm");
             testFutureDate.setProperty("test:email", "good@mail.com");
+            testFutureDate.setProperty("test:confirmEmail", "good@mail.com");
             testFutureDate.setProperty("test:futureDate", Calendar.getInstance());
             session.save();
         } catch (ConstraintViolationException e) {
@@ -156,6 +175,7 @@ public class ValidationTest {
             testGreaterThan2.setProperty("test:notNull", "something");
             testGreaterThan2.setProperty("test:sizeBetween6And20", "abcdefghijklm");
             testGreaterThan2.setProperty("test:email", "good@mail.com");
+            testGreaterThan2.setProperty("test:confirmEmail", "good@mail.com");
             Calendar date = Calendar.getInstance();
             date.setTimeInMillis(date.getTimeInMillis() + 3600000);
             testGreaterThan2.setProperty("test:futureDate", date);
@@ -175,6 +195,7 @@ public class ValidationTest {
         validNode.setProperty("test:notNull", "something");
         validNode.setProperty("test:sizeBetween6And20", "abcdefghijklm");
         validNode.setProperty("test:email", "good@mail.com");
+        validNode.setProperty("test:confirmEmail", "good@mail.com");
         Calendar date = Calendar.getInstance();
         date.setTimeInMillis(date.getTimeInMillis() + 3600000);
         validNode.setProperty("test:futureDate", date);

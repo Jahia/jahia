@@ -40,74 +40,34 @@
 
 package org.jahia.services.validation;
 
-import org.hibernate.validator.constraints.Email;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
-import org.jahia.services.content.decorator.JCRNodeDecorator;
+import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 
-import javax.jcr.RepositoryException;
-import javax.validation.constraints.Future;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.Calendar;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
-@FieldMatch.List({
-        @FieldMatch(first = "test_email", second = "test_confirmEmail")
-})
-public class TestValidatedNodeDecorator extends JCRNodeDecorator {
+public class FieldMatchValidator implements ConstraintValidator<FieldMatch, Object> {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TestValidatedNodeDecorator.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FieldMatchValidator.class);
 
-    public TestValidatedNodeDecorator(JCRNodeWrapper node) {
-        super(node);
+    private String firstFieldName;
+
+    private String secondFieldName;
+
+    public void initialize(FieldMatch constraintAnnotation) {
+        firstFieldName = constraintAnnotation.first();
+        secondFieldName = constraintAnnotation.second();
     }
 
-    @NotNull
-    public String getTest_notNull() {
-        return getPropertyAsString("test:notNull");
-    }
-
-    @Size(min = 6, max = 20)
-    public String getTest_sizeBetween6And20() {
-        return getPropertyAsString("test:sizeBetween6And20");
-    }
-
-    @Email
-    public String getTest_email() {
-        return getPropertyAsString("test:email");
-    }
-
-    @Email
-    public String getTest_confirmEmail() {
-        return getPropertyAsString("test:confirmEmail");
-    }
-
-    @Future
-    public Calendar getTest_futureDate() {
+    public boolean isValid(Object value, ConstraintValidatorContext context) {
         try {
-            JCRPropertyWrapper property = getProperty("test:futureDate");
-            if (property != null) {
-                return property.getDate();
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage());
-        }
-        return null;
-    }
+            Object firstObj = BeanUtils.getProperty(value, firstFieldName);
+            Object secondObj = BeanUtils.getProperty(value, secondFieldName);
 
-    @Min(3)
-    public Long getTest_greaterThan2() {
-        try {
-            JCRPropertyWrapper property = getProperty("test:greaterThan2");
-            if (property != null) {
-                return Long.valueOf(property.getLong());
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage());
+            return firstObj == null && secondObj == null || firstObj != null && firstObj.equals(secondObj);
+        } catch (Exception e) {
+            logger.error("Failed to validate field match", e);
         }
-        return null;
+        return true;
     }
-
 }

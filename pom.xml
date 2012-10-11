@@ -30,13 +30,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <jahia.package.version>${project.version}</jahia.package.version>
-        <jahia.project.structure.version>2</jahia.project.structure.version>
-
-        <jahia.deployers.version>2.7-SNAPSHOT</jahia.deployers.version>
-
-        <jahia.war.classifier />
-
         <pluto.version>2.0.2</pluto.version>
         <spring.version>3.0.5.RELEASE</spring.version>
         <springwebflow-version>2.3.1.RELEASE</springwebflow-version>
@@ -79,25 +72,8 @@
         <surefire.plugin.version>2.7.2</surefire.plugin.version>
         <eclipse.plugin.version>2.8</eclipse.plugin.version>
 
-        <!-- Jahia Maven plugin version and default settings -->
-        <jahia.plugin.version>3.0-SNAPSHOT</jahia.plugin.version>
-        <!-- common settings -->
-        <jahia.configure.useDataStore>true</jahia.configure.useDataStore>
-		<jahia.configure.storeFilesInDB>false</jahia.configure.storeFilesInDB>
-		<jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>
-        <jahia.deploy.processingServer>true</jahia.deploy.processingServer>
-        <jahia.deploy.war.dirName>ROOT</jahia.deploy.war.dirName>
-        <jahia.deploy.war.contextPath />
-        <jahia.test.url>http://localhost:8080/cms</jahia.test.url>
-        <!-- DBMS -->
-        <jahia.configure.databaseType>derby_embedded</jahia.configure.databaseType>
-        <jahia.configure.databaseUrl>jdbc:derby:directory:jahia;create=true</jahia.configure.databaseUrl>
-        <jahia.configure.databaseUsername />
-        <jahia.configure.databasePassword />
-        <!-- Application server -->
-        <jahia.deploy.targetServerType>tomcat</jahia.deploy.targetServerType>
-        <jahia.deploy.targetServerVersion>7</jahia.deploy.targetServerVersion>
-        <!-- end of Jahia Maven plugin default settings -->
+        <jahia.plugin.version>3.1-SNAPSHOT</jahia.plugin.version>
+        <jahia.deployers.version>2.8-SNAPSHOT</jahia.deployers.version>
     </properties>
 
     <scm>
@@ -587,8 +563,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${compiler.plugin.version}</version> 
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                    <source>1.6</source>
+                    <target>1.6</target>
                     <verbose>true</verbose>
                 </configuration>
             </plugin>

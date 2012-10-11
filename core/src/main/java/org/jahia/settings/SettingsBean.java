@@ -257,7 +257,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             serverVersion = getString("serverVersion", "");
             serverHome = getString("serverHome", "");
             ServerDeploymentFactory.setTargetServerDirectory(serverHome);
-            serverDeployer = ServerDeploymentFactory.getInstance().getImplementation(server + serverVersion);
+            serverDeployer = ServerDeploymentFactory.getInstance().getImplementation(server, serverVersion);
             
             maintenanceMode = getBoolean("maintenanceMode", false);
             

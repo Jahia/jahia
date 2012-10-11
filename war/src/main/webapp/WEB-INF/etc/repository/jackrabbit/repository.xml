@@ -56,7 +56,6 @@
         <PersistenceManager class="@PERSISTENCE_CLASS@">
             <param name="dataSourceName" value="jahiaDS" />
             <param name="schemaObjectPrefix" value="jr_${wsp.name}_"/>
-            <param name="externalBLOBs" value="@EXTERNAL_BLOBS@"/>
             <param name="schemaCheckEnabled" value="false"/>
             
             <param name="consistencyCheck" value="${jahia.jackrabbit.consistencyCheck}"/>
@@ -131,7 +130,6 @@
 		<PersistenceManager class="@PERSISTENCE_CLASS@">
  		  <param name="dataSourceName" value="jahiaDS" />
 		  <param name="schemaObjectPrefix" value="jr_v_"/>
-		  <param name="externalBLOBs" value="@EXTERNAL_BLOBS@"/>
           <param name="schemaCheckEnabled" value="false"/>
           
           <param name="consistencyCheck" value="${jahia.jackrabbit.consistencyCheck}"/>
@@ -157,7 +155,7 @@
 
     <DataStore class="org.apache.jackrabbit.core.data.FileDataStore">
         <param name="path" value="${rep.home}/datastore"/>
-        <param name="minRecordLength" value="1024"/>
+        <param name="minRecordLength" value="4096"/>
     </DataStore>
 
     <DataStore class="org.apache.jackrabbit.core.data.db.DbDataStore">
@@ -165,6 +163,6 @@
         <param name="schemaObjectPrefix" value="JR_"/>
         <param name="schemaCheckEnabled" value="false"/>
         <param name="copyWhenReading" value="true"/>
-        <param name="minRecordLength" value="1024"/>
+        <param name="minRecordLength" value="4096"/>
     </DataStore>
 </Repository>

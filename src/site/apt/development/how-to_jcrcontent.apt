@@ -17,7 +17,7 @@ public ActionResult doExecute(HttpServletRequest req, RenderContext renderContex
                               Map<String, List<String>> parameters, URLResolver urlResolver)
 +------------------------
 
- Otherwise if you do not get the session directly, you can get it from a node  (node.getSesion()).
+ Otherwise if you do not get the session directly, you can get it from a node  (node.getSession()).
 
  Another way of getting a session if you develop some services is to make SPRING inject the JCRTemplate class in your service.
 

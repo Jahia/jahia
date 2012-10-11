@@ -1,0 +1,17 @@
+Node decorators
+
+ Node decorators are used to extend functionality of nodes of a specific type. This is done by defining a class that
+ wraps a node and has methods accessing this node.
+
+ This class must implement the <<<org.jahia.services.content.decorator.JCRNodeDecorator>>> interface.
+ The decorator is associated to a node type via Spring :
+
++-------------
+    <bean class="org.jahia.services.content.decorator.JCRNodeDecoratorDefinition">
+        <property name="decorators">
+            <map>
+                <entry key="mynt:myType" value="com.mycompany.decorators.MyTypeNodeDecorator"/>
+            </map>
+        </property>
+    </bean>
++-------------

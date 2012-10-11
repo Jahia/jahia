@@ -29,6 +29,8 @@
             </item>
             <item name="References" href="references/references.html"/>
             <item name="Interceptors" href="interceptors.html"/>
+            <item name="Node decorators" href="nodes/decorators.html"/>
+            <item name="Node validation" href="nodes/validation.html"/>
         </menu>
         <menu name="Rendering" inherit="top">
             <item name="Rendering" href="render/render.html"/>

@@ -1,0 +1,59 @@
+Node validation
+
+ Jahia supports {{{http://www.jahia.com/cms/home/community/documentation/templating-and-integration-guide/part-4-content-definitions-and-v/definitons/validators.html}value constraints}},
+ which can be defined in the standard CND (Compact Namespace and Node Type Definition) file. This is already quite
+ powerful and sufficient in most cases. But if you need more complex or custom constraints, like cross-field validation,
+ you can use {{{http://static.springsource.org/spring/docs/current/spring-framework-reference/html/validation.html#validation-beanvalidation-overview}JSR-303 Bean Validation}}.
+
+ This is done in Jahia by declaring a {{{./decorators.html}node decorator}} and annotating its getters with validation
+ constraints. Note that the getters names should match the property name (replace ':' with '_') if you want the latter
+ to be translated in the constraint violation message. So for example, with the following definition  :
+
++-------------
+[test:validatedNode] > nt:base, jmix:droppableContent
+- test:sizeBetween6And20 (string)
+- test:email (string)
+- test:futureDate (date)
++-------------
+
+ You could have a node decorator like :
+
++-------------
+public class TestValidatedNodeDecorator extends JCRNodeDecorator {
+
+    public TestValidatedNodeDecorator(JCRNodeWrapper node) {
+        super(node);
+    }
+
+    @Size(min = 6, max = 20)
+    public String getTest_sizeBetween6And20() {
+        return getPropertyAsString("test:sizeBetween6And20");
+    }
+
+    @Email
+    public String getTest_email() {
+        return getPropertyAsString("test:email");
+    }
+
+    @Future
+    public Calendar getTest_futureDate() {
+        try {
+            JCRPropertyWrapper property = getProperty("test:futureDate");
+            if (property != null) {
+                return property.getDate();
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage());
+        }
+        return null;
+    }
+
+}
++-------------
+
+ The validation is done during the session save and raises a <<<javax.jcr.nodetype.ConstraintViolationException>>> when
+ it fails. The exception message contains the translated property name and the constraint validation message.
+
+ When you create or edit a node by doing a {{{../jahia-modules/rest.html#HTTP Post Request}HTTP Post Request}} and the
+ validation fails, it returns a JSON object with a property <<<validationError>>> containing the
+ ConstraintViolationException message.

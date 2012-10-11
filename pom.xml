@@ -461,6 +461,10 @@
         	<id>jahia-snapshots</id>
         	<url>https://devtools.jahia.com/nexus/content/repositories/jahia-snapshots</url>
         </snapshotRepository>
+        <site>
+            <id>jahia.website</id>
+            <url>file://${jahia.site.path}</url>
+        </site>
     </distributionManagement>
 
     <build>

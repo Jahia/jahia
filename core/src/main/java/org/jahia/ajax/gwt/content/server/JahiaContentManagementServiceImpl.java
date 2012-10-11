@@ -612,7 +612,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         properties.saveProperties(nodes, newProps, removedTypes, getRemoteJahiaUser(),
                 session, getUILocale());
         try {
-            session.save();
+            session.validate();
         } catch (javax.jcr.nodetype.ConstraintViolationException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -828,8 +828,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                         this.properties.saveProperties(nodes, properties, null, getRemoteJahiaUser(),
                                 langSession,
                                 getUILocale());
+                        langSession.validate();
                     }
-                    langSession.save();
                 }
             }
             session.save();

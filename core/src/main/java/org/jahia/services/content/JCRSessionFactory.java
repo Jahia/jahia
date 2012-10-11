@@ -40,6 +40,7 @@
 
 package org.jahia.services.content;
 
+import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
@@ -59,19 +60,19 @@ import java.util.*;
 
 /**
  * The entry point into the content repositories provided by the <code>JCRStoreProvider</code> list.
- *  
+ *
  * Instead of using this class for creating and using sessions, please rather use the JCRTemplate.
- * 
+ *
  * @see JCRTemplate
- * 
+ *
  * @author toto
  */
 public class JCRSessionFactory implements Repository, ServletContextAware {
-    
+
     public static final String DEFAULT_PROVIDER_KEY = "default";
-    
+
     private static transient Logger logger = LoggerFactory.getLogger(JCRSessionFactory.class);
-    
+
     protected ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> userSession = new ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>>();
     private NamespaceRegistryWrapper namespaceRegistry;
     private Map<String, String> descriptors = new HashMap<String, String>();
@@ -189,9 +190,9 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
                 s = login(JahiaLoginModule.getGuestCredentials(), workspace, locale, fallbackLocale);
             }
             wsMap.put(key, s);
-        //} else {
+            //} else {
             // In cluster, this will perform a cluster node sync, which is an expensive operation.
-        //    s.refresh(true);
+            //    s.refresh(true);
         }
         return s;
     }
@@ -226,6 +227,24 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
     public String getDescriptor(String s) {
         return descriptors.get(s);
+    }
+
+    public Session findSameSession(JCRStoreProvider provider, String userID, String ws) throws RepositoryException {
+        Session s = null;
+        if (userSession != null) {
+            Map<String, Map<String, JCRSessionWrapper>> smap = userSession.get();
+            if (smap != null && smap.containsKey(userID)) {
+                Map<String, JCRSessionWrapper> wsMap = smap.get(userID);
+                for (String key:wsMap.keySet()) {
+                    if (key.startsWith(ws)) {
+                        if ((s = wsMap.get(key).getProviderSession(provider,false)) != null) {
+                            break;
+                        };
+                    }
+                }
+            }
+        }
+        return s;
     }
 
     public JCRSessionWrapper login(Credentials credentials, String workspace)
@@ -376,7 +395,9 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         if (smap != null) {
             for (Map<String, JCRSessionWrapper> wsMap : smap.values()) {
                 for (JCRSessionWrapper s : wsMap.values()) {
-                    s.logout();
+                    if (s.isLive()) {
+                        s.logout();
+                    }
                 }
             }
             userSession.set(null);
@@ -396,7 +417,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         }
         return null;
     }
-    
+
     public boolean unmount(JCRStoreProvider p) {
         if (p != null && p.isDynamicallyMounted()) {
             p.stop();

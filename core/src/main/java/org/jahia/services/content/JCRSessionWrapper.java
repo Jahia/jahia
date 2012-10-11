@@ -53,6 +53,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.importexport.DocumentViewExporter;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.xml.sax.ContentHandler;
@@ -483,55 +484,7 @@ public class JCRSessionWrapper implements Session {
             throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException,
             VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
         if (!isSystem()) {
-            validateNodes(newNodes.values());
-            validateNodes(changedNodes.values());
-
-            if (getLocale() != null) {
-                for (JCRNodeWrapper node : newNodes.values()) {
-                    try {
-                        for (String s : node.getNodeTypes()) {
-                            Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
-                            for (ExtendedPropertyDefinition propDef : propDefs) {
-                                if (propDef.isMandatory() &&
-                                        propDef.getRequiredType() != PropertyType.WEAKREFERENCE &&
-                                        propDef.getRequiredType() != PropertyType.REFERENCE &&
-                                        !propDef.isProtected() && !node.hasProperty(propDef.getName())) {
-                                    throw new ConstraintViolationException("The field "
-                                            + propDef.getName() + " is mandatory for node type "
-                                            + s + " but is empty for the node " + node.getPath());
-                                }
-                            }
-                        }
-                    } catch (InvalidItemStateException e) {
-                        logger.warn("A new node can no longer be accessed to run validation checks", e);
-                    }
-                }
-                for (JCRNodeWrapper node : changedNodes.values()) {
-                    try {
-                        for (String s : node.getNodeTypes()) {
-                            Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
-                            for (ExtendedPropertyDefinition propDef : propDefs) {
-                                if (propDef.isMandatory() &&
-                                    propDef.getRequiredType() != PropertyType.WEAKREFERENCE &&
-                                    propDef.getRequiredType() != PropertyType.REFERENCE &&
-                                    !propDef.isProtected() &&
-                                    (
-                                            !node.hasProperty(propDef.getName()) ||
-                                            (!propDef.isMultiple() &&
-                                            StringUtils.isEmpty(node.getProperty(propDef.getName()).getString()))
-    
-                                    )) {
-                                    throw new ConstraintViolationException("The field "
-                                            + propDef.getName() + " is mandatory for node type " + s
-                                            + " but is empty for the node " + node.getPath());
-                                }
-                            }
-                        }
-                    } catch (InvalidItemStateException e) {
-                        logger.warn("A new node can no longer be accessed to run validation checks", e);
-                    }
-                }
-            }
+            validate();
         }
         newNodes.clear();
         changedNodes.clear();
@@ -544,6 +497,58 @@ public class JCRSessionWrapper implements Session {
                 return null;
             }
         });
+    }
+
+    public void validate() throws RepositoryException {
+        validateNodes(newNodes.values());
+        validateNodes(changedNodes.values());
+
+        if (getLocale() != null) {
+            for (JCRNodeWrapper node : newNodes.values()) {
+                try {
+                    for (String s : node.getNodeTypes()) {
+                        Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
+                        for (ExtendedPropertyDefinition propDef : propDefs) {
+                            if (propDef.isMandatory() &&
+                                    propDef.getRequiredType() != PropertyType.WEAKREFERENCE &&
+                                    propDef.getRequiredType() != PropertyType.REFERENCE &&
+                                    !propDef.isProtected() && !node.hasProperty(propDef.getName())) {
+                                throw new ConstraintViolationException("The field "
+                                        + propDef.getName() + " is mandatory for node type "
+                                        + s + " but is empty for the node " + node.getPath());
+                            }
+                        }
+                    }
+                } catch (InvalidItemStateException e) {
+                    logger.warn("A new node can no longer be accessed to run validation checks", e);
+                }
+            }
+            for (JCRNodeWrapper node : changedNodes.values()) {
+                try {
+                    for (String s : node.getNodeTypes()) {
+                        Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
+                        for (ExtendedPropertyDefinition propDef : propDefs) {
+                            if (propDef.isMandatory() &&
+                                propDef.getRequiredType() != PropertyType.WEAKREFERENCE &&
+                                propDef.getRequiredType() != PropertyType.REFERENCE &&
+                                !propDef.isProtected() &&
+                                (
+                                        !node.hasProperty(propDef.getName()) ||
+                                        (!propDef.isMultiple() &&
+                                        StringUtils.isEmpty(node.getProperty(propDef.getName()).getString()))
+
+                                )) {
+                                throw new ConstraintViolationException("The field "
+                                        + propDef.getName() + " is mandatory for node type " + s
+                                        + " but is empty for the node " + node.getPath());
+                            }
+                        }
+                    }
+                } catch (InvalidItemStateException e) {
+                    logger.warn("A new node can no longer be accessed to run validation checks", e);
+                }
+            }
+        }
     }
 
     public void refresh(boolean b) throws RepositoryException {
@@ -684,7 +689,9 @@ public class JCRSessionWrapper implements Session {
 
     public void logout() {
         for (Session session : sessions.values()) {
-            session.logout();
+            if (session.isLive()) {
+                session.logout();
+            }
         }
         if (credentials instanceof SimpleCredentials) {
             SimpleCredentials simpleCredentials = (SimpleCredentials) credentials;
@@ -742,17 +749,31 @@ public class JCRSessionWrapper implements Session {
     public Collection<Session> getAllSessions() {
         return sessions.values();
     }
-
     public Session getProviderSession(JCRStoreProvider provider) throws RepositoryException {
-        if (sessions.get(provider) == null) {
+        return getProviderSession(provider, true);
+    }
+
+    public Session getProviderSession(JCRStoreProvider provider, boolean create) throws RepositoryException {
+        if (sessions.get(provider) == null && create) {
             Session s = null;
 
             if (credentials instanceof SimpleCredentials) {
                 SimpleCredentials simpleCredentials = (SimpleCredentials) credentials;
                 JahiaLoginModule.Token t = JahiaLoginModule
                         .getToken(simpleCredentials.getUserID(), new String(simpleCredentials.getPassword()));
-
-                s = provider.getSession(credentials, workspace.getName());
+                JahiaUser user = getUser();
+                String username;
+                if (JahiaUserManagerService.isGuest(user)) {
+                    username = JahiaLoginModule.GUEST;
+                } else {
+                    username = user.getUsername();
+                }
+                if (!simpleCredentials.getUserID().startsWith(JahiaLoginModule.SYSTEM)) {
+                    s = provider.getSessionFactory().findSameSession(provider,username,workspace.getName());
+                }
+                if (s == null) {
+                    s = provider.getSession(credentials, workspace.getName());
+                }
 
                 credentials =
                         JahiaLoginModule.getCredentials(simpleCredentials.getUserID(), t != null ? t.deniedPath : null);

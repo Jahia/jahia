@@ -370,7 +370,7 @@ public class ContentTabItem extends PropertiesTabItem {
         if (siteLanguages.size() > 1 && engine.getNodeTypes().get(0).getSuperTypes().contains("jmix:i18n")) {
             final List<String> siteMandatoryLanguages = JahiaGWTParameters.getSiteMandatoryLanguages();
             invalidLanguagesCheckBoxGroup = new CheckBoxGroup();
-            invalidLanguagesCheckBoxGroup.setFieldLabel(Messages.get("label.valid.languages"));
+            invalidLanguagesCheckBoxGroup.setFieldLabel(Messages.get("label.validLanguages", "Valid display languages"));
             for (GWTJahiaLanguage siteLanguage : siteLanguages) {
                 if (siteLanguage.isActive()) {
                     CheckBox checkBox = new CheckBox();

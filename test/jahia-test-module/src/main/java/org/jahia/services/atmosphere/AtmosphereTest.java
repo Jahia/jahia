@@ -43,11 +43,11 @@ import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.junit.*;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-import javax.jcr.ValueFactory;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -59,14 +59,12 @@ import java.util.concurrent.atomic.AtomicReference;
 import static org.junit.Assert.*;
 
 /**
- * Created by IntelliJ IDEA.
- *
- * @author : rincevent
- * @since : JAHIA 6.1
+ * @author rincevent
+ * @since JAHIA 6.7
  *        Created : 01/10/12
  */
 public class AtmosphereTest {
-    private transient static org.slf4j.Logger logger = LoggerFactory.getLogger(AtmosphereTest.class);
+    private transient static Logger logger = LoggerFactory.getLogger(AtmosphereTest.class);
     private String urlTarget = "http://localhost:8080"+ Jahia.getContextPath()+"/atmosphere/alert/testChannel";
 
     @Test
@@ -200,7 +198,7 @@ public class AtmosphereTest {
 
             //Suspend
             final AtomicReference<Response> response = new AtomicReference<Response>();
-            c.prepareGet("http://localhost:8080"+ Jahia.getContextPath()+"/atmosphere/sites/jcrAtmosphereTest__English").execute(new AsyncCompletionHandler<Response>() {
+            c.prepareGet("http://localhost:8080"+ Jahia.getContextPath()+"/atmosphere/sites/jcrAtmosphereTest-en").execute(new AsyncCompletionHandler<Response>() {
 
                 @Override
                 public Response onCompleted(Response r) throws Exception {

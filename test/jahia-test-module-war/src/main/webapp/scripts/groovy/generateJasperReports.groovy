@@ -10,4 +10,8 @@ final def dayVar = new Date().format('dd')
 println "generating report for day = "+dayVar
 def props = [sql:new JRJdbcQueryExecuterFactory(),day:new Integer(dayVar),SUBREPORT_DIR:path+"/jasper/"]
 def print = JasperFillManager.fillReport(path+"/jasper/"+project.properties['jasperreport']+".jasper",props ,sql.getConnection())
-JasperExportManager.exportReportToPdfFile(print,path+"/jasperreports/report"+dayVar+".pdf")
+if(print.getPages().size() > 0) { 
+  JasperExportManager.exportReportToPdfFile(print,path+"/jasperreports/report"+dayVar+".pdf")
+} else {
+  println "report did not generate any pages"
+}  

@@ -1,6 +1,6 @@
-    drop table if exists jgroupsping;
+    drop table if exists JGROUPSPING;
     
-    create table jgroupsping (
+    create table JGROUPSPING (
     	own_addr varchar(200) not null,
     	cluster_name varchar(200) not null,
 		ping_data varbinary(5000) default null,

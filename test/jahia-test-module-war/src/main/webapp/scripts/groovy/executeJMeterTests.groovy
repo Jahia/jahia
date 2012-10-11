@@ -3,7 +3,8 @@ def test = project.properties['test']
 def p = ~/.*\.jmx/
 
 def tests;
-tests = test.tokenize(",");
+if (test != null)
+  tests = test.tokenize(",");
 
 new File(project.properties['jahia.test.jmeter.path']+"/bin/testPlan").eachDir {
     moduleDir ->

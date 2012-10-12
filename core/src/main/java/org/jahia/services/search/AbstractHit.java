@@ -40,9 +40,17 @@
 
 package org.jahia.services.search;
 
+import javax.jcr.Value;
+import javax.jcr.query.Row;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.search.jcr.JahiaExcerptProvider;
+import org.jahia.utils.Patterns;
+import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract search result item, used as a view object in JSP templates.
@@ -51,11 +59,14 @@ import org.jahia.services.render.RenderContext;
  */
 public abstract class AbstractHit<T> implements Hit<T> {
 
+    private static Logger logger = LoggerFactory.getLogger(AbstractHit.class);    
+    
     private String excerpt;
     protected T resource;
     private float score;
     protected RenderContext context;
     private String queryParameter = "";
+    private Row row = null;
 
     /**
      * Initializes an instance of this class.
@@ -70,6 +81,63 @@ public abstract class AbstractHit<T> implements Hit<T> {
     }
 
     public String getExcerpt() {
+        if (excerpt == null && row != null) {
+            try {
+                // this is Jackrabbit specific, so if other implementations
+                // throw exceptions, we have to do a check here
+                Value excerptValue = row.getValue("rep:excerpt(.)");
+                if (excerptValue != null) {
+                    if (excerptValue.getString().contains(
+                            "###" + JahiaExcerptProvider.TAG_TYPE + "#")
+                            || excerptValue.getString().contains(
+                                    "###" + JahiaExcerptProvider.CATEGORY_TYPE
+                                            + "#")) {
+                        String r = "";
+                        String separator = "";
+                        String type = "";
+                        for (String s : Patterns.COMMA.split(excerptValue
+                                .getString())) {
+                            String s2 = s
+                                    .contains(JahiaExcerptProvider.TAG_TYPE) ? JahiaResourceBundle
+                                    .getJahiaInternalResource("label.tags",
+                                            context.getRequest().getLocale())
+                                    : JahiaResourceBundle
+                                            .getJahiaInternalResource(
+                                                    "label.category", context
+                                                            .getRequest()
+                                                            .getLocale());
+                            String s1 = s.substring(s.indexOf("###"),
+                                    s.lastIndexOf("###"));
+                            String identifier = s1.substring(s1
+                                    .lastIndexOf("#") + 1);
+                            String v = "";
+                            if (identifier.startsWith("<span")) {
+                                identifier = identifier.substring(
+                                        identifier.indexOf(">") + 1,
+                                        identifier.lastIndexOf("</span>"));
+                                v = "<span class=\" searchHighlightedText\">"
+                                        + getTitle() + "</span>";
+                            } else {
+                                v = getTitle();
+                            }
+                            if (!type.equals(s2)) {
+                                r += s2 + ":";
+                                type = s2;
+                                separator = "";
+                            }
+                            r += separator + v;
+                            separator = ", ";
+
+                        }
+                        setExcerpt(r);
+                    } else {
+                        setExcerpt(excerptValue.getString());
+                    }
+                }
+            } catch (Exception e) {
+                logger.warn("Search details cannot be retrieved", e);
+            }
+        }
         return excerpt;
     }
 
@@ -120,4 +188,7 @@ public abstract class AbstractHit<T> implements Hit<T> {
         this.queryParameter = queryParameter;
     }
 
+    public void setRow(Row row) {
+        this.row = row;
+    }    
 }

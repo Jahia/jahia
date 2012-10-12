@@ -67,7 +67,6 @@ import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
@@ -236,28 +235,29 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             if (typesToHideFromSearchResults.contains(node.getPrimaryNodeTypeName())) {
                 return true;
             }
-            if (!languages.isEmpty()
+            if (!languages.isEmpty() && isSiteSearch(criteria)
                     && (node.isFile() || node.isNodeType(Constants.NT_FOLDER))) {
                 // if just site-search and no file-search, then skip the node unless it is referred
                 // by a node in the wanted language - unreferenced files are skipped
-                skipNode = isSiteSearch(criteria) && !isFileSearch(criteria) ? true : skipNode;
-                
+                skipNode = !isFileSearch(criteria) ? true : skipNode;
                 for (PropertyIterator it = node.getWeakReferences(); it.hasNext();) {
                     // if site-search and file-search, then skip the node unless it is referred
                     // by a node in the wanted language - unreferenced files are not skipped
-                    skipNode = isSiteSearch(criteria) && isFileSearch(criteria) ? true : skipNode;
-                    
+                    skipNode = isFileSearch(criteria) ? true : skipNode;
+
                     try {
-                        JCRNodeWrapper refNode = (JCRNodeWrapper) it.nextProperty().getParent();
+                        JCRNodeWrapper refNode = (JCRNodeWrapper) it
+                                .nextProperty().getParent();
                         if (languages.contains(refNode.getLanguage())) {
                             skipNode = false;
                             break;
                         }
                     } catch (Exception e) {
-                        logger.debug("Error while trying to check for node language", e);
+                        logger.debug(
+                                "Error while trying to check for node language",
+                                e);
                     }
                 }
-
             }
         } catch (RepositoryException e) {
             logger.debug("Error while trying to check for node language", e);
@@ -277,41 +277,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         try {
             searchHit.setUsageFilterSites(usageFilterSites);
             searchHit.setScore((float) (row.getScore() / 1000.));
-
-            // this is Jackrabbit specific, so if other implementations
-            // throw exceptions, we have to do a check here            
-            Value excerpt = row.getValue("rep:excerpt(.)");
-            if (excerpt != null) {
-                if (excerpt.getString().contains("###" + JahiaExcerptProvider.TAG_TYPE + "#") || excerpt.getString().contains("###" + JahiaExcerptProvider.CATEGORY_TYPE + "#")) {
-                    String r = "";
-                    String separator = "";
-                    String type = "";
-                    for (String s : Patterns.COMMA.split(excerpt.getString())) {
-                        String s2 = s.contains(JahiaExcerptProvider.TAG_TYPE)? JahiaResourceBundle.getJahiaInternalResource("label.tags",context.getRequest().getLocale()):
-                                JahiaResourceBundle.getJahiaInternalResource("label.category",context.getRequest().getLocale());
-                        String s1 = s.substring(s.indexOf("###"), s.lastIndexOf("###"));
-                        String identifier = s1.substring(s1.lastIndexOf("#") + 1);
-                        String v = "";
-                        if (identifier.startsWith("<span")) {
-                            identifier = identifier.substring(identifier.indexOf(">") + 1, identifier.lastIndexOf("</span>"));
-                            v = "<span class=\" searchHighlightedText\">" + node.getSession().getNodeByUUID(identifier).getDisplayableName() + "</span>";
-                        } else {
-                            v = node.getSession().getNodeByUUID(identifier).getDisplayableName();
-                        }
-                        if (!type.equals(s2)) {
-                            r += s2 + ":";
-                            type = s2;
-                            separator = "";
-                        }
-                        r +=separator + v;
-                        separator = ", ";
-
-                    }
-                    searchHit.setExcerpt(r);
-                } else {
-                    searchHit.setExcerpt(excerpt.getString());
-                }
-            }
+            
+            searchHit.setRow(row);
         } catch (Exception e) {
             logger.warn("Search details cannot be retrieved", e);
         }

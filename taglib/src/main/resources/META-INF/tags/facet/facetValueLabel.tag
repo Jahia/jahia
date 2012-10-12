@@ -6,6 +6,7 @@
 <%@ tag import="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"%>
 <%@ tag import="org.jahia.services.content.nodetypes.renderer.ChoiceListRendererService"%>
 <%@ tag import="org.jahia.services.render.RenderContext"%>
+<%@ tag import="java.util.TimeZone" %>
 <%@ attribute name="display" required="false" type="java.lang.Boolean" description="Should we display the label or just return it in the parameter set by attribute var."%>
 <%@ attribute name="currentFacetField" required="false" type="org.apache.solr.client.solrj.response.FacetField" description="The FacetField for the current facet." %>
 <%@ attribute name="facetValueCount" required="false" type="java.lang.Object" description="The FacetField.Count for the current facet value." %>
@@ -63,6 +64,7 @@
         date = dateField.toObject((String)jspContext.findAttribute("facetValueName"));
         RenderContext renderContext = (RenderContext)jspContext.findAttribute("renderContext");
         df = new SimpleDateFormat((String)jspContext.findAttribute("dateFieldFormat"), renderContext != null ? renderContext.getMainResource().getLocale() : Locale.ENGLISH);
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
     } catch (Exception e) {
     %>  <utility:logger value="<%=e.toString()%>" level="WARN"/> <%
     }

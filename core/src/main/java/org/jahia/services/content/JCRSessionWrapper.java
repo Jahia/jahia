@@ -467,6 +467,9 @@ public class JCRSessionWrapper implements Session {
                                 message = propertyPath;
                             } else {
                                 message = propertyDefinition.getLabel(LocaleContextHolder.getLocale(), node.getPrimaryNodeType());
+                                if (propertyDefinition.isInternationalized()) {
+                                    message += " (" + getLocale().getDisplayLanguage(LocaleContextHolder.getLocale()) + ")";
+                                }
                             }
                         } catch (RepositoryException e) {
                             message = propertyPath;

@@ -90,9 +90,7 @@ import static org.junit.Assert.*;
  *         9/ move nodeA in another list, before a node twice - publish it - check if nodeA is correctly moved (and removed from original place)
  *         10/ delete nodeA - publish parent - check in live the node is deleted
  *         <p/>
- *         TestC - pages node with sub pages - same scenarios. sub pages should not be published.
- *         TestD - modify content in live AND edit and merge with edit workspace.
- *         TestF - concurrent modifications (especially moves) in both workspaces.
+ *         TestB - pages node with sub pages - same scenarios. sub pages should not be published.
  */
 public class PublicationTest {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(PublicationTest.class);
@@ -305,7 +303,7 @@ public class PublicationTest {
     }
 
     @Test
-    public void testCPagesWithSubPages() throws RepositoryException {
+    public void testBPagesWithSubPages() throws RepositoryException {
         JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
 
         getCleanSession();
@@ -509,19 +507,6 @@ public class PublicationTest {
 
     }
 
-    /* @todo Still to be implemented...
-        public void testDModificationInTwoWorkspaces() {
-
-        }
-
-        public void testESharedNodesInMultipleLanguages() {
-
-        }
-
-        public void testFConcurrentModificationsInTwoWorkspaces() {
-
-        }
-    */
     @Test
     public void testAddMixinAndPublish() throws RepositoryException {
         JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();

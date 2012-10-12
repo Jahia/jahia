@@ -84,6 +84,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
     protected transient Map<String, PropertiesEditor> langPropertiesEditorMap;
     protected transient Map<String, Map<String,GWTJahiaNodeProperty>> changedProperties;
     protected transient boolean multiLang = true;
+    protected transient boolean viewCopyToAllLangs = true;
 
     @Override
     public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
@@ -209,7 +210,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 propertiesEditor.setWriteable(!engine.isExistingNode() || (PermissionsUtils.isPermitted("jcr:modifyProperties", engine.getNode()) && !engine.getNode().isLocked()));
                 propertiesEditor.setFieldSetGrouping(true);
                 propertiesEditor.setExcludedTypes(excludedTypes);
-                propertiesEditor.setViewCopyToAllLangs(true);
+                propertiesEditor.setViewCopyToAllLangs(viewCopyToAllLangs);
                 propertiesEditor.setMultipleEdit(engine.isMultipleSelection());
                 propertiesEditor.setDisplayHiddenProperties(engine.getLinker().isDisplayHiddenProperties());
                 if (engine.getNode() != null) {
@@ -342,6 +343,9 @@ public class PropertiesTabItem extends EditEngineTabItem {
         this.multiLang = multiLang;
     }
 
+    public void setViewCopyToAllLangs(boolean viewCopyToAllLangs) {
+        this.viewCopyToAllLangs = viewCopyToAllLangs;
+    }
 
     /**
      * Get lang properties per map

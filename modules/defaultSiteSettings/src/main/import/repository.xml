@@ -68,7 +68,6 @@
               </urlmapping.png>
           </files>
           <siteSettingsBase j:view="siteSettings" jcr:primaryType="jnt:template">
-          <manageGroups j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true" j:icon="/templateSets/defaultSiteSettings/templates/files/users_into.png" j:priority="100" jcr:primaryType="jnt:contentTemplate" />
           <manageLanguages j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true" j:icon="/templateSets/defaultSiteSettings/templates/files/signpost.png" j:priority="100" jcr:primaryType="jnt:contentTemplate">
             <pagecontent jcr:primaryType="jnt:contentList">
               <manage-languages jcr:primaryType="jnt:siteSettingsManageLanguages" />

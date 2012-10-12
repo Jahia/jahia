@@ -85,6 +85,10 @@ import static org.junit.Assert.assertEquals;
  *         11/ Mark for deletion the node, publish it and check that it has disappeared in live mode.
  *         12/ Delete a published node and recreate a new one with the same name. Republish and check.
  *         <p/>
+<<<<<<< .working
+=======
+ *         TestB - pages node with sub pages - same scenarios. sub pages should not be published.
+>>>>>>> .merge-right.r43394
  */
 public class PublicationTest {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(PublicationTest.class);
@@ -382,9 +386,14 @@ public class PublicationTest {
     }
 
     @Test
+<<<<<<< .working
     public void testNodeAddAndReorder() throws Exception {
         TestHelper.createList(testHomeEdit, "contentList1", 4, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
         englishEditSession.save();
+=======
+    public void testBPagesWithSubPages() throws RepositoryException {
+        JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
+>>>>>>> .merge-right.r43394
 
         // Case 12 : Reorder nodes, add a new node and order it - check everything is correctly ordered in the end
 
@@ -506,6 +515,7 @@ public class PublicationTest {
         testNodeInWorkspace(englishLiveSession, listPath, "Sub page should have been published");
     }
 
+<<<<<<< .working
     @Test
     public void testMultiLanguagePublication() throws RepositoryException {
         // Set french title
@@ -528,6 +538,8 @@ public class PublicationTest {
         testNodeInWorkspace(frenchLiveSession, testHomeEdit.getPath(), "Page should be published in french");
     }
 
+=======
+>>>>>>> .merge-right.r43394
     @Test
     public void testPublicationStatus() throws RepositoryException {
         JCRNodeWrapper list = TestHelper.createList(testHomeEdit, "contentList1", 4, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);

@@ -10,7 +10,7 @@ Jackrabbit allows you to define index aggregates based on relative path patterns
 The following example creates an index aggregate on jnt:file that includes the content of the jcr:content node:
     -->
     <aggregate primaryType="jnt:file">
-        <include>jcr:content</include>
+        <include primaryType="jnt:resource">jcr:content</include>
     </aggregate>
     
     <index-rule nodeType="jnt:page">

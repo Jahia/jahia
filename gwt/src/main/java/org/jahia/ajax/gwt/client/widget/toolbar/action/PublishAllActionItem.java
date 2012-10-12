@@ -41,6 +41,7 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -70,7 +71,7 @@ public class PublishAllActionItem extends PublishActionItem {
                 updateTitle(Messages.get("label.publish.all.selected.items"));
             }
         } else {
-            gwtJahiaNode = ctx.getSingleSelection();
+            GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
             if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode)) {
                 setEnabled(true);
                 if(gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {

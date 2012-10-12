@@ -98,7 +98,6 @@ public class ExtendedNodeType implements NodeType {
     private String[] declaredSupertypeNames = new String[0];
     private ExtendedNodeType[] declaredSupertypes = new ExtendedNodeType[0];
     private List<ExtendedNodeType> declaredSubtypes = new ArrayList<ExtendedNodeType>();
-    private String validator;
     private boolean queryable = true;
     private String itemsType;
     private List<String> mixinExtendNames = new ArrayList<String>();
@@ -792,14 +791,6 @@ public class ExtendedNodeType implements NodeType {
 
     public ExtendedNodeDefinition getNodeDefinition(String name) {
         return nodes.get(name);
-    }
-
-    public String getValidator() {
-        return validator;
-    }
-
-    public void setValidator(String validator) {
-        this.validator = validator;
     }
 
     public String getItemsType() {

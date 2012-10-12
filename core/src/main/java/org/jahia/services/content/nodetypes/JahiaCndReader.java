@@ -438,7 +438,7 @@ public class JahiaCndReader {
                 nextToken();
                 if (currentTokenEquals(Lexer.DEFAULT)) {
                     nextToken();
-                    ntd.setValidator(currentToken);
+                    logger.warn("Warning : validator is not supported anymore");
                     nextToken();
                 } else {
                     lexer.fail("Invalid validator");

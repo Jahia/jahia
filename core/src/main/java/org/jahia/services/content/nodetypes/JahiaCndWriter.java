@@ -170,12 +170,6 @@ public class JahiaCndWriter {
             out.write("\n" + INDENT);
             out.write("abstract");            
         }
-        if (ntd.getValidator() != null) {
-            out.write("\n" + INDENT);
-            out.write("validator='");
-            out.write(escape(ntd.getValidator()));
-            out.write("'");
-        }
     }
 
     /**

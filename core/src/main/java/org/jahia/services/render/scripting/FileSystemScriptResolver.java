@@ -247,7 +247,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         Map<String, View> views = new HashMap<String, View>();
 
         Map<String,String> installedModules = null;
-        if (site != null) {
+        if (site != null && site.getPath().startsWith("/sites/")) {
             installedModules = site.getInstalledModulesWithVersions();
             List<String> keys = new ArrayList<String>(installedModules.keySet());
             for (int i = 0; i < keys.size(); i++) {

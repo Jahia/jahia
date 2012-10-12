@@ -76,7 +76,7 @@ public class PublishSiteActionItem extends PublishActionItem {
                 new BaseAsyncCallback<List<GWTJahiaNode>>() {
                     public void onSuccess(List<GWTJahiaNode> result) {
                         linker.loaded();
-                        gwtJahiaNode = result.get(0);
+                        GWTJahiaNode gwtJahiaNode = result.get(0);
                         PublishSiteActionItem.super.onComponentSelection();
                     }
                 });

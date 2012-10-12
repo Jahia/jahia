@@ -104,11 +104,11 @@ public class PublishActionItem extends BaseActionItem {
     protected transient String workflowType = "publish";
     protected transient boolean checkForUnpublication = false;
     protected transient boolean allSubTree = false;
-    protected transient GWTJahiaNode gwtJahiaNode;
 
     protected transient GWTJahiaWorkflow wf;
 
     public void handleNewLinkerSelection() {
+        wf = null;
         LinkerSelectionContext ctx = linker.getSelectionContext();
         if (ctx.getMultipleSelection() != null
                 && ctx.getMultipleSelection().size() > 1 && hasPermission(ctx.getSelectionPermissions())) {
@@ -117,7 +117,7 @@ public class PublishActionItem extends BaseActionItem {
                 updateTitle(getGwtToolbarItem().getTitle());
             }
         } else {
-            gwtJahiaNode = ctx.getSingleSelection();
+            GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
             if (gwtJahiaNode != null && gwtJahiaNode.getWorkflowInfo() != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode)) {
                 wf = gwtJahiaNode.getWorkflowInfo().getActiveWorkflows().get(new GWTJahiaWorkflowType(workflowType));
                 if (wf != null) {
@@ -165,7 +165,7 @@ public class PublishActionItem extends BaseActionItem {
 
     public void onComponentSelection() {
         if (wf == null) {
-            if (gwtJahiaNode != null) {
+            if (!linker.getSelectionContext().getMultipleSelection().isEmpty()) {
                 final List<String> uuids = new ArrayList<String>();
                 List<GWTJahiaNode> jahiaNodes = linker.getSelectionContext().getMultipleSelection();
                 if (jahiaNodes.size() > 1) {
@@ -173,7 +173,7 @@ public class PublishActionItem extends BaseActionItem {
                         uuids.add(jahiaNode.getUUID());
                     }
                 } else {
-                    uuids.add(gwtJahiaNode.getUUID());
+                    uuids.add(linker.getSelectionContext().getSingleSelection().getUUID());
                 }
                 linker.loading(Messages.get("label.gettingPublicationInfo", "Getting publication information"));
                 JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, checkForUnpublication, new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {

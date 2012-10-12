@@ -3868,20 +3868,22 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     private String interpolateResourceBundle(String title) {
         Locale locale = getSession().getLocale();
-        JCRSiteNode site = null;
         try {
-            site = getResolveSite();
+            JCRSiteNode site = getResolveSite();
+
+            for (String module : site.getInstalledModules()) {
+                try {
+                    return JahiaResourceBundle.interpolateResourceBunldeMacro(title, locale != null ? locale
+                            : session.getFallbackLocale(),
+                            ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(module).getName());
+                } catch (Exception e) {
+                }
+            }
         } catch (RepositoryException e) {
             logger.warn("Unable to resolve the site for node {}. Cause: {}", getPath(),
                     e.getMessage());
         }
-
-        try {
-            return JahiaResourceBundle.interpolateResourceBunldeMacro(title, locale != null ? locale
-                    : session.getFallbackLocale(), site != null ? site.getTemplatePackageName() : null);
-        } catch (Exception e) {
-            return title;
-        }
+        return title;
     }
 
     public void flushLocalCaches() {

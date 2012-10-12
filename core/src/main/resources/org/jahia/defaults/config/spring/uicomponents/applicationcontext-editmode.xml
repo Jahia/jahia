@@ -646,6 +646,11 @@
     <bean id="sidePanelTab.settings" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="label.settings"/>
         <property name="icon" value="settings"/>
+        <property name="treeColumns">
+            <list>
+                <value>displayName,*,label.title</value>
+            </list>
+        </property>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SettingsTabItem">
                 <property name="settingsPanelList">

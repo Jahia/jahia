@@ -30,11 +30,11 @@ ${fn:escapeXml(templatePackageName)}&nbsp;(${templateSetPackage.lastVersion})
     <thead>
         <tr>
             <th>#</th>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Version</th>
-            <th>Type</th>
-            <th>Source</th>
+            <th><fmt:message key="siteSettings.label.modules.id"/></th>
+            <th><fmt:message key="siteSettings.label.modules.name"/></th>
+            <th><fmt:message key="siteSettings.label.modules.version"/></th>
+            <th><fmt:message key="siteSettings.label.modules.type"/></th>
+            <th><fmt:message key="siteSettings.label.modules.source"/></th>
         </tr>
     </thead>
     <tbody>

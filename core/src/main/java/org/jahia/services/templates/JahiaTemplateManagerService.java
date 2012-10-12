@@ -516,6 +516,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         if (!sources.exists()) {
             finalFolderName = sources.getName();
             sources = sources.getParentFile();
+            if (sources == null) {
+                sources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources");
+            }
             sources.mkdirs();
         }
 

@@ -58,6 +58,8 @@ public class GitSourceControlManagement extends SourceControlManagement {
         executeCommand("git", "add .");
         executeCommand("git", "commit -a -m \"First commit\"");
         executeCommand("git", "remote add origin " + url);
+        executeCommand("git", "fetch");
+        executeCommand("git", "merge origin/master");
         executeCommand("git", "push -u origin master");
     }
 

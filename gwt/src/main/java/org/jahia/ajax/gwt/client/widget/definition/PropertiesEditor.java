@@ -231,6 +231,7 @@ public class PropertiesEditor extends FormPanel {
                 continue;
             }
 
+            List<String> defaultedProperties = new ArrayList<String>();
             if (!currentProperties.containsKey(definition.getName())) {
                 GWTJahiaNodeProperty property = new GWTJahiaNodeProperty();
                 property.setName(definition.getName());
@@ -240,6 +241,7 @@ public class PropertiesEditor extends FormPanel {
                 }
                 if (!definition.isNode() && ((GWTJahiaPropertyDefinition) definition).getDefaultValues() != null) {
                     property.setValues(((GWTJahiaPropertyDefinition) definition).getDefaultValues());
+                    defaultedProperties.add(definition.getName());
                 }
                 currentProperties.put(definition.getName(), property);
             }
@@ -363,6 +365,9 @@ public class PropertiesEditor extends FormPanel {
                         setExternalMixin(adapterField, false);
                     }
                 }
+                if (defaultedProperties.contains(field.getName())) {
+                    field.setData("defaultedField","true");
+                }
             }
         }
     }
@@ -473,7 +478,7 @@ public class PropertiesEditor extends FormPanel {
                             Field<?> f = fields.get(definition.getName());
                             GWTJahiaNodeProperty prop = currentProperties.get(definition.getName());
                             if (!doNotCheckFieldsValues && f != null &&
-                                    (f.isDirty() || !modifiedOnly || f.getData("addedField") != null)) {
+                                    (f.isDirty() || !modifiedOnly || f.getData("addedField") != null || f.getData("defaultedField") != null)) {
                                 Log.debug("Set value for " + prop.getName());
                                 prop.setValues(getPropertyValues(f, definition));
                                 newProps.add(prop);
@@ -753,6 +758,16 @@ public class PropertiesEditor extends FormPanel {
             } else {
                 super.addListener(eventType, listener);
             }
+        }
+
+        @Override
+        public <X> X getData(String key) {
+            return field.getData(key);
+        }
+
+        @Override
+        public void setData(String key, Object data) {
+            field.setData(key, data);
         }
     }
 }

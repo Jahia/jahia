@@ -683,9 +683,14 @@ public class JahiaNodeIndexer extends NodeIndexer {
             try {
                 NodeState parentNode = (NodeState) stateProvider.getItemState(node.getParentId());
 
-                doc.add(new Field(
-                        TRANSLATED_NODE_PARENT, parentNode.getParentId().toString(),
-                        Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
+                NodeId parentId = parentNode.getParentId();
+                if (parentId == null) {
+                    logger.warn("The node " + parentNode.getId().toString() + " is in 'free floating' state. You should run a consistency check/fix on the repository.");
+                } else {
+                    doc.add(new Field(
+                            TRANSLATED_NODE_PARENT, parentId.toString(),
+                            Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
+                }
 
                 doc.add(new Field(
                         TRANSLATION_LANGUAGE, resolveLanguage(),

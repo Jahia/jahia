@@ -93,7 +93,7 @@ public class FileSystemView implements Comparable<FileSystemView>, View {
             this.fileExtension = path.substring(lastDotPos+1);
         }
 
-        String pathWithoutExtension = StringUtils.substringBeforeLast(path, "." + fileExtension);
+        String pathWithoutExtension = path.substring(0, lastDotPos);
         String propName = pathWithoutExtension + ".properties";
         String pathBeforeDot = StringUtils.substringBefore(path, ".");
         String defaultPropName = pathBeforeDot + ".properties";
@@ -165,7 +165,7 @@ public class FileSystemView implements Comparable<FileSystemView>, View {
      * @return
      */
     public String getInfo() {
-        return "Path dispatch : " + path;
+        return "Path dispatch: " + path;
     }
 
     /**

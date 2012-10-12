@@ -56,6 +56,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageR
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
@@ -84,8 +85,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class FileSystemScriptResolver implements ScriptResolver, ApplicationListener<ApplicationEvent> {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FileSystemScriptResolver.class);
+    private static Logger logger = LoggerFactory.getLogger(FileSystemScriptResolver.class);
 
+    Comparator<File> scriptExtensionComparator;
+    
     private List<String> scriptExtensionsOrdering;
 
     private Map<String,ScriptFactory> scriptFactoryMap;
@@ -98,8 +101,14 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         return scriptExtensionsOrdering;
     }
 
-    public void setScriptExtensionsOrdering(List<String> scriptExtensionsOrdering) {
+    public void setScriptExtensionsOrdering(final List<String> scriptExtensionsOrdering) {
         this.scriptExtensionsOrdering = scriptExtensionsOrdering;
+        scriptExtensionComparator = new Comparator<File>() {
+            public int compare(File o1, File o2) {
+                int i = scriptExtensionsOrdering.indexOf(StringUtils.substringAfterLast(o1.getName(), ".")) - scriptExtensionsOrdering.indexOf(StringUtils.substringAfterLast(o2.getName(), "."));
+                return i != 0 ? i : 1;
+            }
+        };
     }
 
     public Map<String, ScriptFactory> getScriptFactoryMap() {
@@ -302,19 +311,15 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         String path = currentTemplatePath + "/" + JCRContentUtils.replaceColon(nt.getAlias()) + "/" + templateType;
         File f = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath() + "/" + path);
         if (f.exists()) {
-            SortedSet<File> files = new TreeSet<File>(new Comparator<File>() {
-                public int compare(File o1, File o2) {
-                    int i = scriptExtensionsOrdering.indexOf(StringUtils.substringAfterLast(o1.getName(), ".")) - scriptExtensionsOrdering.indexOf(StringUtils.substringAfterLast(o2.getName(), "."));
-                    return i != 0 ? i : 1;
-                }
-            });
+            SortedSet<File> files = new TreeSet<File>(scriptExtensionComparator);
             files.addAll(Arrays.asList(f.listFiles(new FilenameFilter() {
                 public boolean accept(File dir, String name) {
                     return scriptExtensionsOrdering.contains(StringUtils.substringAfterLast(name, "."));
                 }
             })));
             for (File file : files) {
-                if (scriptFactoryMap.containsKey(StringUtils.substringAfterLast(file.getName(), "."))) {
+                String ext = StringUtils.substringAfterLast(file.getName(), ".");
+                if (scriptFactoryMap.containsKey(ext)) {
                     String filename = file.getName();
                     String pref = nt.getName().contains(":") ? StringUtils.substringAfter(nt.getName(),":") : nt.getName();
                     if (filename.startsWith(pref+".")) {
@@ -327,7 +332,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                         if (!views.containsKey(key)) {
                             FileSystemView view = new FileSystemView(SettingsBean.getInstance().getTemplatesContext() + path + "/" + file.getName(), key, tplPackage, version, filename);
                             views.put(key, view);
-                            scriptFactoryMap.get(StringUtils.substringAfterLast(file.getName(), ".")).initView(view);
+                            scriptFactoryMap.get(ext).initView(view);
                         }
                     }
                 }

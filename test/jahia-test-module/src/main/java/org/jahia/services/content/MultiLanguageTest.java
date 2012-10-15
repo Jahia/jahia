@@ -52,8 +52,6 @@ import org.junit.*;
 import com.google.common.collect.Sets;
 
 import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import java.util.Arrays;
 import java.util.Locale;
 
 /**
@@ -78,7 +76,7 @@ public class MultiLanguageTest extends TestCase {
         session.save();
     }
 
-    @org.junit.Test
+    @Test
     public void testFallBackLanguage() throws Exception {
         JCRPublicationService jcrService = ServicesRegistry.getInstance()
                 .getJCRPublicationService();
@@ -106,7 +104,7 @@ public class MultiLanguageTest extends TestCase {
         assertEquals("English text node should be available in edit workspace when mixed language is activated.", "English text", frenchTextPropertyValue);
 
         // now let's test without mix language active.
-        frenchEditSession.logout();
+        JCRSessionFactory.getInstance().closeAllSessions();
         site.setMixLanguagesActive(false);
         ServicesRegistry.getInstance().getJahiaSitesService().updateSite(site);
 
@@ -127,7 +125,7 @@ public class MultiLanguageTest extends TestCase {
         assertEquals("English text node should be available in live workspace when mixed language is activated.", "English text", frenchLiveTextPropertyValue);
 
         // now let's test without mix language active.
-        frenchLiveSession.logout();
+        JCRSessionFactory.getInstance().closeAllSessions();
         site.setMixLanguagesActive(false);
         ServicesRegistry.getInstance().getJahiaSitesService().updateSite(site);
 
@@ -148,8 +146,10 @@ public class MultiLanguageTest extends TestCase {
 
         String defaultLanguage = site.getDefaultLanguage();
 
-        JCRSessionWrapper englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
-        JCRSessionWrapper englishLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+        JCRSessionFactory sf = jcrService.getSessionFactory();
+        Locale defLocale = LanguageCodeConverters.languageCodeToLocale(defaultLanguage);
+        JCRSessionWrapper englishEditSession = sf.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH, defLocale);
+        JCRSessionWrapper englishLiveSession = sf.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH, defLocale);
         JCRNodeWrapper stageRootNode = englishEditSession.getNode(SITECONTENT_ROOT_NODE);
         englishLiveSession.getNode(SITECONTENT_ROOT_NODE);
         JCRNodeWrapper stageNode = (JCRNodeWrapper) stageRootNode.getNode("home");
@@ -158,6 +158,12 @@ public class MultiLanguageTest extends TestCase {
         textNode1.setProperty("text", "English text");
 
         englishEditSession.save();
+        
+        JCRSessionWrapper frenchEditSession = sf.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.FRENCH, defLocale);
+        
+        frenchEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/textInvalidLanguage").setProperty("text", "French text");
+        
+        frenchEditSession.save();
 
         jcrService.publishByMainId(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, Sets.newHashSet(Locale.ENGLISH.toString(), Locale.FRENCH.toString()),
                 false, null);
@@ -166,24 +172,18 @@ public class MultiLanguageTest extends TestCase {
         String string = englishLiveSessionNode.getProperty("text").getValue().getString();
         assertEquals(string,"English text");
 
-        textNode1.setProperty("j:invalidLanguages", new String[]{"en"});
+        assertEquals("French text", sf.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.FRENCH, defLocale).getNode(SITECONTENT_ROOT_NODE + "/home/textInvalidLanguage").getProperty("text").getValue().getString());
+
+        textNode1.setProperty("j:invalidLanguages", new String[]{"fr"});
 
         englishEditSession.save();
 
         jcrService.publishByMainId(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, Sets.newHashSet(Locale.ENGLISH.toString(), Locale.FRENCH.toString()),
                 false, null);
 
-        try {
-            englishLiveSession.logout();
-            englishLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
-            englishLiveSessionNode = englishLiveSession.getNode(textNode1.getPath());
-            string = englishLiveSessionNode.getProperty("text").getValue().getString();
-            assertFalse(string.equals("English text"));
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        } catch (IllegalStateException e) {
-            logger.error(e.getMessage(), e);
-        }
+        JCRSessionFactory.getInstance().closeAllSessions();
+        assertEquals("English text", sf.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH, defLocale).getNode(SITECONTENT_ROOT_NODE + "/home/textInvalidLanguage").getProperty("text").getString());
+        assertFalse("French node should not be available in live",  sf.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.FRENCH, defLocale).nodeExists(SITECONTENT_ROOT_NODE + "/home/textInvalidLanguage"));
     }
 
     @After
@@ -191,7 +191,7 @@ public class MultiLanguageTest extends TestCase {
         TestHelper.deleteSite(TESTSITE_NAME);
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
         session.save();
-        session.logout();
+        JCRSessionFactory.getInstance().closeAllSessions();
     }
 
 

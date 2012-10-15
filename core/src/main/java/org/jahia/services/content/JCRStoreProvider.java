@@ -681,7 +681,9 @@ public class JCRStoreProvider {
                     }
                 }
             }
-            logger.debug("Login for " + getKey() + " as " + ((SimpleCredentials) credentials).getUserID());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Login for {} as {}", getKey(), ((SimpleCredentials) credentials).getUserID());
+            }
         }
 
         s = getRepository().login(credentials, workspace);

@@ -120,7 +120,7 @@ public class JahiaQueryEngine extends QueryEngine {
         // if true it means that the LuceneQueryFactory should just let the
         // QueryEngine take care of sorting and applying offset and limit
         // constraints
-        boolean externalSort = !NATIVE_SORT;
+        boolean externalSort = !NATIVE_SORT && (orderings != null && orderings.length > 0);
 
         List<Row> rowsList = null;
         try {

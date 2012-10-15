@@ -381,12 +381,14 @@ public class ContentTabItem extends PropertiesTabItem {
                     checkBox.addListener(Events.Change, new Listener<ComponentEvent>() {
                         public void handleEvent(ComponentEvent componentEvent) {
                             CheckBox checkBox1 = (CheckBox) componentEvent.getSource();
+                            if (engine instanceof AbstractContentEngine) {
                             final ComboBox<GWTJahiaLanguage> languageSwitcher = ((AbstractContentEngine) engine).getLanguageSwitcher();
                             if(languageSwitcher!=null) {
                                 final ListStore<GWTJahiaLanguage> store = languageSwitcher.getStore();
                                 if(store!=null)
                                 store.findModel("language", checkBox1.getValueAttribute()).setActive(checkBox1.getValue());
                                 languageSwitcher.getView().refresh();
+                            }
                             }
                         }
                     });

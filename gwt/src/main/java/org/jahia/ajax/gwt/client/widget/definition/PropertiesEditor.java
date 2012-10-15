@@ -761,8 +761,9 @@ public class PropertiesEditor extends FormPanel {
         }
 
         @Override
+        @SuppressWarnings({"unchecked"})
         public <X> X getData(String key) {
-            return field.getData(key);
+            return (X) field.getData(key);
         }
 
         @Override

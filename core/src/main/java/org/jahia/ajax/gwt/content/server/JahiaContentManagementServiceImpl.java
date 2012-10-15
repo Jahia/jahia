@@ -43,11 +43,13 @@ package org.jahia.ajax.gwt.content.server;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
+import difflib.StringUtills;
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.apache.jackrabbit.core.security.PrivilegeImpl;
 import org.jahia.ajax.gwt.client.data.*;
@@ -257,10 +259,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @return
      * @throws GWTJahiaServiceException
      */
-    public GWTManagerConfiguration getManagerConfiguration(String name) throws GWTJahiaServiceException {
+    public GWTManagerConfiguration getManagerConfiguration(String name, String path) throws GWTJahiaServiceException {
         GWTManagerConfiguration config = null;
         try {
-            config = uiConfig.getGWTManagerConfiguration(getSite(), getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
+            JCRNodeWrapper context = getSite();
+            if (!StringUtils.isEmpty(path)) {
+                context = retrieveCurrentSession().getNode(path);
+            }
+            config = uiConfig.getGWTManagerConfiguration(context, getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
                     getRequest(), name);
             config.setSiteNode(navigation.getGWTJahiaNode(getSite(), GWTJahiaNode.DEFAULT_SITE_FIELDS));
             setAvailablePermissions(config);

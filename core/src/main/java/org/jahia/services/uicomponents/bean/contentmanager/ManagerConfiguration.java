@@ -103,6 +103,8 @@ public class ManagerConfiguration implements Serializable {
     private String requiredPermission;
     private boolean showOnlyNodesWithTemplates = false;
 
+    private boolean editableGrid;
+
     public ManagerConfiguration() {
         tableColumns = new ArrayList<Column>();
         treeColumns = new ArrayList<Column>();
@@ -372,5 +374,14 @@ public class ManagerConfiguration implements Serializable {
 
     public void setDisplaySearchInDateMeta(boolean displaySearchInDateMeta) {
         this.displaySearchInDateMeta = displaySearchInDateMeta;
+    }
+
+
+    public boolean isEditableGrid() {
+        return editableGrid;
+    }
+
+    public void setEditableGrid(boolean editableGrid) {
+        this.editableGrid = editableGrid;
     }
 }

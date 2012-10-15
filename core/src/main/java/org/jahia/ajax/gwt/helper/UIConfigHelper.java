@@ -60,7 +60,10 @@ import org.jahia.services.uicomponents.bean.contentmanager.Repository;
 import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.uicomponents.bean.editmode.EngineTab;
 import org.jahia.services.uicomponents.bean.editmode.SidePanelTab;
-import org.jahia.services.uicomponents.bean.toolbar.*;
+import org.jahia.services.uicomponents.bean.toolbar.Item;
+import org.jahia.services.uicomponents.bean.toolbar.Menu;
+import org.jahia.services.uicomponents.bean.toolbar.Property;
+import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -289,6 +292,7 @@ public class UIConfigHelper {
                 gwtConfig.setSearchBasePath(config.getSearchBasePath());
                 gwtConfig.setShowOnlyNodesWithTemplates(config.isShowOnlyNodesWithTemplates());
                 gwtConfig.setDisplaySearchInDateMeta(config.isDisplaySearchInDateMeta());
+                gwtConfig.setEditableGrid(config.isEditableGrid());
                 // set toolbar
                 gwtConfig.setToolbars(createGWTToolbarSet(contextNode, site, jahiaUser, locale, uiLocale, request, config.getToolbars()));
                 gwtConfig.setContextMenu(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getContextMenu()));
@@ -320,17 +324,28 @@ public class UIConfigHelper {
                         } else {
                             repository.setTitle(item.getKey());
                         }
-                        repository.setPaths(item.getPaths());
+                        repository.setPaths(new ArrayList<String>());
+                        for (String path : item.getPaths()) {
+                            if (path.equals("$rootPath")) {
+                                repository.getPaths().add(contextNode.getPath());
+                            } else {
+                                repository.getPaths().add(path);
+                            }
+                        }
                         gwtConfig.addRepository(repository);
                     }
                 }
 
-                List<GWTEngineTab> tabs = createGWTEngineList(contextNode, site, jahiaUser, locale, uiLocale, request, config.getEngineTabs());
-                gwtConfig.setEngineTabs(tabs);
+                if (config.getEngineTabs() != null && !config.getEngineTabs().isEmpty()) {
+                    List<GWTEngineTab> tabs = createGWTEngineList(contextNode, site, jahiaUser, locale, uiLocale, request, config.getEngineTabs());
+                    gwtConfig.setEngineTabs(tabs);
+                }
 
                 // todo : use eanUtilsBean.getInstance().cloneBean when it works. Actually it does not copy properties of the bean.
-                List<GWTEngineTab> managerTabs = createGWTEngineList(contextNode, site, jahiaUser, locale, uiLocale, request, config.getEngineTabs());
-                gwtConfig.setManagerEngineTabs(managerTabs);
+                if (config.getEngineTabs() != null && !config.getEngineTabs().isEmpty()) {
+                    List<GWTEngineTab> managerTabs = createGWTEngineList(contextNode, site, jahiaUser, locale, uiLocale, request, config.getEngineTabs());
+                    gwtConfig.setManagerEngineTabs(managerTabs);
+                }
 
                 return gwtConfig;
             } else {

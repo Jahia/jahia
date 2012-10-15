@@ -98,7 +98,7 @@ public class ContentPickerEntryPoint extends CommonEntryPoint {
             final String callback = DOM.getElementAttribute(panel.getElement(), "callback");
 
 
-            JahiaContentManagementService.App.getInstance().getManagerConfiguration(conf, new BaseAsyncCallback<GWTManagerConfiguration>() {
+            JahiaContentManagementService.App.getInstance().getManagerConfiguration(conf, null, new BaseAsyncCallback<GWTManagerConfiguration>() {
                 public void onSuccess(GWTManagerConfiguration config) {
                     PermissionsUtils.loadPermissions(config.getPermissions());
                     panel.add(new ContentPickerViewport(jahiaContextPath, jahiaServletPath, filesServletPath,

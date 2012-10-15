@@ -169,7 +169,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void getJobs(int offset, int limit, String sortField, String sortDir, List<String> groupNames, AsyncCallback<PagingLoadResult<GWTJahiaJobDetail>> async);
 
-    void getManagerConfiguration(String name, AsyncCallback<GWTManagerConfiguration> async);
+    void getManagerConfiguration(String name, String path, AsyncCallback<GWTManagerConfiguration> async);
 
     void getMountpoints(AsyncCallback<List<GWTJahiaNode>> async);
 

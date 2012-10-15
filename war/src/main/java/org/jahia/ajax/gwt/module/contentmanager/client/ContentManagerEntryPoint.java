@@ -80,6 +80,7 @@ public class ContentManagerEntryPoint extends CommonEntryPoint {
             final String mimeTypesString = DOM.getElementAttribute(panel.getElement(), "mimeTypes");
             final List<String> mimeTypes = mimeTypesString.length() > 0 ? Arrays.asList(mimeTypesString.split(",")) : null;
             final String config = DOM.getElementAttribute(panel.getElement(), "config");
+            final String rootPath = DOM.getElementAttribute(panel.getElement(), "rootPath");
             final String paths = DOM.getElementAttribute(panel.getElement(), "selectedPaths");
             final List<String> selectedPaths = new ArrayList<String>();
             if (paths != null && paths.length() > 0) {
@@ -88,7 +89,7 @@ public class ContentManagerEntryPoint extends CommonEntryPoint {
                 }
             }
 
-            JahiaContentManagementService.App.getInstance().getManagerConfiguration(config, new BaseAsyncCallback<GWTManagerConfiguration>() {
+            JahiaContentManagementService.App.getInstance().getManagerConfiguration(config, rootPath, new BaseAsyncCallback<GWTManagerConfiguration>() {
                 public void onSuccess(GWTManagerConfiguration config) {
                     PermissionsUtils.loadPermissions(config.getPermissions());
                     if (embedded) {

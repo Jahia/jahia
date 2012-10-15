@@ -1257,6 +1257,78 @@
     </bean>
     <!-- site-level component manager -->
 
+    <bean id="batchmanager" parent="abstractmanager">
+        <property name="nodeTypes" value="jnt:content"/>
+        <property name="folderTypes" value="jnt:contentList"/>
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.EditContent"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Undelete"/>
+                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.ItemsGroup.NodeTypeFiltering"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.EditContent"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Undelete"/>
+                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.ItemsGroup.NodeTypeFiltering"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="hideLeftPanel" value="true"/>
+        <property name="displaySearch" value="false"/>
+        <property name="expandRoot" value="true"/>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="false"/>
+        <property name="searchInContent" value="false"/>
+        <property name="searchInFile" value="false"/>
+        <property name="defaultView" value="list"/>
+        <property name="editableGrid" value="true"/>
+
+        <property name="engineTabs">
+            <list/>
+        </property>
+        <!-- accordion panels-->
+        <property name="repositories">
+            <list>
+                <bean class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+                    <property name="key" value="userDefinedRepository"/>
+                    <property name="paths" value="$rootPath"/>
+                </bean>
+            </list>
+        </property>
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>icon,40,empty</value>
+                <value>name,*,label.name</value>
+            </list>
+        </property>
+
+    </bean>
+
     <!-- accordion -->
     <bean id="repository.global" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="globalRepository"/>

@@ -144,7 +144,7 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
             return;
         }
         JahiaContentManagementService.App.getInstance()
-                .getManagerConfiguration(configuration, new BaseAsyncCallback<GWTManagerConfiguration>() {
+                .getManagerConfiguration(configuration, null, new BaseAsyncCallback<GWTManagerConfiguration>() {
                     public void onSuccess(GWTManagerConfiguration config) {
                         PermissionsUtils.loadPermissions(config.getPermissions());
                         final Window w = new Window();

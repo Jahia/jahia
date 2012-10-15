@@ -61,6 +61,7 @@ import org.jahia.services.content.decorator.JCRQueryNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.sites.SitesSettings;
@@ -1205,20 +1206,20 @@ public class NavigationHelper {
         for (String field : fields) {
             if (!GWTJahiaNode.RESERVED_FIELDS.contains(field)) {
                 try {
-                    if (node.hasProperty(field)) {
+                    if (field.startsWith("fields-")) {
+                        String type = field.substring("fields-".length());
+                        PropertyIterator pi = node.getProperties();
+                        while (pi.hasNext()) {
+                            JCRPropertyWrapper property = (JCRPropertyWrapper) pi.next();
+                            if (((ExtendedPropertyDefinition)property.getDefinition()).getItemType().equals(type)) {
+                                setPropertyValue(n, property, node.getSession());
+                            }
+                        }
+
+                    } else if (node.hasProperty(field)) {
 //                        n.set(StringUtils.substringAfter(propName, ":"), node.getProperty(propName).getString());
                         final JCRPropertyWrapper property = node.getProperty(field);
-                        if (property.isMultiple()) {
-                            Value[] values = property.getValues();
-                            List<Object> l = new ArrayList<Object>();
-                            for (Value value : values) {
-                                l.add(getPropertyValue(value, node.getSession()));
-                            }
-                            n.set(field, l);
-                        } else {
-                            Value value = property.getValue();
-                            n.set(field, getPropertyValue(value, node.getSession()));
-                        }
+                        setPropertyValue(n, property, node.getSession());
                     }
                 } catch (RepositoryException e) {
                     logger.error("Cannot get property " + field + " on node " + node.getPath());
@@ -1306,6 +1307,20 @@ public class NavigationHelper {
             logger.error(e.getMessage(), e);
         }
         return n;
+    }
+
+    private void setPropertyValue(GWTJahiaNode n, JCRPropertyWrapper property, JCRSessionWrapper session) throws RepositoryException {
+        if (property.isMultiple()) {
+            Value[] values = property.getValues();
+            List<Object> l = new ArrayList<Object>();
+            for (Value value : values) {
+                l.add(getPropertyValue(value, session));
+            }
+            n.set(property.getName(), l);
+        } else {
+            Value value = property.getValue();
+            n.set(property.getName(), getPropertyValue(value, session));
+        }
     }
 
     private Object getPropertyValue(Value value, JCRSessionWrapper session)

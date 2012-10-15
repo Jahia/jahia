@@ -43,30 +43,35 @@ package org.jahia.ajax.gwt.client.widget.content;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.core.El;
-import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.dnd.*;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.LoadEvent;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.dnd.DND;
+import com.extjs.gxt.ui.client.dnd.GridDragSource;
+import com.extjs.gxt.ui.client.dnd.GridDropTarget;
+import com.extjs.gxt.ui.client.dnd.Insert;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.util.Rectangle;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.grid.filters.GridFilters;
-import com.extjs.gxt.ui.client.widget.grid.filters.ListFilter;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeSelectorType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem;
 
 import java.util.*;
 
@@ -82,7 +87,7 @@ public class TableView extends AbstractView {
     public TableView(final GWTManagerConfiguration config) {
         super(config);
 
-        NodeColumnConfigList columns = new NodeColumnConfigList(configuration.getTableColumns());
+        final NodeColumnConfigList columns = new NodeColumnConfigList(configuration.getTableColumns());
         columns.init();
         CheckBoxSelectionModel<GWTJahiaNode> checkboxSelectionModel = null;
         if (configuration.isAllowsMultipleSelection()) {
@@ -90,7 +95,12 @@ public class TableView extends AbstractView {
             columns.add(0, checkboxSelectionModel.getColumn());
         }
 
-        m_grid = new Grid<GWTJahiaNode>(store, new ColumnModel(columns));
+        if (configuration.isEditableGrid()) {
+            m_grid = new EditorGrid<GWTJahiaNode>(store, new ColumnModel(columns));
+        } else {
+            m_grid = new Grid<GWTJahiaNode>(store, new ColumnModel(columns));
+        }
+
         m_grid.setBorders(true);
         if (columns.getAutoExpand() != null) {
             m_grid.setAutoExpandColumn(columns.getAutoExpand());
@@ -133,6 +143,74 @@ public class TableView extends AbstractView {
             }
         });
 
+        if (config.isEditableGrid()) {
+            loader.addLoadListener(new LoadListener() {
+                @Override
+                public void loaderLoad(LoadEvent le) {
+                    BasePagingLoadResult<GWTJahiaNode> r = le.getData();
+                    List<String> nodeTypes = null;
+                    for (GWTJahiaNode node : r.getData()) {
+                        List<String> currentNodeTypes = new ArrayList<String>(node.getNodeTypes());
+                        currentNodeTypes.addAll(node.getInheritedNodeTypes());
+                        if (nodeTypes == null) {
+                            nodeTypes = currentNodeTypes;
+                        } else {
+                            nodeTypes.retainAll(currentNodeTypes);
+                        }
+                    }
+                    generateEditableColumns(columns, nodeTypes);
+                }
+            });
+        }
+    }
+
+    private void generateEditableColumns(final NodeColumnConfigList columns, List<String> nodeTypes) {
+        JahiaContentManagementService.App.getInstance().getNodeTypes(nodeTypes, new AsyncCallback<List<GWTJahiaNodeType>>() {
+            public void onFailure(Throwable caught) {
+            }
+
+            public void onSuccess(List<GWTJahiaNodeType> result) {
+                ColumnModel columnModel = new ColumnModel(columns);
+                for (GWTJahiaNodeType gwtJahiaNodeType : result) {
+                    for (GWTJahiaItemDefinition definition : gwtJahiaNodeType.getItems()) {
+                        if (definition.getDataType().equals("content") && !definition.isHidden() && !definition.isProtected()) {
+                            ColumnConfig e = new ColumnConfig(definition.getName(), definition.getLabel(), 200);
+                            switch (definition.getSelector()) {
+                                case GWTJahiaNodeSelectorType.SMALLTEXT:
+                                    break;
+                                case GWTJahiaNodeSelectorType.TEXTAREA:
+                                    break;
+                                case GWTJahiaNodeSelectorType.RICHTEXT:
+                                    continue;
+                                case GWTJahiaNodeSelectorType.DATETIMEPICKER:
+                                case GWTJahiaNodeSelectorType.DATEPICKER:
+                                    e.setWidth(100);
+                                    break;
+                                case GWTJahiaNodeSelectorType.CHECKBOX:
+                                case GWTJahiaNodeSelectorType.COLOR:
+                                case GWTJahiaNodeSelectorType.CRON:
+                                case GWTJahiaNodeSelectorType.CATEGORY:
+                                    break;
+                                case GWTJahiaNodeSelectorType.PICKER:
+                                    e.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
+                                        public Object render(GWTJahiaNode model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
+                                            return ((String)model.get(property)).substring((((String) model.get(property)).indexOf("/")));
+                                        }
+                                    });
+                                    break;
+                                case GWTJahiaNodeSelectorType.CHOICELIST:
+                            }
+                            Field f = FormFieldCreator.createField(definition, null, null, false, root.getPermissions(), JahiaGWTParameters.getUILanguage());
+                            if (f != null) {
+                                e.setEditor(new CellEditor(f));
+                                columnModel.getColumns().add(e);
+                            }
+                        }
+                    }
+                }
+                m_grid.reconfigure(m_grid.getStore(), columnModel);
+            }
+        });
     }
 
     @Override

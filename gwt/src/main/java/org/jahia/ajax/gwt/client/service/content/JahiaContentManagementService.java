@@ -216,7 +216,7 @@ public interface JahiaContentManagementService extends RemoteService {
      */
     PagingLoadResult<GWTJahiaJobDetail> getJobs(int offset, int limit, String sortField, String sortDir, List<String> groupNames) throws GWTJahiaServiceException;
 
-    GWTManagerConfiguration getManagerConfiguration(String name) throws GWTJahiaServiceException;
+    GWTManagerConfiguration getManagerConfiguration(String name, String path) throws GWTJahiaServiceException;
 
     List<GWTJahiaNode> getMountpoints() throws GWTJahiaServiceException;
 

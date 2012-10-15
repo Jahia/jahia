@@ -78,15 +78,17 @@ public class ContentManager extends TriPanelBrowserLayout {
         }
 
         // construction of the UI components
-        LeftComponent tree = null;
-        Component leftTree = null;
+        LeftComponent leftTree = null;
+        Component leftTreeComponent = null;
+        BottomRightComponent bottomTabs = null;
+        Component bottomTabsComponent = null;
 
         if (!config.isHideLeftPanel()) {
-            tree = new ContentRepositoryTabs(config, selectedPaths);
-            leftTree = tree.getComponent();
+            leftTree = new ContentRepositoryTabs(config, selectedPaths);
+            leftTreeComponent = leftTree.getComponent();
         } else {
-            tree = null;
             leftTree = null;
+            leftTreeComponent = null;
             DeferredCommand.addCommand(new Command() {
                 public void execute() {
                     JahiaContentManagementService.App.getInstance().getRoot(config.getRepositories().get(0).getPaths(), null,null,null,GWTJahiaNode.DEFAULT_FIELDS,
@@ -106,7 +108,10 @@ public class ContentManager extends TriPanelBrowserLayout {
 
 
         final ContentViews contentViews = new ContentViews(config);
-        final BottomRightComponent tabs = new ContentDetails(config,linker);
+        if (config.getManagerEngineTabs() != null) {
+            bottomTabs = new ContentDetails(config,linker);
+            bottomTabsComponent = bottomTabs.getComponent();
+        }
         final TopBar toolbar = new ContentToolbar(config, linker) {
 
         };
@@ -114,19 +119,19 @@ public class ContentManager extends TriPanelBrowserLayout {
 
         // setup widgets in layout
 
-        initWidgets(leftTree,
+        initWidgets(leftTreeComponent,
                 contentViews.getComponent(),
-                tabs.getComponent(),
+                bottomTabsComponent,
                 toolbar.getComponent(),
                 statusBar.getComponent());
 
         // linker initializations
-        linker.registerComponents(tree, contentViews, tabs, toolbar, statusBar);
+        linker.registerComponents(leftTree, contentViews, bottomTabs, toolbar, statusBar);
 
         if (config.getContextMenu() != null) {
             final ActionContextMenu actionContextMenu = new ActionContextMenu(config.getContextMenu(), linker);
-            if (tree != null) {
-                tree.getComponent().setContextMenu(actionContextMenu);
+            if (leftTree != null) {
+                leftTree.getComponent().setContextMenu(actionContextMenu);
             }
 
             contentViews.getComponent().setContextMenu(actionContextMenu);

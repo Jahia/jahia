@@ -101,6 +101,7 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     private boolean showOnlyNodesWithTemplates = false;
 
+    private boolean editableGrid = false;
 
     public GWTManagerConfiguration() {
     	super();
@@ -389,6 +390,14 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     public void setShowOnlyNodesWithTemplates(boolean showOnlyNodesWithTemplates) {
         this.showOnlyNodesWithTemplates = showOnlyNodesWithTemplates;
+    }
+
+    public boolean isEditableGrid() {
+        return editableGrid;
+    }
+
+    public void setEditableGrid(boolean editableGrid) {
+        editableGrid = editableGrid;
     }
 
     public boolean isAllowRootNodeEditing() {

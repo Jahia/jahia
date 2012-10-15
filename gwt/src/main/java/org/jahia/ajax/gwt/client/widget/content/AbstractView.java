@@ -101,6 +101,9 @@ public abstract class AbstractView extends TopRightComponent {
                         listLoadConfig.setSortDir(store.getSortDir());
                     }
                     List<String> keys = new ArrayList<String>(configuration.getTableColumnKeys());
+                    if (configuration.isEditableGrid()) {
+                        keys.add("fields-content");
+                    }
                     keys.add(GWTJahiaNode.PUBLICATION_INFO);
                     keys.add(GWTJahiaNode.PERMISSIONS);
                     keys.add(GWTJahiaNode.LOCKS_INFO);

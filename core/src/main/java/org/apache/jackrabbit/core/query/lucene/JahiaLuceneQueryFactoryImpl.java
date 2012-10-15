@@ -95,6 +95,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
     /**
      * Override LuceneQueryFactory.execute()
      */
+    @Override
     public List<Row> execute(Map<String, PropertyValue> columns,
             Selector selector, Constraint constraint, Sort sort,
             boolean externalSort, long offsetIn, long limitIn)
@@ -186,11 +187,27 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                             node.getNodeId(), node.getScore());
                                 }
 
-                                rows.add(row);
-                                if (hasFacets) {
-                                    nodes.add(node); // <-- Added by jahia
+                                if (externalSort) {
+                                    rows.add(row);
+                                    if (hasFacets) {
+                                        nodes.add(node); // <-- Added by jahia
+                                    }
+                                } else {
+                                    // apply limit and offset rules locally
+                                    if (currentNode >= offset
+                                            && currentNode - offset < limit) {
+                                        rows.add(row);
+                                        if (hasFacets) {
+                                            nodes.add(node); // <-- Added by jahia
+                                        }
+                                        addedNodes++;
+                                    }
+                                    currentNode++;
+                                    // end the loop when going over the limit
+                                    if (addedNodes == limit) {
+                                        break;
+                                    }
                                 }
-
                             } else {
                                 NodeImpl objectNode = session.getNodeById(node
                                         .getNodeId());

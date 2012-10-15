@@ -40,12 +40,17 @@
 
 package org.apache.jackrabbit.core.query;
 
+import org.apache.jackrabbit.api.stats.RepositoryStatistics;
 import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
 import org.apache.jackrabbit.core.query.lucene.LuceneQueryFactory;
 import org.apache.jackrabbit.core.query.lucene.SearchIndex;
 import org.apache.jackrabbit.core.query.lucene.join.JahiaQueryEngine;
 import org.apache.jackrabbit.core.session.SessionContext;
+import org.apache.jackrabbit.core.session.SessionOperation;
+import org.apache.jackrabbit.core.stats.RepositoryStatisticsImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.QueryObjectModelTree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -58,6 +63,7 @@ import javax.jcr.query.QueryResult;
  *  - use JahiaQueryEngine instead of QueryEngine in execute()
  */
 public class JahiaQueryObjectModelImpl extends QueryObjectModelImpl {
+    private static final Logger log = LoggerFactory.getLogger(QueryObjectModelImpl.class);
 
     @Override
     public void init(SessionContext sessionContext, QueryHandler handler, QueryObjectModelTree qomTree, String language, Node node) throws InvalidQueryException, RepositoryException {
@@ -68,12 +74,33 @@ public class JahiaQueryObjectModelImpl extends QueryObjectModelImpl {
 
     }
 
+    @Override
     public QueryResult execute() throws RepositoryException {
-        JahiaQueryEngine engine = new JahiaQueryEngine(
-                sessionContext.getSessionImpl(), lqf, variables);
-        return engine.execute(
-                getColumns(), getSource(), getConstraint(),
-                getOrderings(), offset, limit);
+        long time = System.nanoTime();
+        final QueryResult result = sessionContext.getSessionState().perform(
+                new SessionOperation<QueryResult>() {
+                    public QueryResult perform(SessionContext context)
+                            throws RepositoryException {
+                        final JahiaQueryEngine engine = new JahiaQueryEngine(
+                                sessionContext.getSessionImpl(), lqf, variables);
+                        return engine.execute(getColumns(), getSource(),
+                                getConstraint(), getOrderings(), offset, limit);
+                    }
+
+                    public String toString() {
+                        return "query.execute(" + statement + ")";
+                    }
+                });
+        time = System.nanoTime() - time;
+        final long timeMs = time / 1000000;
+        log.debug("executed in {} ms. ({})", timeMs, statement);
+        RepositoryStatisticsImpl statistics = sessionContext
+                .getRepositoryContext().getRepositoryStatistics();
+        statistics.getCounter(RepositoryStatistics.Type.QUERY_COUNT).incrementAndGet();
+        statistics.getCounter(RepositoryStatistics.Type.QUERY_DURATION).addAndGet(timeMs);
+        sessionContext.getRepositoryContext().getStatManager().getQueryStat()
+                .logQuery(language, statement, timeMs);
+        return result;
     }
     
     public LuceneQueryFactory getLuceneQueryFactory() {

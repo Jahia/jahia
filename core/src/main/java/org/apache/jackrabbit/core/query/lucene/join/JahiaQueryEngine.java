@@ -76,12 +76,15 @@ import org.apache.jackrabbit.core.query.lucene.LuceneQueryFactory;
 import org.apache.lucene.search.Sort;
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Override QueryEngine :
  *  - add facet handling in execute()
  */
 public class JahiaQueryEngine extends QueryEngine {
+    private static final Logger log = LoggerFactory.getLogger(QueryEngine.class);
 
     private static final boolean NATIVE_SORT = Boolean.valueOf(System
             .getProperty(NATIVE_SORT_SYSTEM_PROPERTY, "false"));
@@ -101,13 +104,13 @@ public class JahiaQueryEngine extends QueryEngine {
             Ordering[] orderings, long offset, long limit, int printIndentation)
             throws RepositoryException {
         Map<String, NodeType> selectorMap = getSelectorNames(selector);
-        String[] selectorNames =
-            selectorMap.keySet().toArray(new String[selectorMap.size()]);
+        String[] selectorNames = selectorMap.keySet().toArray(
+                new String[selectorMap.size()]);
 
-        Map<String, PropertyValue> columnMap =
-            getColumnMap(columns, selectorMap);
-        String[] columnNames =
-            columnMap.keySet().toArray(new String[columnMap.size()]);
+        Map<String, PropertyValue> columnMap = getColumnMap(columns,
+                selectorMap);
+        String[] columnNames = columnMap.keySet().toArray(
+                new String[columnMap.size()]);
 
         Sort sort = new Sort();
         if (NATIVE_SORT) {
@@ -119,33 +122,43 @@ public class JahiaQueryEngine extends QueryEngine {
         // constraints
         boolean externalSort = !NATIVE_SORT;
 
+        List<Row> rowsList = null;
         try {
-            final List<Row> rowsList = lqf.execute(columnMap, selector, constraint, sort, externalSort, offset, limit);
-            // Added by jahia
-            QueryResult result;
-            if (rowsList.size() > 0 && rowsList.get(0) instanceof FacetRow) {
-                FacetRow facets = (FacetRow) rowsList.remove(0);
-                RowIterator rows = new RowIteratorAdapter(rowsList);
-                result = new FacetedQueryResult(columnNames, selectorNames, rows, facets);
-                QueryResult r = sort(result, orderings, evaluator, offset, limit);
-                if (r != result) {
-                    result = new FacetedQueryResult(columnNames, selectorNames, r.getRows(), facets);
-                }
-            } else {
-                RowIterator rows = new RowIteratorAdapter(rowsList);
-                result = new JahiaSimpleQueryResult(columnNames, selectorNames, rows);
-                QueryResult r = sort(result, orderings, evaluator, offset, limit);
-                if (r != result) {
-                    result = new JahiaSimpleQueryResult(columnNames, selectorNames, r.getRows());
-                }
+            rowsList = lqf.execute(columnMap, selector, constraint, sort, externalSort, offset, limit);
+        } catch (IOException e) {
+            throw new RepositoryException("Failed to access the query index", e);
+        }
+        // Added by jahia
+        QueryResult result;
+        if (rowsList.size() > 0 && rowsList.get(0) instanceof FacetRow) {
+            FacetRow facets = (FacetRow) rowsList.remove(0);
+            RowIterator rows = new RowIteratorAdapter(rowsList);
+            return new FacetedQueryResult(columnNames, selectorNames, rows, facets);
+        } else {
+            RowIterator rows = new RowIteratorAdapter(rowsList);
+            result = new JahiaSimpleQueryResult(columnNames, selectorNames, rows);
+            if (NATIVE_SORT) {
+                return result;
+            }
+            long timeSort = System.currentTimeMillis();
+            QueryResult r = sort(result, orderings, evaluator, offset, limit);
+            log.debug("{}SQL2 SORT took {} ms.", genString(printIndentation),
+                    System.currentTimeMillis() - timeSort);
+            if (r != result) {
+                return new JahiaSimpleQueryResult(columnNames, selectorNames, r.getRows());
             }
             return result;
-            // End
-        } catch (IOException e) {
-            throw new RepositoryException(
-                    "Failed to access the query index", e);
         }
     }
+
+    private static String genString(int len) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < len; i++) {
+            sb.append(" ");
+        }
+        return sb.toString();
+    }
+
 
     @Override
     protected QueryResult execute(Column[] columns, Join join, Constraint constraint, Ordering[] orderings, long offset, long limit, int printIndentation) throws RepositoryException {

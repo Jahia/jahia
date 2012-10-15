@@ -43,10 +43,10 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.*;
@@ -125,19 +125,60 @@ public class TranslateContentEngine extends Window {
         panel.setLayout(new BorderLayout());
 
         sourceLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), false, srcLanguage);
-        targetLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), true, destLanguage);
+        targetLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), true, destLanguage, sourceLangPropertiesEditor);
 
-        Button widget = new Button(Messages.get("label.translate.copy", "Copy to other language"));
-        sourceLangPropertiesEditor.getTopBar().add(widget);
-        widget.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        Button copyButton = new Button(Messages.get("label.translate.copy", "Copy to other language"));
+        sourceLangPropertiesEditor.getTopBar().add(copyButton);
+        copyButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                List<GWTJahiaNodeProperty> props = sourceLangPropertiesEditor.getPropertiesEditorByLang(sourceLangPropertiesEditor.getDisplayedLocale().getLanguage()).getProperties();
+                PropertiesEditor sourcePropertiesEditor = sourceLangPropertiesEditor.getPropertiesEditorByLang(sourceLangPropertiesEditor.getDisplayedLocale().getLanguage());
+                List<GWTJahiaNodeProperty> props = sourcePropertiesEditor.getProperties();
                 Map<String,PropertiesEditor.PropertyAdapterField> fieldsMap = targetLangPropertiesEditor.getPropertiesEditorByLang(targetLangPropertiesEditor.getDisplayedLocale().getLanguage()).getFieldsMap();
                 for (final GWTJahiaNodeProperty prop : props) {
-                    final Field<?> f = fieldsMap.get(prop.getName()).getField();
-                    FormFieldCreator.copyValue(prop, f);
+                    if (sourcePropertiesEditor.getGWTJahiaItemDefinition(prop).isInternationalized()) {
+                        final Field<?> f = fieldsMap.get(prop.getName()).getField();
+                        FormFieldCreator.copyValue(prop, f);
+                    }
                 }
+            }
+        });
+        Button suggestButton = new Button(Messages.get("label.translate.suggest", "Suggest translation"));
+        targetLangPropertiesEditor.getTopBar().add(suggestButton);
+        suggestButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                MessageBox.confirm(
+                        Messages.get("label.translate.suggest", "Suggest translation"),
+                        Messages.get("label.translate.suggest.confirm", "Do you want to replace the content by an automatic translation of it?"),
+                        new Listener<MessageBoxEvent>() {
+                            public void handleEvent(MessageBoxEvent be) {
+                                if(Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getItemId())) {
+                                    PropertiesEditor sourcePropertiesEditor = sourceLangPropertiesEditor.getPropertiesEditorByLang(sourceLangPropertiesEditor.getDisplayedLocale().getLanguage());
+                                    List<GWTJahiaNodeProperty> props = new ArrayList<GWTJahiaNodeProperty>();
+                                    for (GWTJahiaNodeProperty prop : sourcePropertiesEditor.getProperties()) {
+                                        if (sourcePropertiesEditor.getGWTJahiaItemDefinition(prop).isInternationalized()) {
+                                            props.add(prop);
+                                        }
+                                    }
+                                    JahiaContentManagementService.App.getInstance().translate(props, targetLangPropertiesEditor.getDisplayedLocale().getLanguage(), new BaseAsyncCallback<List<GWTJahiaNodeProperty>>() {
+                                        public void onApplicationFailure(Throwable throwable) {
+                                            com.google.gwt.user.client.Window.alert(Messages.get("failure.properties.translation", "Properties translation failed") + "\n\n"
+                                                    + throwable.getMessage());
+                                            Log.error("Failed to translate properties", throwable);
+                                        }
+
+                                        public void onSuccess(List<GWTJahiaNodeProperty> newProps) {
+                                            Map<String, PropertiesEditor.PropertyAdapterField> fieldsMap = targetLangPropertiesEditor.getPropertiesEditorByLang(targetLangPropertiesEditor.getDisplayedLocale().getLanguage()).getFieldsMap();
+                                            for (final GWTJahiaNodeProperty prop : newProps) {
+                                                final Field<?> f = fieldsMap.get(prop.getName()).getField();
+                                                FormFieldCreator.copyValue(prop, f);
+                                            }
+                                        }
+                                    });
+                                }
+                            }}
+                );
             }
         });
 

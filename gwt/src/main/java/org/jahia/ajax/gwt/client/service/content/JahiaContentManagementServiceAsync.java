@@ -43,6 +43,7 @@ package org.jahia.ajax.gwt.client.service.content;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -344,4 +345,8 @@ public interface JahiaContentManagementServiceAsync {
 	        AsyncCallback<Map<String, WCAGValidationResult>> asyncCallback);
 
     void zip(List<String> paths, String archiveName, AsyncCallback async);
+
+    void translate(List<GWTJahiaNodeProperty> properties, String language, AsyncCallback<List<GWTJahiaNodeProperty>> async);
+
+    void translate(GWTJahiaNodeProperty property, String language, AsyncCallback<GWTJahiaNodeProperty> async);
 }

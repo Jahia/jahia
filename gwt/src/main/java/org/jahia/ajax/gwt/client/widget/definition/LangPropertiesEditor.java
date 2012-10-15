@@ -93,13 +93,20 @@ public class LangPropertiesEditor extends LayoutContainer {
     private boolean editable = true;
     private GWTJahiaLanguage displayedLocale = null;
     private LayoutContainer topBar;
+    private LangPropertiesEditor translationSource;
 
     public LangPropertiesEditor(GWTJahiaNode node, List<String> dataType, boolean editable,
                                 GWTJahiaLanguage displayedLanguage) {
+        this(node, dataType, editable, displayedLanguage, null);
+    }
+
+    public LangPropertiesEditor(GWTJahiaNode node, List<String> dataType, boolean editable,
+                                GWTJahiaLanguage displayedLanguage, LangPropertiesEditor translationSource) {
         this.node = node;
         this.dataType = dataType;
         langPropertiesEditorMap = new HashMap<String, PropertiesEditor>();
         this.editable = editable;
+        this.translationSource = translationSource;
 
         setScrollMode(Style.Scroll.NONE);
         setBorders(false);
@@ -197,6 +204,9 @@ public class LangPropertiesEditor extends LayoutContainer {
                 langPropertiesEditor.setExcludedTypes(excludedTypes);
                 if (node != null) {
                     langPropertiesEditor.setPermissions(node.getPermissions());
+                }
+                if (translationSource != null) {
+                    langPropertiesEditor.setTranslationSource(translationSource);
                 }
                 langPropertiesEditor.renderNewFormPanel();
                 setPropertiesEditorByLang(langPropertiesEditor, locale);

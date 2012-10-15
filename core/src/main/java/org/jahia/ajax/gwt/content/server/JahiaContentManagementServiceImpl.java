@@ -980,6 +980,25 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         zip.zip(paths, archiveName, retrieveCurrentSession(), getUILocale());
     }
 
+    public List<GWTJahiaNodeProperty> translate(List<GWTJahiaNodeProperty> properties, String language) {
+        List<GWTJahiaNodeProperty> translatedProperties = new ArrayList<GWTJahiaNodeProperty>();
+        for (GWTJahiaNodeProperty property : properties) {
+            translatedProperties.add(translate(property, language));
+        }
+        return translatedProperties;
+    }
+
+    public GWTJahiaNodeProperty translate(GWTJahiaNodeProperty property, String language) {
+        GWTJahiaNodeProperty translatedProperty = property.cloneObject();
+        List<GWTJahiaNodePropertyValue> translatedValues = new ArrayList<GWTJahiaNodePropertyValue>();
+        for (GWTJahiaNodePropertyValue value : property.getValues()) {
+            String translation = value.getString(); // call translation service
+            translatedValues.add(new GWTJahiaNodePropertyValue(translation));
+        }
+        translatedProperty.setValues(translatedValues);
+        return translatedProperty;
+    }
+
     public void unzip(List<String> paths) throws GWTJahiaServiceException {
         zip.unzip(paths, false, retrieveCurrentSession(), getUILocale());
     }

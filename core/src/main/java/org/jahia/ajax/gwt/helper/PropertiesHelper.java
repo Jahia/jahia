@@ -47,14 +47,13 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.service.GWTCompositeConstraintViolationException;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.categories.Category;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRValueWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -64,12 +63,13 @@ import org.jahia.utils.EncryptionUtils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.io.InputStream;
-import java.text.MessageFormat;
 import java.util.*;
 
 /**
@@ -83,7 +83,7 @@ public class PropertiesHelper {
 
     private ContentDefinitionHelper contentDefinition;
     private NavigationHelper navigation;
-    
+
     private Set<String> ignoredProperties = Collections.emptySet();
 
     public void setContentDefinition(ContentDefinitionHelper contentDefinition) {
@@ -126,7 +126,7 @@ public class PropertiesHelper {
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>(values.length);
 
                     for (Value val : values) {
-                        GWTJahiaNodePropertyValue convertedValue = contentDefinition.convertValue(val, (ExtendedPropertyDefinition)def);
+                        GWTJahiaNodePropertyValue convertedValue = contentDefinition.convertValue(val, (ExtendedPropertyDefinition) def);
                         if (convertedValue != null) {
                             gwtValues.add(convertedValue);
                         }
@@ -212,79 +212,67 @@ public class PropertiesHelper {
     /**
      * A batch-capable save properties method.
      *
-     *
-     * @param nodes    the nodes to save the properties of
-     * @param newProps the new properties
+     * @param nodes              the nodes to save the properties of
+     * @param newProps           the new properties
      * @param removedTypes
-     * @param currentUserSession  @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
+     * @param currentUserSession @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      * @param uiLocale
      */
-    public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, Set<String> removedTypes, JahiaUser user, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
+    public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, Set<String> removedTypes, JahiaUser user, JCRSessionWrapper currentUserSession, Locale uiLocale) throws RepositoryException {
         for (GWTJahiaNode aNode : nodes) {
-            JCRNodeWrapper objectNode;
-            try {
-                objectNode = currentUserSession.getNodeByUUID(aNode.getUUID());
-            } catch (RepositoryException e) {
-                logger.error(e.toString(), e);
-                throw new GWTJahiaServiceException(new StringBuilder(aNode.getDisplayName()).append(" could not be accessed :\n").append(e.toString()).toString());
-            }
-            try {
-                List<String> types = aNode.getNodeTypes();
-                if (removedTypes != null) {
-                    for (ExtendedNodeType mixin : objectNode.getMixinNodeTypes()) {
-                        if (removedTypes.contains(mixin.getName())) {
-                            List<ExtendedItemDefinition> items = mixin.getItems();
-                            for (ExtendedItemDefinition item : items) {
-                                if (item.isNode()) {
-                                    if (objectNode.hasNode(item.getName())) {
-                                        currentUserSession.checkout(objectNode);
-                                        objectNode.getNode(item.getName()).remove();
-                                    }
-                                } else {
-                                    if (objectNode.hasProperty(item.getName())) {
-                                        currentUserSession.checkout(objectNode);
-                                        objectNode.getProperty(item.getName()).remove();
-                                    }
+            JCRNodeWrapper objectNode = currentUserSession.getNodeByUUID(aNode.getUUID());
+            List<String> types = aNode.getNodeTypes();
+            if (removedTypes != null) {
+                for (ExtendedNodeType mixin : objectNode.getMixinNodeTypes()) {
+                    if (removedTypes.contains(mixin.getName())) {
+                        List<ExtendedItemDefinition> items = mixin.getItems();
+                        for (ExtendedItemDefinition item : items) {
+                            if (item.isNode()) {
+                                if (objectNode.hasNode(item.getName())) {
+                                    currentUserSession.checkout(objectNode);
+                                    objectNode.getNode(item.getName()).remove();
+                                }
+                            } else {
+                                if (objectNode.hasProperty(item.getName())) {
+                                    currentUserSession.checkout(objectNode);
+                                    objectNode.getProperty(item.getName()).remove();
                                 }
                             }
-                            objectNode.removeMixin(mixin.getName());
                         }
+                        objectNode.removeMixin(mixin.getName());
                     }
-                    for (ExtendedNodeType mixin : objectNode.getPrimaryNodeType().getDeclaredSupertypes()) {
-                        if (removedTypes.contains(mixin.getName())) {
-                            List<ExtendedItemDefinition> items = mixin.getItems();
-                            for (ExtendedItemDefinition item : items) {
-                                if (item.isNode()) {
-                                    if (objectNode.hasNode(item.getName())) {
-                                        currentUserSession.checkout(objectNode);
-                                        objectNode.getNode(item.getName()).remove();
-                                    }
-                                } else {
-                                    if (objectNode.hasProperty(item.getName())) {
-                                        currentUserSession.checkout(objectNode);
-                                        objectNode.getProperty(item.getName()).remove();
-                                    }
+                }
+                for (ExtendedNodeType mixin : objectNode.getPrimaryNodeType().getDeclaredSupertypes()) {
+                    if (removedTypes.contains(mixin.getName())) {
+                        List<ExtendedItemDefinition> items = mixin.getItems();
+                        for (ExtendedItemDefinition item : items) {
+                            if (item.isNode()) {
+                                if (objectNode.hasNode(item.getName())) {
+                                    currentUserSession.checkout(objectNode);
+                                    objectNode.getNode(item.getName()).remove();
+                                }
+                            } else {
+                                if (objectNode.hasProperty(item.getName())) {
+                                    currentUserSession.checkout(objectNode);
+                                    objectNode.getProperty(item.getName()).remove();
                                 }
                             }
                         }
                     }
                 }
-                for (String type : types) {
-                    if (!objectNode.isNodeType(type)) {
-                        currentUserSession.checkout(objectNode);
-                        objectNode.addMixin(type);
-                    }
-                }
-                setProperties(objectNode, newProps);
-            } catch (RepositoryException e) {
-                logger.error(e.toString(), e);
-                throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.save.node", uiLocale), objectNode.getName(), e.getMessage()));
             }
+            for (String type : types) {
+                if (!objectNode.isNodeType(type)) {
+                    currentUserSession.checkout(objectNode);
+                    objectNode.addMixin(type);
+                }
+            }
+            setProperties(objectNode, newProps);
         }
     }
 
     public void setProperties(JCRNodeWrapper objectNode, List<GWTJahiaNodeProperty> newProps) throws RepositoryException {
-        if(objectNode == null || newProps == null || newProps.isEmpty()){
+        if (objectNode == null || newProps == null || newProps.isEmpty()) {
             logger.debug("node or properties are null or empty");
             return;
         }
@@ -359,7 +347,7 @@ public class PropertiesHelper {
                                 GWTJahiaNode nodeReference = gwtJahiaNode.get("j:node");
 
                                 // case of external
-                                if (linkType.equalsIgnoreCase("external") && linkUrl !=null) {
+                                if (linkType.equalsIgnoreCase("external") && linkUrl != null) {
                                     Node content = objectNode.addNode(prop.getName(), Constants.JAHIANT_EXTERNAL_PAGE_LINK);
                                     content.setProperty(Constants.JCR_TITLE, linkTitle);
                                     content.setProperty(Constants.URL, linkUrl);
@@ -437,4 +425,36 @@ public class PropertiesHelper {
     public String encryptPassword(String pwd) {
         return StringUtils.isNotEmpty(pwd) ? EncryptionUtils.passwordBaseEncrypt(pwd) : StringUtils.EMPTY;
     }
+
+    public void convertException(NodeConstraintViolationException violationException) throws GWTJahiaServiceException {
+        GWTCompositeConstraintViolationException gwt = new GWTCompositeConstraintViolationException(violationException.getMessage());
+        addConvertedException(violationException, gwt);
+        throw gwt;
+    }
+
+    public void convertException(CompositeConstraintViolationException e) throws GWTJahiaServiceException {
+        GWTCompositeConstraintViolationException gwt = new GWTCompositeConstraintViolationException(e.getMessage());
+        for (ConstraintViolationException violationException : e.getErrors()) {
+            if (violationException instanceof NodeConstraintViolationException) {
+                addConvertedException((NodeConstraintViolationException) violationException, gwt);
+            }
+        }
+        throw gwt;
+    }
+
+    private void addConvertedException(NodeConstraintViolationException violationException, GWTCompositeConstraintViolationException gwt) throws GWTJahiaServiceException {
+        try {
+            if (violationException instanceof PropertyConstraintViolationException) {
+                PropertyConstraintViolationException v = (PropertyConstraintViolationException) violationException;
+                gwt.addError(v.getNode().getIdentifier(), v.getConstraintMessage(), v.getLocale() != null ? v.getLocale().toString() : null, v.getDefinition().getName(), v.getDefinition().getLabel(LocaleContextHolder.getLocale(), v.getNode().getPrimaryNodeType()));
+            } else {
+                NodeConstraintViolationException v = violationException;
+                gwt.addError(v.getNode().getIdentifier(), v.getConstraintMessage(), v.getLocale() != null ? v.getLocale().toString() : null, null, null);
+            }
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
+
 }

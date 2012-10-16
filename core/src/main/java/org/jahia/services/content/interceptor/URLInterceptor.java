@@ -51,10 +51,11 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
-import org.jahia.utils.Url;
 import org.jahia.utils.WebUtils;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
@@ -152,7 +153,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
      * @throws ConstraintViolationException
      * @throws RepositoryException
      */
-    public Value beforeSetValue(final JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public Value beforeSetValue(final JCRNodeWrapper node, String name, final ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         String content = originalValue.getString();
         // if the node is a translated node, then take the parent to have the references
         JCRNodeWrapper nodeWithReferences = node.isNodeType(Constants.JAHIANT_TRANSLATION)?node.getParent():node;
@@ -192,7 +193,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                 public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
                     if (StringUtils.isNotEmpty(value)) {
                         try {
-                            value = replaceRefsByPlaceholders(value, newRefs, refs, node.getSession().getWorkspace().getName());
+                            value = replaceRefsByPlaceholders(value, newRefs, refs, node.getSession().getWorkspace().getName(), node.getSession().getLocale(), node, definition);
                         } catch (RepositoryException e) {
                             throw new RuntimeException(e);
                         }
@@ -364,7 +365,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
         return res;
     }
 
-    String replaceRefsByPlaceholders(final String originalValue, final Map<String, Long> newRefs, final Map<String, Long> oldRefs, String workspace) throws RepositoryException {
+    private String replaceRefsByPlaceholders(final String originalValue, final Map<String, Long> newRefs, final Map<String, Long> oldRefs, String workspace, final Locale locale, final JCRNodeWrapper node, final ExtendedPropertyDefinition definition) throws RepositoryException {
 
         if (logger.isDebugEnabled()) {
             logger.debug("Before replaceRefsByPlaceholders : "+originalValue);
@@ -380,7 +381,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
             // Remove CMS context part
             Matcher m = cmsPattern.matcher(pathPart);
             if (!m.matches()) {
-                throw new ConstraintViolationException("Invalid link "+pathPart);
+                throw new PropertyConstraintViolationException(node, JahiaResourceBundle.getJahiaInternalResource("label.error.invalidlink", LocaleContextHolder.getLocale(), "Invalid link") + pathPart, definition.isInternationalized() ? locale : null,definition);
             }
             pathPart = m.group(5);
             isCmsContext = true;
@@ -439,7 +440,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                         value = DOC_CONTEXT_PLACEHOLDER + StringUtils.substringAfter(value, dmsContext);
                     }
                 } catch (PathNotFoundException e) {
-                    throw new ConstraintViolationException("Invalid link : " + path, e);
+                    throw new PropertyConstraintViolationException(node,  JahiaResourceBundle.getJahiaInternalResource("label.error.invalidlink", LocaleContextHolder.getLocale(), "Invalid link") + path, definition.isInternationalized() ? locale : null,definition);
                 }
                 String id = reference.getIdentifier();
                 if (!newRefs.containsKey(id)) {

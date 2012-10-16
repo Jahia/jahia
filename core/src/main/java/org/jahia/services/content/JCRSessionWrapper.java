@@ -54,6 +54,7 @@ import org.jahia.services.importexport.DocumentViewExporter;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.xml.sax.ContentHandler;
@@ -65,7 +66,6 @@ import javax.jcr.lock.LockException;
 import javax.jcr.lock.LockManager;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.retention.RetentionManager;
 import javax.jcr.security.AccessControlManager;
 import javax.jcr.version.Version;
@@ -73,7 +73,6 @@ import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
 import javax.validation.ConstraintViolation;
-import javax.validation.Path;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.OutputKeys;
@@ -134,6 +133,9 @@ public class JCRSessionWrapper implements Session {
 
     private static AtomicLong activeSessions = new AtomicLong(0L);
 
+    private Exception thisSessionTrace;
+    private static List<Exception> activeSessionsTraces = new ArrayList<Exception>();
+
     public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale,
                              JCRSessionFactory sessionFactory, Locale fallbackLocale) {
         this.user = user;
@@ -150,6 +152,8 @@ public class JCRSessionWrapper implements Session {
         this.fallbackLocale = fallbackLocale;
         this.sessionFactory = sessionFactory;
         activeSessions.incrementAndGet();
+        thisSessionTrace = new Exception();
+        activeSessionsTraces.add(thisSessionTrace);
     }
 
 
@@ -268,7 +272,7 @@ public class JCRSessionWrapper implements Session {
                 throw new ItemNotFoundException(uuid, originalEx);
             }
         }
-        
+
         throw new ItemNotFoundException(uuid);
     }
 
@@ -381,7 +385,7 @@ public class JCRSessionWrapper implements Session {
         sessionCacheByPath.put(fullPath, wrapper);
         return wrapper;
     }
-    
+
     public JCRNodeWrapper getNode(String path) throws PathNotFoundException, RepositoryException {
         return getNode(path, true);
     }
@@ -450,39 +454,6 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
-    protected void validateNodes(Collection<JCRNodeWrapper> nodes) throws ConstraintViolationException {
-        for (JCRNodeWrapper node : nodes) {
-            if (node instanceof JCRNodeDecorator) {
-                Set<ConstraintViolation<JCRNodeWrapper>> constraintViolations = sessionFactory.getValidatorFactoryBean().validate(node);
-                for (ConstraintViolation<JCRNodeWrapper> constraintViolation : constraintViolations) {
-                    String propertyPath = constraintViolation.getPropertyPath().toString();
-                    String message = "";
-                    if (StringUtils.isNotBlank(propertyPath)) {
-                        try {
-                            ExtendedPropertyDefinition propertyDefinition = node.getApplicablePropertyDefinition(propertyPath);
-                            if (propertyDefinition == null) {
-                                propertyDefinition = node.getApplicablePropertyDefinition(propertyPath.replaceFirst("_", ":"));
-                            }
-                            if (propertyDefinition == null) {
-                                message = propertyPath;
-                            } else {
-                                message = propertyDefinition.getLabel(LocaleContextHolder.getLocale(), node.getPrimaryNodeType());
-                                if (propertyDefinition.isInternationalized()) {
-                                    message += " (" + getLocale().getDisplayLanguage(LocaleContextHolder.getLocale()) + ")";
-                                }
-                            }
-                        } catch (RepositoryException e) {
-                            message = propertyPath;
-                        }
-                        message += ": ";
-                    }
-                    message += constraintViolation.getMessage();
-                    throw new ConstraintViolationException(message);
-                }
-            }
-        }
-    }
-
     public void save(final int operationType)
             throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException,
             VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
@@ -502,57 +473,90 @@ public class JCRSessionWrapper implements Session {
         });
     }
 
-    public void validate() throws RepositoryException {
-        validateNodes(newNodes.values());
-        validateNodes(changedNodes.values());
+    public void validate() throws ConstraintViolationException, RepositoryException {
+        CompositeConstraintViolationException exception = validateNodes(newNodes.values(), null);
+        exception = validateNodes(changedNodes.values(), exception);
+        if (exception != null) {
+            throw exception;
+        }
+    }
 
-        if (getLocale() != null) {
-            for (JCRNodeWrapper node : newNodes.values()) {
-                try {
-                    for (String s : node.getNodeTypes()) {
-                        Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
-                        for (ExtendedPropertyDefinition propDef : propDefs) {
-                            if (propDef.isMandatory() &&
-                                    propDef.getRequiredType() != PropertyType.WEAKREFERENCE &&
-                                    propDef.getRequiredType() != PropertyType.REFERENCE &&
-                                    !propDef.isProtected() && !node.hasProperty(propDef.getName())) {
-                                throw new ConstraintViolationException("The field "
-                                        + propDef.getName() + " is mandatory for node type "
-                                        + s + " but is empty for the node " + node.getPath());
-                            }
-                        }
-                    }
-                } catch (InvalidItemStateException e) {
-                    logger.warn("A new node can no longer be accessed to run validation checks", e);
-                }
-            }
-            for (JCRNodeWrapper node : changedNodes.values()) {
-                try {
-                    for (String s : node.getNodeTypes()) {
-                        Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
-                        for (ExtendedPropertyDefinition propDef : propDefs) {
-                            if (propDef.isMandatory() &&
-                                propDef.getRequiredType() != PropertyType.WEAKREFERENCE &&
-                                propDef.getRequiredType() != PropertyType.REFERENCE &&
-                                !propDef.isProtected() &&
+    protected CompositeConstraintViolationException validateNodes(Collection<JCRNodeWrapper> nodes, CompositeConstraintViolationException ccve) throws ConstraintViolationException, RepositoryException {
+        for (JCRNodeWrapper node : nodes) {
+            try {
+                for (String s : node.getNodeTypes()) {
+                    Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
+                    for (ExtendedPropertyDefinition propertyDefinition : propDefs) {
+                        String propertyName = propertyDefinition.getName();
+                        if (propertyDefinition.isMandatory() &&
+                                propertyDefinition.getRequiredType() != PropertyType.WEAKREFERENCE &&
+                                propertyDefinition.getRequiredType() != PropertyType.REFERENCE &&
+                                !propertyDefinition.isProtected() &&
+                                (!propertyDefinition.isInternationalized() || getLocale() != null) &&
                                 (
-                                        !node.hasProperty(propDef.getName()) ||
-                                        (!propDef.isMultiple() &&
-                                        StringUtils.isEmpty(node.getProperty(propDef.getName()).getString()))
+                                        !node.hasProperty(propertyName) ||
+                                                (!propertyDefinition.isMultiple() &&
+                                                        StringUtils.isEmpty(node.getProperty(propertyName).getString()))
 
                                 )) {
-                                throw new ConstraintViolationException("The field "
-                                        + propDef.getName() + " is mandatory for node type " + s
-                                        + " but is empty for the node " + node.getPath());
+
+                            Locale errorLocale = null;
+                            if (propertyDefinition.isInternationalized()) {
+                                errorLocale = getLocale();
                             }
+
+                            String propertyLabel = propertyDefinition.getLabel(LocaleContextHolder.getLocale());
+
+                            if (ccve == null) {
+                                ccve = new CompositeConstraintViolationException();
+                            }
+                            ccve.addException(new PropertyConstraintViolationException(node, JahiaResourceBundle.getJahiaInternalResource("label.error.mandatoryField", LocaleContextHolder.getLocale(), "Field is mandatory"), errorLocale, propertyDefinition));
                         }
                     }
-                } catch (InvalidItemStateException e) {
-                    logger.warn("A new node can no longer be accessed to run validation checks", e);
+                }
+            } catch (InvalidItemStateException e) {
+                logger.warn("A new node can no longer be accessed to run validation checks", e);
+            }
+
+            if (node instanceof JCRNodeDecorator) {
+                Set<ConstraintViolation<JCRNodeWrapper>> constraintViolations = sessionFactory.getValidatorFactoryBean().validate(node);
+                for (ConstraintViolation<JCRNodeWrapper> constraintViolation : constraintViolations) {
+                    if (ccve == null) {
+                        ccve = new CompositeConstraintViolationException();
+                    }
+                    String propertyName = constraintViolation.getPropertyPath().toString();
+                    String propertyLabel = propertyName;
+                    Locale errorLocale = null;
+                    if (StringUtils.isNotBlank(propertyName)) {
+                        try {
+                            ExtendedPropertyDefinition propertyDefinition = node.getApplicablePropertyDefinition(propertyName);
+                            if (propertyDefinition == null) {
+                                propertyDefinition = node.getApplicablePropertyDefinition(propertyName.replaceFirst("_", ":"));
+                            }
+                            if (propertyDefinition != null) {
+                                propertyLabel = propertyDefinition.getLabel(LocaleContextHolder.getLocale(), node.getPrimaryNodeType());
+
+                                if (propertyDefinition.isInternationalized()) {
+                                    errorLocale = getLocale();
+                                }
+                                ccve.addException(new PropertyConstraintViolationException(node, constraintViolation.getMessage(), errorLocale, propertyDefinition));
+                            } else {
+                                ccve.addException(new NodeConstraintViolationException(node, constraintViolation.getMessage(), errorLocale));
+                            }
+                        } catch (RepositoryException e) {
+                            ccve.addException(new NodeConstraintViolationException(node, constraintViolation.getMessage(), errorLocale));
+                        }
+                    } else {
+                        ccve.addException(new NodeConstraintViolationException(node, constraintViolation.getMessage(), errorLocale));
+                    }
                 }
             }
         }
+
+        return ccve;
     }
+
+
 
     public void refresh(boolean b) throws RepositoryException {
         for (Session session : sessions.values()) {
@@ -702,6 +706,7 @@ public class JCRSessionWrapper implements Session {
         }
         isLive = false;
         activeSessions.decrementAndGet();
+        activeSessionsTraces.remove(thisSessionTrace);
     }
 
     public boolean isLive() {
@@ -1143,7 +1148,11 @@ public class JCRSessionWrapper implements Session {
     public static AtomicLong getActiveSessions() {
         return activeSessions;
     }
-    
+
+    public static List<Exception> getActiveSessionsTraces() {
+        return activeSessionsTraces;
+    }
+
     protected void flushCaches() {
         sessionCacheByIdentifier.clear();
         sessionCacheByPath.clear();

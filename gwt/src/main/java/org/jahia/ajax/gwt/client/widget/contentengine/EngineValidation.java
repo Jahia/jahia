@@ -5,8 +5,10 @@ import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.service.GWTConstraintViolationException;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -80,6 +82,45 @@ public class EngineValidation {
                                 }
                             }
                         }
+                    }
+                }
+            }
+        }
+        return validateResult;
+    }
+
+    public ValidateResult getValidationFromException(List<GWTConstraintViolationException> errors) {
+        Map<String, GWTConstraintViolationException> errorMap = new HashMap<String, GWTConstraintViolationException>();
+        for (GWTConstraintViolationException error : errors) {
+            if (error.getPropertyName() != null) {
+                errorMap.put(error.getPropertyName(), error);
+            }
+        }
+
+        ValidateResult validateResult = new ValidateResult();
+
+        for (TabItem tab : tabs.getItems()) {
+            EditEngineTabItem item = tab.getData("item");
+            if (item instanceof PropertiesTabItem) {
+                PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
+                PropertiesEditor pe = ((PropertiesTabItem) item).getPropertiesEditor();
+                if (pe != null) {
+                    for (PropertiesEditor.PropertyAdapterField adapterField : pe.getFieldsMap().values()) {
+                        if (errorMap.containsKey(adapterField.getName())) {
+                            Field<?> field = adapterField.getField();
+                            GWTConstraintViolationException error = errorMap.get(adapterField.getName());
+                            field.markInvalid(error.getConstraintMessage());
+                            if (validateResult.allValid || tab.equals(tabs.getSelectedItem())
+                                    && !tab.equals(validateResult.firstErrorTab)) {
+                                validateResult.firstErrorTab = tab;
+                                validateResult.firstErrorField = field;
+                                validateResult.firstErrorLang = error.getLocale();
+                            }
+                            validateResult.allValid = false;
+                        }
+                    }
+                    if (!validateResult.allValid) {
+                        continue;
                     }
                 }
             }

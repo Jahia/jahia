@@ -42,6 +42,7 @@ package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.services.content.CompositeConstraintViolationException;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -129,9 +130,17 @@ public class DefaultPutAction extends Action {
                 }
             }
             session.save();
+        } catch (CompositeConstraintViolationException e) {
+            List<JSONObject> jsonErrors = new ArrayList<JSONObject>();
+            for (ConstraintViolationException exception : e.getErrors()) {
+                jsonErrors.add(getJSONConstraintError(exception));
+            }
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("validationError", jsonErrors);
+            return new ActionResult(HttpServletResponse.SC_BAD_REQUEST, null, jsonObject);
         } catch (ConstraintViolationException e) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("validationError", e.getMessage());
+            jsonObject.put("validationError", Arrays.asList(getJSONConstraintError(e)));
             return new ActionResult(HttpServletResponse.SC_BAD_REQUEST, null, jsonObject);
         }
         if (req.getParameter(Render.AUTO_CHECKIN) != null && req.getParameter(Render.AUTO_CHECKIN).length() > 0) {

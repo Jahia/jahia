@@ -53,6 +53,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.Patterns;
 import org.json.JSONObject;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -174,9 +175,17 @@ public class DefaultPostAction extends Action {
                 }
 
                 session.save();
+            } catch (CompositeConstraintViolationException e) {
+                List<JSONObject> jsonErrors = new ArrayList<JSONObject>();
+                for (ConstraintViolationException exception : e.getErrors()) {
+                    jsonErrors.add(getJSONConstraintError(exception));
+                }
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("validationError", jsonErrors);
+                return new ActionResult(HttpServletResponse.SC_BAD_REQUEST, null, jsonObject);
             } catch (ConstraintViolationException e) {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("validationError", e.getMessage());
+                jsonObject.put("validationError", Arrays.asList(getJSONConstraintError(e)));
                 return new ActionResult(HttpServletResponse.SC_BAD_REQUEST, null, jsonObject);
             }
 

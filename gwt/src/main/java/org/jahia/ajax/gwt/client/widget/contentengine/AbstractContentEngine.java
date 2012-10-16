@@ -70,6 +70,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.GWTCompositeConstraintViolationException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
@@ -557,21 +558,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 			                        + " Click on the information icon next to the"
 			                        + " highlighted fields, correct the input and save again."),
 			        null);
-            if (r.firstErrorLang != null) {
-                for (GWTJahiaLanguage jahiaLanguage : languageSwitcher.getStore().getModels()) {
-                    if (jahiaLanguage.getLanguage().equals(r.firstErrorLang)) {
-                        languageSwitcher.setValue(jahiaLanguage);
-                        break;
-                    }
-                }
-            }
-            if (r.firstErrorTab != null && !tabs.getSelectedItem().equals(r.firstErrorTab)) {
-                tabs.setSelection(r.firstErrorTab);
-            }
-            if (r.firstErrorField != null) {
-                r.firstErrorField.focus();
-            }
-            r.firstErrorTab.layout();
+            handleValidationResult(r);
             unmask();
             setButtonsEnabled(true);
             return false;
@@ -580,7 +567,53 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         }
     }
 
-	protected abstract void setButtonsEnabled(boolean doEnable);
+    protected void failSave(Throwable throwable) {
+        try {
+            throw throwable;
+        } catch (final GWTCompositeConstraintViolationException cve) {
+            MessageBox.alert(Messages.get("label.error", "Error"),
+                    Messages.get("failure.invalid.constraint.label",
+                            "There are some validation errors!"
+                                    + " Click on the information icon next to the"
+                                    + " highlighted fields, correct the input and save again."),
+                    new Listener<MessageBoxEvent>() {
+                        public void handleEvent(MessageBoxEvent be) {
+                            if (!cve.getErrors().isEmpty()) {
+                                EngineValidation e = new EngineValidation(tabs, getSelectedLanguage(), changedI18NProperties);
+                                EngineValidation.ValidateResult r = e.getValidationFromException(cve.getErrors());
+                                handleValidationResult(r);
+                            }
+                        }
+                    });
+        } catch (Throwable t) {
+            String message = throwable.getMessage();
+            com.google.gwt.user.client.Window.alert(Messages.get("failure.properties.save", "Properties save failed") + "\n\n"
+                    + message);
+            Log.error("failed", throwable);
+        }
+        unmask();
+        setButtonsEnabled(true);
+    }
+
+    protected void handleValidationResult(EngineValidation.ValidateResult r) {
+        if (r.firstErrorLang != null) {
+            for (GWTJahiaLanguage jahiaLanguage : languageSwitcher.getStore().getModels()) {
+                if (jahiaLanguage.getLanguage().equals(r.firstErrorLang)) {
+                    languageSwitcher.setValue(jahiaLanguage);
+                    break;
+                }
+            }
+        }
+        if (r.firstErrorTab != null && !tabs.getSelectedItem().equals(r.firstErrorTab)) {
+            tabs.setSelection(r.firstErrorTab);
+        }
+        if (r.firstErrorField != null) {
+            r.firstErrorField.focus();
+        }
+        r.firstErrorTab.layout();
+    }
+
+    protected abstract void setButtonsEnabled(boolean doEnable);
 
     public ComboBox<GWTJahiaLanguage> getLanguageSwitcher() {
         return languageSwitcher;

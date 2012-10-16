@@ -43,6 +43,7 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
@@ -62,6 +63,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.GWTCompositeConstraintViolationException;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
@@ -417,15 +419,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 orderedChildrenNodes, acl, changedI18NProperties, changedProperties,
                 removedTypes, new BaseAsyncCallback<Object>() {
                     public void onApplicationFailure(Throwable throwable) {
-                        String message = throwable.getMessage();
-                        if (message.contains("Invalid link")) {
-                            message = Messages.get("label.error.invalidlink", "Invalid link") + " : " + message.substring(message.indexOf(":")+1);
-                        }
-                        com.google.gwt.user.client.Window.alert(Messages.get("failure.properties.save", "Properties save failed") + "\n\n"
-                                + message);
-                        Log.error("failed", throwable);
-                        unmask();
-                        ok.setEnabled(true);
+                        failSave(throwable);
                     }
 
                     public void onSuccess(Object o) {

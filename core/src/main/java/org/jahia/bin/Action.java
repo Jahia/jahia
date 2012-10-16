@@ -47,10 +47,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.cfg.Settings;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaBadRequestException;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.render.RenderContext;
@@ -60,10 +57,13 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
+import org.json.JSONObject;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -203,6 +203,24 @@ public abstract class Action {
 
         return newNode;
     }
+
+    protected JSONObject getJSONConstraintError(ConstraintViolationException e) throws RepositoryException {
+        JSONObject jsonObject = new JSONObject();
+        Map<String,String> m = new HashMap<String, String>();
+        m.put("message",e.getMessage());
+        if (e instanceof NodeConstraintViolationException) {
+            m.put("constraintMessage",((NodeConstraintViolationException)e).getConstraintMessage());
+            m.put("locale",((NodeConstraintViolationException)e).getLocale().toString());
+            m.put("uuid",((NodeConstraintViolationException)e).getNode().getIdentifier());
+        }
+        if (e instanceof PropertyConstraintViolationException) {
+            m.put("propertyName",((PropertyConstraintViolationException)e).getDefinition().getName());
+            m.put("propertyLabel",((PropertyConstraintViolationException)e).getDefinition().getLabel(LocaleContextHolder.getLocale(), ((NodeConstraintViolationException)e).getNode().getPrimaryNodeType()));
+        }
+        new JSONObject(m);
+        return jsonObject;
+    }
+
 
     public abstract ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                            JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception;

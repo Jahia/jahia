@@ -1,8 +1,7 @@
 package org.jahia.services.content;
 
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.content.rules.AddedNodeFact;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.observation.Event;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 public class AclListener extends DefaultEventListener {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(AclListener.class);
+    private static Logger logger = LoggerFactory.getLogger(AclListener.class);
 
     @Override
     public int getEventTypes() {

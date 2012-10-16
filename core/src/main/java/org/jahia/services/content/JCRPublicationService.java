@@ -783,7 +783,7 @@ public class JCRPublicationService extends JahiaService {
                     " with current version " + versionManager.getBaseVersion(node.getPath()).getName());
         }
         if (node.isNodeType(JAHIAMIX_NODENAMEINFO)) {
-            boolean doUpdate = false;
+            boolean doUpdate = true;
             String nodePath = node.getPath();
             if (node.hasProperty(FULLPATH)) {
                 Value fp = node.getProperty(FULLPATH).getValue();

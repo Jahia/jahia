@@ -101,7 +101,7 @@ public class MultiLanguageTest extends TestCase {
     }
 
     @Test
-    public void atestFallBackLanguage() throws Exception {
+    public void testFallBackLanguage() throws Exception {
         JCRPublicationService jcrService = ServicesRegistry.getInstance()
                 .getJCRPublicationService();
 

@@ -40,16 +40,16 @@
 
 package org.jahia.ajax.gwt.client.widget.form;
 
+import java.util.List;
+
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-
-import java.util.List;
 
 /**
  * 
@@ -72,11 +72,11 @@ public class AutoCompleteComboBox extends ComboBox<GWTJahiaNode> {
                     protected void load(Object loadConfig, AsyncCallback<List<GWTJahiaNode>> asyncCallback) {
                         if (field.equals("name")) {
                             JahiaContentManagementService.App.getInstance().searchSQL("select * from [" + nodeType.get(
-                                    0) + "] as content where name(content) like '" + getRawValue() + "%'", maxResult,
+                                    0) + "] as content where name(content) like '" + getRawValue().replaceAll("'", "''") + "%'", maxResult,
                                     nodeType, null, null, null,true, asyncCallback);
                         } else {
                             JahiaContentManagementService.App.getInstance().searchSQL("select * from [" + nodeType.get(
-                                    0) + "] as content where content.'"+field+"' like '" + getRawValue() + "%'", maxResult,
+                                    0) + "] as content where content.'"+field+"' like '" + getRawValue().replaceAll("'", "''") + "%'", maxResult,
                                     nodeType, null, null, null,true, asyncCallback);
                         }
                     }

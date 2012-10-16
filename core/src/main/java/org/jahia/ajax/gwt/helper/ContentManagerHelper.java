@@ -528,7 +528,7 @@ public class ContentManagerHelper {
                     }
                 }
             }
-            node.copy(targetNode, name, true);
+            node.copy(targetNode, name, true, null, SettingsBean.getInstance().getImportMaxBatch());
         }
         return targetNode.getNode(name);
     }

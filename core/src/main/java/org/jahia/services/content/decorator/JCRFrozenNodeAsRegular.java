@@ -41,6 +41,7 @@
 package org.jahia.services.content.decorator;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.jackrabbit.util.ChildrenCollectorFilter;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
@@ -592,7 +593,17 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
     /**
      * {@inheritDoc}
      */
-    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references) throws RepositoryException {
+    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, List<String> ignoreNodeTypes, int maxBatch) throws RepositoryException {
+        Map<String, List<String>> references = new HashMap<String, List<String>>();
+        boolean copy = copy(dest,name,allowsExternalSharedNodes,references,ignoreNodeTypes,maxBatch,new MutableInt(0));
+        ReferencesHelper.resolveCrossReferences(getSession(), references);
+        return copy;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes, int maxBatch, MutableInt batchCount) throws RepositoryException {
         JCRNodeWrapper copy = null;
         try {
             copy = (JCRNodeWrapper) getSession()
@@ -602,6 +613,25 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
             }
         } catch (PathNotFoundException ex) {
             // node does not exist
+        }
+
+        if (ignoreNodeTypes != null) {
+            for (String nodeType : ignoreNodeTypes) {
+                if (isNodeType(nodeType)) {
+                    return false;
+                }
+            }
+        }
+
+        batchCount.increment();
+        if (maxBatch > 0 && batchCount.intValue() > maxBatch) {
+            try {
+                session.save();
+                batchCount.setValue(0);
+            } catch (ConstraintViolationException e) {
+                // save on the next node when next node is needed (like content node for files)
+                batchCount.setValue(maxBatch -1);
+            }
         }
 
         final Map<String, String> uuidMapping = getSession().getUuidMapping();
@@ -643,10 +673,10 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
                 } else if (allowsExternalSharedNodes) {
                     copy.clone(source, source.getName());
                 } else {
-                    source.copy(copy, source.getName(), allowsExternalSharedNodes, references);
+                    source.copy(copy, source.getName(), allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batchCount);
                 }
             } else {
-                source.copy(copy, source.getName(), allowsExternalSharedNodes, references);
+                source.copy(copy, source.getName(), allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batchCount);
             }
         }
 

@@ -40,6 +40,7 @@
 
 package org.jahia.services.content.decorator;
 
+import org.apache.commons.lang.mutable.MutableInt;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -272,6 +273,14 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references) throws RepositoryException {
         return node.copy(dest, name, allowsExternalSharedNodes, references);
+    }
+
+    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, List<String> ignoreNodeTypes, int maxBatch) throws RepositoryException {
+        return node.copy(dest, name, allowsExternalSharedNodes, ignoreNodeTypes, maxBatch);
+    }
+
+    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes, int maxBatch, MutableInt batch) throws RepositoryException {
+        return node.copy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batch);
     }
 
     public void copyProperties(JCRNodeWrapper destinationNode, Map<String, List<String>> references) throws RepositoryException {

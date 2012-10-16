@@ -42,12 +42,10 @@ package org.jahia.ajax.gwt.client.widget.definition;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.layout.*;
@@ -60,6 +58,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
@@ -93,6 +92,7 @@ public class LangPropertiesEditor extends LayoutContainer {
     private boolean editable = true;
     private GWTJahiaLanguage displayedLocale = null;
     private LayoutContainer topBar;
+    private boolean translationEnabled;
     private LangPropertiesEditor translationSource;
 
     public LangPropertiesEditor(GWTJahiaNode node, List<String> dataType, boolean editable,
@@ -205,7 +205,7 @@ public class LangPropertiesEditor extends LayoutContainer {
                 if (node != null) {
                     langPropertiesEditor.setPermissions(node.getPermissions());
                 }
-                if (translationSource != null) {
+                if (translationEnabled && translationSource != null) {
                     langPropertiesEditor.setTranslationSource(translationSource);
                 }
                 langPropertiesEditor.renderNewFormPanel();
@@ -259,6 +259,48 @@ public class LangPropertiesEditor extends LayoutContainer {
         languageSwitcher.setTriggerAction(ComboBox.TriggerAction.ALL);
         languageSwitcher.setForceSelection(true);
         return languageSwitcher;
+    }
+
+    private Button createSuggestTranslationButton() {
+        Button button = new Button(Messages.get("label.translate.suggest", "Suggest translation"));
+        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                MessageBox.confirm(
+                        Messages.get("label.translate.suggest", "Suggest translation"),
+                        Messages.get("label.translate.suggest.confirm", "Do you want to replace the content by an automatic translation of it?"),
+                        new Listener<MessageBoxEvent>() {
+                            public void handleEvent(MessageBoxEvent be) {
+                                if (Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getItemId())) {
+                                    PropertiesEditor sourcePropertiesEditor = translationSource.getPropertiesEditorByLang(translationSource.getDisplayedLocale().getLanguage());
+                                    List<GWTJahiaNodeProperty> props = new ArrayList<GWTJahiaNodeProperty>();
+                                    for (GWTJahiaNodeProperty prop : sourcePropertiesEditor.getProperties()) {
+                                        if (sourcePropertiesEditor.getGWTJahiaItemDefinition(prop).isInternationalized()) {
+                                            props.add(prop);
+                                        }
+                                    }
+                                    JahiaContentManagementService.App.getInstance().translate(props, translationSource.getDisplayedLocale().getLanguage(), displayedLocale.getLanguage(), new BaseAsyncCallback<List<GWTJahiaNodeProperty>>() {
+                                        public void onApplicationFailure(Throwable throwable) {
+                                            com.google.gwt.user.client.Window.alert(Messages.get("failure.properties.translation", "Properties translation failed") + "\n\n"
+                                                    + throwable.getMessage());
+                                            Log.error("Failed to translate properties", throwable);
+                                        }
+
+                                        public void onSuccess(List<GWTJahiaNodeProperty> newProps) {
+                                            Map<String, PropertiesEditor.PropertyAdapterField> fieldsMap = getPropertiesEditorByLang(displayedLocale.getLanguage()).getFieldsMap();
+                                            for (final GWTJahiaNodeProperty prop : newProps) {
+                                                final Field<?> f = fieldsMap.get(prop.getName()).getField();
+                                                FormFieldCreator.copyValue(prop, f);
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                );
+            }
+        });
+        return button;
     }
 
     /**
@@ -325,6 +367,11 @@ public class LangPropertiesEditor extends LayoutContainer {
                         languageSwitcher.getStore().add(result.getAvailabledLanguages());
                     }
                     languageSwitcher.setSelection(selected);
+                }
+                translationEnabled = result.isTranslationEnabled();
+                if (translationEnabled && translationSource != null) {
+                    topBar.add(createSuggestTranslationButton());
+                    topBar.layout();
                 }
 
                 mixin = result.getMixin();

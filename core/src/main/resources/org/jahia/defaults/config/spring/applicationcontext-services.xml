@@ -258,4 +258,6 @@
     </bean>
     
     <bean id="groovyPatcher" class="org.jahia.tools.patches.GroovyPatcher"/>
+
+    <bean id="TranslationService" class="org.jahia.services.translation.TranslationService" />
 </beans>

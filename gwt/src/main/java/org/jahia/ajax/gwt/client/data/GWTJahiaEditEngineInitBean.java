@@ -64,6 +64,7 @@ public class GWTJahiaEditEngineInitBean extends GWTJahiaGetPropertiesResult {
     private GWTJahiaNodeACL acl;
     private Map<String, Set<String>> referencesWarnings;
     private String defaultLanguageCode;
+    private boolean translationEnabled;
 
     public GWTJahiaEditEngineInitBean() {
     }
@@ -112,4 +113,11 @@ public class GWTJahiaEditEngineInitBean extends GWTJahiaGetPropertiesResult {
         this.defaultLanguageCode = defaultLanguageCode;
     }
 
+    public boolean isTranslationEnabled() {
+        return translationEnabled;
+    }
+
+    public void setTranslationEnabled(boolean translationEnabled) {
+        this.translationEnabled = translationEnabled;
+    }
 }

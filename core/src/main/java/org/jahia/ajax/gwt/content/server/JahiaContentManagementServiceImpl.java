@@ -43,7 +43,6 @@ package org.jahia.ajax.gwt.content.server;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
-import difflib.StringUtills;
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
@@ -152,6 +151,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private UIConfigHelper uiConfigHelper;
     private JCRContentUtils jcrContentUtils;
     private ChannelHelper channelHelper;
+    private TranslationHelper translationHelper;
 
     public void setAcl(ACLHelper acl) {
         this.acl = acl;
@@ -247,6 +247,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void setChannelHelper(ChannelHelper channelHelper) {
         this.channelHelper = channelHelper;
     }
+
+    public void setTranslationHelper(TranslationHelper translationHelper) {
+        this.translationHelper = translationHelper;
+    }
+
 // ------------------------ INTERFACE METHODS ------------------------
 
 
@@ -986,23 +991,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         zip.zip(paths, archiveName, retrieveCurrentSession(), getUILocale());
     }
 
-    public List<GWTJahiaNodeProperty> translate(List<GWTJahiaNodeProperty> properties, String language) {
-        List<GWTJahiaNodeProperty> translatedProperties = new ArrayList<GWTJahiaNodeProperty>();
-        for (GWTJahiaNodeProperty property : properties) {
-            translatedProperties.add(translate(property, language));
-        }
-        return translatedProperties;
+    public List<GWTJahiaNodeProperty> translate(List<GWTJahiaNodeProperty> properties, String srcLanguage, String destLanguage) {
+        return translationHelper.translate(properties, srcLanguage, destLanguage);
     }
 
-    public GWTJahiaNodeProperty translate(GWTJahiaNodeProperty property, String language) {
-        GWTJahiaNodeProperty translatedProperty = property.cloneObject();
-        List<GWTJahiaNodePropertyValue> translatedValues = new ArrayList<GWTJahiaNodePropertyValue>();
-        for (GWTJahiaNodePropertyValue value : property.getValues()) {
-            String translation = value.getString(); // call translation service
-            translatedValues.add(new GWTJahiaNodePropertyValue(translation));
-        }
-        translatedProperty.setValues(translatedValues);
-        return translatedProperty;
+    public GWTJahiaNodeProperty translate(GWTJahiaNodeProperty property, String srcLanguage, String destLanguage) {
+        return translationHelper.translate(property, srcLanguage, destLanguage);
     }
 
     public void unzip(List<String> paths) throws GWTJahiaServiceException {
@@ -1569,6 +1563,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 }
             }
             result.setReferencesWarnings(referencesWarnings);
+            result.setTranslationEnabled(translationHelper.isTranslationEnabled());
             return result;
         } catch (PathNotFoundException e) {
             // the node no longer exists

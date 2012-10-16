@@ -403,9 +403,9 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void zip(List<String> paths, String archiveName) throws GWTJahiaServiceException;
 
-    List<GWTJahiaNodeProperty> translate(List<GWTJahiaNodeProperty> properties, String language);
+    List<GWTJahiaNodeProperty> translate(List<GWTJahiaNodeProperty> properties, String srcLanguage, String destLanguage);
 
-    GWTJahiaNodeProperty translate(GWTJahiaNodeProperty property, String language);
+    GWTJahiaNodeProperty translate(GWTJahiaNodeProperty property, String srcLanguage, String destLanguage);
 
 // -------------------------- INNER CLASSES --------------------------
 

@@ -346,7 +346,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void zip(List<String> paths, String archiveName, AsyncCallback async);
 
-    void translate(List<GWTJahiaNodeProperty> properties, String language, AsyncCallback<List<GWTJahiaNodeProperty>> async);
+    void translate(List<GWTJahiaNodeProperty> properties, String srcLanguage, String destLanguage, AsyncCallback<List<GWTJahiaNodeProperty>> async);
 
-    void translate(GWTJahiaNodeProperty property, String language, AsyncCallback<GWTJahiaNodeProperty> async);
+    void translate(GWTJahiaNodeProperty property, String srcLanguage, String destLanguage, AsyncCallback<GWTJahiaNodeProperty> async);
 }

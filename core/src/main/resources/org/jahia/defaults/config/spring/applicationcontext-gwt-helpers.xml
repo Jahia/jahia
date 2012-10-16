@@ -122,4 +122,8 @@
         <property name="channelService" ref="ChannelService" />
     </bean>
 
+    <bean name="TranslationHelper" class="org.jahia.ajax.gwt.helper.TranslationHelper">
+        <property name="translationService" ref="TranslationService" />
+    </bean>
+
 </beans>

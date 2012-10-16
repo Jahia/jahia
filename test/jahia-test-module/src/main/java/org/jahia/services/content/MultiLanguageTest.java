@@ -40,13 +40,10 @@
 
 package org.jahia.services.content;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.drools.util.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;

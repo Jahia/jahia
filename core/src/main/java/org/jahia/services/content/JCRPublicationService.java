@@ -783,7 +783,15 @@ public class JCRPublicationService extends JahiaService {
                     " with current version " + versionManager.getBaseVersion(node.getPath()).getName());
         }
         if (node.isNodeType(JAHIAMIX_NODENAMEINFO)) {
-            node.setProperty(FULLPATH, node.getPath());
+            boolean doUpdate = false;
+            String nodePath = node.getPath();
+            if (node.hasProperty(FULLPATH)) {
+                Value fp = node.getProperty(FULLPATH).getValue();
+                doUpdate = fp == null || !StringUtils.equals(fp.getString(), nodePath);
+            }
+            if (doUpdate) {
+                node.setProperty(FULLPATH, node.getPath());
+            }
         }
         session.save();
         Version version = versionManager.checkpoint(node.getPath());

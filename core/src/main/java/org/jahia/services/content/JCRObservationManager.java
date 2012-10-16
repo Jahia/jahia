@@ -461,6 +461,11 @@ public class JCRObservationManager implements ObservationManager {
             return event instanceof JackrabbitEvent ? ((JackrabbitEvent) event).isExternal()
                     : false;
         }
+        
+        @Override
+        public String toString() {
+            return event.toString();
+        }
     }
 }
 

@@ -80,11 +80,18 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
      * @param events The event set received.
      */
     public void onEvent(EventIterator events) {
+        final int operationType = ((JCREventIterator)events).getOperationType();
+        if (logger.isDebugEnabled()) {
+            logger.debug("{} events received. Operation type {}", events.getSize(), operationType);
+        }
         final Cache depCache = cacheProvider.getDependenciesCache();
         final Cache regexpDepCache = cacheProvider.getRegexpDependenciesCache();
         final Set<String> flushed = new HashSet<String>();
         while (events.hasNext()) {
             Event event = (Event) events.next();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Event: {}", event);
+            }
             boolean propageToOtherClusterNodes = !isExternal(event);
             try {
                 String path = event.getPath();
@@ -96,6 +103,9 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                         flushParent = true;
                     }
                     final int type = event.getType();
+                    if(path.contains("j:invalidLanguages")) {
+                        flushParent=true;
+                    }
                     if (type == Event.PROPERTY_ADDED || type == Event.PROPERTY_CHANGED || type == Event.PROPERTY_REMOVED) {
                         if (path.endsWith("/j:published")) {
                             flushParent = true;
@@ -108,9 +118,6 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                         flushParent = true;
                     }
                     if(path.contains("vanityUrlMapping")) {
-                        flushParent=true;
-                    }
-                    if(path.contains("j:invalidLanguages")) {
                         flushParent=true;
                     }
                     if (path.contains("j:acl") || path.contains("jnt:group") || flushRoles || type == Event.NODE_MOVED) {
@@ -161,14 +168,14 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
     }
 
     private void flushDependenciesOfPath(Cache depCache, Set<String> flushed, String path, boolean propageToOtherClusterNodes) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Flushing dependencies for path : " + path);
-        }
         Element element = !flushed.contains(path) ? depCache.get(path) : null;
         if (element != null) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Flushing dependencies for path: {}", path);
+            }
             flushed.add(path);
             if (logger.isDebugEnabled()) {
-                logger.debug("Flushing path : " + path);
+                logger.debug("Flushing path: {}", path);
             }
             cacheProvider.invalidate(path, propageToOtherClusterNodes);
             depCache.remove(element.getKey());
@@ -177,7 +184,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
 
     private void flushRegexpDependenciesOfPath(Cache depCache, String path, boolean propageToOtherClusterNodes) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Flushing dependencies for path : " + path);
+            logger.debug("Flushing dependencies for path: {}", path);
         }
         @SuppressWarnings("unchecked")
         List<String> keys = depCache.getKeys();
@@ -191,7 +198,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
 
     private void flushChildsDependenciesOfPath(Cache depCache, String path, boolean propageToOtherClusterNodes) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Flushing dependencies for path : " + path);
+            logger.debug("Flushing dependencies for path: {}", path);
         }
         @SuppressWarnings("unchecked")
         List<String> keys = depCache.getKeys();

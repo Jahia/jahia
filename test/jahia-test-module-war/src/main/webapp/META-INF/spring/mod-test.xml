@@ -58,6 +58,7 @@
                 <value>org.jahia.services.tags.TaggingTest</value>
                 <value>org.jahia.services.templates.JahiaTemplateManagerServiceTest</value>                
                 <value>org.jahia.services.usermanager.JahiaGroupManagerServiceTest</value>
+                <value>org.jahia.services.validation.ValidationTest</value>
                 <value>org.jahia.services.versioning.VersioningTest</value>
                 <value>org.jahia.services.visibility.VisibilityServiceTest</value>
                 <value>org.jahia.services.workflow.StateSequenceTest</value>

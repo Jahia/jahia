@@ -62,6 +62,8 @@ public @interface FieldMatch {
 
     Class<? extends Payload>[] payload() default {};
 
+    String propertyName() default "";
+
     String first();
 
     String second();

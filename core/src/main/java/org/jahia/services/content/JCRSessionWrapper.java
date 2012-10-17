@@ -85,6 +85,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.security.AccessControlException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -434,7 +435,9 @@ public class JCRSessionWrapper implements Session {
     }
 
     void registerChangedNode(JCRNodeWrapper node) {
-        changedNodes.put(node.getPath(), node);
+        if (!newNodes.containsKey(node.getPath())) {
+            changedNodes.put(node.getPath(), node);
+        }
     }
 
     void unregisterNewNode(JCRNodeWrapper node) {
@@ -524,8 +527,13 @@ public class JCRSessionWrapper implements Session {
                     if (ccve == null) {
                         ccve = new CompositeConstraintViolationException();
                     }
-                    String propertyName = constraintViolation.getPropertyPath().toString();
-                    String propertyLabel = propertyName;
+                    String propertyName;
+                    try {
+                        Method propertyNameGetter = constraintViolation.getConstraintDescriptor().getAnnotation().annotationType().getMethod("propertyName");
+                        propertyName = (String) propertyNameGetter.invoke(constraintViolation.getConstraintDescriptor().getAnnotation());
+                    } catch (Exception e) {
+                        propertyName = constraintViolation.getPropertyPath().toString();
+                    }
                     Locale errorLocale = null;
                     if (StringUtils.isNotBlank(propertyName)) {
                         try {
@@ -534,8 +542,6 @@ public class JCRSessionWrapper implements Session {
                                 propertyDefinition = node.getApplicablePropertyDefinition(propertyName.replaceFirst("_", ":"));
                             }
                             if (propertyDefinition != null) {
-                                propertyLabel = propertyDefinition.getLabel(LocaleContextHolder.getLocale(), node.getPrimaryNodeType());
-
                                 if (propertyDefinition.isInternationalized()) {
                                     errorLocale = getLocale();
                                 }

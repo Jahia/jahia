@@ -54,7 +54,7 @@ import javax.validation.constraints.Size;
 import java.util.Calendar;
 
 @FieldMatch.List({
-        @FieldMatch(first = "test_email", second = "test_confirmEmail")
+        @FieldMatch(first = "test_email", second = "test_confirmEmail", propertyName = "test:confirmEmail")
 })
 public class TestValidatedNodeDecorator extends JCRNodeDecorator {
 

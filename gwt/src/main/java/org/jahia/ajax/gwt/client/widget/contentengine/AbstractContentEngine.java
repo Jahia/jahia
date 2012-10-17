@@ -71,6 +71,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.GWTCompositeConstraintViolationException;
+import org.jahia.ajax.gwt.client.service.GWTConstraintViolationException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
@@ -571,14 +572,25 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         try {
             throw throwable;
         } catch (final GWTCompositeConstraintViolationException cve) {
+            String nodeLevelMessages = "";
+            boolean hasFieldErrors = false;
+            for (GWTConstraintViolationException violationException : cve.getErrors()) {
+                if (violationException.getPropertyName() == null || violationException.getPropertyName().equals("")) {
+                    nodeLevelMessages += "<br>" + violationException.getConstraintMessage();
+                } else {
+                    hasFieldErrors = true;
+                }
+            }
+            final boolean fHasFieldErrors = hasFieldErrors;
             MessageBox.alert(Messages.get("label.error", "Error"),
-                    Messages.get("failure.invalid.constraint.label",
+                    (hasFieldErrors ? Messages.get("failure.invalid.constraint.label",
                             "There are some validation errors!"
                                     + " Click on the information icon next to the"
-                                    + " highlighted fields, correct the input and save again."),
+                                    + " highlighted fields, correct the input and save again.") : "")
+                            + nodeLevelMessages,
                     new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
-                            if (!cve.getErrors().isEmpty()) {
+                            if (fHasFieldErrors) {
                                 EngineValidation e = new EngineValidation(tabs, getSelectedLanguage(), changedI18NProperties);
                                 EngineValidation.ValidateResult r = e.getValidationFromException(cve.getErrors());
                                 handleValidationResult(r);
@@ -610,7 +622,9 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         if (r.firstErrorField != null) {
             r.firstErrorField.focus();
         }
-        r.firstErrorTab.layout();
+        if (r.firstErrorTab != null) {
+            r.firstErrorTab.layout();
+        }
     }
 
     protected abstract void setButtonsEnabled(boolean doEnable);

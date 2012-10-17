@@ -40,6 +40,7 @@
 
 package org.jahia.services.visibility.filters;
 
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
@@ -60,7 +61,9 @@ public class VisibilityFilter extends AbstractFilter {
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        if(!visibilityService.matchesConditions(resource.getNode())) {
+        if (!visibilityService.matchesConditions(resource.getNode())
+                || JCRContentUtils.isLanguageInvalid(resource.getNode(), resource.getLocale()
+                        .toString())) {
             return "";
         }
         return null;

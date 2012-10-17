@@ -1122,6 +1122,34 @@ public final class JCRContentUtils implements ServletContextAware {
     }
 
     /**
+     * Checks if the specified language is marked as invalid for displaying.
+     * 
+     * @param node
+     *            the node to be checked
+     * @param languageCode
+     *            language code to be tested
+     * @return <code>true</code> if the specified language is in the list of languages marked as invalid for displaying; <code>false</code>
+     *         otherwise.
+     * @throws RepositoryException
+     *             in case of an exception
+     */
+    public static boolean isLanguageInvalid(Node node, String languageCode)
+            throws RepositoryException {
+        boolean invalid = false;
+        if (node.hasProperty("j:invalidLanguages")) {
+            final Value[] values = node.getProperty("j:invalidLanguages").getValues();
+            for (Value value : values) {
+                if (value.getString().equals(languageCode)) {
+                    invalid = true;
+                    break;
+                }
+            }
+        }
+
+        return invalid;
+    }
+
+    /**
      * Returns <code>true</code> if the node is locked and cannot be edited by current user.
      *
      * @param node the node to be tested

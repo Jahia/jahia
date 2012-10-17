@@ -165,15 +165,6 @@ public class DefaultPostAction extends Action {
                     }
                 }
 
-                for (String s : newNode.getNodeTypes()) {
-                    Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
-                    for (ExtendedPropertyDefinition propDef : propDefs) {
-                        if (propDef.isMandatory() && !propDef.isProtected() && !newNode.hasProperty(propDef.getName())) {
-                            throw new ConstraintViolationException("Mandatory field : "+propDef.getName());
-                        }
-                    }
-                }
-
                 session.save();
             } catch (CompositeConstraintViolationException e) {
                 List<JSONObject> jsonErrors = new ArrayList<JSONObject>();

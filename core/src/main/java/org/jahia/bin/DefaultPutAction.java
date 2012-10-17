@@ -120,15 +120,6 @@ public class DefaultPutAction extends Action {
                     }
                 }
             }
-            for (String s : node.getNodeTypes()) {
-                Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
-                for (ExtendedPropertyDefinition propDef : propDefs) {
-                    if (propDef.isMandatory() && !propDef.isProtected() && (!node.hasProperty(propDef.getName()) ||
-                            StringUtils.isEmpty(node.getProperty(propDef.getName()).getString()))) {
-                        throw new ConstraintViolationException("Mandatory field : "+propDef.getName());
-                    }
-                }
-            }
             session.save();
         } catch (CompositeConstraintViolationException e) {
             List<JSONObject> jsonErrors = new ArrayList<JSONObject>();

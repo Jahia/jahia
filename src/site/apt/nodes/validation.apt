@@ -1,13 +1,19 @@
 Node validation
 
+* Using validation framework
+
  Jahia supports {{{http://www.jahia.com/cms/home/community/documentation/templating-and-integration-guide/part-4-content-definitions-and-v/definitons/validators.html}value constraints}},
  which can be defined in the standard CND (Compact Namespace and Node Type Definition) file. This is already quite
  powerful and sufficient in most cases. But if you need more complex or custom constraints, like cross-field validation,
  you can use {{{http://static.springsource.org/spring/docs/current/spring-framework-reference/html/validation.html#validation-beanvalidation-overview}JSR-303 Bean Validation}}.
 
  This is done in Jahia by declaring a {{{./decorators.html}node decorator}} and annotating its getters with validation
- constraints. Note that the getters names should match the property name (replace ':' with '_') if you want the latter
- to be translated in the constraint violation message. So for example, with the following definition  :
+ constraints. Note that the getters names should match a property name if it makes sense, (replace ':' with '_') so that
+ the system recognize which jcr property violates the constraint. When using custom annotation, it is also possible to
+ specify the name of the jcr property directly in an annotation field named <<<propertyName>>>. This is also useful for
+ class level constraints which apply on multiple fields, to specify which field to focus on when the error occurs.
+
+ So for example, with the following definition  :
 
 +-------------
 [test:validatedNode] > nt:base, jmix:droppableContent
@@ -51,9 +57,53 @@ public class TestValidatedNodeDecorator extends JCRNodeDecorator {
 }
 +-------------
 
- The validation is done during the session save and raises a <<<javax.jcr.nodetype.ConstraintViolationException>>> when
- it fails. The exception message contains the translated property name and the constraint validation message.
+* Custom validators
 
- When you create or edit a node by doing a {{{../jahia-modules/rest.html#HTTP Post Request}HTTP Post Request}} and the
- validation fails, it returns a JSON object with a property <<<validationError>>> containing the
- ConstraintViolationException message.
+ A custom annotation, checking that multiple fields match, can be declared this way :
+
++-------------
+    @Target({TYPE, ANNOTATION_TYPE})
+    @Retention(RUNTIME)
+    @Constraint(validatedBy = FieldMatchValidator.class)
+    @Documented
+    public @interface FieldMatch {
+
+        String message() default "{validation.constraints.fieldmatch}";
+
+        Class<?>[] groups() default {};
+
+        Class<? extends Payload>[] payload() default {};
+
+        String propertyName() default "";
+
+        String first();
+
+        String second();
+
+        @Target({TYPE, ANNOTATION_TYPE})
+        @Retention(RUNTIME)
+        @Documented
+        @interface List {
+            FieldMatch[] value();
+        }
+    }
++-------------
+
+ One can use it this way :
+
++-------------
+ @FieldMatch(first = "firstField", second = "secondField", propertyName = "j:firstField")
+ public class MyNodeDecorator extends JCRNodeDecorator {
+  ...
+ }
++-------------
+
+* Constraints validation mechanism
+
+  The validation is done during the session save and raises a subtype of <<<javax.jcr.nodetype.ConstraintViolationException>>> when
+  it fails. The exception contains reference to the node and the definition of the field which violates the constraint. In the
+  edit engine, that field will be highlighted and the constraint error message is displayed.
+
+  When you create or edit a node by doing a {{{../jahia-modules/rest.html#HTTP Post Request}HTTP Post Request}} and the
+  validation fails, it returns a JSON object with a property <<<validationError>>> containing a list of objects with
+  some useful properties : the error message, the node identifier, the property name and its localized label if applicable.

@@ -80,6 +80,6 @@ public class ExternalBinaryImpl implements Binary {
     }
 
     public void dispose() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 }

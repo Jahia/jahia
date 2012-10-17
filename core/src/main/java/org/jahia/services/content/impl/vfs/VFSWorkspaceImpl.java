@@ -72,93 +72,93 @@ public class VFSWorkspaceImpl implements Workspace {
     }
 
     public Session getSession() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public String getName() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public void copy(String s, String s1) throws ConstraintViolationException, VersionException, AccessDeniedException, PathNotFoundException, ItemExistsException, LockException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void copy(String s, String s1, String s2) throws NoSuchWorkspaceException, ConstraintViolationException, VersionException, AccessDeniedException, PathNotFoundException, ItemExistsException, LockException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void clone(String s, String s1, String s2, boolean b) throws NoSuchWorkspaceException, ConstraintViolationException, VersionException, AccessDeniedException, PathNotFoundException, ItemExistsException, LockException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void move(String s, String s1) throws ConstraintViolationException, VersionException, AccessDeniedException, PathNotFoundException, ItemExistsException, LockException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void restore(Version[] versions, boolean b) throws ItemExistsException, UnsupportedRepositoryOperationException, VersionException, LockException, InvalidItemStateException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public QueryManager getQueryManager() throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public NamespaceRegistry getNamespaceRegistry() throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public NodeTypeManager getNodeTypeManager() throws RepositoryException {
         return new NodeTypeManager() {
             public NodeType getNodeType(String s) throws NoSuchNodeTypeException, RepositoryException {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
+                return null;  
             }
 
             public NodeTypeIterator getAllNodeTypes() throws RepositoryException {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
+                return null;  
             }
 
             public NodeTypeIterator getPrimaryNodeTypes() throws RepositoryException {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
+                return null;  
             }
 
             public NodeTypeIterator getMixinNodeTypes() throws RepositoryException {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
+                return null;  
             }
 
             public boolean hasNodeType(String name) throws RepositoryException {
-                return false;  //To change body of implemented methods use File | Settings | File Templates.
+                return false;  
             }
 
             public NodeTypeTemplate createNodeTypeTemplate() throws UnsupportedRepositoryOperationException, RepositoryException {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
+                return null;  
             }
 
             public NodeTypeTemplate createNodeTypeTemplate(NodeTypeDefinition ntd) throws UnsupportedRepositoryOperationException, RepositoryException {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
+                return null;  
             }
 
             public NodeDefinitionTemplate createNodeDefinitionTemplate() throws UnsupportedRepositoryOperationException, RepositoryException {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
+                return null;  
             }
 
             public PropertyDefinitionTemplate createPropertyDefinitionTemplate() throws UnsupportedRepositoryOperationException, RepositoryException {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
+                return null;  
             }
 
             public NodeType registerNodeType(NodeTypeDefinition ntd, boolean allowUpdate) throws InvalidNodeTypeDefinitionException, NodeTypeExistsException, UnsupportedRepositoryOperationException, RepositoryException {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
+                return null;  
             }
 
             public NodeTypeIterator registerNodeTypes(NodeTypeDefinition[] ntds, boolean allowUpdate) throws InvalidNodeTypeDefinitionException, NodeTypeExistsException, UnsupportedRepositoryOperationException, RepositoryException {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
+                return null;  
             }
 
             public void unregisterNodeType(String name) throws UnsupportedRepositoryOperationException, NoSuchNodeTypeException, RepositoryException {
-                //To change body of implemented methods use File | Settings | File Templates.
+                
             }
 
             public void unregisterNodeTypes(String[] names) throws UnsupportedRepositoryOperationException, NoSuchNodeTypeException, RepositoryException {
-                //To change body of implemented methods use File | Settings | File Templates.
+                
             }
         };
     }
@@ -166,41 +166,41 @@ public class VFSWorkspaceImpl implements Workspace {
     public ObservationManager getObservationManager() throws UnsupportedRepositoryOperationException, RepositoryException {
         return new ObservationManager() {
             public void addEventListener(EventListener eventListener, int i, String s, boolean b, String[] strings, String[] strings1, boolean b1) throws RepositoryException {
-                //To change body of implemented methods use File | Settings | File Templates.
+                
             }
 
             public void removeEventListener(EventListener eventListener) throws RepositoryException {
-                //To change body of implemented methods use File | Settings | File Templates.
+                
             }
 
             public EventListenerIterator getRegisteredEventListeners() throws RepositoryException {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
+                return null;  
             }
 
             public void setUserData(String userData) throws RepositoryException {
-                //To change body of implemented methods use File | Settings | File Templates.
+                
             }
 
             public EventJournal getEventJournal() throws RepositoryException {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
+                return null;  
             }
 
             public EventJournal getEventJournal(int i, String s, boolean b, String[] strings, String[] strings1) throws RepositoryException {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
+                return null;  
             }
         };
     }
 
     public String[] getAccessibleWorkspaceNames() throws RepositoryException {
-        return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return new String[0];  
     }
 
     public ContentHandler getImportContentHandler(String s, int i) throws PathNotFoundException, ConstraintViolationException, VersionException, LockException, AccessDeniedException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public void importXML(String s, InputStream inputStream, int i) throws IOException, PathNotFoundException, ItemExistsException, ConstraintViolationException, InvalidSerializedDataException, LockException, AccessDeniedException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public LockManager getLockManager() throws UnsupportedRepositoryOperationException, RepositoryException {

@@ -109,7 +109,7 @@
 //            }
 //
 //            public void skippedComparison(Node node, Node node1) {
-//                //To change body of implemented methods use File | Settings | File Templates.
+//                
 //            }
 //        };
 //        Diff myDiff = new Diff(new InputSource(getClass().getClassLoader().getResourceAsStream("imports/import.xml")), new InputSource(new ByteArrayInputStream(out.toByteArray())));

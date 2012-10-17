@@ -505,15 +505,15 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
     }
 
     public Property setProperty(String name, Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public Property setProperty(String name, BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public NodeIterator getNodes(String[] nameGlobs) throws RepositoryException {
-        return VFSNodeIteratorImpl.EMPTY;  //To change body of implemented methods use File | Settings | File Templates.
+        return VFSNodeIteratorImpl.EMPTY;  
     }
 
     public PropertyIterator getProperties(String[] strings) throws RepositoryException {
@@ -530,38 +530,38 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
     }
 
     public PropertyIterator getReferences(String name) throws RepositoryException {
-        return PropertyIteratorImpl.EMPTY;  //To change body of implemented methods use File | Settings | File Templates.
+        return PropertyIteratorImpl.EMPTY;  
     }
 
     public PropertyIterator getWeakReferences() throws RepositoryException {
-        return PropertyIteratorImpl.EMPTY;  //To change body of implemented methods use File | Settings | File Templates.
+        return PropertyIteratorImpl.EMPTY;  
     }
 
     public PropertyIterator getWeakReferences(String name) throws RepositoryException {
-        return PropertyIteratorImpl.EMPTY;  //To change body of implemented methods use File | Settings | File Templates.
+        return PropertyIteratorImpl.EMPTY;  
     }
 
     public void setPrimaryType(String nodeTypeName) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public NodeIterator getSharedSet() throws RepositoryException {
-        return VFSNodeIteratorImpl.EMPTY;  //To change body of implemented methods use File | Settings | File Templates.
+        return VFSNodeIteratorImpl.EMPTY;  
     }
 
     public void removeSharedSet() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void removeShare() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void followLifecycleTransition(String transition) throws UnsupportedRepositoryOperationException, InvalidLifecycleTransitionException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public String[] getAllowedLifecycleTransistions() throws UnsupportedRepositoryOperationException, RepositoryException {
-        return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return new String[0];  
     }
 }

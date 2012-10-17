@@ -47,7 +47,7 @@ public class ExternalQueryManager implements QueryManager {
     }
 
     public Query getQuery(Node node) throws InvalidQueryException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public String[] getSupportedQueryLanguages() throws RepositoryException {
@@ -247,15 +247,15 @@ public class ExternalQueryManager implements QueryManager {
         }
 
         public void setLimit(long limit) {
-            //To change body of implemented methods use File | Settings | File Templates.
+            
         }
 
         public void setOffset(long offset) {
-            //To change body of implemented methods use File | Settings | File Templates.
+            
         }
 
         public String getStatement() {
-            return null;  //To change body of implemented methods use File | Settings | File Templates.
+            return null;  
         }
 
         public String getLanguage() {
@@ -275,7 +275,7 @@ public class ExternalQueryManager implements QueryManager {
         }
 
         public String[] getBindVariableNames() throws RepositoryException {
-            return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
+            return new String[0];  
         }
     }
 }

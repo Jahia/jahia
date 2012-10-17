@@ -83,7 +83,7 @@ public class EditManager extends ContentPanel {
         if (!config.getTabs().isEmpty()) {
 //        GWT.runAsync(new RunAsyncCallback() {
 //            public void onFailure(Throwable reason) {
-//                //To change body of implemented methods use File | Settings | File Templates.
+//                
 //            }
 //
 //            public void onSuccess() {

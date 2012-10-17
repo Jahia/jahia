@@ -101,19 +101,19 @@ public class VFSValueImpl implements Value {
     }
 
     public String getString() throws ValueFormatException, IllegalStateException, RepositoryException {
-        return value.toString();  //To change body of implemented methods use File | Settings | File Templates.
+        return value.toString();  
     }
 
     public InputStream getStream() throws RepositoryException {
-        return (InputStream) value;  //To change body of implemented methods use File | Settings | File Templates.
+        return (InputStream) value;  
     }
 
     public Binary getBinary() throws RepositoryException {
-        return (Binary) value;  //To change body of implemented methods use File | Settings | File Templates.
+        return (Binary) value;  
     }
 
     public long getLong() throws ValueFormatException, RepositoryException {
-        return ((Long) value).longValue();  //To change body of implemented methods use File | Settings | File Templates.
+        return ((Long) value).longValue();  
     }
 
     public double getDouble() throws ValueFormatException, RepositoryException {
@@ -121,18 +121,18 @@ public class VFSValueImpl implements Value {
     }
 
     public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
-        return (BigDecimal) value;  //To change body of implemented methods use File | Settings | File Templates.
+        return (BigDecimal) value;  
     }
 
     public Calendar getDate() throws ValueFormatException, RepositoryException {
-        return (Calendar) value;  //To change body of implemented methods use File | Settings | File Templates.
+        return (Calendar) value;  
     }
 
     public boolean getBoolean() throws ValueFormatException, RepositoryException {
-        return ((Boolean) value).booleanValue();  //To change body of implemented methods use File | Settings | File Templates.
+        return ((Boolean) value).booleanValue();  
     }
 
     public int getType() {
-        return type;  //To change body of implemented methods use File | Settings | File Templates.
+        return type;  
     }
 }

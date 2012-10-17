@@ -176,11 +176,11 @@ public class JCRSessionWrapper implements Session {
     }
 
     public Object getAttribute(String s) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public String[] getAttributeNames() {
-        return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return new String[0];  
     }
 
     public JCRWorkspaceWrapper getWorkspace() {
@@ -436,8 +436,8 @@ public class JCRSessionWrapper implements Session {
 
     void registerChangedNode(JCRNodeWrapper node) {
         if (!newNodes.containsKey(node.getPath())) {
-            changedNodes.put(node.getPath(), node);
-        }
+        changedNodes.put(node.getPath(), node);
+    }
     }
 
     void unregisterNewNode(JCRNodeWrapper node) {

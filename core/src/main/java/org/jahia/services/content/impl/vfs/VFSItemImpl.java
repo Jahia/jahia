@@ -55,58 +55,58 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
  */
 public class VFSItemImpl implements Item {
     public String getPath() throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public String getName() throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public Item getAncestor(int i) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public int getDepth() throws RepositoryException {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return 0;  
     }
 
     public Session getSession() throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public boolean isNode() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;  
     }
 
     public boolean isNew() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;  
     }
 
     public boolean isModified() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;  
     }
 
     public boolean isSame(Item item) throws RepositoryException {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;  
     }
 
     public void accept(ItemVisitor itemVisitor) throws RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, ReferentialIntegrityException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void refresh(boolean b) throws InvalidItemStateException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 }

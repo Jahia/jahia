@@ -86,35 +86,35 @@ public class VFSPropertyImpl extends VFSItemImpl implements Property {
     }
 
     public void setValue(String s) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void setValue(String[] strings) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void setValue(InputStream inputStream) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void setValue(long l) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void setValue(double v) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void setValue(Calendar calendar) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void setValue(boolean b) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void setValue(Node node) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public Value getValue() throws ValueFormatException, RepositoryException {
@@ -129,54 +129,54 @@ public class VFSPropertyImpl extends VFSItemImpl implements Property {
         if (value != null) {
             return value.getString();
         }
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public InputStream getStream() throws ValueFormatException, RepositoryException {
         if (value != null) {
             return value.getStream();
         }
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public long getLong() throws ValueFormatException, RepositoryException {
         if (value != null) {
             return value.getLong();
         }
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return 0;  
     }
 
     public double getDouble() throws ValueFormatException, RepositoryException {
         if (value != null) {
             return value.getDouble();
         }
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return 0;  
     }
 
     public Calendar getDate() throws ValueFormatException, RepositoryException {
         if (value != null) {
             return value.getDate();
         }
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public boolean getBoolean() throws ValueFormatException, RepositoryException {
         if (value != null) {
             return value.getBoolean();
         }
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;  
     }
 
     public Node getNode() throws ValueFormatException, RepositoryException {
-        return node;  //To change body of implemented methods use File | Settings | File Templates.
+        return node;  
     }
 
     public long getLength() throws ValueFormatException, RepositoryException {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return 0;  
     }
 
     public long[] getLengths() throws ValueFormatException, RepositoryException {
-        return new long[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return new long[0];  
     }
 
     public PropertyDefinition getDefinition() throws RepositoryException {
@@ -184,33 +184,33 @@ public class VFSPropertyImpl extends VFSItemImpl implements Property {
     }
 
     public int getType() throws RepositoryException {
-        return value.getType();  //To change body of implemented methods use File | Settings | File Templates.
+        return value.getType();  
     }
 
     public void setValue(Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void setValue(BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public Binary getBinary() throws ValueFormatException, RepositoryException {
-        return value.getBinary();  //To change body of implemented methods use File | Settings | File Templates.
+        return value.getBinary();  
     }
 
     public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
-        return value.getDecimal();  //To change body of implemented methods use File | Settings | File Templates.
+        return value.getDecimal();  
     }
 
     public Property getProperty() throws ItemNotFoundException, ValueFormatException, RepositoryException {
-        return this;  //To change body of implemented methods use File | Settings | File Templates.
+        return this;  
     }
 
     public boolean isMultiple() throws RepositoryException {
         if (values != null) {
             return true;
         }
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;  
     }
 }

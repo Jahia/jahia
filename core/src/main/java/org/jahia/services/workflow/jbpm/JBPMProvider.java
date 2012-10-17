@@ -1094,7 +1094,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                 ((command instanceof DeleteDeploymentCmd))) {
             return true;
         }
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;  
     }
 
     public <T> void beforeCommand(Command<T> command) {

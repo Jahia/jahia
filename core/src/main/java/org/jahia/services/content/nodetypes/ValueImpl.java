@@ -207,10 +207,10 @@ public class ValueImpl implements Value {
     }
 
     public Binary getBinary() throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 }

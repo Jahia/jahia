@@ -133,7 +133,7 @@ public class ExternalValueFactoryImpl implements ValueFactory {
     }
 
     public Binary createBinary(InputStream stream) throws RepositoryException {
-        return new ExternalBinaryImpl(stream);  //To change body of implemented methods use File | Settings | File Templates.
+        return new ExternalBinaryImpl(stream);  
     }
 
 }

@@ -94,7 +94,7 @@ public class NodenameListener extends DefaultEventListener {
                     for (Session jcrsession : sessions) {
                         jcrsession.save();
                     }
-                    return null;  //To change body of implemented methods use File | Settings | File Templates.
+                    return null;  
                 }
             });
         } catch (RepositoryException e) {

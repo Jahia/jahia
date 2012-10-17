@@ -323,7 +323,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
      *
      */
     public void setJahiaPreferenceByMaps(Map<String, String> jahiaPreferenceAttributes) throws JahiaPreferenceNotDefinedAttributeException, JahiaPreferenceNotDefinedPropertyException, JahiaPreferencesNotValidException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     /**

@@ -394,7 +394,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
     }
 
     public CamelContext getCamelContext() {
-        return camelContext;  //To change body of implemented methods use File | Settings | File Templates.
+        return camelContext;  
     }
 
     public void setFrom(String from) {

@@ -133,7 +133,7 @@ public class VFSValueFactoryImpl implements ValueFactory {
     }
 
     public Binary createBinary(InputStream stream) throws RepositoryException {
-        return new VFSBinaryImpl(stream);  //To change body of implemented methods use File | Settings | File Templates.
+        return new VFSBinaryImpl(stream);  
     }
 
 }

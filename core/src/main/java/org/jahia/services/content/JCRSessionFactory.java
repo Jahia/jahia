@@ -317,19 +317,19 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     }
 
     public boolean isStandardDescriptor(String key) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;  
     }
 
     public boolean isSingleValueDescriptor(String key) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;  
     }
 
     public Value getDescriptorValue(String key) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public Value[] getDescriptorValues(String key) {
-        return new Value[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return new Value[0];  
     }
 
 

@@ -276,7 +276,7 @@ public class WelcomeServlet extends HttpServlet {
                     } catch (RepositoryException e) {
                         logger.debug("This site does not have a published home in language "+curLocale,e);
                     }
-                    return null;  //To change body of implemented methods use File | Settings | File Templates.
+                    return null;
                 }
             });
         } catch (RepositoryException e) {

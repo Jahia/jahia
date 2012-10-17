@@ -97,7 +97,7 @@ public class ServletContextManager implements ServletContextAware {
 
     public void setServletContext(ServletContext servletContext) {
         mContext = servletContext;
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }//--------------------------------------------------------------------------
     /**
      * constructor

@@ -283,7 +283,6 @@ public class ChangedPropertyFact implements Updateable {
         return r;
     }
 
-<<<<<<< .working
     public AddedNodeFact getNodeValue() throws RepositoryException {
         if (property != null) {
             if (property.getDefinition().isMultiple()) {
@@ -302,27 +301,6 @@ public class ChangedPropertyFact implements Updateable {
         return null;
     }
 
-
-=======
-    public AddedNodeFact getNodeValue() throws RepositoryException {
-        if (property != null) {
-            if (property.getDefinition().isMultiple()) {
-                return null;
-            }
-            JCRValueWrapper v = (JCRValueWrapper) property.getValue();
-            if (v.getType() == PropertyType.WEAKREFERENCE || v.getType() == PropertyType.REFERENCE) {
-                JCRNodeWrapper node = ((JCRValueWrapper) v).getNode();
-                if (node != null ) {
-                    return new AddedNodeFact(node);
-                }
-            } else {
-                return null;
-            }
-        }
-        return null;
-    }
-
->>>>>>> .merge-right.r43438
     public Object getValues() throws RepositoryException {
         if (property != null) {
             return property.getValues();

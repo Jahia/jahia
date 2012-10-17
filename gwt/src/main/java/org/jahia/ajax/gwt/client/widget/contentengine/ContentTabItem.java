@@ -64,6 +64,7 @@ import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -76,6 +77,7 @@ import java.util.Map;
  */
 public class ContentTabItem extends PropertiesTabItem {
     private int maxNameSize = 32;
+    private int maxLanguagesInRow = 10;
 
     private transient boolean isNodeNameFieldDisplayed = false;
     private transient Field name;
@@ -87,15 +89,21 @@ public class ContentTabItem extends PropertiesTabItem {
 
     private List<String> nameNotEditableForTypes;
 
-    private transient CheckBoxGroup invalidLanguagesCheckBoxGroup;
+    private transient List<CheckBoxGroup> invalidLanguagesCheckBoxGroups;
     private transient FieldSet invalidLanguagesFieldSet;
 
     public Field<String> getName() {
         return nameText;
     }
 
-    public CheckBoxGroup getInvalidLanguagesCheckBoxGroup() {
-        return invalidLanguagesCheckBoxGroup;
+    public List<CheckBox> getInvalidLanguagesCheckBoxes() {
+        List<CheckBox> cb = new ArrayList<CheckBox>();
+        if (invalidLanguagesCheckBoxGroups != null) {
+            for (CheckBoxGroup grp : invalidLanguagesCheckBoxGroups) {
+                cb.addAll(grp.getValues());
+            }
+        }
+        return cb;
     }
 
     @Override
@@ -108,7 +116,7 @@ public class ContentTabItem extends PropertiesTabItem {
         if (dataType == null) {
             dataType = Arrays.asList(GWTJahiaItemDefinition.CONTENT);
         }
-        invalidLanguagesCheckBoxGroup = null;
+        invalidLanguagesCheckBoxGroups = null;
         invalidLanguagesFieldSet = null;
         return super.create(engineTab, engine);
     }
@@ -371,8 +379,11 @@ public class ContentTabItem extends PropertiesTabItem {
         final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
         if (invalidLanguagesFieldSet == null && siteLanguages.size() > 1 && engine.getNodeTypes().get(0).getSuperTypes().contains("jmix:i18n")) {
             final List<String> siteMandatoryLanguages = JahiaGWTParameters.getSiteMandatoryLanguages();
-            invalidLanguagesCheckBoxGroup = new CheckBoxGroup();
-            invalidLanguagesCheckBoxGroup.setFieldLabel(Messages.get("label.validLanguages", "Valid display languages"));
+            CheckBoxGroup cbGroup = new CheckBoxGroup();
+            cbGroup.setFieldLabel(Messages.get("label.validLanguages", "Valid display languages"));
+            List<CheckBoxGroup> cbGroups = new ArrayList<CheckBoxGroup>();
+            cbGroups.add(cbGroup);
+            int langCount = 0;
             for (GWTJahiaLanguage siteLanguage : siteLanguages) {
                 if (siteLanguage.isActive()) {
                     CheckBox checkBox = new CheckBox();
@@ -406,13 +417,23 @@ public class ContentTabItem extends PropertiesTabItem {
                                 "language",siteLanguage.getLanguage());
                         model.setActive(false);
                     }
-                    invalidLanguagesCheckBoxGroup.add(checkBox);
+                    langCount++;
+                    if (langCount > maxLanguagesInRow) {
+                        cbGroup = new CheckBoxGroup();
+                        cbGroup.setHideLabel(true);
+                        cbGroups.add(cbGroup);
+                        langCount = 1;
+                    }
+                    cbGroup.add(checkBox);
                 }
             }
             invalidLanguagesFieldSet = new FieldSet();
-            invalidLanguagesFieldSet.setHeading(Messages.get("label.validLanguages", "Valid display languages"));
+            invalidLanguagesFieldSet.setHeading(Messages.get("label.validLanguages2", "Valid display languages2"));
             invalidLanguagesFieldSet.setLayout(fl);
-            invalidLanguagesFieldSet.add(invalidLanguagesCheckBoxGroup, fd);
+            for (CheckBoxGroup grp : cbGroups) {
+                invalidLanguagesFieldSet.add(grp, fd);
+            }
+            invalidLanguagesCheckBoxGroups = cbGroups;
         }
         super.attachPropertiesEditor(engine, tab);
     }
@@ -496,5 +517,9 @@ public class ContentTabItem extends PropertiesTabItem {
         return nameNotEditableForTypes == null || nameNotEditableForTypes.isEmpty()
                 || engine == null || !engine.isExistingNode()
                 || !engine.getNode().isNodeType(nameNotEditableForTypes);
+    }
+
+    public void setMaxLanguagesInRow(int maxLanguagesInRow) {
+        this.maxLanguagesInRow = maxLanguagesInRow;
     }
 }

@@ -46,7 +46,6 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -243,9 +242,8 @@ public class CreateContentEngine extends AbstractContentEngine {
                 if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
                     nodeName = ((ContentTabItem) item).getName().getValue();
                 }
-                final CheckBoxGroup checkBoxGroup = ((ContentTabItem) item).getInvalidLanguagesCheckBoxGroup();
-                if (checkBoxGroup!=null) {
-                    final List<CheckBox> values = checkBoxGroup.getValues();
+                final List<CheckBox> values = ((ContentTabItem) item).getInvalidLanguagesCheckBoxes();
+                if (!values.isEmpty()) {
                     final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
                     if (values.size() != siteLanguages.size()) {
                         List<String> strings = new ArrayList<String>(siteLanguages.size());

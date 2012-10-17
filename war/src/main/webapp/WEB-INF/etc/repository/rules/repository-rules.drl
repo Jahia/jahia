@@ -89,7 +89,7 @@ rule "Profile Image update"
     then
         Create a square thumbnail on reference "avatar_120" of size 120
         Create a square thumbnail on reference "avatar_60" of size 60
-        Publish the node.getProperty("j:picture").getNode()
+        Publish the node.getProperty("j:picture").getNodeValue()
 end
 
 rule "Move subnodes to split folder"

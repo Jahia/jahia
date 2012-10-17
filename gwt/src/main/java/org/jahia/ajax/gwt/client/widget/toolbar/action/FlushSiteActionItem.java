@@ -74,7 +74,7 @@ public class FlushSiteActionItem extends BaseActionItem {
      */
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
-        super.init(gwtToolbarItem, linker);    //To change body of overridden methods use File | Settings | File Templates.
+        super.init(gwtToolbarItem, linker);    
         setEnabled(false);
     }
 

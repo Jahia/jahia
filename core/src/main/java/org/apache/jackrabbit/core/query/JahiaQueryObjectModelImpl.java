@@ -67,7 +67,7 @@ public class JahiaQueryObjectModelImpl extends QueryObjectModelImpl {
 
     @Override
     public void init(SessionContext sessionContext, QueryHandler handler, QueryObjectModelTree qomTree, String language, Node node) throws InvalidQueryException, RepositoryException {
-        super.init(sessionContext, handler, qomTree, language, node);    //To change body of overridden methods use File | Settings | File Templates.
+        super.init(sessionContext, handler, qomTree, language, node);    
 
         this.lqf = new JahiaLuceneQueryFactoryImpl(sessionContext.getSessionImpl(), (SearchIndex) handler,
                 variables);

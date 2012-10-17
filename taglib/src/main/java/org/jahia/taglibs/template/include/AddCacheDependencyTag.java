@@ -104,6 +104,6 @@ public class AddCacheDependencyTag extends TagSupport {
             resource.getRegexpDependencies().add(flushOnPathMatchingRegexp);
         }
         node = null;
-        return super.doEndTag();    //To change body of overridden methods use File | Settings | File Templates.
+        return super.doEndTag();    
     }
 }

@@ -103,6 +103,6 @@ public class UserAgentChannelProvider implements ChannelProvider, InitializingBe
             return true;
         }
         if (!(obj instanceof UserAgentChannelProvider)) return false;
-        return ((UserAgentChannelProvider) obj).getBeanName().equals(beanName);    //To change body of overridden methods use File | Settings | File Templates.
+        return ((UserAgentChannelProvider) obj).getBeanName().equals(beanName);    
     }
 }

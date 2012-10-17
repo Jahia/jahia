@@ -121,7 +121,7 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
     }
 
     public Item getAncestor(int i) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
-        return super.getAncestor(i);    //To change body of overridden methods use File | Settings | File Templates.
+        return super.getAncestor(i);    
     }
 
     public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
@@ -137,7 +137,7 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
     }
 
     public int getDepth() throws RepositoryException {
-        return super.getDepth();    //To change body of overridden methods use File | Settings | File Templates.
+        return super.getDepth();    
     }
 
     public Session getSession() throws RepositoryException {

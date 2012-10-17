@@ -120,7 +120,7 @@ public class FileUploadField extends AdapterField {
                     if (elem != null) {
                         setValue(elem.getAttribute("name"), elem.getAttribute("key"));
                     }
-                    super.onBrowserEvent(event);    //To change body of overridden methods use File | Settings | File Templates.
+                    super.onBrowserEvent(event);    
                 }
             };
             target.sinkEvents(Event.ONLOAD);

@@ -350,7 +350,7 @@ public class MainModule extends Module {
             com.google.gwt.dom.client.Element body = iframe.getContentDocument().getElementsByTagName("body").getItem(0);
             return (Element) body;
         }
-        return super.getInnerElement();    //To change body of overridden methods use File | Settings | File Templates.
+        return super.getInnerElement();    
     }
 
     public static native void setDocumentTitle(String title) /*-{

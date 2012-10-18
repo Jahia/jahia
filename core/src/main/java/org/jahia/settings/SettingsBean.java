@@ -61,6 +61,7 @@ package org.jahia.settings;
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.query.lucene.join.QueryEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.services.content.JCRContentUtils;
@@ -413,6 +414,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             System.setProperty("jahia.jackrabbit.searchIndex.enableConsistencyCheck", getString("jahia.jackrabbit.searchIndex.enableConsistencyCheck", "false"));
             System.setProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", getString("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "false"));
             System.setProperty("jahia.jackrabbit.searchIndex.autoRepair", getString("jahia.jackrabbit.searchIndex.autoRepair", "false"));
+            
+            System.setProperty(QueryEngine.NATIVE_SORT_SYSTEM_PROPERTY, getString("jahia.jackrabbit.useNativeSort", "true"));
             
             checkIndexConsistencyIfNeeded();
             

@@ -101,7 +101,7 @@ public class ContentTabItem extends PropertiesTabItem {
         List<CheckBox> values = new ArrayList<CheckBox>();
         for (CheckBox check : invalidLanguagesCheckBoxes) {
             if (check.getValue()) {
-              values.add(check);
+                values.add(check);
             }
         }
         return values;
@@ -126,7 +126,7 @@ public class ContentTabItem extends PropertiesTabItem {
     public void init(final NodeHolder engine, AsyncTabItem tab, String language) {
         super.init(engine, tab, language);
 
-        if (engine.getMixin() != null && nameFieldSet !=null) {
+        if (engine.getMixin() != null && nameFieldSet != null) {
             final Field<?> titleField;
             PropertiesEditor.PropertyAdapterField adapterField = propertiesEditor.getFieldsMap().get("jcr:title");
             if (adapterField != null) {
@@ -213,8 +213,8 @@ public class ContentTabItem extends PropertiesTabItem {
             }
 
         }
-        if(invalidLanguagesFieldSet!=null) {
-            propertiesEditor.insert(invalidLanguagesFieldSet,0);
+        if (invalidLanguagesFieldSet != null) {
+            propertiesEditor.insert(invalidLanguagesFieldSet, 0);
         }
         tab.layout();
     }
@@ -257,15 +257,15 @@ public class ContentTabItem extends PropertiesTabItem {
                 hBoxLayout.setHBoxLayoutAlign(HBoxLayout.HBoxLayoutAlign.MIDDLE);
                 final LayoutContainer panel = new LayoutContainer(hBoxLayout);
 
-                panel.add(this.nameText, new HBoxLayoutData(0,5,0,5));
+                panel.add(this.nameText, new HBoxLayoutData(0, 5, 0, 5));
 
                 autoUpdateLabel = new Label("");
-                panel.add(autoUpdateLabel, new HBoxLayoutData(0,5,0,5));
+                panel.add(autoUpdateLabel, new HBoxLayoutData(0, 5, 0, 5));
                 if (titleField != null) {
                     autoUpdateName = new CheckBox();
                     autoUpdateName.setId("JahiaGxtCheckbox_syncSystemNameWithTitle");
                     autoUpdateName.setWidth(10);
-                    panel.add(autoUpdateName, new HBoxLayoutData(0,5,5,5));
+                    panel.add(autoUpdateName, new HBoxLayoutData(0, 5, 5, 5));
                 }
 
                 name = new AdapterField(panel);
@@ -274,9 +274,9 @@ public class ContentTabItem extends PropertiesTabItem {
                 FormData fd = new FormData("98%");
                 fd.setMargins(new Margins(0));
                 nameFieldSet.add(name, fd);
-                if(engine.getNode() !=null && engine.getNode().isLocked()) {
+                if (engine.getNode() != null && engine.getNode().isLocked()) {
                     nameText.setReadOnly(true);
-                    if(autoUpdateName!=null) {
+                    if (autoUpdateName != null) {
                         autoUpdateName.setEnabled(false);
                     }
                 }
@@ -327,7 +327,7 @@ public class ContentTabItem extends PropertiesTabItem {
                 if (id != null) {
                     flowPanel.add(new HTML("<b>" + Messages.get("label.id", "ID") + ":</b> " + id));
                 }
-                if (selectedNode.isFile() != null &&selectedNode.isFile()) {
+                if (selectedNode.isFile() != null && selectedNode.isFile()) {
                     Long s = selectedNode.getSize();
                     if (s != null) {
                         flowPanel.add(new HTML("<b>" + Messages.get("label.size") + ":</b> " +
@@ -372,12 +372,15 @@ public class ContentTabItem extends PropertiesTabItem {
                 g.setWidget(0, 1, flowPanel);
             }
             if (preview != null || JahiaGWTParameters.isDevelopmentMode()) {
-                fieldSet.add(g,fd);
+                fieldSet.add(g, fd);
                 propertiesEditor.add(fieldSet);
             }
         }
         //Invalid Languages selection
-        final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
+        List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
+        if (engine instanceof AbstractContentEngine) {
+            siteLanguages = ((AbstractContentEngine) engine).getLanguageSwitcher().getStore().getModels();
+        }
         if (invalidLanguagesFieldSet == null && siteLanguages.size() > 1 && engine.getNodeTypes().get(0).getSuperTypes().contains("jmix:i18n")) {
             final List<String> siteMandatoryLanguages = JahiaGWTParameters.getSiteMandatoryLanguages();
             invalidLanguagesCheckBoxes = new ArrayList<CheckBox>();
@@ -391,42 +394,42 @@ public class ContentTabItem extends PropertiesTabItem {
             });
             layoutContainer1.setWidth("100%");
 
-            for (GWTJahiaLanguage siteLanguage : siteLanguages) {
-                if (siteLanguage.isActive()) {
-                    CheckBox checkBox = new CheckBox();
-                    checkBox.setBoxLabel(siteLanguage.getDisplayName());
-                    checkBox.setValueAttribute(siteLanguage.getLanguage());
-                    checkBox.addListener(Events.Change, new Listener<ComponentEvent>() {
-                        public void handleEvent(ComponentEvent componentEvent) {
-                            CheckBox checkBox1 = (CheckBox) componentEvent.getSource();
-                            if (engine instanceof AbstractContentEngine) {
+            for (final GWTJahiaLanguage siteLanguage : siteLanguages) {
+                CheckBox checkBox = new CheckBox();
+                checkBox.setBoxLabel(siteLanguage.getDisplayName());
+                checkBox.setValueAttribute(siteLanguage.getLanguage());
+                checkBox.addListener(Events.Change, new Listener<ComponentEvent>() {
+                    public void handleEvent(ComponentEvent componentEvent) {
+                        CheckBox checkBox1 = (CheckBox) componentEvent.getSource();
+                        if (engine instanceof AbstractContentEngine) {
                             final ComboBox<GWTJahiaLanguage> languageSwitcher = ((AbstractContentEngine) engine).getLanguageSwitcher();
-                            if(languageSwitcher!=null) {
+                            if (languageSwitcher != null && siteLanguage.isActive()) {
                                 final ListStore<GWTJahiaLanguage> store = languageSwitcher.getStore();
-                                if(store!=null)
-                                store.findModel("language", checkBox1.getValueAttribute()).setActive(checkBox1.getValue());
+                                if (store != null)
+                                    store.findModel("language", checkBox1.getValueAttribute()).setActive(checkBox1.getValue());
                                 languageSwitcher.getView().refresh();
                             }
-                            }
                         }
-                    });
-
-                    if(siteMandatoryLanguages.contains(siteLanguage.getLanguage())) {
-                        checkBox.setEnabled(false);
                     }
+                });
 
-                    if (selectedNode == null || !selectedNode.getInvalidLanguages().contains(
-                            siteLanguage.getLanguage())) {
-                        checkBox.setValue(true);
-                    } else if( engine instanceof AbstractContentEngine) {
-                        AbstractContentEngine contentEngine = (AbstractContentEngine) engine;
-                        final GWTJahiaLanguage model = contentEngine.getLanguageSwitcher().getStore().findModel(
-                                "language",siteLanguage.getLanguage());
-                        model.setActive(false);
-                    }
-                    layoutContainer1.add(checkBox);
-                    invalidLanguagesCheckBoxes.add(checkBox);
+                if (siteMandatoryLanguages.contains(siteLanguage.getLanguage())) {
+                    checkBox.setValue(true);
+                    checkBox.setEnabled(false);
                 }
+
+                if (selectedNode == null || !selectedNode.getInvalidLanguages().contains(
+                        siteLanguage.getLanguage())) {
+                    checkBox.setValue(true);
+                } else if (engine instanceof AbstractContentEngine) {
+                    AbstractContentEngine contentEngine = (AbstractContentEngine) engine;
+                    final GWTJahiaLanguage model = contentEngine.getLanguageSwitcher().getStore().findModel(
+                            "language", siteLanguage.getLanguage());
+                    model.setActive(false);
+                }
+                layoutContainer1.add(checkBox);
+                invalidLanguagesCheckBoxes.add(checkBox);
+
             }
             invalidLanguagesFieldSet = new FieldSet();
             invalidLanguagesFieldSet.setHeading(Messages.get("label.validLanguages", "Valid display languages"));

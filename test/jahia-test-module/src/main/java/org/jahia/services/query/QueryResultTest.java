@@ -364,7 +364,6 @@ public class QueryResultTest {
         Calendar calendar = new GregorianCalendar(2000, 0, 1, 12, 0);
 
         JCRNodeWrapper cats = session.getNode("/sites/systemsite/categories");
-        session.getWorkspace().getVersionManager().checkout(cats.getPath());
         if (!cats.hasNode("cat1"))
             cats.addNode("cat1", "jnt:category");
         if (!cats.hasNode("cat2"))

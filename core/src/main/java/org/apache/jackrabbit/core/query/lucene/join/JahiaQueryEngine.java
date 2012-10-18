@@ -142,8 +142,10 @@ public class JahiaQueryEngine extends QueryEngine {
             }
             long timeSort = System.currentTimeMillis();
             QueryResult r = sort(result, orderings, evaluator, offset, limit);
-            log.debug("{}SQL2 SORT took {} ms.", genString(printIndentation),
+            if (log.isDebugEnabled()) {
+                log.debug("{}SQL2 SORT took {} ms.", genString(printIndentation),
                     System.currentTimeMillis() - timeSort);
+            }
             if (r != result) {
                 return new JahiaSimpleQueryResult(columnNames, selectorNames, r.getRows());
             }

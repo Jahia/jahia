@@ -1,0 +1,9 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+
+[jmix:microsoftTranslatorSettings] mixin
+ - j:microsoftTranslationActivated (boolean) = false autocreated indexed=no
+ - j:microsoftClientId (string) mandatory indexed=no
+ - j:microsoftClientSecret (string) mandatory indexed=no
+
+[jnt:editMicrosoftTranslatorSettings] > jnt:content, mix:title, jmix:studioOnly, jmix:siteComponent

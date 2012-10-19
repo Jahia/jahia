@@ -40,6 +40,7 @@
 
 package org.jahia.services.translation;
 
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
@@ -51,15 +52,29 @@ public class TranslationService {
 
     private Map<String, TranslationProvider> providers = new HashMap<String, TranslationProvider>();
 
-    public String translate(String text, String srcLanguage, String destLanguage) {
-        if (providers.isEmpty()) {
+    public String translate(String text, String srcLanguage, String destLanguage, boolean isHtml, JCRSiteNode site) {
+        TranslationProvider provider = null;
+        for (TranslationProvider p : providers.values()) {
+            if (p.isEnabled(site)) {
+                provider = p;
+                break;
+            }
+        }
+        if (provider == null) {
             return text;
         }
-        return providers.values().iterator().next().translate(text, srcLanguage, destLanguage);
+        return provider.translate(text, srcLanguage, destLanguage, isHtml, site);
     }
 
-    public boolean isEnabled() {
-        return !providers.isEmpty();
+    public boolean isEnabled(JCRSiteNode site) {
+        boolean enabled = false;
+        for (TranslationProvider p : providers.values()) {
+            if(p.isEnabled(site)) {
+                enabled = true;
+                break;
+            }
+        }
+        return enabled;
     }
 
     public void addProvider(TranslationProvider provider) {

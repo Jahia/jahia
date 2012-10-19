@@ -51,13 +51,11 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.apache.jackrabbit.core.security.PrivilegeImpl;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -82,6 +80,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.htmlvalidator.Result;
@@ -992,12 +991,20 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         zip.zip(paths, archiveName, retrieveCurrentSession(), getUILocale());
     }
 
-    public List<GWTJahiaNodeProperty> translate(List<GWTJahiaNodeProperty> properties, String srcLanguage, String destLanguage) {
-        return translationHelper.translate(properties, srcLanguage, destLanguage);
+    public List<GWTJahiaNodeProperty> translate(List<GWTJahiaNodeProperty> properties, List<GWTJahiaItemDefinition> definitions, String srcLanguage, String destLanguage, String siteUUID) throws GWTJahiaServiceException {
+        try {
+            return translationHelper.translate(properties, definitions, srcLanguage, destLanguage, (JCRSiteNode) retrieveCurrentSession().getNodeByIdentifier(siteUUID));
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
     }
 
-    public GWTJahiaNodeProperty translate(GWTJahiaNodeProperty property, String srcLanguage, String destLanguage) {
-        return translationHelper.translate(property, srcLanguage, destLanguage);
+    public GWTJahiaNodeProperty translate(GWTJahiaNodeProperty property, GWTJahiaItemDefinition definition, String srcLanguage, String destLanguage, String siteUUID) throws GWTJahiaServiceException {
+        try {
+            return translationHelper.translate(property, definition, srcLanguage, destLanguage, (JCRSiteNode) retrieveCurrentSession().getNodeByIdentifier(siteUUID));
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
     }
 
     public void unzip(List<String> paths) throws GWTJahiaServiceException {
@@ -1564,7 +1571,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 }
             }
             result.setReferencesWarnings(referencesWarnings);
-            result.setTranslationEnabled(translationHelper.isTranslationEnabled());
+            result.setTranslationEnabled(translationHelper.isTranslationEnabled(nodeWrapper.getResolveSite()));
             return result;
         } catch (PathNotFoundException e) {
             // the node no longer exists

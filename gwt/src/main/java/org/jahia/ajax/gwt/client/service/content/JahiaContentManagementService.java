@@ -49,6 +49,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -403,9 +404,9 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void zip(List<String> paths, String archiveName) throws GWTJahiaServiceException;
 
-    List<GWTJahiaNodeProperty> translate(List<GWTJahiaNodeProperty> properties, String srcLanguage, String destLanguage);
+    List<GWTJahiaNodeProperty> translate(List<GWTJahiaNodeProperty> properties, List<GWTJahiaItemDefinition> definitions, String srcLanguage, String destLanguage, String siteUUID) throws GWTJahiaServiceException;
 
-    GWTJahiaNodeProperty translate(GWTJahiaNodeProperty property, String srcLanguage, String destLanguage);
+    GWTJahiaNodeProperty translate(GWTJahiaNodeProperty property, GWTJahiaItemDefinition definition, String srcLanguage, String destLanguage, String siteUUID) throws GWTJahiaServiceException;
 
 // -------------------------- INNER CLASSES --------------------------
 

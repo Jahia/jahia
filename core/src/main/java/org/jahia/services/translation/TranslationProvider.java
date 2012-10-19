@@ -40,10 +40,14 @@
 
 package org.jahia.services.translation;
 
+import org.jahia.services.content.decorator.JCRSiteNode;
+
 public interface TranslationProvider {
 
     String getName();
 
-    String translate(String text, String srcLanguage, String destLanguage);
+    String translate(String text, String srcLanguage, String destLanguage, boolean isHtml, JCRSiteNode site);
+
+    boolean isEnabled(JCRSiteNode site);
 
 }

@@ -217,6 +217,7 @@
                 <module>tasks</module>
                 <module>templates-system</module>
                 <module>visibility</module>
+                <module>translation</module>
             </modules>
         </profile>
         <profile>

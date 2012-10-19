@@ -54,6 +54,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
@@ -274,12 +275,15 @@ public class LangPropertiesEditor extends LayoutContainer {
                                 if (Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getItemId())) {
                                     PropertiesEditor sourcePropertiesEditor = translationSource.getPropertiesEditorByLang(translationSource.getDisplayedLocale().getLanguage());
                                     List<GWTJahiaNodeProperty> props = new ArrayList<GWTJahiaNodeProperty>();
+                                    List<GWTJahiaItemDefinition> defs = new ArrayList<GWTJahiaItemDefinition>();
                                     for (GWTJahiaNodeProperty prop : sourcePropertiesEditor.getProperties()) {
-                                        if (sourcePropertiesEditor.getGWTJahiaItemDefinition(prop).isInternationalized()) {
+                                        GWTJahiaItemDefinition def = sourcePropertiesEditor.getGWTJahiaItemDefinition(prop);
+                                        if (def.isInternationalized()) {
                                             props.add(prop);
+                                            defs.add(def);
                                         }
                                     }
-                                    JahiaContentManagementService.App.getInstance().translate(props, translationSource.getDisplayedLocale().getLanguage(), displayedLocale.getLanguage(), new BaseAsyncCallback<List<GWTJahiaNodeProperty>>() {
+                                    JahiaContentManagementService.App.getInstance().translate(props, defs, translationSource.getDisplayedLocale().getLanguage(), displayedLocale.getLanguage(), JahiaGWTParameters.getSiteUUID(), new BaseAsyncCallback<List<GWTJahiaNodeProperty>>() {
                                         public void onApplicationFailure(Throwable throwable) {
                                             com.google.gwt.user.client.Window.alert(Messages.get("failure.properties.translation", "Properties translation failed") + "\n\n"
                                                     + throwable.getMessage());

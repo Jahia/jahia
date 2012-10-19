@@ -730,7 +730,7 @@ public class PropertiesEditor extends FormPanel {
                                         new Listener<MessageBoxEvent>() {
                                             public void handleEvent(MessageBoxEvent be) {
                                                 if(Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getItemId())) {
-                                                    JahiaContentManagementService.App.getInstance().translate(finalSourceProperty, translationSource.getDisplayedLocale().getLanguage(), locale, new BaseAsyncCallback<GWTJahiaNodeProperty>() {
+                                                    JahiaContentManagementService.App.getInstance().translate(finalSourceProperty, definition, translationSource.getDisplayedLocale().getLanguage(), locale, JahiaGWTParameters.getSiteUUID(), new BaseAsyncCallback<GWTJahiaNodeProperty>() {
                                                         public void onApplicationFailure(Throwable throwable) {
                                                             com.google.gwt.user.client.Window.alert(Messages.get("failure.property.translation", "Property translation failed") + "\n\n"
                                                                     + throwable.getMessage());

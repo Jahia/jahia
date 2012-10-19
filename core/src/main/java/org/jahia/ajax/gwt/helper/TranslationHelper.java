@@ -40,38 +40,45 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeSelectorType;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.translation.TranslationService;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class TranslationHelper {
 
     private TranslationService translationService;
 
-    public List<GWTJahiaNodeProperty> translate(List<GWTJahiaNodeProperty> properties, String srcLanguage, String destLanguage) {
+    public List<GWTJahiaNodeProperty> translate(List<GWTJahiaNodeProperty> properties, List<GWTJahiaItemDefinition> definitions, String srcLanguage, String destLanguage, JCRSiteNode site) {
         List<GWTJahiaNodeProperty> translatedProperties = new ArrayList<GWTJahiaNodeProperty>();
-        for (GWTJahiaNodeProperty property : properties) {
-            translatedProperties.add(translate(property, srcLanguage, destLanguage));
+        Iterator<GWTJahiaNodeProperty> propIterator = properties.iterator();
+        Iterator<GWTJahiaItemDefinition> defIterator = definitions.iterator();
+        while (propIterator.hasNext()) {
+            translatedProperties.add(translate(propIterator.next(), defIterator.next(), srcLanguage, destLanguage, site));
         }
         return translatedProperties;
     }
 
-    public GWTJahiaNodeProperty translate(GWTJahiaNodeProperty property, String srcLanguage, String destLanguage) {
+    public GWTJahiaNodeProperty translate(GWTJahiaNodeProperty property, GWTJahiaItemDefinition definition, String srcLanguage, String destLanguage, JCRSiteNode site) {
         GWTJahiaNodeProperty translatedProperty = property.cloneObject();
         List<GWTJahiaNodePropertyValue> translatedValues = new ArrayList<GWTJahiaNodePropertyValue>();
         for (GWTJahiaNodePropertyValue value : property.getValues()) {
-            String translation = translationService.translate(value.getString(), srcLanguage, destLanguage);
+            String translation = translationService.translate(value.getString(), srcLanguage, destLanguage, definition.getSelector() == GWTJahiaNodeSelectorType.RICHTEXT, site);
             translatedValues.add(new GWTJahiaNodePropertyValue(translation));
         }
         translatedProperty.setValues(translatedValues);
         return translatedProperty;
     }
 
-    public boolean isTranslationEnabled() {
-        return translationService.isEnabled();
+    public boolean isTranslationEnabled(JCRSiteNode site) {
+        return translationService.isEnabled(site);
     }
 
     public void setTranslationService(TranslationService translationService) {

@@ -41,14 +41,17 @@
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.TreeGridDropTarget;
 import com.extjs.gxt.ui.client.event.DNDEvent;
+import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
@@ -70,9 +73,7 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Selection;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Side panel tab item for browsing the pages tree.
@@ -84,6 +85,7 @@ public class PagesTabItem extends SidePanelTabItem {
     protected List<String> folderTypes = new ArrayList<String>();
     private List<String> paths = new ArrayList<String>();
 
+    protected transient Map<String,GWTJahiaNode> nodesByPath = new HashMap<String, GWTJahiaNode>();
     protected transient TreeGrid<GWTJahiaNode> pageTree;
     protected transient GWTJahiaNodeTreeFactory pageFactory;
     protected transient String path;
@@ -147,7 +149,20 @@ public class PagesTabItem extends SidePanelTabItem {
         this.pageTree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         
         pageTree.setContextMenu(createContextMenu(config.getTreeContextMenu(), pageTree.getSelectionModel()));
-
+        pageTree.getTreeStore().getLoader().addLoadListener(new LoadListener() {
+            @Override
+            public void loaderLoad(LoadEvent le) {
+                for (GWTJahiaNode node : ((List<GWTJahiaNode>) le.getData())) {
+                    nodesByPath.put(node.getPath(), node);
+                };
+                List<String> selectedPath = pageFactory.getSelectedPath();
+                if (selectedPath.size() == 1 && pageTree.getSelectionModel().getSelectedItem() == null && nodesByPath.containsKey(selectedPath.get(0))) {
+                    pageTree.getSelectionModel().setFiresEvents(false);
+                    pageTree.getSelectionModel().setSelection(Arrays.asList(nodesByPath.get(selectedPath.get(0))));
+                    pageTree.getSelectionModel().setFiresEvents(true);
+                }
+            }
+        });
         tab.add(pageTree);
     }
 
@@ -155,6 +170,13 @@ public class PagesTabItem extends SidePanelTabItem {
         if (pageTree != null && (pageTree.getSelectionModel().getSelectedItem() == null || !path.equals(
                 pageTree.getSelectionModel().getSelectedItem().getPath()))) {
             pageFactory.setSelectedPath(Arrays.asList(path));
+            pageTree.getSelectionModel().setFiresEvents(false);
+            if (nodesByPath.containsKey(path)) {
+                pageTree.getSelectionModel().setSelection(Arrays.asList(nodesByPath.get(path)));
+            } else {
+                pageTree.getSelectionModel().deselectAll();
+            }
+            pageTree.getSelectionModel().setFiresEvents(true);
         }
         super.handleNewMainSelection(path);
     }

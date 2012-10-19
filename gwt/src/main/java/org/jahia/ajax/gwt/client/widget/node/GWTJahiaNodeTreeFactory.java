@@ -170,6 +170,9 @@ public class GWTJahiaNodeTreeFactory {
         this.mimeTypes = mimeTypes;
     }
 
+    public List<String> getSelectedPath() {
+        return selectedPath;
+    }
 
     public void setSelectedPath(String selectedPath) {
         this.selectedPath.add(selectedPath);

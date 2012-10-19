@@ -200,6 +200,10 @@ public class SiteSwitcherActionItem extends BaseActionItem {
         }
         sitesCombo.getStore().sort("switcherDisplayName", Style.SortDir.ASC);
 
+        // Change the value to the first one of the list if not set before
+        if (b) {
+            sitesCombo.setValue(sitesCombo.getStore().getAt(0));
+        }
         sitesCombo.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
@@ -219,10 +223,6 @@ public class SiteSwitcherActionItem extends BaseActionItem {
                 }
             }
         });
-        // Change the value to the first one of the list if not set before
-        if (b) {
-            sitesCombo.setValue(sitesCombo.getStore().getAt(0));
-        }
     }
 
     /**

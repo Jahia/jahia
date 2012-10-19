@@ -62,6 +62,12 @@
 		<property name="applyOnTemplateTypes" value="html,edit,html-iphone,html-ipad" />
 	</bean>
 	-->
+    <bean class="org.jahia.services.render.filter.EditModeFilter">
+   		<property name="priority" value="-2" />
+           <property name="description" value="Filter that embeds edit mode frame around content"/>
+   		<property name="applyOnModes" value="edit,studio,contribute" />
+   		<property name="applyOnConfigurations" value="page" />
+   	</bean>
 	<bean class="org.jahia.services.render.filter.ExternalizeHtmlFilter">
 		<property name="priority" value="-1" />
         <property name="description" value="Render filter that 'externalizes' the HTML document by converting all local URLs into absolute, inlining external CSS styles, and rewriting URLs in CSS."/>

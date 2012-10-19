@@ -113,7 +113,7 @@ public class GWTInitializer {
         String serviceEntrypoint = buildServiceBaseEntrypointUrl(request);
         params.put(JahiaGWTParameters.SERVICE_ENTRY_POINT, serviceEntrypoint);
         params.put(JahiaGWTParameters.CONTEXT_PATH, request.getContextPath().equals("/")?"":request.getContextPath());
-        params.put(JahiaGWTParameters.SERVLET_PATH, request.getServletPath());
+        params.put(JahiaGWTParameters.SERVLET_PATH, (request.getAttribute("servletPath") == null) ? request.getServletPath() : (String) request.getAttribute("servletPath"));
         params.put(JahiaGWTParameters.PATH_INFO, request.getPathInfo());
         params.put(JahiaGWTParameters.QUERY_STRING, request.getQueryString());
         params.put(JahiaGWTParameters.DEVELOPMENT_MODE, SettingsBean.getInstance().isDevelopmentMode()?"true":"false");

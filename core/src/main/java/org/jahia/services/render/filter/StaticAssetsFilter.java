@@ -260,44 +260,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             }
         } else if (resource.getContextConfiguration().equals("page")) {
             if (renderContext.isEditMode()) {
-                List<Element> bodyElementList = source.getAllElements(HTMLElementName.BODY);
-                if (!renderContext.getServletPath().endsWith("frame")) {
-                    // Add static div for edit mode
-                    Map<String, Map<String, String>> javascript = assets.get("javascript");
-                    if (javascript == null) {
-                        assets.put("javascript", (javascript = new HashMap<String, Map<String, String>>()));
-                    }
-                    String ctx = renderContext.getRequest().getContextPath();
-                    boolean nonEmptyCtx = ctx.length() > 0;
-                    javascript.put(nonEmptyCtx ? ctx + "/modules/assets/javascript/jquery.min.js" : "/modules/assets/javascript/jquery.min.js", null);
-                    javascript.put(nonEmptyCtx ? ctx + "/modules/assets/javascript/jquery.Jcrop.js" : "/modules/assets/javascript/jquery.Jcrop.js", null);
-                    javascript.put(nonEmptyCtx ? ctx + "/modules/assets/javascript/clippy/jquery.clippy.min.js" : "/modules/assets/javascript/clippy/jquery.clippy.min.js", null);
-
-                    if (bodyElementList.size() > 0) {
-                        Element bodyElement = bodyElementList.get(bodyElementList.size() - 1);
-
-                        EndTag bodyEndTag = bodyElement.getEndTag();
-                        outputDocument.replace(bodyEndTag.getBegin(), bodyEndTag.getBegin() + 1, "</div><");
-
-                        bodyElement = bodyElementList.get(0);
-
-                        StartTag bodyStartTag = bodyElement.getStartTag();
-                        outputDocument.replace(bodyStartTag.getEnd(), bodyStartTag.getEnd(), "\n" +
-                                "<div class=\"jahia-template-gxt editmode-gxt\" jahiatype=\"editmode\" id=\"editmode\"" +
-                                " config=\"" +
-                                renderContext.getEditModeConfigName() +
-                                "\"" + " path=\"" +
-                                resource.getNode().getPath() +
-                                "\" locale=\"" +
-                                resource.getLocale() + "\"" +
-                                " template=\"" +
-                                resource.getResolvedTemplate() +
-                                "\"" + " nodetypes=\"" +
-                                ConstraintsHelper.getConstraints(
-                                        renderContext.getMainResource().getNode()) +
-                                "\"" + ">");
-                    }
-                } else {
+                if (renderContext.getServletPath().endsWith("frame")) {
+                    List<Element> bodyElementList = source.getAllElements(HTMLElementName.BODY);
                     if (bodyElementList.size() > 0) {
                         Element bodyElement = bodyElementList.get(bodyElementList.size() - 1);
 

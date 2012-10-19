@@ -105,7 +105,7 @@ public class EngineLoader {
 
     private static EngineContainer createContainer(Linker linker, boolean forceEngineWindow) {
         EngineContainer container;
-        if (!forceEngineWindow && (!(GXT.isIE7 || GXT.isIE6) && (linker instanceof EditLinker || linker instanceof SidePanelLinker))) {
+        if (!forceEngineWindow && (!(GXT.isIE) && (linker instanceof EditLinker || linker instanceof SidePanelLinker))) {
             container = new EnginePanel();
         } else {
             container = new EngineWindow();

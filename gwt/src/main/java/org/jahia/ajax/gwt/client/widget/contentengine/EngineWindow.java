@@ -84,7 +84,7 @@ public class EngineWindow extends Window implements EngineContainer {
             setBottomComponent(buttonsBar);
         }
 
-		if (!(linker instanceof ManagerLinker) && (GXT.isIE7 || GXT.isIE6)) {
+		if (!(linker instanceof ManagerLinker) && (GXT.isIE)) {
 			EditLinker editLinker = linker instanceof EditLinker ? (EditLinker) linker : ((SidePanelLinker) linker).getEditLinker();
 			// resize to fit main module area
 			MainModule main = editLinker.getMainModule();

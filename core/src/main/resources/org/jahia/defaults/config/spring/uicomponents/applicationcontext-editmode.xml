@@ -2,7 +2,9 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
     <bean name="editmodeEditorConfigurer" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
         <property name="customEditors">
@@ -705,6 +707,11 @@
         </property>
     </bean>
 
+    <util:list id="editModeInvalidLanguagesAvailableForTypes">
+        <value>jnt:page</value>
+        <value>jmix:editorialContent</value>
+    </util:list>
+
     <bean id="Engine.Tab.Content" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="content"/>
         <property name="titleKey" value="label.engineTab.content"/>
@@ -712,12 +719,7 @@
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ContentTabItem">
                 <property name="maxNameSize" value="${jahia.jcr.maxNameSize}"/>
-                <property name="invalidLanguagesAvailableForTypes">
-                    <list>
-                        <value>jnt:page</value>
-                        <value>jmix:editorialContent</value>
-                    </list>
-                </property>
+                <property name="invalidLanguagesAvailableForTypes" ref="editModeInvalidLanguagesAvailableForTypes"/>
                 <property name="nameNotEditableForTypes">
                     <list>
                         <value>jnt:group</value>

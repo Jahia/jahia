@@ -216,12 +216,12 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         SortedSet<View> t;
         String cacheKey = nt.getName() + (site != null ? site.getSiteKey() : "");
         //viewSetCache.clear();
-         if (viewSetCache.containsKey(cacheKey)) {
-            t = viewSetCache.get(cacheKey);
-        } else {
+//         if (viewSetCache.containsKey(cacheKey)) {
+//            t = viewSetCache.get(cacheKey);
+//        } else {
             t = getViewsSet(nt, site, templateType);
-            viewSetCache.put(cacheKey, t);
-        }
+//            viewSetCache.put(cacheKey, t);
+//        }
         for (View view : t) {
             if (view.getKey().equals(key)) {
                 return true;
@@ -301,11 +301,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                 }
             }
             for (String templateType : templateTypes) {
-<<<<<<< .working
-                getViewsSet(type, views, templateType, "default", null, null);
-=======
-                getViewsSet(type, views, templateType, "default", templateManagerService.getTemplatePackageByFileName("default"));
->>>>>>> .merge-right.r43468
+                getViewsSet(type, views, templateType, "default", templateManagerService.getTemplatePackageByFileName("default"), null);
             }
         }
         return new TreeSet<View>(views.values());

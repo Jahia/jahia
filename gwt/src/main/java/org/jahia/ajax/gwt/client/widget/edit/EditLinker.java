@@ -278,13 +278,13 @@ public class EditLinker implements Linker {
         if (mainAreaComponent == null) {
             m = (ContentPanel) mainModule.getParent();
             mainAreaVScrollPosition = mainModule.getContainer().getVScrollPosition();
-            m.remove(mainModule);
+            mainModule.setStyleAttribute("display","none");
         } else {
             m = (ContentPanel) mainAreaComponent.getParent();
             m.remove(mainAreaComponent);
         }
         mainAreaComponent = w;
-        m.add(mainAreaComponent, new BorderLayoutData(Style.LayoutRegion.CENTER));
+        m.insert(mainAreaComponent, 0, new BorderLayoutData(Style.LayoutRegion.CENTER));
         m.layout();
     }
 
@@ -292,7 +292,7 @@ public class EditLinker implements Linker {
         ContentPanel m = (ContentPanel) mainAreaComponent.getParent();
         m.remove(mainAreaComponent);
         mainAreaComponent = null;
-        m.add(mainModule, new BorderLayoutData(Style.LayoutRegion.CENTER));
+        mainModule.setStyleAttribute("display","block");
         m.layout();
         mainModule.getContainer().setVScrollPosition(mainAreaVScrollPosition);
     }

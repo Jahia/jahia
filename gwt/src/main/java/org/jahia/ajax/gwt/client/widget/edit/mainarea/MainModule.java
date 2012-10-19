@@ -94,7 +94,8 @@ public class MainModule extends Module {
     private boolean ctrlActive = false;
     private Map<Module, Selection> selections = new HashMap<Module, Selection>();
 
-    Map<Element, Module> m;
+    private boolean needParseAfterLayout = false;
+    private Map<Element, Module> moduleMap;
     protected LayoutContainer scrollContainer;
     protected LayoutContainer center;
     protected EditFrame frame;
@@ -377,18 +378,21 @@ public class MainModule extends Module {
     @Override
     protected void onAfterLayout() {
         super.onAfterLayout();
-        if (m != null) {
-            ModuleHelper.move(m);
-        }
-        scrollContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
-        scrollContainer.setWidth(getWidth());
+        if (needParseAfterLayout) {
+            if (moduleMap != null) {
+                ModuleHelper.move(moduleMap);
+            }
+            scrollContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
+            scrollContainer.setWidth(getWidth());
 
-        GWTJahiaChannel activeChannel = editLinker.getActiveChannel();
-        if (activeChannel != null && !"default".equals(activeChannel.getValue())) {
-            int[] usableResolution = getUsableDeviceResolution(editLinker.getActiveChannel(), editLinker.getActiveChannelVariantIndex());
-            scrollContainer.setSize(usableResolution[0], usableResolution[1]);
+            GWTJahiaChannel activeChannel = editLinker.getActiveChannel();
+            if (activeChannel != null && !"default".equals(activeChannel.getValue())) {
+                int[] usableResolution = getUsableDeviceResolution(editLinker.getActiveChannel(), editLinker.getActiveChannelVariantIndex());
+                scrollContainer.setSize(usableResolution[0], usableResolution[1]);
+            }
+            needParseAfterLayout = false;
+            //scrollContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
         }
-        //scrollContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
     }
 
     protected void onResize(int width, int height) {
@@ -425,7 +429,7 @@ public class MainModule extends Module {
     }
 
     public void parse() {
-        m = ModuleHelper.parse(this, null);
+        moduleMap = ModuleHelper.parse(this, null);
     }
 
     public String getModuleId() {
@@ -716,6 +720,7 @@ public class MainModule extends Module {
                 ModuleHelper.buildTree(MainModule.this);
                 parse();
                 editLinker.getMainModule().unmask();
+                needParseAfterLayout = true;
                 layout();
                 DOM.sinkEvents(body, Event.ONMOUSEMOVE + Event.ONMOUSEUP + Event.ONCONTEXTMENU + Event.ONCLICK/*+ Event.ONMOUSEDOWN*/);
                 DOM.setEventListener(body, new EventListener() {

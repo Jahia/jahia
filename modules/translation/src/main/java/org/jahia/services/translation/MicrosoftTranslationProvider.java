@@ -64,8 +64,6 @@ public class MicrosoftTranslationProvider implements TranslationProvider {
     private String name;
     private TranslationService translationService;
     private HttpClientService httpClientService;
-//    private String clientId = "jahia-translation-test";
-//    private String clientSecret = "J5VZSNEf6LvaoTOF+hoB9Zoy1zDA38dZyvXyGu2kWGM=";
 
     private long accesExpiration = System.currentTimeMillis();
     private String accessToken;

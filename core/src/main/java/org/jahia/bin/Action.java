@@ -205,20 +205,21 @@ public abstract class Action {
     }
 
     protected JSONObject getJSONConstraintError(ConstraintViolationException e) throws RepositoryException {
-        JSONObject jsonObject = new JSONObject();
         Map<String,String> m = new HashMap<String, String>();
         m.put("message",e.getMessage());
         if (e instanceof NodeConstraintViolationException) {
             m.put("constraintMessage",((NodeConstraintViolationException)e).getConstraintMessage());
-            m.put("locale",((NodeConstraintViolationException)e).getLocale().toString());
+            Locale locale = ((NodeConstraintViolationException) e).getLocale();
+            if (locale != null) {
+                m.put("locale", locale.toString());
+            }
             m.put("uuid",((NodeConstraintViolationException)e).getNode().getIdentifier());
         }
         if (e instanceof PropertyConstraintViolationException) {
             m.put("propertyName",((PropertyConstraintViolationException)e).getDefinition().getName());
             m.put("propertyLabel",((PropertyConstraintViolationException)e).getDefinition().getLabel(LocaleContextHolder.getLocale(), ((NodeConstraintViolationException)e).getNode().getPrimaryNodeType()));
         }
-        new JSONObject(m);
-        return jsonObject;
+        return new JSONObject(m);
     }
 
 

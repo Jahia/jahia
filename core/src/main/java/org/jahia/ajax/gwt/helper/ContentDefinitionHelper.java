@@ -772,11 +772,16 @@ public class ContentDefinitionHelper {
         try {
             List<String> dependencies = null;
 
-            if (!includeNonDependentModules && site.hasProperty("j:dependencies")) {
-                dependencies = new ArrayList<String>();
-                Value[] deps = site.getProperty("j:dependencies").getValues();
-                for (Value dep : deps) {
-                    dependencies.add(dep.getString());
+            if (!includeNonDependentModules) {
+                if (site.hasProperty("j:dependencies")) {
+                    dependencies = new ArrayList<String>();
+                    Value[] deps = site.getProperty("j:dependencies").getValues();
+                    for (Value dep : deps) {
+                        dependencies.add(dep.getString());
+                    }
+                }
+                if (dependencies.isEmpty()) {
+                    dependencies = Arrays.asList("default");
                 }
             }
 

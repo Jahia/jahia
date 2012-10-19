@@ -270,7 +270,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                 }
             }
             for (String templateType : templateTypes) {
-                getViewsSet(type, views, templateType, "default", null);
+                getViewsSet(type, views, templateType, "default", templateManagerService.getTemplatePackageByFileName("default"));
             }
         }
         return new TreeSet<View>(views.values());

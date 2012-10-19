@@ -13,6 +13,7 @@
 <%@page import="javax.jcr.query.Query"%>
 <%@page import="javax.jcr.query.QueryManager"%>
 <%@page import="javax.jcr.query.QueryResult"%>
+<%@page import="org.apache.jackrabbit.core.query.lucene.join.JahiaQueryEngine"%>
 <%@page import="org.jahia.services.usermanager.jcr.JCRUserManagerProvider"%>
 <%@page import="org.jahia.services.content.JCRContentUtils"%>
 <%@page import="org.jahia.services.content.JCRNodeWrapper"%>
@@ -60,6 +61,12 @@
 <c:set var="offset" value="${functions:default(fn:escapeXml(param.offset), '0')}"/>
 <c:set var="displayLimit" value="${functions:default(fn:escapeXml(param.displayLimit), '100')}"/>
 <c:set var="showActions" value="${functions:default(fn:escapeXml(param.showActions), 'false')}"/>
+<c:set var="useNativeSort" value="<%= JahiaQueryEngine.NATIVE_SORT %>"/>
+<c:set var="allowChangingNativeSort" value="false"/>
+<c:if test="${allowChangingNativeSort && not empty param.useNativeSort}">
+    <c:set var="useNativeSort" value="${fn:escapeXml(param.useNativeSort)}"/>
+    <% JahiaQueryEngine.NATIVE_SORT = Boolean.valueOf(request.getParameter("useNativeSort")); %>
+</c:if>
 <%
 Locale currentLocale = LanguageCodeConverters.languageCodeToLocale((String) pageContext.getAttribute("locale"));
 pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(Locale.ENGLISH));
@@ -78,6 +85,10 @@ pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(L
     </legend>
     <fieldset style="position: absolute; right: 20px;">
         <legend><strong>Settings</strong></legend>
+            <c:if test="${allowChangingNativeSort}">
+            <input id="cbNative" type="checkbox" ${useNativeSort ? 'checked="checked"' : ''}
+                onchange="go('useNativeSort', '${!useNativeSort}')"/>&nbsp;<label for="cbNative">Use native sort</label><br/>
+            </c:if>
             <input id="cbActions" type="checkbox" ${showActions ? 'checked="checked"' : ''}
                 onchange="go('showActions', '${!showActions}')"/>&nbsp;<label for="cbActions">Show actions</label>
     </fieldset>
@@ -85,6 +96,7 @@ pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(L
         <input type="hidden" name="workspace" id="workspace" value="${workspace}"/>
         <input type="hidden" name="locale" id="locale" value="${locale}"/>
         <input type="hidden" name="showActions" id="showActions" value="${showActions}"/>
+        <input type="hidden" name="useNativeSort" id="useNativeSort" value="${useNativeSort}"/>
         <input type="hidden" name="action" id="action" value=""/>
         <input type="hidden" name="target" id="target" value=""/>
         <textarea rows="3" cols="75" name="query" id="query"

@@ -32,7 +32,11 @@
                         if (jqXHR.status == 400) {
                             var json = $.parseJSON(jqXHR.responseText);
                             if (typeof(json.validationError) !== "undefined") {
-                                alert(json.validationError);
+                                var message = "";
+                                for (var i = 0; i < json.validationError.length; i++) {
+                                    message += json.validationError[i].message + "\n";
+                                }
+                                alert(message);
                             }
                         }
                         $("#updateSiteButton").removeAttr('disabled');

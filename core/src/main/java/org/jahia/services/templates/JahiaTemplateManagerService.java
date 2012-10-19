@@ -1350,7 +1350,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     session.checkout(destinationNode);
                     String primaryNodeTypeName = child.getPrimaryNodeTypeName();
                     node = destinationNode.addNode(childName, primaryNodeTypeName);
-                    session.save();
                     newNode = true;
                 }
 

@@ -58,6 +58,7 @@ import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -89,6 +90,7 @@ public class ContentTabItem extends PropertiesTabItem {
     private boolean nameEditable = true;
 
     private List<String> nameNotEditableForTypes;
+    private List<String> invalidLanguagesAvailableForTypes;
 
     private transient List<CheckBox> invalidLanguagesCheckBoxes;
     private transient FieldSet invalidLanguagesFieldSet;
@@ -99,9 +101,11 @@ public class ContentTabItem extends PropertiesTabItem {
 
     public List<CheckBox> getInvalidLanguagesCheckBoxes() {
         List<CheckBox> values = new ArrayList<CheckBox>();
-        for (CheckBox check : invalidLanguagesCheckBoxes) {
-            if (check.getValue()) {
-                values.add(check);
+        if (invalidLanguagesCheckBoxes != null) {
+            for (CheckBox check : invalidLanguagesCheckBoxes) {
+                if (check.getValue()) {
+                    values.add(check);
+                }
             }
         }
         return values;
@@ -381,7 +385,7 @@ public class ContentTabItem extends PropertiesTabItem {
         if (engine instanceof AbstractContentEngine) {
             siteLanguages = ((AbstractContentEngine) engine).getLanguageSwitcher().getStore().getModels();
         }
-        if (invalidLanguagesFieldSet == null && siteLanguages.size() > 1 && engine.getNodeTypes().get(0).getSuperTypes().contains("jmix:i18n")) {
+        if (invalidLanguagesFieldSet == null && siteLanguages.size() > 1 && engine.getNodeTypes().get(0).getSuperTypes().contains("jmix:i18n") && isInvalidLanguagesAvailableForType(engine)) {
             final List<String> siteMandatoryLanguages = JahiaGWTParameters.getSiteMandatoryLanguages();
             invalidLanguagesCheckBoxes = new ArrayList<CheckBox>();
 
@@ -519,6 +523,26 @@ public class ContentTabItem extends PropertiesTabItem {
         return nameNotEditableForTypes == null || nameNotEditableForTypes.isEmpty()
                 || engine == null || !engine.isExistingNode()
                 || !engine.getNode().isNodeType(nameNotEditableForTypes);
+    }
+
+    public void setInvalidLanguagesAvailableForTypes(List<String> invalidLanguagesAvailableForTypes) {
+        this.invalidLanguagesAvailableForTypes = invalidLanguagesAvailableForTypes;
+    }
+
+    private boolean isInvalidLanguagesAvailableForType(NodeHolder engine) {
+        if (invalidLanguagesAvailableForTypes != null && !invalidLanguagesAvailableForTypes.isEmpty() && engine != null) {
+            for (GWTJahiaNodeType type : engine.getNodeTypes()) {
+                if (invalidLanguagesAvailableForTypes.contains(type.getName())) {
+                    return true;
+                }
+                for (String superType : type.getSuperTypes()) {
+                    if (invalidLanguagesAvailableForTypes.contains(superType)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 }

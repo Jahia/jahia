@@ -131,7 +131,8 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             boolean hasFacets = FacetHandler.hasFacetFunctions(columns, session);
             // End
 
-            List<Row> rows = new ArrayList<Row>();
+            List<Row> rowList = externalSort ? new LinkedList<Row>() : null;
+            Map<String, Row> rows = externalSort ? null : new LinkedHashMap<String, Row>();
             QueryHits hits = searcher.evaluate(qp.mainQuery, sort, offset+limit);
             int currentNode = 0;
             int addedNodes = 0;
@@ -188,7 +189,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                 }
 
                                 if (externalSort) {
-                                    rows.add(row);
+                                    rowList.add(row);
                                     if (hasFacets) {
                                         nodes.add(node); // <-- Added by jahia
                                     }
@@ -196,7 +197,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                     // apply limit and offset rules locally
                                     if (currentNode >= offset
                                             && currentNode - offset < limit) {
-                                        rows.add(row);
+                                        rows.put(node.getNodeId().toString(), row);
                                         if (hasFacets) {
                                             nodes.add(node); // <-- Added by jahia
                                         }
@@ -221,12 +222,12 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                                 jcrSession), node.getScore());
                                 if (filter.evaluate(row)) {
                                     if (externalSort) {
-                                        rows.add(row);
+                                        rowList.add(row);
                                     } else {
                                         // apply limit and offset rules locally
                                         if (currentNode >= offset
                                                 && currentNode - offset < limit) {
-                                            rows.add(row);
+                                            rows.put(node.getNodeId().toString(), row);
                                             addedNodes++;
                                         }
                                         currentNode++;
@@ -245,19 +246,27 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                     } catch (ItemNotFoundException e) {
                         // skip the node
                     }
+                } else {
+                    if (!externalSort && !infos[0].equals(node.getNodeId().toString())) {
+                        // we've got the translation node -> adjusting the position of the original node in the result list  
+                        rows.put(infos[0], rows.remove(infos[0]));
+                    }
                 }  // <-- Added by jahia
                 node = hits.nextScoreNode();
             }
 
+            if (rowList == null) {
+                rowList = new LinkedList<Row>(rows.values());
+            }
             // Added by jahia
             if (hasFacets) {
                 FacetHandler h = new FacetHandler(columns, selector, nodes, index, session);
                 h.handleFacets(reader);
-                rows.add(0, h.getFacetsRow());
+                rowList.add(0, h.getFacetsRow());
             }
             // End
 
-            return rows;
+            return rowList;
         } finally {
             Util.closeOrRelease(reader);
         }

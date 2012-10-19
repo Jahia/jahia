@@ -86,7 +86,7 @@ import org.slf4j.LoggerFactory;
 public class JahiaQueryEngine extends QueryEngine {
     private static final Logger log = LoggerFactory.getLogger(QueryEngine.class);
 
-    private static final boolean NATIVE_SORT = Boolean.valueOf(System
+    public static boolean NATIVE_SORT = Boolean.valueOf(System
             .getProperty(NATIVE_SORT_SYSTEM_PROPERTY, "false"));
 
 

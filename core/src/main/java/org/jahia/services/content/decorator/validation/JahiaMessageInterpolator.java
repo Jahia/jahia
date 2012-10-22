@@ -35,6 +35,7 @@ package org.jahia.services.content.decorator.validation;
 import org.apache.log4j.Logger;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
@@ -54,15 +55,11 @@ import java.util.regex.Pattern;
  */
 public class JahiaMessageInterpolator implements MessageInterpolator {
     private transient static Logger logger = Logger.getLogger(JahiaMessageInterpolator.class);
-    JahiaTemplateManagerService templateManagerService;
+
     /**
      * Regular expression used to do message interpolation.
      */
     private static final Pattern MESSAGE_PARAMETER_PATTERN = Pattern.compile("(\\{[^\\}]+?\\})");
-
-    public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
-        this.templateManagerService = templateManagerService;
-    }
 
     /**
      * Interpolate the message template based on the contraint validation context.
@@ -73,7 +70,6 @@ public class JahiaMessageInterpolator implements MessageInterpolator {
      * @param context         contextual information related to the interpolation
      * @return Interpolated error message.
      */
-    @Override
     public String interpolate(String messageTemplate, Context context) {
         ResourceBundle resourceBundle = JahiaResourceBundle.lookupBundle(
                 ResourceBundleMessageInterpolator.DEFAULT_VALIDATION_MESSAGES, LocaleContextHolder.getLocale(), null,
@@ -82,7 +78,7 @@ public class JahiaMessageInterpolator implements MessageInterpolator {
         if (resourceBundle != null && resourceBundle.containsKey(key)) {
             return resourceBundle.getString(key);
         }
-        final List<JahiaTemplatesPackage> availableTemplatePackages = templateManagerService.getAvailableTemplatePackages();
+        final List<JahiaTemplatesPackage> availableTemplatePackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages();
         List<String> processedRB = new ArrayList<String>(availableTemplatePackages.size() * 2);
         for (JahiaTemplatesPackage availableTemplatePackage : availableTemplatePackages) {
             final List<String> resourceBundleHierarchy = availableTemplatePackage.getResourceBundleHierarchy();
@@ -116,7 +112,6 @@ public class JahiaMessageInterpolator implements MessageInterpolator {
      * @param locale          the locale targeted for the message
      * @return Interpolated error message.
      */
-    @Override
     public String interpolate(String messageTemplate, Context context, Locale locale) {
         ResourceBundle resourceBundle = JahiaResourceBundle.lookupBundle(
                 ResourceBundleMessageInterpolator.DEFAULT_VALIDATION_MESSAGES, locale, null, false);
@@ -124,7 +119,7 @@ public class JahiaMessageInterpolator implements MessageInterpolator {
         if (resourceBundle != null && resourceBundle.containsKey(key)) {
             return resourceBundle.getString(key);
         }
-        final List<JahiaTemplatesPackage> availableTemplatePackages = templateManagerService.getAvailableTemplatePackages();
+        final List<JahiaTemplatesPackage> availableTemplatePackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages();
         List<String> processedRB = new ArrayList<String>(availableTemplatePackages.size() * 2);
         for (JahiaTemplatesPackage availableTemplatePackage : availableTemplatePackages) {
             final List<String> resourceBundleHierarchy = availableTemplatePackage.getResourceBundleHierarchy();

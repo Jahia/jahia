@@ -8,9 +8,7 @@
 
     <bean id="validatorFactoryBean" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
         <property name="messageInterpolator">
-            <bean class="org.jahia.services.content.decorator.validation.JahiaMessageInterpolator">
-                <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
-            </bean>
+            <bean class="org.jahia.services.content.decorator.validation.JahiaMessageInterpolator"/>
         </property>
     </bean>
 
@@ -534,4 +532,34 @@
             </list>
         </property>
     </bean>
+
+    <!--<bean id="MyStoreProvider" class="org.jahia.services.content.impl.external.ExternalContentStoreProvider"  parent="AbstractJCRStoreProvider">-->
+        <!--<property name="key" value="my"/>-->
+        <!--<property name="dataSource" >-->
+            <!--<bean class="org.jahia.services.content.impl.external.fs.FSDataSource">-->
+                <!--<property name="root" value="/tmp"/>-->
+            <!--</bean>-->
+        <!--</property>-->
+        <!--<property name="mountPoint" value="/tmp"/>-->
+    <!--</bean>-->
+
+
+    <!--<bean id="LdapStoreProvider" class="org.jahia.services.content.impl.external.ExternalContentStoreProvider"  parent="AbstractJCRStoreProvider">-->
+        <!--<property name="key" value="myldap"/>-->
+        <!--<property name="dataSource" >-->
+            <!--<bean class="org.jahia.services.content.impl.external.users.UsersDataSource">-->
+            <!--</bean>-->
+        <!--</property>-->
+        <!--<property name="mountPoint" value="/ldap"/>-->
+    <!--</bean>-->
+
+    <!--<bean id="VFStoreProvider" class="org.jahia.services.content.impl.external.ExternalContentStoreProvider"  parent="AbstractJCRStoreProvider">-->
+        <!--<property name="key" value="myvfs"/>-->
+        <!--<property name="dataSource" >-->
+            <!--<bean class="org.jahia.services.content.impl.external.vfs.VFSDataSource">-->
+                <!--<property name="root" value="file:///Users/toto/tmp"/>-->
+            <!--</bean>-->
+        <!--</property>-->
+        <!--<property name="mountPoint" value="/tmp2"/>-->
+    <!--</bean>-->
 </beans>

@@ -54,9 +54,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -274,7 +272,7 @@ public class LangPropertiesEditor extends LayoutContainer {
                                     List<GWTJahiaItemDefinition> defs = new ArrayList<GWTJahiaItemDefinition>();
                                     for (GWTJahiaNodeProperty prop : sourcePropertiesEditor.getProperties()) {
                                         GWTJahiaItemDefinition def = sourcePropertiesEditor.getGWTJahiaItemDefinition(prop);
-                                        if (def.isInternationalized()) {
+                                        if (def.isInternationalized() && ((GWTJahiaPropertyDefinition)def).getRequiredType() == GWTJahiaNodePropertyType.STRING) {
                                             props.add(prop);
                                             defs.add(def);
                                         }

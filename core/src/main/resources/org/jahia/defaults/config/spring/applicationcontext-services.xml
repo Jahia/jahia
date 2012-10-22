@@ -260,4 +260,8 @@
     <bean id="groovyPatcher" class="org.jahia.tools.patches.GroovyPatcher"/>
 
     <bean id="TranslationService" class="org.jahia.services.translation.TranslationService" />
+
+    <bean abstract="true" id="abstractTranslationProvider" class="org.jahia.services.translation.AbstractTranslationProvider" init-method="init">
+        <property name="translationService" ref="TranslationService" />
+    </bean>
 </beans>

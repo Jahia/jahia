@@ -3,9 +3,9 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean class="org.jahia.services.translation.MicrosoftTranslationProvider" factory-method="getInstance" init-method="start">
+    <bean id="microsoftTranslationProvider" class="org.jahia.services.translation.MicrosoftTranslationProvider"
+          parent="abstractTranslationProvider">
         <property name="name" value="Microsoft Translator" />
-        <property name="translationService" ref="TranslationService" />
         <property name="httpClientService" ref="HttpClientService" />
     </bean>
 

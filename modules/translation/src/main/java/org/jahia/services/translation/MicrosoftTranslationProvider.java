@@ -55,43 +55,32 @@ import javax.jcr.RepositoryException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-public class MicrosoftTranslationProvider implements TranslationProvider {
+public class MicrosoftTranslationProvider extends AbstractTranslationProvider {
 
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(MicrosoftTranslationProvider.class);
-    private static MicrosoftTranslationProvider instance;
 
-    private String name;
-    private TranslationService translationService;
     private HttpClientService httpClientService;
 
-    private long accesExpiration = System.currentTimeMillis();
-    private String accessToken;
+    private Map<String, MicrosoftTranslatorAccess> accesses = new HashMap<String, MicrosoftTranslatorAccess>();
 
-    public static MicrosoftTranslationProvider getInstance() {
-        if (instance == null) {
-            instance = new MicrosoftTranslationProvider();
-        }
-        return instance;
-    }
-
-    public void start() {
-        translationService.addProvider(this);
-    }
-
-    private boolean authenticate(JCRSiteNode site) {
-        if (accesExpiration < System.currentTimeMillis()) {
-            String clientId = null;
-            String clientSecret = null;
-            try {
-                if (site.isNodeType("jmix:microsoftTranslatorSettings")) {
-                    clientId = site.getPropertyAsString("j:microsoftClientId");
-                    clientSecret = site.getPropertyAsString("j:microsoftClientSecret");
-                }
-            } catch (RepositoryException e) {
-                logger.error("Failed to get Microsoft Translator credentials", e);
-                return false;
+    private String authenticate(JCRSiteNode site) {
+        String clientId = null;
+        String clientSecret = null;
+        try {
+            if (site.isNodeType("jmix:microsoftTranslatorSettings")) {
+                clientId = site.getPropertyAsString("j:microsoftClientId");
+                clientSecret = site.getPropertyAsString("j:microsoftClientSecret");
             }
+        } catch (RepositoryException e) {
+            logger.error("Failed to get Microsoft Translator credentials", e);
+            return null;
+        }
+        String key = clientId + clientSecret;
+        String accessToken;
+        if (!accesses.containsKey(key) || accesses.get(key).getExpiration() < System.currentTimeMillis()) {
             PostMethod method = new PostMethod("https://datamarket.accesscontrol.windows.net/v2/OAuth2-13");
             method.addParameter("grant_type", "client_credentials");
             method.addParameter("client_id", clientId);
@@ -105,26 +94,30 @@ public class MicrosoftTranslationProvider implements TranslationProvider {
                 bodyAsString = method.getResponseBodyAsString();
             } catch (IOException e) {
                 logger.error("Failed to call token service", e);
-                return false;
+                return null;
             }
             if (returnCode != HttpStatus.SC_OK) {
-                return false;
+                return null;
             }
             try {
                 JSONObject jsonObject = new JSONObject(bodyAsString);
                 accessToken = jsonObject.getString("access_token");
-                accesExpiration = callTime + jsonObject.getLong("expires_in") * 1000;
+                accesses.put(key, new MicrosoftTranslatorAccess(accessToken,
+                        callTime + jsonObject.getLong("expires_in") * 1000));
             } catch (JSONException e) {
                 logger.error("Failed to parse access token", e);
-                return false;
+                return null;
             }
+        } else {
+            accessToken = accesses.get(key).getToken();
         }
-        return true;
+        return accessToken;
     }
 
     public String translate(String text, String srcLanguage, String destLanguage, boolean isHtml, JCRSiteNode site) {
         String translatedText = text;
-        if (authenticate(site)) {
+        String accessToken = authenticate(site);
+        if (accessToken != null) {
             GetMethod method = new GetMethod("http://api.microsofttranslator.com/v2/Http.svc/Translate");
             method.setRequestHeader("Authorization", "Bearer " + accessToken);
             method.setQueryString(new NameValuePair[]{
@@ -157,20 +150,28 @@ public class MicrosoftTranslationProvider implements TranslationProvider {
         return false;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setTranslationService(TranslationService translationService) {
-        this.translationService = translationService;
-    }
-
     public void setHttpClientService(HttpClientService httpClientService) {
         this.httpClientService = httpClientService;
+    }
+
+    private class MicrosoftTranslatorAccess {
+
+        private String token;
+        private long expiration;
+
+        private MicrosoftTranslatorAccess(String token, long expiration) {
+            this.token = token;
+            this.expiration = expiration;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public long getExpiration() {
+            return expiration;
+        }
+
     }
 
 }

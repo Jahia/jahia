@@ -125,10 +125,6 @@ public class LangPropertiesEditor extends LayoutContainer {
 
         // update node info
         loadEngine(displayedLanguage);
-
-        mainPanel = new LayoutContainer();
-        mainPanel.setScrollMode(Style.Scroll.AUTOY);
-        add(mainPanel, new BorderLayoutData(Style.LayoutRegion.CENTER));
     }
 
     public LayoutContainer getTopBar() {
@@ -229,7 +225,7 @@ public class LangPropertiesEditor extends LayoutContainer {
             // update displayed properties 
             displayedPropertiesEditor = langPropertiesEditor;
 
-            mainPanel.layout();
+            layout();
         } else {
             Log.debug("mixin is not set");
         }
@@ -355,6 +351,10 @@ public class LangPropertiesEditor extends LayoutContainer {
                 node = result.getNode();
                 nodeTypes = result.getNodeTypes();
                 properties = result.getProperties();
+
+                mainPanel = new LayoutContainer();
+                mainPanel.setScrollMode(Style.Scroll.AUTOY);
+                add(mainPanel, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
                 if (displayedLocale == null) {
                     displayedLocale = result.getCurrentLocale();

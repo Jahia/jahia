@@ -1,0 +1,44 @@
+Translation Service
+
+ Jahia TranslationService adds the possibility to call online translation services directly from the translation
+ content engine.
+
+* Translation Providers
+
+ An implementation for one online translation service is defined though a provider. Several providers can be defined
+ and there is already one defined in Jahia for Microsoft Translator. The first one that is enabled for a given site is
+ used for the translation. If no provider is enabled, then the "Suggest translation" buttons are not displayed.
+
+ A translation provider must implement the interface <<<TranslationProvider>>> :
+
++-----------------------
+    String getName();
+
+    String translate(String text, String srcLanguage, String destLanguage, boolean isHtml, JCRSiteNode site);
+
+    boolean isEnabled(JCRSiteNode site);
++-----------------------
+
+ The <<<translate>>> method takes a <<<text>>> and returns the text translated from <<<srcLanguage>>> to
+ <<<destLanguage>>> language code. The parameter <<<isHtml>>> can be useful for some services that need to know if the
+ text contains html tags for ignoring them. The site node passed as argument is used to read the necessary settings to
+ login to the online service.
+
+ The <<<isEnabled>>> method returns if the provider is enabled for a specified site, based on settings stored on this
+ site node or sub-node.
+
+ The <<<getName>>> method returns the name of the provider and is used for the provider registry.
+
+ To define a new translation provider, you should extends <<<AbstractTranslationProvider>>> as it's already implementing
+ the <<<getName>>> method and an init method that registers the provider to the TranslationService.
+
+ You will need then to declare it via Spring like this :
+
++-----------------------
+    <bean id="myTranslationProvider" class="com.mycompany.translation.MyTranslationProvider"
+          parent="abstractTranslationProvider">
+        <property name="name" value="My Custom Translator" />
+    </bean>
++-----------------------
+
+ As an example, you can look at <<<org.jahia.services.translation.MicrosoftTranslationProvider>>>.

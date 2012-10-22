@@ -97,6 +97,7 @@
             </item>
             <item name="Versioning" href="versioning/versioning.html"/>
             <item name="Image Service" href="image_service.html"/>
+            <item name="Translation Service" href="i18n/translation_service.html"/>
         </menu>
         <menu name="UI Customization" inherit="top">
             <item name="Managers and Edit mode" href="uicomponents/uicomponents.html"/>

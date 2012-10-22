@@ -780,7 +780,7 @@ public class ContentDefinitionHelper {
                         dependencies.add(dep.getString());
                     }
                 }
-                if (dependencies.isEmpty()) {
+                if (dependencies == null || dependencies.isEmpty()) {
                     dependencies = Arrays.asList("default");
                 }
             }

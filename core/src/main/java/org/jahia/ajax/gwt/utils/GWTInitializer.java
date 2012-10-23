@@ -183,11 +183,23 @@ public class GWTInitializer {
         
         addJavaScript(buf, request);
         
-        if (getConfig().isDetectCustomCKEditorConfig()) {
-            addCustomCKEditorConfig(buf, request);
-        }
+        addCustomCKEditorConfig(buf, request);
 
         return buf.toString();
+    }
+    
+    public static String getCustomCKEditorConfig(RenderContext ctx) {
+        if (ctx == null || !getConfig().isDetectCustomCKEditorConfig()) {
+            return null;
+        }
+
+        String templateSetFolder = ctx.getSite().getTemplateFolder();
+        if (getConfig().exists(templateSetFolder, "/javascript/ckeditor_config.js")) {
+            return ctx.getRequest().getContextPath() + "/modules/" + templateSetFolder
+                    + "/javascript/ckeditor_config.js";
+        }
+
+        return null;
     }
 
     private static void addCss(StringBuilder buf, HttpServletRequest request) {
@@ -208,15 +220,12 @@ public class GWTInitializer {
 
     private static void addCustomCKEditorConfig(StringBuilder buf, HttpServletRequest request) {
         RenderContext ctx = (RenderContext) request.getAttribute("renderContext");
-        if (ctx == null) {
+        String configPath = getCustomCKEditorConfig(ctx);
+        if (configPath == null) {
             return;
         }
-        String templateSetFolder = ctx.getSite().getTemplateFolder();
-        if (getConfig().exists(templateSetFolder, "/javascript/ckeditor_config.js")) {
-            buf.append("<script id=\"jahia-ckeditor-config-js\" type=\"text/javascript\" src=\"")
-                    .append(request.getContextPath()).append("/modules/").append(templateSetFolder)
-                    .append("/javascript/ckeditor_config.js").append("\"></script>\n");
-        }
+        buf.append("<script id=\"jahia-ckeditor-config-js\" type=\"text/javascript\" src=\"")
+                .append(configPath).append("\"></script>\n");
     }
 
     private static GWTResourceConfig getConfig() {

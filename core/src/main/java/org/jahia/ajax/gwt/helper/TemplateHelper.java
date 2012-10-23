@@ -40,11 +40,9 @@
 
 package org.jahia.ajax.gwt.helper;
 
-import org.apache.commons.collections.functors.NOPTransformer;
-import org.apache.commons.collections.map.LazySortedMap;
-import org.apache.commons.collections.map.TransformedSortedMap;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.utils.GWTInitializer;
 import org.jahia.bin.Render;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.channels.Channel;
@@ -206,6 +204,17 @@ public class TemplateHelper {
             String constraints = ConstraintsHelper.getConstraints(node);
             if (constraints == null) {
                 constraints = "";
+            }
+            if (renderContext.isEditMode()) {
+                String customConfig = GWTInitializer.getCustomCKEditorConfig(renderContext);
+                if (customConfig != null) {
+                    Map<String, Map<String, String>> js = map.get("javascript");
+                    if (js == null) {
+                        js = new HashMap<String, Map<String,String>>();
+                        map.put("javascript", js);
+                    }
+                    js.put(customConfig, Collections.<String, String>emptyMap());
+                }
             }
             Map<String, List<String>> m = new HashMap<String, List<String>>();
             if (map != null) {

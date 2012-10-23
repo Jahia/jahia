@@ -226,22 +226,8 @@ public class GWTInitializer {
         if (configPath == null) {
             return;
         }
-<<<<<<< .working
-        String templateSetFolder = ctx.getSite().getTemplateFolder();
-        String version = ctx.getSite().getInstalledModulesWithVersions().get(templateSetFolder);
-        if (StringUtils.isNotEmpty(version)) {
-            templateSetFolder += "/" + JahiaTemplateManagerService.VERSIONS_FOLDER_NAME + "/"
-                    + Patterns.DOT.matcher(version).replaceAll("-");
-        }
-        if (getConfig().exists(templateSetFolder, "/javascript/ckeditor_config.js")) {
-            buf.append("<script id=\"jahia-ckeditor-config-js\" type=\"text/javascript\" src=\"")
-                    .append(request.getContextPath()).append("/modules/").append(templateSetFolder)
-                    .append("/javascript/ckeditor_config.js").append("\"></script>\n");
-        }
-=======
         buf.append("<script id=\"jahia-ckeditor-config-js\" type=\"text/javascript\" src=\"")
                 .append(configPath).append("\"></script>\n");
->>>>>>> .merge-right.r43490
     }
 
     private static GWTResourceConfig getConfig() {

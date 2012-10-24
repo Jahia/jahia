@@ -230,7 +230,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                                 		aclsKeys.add(getAclsKeyPart(renderContext, finalCheckRootPath,
                                             nodeByIdentifier.getPath(), true, null));
                                 	}catch(ItemNotFoundException ex) {
-                                		logger.warn("ItemNotFound " + dependency + " maybe it is an invalid reference, check jcr integrity");
+                                		logger.warn("ItemNotFound: " + dependency + "  it could be an invalid reference, check jcr integrity");
                                 	}
                                     return null;
                                 }

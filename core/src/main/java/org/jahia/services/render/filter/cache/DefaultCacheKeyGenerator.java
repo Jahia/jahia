@@ -225,9 +225,13 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                             final boolean finalCheckRootPath = checkRootPath;
                             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                    final JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(dependency);
-                                    aclsKeys.add(getAclsKeyPart(renderContext, finalCheckRootPath,
+                                	try{
+                                		final JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(dependency);
+                                		aclsKeys.add(getAclsKeyPart(renderContext, finalCheckRootPath,
                                             nodeByIdentifier.getPath(), true, null));
+                                	}catch(ItemNotFoundException ex) {
+                                		logger.warn("ItemNotFound " + dependency + " maybe it is an invalid reference, check jcr integrity");
+                                	}
                                     return null;
                                 }
                             });

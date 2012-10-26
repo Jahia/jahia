@@ -62,7 +62,7 @@
         <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
         <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>
         <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
-        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/files/(default|live)/sites/.*</condition>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/files/(default|live|\{workspace\}|%7Bworkspace%7D)/sites/.*</condition>
         <from>^/files/(.*)$</from>
         <to last="true">/files/live/sites/%{attribute:jahiaSiteKeyForCurrentServerName}/files/$1</to>
     </rule>

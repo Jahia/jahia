@@ -86,6 +86,7 @@ import java.util.Map;
  */
 public class CustomizedPreviewActionItem extends BaseActionItem {
     private transient SearchField userSearchField;
+    private transient String lastUserSearchValue;
     private transient Grid<GWTJahiaUser> userGrid;
 
     @Override
@@ -107,14 +108,15 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
             @Override
             protected void load(Object pageLoaderConfig, AsyncCallback<BasePagingLoadResult<GWTJahiaUser>> callback) {
                 if (userSearchField != null) {
-                    if (userSearchField.getText().length() == 0) {
-                        service.searchUsersInContext("*", ((PagingLoadConfig) pageLoaderConfig).getOffset(),
-                                ((PagingLoadConfig) pageLoaderConfig).getLimit(), "currentSite", callback);
-                    } else {
-                        service.searchUsersInContext("*" + userSearchField.getText() + "*",
-                                ((PagingLoadConfig) pageLoaderConfig).getOffset(),
-                                ((PagingLoadConfig) pageLoaderConfig).getLimit(), "currentSite", callback);
-                    }
+                    String newSearch = userSearchField.getText();
+                    String searchQuery = newSearch.length() == 0 ? "*" : "*"+newSearch+"*";
+                    // reset offset to 0 if the search value has changed
+                    int offset = lastUserSearchValue != null && lastUserSearchValue.equals(newSearch) ? ((PagingLoadConfig) pageLoaderConfig).getOffset() : 0;
+                    service.searchUsersInContext(searchQuery, offset,
+                            ((PagingLoadConfig) pageLoaderConfig).getLimit(), "currentSite",
+                            callback);
+                    // remember last searched value
+                    lastUserSearchValue = newSearch;
                 }
             }
         };

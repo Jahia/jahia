@@ -70,7 +70,19 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(UserManagerServiceImpl.class);
     
     private static final Pattern NBSP_PATTERN = Pattern.compile("&nbsp;");
-    
+
+    private static final Comparator<? super GWTJahiaUser> USERNAME_COMPARARTOR = new Comparator<GWTJahiaUser>() {
+        public int compare(GWTJahiaUser o1, GWTJahiaUser o2) {
+            return o1.getUsername().compareTo(o2.getUsername());
+        }
+    };
+
+    private static final Comparator<? super GWTJahiaGroup> GROUPNAME_COMPARATOR = new Comparator<GWTJahiaGroup>() {
+        public int compare(GWTJahiaGroup o1, GWTJahiaGroup o2) {
+            return o1.getGroupname().compareTo(o2.getGroupname());
+        }
+    };
+
     private JahiaUserManagerService userManagerService;
     private JahiaGroupManagerService groupManagerService;
     private JahiaSitesService sitesService;
@@ -111,17 +123,17 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
                     result.add(data);
                 }
             }
-            Collections.sort(result, new Comparator<GWTJahiaUser>() {
-                public int compare(GWTJahiaUser o1, GWTJahiaUser o2) {
-                    return o1.getUsername().compareTo(o2.getUsername());
-                }
-            });
             int size = result.size();
-            while(size < offset) {
-              //check if the current offset is ok, if not set it to last page
-              offset = offset - limit;
+            if (offset > size) {
+                result = new ArrayList<GWTJahiaUser>();
+                size = 0;
+                offset = 0;
+            } else {
+                if (size > 1) {
+                    Collections.sort(result, USERNAME_COMPARARTOR);
+                }
+                result = new ArrayList<GWTJahiaUser>(result.subList(offset, Math.min(size, offset + limit)));
             }
-            result = new ArrayList<GWTJahiaUser>(result.subList(offset, Math.min(size, offset + limit)));
             return new BasePagingLoadResult<GWTJahiaUser>(result, offset, size);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -169,13 +181,17 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
                 result.add(data);
             }
             
-            Collections.sort(result, new Comparator<GWTJahiaGroup>() {
-                public int compare(GWTJahiaGroup o1, GWTJahiaGroup o2) {
-                    return o1.getGroupname().compareTo(o2.getGroupname());
-                }
-            });
             int size = result.size();
-            result = new ArrayList<GWTJahiaGroup>(result.subList(offset, Math.min(size, offset + limit)));
+            if (offset > size) {
+                result = new ArrayList<GWTJahiaGroup>();
+                size = 0;
+                offset = 0;
+            } else {
+                if (size > 1) {
+                    Collections.sort(result, GROUPNAME_COMPARATOR);
+                }
+                result = new ArrayList<GWTJahiaGroup>(result.subList(offset, Math.min(size, offset + limit)));
+            }
             BasePagingLoadResult<GWTJahiaGroup> pagingLoadResult = new BasePagingLoadResult<GWTJahiaGroup>(result, offset, size);
             return pagingLoadResult;
         } catch (Exception e) {

@@ -46,6 +46,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 import java.util.Arrays;
 import java.util.List;
@@ -76,8 +77,13 @@ public class PublishSiteActionItem extends PublishActionItem {
                 new BaseAsyncCallback<List<GWTJahiaNode>>() {
                     public void onSuccess(List<GWTJahiaNode> result) {
                         linker.loaded();
-                        GWTJahiaNode gwtJahiaNode = result.get(0);
+                        final LinkerSelectionContext selectionContext = linker.getSelectionContext();
+                        final List<GWTJahiaNode> multipleSelection = selectionContext.getMultipleSelection();
+                        selectionContext.setSelectedNodes(result);
+                        selectionContext.refresh(LinkerSelectionContext.SELECTED_NODE_ONLY);
                         PublishSiteActionItem.super.onComponentSelection();
+                        selectionContext.setSelectedNodes(multipleSelection);
+                        selectionContext.refresh(LinkerSelectionContext.SELECTED_NODE_ONLY);
                     }
                 });
     }

@@ -81,8 +81,9 @@ public class UserGroupSelect extends Window {
     public static final int VIEW_ROLES = 4;
     private JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
     private SearchField userSearchField;
+    private String lastUserSearchValue;
     private SearchField groupSearchField;
-    private SearchField roleSearchField;
+    private String lastGroupSearchValue;
     private ListStore<GWTJahiaSite> sites;
     private String selectedSite;
     private Grid<GWTJahiaUser> userGrid;
@@ -161,11 +162,13 @@ public class UserGroupSelect extends Window {
                     context = "site:"+selectedSite;
                 }
                 if (context != null) {
-                    if (userSearchField.getText().length()==0)  {
-                        service.searchUsersInContext("*",((PagingLoadConfig) pageLoaderConfig).getOffset(), ((PagingLoadConfig) pageLoaderConfig).getLimit(),context, callback);
-                    } else {
-                        service.searchUsersInContext("*"+userSearchField.getText()+"*",((PagingLoadConfig) pageLoaderConfig).getOffset(), ((PagingLoadConfig) pageLoaderConfig).getLimit(), context, callback);
-                    }
+                    String newSearch = userSearchField.getText();
+                    String searchQuery = newSearch.length() == 0 ? "*" : "*"+newSearch+"*";
+                    // reset offset to 0 if the search value has changed
+                    int offset = lastUserSearchValue != null && lastUserSearchValue.equals(newSearch) ? ((PagingLoadConfig) pageLoaderConfig).getOffset() : 0;
+                    service.searchUsersInContext(searchQuery, offset, ((PagingLoadConfig) pageLoaderConfig).getLimit(),context, callback);
+                    // remember last searched value
+                    lastUserSearchValue = newSearch;
                 }
             }
         };
@@ -241,14 +244,16 @@ public class UserGroupSelect extends Window {
                     context = "site:"+selectedSite;
                 }
 
-                if (groupSearchField.getText().length()==0)  {
-                    service.searchGroupsInContext("*",((PagingLoadConfig) pageLoaderConfig).getOffset(), ((PagingLoadConfig) pageLoaderConfig).getLimit(),context, callback);
-                } else {
-                    service.searchGroupsInContext("*"+groupSearchField.getText()+"*",((PagingLoadConfig) pageLoaderConfig).getOffset(), ((PagingLoadConfig) pageLoaderConfig).getLimit(), context, callback);
-                }
+                String newSearch = groupSearchField.getText();
+                String searchQuery = newSearch.length() == 0 ? "*" : "*"+newSearch+"*";
+                // reset offset to 0 if the search value has changed
+                int offset = lastGroupSearchValue != null && lastGroupSearchValue.equals(newSearch) ? ((PagingLoadConfig) pageLoaderConfig).getOffset() : 0;
+                service.searchGroupsInContext(searchQuery, offset, ((PagingLoadConfig) pageLoaderConfig).getLimit(),context, callback);
+                // remember last searched value
+                lastGroupSearchValue = newSearch;
             }
         };
-        final BasePagingLoader loader = new BasePagingLoader<PagingLoadResult<GWTJahiaGroup>>(proxy);
+        final BasePagingLoader<PagingLoadResult<GWTJahiaGroup>> loader = new BasePagingLoader<PagingLoadResult<GWTJahiaGroup>>(proxy);
 
         groupSearchField = new SearchField(Messages.get("label.search", "Search: "), false) {
             public void onFieldValidation(String value) {

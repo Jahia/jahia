@@ -787,3 +787,21 @@ extends = jnt:content
 
 [jnt:containerList] > nt:base,  jmix:basemetadata orderable
  + * (jnt:container) version
+
+//---------------------------------------------------------
+// Modules filesystem nodes
+//---------------------------------------------------------
+
+[jnt:nodeTypeFolder] > jnt:folder
+[jnt:templateTypeFolder] > jnt:folder
+[jnt:cssFolder] > jnt:folder
++ * (cssFile)
+[jnt:cssFile] > jnt:file
+[jnt:javascriptFolder] > jnt:folder
+[jnt:javascriptFile] > jnt:file
+[jnt:viewFile] > jnt:file
+- * (string)
+[jnt:definitionFile] > jnt:file
++ * (nt:nodeType)
+[jnt:resourceBundleFolder] > jnt:folder
+

@@ -42,6 +42,7 @@ package org.jahia.services.content.impl.external;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ChildrenCollectorFilter;
+import org.apache.jackrabbit.value.BinaryImpl;
 import org.jahia.services.content.nodetypes.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +57,7 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionHistory;
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.*;
@@ -64,7 +66,10 @@ import java.util.*;
  *
  * User: toto
  * Date: Apr 23, 2008
- * Time: 11:46:22 AM
+ * Time: 11:46:22 AM                                           @Override
+    public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+        if ()
+    }
  *
  */
 public class ExternalNodeImpl extends ExternalItemImpl implements Node {
@@ -73,7 +78,6 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
 
     private ExternalData data;
     private Map<String, ExternalPropertyImpl> properties = null;
-
     public ExternalNodeImpl(ExternalData data, ExternalSessionImpl session) throws RepositoryException {
         super(session);
         this.data = data;
@@ -164,17 +168,24 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
         return true;
     }
 
-
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        session.getDeletedData().put(getPath(),data);
+    }
+
+    public void removeProperty(String name) throws RepositoryException {
+        data.getBinaryProperties().remove(name);
+        data.getProperties().remove(name);
+        session.getChangedData().put(getPath(),data);
     }
 
     public Node addNode(String relPath) throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        return addNode(relPath,null);
     }
 
     public Node addNode(String relPath, String primaryNodeTypeName) throws ItemExistsException, PathNotFoundException, NoSuchNodeTypeException, LockException, VersionException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        ExternalData data = new ExternalData(null,getPath() + "/" + relPath,primaryNodeTypeName,new HashMap<String, String[]>());
+        session.getChangedData().put(data.getPath(),data);
+        return  new ExternalNodeImpl(data,session);
     }
 
     public void orderBefore(String srcChildRelPath, String destChildRelPath) throws UnsupportedRepositoryOperationException, VersionException, ConstraintViolationException, ItemNotFoundException, LockException, RepositoryException {
@@ -182,59 +193,91 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
     }
 
     public Property setProperty(String name, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        data.getProperties().put(name, new String[]{value.getString()});
+        session.getChangedData().put(getPath(),data);
+        return new ExternalPropertyImpl(new Name(name,NodeTypeRegistry.getInstance().getNamespaces()),this,(ExternalSessionImpl) getSession(), value);
     }
 
     public Property setProperty(String name, Value value, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        return setProperty(name,value);
     }
 
     public Property setProperty(String name, Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        String[]  s = null;
+        if (values != null) {
+            s = new String[values.length];
+            for (int i = 0; i < values.length; i ++) {
+                s[i] = values[i].getString();
+            }
+            data.getProperties().put(name,s);
+            session.getChangedData().put(getPath(),data);
+        }
+        return new ExternalPropertyImpl(new Name(name,NodeTypeRegistry.getInstance().getNamespaces()),this,(ExternalSessionImpl) getSession(), values);
     }
 
     public Property setProperty(String name, Value[] values, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        return setProperty(name,values);
     }
 
     public Property setProperty(String name, String[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        Value[] v = null;
+        if (values != null) {
+            v = new Value[values.length];
+            for (int i =0; i < values.length; i ++ ) {
+                v[i] = getSession().getValueFactory().createValue(values[i]);
+            }
+        }
+        return setProperty(name,v);
     }
 
     public Property setProperty(String name, String[] values, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        return setProperty(name,values);
     }
 
     public Property setProperty(String name, String value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        return setProperty(name,getSession().getValueFactory().createValue(value));
     }
 
     public Property setProperty(String name, String value, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        return setProperty(name,value);
     }
 
     public Property setProperty(String name, InputStream value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        Value v = null;
+        try{
+            Binary[] b = {new BinaryImpl(value)};
+            data.getBinaryProperties().put(name,b);
+            v = getSession().getValueFactory().createValue(new BinaryImpl(value));
+        } catch (IOException e) {
+            throw new RepositoryException(e);
+        }
+        session.getChangedData().put(getPath(),data);
+        return new ExternalPropertyImpl(new Name(name,NodeTypeRegistry.getInstance().getNamespaces()),this,(ExternalSessionImpl) getSession(), v);
     }
 
     public Property setProperty(String name, boolean value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        Value v = getSession().getValueFactory().createValue(value);
+        return setProperty(name, v);
     }
 
     public Property setProperty(String name, double value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        Value v = getSession().getValueFactory().createValue(value);
+        return setProperty(name, v);
     }
 
     public Property setProperty(String name, long value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        Value v = getSession().getValueFactory().createValue(value);
+        return setProperty(name, v);
     }
 
     public Property setProperty(String name, Calendar value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        Value v = getSession().getValueFactory().createValue(value);
+        return setProperty(name, v);
     }
 
     public Property setProperty(String name, Node value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        Value v = getSession().getValueFactory().createValue(value);
+        return setProperty(name, v);
     }
 
     public Node getNode(String s) throws PathNotFoundException, RepositoryException {
@@ -448,11 +491,12 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
     }
 
     public Property setProperty(String name, Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        return setProperty(name, value.getStream());
     }
 
     public Property setProperty(String name, BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        Value v = getSession().getValueFactory().createValue(value);
+        return setProperty(name, v);
     }
 
     public NodeIterator getNodes(String[] nameGlobs) throws RepositoryException {

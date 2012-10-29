@@ -81,18 +81,18 @@ public abstract class ExternalItemImpl implements Item {
     }
 
     public void accept(ItemVisitor itemVisitor) throws RepositoryException {
-        
+
     }
 
     public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, ReferentialIntegrityException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
-        
+        session.save();
     }
 
     public void refresh(boolean b) throws InvalidItemStateException, RepositoryException {
-        
+        session.refresh(b);
     }
 
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+
     }
 }

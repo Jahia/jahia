@@ -18,6 +18,10 @@ public interface ExternalDataSource {
 
     List<String> getChildren(String path);
 
+    void removeItemByPath(String path) throws PathNotFoundException;
+
+    void saveItem(ExternalData data) throws PathNotFoundException;
+
     List<String> search(String basePath, String type, Map<String, String> constraints, String orderBy, int limit);
 
 }

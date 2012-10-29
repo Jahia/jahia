@@ -112,6 +112,20 @@ public class VFSDataSource implements ExternalDataSource {
         return new ArrayList<String>();
     }
 
+    @Override
+    public void removeItemByPath(String path) throws PathNotFoundException {
+        try {
+            getFile(path).delete();
+        }
+        catch (FileSystemException e) {
+            throw new PathNotFoundException(e);
+        }
+    }
+
+    public void saveItem(ExternalData data) {
+
+    }
+
     public List<String> search(String basePath, String type, Map<String, String> constraints, String orderBy, int limit) {
         return new ArrayList<String>();
     }

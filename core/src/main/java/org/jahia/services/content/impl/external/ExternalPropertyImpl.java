@@ -40,24 +40,27 @@
 
 package org.jahia.services.content.impl.external;
 
+import org.apache.jackrabbit.value.BinaryImpl;
 import org.jahia.services.content.nodetypes.Name;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import sun.misc.IOUtils;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.version.VersionException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Calendar;
 
 /**
- * 
+ *
  * User: toto
  * Date: Apr 23, 2008
  * Time: 11:46:28 AM
- * 
+ *
  */
 public class ExternalPropertyImpl extends ExternalItemImpl implements Property {
 
@@ -81,43 +84,72 @@ public class ExternalPropertyImpl extends ExternalItemImpl implements Property {
     }
 
     public void setValue(Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();        
+        this.value = value;
     }
 
     public void setValue(Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();        
+        this.values = values;
     }
 
     public void setValue(String s) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();        
+        if (s != null) {
+            setValue(getSession().getValueFactory().createValue(s));
+        } else {
+            remove();
+        }
     }
 
     public void setValue(String[] strings) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();        
+        if (strings != null) {
+            Value[] v = new Value[strings.length];
+            for (int i = 0; i < strings.length; i++) {
+                if (strings[i] != null) {
+                    v[i] = getSession().getValueFactory().createValue(strings[i]);
+                } else {
+                    v[i] = null;
+                }
+            }
+            setValue(v);
+        } else {
+            remove();
+        }
     }
 
     public void setValue(InputStream inputStream) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();        
+        if (inputStream != null) {
+            try {
+            Binary b = new BinaryImpl(inputStream);
+            setValue(getSession().getValueFactory().createValue(b));
+            } catch (IOException e) {
+
+            }
+        } else {
+            remove();
+        }
     }
 
     public void setValue(long l) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();        
+        setValue(getSession().getValueFactory().createValue(l));
     }
 
     public void setValue(double v) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();        
+        setValue(getSession().getValueFactory().createValue(v));
     }
 
     public void setValue(Calendar calendar) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();        
+        if (calendar != null) {
+            setValue(getSession().getValueFactory().createValue(calendar));
+        } else {
+            remove();
+        };
     }
 
     public void setValue(boolean b) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();        
+        setValue(getSession().getValueFactory().createValue(b));
     }
 
     public void setValue(Node node) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();        
+        throw new UnsupportedRepositoryOperationException();
     }
 
     public Value getValue() throws ValueFormatException, RepositoryException {
@@ -132,46 +164,46 @@ public class ExternalPropertyImpl extends ExternalItemImpl implements Property {
         if (value != null) {
             return value.getString();
         }
-        return null;  
+        return null;
     }
 
     public InputStream getStream() throws ValueFormatException, RepositoryException {
         if (value != null) {
-            return value.getStream();
+            return value.getBinary().getStream();
         }
-        return null;  
+        return null;
     }
 
     public long getLong() throws ValueFormatException, RepositoryException {
         if (value != null) {
             return value.getLong();
         }
-        return 0;  
+        return 0;
     }
 
     public double getDouble() throws ValueFormatException, RepositoryException {
         if (value != null) {
             return value.getDouble();
         }
-        return 0;  
+        return 0;
     }
 
     public Calendar getDate() throws ValueFormatException, RepositoryException {
         if (value != null) {
             return value.getDate();
         }
-        return null;  
+        return null;
     }
 
     public boolean getBoolean() throws ValueFormatException, RepositoryException {
         if (value != null) {
             return value.getBoolean();
         }
-        return false;  
+        return false;
     }
 
     public Node getNode() throws ValueFormatException, RepositoryException {
-        return null;  
+        return null;
     }
 
     public long getLength() throws ValueFormatException, RepositoryException {
@@ -179,7 +211,7 @@ public class ExternalPropertyImpl extends ExternalItemImpl implements Property {
     }
 
     public long[] getLengths() throws ValueFormatException, RepositoryException {
-        return new long[0];  
+        return new long[0];
     }
 
     public PropertyDefinition getDefinition() throws RepositoryException {
@@ -187,34 +219,42 @@ public class ExternalPropertyImpl extends ExternalItemImpl implements Property {
     }
 
     public int getType() throws RepositoryException {
-        return value.getType();  
+        return value.getType();
     }
 
     public void setValue(Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();        
+        if (value != null) {
+            setValue(getSession().getValueFactory().createValue(value));
+        } else {
+            remove();
+        }
     }
 
     public void setValue(BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();        
+        if (value != null) {
+            setValue(getSession().getValueFactory().createValue(value));
+        } else {
+            remove();
+        }
     }
 
     public Binary getBinary() throws ValueFormatException, RepositoryException {
-        return value.getBinary();  
+        return value.getBinary();
     }
 
     public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
-        return value.getDecimal();  
+        return value.getDecimal();
     }
 
     public Property getProperty() throws ItemNotFoundException, ValueFormatException, RepositoryException {
-        return this;  
+        return this;
     }
 
     public boolean isMultiple() throws RepositoryException {
         if (values != null) {
             return true;
         }
-        return false;  
+        return false;
     }
 
     public String getPath() throws RepositoryException {
@@ -235,5 +275,10 @@ public class ExternalPropertyImpl extends ExternalItemImpl implements Property {
 
     public int getDepth() throws RepositoryException {
         throw new UnsupportedRepositoryOperationException();
+    }
+
+    @Override
+    public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+        ((ExternalNodeImpl) getParent()).removeProperty(getName());
     }
 }

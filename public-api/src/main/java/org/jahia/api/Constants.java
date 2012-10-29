@@ -194,6 +194,16 @@ public class Constants {
     public static final String JAHIANT_AREA = "jnt:area";
     public static final String JAHIANT_QUERY = "jnt:query";
 
+    public static final String JAHIANT_NODETYPEFOLDER = "jnt:nodeTypeFolder";
+    public static final String JAHIANT_TEMPLATETYPEFOLDER = "jnt:templateTypeFolder";
+    public static final String JAHIANT_CSSFOLDER = "jnt:cssFolder";
+    public static final String JAHIANT_CSSFILE = "jnt:cssFile";
+    public static final String JAHIANT_JAVASCRIPTFOLDER = "jnt:javascriptFolder";
+    public static final String JAHIANT_JAVASCRIPTFILE = "jnt:javascriptFile";
+    public static final String JAHIANT_VIEWFILE = "jnt:viewFile";
+    public static final String JAHIANT_DEFINITIONFILE = "jnt:definitionFile";
+    public static final String JAHIANT_RESOURCEBUNDLEFOLDER = "jnt:resourceBundleFolder";
+
     public static final String LASTPUBLISHED = "j:lastPublished";
     public static final String LASTPUBLISHEDBY = "j:lastPublishedBy";
     public static final String PUBLISHED = "j:published";

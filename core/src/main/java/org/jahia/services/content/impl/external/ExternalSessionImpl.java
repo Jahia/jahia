@@ -55,6 +55,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.AccessControlException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * JCR session implementation for VFS provider.
@@ -66,6 +70,8 @@ public class ExternalSessionImpl implements Session {
     private ExternalRepositoryImpl repository;
     private ExternalWorkspaceImpl workspace;
     private Credentials credentials;
+    private Map<String, ExternalData> changedData = new HashMap<String, ExternalData>();
+    private Map<String, ExternalData> deletedData = new HashMap<String, ExternalData>();
 
     public ExternalSessionImpl(ExternalRepositoryImpl repository, Credentials credentials) {
         this.repository = repository;
@@ -106,15 +112,25 @@ public class ExternalSessionImpl implements Session {
         if (!repository.getDataSource().isSupportsUuid()) {
             throw new ItemNotFoundException("This repository does not support UUID as identifiers");
         }
-        return new ExternalNodeImpl(repository.getDataSource().getItemByIdentifier(uuid), this);
+        Node n = new ExternalNodeImpl(repository.getDataSource().getItemByIdentifier(uuid), this);
+        if (deletedData.containsKey(n.getPath())) {
+            throw new ItemNotFoundException("This node has been deleted");
+        }
+        return n;
     }
 
     public Item getItem(String path) throws PathNotFoundException, RepositoryException {
+        if (deletedData.containsKey(path)) {
+            throw new PathNotFoundException("This node has been deleted");
+        }
         ExternalData object = repository.getDataSource().getItemByPath(path);
         return new ExternalNodeImpl(object, this);
     }
 
     public boolean itemExists(String path) throws RepositoryException {
+        if (deletedData.containsKey(path)) {
+            throw new PathNotFoundException("This node has been deleted");
+        }
         try {
             ExternalData object = repository.getDataSource().getItemByPath(path);
         } catch (PathNotFoundException fse) {
@@ -127,11 +143,21 @@ public class ExternalSessionImpl implements Session {
     }
 
     public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
-
+        for(ExternalData data: changedData.values()) {
+            repository.getDataSource().saveItem(data);
+        }
+        changedData.clear();
+        for (String path : deletedData.keySet()) {
+            repository.getDataSource().removeItemByPath(path);
+        }
+        deletedData.clear();
     }
 
     public void refresh(boolean b) throws RepositoryException {
-
+        if (!b) {
+            deletedData.clear();
+            changedData.clear();
+        }
     }
 
     public boolean hasPendingChanges() throws RepositoryException {
@@ -204,6 +230,14 @@ public class ExternalSessionImpl implements Session {
 
     public void removeLockToken(String s) {
 
+    }
+
+    public Map<String, ExternalData> getChangedData() {
+        return changedData;
+    }
+
+    public Map<String, ExternalData> getDeletedData() {
+        return deletedData;
     }
 
     public Node getNodeByIdentifier(String id) throws ItemNotFoundException, RepositoryException {

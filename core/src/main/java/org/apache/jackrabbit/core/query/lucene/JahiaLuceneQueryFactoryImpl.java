@@ -102,6 +102,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             Map<String, PropertyValue> columns, Selector selector,
             final Constraint constraint) throws RepositoryException, IOException {
         final IndexReader reader = index.getIndexReader(true);
+        QueryHits hits = null;
         try {
             JackrabbitIndexSearcher searcher = new JackrabbitIndexSearcher(
                     session, reader, index.getContext().getItemStateManager());
@@ -130,7 +131,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             // End
 
             List<Row> rows = new ArrayList<Row>();
-            QueryHits hits = searcher.evaluate(qp.mainQuery);
+            hits = searcher.evaluate(qp.mainQuery);
             ScoreNode node = hits.nextScoreNode();
             Map<String, Boolean> checkedAcls = new HashMap<String, Boolean>();
             
@@ -224,6 +225,9 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
 
             return rows;
         } finally {
+            if(hits != null){
+                hits.close();
+            }            
             Util.closeOrRelease(reader);
         }
     }

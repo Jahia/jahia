@@ -101,13 +101,10 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             boolean externalSort, long offsetIn, long limitIn)
             throws RepositoryException, IOException {
         final IndexReader reader = index.getIndexReader(true);
-<<<<<<< .working
         final int offset = offsetIn < 0 ? 0 : (int) offsetIn;
         final int limit = limitIn < 0 ? Integer.MAX_VALUE : (int) limitIn;
 
-=======
         QueryHits hits = null;
->>>>>>> .merge-right.r43508
         try {
             JackrabbitIndexSearcher searcher = new JackrabbitIndexSearcher(
                     session, reader, index.getContext().getItemStateManager());
@@ -135,20 +132,15 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             boolean hasFacets = FacetHandler.hasFacetFunctions(columns, session);
             // End
 
-<<<<<<< .working
             List<Row> rowList = externalSort ? new LinkedList<Row>() : null;
             Map<String, Row> rows = externalSort ? null : new LinkedHashMap<String, Row>();
-            QueryHits hits = searcher.evaluate(qp.mainQuery, sort, offset+limit);
+            hits = searcher.evaluate(qp.mainQuery, sort, offset+limit);
             int currentNode = 0;
             int addedNodes = 0;
 
-=======
-            List<Row> rows = new ArrayList<Row>();
-            hits = searcher.evaluate(qp.mainQuery);
->>>>>>> .merge-right.r43508
             ScoreNode node = hits.nextScoreNode();
             Map<String, Boolean> checkedAcls = new HashMap<String, Boolean>();
-            
+
             while (node != null) {
                 String[] infos = getIndexedNodeInfo(node, reader);
                 if (foundIds.add(infos[0])) {  // <-- Added by jahia

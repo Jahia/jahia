@@ -16,6 +16,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.*;
 
 public class VFSDataSource implements ExternalDataSource {
@@ -133,12 +134,8 @@ public class VFSDataSource implements ExternalDataSource {
     private ExternalData getFile(FileObject fileObject) throws FileSystemException {
         String identifier =  fileObject.getURL().toString();
         String type;
-        FileType fileType = fileObject.getType();
-        if (fileType == FileType.FILE) {
-            type = Constants.JAHIANT_FILE;
-        } else {
-            type = Constants.JAHIANT_FOLDER;
-        }
+
+        type = getDataType(fileObject);
 
         Map<String,String[]> properties = new HashMap<String, String[]>();
         if (fileObject.getContent() != null) {
@@ -157,6 +154,17 @@ public class VFSDataSource implements ExternalDataSource {
         }
 
         return new ExternalData(identifier, path, type, properties);
+    }
+
+    public String getDataType(FileObject fileObject) throws FileSystemException {
+        FileType fileType = fileObject.getType();
+        String type;
+        if (fileType == FileType.FILE) {
+            type = Constants.JAHIANT_FILE;
+        } else {
+            type = Constants.JAHIANT_FOLDER;
+        }
+        return type;
     }
 
     private ExternalData getFileContent(final FileContent content) throws FileSystemException {

@@ -186,7 +186,7 @@
  - typeOfContent (string,choicelist[resourceBundle]) = website indexed=no < website,contents,files
  - numberOfSitesPerPage (long) hidden
  - numberMaxOfSitesDisplayed (long)
- - templatesSets (weakreference,choicelist[nodes='/templateSets;jnt:virtualsite']) multiple
+ - templatesSets (weakreference,choicelist[nodes='/modules;jnt:virtualsite']) multiple
 
 [jmix:gadget] mixin
 
@@ -227,7 +227,7 @@
  - allowsUnlistedLanguages (boolean)
  - forceLanguage (string)
  - class (string) indexed=no
- - defaultTemplatesSet (weakreference,choicelist[nodes='/templateSets;jnt:virtualsite'])
+ - defaultTemplatesSet (weakreference,choicelist[nodes='/modules;jnt:virtualsite'])
  - buttonLabel (string) i18n nofulltext
 
 [jnt:openInPopup] > jnt:content, jmix:siteComponent, jmix:studioOnly

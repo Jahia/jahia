@@ -89,7 +89,7 @@ public class MissingModulesValidationResult implements ValidationResult {
      *            the template set from the import file
      * @param targetTemplateSetPresent
      *            is template set from import file present on the system?
-     * @param templateSetsMissingCounts
+     * @param modulesMissingCounts
      *            if the target template set is not present on the system we verify templates against all available template sets and check
      *            how many are missing in each of them
      */

@@ -89,7 +89,7 @@ public class LoginConfig implements ApplicationListener<ContextInitializedEvent>
 
     public void onApplicationEvent(ContextInitializedEvent event) {
         Map<String, LoginUrlProvider> beansOfType = BeanFactoryUtils.beansOfTypeIncludingAncestors(
-                ((TemplatePackageApplicationContextLoader) event.getSource()).getContext(),
+                event.getContext(),
                 LoginUrlProvider.class);
         if (!beansOfType.isEmpty()) {
             for (LoginUrlProvider provider : beansOfType.values()) {

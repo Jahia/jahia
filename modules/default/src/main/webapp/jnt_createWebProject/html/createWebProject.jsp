@@ -48,7 +48,7 @@
         <c:if test="${currentNode.properties['useTemplatesSet'].boolean}">
             <p><label for="siteDescr"><fmt:message key="org.jahia.admin.site.ManageSites.templateSet.label"/></label>
                 <select name="templatesSet">
-                    <jcr:node var="sets" path="/templateSets"/>
+                    <jcr:node var="sets" path="/modules"/>
                     <c:forEach items="${sets.nodes}" var="set">
                         <c:if test="${set.properties['j:siteType'].string eq 'templatesSet'}">
                             <option value="${set.name}">${set.displayableName}</option>

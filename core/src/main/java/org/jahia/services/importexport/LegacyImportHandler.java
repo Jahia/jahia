@@ -442,17 +442,8 @@ public class LegacyImportHandler extends DefaultHandler {
             pageKey = pageKey.replace(']', '_');
 
             ExtendedNodeType pageType = registry.getNodeType("jnt:page");
-            JCRNodeWrapper templateNode = null;
-            try {
-                if (!StringUtils.isEmpty(template)) {
-                    template = mapping.getMappedPropertyValue(pageType, "jahia:template", template);
-                }
-                templateNode = !StringUtils.isEmpty(template) ? currentSiteNode.getNode("templates/" + template) : null;
-            } catch (PathNotFoundException e) {
-                logger.warn("Template '" + template + "' not found. Plain jnt:page will be created");
-            }
-
-            subPage = addOrCheckoutPageNode(templateNode, parent, pageKey, creationMetadata);
+            String templateName = StringUtils.substringAfterLast("templates/"+template,"/");
+            subPage = addOrCheckoutPageNode(templateName, parent, pageKey, creationMetadata);
             uuidMapping.put(uuid, subPage.getIdentifier());
 
             performActions(mapping.getActions(pageType, "jahia:template", template), subPage);
@@ -524,7 +515,7 @@ public class LegacyImportHandler extends DefaultHandler {
     }
 
 
-    private JCRNodeWrapper addOrCheckoutPageNode(JCRNodeWrapper template, JCRNodeWrapper parent, String nodeName, Map<String, String> creationMetadata)
+    private JCRNodeWrapper addOrCheckoutPageNode(String template, JCRNodeWrapper parent, String nodeName, Map<String, String> creationMetadata)
             throws RepositoryException {
         JCRNodeWrapper node = null;
         try {
@@ -555,16 +546,15 @@ public class LegacyImportHandler extends DefaultHandler {
             node.getOrCreateI18N(locale, created, createdBy, lastModified, lastModifiedBy);
 
             if (template != null) {
-                node.setProperty("j:templateNode", template);
-                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:area] as a where isdescendantnode(a,['" + template.getPath() + "'])", Query.JCR_SQL2);
-                NodeIterator ni = q.execute().getNodes();
-                while (ni.hasNext()) {
-                    JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) ni.next();
-                    JCRNodeWrapper list = node.addNode(nodeWrapper.getName(), "jnt:contentList", null, created, createdBy, lastModified, lastModifiedBy);
-                    list.getOrCreateI18N(locale, created, createdBy, lastModified, lastModifiedBy);
-                }
+                node.setProperty("j:templateName", template);
+//                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:area] as a where isdescendantnode(a,['" + template.getPath() + "'])", Query.JCR_SQL2);
+//                NodeIterator ni = q.execute().getNodes();
+//                while (ni.hasNext()) {
+//                    JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) ni.next();
+//                    JCRNodeWrapper list = node.addNode(nodeWrapper.getName(), "jnt:contentList", null, created, createdBy, lastModified, lastModifiedBy);
+//                    list.getOrCreateI18N(locale, created, createdBy, lastModified, lastModifiedBy);
+//                }
             }
-//            }
         }
         return node;
     }

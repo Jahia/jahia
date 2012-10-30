@@ -42,6 +42,8 @@ package org.jahia.services.templates;
 
 import javax.servlet.ServletContext;
 
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.services.SpringContextSingleton;
@@ -50,6 +52,9 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * Loader and manager of the Spring's application context for Jahia modules.
@@ -65,50 +70,61 @@ public class TemplatePackageApplicationContextLoader implements ServletContextAw
      */
     public static class ContextInitializedEvent extends ApplicationEvent {
         private static final long serialVersionUID = -2367558261328740803L;
+        private JahiaTemplatesPackage aPackage;
 
-        public ContextInitializedEvent(Object source) {
+        public ContextInitializedEvent(Object source, JahiaTemplatesPackage aPackage) {
             super(source);
+            this.aPackage = aPackage;
         }
-        
+
+
+        public JahiaTemplatesPackage getPackage() {
+            return aPackage;
+        }
+
         public XmlWebApplicationContext getContext() {
-            return ((TemplatePackageApplicationContextLoader)getSource()).getContext();
+            return aPackage.getContext();
         }
     }
 
     private static final Logger logger = LoggerFactory.getLogger(TemplatePackageApplicationContextLoader.class);
 
-    private XmlWebApplicationContext context;
+//    private XmlWebApplicationContext context;
 
-    private String contextConfigLocation;
+//    private String contextConfigLocation;
 
     private ServletContext servletContext;
 
-    private XmlWebApplicationContext createWebApplicationContext() throws BeansException {
-
-        XmlWebApplicationContext ctx = new XmlWebApplicationContext();
-        ctx.setParent(SpringContextSingleton.getInstance().getContext());
-        ctx.setServletContext(servletContext);
-        servletContext.setAttribute(WebApplicationContext.class.getName() + ".jahiaModules", ctx);
-        ctx.setConfigLocation(contextConfigLocation);
-        ctx.refresh();
-
-        return ctx;
+    private void createWebApplicationContext(JahiaTemplatesPackage aPackage) throws BeansException {
+        if (new File(servletContext.getRealPath("modules/" + aPackage.getRootFolderWithVersion() + "/META-INF/spring/")).exists()) {
+            String configLocation = "classpath*:org/jahia/defaults/config/**/modules-applicationcontext*.xml,WEB-INF/etc/spring/modules-applicationcontext*.xml";
+            configLocation += ",modules/" + aPackage.getRootFolderWithVersion() + "/META-INF/spring/*.xml";
+            XmlWebApplicationContext ctx = new XmlWebApplicationContext();
+            ctx.setParent(SpringContextSingleton.getInstance().getContext());
+            ctx.setServletContext(servletContext);
+            servletContext.setAttribute(WebApplicationContext.class.getName() + ".jahiaModule." + aPackage.getName(), ctx);
+            ctx.setConfigLocation(configLocation);
+            aPackage.setContext(ctx);
+            ctx.refresh();
+        }
     }
 
-    public void reload() {
+    public void reload(JahiaTemplatesPackage aPackage) {
         logger.info("Reloading Spring application context for Jahia modules");
         long startTime = System.currentTimeMillis();
 
-        context.refresh();
+        if (aPackage.getContext() != null) {
+            aPackage.getContext().refresh();
+        }
 
         logger.info("Jahia modules application context reload completed in "
                 + (System.currentTimeMillis() - startTime) + " ms");
 
-        context.publishEvent(new ContextInitializedEvent(this));
+        aPackage.getContext().publishEvent(new ContextInitializedEvent(this, aPackage));
     }
 
     public void setContextConfigLocation(String contextConfigLocation) {
-        this.contextConfigLocation = contextConfigLocation;
+//        this.contextConfigLocation = contextConfigLocation;
     }
 
     public void setServletContext(ServletContext servletContext) {
@@ -119,25 +135,31 @@ public class TemplatePackageApplicationContextLoader implements ServletContextAw
         logger.info("Initializing Spring application context for Jahia modules");
         long startTime = System.currentTimeMillis();
 
-        context = createWebApplicationContext();
+
+        List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages();
+        for (JahiaTemplatesPackage aPackage : packages) {
+            try {
+                createWebApplicationContext(aPackage);
+            } catch (BeansException e) {
+                logger.error("Cannot instantiate context for module "+aPackage.getRootFolder(),e);
+            }
+        }
+
         
         logger.info("Jahia modules application context initialization completed in "
                 + (System.currentTimeMillis() - startTime) + " ms");
-
-        context.publishEvent(new ContextInitializedEvent(this));
     }
 
     public void stop() {
-        if (context != null) {
-            try {
-                context.close();
-            } catch (Exception e) {
-                logger.error("Error shutting down Jahia modules Spring application context", e);
+        List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages();
+        for (JahiaTemplatesPackage aPackage : packages) {
+            if (aPackage.getContext() != null) {
+                try {
+                    aPackage.getContext().close();
+                } catch (Exception e) {
+                    logger.error("Error shutting down Jahia modules Spring application context", e);
+                }
             }
         }
-    }
-
-    public XmlWebApplicationContext getContext() {
-        return context;
     }
 }

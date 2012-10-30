@@ -35,7 +35,7 @@
 
     <portletdefinitions jcr:primaryType="jnt:portletDefinitions"/>
 
-    <templateSets jcr:primaryType="jnt:templateSets"/>
+    <modules jcr:primaryType="jnt:modules"/>
 
     <j:acl jcr:primaryType="jnt:acl">
         <GRANT_u_guest j:protected="false" j:principal="u:guest" j:roles="reader" j:aceType="GRANT"
@@ -303,7 +303,7 @@
 
         <web-designer jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite" j:roleGroup="edit-role"
                       j:privilegedAccess="true">
-            <studio-access  jcr:primaryType="jnt:externalPermissions" j:path="/templateSets"
+            <studio-access  jcr:primaryType="jnt:externalPermissions" j:path="/modules"
                 j:permissions="/permissions/editMode
                         /permissions/studioMode
                         /permissions/repository-default">

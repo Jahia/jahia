@@ -24,7 +24,7 @@
     <input type="hidden" name="jcrNormalizeNodeName" value="true"/>
     <input type="hidden" name="jcrAutoAssignRole" value="owner"/>
     <input type="hidden" name="jcr:mixinTypes" value="jmix:hasTemplateNode"/>
-    <input type="hidden" name="j:templateNode" value="${currentNode.properties['templateNode'].string}"/>
+    <input type="hidden" name="j:templateName" value="${currentNode.properties['templateNode'].node.name}"/>
     <c:if test="${currentNode.properties.stayOnPage.boolean}">
         <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
     </c:if>

@@ -164,6 +164,10 @@ public final class JCRContentUtils implements ServletContextAware {
         Boolean present = iconsPresence.get(icon);
         if (present == null) {
             try {
+                String moduleName = StringUtils.substringBefore(icon, "/");
+                String pathAfter = StringUtils.substringAfter(icon, "/");
+                JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName);
+                icon = module.getRootFolder() + "/" + module.getVersion() + "/" + pathAfter;
                 present = Jahia.getStaticServletConfig().getServletContext().getResource("/modules/" + icon + ".png") != null;
                 iconsPresence.put(icon, present);
             } catch (MalformedURLException e) {

@@ -286,6 +286,14 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         }
     }
 
+    public void removeDecorator(String nodeType) {
+        if (decorators == null) {
+            decorators = new HashMap<String, String>();
+        }
+        decorators.remove(nodeType);
+        decoratorCreators.remove(nodeType);
+    }
+
     public void setInterceptors(List<PropertyInterceptor> interceptors) {
         this.interceptors.addAll(interceptors);
         interceptorChain = null;

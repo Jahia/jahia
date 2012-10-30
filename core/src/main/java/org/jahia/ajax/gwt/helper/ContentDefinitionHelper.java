@@ -47,6 +47,8 @@ import org.apache.jackrabbit.value.*;
 import org.apache.jackrabbit.value.StringValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.slf4j.Logger;
@@ -773,14 +775,12 @@ public class ContentDefinitionHelper {
             List<String> dependencies = null;
 
             if (!includeNonDependentModules) {
-                if (site.hasProperty("j:dependencies")) {
-                    dependencies = new ArrayList<String>();
-                    Value[] deps = site.getProperty("j:dependencies").getValues();
-                    for (Value dep : deps) {
-                        dependencies.add(dep.getString());
-                    }
+                dependencies = new ArrayList<String>();
+                Set<JahiaTemplatesPackage> s = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(site.getName()).getDependencies();
+                for (JahiaTemplatesPackage aPackage : s) {
+                    dependencies.add(aPackage.getRootFolder());
                 }
-                if (dependencies == null || dependencies.isEmpty()) {
+                if (dependencies.isEmpty()) {
                     dependencies = Arrays.asList("default");
                 }
             }

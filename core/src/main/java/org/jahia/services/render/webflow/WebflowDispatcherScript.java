@@ -108,9 +108,7 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
         RequestDispatcher rd = request.getRequestDispatcher(flowPath);
 
         Object oldModule = request.getAttribute("currentModule");
-        Object oldModuleVersion = request.getAttribute("currentModuleVersion");
         request.setAttribute("currentModule", view.getModule());
-        request.setAttribute("currentModuleVersion", view.getModuleVersion());
 
         if (logger.isDebugEnabled()) {
             dumpRequestAttributes(request);
@@ -164,7 +162,6 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
             throw new RenderException(e);
         } finally {
             request.setAttribute("currentModule", oldModule);
-            request.setAttribute("currentModuleVersion", oldModuleVersion);
         }
         try {
             return responseWrapper.getString();

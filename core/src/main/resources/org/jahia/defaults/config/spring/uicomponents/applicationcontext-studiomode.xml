@@ -24,7 +24,7 @@
     <bean id="studiomode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         <property name="requiredPermission" value="studioModeAccess"/>
         <property name="defaultUrlMapping" value="/cms/studio"/>
-        <property name="sitesLocation" value="/templateSets/*"/>
+        <property name="sitesLocation" value="/modules/*"/>
         <property name="topToolbar">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="layout" value="button-label"/>
@@ -220,8 +220,8 @@
                               class="org.jahia.services.uicomponents.bean.toolbar.Item">
                             <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem">
-                                    <property name="root" value="/templateSets/*"/>
-                                    <property name="useModuleType" value="true"/>
+                                    <property name="root" value="/modules/*"/>
+                                    <property name="useModuleType" value="false"/>
                                 </bean>
                             </property>
                             <property name="titleKey" value="label.templateSets"/>
@@ -288,7 +288,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.TemplatesTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>$site/templates</value>
+                                    <value>$site/$moduleversion/templates</value>
                                 </list>
                             </property>
                             <property name="folderTypes">
@@ -379,7 +379,7 @@
                             <property name="paths">
                                 <list>
                                     <!--<value>$site/components/*</value>-->
-                                    <value>/templateSets/*</value>
+                                    <value>/modules/*</value>
                                 </list>
                             </property>
                         </bean>
@@ -399,7 +399,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.ContentBrowseTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>$site/templates/contents</value>
+                                    <value>$site/$moduleversion/templates/contents</value>
                                 </list>
                             </property>
                             <property name="folderTypes">
@@ -459,7 +459,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.FileImagesBrowseTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>$site/templates/files</value>
+                                    <value>$site/$moduleversion/templates/files</value>
                                 </list>
                             </property>
                             <property name="folderTypes">
@@ -520,7 +520,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.PortletBrowseTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>$site/portlets</value>
+                                    <value>$site/$moduleversion/portlets</value>
                                 </list>
                             </property>
                             <property name="folderTypes" value="jnt:portletFolder"/>
@@ -574,7 +574,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.PagesTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>$site</value>
+                                    <value>$site/$moduleversion</value>
                                 </list>
                             </property>
                             <property name="folderTypes">

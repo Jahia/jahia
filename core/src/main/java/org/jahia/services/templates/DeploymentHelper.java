@@ -152,26 +152,26 @@ class DeploymentHelper implements ServletContextAware {
 
     private static final PathFilter TEMPLATE_FILTER = new ExclusionWildcardFilter("WEB-INF/web.xml", "META-INF/maven/*");
     
-    private static final FileFilter VERSIONS_FOLDER_FILTER = new FileFilter() {
-        public boolean accept(File file) {
-            return !JahiaTemplateManagerService.VERSIONS_FOLDER_NAME.equals(file.getName());
-        }
-    };
+//    private static final FileFilter VERSIONS_FOLDER_FILTER = new FileFilter() {
+//        public boolean accept(File file) {
+//            return !JahiaTemplateManagerService.VERSIONS_FOLDER_NAME.equals(file.getName());
+//        }
+//    };
     private ServletContext servletContext;
 
     private SettingsBean settingsBean;
 
-    private void backupOldModuleVersion(File tmplRootFolder, String oldVersion) throws IOException {
-        File destDir = new File(new File(tmplRootFolder,
-                JahiaTemplateManagerService.VERSIONS_FOLDER_NAME), Patterns.DOT.matcher(oldVersion)
-                .replaceAll("-"));
-        org.jahia.utils.FileUtils.moveDirectoryContentToDirectory(tmplRootFolder, destDir,
-                VERSIONS_FOLDER_FILTER);
-        File dummy = new File(destDir, "deployed");
-        if (dummy.exists()) {
-            dummy.delete();
-        }
-    }
+//    private void backupOldModuleVersion(File tmplRootFolder, String oldVersion) throws IOException {
+//        File destDir = new File(new File(tmplRootFolder,
+//                JahiaTemplateManagerService.VERSIONS_FOLDER_NAME), Patterns.DOT.matcher(oldVersion)
+//                .replaceAll("-"));
+//        org.jahia.utils.FileUtils.moveDirectoryContentToDirectory(tmplRootFolder, destDir,
+//                VERSIONS_FOLDER_FILTER);
+//        File dummy = new File(destDir, "deployed");
+//        if (dummy.exists()) {
+//            dummy.delete();
+//        }
+//    }
 
     /**
      * Create the fix descriptor as a XML file into the specified save location.
@@ -193,7 +193,7 @@ class DeploymentHelper implements ServletContextAware {
     protected File deployPackage(File templateWar) throws IOException {
         String packageName = null;
         String rootFolder = null;
-        String implementationVersionStr = "SNAPSHOT";
+        ModuleVersion implementationVersionStr = new ModuleVersion("SNAPSHOT");
         String depends = null;
         Calendar packageTimestamp = Calendar.getInstance();
 
@@ -206,7 +206,7 @@ class DeploymentHelper implements ServletContextAware {
             depends = jarFile.getManifest().getMainAttributes().getValue("depends");
             long manifestTime = jarFile.getEntry("META-INF/MANIFEST.MF").getTime();
             packageTimestamp.setTimeInMillis(manifestTime);
-            implementationVersionStr = (String) jarFile.getManifest().getMainAttributes().get(new Attributes.Name("Implementation-Version"));
+            implementationVersionStr = new ModuleVersion((String) jarFile.getManifest().getMainAttributes().get(new Attributes.Name("Implementation-Version")));
         } catch (IOException e) {
             logger.warn("Cannot read MANIFEST file from " + templateWar, e);
         } finally {
@@ -223,10 +223,10 @@ class DeploymentHelper implements ServletContextAware {
             rootFolder = StringUtils.substringBeforeLast(templateWar.getName(), ".");
         }
 
-        String replacedImplementationVersionStr = Patterns.DOT.matcher(implementationVersionStr).replaceAll("-");
+        String replacedImplementationVersionStr = implementationVersionStr.toString();
 
         File tmplRootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), rootFolder);
-        File versionFolder = new File(new File(tmplRootFolder, JahiaTemplateManagerService.VERSIONS_FOLDER_NAME), replacedImplementationVersionStr);
+        File versionFolder = new File(tmplRootFolder, replacedImplementationVersionStr);
         if (versionFolder.exists()) {
             if (FileUtils.isFileNewer(templateWar, versionFolder)) {
                 logger.info("Older module package '{}' ({}) already deployed. Deleting it.", packageName, implementationVersionStr);
@@ -241,50 +241,60 @@ class DeploymentHelper implements ServletContextAware {
         if (!versionFolder.exists()) {
             logger.info("Start deploying module package '{}' version {}", packageName, implementationVersionStr);
             
-            tmplRootFolder.mkdirs();
-
-            if (!deployPackageVersion(packageName, implementationVersionStr, templateWar, versionFolder, deployedFiles)) {
+            if (!deployPackageVersion(packageName, templateWar, versionFolder, deployedFiles)) {
                 return null;
             }
             
-            String oldVersion = getImplementationVersion(new File(tmplRootFolder, "META-INF/MANIFEST.MF"));
-            if (oldVersion != null && !oldVersion.equals(implementationVersionStr)) {
-                backupOldModuleVersion(tmplRootFolder, oldVersion);
-            }
+//            String oldVersion = getImplementationVersion(new File(tmplRootFolder, "META-INF/MANIFEST.MF"));
+//            if (oldVersion != null && !oldVersion.equals(implementationVersionStr)) {
+//                backupOldModuleVersion(tmplRootFolder, oldVersion);
+//            }
             
             // delete the deployed resources
-            org.jahia.utils.FileUtils.cleanDirectory(tmplRootFolder, VERSIONS_FOLDER_FILTER);
+//            org.jahia.utils.FileUtils.cleanDirectory(tmplRootFolder, VERSIONS_FOLDER_FILTER);
             
             // move the version resources to the module's root
-            org.jahia.utils.FileUtils.moveDirectoryContentToDirectory(versionFolder, tmplRootFolder, null);
+//            org.jahia.utils.FileUtils.moveDirectoryContentToDirectory(versionFolder, tmplRootFolder, null);
             
-            File dummy = new File(versionFolder, "deployed");
-            FileUtils.touch(dummy);
-            dummy.setLastModified(templateWar.lastModified());
+//            File dummy = new File(versionFolder, "deployed");
+//            FileUtils.touch(dummy);
+//            dummy.setLastModified(templateWar.lastModified());
 
-            File metaInfFolder = new File(tmplRootFolder, "META-INF");
-            metaInfFolder.mkdirs();
-            
-            String toRemove = JahiaTemplateManagerService.VERSIONS_FOLDER_NAME + File.separator
-                    + replacedImplementationVersionStr + File.separator;
+            File metaInfFolder = new File(versionFolder, "META-INF");
+
             for (Map.Entry<String, String> deployedFile : deployedFiles.entrySet()) {
-                String name = StringUtils.substringBefore(deployedFile.getValue(), toRemove)
-                        + StringUtils.substringAfter(deployedFile.getValue(), toRemove);
-                deployedFiles.put(deployedFile.getKey(), name);
+                deployedFiles.put(deployedFile.getKey(), deployedFile.getValue());
             }
 
             createDeploymentXMLFile(new File(metaInfFolder, "deployed.xml"), deployedFiles,
                     templateWar, packageName, depends, rootFolder, replacedImplementationVersionStr, packageTimestamp);
 
+//            Check if latest version
+//            FileUtils.deleteDirectory(new File(rootFolder, "META-INF"));
+//            FileUtils.copyDirectory(metaInfFolder, new File(rootFolder, "META-INF"));
+
+            File activeVersion = new File(tmplRootFolder, "activeVersion");
+            if (!activeVersion.exists()) {
+                FileUtils.write(activeVersion, replacedImplementationVersionStr, "UTF-8");
+            }
+            File lastVersion = new File(tmplRootFolder, "lastVersion");
+            if (!lastVersion.exists()) {
+                FileUtils.write(lastVersion, replacedImplementationVersionStr, "UTF-8");
+            } else {
+                ModuleVersion lastVersionNumber = new ModuleVersion(FileUtils.readFileToString(lastVersion, "UTF-8"));
+                if (lastVersionNumber.compareTo(implementationVersionStr) <= 0) {
+                    FileUtils.write(lastVersion, replacedImplementationVersionStr, "UTF-8");
+                }
+            }
+
             versionFolder.setLastModified(templateWar.lastModified());
             
-            return tmplRootFolder;
+            return versionFolder;
         }
         return null;
     }
 
-    private boolean deployPackageVersion(String packageName, String version, File templateWar,
-            File versionFolder, Map<String,String> deployedFiles) throws IOException {
+    private boolean deployPackageVersion(String packageName, File templateWar, File versionFolder, Map<String,String> deployedFiles) throws IOException {
         versionFolder.mkdirs();
 
         JahiaArchiveFileHandler archiveFileHandler = null;

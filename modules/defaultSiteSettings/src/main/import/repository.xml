@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
-  <templateSets jcr:primaryType="jnt:templateSets">
+  <modules jcr:primaryType="jnt:modules">
     <defaultSiteSettings j:dependencies="default" j:installedModules="defaultSiteSettings" j:siteType="module" j:title="Jahia Default Site Settings" j:wcagCompliance="true" jcr:primaryType="jnt:virtualsite">
       <portlets jcr:primaryType="jnt:portletFolder" />
       <contents jcr:primaryType="jnt:contentFolder" />
@@ -68,39 +68,39 @@
               </urlmapping.png>
           </files>
           <siteSettingsBase j:view="siteSettings" jcr:primaryType="jnt:template">
-          <manageLanguages j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true" j:icon="/templateSets/defaultSiteSettings/templates/files/signpost.png" j:priority="100" jcr:primaryType="jnt:contentTemplate">
+          <manageLanguages j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true" j:icon="/modules/defaultSiteSettings/templates/files/signpost.png" j:priority="100" jcr:primaryType="jnt:contentTemplate">
             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(siteSettings.label.manageLanguages)##" />
             <pagecontent jcr:primaryType="jnt:contentList">
               <manage-languages jcr:primaryType="jnt:siteSettingsManageLanguages" />
             </pagecontent>
           </manageLanguages>
-          <wcagCompliance j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true" j:icon="/templateSets/defaultSiteSettings/templates/files/text_rich_colored.png" j:priority="100" jcr:primaryType="jnt:contentTemplate">
+          <wcagCompliance j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true" j:icon="/modules/defaultSiteSettings/templates/files/text_rich_colored.png" j:priority="100" jcr:primaryType="jnt:contentTemplate">
             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(siteSettings.label.wcagCompliance)##" />
             <pagecontent jcr:primaryType="jnt:contentList">
               <wcag-compliance jcr:primaryType="jnt:siteSettingsWcagCompliance" />
             </pagecontent>
           </wcagCompliance>
-          <htmlFiltering j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true" j:icon="/templateSets/defaultSiteSettings/templates/files/text_rich_colored.png" j:priority="100" jcr:primaryType="jnt:contentTemplate">
+          <htmlFiltering j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true" j:icon="/modules/defaultSiteSettings/templates/files/text_rich_colored.png" j:priority="100" jcr:primaryType="jnt:contentTemplate">
             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(siteSettings.label.htmlFiltering)##" />
             <pagecontent jcr:primaryType="jnt:contentList">
               <html-filtering jcr:primaryType="jnt:siteSettingsHtmlFiltering" />
             </pagecontent>
           </htmlFiltering>
-          <vanityURLSetting j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true" j:icon="/templateSets/defaultSiteSettings/templates/files/urlmapping.png" j:priority="100" jcr:primaryType="jnt:contentTemplate">
+          <vanityURLSetting j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true" j:icon="/modules/defaultSiteSettings/templates/files/urlmapping.png" j:priority="100" jcr:primaryType="jnt:contentTemplate">
             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(siteSettings.label.vanityURLSettings)##" />
             <pagecontent jcr:primaryType="jnt:contentList">
-              <pager displayNbOfItemsPerPage="true" displayNbOfItemsPerPageValues="5,10,25,50,100" displayPager="true" j:bindedComponent="/templateSets/defaultSiteSettings/templates/siteSettingsBase/vanityURLSetting/pagecontent/vanityurlslist" jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:pager" nbOfPages="10" pageSize="10">
+              <pager displayNbOfItemsPerPage="true" displayNbOfItemsPerPageValues="5,10,25,50,100" displayPager="true" j:bindedComponent="/modules/defaultSiteSettings/templates/siteSettingsBase/vanityURLSetting/pagecontent/vanityurlslist" jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:pager" nbOfPages="10" pageSize="10">
                 <j:acl jcr:primaryType="jnt:acl" />
               </pager>
               <vanityurlslist jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:siteSettingsVanityUrlsList">
                 <j:acl jcr:primaryType="jnt:acl" />
               </vanityurlslist>
-              <pager-1 displayNbOfItemsPerPage="true" displayNbOfItemsPerPageValues="5,10,25,50,100" displayPager="true" j:bindedComponent="/templateSets/defaultSiteSettings/templates/siteSettingsBase/vanityURLSetting/pagecontent/vanityurlslist" jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:pager" nbOfPages="10" pageSize="10">
+              <pager-1 displayNbOfItemsPerPage="true" displayNbOfItemsPerPageValues="5,10,25,50,100" displayPager="true" j:bindedComponent="/modules/defaultSiteSettings/templates/siteSettingsBase/vanityURLSetting/pagecontent/vanityurlslist" jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:pager" nbOfPages="10" pageSize="10">
                 <j:acl jcr:primaryType="jnt:acl" />
               </pager-1>
             </pagecontent>
           </vanityURLSetting>
-          <manageModules j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true" j:icon="/templateSets/defaultSiteSettings/templates/files/briefcase_document.png" j:priority="100" jcr:primaryType="jnt:contentTemplate">
+          <manageModules j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true" j:icon="/modules/defaultSiteSettings/templates/files/briefcase_document.png" j:priority="100" jcr:primaryType="jnt:contentTemplate">
             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(siteSettings.label.manageModules)##" />
             <pagecontent jcr:primaryType="jnt:contentList">
               <manage-modules jcr:primaryType="jnt:siteSettingsManageModules" />
@@ -109,5 +109,5 @@
         </siteSettingsBase>
       </templates>
     </defaultSiteSettings>
-  </templateSets>
+  </modules>
 </content>

@@ -112,9 +112,7 @@ public class RequestDispatcherScript implements Script {
         RequestDispatcher rd = request.getRequestDispatcher(view.getPath());
 
         Object oldModule = request.getAttribute("currentModule");
-        Object oldModuleVersion = request.getAttribute("currentModuleVersion");
         request.setAttribute("currentModule", view.getModule());
-        request.setAttribute("currentModuleVersion", view.getModuleVersion());
 
         if (logger.isDebugEnabled()) {
             dumpRequestAttributes(request);
@@ -129,7 +127,6 @@ public class RequestDispatcherScript implements Script {
             throw new RenderException(e);
         } finally {
             request.setAttribute("currentModule", oldModule);
-            request.setAttribute("currentModuleVersion", oldModuleVersion);
         }
         try {
             return wrapper.getString();

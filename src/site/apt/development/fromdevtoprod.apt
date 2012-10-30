@@ -70,16 +70,16 @@ mvn install jahia:deploy
 2012-01-11 11:32:04,585: INFO  [JobSchedulingBean] - Scheduling RAM job SitemapJob.SitemapJob
 2012-01-11 11:32:04,587: INFO  [TemplatePackageApplicationContextLoader] - Jahia modules application context reload completed in 1172 ms
 2012-01-11 11:32:04,639: INFO  [TemplatePackageDeployer] - Checking for missing module nodes and initializing 0 of them took 52 ms
-2012-01-11 11:32:05,174: INFO  [RulesListener] - Rules executed for live [/templateSets/mycustomtemplateset, /templateSets/mycustomtemplateset/j:wcagCompliance] in 1ms
-2012-01-11 11:32:05,441: INFO  [RulesListener] - Rules executed for live [/templateSets/mycustomtemplateset/jcr:mixinTypes, /templateSets/mycustomtemplateset/priority, /templateSets/mycustomtemplateset/changefreq] in 0ms
-2012-01-11 11:32:05,479: INFO  [RulesListener] - Rules executed for default [/templateSets/mycustomtemplateset/templates/contents, /templateSets/mycustomtemplateset/templates/files, /templateSets/mycustomtemplateset/contents] ... and 3 other nodes in 116ms
+2012-01-11 11:32:05,174: INFO  [RulesListener] - Rules executed for live [/modules/mycustomtemplateset, /modules/mycustomtemplateset/j:wcagCompliance] in 1ms
+2012-01-11 11:32:05,441: INFO  [RulesListener] - Rules executed for live [/modules/mycustomtemplateset/jcr:mixinTypes, /modules/mycustomtemplateset/priority, /modules/mycustomtemplateset/changefreq] in 0ms
+2012-01-11 11:32:05,479: INFO  [RulesListener] - Rules executed for default [/modules/mycustomtemplateset/templates/contents, /modules/mycustomtemplateset/templates/files, /modules/mycustomtemplateset/contents] ... and 3 other nodes in 116ms
 2012-01-11 11:32:05,492: INFO  [TemplatePackageDeployer] - Starting import for the module package 'myCustomTemplateSet' including: [META-INF/import.zip]
 2012-01-11 11:32:05,521: INFO  [TemplatePackageDeployer] - ... importing /home/user1/Ent-Jahia_xCM_v6.6/tomcat/webapps/ROOT/modules/mycustomtemplateset/META-INF/import.zip into /
 2012-01-11 11:32:05,524: ERROR [DocumentViewImportHandler] - Couldn't find definition for property j:displayInMenu
-2012-01-11 11:32:05,857: INFO  [RulesListener] - Rules executed for live [/templateSets/mycustomtemplateset/j:installedModules, /templateSets/mycustomtemplateset/j:siteType] in 0ms
-2012-01-11 11:32:05,918: INFO  [RulesListener] - Rules executed for default [deleted /templateSets, deleted /templateSets/mycustomtemplateset/templates/files, deleted /templateSets/mycustomtemplateset/templates/contents] ... and 23 other nodes in 20ms
-2012-01-11 11:32:06,025: INFO  [RulesListener] - Rules executed for live [/templateSets/mycustomtemplateset/j:installedModules, /templateSets/mycustomtemplateset/j:title, /templateSets/mycustomtemplateset/j:dependencies] in 1ms
-2012-01-11 11:32:06,062: INFO  [RulesListener] - Rules executed for default [/templateSets/mycustomtemplateset/j:siteType, /templateSets/mycustomtemplateset/j:installedModules, /templateSets/mycustomtemplateset/j:title] ... and 1 other nodes in 1ms
+2012-01-11 11:32:05,857: INFO  [RulesListener] - Rules executed for live [/modules/mycustomtemplateset/j:installedModules, /modules/mycustomtemplateset/j:siteType] in 0ms
+2012-01-11 11:32:05,918: INFO  [RulesListener] - Rules executed for default [deleted /modules, deleted /modules/mycustomtemplateset/templates/files, deleted /modules/mycustomtemplateset/templates/contents] ... and 23 other nodes in 20ms
+2012-01-11 11:32:06,025: INFO  [RulesListener] - Rules executed for live [/modules/mycustomtemplateset/j:installedModules, /modules/mycustomtemplateset/j:title, /modules/mycustomtemplateset/j:dependencies] in 1ms
+2012-01-11 11:32:06,062: INFO  [RulesListener] - Rules executed for default [/modules/mycustomtemplateset/j:siteType, /modules/mycustomtemplateset/j:installedModules, /modules/mycustomtemplateset/j:title] ... and 1 other nodes in 1ms
 2012-01-11 11:32:06,063: INFO  [TemplatePackageDeployer] - ... finished initial import for module package 'myCustomTemplateSet'.
 2012-01-11 11:32:06,063: INFO  [ComponentRegistry] - Start registering UI droppable components...
 +-----------------------------

@@ -1358,7 +1358,7 @@
                   value="repository.myExternalRepository.label"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.InvertedVisibility">
-                <property name="inNodePath" value="/templateSets"/>
+                <property name="inNodePath" value="/modules"/>
             </bean>
         </property>
     </bean>
@@ -1438,7 +1438,7 @@
                   value="repository.siteRepository.label"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.InvertedVisibility">
-                <property name="inNodePath" value="/templateSets"/>
+                <property name="inNodePath" value="/modules"/>
             </bean>
         </property>
     </bean>
@@ -1457,7 +1457,7 @@
                   value="repository.templateContentsRepository.label"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="inNodePath" value="/templateSets"/>
+                <property name="inNodePath" value="/modules"/>
             </bean>
         </property>
     </bean>
@@ -1468,7 +1468,7 @@
                   value="repository.templateFilesRepository.label"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="inNodePath" value="/templateSets"/>
+                <property name="inNodePath" value="/modules"/>
             </bean>
         </property>
     </bean>

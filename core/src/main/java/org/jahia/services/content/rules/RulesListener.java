@@ -535,6 +535,10 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         globalObjects.put(key, value);
     }
 
+    public void removeGlobalObject(String key) {
+        globalObjects.remove(key);
+    }
+
     class DelayedUpdatesTimerTask extends TimerTask {
         private String username;
         private List<Updateable> updates;

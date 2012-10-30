@@ -41,10 +41,12 @@
 package org.jahia.services.templates;
 
 import org.apache.commons.collections.map.CaseInsensitiveMap;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRNodeDecoratorDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -67,11 +69,14 @@ import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Workspace;
 import javax.jcr.observation.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.EventListener;
 
@@ -94,7 +99,7 @@ class TemplatePackageRegistry {
         }
     };
 
-    static class ModuleRegistry implements BeanPostProcessor {
+    static class ModuleRegistry implements DestructionAwareBeanPostProcessor {
 
         private TemplatePackageRegistry templatePackageRegistry;
         
@@ -112,7 +117,130 @@ class TemplatePackageRegistry {
 
         private JCRStoreService jcrStoreService;
 
+        public void postProcessBeforeDestruction(Object bean, String beanName) throws BeansException {
+            if (bean instanceof RenderFilter) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Unregistering RenderFilter '" + beanName + "'");
+                }
+                templatePackageRegistry.filters.remove((RenderFilter) bean);
+            }
+            if (bean instanceof ErrorHandler) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Unregistering ErrorHandler '" + beanName + "'");
+                }
+                templatePackageRegistry.errorHandlers.remove((ErrorHandler) bean);
+            }
+            if (bean instanceof Action) {
+                Action action = (Action) bean;
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Unregistering Action '" + action.getName() + "' (" + beanName + ")");
+                }
+                templatePackageRegistry.actions.remove(action.getName());
+            }
+            if (bean instanceof ModuleChoiceListInitializer) {
+                ModuleChoiceListInitializer moduleChoiceListInitializer = (ModuleChoiceListInitializer) bean;
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Unregistering ModuleChoiceListInitializer '" + moduleChoiceListInitializer.getKey() + "' (" + beanName + ")");
+                }
+                choiceListInitializers.getInitializers().remove(moduleChoiceListInitializer.getKey());
+            }
+
+            if (bean instanceof ModuleChoiceListRenderer) {
+                ModuleChoiceListRenderer choiceListRenderer = (ModuleChoiceListRenderer) bean;
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Unregistering ChoiceListRenderer '" + choiceListRenderer.getKey() + "' (" + beanName + ")");
+                }
+                choiceListRendererService.getRenderers().remove(choiceListRenderer.getKey());
+            }
+            if (bean instanceof ModuleGlobalObject) {
+                ModuleGlobalObject moduleGlobalObject = (ModuleGlobalObject) bean;
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Unregistering ModuleGlobalObject '" + beanName + "'");
+                }
+                if(moduleGlobalObject.getGlobalRulesObject()!=null) {
+                    for (RulesListener listener : RulesListener.getInstances()) {
+                        for (Map.Entry<String, Object> entry : moduleGlobalObject.getGlobalRulesObject().entrySet()) {
+                            listener.removeGlobalObject(entry.getKey());
+                        }
+                    }
+                }
+            }
+            if (bean instanceof StaticAssetMapping) {
+                StaticAssetMapping mappings = (StaticAssetMapping) bean;
+                staticAssetMapping.keySet().removeAll(mappings.getMapping().keySet());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Unregistering static asset mappings '" + mappings.getMapping() + "'");
+                }
+            }
+            if (bean instanceof DefaultEventListener) {
+                final DefaultEventListener eventListener = (DefaultEventListener) bean;
+                if (eventListener.getEventTypes() > 0) {
+	                try {
+	                    JCRTemplate.getInstance().doExecuteWithSystemSession(null,eventListener.getWorkspace(),new JCRCallback<Object>() {
+	                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+	                            final Workspace workspace = session.getWorkspace();
+
+	                            ObservationManager observationManager = workspace.getObservationManager();
+                                //first remove existing listener of same type
+                                final EventListenerIterator registeredEventListeners = observationManager.getRegisteredEventListeners();
+                                javax.jcr.observation.EventListener toBeRemoved = null;
+                                while (registeredEventListeners.hasNext()) {
+                                    javax.jcr.observation.EventListener next = registeredEventListeners.nextEventListener();
+                                    if(next.getClass().equals(eventListener.getClass())) {
+                                        toBeRemoved = next;
+                                        break;
+                                    }
+                                }
+                                observationManager.removeEventListener(toBeRemoved);
+	                            return null;
+	                        }
+	                    });
+	                    if (logger.isDebugEnabled()) {
+	                        logger.debug("Unregistering event listener"+eventListener.getClass().getName()+" for workspace '" + eventListener.getWorkspace() + "'");
+	                    }
+	                } catch (RepositoryException e) {
+	                    logger.error(e.getMessage(), e);
+	                }
+                }
+            }
+            if (bean instanceof BackgroundAction) {
+                BackgroundAction backgroundAction = (BackgroundAction) bean;
+                if (logger.isDebugEnabled()) {
+                    logger.debug(
+                            "Unregistering Background Action '" + backgroundAction.getName() + "' (" + beanName + ")");
+                }
+                templatePackageRegistry.backgroundActions.remove(backgroundAction.getName());
+            }
+
+            if(bean instanceof WorklowTypeRegistration) {
+                WorklowTypeRegistration registration = (WorklowTypeRegistration) bean;
+                workflowService.unregisterWorkflowType(registration.getType(), registration.getDefinition());
+            }
+
+            if (bean instanceof VisibilityConditionRule) {
+                VisibilityConditionRule conditionRule = (VisibilityConditionRule) bean;
+                if (logger.isDebugEnabled()) {
+                    logger.debug(
+                            "Unregistering Visibility Condition Rule '" + conditionRule.getClass().getName() + "' (" + beanName + ")");
+                }
+                visibilityService.removeCondition(conditionRule.getAssociatedNodeType());
+            }
+
+            if (bean instanceof JCRNodeDecoratorDefinition) {
+                JCRNodeDecoratorDefinition jcrNodeDecoratorDefinition = (JCRNodeDecoratorDefinition) bean;
+                Map<String, String> decorators = jcrNodeDecoratorDefinition.getDecorators();
+                if (decorators != null) {
+                    for (Map.Entry<String, String> decorator : decorators.entrySet()) {
+                        jcrStoreService.removeDecorator(decorator.getKey());
+                    }
+                }
+            }
+        }
+
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+            if (bean instanceof SharedService) {
+                ((ConfigurableApplicationContext)SpringContextSingleton.getInstance().getContext()).getBeanFactory().registerSingleton(beanName, bean);
+            }
             if (bean instanceof RenderServiceAware) {
                 ((RenderServiceAware) bean).setRenderService(renderService);
             }
@@ -287,6 +415,7 @@ class TemplatePackageRegistry {
 
     private Map<String, JahiaTemplatesPackage> registry = new TreeMap<String, JahiaTemplatesPackage>();
     private Map<String, JahiaTemplatesPackage> fileNameRegistry = new TreeMap<String, JahiaTemplatesPackage>();
+    private Map<String, Map<ModuleVersion,JahiaTemplatesPackage>> packagesWithVersion = new TreeMap<String, Map<ModuleVersion, JahiaTemplatesPackage>>();
     private Map<String, Set<JahiaTemplatesPackage>> packagesPerModule = new HashMap<String, Set<JahiaTemplatesPackage>>();
     private List<RenderFilter> filters = new LinkedList<RenderFilter>();
     private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
@@ -439,17 +568,30 @@ class TemplatePackageRegistry {
                 : null;
     }
 
-    /**
-     * Adds a collection of template packages to the repository.
-     *
-     * @param templatePackages a collection of packages to add
-     */
-    public void register(Collection<JahiaTemplatesPackage> templatePackages) {
-        for (JahiaTemplatesPackage pack : templatePackages) {
-            register(pack);
+    public void registerPackage(JahiaTemplatesPackage pack) {
+        try {
+            if (!packagesWithVersion.containsKey(pack.getRootFolder())) {
+                packagesWithVersion.put(pack.getRootFolder(), new HashMap<ModuleVersion, JahiaTemplatesPackage>());
+            }
+            packagesWithVersion.get(pack.getRootFolder()).put(pack.getVersion(), pack);
+
+            File rootFile = new File(pack.getFilePath()).getParentFile();
+            String lastVersion = FileUtils.readFileToString(new File(rootFile, "lastVersion"));
+            if (pack.getVersion().toString().equals(lastVersion)) {
+                registerDefinitions(pack);
+                pack.setLastVersion(true);
+            }
+            String activeVersion = FileUtils.readFileToString(new File(rootFile, "activeVersion"));
+            if (pack.getVersion().toString().equals(activeVersion)) {
+                register(pack);
+                pack.setActiveVersion(true);
+            }
+        } catch (IOException e) {
+            logger.error("Cannot get active versions of module " + pack.getRootFolder(),e);
         }
     }
-    
+
+
     /**
      * Adds the template package to the repository.
      *
@@ -458,52 +600,8 @@ class TemplatePackageRegistry {
     public void register(JahiaTemplatesPackage templatePackage) {
         templatePackages = null;
         registry.put(templatePackage.getName(), templatePackage);
-        fileNameRegistry.put(templatePackage.getFileName(), templatePackage);
-        File rootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), templatePackage.getRootFolder());
-        if (!rootFolder.exists()) {
-            rootFolder = new File(templatePackage.getFilePath());
-        }
-
-        // register content definitions
-        if (!templatePackage.getDefinitionsFiles().isEmpty()) {
-            try {
-                for (String name : templatePackage.getDefinitionsFiles()) {
-                    NodeTypeRegistry.getInstance().addDefinitionsFile(
-                            new File(rootFolder, name),
-                            templatePackage.getName());
-                }
-                jcrStoreService.deployDefinitions(templatePackage.getName());
-            } catch (Exception e) {
-                logger.warn("Cannot parse definitions for "+templatePackage.getName(),e);
-            }
-        }
-        // add rules descriptor
-        if (!templatePackage.getRulesDescriptorFiles().isEmpty()) {
-            try {
-                for (String name : templatePackage.getRulesDescriptorFiles()) {
-                    for (RulesListener listener : RulesListener.getInstances()) {
-                        listener.addRulesDescriptor(new File(rootFolder, name));
-                    }
-                }
-            } catch (Exception e) {
-                logger.warn("Cannot parse rules for "+templatePackage.getName(),e);
-            }
-        }
-        // add rules
-        if (!templatePackage.getRulesFiles().isEmpty()) {
-            try {
-                for (String name : templatePackage.getRulesFiles()) {
-                    for (RulesListener listener : RulesListener.getInstances()) {
-                        List<String> filesAccepted = listener.getFilesAccepted();
-                        if(filesAccepted.contains(StringUtils.substringAfterLast(name,"/"))) {
-                            listener.addRules(new File(rootFolder, name));
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                logger.warn("Cannot parse rules for "+templatePackage.getName(),e);
-            }
-        }
+        fileNameRegistry.put(templatePackage.getRootFolder(), templatePackage);
+        File rootFolder = new File(templatePackage.getFilePath());
 
         // handle dependencies
         for (JahiaTemplatesPackage pack : registry.values()) {
@@ -542,12 +640,55 @@ class TemplatePackageRegistry {
                 packagesPerModule.get(key).add(templatePackage);
             }
         }
-        logger.info("Registered "+templatePackage.getName() + " version=" + templatePackage.getLastVersion());
+        logger.info("Registered "+templatePackage.getName() + " version=" + templatePackage.getVersion());
+    }
+
+    public void registerDefinitions(JahiaTemplatesPackage templatePackage) {
+        File rootFolder = new File(templatePackage.getFilePath());
+        if (!templatePackage.getDefinitionsFiles().isEmpty()) {
+            try {
+                for (String name : templatePackage.getDefinitionsFiles()) {
+                    NodeTypeRegistry.getInstance().addDefinitionsFile(
+                            new File(rootFolder, name),
+                            templatePackage.getName());
+                }
+                jcrStoreService.deployDefinitions(templatePackage.getName());
+            } catch (Exception e) {
+                logger.warn("Cannot parse definitions for "+templatePackage.getName(),e);
+            }
+        }
+        // add rules descriptor
+        if (!templatePackage.getRulesDescriptorFiles().isEmpty()) {
+            try {
+                for (String name : templatePackage.getRulesDescriptorFiles()) {
+                    for (RulesListener listener : RulesListener.getInstances()) {
+                        listener.addRulesDescriptor(new File(rootFolder, name));
+                    }
+                }
+            } catch (Exception e) {
+                logger.warn("Cannot parse rules for "+templatePackage.getName(),e);
+            }
+        }
+        // add rules
+        if (!templatePackage.getRulesFiles().isEmpty()) {
+            try {
+                for (String name : templatePackage.getRulesFiles()) {
+                    for (RulesListener listener : RulesListener.getInstances()) {
+                        List<String> filesAccepted = listener.getFilesAccepted();
+                        if(filesAccepted.contains(StringUtils.substringAfterLast(name, "/"))) {
+                            listener.addRules(new File(rootFolder, name));
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                logger.warn("Cannot parse rules for "+templatePackage.getName(),e);
+            }
+        }
     }
 
     public void unregister(JahiaTemplatesPackage templatePackage) {
         registry.remove(templatePackage.getName());
-        fileNameRegistry.remove(templatePackage.getFileName());
+        fileNameRegistry.remove(templatePackage.getRootFolder());
         templatePackages = null;
         NodeTypeRegistry.getInstance().unregisterNodeTypes(templatePackage.getName());
     }
@@ -572,17 +713,6 @@ class TemplatePackageRegistry {
 
     public void setJcrStoreService(JCRStoreService jcrStoreService) {
         this.jcrStoreService = jcrStoreService;
-    }
-
-    /**
-     * Performs a set of validation tests for deployed template packages.
-     */
-    public void validate() {
-        if (getAvailablePackagesCount() == 0) {
-            logger.warn("No available template packages found."
-                    + " That will prevent creation of a virtual site.");
-        }
-        // TODO implement dependency validation for template sets
     }
 
     public Map<String, BackgroundAction> getBackgroundActions() {

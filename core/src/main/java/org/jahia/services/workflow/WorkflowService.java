@@ -120,6 +120,18 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         this.workflowPermissions.put(definition, perms);
     }
 
+    public void unregisterWorkflowType(String type, String definition) {
+        List<String> list = workflowTypes.get(type);
+        if(list==null){
+            return;
+        }
+        if(list.contains(definition)) {
+            list.remove(definition);
+        }
+        workflowTypeByDefinition.remove(definition);
+        this.workflowPermissions.remove(definition);
+    }
+
     public Map<String, WorkflowProvider> getProviders() {
         return providers;
     }

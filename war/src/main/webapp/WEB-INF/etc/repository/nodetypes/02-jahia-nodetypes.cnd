@@ -382,7 +382,8 @@
 
 [jmix:hasTemplateNode] mixin
  itemtype = layout
- - j:templateNode (weakreference,choicelist[templatesNode]) mandatory < jnt:template
+ - j:templateNode (weakreference,choicelist[templatesNode]) hidden < jnt:template
+ - j:templateName (string,choicelist[templatesNode]) mandatory
 
 [jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:requiredPermissions, jmix:renderable, jmix:observable, jmix:hasIcon, mix:title
  - j:hiddenTemplate (boolean)
@@ -674,7 +675,7 @@ extends = jnt:content
 [jnt:page] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged, jmix:navMenuItem, jmix:hasTemplateNode
  orderable
  - jcr:title (string) i18n mandatory boost=2.0
- - j:templateNode (weakreference,choicelist[templatesNode]) mandatory < jnt:template
+ - j:templateName (string,choicelist[templatesNode]) mandatory
  - j:isHomePage (boolean) hidden
  + * (nt:base) = nt:base version
  + * (jmix:navMenuItem)
@@ -708,9 +709,25 @@ extends = jnt:content
 [jnt:templateSets] > nt:base, jmix:nodenameInfo, jmix:unversionedBasemetadata, jmix:list
  + * (jnt:virtualsite)
 
+[jnt:modules] > nt:base, jmix:nodenameInfo, jmix:unversionedBasemetadata, jmix:list
+ + * (jnt:module)
+
+[jnt:module] > jnt:virtualsite
+ + * (jnt:moduleVersion)
+
+[jnt:moduleVersion] > nt:base, jmix:nodenameInfo, jmix:publication, jmix:observable, mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS
+ + j:versionInfo (jnt:versionInfo)
+ - j:defaultTemplate (weakreference,choicelist[templatesNode=pageTemplate]) nofulltext
+ - j:title (string) protected nofulltext primary
+ - j:description (string) protected
+ - j:installedModules (string) multiple protected nofulltext
+ - j:moduleType (string) protected hidden
+ - j:dependencies (string) protected multiple nofulltext
+ + * (nt:base)
+
 [jnt:templatesFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list, jmix:publication
  - j:rootTemplatePath (string)
- - j:templateSetContext (weakreference, choicelist[nodes='/templateSets;jnt:virtualsite'])
+ - j:templateSetContext (weakreference, choicelist[nodes='/modules;jnt:virtualsite'])
  + * (jnt:template)
  + * (jnt:contentFolder)
  + * (jnt:folder)

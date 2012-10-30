@@ -659,7 +659,7 @@ public class Service extends JahiaService {
     public void deployModule(String moduleName, AddedNodeFact site, KnowledgeHelper drools) {
         User user = (User) drools.getWorkingMemory().getGlobal("user");
         try {
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployModule("/templateSets/" + moduleName, site.getPath(), user.getName());
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployModule("/modules/" + moduleName, site.getPath(), user.getName());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -722,7 +722,7 @@ public class Service extends JahiaService {
             }
             if (!depends.equals(pack.getDepends())) {
                 ServicesRegistry.getInstance().getJahiaTemplateManagerService().updateDependencies(pack, depends);
-                ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateManifest(pack.getFileName(), node.getNode().getSession());
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateManifest(pack.getRootFolder(), node.getNode().getSession());
             }
         }
     }

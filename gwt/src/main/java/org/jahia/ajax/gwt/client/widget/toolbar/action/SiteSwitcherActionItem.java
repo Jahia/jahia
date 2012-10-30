@@ -216,7 +216,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
                 if (((EditLinker) linker).getSidePanel() != null) {
                     ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
                 }
-                if (root.get(0).startsWith("/templateSets")) {
+                if (root.get(0).startsWith("/modules")) {
                     MainModule.staticGoTo(jahiaNode.getPath(), null);
                 } else {
                     MainModule.staticGoTo((String) jahiaNode.get(GWTJahiaNode.HOMEPAGE_PATH), null);

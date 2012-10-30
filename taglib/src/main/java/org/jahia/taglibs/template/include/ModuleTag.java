@@ -41,6 +41,8 @@
 package org.jahia.taglibs.template.include;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -354,10 +356,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     
     private AbstractFilter getExclusionFilter() {
         if (!exclusionFilterChecked) {
-            exclusionFilter = SpringContextSingleton.getInstance().getModuleContext()
-                    .containsBean("ChannelExclusionFilter") ? (AbstractFilter) SpringContextSingleton
-                    .getInstance().getModuleContext().getBean("ChannelExclusionFilter")
-                    : null;
+            try {
+                exclusionFilter = (AbstractFilter) SpringContextSingleton.getBeanInModulesContext("ChannelExclusionFilter");
+            } catch (Exception e) {
+            }
             exclusionFilterChecked = true;
         }
         return exclusionFilter;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:test_templates="http://www.jahia.org/jahia/test_templates/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
-    <templateSets jcr:primaryType="jnt:templateSets">
+    <modules jcr:primaryType="jnt:modules">
         <default j:installedModules="default" j:siteType="module" j:title="Default Jahia Templates" j:wcagCompliance="true" jcr:primaryType="jnt:virtualsite">
             <templates jcr:primaryType="jnt:templatesFolder">
                 <content-template j:applyOn="jnt:content" j:hiddenTemplate="true" j:priority="1" j:view="default" jcr:primaryType="jnt:contentTemplate">
@@ -15,5 +15,5 @@
             </contents>
             <portlets jcr:primaryType="jnt:portletFolder" />
         </default>
-    </templateSets>
+    </modules>
 </content>

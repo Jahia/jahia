@@ -48,12 +48,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader.ContextInitializedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
@@ -83,9 +86,19 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
         try {
             return getInstance().getContext().getBean(beanId);
         } catch (BeansException e) {
-            return getInstance().getModuleContext().getBean(beanId);
+            return getBeanInModulesContext(beanId);
         }
     }
+
+    public static Object getBeanInModulesContext(String beanId) {
+        for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
+            if (aPackage.getContext() != null && aPackage.getContext().containsBean(beanId)) {
+                return aPackage.getContext().getBean(beanId);
+            }
+        }
+        throw new NoSuchBeanDefinitionException(beanId);
+    }
+
 
     public static SpringContextSingleton getInstance() {
         if (ourInstance == null) {
@@ -94,23 +107,9 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
         return ourInstance;
     }
 
-    /**
-     * Returns an instance of the requested bean, located in the modules
-     * application context.
-     * 
-     * @param beanId the requested bean ID
-     * @return an instance of the requested bean, located in the modules
-     *         application context
-     */
-    public static Object getModuleBean(String beanId) {
-        return getInstance().getModuleContext().getBean(beanId);
-    }
-
     private ApplicationContext context;
 
     private boolean initialized;
-
-    private ApplicationContext moduleContext;
 
     private SpringContextSingleton() {
         super();
@@ -129,15 +128,12 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
         return context;
     }
 
-    /**
-     * Returns the Spring application context instance that corresponds to
-     * modules.
-     * 
-     * @return the Spring application context instance that corresponds to
-     *         modules
-     */
-    public ApplicationContext getModuleContext() {
-        return moduleContext;
+    public void publishEventInModuleContexts(ApplicationEvent event) {
+        for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
+            if (aPackage.getContext() != null) {
+                aPackage.getContext().publishEvent(event);
+            }
+        }
     }
 
     public boolean isInitialized() {
@@ -145,9 +141,10 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
     }
 
     public void onApplicationEvent(ApplicationEvent event) {
-        if (event instanceof ContextInitializedEvent) {
-            this.moduleContext = ((TemplatePackageApplicationContextLoader) event.getSource()).getContext();
-        } else if (event instanceof TemplatePackageRedeployedEvent) {
+//        if (event instanceof ContextInitializedEvent) {
+//            this.moduleContext = ((TemplatePackageApplicationContextLoader) event.getSource()).getContext();
+//        } else
+        if (event instanceof TemplatePackageRedeployedEvent) {
             resourcesCache.clear();
         }
     }

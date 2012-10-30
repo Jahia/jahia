@@ -90,7 +90,7 @@ public class LogoutConfig implements ApplicationListener<ContextInitializedEvent
     public void onApplicationEvent(ContextInitializedEvent event) {
         Map<String, LogoutUrlProvider> beansOfType = BeanFactoryUtils
                 .beansOfTypeIncludingAncestors(
-                        ((TemplatePackageApplicationContextLoader) event.getSource()).getContext(),
+                        event.getContext(),
                         LogoutUrlProvider.class);
         if (!beansOfType.isEmpty()) {
             for (LogoutUrlProvider provider : beansOfType.values()) {

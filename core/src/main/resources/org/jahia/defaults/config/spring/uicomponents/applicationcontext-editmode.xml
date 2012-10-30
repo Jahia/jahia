@@ -726,6 +726,9 @@
                         <value>jnt:groupsFolder</value>
                         <value>jnt:mounts</value>
                         <value>jnt:remotePublications</value>
+                        <value>jnt:modules</value>
+                        <value>jnt:module</value>
+                        <value>jnt:moduleVersion</value>
                         <value>jnt:templateSets</value>
                         <value>jnt:user</value>
                         <value>jnt:usersFolder</value>

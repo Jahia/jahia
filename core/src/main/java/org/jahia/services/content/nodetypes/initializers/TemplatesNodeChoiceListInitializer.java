@@ -41,6 +41,9 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -58,15 +61,16 @@ import java.util.*;
  * page context it returns page templates (pageTemplate)
  * The query is :
  * <code>
- *     "select * from [jnt:" + type + "] as n where isdescendantnode(n,['" +site.getPath()+"'])"
+ * "select * from [jnt:" + type + "] as n where isdescendantnode(n,['" +site.getPath()+"'])"
  * </code>
  * usage :
  * <code>
- *     - j:templateNode (weakreference,choicelist[templatesNode]) mandatory < jnt:template
- *     - j:templateNode (weakreference,choicelist[templatesNode=pageTemplate]) mandatory < jnt:template
+ * - j:templateNode (weakreference,choicelist[templatesNode]) mandatory < jnt:template
+ * - j:templateNode (weakreference,choicelist[templatesNode=pageTemplate]) mandatory < jnt:template
  * </code>
- * @version 6.5
+ *
  * @author toto
+ * @version 6.5
  * @since Jul 1, 2010
  */
 public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer {
@@ -90,64 +94,91 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
             JCRNodeWrapper site = node.getResolveSite();
 
             final JCRSessionWrapper session = site.getSession();
-            final QueryManager queryManager = session.getWorkspace().getQueryManager();
-            String type = "contentTemplate";
+            String templateType = "contentTemplate";
             if (StringUtils.isEmpty(param)) {
                 if (nodetype.isNodeType("jnt:page")) {
-                    type = "pageTemplate";
+                    templateType = "pageTemplate";
                 }
             } else {
-                type = param;
+                templateType = param;
             }
 
-            QueryResult result = queryManager.createQuery(
-                    "select * from [jnt:" + type + "] as n where isdescendantnode(n,['" +site.getPath()+"'])", Query.JCR_SQL2).execute();
+            List<String> installedModules = ((JCRSiteNode) site).getInstalledModules();
+            for (int i = 0; i < installedModules.size(); i++) {
+                String installedModule = installedModules.get(i);
+                JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(installedModule);
+                if (aPackage != null) {
+                    for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
+                        if (!installedModules.contains(depend.getRootFolder())) {
+                            installedModules.add(depend.getRootFolder());
+                        }
+                    }
+                } else {
+                    logger.error("Couldn't find module directory for module '" + installedModule + "' installed in site '" + site.getPath() + "'");
+                }
+            }
+
             // get default template
-            JCRNodeWrapper  defaultTemplate = null;
+            JCRNodeWrapper defaultTemplate = null;
             try {
-                defaultTemplate = site.hasProperty("j:defaultTemplate")? (JCRNodeWrapper) site.getProperty("j:defaultTemplate").getNode():null;
+                defaultTemplate = site.hasProperty("j:defaultTemplate") ? (JCRNodeWrapper) site.getProperty("j:defaultTemplate").getNode() : null;
             } catch (ItemNotFoundException e) {
                 logger.warn("A default template has been set on site '" + site.getName() + "' but the template has been deleted");
             }
-                final NodeIterator iterator = result.getNodes();
-            while (iterator.hasNext()) {
-                JCRNodeWrapper templateNode = (JCRNodeWrapper) iterator.next();
-
-                boolean ok = true;
-                if (templateNode. hasProperty("j:applyOn")) {
-                    ok = false;
-                    Value[] types = templateNode.getProperty("j:applyOn").getValues();
-                    for (Value value : types) {
-                        if (nodetype.isNodeType(value.getString())) {
-                            ok = true;
-                            break;
-                        }
-                    }
-                    if (types.length == 0) {
-                        ok = true;
-                    }
-                }
-                if (ok && templateNode.hasProperty("j:hiddenTemplate")) {
-                    ok = !templateNode.getProperty("j:hiddenTemplate").getBoolean();
-                }
-                if ("pageTemplate".equals(type)) {
-                    ok &= node.hasPermission("template-"+templateNode.getName());
-                }
-
-                if (ok) {
-                    ChoiceListValue v = new ChoiceListValue(templateNode.getName(), null, session.getValueFactory().createValue(templateNode.getIdentifier(),
-                            PropertyType.WEAKREFERENCE));
-                    if (defaultTemplate !=  null && templateNode.getPath().equals(defaultTemplate.getPath())) {
-                        v.addProperty("defaultProperty",true);
-                    }
-                    vs.add(v);
-                }
+            for (String installedModule : installedModules) {
+                JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(installedModule);
+                addTemplates(vs, "/modules/" + installedModule + "/" + aPackage.getVersion(), session, node, nodetype, templateType, defaultTemplate, epd);
             }
+
         } catch (RepositoryException e) {
-            logger.error("Cannot get template",e);
+            logger.error("Cannot get template", e);
         }
 
         Collections.sort(vs);
         return vs;
+    }
+
+    private void addTemplates(List<ChoiceListValue> vs, String path, JCRSessionWrapper session, JCRNodeWrapper node, ExtendedNodeType nodetype, String templateType, JCRNodeWrapper defaultTemplate, ExtendedPropertyDefinition propertyDefinition) throws RepositoryException {
+        final QueryManager queryManager = session.getWorkspace().getQueryManager();
+        QueryResult result = queryManager.createQuery(
+                "select * from [jnt:" + templateType + "] as n where isdescendantnode(n,['" + path + "'])", Query.JCR_SQL2).execute();
+        final NodeIterator iterator = result.getNodes();
+        while (iterator.hasNext()) {
+            JCRNodeWrapper templateNode = (JCRNodeWrapper) iterator.next();
+
+            boolean ok = true;
+            if (templateNode.hasProperty("j:applyOn")) {
+                ok = false;
+                Value[] types = templateNode.getProperty("j:applyOn").getValues();
+                for (Value value : types) {
+                    if (nodetype.isNodeType(value.getString())) {
+                        ok = true;
+                        break;
+                    }
+                }
+                if (types.length == 0) {
+                    ok = true;
+                }
+            }
+            if (ok && templateNode.hasProperty("j:hiddenTemplate")) {
+                ok = !templateNode.getProperty("j:hiddenTemplate").getBoolean();
+            }
+            if ("pageTemplate".equals(templateType)) {
+                ok &= node.hasPermission("template-" + templateNode.getName());
+            }
+
+            if (ok) {
+                ChoiceListValue v;
+                if (propertyDefinition.getRequiredType() == PropertyType.STRING) {
+                    v = new ChoiceListValue(templateNode.getName(), null, session.getValueFactory().createValue(templateNode.getName(), PropertyType.STRING));
+                } else {
+                    v = new ChoiceListValue(templateNode.getName(), null, session.getValueFactory().createValue(templateNode.getIdentifier(), PropertyType.WEAKREFERENCE));
+                }
+                if (defaultTemplate != null && templateNode.getPath().equals(defaultTemplate.getPath())) {
+                    v.addProperty("defaultProperty", true);
+                }
+                vs.add(v);
+            }
+        }
     }
 }

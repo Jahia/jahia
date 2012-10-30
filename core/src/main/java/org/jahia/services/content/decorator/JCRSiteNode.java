@@ -346,12 +346,16 @@ public class JCRSiteNode extends JCRNodeDecorator {
 
     public String getTemplateFolder() {
         if (templateFolder == null) {
-            try {
-                if (hasProperty("j:installedModules")) {
-                    templateFolder = getProperty("j:installedModules").getValues()[0].getString();
+            if (getPath().startsWith("/modules")) {
+                templateFolder = getName();
+            } else {
+                try {
+                    if (hasProperty("j:installedModules")) {
+                        templateFolder = getProperty("j:installedModules").getValues()[0].getString();
+                    }
+                } catch (RepositoryException e) {
+                    logger.error("Cannot get site property",e);
                 }
-            } catch (RepositoryException e) {
-                logger.error("Cannot get site property",e);
             }
         }
         return StringUtils.substringBefore(templateFolder,":");
@@ -360,7 +364,9 @@ public class JCRSiteNode extends JCRNodeDecorator {
     public List<String> getInstalledModules() {
         List<String> modules = new ArrayList<String>();
         try {
-            if (hasProperty("j:installedModules")) {
+            if (getPath().startsWith("/modules")) {
+                modules.add(getName());
+            } else if (hasProperty("j:installedModules")) {
                 Value[] v = getProperty("j:installedModules").getValues();
                 for (int i = 0; i < v.length; i++) {
                     Value value = v[i];
@@ -384,12 +390,12 @@ public class JCRSiteNode extends JCRNodeDecorator {
                 }
             }
             if (hasProperty("j:templatesSet")) {
-                final JahiaTemplatesPackage templatePackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByNodeName(
+                final JahiaTemplatesPackage templatePackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(
                         getProperty("j:templatesSet").getString());
                 final Set<JahiaTemplatesPackage> dependencies = templatePackage.getDependencies();
                 for (JahiaTemplatesPackage dependency : dependencies) {
-                    if(!modules.contains(dependency.getFileName())) {
-                        modules.add(dependency.getFileName());
+                    if(!modules.contains(dependency.getRootFolder())) {
+                        modules.add(dependency.getRootFolder());
                     }
                 }
             }

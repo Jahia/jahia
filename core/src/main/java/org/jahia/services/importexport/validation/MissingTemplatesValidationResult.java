@@ -61,7 +61,7 @@ public class MissingTemplatesValidationResult implements ValidationResult {
 
     private boolean targetTemplateSetPresent;
 
-    private Map<String, Integer> templateSetsMissingCounts = Collections.emptyMap();
+    private Map<String, Integer> modulesMissingCounts = Collections.emptyMap();
 
     /**
      * Initializes an instance of this class.
@@ -72,19 +72,19 @@ public class MissingTemplatesValidationResult implements ValidationResult {
      *            the template set from the import file
      * @param targetTemplateSetPresent
      *            is template set from import file present on the system?
-     * @param templateSetsMissingCounts
+     * @param modulesMissingCounts
      *            if the target template set is not present on the system we verify templates against all available template sets and check
      *            how many are missing in each of them
      */
     public MissingTemplatesValidationResult(Map<String, Set<String>> missing,
             String targetTemplateSet, boolean targetTemplateSetPresent,
-            Map<String, Integer> templateSetsMissingCounts) {
+            Map<String, Integer> modulesMissingCounts) {
         super();
         this.missing = missing;
         this.targetTemplateSet = targetTemplateSet;
         this.targetTemplateSetPresent = targetTemplateSetPresent;
-        if (templateSetsMissingCounts != null) { 
-            this.templateSetsMissingCounts = templateSetsMissingCounts;
+        if (modulesMissingCounts != null) {
+            this.modulesMissingCounts = modulesMissingCounts;
         }
     }
 
@@ -141,7 +141,7 @@ public class MissingTemplatesValidationResult implements ValidationResult {
      * @return a map, with template set names as keys and missing count as values
      */
     public Map<String, Integer> getTemplateSetsMissingCounts() {
-        return templateSetsMissingCounts;
+        return modulesMissingCounts;
     }
 
     /**
@@ -176,7 +176,7 @@ public class MissingTemplatesValidationResult implements ValidationResult {
                 .append("=").append(isSuccessful() ? "successful" : "failure");
         out.append(", targetTemplateSet=").append(targetTemplateSet);
         out.append(", targetTemplateSetPresent=").append(targetTemplateSetPresent);
-        out.append(", templateSetsMissingCounts=").append(templateSetsMissingCounts);
+        out.append(", modulesMissingCounts=").append(modulesMissingCounts);
         out.append(", missingTemplates=").append(missing);
         out.append("]");
 

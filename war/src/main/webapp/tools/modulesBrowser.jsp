@@ -105,7 +105,7 @@
                     ExtendedNodeType next = (ExtendedNodeType) nti.next();
                     ntm.unregisterNodeType(next.getName());
                 }
-                session.getNode("/templateSets/"+pack.getFileName()).remove();
+                session.getNode("/modules/"+pack.getRootFolder()).remove();
                 session.save();
                 return null;
             }

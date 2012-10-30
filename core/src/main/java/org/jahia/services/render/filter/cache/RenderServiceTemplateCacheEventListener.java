@@ -87,10 +87,10 @@ public class RenderServiceTemplateCacheEventListener extends DefaultEventListene
                         renderService = (RenderService) SpringContextSingleton.getBean("RenderService");
                     }
                     if (renderService != null) {
-                        if (path.contains("/templates") || path.startsWith("/templateSets")) {
+                        if (path.startsWith("/modules")) {
                             renderService.flushCache();
                         }
-                        if (path.contains("j:templateNode")) {
+                        if (path.contains("j:templateName")) {
                             renderService.flushCache();
                         }
                         if (path.endsWith("j:roles")) {

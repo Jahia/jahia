@@ -3723,7 +3723,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             String path = getPath();
 
-            if (path.startsWith("/sites/") || path.startsWith("/templateSets/")) {
+            if (path.startsWith("/sites/") || path.startsWith("/modules/")) {
                 int index = path.indexOf('/', path.indexOf('/',1)+1);
                 if (index == -1) {
                     JCRNodeWrapper node = provider.getService().decorate(this);

@@ -1153,17 +1153,17 @@ public class ContentManagerHelper {
         } else {
             String shortName = JCRContentUtils.generateNodeName(key);
             try {
-                JCRNodeWrapper node = session.getNode("/templateSets");
+                JCRNodeWrapper node = session.getNode("/modules");
                 shortName = JCRContentUtils.findAvailableNodeName(node, shortName);
 
-                List<GWTJahiaNode> result = copy(Arrays.asList("/templateSets/" + baseSet), "/templateSets", shortName, false, false, false, true, session);
-                String s = session.getNode("/templateSets/" + baseSet).getProperty("j:siteType").getValue().getString();
-                session.getNode("/templateSets/" + shortName).setProperty("j:title", key);
+                List<GWTJahiaNode> result = copy(Arrays.asList("/modules/" + baseSet), "/modules", shortName, false, false, false, true, session);
+                String s = session.getNode("/modules/" + baseSet).getProperty("j:siteType").getValue().getString();
+                session.getNode("/modules/" + shortName).setProperty("j:title", key);
 
                 boolean isTemplatesSet = JahiaTemplateManagerService.MODULE_TYPE_TEMPLATES_SET.equals(s);
 
                 if (isTemplatesSet) {
-                    Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:template] as t where t.[j:view]='" + baseSet + "' and isdescendantnode(t,'/templateSets/" + shortName + "')", Query.JCR_SQL2);
+                    Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:template] as t where t.[j:view]='" + baseSet + "' and isdescendantnode(t,'/modules/" + shortName + "')", Query.JCR_SQL2);
                     NodeIterator ni = q.execute().getNodes();
                     while (ni.hasNext()) {
                         JCRNodeWrapper template = (JCRNodeWrapper) ni.next();
@@ -1172,10 +1172,10 @@ public class ContentManagerHelper {
                 }
                 session.save();
                 templateManagerService.duplicateModule(shortName, s, baseSet);
-                if (!session.getNode("/templateSets/"+shortName).hasNode("j:versionInfo")) {
-                    session.getNode("/templateSets/"+shortName).addNode("j:versionInfo","jnt:versionInfo");
+                if (!session.getNode("/modules/"+shortName).hasNode("j:versionInfo")) {
+                    session.getNode("/modules/"+shortName).addNode("j:versionInfo","jnt:versionInfo");
                 }
-                session.getNode("/templateSets/"+shortName).getNode("j:versionInfo").setProperty("j:version","1.0");
+                session.getNode("/modules/"+shortName).getNode("j:versionInfo").setProperty("j:version","1.0");
                 session.save();
 
                 JCRNodeWrapper templateSet = session.getNodeByUUID(result.get(0).getUUID());
@@ -1189,7 +1189,7 @@ public class ContentManagerHelper {
 
     private File getSource(String moduleName, JCRSessionWrapper session) throws RepositoryException  {
         String sources;
-        JCRNodeWrapper n = session.getNode("/templateSets/"+moduleName);
+        JCRNodeWrapper n = session.getNode("/modules/"+moduleName);
         if (!n.hasNode("j:versionInfo")) {
             return null;
         }

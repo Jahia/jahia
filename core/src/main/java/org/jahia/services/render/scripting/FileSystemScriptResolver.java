@@ -53,6 +53,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDependenciesEvent;
 import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDeployedOnSiteEvent;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
+import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
@@ -246,35 +247,30 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     private SortedSet<View> getViewsSet(List<ExtendedNodeType> nodeTypeList, JCRSiteNode site,  List<String> templateTypes) {
         Map<String, View> views = new HashMap<String, View>();
 
-        Map<String,String> installedModules = null;
+        List<String> installedModules = null;
         if (site != null && site.getPath().startsWith("/sites/")) {
-            installedModules = site.getInstalledModulesWithVersions();
-            List<String> keys = new ArrayList<String>(installedModules.keySet());
-            for (int i = 0; i < keys.size(); i++) {
-                String key = keys.get(i);
-                JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(key);
+            installedModules = site.getInstalledModules();
+            for (int i = 0; i < installedModules.size(); i++) {
+                String installedModule = installedModules.get(i);
+                JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(installedModule);
                 if (aPackage != null) {
-                    if (installedModules.get(key) != null && aPackage.getLastVersion().toString().equals(installedModules.get(key))) {
-                        installedModules.put(key, null);
-                    }
                     for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
-                        if (!installedModules.containsKey(depend.getRootFolder())) {
-                            installedModules.put(depend.getRootFolder(), null);
-                            keys.add(depend.getRootFolder());
+                        if (!installedModules.contains(depend.getRootFolder())) {
+                            installedModules.add(depend.getRootFolder());
                         }
                     }
                 } else {
-                    logger.error("Couldn't find module directory for module '" + installedModules.get(i) + "' installed in site '"+site.getPath()+"'");
+                    logger.error("Couldn't find module directory for module '" + installedModule + "' installed in site '"+site.getPath()+"'");
                 }
             }
-        } else if (site != null && site.getPath().startsWith("/templateSets/")) {
+        } else if (site != null && site.getPath().startsWith("/modules/")) {
             JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(site.getName());
             if (aPackage != null) {
-                installedModules = new HashMap<String, String>();
-                installedModules.put(aPackage.getRootFolder(), null);
+                installedModules = new ArrayList<String>();
+                installedModules.add(aPackage.getRootFolder());
                 for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
-                    if (!installedModules.containsKey(depend.getRootFolder())) {
-                        installedModules.put(depend.getRootFolder(), null);
+                    if (!installedModules.contains(depend.getRootFolder())) {
+                        installedModules.add(depend.getRootFolder());
                     }
                 }
             }
@@ -287,28 +283,28 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                 String packageName = aPackage.getRootFolder();
                 if (installedModules == null) {
                     for (String templateType : templateTypes) {
-                        getViewsSet(type, views, templateType, packageName, aPackage, null);
+                        getViewsSet(type, views, templateType, packageName, aPackage, aPackage.getVersion());
                     }
-                } else if (installedModules.containsKey(packageName)) {
+                } else if (installedModules.contains(packageName)) {
                     for (String templateType : templateTypes) {
-                        String version = StringUtils.isEmpty(installedModules.get(packageName)) ? null : Patterns.DOT.matcher(installedModules.get(packageName)).replaceAll("-");
-                        getViewsSet(type, views, templateType, packageName + (version == null ? "" : "/" + JahiaTemplateManagerService.VERSIONS_FOLDER_NAME + "/" + version), aPackage, version);
+                        getViewsSet(type, views, templateType, packageName ,aPackage, aPackage.getVersion());
                     }
                 } else if (site.getPath().startsWith("/sites/")) {
                     for (String templateType : templateTypes) {
-                        getViewsSet(type, views, templateType, packageName, aPackage, null);
+                        getViewsSet(type, views, templateType, packageName, aPackage, aPackage.getVersion());
                     }
                 }
             }
             for (String templateType : templateTypes) {
-                getViewsSet(type, views, templateType, "default", templateManagerService.getTemplatePackageByFileName("default"), null);
+                JahiaTemplatesPackage defaultModule = templateManagerService.getTemplatePackageByFileName("default");
+                getViewsSet(type, views, templateType, "default", defaultModule, defaultModule.getVersion());
             }
         }
         return new TreeSet<View>(views.values());
     }
 
-    private void getViewsSet(ExtendedNodeType nt, Map<String, View> views, String templateType, String currentTemplatePath, JahiaTemplatesPackage tplPackage, String version) {
-        String path = currentTemplatePath + "/" + JCRContentUtils.replaceColon(nt.getAlias()) + "/" + templateType;
+    private void getViewsSet(ExtendedNodeType nt, Map<String, View> views, String templateType, String currentTemplatePath, JahiaTemplatesPackage tplPackage, ModuleVersion version) {
+        String path = currentTemplatePath + "/" + version.toString() + "/" + JCRContentUtils.replaceColon(nt.getAlias()) + "/" + templateType;
         File f = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath() + "/" + path);
         if (f.exists()) {
             SortedSet<File> files = new TreeSet<File>(scriptExtensionComparator);

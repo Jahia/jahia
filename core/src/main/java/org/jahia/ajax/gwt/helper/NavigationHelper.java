@@ -55,6 +55,7 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRQueryNode;
@@ -389,13 +390,16 @@ public class NavigationHelper {
         for (String path : paths) {
             // replace $user and $site by the right values
             String displayName = "";
-            if (site != null && path.contains("$site/") || path.equals("$site")) {
+            if (site != null && path.contains("$site/") || path.endsWith("$site")) {
                 path = path.replace("$site", site.getPath());
 //                if (!path.endsWith("*")) {
 //                    displayName = site.getSiteKey();
 //                }
             }
-            if (path.contains("$systemsite/") || path.equals("$systemsite")) {
+            if (path.contains("$moduleversion/") || path.endsWith("$moduleversion")) {
+                path = path.replace("$moduleversion", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(site.getSiteKey()).getVersion().toString());
+            }
+            if (path.contains("$systemsite/") || path.endsWith("$systemsite")) {
                 String systemSiteKey = JCRContentUtils.getSystemSitePath();
                 path = path.replace("$systemsite", systemSiteKey);
 //                try {

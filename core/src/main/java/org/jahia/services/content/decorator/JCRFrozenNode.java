@@ -90,7 +90,7 @@ public class JCRFrozenNode extends JCRNodeDecorator {
                 return (site = new JCRSiteNode(getSession().getNode(path.substring(0, path.indexOf('/',7)))));
             }
 
-            if (path.startsWith("/templateSets/")) {
+            if (path.startsWith("/modules/")) {
                 return (site = new JCRSiteNode(getSession().getNode(path.substring(0, path.indexOf('/',14)))));
             }
         } catch (ItemNotFoundException e) {

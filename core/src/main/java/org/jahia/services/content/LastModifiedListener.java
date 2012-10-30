@@ -206,7 +206,7 @@ public class LastModifiedListener extends DefaultEventListener {
 
     private boolean addAutoPublish(JCRNodeWrapper n, List<String> autoPublished) throws RepositoryException {
         if (autoPublished != null) {
-            if (!n.getPath().startsWith("/templateSets")) {
+            if (!n.getPath().startsWith("/modules")) {
                 if (!autoPublished.contains(n.getIdentifier()) && n.isNodeType("jmix:autoPublish")) {
                     autoPublished.add(n.getIdentifier());
                     return true;

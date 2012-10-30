@@ -60,6 +60,7 @@ package org.jahia.bin;
 
 import org.apache.commons.io.IOUtils;
 import org.jahia.api.Constants;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
@@ -67,6 +68,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Version;
@@ -289,15 +291,14 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                     JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
                     initializationService.initAfterAllServicesAreStarted();
                 }
-                if (SpringContextSingleton.getInstance().getModuleContext() != null) {
-                    map = SpringContextSingleton.getInstance().getModuleContext().getBeansOfType(
-                            JahiaAfterInitializationService.class);
-                    for (Object o : map.values()) {
-                        JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
-                        initializationService.initAfterAllServicesAreStarted();
+                for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
+                    if (aPackage.getContext() != null) {
+                        map = aPackage.getContext().getBeansOfType(JahiaAfterInitializationService.class);
+                        for (Object o : map.values()) {
+                            JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
+                            initializationService.initAfterAllServicesAreStarted();
+                        }
                     }
-                } else {
-                    logger.error("Modules Spring application context failed to start. Unable to initialize services");
                 }
             }
         } catch (Exception je) {

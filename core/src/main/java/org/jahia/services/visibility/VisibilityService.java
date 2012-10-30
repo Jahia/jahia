@@ -102,6 +102,17 @@ public class VisibilityService {
         this.conditions.put(conditionType, instance);
     }
 
+    public void removeCondition(String conditionType) {
+        if (instance instanceof Conditional) {
+            if (!((Conditional) instance).evaluate()) {
+                logger.info("Visibility condition of type {} is considered disabled. Skipping it.",
+                        conditionType);
+                return;
+            }
+        }
+        this.conditions.remove(conditionType);
+    }
+
     public boolean matchesConditions(JCRNodeWrapper node) {
         if (conditions.isEmpty()) {
             return true;

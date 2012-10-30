@@ -1274,7 +1274,7 @@ public class ManageSites extends AbstractAdministrationModule {
             String selectedTmplSet = (String) request.getAttribute("selectedTmplSet");
             // get tmplPackage list...
             final JCRNodeWrapper tmplPack = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession()
-                    .getNode("/templateSets/" + selectedTmplSet);
+                    .getNode("/modules/" + selectedTmplSet);
 
 
             Boolean defaultSite = Boolean.FALSE;
@@ -1917,8 +1917,7 @@ public class ManageSites extends AbstractAdministrationModule {
                                                 .get("templatePackageName"));
                             }
                             if (pack != null) {
-                                importInfos
-                                        .put("templates", pack.getFileName());
+                                importInfos.put("templates", pack.getRootFolder());
                             }
                         }
                         importInfos.put("oldsitekey",
@@ -2245,13 +2244,13 @@ public class ManageSites extends AbstractAdministrationModule {
         JahiaTemplateManagerService managerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         TreeMap<String, JCRNodeWrapper> orderedTemplateSets = new TreeMap<String, JCRNodeWrapper>();
         final JCRNodeWrapper templatesSet =
-                JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode("/templateSets");
+                JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode("/modules");
         NodeIterator templates = templatesSet.getNodes();
         while (templates.hasNext()) {
             JCRNodeWrapper node = (JCRNodeWrapper) templates.next();
-            if (!node.getName().equals("templates-system") && node.hasProperty("j:siteType") &&
-                    types.contains(node.getProperty("j:siteType").getString())) {
-                if (managerService.getTemplatePackageByFileName(node.getName()) != null) {
+            if (!node.getName().equals("templates-system")) {
+                JahiaTemplatesPackage pack = managerService.getTemplatePackageByFileName(node.getName());
+                if (pack != null && types.contains(pack.getModuleType())) {
                     orderedTemplateSets.put(node.getName(), node);
                 }
             }

@@ -140,6 +140,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private boolean expandImportedFilesOnDisk;
     private String expandImportedFilesOnDiskPath;
 
+    private List<AttributeProcessor> attributeProcessors;
+
     public static ImportExportBaseService getInstance() {
         if (instance == null) {
             synchronized (ImportExportBaseService.class) {
@@ -194,6 +196,14 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     public void setExpandImportedFilesOnDiskPath(String expandImportedFilesOnDiskPath) {
         this.expandImportedFilesOnDiskPath = expandImportedFilesOnDiskPath;
+    }
+
+    public List<AttributeProcessor> getAttributeProcessors() {
+        return attributeProcessors;
+    }
+
+    public void setAttributeProcessors(List<AttributeProcessor> attributeProcessors) {
+        this.attributeProcessors = attributeProcessors;
     }
 
     class ImportFileObserver implements Observer {
@@ -666,12 +676,16 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     public void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath, String legacyDefinitionsFilePath) throws RepositoryException, IOException {
+        importSiteZip(file, site, infos, legacyMappingFilePath, legacyDefinitionsFilePath,  jcrStoreService.getSessionFactory().getCurrentUserSession(null, null, null));
+    }
+
+    public void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath, String legacyDefinitionsFilePath,JCRSessionWrapper session) throws RepositoryException, IOException {
         long timerSite = System.currentTimeMillis();
         logger.info("Start import for site {}", site != null ? site.getSiteKey() : "");
         
         final CategoriesImportHandler categoriesImportHandler = new CategoriesImportHandler();
         final UsersImportHandler usersImportHandler = new UsersImportHandler(site);
-        JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null, null, null);
+
         boolean legacyImport = false;
         List<String[]> catProps = null;
         List<String[]> userProps = null;
@@ -1123,7 +1137,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         try {
             if (!installedModules.contains(templateSet)) {
-                templateManagerService.deployModule("/templateSets/" + templateSet, "/sites/" + site.getSiteKey(), session);
+                templateManagerService.deployModule("/modules/" + templateSet, "/sites/" + site.getSiteKey(), session);
             }
         } catch (RepositoryException e) {
             logger.error("Cannot deploy module "+templateSet,e);
@@ -1179,7 +1193,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 sitesService.setDefaultSite(site);
             } else if (firstKey.equals("installedModules")) {
                 if (!installedModules.contains(value) && !templateSet.equals(value)) {
-                    modules.add("/templateSets/" +value);
+                    modules.add("/modules/" +value);
                 }
             }
         }
@@ -1499,6 +1513,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         documentViewImportHandler.setReferences(references);
                         documentViewImportHandler.setRootBehavior(rootBehaviour);
                         documentViewImportHandler.setBaseFilesPath("/live-content");
+                        documentViewImportHandler.setAttributeProcessors(attributeProcessors);
 
                         handleImport(zis, documentViewImportHandler);
                         
@@ -1572,6 +1587,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     }
                     documentViewImportHandler.setReferences(references);
                     documentViewImportHandler.setRootBehavior(rootBehaviour);
+                    documentViewImportHandler.setAttributeProcessors(attributeProcessors);
 
                     handleImport(zis, documentViewImportHandler);
 
@@ -1620,6 +1636,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         documentViewImportHandler.setReferences(references);
                         documentViewImportHandler.setRootBehavior(rootBehaviour);
                         documentViewImportHandler.setBaseFilesPath("/live-content");
+                        documentViewImportHandler.setAttributeProcessors(attributeProcessors);
                         liveSession.getPathMapping().putAll(session.getPathMapping());
                         handleImport(zis, documentViewImportHandler);
                         

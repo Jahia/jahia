@@ -167,7 +167,7 @@ public class ContentTypeWindow extends Window {
     public static void createContent(final Linker linker, final String name, final List<String> nodeTypes, final Map<String, GWTJahiaNodeProperty> props, final GWTJahiaNode targetNode, boolean includeSubTypes, final boolean createInParentAndMoveBefore, final Set<String> displayedNodeTypes) {
         String contentPath = "$site/components/*";
         if ("studiomode".equals(linker.getConfig().getName())) {
-            contentPath = "/templateSets/*";
+            contentPath = "/modules/*";
         }
         JahiaContentManagementService.App.getInstance().getContentTypesAsTree(Arrays.asList(contentPath), nodeTypes, Arrays.asList("name"), includeSubTypes, false, new BaseAsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> result) {

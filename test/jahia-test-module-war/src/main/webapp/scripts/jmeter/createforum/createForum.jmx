@@ -181,7 +181,7 @@
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/${CONTEXT}/cms/render/default/en/templateSets/templates-intranet/templates/base/forum.raw</stringProp>
+              <stringProp name="HTTPSampler.path">/${CONTEXT}/cms/render/default/en/modules/templates-intranet/templates/base/forum.raw</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>

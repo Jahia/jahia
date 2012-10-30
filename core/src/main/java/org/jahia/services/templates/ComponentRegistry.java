@@ -143,10 +143,9 @@ public class ComponentRegistry {
         if (resolvedSite != null && resolvedSite.hasNode("components")) {
             components.add(resolvedSite.getNode("components"));
         }
-        if (resolvedSite.isNodeType(Constants.JAHIANT_VIRTUALSITE)
-                && resolvedSite.hasProperty("j:dependencies")) {
+        if (resolvedSite != null && resolvedSite.isNodeType(Constants.JAHIANT_VIRTUALSITE) && resolvedSite.hasProperty("j:dependencies")) {
             for (Value dep : resolvedSite.getProperty("j:dependencies").getValues()) {
-                String path = "/templateSets/" + dep.getString() + "/components";
+                String path = "/modules/" + dep.getString() + "/components";
                 if (resolvedSite.getSession().nodeExists(path)) {
                     components.add(resolvedSite.getSession().getNode(path));
                 }
@@ -374,14 +373,14 @@ public class ComponentRegistry {
             throws RepositoryException {
         int count = 0;
         JCRNodeWrapper modules = null;
-        if (!session.nodeExists("/templateSets")) {
-            modules = session.getRootNode().addNode("templateSets", "jnt:templateSets");
+        if (!session.nodeExists("/modules")) {
+            modules = session.getRootNode().addNode("modules", "jnt:modules");
         } else {
-            modules = session.getNode("/templateSets");
+            modules = session.getNode("/modules");
         }
 
-        if (modules.hasNode(pkg.getRootFolder())) {
-            JCRNodeWrapper module = modules.getNode(pkg.getRootFolder());
+        if (modules.hasNode(pkg.getRootFolderWithVersion())) {
+            JCRNodeWrapper module = modules.getNode(pkg.getRootFolderWithVersion());
             boolean newDeployment = !module.hasNode(NODE_COMPONENTS);
             JCRNodeWrapper components = newDeployment ? module.addNode(NODE_COMPONENTS,
                     JNT_COMPONENT_FOLDER) : module.getNode(NODE_COMPONENTS);

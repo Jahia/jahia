@@ -41,8 +41,10 @@
 package org.jahia.services.render;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.CacheImplementation;
 import org.jahia.services.cache.CacheProvider;
 import org.jahia.services.content.*;
@@ -266,6 +268,8 @@ public class RenderService {
                 }
             }
 
+            JahiaTemplateManagerService managerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+
             if (current.isNodeType("jnt:template")) {
                 // Display a template node in studio
                 if (!current.hasProperty("j:view") || "default".equals(current.getProperty("j:view").getString())) {
@@ -278,28 +282,35 @@ public class RenderService {
                     template = addContextualTemplates(node, templateName, template, parent);
                 }
             } else {
-                if (resource.getTemplate().equals("default") && current.hasProperty("j:templateNode")) {
+                if (resource.getTemplate().equals("default") && current.hasProperty("j:templateName")) {
                     // A template node is specified on the current node
-                    JCRNodeWrapper templateNode = (JCRNodeWrapper) current.getProperty("j:templateNode").getNode();
-//                    if (renderContext.getSite() != null && !templateNode.getResolveSite().equals(renderContext.getSite())) {
-//                        try {
-//                            templateNode = templatesNode.getSession().getNode(templateNode.getPath().replace("/sites/"+templateNode.getResolveSite().getSiteKey(), "/sites/"+renderContext.getSite().getSiteKey()));
-//                        } catch (PathNotFoundException e) {
-//                            // Cannot switch site context, template not found
-//                        }
-//                    }
-                    if (!checkTemplatePermission(resource, renderContext, templateNode)) {
-                        throw new AccessDeniedException(resource.getTemplate());
+                    templateName = current.getProperty("j:templateName").getString();
+                }
+
+                List<String> installedModules = ((JCRSiteNode)site).getInstalledModules();
+                for (int i = 0; i < installedModules.size(); i++) {
+                    String installedModule = installedModules.get(i);
+                    JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(installedModule);
+                    if (aPackage != null) {
+                        for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
+                            if (!installedModules.contains(depend.getRootFolder())) {
+                                installedModules.add(depend.getRootFolder());
+                            }
+                        }
+                    } else {
+                        logger.error("Couldn't find module directory for module '" + installedModule + "' installed in site '"+site.getPath()+"'");
                     }
-                    template = new org.jahia.services.render.Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                            templateName, templateNode.getIdentifier(), template, templateNode.getName());
-                } else if (templatesNode != null) {
-                    template = addTemplates(resource, renderContext, templatesNode);
+                }
+
+                for (String s : installedModules) {
+                    JahiaTemplatesPackage pack = managerService.getTemplatePackageByFileName(s);
+                    template = addTemplates(resource, renderContext, templateName, resource.getNode().getSession().getNode("/modules/"+s+"/"+pack.getVersion()));
+                    if (template != null) {
+                        break;
+                    }
                 }
 
                 if (template == null) {
-                    template = addTemplates(resource, renderContext,
-                            node.getSession().getNode(JCRContentUtils.getSystemSitePath() + "/templates"));
                 }
 
                 if (template != null) {
@@ -387,16 +398,14 @@ public class RenderService {
         return r;
     }*/
 
-    private org.jahia.services.render.Template addTemplates(Resource resource, RenderContext renderContext,
+    private org.jahia.services.render.Template addTemplates(Resource resource, RenderContext renderContext, String templateName,
                                                             JCRNodeWrapper templateNode) throws RepositoryException {
         String type = "contentTemplate";
         if (resource.getNode().isNodeType("jnt:page")) {
             type = "pageTemplate";
         }
-        boolean isNotDefaultTemplate = resource.getTemplate() != null && !resource.getTemplate().equals("default");
-
         String key = new StringBuffer(templateNode.getPath()).append(type).append(
-                isNotDefaultTemplate ? resource.getTemplate() : "default").toString() + renderContext.getServletPath() + resource.getWorkspace() + renderContext.isLoggedIn() +
+                templateName != null ? templateName : "default").toString() + renderContext.getServletPath() + resource.getWorkspace() + renderContext.isLoggedIn() +
                 resource.getNode().getNodeTypes()+cacheKeyGenerator.appendAcls(resource, renderContext, false);
 
         Template template = templatesCache.get(key);
@@ -405,8 +414,8 @@ public class RenderService {
             String query =
                     "select * from [jnt:" + type + "] as w where isdescendantnode(w, ['" + templateNode.getPath() +
                     "'])";
-            if (isNotDefaultTemplate) {
-                query += " and name(w)='" + resource.getTemplate() + "'";
+            if (templateName != null) {
+                query += " and name(w)='" + templateName + "'";
             } else {
                 query += " and [j:defaultTemplate]=true";
             }

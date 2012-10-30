@@ -77,9 +77,9 @@ INFO  [Timer-1] JobSchedulingBean, org.jahia.services.scheduler.JobSchedulingBea
 INFO  [Timer-1] TemplatePackageApplicationContextLoader, org.jahia.services.templates.TemplatePackageApplicationContextLoader: Jahia modules application context reload completed in 1095 ms
 INFO  [Timer-1] TemplatePackageDeployer, org.jahia.services.templates.TemplatePackageDeployer: Starting import for the template package 'myapp' including: [META-INF/import.zip]
 INFO  [Timer-1] TemplatePackageDeployer, org.jahia.services.templates.TemplatePackageDeployer: ... importing W:\runtime\jahia-crazyjane-tomcat\webapps\ROOT\modules\myapp\META-INF\import.zip into /
-INFO  [Timer-1] ConflictResolver, org.jahia.services.content.ConflictResolver: compare /templateSets/myapp version : 1.0 with (source) 1.0.0
-INFO  [Timer-1] ConflictResolver, org.jahia.services.content.ConflictResolver: compare /templateSets/myapp version : 1.1 with (target) 1.2
-INFO  [Timer-1] RulesListener$1, org.jahia.services.content.rules.RulesListener: Rules executed for default [/templateSets/myapp/templates/files/themes/default, /templateSets/myapp/templates/files/themes, /templateSets/myapp/templates/contents] ... and 7 other nodes in 1214ms
+INFO  [Timer-1] ConflictResolver, org.jahia.services.content.ConflictResolver: compare /modules/myapp version : 1.0 with (source) 1.0.0
+INFO  [Timer-1] ConflictResolver, org.jahia.services.content.ConflictResolver: compare /modules/myapp version : 1.1 with (target) 1.2
+INFO  [Timer-1] RulesListener$1, org.jahia.services.content.rules.RulesListener: Rules executed for default [/modules/myapp/templates/files/themes/default, /modules/myapp/templates/files/themes, /modules/myapp/templates/contents] ... and 7 other nodes in 1214ms
 INFO  [Timer-1] TemplatePackageDeployer, org.jahia.services.templates.TemplatePackageDeployer: ... finished initial import for template package 'myapp'.
 +-----------------------
 

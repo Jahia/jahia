@@ -36,7 +36,7 @@ Modules
   When deploying a module to a site, the content of the module is copied to the site node. <<<templates>>> and
   <<<components>>> folder are synchronized : the content of the template nodes and the components which have been
   removed in a module will be deleted from the site <<<templates>>> and <<<components>>> nodes. Every template node
-  has a property <<<j:sourceTemplate>>> which holds a reference to the original template in <<</templateSets>>> : this
+  has a property <<<j:sourceTemplate>>> which holds a reference to the original template in <<</modules>>> : this
   is used to identify from which module a deployed template comes from, and avoids overriding or removing templates
   which come from other modules. Other nodes (default pages, content, files, ...) are simply copied to the site.
 

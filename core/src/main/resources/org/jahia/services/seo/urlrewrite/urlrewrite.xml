@@ -51,7 +51,15 @@
         <to>/gwt/resources/clear.gif$2</to>
     </rule>
     <!-- end of GWT resources-->
-    
+
+    <rule>
+        <note>Append version number on modules</note>
+        <condition type="attribute" name="moduleVersion" operator="notequal">^$</condition>
+        <from>^/modules/([^/]*)/(.*)$</from>
+        <to>/modules/$1/%{attribute:moduleVersion}/$2</to>
+    </rule>
+
+
     <!-- Jahia tools -->
     <rule enabled="true">
         <name>Jahia tools</name>

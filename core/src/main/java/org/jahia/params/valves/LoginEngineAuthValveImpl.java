@@ -231,7 +231,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             //        String.valueOf(System.currentTimeMillis()));
 
             if (fireLoginEvent) {
-                SpringContextSingleton.getInstance().getModuleContext().publishEvent(new LoginEvent(this, theUser, authContext));
+                SpringContextSingleton.getInstance().publishEventInModuleContexts(new LoginEvent(this, theUser, authContext));
             }
 
         } else {

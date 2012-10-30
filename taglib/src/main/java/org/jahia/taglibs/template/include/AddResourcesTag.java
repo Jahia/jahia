@@ -58,7 +58,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Add some resources to the head tag of the HTML.
@@ -91,16 +93,15 @@ public class AddResourcesTag extends AbstractJahiaTag {
     public int doEndTag() throws JspException {
         JahiaTemplatesPackage templatesPackage = (JahiaTemplatesPackage) pageContext.getAttribute("currentModule", PageContext.REQUEST_SCOPE);
         JahiaTemplatesPackage templatesSetPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(getRenderContext().getSite().getTemplatePackageName());
-        String version = (String) pageContext.getAttribute("currentModuleVersion", PageContext.REQUEST_SCOPE);
-        if (!addResources(getRenderContext(), templatesSetPackage, false, version)) {
-            addResources(getRenderContext(), templatesPackage, true, version);
+        if (!addResources(getRenderContext(), templatesSetPackage, false)) {
+            addResources(getRenderContext(), templatesPackage, true);
         }
 
         resetState();
         return super.doEndTag();
     }
 
-    protected boolean addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage, boolean checkDependencies, String versionFolder) {
+    protected boolean addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage, boolean checkDependencies) {
         if (logger.isDebugEnabled()) {
             logger.debug("Package : " + aPackage.getName() + " type : " + type + " resources : " + resources);
         }
@@ -121,11 +122,11 @@ public class AddResourcesTag extends AbstractJahiaTag {
 
         String[] strings = Patterns.COMMA.split(resources);
 
-        Map<JahiaTemplatesPackage, String> packages = new LinkedHashMap<JahiaTemplatesPackage, String>();
-        packages.put(aPackage, StringUtils.isNotEmpty(versionFolder) ? JahiaTemplateManagerService.VERSIONS_FOLDER_NAME + "/" + versionFolder : StringUtils.EMPTY);
+        Set<JahiaTemplatesPackage> packages = new LinkedHashSet<JahiaTemplatesPackage>();
+        packages.add(aPackage);
         if (checkDependencies) {
             for (JahiaTemplatesPackage pack : aPackage.getDependencies()) {
-                packages.put(pack, StringUtils.EMPTY);
+                packages.add(pack);
             }
         }
         StringBuilder builder = new StringBuilder();
@@ -143,12 +144,11 @@ public class AddResourcesTag extends AbstractJahiaTag {
                 }
                 resource = mapping.containsKey(resource) ? mapping.get(resource) : resource;
             } else {
-                for (JahiaTemplatesPackage pack : packages.keySet()) {
+                for (JahiaTemplatesPackage pack : packages) {
                     String path = pack.getRootFolderPath() + "/" + type + "/" + resource;
-                    String version = packages.get(pack);
-                    String pathWithVersion = pack.getRootFolderPath() + "/"
-                            + (version.isEmpty() ? StringUtils.EMPTY : "/" + version) + type + "/" + resource;
-                    String pathWithContext = renderContext.getRequest().getContextPath().isEmpty() ? pathWithVersion : renderContext.getRequest().getContextPath() + pathWithVersion;
+                    String pathWithContext = renderContext.getRequest().getContextPath().isEmpty() ? path : renderContext.getRequest().getContextPath() + path;
+                    String pathWithVersion = pack.getRootFolderPath() + "/" + pack.getVersion() + "/" + type + "/" + resource;
+//                    String pathWithVersionAndContext = renderContext.getRequest().getContextPath().isEmpty() ? pathWithVersion : renderContext.getRequest().getContextPath() + pathWithVersion;
                     try {
                         if (pageContext.getServletContext().getResource(pathWithVersion) != null) {
                             // we found it
@@ -156,7 +156,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
                             // apply mapping
                             if (mapping.containsKey(path)) {
                                 for (String mappedResource : mapping.get(path).split(" ")) {
-                                    path = mappedResource.replace(pack.getRootFolderPath(), pack.getRootFolderPath()+"/"+packages.get(pack));
+                                    path = mappedResource;
                                     pathWithContext = !path.startsWith("http://") && !path.startsWith("https://") ? renderContext.getRequest().getContextPath() + path : path;
                                     writeResourceTag(type, pathWithContext, resource);
                                 }

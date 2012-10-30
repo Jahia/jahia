@@ -50,9 +50,11 @@ package org.jahia.data.templates;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.Version;
+import org.springframework.web.context.support.XmlWebApplicationContext;
 
 import java.io.File;
 import java.util.*;
@@ -66,10 +68,6 @@ import java.util.*;
 public class JahiaTemplatesPackage {
 
     /**
-     * the file or directory name from which data are loaded
-     */
-    private String m_FileName;
-    /**
      * the full path to the source file or directory
      */
     private String m_FilePath;
@@ -78,6 +76,8 @@ public class JahiaTemplatesPackage {
      * Name of the package
      */
     private String m_Name;
+
+    private ModuleVersion version;
     /**
      * Name of the dependent package
      */
@@ -131,11 +131,13 @@ public class JahiaTemplatesPackage {
 
     private long buildNumber;
 
-    private Version lastVersion;
-    private String lastVersionFolder;
     private String autoDeployOnSite;
 
-    private List<String> versions = new LinkedList<String>();
+    private XmlWebApplicationContext context;
+
+    private boolean isActiveVersion = false;
+
+    private boolean isLastVersion = false;
 
     /**
      * Return the template name
@@ -166,6 +168,10 @@ public class JahiaTemplatesPackage {
      */
     public String getRootFolder() {
         return m_RootFolder;
+    }
+
+    public String getRootFolderWithVersion() {
+        return m_RootFolder + "/" + version.toString();
     }
 
 
@@ -296,23 +302,6 @@ public class JahiaTemplatesPackage {
         changesMade = true;
     }
 
-
-    /**
-     * get the source filename
-     */
-    public String getFileName() {
-        return this.m_FileName;
-    }
-
-
-    /**
-     * set the source filename
-     */
-    public void setFileName(String name) {
-        this.m_FileName = name;
-    }
-
-
     /**
      * get the file path
      */
@@ -326,8 +315,6 @@ public class JahiaTemplatesPackage {
      */
     public void setFilePath(String path) {
         this.m_FilePath = path;
-        File f = new File(path);
-        this.setFileName(f.getName());
     }
 
 
@@ -459,25 +446,22 @@ public class JahiaTemplatesPackage {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         JahiaTemplatesPackage that = (JahiaTemplatesPackage) o;
 
-        if (m_Name != null ? !m_Name.equals(that.m_Name) : that.m_Name != null) {
-            return false;
-        }
+        if (m_RootFolder != null ? !m_RootFolder.equals(that.m_RootFolder) : that.m_RootFolder != null) return false;
+        if (version != null ? !version.equals(that.version) : that.version != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return m_Name != null ? m_Name.hashCode() : 0;
+        int result = version != null ? version.hashCode() : 0;
+        result = 31 * result + (m_RootFolder != null ? m_RootFolder.hashCode() : 0);
+        return result;
     }
 
     public List<String> getRulesDescriptorFiles() {
@@ -504,28 +488,12 @@ public class JahiaTemplatesPackage {
         this.buildNumber = buildNumber;
     }
 
-    public Version getLastVersion() {
-        return lastVersion;
+    public ModuleVersion getVersion() {
+        return version;
     }
 
-    public String getLastVersionFolder() {
-        if (lastVersionFolder == null) {
-            lastVersionFolder = Patterns.DOT.matcher(lastVersion.toString()).replaceAll("-");
-        }
-        return lastVersionFolder;
-    }
-
-    public void setLastVersion(Version lastVersion) {
-        this.lastVersion = lastVersion;
-        lastVersionFolder = null;
-    }
-
-    public List<String> getVersions() {
-        return versions;
-    }
-
-    public void setVersions(List<String> versions) {
-        this.versions = versions;
+    public void setVersion(ModuleVersion version) {
+        this.version = version;
     }
 
     public String getModuleType() {
@@ -542,5 +510,29 @@ public class JahiaTemplatesPackage {
 
     public String getAutoDeployOnSite() {
         return autoDeployOnSite;
+    }
+
+    public XmlWebApplicationContext getContext() {
+        return context;
+    }
+
+    public void setContext(XmlWebApplicationContext context) {
+        this.context = context;
+    }
+
+    public boolean isActiveVersion() {
+        return isActiveVersion;
+    }
+
+    public void setActiveVersion(boolean activeVersion) {
+        isActiveVersion = activeVersion;
+    }
+
+    public boolean isLastVersion() {
+        return isLastVersion;
+    }
+
+    public void setLastVersion(boolean lastVersion) {
+        isLastVersion = lastVersion;
     }
 }

@@ -59,6 +59,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaControllerUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -176,16 +178,16 @@ public class ContentManagerAccessCheckFilter implements Filter,
 
     protected Map<String, String> getMapping() {
         if (mapping == null) {
-            if (SpringContextSingleton.getInstance().getModuleContext() != null) {
-                mapping = new HashMap<String, String>();
-                for (Map.Entry<String, ManagerConfiguration> cfg : org.springframework.beans.factory.BeanFactoryUtils
-                        .beansOfTypeIncludingAncestors(
-                                SpringContextSingleton.getInstance().getModuleContext(),
-                                ManagerConfiguration.class).entrySet()) {
-                    mapping.put(cfg.getKey(), cfg.getValue().getRequiredPermission());
+            mapping = new HashMap<String, String>();
+            for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
+                if (aPackage.getContext() != null) {
+                    for (Map.Entry<String, ManagerConfiguration> cfg : org.springframework.beans.factory.BeanFactoryUtils
+                            .beansOfTypeIncludingAncestors(
+                                    aPackage.getContext(),
+                                    ManagerConfiguration.class).entrySet()) {
+                        mapping.put(cfg.getKey(), cfg.getValue().getRequiredPermission());
+                    }
                 }
-            } else {
-                return Collections.emptyMap();
             }
         }
 

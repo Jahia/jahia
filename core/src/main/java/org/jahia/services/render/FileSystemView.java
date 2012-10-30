@@ -45,6 +45,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.TemplateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,11 +83,11 @@ public class FileSystemView implements Comparable<FileSystemView>, View {
         propCache.clear();
     }
 
-    public FileSystemView(String path, String key, JahiaTemplatesPackage ownerPackage, String version, String displayName) {
+    public FileSystemView(String path, String key, JahiaTemplatesPackage ownerPackage, ModuleVersion version, String displayName) {
         this.path = path;
         this.key = key;
         this.ownerPackage = ownerPackage;
-        this.moduleVersion = StringUtils.defaultIfEmpty(version, null);
+        this.moduleVersion = StringUtils.defaultIfEmpty(version.toString(), null);
         this.displayName = displayName;
         int lastDotPos = path.lastIndexOf(".");
         if (lastDotPos > 0) {

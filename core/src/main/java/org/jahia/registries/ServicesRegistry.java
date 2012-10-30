@@ -52,6 +52,7 @@ import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRVersionService;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
+import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.preferences.JahiaPreferencesService;
@@ -59,6 +60,7 @@ import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.query.QueryService;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.search.SearchService;
+import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -229,8 +231,8 @@ public class ServicesRegistry {
     /**
      * NK 12.03.2001
      */
-    public JahiaSitesService getJahiaSitesService() {
-        return (JahiaSitesService) getService(JAHIA_SITES_SERVICE);
+    public JahiaSitesBaseService getJahiaSitesService() {
+        return (JahiaSitesBaseService) getService(JAHIA_SITES_SERVICE);
     }
 
     /**
@@ -264,8 +266,8 @@ public class ServicesRegistry {
         return (JCRVersionService) getService(JCRVERSION_SERVICE);
     }
 
-    public ImportExportService getImportExportService() {
-        return (ImportExportService) getService(IMPORTEXPORT_SERVICE);
+    public ImportExportBaseService getImportExportService() {
+        return (ImportExportBaseService) getService(IMPORTEXPORT_SERVICE);
     }
 
     public JahiaPreferencesService getJahiaPreferencesService() {

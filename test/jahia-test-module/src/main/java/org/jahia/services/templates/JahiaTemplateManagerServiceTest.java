@@ -130,12 +130,12 @@ public class JahiaTemplateManagerServiceTest {
         assertFalse(availableTemplatePackages.isEmpty());
         JahiaTemplatesPackage articlePackage = null;
         for (JahiaTemplatesPackage availableTemplatePackage : availableTemplatePackages) {
-            if (availableTemplatePackage.getFileName().equals(moduleToBeDeployed)) {
+            if (availableTemplatePackage.getRootFolder().equals(moduleToBeDeployed)) {
                 articlePackage = availableTemplatePackage;
             }
         }
         assertNotNull(articlePackage);
-        String modulePath = "/templateSets/" + articlePackage.getFileName();
+        String modulePath = "/modules/" + articlePackage.getRootFolder();
         templateManagerService.deployModule(modulePath, SITE_CONTENT_ROOT_NODE, "root");
         JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         JCRSessionWrapper session = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);

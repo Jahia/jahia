@@ -48,24 +48,16 @@
 
 package org.jahia.services.templates;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.utils.Patterns;
-import org.jahia.utils.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -103,11 +95,15 @@ final class JahiaTemplatesPackageHandler {
         templatePackage.setFilePath(file.getPath());
 
         if (StringUtils.isEmpty(templatePackage.getName())) {
-            templatePackage.setName(FilenameUtils.getBaseName(file.getPath()));
+            templatePackage.setRootFolder(file.getParentFile().getName());
         }
         if (StringUtils.isEmpty(templatePackage.getRootFolder())) {
-            templatePackage.setRootFolder((FilenameUtils.getBaseName(file.getPath())).toLowerCase());
+            templatePackage.setRootFolder(file.getParentFile().getName());
         }
+        if (StringUtils.isEmpty(templatePackage.getVersion().toString())) {
+            templatePackage.setVersion(new ModuleVersion("SNAPSHOT"));
+        }
+
         if (templatePackage.getDefinitionsFiles().isEmpty()) {
             // check if there is a definitions file
             if (new File(file, "definitions.cnd").exists()) {
@@ -116,15 +112,6 @@ final class JahiaTemplatesPackageHandler {
             }
             if (new File(file, "META-INF/definitions.cnd").exists()) {
                 templatePackage.setDefinitionsFile("META-INF/definitions.cnd");
-            }
-            // check if there is a definitions grouping file
-            if (new File(file, "definitions.grp").exists()) {
-                templatePackage.setDefinitionsFile("definitions.grp");
-                warnMetaInf("definitions.grp", templatePackage.getRootFolder());
-            }
-            // check if there is a definitions grouping file
-            if (new File(file, "META-INF/definitions.grp").exists()) {
-                templatePackage.setDefinitionsFile("META-INF/definitions.grp");
             }
         }
         if (templatePackage.getRulesDescriptorFiles().isEmpty()) {
@@ -225,12 +212,6 @@ final class JahiaTemplatesPackageHandler {
                 String rootFolder = (String) manifest.getMainAttributes().get(new Attributes.Name("root-folder"));
                 String moduleType = (String) manifest.getMainAttributes().get(new Attributes.Name("module-type"));
                 String implementationVersionStr = (String) manifest.getMainAttributes().get(new Attributes.Name("Implementation-Version"));
-                if (packageName == null) {
-                    packageName = file.getName();
-                }
-                if (rootFolder == null) {
-                    rootFolder = file.getName();
-                }
 
                 String depends = (String) manifest.getMainAttributes().get(new Attributes.Name("depends"));
                 if (depends != null && !StringUtils.isEmpty(depends.trim())) {
@@ -267,18 +248,8 @@ final class JahiaTemplatesPackageHandler {
                 templatePackage.setName(packageName);
                 templatePackage.setRootFolder(rootFolder);
                 templatePackage.setModuleType(moduleType);
-                if (implementationVersionStr != null) {
-                    templatePackage.setLastVersion(new Version(implementationVersionStr));
-                }
-                File[] l = file.listFiles();
-                List<String> versions = new ArrayList<String>();
-                for (File file1 : l) {
-                    if (file1.isDirectory() && !file1.getName().equals("WEB-INF") && !file1.getName().equals("META-INF")) {
-                        versions.add(file1.getName());
-                    }
-                }
-                templatePackage.setVersions(versions);
-                
+                templatePackage.setVersion(new ModuleVersion(implementationVersionStr));
+
                 String provider = (String) manifest.getMainAttributes().get(new Attributes.Name("Implementation-Vendor"));
                 templatePackage.setProvider(StringUtils.defaultIfBlank(provider, "Jahia Solutions Group SA"));
             }

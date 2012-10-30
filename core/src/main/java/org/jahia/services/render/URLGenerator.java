@@ -194,21 +194,12 @@ public class URLGenerator {
     public String getStudio() {
         if (!SettingsBean.getInstance().isDistantPublicationServerMode() && !SettingsBean.getInstance().isProductionMode()) {
             if (studio == null) {
-                studio = Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/templateSets";
+                studio = Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/modules";
                 if (context.getSite() != null) {
                     try {
                         if (context.getSite().hasProperty("j:templatesSet")) {
                             studio += "/" + context.getSite().getProperty("j:templatesSet").getString();
-                            if (resource.getNode().hasProperty("j:templateNode")) {
-                                try {
-                                    studio += StringUtils.substringAfter(resource.getNode().getProperty("j:templateNode").getNode().getPath(), context.getSite().getPath());
-                                    studio += ".html";
-                                } catch (RepositoryException e) {
-                                    studio += ".html";
-                                }
-                            } else {
-                                studio += ".html";
-                            }
+                            studio += ".html";
                         }
                     } catch (RepositoryException e) {
                         logger.error("Cannot get studio url", e);
@@ -246,8 +237,7 @@ public class URLGenerator {
                 + "/"
                 + view.getModule().getRootFolder()
                 + (view.getModuleVersion() != null ? "/"
-                        + JahiaTemplateManagerService.VERSIONS_FOLDER_NAME + "/"
-                        + view.getModuleVersion() : StringUtils.EMPTY);
+                + view.getModuleVersion() : StringUtils.EMPTY);
     }
 
     public String getCurrent() {

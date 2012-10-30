@@ -247,7 +247,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
             HashMap<String, Object> map = new HashMap<String, Object>();
             fillProperties(map, view.getDefaultProperties());
             fillProperties(map, view.getProperties());
-            boolean isStudio = site != null && site.getPath().startsWith("/templateSets");
+            boolean isStudio = site != null && site.getPath().startsWith("/modules");
             if (!"false".equals(map.get("visible")) && (!"studioOnly".equals(map.get("visible")) || isStudio) &&
                     ((StringUtils.isEmpty(param) && map.get("type") == null) ||
                             param.equals(map.get("type"))) &&

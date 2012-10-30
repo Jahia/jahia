@@ -118,6 +118,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     private Map<String, List<String>> references = new HashMap<String, List<String>>();
 
     private Map<Pattern, String> replacements = Collections.emptyMap();
+    private List<AttributeProcessor> attributeProcessors = Collections.emptyList();
 
     private Set<String> propertiesToSkip = Collections.emptySet();
 
@@ -496,7 +497,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     }
 
     private void checkDependencies(String path, String pt, Attributes atts) throws RepositoryException {
-        if (path.startsWith("/templateSets/")) {
+        if (path.startsWith("/modules/")) {
             List<ExtendedNodeType> nodeTypes = new ArrayList<ExtendedNodeType>();
             nodeTypes.add(NodeTypeRegistry.getInstance().getNodeType(pt));
             if (atts.getValue(Constants.JCR_MIXINTYPES) != null) {
@@ -525,8 +526,8 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 }
             }
             for (ExtendedNodeType type : nodeTypes) {
-                if (type.getTemplatePackage() != null && dependencies != null && !dependencies.contains(type.getTemplatePackage().getFileName())) {
-                    String fileName = type.getTemplatePackage().getFileName();
+                if (type.getTemplatePackage() != null && dependencies != null && !dependencies.contains(type.getTemplatePackage().getRootFolder())) {
+                    String fileName = type.getTemplatePackage().getRootFolder();
                     logger.debug("Missing dependency : " + path + " (" + type.getName() + ") requires " + fileName + getLocation());
                     if (!missingDependencies.contains(fileName)) {
                         missingDependencies.add(fileName);
@@ -564,6 +565,18 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
             String attrName = ISO9075.decode(atts.getQName(i));
             String attrValue = atts.getValue(i);
+
+            boolean processed = false;
+            for (AttributeProcessor processor : attributeProcessors) {
+                if (processor.process(child,attrName, attrValue)) {
+                    processed = true;
+                    break;
+                }
+            }
+            if (processed) {
+                continue;
+            }
+
             for (String placeHolder : placeHoldersMap.keySet()) {
                 if (attrValue.contains(placeHolder)) {
                     attrValue = attrValue.replace(placeHolder, placeHoldersMap.get(placeHolder));
@@ -834,6 +847,10 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 this.replacements.put(Pattern.compile(repl.getKey()), repl.getValue());
             }
         }
+    }
+
+    public void setAttributeProcessors(List<AttributeProcessor> attributeProcessors) {
+        this.attributeProcessors = attributeProcessors;
     }
 
     public Set<String> getPropertiesToSkip() {

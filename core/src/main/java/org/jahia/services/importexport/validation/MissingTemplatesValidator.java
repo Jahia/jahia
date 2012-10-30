@@ -108,20 +108,20 @@ public class MissingTemplatesValidator implements ImportValidator, ModuleDepende
     }
 
     public ValidationResult getResult() {
-        Map<String, Integer> templateSetsMissingCounts = Collections.emptyMap();
+        Map<String, Integer> modulesMissingCounts = Collections.emptyMap();
         if (!missingInAllTemplateSets.isEmpty()) {
-            templateSetsMissingCounts = new LinkedHashMap<String, Integer>(
+            modulesMissingCounts = new LinkedHashMap<String, Integer>(
                     missingInAllTemplateSets.size());
 
             List<Map.Entry<String, Integer>> mapEntries = new LinkedList<Map.Entry<String, Integer>>(
                     missingInAllTemplateSets.entrySet());
             Collections.sort(mapEntries, MISSING_COUNT_COMPARATOR);
             for (Map.Entry<String, Integer> entry : mapEntries) {
-                templateSetsMissingCounts.put(entry.getKey(), entry.getValue());
+                modulesMissingCounts.put(entry.getKey(), entry.getValue());
             }
         }
         return new MissingTemplatesValidationResult(missingTemplates, targetTemplateSet,
-                targetTemplateSetPresent, templateSetsMissingCounts);
+                targetTemplateSetPresent, modulesMissingCounts);
     }
 
     public void initDependencies(String templateSetName, List<String> modules) {
@@ -129,9 +129,9 @@ public class MissingTemplatesValidator implements ImportValidator, ModuleDepende
         this.modules = new LinkedHashSet<String>(modules);
     }
 
-    private boolean isTemplatePresent(String templatePath) {
+    private boolean isTemplatePresent(String templateName) {
         if (targetTemplateSetPresent) {
-            return templateManagerService.isTemplatePresent(templatePath, dependencies);
+            return templateManagerService.isTemplatePresent(templateName, dependencies);
         } else {
             // we do not have the target template set
             // will populate the information for available template sets
@@ -143,7 +143,7 @@ public class MissingTemplatesValidator implements ImportValidator, ModuleDepende
                 if (!missingInAllTemplateSets.containsKey(setName)) {
                     missingInAllTemplateSets.put(setName, Integer.valueOf(0));
                 }
-                boolean found = templateManagerService.isTemplatePresent(templatePath,
+                boolean found = templateManagerService.isTemplatePresent(templateName,
                         dependenciesToCheck);
                 if (!found) {
                     missingInAllTemplateSets.put(setName,
@@ -170,44 +170,34 @@ public class MissingTemplatesValidator implements ImportValidator, ModuleDepende
 
             // validate if we have the template set deployed
             targetTemplateSetPresent = templateManagerService
-                    .getTemplatePackageByNodeName(targetTemplateSet) != null;
+                    .getTemplatePackageByFileName(targetTemplateSet) != null;
         }
         if (dependencies.isEmpty()) {
             return;
         }
 
-        String templateAttr = atts.getValue("j:templateNode");
+        String templateAttr = atts.getValue("j:templateName");
         if (StringUtils.isEmpty(templateAttr)) {
             // no template attribute
             return;
         }
-        templateAttr = ISO9075.decode(templateAttr);
-        Matcher matcher = TEMPLATE_PATTERN.matcher(templateAttr);
+        String templateName = ISO9075.decode(templateAttr);
 
-        String templatePath = matcher.matches() ? matcher.group(2) : null;
-        if (StringUtils.isEmpty(templatePath)) {
-            logger.warn("j:templateNode value '{}' does not seem well-formed. Skipping.",
-                    templateAttr);
-            return;
-        }
-
-        templatePath = "/" + templatePath;
-
-        if (checked.containsKey(templatePath)) {
+        if (checked.containsKey(templateName)) {
             // we have already checked that template
-            if (!checked.get(templatePath)) {
+            if (!checked.get(templateName)) {
                 // the template is missing -> add the path to the set
-                missingTemplates.get(templatePath).add(currentPath);
+                missingTemplates.get(templateName).add(currentPath);
             }
         } else {
             // not yet checked -> do check it
-            if (!isTemplatePresent(templatePath)) {
-                checked.put(templatePath, Boolean.FALSE);
+            if (!isTemplatePresent(templateName)) {
+                checked.put(templateName, Boolean.FALSE);
                 TreeSet<String> pathes = new TreeSet<String>();
                 pathes.add(currentPath);
-                missingTemplates.put(templatePath, pathes);
+                missingTemplates.put(templateName, pathes);
             } else {
-                checked.put(templatePath, Boolean.TRUE);
+                checked.put(templateName, Boolean.TRUE);
             }
         }
     }

@@ -183,7 +183,7 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
     }
 
     public Node addNode(String relPath, String primaryNodeTypeName) throws ItemExistsException, PathNotFoundException, NoSuchNodeTypeException, LockException, VersionException, ConstraintViolationException, RepositoryException {
-        ExternalData data = new ExternalData(null,getPath() + "/" + relPath,primaryNodeTypeName,new HashMap<String, String[]>());
+        ExternalData data = new ExternalData(this.data.getId() + "/" + relPath ,getPath() + "/" + relPath,primaryNodeTypeName,new HashMap<String, String[]>());
         session.getChangedData().put(data.getPath(),data);
         return  new ExternalNodeImpl(data,session);
     }

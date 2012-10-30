@@ -5,6 +5,8 @@ import org.apache.commons.vfs2.FileSystemException;
 import org.jahia.api.Constants;
 import org.jahia.services.content.impl.external.ExternalData;
 import org.jahia.services.content.impl.external.vfs.VFSDataSource;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.ServletContextAware;
@@ -12,6 +14,7 @@ import org.springframework.web.context.ServletContextAware;
 import javax.jcr.Binary;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.servlet.ServletContext;
 import java.io.*;
 import java.util.*;
@@ -36,8 +39,8 @@ public class ModulesDataSource extends VFSDataSource implements ServletContextAw
 
     @Override
     public void saveItem(ExternalData data) {
+        OutputStream outputStream = null;
         if (data.getPath().endsWith(Constants.JCR_CONTENT)) {
-            OutputStream outputStream = null;
             try {
                 outputStream = getFile(data.getPath().substring(0, data.getPath().indexOf("/" + Constants.JCR_CONTENT))).getContent().getOutputStream();
                 final Binary[] binaries = data.getBinaryProperties().get(Constants.JCR_DATA);
@@ -64,6 +67,47 @@ public class ModulesDataSource extends VFSDataSource implements ServletContextAw
                     }
                 }
             }
+        } else if (data.getType().equals(Constants.JAHIANT_VIEWFILE)) {
+            // Handle properties
+            try {
+                ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(data.getType());
+                Properties properties = new Properties();
+                for (String property  : data.getProperties().keySet()) {
+                    if (type.getDeclaredPropertyDefinitionsAsMap().containsKey(property)) {
+                        String[] v = data.getProperties().get(property);
+                        StringBuilder propertyValue = new StringBuilder();
+                        if (v!= null) {
+                            for (String s : v) {
+                                if (propertyValue.length() > 0) {
+                                    propertyValue.append(",");
+                                }
+                                propertyValue.append(s);
+                            }
+                            properties.put(property,propertyValue.toString());
+                        }
+                    } else {
+                        logger.warn("property not found " + property + " for type " + type.getName());
+                    }
+                }
+                outputStream = getFile(data.getPath().substring(0,data.getPath().lastIndexOf(".")) + ".properties").getContent().getOutputStream();
+                properties.store(outputStream,data.getPath());
+            } catch (FileSystemException e) {
+                logger.error(e.getMessage(), e);
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            }  catch (NoSuchNodeTypeException e) {
+                logger.error("Unable to find type : " + data.getType() + " for node " + data.getPath(),e);
+            }
+
+
+            finally {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+
         }
     }
 

@@ -799,7 +799,14 @@ extends = jnt:content
 [jnt:javascriptFolder] > jnt:folder
 [jnt:javascriptFile] > jnt:file
 [jnt:viewFile] > jnt:file
-- * (string)
+- cache.requestParameters (string)
+- cache.mainResource (boolean)
+- visible (boolean)
+- requirePermissions (string)
+- cache.expiration (int)
+- addMixin (string)
+- type (string)
+
 [jnt:definitionFile] > jnt:file
 + * (nt:nodeType)
 [jnt:resourceBundleFolder] > jnt:folder

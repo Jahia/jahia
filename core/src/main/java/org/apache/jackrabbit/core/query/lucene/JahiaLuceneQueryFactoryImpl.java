@@ -145,10 +145,10 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             Map<String, Boolean> checkedAcls = new HashMap<String, Boolean>();
 
             while (node != null) {
-                String[] infos = getIndexedNodeInfo(node, reader);
-                if (foundIds.add(infos[0])) {  // <-- Added by jahia
+                IndexedNodeInfo infos = getIndexedNodeInfo(node, reader);
+                if (foundIds.add(infos.getMainNodeUuid())) {  // <-- Added by jahia
                     try {
-                        String[] acls = infos[1] != null ? infos[1].split(" ") : new String[0];
+                        String[] acls = infos.getAclUuid() != null ? infos.getAclUuid().split(" ") : new String[0];
                         boolean canRead = true;
 
                         for (String acl : acls) {
@@ -169,8 +169,8 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                         if (canRead
                                 && (!Constants.LIVE_WORKSPACE.equals(session
                                         .getWorkspace().getName())
-                                        || infos[3] == null || "true"
-                                            .equals(infos[3]))) {
+                                        || infos.getPublished() == null || "true"
+                                            .equals(infos.getPublished()))) {
                             if (filter == Predicate.TRUE) { // <-- Added by jahia
                                 if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
                                     try {
@@ -183,7 +183,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                 if ((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) {
                                     Row row = null;
 
-                                    if ("1".equals(infos[2])) {
+                                    if ("1".equals(infos.getCheckVisibility())) {
                                         NodeImpl objectNode = session
                                                 .getNodeById(node.getNodeId());
                                         if (objectNode
@@ -206,6 +206,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                                 node.getScore());
                                     }
 
+<<<<<<< .working
                                     if (externalSort) {
                                         rowList.add(row);
                                     } else {
@@ -222,6 +223,12 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                             break;
                                         }
                                     }
+=======
+                                    rows.add(row);
+                                }
+                                if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
+                                    bitset.set(infos.getDocNumber()); // <-- Added by jahia
+>>>>>>> .merge-right.r43526
                                 }
                             } else {
                                 NodeImpl objectNode = session.getNodeById(node
@@ -254,6 +261,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                         }
                                     }
                                     if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
+<<<<<<< .working
                                         try {
                                             bitset.set(node.getDoc(reader)); // <-- Added by jahia
                                         } catch (IOException e) {
@@ -261,6 +269,9 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                                     "Can't retrive bitset from hits",
                                                     e);
                                         }
+=======
+                                        bitset.set(infos.getDocNumber()); // <-- Added by jahia
+>>>>>>> .merge-right.r43526
                                     }
                                 }
                             }
@@ -311,12 +322,11 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
      * [2] "1" if visibility rule is set for node
      * [3] "true" node is published / "false" node is not published
      */
-    private String[] getIndexedNodeInfo (ScoreNode sn, IndexReader reader) throws IOException {
-        String[] info = new String[4];
-        int docNb = sn.getDoc(reader);
+    private IndexedNodeInfo getIndexedNodeInfo (ScoreNode sn, IndexReader reader) throws IOException {
+        IndexedNodeInfo info = new IndexedNodeInfo(sn.getDoc(reader));
 
         @SuppressWarnings("serial")
-        Document doc = reader.document(docNb, new FieldSelector() {
+        Document doc = reader.document(info.getDocNumber(), new FieldSelector() {
             public FieldSelectorResult accept(String fieldName) {
                 if (FieldNames.UUID == fieldName) {
                     return FieldSelectorResult.LOAD;
@@ -337,21 +347,21 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         });
 
         if (doc.getField(JahiaNodeIndexer.TRANSLATED_NODE_PARENT) != null) {
-            info[0] = doc.getField(FieldNames.PARENT).stringValue();
+            info.setMainNodeUuid(doc.getField(FieldNames.PARENT).stringValue());
         } else {
-            info[0] = sn.getNodeId().toString();
+            info.setMainNodeUuid(sn.getNodeId().toString());
         }
         Field aclUuidField = doc.getField(JahiaNodeIndexer.ACL_UUID);
         if (aclUuidField != null) {
-            info[1] = aclUuidField.stringValue();
+            info.setAclUuid(aclUuidField.stringValue());
         }
         Field checkVisibilityField = doc.getField(JahiaNodeIndexer.CHECK_VISIBILITY);
         if (checkVisibilityField != null) {
-            info[2] = checkVisibilityField.stringValue();
+            info.setCheckVisibility(checkVisibilityField.stringValue());
         }
         Field publishedField = doc.getField(JahiaNodeIndexer.PUBLISHED);
         if (publishedField != null) {
-            info[3] = publishedField.stringValue();
+            info.setPublished(publishedField.stringValue());
         }        
         return info;
     }
@@ -471,6 +481,56 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         return super.getComparisonQuery(left, transform, operator, rigth, selectorMap);
     }
 
+    class IndexedNodeInfo {
+        private int docNumber;
+        private String mainNodeUuid;
+        private String aclUuid;
+        private String checkVisibility;
+        private String published;
+
+        public IndexedNodeInfo(int docNumber) {
+            super();
+            this.docNumber = docNumber;
+        }
+
+        public String getMainNodeUuid() {
+            return mainNodeUuid;
+        }
+
+        public void setMainNodeUuid(String mainNodeUuid) {
+            this.mainNodeUuid = mainNodeUuid;
+        }
+
+        public String getAclUuid() {
+            return aclUuid;
+        }
+
+        public void setAclUuid(String aclUuid) {
+            this.aclUuid = aclUuid;
+        }
+
+        public String getCheckVisibility() {
+            return checkVisibility;
+        }
+
+        public void setCheckVisibility(String checkVisibility) {
+            this.checkVisibility = checkVisibility;
+        }
+
+        public String getPublished() {
+            return published;
+        }
+
+        public void setPublished(String published) {
+            this.published = published;
+        }
+
+        public int getDocNumber() {
+            return docNumber;
+        }
+
+    }
+    
     class LazySelectorRow extends SelectorRow {   // <-- Added by jahia
         private Node node;
         private NodeId nodeId;

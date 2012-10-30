@@ -820,7 +820,7 @@ extends = jnt:content
 - cache.mainResource (boolean)
 - visible (boolean)
 - requirePermissions (string)
-- cache.expiration (int)
+- cache.expiration (long)
 - addMixin (string)
 - type (string)
 

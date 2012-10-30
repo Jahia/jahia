@@ -270,7 +270,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                         // skip the node
                     }
                 } else {
-                    if (!externalSort && !infos[0].equals(node.getNodeId().toString())) {
+                    if (((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) && !externalSort && !infos[0].equals(node.getNodeId().toString())) {
                         // we've got the translation node -> adjusting the position of the original node in the result list  
                         rows.put(infos[0], rows.remove(infos[0]));
                     }
@@ -279,7 +279,11 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             }
 
             if (rowList == null) {
-                rowList = new LinkedList<Row>(rows.values());
+                if (rows != null) {
+                    rowList = new LinkedList<Row>(rows.values());
+                } else {
+                    rowList = new LinkedList<Row>();
+                }
             }
             // Added by jahia
             if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {

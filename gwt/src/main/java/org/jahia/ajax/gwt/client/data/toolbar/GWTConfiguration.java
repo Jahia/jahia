@@ -42,9 +42,11 @@ package org.jahia.ajax.gwt.client.data.toolbar;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +57,7 @@ import java.util.Map;
  */
 public class GWTConfiguration implements IsSerializable, Serializable {
     protected String name;
-    private List<GWTEngineTab> engineTabs;
+    private Map<String, GWTEngineConfiguration> engineConfigurations;
     private List<String> permissions;
     private GWTJahiaNode siteNode;
     private String sitesLocation;
@@ -74,12 +76,48 @@ public class GWTConfiguration implements IsSerializable, Serializable {
         this.name = name;
     }
 
-    public List<GWTEngineTab> getEngineTabs() {
-        return engineTabs;
+    public GWTEngineConfiguration getDefaultEngineConfiguration() {
+        if (engineConfigurations == null) {
+            engineConfigurations = new HashMap<String, GWTEngineConfiguration>();
+        }
+        if (!engineConfigurations.containsKey("nt:base")) {
+            engineConfigurations.put("nt:base", new GWTEngineConfiguration());
+        }
+        return engineConfigurations.get("nt:base");
     }
 
-    public void setEngineTabs(List<GWTEngineTab> engineTabs) {
-        this.engineTabs = engineTabs;
+    public GWTEngineConfiguration getEngineConfiguration(GWTJahiaNode node) {
+        for (String t : node.getNodeTypes()) {
+            if (engineConfigurations.containsKey(t)) {
+                return engineConfigurations.get(t);
+            }
+        }
+        for (String t : node.getInheritedNodeTypes()) {
+            if (engineConfigurations.containsKey(t)) {
+                return engineConfigurations.get(t);
+            }
+        }
+        return getDefaultEngineConfiguration();
+    }
+
+    public GWTEngineConfiguration getEngineConfiguration(GWTJahiaNodeType type) {
+        if (engineConfigurations.containsKey(type.getName())) {
+            return engineConfigurations.get(type.getName());
+        }
+        for (String t : type.getSuperTypes()) {
+            if (engineConfigurations.containsKey(t)) {
+                return engineConfigurations.get(t);
+            }
+        }
+        return getDefaultEngineConfiguration();
+    }
+
+    public Map<String, GWTEngineConfiguration> getEngineConfigurations() {
+        return engineConfigurations;
+    }
+
+    public void setEngineConfigurations(Map<String, GWTEngineConfiguration> engineConfigurations) {
+        this.engineConfigurations = engineConfigurations;
     }
 
     public List<String> getPermissions() {

@@ -58,6 +58,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.contentengine.ButtonItem;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEngine;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 
@@ -117,7 +118,7 @@ public class ContentTypeWindow extends Window {
         buttonBar.setAlignment(Style.HorizontalAlignment.CENTER);
 
         ok = new Button(Messages.get("label.ok"));
-        ok.setHeight(EditContentEngine.BUTTON_HEIGHT);
+        ok.setHeight(ButtonItem.BUTTON_HEIGHT);
         ok.setEnabled(false);
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -142,7 +143,7 @@ public class ContentTypeWindow extends Window {
         buttonBar.add(ok);
 
         cancel = new Button(Messages.get("label.cancel"));
-        cancel.setHeight(EditContentEngine.BUTTON_HEIGHT);
+        cancel.setHeight(ButtonItem.BUTTON_HEIGHT);
         cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override

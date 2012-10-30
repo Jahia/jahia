@@ -58,6 +58,7 @@ import org.jahia.services.uicomponents.bean.contentmanager.Column;
 import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
 import org.jahia.services.uicomponents.bean.contentmanager.Repository;
 import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
+import org.jahia.services.uicomponents.bean.editmode.EngineConfiguration;
 import org.jahia.services.uicomponents.bean.editmode.EngineTab;
 import org.jahia.services.uicomponents.bean.editmode.SidePanelTab;
 import org.jahia.services.uicomponents.bean.toolbar.Item;
@@ -338,7 +339,7 @@ public class UIConfigHelper {
 
                 if (config.getEngineTabs() != null && !config.getEngineTabs().isEmpty()) {
                     List<GWTEngineTab> tabs = createGWTEngineList(contextNode, site, jahiaUser, locale, uiLocale, request, config.getEngineTabs());
-                    gwtConfig.setEngineTabs(tabs);
+                    gwtConfig.getDefaultEngineConfiguration().setEngineTabs(tabs);
                 }
 
                 // todo : use eanUtilsBean.getInstance().cloneBean when it works. Actually it does not copy properties of the bean.
@@ -556,7 +557,7 @@ public class UIConfigHelper {
                 gwtConfig.setMainModuleToolbar(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getMainModuleToolbar()));
                 gwtConfig.setContextMenu(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getContextMenu()));
                 gwtConfig.setTabs(createGWTSidePanelTabList(contextNode, site, jahiaUser, locale, uiLocale, request, config.getTabs()));
-                gwtConfig.setEngineTabs(createGWTEngineList(contextNode, site, jahiaUser, locale, uiLocale, request, config.getEngineTabs()));
+                gwtConfig.setEngineConfigurations(createGWTEngineConfigurations(contextNode, site, jahiaUser, locale, uiLocale, request, config.getEngineConfigurations()));
                 gwtConfig.setSitesLocation(config.getSitesLocation());
                 gwtConfig.setEnableDragAndDrop(config.isEnableDragAndDrop());
                 return gwtConfig;
@@ -615,6 +616,20 @@ public class UIConfigHelper {
             }
         }
         return gwtSidePanelTabList;
+    }
+
+    private Map<String, GWTEngineConfiguration> createGWTEngineConfigurations(JCRNodeWrapper contextNode, JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, Map<String, EngineConfiguration> engineConfigurations) {
+        Map<String, GWTEngineConfiguration> gwtEngineConfigurations = new HashMap<String, GWTEngineConfiguration>();
+        for (String type : engineConfigurations.keySet()) {
+            GWTEngineConfiguration gwtEngineConfiguration = new GWTEngineConfiguration();
+            EngineConfiguration engineConfiguration = engineConfigurations.get(type);
+            gwtEngineConfiguration.setEngineTabs(createGWTEngineList(contextNode, site, jahiaUser, locale, uiLocale, request, engineConfiguration.getEngineTabs()));
+            gwtEngineConfiguration.setCreationButtons(engineConfiguration.getCreationButtons());
+            gwtEngineConfiguration.setEditionButtons(engineConfiguration.getEditionButtons());
+            gwtEngineConfiguration.setCommonButtons(engineConfiguration.getCommonButtons());
+            gwtEngineConfigurations.put(type, gwtEngineConfiguration);
+        }
+        return gwtEngineConfigurations;
     }
 
     /**

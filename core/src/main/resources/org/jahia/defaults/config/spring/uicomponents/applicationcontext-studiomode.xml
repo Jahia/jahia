@@ -266,16 +266,40 @@
         </property>
 
         <!-- edit engine -->
-        <property name="engineTabs">
-            <list>
-                <ref bean="Engine.Tab.Content"/>
-                <ref bean="Engine.Tab.ListOrdering"/>
-                <ref bean="Engine.Tab.Layout"/>
-                <ref bean="Engine.Tab.Options"/>
-                <ref bean="Engine.Tab.RequiredPermissions"/>
-                <ref bean="Engine.Tab.Usages"/>
-                <ref bean="Engine.Tab.ContributeMode"/>
-            </list>
+        <property name="engineConfigurations">
+            <map>
+                <entry key="nt:base">
+                    <bean class="org.jahia.services.uicomponents.bean.editmode.EngineConfiguration">
+                        <property name="engineTabs">
+                            <list>
+                                <ref bean="Engine.Tab.Content"/>
+                                <ref bean="Engine.Tab.ListOrdering"/>
+                                <ref bean="Engine.Tab.Layout"/>
+                                <ref bean="Engine.Tab.Options"/>
+                                <ref bean="Engine.Tab.RequiredPermissions"/>
+                                <ref bean="Engine.Tab.Usages"/>
+                                <ref bean="Engine.Tab.ContributeMode"/>
+                            </list>
+                        </property>
+                        <property name="creationButtons">
+                            <list>
+                                <ref bean="Engine.Button.Create"/>
+                                <ref bean="Engine.Button.CreateAndNew"/>
+                            </list>
+                        </property>
+                        <property name="editionButtons">
+                            <list>
+                                <ref bean="Engine.Button.Update"/>
+                            </list>
+                        </property>
+                        <property name="commonButtons">
+                            <list>
+                                <ref bean="Engine.Button.Cancel"/>
+                            </list>
+                        </property>
+                    </bean>
+                </entry>
+            </map>
         </property>
 
         <!-- tabs-->

@@ -42,24 +42,17 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
@@ -76,8 +69,8 @@ public class CreateContentEngine extends AbstractContentEngine {
     protected GWTJahiaNodeType type = null;
     protected String targetName = null;
     protected boolean createInParentAndMoveBefore = false;
-    private Button ok;
-    private Button okAndNew;
+    private List<Button> saveButtons = new ArrayList<Button>();
+
     /**
      * Open Edit content engine for a new node creation
      *
@@ -89,7 +82,7 @@ public class CreateContentEngine extends AbstractContentEngine {
      * @param createInParentAndMoveBefore
      */
     public CreateContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore, EngineContainer engineContainer) {
-        super(linker.getConfig().getEngineTabs(), linker, createInParentAndMoveBefore ? parent.getPath().substring(0, parent.getPath().lastIndexOf('/')) : parent.getPath());
+        super(linker.getConfig().getEngineConfiguration(type), linker, createInParentAndMoveBefore ? parent.getPath().substring(0, parent.getPath().lastIndexOf('/')) : parent.getPath());
         this.existingNode = false;
         this.targetNode = parent;
         this.type = type;
@@ -115,7 +108,7 @@ public class CreateContentEngine extends AbstractContentEngine {
      * Creates and initializes all window tabs.
      */
     protected void initTabs() {
-        for (GWTEngineTab tabConfig : config) {
+        for (GWTEngineTab tabConfig : config.getEngineTabs()) {
             EditEngineTabItem tabItem = tabConfig.getTabItem();
             if (tabConfig.getRequiredPermission() == null ||
                 PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), targetNode)) {
@@ -133,30 +126,14 @@ public class CreateContentEngine extends AbstractContentEngine {
      * init buttons
      */
     protected void initFooter() {
-        ok = new Button(Messages.get("label.save"));
-        ok.setHeight(BUTTON_HEIGHT);
-        ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
-        ok.addSelectionListener(new CreateSelectionListener());
-
-        buttonBar.add(ok);
-
-        okAndNew = new Button(Messages.get("properties.saveAndNew.label", "Save and new"));
-        okAndNew.setHeight(BUTTON_HEIGHT);
-        okAndNew.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
-
-        okAndNew.addSelectionListener(new CreateAndAddNewSelectionListener());
-        buttonBar.add(okAndNew);
-
-        Button cancel = new Button(Messages.get("label.cancel", "Cancel"));
-        cancel.setHeight(BUTTON_HEIGHT);
-        cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
-        cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent buttonEvent) {
-                close();
-            }
-        });
-        buttonBar.add(cancel);
+        for (ButtonItem buttonItem : config.getCreationButtons()) {
+            Button button = buttonItem.create(this);
+            saveButtons.add(button);
+            buttonBar.add(button);
+        }
+        for (ButtonItem buttonItem : config.getCommonButtons()) {
+            buttonBar.add(buttonItem.create(this));
+        }
 
         setButtonsEnabled(false);
     }
@@ -186,7 +163,7 @@ public class CreateContentEngine extends AbstractContentEngine {
      * load mixin
      */
     private void loadEngine() {
-        contentService.initializeCreateEngine(nodeTypes.iterator().next().getName(), parentPath, targetName, new BaseAsyncCallback<GWTJahiaCreateEngineInitBean>() {
+        JahiaContentManagementService.App.getInstance().initializeCreateEngine(nodeTypes.iterator().next().getName(), parentPath, targetName, new BaseAsyncCallback<GWTJahiaCreateEngineInitBean>() {
             public void onSuccess(GWTJahiaCreateEngineInitBean result) {
                 mixin = result.getMixin();
                 initializersValues = result.getInitializersValues();
@@ -218,114 +195,21 @@ public class CreateContentEngine extends AbstractContentEngine {
         });
     }
     
-    protected class CreateSelectionListener extends SelectionListener<ButtonEvent> {
-        public void componentSelected(ButtonEvent event) {
-            save(true);
+    public void setButtonsEnabled(final boolean enabled) {
+        for (Button button : saveButtons) {
+            button.setEnabled(enabled);
         }
     }
 
-    protected class CreateAndAddNewSelectionListener extends SelectionListener<ButtonEvent> {
-        public void componentSelected(ButtonEvent event) {
-            save(false);
-        }
+    public String getTargetName() {
+        return targetName;
     }
 
-    protected void prepareAndSave(final boolean closeAfterSave) {
-        String nodeName = targetName;
-        GWTJahiaNodeACL newNodeACL = new GWTJahiaNodeACL();
-        newNodeACL.setAce(new ArrayList<GWTJahiaNodeACE>());
-
-        final Set<String> addedTypes = new HashSet<String>();
-        for (TabItem tab : tabs.getItems()) {
-            EditEngineTabItem item = tab.getData("item");
-            if (item instanceof ContentTabItem) {
-                if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
-                    nodeName = ((ContentTabItem) item).getName().getValue();
-                }
-                final List<CheckBox> values = ((ContentTabItem) item).getInvalidLanguagesCheckBoxes();
-                if (!values.isEmpty()) {
-                    final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
-                    if (values.size() != siteLanguages.size()) {
-                        List<String> strings = new ArrayList<String>(siteLanguages.size());
-                        for (GWTJahiaLanguage siteLanguage : siteLanguages) {
-                            strings.add(siteLanguage.getLanguage());
-                        }
-                        GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
-                        gwtJahiaNodeProperty.setName("j:invalidLanguages");
-                        gwtJahiaNodeProperty.setMultiple(true);
-                        for (CheckBox value : values) {
-                            if (value.getValue()) {
-                                strings.remove(value.getValueAttribute());
-                            }
-                        }
-                        if(strings.size()>0) {
-                            gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
-                            for (String string : strings) {
-                                gwtJahiaNodeProperty.getValues().add(new GWTJahiaNodePropertyValue(string));
-                            }
-                        }
-                        final List<GWTJahiaNodePropertyValue> gwtJahiaNodePropertyValues = gwtJahiaNodeProperty.getValues();
-                        if (gwtJahiaNodePropertyValues!=null && gwtJahiaNodePropertyValues.size() > 0) {
-                            changedProperties.add(gwtJahiaNodeProperty);
-                            addedTypes.add("jmix:i18n");
-                        }
-                    }
-                }
-            }
-
-            item.doSave(node, changedProperties, changedI18NProperties, addedTypes, new HashSet<String>(), newNodeACL);
-        }
-        
-		doSave(nodeName, changedProperties, changedI18NProperties, new ArrayList<String>(addedTypes), newNodeACL,
-                closeAfterSave);
-    }
-    
-    protected void doSave(String nodeName, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<String> mixin, GWTJahiaNodeACL newNodeACL, final boolean closeAfterSave) {
-        final AsyncCallback<GWTJahiaNode> callback = new BaseAsyncCallback<GWTJahiaNode>() {
-            public void onApplicationFailure(Throwable throwable) {
-                failSave(throwable);
-            }
-
-            public void onSuccess(GWTJahiaNode node) {
-                if (closeAfterSave) {
-					Info.display(
-					        Messages.get("label.information", "Information"),
-					        Messages.get(
-					                "org.jahia.engines.contentmanager.addContentWizard.formCard.success.save",
-					                "Content node created successfully:")
-					                + " " + node.getName());
-                    CreateContentEngine.this.container.closeEngine();
-
-                    if (node.isPage() || node.getNodeTypes().contains("jnt:externalLink")
-                            || node.getNodeTypes().contains("jnt:nodeLink")
-                            || node.getNodeTypes().contains("jnt:template") || node.getInheritedNodeTypes().contains("jnt:template")
-                            || node.getInheritedNodeTypes().contains("jmix:visibleInPagesTree")) {
-                        linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
-                        linker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
-                    } else {
-                        linker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_FOLDERS);
-                    }
-                } else {
-                    CreateContentEngine.this.tabs.removeAll();
-                    CreateContentEngine.this.initTabs();
-                    changedI18NProperties.clear();
-                    changedProperties.clear();
-                    CreateContentEngine.this.tabs.setSelection(tabs.getItem(0));
-                    CreateContentEngine.this.layout(true);
-                    unmask();
-                    setButtonsEnabled(true);
-                }
-            }
-        };
-        if (createInParentAndMoveBefore) {
-            contentService.createNodeAndMoveBefore(targetNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props, langCodeProperties, callback);
-        } else {
-            contentService.createNode(parentPath, nodeName, type.getName(), mixin, newNodeACL, props, langCodeProperties, callback);
-        }
+    public boolean isCreateInParentAndMoveBefore() {
+        return createInParentAndMoveBefore;
     }
 
-    protected void setButtonsEnabled(final boolean enabled) {
-        ok.setEnabled(enabled);
-        okAndNew.setEnabled(enabled);
+    public GWTJahiaNodeType getType() {
+        return type;
     }
 }

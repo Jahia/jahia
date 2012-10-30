@@ -44,8 +44,10 @@ import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 import org.springframework.beans.factory.BeanNameAware;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represent edit mode configuration, including side panel and side panel toolbar,
@@ -68,7 +70,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     private List<SidePanelTab> tabs;
 
-    private List<EngineTab> engineTabs;
+    private Map<String, EngineConfiguration> engineConfigurations;
 
     private String sitesLocation;
 
@@ -137,12 +139,22 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         this.tabs = tabs;
     }
 
-    public List<EngineTab> getEngineTabs() {
-        return engineTabs;
+    public EngineConfiguration getDefaultEditConfiguration() {
+        if (engineConfigurations == null) {
+            engineConfigurations = new HashMap<String, EngineConfiguration>();
+        }
+        if (!engineConfigurations.containsKey("nt:base")) {
+            engineConfigurations.put("nt:base", new EngineConfiguration());
+        }
+        return engineConfigurations.get("nt:base");
     }
 
-    public void setEngineTabs(List<EngineTab> engineTabs) {
-        this.engineTabs = engineTabs;
+    public Map<String, EngineConfiguration> getEngineConfigurations() {
+        return engineConfigurations;
+    }
+
+    public void setEngineConfigurations(Map<String, EngineConfiguration> engineConfigurations) {
+        this.engineConfigurations = engineConfigurations;
     }
 
     public String getSitesLocation() {

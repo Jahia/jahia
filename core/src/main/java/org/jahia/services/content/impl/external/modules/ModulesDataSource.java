@@ -78,7 +78,7 @@ public class ModulesDataSource extends VFSDataSource implements ServletContextAw
             return Constants.JAHIANT_DEFINITIONFILE;
         } else if (path.endsWith("/javascript")){
             return Constants.JAHIANT_JAVASCRIPTFOLDER;
-        } else if (path.endsWith(".javascript")){
+        } else if (path.endsWith(".js")){
             return Constants.JAHIANT_JAVASCRIPTFILE;
         }
         return super.getDataType(fileObject);
@@ -90,6 +90,6 @@ public class ModulesDataSource extends VFSDataSource implements ServletContextAw
 
     @Override
     public void setRoot(String root) {
-        super.setRoot("/");    //To change body of overridden methods use File | Settings | File Templates.
+        super.setRoot("/");
     }
 }

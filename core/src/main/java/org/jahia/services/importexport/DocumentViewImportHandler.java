@@ -257,6 +257,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
             if (pathMapping.containsKey(path + "/")) {
                 path = StringUtils.substringBeforeLast(pathMapping.get(path + "/"), "/");
+                decodedQName = StringUtils.substringAfter(path,"/");
             }
 
             if (noSubNodesImport.contains(pt)) {

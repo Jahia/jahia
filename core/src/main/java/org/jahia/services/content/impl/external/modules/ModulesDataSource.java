@@ -10,14 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.ServletContextAware;
 
 import javax.jcr.Binary;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletContext;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -75,6 +72,8 @@ public class ModulesDataSource extends VFSDataSource implements ServletContextAw
             return Constants.JAHIANT_CSSFILE;
         } else if (path.endsWith("/css")){
             return Constants.JAHIANT_CSSFOLDER;
+        } else if (path.endsWith(".jsp")){
+            return Constants.JAHIANT_VIEWFILE;
         } else if (path.endsWith(".cnd")){
             return Constants.JAHIANT_DEFINITIONFILE;
         } else if (path.endsWith("/javascript")){
@@ -92,5 +91,30 @@ public class ModulesDataSource extends VFSDataSource implements ServletContextAw
     @Override
     public void afterPropertiesSet() throws Exception {
         super.setRoot(servletContext.getRealPath("/modules"));
+    }
+
+    @Override
+    public ExternalData getItemByPath(String path) throws PathNotFoundException {
+        ExternalData data = super.getItemByPath(path);
+        if (path.endsWith(".jsp")) {
+            Properties properties = new Properties();
+
+            // set Properties
+            try {
+                properties.load(getFile(path.substring(0, path.lastIndexOf(".")) + ".properties").getContent().getInputStream());
+                Map<String,String[]> dataProperties = new HashMap<String, String[]>();
+                for (Iterator<?> iterator = properties.keySet().iterator(); iterator.hasNext();) {
+                    String k = (String) iterator.next();
+                    String v = properties.getProperty(k);
+                    dataProperties.put(k,v.split(","));
+                }
+                data.getProperties().putAll(dataProperties);
+            } catch (FileSystemException e) {
+                //no properties files, do nothing
+            } catch (IOException e) {
+                logger.error("Cannot read property file",e);
+            }
+        }
+        return data;
     }
 }

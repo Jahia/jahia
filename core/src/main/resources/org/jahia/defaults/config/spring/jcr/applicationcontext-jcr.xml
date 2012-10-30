@@ -562,4 +562,14 @@
         <!--</property>-->
         <!--<property name="mountPoint" value="/tmp2"/>-->
     <!--</bean>-->
+
+    <bean id="VFStoreProvider" class="org.jahia.services.content.impl.external.ExternalContentStoreProvider"  parent="AbstractJCRStoreProvider">
+        <property name="key" value="module"/>
+        <property name="dataSource">
+            <bean class="org.jahia.services.content.impl.external.modules.ModulesDataSource">
+                <property name="root" value="/modules"/>
+            </bean>
+        </property>
+        <property name="mountPoint" value="/modulesFileSystem"/>
+    </bean>
 </beans>

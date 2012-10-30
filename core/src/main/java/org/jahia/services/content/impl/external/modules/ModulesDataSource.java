@@ -5,9 +5,12 @@ import org.apache.commons.vfs2.FileSystemException;
 import org.jahia.api.Constants;
 import org.jahia.services.content.impl.external.ExternalData;
 import org.jahia.services.content.impl.external.vfs.VFSDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.ServletContextAware;
 
 import javax.jcr.Binary;
 import javax.jcr.RepositoryException;
+import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -22,7 +25,8 @@ import java.util.List;
  * Time: 2:09 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ModulesDataSource extends VFSDataSource {
+public class ModulesDataSource extends VFSDataSource implements ServletContextAware {
+    private ServletContext servletContext;
 
     @Override
     public List<String> getSupportedNodeTypes() {
@@ -78,5 +82,14 @@ public class ModulesDataSource extends VFSDataSource {
             return Constants.JAHIANT_JAVASCRIPTFILE;
         }
         return super.getDataType(fileObject);
+    }
+
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
+
+    @Override
+    public void setRoot(String root) {
+        super.setRoot("/");    //To change body of overridden methods use File | Settings | File Templates.
     }
 }

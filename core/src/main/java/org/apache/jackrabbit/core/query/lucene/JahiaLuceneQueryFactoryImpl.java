@@ -173,11 +173,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                             .equals(infos.getPublished()))) {
                             if (filter == Predicate.TRUE) { // <-- Added by jahia
                                 if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
-                                    try {
-                                        bitset.set(node.getDoc(reader)); // <-- Added by jahia
-                                    } catch (IOException e) {
-                                        logger.debug("Can't retrive bitset from hits", e);
-                                    }
+                                    bitset.set(infos.getDocNumber()); // <-- Added by jahia
                                 }
                                 
                                 if ((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) {
@@ -206,7 +202,6 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                                 node.getScore());
                                     }
 
-<<<<<<< .working
                                     if (externalSort) {
                                         rowList.add(row);
                                     } else {
@@ -223,12 +218,6 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                             break;
                                         }
                                     }
-=======
-                                    rows.add(row);
-                                }
-                                if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
-                                    bitset.set(infos.getDocNumber()); // <-- Added by jahia
->>>>>>> .merge-right.r43526
                                 }
                             } else {
                                 NodeImpl objectNode = session.getNodeById(node
@@ -261,17 +250,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                         }
                                     }
                                     if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
-<<<<<<< .working
-                                        try {
-                                            bitset.set(node.getDoc(reader)); // <-- Added by jahia
-                                        } catch (IOException e) {
-                                            logger.debug(
-                                                    "Can't retrive bitset from hits",
-                                                    e);
-                                        }
-=======
                                         bitset.set(infos.getDocNumber()); // <-- Added by jahia
->>>>>>> .merge-right.r43526
                                     }
                                 }
                             }
@@ -281,9 +260,9 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                         // skip the node
                     }
                 } else {
-                    if (((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) && !externalSort && !infos[0].equals(node.getNodeId().toString())) {
+                    if (((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) && !externalSort && !infos.getMainNodeUuid().equals(node.getNodeId().toString())) {
                         // we've got the translation node -> adjusting the position of the original node in the result list  
-                        rows.put(infos[0], rows.remove(infos[0]));
+                        rows.put(infos.getMainNodeUuid(), rows.remove(infos.getMainNodeUuid()));
                     }
                 }  // <-- Added by jahia
                 node = hits.nextScoreNode();

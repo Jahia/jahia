@@ -146,6 +146,7 @@
             <bean class="org.jahia.services.templates.TemplatePackageDeployer">
                 <property name="settingsBean" ref="settingsBean"/>
                 <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
+                <property name="componentRegistry" ref="ComponentRegistry"/>
                 <property name="importExportService" ref="ImportExportService"/>
                 <property name="contextLoader" ref="TemplatePackageApplicationContextLoader"/>
                 <property name="deploymentHelper">

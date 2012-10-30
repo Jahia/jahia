@@ -68,6 +68,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -116,7 +117,7 @@ import java.util.zip.ZipOutputStream;
  *
  * @author Sergiy Shyrkov
  */
-public class JahiaTemplateManagerService extends JahiaService implements ApplicationEventPublisherAware, ApplicationListener<ApplicationEvent> {
+public class JahiaTemplateManagerService extends JahiaService implements ApplicationEventPublisherAware, ApplicationListener<ApplicationEvent>, JahiaAfterInitializationService {
 
     public static final String MODULE_TYPE_JAHIAPP = "jahiapp";
 
@@ -399,6 +400,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public void setTemplatePackageDeployer(TemplatePackageDeployer deployer) {
         templatePackageDeployer = deployer;
+        deployer.setService(this);
     }
 
     public void setTemplatePackageRegistry(TemplatePackageRegistry registry) {
@@ -413,9 +415,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         // scan the directory for templates
         templatePackageDeployer.registerTemplatePackages();
-
-        // start template package watcher
-        templatePackageDeployer.startWatchdog();
 
         logger.info("JahiaTemplateManagerService started successfully."
                 + " Total number of found modules: "
@@ -441,20 +440,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public void onApplicationEvent(final ApplicationEvent event) {
         if (event instanceof JahiaContextLoaderListener.RootContextInitializedEvent) {
             if (SettingsBean.getInstance().isProcessingServer()) {
-                try {
-                    JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
-                        public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            // initialize modules (migration case)
-                            List<JahiaTemplatesPackage> initialImports = templatePackageDeployer.getInitialImports();
-                            while (!initialImports.isEmpty()) {
-                                processInitialImports(session, initialImports.remove(0));
-                            }
-                            return null;
-                        }
-                    });
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                }
+                templatePackageDeployer.initializeModulesContent();
             }
         } else if (event instanceof TemplatePackageRedeployedEvent) {
             // flush resource bundle cache
@@ -463,39 +449,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             NodeTypeRegistry.flushLabels();
         }
     }
-
-    public void processInitialImports(JCRSessionWrapper session, JahiaTemplatesPackage aPackage) throws RepositoryException {
-        templatePackageDeployer.initializeMissingModuleNodes(aPackage, session);
-
-        templatePackageDeployer.performInitialImport(aPackage, session);
-
-        if (aPackage.isLastVersion()) {
-            componentRegistry.registerComponents(aPackage, session);
-        }
-        if (aPackage.isActiveVersion()) {
-            if (templatePackageRegistry.lookupByFileName(aPackage.getRootFolder()).equals(aPackage)) {
-                autoDeployModulesToSites(session, aPackage);
-            }
-        }
-    }
-
-
-    private void autoDeployModulesToSites(JCRSessionWrapper session, JahiaTemplatesPackage pack)
-            throws RepositoryException {
-        if(pack.getAutoDeployOnSite()!=null) {
-            if("system".equals(pack.getAutoDeployOnSite())) {
-                if(session.nodeExists("/sites/systemsite")) {
-                    deployModule("/modules/"+pack.getRootFolder(),"/sites/systemsite",session);
-                }
-            } else if ("all".equals(pack.getAutoDeployOnSite())) {
-                if(session.nodeExists("/sites/systemsite")) {
-                    deployModuleToAllSites("/modules/"+pack.getRootFolder(),false,session, null);
-                }
-            }
-        }
-    }
-
-
 
     public JCRNodeWrapper createModule(String moduleName, String moduleType, File sources, String scmURI, String scmType, JCRSessionWrapper session) throws IOException, RepositoryException {
         if (sources == null) {
@@ -1736,5 +1689,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public void setComponentRegistry(ComponentRegistry componentRegistry) {
         this.componentRegistry = componentRegistry;
+    }
+
+    public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
+        // start template package watcher
+        templatePackageDeployer.startWatchdog();
     }
 }

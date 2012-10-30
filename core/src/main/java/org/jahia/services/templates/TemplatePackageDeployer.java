@@ -40,28 +40,17 @@
 
 package org.jahia.services.templates;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.ZipException;
-
-import javax.jcr.*;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.filefilter.*;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportService;
-import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.settings.SettingsBean;
@@ -69,6 +58,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+
+import javax.jcr.ImportUUIDBehavior;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import java.io.*;
+import java.util.*;
+import java.util.zip.ZipException;
 
 /**
  * Template package deployer service.
@@ -128,9 +124,9 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
                         }
                         timestamps.put(file.getPath(), file.lastModified());
                     } catch (ZipException e) {
-                        logger.warn("Cannot deploy module : "+file.getName()+", will try again later");
+                        logger.warn("Cannot deploy module : " + file.getName() + ", will try again later");
                     } catch (Exception e) {
-                        logger.error("Cannot deploy module : "+file.getName(),e);
+                        logger.error("Cannot deploy module : " + file.getName(), e);
                         timestamps.put(file.getPath(), file.lastModified());
                     }
                 }
@@ -142,7 +138,7 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
                 for (File file : files) {
                     if (!timestamps.containsKey(file.getPath()) || timestamps.get(file.getPath()) != file.lastModified()) {
                         timestamps.put(file.getPath(), file.lastModified());
-                        while (file.getPath().split("/").length > deployedTemplatesFolder.getPath().split("/").length+2) {
+                        while (file.getPath().split("/").length > deployedTemplatesFolder.getPath().split("/").length + 2) {
                             file = file.getParentFile();
                         }
                         remaining.add(file);
@@ -233,26 +229,23 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
                                 unresolvedDependencies.remove(pack);
                                 templatePackageRegistry.registerPackage(pack);
 
-                                if (pack.getContext() != null) {
-                                    if (pack.isActiveVersion()) {
-                                        contextLoader.reload(pack);
-                                    }
+                                if (pack.getContext() != null && pack.isActiveVersion()) {
+                                    contextLoader.reload(pack);
 
-                                    ServicesRegistry.getInstance().getJahiaTemplateManagerService().processInitialImports(session, pack);
+                                    initializeModuleContent(pack, session);
 
-                                    if (pack.isActiveVersion()) {
-                                        Map map = pack.getContext().getBeansOfType(JahiaAfterInitializationService.class);
-                                        for (Object o : map.values()) {
-                                            JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
-                                            try {
-                                                initializationService.initAfterAllServicesAreStarted();
-                                            } catch (JahiaInitializationException e) {
-                                                logger.error(e.getMessage(), e);
-                                            }
+                                    Map map = pack.getContext().getBeansOfType(JahiaAfterInitializationService.class);
+                                    for (Object o : map.values()) {
+                                        JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
+                                        try {
+                                            initializationService.initAfterAllServicesAreStarted();
+                                        } catch (JahiaInitializationException e) {
+                                            logger.error(e.getMessage(), e);
                                         }
                                     }
+                                } else {
+                                    initializeModuleContent(pack, session);
                                 }
-
                             }
                             return null;
                         }
@@ -278,20 +271,23 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
     }
 
     private static Logger logger = LoggerFactory.getLogger(TemplatePackageDeployer.class);
-    
+
     private DeploymentHelper deploymentHelper;
     private Map<String, Long> timestamps = new HashMap<String, Long>();
     private TemplatesWatcher templatesWatcher;
 
+    private JahiaTemplateManagerService service;
+
     private TemplatePackageRegistry templatePackageRegistry;
-    
+    private ComponentRegistry componentRegistry;
+
     private ImportExportService importExportService;
 
     private SettingsBean settingsBean;
 
     private Timer watchdog;
 
-    private List<JahiaTemplatesPackage> initialImports = new LinkedList<JahiaTemplatesPackage>();
+    private List<JahiaTemplatesPackage> modulesToInitialize = new LinkedList<JahiaTemplatesPackage>();
     private List<String> unzippedPackages = new LinkedList<String>();
     private Set<JahiaTemplatesPackage> unresolvedDependencies = new HashSet<JahiaTemplatesPackage>();
 
@@ -337,7 +333,7 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
             for (JahiaTemplatesPackage pack : getOrderedPackages(remaining).values()) {
                 if (unzippedPackages.contains(pack.getFilePath())) {
                     unzippedPackages.remove(pack.getFilePath());
-                    initialImports.add(pack);
+                    modulesToInitialize.add(pack);
                 }
 
                 templatePackageRegistry.registerPackage(pack);
@@ -360,7 +356,7 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
         }
         return null;
     }
-    
+
     /**
      * Goes through the template set archives in the in the shared templates
      * folder to check if there are any new or updated files, which needs to be
@@ -383,86 +379,125 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
                     unzippedPackages.add(folder.getPath());
                 }
             } catch (Exception e) {
-                logger.error("Cannot deploy module : "+templateWar.getName(),e);
+                logger.error("Cannot deploy module : " + templateWar.getName(), e);
             }
         }
 
         logger.info("...finished scanning shared modules directory.");
     }
 
-    public boolean performInitialImport(final JahiaTemplatesPackage pack, JCRSessionWrapper session) {
+    public void initializeModulesContent() {
         try {
-            initRepository(session, pack);
-            if (!pack.getInitialImports().isEmpty()) {
-                logger.info("Starting import for the module package '" + pack.getName() + "' including: "
-                        + pack.getInitialImports());
-                cleanTemplates(pack.getRootFolder(), pack.getVersion(), session);
-                for (String imp : pack.getInitialImports()) {
-                    String targetPath = "/" + StringUtils.substringAfter(StringUtils.substringBeforeLast(imp, "."), "import-").replace('-', '/');
-                    File importFile = new File(pack.getFilePath(), imp);
-                    logger.info("... importing " + importFile + " into " + targetPath);
-                    try {
-                        session.getPathMapping().put("/templateSets/", "/modules/");
-                        session.getPathMapping().put("/modules/"+pack.getRootFolder() + "/", "/modules/"+pack.getRootFolder()+"/"+pack.getVersion() + "/");
-
-                        if (imp.toLowerCase().endsWith(".xml")) {
-                            InputStream is = null;
-                            try {
-                                is = new BufferedInputStream(new FileInputStream(importFile));
-                                session.importXML(targetPath, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE);
-                            } finally {
-                                IOUtils.closeQuietly(is);
-                            }
-                        } else if (imp.toLowerCase().contains("/importsite")) {
-                            JCRUser user = null;
-                            try {
-                                user = JCRUserManagerProvider.getInstance().lookupRootUser();
-                                JCRSessionFactory.getInstance().setCurrentUser(user);
-                                importExportService.importSiteZip(importFile,session);
-                            } finally {
-                                JCRSessionFactory.getInstance().setCurrentUser(user);
-                            }
-
-                        } else {
-                            importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session);
-                        }
-
-                        importFile.delete();
-                        session.save(JCRObservationManager.IMPORT);
-                    } catch (Exception e) {
-                        logger.error("Unable to import content for package '" + pack.getName() + "' from file " + imp
-                                + ". Cause: " + e.getMessage(), e);
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    // initialize modules (migration case)
+                    while (!modulesToInitialize.isEmpty()) {
+                        initializeModuleContent(modulesToInitialize.remove(0), session);
                     }
+
+                    return null;
                 }
-                resetModuleAttributes(session, pack);
-                session.save();
-//                JCRPublicationService.getInstance().publish(this.getChildrenUuids(session.getNode("/modules/" + pack.getRootFolderWithVersion())), "default", "live", false, null);
-                logger.info("... finished initial import for module package '" + pack.getName() + "'.");
-                return true;
-            }
-            resetModuleAttributes(session, pack);
-            session.save();
-//            JCRPublicationService.getInstance().publish(this.getChildrenUuids(session.getNode("/modules/" + pack.getRootFolderWithVersion())), "default", "live", false, null);
-            return false;
+            });
         } catch (RepositoryException e) {
-            logger.error("Unable to import content for package '" + pack.getName()
-                    + "'. Cause: " + e.getMessage(), e);
-            return false;
+            logger.error(e.getMessage(), e);
         }
     }
 
-    private List<String> getChildrenUuids(JCRNodeWrapper n) throws RepositoryException {
-        ArrayList<String> uuids = new ArrayList<String>();
-        getChildrenUuids(uuids, n);
-        return uuids;
+    public void initializeModuleContent(JahiaTemplatesPackage aPackage, JCRSessionWrapper session) throws RepositoryException {
+        try {
+            resetModuleNodes(aPackage, session);
+
+            logger.info("Starting import for the module package '" + aPackage.getName() + "' including: "
+                    + aPackage.getInitialImports());
+            for (String imp : aPackage.getInitialImports()) {
+                String targetPath = "/" + StringUtils.substringAfter(StringUtils.substringBeforeLast(imp, "."), "import-").replace('-', '/');
+                File importFile = new File(aPackage.getFilePath(), imp);
+                logger.info("... importing " + importFile + " into " + targetPath);
+                try {
+                    session.getPathMapping().put("/templateSets/", "/modules/");
+                    session.getPathMapping().put("/modules/" + aPackage.getRootFolder() + "/", "/modules/" + aPackage.getRootFolder() + "/" + aPackage.getVersion() + "/");
+
+                    if (imp.toLowerCase().endsWith(".xml")) {
+                        InputStream is = null;
+                        try {
+                            is = new BufferedInputStream(new FileInputStream(importFile));
+                            session.importXML(targetPath, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE);
+                        } finally {
+                            IOUtils.closeQuietly(is);
+                        }
+                    } else if (imp.toLowerCase().contains("/importsite")) {
+                        JCRUser user = null;
+                        try {
+                            user = JCRUserManagerProvider.getInstance().lookupRootUser();
+                            JCRSessionFactory.getInstance().setCurrentUser(user);
+                            importExportService.importSiteZip(importFile, session);
+                        } finally {
+                            JCRSessionFactory.getInstance().setCurrentUser(user);
+                        }
+
+                    } else {
+                        importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session);
+                    }
+
+                    importFile.delete();
+                    session.save(JCRObservationManager.IMPORT);
+                } catch (Exception e) {
+                    logger.error("Unable to import content for package '" + aPackage.getName() + "' from file " + imp
+                            + ". Cause: " + e.getMessage(), e);
+                }
+            }
+            cloneModuleInLive(aPackage);
+            logger.info("... finished initial import for module package '" + aPackage.getName() + "'.");
+
+            if (aPackage.isLastVersion()) {
+                componentRegistry.registerComponents(aPackage, session);
+            }
+            if (aPackage.isActiveVersion()) {
+                if (templatePackageRegistry.lookupByFileName(aPackage.getRootFolder()).equals(aPackage)) {
+                    autoDeployModulesToSites(session, aPackage);
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error("Unable to import content for package '" + aPackage.getName()
+                    + "'. Cause: " + e.getMessage(), e);
+        }
     }
 
-    private void getChildrenUuids(List<String> uuids, JCRNodeWrapper n) throws RepositoryException {
-        uuids.add(n.getIdentifier());
-        NodeIterator ni = n.getNodes();
-        while (ni.hasNext()) {
-            JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
-            getChildrenUuids(uuids, next);
+    private void autoDeployModulesToSites(JCRSessionWrapper session, JahiaTemplatesPackage pack)
+            throws RepositoryException {
+        if(pack.getAutoDeployOnSite()!=null) {
+            if("system".equals(pack.getAutoDeployOnSite())) {
+                if(session.nodeExists("/sites/systemsite")) {
+                    service.deployModule("/modules/" + pack.getRootFolder(), "/sites/systemsite", session);
+                }
+            } else if ("all".equals(pack.getAutoDeployOnSite())) {
+                if(session.nodeExists("/sites/systemsite")) {
+                    service.deployModuleToAllSites("/modules/" + pack.getRootFolder(), false, session, null);
+                }
+            }
+        }
+    }
+
+    private synchronized void cloneModuleInLive(final JahiaTemplatesPackage pack) throws RepositoryException {
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    if (!session.itemExists("/modules")) {
+                        session.getWorkspace().clone("default", "/modules", "/modules", true);
+                    } else if (!session.itemExists("/modules/" + pack.getRootFolder())) {
+                        session.getWorkspace().clone("default", "/modules/" + pack.getRootFolder(), "/modules/" + pack.getRootFolder(), true);
+                    } else {
+                        if (session.itemExists("/modules/" + pack.getRootFolderWithVersion())) {
+                            session.getNode("/modules/" + pack.getRootFolderWithVersion()).remove();
+                            session.save();
+                        }
+                        session.getWorkspace().clone("default", "/modules/" + pack.getRootFolderWithVersion(), "/modules/" + pack.getRootFolderWithVersion(), true);
+                    }
+                    return null;
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error("Cannot clone " + pack.getRootFolderWithVersion(), e);
         }
     }
 
@@ -473,7 +508,7 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
         m.setProperty("j:title", pack.getName());
 //        m.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(pack.getRootFolder())});
         if (pack.getModuleType() != null) {
-            m.setProperty("j:moduleType",pack.getModuleType());
+            m.setProperty("j:moduleType", pack.getModuleType());
         }
         List<Value> l = new ArrayList<Value>();
         for (String d : pack.getDepends()) {
@@ -486,7 +521,7 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
             }
         }
         Value[] values = new Value[pack.getDepends().size()];
-        m.setProperty("j:dependencies",l.toArray(values));
+        m.setProperty("j:dependencies", l.toArray(values));
 
         if (pack.getModuleType() == null) {
             String moduleType = guessModuleType(session, pack);
@@ -494,28 +529,23 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
         }
 
         JCRNodeWrapper tpls = m.getNode("templates");
-        if (!tpls.hasProperty("j:rootTemplatePath") && JahiaTemplateManagerService.MODULE_TYPE_MODULE.equals(pack.getModuleType())){
-            tpls.setProperty("j:rootTemplatePath","/base");
+        if (!tpls.hasProperty("j:rootTemplatePath") && JahiaTemplateManagerService.MODULE_TYPE_MODULE.equals(pack.getModuleType())) {
+            tpls.setProperty("j:rootTemplatePath", "/base");
         }
     }
 
     private String guessModuleType(JCRSessionWrapper session, JahiaTemplatesPackage pack) throws RepositoryException {
         String moduleType = JahiaTemplateManagerService.MODULE_TYPE_MODULE;
         if (session.itemExists("/modules/" + pack.getRootFolderWithVersion() + "/j:moduleType")) {
-            moduleType = session.getNode("/modules/"+pack.getRootFolderWithVersion()).getProperty("j:moduleType").getValue().getString();
+            moduleType = session.getNode("/modules/" + pack.getRootFolderWithVersion()).getProperty("j:moduleType").getValue().getString();
         } else {
             List<String> files = new ArrayList<String>(Arrays.asList(new File(pack.getFilePath()).list()));
-            files.removeAll(Arrays.asList("META-INF","WEB-INF", "resources"));
+            files.removeAll(Arrays.asList("META-INF", "WEB-INF", "resources"));
             if (files.isEmpty()) {
                 moduleType = JahiaTemplateManagerService.MODULE_TYPE_SYSTEM;
             }
         }
         return moduleType;
-    }
-
-    private void initRepository(JCRSessionWrapper session, JahiaTemplatesPackage pack) throws RepositoryException {
-        initModuleNode(session, pack, true);
-        session.save();
     }
 
     private boolean initModuleNode(JCRSessionWrapper session, JahiaTemplatesPackage pack, boolean updateDeploymentDate)
@@ -541,8 +571,8 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
             m.addNode("files", "jnt:folder");
             m.addNode("contents", "jnt:contentFolder");
             JCRNodeWrapper tpls = m.addNode("templates", "jnt:templatesFolder");
-            if (JahiaTemplateManagerService.MODULE_TYPE_MODULE.equals(pack.getModuleType())){
-                tpls.setProperty("j:rootTemplatePath","/base");
+            if (JahiaTemplateManagerService.MODULE_TYPE_MODULE.equals(pack.getModuleType())) {
+                tpls.setProperty("j:rootTemplatePath", "/base");
             }
             tpls.addNode("files", "jnt:folder");
             tpls.addNode("contents", "jnt:contentFolder");
@@ -572,40 +602,6 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
         return modified;
     }
 
-    public List<JahiaTemplatesPackage> getInitialImports() {
-        return initialImports;
-    }
-
-    private void cleanTemplates(String moduleName, ModuleVersion version, JCRSessionWrapper session) throws RepositoryException {
-        final QueryManager queryManager = session.getWorkspace().getQueryManager();
-        QueryResult result = queryManager.createQuery(
-                "select * from [jnt:module] as n where isdescendantnode(n,['/modules']) and name(n) = '" + moduleName + "'", Query.JCR_SQL2).execute();
-        final NodeIterator iterator = result.getNodes();
-        if (iterator.hasNext()) {
-            Node n = iterator.nextNode();
-            if (n.hasNode(version.toString())) {
-                n = n.getNode(version.toString());
-                if (n.hasNode("templates")) {
-                    removeTemplates(n.getNode("templates"));
-                }
-            }
-        }
-    }
-
-    private void removeTemplates(Node n)  throws RepositoryException {
-        NodeIterator c = n.getNodes();
-        while(c.hasNext()) {
-            Node nn = (c.nextNode());
-            if (!nn.isNodeType("jnt:template")) {
-                nn.remove();
-            } else {
-                if (nn.hasNodes()) {
-                    removeTemplates(nn);
-                }
-            }
-        }
-    }
-
     private Map<String, JahiaTemplatesPackage> getOrderedPackages(LinkedHashSet<JahiaTemplatesPackage> remaining) {
         LinkedHashMap<String, JahiaTemplatesPackage> toDeploy = new LinkedHashMap<String, JahiaTemplatesPackage>();
         Set<String> packageNames = new HashSet<String>();
@@ -617,7 +613,7 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
                 toDeploy.put(pack.getFilePath(), pack);
                 packageNames.add(pack.getName());
                 folderNames.add(pack.getRootFolder());
-            }  else {
+            } else {
                 newRemaining.add(pack);
             }
         }
@@ -701,6 +697,14 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
         templatePackageRegistry = tmplPackageRegistry;
     }
 
+    public void setComponentRegistry(ComponentRegistry componentRegistry) {
+        this.componentRegistry = componentRegistry;
+    }
+
+    public void setService(JahiaTemplateManagerService service) {
+        this.service = service;
+    }
+
     public void startWatchdog() {
         long interval = settingsBean.isDevelopmentMode() ? 5000 : SettingsBean.getInstance().getTemplatesObserverInterval();
         if (interval <= 0) {
@@ -740,12 +744,14 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
-    public void initializeMissingModuleNodes(JahiaTemplatesPackage pkg, JCRSessionWrapper session) {
+    public void resetModuleNodes(JahiaTemplatesPackage pkg, JCRSessionWrapper session) {
         try {
-            if (!session.nodeExists("/modules/" + pkg.getRootFolder() + "/" + pkg.getVersion())) {
-                if (initModuleNode(session, pkg, false)) {
-                    resetModuleAttributes(session, pkg);
-                }
+            if (session.nodeExists("/modules/" + pkg.getRootFolder() + "/" + pkg.getVersion())) {
+                session.getNode("/modules/" + pkg.getRootFolder() + "/" + pkg.getVersion()).remove();
+                session.save();
+            }
+            if (initModuleNode(session, pkg, false)) {
+                resetModuleAttributes(session, pkg);
             }
             session.save();
         } catch (RepositoryException e) {

@@ -60,6 +60,9 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.util.DocIdBitSet;
+import org.apache.lucene.util.OpenBitSet;
+import org.apache.lucene.util.OpenBitSetDISI;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
@@ -126,8 +129,8 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
 
             // Added by jahia
             Set<String> foundIds = new HashSet<String>();
-            List<ScoreNode> nodes = new ArrayList<ScoreNode>();
-            boolean hasFacets = FacetHandler.hasFacetFunctions(columns, session);
+            int hasFacets = FacetHandler.hasFacetFunctions(columns, session);
+            BitSet bitset = (hasFacets & FacetHandler.FACET_COLUMNS) == 0 ? null : new BitSet();            
             // End
 
             List<Row> rows = new ArrayList<Row>();
@@ -163,29 +166,40 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                         || infos[3] == null || "true"
                                             .equals(infos[3]))) {
                             if (filter == Predicate.TRUE) { // <-- Added by jahia
-                                Row row = null;
-                            
-                                if ("1".equals(infos[2])) {
-                                    NodeImpl objectNode = session.getNodeById(node
-                                            .getNodeId());
-                                    if (objectNode.isNodeType("jnt:translation")) {
-                                        objectNode = (NodeImpl) objectNode
-                                                .getParent();
-                                    }
-                                    row = new LazySelectorRow(columns,
-                                            evaluator, selector.getSelectorName(),
-                                            provider.getNodeWrapper(objectNode,
-                                                    jcrSession), node.getScore());
-                                } else {
-                                    row = new LazySelectorRow(columns,
-                                            evaluator,
-                                            selector.getSelectorName(),
-                                            node.getNodeId(), node.getScore());
-                                }
+                                if ((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) {
+                                    Row row = null;
 
-                                rows.add(row);
-                                if (hasFacets) {
-                                    nodes.add(node); // <-- Added by jahia
+                                    if ("1".equals(infos[2])) {
+                                        NodeImpl objectNode = session
+                                                .getNodeById(node.getNodeId());
+                                        if (objectNode
+                                                .isNodeType("jnt:translation")) {
+                                            objectNode = (NodeImpl) objectNode
+                                                    .getParent();
+                                        }
+                                        row = new LazySelectorRow(
+                                                columns,
+                                                evaluator,
+                                                selector.getSelectorName(),
+                                                provider.getNodeWrapper(
+                                                        objectNode, jcrSession),
+                                                node.getScore());
+                                    } else {
+                                        row = new LazySelectorRow(columns,
+                                                evaluator,
+                                                selector.getSelectorName(),
+                                                node.getNodeId(),
+                                                node.getScore());
+                                    }
+
+                                    rows.add(row);
+                                }
+                                if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
+                                    try {
+                                        bitset.set(node.getDoc(reader)); // <-- Added by jahia
+                                    } catch (IOException e) {
+                                        logger.debug("Can't retrive bitset from hits", e);
+                                    }
                                 }
 
                             } else {
@@ -200,9 +214,15 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                         provider.getNodeWrapper(objectNode,
                                                 jcrSession), node.getScore());
                                 if (filter.evaluate(row)) {
-                                    rows.add(row);
-                                    if (hasFacets) {
-                                        nodes.add(node); // <-- Added by jahia
+                                    if ((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) {
+                                        rows.add(row);
+                                    }
+                                    if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
+                                        try {
+                                            bitset.set(node.getDoc(reader)); // <-- Added by jahia
+                                        } catch (IOException e) {
+                                            logger.debug("Can't retrive bitset from hits", e);
+                                        }
                                     }
                                 }
                             }
@@ -216,8 +236,10 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             }
 
             // Added by jahia
-            if (hasFacets) {
-                FacetHandler h = new FacetHandler(columns, selector, nodes, index, session);
+            if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
+                OpenBitSet docIdSet = new OpenBitSetDISI(new DocIdBitSet(bitset).iterator(), bitset.size());
+                
+                FacetHandler h = new FacetHandler(columns, selector, docIdSet, index, session);
                 h.handleFacets(reader);
                 rows.add(0, h.getFacetsRow());
             }

@@ -5,6 +5,7 @@ import org.apache.commons.vfs2.FileSystemException;
 import org.jahia.api.Constants;
 import org.jahia.services.content.impl.external.ExternalData;
 import org.jahia.services.content.impl.external.vfs.VFSDataSource;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.ServletContextAware;
 
@@ -25,7 +26,7 @@ import java.util.List;
  * Time: 2:09 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ModulesDataSource extends VFSDataSource implements ServletContextAware {
+public class ModulesDataSource extends VFSDataSource implements ServletContextAware,InitializingBean {
     private ServletContext servletContext;
 
     @Override
@@ -89,7 +90,7 @@ public class ModulesDataSource extends VFSDataSource implements ServletContextAw
     }
 
     @Override
-    public void setRoot(String root) {
-        super.setRoot("/");
+    public void afterPropertiesSet() throws Exception {
+        super.setRoot(servletContext.getRealPath("/modules"));
     }
 }

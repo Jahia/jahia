@@ -47,9 +47,7 @@ import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.util.DocIdBitSet;
 import org.apache.lucene.util.OpenBitSet;
-import org.apache.lucene.util.OpenBitSetDISI;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.RangeFacet;
 import org.apache.solr.client.solrj.util.ClientUtils;
@@ -73,6 +71,9 @@ import java.util.*;
  * Handle facet queries
  */
 public class FacetHandler {
+    public static final int FACET_COLUMNS = 0x1;    
+    public static final int ONLY_FACET_COLUMNS = 0x2;
+    
     /**
      * The logger instance for this class
      */
@@ -115,27 +116,28 @@ public class FacetHandler {
      */
     protected final Map<String, PropertyValue> columns;
 
-    private int totalSize = 1;
+    private long totalSize = 1;
 
-    List<ScoreNode> nodes;
+    OpenBitSet docIdSet;
 
     SearchIndex index;
 
-    public FacetHandler(Map<String, PropertyValue> columns, Selector selector, List<ScoreNode> nodes, SearchIndex index, SessionImpl session) {
+    public FacetHandler(Map<String, PropertyValue> columns, Selector selector, OpenBitSet docIdSet, SearchIndex index, SessionImpl session) {
         this.columns = columns;
         this.selector = selector;
         this.session = session;
-        this.nodes = nodes;
+        this.docIdSet = docIdSet;
         this.index = index;
-        totalSize = nodes.size();
+        totalSize = docIdSet.cardinality();
     }
 
-    public static boolean hasFacetFunctions(Map<String, PropertyValue> columns, SessionImpl session) {
-        boolean hasFacetRequest = false;
+    public static int hasFacetFunctions(Map<String, PropertyValue> columns, SessionImpl session) {
+        int hasFacetRequest = ONLY_FACET_COLUMNS;
         for (String column : columns.keySet()) {
             if (isFacetFunction(column, session)) {
-                hasFacetRequest = true;
-                break;
+                hasFacetRequest |= FACET_COLUMNS;
+            } else {
+                hasFacetRequest &= ~ONLY_FACET_COLUMNS;                
             }
         }
         return hasFacetRequest;
@@ -262,8 +264,7 @@ public class FacetHandler {
             }
 
             SimpleJahiaJcrFacets facets = new SimpleJahiaJcrFacets(searcher,
-                    transformToDocIdSet(nodes, reader, selectorIndexes), SolrParams
-                            .toSolrParams(parameters), index, session);
+                    docIdSet, SolrParams.toSolrParams(parameters), index, session);
             extractFacetInfo(facets.getFacetCounts());
         } catch (Exception ex) {
             log.warn("Problem creating facets: ", ex);
@@ -456,27 +457,6 @@ public class FacetHandler {
             }
         }        
     }
-
-    private OpenBitSet transformToDocIdSet(List<ScoreNode> scoreNodeArrays, IndexReader reader, Set<Integer> selectorIndexes) {
-        OpenBitSet docIds = null;
-        try {
-            BitSet bitset = new BitSet();
-            for (ScoreNode node : scoreNodeArrays) {
-                int i = 0;
-//                for (ScoreNode node : scoreNodeArrays) {
-                    if (node != null /*&& selectorIndexes.contains(i)*/) {
-                        bitset.set(node.getDoc(reader));
-                    }
-                    i++;
-//                }
-            }
-            docIds = new OpenBitSetDISI(new DocIdBitSet(bitset).iterator(), bitset.size());
-        } catch (IOException e) {
-            log.debug("Can't retrive bitset from hits", e);
-        }
-        return docIds;
-    }
-
 
     public FacetRow getFacetsRow() {
         FacetRow row = new FacetRow();

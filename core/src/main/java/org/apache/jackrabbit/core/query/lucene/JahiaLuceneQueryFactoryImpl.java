@@ -172,6 +172,14 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                         || infos[3] == null || "true"
                                             .equals(infos[3]))) {
                             if (filter == Predicate.TRUE) { // <-- Added by jahia
+                                if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
+                                    try {
+                                        bitset.set(node.getDoc(reader)); // <-- Added by jahia
+                                    } catch (IOException e) {
+                                        logger.debug("Can't retrive bitset from hits", e);
+                                    }
+                                }
+                                
                                 if ((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) {
                                     Row row = null;
 
@@ -198,42 +206,23 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                                 node.getScore());
                                     }
 
-<<<<<<< .working
-                                if (externalSort) {
-                                    rowList.add(row);
-                                    if (hasFacets) {
-                                        nodes.add(node); // <-- Added by jahia
-                                    }
-                                } else {
-                                    // apply limit and offset rules locally
-                                    if (currentNode >= offset
-                                            && currentNode - offset < limit) {
-                                        rows.put(node.getNodeId().toString(), row);
-                                        if (hasFacets) {
-                                            nodes.add(node); // <-- Added by jahia
+                                    if (externalSort) {
+                                        rowList.add(row);
+                                    } else {
+                                        // apply limit and offset rules locally
+                                        if (currentNode >= offset
+                                                && currentNode - offset < limit) {
+                                            rows.put(node.getNodeId()
+                                                    .toString(), row);
+                                            addedNodes++;
                                         }
-                                        addedNodes++;
-                                    }
-                                    currentNode++;
-                                    // end the loop when going over the limit
-                                    if (addedNodes == limit) {
-                                        break;
-                                    }
-=======
-                                    rows.add(row);
->>>>>>> .merge-right.r43516
-                                }
-<<<<<<< .working
-=======
-                                if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
-                                    try {
-                                        bitset.set(node.getDoc(reader)); // <-- Added by jahia
-                                    } catch (IOException e) {
-                                        logger.debug("Can't retrive bitset from hits", e);
+                                        currentNode++;
+                                        // end the loop when going over the limit
+                                        if (addedNodes == limit) {
+                                            break;
+                                        }
                                     }
                                 }
-
->>>>>>> .merge-right.r43516
                             } else {
                                 NodeImpl objectNode = session.getNodeById(node
                                         .getNodeId());
@@ -246,34 +235,31 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                         provider.getNodeWrapper(objectNode,
                                                 jcrSession), node.getScore());
                                 if (filter.evaluate(row)) {
-<<<<<<< .working
-                                    if (externalSort) {
-                                        rowList.add(row);
-                                    } else {
-                                        // apply limit and offset rules locally
-                                        if (currentNode >= offset
-                                                && currentNode - offset < limit) {
-                                            rows.put(node.getNodeId().toString(), row);
-                                            addedNodes++;
-                                        }
-                                        currentNode++;
-                                        // end the loop when going over the limit
-                                        if (addedNodes == limit) {
-                                            break;
-                                        }
-                                    }
-                                    if (hasFacets) {
-                                        nodes.add(node); // <-- Added by jahia
-=======
                                     if ((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) {
-                                        rows.add(row);
->>>>>>> .merge-right.r43516
+                                        if (externalSort) {
+                                            rowList.add(row);
+                                        } else {
+                                            // apply limit and offset rules locally
+                                            if (currentNode >= offset
+                                                    && currentNode - offset < limit) {
+                                                rows.put(node.getNodeId()
+                                                        .toString(), row);
+                                                addedNodes++;
+                                            }
+                                            currentNode++;
+                                            // end the loop when going over the limit
+                                            if (addedNodes == limit) {
+                                                break;
+                                            }
+                                        }
                                     }
                                     if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
                                         try {
                                             bitset.set(node.getDoc(reader)); // <-- Added by jahia
                                         } catch (IOException e) {
-                                            logger.debug("Can't retrive bitset from hits", e);
+                                            logger.debug(
+                                                    "Can't retrive bitset from hits",
+                                                    e);
                                         }
                                     }
                                 }

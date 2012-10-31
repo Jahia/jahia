@@ -40,12 +40,15 @@
 
 package org.jahia.services.uicomponents.bean.contentmanager;
 
+import org.jahia.services.uicomponents.bean.editmode.EngineConfiguration;
 import org.jahia.services.uicomponents.bean.editmode.EngineTab;
 import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Content manager configuratino settings.
@@ -78,6 +81,7 @@ public class ManagerConfiguration implements Serializable {
     private List<String> allowedNodeTypesForDragAndDrop;
     private List<String> forbiddenNodeTypesForDragAndDrop;
 
+    private Map<String, EngineConfiguration> engineConfigurations;
     private List<EngineTab> engineTabs;
 
     private List<Toolbar> toolbars;
@@ -286,6 +290,14 @@ public class ManagerConfiguration implements Serializable {
 
     public void setDisplaySearchInContent(boolean displaySearchInContent) {
         this.displaySearchInContent = displaySearchInContent;
+    }
+
+    public Map<String, EngineConfiguration> getEngineConfigurations() {
+        return engineConfigurations;
+    }
+
+    public void setEngineConfigurations(Map<String, EngineConfiguration> engineConfigurations) {
+        this.engineConfigurations = engineConfigurations;
     }
 
     public List<EngineTab> getEngineTabs() {

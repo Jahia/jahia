@@ -48,11 +48,11 @@ import java.util.List;
 
 public class EngineConfiguration implements Serializable {
 
-    private List<EngineTab> engineTabs = new ArrayList<EngineTab>();
+    private List<EngineTab> engineTabs;
 
-    private List<ButtonItem> creationButtons;
-    private List<ButtonItem> editionButtons;
-    private List<ButtonItem> commonButtons;
+    private List<ButtonItem> creationButtons = new ArrayList<ButtonItem>();
+    private List<ButtonItem> editionButtons = new ArrayList<ButtonItem>();
+    private List<ButtonItem> commonButtons = new ArrayList<ButtonItem>();
 
     public List<EngineTab> getEngineTabs() {
         return engineTabs;

@@ -337,9 +337,8 @@ public class UIConfigHelper {
                     }
                 }
 
-                if (config.getEngineTabs() != null && !config.getEngineTabs().isEmpty()) {
-                    List<GWTEngineTab> tabs = createGWTEngineList(contextNode, site, jahiaUser, locale, uiLocale, request, config.getEngineTabs());
-                    gwtConfig.getDefaultEngineConfiguration().setEngineTabs(tabs);
+                if (config.getEngineConfigurations() != null && !config.getEngineConfigurations().isEmpty()) {
+                    gwtConfig.setEngineConfigurations(createGWTEngineConfigurations(contextNode, site, jahiaUser, locale, uiLocale, request, config.getEngineConfigurations(), config.getEngineTabs()));
                 }
 
                 // todo : use eanUtilsBean.getInstance().cloneBean when it works. Actually it does not copy properties of the bean.
@@ -619,11 +618,19 @@ public class UIConfigHelper {
     }
 
     private Map<String, GWTEngineConfiguration> createGWTEngineConfigurations(JCRNodeWrapper contextNode, JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, Map<String, EngineConfiguration> engineConfigurations) {
+        return createGWTEngineConfigurations(contextNode, site, jahiaUser, locale, uiLocale, request, engineConfigurations, new ArrayList<EngineTab>());
+    }
+
+    private Map<String, GWTEngineConfiguration> createGWTEngineConfigurations(JCRNodeWrapper contextNode, JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, Map<String, EngineConfiguration> engineConfigurations, List<EngineTab> defaultEngineTabs) {
         Map<String, GWTEngineConfiguration> gwtEngineConfigurations = new HashMap<String, GWTEngineConfiguration>();
         for (String type : engineConfigurations.keySet()) {
             GWTEngineConfiguration gwtEngineConfiguration = new GWTEngineConfiguration();
             EngineConfiguration engineConfiguration = engineConfigurations.get(type);
-            gwtEngineConfiguration.setEngineTabs(createGWTEngineList(contextNode, site, jahiaUser, locale, uiLocale, request, engineConfiguration.getEngineTabs()));
+            List<EngineTab> engineTabs = engineConfiguration.getEngineTabs();
+            if (engineTabs == null) {
+                engineTabs = defaultEngineTabs;
+            }
+            gwtEngineConfiguration.setEngineTabs(createGWTEngineList(contextNode, site, jahiaUser, locale, uiLocale, request, engineTabs));
             gwtEngineConfiguration.setCreationButtons(engineConfiguration.getCreationButtons());
             gwtEngineConfiguration.setEditionButtons(engineConfiguration.getEditionButtons());
             gwtEngineConfiguration.setCommonButtons(engineConfiguration.getCommonButtons());

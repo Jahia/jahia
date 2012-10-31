@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spring="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring-2.0-M1.xsd">
+
+    <bean name="org.jahia.modules.default.ModuleRegistry"
+          class="org.jahia.services.templates.TemplatePackageRegistry$ModuleRegistry">
+        <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
+        <property name="choiceListRendererService" ref="choiceListRenderers"/>
+        <property name="choiceListInitializers" ref="choiceListInitializers"/>
+        <property name="renderService" ref="RenderService"/>
+        <property name="staticAssetMapping" ref="org.jahia.services.render.StaticAssetMappingRegistry"/>
+        <property name="workflowService" ref="workflowService"/>
+        <property name="visibilityService" ref="visibilityService"/>
+        <property name="jcrStoreService" ref="JCRStoreService"/>
+    </bean>
+
+    <bean id="modulePlaceholderConfig"
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties">
+            <ref bean="jahiaProperties" />
+        </property>
+    </bean>
+
+    <bean name="managerEditorConfigurerModules" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+        <property name="customEditors">
+            <map>
+                <entry key="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                    <bean class="org.jahia.services.uicomponents.bean.contentmanager.ColumnPropertyEditor"/>
+                </entry>
+                <entry key="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+                    <bean class="org.jahia.services.uicomponents.bean.contentmanager.RepositoryPropertyEditor"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean name="editmodeEditorConfigurerModules" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+        <property name="customEditors">
+            <map>
+                <entry key="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                    <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTabPropertyEditor"/>
+                </entry>
+                <entry key="org.jahia.services.uicomponents.bean.Visibility">
+                    <bean class="org.jahia.services.uicomponents.bean.VisibilityPropertyEditor"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+
+</beans>

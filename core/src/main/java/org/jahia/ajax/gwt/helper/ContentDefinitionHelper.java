@@ -776,7 +776,7 @@ public class ContentDefinitionHelper {
 
             if (!includeNonDependentModules) {
                 dependencies = new ArrayList<String>();
-                Set<JahiaTemplatesPackage> s = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(site.getName()).getDependencies();
+                Set<JahiaTemplatesPackage> s = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(site.getTemplateFolder()).getDependencies();
                 for (JahiaTemplatesPackage aPackage : s) {
                     dependencies.add(aPackage.getRootFolder());
                 }

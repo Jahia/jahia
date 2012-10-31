@@ -2455,11 +2455,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             try {
                 JCRNodeWrapper parent = getParent();
                 getCorrespondingNodePath(Constants.LIVE_WORKSPACE);
-                if (!parent.isNodeType("jmix:deletedChildren")) {
-                    parent.addMixin("jmix:deletedChildren");
-                    parent.setProperty("j:deletedChildren", new String[] {getIdentifier()});
-                } else {
-                    parent.getProperty("j:deletedChildren").addValue(getIdentifier());
+                if (hasProperty("j:lastPublished")) {
+                    if (!parent.isNodeType("jmix:deletedChildren")) {
+                        parent.addMixin("jmix:deletedChildren");
+                        parent.setProperty("j:deletedChildren", new String[] {getIdentifier()});
+                    } else {
+                        parent.getProperty("j:deletedChildren").addValue(getIdentifier());
+                    }
                 }
             } catch (ItemNotFoundException e) {
                 // no live

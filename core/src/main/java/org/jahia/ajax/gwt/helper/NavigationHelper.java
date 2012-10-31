@@ -1209,6 +1209,15 @@ public class NavigationHelper {
             }
         }
 
+        try {
+            if (node.isNodeType("jnt:module")) {
+                String versionNumber = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getName()).getVersion().toString();
+                n.set("moduleActiveVersion", versionNumber);
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot get property module version");
+        }
+
         // properties
         for (String field : fields) {
             if (!GWTJahiaNode.RESERVED_FIELDS.contains(field)) {

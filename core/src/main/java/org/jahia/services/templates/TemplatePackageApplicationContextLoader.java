@@ -62,69 +62,18 @@ import java.util.List;
  * @author Sergiy Shyrkov
  */
 public class TemplatePackageApplicationContextLoader implements ServletContextAware {
-    
-    /**
-     * This event is fired when modules application context is initialized.
-     * 
-     * @author Sergiy Shyrkov
-     */
-    public static class ContextInitializedEvent extends ApplicationEvent {
-        private static final long serialVersionUID = -2367558261328740803L;
-        private JahiaTemplatesPackage aPackage;
-
-        public ContextInitializedEvent(Object source, JahiaTemplatesPackage aPackage) {
-            super(source);
-            this.aPackage = aPackage;
-        }
-
-
-        public JahiaTemplatesPackage getPackage() {
-            return aPackage;
-        }
-
-        public XmlWebApplicationContext getContext() {
-            return aPackage.getContext();
-        }
-    }
+// ------------------------------ FIELDS ------------------------------
 
     private static final Logger logger = LoggerFactory.getLogger(TemplatePackageApplicationContextLoader.class);
 
-//    private XmlWebApplicationContext context;
-
-//    private String contextConfigLocation;
-
     private ServletContext servletContext;
 
-    private void createWebApplicationContext(JahiaTemplatesPackage aPackage) throws BeansException {
-        if (new File(servletContext.getRealPath("modules/" + aPackage.getRootFolderWithVersion() + "/META-INF/spring/")).exists()) {
-            String configLocation = "classpath*:org/jahia/defaults/config/**/modules-applicationcontext*.xml,WEB-INF/etc/spring/modules-applicationcontext*.xml";
-            configLocation += ",modules/" + aPackage.getRootFolderWithVersion() + "/META-INF/spring/*.xml";
-            XmlWebApplicationContext ctx = new XmlWebApplicationContext();
-            ctx.setParent(SpringContextSingleton.getInstance().getContext());
-            ctx.setServletContext(servletContext);
-            servletContext.setAttribute(WebApplicationContext.class.getName() + ".jahiaModule." + aPackage.getName(), ctx);
-            ctx.setConfigLocation(configLocation);
-            aPackage.setContext(ctx);
-            ctx.refresh();
-        }
-    }
+    private String contextConfigLocation;
 
-    public void reload(JahiaTemplatesPackage aPackage) {
-        logger.info("Reloading Spring application context for Jahia modules");
-        long startTime = System.currentTimeMillis();
-
-        if (aPackage.getContext() != null) {
-            aPackage.getContext().refresh();
-        }
-
-        logger.info("Jahia modules application context reload completed in "
-                + (System.currentTimeMillis() - startTime) + " ms");
-
-        aPackage.getContext().publishEvent(new ContextInitializedEvent(this, aPackage));
-    }
+// --------------------- GETTER / SETTER METHODS ---------------------
 
     public void setContextConfigLocation(String contextConfigLocation) {
-//        this.contextConfigLocation = contextConfigLocation;
+        this.contextConfigLocation = contextConfigLocation;
     }
 
     public void setServletContext(ServletContext servletContext) {
@@ -160,6 +109,60 @@ public class TemplatePackageApplicationContextLoader implements ServletContextAw
                     logger.error("Error shutting down Jahia modules Spring application context", e);
                 }
             }
+        }
+    }
+
+// -------------------------- OTHER METHODS --------------------------
+
+    public void reload(JahiaTemplatesPackage aPackage) {
+        logger.info("Reloading Spring application context for Jahia modules");
+        long startTime = System.currentTimeMillis();
+
+        if (aPackage.getContext() != null) {
+            aPackage.getContext().refresh();
+        }
+
+        logger.info("Jahia modules application context reload completed in "
+                + (System.currentTimeMillis() - startTime) + " ms");
+
+        aPackage.getContext().publishEvent(new ContextInitializedEvent(this, aPackage));
+    }
+
+    public void createWebApplicationContext(JahiaTemplatesPackage aPackage) throws BeansException {
+        if (new File(servletContext.getRealPath("modules/" + aPackage.getRootFolderWithVersion() + "/META-INF/spring/")).exists()) {
+            String configLocation = contextConfigLocation + ",modules/" + aPackage.getRootFolderWithVersion() + "/META-INF/spring/*.xml";
+            XmlWebApplicationContext ctx = new XmlWebApplicationContext();
+            ctx.setParent(SpringContextSingleton.getInstance().getContext());
+            ctx.setServletContext(servletContext);
+            servletContext.setAttribute(WebApplicationContext.class.getName() + ".jahiaModule." + aPackage.getName(), ctx);
+            ctx.setConfigLocation(configLocation);
+            aPackage.setContext(ctx);
+            ctx.refresh();
+        }
+    }
+
+// -------------------------- INNER CLASSES --------------------------
+
+    /**
+     * This event is fired when modules application context is initialized.
+     * 
+     * @author Sergiy Shyrkov
+     */
+    public static class ContextInitializedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = -2367558261328740803L;
+        private JahiaTemplatesPackage aPackage;
+
+        public ContextInitializedEvent(Object source, JahiaTemplatesPackage aPackage) {
+            super(source);
+            this.aPackage = aPackage;
+        }
+
+        public JahiaTemplatesPackage getPackage() {
+            return aPackage;
+        }
+
+        public XmlWebApplicationContext getContext() {
+            return aPackage.getContext();
         }
     }
 }

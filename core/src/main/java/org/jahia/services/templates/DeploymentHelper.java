@@ -273,20 +273,6 @@ class DeploymentHelper implements ServletContextAware {
 //            FileUtils.deleteDirectory(new File(rootFolder, "META-INF"));
 //            FileUtils.copyDirectory(metaInfFolder, new File(rootFolder, "META-INF"));
 
-            File activeVersion = new File(tmplRootFolder, "activeVersion");
-            if (!activeVersion.exists()) {
-                FileUtils.write(activeVersion, replacedImplementationVersionStr, "UTF-8");
-            }
-            File lastVersion = new File(tmplRootFolder, "lastVersion");
-            if (!lastVersion.exists()) {
-                FileUtils.write(lastVersion, replacedImplementationVersionStr, "UTF-8");
-            } else {
-                ModuleVersion lastVersionNumber = new ModuleVersion(FileUtils.readFileToString(lastVersion, "UTF-8"));
-                if (lastVersionNumber.compareTo(implementationVersionStr) <= 0) {
-                    FileUtils.write(lastVersion, replacedImplementationVersionStr, "UTF-8");
-                }
-            }
-
             versionFolder.setLastModified(templateWar.lastModified());
             
             return versionFolder;

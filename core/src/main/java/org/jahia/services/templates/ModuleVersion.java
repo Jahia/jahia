@@ -31,6 +31,24 @@ public class ModuleVersion implements Comparable<ModuleVersion> {
         return orderedVersionNumbers;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ModuleVersion that = (ModuleVersion) o;
+
+        if (versionString != null ? !versionString.equals(that.versionString) : that.versionString != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return versionString != null ? versionString.hashCode() : 0;
+    }
+
     public int compareTo(ModuleVersion o) {
         for (int i = 0; i < Math.min(orderedVersionNumbers.size(), o.orderedVersionNumbers.size()); i++) {
             int c = orderedVersionNumbers.get(i).compareTo(o.getOrderedVersionNumbers().get(i));

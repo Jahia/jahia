@@ -138,6 +138,7 @@
           class="org.jahia.services.templates.TemplatePackageRegistry">
         <property name="settingsBean" ref="settingsBean"/>
         <property name="jcrStoreService" ref="JCRStoreService" />
+        <property name="templatePackageApplicationContextLoader" ref="TemplatePackageApplicationContextLoader" />
     </bean>
 
     <bean id="JahiaTemplateManagerService" class="org.jahia.services.templates.JahiaTemplateManagerService"
@@ -167,7 +168,7 @@
 
     <bean id="TemplatePackageApplicationContextLoader"
           class="org.jahia.services.templates.TemplatePackageApplicationContextLoader">
-        <property name="contextConfigLocation" value="modules/**/META-INF/spring/*.xml"/>
+        <property name="contextConfigLocation" value="classpath*:org/jahia/defaults/config/**/modules-applicationcontext*.xml,WEB-INF/etc/spring/modules-applicationcontext*.xml"/>
     </bean>
 
 	<bean id="org.jahia.services.tasks.TaskService" class="org.jahia.services.tasks.TaskService">

@@ -44,14 +44,14 @@ int stretcherToOpen   = 0;
                     <td>&nbsp;&nbsp;<fmt:message key="label.in"/>&nbsp;:</td>
                     <td>
                         <input type="radio" name="searchIn" value="allProps" checked
-                               onclick="disableCheckBox(properties);">&nbsp;<fmt:message key="label.allProperties"/>
+                               onclick="disableCheckBox(document.mainForm.elements.properties);">&nbsp;<fmt:message key="label.allProperties"/>
                     </td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
                     <td valign="top">
                         <input type="radio" name="searchIn" value="properties"
-                               onclick="enableCheckbox(properties);">&nbsp;<fmt:message key="label.properties"/><br>
+                               onclick="enableCheckbox(document.mainForm.elements.properties);">&nbsp;<fmt:message key="label.properties"/><br>
                         &nbsp;&nbsp;&nbsp;&nbsp;
                         <input type="checkbox" name="properties" value="username" disabled><nobr> <fmt:message key="label.username"/></nobr><br>
                         &nbsp;&nbsp;&nbsp;&nbsp;

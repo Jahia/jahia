@@ -816,9 +816,9 @@ public class ContentDefinitionHelper {
                         List<GWTJahiaNode> vlist = navigation.ls(node, Arrays.asList("jnt:moduleVersion"), null, null, fields, false,
                                 false, null, null, session, false, uiLocale);
                         String version = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getName()).getVersion().toString();
-                        for (GWTJahiaNode jahiaNode : vlist) {
-                            if (jahiaNode.getName().equals(version)) {
-                                List<GWTJahiaNode>  clist = navigation.ls(node, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
+                        for (GWTJahiaNode versionNode : vlist) {
+                            if (versionNode.getName().equals(version)) {
+                                List<GWTJahiaNode>  clist = navigation.ls(versionNode, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
                                         false, null, null, session, false, uiLocale);
                                 for (GWTJahiaNode compNode : clist) {
                                     if (compNode.getName().equals("components")) {

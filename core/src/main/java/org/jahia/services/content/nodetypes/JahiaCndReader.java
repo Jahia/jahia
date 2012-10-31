@@ -159,6 +159,8 @@ public class JahiaCndReader {
     protected String currentToken;
 
 
+    protected boolean doRegister = true;
+
     /**
      * Checks if the provided token is semantically equal to the given
      * argument.
@@ -266,6 +268,10 @@ public class JahiaCndReader {
         lexer = new Lexer(r, filename);
     }
 
+    public void setDoRegister(boolean doRegister) {
+        this.doRegister = doRegister;
+    }
+
     /**
      * Returns the list of parsed nodetype definitions.
      *
@@ -295,7 +301,9 @@ public class JahiaCndReader {
                 doOptions(ntd);
                 doItemDefs(ntd);
 
-                registry.addNodeType(ntd.getNameObject(),ntd);
+                if (doRegister) {
+                    registry.addNodeType(ntd.getNameObject(),ntd);
+                }
                 nodeTypesList.add(ntd);
             } catch (ParseException e) {
                 logger.error(e.getMessage(), e);

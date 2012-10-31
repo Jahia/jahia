@@ -40,16 +40,10 @@
 
 package org.jahia.services.templates;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeTypeIterator;
@@ -61,9 +55,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.content.nodetypes.ConstraintsHelper;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.*;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
@@ -379,6 +371,17 @@ public class ComponentRegistry {
             modules = session.getNode("/modules");
         }
 
+        List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
+        for (String s : pkg.getDefinitionsFiles()) {
+            try {
+                types.addAll(NodeTypeRegistry.getInstance().getDefinitionsFromFile(new File(pkg.getFilePath() + "/" + s), pkg.getName()));
+            } catch (ParseException e) {
+                logger.error("Cannot parse definitions file "+s,e);
+            } catch (IOException e) {
+                logger.error("Cannot parse definitions file " + s, e);
+            }
+        }
+
         if (modules.hasNode(pkg.getRootFolderWithVersion())) {
             JCRNodeWrapper module = modules.getNode(pkg.getRootFolderWithVersion());
             boolean newDeployment = !module.hasNode(NODE_COMPONENTS);
@@ -386,17 +389,15 @@ public class ComponentRegistry {
                     JNT_COMPONENT_FOLDER) : module.getNode(NODE_COMPONENTS);
 
             if (pkg.getRootFolder().equals("default")) {
-                for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes("system-jahia"); nti
-                        .hasNext(); ) {
+                for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes("system-jahia"); nti.hasNext(); ) {
                     if (registerComponent(session, newDeployment, components, (ExtendedNodeType) nti.nextNodeType())) {
                         count++;
                     }
                 }
             }
 
-            for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(pkg.getName()); nti
-                    .hasNext(); ) {
-                if (registerComponent(session, newDeployment, components, (ExtendedNodeType) nti.nextNodeType())) {
+            for (ExtendedNodeType type : types) {
+                if (registerComponent(session, newDeployment, components, type)) {
                     count++;
                 }
             }

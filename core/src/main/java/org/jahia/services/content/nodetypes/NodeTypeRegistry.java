@@ -135,6 +135,23 @@ public class NodeTypeRegistry implements NodeTypeManager {
         files.get(systemId).add(file);
     }
 
+    public List<ExtendedNodeType> getDefinitionsFromFile(File file, String systemId) throws ParseException, IOException {
+        String ext = file.getName().substring(file.getName().lastIndexOf('.'));
+        if (ext.equalsIgnoreCase(".cnd")) {
+            FileReader defsReader = null;
+            try {
+                defsReader = new FileReader(file);
+                JahiaCndReader r = new JahiaCndReader(defsReader, file.getPath(), systemId, this);
+                r.setDoRegister(false);
+                r.parse();
+                return r.getNodeTypesList();
+            } finally {
+                IOUtils.closeQuietly(defsReader);
+            }
+        }
+        return Collections.emptyList();
+    }
+
     public List<String> getSystemIds() {
         return new ArrayList<String>(files.keySet());
     }

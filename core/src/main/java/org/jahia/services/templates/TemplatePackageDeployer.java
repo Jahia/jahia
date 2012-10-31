@@ -449,9 +449,8 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
             cloneModuleInLive(aPackage);
             logger.info("... finished initial import for module package '" + aPackage.getName() + "'.");
 
-            if (aPackage.isLastVersion()) {
-                componentRegistry.registerComponents(aPackage, session);
-            }
+            componentRegistry.registerComponents(aPackage, session);
+
             if (aPackage.isActiveVersion()) {
                 if (templatePackageRegistry.lookupByFileName(aPackage.getRootFolder()).equals(aPackage)) {
                     autoDeployModulesToSites(session, aPackage);

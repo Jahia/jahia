@@ -71,6 +71,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.rules.BackgroundAction;
@@ -80,6 +81,7 @@ import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
@@ -178,7 +180,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     private TemplatePackageRegistry templatePackageRegistry;
 
-    private JahiaSitesService siteService;
+    private JahiaSitesBaseService siteService;
 
     private ApplicationEventPublisher applicationEventPublisher;
 
@@ -186,7 +188,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
 //    public static final String VERSIONS_FOLDER_NAME = "versions";
 
-    public void setSiteService(JahiaSitesService siteService) {
+    public void setSiteService(JahiaSitesBaseService siteService) {
         this.siteService = siteService;
     }
 
@@ -1131,6 +1133,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 .doExecuteWithSystemSession(username, new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         deployModules(modulesPath, sitePath, session);
+                        session.save();
                         return null;
                     }
                 });
@@ -1144,67 +1147,32 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         if (!sitePath.startsWith("/sites/")) {
             return;
         }
-        final JCRNodeWrapper destinationNode = session.getNode(sitePath);
+        final JCRSiteNode siteNode = (JCRSiteNode) session.getNode(sitePath);
 
-        List<JCRNodeWrapper> originalNodes = new ArrayList<JCRNodeWrapper>();
+        List<JCRNodeWrapper> moduleNodes = new ArrayList<JCRNodeWrapper>();
 
         HashMap<String, List<String>> references = new HashMap<String, List<String>>();
         for (String modulePath : modulesPath) {
-            JCRNodeWrapper originalNode = null;
+            JCRNodeWrapper moduleNode = null;
             try {
-                originalNode = session.getNode(modulePath);
-                originalNodes.add(originalNode);
+                moduleNode = session.getNode(modulePath);
+                moduleNodes.add(moduleNode);
             } catch (PathNotFoundException e) {
                 logger.warn("Cannot find module for path {}. Skipping deployment to site {}.",
                         modulePath, sitePath);
                 return;
             }
-            String moduleName = originalNode.getName();
+            String moduleName = moduleNode.getName();
 
-            synchro(originalNode, destinationNode, session, moduleName, references);
+            synchro(moduleNode, siteNode, session, moduleName, references);
 
             ReferencesHelper.resolveCrossReferences(session, references);
 
-            addDependencyValue(originalNode, destinationNode, "j:installedModules");
+            addDependencyValue(moduleNode, siteNode, "j:installedModules");
         }
 
-        session.save();
-
-//        synchronized (this) {
-//            List<PublicationInfo> tree = JCRTemplate.getInstance()
-//                    .doExecuteWithSystemSession(null,"live", new JCRCallback<List<PublicationInfo>>() {
-//                        public List<PublicationInfo> doInJCR(JCRSessionWrapper livesession) throws RepositoryException {
-//                             return
-//                                    JCRPublicationService.getInstance().getPublicationInfo(destinationNode.getNode("templates").getIdentifier(), null, true, true, true, session, livesession);
-//                        }
-//                    });
-//            JCRPublicationService.getInstance().publishByInfoList(tree, "default", "live", false, null);
-//        }
-
-        try {
-            List<String> modules = siteService.getSiteByKey(destinationNode.getName()).getInstalledModules();
-            for (JCRNodeWrapper originalNode : originalNodes) {
-                if (!modules.contains(originalNode.getName())) {
-                    modules.add(originalNode.getName());
-                }
-            }
-        } catch (JahiaException e) {
-            logger.error(e.getMessage(), e);
-        }
-
-
+        siteService.updateSite(siteNode);
         applicationEventPublisher.publishEvent(new ModuleDeployedOnSiteEvent(sitePath, JahiaTemplateManagerService.class.getName()));
-
-    }
-
-    public void deployModuleToAllSites(final String modulePath, final boolean updateOnly, String username) throws RepositoryException {
-        JCRTemplate.getInstance()
-                .doExecuteWithSystemSession(username, new JCRCallback<Object>() {
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        deployModuleToAllSites(modulePath, updateOnly, session, null);
-                        return null;
-                    }
-                });
     }
 
     public void deployModuleToAllSites(String modulePath, boolean updateOnly, JCRSessionWrapper sessionWrapper, List<JCRNodeWrapper> sites) throws RepositoryException {

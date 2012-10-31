@@ -327,34 +327,6 @@ public class ComponentRegistry {
     }
 
     /**
-     * Performs the registration of the components from modules into JCR tree.
-     */
-    protected void registerComponents(List<JahiaTemplatesPackage> packages, JCRSessionWrapper session) {
-        long timer = System.currentTimeMillis();
-        logger.info("Start registering UI droppable components...");
-        int newComponents = 0;
-        try {
-            int count = 0;
-            for (JahiaTemplatesPackage pkg : packages) {
-                count = count + registerComponents(pkg, session);
-            }
-            if (count > 0) {
-                session.save();
-            }
-            newComponents = count;
-        } catch (Exception e) {
-            logger.error("Error registering components. Cause: " + e.getMessage(), e);
-        }
-        if (newComponents > 0) {
-            logger.info("Registered {} component(s) in {} ms.", newComponents,
-                    (System.currentTimeMillis() - timer));
-        } else {
-            logger.info("No changes in components detected. Done in {} ms.",
-                    (System.currentTimeMillis() - timer));
-        }
-    }
-
-    /**
      * Performs the registration of the components from the specified module into JCR tree.
      *
      * @param pkg     the module package

@@ -1200,6 +1200,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         try {
             templateManagerService.deployModules(modules, "/sites/" + site.getSiteKey(), session);
+
+            session.save();
         } catch (RepositoryException e) {
             logger.error("Cannot deploy module "+modules,e);
         }

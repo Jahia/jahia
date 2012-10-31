@@ -986,10 +986,6 @@ public class ManageSites extends AbstractAdministrationModule {
         } catch (Exception ex) {
             // clean site
             try {
-                JahiaUserManagerService userServ = ServicesRegistry.getInstance().getJahiaUserManagerService();
-                Object[] src = userServ.getProviderList().toArray();
-                String[] provs = new String[src.length];
-                System.arraycopy(src, 0, provs, 0, src.length);
                 delete(site, jParams.getUser(), true);
                 sMgr.removeSite(site);
             } catch (Exception t) {

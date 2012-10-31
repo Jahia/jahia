@@ -605,17 +605,19 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                 throw new IOException("site already exists");
             }
 
+            JCRSiteNode siteNode = (JCRSiteNode) session.getNode(site.getJCRLocalPath());
+
             // continue if the site is added correctly...
-            if (site.getID() != -1) {
+            if (siteNode.getID() != -1) {
                 if (!site.isDefault() && !site.getSiteKey().equals(SYSTEM_SITE_KEY) && getNbSites() == 2) {
-                    setDefaultSite(site);
+                    setDefaultSite(site, session);
                 }
                 if (!importingSystemSite) {
                     JahiaGroupManagerService jgms = ServicesRegistry.getInstance().getJahiaGroupManagerService();
 
-                    updateSite(site);
-
-                    site.setMixLanguagesActive(false);
+                    siteNode.setMixLanguagesActive(false);
+                    session.save();
+                    updateSite(siteNode);
 
                     // create default groups...
                     JahiaGroup usersGroup = jgms.lookupGroup(null, JahiaGroupManagerService.USERS_GROUPNAME);
@@ -656,7 +658,6 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                         privGroup.addMember(sitePrivGroup);
                     }
 
-                    JCRNodeWrapper siteNode = getSite(site.getID(), session);
                     if (!siteKey.equals(SYSTEM_SITE_KEY)) {
                         siteNode.grantRoles("g:" + JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, Collections.singleton("privileged"));
                         siteNode.denyRoles("g:" + JahiaGroupManagerService.PRIVILEGED_GROUPNAME, Collections.singleton("privileged"));
@@ -772,6 +773,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     updateSite(site, session);
+                    session.save();
                     return null;
                 }
             });
@@ -873,12 +875,6 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
             updateWorkspacePermissions(session, "live", site);
             updateTranslatorRoles(session, site);
         }
-
-        session.save();
-
-
-//        JCRPublicationService.getInstance().publishByMainId(siteNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-//                false, new ArrayList<String>());
     }
 
 
@@ -924,6 +920,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JahiaSitesBaseService.this.setDefaultSite(site, session);
+                    session.save();
                     return null;
                 }
             });
@@ -941,10 +938,8 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         if (site != null) {
             JCRNodeWrapper s = node.getNode(site.getSiteKey());
             node.setProperty("j:defaultSite", s);
-            session.save();
         } else if (node.hasProperty("j:defaultSite")) {
             node.getProperty("j:defaultSite").remove();
-            session.save();
         }
     }
 

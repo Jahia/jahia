@@ -456,6 +456,7 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
                     autoDeployModulesToSites(session, aPackage);
                 }
             }
+            session.save();
         } catch (RepositoryException e) {
             logger.error("Unable to import content for package '" + aPackage.getName()
                     + "'. Cause: " + e.getMessage(), e);

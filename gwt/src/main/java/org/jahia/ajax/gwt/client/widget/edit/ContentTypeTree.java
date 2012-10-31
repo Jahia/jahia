@@ -162,7 +162,7 @@ public class ContentTypeTree extends LayoutContainer {
 
                     @Override
                     protected TreePanel.Joint calcualteJoint(TreeGrid<GWTJahiaNode> gwtJahiaNodeTreeGrid, GWTJahiaNode model, String property, int rowIndex, int colIndex) {
-                        if (model.getNodeTypes().contains("jnt:virtualsite")) {
+                        if (model.getNodeTypes().contains("jnt:module")) {
                             boolean checked = JahiaGWTParameters.getSiteNode().getName().equals(model.getName()) || (JahiaGWTParameters.getSiteNode().get("j:dependencies") != null && ((List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies")).contains(model.getName()));
                             if (!checked) {
                                 model.set("cannotexpand", Boolean.TRUE);
@@ -183,7 +183,7 @@ public class ContentTypeTree extends LayoutContainer {
                         setRenderer(new GridCellRenderer<ModelData>() {
                             public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
                                                  ListStore<ModelData> store, Grid<ModelData> grid) {
-                                if (((GWTJahiaNode) model).getNodeTypes().contains("jnt:moduleVersion")) {
+                                if (((GWTJahiaNode) model).getNodeTypes().contains("jnt:module")) {
                                     String s = onRender(model, property, config, rowIndex, colIndex, store);
                                     Text text = new Text(s);
                                     boolean checked = JahiaGWTParameters.getSiteNode().get("j:dependencies") != null && ((List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies")).contains(((GWTJahiaNode) model).getName());

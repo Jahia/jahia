@@ -1227,6 +1227,12 @@ public class NavigationHelper {
 //                        n.set(StringUtils.substringAfter(propName, ":"), node.getProperty(propName).getString());
                         final JCRPropertyWrapper property = node.getProperty(field);
                         setPropertyValue(n, property, node.getSession());
+                    } else if (node.isNodeType("jnt:module")) {
+                        JCRNodeWrapper versionNode = node.getNode(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getName()).getVersion().toString());
+                        if (versionNode.hasProperty(field)) {
+                            final JCRPropertyWrapper property = versionNode.getProperty(field);
+                            setPropertyValue(n, property, node.getSession());
+                        }
                     }
                 } catch (RepositoryException e) {
                     logger.error("Cannot get property " + field + " on node " + node.getPath());

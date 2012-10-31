@@ -660,13 +660,11 @@ public class PropertiesEditor extends FormPanel {
 
         public PropertyAdapterField(final Field field, final GWTJahiaItemDefinition definition, final GWTJahiaNodeProperty property) {
             super(new LayoutContainer());
-
             panel = (LayoutContainer) getWidget();
 
             if (isMultipleEdit && !definition.isProtected()) {
                 field.setEnabled(false);
                 final CheckBox checkbox = new CheckBox();
-
                 final Field f = field;
                 checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
                     public void handleEvent(ComponentEvent event) {

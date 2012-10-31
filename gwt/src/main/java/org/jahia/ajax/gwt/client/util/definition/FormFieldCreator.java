@@ -345,7 +345,7 @@ public class FormFieldCreator {
         if (field == null || definition == null) {
             return;
         }
-        field.setName(definition.getName());
+        field.setName(definition.getName().replace(".","_"));
         field.setFieldLabel(definition.getLabel());
         if(!"".equals(definition.getTooltip())) {
             String separator = field.getLabelSeparator()!=null? field.getLabelSeparator():"";

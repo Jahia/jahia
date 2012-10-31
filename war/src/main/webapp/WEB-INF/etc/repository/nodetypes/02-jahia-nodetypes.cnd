@@ -816,6 +816,7 @@ extends = jnt:content
 [jnt:javascriptFolder] > jnt:folder
 [jnt:javascriptFile] > jnt:file
 [jnt:viewFile] > jnt:file
+itemtype = propertiesView
 - cache.requestParameters (string)
 - cache.mainResource (boolean)
 - visible (boolean)

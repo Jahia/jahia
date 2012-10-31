@@ -1496,13 +1496,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
             JCRNodeWrapper nodeWrapper = sessionWrapper.getNode(nodepath);
             final GWTJahiaNode node = navigation.getGWTJahiaNode(nodeWrapper);
-            if (tryToLockNode && !nodeWrapper.isLocked() && nodeWrapper.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
-                nodeWrapper.checkout();
-                nodeWrapper.lockAndStoreToken("engine");
+            try {
+                if (tryToLockNode && !nodeWrapper.isLocked() && nodeWrapper.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
+                    nodeWrapper.checkout();
+                    nodeWrapper.lockAndStoreToken("engine");
+                }
+                dumpLocks(nodeWrapper);
+            } catch (UnsupportedRepositoryOperationException e) {
+                // do nothing is lock is not supported
             }
-
-            dumpLocks(nodeWrapper);
-
             // get node type
             final List<GWTJahiaNodeType> nodeTypes =
                     contentDefinition.getNodeTypes(nodeWrapper.getNodeTypes(), getUILocale());
@@ -1592,7 +1594,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
 
             dumpLocks(n);
-        } catch (RepositoryException e) {
+        } catch (UnsupportedRepositoryOperationException e) {
+            // do nothing is lock is not supported
+        }
+        catch (RepositoryException e) {
             throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.cannot.unlock.node", getUILocale()));
         }
     }

@@ -59,7 +59,7 @@ public class ExportTemplateActionItem extends BaseActionItem    {
     public void onComponentSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         if (linker instanceof EditLinker) {
-            new ContentExportTemplate(linker, "/modules/"+JahiaGWTParameters.getSiteKey(), JahiaGWTParameters.getSiteKey()).show();
+            new ContentExportTemplate(linker, "/modules/"+JahiaGWTParameters.getSiteKey()+"/"+JahiaGWTParameters.getSiteNode().get("moduleActiveVersion"), JahiaGWTParameters.getSiteKey()).show();
         } else {
             new ContentExportTemplate(linker, lh.getSingleSelection()).show();
         }

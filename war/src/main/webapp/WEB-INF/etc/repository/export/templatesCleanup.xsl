@@ -35,6 +35,13 @@
             <xsl:when test="@jcr:primaryType='jnt:roles'"/>
             <xsl:when test="@jcr:primaryType='jnt:versionInfo'"/>
             <xsl:when test="@jcr:primaryType='jnt:componentFolder'"/>
+            <xsl:when test="@jcr:primaryType='jnt:module'">
+                <xsl:element name="{name()}" namespace="{namespace-uri()}">
+					<xsl:for-each select="*">
+    	                <xsl:apply-templates select="node()|@*"/>
+					</xsl:for-each>
+				</xsl:element>
+            </xsl:when>
             <xsl:otherwise>
                 <xsl:element name="{name()}" namespace="{namespace-uri()}">
                     <xsl:variable name="vtheElem" select="."/>

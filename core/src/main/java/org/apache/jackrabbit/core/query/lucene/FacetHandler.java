@@ -132,7 +132,7 @@ public class FacetHandler {
     }
 
     public static int hasFacetFunctions(Map<String, PropertyValue> columns, SessionImpl session) {
-        int hasFacetRequest = ONLY_FACET_COLUMNS;
+        int hasFacetRequest = !columns.isEmpty() ? ONLY_FACET_COLUMNS : 0;
         for (String column : columns.keySet()) {
             if (isFacetFunction(column, session)) {
                 hasFacetRequest |= FACET_COLUMNS;

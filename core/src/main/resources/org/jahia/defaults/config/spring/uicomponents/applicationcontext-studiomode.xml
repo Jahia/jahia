@@ -653,7 +653,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.ModulesTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>$moduleFolder/$moduleversion/*</value>
+                                    <value>/modulesFileSystem/$siteKey/$moduleversion/*</value>
                                 </list>
                             </property>
                             <property name="folderTypes">
@@ -676,22 +676,6 @@
                                     <ref bean="Toolbar.Item.NewContentFolder"/>
                                     <ref bean="Toolbar.Item.NewContent"/>
                                     <ref bean="Toolbar.Item.NewMenuAvailable"/>
-                                    <ref bean="Toolbar.Item.EditContent"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Undelete"/>
-                                    <ref bean="Toolbar.Item.DeletePermanently"/>
-                                    <ref bean="Toolbar.Item.Copy"/>
-                                    <ref bean="Toolbar.Item.Cut"/>
-                                    <ref bean="Toolbar.Item.Paste"/>
-                                    <ref bean="Toolbar.Item.PasteReference"/>
-                                </list>
-                            </property>
-                        </bean>
-                    </property>
-                    <property name="tableContextMenu">
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="items">
-                                <list>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Undelete"/>

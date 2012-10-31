@@ -396,8 +396,8 @@ public class NavigationHelper {
 //                    displayName = site.getSiteKey();
 //                }
             }
-            if (path.contains("$moduleFolder/")) {
-                path = path.replace("$moduleFolder", "/modulesFileSystem/" + site.getSiteKey());
+            if (path.contains("$siteKey/")) {
+                path = path.replace("$siteKey", site.getSiteKey());
             }
             if (path.contains("$moduleversion/") || path.endsWith("$moduleversion")) {
                 path = path.replace("$moduleversion", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(site.getSiteKey()).getVersion().toString());

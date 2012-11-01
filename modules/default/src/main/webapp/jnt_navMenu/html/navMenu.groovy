@@ -14,7 +14,7 @@ layoutID = currentNode.properties['j:layoutID']
 
 def base;
 if (!baseline || baseline.string == 'home') {
-    base = currentNode.resolveSite.home
+    base = renderContext.site.home
 } else if (baseline.string == 'currentPage') {
     base = JCRTagUtils.getMeAndParentsOfType(renderContext.mainResource.node, "jnt:page")[0]
 }

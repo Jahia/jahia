@@ -260,13 +260,6 @@ public class RenderService {
             if (site == null) {
                 site = node.getResolveSite();
             }
-            JCRNodeWrapper templatesNode = null;
-            if (site != null) {
-                try {
-                    templatesNode = site.getNode("templates");
-                } catch (PathNotFoundException e) {
-                }
-            }
 
             JahiaTemplateManagerService managerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
 
@@ -404,6 +397,9 @@ public class RenderService {
         if (resource.getNode().isNodeType("jnt:page")) {
             type = "pageTemplate";
         }
+        if("base".equals(templateName)) {
+            type = "template";
+        }
         String key = new StringBuffer(templateNode.getPath()).append(type).append(
                 templateName != null ? templateName : "default").toString() + renderContext.getServletPath() + resource.getWorkspace() + renderContext.isLoggedIn() +
                 resource.getNode().getNodeTypes()+cacheKeyGenerator.appendAcls(resource, renderContext, false);
@@ -429,6 +425,30 @@ public class RenderService {
                 final JCRNodeWrapper contentTemplateNode = (JCRNodeWrapper) ni.nextNode();
                 addTemplate(resource, renderContext, contentTemplateNode, templates);
             }
+
+            try {
+                if (!"base".equals(templateName)) {
+                    JCRSiteNode site = renderContext.getSite();
+                    if (site == null) {
+                        site = resource.getNode().getResolveSite();
+                    }
+                    String templatePackageName = site.getTemplateFolder();
+                    JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(
+                            templatePackageName);
+                    Template siteTemplateBase = addTemplates(resource, renderContext, "base",
+                            resource.getNode().getSession().getNode(
+                                    "/modules/" + templatePackageName + "/" + pack.getVersion()));
+                    if (siteTemplateBase != null && !templates.isEmpty()) {
+                        final Template template1 = new Template(siteTemplateBase.getView(), siteTemplateBase.getNode(),
+                                templates.get(0), siteTemplateBase.getName());
+                        templatesCache.put(key, null, template1);
+                        return template1;
+                    }
+                }
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
+
             if (templates.isEmpty()) {
                 templatesCache.put(key, null, new EmptyTemplate(null,null,null,null));
                 return null;

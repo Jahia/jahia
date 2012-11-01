@@ -181,7 +181,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     if (level != null && main.getDepth() >= level + 3) {
                         node = (JCRNodeWrapper) main.getAncestor(level + 3);
                     } else if (level == null) {
-                        node = currentResource.getNode().getResolveSite().getHome();
+                        node = renderContext.getSite().getHome();
                     } else {
                         return;
                     }

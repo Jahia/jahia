@@ -427,7 +427,7 @@ class TemplatePackageRegistry {
             }
         }
         if (!templatePackage.isDefault() && fileNameRegistry.containsKey("default")) {
-            	templatePackage.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + fileNameRegistry.get("default").getVersion().toString().replaceAll("\\.","___") + "." + "default.resources.DefaultJahiaTemplates");
+            	templatePackage.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + ".default." + fileNameRegistry.get("default").getVersion().toString().replaceAll("\\.","___") + ".resources.DefaultJahiaTemplates");
             templatePackage.getResourceBundleHierarchy().add("JahiaTypesResources");
             templatePackage.getResourceBundleHierarchy().add("JahiaInternalResources");
         } else {

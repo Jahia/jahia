@@ -144,6 +144,7 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
     }
 
     public InputStream getResourceAsStream(String name) {
+        name = name.replaceAll("___",".");
         if (loader != null) {
             InputStream stream = loader.getResourceAsStream(name);
             if (stream != null) {

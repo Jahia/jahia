@@ -419,15 +419,15 @@ class TemplatePackageRegistry {
     private void computeResourceBundleHierarchy(JahiaTemplatesPackage templatePackage) {
         templatePackage.getResourceBundleHierarchy().clear();
         if (templatePackage.getResourceBundleName() != null) {
-            templatePackage.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + templatePackage.getRootFolder() + "." + templatePackage.getVersion().toString() + "." + templatePackage.getResourceBundleName());
+            templatePackage.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + templatePackage.getRootFolder() + "." + templatePackage.getVersion().toString().replaceAll("\\.","___") + "." + templatePackage.getResourceBundleName());
         }
         for (JahiaTemplatesPackage dependency : templatePackage.getDependencies()) {
             if (!dependency.isDefault() && dependency.getResourceBundleName() != null) {
-                templatePackage.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + dependency.getRootFolder() + "." + dependency.getVersion().toString() + "." + dependency.getResourceBundleName());
+                templatePackage.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + dependency.getRootFolder() + "." + dependency.getVersion().toString().replaceAll("\\.","___") + "." + dependency.getResourceBundleName());
             }
         }
         if (!templatePackage.isDefault() && fileNameRegistry.containsKey("default")) {
-            	templatePackage.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + fileNameRegistry.get("default").getVersion() + "." + "default.resources.DefaultJahiaTemplates");
+            	templatePackage.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + fileNameRegistry.get("default").getVersion().toString().replaceAll("\\.","___") + "." + "default.resources.DefaultJahiaTemplates");
             templatePackage.getResourceBundleHierarchy().add("JahiaTypesResources");
             templatePackage.getResourceBundleHierarchy().add("JahiaInternalResources");
         } else {

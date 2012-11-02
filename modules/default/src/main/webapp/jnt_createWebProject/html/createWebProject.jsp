@@ -50,7 +50,7 @@
                 <select name="templatesSet">
                     <jcr:node var="sets" path="/modules"/>
                     <c:forEach items="${sets.nodes}" var="set">
-                        <c:if test="${set.properties['j:siteType'].string eq 'templatesSet'}">
+                        <c:if test="${set.properties['j:moduleType'].string eq 'templatesSet'}">
                             <option value="${set.name}">${set.displayableName}</option>
                         </c:if>
                     </c:forEach>

@@ -114,7 +114,7 @@ public class DeployTemplatesActionItem extends BaseActionItem {
 
         menu.removeAll();
         
-        String siteType = JahiaGWTParameters.getSiteNode().get("j:siteType");
+        String siteType = JahiaGWTParameters.getSiteNode().get("j:moduleType");
         boolean isTemplateSet = Constants.MODULE_TYPE_TEMPLATES_SET.equals(siteType); 
         boolean isProfileModule = Constants.MODULE_TYPE_PROFILE_MODULE.equals(siteType);
         if (isTemplateSet) {
@@ -164,7 +164,7 @@ public class DeployTemplatesActionItem extends BaseActionItem {
     
     private void addItemToMenu(MenuItem item, Menu menu) {
         if (menu.getItems().isEmpty()) {
-            MenuItem firstItem = new MenuItem(Messages.get("label.deploy."+JahiaGWTParameters.getSiteNode().get("j:siteType")+".on.all.sites",
+            MenuItem firstItem = new MenuItem(Messages.get("label.deploy."+JahiaGWTParameters.getSiteNode().get("j:moduleType")+".on.all.sites",
                     Messages.get("label.deploy.module.on.all.sites", "Deploy on all sites with this module")));
             addDeployAllListener(firstItem,linker);
             menu.add(firstItem);
@@ -182,7 +182,7 @@ public class DeployTemplatesActionItem extends BaseActionItem {
 
                 final String[] parts = nodePath.split("/");
                 nodePath = "/" + parts[1] + "/" + parts[2];
-                if (Constants.MODULE_TYPE_TEMPLATES_SET.equals(JahiaGWTParameters.getSiteNode().get("j:siteType"))) {
+                if (Constants.MODULE_TYPE_TEMPLATES_SET.equals(JahiaGWTParameters.getSiteNode().get("j:moduleType"))) {
                     if (sitesMap != null && sitesMap.containsKey(JahiaGWTParameters.getSiteKey())) {
                         for (final GWTJahiaSite site : sitesMap.get(JahiaGWTParameters.getSiteKey())) {
                             linker.loading(Messages.getWithArgs(
@@ -207,7 +207,7 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                 }
                 if (noDeployment) {
                     Info.display(Messages.get("label.templatesDeploy", "Deploy"), Messages.get(
-                            "info.noDeployment.noSite.with."+JahiaGWTParameters.getSiteNode().get("j:siteType"),
+                            "info.noDeployment.noSite.with."+JahiaGWTParameters.getSiteNode().get("j:moduleType"),
                             Messages.get("info.noDeployment.noSite.with.module", "No deployment was done, as no site was found having this module.")));
                 }
             }

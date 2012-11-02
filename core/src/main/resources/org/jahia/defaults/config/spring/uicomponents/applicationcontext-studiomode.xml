@@ -102,6 +102,13 @@
                                         <property name="actionItem">
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GenerateWarActionItem"/>
                                         </property>
+                                        <property name="titleKey" value="label.exportWar"/>
+                                        <property name="icon" value="templateExport"/>
+                                    </bean>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ReleaseModuleActionItem"/>
+                                        </property>
                                         <property name="titleKey" value="label.releaseWar"/>
                                         <property name="icon" value="templateExport"/>
                                     </bean>
@@ -167,7 +174,7 @@
                                         <property name="actionItem">
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GenerateWarActionItem"/>
                                         </property>
-                                        <property name="titleKey" value="label.releaseWar"/>
+                                        <property name="titleKey" value="label.exportWar"/>
                                         <property name="icon" value="templateExport"/>
                                     </bean>
 

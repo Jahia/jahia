@@ -127,7 +127,9 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
             }
             for (String installedModule : installedModules) {
                 JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(installedModule);
-                addTemplates(vs, "/modules/" + installedModule + "/" + aPackage.getVersion(), session, node, nodetype, templateType, defaultTemplate, epd);
+                if (aPackage != null) {
+                    addTemplates(vs, "/modules/" + installedModule + "/" + aPackage.getVersion(), session, node, nodetype, templateType, defaultTemplate, epd);
+                }
             }
 
         } catch (RepositoryException e) {

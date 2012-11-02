@@ -149,7 +149,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void flushSite(String siteUUID) throws GWTJahiaServiceException;
 
-    GWTJahiaNode generateWar(String moduleName) throws GWTJahiaServiceException;
+    GWTJahiaNode releaseModule(String moduleName, String nextVersion) throws GWTJahiaServiceException;
 
     String getAbsolutePath(String path) throws GWTJahiaServiceException;
 

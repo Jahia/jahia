@@ -51,7 +51,6 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.apache.jackrabbit.core.security.PrivilegeImpl;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -1374,10 +1373,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public GWTJahiaNode generateWar(String moduleName) throws GWTJahiaServiceException {
+    public GWTJahiaNode releaseModule(String moduleName, String nextVersion) throws GWTJahiaServiceException {
         try {
-            GWTJahiaNode node = contentManager.generateWar(moduleName, retrieveCurrentSession());
-
+            GWTJahiaNode node = contentManager.releaseModule(moduleName, nextVersion, retrieveCurrentSession());
             return node;
         } catch (Exception e) {
             logger.error("", e);

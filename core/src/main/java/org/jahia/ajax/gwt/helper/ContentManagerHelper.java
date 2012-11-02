@@ -1157,7 +1157,7 @@ public class ContentManagerHelper {
                 shortName = JCRContentUtils.findAvailableNodeName(node, shortName);
 
                 List<GWTJahiaNode> result = copy(Arrays.asList("/modules/" + baseSet), "/modules", shortName, false, false, false, true, session);
-                String s = session.getNode("/modules/" + baseSet).getProperty("j:siteType").getValue().getString();
+                String s = session.getNode("/modules/" + baseSet).getProperty("j:moduleType").getValue().getString();
                 session.getNode("/modules/" + shortName).setProperty("j:title", key);
 
                 boolean isTemplatesSet = JahiaTemplateManagerService.MODULE_TYPE_TEMPLATES_SET.equals(s);
@@ -1248,10 +1248,11 @@ public class ContentManagerHelper {
 
     }
 
-    public GWTJahiaNode generateWar(String moduleName, JCRSessionWrapper session) {
+    public GWTJahiaNode releaseModule(String moduleName, String nextVersion, JCRSessionWrapper session) {
         try {
             JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-            File f = templateManagerService.generateWar(moduleName, session);
+
+            File f = templateManagerService.releaseModule(moduleName, nextVersion, session);
             if (f == null) {
                 return null;
             }

@@ -62,6 +62,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 
 import javax.jcr.ImportUUIDBehavior;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import java.io.*;
@@ -375,7 +376,14 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
     public void resetModuleNodes(JahiaTemplatesPackage pkg, JCRSessionWrapper session) {
         try {
             if (session.nodeExists("/modules/" + pkg.getRootFolder() + "/" + pkg.getVersion())) {
-                session.getNode("/modules/" + pkg.getRootFolder() + "/" + pkg.getVersion()).remove();
+                JCRNodeWrapper moduleNode = session.getNode("/modules/" + pkg.getRootFolder() + "/" + pkg.getVersion());
+                NodeIterator nodeIterator = moduleNode.getNodes();
+                while (nodeIterator.hasNext()) {
+                    JCRNodeWrapper next = (JCRNodeWrapper) nodeIterator.next();
+                    if (!next.isNodeType("jnt:versionInfo")) {
+                        next.remove();
+                    }
+                }
                 session.save();
             }
             if (initModuleNode(session, pkg, false)) {

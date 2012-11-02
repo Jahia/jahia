@@ -134,7 +134,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void flushSite(String siteUUID, AsyncCallback<Void> asyncCallback);
 
-    void generateWar(String moduleName, AsyncCallback<GWTJahiaNode> asyncCallback);
+    void releaseModule(String moduleName, String nextVersion, AsyncCallback<GWTJahiaNode> asyncCallback);
 
     void getAbsolutePath(String path, AsyncCallback<String> async);
 

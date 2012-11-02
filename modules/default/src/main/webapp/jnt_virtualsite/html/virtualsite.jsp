@@ -27,10 +27,10 @@
     </ul>
 </c:if>
 <c:if test="${currentNode.parent.name eq 'templateSets'}">
-    <c:if test="${currentNode.properties['j:siteType'].string eq 'module'}">
+    <c:if test="${currentNode.properties['j:moduleType'].string eq 'module'}">
         <h1>Module : ${currentNode.name}</h1>
     </c:if>
-    <c:if test="${currentNode.properties['j:siteType'].string eq 'templatesSet'}">
+    <c:if test="${currentNode.properties['j:moduleType'].string eq 'templatesSet'}">
         <h1>Templates Set : ${currentNode.name}</h1>
     </c:if>
     <jcr:node path="${currentNode.path}/templates/files/template.jpg" var="thumbnail"/>

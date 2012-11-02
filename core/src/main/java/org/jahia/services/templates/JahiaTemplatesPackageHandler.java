@@ -100,7 +100,7 @@ final class JahiaTemplatesPackageHandler {
         if (StringUtils.isEmpty(templatePackage.getRootFolder())) {
             templatePackage.setRootFolder(file.getParentFile().getName());
         }
-        if (StringUtils.isEmpty(templatePackage.getVersion().toString())) {
+        if (templatePackage.getVersion() == null || StringUtils.isEmpty(templatePackage.getVersion().toString())) {
             templatePackage.setVersion(new ModuleVersion("SNAPSHOT"));
         }
 

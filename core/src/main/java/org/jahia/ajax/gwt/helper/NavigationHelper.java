@@ -55,6 +55,7 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
@@ -1210,9 +1211,20 @@ public class NavigationHelper {
         }
 
         try {
-            if (node.isNodeType("jnt:module")) {
-                String versionNumber = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getName()).getVersion().toString();
-                n.set("moduleActiveVersion", versionNumber);
+            if (fields.contains("j:versionInfo") && node.isNodeType("jnt:module")) {
+                JahiaTemplatesPackage packageByFileName = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getName());
+                JCRNodeWrapper versionInfo = node.getNode(packageByFileName.getVersion().toString() + "/j:versionInfo");
+                if (packageByFileName != null) {
+                    n.set(GWTJahiaNode.DISPLAY_NAME, packageByFileName.getName());
+                    n.set("j:versionInfo", packageByFileName.getVersion().toString());
+                    n.set("j:versionNumbers", packageByFileName.getVersion().getOrderedVersionNumbers());
+                    if (versionInfo.hasProperty("j:sourcesFolder")) {
+                        n.set("j:sourcesFolder", versionInfo.getProperty("j:sourcesFolder").getString());
+                    }
+                    if (versionInfo.hasProperty("j:scmUrl")) {
+                        n.set("j:scmUrl", versionInfo.getProperty("j:scmUrl").getString());
+                    }
+                }
             }
         } catch (RepositoryException e) {
             logger.error("Cannot get property module version");
@@ -1237,10 +1249,13 @@ public class NavigationHelper {
                         final JCRPropertyWrapper property = node.getProperty(field);
                         setPropertyValue(n, property, node.getSession());
                     } else if (node.isNodeType("jnt:module")) {
-                        JCRNodeWrapper versionNode = node.getNode(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getName()).getVersion().toString());
-                        if (versionNode.hasProperty(field)) {
-                            final JCRPropertyWrapper property = versionNode.getProperty(field);
-                            setPropertyValue(n, property, node.getSession());
+                        JahiaTemplatesPackage templatePackageByFileName = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getName());
+                        if (templatePackageByFileName != null) {
+                            JCRNodeWrapper versionNode = node.getNode(templatePackageByFileName.getVersion().toString());
+                            if (versionNode.hasProperty(field)) {
+                                final JCRPropertyWrapper property = versionNode.getProperty(field);
+                                setPropertyValue(n, property, node.getSession());
+                            }
                         }
                     }
                 } catch (RepositoryException e) {
@@ -1301,14 +1316,6 @@ public class NavigationHelper {
                     && node.getResolveSite()
                             .getProperty(SitesSettings.WCAG_COMPLIANCE_CHECKING_ENABLED)
                             .getBoolean());
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-
-        try {
-            if (fields.contains("j:versionInfo") && node.hasNode("j:versionInfo")) {
-                n.set("j:versionInfo", node.getNode("j:versionInfo").getProperty("j:version").getString());
-            }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

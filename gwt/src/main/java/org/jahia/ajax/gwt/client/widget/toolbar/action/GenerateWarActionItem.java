@@ -43,15 +43,12 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 /**
  * Action item to export and download the current templates set as a war
@@ -68,7 +65,7 @@ public class GenerateWarActionItem extends BaseActionItem {
         dl.setHeight(120);
         dl.show();
 
-        JahiaContentManagementService.App.getInstance().generateWar(JahiaGWTParameters.getSiteKey(), new BaseAsyncCallback<GWTJahiaNode>() {
+        JahiaContentManagementService.App.getInstance().releaseModule(JahiaGWTParameters.getSiteKey(), null, new BaseAsyncCallback<GWTJahiaNode>() {
             public void onSuccess(GWTJahiaNode result) {
                 dl.removeAll();
                 HTML link = new HTML(Messages.get("downloadMessage.label") + "<br /><br /><a href=\"" + result.getUrl() + "\" target=\"_new\">" + result.getName() + "</a>");

@@ -224,7 +224,7 @@ public class Constants {
     public static final String LOCKTYPES = "j:lockTypes";
     public static final String AREA_NAME = "j:areaName";
     public static final String SITEID = "j:siteId";
-    public static final String SITETYPE = "j:siteType";
+    public static final String SITETYPE = "j:moduleType";
 
     public static final String APPLY_ACL = "j:applyAcl";
     public static final String THUMBNAIL = "j:thumbnail";

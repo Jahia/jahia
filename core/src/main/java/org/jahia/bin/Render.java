@@ -732,7 +732,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         }
                     }
                     if ((site == null && resource.getNode().getPath().startsWith("/sites/")) || (site != null
-                            && !renderContext.getMode().equals("studio") && !site.isAllowsUnlistedLanguages()
+                            && !site.getPath().startsWith("/modules/") && !site.isAllowsUnlistedLanguages()
                             && !(renderContext.isLiveMode() ? site.getActiveLiveLanguagesAsLocales().contains(urlResolver.getLocale()) : site.getLanguagesAsLocales().contains(urlResolver.getLocale())))) {
                         throw new PathNotFoundException("This language does not exist on this site");
                     }

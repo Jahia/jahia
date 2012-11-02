@@ -105,6 +105,10 @@ public class Template implements Serializable {
         return next;
     }
 
+    void setNext(Template next) {
+        this.next = next;
+    }
+
     public List<Template> getNextTemplates() {
         List<Template> t;
         if (next == null) {

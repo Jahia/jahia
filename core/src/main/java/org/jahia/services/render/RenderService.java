@@ -44,7 +44,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.CacheImplementation;
 import org.jahia.services.cache.CacheProvider;
 import org.jahia.services.content.*;
@@ -78,6 +77,10 @@ import java.util.*;
 public class RenderService {
 
     public static final String RENDER_SERVICE_TEMPLATES_CACHE = "RenderService.TemplatesCache";
+
+    private CacheImplementation<String,Template> templatesCache;
+
+    private DefaultCacheKeyGenerator cacheKeyGenerator;
 
     public void setCacheKeyGenerator(DefaultCacheKeyGenerator cacheKeyGenerator) {
         this.cacheKeyGenerator = cacheKeyGenerator;
@@ -232,16 +235,14 @@ public class RenderService {
         return set;
     }
     
-    public org.jahia.services.render.Template resolveTemplate(Resource resource, RenderContext renderContext) throws AccessDeniedException {
+    public Template resolveTemplate(Resource resource, RenderContext renderContext) throws AccessDeniedException {
         final JCRNodeWrapper node = resource.getNode();
         String templateName = resource.getTemplate();
         if ("default".equals(templateName)) {
             templateName = null;
         }
-        JCRNodeWrapper current = node;
 
-
-        org.jahia.services.render.Template template = null;
+        Template template = null;
         try {
             JCRNodeWrapper site;
             String jsite = null;
@@ -261,23 +262,31 @@ public class RenderService {
                 site = node.getResolveSite();
             }
 
-            JahiaTemplateManagerService managerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-
-            if (current.isNodeType("jnt:template")) {
+            if (node.isNodeType("jnt:template")) {
                 // Display a template node in studio
-                if (!current.hasProperty("j:view") || "default".equals(current.getProperty("j:view").getString())) {
-                    JCRNodeWrapper parent = current.getParent();
+                if (!node.hasProperty("j:view") || "default".equals(node.getProperty("j:view").getString())) {
+                    JCRNodeWrapper parent = node.getParent();
                     while (!(parent.isNodeType("jnt:templatesFolder"))) {
-                        template = new org.jahia.services.render.Template(parent.hasProperty("j:view") ? parent.getProperty("j:view").getString() :
+                        template = new Template(parent.hasProperty("j:view") ? parent.getProperty("j:view").getString() :
                                 templateName, parent.getIdentifier(), template, parent.getName());
                         parent = parent.getParent();
                     }
-                    template = addContextualTemplates(node, templateName, template, parent);
+
+                    String packageName = "templates-system";
+                    if (parent.hasProperty("j:templateSetContext")) {
+                        packageName = parent.getProperty("j:templateSetContext").getNode().getName();
+                    }
+                    List<String> installed = new ArrayList<String>();
+                    installed.add(packageName);
+                    for (JahiaTemplatesPackage aPackage : templateManagerService.getTemplatePackageByFileName(packageName).getDependencies()) {
+                        installed.add(aPackage.getRootFolder());
+                    }
+                    template = addContextualTemplates(resource, renderContext, templateName, template, parent, installed);
                 }
             } else {
-                if (resource.getTemplate().equals("default") && current.hasProperty("j:templateName")) {
+                if (resource.getTemplate().equals("default") && node.hasProperty("j:templateName")) {
                     // A template node is specified on the current node
-                    templateName = current.getProperty("j:templateName").getString();
+                    templateName = node.getProperty("j:templateName").getString();
                 }
 
                 List<String> installedModules = ((JCRSiteNode)site).getInstalledModules();
@@ -295,25 +304,26 @@ public class RenderService {
                     }
                 }
 
-                for (String s : installedModules) {
-                    JahiaTemplatesPackage pack = managerService.getTemplatePackageByFileName(s);
-                    template = addTemplates(resource, renderContext, templateName, resource.getNode().getSession().getNode("/modules/"+s+"/"+pack.getVersion()));
-                    if (template != null) {
-                        break;
-                    }
+                String type = "jnt:contentTemplate";
+                if (resource.getNode().isNodeType("jnt:page")) {
+                    type = "jnt:pageTemplate";
                 }
-
-                if (template == null) {
-                }
+                template = addTemplate(resource, renderContext, templateName, installedModules, type);
 
                 if (template != null) {
                     // Add cascade of parent templates
                     JCRNodeWrapper templateNode = resource.getNode().getSession().getNodeByIdentifier(template.getNode()).getParent();
                     while (!(templateNode.isNodeType("jnt:templatesFolder"))) {
-                        template = new org.jahia.services.render.Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
+                        template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
                                 null, templateNode.getIdentifier(), template, templateNode.getName());
+
+//                        Template t = addTemplate(resource, renderContext, templateNode.getName(), installedModules);
+//                        t.setNext(template);
+//                        template = t;
+
                         templateNode = templateNode.getParent();
                     }
+                    template = addContextualTemplates(resource, renderContext, templateName, template, templateNode, installedModules);
                 } else {
                     return null;
                 }
@@ -327,11 +337,6 @@ public class RenderService {
                     }
                     currentTemplate = currentTemplate.getNext();
                 } while (currentTemplate != null);
-
-                if ("default".equals(template.getView())) {
-                    JCRNodeWrapper parent = node.getSession().getNodeByUUID(template.getNode()).getParent();
-                    template = addContextualTemplates(node, templateName, template, parent);
-                }
             } else {
                 template = new Template(null,null,null, null);
             }
@@ -344,62 +349,39 @@ public class RenderService {
         return template;
     }
 
-    private Template addContextualTemplates(JCRNodeWrapper node, String templateName, Template template, JCRNodeWrapper parent) throws RepositoryException {
+    private Template addContextualTemplates(Resource resource, RenderContext renderContext, String templateName, Template template, JCRNodeWrapper parent, List<String> modules) throws RepositoryException {
         if (parent.isNodeType("jnt:templatesFolder") && parent.hasProperty("j:rootTemplatePath")) {
             String rootTemplatePath = parent.getProperty("j:rootTemplatePath").getString();
-            JCRNodeWrapper systemSite = node.getSession().getNode(JCRContentUtils.getSystemSitePath());
-            if (parent.hasProperty("j:templateSetContext")) {
-                systemSite = (JCRNodeWrapper) parent.getProperty("j:templateSetContext").getNode();
+
+            if (rootTemplatePath.contains("/")) {
+                rootTemplatePath = StringUtils.substringAfter(rootTemplatePath,"/");
             }
-            if (systemSite.hasNode("templates"+ rootTemplatePath)) {
-                parent = systemSite.getNode("templates"+ rootTemplatePath);
-                while (!(parent.isNodeType("jnt:templatesFolder"))) {
-                    template = new Template(parent.hasProperty("j:view") ? parent.getProperty("j:view").getString() :
-                            templateName, parent.getIdentifier(), template, parent.getName());
-                    parent = parent.getParent();
-                }
-            } else {
-                logger.warn("Cannot find template : " + systemSite + "/templates" + rootTemplatePath);
+
+            Template t = addTemplate(resource, renderContext, rootTemplatePath, modules, "jnt:template");
+
+            if (t != null) {
+                t.setNext(template);
+                return t;
             }
         }
         return template;
     }
 
-    private CacheImplementation<String,Template> templatesCache;
-
-    private DefaultCacheKeyGenerator cacheKeyGenerator;
-
-/*    private String resolveTemplateType(Resource resource , Channel channel) {
-        boolean doFallBack = false;
-        String r = resource.getTemplateType();
-        if (!channel.hasCapabilityValue("template-type-mapping")) {
-            doFallBack = true;
-        }
-        if (channel.hasCapabilityValue("template-type-mapping") && hasView(resource.getNode(), resource.getTemplate(), resource.getTemplateType())) {
-            if (!resource.getTemplateType().contains("-")) {
-                String baseType = resource.getTemplateType();
-                r = baseType+"-" + channel.getCapability("template-type-mapping");
-
+    private Template addTemplate(Resource resource, RenderContext renderContext, String templateName, List<String> installedModules, String type) throws RepositoryException {
+        for (String s : installedModules) {
+            JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName(s);
+            if (pack != null) {
+                Template template = addTemplates(resource, renderContext, templateName, resource.getNode().getSession().getNode("/modules/"+s+"/"+pack.getVersion()), type);
+                if (template != null) {
+                    return template;
+                }
             }
-        } else {
-            doFallBack = true;
         }
+        return null;
+    }
 
-        if (doFallBack && channel.getFallBack() != null && !channel.getFallBack().equals("root")) {
-            resolveTemplateType(resource, channelService.getChannel(channel.getFallBack()));
-        }
-        return r;
-    }*/
-
-    private org.jahia.services.render.Template addTemplates(Resource resource, RenderContext renderContext, String templateName,
-                                                            JCRNodeWrapper templateNode) throws RepositoryException {
-        String type = "contentTemplate";
-        if (resource.getNode().isNodeType("jnt:page")) {
-            type = "pageTemplate";
-        }
-        if("base".equals(templateName)) {
-            type = "template";
-        }
+    private Template addTemplates(Resource resource, RenderContext renderContext, String templateName,
+                                  JCRNodeWrapper templateNode, String type) throws RepositoryException {
         String key = new StringBuffer(templateNode.getPath()).append(type).append(
                 templateName != null ? templateName : "default").toString() + renderContext.getServletPath() + resource.getWorkspace() + renderContext.isLoggedIn() +
                 resource.getNode().getNodeTypes()+cacheKeyGenerator.appendAcls(resource, renderContext, false);
@@ -408,7 +390,7 @@ public class RenderService {
 
         if (template == null) {
             String query =
-                    "select * from [jnt:" + type + "] as w where isdescendantnode(w, ['" + templateNode.getPath() +
+                    "select * from [" + type + "] as w where isdescendantnode(w, ['" + templateNode.getPath() +
                     "'])";
             if (templateName != null) {
                 query += " and name(w)='" + templateName + "'";
@@ -424,29 +406,6 @@ public class RenderService {
             while (ni.hasNext()) {
                 final JCRNodeWrapper contentTemplateNode = (JCRNodeWrapper) ni.nextNode();
                 addTemplate(resource, renderContext, contentTemplateNode, templates);
-            }
-
-            try {
-                if (!"base".equals(templateName)) {
-                    JCRSiteNode site = renderContext.getSite();
-                    if (site == null) {
-                        site = resource.getNode().getResolveSite();
-                    }
-                    String templatePackageName = site.getTemplateFolder();
-                    JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(
-                            templatePackageName);
-                    Template siteTemplateBase = addTemplates(resource, renderContext, "base",
-                            resource.getNode().getSession().getNode(
-                                    "/modules/" + templatePackageName + "/" + pack.getVersion()));
-                    if (siteTemplateBase != null && !templates.isEmpty()) {
-                        final Template template1 = new Template(siteTemplateBase.getView(), siteTemplateBase.getNode(),
-                                templates.get(0), siteTemplateBase.getName());
-                        templatesCache.put(key, null, template1);
-                        return template1;
-                    }
-                }
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
             }
 
             if (templates.isEmpty()) {

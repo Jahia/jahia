@@ -398,25 +398,9 @@ class TemplatePackageRegistry {
         }
 
         // handle resource bundles
-        for (JahiaTemplatesPackage sourcePack : registry.values()) {
-            sourcePack.getResourceBundleHierarchy().clear();
-            if (sourcePack.getResourceBundleName() != null) {
-                sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + sourcePack.getRootFolder() + "." + sourcePack.getResourceBundleName());
-            }
-            for (JahiaTemplatesPackage dependency : sourcePack.getDependencies()) {
-                if (!dependency.isDefault() && dependency.getResourceBundleName() != null) {
-                    sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + dependency.getRootFolder() + "." + dependency.getResourceBundleName());
-                }
-            }
-            if (!sourcePack.isDefault() && registry.containsKey("Default Jahia Templates")) {
-            	sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + "default.resources.DefaultJahiaTemplates");
-            	sourcePack.getResourceBundleHierarchy().add("JahiaTypesResources");
-                sourcePack.getResourceBundleHierarchy().add("JahiaInternalResources");
-            } else {
-                sourcePack.getResourceBundleHierarchy().add("JahiaTypesResources");
-                sourcePack.getResourceBundleHierarchy().add("JahiaInternalResources");
-            }
-        }
+//        for (JahiaTemplatesPackage sourcePack : registry.values()) {
+        computeResourceBundleHierarchy(templatePackage);
+//        }
         
         File[] files = rootFolder.listFiles();
         for (File file : files) {
@@ -430,6 +414,26 @@ class TemplatePackageRegistry {
             }
         }
         logger.info("Registered "+templatePackage.getName() + " version=" + templatePackage.getVersion());
+    }
+
+    private void computeResourceBundleHierarchy(JahiaTemplatesPackage templatePackage) {
+        templatePackage.getResourceBundleHierarchy().clear();
+        if (templatePackage.getResourceBundleName() != null) {
+            templatePackage.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + templatePackage.getRootFolder() + "." + templatePackage.getVersion().toString() + "." + templatePackage.getResourceBundleName());
+        }
+        for (JahiaTemplatesPackage dependency : templatePackage.getDependencies()) {
+            if (!dependency.isDefault() && dependency.getResourceBundleName() != null) {
+                templatePackage.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + dependency.getRootFolder() + "." + dependency.getVersion().toString() + "." + dependency.getResourceBundleName());
+            }
+        }
+        if (!templatePackage.isDefault() && fileNameRegistry.containsKey("default")) {
+            	templatePackage.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + fileNameRegistry.get("default").getVersion() + "." + "default.resources.DefaultJahiaTemplates");
+            templatePackage.getResourceBundleHierarchy().add("JahiaTypesResources");
+            templatePackage.getResourceBundleHierarchy().add("JahiaInternalResources");
+        } else {
+            templatePackage.getResourceBundleHierarchy().add("JahiaTypesResources");
+            templatePackage.getResourceBundleHierarchy().add("JahiaInternalResources");
+        }
     }
 
     public void computeDependencies(JahiaTemplatesPackage pack) {

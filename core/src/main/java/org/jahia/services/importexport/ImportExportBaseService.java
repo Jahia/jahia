@@ -1133,7 +1133,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             logger.error("Cannot get installed modules ",e);
         }
 
-        String templateSet = site.getTemplatePackageName();
+        String templateSet = site.getTemplateFolder();
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         try {
             if (!installedModules.contains(templateSet)) {

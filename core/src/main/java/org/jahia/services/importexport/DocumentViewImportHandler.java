@@ -225,7 +225,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         }
 
         if (rootBehavior == ROOT_BEHAVIOUR_IGNORE && pathes.size() <= 1) {
-            session.getPathMapping().put("/" + decodedQName, nodes.peek().getPath().equals("/") ? "" : nodes.peek().getPath());
+            session.getPathMapping().put("/" + decodedQName + "/", nodes.peek().getPath().equals("/") ? "/" : nodes.peek().getPath() + "/");
             pathes.push("");
             return;
         }

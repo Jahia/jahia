@@ -292,7 +292,7 @@ public class FormFieldCreator {
         if (property != null) {
             fillValue(field, definition, property, initializer);
         }
-        field.setId("JahiaGxtField"+ "_" + field.getName().replace(":","_")+"_"+locale);
+        //field.setId("JahiaGxtField"+ "_" + field.getName().replace(":","_")+"_"+locale);
         return field;
     }
 
@@ -345,7 +345,7 @@ public class FormFieldCreator {
         if (field == null || definition == null) {
             return;
         }
-        field.setName(definition.getName().replace(".","_"));
+        field.setName(definition.getName());
         field.setFieldLabel(definition.getLabel());
         if(!"".equals(definition.getTooltip())) {
             String separator = field.getLabelSeparator()!=null? field.getLabelSeparator():"";

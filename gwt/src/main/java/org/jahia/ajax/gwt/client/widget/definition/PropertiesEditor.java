@@ -273,8 +273,7 @@ public class PropertiesEditor extends FormPanel {
                 }
 
                 final PropertyAdapterField adapterField = new PropertyAdapterField(field, definition, gwtJahiaNodeProperty);
-
-                adapterField.setId(nodeType.getName().replace(":","-") + "_" + field.getName().replace(":","-") + locale + (isWriteable?"-true":"-false"));
+                adapterField.setName(nodeType.getName());
                 adapterField.setWidth("98%");
                 adapterField.setStyleAttribute("padding-left", "0");
                 fields.put(field.getName(), adapterField);
@@ -405,7 +404,7 @@ public class PropertiesEditor extends FormPanel {
                 FieldSet fs = (FieldSet) c.getParent();
                 Set<Component> compToRemove = new HashSet<Component>();
                 for (Component co : fs.getItems()) {
-                    if (co.getId().startsWith(removeMixin.replace(":", "-") + "_")) {
+                    if (co instanceof AdapterField && ((AdapterField) co).getName().equals(removeMixin)) {
                         compToRemove.add(co);
                     }
                 }
@@ -690,7 +689,7 @@ public class PropertiesEditor extends FormPanel {
                 panel.setLayout(hBoxLayout);
                 panel.add(field);
                 field.setWidth("98%");
-                if (isWriteable && viewCopyToAllLangs && JahiaGWTParameters.getSiteLanguages().size() > 1 && definition.isInternationalized()) {
+                if (isWriteable && viewCopyToAllLangs && JahiaGWTParameters.getSiteLanguages() != null && JahiaGWTParameters.getSiteLanguages().size() > 1 && definition.isInternationalized()) {
                     final Button button = new Button(Messages.get("label.translate.copyall","Copy to all languages"));
                     button.addSelectionListener(new SelectionListener<ButtonEvent>() {
                         @Override

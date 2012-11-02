@@ -314,6 +314,7 @@
                                             </list>
                                         </property>
                                         <property name="viewCopyToAllLangs" value="false"/>
+                                        <property name="multiLang" value="false"/>
                                     </bean>
                                 </property>
                                 </bean>

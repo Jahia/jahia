@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"
 %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@page import="javax.jcr.Repository"%>
 <%@page import="javax.jcr.Value"%>
 <%@page import="javax.jcr.nodetype.PropertyDefinition"%>
 <%@page import="org.jahia.services.content.JCRContentUtils"%>
@@ -8,10 +9,10 @@
 <%@page import="org.jahia.services.content.JCRSessionFactory"%>
 <%@page import="org.jahia.services.content.JCRSessionWrapper"%>
 <%@page import="org.jahia.services.usermanager.jcr.JCRUserManagerProvider"%>
-<%@ page import="javax.jcr.version.Version" %>
-<%@ page import="org.apache.commons.lang.StringUtils" %>
-<%@ page import="javax.jcr.version.VersionIterator" %>
-<%@ page import="java.util.*" %>
+<%@page import="javax.jcr.version.Version" %>
+<%@page import="org.apache.commons.lang.StringUtils" %>
+<%@page import="javax.jcr.version.VersionIterator" %>
+<%@page import="java.util.*" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -79,16 +80,17 @@
 JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
 JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"));
 try {
-JCRNodeWrapper node = null;
-if (request.getParameter("path") != null && request.getParameter("path").length() > 0) {
-    node = jcrSession.getNode(JCRContentUtils.escapeNodePath(request.getParameter("path")));
-    pageContext.setAttribute("nodeId", node.getIdentifier());
-} else {
-    node = jcrSession.getNodeByIdentifier((String) pageContext.getAttribute("nodeId"));
-}
-pageContext.setAttribute("node", node);
-pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
-    if (node.isVersioned()) {
+    JCRNodeWrapper node = null;
+    if (request.getParameter("path") != null && request.getParameter("path").length() > 0) {
+        node = jcrSession.getNode(JCRContentUtils.escapeNodePath(request.getParameter("path")));
+        pageContext.setAttribute("nodeId", node.getIdentifier());
+    } else {
+        node = jcrSession.getNodeByIdentifier((String) pageContext.getAttribute("nodeId"));
+    }
+    pageContext.setAttribute("node", node);
+    pageContext.setAttribute("currentNode", node);
+    Value versioningSupported = jcrSession.getProviderSession(node.getProvider()).getRepository().getDescriptorValue(Repository.OPTION_SIMPLE_VERSIONING_SUPPORTED);
+    if (versioningSupported != null && versioningSupported.getBoolean() && node.isVersioned()) {
         VersionIterator versionIterator = jcrSession.getWorkspace().getVersionManager().getVersionHistory(node.getPath()).getAllLinearVersions();
         pageContext.setAttribute("versionIterator", versionIterator);
 

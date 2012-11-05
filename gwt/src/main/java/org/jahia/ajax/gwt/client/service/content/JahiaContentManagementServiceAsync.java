@@ -42,6 +42,7 @@ package org.jahia.ajax.gwt.client.service.content;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.extjs.gxt.ui.client.data.RpcMap;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.*;
@@ -134,7 +135,9 @@ public interface JahiaContentManagementServiceAsync {
 
     void flushSite(String siteUUID, AsyncCallback<Void> asyncCallback);
 
-    void releaseModule(String moduleName, String nextVersion, AsyncCallback<GWTJahiaNode> asyncCallback);
+    void generateWar(String moduleName, AsyncCallback<GWTJahiaNode> asyncCallback);
+
+    void releaseModule(String moduleName, String nextVersion, AsyncCallback<RpcMap> asyncCallback);
 
     void getAbsolutePath(String path, AsyncCallback<String> async);
 

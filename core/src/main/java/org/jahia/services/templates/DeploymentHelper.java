@@ -227,7 +227,7 @@ class DeploymentHelper implements ServletContextAware {
 
         File tmplRootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), rootFolder);
         File versionFolder = new File(tmplRootFolder, replacedImplementationVersionStr);
-        if (versionFolder.exists()) {
+        if (versionFolder.exists() && (implementationVersionStr.isSnapshot() || settingsBean.isDevelopmentMode())) {
             if (FileUtils.isFileNewer(templateWar, versionFolder)) {
                 logger.info("Older module package '{}' ({}) already deployed. Deleting it.", packageName, implementationVersionStr);
                 try {

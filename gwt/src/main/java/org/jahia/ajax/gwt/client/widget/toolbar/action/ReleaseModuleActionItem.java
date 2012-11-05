@@ -41,6 +41,7 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.RpcMap;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Info;
@@ -58,12 +59,10 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Action item to export and download the current templates set as a war
@@ -121,15 +120,24 @@ public class ReleaseModuleActionItem extends BaseActionItem {
                 window.getButtonBar().setEnabled(false);
                 window.add(html);
 
-                JahiaContentManagementService.App.getInstance().releaseModule(JahiaGWTParameters.getSiteKey(), vn.getValue(), new BaseAsyncCallback<GWTJahiaNode>() {
-                    public void onSuccess(GWTJahiaNode result) {
+                JahiaContentManagementService.App.getInstance().releaseModule(JahiaGWTParameters.getSiteKey(), vn.getValue(), new BaseAsyncCallback<RpcMap>() {
+                    public void onSuccess(RpcMap result) {
                         linker.loaded();
+                        GWTJahiaNode newModule = (GWTJahiaNode) result.get("newModule");
+                        String filename = (String) result.get("filename");
+                        String url = (String) result.get("downloadUrl");
 
-                        MainModule.staticGoTo("/modules/"+JahiaGWTParameters.getSiteKey()+"/"+vn.getValue(), null);
+                        JahiaGWTParameters.getSitesMap().remove(JahiaGWTParameters.getSiteNode().getUUID());
+                        JahiaGWTParameters.getSitesMap().put(newModule.getUUID(), newModule);
+                        JahiaGWTParameters.setSite(newModule, linker);
+                        if (((EditLinker) linker).getSidePanel() != null) {
+                            ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
+                        }
+                        MainModule.staticGoTo(newModule.getPath(), null);
                         SiteSwitcherActionItem.refreshAllSitesList(linker);
 
                         window.removeAll();
-                        HTML link = new HTML(Messages.get("downloadMessage.label") + "<br /><br /><a href=\"" + result.getUrl() + "\" target=\"_new\">" + result.getName() + "</a>");
+                        HTML link = new HTML(Messages.get("downloadMessage.label") + "<br /><br /><a href=\"" + url + "\" target=\"_new\">" + filename + "</a>");
                         window.add(link);
                         window.show();
                     }
@@ -155,6 +163,9 @@ public class ReleaseModuleActionItem extends BaseActionItem {
     private String generateVersionNumber(List<Integer> orderedVersionNumbers, int index) {
         List<Integer> newOrderedVersionNumbers = new ArrayList<Integer>(orderedVersionNumbers);
         newOrderedVersionNumbers.set(index, orderedVersionNumbers.get(index) + 1);
+        for (int i = index+1; i < orderedVersionNumbers.size(); i++) {
+            orderedVersionNumbers.set(i, 0);
+        }
         String s = "";
         for (Integer n : newOrderedVersionNumbers) {
             s += ("." + n);

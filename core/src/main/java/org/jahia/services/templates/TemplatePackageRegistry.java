@@ -316,6 +316,11 @@ class TemplatePackageRegistry {
                 : null;
     }
 
+    public JahiaTemplatesPackage lookupByFileNameAndVersion(String fileName, String version) {
+        if (fileName == null || registry == null) return null;
+        return packagesWithVersion.get(fileName).get(new ModuleVersion(version));
+    }
+
     /**
      * Returns the requested template package or <code>null</code> if the package with the specified JCR node name is not registered in the
      * repository.
@@ -361,7 +366,8 @@ class TemplatePackageRegistry {
                 pack.setLastVersion(true);
             } else {
                 String lastVersion = FileUtils.readFileToString(lastVersionFile, "UTF-8");
-                if (new ModuleVersion(lastVersion).compareTo(pack.getVersion()) <= 0) {
+                if (new ModuleVersion(lastVersion).compareTo(pack.getVersion()) < 0) {
+                    packagesWithVersion.get(pack.getRootFolder()).get(new ModuleVersion(lastVersion)).setLastVersion(false);
                     FileUtils.write(lastVersionFile, pack.getVersion().toString(), "UTF-8");
                     pack.setLastVersion(true);
                 } else if (pack.getVersion().toString().equals(lastVersion)) {
@@ -492,10 +498,15 @@ class TemplatePackageRegistry {
     }
 
     public void unregister(JahiaTemplatesPackage templatePackage) {
-        registry.remove(templatePackage.getName());
-        fileNameRegistry.remove(templatePackage.getRootFolder());
-        templatePackages = null;
-        NodeTypeRegistry.getInstance().unregisterNodeTypes(templatePackage.getName());
+        if (templatePackage.isActiveVersion()) {
+            registry.remove(templatePackage.getName());
+            fileNameRegistry.remove(templatePackage.getRootFolder());
+            templatePackages = null;
+        }
+        if (templatePackage.isLastVersion()) {
+            NodeTypeRegistry.getInstance().unregisterNodeTypes(templatePackage.getName());
+        }
+        packagesWithVersion.get(templatePackage.getRootFolder()).remove(templatePackage.getVersion());
     }
 
     public void resetBeanModules() {

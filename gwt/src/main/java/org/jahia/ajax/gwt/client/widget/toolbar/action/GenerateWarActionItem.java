@@ -57,8 +57,9 @@ public class GenerateWarActionItem extends BaseActionItem {
     @Override public void onComponentSelection() {
         linker.loading("Generating war...");
 
-        JahiaContentManagementService.App.getInstance().releaseModule(JahiaGWTParameters.getSiteKey(), null, new BaseAsyncCallback<GWTJahiaNode>() {
+        JahiaContentManagementService.App.getInstance().generateWar(JahiaGWTParameters.getSiteKey(), new BaseAsyncCallback<GWTJahiaNode>() {
             public void onSuccess(GWTJahiaNode result) {
+                linker.loaded();
                 final com.extjs.gxt.ui.client.widget.Window dl = new com.extjs.gxt.ui.client.widget.Window();
                 dl.setModal(true);
                 dl.setHeading(Messages.get("label.export"));
@@ -73,6 +74,7 @@ public class GenerateWarActionItem extends BaseActionItem {
             }
 
             public void onApplicationFailure(Throwable caught) {
+                linker.loaded();
                 Info.display("War creation failed","War creation failed");
             }
         });

@@ -42,6 +42,7 @@ package org.jahia.ajax.gwt.client.service.content;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.extjs.gxt.ui.client.data.RpcMap;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -149,7 +150,9 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void flushSite(String siteUUID) throws GWTJahiaServiceException;
 
-    GWTJahiaNode releaseModule(String moduleName, String nextVersion) throws GWTJahiaServiceException;
+    GWTJahiaNode generateWar(String moduleName) throws GWTJahiaServiceException;
+
+    RpcMap releaseModule(String moduleName, String nextVersion) throws GWTJahiaServiceException;
 
     String getAbsolutePath(String path) throws GWTJahiaServiceException;
 

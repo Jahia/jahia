@@ -626,6 +626,30 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
         return null;
     }
 
+    public void undeployModule(JahiaTemplatesPackage pack, JCRSessionWrapper session) throws RepositoryException {
+        if (pack.getContext() != null) {
+            pack.getContext().close();
+            pack.setContext(null);
+        }
+        templatePackageRegistry.unregister(pack);
+
+        File rootFile = new File(pack.getFilePath()).getParentFile();
+
+        session.getNode("/modules/"+pack.getRootFolderWithVersion()).remove();
+
+        if (pack.isActiveVersion()) {
+            File activeVersionFile = new File(rootFile, "activeVersion");
+            activeVersionFile.delete();
+        }
+        if (pack.isLastVersion()) {
+            File activeVersionFile = new File(rootFile, "lastVersion");
+            activeVersionFile.delete();
+        }
+
+        FileUtils.deleteQuietly(new File(settingsBean.getJahiaSharedTemplatesDiskPath(), pack.getRootFolder() + "-" + pack.getVersion() + ".war"));
+        FileUtils.deleteQuietly(new File(pack.getFilePath()));
+    }
+
 // -------------------------- INNER CLASSES --------------------------
 
     class TemplatesWatcher extends TimerTask {

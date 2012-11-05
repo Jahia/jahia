@@ -43,6 +43,7 @@ package org.jahia.ajax.gwt.content.server;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.data.RpcMap;
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
@@ -304,7 +305,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             setAvailablePermissions(config);
 
             config.setChannels(channelHelper.getChannels());
-        } catch (RepositoryException e) {
+        } catch (Exception e) {
             logger.error("Cannot get node", e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -1373,10 +1374,20 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public GWTJahiaNode releaseModule(String moduleName, String nextVersion) throws GWTJahiaServiceException {
+    public GWTJahiaNode generateWar(String moduleName) throws GWTJahiaServiceException {
+        return contentManager.releaseModule(moduleName, null, retrieveCurrentSession());
+    }
+
+    public RpcMap releaseModule(String moduleName, String nextVersion) throws GWTJahiaServiceException {
         try {
-            GWTJahiaNode node = contentManager.releaseModule(moduleName, nextVersion, retrieveCurrentSession());
-            return node;
+            JCRSessionWrapper session = retrieveCurrentSession();
+            GWTJahiaNode node = contentManager.releaseModule(moduleName, nextVersion, session);
+            RpcMap r = new RpcMap();
+            r.put("newModule",navigation.getNode("/modules/"+moduleName, GWTJahiaNode.DEFAULT_SITE_FIELDS, session));
+            r.put("filename",node.getName());
+            r.put("downloadUrl",node.getUrl());
+
+            return r;
         } catch (Exception e) {
             logger.error("", e);
             throw new GWTJahiaServiceException(e.toString());

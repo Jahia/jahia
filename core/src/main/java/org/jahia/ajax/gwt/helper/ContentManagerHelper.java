@@ -1257,6 +1257,8 @@ public class ContentManagerHelper {
         try {
             JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
 
+            JahiaTemplatesPackage previous = templateManagerService.getTemplatePackageByFileName(moduleName);
+
             File f = templateManagerService.releaseModule(moduleName, nextVersion, session);
             if (f == null) {
                 return null;
@@ -1264,6 +1266,7 @@ public class ContentManagerHelper {
 
             if (nextVersion != null) {
                 templateManagerService.activateModuleVersion(moduleName, new ModuleVersion(nextVersion));
+                templateManagerService.undeployModule(moduleName, previous.getVersion().toString(), session);
             }
 
             JCRNodeWrapper privateFolder = session.getNode(session.getUser().getLocalPath() + "/files/private");

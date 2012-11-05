@@ -67,6 +67,7 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.sites.SitesSettings;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.utils.LanguageCodeConverters;
@@ -79,6 +80,7 @@ import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.version.Version;
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.*;
 
 /**
@@ -1210,16 +1212,18 @@ public class NavigationHelper {
             }
         }
 
+        JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         try {
             if (fields.contains("j:versionInfo") && node.isNodeType("jnt:module")) {
-                JahiaTemplatesPackage packageByFileName = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getName());
+                JahiaTemplatesPackage packageByFileName = templateManagerService.getTemplatePackageByFileName(node.getName());
                 JCRNodeWrapper versionInfo = node.getNode(packageByFileName.getVersion().toString() + "/j:versionInfo");
                 if (packageByFileName != null) {
                     n.set(GWTJahiaNode.DISPLAY_NAME, packageByFileName.getName());
                     n.set("j:versionInfo", packageByFileName.getVersion().toString());
                     n.set("j:versionNumbers", packageByFileName.getVersion().getOrderedVersionNumbers());
-                    if (versionInfo.hasProperty("j:sourcesFolder")) {
-                        n.set("j:sourcesFolder", versionInfo.getProperty("j:sourcesFolder").getString());
+                    File sources = templateManagerService.getSources(packageByFileName, node.getSession());
+                    if (sources != null) {
+                        n.set("j:sourcesFolder", sources.getPath());
                     }
                     if (versionInfo.hasProperty("j:scmUrl")) {
                         n.set("j:scmUrl", versionInfo.getProperty("j:scmUrl").getString());
@@ -1249,7 +1253,7 @@ public class NavigationHelper {
                         final JCRPropertyWrapper property = node.getProperty(field);
                         setPropertyValue(n, property, node.getSession());
                     } else if (node.isNodeType("jnt:module")) {
-                        JahiaTemplatesPackage templatePackageByFileName = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getName());
+                        JahiaTemplatesPackage templatePackageByFileName = templateManagerService.getTemplatePackageByFileName(node.getName());
                         if (templatePackageByFileName != null) {
                             JCRNodeWrapper versionNode = node.getNode(templatePackageByFileName.getVersion().toString());
                             if (versionNode.hasProperty(field)) {

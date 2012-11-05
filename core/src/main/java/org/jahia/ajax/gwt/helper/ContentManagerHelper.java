@@ -54,6 +54,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.api.Constants;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
@@ -68,6 +69,7 @@ import org.jahia.services.importexport.validation.*;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.SourceControlManagement;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -1146,7 +1148,7 @@ public class ContentManagerHelper {
             String shortName = JCRContentUtils.generateNodeName(key);
             try {
                 JCRNodeWrapper node = templateManagerService.createModule(shortName, siteType, sources != null ? new File(sources) : null, scmURI, scmType, session);
-                return node != null ? navigation.getGWTJahiaNode(node, GWTJahiaNode.DEFAULT_SITE_FIELDS) : null;
+                return node != null ? navigation.getGWTJahiaNode(node.getParent(), GWTJahiaNode.DEFAULT_SITE_FIELDS) : null;
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
@@ -1190,6 +1192,9 @@ public class ContentManagerHelper {
     private File getSource(String moduleName, JCRSessionWrapper session) throws RepositoryException  {
         String sources;
         JCRNodeWrapper n = session.getNode("/modules/"+moduleName);
+
+        JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName);
+        n = n.getNode(pack.getVersion().toString());
         if (!n.hasNode("j:versionInfo")) {
             return null;
         }
@@ -1256,15 +1261,20 @@ public class ContentManagerHelper {
             if (f == null) {
                 return null;
             }
+
+            if (nextVersion != null) {
+                templateManagerService.activateModuleVersion(moduleName, new ModuleVersion(nextVersion));
+            }
+
             JCRNodeWrapper privateFolder = session.getNode(session.getUser().getLocalPath() + "/files/private");
 
-            if (!privateFolder.hasNode("templates-sets")) {
+            if (!privateFolder.hasNode("modules")) {
                 if (!privateFolder.isCheckedOut()) {
                     session.getWorkspace().getVersionManager().checkout(privateFolder.getPath());
                 }
-                privateFolder.addNode("templates-sets", Constants.JAHIANT_FOLDER);
+                privateFolder.addNode("modules", Constants.JAHIANT_FOLDER);
             }
-            JCRNodeWrapper parent = privateFolder.getNode("templates-sets");
+            JCRNodeWrapper parent = privateFolder.getNode("modules");
             if (!parent.isCheckedOut()) {
                 session.getWorkspace().getVersionManager().checkout(parent.getPath());
             }

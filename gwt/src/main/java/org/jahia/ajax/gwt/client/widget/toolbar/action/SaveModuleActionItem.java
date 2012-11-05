@@ -51,6 +51,7 @@ import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
@@ -82,16 +83,16 @@ public class SaveModuleActionItem extends BaseActionItem {
         Button btnSubmit = new Button(Messages.get("label.save", "Save"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 wnd.hide();
-                linker.loading("Saving module...");
+                linker.loading(Messages.get("message.moduleSaving", "Saving module..."));
                 JahiaContentManagementService.App.getInstance().saveModule(JahiaGWTParameters.getSiteKey(), message.getValue(), new BaseAsyncCallback() {
                     public void onSuccess(Object result) {
                         linker.loaded();
-                        Info.display(Messages.get("label.information", "Information"), Messages.get("message.templateSetCreated", "Module saved"));
+                        Info.display(Messages.get("label.information", "Information"), Messages.get("message.moduleSave", "Module saved"));
                     }
 
                     public void onApplicationFailure(Throwable caught) {
                         linker.loaded();
-                        Info.display(Messages.get("label.error", "Error"), Messages.get("message.templateSetCreationFailed", "Module save failed"));
+                        Info.display(Messages.get("label.error", "Error"), Messages.get("message.moduleSaveFailed", "Module save failed"));
                     }
                 });
             }
@@ -111,4 +112,16 @@ public class SaveModuleActionItem extends BaseActionItem {
 
         wnd.show();
     }
+
+    @Override
+    public void handleNewLinkerSelection() {
+        GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
+        String s = siteNode.get("j:versionInfo");
+        if (s.endsWith("-SNAPSHOT") && siteNode.get("j:sourcesFolder") != null) {
+            setEnabled(true);
+        } else {
+            setEnabled(false);
+        }
+    }
+
 }

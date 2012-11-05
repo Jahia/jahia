@@ -51,6 +51,7 @@ import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
@@ -73,4 +74,16 @@ public class UpdateModuleActionItem extends BaseActionItem {
             }
         });
     }
+
+    @Override
+    public void handleNewLinkerSelection() {
+        GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
+        String s = siteNode.get("j:versionInfo");
+        if (s.endsWith("-SNAPSHOT") && siteNode.get("j:scmUrl") != null) {
+            setEnabled(true);
+        } else {
+            setEnabled(false);
+        }
+    }
+
 }

@@ -58,6 +58,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -109,6 +110,8 @@ public class ReleaseModuleActionItem extends BaseActionItem {
 
         b = new Button(Messages.get("label.release", "Release"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
+                window.hide();
+                linker.loading("Releasing module...");
                 if (!vn.getValue().endsWith("-SNAPSHOT")) {
                     vn.markInvalid(Messages.get("label.snapshotRequired","Working version number must be SNAPSHOT"));
                     return;
@@ -120,20 +123,22 @@ public class ReleaseModuleActionItem extends BaseActionItem {
 
                 JahiaContentManagementService.App.getInstance().releaseModule(JahiaGWTParameters.getSiteKey(), vn.getValue(), new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode result) {
+                        linker.loaded();
+
+                        MainModule.staticGoTo("/modules/"+JahiaGWTParameters.getSiteKey()+"/"+vn.getValue(), null);
+                        SiteSwitcherActionItem.refreshAllSitesList(linker);
+
                         window.removeAll();
                         HTML link = new HTML(Messages.get("downloadMessage.label") + "<br /><br /><a href=\"" + result.getUrl() + "\" target=\"_new\">" + result.getName() + "</a>");
                         window.add(link);
-                        window.layout();
+                        window.show();
                     }
 
                     public void onApplicationFailure(Throwable caught) {
-                        window.hide();
-                        ;
+                        linker.loaded();
                         Info.display("War creation failed", "War creation failed");
                     }
                 });
-
-                window.hide();
             }
         });
         window.addButton(b);
@@ -163,7 +168,7 @@ public class ReleaseModuleActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
         String s = siteNode.get("j:versionInfo");
-        if (s.endsWith("-SNAPSHOT") && siteNode.get("j:sourcesFolder") != null && siteNode.get("j:scmUrl") != null) {
+        if (s.endsWith("-SNAPSHOT") && siteNode.get("j:sourcesFolder") != null) {
             setEnabled(true);
         } else {
             setEnabled(false);

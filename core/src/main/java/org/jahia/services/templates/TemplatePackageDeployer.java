@@ -476,6 +476,9 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
             pack.setModuleType(moduleType);
         }
 
+        if (!m.hasNode("templates")) {
+            m.addNode("templates", "jnt:templatesFolder");
+        }
         JCRNodeWrapper tpls = m.getNode("templates");
         if (!tpls.hasProperty("j:rootTemplatePath") && JahiaTemplateManagerService.MODULE_TYPE_MODULE.equals(pack.getModuleType())) {
             tpls.setProperty("j:rootTemplatePath", "/base");
@@ -579,6 +582,48 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
         if (watchdog != null) {
             watchdog.cancel();
         }
+    }
+
+    public JahiaTemplatesPackage deployModule(File warFile) {
+        synchronized (templatesWatcher) {
+            try {
+                File destFile = new File(settingsBean.getJahiaSharedTemplatesDiskPath(), warFile.getName());
+                FileUtils.copyFile(warFile, destFile);
+                File folder = deploymentHelper.deployPackage(destFile);
+                final JahiaTemplatesPackage pack = getPackage(folder);
+                try {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
+                        public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            templatePackageRegistry.registerPackage(pack);
+
+                            if (pack.getContext() != null && pack.isActiveVersion()) {
+                                contextLoader.reload(pack);
+
+                                initializeModuleContent(pack, session);
+
+                                templatePackageRegistry.afterInitializationForModule(pack);
+                            } else {
+                                initializeModuleContent(pack, session);
+                            }
+                            return null;
+                        }
+                    });
+                } catch (RepositoryException e) {
+                    logger.error("Error when initializing modules",e);
+                }
+
+                setTimestamp(destFile.getPath(), destFile.lastModified());
+                Collection<File> files = FileUtils.listFiles(folder, null, true);
+                for (File file : files) {
+                    setTimestamp(file.getPath(), file.lastModified());
+                }
+
+                return pack;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
 // -------------------------- INNER CLASSES --------------------------

@@ -354,7 +354,7 @@ public class RenderService {
             String rootTemplatePath = parent.getProperty("j:rootTemplatePath").getString();
 
             if (rootTemplatePath.contains("/")) {
-                rootTemplatePath = StringUtils.substringAfter(rootTemplatePath,"/");
+                rootTemplatePath = StringUtils.substringAfterLast(rootTemplatePath,"/");
             }
 
             Template t = addTemplate(resource, renderContext, rootTemplatePath, modules, "jnt:template");

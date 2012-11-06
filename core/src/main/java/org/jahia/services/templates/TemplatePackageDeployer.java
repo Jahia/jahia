@@ -318,45 +318,13 @@ class TemplatePackageDeployer {
 
             if (aPackage.isActiveVersion()) {
                 if (templatePackageRegistry.lookupByFileName(aPackage.getRootFolder()).equals(aPackage)) {
-                    autoDeployModulesToSites(session, aPackage);
+                    service.autoInstallModulesToSites(aPackage, session);
                 }
             }
             session.save();
         } catch (RepositoryException e) {
             logger.error("Unable to import content for package '" + aPackage.getName()
                     + "'. Cause: " + e.getMessage(), e);
-        }
-    }
-
-    private void autoDeployModulesToSites(JCRSessionWrapper session, JahiaTemplatesPackage pack)
-            throws RepositoryException {
-        if (pack.getAutoDeployOnSite() != null) {
-            if ("system".equals(pack.getAutoDeployOnSite())) {
-                if (session.nodeExists("/sites/systemsite")) {
-                    service.deployModule("/modules/" + pack.getRootFolder(), "/sites/systemsite", session);
-                }
-            } else if ("all".equals(pack.getAutoDeployOnSite())) {
-                if (session.nodeExists("/sites/systemsite")) {
-                    service.deployModuleToAllSites(pack, session, null);
-                }
-            }
-        }
-
-        List<JCRNodeWrapper> sites = new ArrayList<JCRNodeWrapper>();
-        NodeIterator ni = session.getNode("/sites").getNodes();
-        while (ni.hasNext()) {
-            JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
-            if (next.hasProperty("j:installedModules")) {
-                Value[] v = next.getProperty("j:installedModules").getValues();
-                for (Value value : v) {
-                    if (value.getString().equals(pack.getRootFolder())) {
-                        sites.add(next);
-                    }
-                }
-            }
-        }
-        if (!sites.isEmpty()) {
-            service.deployModuleToAllSites(pack,session, sites);
         }
     }
 
@@ -715,7 +683,7 @@ class TemplatePackageDeployer {
 
             if (settingsBean.isDevelopmentMode()) {
                 // list first level folders under /modules
-                Collection<File> files = FileUtils.listFiles(deployedTemplatesFolder, null, true);
+                Collection<File> files = FileUtils.listFiles(deployedTemplatesFolder, new String[] {".xml",".cnd",".MF",".zip",".drl",".dsl",".properties"}, true);
                 for (File file : files) {
                     if (!timestamps.containsKey(file.getPath()) || timestamps.get(file.getPath()) != file.lastModified()) {
                         timestamps.put(file.getPath(), file.lastModified());

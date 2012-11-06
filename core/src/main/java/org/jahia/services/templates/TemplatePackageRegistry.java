@@ -156,25 +156,21 @@ class TemplatePackageRegistry {
 
 // -------------------------- OTHER METHODS --------------------------
 
-    public JahiaTemplatesPackage activateModuleVersion(String rootFolder, ModuleVersion version) {
-        JahiaTemplatesPackage newPack = packagesWithVersion.get(rootFolder).get(version);
-
-        File rootFile = new File(newPack.getFilePath()).getParentFile();
+    public void activateModuleVersion(JahiaTemplatesPackage module) {
+        File rootFile = new File(module.getFilePath()).getParentFile();
         File activeVersionFile = new File(rootFile, "activeVersion");
 
         try {
-            FileUtils.write(activeVersionFile, newPack.getVersion().toString(), "UTF-8");
+            FileUtils.write(activeVersionFile, module.getVersion().toString(), "UTF-8");
         } catch (IOException e) {
             logger.error("Cannot store active version file "+activeVersionFile, e);
         }
-        newPack.setActiveVersion(true);
+        module.setActiveVersion(true);
 
-        register(newPack);
+        register(module);
 
-        templatePackageApplicationContextLoader.createWebApplicationContext(newPack);
-        afterInitializationForModule(newPack);
-
-        return newPack;
+        templatePackageApplicationContextLoader.createWebApplicationContext(module);
+        afterInitializationForModule(module);
     }
 
     private void computeDependencies(Set<JahiaTemplatesPackage> dependencies,  JahiaTemplatesPackage pack) {
@@ -301,9 +297,9 @@ class TemplatePackageRegistry {
                 : null;
     }
 
-    public JahiaTemplatesPackage lookupByFileNameAndVersion(String fileName, String version) {
+    public JahiaTemplatesPackage lookupByFileNameAndVersion(String fileName, ModuleVersion moduleVersion) {
         if (fileName == null || registry == null) return null;
-        return packagesWithVersion.get(fileName).get(new ModuleVersion(version));
+        return packagesWithVersion.get(fileName).get(moduleVersion);
     }
 
     /**

@@ -243,7 +243,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
             setSCMConfigInPom(path, scmType, scmURI);
 
-            JahiaTemplatesPackage pack = installModule(moduleName, path);
+            JahiaTemplatesPackage pack = compileAndDeploy(moduleName, path);
 
             JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
             node.getNode("j:versionInfo").setProperty("j:sourcesFolder", path.getPath());
@@ -314,7 +314,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
         }
 
-        JahiaTemplatesPackage pack = installModule(moduleName, path);
+        JahiaTemplatesPackage pack = compileAndDeploy(moduleName, path);
 
         JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
         node.getNode("j:versionInfo").setProperty("j:sourcesFolder", path.getPath());
@@ -361,7 +361,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
-    public JahiaTemplatesPackage installModule(final String moduleName, File sources) {
+    public JahiaTemplatesPackage compileAndDeploy(final String moduleName, File sources) {
         File warFile = compileModule(moduleName, sources);
         return templatePackageDeployer.deployModule(warFile);
     }
@@ -434,7 +434,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             Element n = (Element) document.getRootElement().elementIterator("artifactId").next();
             String moduleName = n.getText();
 
-            JahiaTemplatesPackage pack = installModule(moduleName, sources);
+            JahiaTemplatesPackage pack = compileAndDeploy(moduleName, sources);
 
             JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
             node.getNode("j:versionInfo").setProperty("j:sourcesFolder", sources.getPath());
@@ -604,7 +604,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
 
                 if (generatedWar != null) {
-                    JahiaTemplatesPackage pack = installModule(module.getRootFolder(), sources);
+                    JahiaTemplatesPackage pack = compileAndDeploy(module.getRootFolder(), sources);
 
                     JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
                     node.getNode("j:versionInfo").setProperty("j:sourcesFolder", sources.getPath());
@@ -939,7 +939,39 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return packages.isEmpty() ? Collections.<JahiaTemplatesPackage>emptyList() : packages;
     }
 
-    public void deployModuleToAllSites(JahiaTemplatesPackage module, JCRSessionWrapper sessionWrapper, List<JCRNodeWrapper> sites) throws RepositoryException {
+    public void autoInstallModulesToSites(JahiaTemplatesPackage module, JCRSessionWrapper session)
+            throws RepositoryException {
+        if (module.getAutoDeployOnSite() != null) {
+            if ("system".equals(module.getAutoDeployOnSite())) {
+                if (session.nodeExists("/sites/systemsite")) {
+                    installModule(module, "/sites/systemsite", session);
+                }
+            } else if ("all".equals(module.getAutoDeployOnSite())) {
+                if (session.nodeExists("/sites/systemsite")) {
+                    installModuleOnAllSites(module, session, null);
+                }
+            }
+        }
+
+        List<JCRNodeWrapper> sites = new ArrayList<JCRNodeWrapper>();
+        NodeIterator ni = session.getNode("/sites").getNodes();
+        while (ni.hasNext()) {
+            JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
+            if (next.hasProperty("j:installedModules")) {
+                Value[] v = next.getProperty("j:installedModules").getValues();
+                for (Value value : v) {
+                    if (value.getString().equals(module.getRootFolder())) {
+                        sites.add(next);
+                    }
+                }
+            }
+        }
+        if (!sites.isEmpty()) {
+            installModuleOnAllSites(module, session, sites);
+        }
+    }
+
+    public void installModuleOnAllSites(JahiaTemplatesPackage module, JCRSessionWrapper sessionWrapper, List<JCRNodeWrapper> sites) throws RepositoryException {
         if (sites == null) {
             sites = new ArrayList<JCRNodeWrapper>();
             NodeIterator ni = sessionWrapper.getNode("/sites").getNodes();
@@ -953,63 +985,67 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         for (JCRNodeWrapper site : sites) {
             if (tpl.hasProperty("j:moduleType") && MODULE_TYPE_TEMPLATES_SET.equals(tpl.getProperty("j:moduleType").getString())) {
                 if (tpl.getName().equals(site.getResolveSite().getTemplateFolder())) {
-                    deployModule("/modules/" + module.getRootFolder(), site.getPath(), sessionWrapper);
+                    installModule(module, site.getPath(), sessionWrapper);
                 }
             } else {
-                deployModule("/modules/" + module.getRootFolder(), site.getPath(), sessionWrapper);
+                installModule(module, site.getPath(), sessionWrapper);
             }
         }
     }
 
-    public void deployModule(final String modulePath, final String sitePath, String username)
+    public void installModule(final String module, final String sitePath, String username)
             throws RepositoryException {
-        deployModules(Arrays.asList(modulePath), sitePath, username);
+        installModule(templatePackageRegistry.lookupByFileName(module), sitePath, username);
     }
 
-    public void deployModules(final List<String> modulesPath, final String sitePath, String username)
+    public void installModule(final JahiaTemplatesPackage module, final String sitePath, String username)
+            throws RepositoryException {
+        installModules(Arrays.asList(module), sitePath, username);
+    }
+
+    public void installModules(final List<JahiaTemplatesPackage> modules, final String sitePath, String username)
             throws RepositoryException {
         JCRTemplate.getInstance()
                 .doExecuteWithSystemSession(username, new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        deployModules(modulesPath, sitePath, session);
+                        installModules(modules, sitePath, session);
                         session.save();
                         return null;
                     }
                 });
     }
 
-    public void deployModule(final String modulePath, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
-        deployModules(Arrays.asList(modulePath), sitePath, session);
+    public void installModule(final JahiaTemplatesPackage module, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
+        installModules(Arrays.asList(module), sitePath, session);
     }
 
-    public void deployModules(final List<String> modulesPath, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
+    public void installModules(final List<JahiaTemplatesPackage> modules, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
         if (!sitePath.startsWith("/sites/")) {
             return;
         }
         final JCRSiteNode siteNode = (JCRSiteNode) session.getNode(sitePath);
 
-        List<JCRNodeWrapper> moduleNodes = new ArrayList<JCRNodeWrapper>();
-
         HashMap<String, List<String>> references = new HashMap<String, List<String>>();
-        for (String modulePath : modulesPath) {
-            logger.info("Deploying " + modulesPath + " on " + sitePath);
+        for (JahiaTemplatesPackage module : modules) {
+            logger.info("Deploying " + modules + " on " + sitePath);
             JCRNodeWrapper moduleNode = null;
             try {
-                moduleNode = session.getNode(modulePath);
-                moduleNodes.add(moduleNode);
+                moduleNode = session.getNode("/modules/" + module.getRootFolder());
+
+                String moduleName = moduleNode.getName();
+
+                synchro(moduleNode, siteNode, session, moduleName, references);
+
+                ReferencesHelper.resolveCrossReferences(session, references);
+
+                addDependencyValue(moduleNode, siteNode, "j:installedModules");
+                logger.info("Done deploying " + modules + " on " + sitePath);
             } catch (PathNotFoundException e) {
                 logger.warn("Cannot find module for path {}. Skipping deployment to site {}.",
-                        modulePath, sitePath);
+                        module, sitePath);
                 return;
             }
-            String moduleName = moduleNode.getName();
 
-            synchro(moduleNode, siteNode, session, moduleName, references);
-
-            ReferencesHelper.resolveCrossReferences(session, references);
-
-            addDependencyValue(moduleNode, siteNode, "j:installedModules");
-            logger.info("Done deploying " + modulesPath + " on " + sitePath);
         }
 
         siteService.updateSite(siteNode);
@@ -1437,12 +1473,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
-    public JahiaTemplatesPackage activateModuleVersion(String rootFolder, ModuleVersion version) {
-        return templatePackageRegistry.activateModuleVersion(rootFolder, version);
+    public JahiaTemplatesPackage activateModuleVersion(String rootFolder, ModuleVersion version, JCRSessionWrapper session) throws RepositoryException {
+        JahiaTemplatesPackage module = templatePackageRegistry.lookupByFileNameAndVersion(rootFolder, version);
+
+        autoInstallModulesToSites(module, session);
+        templatePackageRegistry.activateModuleVersion(module);
+        return module;
     }
 
     public void undeployModule(String rootFolder, String version, JCRSessionWrapper session) throws RepositoryException {
-        JahiaTemplatesPackage pack = templatePackageRegistry.lookupByFileNameAndVersion(rootFolder, version);
+        JahiaTemplatesPackage pack = templatePackageRegistry.lookupByFileNameAndVersion(rootFolder, new ModuleVersion(version));
         if (!pack.isActiveVersion() && !pack.isLastVersion()) {
             templatePackageDeployer.undeployModule(pack, session);
         }

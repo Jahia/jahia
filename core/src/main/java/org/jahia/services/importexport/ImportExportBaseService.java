@@ -48,6 +48,7 @@ import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.importexport.validation.*;
 import org.jahia.services.sites.JahiaSitesBaseService;
@@ -1137,7 +1138,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         try {
             if (!installedModules.contains(templateSet)) {
-                templateManagerService.deployModule("/modules/" + templateSet, "/sites/" + site.getSiteKey(), session);
+                templateManagerService.installModule(templateManagerService.getTemplatePackageByFileName(templateSet), "/sites/" + site.getSiteKey(), session);
             }
         } catch (RepositoryException e) {
             logger.error("Cannot deploy module "+templateSet,e);
@@ -1147,7 +1148,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         String lowestRankLanguage = null;
         int currentRank = 0;
 
-        List<String> modules = new ArrayList<String>();
+        List<JahiaTemplatesPackage> modules = new ArrayList<JahiaTemplatesPackage>();
 
         for (Object key : keys) {
             String property = (String) key;
@@ -1193,13 +1194,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 sitesService.setDefaultSite(site);
             } else if (firstKey.equals("installedModules")) {
                 if (!installedModules.contains(value) && !templateSet.equals(value)) {
-                    modules.add("/modules/" +value);
+                    modules.add(templateManagerService.getTemplatePackageByFileName(value));
                 }
             }
         }
 
         try {
-            templateManagerService.deployModules(modules, "/sites/" + site.getSiteKey(), session);
+            templateManagerService.installModules(modules, "/sites/" + site.getSiteKey(), session);
 
             session.save();
         } catch (RepositoryException e) {

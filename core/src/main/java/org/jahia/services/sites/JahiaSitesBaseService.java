@@ -551,23 +551,25 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
                         siteNode.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(templatePackage /*+ ":" + aPackage.getLastVersion()*/)});
 
-                        List<String> modules = new ArrayList<String>(
+                        JahiaTemplateManagerService templateService = ServicesRegistry
+                                .getInstance().getJahiaTemplateManagerService();
+
+                        List<JahiaTemplatesPackage> modules = new ArrayList<JahiaTemplatesPackage>(
                                 2 + (modulesToDeploy != null ? modulesToDeploy.length : 0));
-                        modules.add("/modules/default");
-                        modules.add("/modules/" + templatePackage);
+                        modules.add(templateService.getTemplatePackageByFileName("default"));
+                        modules.add(templateService.getTemplatePackageByFileName(templatePackage));
                         if (modulesToDeploy != null) {
                             for (String s : modulesToDeploy) {
-                                if (!modules.contains("/modules/" + s)) {
-                                    modules.add("/modules/" + s);
+                                JahiaTemplatesPackage packageByFileName = templateService.getTemplatePackageByFileName(s);
+                                if (!modules.contains(packageByFileName)) {
+                                    modules.add(packageByFileName);
                                 }
                             }
                         }
-                        JahiaTemplateManagerService templateService = ServicesRegistry
-                                .getInstance().getJahiaTemplateManagerService();
                         String target = "/sites/" + siteKey1;
                         try {
                             logger.info("Deploying modules {} to {}", modules, target);
-                            templateService.deployModules(modules, target, session);
+                            templateService.installModules(modules, target, session);
                         } catch (RepositoryException re) {
                             logger.error("Unable to deploy module " + modules + " to "
                                     + target + ". Cause: " + re.getMessage(), re);
@@ -580,7 +582,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                                     String source = "/modules/" + availableTemplatePackage.getRootFolder();
                                     try {
                                         logger.info("Deploying module {} to {}", source, target);
-                                        templateService.deployModule(source, target, session);
+                                        templateService.installModule(availableTemplatePackage, target, session);
                                     } catch (RepositoryException re) {
                                         logger.error("Unable to deploy module " + source + " to "
                                                 + target + ". Cause: " + re.getMessage(), re);

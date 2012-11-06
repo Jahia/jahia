@@ -181,7 +181,7 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                 String nodePath = node.getPath();
 
                 final String[] parts = nodePath.split("/");
-                nodePath = "/" + parts[1] + "/" + parts[2];
+                nodePath = parts[2];
                 if (Constants.MODULE_TYPE_TEMPLATES_SET.equals(JahiaGWTParameters.getSiteNode().get("j:moduleType"))) {
                     if (sitesMap != null && sitesMap.containsKey(JahiaGWTParameters.getSiteKey())) {
                         for (final GWTJahiaSite site : sitesMap.get(JahiaGWTParameters.getSiteKey())) {
@@ -242,7 +242,7 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                 String nodePath = node.getPath();
 
                 final String[] parts = nodePath.split("/");
-                nodePath = "/" + parts[1] + "/" + parts[2];
+                nodePath = parts[2];
                 linker.loading(Messages.get("org.jahia.admin.site.ManageTemplates.deploymentInProgress", 
                         "Deployment in progress..."));
                 JahiaContentManagementService.App.getInstance()

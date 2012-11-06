@@ -48,9 +48,9 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.drools.FactException;
@@ -68,13 +68,11 @@ import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
-import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.services.workflow.WorkflowService;
-import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.*;
 
 import javax.jcr.*;
@@ -659,7 +657,9 @@ public class Service extends JahiaService {
     public void deployModule(String moduleName, AddedNodeFact site, KnowledgeHelper drools) {
         User user = (User) drools.getWorkingMemory().getGlobal("user");
         try {
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployModule("/modules/" + moduleName, site.getPath(), user.getName());
+
+            JahiaTemplateManagerService managerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+            ((JahiaTemplateManagerService) managerService).installModule(managerService.getTemplatePackageByFileName(moduleName), site.getPath(), user.getName());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

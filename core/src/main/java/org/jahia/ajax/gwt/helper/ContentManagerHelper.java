@@ -1118,10 +1118,10 @@ public class ContentManagerHelper {
         }
     }
 
-    public void deployModule(final String modulePath, final String sitePath, JCRSessionWrapper currentUserSession)
+    public void deployModule(final String moduleName, final String sitePath, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         try {
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployModule(modulePath, sitePath, currentUserSession.getUser().getUsername());
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().installModule(moduleName, sitePath, currentUserSession.getUser().getUsername());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -1218,7 +1218,7 @@ public class ContentManagerHelper {
 
             scm.update();
 
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().installModule(moduleName, sources);
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().compileAndDeploy(moduleName, sources);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1265,7 +1265,7 @@ public class ContentManagerHelper {
             }
 
             if (nextVersion != null) {
-                templateManagerService.activateModuleVersion(moduleName, new ModuleVersion(nextVersion));
+                templateManagerService.activateModuleVersion(moduleName, new ModuleVersion(nextVersion), session);
                 templateManagerService.undeployModule(moduleName, previous.getVersion().toString(), session);
             }
 

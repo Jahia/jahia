@@ -139,7 +139,7 @@ public class TemplatePackageApplicationContextLoader implements ServletContextAw
             ctx.refresh();
             
             logger.info(
-                    "\"{}\" [{}] context initialized in {} ms",
+                    "'{}' [{}] context initialized in {} ms",
                     new Object[] { aPackage.getName(), aPackage.getRootFolder(),
                             System.currentTimeMillis() - startTime });
         }

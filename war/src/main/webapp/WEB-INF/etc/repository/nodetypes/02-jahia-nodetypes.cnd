@@ -810,22 +810,29 @@ extends = jnt:content
 //---------------------------------------------------------
 
 [jnt:nodeTypeFolder] > jnt:folder
+
 [jnt:templateTypeFolder] > jnt:folder
+
 [jnt:cssFile] > jnt:file
+
 [jnt:cssFolder] > jnt:folder
+
 [jnt:javascriptFolder] > jnt:folder
+
 [jnt:javascriptFile] > jnt:file
+
 [jnt:viewFile] > jnt:file
-itemtype = propertiesView
-- cache.requestParameters (string)
-- cache.mainResource (boolean)
-- visible (boolean)
-- requirePermissions (string)
-- cache.expiration (long)
-- addMixin (string)
-- type (string)
+ itemtype = propertiesView
+ - cache.requestParameters (string)
+ - cache.mainResource (boolean)
+ - visible (boolean)
+ - requirePermissions (string)
+ - cache.expiration (long)
+ - addMixin (string)
+ - type (string)
 
 [jnt:definitionFile] > jnt:file
-+ * (nt:nodeType)
+ + * (nt:nodeType)
+
 [jnt:resourceBundleFolder] > jnt:folder
 

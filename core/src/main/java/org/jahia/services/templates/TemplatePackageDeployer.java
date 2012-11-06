@@ -337,9 +337,26 @@ class TemplatePackageDeployer {
                 }
             } else if ("all".equals(pack.getAutoDeployOnSite())) {
                 if (session.nodeExists("/sites/systemsite")) {
-                    service.deployModuleToAllSites("/modules/" + pack.getRootFolder(), session, null);
+                    service.deployModuleToAllSites(pack, session, null);
                 }
             }
+        }
+
+        List<JCRNodeWrapper> sites = new ArrayList<JCRNodeWrapper>();
+        NodeIterator ni = session.getNode("/sites").getNodes();
+        while (ni.hasNext()) {
+            JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
+            if (next.hasProperty("j:installedModules")) {
+                Value[] v = next.getProperty("j:installedModules").getValues();
+                for (Value value : v) {
+                    if (value.getString().equals(pack.getRootFolder())) {
+                        sites.add(next);
+                    }
+                }
+            }
+        }
+        if (!sites.isEmpty()) {
+            service.deployModuleToAllSites(pack,session, sites);
         }
     }
 

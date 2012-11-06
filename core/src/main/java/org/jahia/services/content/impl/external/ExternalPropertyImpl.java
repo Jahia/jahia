@@ -43,7 +43,6 @@ package org.jahia.services.content.impl.external;
 import org.apache.jackrabbit.value.BinaryImpl;
 import org.jahia.services.content.nodetypes.Name;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import sun.misc.IOUtils;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;

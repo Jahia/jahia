@@ -40,7 +40,6 @@
 
 package org.jahia.services.templates;
 
-import groovy.swing.binding.JTableProperties;
 import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -158,7 +157,6 @@ class TemplatePackageRegistry {
 // -------------------------- OTHER METHODS --------------------------
 
     public JahiaTemplatesPackage activateModuleVersion(String rootFolder, ModuleVersion version) {
-        JahiaTemplatesPackage previousPack = fileNameRegistry.get(rootFolder);
         JahiaTemplatesPackage newPack = packagesWithVersion.get(rootFolder).get(version);
 
         File rootFile = new File(newPack.getFilePath()).getParentFile();
@@ -370,7 +368,7 @@ class TemplatePackageRegistry {
                 register(pack);
                 if (startContext) {
                     templatePackageApplicationContextLoader.createWebApplicationContext(pack);
-                }
+            }
             }
         } catch (IOException e) {
             logger.error("Cannot get active versions of module " + pack.getRootFolder(),e);
@@ -418,7 +416,7 @@ class TemplatePackageRegistry {
                 packagesPerModule.get(key).add(templatePackage);
             }
         }
-        logger.info("Registered \"{}\" [{}] v{}", new Object[] { templatePackage.getName(),
+        logger.info("Registered '{}' [{}] version {}", new Object[] { templatePackage.getName(),
                 templatePackage.getRootFolder(), templatePackage.getVersion() });
     }
 

@@ -44,8 +44,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ChildrenCollectorFilter;
 import org.apache.jackrabbit.value.BinaryImpl;
 import org.jahia.services.content.nodetypes.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -63,18 +61,11 @@ import java.math.BigDecimal;
 import java.util.*;
 
 /**
- *
  * User: toto
  * Date: Apr 23, 2008
- * Time: 11:46:22 AM                                           @Override
-    public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        if ()
-    }
- *
+ * Time: 11:46:22 AM
  */
 public class ExternalNodeImpl extends ExternalItemImpl implements Node {
-
-    private static final Logger logger = LoggerFactory.getLogger(ExternalNodeImpl.class);
 
     private ExternalData data;
     private Map<String, ExternalPropertyImpl> properties = null;

@@ -90,7 +90,7 @@ public class VFSDataSource implements ExternalDataSource {
 
     public ExternalData getItemByIdentifier(String identifier) throws ItemNotFoundException {
         try {
-            UUID testUUID = UUID.fromString(identifier);
+            UUID.fromString(identifier);
             throw new ItemNotFoundException("This repository does not support UUID as identifiers");
         } catch (IllegalArgumentException iae) {
             // this is expected, we should not be using UUIDs

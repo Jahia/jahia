@@ -101,7 +101,7 @@ public class RenderService {
                 ((RenderServiceAware) bean).setRenderService(getInstance());
             }
             if (bean instanceof RenderFilter) {
-                logger.info("Registering render filter {}", bean.getClass().getName());
+                logger.debug("Registering render filter {}", bean.getClass().getName());
                 getInstance().addFilter((RenderFilter) bean);
             }
             return bean;

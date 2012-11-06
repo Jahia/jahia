@@ -177,32 +177,36 @@ class TemplatePackageDeployer {
         LinkedHashMap<String, JahiaTemplatesPackage> toDeploy = new LinkedHashMap<String, JahiaTemplatesPackage>();
         Set<String> packageNames = new HashSet<String>();
         Set<String> folderNames = new HashSet<String>();
-
-        LinkedHashSet<JahiaTemplatesPackage> newRemaining = new LinkedHashSet<JahiaTemplatesPackage>();
-        for (JahiaTemplatesPackage pack : remaining) {
+        
+        JahiaTemplatesPackage assetsPack = null;
+        JahiaTemplatesPackage defaultPack = null;
+        
+        remaining = new LinkedHashSet<JahiaTemplatesPackage>(remaining);
+        for (Iterator<JahiaTemplatesPackage> iterator = remaining.iterator(); iterator.hasNext() && assetsPack == null && defaultPack == null;) {
+            JahiaTemplatesPackage pack = iterator.next();
             if (pack.getRootFolder().equals("assets")) {
-                toDeploy.put(pack.getFilePath(), pack);
-                packageNames.add(pack.getName());
-                folderNames.add(pack.getRootFolder());
-            } else {
-                newRemaining.add(pack);
+                assetsPack = pack;
+                    iterator.remove();
+            } else if (pack.getRootFolder().equals("default")) {
+                defaultPack = pack;
+                iterator.remove();
             }
         }
-        remaining = newRemaining;
-        newRemaining = new LinkedHashSet<JahiaTemplatesPackage>();
-        for (JahiaTemplatesPackage pack : remaining) {
-            if (pack.getRootFolder().equals("default")) {
-                toDeploy.put(pack.getFilePath(), pack);
-                packageNames.add(pack.getName());
-                folderNames.add(pack.getRootFolder());
-            } else {
-                newRemaining.add(pack);
-            }
+
+        if (assetsPack != null) {
+            toDeploy.put(assetsPack.getFilePath(), assetsPack);
+            packageNames.add(assetsPack.getName());
+            folderNames.add(assetsPack.getRootFolder());
         }
+        if (defaultPack != null) {
+            toDeploy.put(defaultPack.getFilePath(), defaultPack);
+            packageNames.add(defaultPack.getName());
+            folderNames.add(defaultPack.getRootFolder());
+        }
+        
         boolean systemTemplatesDeployed = templatePackageRegistry.containsFileName("templates-system");
-        remaining = newRemaining;
         while (!remaining.isEmpty()) {
-            newRemaining = new LinkedHashSet<JahiaTemplatesPackage>();
+            LinkedHashSet<JahiaTemplatesPackage> newRemaining = new LinkedHashSet<JahiaTemplatesPackage>();
             for (JahiaTemplatesPackage pack : remaining) {
                 Set<String> allDeployed = new HashSet<String>(templatePackageRegistry.getPackageNames());
                 allDeployed.addAll(templatePackageRegistry.getPackageFileNames());
@@ -231,12 +235,15 @@ class TemplatePackageDeployer {
                 }
             }
             if (newRemaining.equals(remaining)) {
-                String str = "";
+                StringBuilder str = new StringBuilder();
                 for (JahiaTemplatesPackage item : newRemaining) {
                     unresolvedDependencies.add(item);
-                    str += item.getName() + ",";
+                    if (str.length() > 0) {
+                        str.append(", ");
+                    }
+                    str.append(item.getName());
                 }
-                logger.error("Cannot deploy packages " + str + " unresolved dependencies");
+                logger.error("Cannot deploy packages with unresolved dependencies: {}", str);
                 break;
             } else {
                 remaining = newRemaining;

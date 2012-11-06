@@ -66,7 +66,6 @@ import java.util.Map;
 
 public abstract class SaveButtonItem implements ButtonItem {
 
-    @Override
     public Button create(final AbstractContentEngine engine) {
         Button button = new Button(Messages.get("label.save"));
         button.setHeight(BUTTON_HEIGHT);

@@ -48,7 +48,6 @@ import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 
 public class CancelButtonItem implements ButtonItem {
 
-    @Override
     public Button create(final AbstractContentEngine engine) {
         Button button = new Button(Messages.get("label.cancel", "Cancel"));
         button.setHeight(BUTTON_HEIGHT);

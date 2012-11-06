@@ -97,7 +97,7 @@ sysout << "Start analyzing sites and deploying modules\n"
                         sysout << "  Following modules will deployed to the site " + site.getName() + ": " + toDeploy + "\n";
                         for (String deployedModule : toDeploy) {
                             sysout << "    Deploying module " + deployedModule + " to site " + site.getName() + "\n";
-                            templateService.deployModule("/templateSets/" + deployedModule, site.getPath(), session); 
+                            templateService.installModule(templateService.getTemplatePackageByFileName(deployedModule), site.getPath(), session);
                         }
                         session.save();
                     }

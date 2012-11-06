@@ -112,19 +112,20 @@ class DeploymentHelper implements ServletContextAware {
                     }
                     return FileUtils.checksum(file, new CRC32()).getValue() != FileUtils.checksum(destFile, new CRC32()).getValue();
                 } catch (IOException e) {
-                    logger.error("Cannot compare CRC32 for file "+file.getName(),e);
+                    logger.error("Cannot compare CRC32 for file " + file.getName(), e);
                 }
             }
             return false;
         }
 
         public boolean accept(File dir, String name) {
-            return accept(new File(dir,name));
+            return accept(new File(dir, name));
         }
     }
+
     private static class EmptyJarFilter implements IOFileFilter {
-        
-        protected static EmptyJarFilter INSTANCE = new EmptyJarFilter(); 
+
+        protected static EmptyJarFilter INSTANCE = new EmptyJarFilter();
 
         public boolean accept(File file) {
             ZipInputStream zis = null;
@@ -144,34 +145,18 @@ class DeploymentHelper implements ServletContextAware {
         }
 
         public boolean accept(File dir, String name) {
-            return accept(new File(dir,name));
+            return accept(new File(dir, name));
         }
     }
-    
+
     private static Logger logger = LoggerFactory.getLogger(DeploymentHelper.class);
 
     private static final PathFilter TEMPLATE_FILTER = new ExclusionWildcardFilter("WEB-INF/web.xml", "META-INF/maven/*");
-    
-//    private static final FileFilter VERSIONS_FOLDER_FILTER = new FileFilter() {
-//        public boolean accept(File file) {
-//            return !JahiaTemplateManagerService.VERSIONS_FOLDER_NAME.equals(file.getName());
-//        }
-//    };
+
     private ServletContext servletContext;
 
     private SettingsBean settingsBean;
 
-//    private void backupOldModuleVersion(File tmplRootFolder, String oldVersion) throws IOException {
-//        File destDir = new File(new File(tmplRootFolder,
-//                JahiaTemplateManagerService.VERSIONS_FOLDER_NAME), Patterns.DOT.matcher(oldVersion)
-//                .replaceAll("-"));
-//        org.jahia.utils.FileUtils.moveDirectoryContentToDirectory(tmplRootFolder, destDir,
-//                VERSIONS_FOLDER_FILTER);
-//        File dummy = new File(destDir, "deployed");
-//        if (dummy.exists()) {
-//            dummy.delete();
-//        }
-//    }
 
     /**
      * Create the fix descriptor as a XML file into the specified save location.
@@ -193,11 +178,11 @@ class DeploymentHelper implements ServletContextAware {
     protected File deployPackage(File templateWar) throws IOException {
         String packageName = null;
         String rootFolder = null;
-        ModuleVersion implementationVersionStr = new ModuleVersion("SNAPSHOT");
+        ModuleVersion version = new ModuleVersion("SNAPSHOT");
         String depends = null;
         Calendar packageTimestamp = Calendar.getInstance();
 
-        Map<String,String> deployedFiles = new TreeMap<String,String>();
+        Map<String, String> deployedFiles = new TreeMap<String, String>();
         JarFile jarFile = new JarFile(templateWar);
         try {
             Attributes mainAttributes = jarFile.getManifest().getMainAttributes();
@@ -206,7 +191,7 @@ class DeploymentHelper implements ServletContextAware {
             depends = jarFile.getManifest().getMainAttributes().getValue("depends");
             long manifestTime = jarFile.getEntry("META-INF/MANIFEST.MF").getTime();
             packageTimestamp.setTimeInMillis(manifestTime);
-            implementationVersionStr = new ModuleVersion((String) jarFile.getManifest().getMainAttributes().get(new Attributes.Name("Implementation-Version")));
+            version = new ModuleVersion((String) jarFile.getManifest().getMainAttributes().get(new Attributes.Name("Implementation-Version")));
         } catch (IOException e) {
             logger.warn("Cannot read MANIFEST file from " + templateWar, e);
         } finally {
@@ -223,13 +208,23 @@ class DeploymentHelper implements ServletContextAware {
             rootFolder = StringUtils.substringBeforeLast(templateWar.getName(), ".");
         }
 
-        String replacedImplementationVersionStr = implementationVersionStr.toString();
+        String versionString = version.toString();
 
         File tmplRootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), rootFolder);
-        File versionFolder = new File(tmplRootFolder, replacedImplementationVersionStr);
-        if (versionFolder.exists() && (implementationVersionStr.isSnapshot() || settingsBean.isDevelopmentMode())) {
+        File versionFolder = new File(tmplRootFolder, versionString);
+
+        if (!settingsBean.isDevelopmentMode()) {
+            if (version.isSnapshot()) {
+                logger.warn("Warning : deploying a snapshot version on a production server");
+            } else if (versionFolder.exists()) {
+                logger.warn("Module " + packageName + " is already deployed, skip deployment");
+                return null;
+            }
+        }
+
+        if (versionFolder.exists()) {
             if (FileUtils.isFileNewer(templateWar, versionFolder)) {
-                logger.info("Older module package '{}' ({}) already deployed. Deleting it.", packageName, implementationVersionStr);
+                logger.info("Older module package '{}' ({}) already deployed. Deleting it.", packageName, version);
                 try {
                     FileUtils.deleteDirectory(versionFolder);
                 } catch (IOException e) {
@@ -239,26 +234,11 @@ class DeploymentHelper implements ServletContextAware {
             }
         }
         if (!versionFolder.exists()) {
-            logger.info("Start deploying module package '{}' version {}", packageName, implementationVersionStr);
-            
+            logger.info("Start deploying module package '{}' version {}", packageName, version);
+
             if (!deployPackageVersion(packageName, templateWar, versionFolder, deployedFiles)) {
                 return null;
             }
-            
-//            String oldVersion = getImplementationVersion(new File(tmplRootFolder, "META-INF/MANIFEST.MF"));
-//            if (oldVersion != null && !oldVersion.equals(implementationVersionStr)) {
-//                backupOldModuleVersion(tmplRootFolder, oldVersion);
-//            }
-            
-            // delete the deployed resources
-//            org.jahia.utils.FileUtils.cleanDirectory(tmplRootFolder, VERSIONS_FOLDER_FILTER);
-            
-            // move the version resources to the module's root
-//            org.jahia.utils.FileUtils.moveDirectoryContentToDirectory(versionFolder, tmplRootFolder, null);
-            
-//            File dummy = new File(versionFolder, "deployed");
-//            FileUtils.touch(dummy);
-//            dummy.setLastModified(templateWar.lastModified());
 
             File metaInfFolder = new File(versionFolder, "META-INF");
 
@@ -267,31 +247,23 @@ class DeploymentHelper implements ServletContextAware {
             }
 
             createDeploymentXMLFile(new File(metaInfFolder, "deployed.xml"), deployedFiles,
-                    templateWar, packageName, depends, rootFolder, replacedImplementationVersionStr, packageTimestamp);
-
-//            Check if latest version
-//            FileUtils.deleteDirectory(new File(rootFolder, "META-INF"));
-//            FileUtils.copyDirectory(metaInfFolder, new File(rootFolder, "META-INF"));
+                    templateWar, packageName, depends, rootFolder, versionString, packageTimestamp);
 
             versionFolder.setLastModified(templateWar.lastModified());
-            
+
             return versionFolder;
         }
         return null;
     }
 
-    private boolean deployPackageVersion(String packageName, File templateWar, File versionFolder, Map<String,String> deployedFiles) throws IOException {
+    private boolean deployPackageVersion(String packageName, File templateWar, File versionFolder, Map<String, String> deployedFiles) throws IOException {
         versionFolder.mkdirs();
 
         JahiaArchiveFileHandler archiveFileHandler = null;
         try {
             archiveFileHandler = new JahiaArchiveFileHandler(templateWar.getPath());
-            Map<String,String> unzippedFiles = archiveFileHandler.unzip(versionFolder.getAbsolutePath(), TEMPLATE_FILTER);
+            Map<String, String> unzippedFiles = archiveFileHandler.unzip(versionFolder.getAbsolutePath(), TEMPLATE_FILTER);
             deployedFiles.putAll(unzippedFiles);
-//            File manifest = new File(tmplRootFolder, "META-INF/MANIFEST.MF");
-//            if (!manifest.exists()) {
-//                //TODO createManifest
-//            }
         } catch (Exception e) {
             logger.error("Cannot unzip file: " + templateWar, e);
             return false;
@@ -319,7 +291,7 @@ class DeploymentHelper implements ServletContextAware {
                 }
             }
         }
-        
+
         if (!newerClassesDetected) {
             // check JARs
             File libFolder = new File(versionFolder, "WEB-INF/lib");
@@ -347,7 +319,7 @@ class DeploymentHelper implements ServletContextAware {
 
         FileUtils.deleteDirectory(new File(versionFolder, "WEB-INF/classes"));
         FileUtils.deleteDirectory(new File(versionFolder, "WEB-INF/lib"));
-        
+
         // delete WEB-INF if it is empty
         File webInfFolder = new File(versionFolder, "WEB-INF");
         if (webInfFolder.exists() && webInfFolder.list().length == 0) {
@@ -358,7 +330,7 @@ class DeploymentHelper implements ServletContextAware {
         return true;
     }
 
-    private Document getDOM(Map<String,String> deployedFiles, File packageWar, String packageName, String depends, String rootFolder, String implementationVersionStr, Calendar packageTimestamp) {
+    private Document getDOM(Map<String, String> deployedFiles, File packageWar, String packageName, String depends, String rootFolder, String implementationVersionStr, Calendar packageTimestamp) {
         Element moduleElement = new Element("module");
 
         moduleElement.addContent(new Element("name").setText(packageName));
@@ -380,7 +352,7 @@ class DeploymentHelper implements ServletContextAware {
         moduleElement.addContent(packageElement);
 
         Element installedFiles = new Element("deployed");
-        for (Map.Entry<String,String> deployedFile : deployedFiles.entrySet()) {
+        for (Map.Entry<String, String> deployedFile : deployedFiles.entrySet()) {
             Element deployedFileElement = new Element("file");
             deployedFileElement.setAttribute("source", deployedFile.getKey());
             deployedFileElement.setAttribute("destination", deployedFile.getValue());
@@ -416,7 +388,7 @@ class DeploymentHelper implements ServletContextAware {
         this.servletContext = servletContext;
     }
 
-   public void setSettingsBean(SettingsBean settingsBean) {
+    public void setSettingsBean(SettingsBean settingsBean) {
         this.settingsBean = settingsBean;
     }
 }

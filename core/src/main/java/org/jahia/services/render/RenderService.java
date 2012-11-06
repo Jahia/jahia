@@ -303,6 +303,7 @@ public class RenderService {
                         logger.error("Couldn't find module directory for module '" + installedModule + "' installed in site '"+site.getPath()+"'");
                     }
                 }
+                installedModules.add("templates-system");
 
                 String type = "jnt:contentTemplate";
                 if (resource.getNode().isNodeType("jnt:page")) {

@@ -26,7 +26,7 @@
         </c:forEach>
     </ul>
 </c:if>
-<c:if test="${currentNode.parent.name eq 'templateSets'}">
+<c:if test="${currentNode.parent.name eq 'modules'}">
     <c:if test="${currentNode.properties['j:moduleType'].string eq 'module'}">
         <h1>Module : ${currentNode.name}</h1>
     </c:if>

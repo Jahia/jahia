@@ -41,7 +41,6 @@
 package org.jahia.bin.filters;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,7 +60,6 @@ import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaControllerUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -75,6 +73,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
@@ -181,8 +180,7 @@ public class ContentManagerAccessCheckFilter implements Filter,
             mapping = new HashMap<String, String>();
             for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
                 if (aPackage.getContext() != null) {
-                    for (Map.Entry<String, ManagerConfiguration> cfg : org.springframework.beans.factory.BeanFactoryUtils
-                            .beansOfTypeIncludingAncestors(
+                    for (Map.Entry<String, ManagerConfiguration> cfg : BeanFactoryUtils.beansOfTypeIncludingAncestors(
                                     aPackage.getContext(),
                                     ManagerConfiguration.class).entrySet()) {
                         mapping.put(cfg.getKey(), cfg.getValue().getRequiredPermission());

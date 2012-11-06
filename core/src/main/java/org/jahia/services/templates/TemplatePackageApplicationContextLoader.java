@@ -62,15 +62,12 @@ import java.util.List;
  * @author Sergiy Shyrkov
  */
 public class TemplatePackageApplicationContextLoader implements ServletContextAware {
-// ------------------------------ FIELDS ------------------------------
 
     private static final Logger logger = LoggerFactory.getLogger(TemplatePackageApplicationContextLoader.class);
 
     private ServletContext servletContext;
 
     private String contextConfigLocation;
-
-// --------------------- GETTER / SETTER METHODS ---------------------
 
     public void setContextConfigLocation(String contextConfigLocation) {
         this.contextConfigLocation = contextConfigLocation;
@@ -93,10 +90,9 @@ public class TemplatePackageApplicationContextLoader implements ServletContextAw
                 logger.error("Cannot instantiate context for module "+aPackage.getRootFolder(),e);
             }
         }
-
         
-        logger.info("Jahia modules application context initialization completed in "
-                + (System.currentTimeMillis() - startTime) + " ms");
+        logger.info("Jahia modules application context initialization completed in {} ms",
+                System.currentTimeMillis() - startTime);
     }
 
     public void stop() {
@@ -115,21 +111,24 @@ public class TemplatePackageApplicationContextLoader implements ServletContextAw
 // -------------------------- OTHER METHODS --------------------------
 
     public void reload(JahiaTemplatesPackage aPackage) {
-        logger.info("Reloading Spring application context for Jahia modules");
+        logger.info("Reloading Spring application context for module {}", aPackage.getName());
         long startTime = System.currentTimeMillis();
 
         if (aPackage.getContext() != null) {
             aPackage.getContext().refresh();
         }
 
-        logger.info("Jahia modules application context reload completed in "
-                + (System.currentTimeMillis() - startTime) + " ms");
-
         aPackage.getContext().publishEvent(new ContextInitializedEvent(this, aPackage));
+        
+        logger.info("...done reloading context for module {} in {} ms", aPackage.getName(),
+                System.currentTimeMillis() - startTime);
     }
 
     public void createWebApplicationContext(JahiaTemplatesPackage aPackage) throws BeansException {
         if (new File(servletContext.getRealPath("modules/" + aPackage.getRootFolderWithVersion() + "/META-INF/spring/")).exists()) {
+            logger.debug("Start initializing context for module {}", aPackage.getName());
+            long startTime = System.currentTimeMillis();
+
             String configLocation = contextConfigLocation + ",modules/" + aPackage.getRootFolderWithVersion() + "/META-INF/spring/*.xml";
             XmlWebApplicationContext ctx = new XmlWebApplicationContext();
             ctx.setParent(SpringContextSingleton.getInstance().getContext());
@@ -138,6 +137,8 @@ public class TemplatePackageApplicationContextLoader implements ServletContextAw
             ctx.setConfigLocation(configLocation);
             aPackage.setContext(ctx);
             ctx.refresh();
+            
+            logger.info("Context initialized for module {} in {} ms", aPackage.getName(), System.currentTimeMillis() - startTime);
         }
     }
 

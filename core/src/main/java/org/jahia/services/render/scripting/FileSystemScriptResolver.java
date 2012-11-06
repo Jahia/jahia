@@ -55,7 +55,6 @@ import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDeployedOn
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
@@ -215,7 +214,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
 
     public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site, String templateType) {
         SortedSet<View> t;
-        String cacheKey = nt.getName() + (site != null ? site.getSiteKey() : "");
+        //String cacheKey = nt.getName() + (site != null ? site.getSiteKey() : "");
         //viewSetCache.clear();
 //         if (viewSetCache.containsKey(cacheKey)) {
 //            t = viewSetCache.get(cacheKey);

@@ -142,18 +142,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     private ApplicationEventPublisher applicationEventPublisher;
 
-    private ComponentRegistry componentRegistry;
-
     private MavenCli cli = new MavenCli(new ClassWorld("plexus.core",getClass().getClassLoader()));
-
-// --------------------- GETTER / SETTER METHODS ---------------------
 
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
-    }
-
-    public void setComponentRegistry(ComponentRegistry componentRegistry) {
-        this.componentRegistry = componentRegistry;
     }
 
     public void setSiteService(JahiaSitesBaseService siteService) {
@@ -960,7 +952,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     deployModule(modulePath, site.getPath(), sessionWrapper);
                 }
             } else {
-                List<String> installedModules = site.getResolveSite().getInstalledModules();
                 deployModule(modulePath, site.getPath(), sessionWrapper);
             }
         }

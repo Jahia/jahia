@@ -136,7 +136,6 @@
 
     <bean id="org.jahia.services.templates.TemplatePackageRegistry"
           class="org.jahia.services.templates.TemplatePackageRegistry">
-        <property name="settingsBean" ref="settingsBean"/>
         <property name="jcrStoreService" ref="JCRStoreService" />
         <property name="templatePackageApplicationContextLoader" ref="TemplatePackageApplicationContextLoader" />
     </bean>
@@ -159,7 +158,6 @@
         </property>
         <property name="siteService" ref="JahiaSitesService"/>
         <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
-        <property name="componentRegistry" ref="ComponentRegistry"/>
     </bean>
     
     <bean id="ComponentRegistry" class="org.jahia.services.templates.ComponentRegistry">

@@ -52,18 +52,14 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.Patterns;
-import org.jahia.utils.Version;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
-import java.io.File;
 import java.util.*;
 
 /**
  * Holds Informations about a templates package
  *
  * @author Khue ng
- * @version 1.0
  */
 public class JahiaTemplatesPackage {
 

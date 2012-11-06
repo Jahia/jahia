@@ -91,7 +91,7 @@ public class JSR223Script implements Script {
         if (scriptEngine != null) {
             ScriptContext scriptContext = new SimpleScriptContext();
             final Bindings bindings = new SimpleBindings();
-            Enumeration attrNamesEnum = context.getRequest().getAttributeNames();
+            Enumeration<?> attrNamesEnum = context.getRequest().getAttributeNames();
             while (attrNamesEnum.hasMoreElements()) {
                 String currentAttributeName = (String) attrNamesEnum.nextElement();
                 if (!"".equals(currentAttributeName)) {

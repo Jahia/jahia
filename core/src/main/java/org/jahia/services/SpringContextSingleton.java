@@ -50,9 +50,7 @@ import java.util.Map;
 import org.apache.commons.lang.ArrayUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.templates.TemplatePackageApplicationContextLoader;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
-import org.jahia.services.templates.TemplatePackageApplicationContextLoader.ContextInitializedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -69,11 +67,12 @@ import org.springframework.core.io.Resource;
  * 
  * @author Sergiy Shyrkov
  */
-public class SpringContextSingleton implements ApplicationContextAware, ApplicationListener<ApplicationEvent> {
+public class SpringContextSingleton implements ApplicationContextAware, ApplicationListener<TemplatePackageRedeployedEvent> {
 
     private transient static Logger logger = LoggerFactory.getLogger(SpringContextSingleton.class);
 
-    private static SpringContextSingleton ourInstance;
+    private static SpringContextSingleton ourInstance = new SpringContextSingleton();
+    
     private Map<String, Resource[]> resourcesCache;
 
     /**
@@ -101,9 +100,6 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
 
 
     public static SpringContextSingleton getInstance() {
-        if (ourInstance == null) {
-            ourInstance = new SpringContextSingleton();
-        }
         return ourInstance;
     }
 
@@ -140,13 +136,8 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
         return initialized;
     }
 
-    public void onApplicationEvent(ApplicationEvent event) {
-//        if (event instanceof ContextInitializedEvent) {
-//            this.moduleContext = ((TemplatePackageApplicationContextLoader) event.getSource()).getContext();
-//        } else
-        if (event instanceof TemplatePackageRedeployedEvent) {
-            resourcesCache.clear();
-        }
+    public void onApplicationEvent(TemplatePackageRedeployedEvent event) {
+        resourcesCache.clear();
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

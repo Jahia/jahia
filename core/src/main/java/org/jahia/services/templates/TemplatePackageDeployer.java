@@ -46,10 +46,6 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.JahiaAfterInitializationService;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportService;
@@ -58,8 +54,6 @@ import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
 
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NodeIterator;
@@ -75,8 +69,7 @@ import java.util.zip.ZipException;
  * @author Sergiy Shyrkov
  * @author Thomas Draier
  */
-class TemplatePackageDeployer implements ApplicationEventPublisherAware {
-// ------------------------------ FIELDS ------------------------------
+class TemplatePackageDeployer {
 
     private static Logger logger = LoggerFactory.getLogger(TemplatePackageDeployer.class);
 
@@ -101,16 +94,9 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
 
     private TemplatePackageApplicationContextLoader contextLoader;
 
-    private ApplicationEventPublisher applicationEventPublisher;
-
-// --------------------- GETTER / SETTER METHODS ---------------------
-
+    
     public TemplatesWatcher getTemplatesWatcher() {
         return templatesWatcher;
-    }
-
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     public void setComponentRegistry(ComponentRegistry componentRegistry) {
@@ -434,7 +420,6 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
             v = m.getNode("j:versionInfo");
         }
         if (v.hasProperty("j:version")) {
-            String s = v.getProperty("j:version").getString();
             v.setProperty("j:version", pack.getVersion().toString());
             modified = true;
         } else {
@@ -454,7 +439,6 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
         JCRNodeWrapper m = modules.getNode(pack.getRootFolderWithVersion());
 
         m.setProperty("j:title", pack.getName());
-//        m.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(pack.getRootFolder())});
         if (pack.getModuleType() != null) {
             m.setProperty("j:moduleType", pack.getModuleType());
         }
@@ -683,11 +667,7 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
 
         @Override
         public synchronized void run() {
-            Set<File> changed = new HashSet<File>();
-
             LinkedHashSet<File> remaining = new LinkedHashSet<File>();
-
-            List<File> foldersToCheck = new ArrayList<File>();
 
             // list WEB-INF/var/shared_modules
             File[] existingFiles = getPackageFiles(sharedTemplatesFolder);

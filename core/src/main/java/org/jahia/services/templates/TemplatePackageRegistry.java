@@ -67,8 +67,8 @@ import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorklowTypeRegistration;
-import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -87,9 +87,7 @@ import java.util.*;
  * @author Sergiy Shyrkov
  */
 class TemplatePackageRegistry {
-// ------------------------------ FIELDS ------------------------------
-
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplatePackageRegistry.class);
+    private static Logger logger = LoggerFactory.getLogger(TemplatePackageRegistry.class);
     
     private final static String MODULES_ROOT_PATH = "modules.";
 
@@ -110,7 +108,6 @@ class TemplatePackageRegistry {
     private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
     private Map<String,Action> actions;
     private Map<String, BackgroundAction> backgroundActions;
-    private SettingsBean settingsBean;
     private JCRStoreService jcrStoreService;
     private TemplatePackageApplicationContextLoader templatePackageApplicationContextLoader;
 
@@ -151,10 +148,6 @@ class TemplatePackageRegistry {
 
     public void setJcrStoreService(JCRStoreService jcrStoreService) {
         this.jcrStoreService = jcrStoreService;
-    }
-
-    public void setSettingsBean(SettingsBean settingsBean) {
-        this.settingsBean = settingsBean;
     }
 
     public void setTemplatePackageApplicationContextLoader(TemplatePackageApplicationContextLoader templatePackageApplicationContextLoader) {
@@ -205,9 +198,8 @@ class TemplatePackageRegistry {
     }
 
     public void afterInitializationForModule(JahiaTemplatesPackage pack) {
-        Map map = pack.getContext().getBeansOfType(JahiaAfterInitializationService.class);
-        for (Object o : map.values()) {
-            JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
+        Map<String, JahiaAfterInitializationService> map = pack.getContext().getBeansOfType(JahiaAfterInitializationService.class);
+        for (JahiaAfterInitializationService initializationService : map.values()) {
             try {
                 initializationService.initAfterAllServicesAreStarted();
             } catch (JahiaInitializationException e) {

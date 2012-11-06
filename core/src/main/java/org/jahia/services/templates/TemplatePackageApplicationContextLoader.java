@@ -133,12 +133,15 @@ public class TemplatePackageApplicationContextLoader implements ServletContextAw
             XmlWebApplicationContext ctx = new XmlWebApplicationContext();
             ctx.setParent(SpringContextSingleton.getInstance().getContext());
             ctx.setServletContext(servletContext);
-            servletContext.setAttribute(WebApplicationContext.class.getName() + ".jahiaModule." + aPackage.getName(), ctx);
+            servletContext.setAttribute(WebApplicationContext.class.getName() + ".jahiaModule." + aPackage.getRootFolder(), ctx);
             ctx.setConfigLocation(configLocation);
             aPackage.setContext(ctx);
             ctx.refresh();
             
-            logger.info("Context initialized for module {} in {} ms", aPackage.getName(), System.currentTimeMillis() - startTime);
+            logger.info(
+                    "\"{}\" [{}] context initialized in {} ms",
+                    new Object[] { aPackage.getName(), aPackage.getRootFolder(),
+                            System.currentTimeMillis() - startTime });
         }
     }
 

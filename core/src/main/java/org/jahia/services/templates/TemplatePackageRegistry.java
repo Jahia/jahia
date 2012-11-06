@@ -411,7 +411,8 @@ class TemplatePackageRegistry {
                 packagesPerModule.get(key).add(templatePackage);
             }
         }
-        logger.info("Registered "+templatePackage.getName() + " version=" + templatePackage.getVersion());
+        logger.info("Registered \"{}\" [{}] v{}", new Object[] { templatePackage.getName(),
+                templatePackage.getRootFolder(), templatePackage.getVersion() });
     }
 
     private void computeResourceBundleHierarchy(JahiaTemplatesPackage templatePackage) {

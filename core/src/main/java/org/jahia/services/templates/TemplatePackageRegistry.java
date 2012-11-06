@@ -40,6 +40,7 @@
 
 package org.jahia.services.templates;
 
+import groovy.swing.binding.JTableProperties;
 import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -159,12 +160,6 @@ class TemplatePackageRegistry {
     public JahiaTemplatesPackage activateModuleVersion(String rootFolder, ModuleVersion version) {
         JahiaTemplatesPackage previousPack = fileNameRegistry.get(rootFolder);
         JahiaTemplatesPackage newPack = packagesWithVersion.get(rootFolder).get(version);
-
-        previousPack.setActiveVersion(false);
-        if (previousPack.getContext() != null) {
-            previousPack.getContext().close();
-            previousPack.setContext(null);
-        }
 
         File rootFile = new File(newPack.getFilePath()).getParentFile();
         File activeVersionFile = new File(rootFile, "activeVersion");
@@ -333,7 +328,7 @@ class TemplatePackageRegistry {
         return null;
     }
 
-    public void registerPackage(JahiaTemplatesPackage pack) {
+    public void registerPackage(JahiaTemplatesPackage pack, boolean startContext) {
         try {
             if (!packagesWithVersion.containsKey(pack.getRootFolder())) {
                 packagesWithVersion.put(pack.getRootFolder(), new HashMap<ModuleVersion, JahiaTemplatesPackage>());
@@ -373,6 +368,9 @@ class TemplatePackageRegistry {
 
             if (pack.isActiveVersion()) {
                 register(pack);
+                if (startContext) {
+                    templatePackageApplicationContextLoader.createWebApplicationContext(pack);
+                }
             }
         } catch (IOException e) {
             logger.error("Cannot get active versions of module " + pack.getRootFolder(),e);
@@ -386,6 +384,15 @@ class TemplatePackageRegistry {
      */
     public void register(JahiaTemplatesPackage templatePackage) {
         templatePackages = null;
+        if (registry.get(templatePackage.getName()) != null) {
+            JahiaTemplatesPackage previousPack = registry.get(templatePackage.getName());
+            previousPack.setActiveVersion(false);
+            if (previousPack.getContext() != null) {
+                previousPack.getContext().close();
+                previousPack.setContext(null);
+            }
+        }
+
         registry.put(templatePackage.getName(), templatePackage);
         fileNameRegistry.put(templatePackage.getRootFolder(), templatePackage);
         File rootFolder = new File(templatePackage.getFilePath());

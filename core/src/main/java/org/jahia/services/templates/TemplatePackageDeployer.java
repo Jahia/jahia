@@ -94,7 +94,7 @@ class TemplatePackageDeployer {
 
     private TemplatePackageApplicationContextLoader contextLoader;
 
-    
+
     public TemplatesWatcher getTemplatesWatcher() {
         return templatesWatcher;
     }
@@ -330,13 +330,13 @@ class TemplatePackageDeployer {
 
     private void autoDeployModulesToSites(JCRSessionWrapper session, JahiaTemplatesPackage pack)
             throws RepositoryException {
-        if(pack.getAutoDeployOnSite()!=null) {
-            if("system".equals(pack.getAutoDeployOnSite())) {
-                if(session.nodeExists("/sites/systemsite")) {
+        if (pack.getAutoDeployOnSite() != null) {
+            if ("system".equals(pack.getAutoDeployOnSite())) {
+                if (session.nodeExists("/sites/systemsite")) {
                     service.deployModule("/modules/" + pack.getRootFolder(), "/sites/systemsite", session);
                 }
             } else if ("all".equals(pack.getAutoDeployOnSite())) {
-                if(session.nodeExists("/sites/systemsite")) {
+                if (session.nodeExists("/sites/systemsite")) {
                     service.deployModuleToAllSites("/modules/" + pack.getRootFolder(), session, null);
                 }
             }
@@ -513,7 +513,7 @@ class TemplatePackageDeployer {
                     modulesToInitialize.add(pack);
                 }
 
-                templatePackageRegistry.registerPackage(pack);
+                templatePackageRegistry.registerPackage(pack, false);
             }
         }
 
@@ -565,8 +565,7 @@ class TemplatePackageDeployer {
         stopWatchdog();
         watchdog = new Timer(true);
         templatesWatcher = new TemplatesWatcher(new File(settingsBean.getJahiaSharedTemplatesDiskPath()), new File(settingsBean.getJahiaTemplatesDiskPath()));
-        watchdog.schedule(templatesWatcher,
-                interval, interval);
+        watchdog.schedule(templatesWatcher, interval, interval);
     }
 
     public void stopWatchdog() {
@@ -585,7 +584,7 @@ class TemplatePackageDeployer {
                 try {
                     JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
                         public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            templatePackageRegistry.registerPackage(pack);
+                            templatePackageRegistry.registerPackage(pack, true);
 
                             if (pack.getContext() != null && pack.isActiveVersion()) {
                                 contextLoader.reload(pack);
@@ -600,7 +599,7 @@ class TemplatePackageDeployer {
                         }
                     });
                 } catch (RepositoryException e) {
-                    logger.error("Error when initializing modules",e);
+                    logger.error("Error when initializing modules", e);
                 }
 
                 setTimestamp(destFile.getPath(), destFile.lastModified());
@@ -626,7 +625,7 @@ class TemplatePackageDeployer {
 
         File rootFile = new File(pack.getFilePath()).getParentFile();
 
-        session.getNode("/modules/"+pack.getRootFolderWithVersion()).remove();
+        session.getNode("/modules/" + pack.getRootFolderWithVersion()).remove();
 
         if (pack.isActiveVersion()) {
             File activeVersionFile = new File(rootFile, "activeVersion");
@@ -731,7 +730,7 @@ class TemplatePackageDeployer {
                                     unzippedPackages.remove(pack.getFilePath());
                                 }
                                 unresolvedDependencies.remove(pack);
-                                templatePackageRegistry.registerPackage(pack);
+                                templatePackageRegistry.registerPackage(pack, true);
 
                                 if (pack.getContext() != null && pack.isActiveVersion()) {
                                     contextLoader.reload(pack);
@@ -747,7 +746,7 @@ class TemplatePackageDeployer {
                         }
                     });
                 } catch (RepositoryException e) {
-                    logger.error("Error when initializing modules",e);
+                    logger.error("Error when initializing modules", e);
                 }
             }
         }

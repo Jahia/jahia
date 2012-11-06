@@ -825,6 +825,7 @@ extends = jnt:content
  itemtype = propertiesView
  - cache.requestParameters (string)
  - cache.mainResource (boolean)
+ - cache.perUser (boolean)
  - visible (boolean)
  - requirePermissions (string)
  - cache.expiration (long)

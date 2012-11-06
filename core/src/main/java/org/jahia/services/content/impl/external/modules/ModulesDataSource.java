@@ -4,11 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import javax.jcr.Binary;
 import javax.jcr.PathNotFoundException;
@@ -24,22 +20,52 @@ import org.jahia.services.content.impl.external.ExternalData;
 import org.jahia.services.content.impl.external.vfs.VFSDataSource;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.springframework.core.io.Resource;
 
 /**
  * Data source provider that is mapped to the /modules filesystem folder with deployed Jahia modules.
- *   
+ *
  * @author david
  * @since 6.7
  */
 public class ModulesDataSource extends VFSDataSource {
 
     private Map<String, String> fileTypeMapping;
-    
+
     private Map<String, String> folderTypeMapping;
-    
+
     private List<String> supportedNodeTypes;
-    
+
+    private JahiaTemplateManagerService templateManagerService;
+
+    @Override
+    public List<String> getChildren(String path) {
+        try {
+            if (!path.endsWith("/"+Constants.JCR_CONTENT)) {
+                FileObject fileObject = getFile(path);
+                if (fileObject.getType() == FileType.FILE) {
+                    return Arrays.asList(Constants.JCR_CONTENT);
+                } else if (fileObject.getType() == FileType.FOLDER) {
+                    List<String> children = new ArrayList<String>();
+                    for (FileObject object : fileObject.getChildren()) {
+                        if (path.equals("/") && templateManagerService.getTemplatePackageByFileName(object.getName().getBaseName()) != null)  {
+                            children.add(object.getName().getBaseName());
+                        } else if (!path.equals("/")) {
+                            children.add(object.getName().getBaseName());
+                        }
+                    }
+                    return children;
+                } else {
+                    logger.warn("Found non file or folder entry, maybe an alias. VFS file type=" + fileObject.getType());
+                }
+            }
+        } catch (FileSystemException e) {
+            logger.error("Cannot get node children",e);
+        }
+        return new ArrayList<String>();
+    }
+
     @Override
     public String getDataType(FileObject fileObject) throws FileSystemException {
         String type = fileObject.getType().equals(FileType.FOLDER) ? folderTypeMapping
@@ -168,5 +194,9 @@ public class ModulesDataSource extends VFSDataSource {
 
     public void setSupportedNodeTypes(List<String> supportedNodeTypes) {
         this.supportedNodeTypes = supportedNodeTypes;
+    }
+
+    public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
+        this.templateManagerService = templateManagerService;
     }
 }

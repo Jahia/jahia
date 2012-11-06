@@ -571,6 +571,7 @@
     
     <bean id="ModulesDataSource" class="org.jahia.services.content.impl.external.modules.ModulesDataSource">
         <property name="rootResource" value="/modules"/>
+        <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
         <property name="supportedNodeTypes">
             <list>
                 <value>jnt:nodeTypeFolder</value>

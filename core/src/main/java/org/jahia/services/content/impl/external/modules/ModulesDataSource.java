@@ -1,40 +1,85 @@
 package org.jahia.services.content.impl.external.modules;
 
-import org.apache.commons.vfs2.FileObject;
-import org.apache.commons.vfs2.FileSystemException;
-import org.jahia.api.Constants;
-import org.jahia.services.content.impl.external.ExternalData;
-import org.jahia.services.content.impl.external.vfs.VFSDataSource;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.ServletContextAware;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.jcr.Binary;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.servlet.ServletContext;
-import java.io.*;
-import java.util.*;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.FileType;
+import org.jahia.api.Constants;
+import org.jahia.services.content.impl.external.ExternalData;
+import org.jahia.services.content.impl.external.vfs.VFSDataSource;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.springframework.core.io.Resource;
 
 /**
- * Created with IntelliJ IDEA.
- * User: david
- * Date: 10/25/12
- * Time: 2:09 PM
- * To change this template use File | Settings | File Templates.
+ * Data source provider that is mapped to the /modules filesystem folder with deployed Jahia modules.
+ *   
+ * @author david
+ * @since 6.7
  */
-public class ModulesDataSource extends VFSDataSource implements ServletContextAware,InitializingBean {
-    private ServletContext servletContext;
+public class ModulesDataSource extends VFSDataSource {
+
+    private Map<String, String> fileTypeMapping;
+    
+    private Map<String, String> folderTypeMapping;
+    
+    private List<String> supportedNodeTypes;
+    
+    @Override
+    public String getDataType(FileObject fileObject) throws FileSystemException {
+        String type = fileObject.getType().equals(FileType.FOLDER) ? folderTypeMapping
+                .get(fileObject.getName().getBaseName()) : fileTypeMapping.get(fileObject.getName()
+                .getExtension());
+        return type != null ? type : super.getDataType(fileObject);
+    }
+
+    @Override
+    public ExternalData getItemByPath(String path) throws PathNotFoundException {
+        ExternalData data = super.getItemByPath(path);
+        if (path.endsWith(".jsp")) {
+            Properties properties = new Properties();
+
+            // set Properties
+            InputStream is = null;
+            try {
+                is = getFile(path.substring(0, path.lastIndexOf(".")) + ".properties").getContent().getInputStream();
+                properties.load(is);
+                Map<String,String[]> dataProperties = new HashMap<String, String[]>();
+                for (Iterator<?> iterator = properties.keySet().iterator(); iterator.hasNext();) {
+                    String k = (String) iterator.next();
+                    String v = properties.getProperty(k);
+                    dataProperties.put(k,v.split(","));
+                }
+                data.getProperties().putAll(dataProperties);
+            } catch (FileSystemException e) {
+                //no properties files, do nothing
+            } catch (IOException e) {
+                logger.error("Cannot read property file",e);
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
+        }
+        return data;
+    }
 
     @Override
     public List<String> getSupportedNodeTypes() {
-        return Arrays.asList(Constants.JAHIANT_NODETYPEFOLDER, Constants.JAHIANT_TEMPLATETYPEFOLDER,
-                Constants.JAHIANT_CSSFOLDER, Constants.JAHIANT_CSSFILE, Constants.JAHIANT_JAVASCRIPTFOLDER,
-                Constants.JAHIANT_JAVASCRIPTFILE, Constants.JAHIANT_VIEWFILE, Constants.JAHIANT_DEFINITIONFILE,
-                Constants.JAHIANT_RESOURCEBUNDLEFOLDER);
+        return supportedNodeTypes;
     }
 
     @Override
@@ -59,13 +104,7 @@ public class ModulesDataSource extends VFSDataSource implements ServletContextAw
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             } finally {
-                if (outputStream != null) {
-                    try {
-                        outputStream.close();
-                    } catch (IOException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
+                IOUtils.closeQuietly(outputStream);
             }
         } else if (data.getType().equals(Constants.JAHIANT_VIEWFILE)) {
             // Handle properties
@@ -111,56 +150,23 @@ public class ModulesDataSource extends VFSDataSource implements ServletContextAw
         }
     }
 
-    @Override
-    public String getDataType(FileObject fileObject) throws FileSystemException {
-        final String path = fileObject.getName().getPath();
-        if (path.endsWith(".css")) {
-            return Constants.JAHIANT_CSSFILE;
-        } else if (path.endsWith("/css")){
-            return Constants.JAHIANT_CSSFOLDER;
-        } else if (path.endsWith(".jsp")){
-            return Constants.JAHIANT_VIEWFILE;
-        } else if (path.endsWith(".cnd")){
-            return Constants.JAHIANT_DEFINITIONFILE;
-        } else if (path.endsWith("/javascript")){
-            return Constants.JAHIANT_JAVASCRIPTFOLDER;
-        } else if (path.endsWith(".js")){
-            return Constants.JAHIANT_JAVASCRIPTFILE;
+    public void setFileTypeMapping(Map<String, String> fileTypeMapping) {
+        this.fileTypeMapping = fileTypeMapping;
+    }
+
+    public void setFolderTypeMapping(Map<String, String> folderTypeMapping) {
+        this.folderTypeMapping = folderTypeMapping;
+    }
+
+    public void setRootResource(Resource root) {
+        try {
+            super.setRoot(root.getFile().getPath());
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
         }
-        return super.getDataType(fileObject);
     }
 
-    public void setServletContext(ServletContext servletContext) {
-        this.servletContext = servletContext;
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        super.setRoot(servletContext.getRealPath("/modules"));
-    }
-
-    @Override
-    public ExternalData getItemByPath(String path) throws PathNotFoundException {
-        ExternalData data = super.getItemByPath(path);
-        if (path.endsWith(".jsp")) {
-            Properties properties = new Properties();
-
-            // set Properties
-            try {
-                properties.load(getFile(path.substring(0, path.lastIndexOf(".")) + ".properties").getContent().getInputStream());
-                Map<String,String[]> dataProperties = new HashMap<String, String[]>();
-                for (Iterator<?> iterator = properties.keySet().iterator(); iterator.hasNext();) {
-                    String k = (String) iterator.next();
-                    String v = properties.getProperty(k);
-                    dataProperties.put(k,v.split(","));
-                }
-                data.getProperties().putAll(dataProperties);
-            } catch (FileSystemException e) {
-                //no properties files, do nothing
-            } catch (IOException e) {
-                logger.error("Cannot read property file",e);
-            }
-        }
-        return data;
+    public void setSupportedNodeTypes(List<String> supportedNodeTypes) {
+        this.supportedNodeTypes = supportedNodeTypes;
     }
 }

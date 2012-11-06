@@ -565,9 +565,39 @@
 
     <bean id="ModulestoreProvider" class="org.jahia.services.content.impl.external.ExternalContentStoreProvider"  parent="AbstractJCRStoreProvider">
         <property name="key" value="module"/>
-        <property name="dataSource">
-            <bean class="org.jahia.services.content.impl.external.modules.ModulesDataSource"/>
-        </property>
+        <property name="dataSource" ref="ModulesDataSource"/>
         <property name="mountPoint" value="/modulesFileSystem"/>
+    </bean>
+    
+    <bean id="ModulesDataSource" class="org.jahia.services.content.impl.external.modules.ModulesDataSource">
+        <property name="rootResource" value="/modules"/>
+        <property name="supportedNodeTypes">
+            <list>
+                <value>jnt:nodeTypeFolder</value>
+                <value>jnt:templateTypeFolder</value>
+                <value>jnt:cssFolder</value>
+                <value>jnt:cssFile</value>
+                <value>jnt:javascriptFolder</value>
+                <value>jnt:javascriptFile</value>
+                <value>jnt:viewFile</value>
+                <value>jnt:definitionFile</value>
+                <value>jnt:resourceBundleFolder</value>
+            </list>
+        </property>
+        <property name="folderTypeMapping">
+            <util:map key-type="java.lang.String" value-type="java.lang.String">
+                <entry key="css" value="jnt:cssFolder"/>
+                <entry key="javascript" value="jnt:javascriptFolder"/>
+                <entry key="resources" value="jnt:resourceBundleFolder"/>
+            </util:map>
+        </property>
+        <property name="fileTypeMapping">
+            <util:map key-type="java.lang.String" value-type="java.lang.String">
+                <entry key="cnd" value="jnt:definitionFile"/>
+                <entry key="css" value="jnt:cssFile"/>
+                <entry key="js" value="jnt:javascriptFile"/>
+                <entry key="jsp" value="jnt:viewFile"/>
+            </util:map>
+        </property>
     </bean>
 </beans>

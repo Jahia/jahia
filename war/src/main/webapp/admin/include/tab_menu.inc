@@ -77,7 +77,7 @@
             <div>
                 <div>
                     <span class="tab-icon ico-studio">
-                        <c:url var="studioUrl" value="/cms/studio/default/${processingContext.UILocale}/modules/templates-system/home.html"/>
+                        <c:url var="studioUrl" value="/cms/studio/default/${processingContext.UILocale}/modules/templates-system.html"/>
                         <a href="${studioUrl}"><fmt:message key="org.jahia.admin.exitToStudio.label"/></a>
                     </span>
                 </div>

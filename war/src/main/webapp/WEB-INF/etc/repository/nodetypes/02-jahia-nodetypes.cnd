@@ -821,7 +821,7 @@ extends = jnt:content
 
 [jnt:javascriptFile] > jnt:file
 
-[jnt:viewFile] > jnt:file
+[jmix:viewProperties] mixin
  itemtype = propertiesView
  - cache.requestParameters (string)
  - cache.mainResource (boolean)
@@ -832,8 +832,10 @@ extends = jnt:content
  - addMixin (string)
  - type (string)
 
+[jnt:viewFile] > jnt:file, jmix:viewProperties
+ - sourceCode (string) itemtype = codeEditor
+
 [jnt:definitionFile] > jnt:file
  + * (nt:nodeType)
 
 [jnt:resourceBundleFolder] > jnt:folder
-

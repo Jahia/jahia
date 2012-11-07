@@ -47,14 +47,12 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DualListField;
 import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -65,22 +63,15 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaPropertyDefinition;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineConfiguration;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
-import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.GWTCompositeConstraintViolationException;
-import org.jahia.ajax.gwt.client.service.GWTConstraintViolationException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.AreaModule;
-import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem;
 
 import java.util.*;
@@ -330,60 +321,60 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
         JahiaContentManagementService.App.getInstance().getFieldInitializerValues(nodeTypeName, propertyName, parentPath,
                 dependentValues, new BaseAsyncCallback<GWTJahiaFieldInitializer>() {
-                    public void onSuccess(GWTJahiaFieldInitializer result) {
-                        initializersValues.put(propertyId, result);
-                        if (result.getDisplayValues() != null) {
-                            for (TabItem tab : tabs.getItems()) {
-                                EditEngineTabItem item = tab.getData("item");
-                                if (item instanceof PropertiesTabItem) {
-                                    PropertiesEditor pe = ((PropertiesTabItem) item)
-                                            .getPropertiesEditor();
-                                    if (pe != null) {
-                                        for (Field<?> field : pe.getFields()) {
-                                            if (field instanceof PropertiesEditor.PropertyAdapterField) {
-                                                field = ((PropertiesEditor.PropertyAdapterField)field).getField();
-                                            }
-                                            if (propertyName.equals(field.getName())) {
-                                                if (field instanceof DualListField<?>) {
-                                                    DualListField<GWTJahiaValueDisplayBean> dualListField = (DualListField<GWTJahiaValueDisplayBean>) field;
-                                                    ListStore<GWTJahiaValueDisplayBean> store = dualListField.getToField().getStore();
-                                                    for (GWTJahiaValueDisplayBean toValue : store.getModels()) {
-                                                        if (!result.getDisplayValues()
-                                                                .contains(toValue)) {
-                                                            store.remove(toValue);
-                                                        }
-                                                    }
-                                                    dualListField.getToField().getListView().refresh();
-                                                    
-                                                    store = dualListField.getFromField().getStore();
-                                                    store.removeAll();
-                                                    store.add(result.getDisplayValues());
-                                                    dualListField.getFromField().getListView().refresh();
-                                                } else if (field instanceof ComboBox<?>) {
-                                                    ComboBox<GWTJahiaValueDisplayBean> comboBox = (ComboBox<GWTJahiaValueDisplayBean>) field;
-                                                    if (comboBox.getValue() != null
-                                                            && !result
-                                                                    .getDisplayValues()
-                                                                    .contains(
-                                                                            comboBox.getValue())) {
-                                                        comboBox.clear();
-                                                    }
-                                                    ListStore<GWTJahiaValueDisplayBean> store = new ListStore<GWTJahiaValueDisplayBean>();
-                                                    store.add(result.getDisplayValues());
-                                                    comboBox.setStore(store);
+            public void onSuccess(GWTJahiaFieldInitializer result) {
+                initializersValues.put(propertyId, result);
+                if (result.getDisplayValues() != null) {
+                    for (TabItem tab : tabs.getItems()) {
+                        EditEngineTabItem item = tab.getData("item");
+                        if (item instanceof PropertiesTabItem) {
+                            PropertiesEditor pe = ((PropertiesTabItem) item)
+                                    .getPropertiesEditor();
+                            if (pe != null) {
+                                for (Field<?> field : pe.getFields()) {
+                                    if (field instanceof PropertiesEditor.PropertyAdapterField) {
+                                        field = ((PropertiesEditor.PropertyAdapterField) field).getField();
+                                    }
+                                    if (propertyName.equals(field.getName())) {
+                                        if (field instanceof DualListField<?>) {
+                                            DualListField<GWTJahiaValueDisplayBean> dualListField = (DualListField<GWTJahiaValueDisplayBean>) field;
+                                            ListStore<GWTJahiaValueDisplayBean> store = dualListField.getToField().getStore();
+                                            for (GWTJahiaValueDisplayBean toValue : store.getModels()) {
+                                                if (!result.getDisplayValues()
+                                                        .contains(toValue)) {
+                                                    store.remove(toValue);
                                                 }
                                             }
+                                            dualListField.getToField().getListView().refresh();
+
+                                            store = dualListField.getFromField().getStore();
+                                            store.removeAll();
+                                            store.add(result.getDisplayValues());
+                                            dualListField.getFromField().getListView().refresh();
+                                        } else if (field instanceof ComboBox<?>) {
+                                            ComboBox<GWTJahiaValueDisplayBean> comboBox = (ComboBox<GWTJahiaValueDisplayBean>) field;
+                                            if (comboBox.getValue() != null
+                                                    && !result
+                                                    .getDisplayValues()
+                                                    .contains(
+                                                            comboBox.getValue())) {
+                                                comboBox.clear();
+                                            }
+                                            ListStore<GWTJahiaValueDisplayBean> store = new ListStore<GWTJahiaValueDisplayBean>();
+                                            store.add(result.getDisplayValues());
+                                            comboBox.setStore(store);
                                         }
                                     }
                                 }
                             }
                         }
                     }
+                }
+            }
 
-                    public void onApplicationFailure(Throwable caught) {
-                        Log.error("Unable to load avalibale mixin", caught);
-                    }
-                });
+            public void onApplicationFailure(Throwable caught) {
+                Log.error("Unable to load avalibale mixin", caught);
+            }
+        });
 
     }
 

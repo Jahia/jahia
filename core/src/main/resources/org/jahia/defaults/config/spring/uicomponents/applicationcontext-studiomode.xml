@@ -310,20 +310,29 @@
                     <bean class="org.jahia.services.uicomponents.bean.editmode.EngineConfiguration">
                         <property name="engineTabs">
                             <list>
+                                <bean id="Engine.Tab.CodeEditor" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                                    <property name="id" value="codeEditor"/>
+                                    <property name="titleKey" value="label.engineTab.codeEditor"/>
+                                    <property name="tabItem">
+                                        <bean class="org.jahia.ajax.gwt.client.widget.contentengine.CodeEditorTabItem">
+                                            <property name="codePropertyName" value="sourceCode" />
+                                        </bean>
+                                    </property>
+                                </bean>
                                 <bean id="Engine.Tab.PropertiesView" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                                <property name="id" value="propertiesView"/>
-                                <property name="titleKey" value="label.engineTab.propertiesView"/>
-                                <property name="tabItem">
-                                    <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PropertiesTabItem">
-                                        <property name="dataType">
-                                            <list>
-                                                <value>propertiesView</value>
-                                            </list>
-                                        </property>
-                                        <property name="viewCopyToAllLangs" value="false"/>
-                                        <property name="multiLang" value="false"/>
-                                    </bean>
-                                </property>
+                                    <property name="id" value="propertiesView"/>
+                                    <property name="titleKey" value="label.engineTab.propertiesView"/>
+                                    <property name="tabItem">
+                                        <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PropertiesTabItem">
+                                            <property name="dataType">
+                                                <list>
+                                                    <value>propertiesView</value>
+                                                </list>
+                                            </property>
+                                            <property name="viewCopyToAllLangs" value="false"/>
+                                            <property name="multiLang" value="false"/>
+                                        </bean>
+                                    </property>
                                 </bean>
                             </list>
                         </property>

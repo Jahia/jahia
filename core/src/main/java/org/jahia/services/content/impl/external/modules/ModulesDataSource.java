@@ -1,16 +1,5 @@
 package org.jahia.services.content.impl.external.modules;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.*;
-
-import javax.jcr.Binary;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
@@ -22,6 +11,13 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.springframework.core.io.Resource;
+
+import javax.jcr.Binary;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import java.io.*;
+import java.util.*;
 
 /**
  * Data source provider that is mapped to the /modules filesystem folder with deployed Jahia modules.
@@ -78,10 +74,34 @@ public class ModulesDataSource extends VFSDataSource {
     public ExternalData getItemByPath(String path) throws PathNotFoundException {
         ExternalData data = super.getItemByPath(path);
         if (path.endsWith(".jsp")) {
-            Properties properties = new Properties();
+            // set source code
+            InputStream is = null;
+            Writer writer = new StringWriter();
+            char[] buffer = new char[1024];
+            try {
+                is = getFile(path).getContent().getInputStream();
+                Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                int n;
+                while ((n = reader.read(buffer)) != -1) {
+                    writer.write(buffer, 0, n);
+                }
+                String[] propertyValue = {writer.toString()};
+                data.getProperties().put("sourceCode", propertyValue);
+            } catch (Exception e) {
+                logger.error("Failed to read source code", e);
+            } finally {
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        logger.error("Failed to close input stream",e);
+                    }
+                }
+            }
 
             // set Properties
-            InputStream is = null;
+            Properties properties = new Properties();
+            is = null;
             try {
                 is = getFile(path.substring(0, path.lastIndexOf(".")) + ".properties").getContent().getInputStream();
                 properties.load(is);
@@ -133,9 +153,26 @@ public class ModulesDataSource extends VFSDataSource {
                 IOUtils.closeQuietly(outputStream);
             }
         } else if (data.getType().equals(Constants.JAHIANT_VIEWFILE)) {
+            // Handle source code
+            try {
+                outputStream = getFile(data.getPath()).getContent().getOutputStream();
+                byte[] sourceCode = data.getProperties().get("sourceCode")[0].getBytes();
+                outputStream.write(sourceCode);
+            } catch (Exception e) {
+                logger.error("Failed to write source code", e);
+            } finally {
+                if (outputStream != null) {
+                    try {
+                        outputStream.close();
+                    } catch (IOException e) {
+                        logger.error("Failed to close output stream", e);
+                    }
+                }
+            }
+
             // Handle properties
             try {
-                ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(data.getType());
+                ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIAMIX_VIEWPROPERTIES);
                 Properties properties = new Properties();
                 for (String property  : data.getProperties().keySet()) {
                     if (type.getDeclaredPropertyDefinitionsAsMap().containsKey(property)) {
@@ -150,8 +187,6 @@ public class ModulesDataSource extends VFSDataSource {
                             }
                             properties.put(property,propertyValue.toString());
                         }
-                    } else {
-                        logger.warn("property not found " + property + " for type " + type.getName());
                     }
                 }
                 outputStream = getFile(data.getPath().substring(0,data.getPath().lastIndexOf(".")) + ".properties").getContent().getOutputStream();

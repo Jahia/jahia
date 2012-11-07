@@ -40,13 +40,18 @@
 
 package org.jahia.services.content.impl.external;
 
+import org.apache.jackrabbit.util.ISO8601;
+
 import javax.jcr.*;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * 
@@ -67,15 +72,7 @@ public class ExternalValueFactoryImpl implements ValueFactory {
             case PropertyType.BOOLEAN :
                 return createValue(Boolean.parseBoolean(value));
             case PropertyType.DATE :
-                Date date = null;
-                try {
-                    date = DateFormat.getInstance().parse(value);
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(date);
-                    return createValue(calendar);
-                } catch (ParseException e) {
-                    throw new ValueFormatException("Error converting value [" + value +"] to calendar value");
-                }                
+                return createValue(ISO8601.parse(value));
             case PropertyType.DECIMAL :
                 return createValue(new BigDecimal(value));
             case PropertyType.DOUBLE :

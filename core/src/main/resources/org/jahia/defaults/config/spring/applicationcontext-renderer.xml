@@ -243,6 +243,8 @@
         <property name="cssStyles">
             <list>
                 <value>/gwt/resources/css/gwt-1.3.min.css</value>
+                <value>/modules/assets/javascript/codemirror/lib/codemirror.css</value>
+                <value>/modules/assets/javascript/codemirror/theme/default.css</value>
             </list>
             <!-- comment out gwt.css and uncomment the following CSS if you are in dev mode and are working on modifying those CSSs
             <list>
@@ -257,6 +259,11 @@
         <property name="javaScripts">
             <list>
                 <value>/modules/assets/javascript/ckeditor/ckeditor.js</value>
+                <value>/modules/assets/javascript/codemirror/lib/codemirror.js</value>
+                <value>/modules/assets/javascript/codemirror/mode/xml/xml.js"/>"></value>
+                <value>/modules/assets/javascript/codemirror/mode/javascript/javascript.js"/>"></value>
+                <value>/modules/assets/javascript/codemirror/mode/css/css.js"/>"></value>
+                <value>/modules/assets/javascript/codemirror/mode/htmlmixed/htmlmixed.js"/>"></value>
             </list>
         </property>
         <property name="detectCustomCKEditorConfig" value="${detectCustomCKEditorConfig:true}"/>

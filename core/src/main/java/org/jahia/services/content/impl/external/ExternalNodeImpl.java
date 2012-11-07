@@ -112,14 +112,14 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
     }
 
     private ExtendedPropertyDefinition getPropertyDefinition(String name) throws RepositoryException {
-        ExtendedPropertyDefinition def = getExtendedPrimaryNodeType().getPropertyDefinition(name);
-        if (def != null) {
-            return def;
+        Map<String, ExtendedPropertyDefinition> propertyDefinitionsAsMap = getExtendedPrimaryNodeType().getPropertyDefinitionsAsMap();
+        if (propertyDefinitionsAsMap.containsKey(name)) {
+            return propertyDefinitionsAsMap.get(name);
         }
         for (NodeType nodeType : getMixinNodeTypes()) {
-            def = ((ExtendedNodeType)nodeType).getPropertyDefinition(name);
-            if (def != null) {
-                return def;
+            propertyDefinitionsAsMap = ((ExtendedNodeType)nodeType).getPropertyDefinitionsAsMap();
+            if (propertyDefinitionsAsMap.containsKey(name)) {
+                return propertyDefinitionsAsMap.get(name);
             }
         }
 

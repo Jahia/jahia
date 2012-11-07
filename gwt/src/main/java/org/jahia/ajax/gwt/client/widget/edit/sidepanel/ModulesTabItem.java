@@ -40,7 +40,7 @@ public class ModulesTabItem extends BrowseTabItem {
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
-        refreshFlag = EditLinker.REFRESH_PAGES;
+        refreshFlag = EditLinker.REFRESH_SOURCES;;
         this.tree.setSelectionModel(new TreeGridSelectionModel<GWTJahiaNode>() {
             @Override
             protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {

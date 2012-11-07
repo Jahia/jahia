@@ -14,6 +14,9 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -86,13 +89,16 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                         String newModuleName = moduleName;
                         String newModulePath = modulePath;
                         String newModuleVersion = moduleVersion;
-
-                        for (GWTJahiaNode n : JahiaGWTParameters.getSitesMap().values()) {
-                            if (n.getName().equals(dependenciesCombo.getSimpleValue())) {
-                                newModuleName = dependenciesCombo.getSimpleValue();
-                                newModulePath = n.getPath().replace("/modules/","/" + filePath[1] + "/");
-                                newModuleVersion = (String) n.getProperties().get("j:versionInfo");
-                                break;
+                        GWTJahiaNode newModuleNode = null;
+                        if (!newModuleName.equals(dependenciesCombo.getSimpleValue())) {
+                            for (GWTJahiaNode n : JahiaGWTParameters.getSitesMap().values()) {
+                                if (n.getName().equals(dependenciesCombo.getSimpleValue())) {
+                                    newModuleNode = n;
+                                    newModuleName = dependenciesCombo.getSimpleValue();
+                                    newModulePath = n.getPath().replace("/modules/","/" + filePath[1] + "/");
+                                    newModuleVersion = (String) n.getProperties().get("j:versionInfo");
+                                    break;
+                                }
                             }
                         }
                         String newfileTemplateType = !"".equals(templateType.getValue())?templateType.getValue():fileTemplateType;
@@ -110,7 +116,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                         parentNodesType.put(newModuleVersion, "jnt:folder");
                         parentNodesType.put(fileType, "jnt:folder");
                         parentNodesType.put(newfileTemplateType, "jnt:folder");
-                        prepareAndSave(newModulePath, newViewName, parentNodesType, engine);
+                        prepareAndSave(newModulePath, newViewName, parentNodesType, engine, newModuleNode);
                         popup.hide();
                     }
                 });
@@ -133,7 +139,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
         return button;
     }
 
-    protected void prepareAndSave(String modulePath,String viewName,Map<String, String> parentNodesType, final AbstractContentEngine engine) {
+    protected void prepareAndSave(final String modulePath,String viewName,Map<String, String> parentNodesType, final AbstractContentEngine engine,final GWTJahiaNode newModuleNode) {
 
         JahiaContentManagementService.App.getInstance().createNode(modulePath, viewName, "jnt:viewFile", null, null, null, null, parentNodesType, new AsyncCallback<GWTJahiaNode>() {
             @Override
@@ -144,6 +150,11 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
             @Override
             public void onSuccess(GWTJahiaNode gwtJahiaNode) {
                 prepareAndSave(engine,true);
+                if (newModuleNode == null) {
+                    engine.getLinker().refresh(Linker.REFRESH_SOURCES);
+                } else {
+                    // have to handle refresh page
+                }
             }
         });
 

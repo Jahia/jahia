@@ -111,17 +111,19 @@ public class TemplatePackageApplicationContextLoader implements ServletContextAw
 // -------------------------- OTHER METHODS --------------------------
 
     public void reload(JahiaTemplatesPackage aPackage) {
-        logger.info("Reloading Spring application context for module {}", aPackage.getName());
-        long startTime = System.currentTimeMillis();
-
         if (aPackage.getContext() != null) {
-            aPackage.getContext().refresh();
-        }
+            logger.info("Reloading Spring application context for module {}", aPackage.getName());
+            long startTime = System.currentTimeMillis();
 
-        aPackage.getContext().publishEvent(new ContextInitializedEvent(this, aPackage));
+            if (aPackage.getContext() != null) {
+                aPackage.getContext().refresh();
+            }
+
+            aPackage.getContext().publishEvent(new ContextInitializedEvent(this, aPackage));
         
-        logger.info("...done reloading context for module {} in {} ms", aPackage.getName(),
-                System.currentTimeMillis() - startTime);
+            logger.info("...done reloading context for module {} in {} ms", aPackage.getName(),
+                    System.currentTimeMillis() - startTime);
+        }
     }
 
     public void createWebApplicationContext(JahiaTemplatesPackage aPackage) throws BeansException {

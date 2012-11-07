@@ -184,6 +184,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
+        templatePackageRegistry.afterInitializationForModules();
+
         // start template package watcher
         templatePackageDeployer.startWatchdog();
     }
@@ -1024,7 +1026,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         HashMap<String, List<String>> references = new HashMap<String, List<String>>();
         for (JahiaTemplatesPackage module : modules) {
-            logger.info("Deploying " + modules + " on " + sitePath);
+            logger.info("Installing " + module.getName() + " on " + sitePath);
             JCRNodeWrapper moduleNode = null;
             try {
                 moduleNode = session.getNode("/modules/" + module.getRootFolder());
@@ -1036,7 +1038,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 ReferencesHelper.resolveCrossReferences(session, references);
 
                 addDependencyValue(moduleNode, siteNode, "j:installedModules");
-                logger.info("Done deploying " + modules + " on " + sitePath);
+                logger.info("Done installing " + module.getName() + " on " + sitePath);
             } catch (PathNotFoundException e) {
                 logger.warn("Cannot find module for path {}. Skipping deployment to site {}.",
                         module, sitePath);
@@ -1481,7 +1483,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public void undeployModule(String rootFolder, String version, JCRSessionWrapper session) throws RepositoryException {
         JahiaTemplatesPackage pack = templatePackageRegistry.lookupByFileNameAndVersion(rootFolder, new ModuleVersion(version));
         if (!pack.isActiveVersion() && !pack.isLastVersion()) {
-            templatePackageDeployer.undeployModule(pack, session);
+            templatePackageDeployer.undeployModule(pack, session, false);
         }
     }
 

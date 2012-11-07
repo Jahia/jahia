@@ -598,13 +598,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         importSiteZip(file, null);
     }
 
-    public void importSiteZip(File file, JCRSessionWrapper session) throws RepositoryException, IOException, JahiaException {
+    public void importSiteZip(File file, JCRSessionWrapper session) throws RepositoryException, IOException {
         ZipInputStream zis = new ZipInputStream(new FileInputStream(file));
 
         importSiteZip(zis, null, file, session);
     }
 
-    private void importSiteZip(ZipInputStream zis2, final String uri, final File fileImport, JCRSessionWrapper session) throws IOException, JahiaException {
+    private void importSiteZip(ZipInputStream zis2, final String uri, final File fileImport, JCRSessionWrapper session) throws IOException {
         ZipEntry z;
         final Properties infos = new Properties();
         while ((z = zis2.getNextEntry()) != null) {
@@ -612,10 +612,16 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 infos.load(zis2);
                 zis2.closeEntry();
 
-                boolean siteKeyEx = sitesService.getSiteByKey((String) infos.get("sitekey")) != null || "".equals(
-                        infos.get("sitekey"));
-                String serverName = (String) infos.get("siteservername");
-                boolean serverNameEx = (sitesService.getSite(serverName) != null && !Url.isLocalhost(serverName)) || "".equals(serverName);
+                boolean siteKeyEx = false;
+                boolean serverNameEx = false;
+                try {
+                    siteKeyEx = sitesService.getSiteByKey((String) infos.get("sitekey")) != null || "".equals(
+                            infos.get("sitekey"));
+                    String serverName = (String) infos.get("siteservername");
+                    serverNameEx = (sitesService.getSite(serverName) != null && !Url.isLocalhost(serverName)) || "".equals(serverName);
+                } catch (JahiaException e) {
+                    logger.error("Error when getting site",e);
+                }
 
                 if (!siteKeyEx && !serverNameEx) {
                     // site import

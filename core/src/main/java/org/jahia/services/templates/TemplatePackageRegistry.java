@@ -186,13 +186,21 @@ class TemplatePackageRegistry {
         }
     }
 
+    public void afterInitializationForModules() {
+        for (JahiaTemplatesPackage pack : registry.values()) {
+            afterInitializationForModule(pack);
+        }
+    }
+
     public void afterInitializationForModule(JahiaTemplatesPackage pack) {
-        Map<String, JahiaAfterInitializationService> map = pack.getContext().getBeansOfType(JahiaAfterInitializationService.class);
-        for (JahiaAfterInitializationService initializationService : map.values()) {
-            try {
-                initializationService.initAfterAllServicesAreStarted();
-            } catch (JahiaInitializationException e) {
-                logger.error(e.getMessage(), e);
+        if (pack.getContext() != null) {
+            Map<String, JahiaAfterInitializationService> map = pack.getContext().getBeansOfType(JahiaAfterInitializationService.class);
+            for (JahiaAfterInitializationService initializationService : map.values()) {
+                try {
+                    initializationService.initAfterAllServicesAreStarted();
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
         }
     }

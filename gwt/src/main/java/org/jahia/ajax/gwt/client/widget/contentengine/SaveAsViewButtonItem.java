@@ -59,7 +59,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                 final SimpleComboBox<String> dependenciesCombo = new SimpleComboBox<String>();
                 if (JahiaGWTParameters.getSiteNode() != null && JahiaGWTParameters.getSiteNode().getProperties().get("j:dependencies") != null) {
                     dependenciesCombo.setStore(new ListStore<SimpleComboValue<String>>());
-                    dependenciesCombo.setFieldLabel("module");
+                    dependenciesCombo.setFieldLabel(Messages.get("label.module","module"));
                     dependenciesCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
                     dependenciesCombo.add(moduleName);
                     for (String s : (List<String>) JahiaGWTParameters.getSiteNode().getProperties().get("j:dependencies")) {
@@ -69,16 +69,16 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                     f.add(dependenciesCombo);
                 }
                 final TextField<String> templateType = new TextField<String>();
-                templateType.setFieldLabel("template Type");
+                templateType.setFieldLabel(Messages.get("label.templateType","template Type"));
                 templateType.setValue(fileTemplateType);
                 f.add(templateType);
 
                 final TextField<String> viewName = new TextField<String>();
-                viewName.setFieldLabel("View name");
+                viewName.setFieldLabel(Messages.get("label.viewName","View name"));
                 viewName.setValue(fileView);
                 f.add(viewName);
 
-                Button b = new Button("submit");
+                Button b = new Button(Messages.get("label.submit","submit"));
                 f.addButton(b);
                 b.addSelectionListener(new SelectionListener<ButtonEvent>() {
                     @Override
@@ -114,7 +114,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                         popup.hide();
                     }
                 });
-                Button c = new Button("Cancel");
+                Button c = new Button(Messages.get("label.cancel","Cancel"));
                 c.addSelectionListener(new SelectionListener<ButtonEvent>() {
                     @Override
                     public void componentSelected(ButtonEvent buttonEvent) {

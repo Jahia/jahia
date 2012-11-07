@@ -29,7 +29,7 @@ import java.util.Map;
 public class SaveAsViewButtonItem extends SaveButtonItem {
 
     public Button create(final AbstractContentEngine engine) {
-        Button button = new Button(Messages.get("label.saveasnewview","Save as ..."));
+        Button button = new Button(Messages.get("label.saveAsNewView","Save as ..."));
         button.setHeight(BUTTON_HEIGHT);
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {

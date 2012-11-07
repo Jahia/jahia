@@ -395,8 +395,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             File manifestFile = new File(tmplRootFolder + "/META-INF/MANIFEST.MF");
             Manifest manifest = new Manifest();
             if (manifestFile.exists()) {
-                InputStream manifestStream = new BufferedInputStream(new FileInputStream(manifestFile), 1024);
-                manifest = new Manifest(manifestStream);
+                InputStream manifestStream = null;
+                try {
+                    manifestStream = new BufferedInputStream(new FileInputStream(manifestFile), 1024);
+                    manifest = new Manifest(manifestStream);
+                } finally {
+                    IOUtils.closeQuietly(manifestStream);
+                }
             }
             Attributes attributes = manifest.getMainAttributes();
             attributes.put(new Attributes.Name("Manifest-Version"), "1.0");
@@ -412,9 +417,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             attributes.put(new Attributes.Name("package-name"), packageName);
             attributes.put(new Attributes.Name("root-folder"), rootFolder);
 
-            FileOutputStream out = new FileOutputStream(manifestFile);
-            manifest.write(out);
-            out.close();
+            FileOutputStream out = null;
+            try {
+                out = new FileOutputStream(manifestFile);
+                manifest.write(out);
+            } finally {
+                IOUtils.closeQuietly(out);
+            }
 
             templatePackageDeployer.setTimestamp(manifestFile.getPath(), manifestFile.lastModified());
         } catch (IOException e) {

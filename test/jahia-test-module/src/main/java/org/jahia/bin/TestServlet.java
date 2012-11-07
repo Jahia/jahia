@@ -43,6 +43,7 @@ package org.jahia.bin;
 import org.jahia.params.ProcessingContextFactory;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ParamBean;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
@@ -232,7 +233,7 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
     }
     
     private Set<String> getIgnoreTests() {
-        WebApplicationContext webApplicationContext = (WebApplicationContext) servletContext.getAttribute(WebApplicationContext.class.getName() + ".jahiaModules");
+        WebApplicationContext webApplicationContext = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("jahia-test-module-war").getContext();
         Map<String,TestBean> testBeans = webApplicationContext.getBeansOfType(TestBean.class);
 
         // Return the lists of available tests

@@ -40,6 +40,7 @@
 
 package org.jahia.services.templates;
 
+import org.codehaus.plexus.util.FileUtils;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
@@ -50,6 +51,7 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.test.TestHelper;
 import org.junit.*;
 import org.slf4j.Logger;
@@ -57,11 +59,11 @@ import org.slf4j.Logger;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -123,6 +125,28 @@ public class JahiaTemplateManagerServiceTest {
         deployModule(moduleToBeDeployed);
     }
 
+    @Test
+    public void testWarWatcher() throws RepositoryException {
+        SettingsBean settingsBean = SettingsBean.getInstance();
+        File sharedTemplatesFolder = new File(settingsBean.getJahiaSharedTemplatesDiskPath());
+        File deployedTemplatesFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("jahia-test-module-war").getRootFolderWithVersion());
+
+        try {
+            FileUtils.copyFileToDirectory(new File(deployedTemplatesFolder, "resources/dummy-1.0-SNAPSHOT.war"), sharedTemplatesFolder);
+        } catch (IOException e) {
+
+        }
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("dummy1");
+        assertNotNull(pack);
+    }
+
+
     private void deployModule(String moduleToBeDeployed) throws RepositoryException {
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         List<JahiaTemplatesPackage> availableTemplatePackages = templateManagerService.getAvailableTemplatePackages();
@@ -135,14 +159,14 @@ public class JahiaTemplateManagerServiceTest {
             }
         }
         assertNotNull(articlePackage);
-        String modulePath = "/modules/" + articlePackage.getRootFolder();
+        String modulePath = "/modules/" + articlePackage.getRootFolderWithVersion();
         templateManagerService.installModule(articlePackage, SITE_CONTENT_ROOT_NODE, "root");
         JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         JCRSessionWrapper session = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
         JCRSiteNode siteNode = (JCRSiteNode) session.getNode(SITE_CONTENT_ROOT_NODE);
         assertTrue(siteNode.getInstalledModules().contains(moduleToBeDeployed));
         JCRNodeWrapper node = session.getNode(modulePath);
-        assertTrue(compareNodeNamesTreeStopOnError(node, modulePath, SITE_CONTENT_ROOT_NODE, session));
+        assertModuleIsInstalledInSite(node, modulePath, SITE_CONTENT_ROOT_NODE, session);
     }
 
     @Test
@@ -160,25 +184,21 @@ public class JahiaTemplateManagerServiceTest {
 
     }
 
-    private boolean compareNodeNamesTreeStopOnError(JCRNodeWrapper node, String oldPrefix, String newPrefix, JCRSessionWrapper session) {
+    private void assertModuleIsInstalledInSite(JCRNodeWrapper node, String oldPrefix, String newPrefix, JCRSessionWrapper session) {
         if (!excludedNodeName.contains(node.getName())) {
             try {
                 // StudioOnly node are not deployed on sites
-                if(!node.isNodeType("jmix:studioOnly")) {
-                    session.getNode(node.getPath().replaceAll(oldPrefix, newPrefix).replaceAll("forum\\-base", "base/forum-base"));
-                }
-                NodeIterator nodeIterator = node.getNodes();
-                while (nodeIterator.hasNext()) {
-                    if (!compareNodeNamesTreeStopOnError((JCRNodeWrapper) nodeIterator.nextNode(), oldPrefix, newPrefix, session)) {
-                        return false;
+                if(!node.isNodeType("jmix:studioOnly") && !node.isNodeType("jnt:templatesFolder")) {
+                    session.getNode(node.getPath().replaceAll(oldPrefix, newPrefix));
+                    NodeIterator nodeIterator = node.getNodes();
+                    while (nodeIterator.hasNext()) {
+                        assertModuleIsInstalledInSite((JCRNodeWrapper) nodeIterator.nextNode(), oldPrefix, newPrefix, session);
                     }
                 }
             } catch (RepositoryException e) {
-                logger.error("Error while getting node " + node.getPath().replaceAll(oldPrefix, newPrefix));
-                return false;
+                fail("Error while getting node " + node.getPath().replaceAll(oldPrefix, newPrefix));
             }
         }
-        return true;
     }
 
     class CheckPermission implements JCRCallback<Boolean> {

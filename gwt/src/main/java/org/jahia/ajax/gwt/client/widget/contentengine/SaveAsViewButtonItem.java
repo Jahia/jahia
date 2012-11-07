@@ -21,11 +21,10 @@ import java.util.Map;
 
 
 /**
- * Created with IntelliJ IDEA.
  * User: david
  * Date: 11/5/12
  * Time: 9:59 AM
- * To change this template use File | Settings | File Templates.
+ * Defines a button that opens a popup and allows to save a view ( see ModuleDataSource ) with custom parameters
  */
 public class SaveAsViewButtonItem extends SaveButtonItem {
 
@@ -98,7 +97,6 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                         }
                         String newfileTemplateType = !"".equals(templateType.getValue())?templateType.getValue():fileTemplateType;
                         String newfileView = !"".equals(viewName.getValue())?viewName.getValue():fileView;
-
                         newModulePath = newModulePath + "/" +
                                 newModuleVersion + "/" +
                                 fileType + "/" +
@@ -113,7 +111,6 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                         parentNodesType.put(fileType, "jnt:folder");
                         parentNodesType.put(newfileTemplateType, "jnt:folder");
                         prepareAndSave(newModulePath, newViewName, parentNodesType, engine);
-
                         popup.hide();
                     }
                 });
@@ -137,8 +134,6 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
     }
 
     protected void prepareAndSave(String modulePath,String viewName,Map<String, String> parentNodesType, final AbstractContentEngine engine) {
-
-
 
         JahiaContentManagementService.App.getInstance().createNode(modulePath, viewName, "jnt:viewFile", null, null, null, null, parentNodesType, new AsyncCallback<GWTJahiaNode>() {
             @Override

@@ -234,7 +234,7 @@ class DeploymentHelper implements ServletContextAware {
             }
         }
         if (!versionFolder.exists()) {
-            logger.info("Start deploying module package '{}' version {}", packageName, version);
+            logger.info("Start unzipping module war package '{}' version {}", packageName, version);
 
             if (!deployPackageVersion(packageName, templateWar, versionFolder, deployedFiles)) {
                 return null;

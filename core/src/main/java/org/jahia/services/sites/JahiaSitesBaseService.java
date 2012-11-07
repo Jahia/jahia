@@ -568,10 +568,10 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                         }
                         String target = "/sites/" + siteKey1;
                         try {
-                            logger.info("Deploying modules {} to {}", modules, target);
+                            logger.info("Deploying modules to {}", target);
                             templateService.installModules(modules, target, session);
                         } catch (RepositoryException re) {
-                            logger.error("Unable to deploy module " + modules + " to "
+                            logger.error("Unable to deploy modules to "
                                     + target + ". Cause: " + re.getMessage(), re);
                         }
                         //Auto deploy all modules that define this behavior on site creation

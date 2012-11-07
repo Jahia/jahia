@@ -165,10 +165,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         logger.info("Starting JahiaTemplateManagerService ...");
 
         // deploy shared templates if not deployed yet
-        templatePackageDeployer.deploySharedTemplatePackages();
-
-        // scan the directory for templates
-        templatePackageDeployer.registerTemplatePackages();
+        templatePackageDeployer.deployAndRegisterTemplatePackages();
 
         logger.info("JahiaTemplateManagerService started successfully."
                 + " Total number of found modules: "

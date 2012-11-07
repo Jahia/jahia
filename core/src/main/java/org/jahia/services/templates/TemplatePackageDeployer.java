@@ -89,10 +89,12 @@ class TemplatePackageDeployer {
     private Timer watchdog;
 
     private List<JahiaTemplatesPackage> modulesToInitialize = new LinkedList<JahiaTemplatesPackage>();
-    private List<String> unzippedPackages = new LinkedList<String>();
     private Set<JahiaTemplatesPackage> unresolvedDependencies = new HashSet<JahiaTemplatesPackage>();
 
     private TemplatePackageApplicationContextLoader contextLoader;
+
+    private File sharedTemplatesFolder;
+    private File deployedTemplatesFolder;
 
 
     public TemplatesWatcher getTemplatesWatcher() {
@@ -135,8 +137,10 @@ class TemplatePackageDeployer {
      * deployed to the templates folder. Does not register template set package
      * itself.
      */
-    public void deploySharedTemplatePackages() {
+    public void deployAndRegisterTemplatePackages() {
         File sharedTemplates = new File(settingsBean.getJahiaSharedTemplatesDiskPath());
+
+        List<String> unzippedPackages = new LinkedList<String>();
 
         logger.info("Scanning shared modules directory (" + sharedTemplates
                 + ") for new or updated modules set packages ...");
@@ -156,6 +160,36 @@ class TemplatePackageDeployer {
         }
 
         logger.info("...finished scanning shared modules directory.");
+
+        File templatesRoot = new File(settingsBean.getJahiaTemplatesDiskPath());
+        logger.info("Scanning module directory (" + templatesRoot + ") for deployed packages...");
+        if (templatesRoot.isDirectory()) {
+            File[] dirs = templatesRoot.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
+
+            LinkedHashSet<JahiaTemplatesPackage> remaining = new LinkedHashSet<JahiaTemplatesPackage>();
+
+            for (File moduleDir : dirs) {
+                for (File versionDir : moduleDir.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY)) {
+                    JahiaTemplatesPackage packageHandler = getPackage(versionDir);
+                    if (packageHandler != null) {
+                        remaining.add(packageHandler);
+                    }
+                }
+            }
+
+            for (JahiaTemplatesPackage pack : getOrderedPackages(remaining).values()) {
+                if (unzippedPackages.contains(pack.getFilePath())) {
+                    unzippedPackages.remove(pack.getFilePath());
+                    modulesToInitialize.add(pack);
+                }
+
+                templatePackageRegistry.registerPackage(pack, false);
+            }
+        }
+
+        logger.info("...finished scanning module directory. Found "
+                + templatePackageRegistry.getAvailablePackagesCount() + " template packages.");
+
     }
 
     private File[] getPackageFiles(File sharedTemplatesFolder) {
@@ -475,37 +509,6 @@ class TemplatePackageDeployer {
         return moduleType;
     }
 
-    public void registerTemplatePackages() {
-        File templatesRoot = new File(settingsBean.getJahiaTemplatesDiskPath());
-        logger.info("Scanning module directory (" + templatesRoot + ") for deployed packages...");
-        if (templatesRoot.isDirectory()) {
-            File[] dirs = templatesRoot.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
-
-            LinkedHashSet<JahiaTemplatesPackage> remaining = new LinkedHashSet<JahiaTemplatesPackage>();
-
-            for (File moduleDir : dirs) {
-                for (File versionDir : moduleDir.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY)) {
-                    JahiaTemplatesPackage packageHandler = getPackage(versionDir);
-                    if (packageHandler != null) {
-                        remaining.add(packageHandler);
-                    }
-                }
-            }
-
-            for (JahiaTemplatesPackage pack : getOrderedPackages(remaining).values()) {
-                if (unzippedPackages.contains(pack.getFilePath())) {
-                    unzippedPackages.remove(pack.getFilePath());
-                    modulesToInitialize.add(pack);
-                }
-
-                templatePackageRegistry.registerPackage(pack, false);
-            }
-        }
-
-        logger.info("...finished scanning module directory. Found "
-                + templatePackageRegistry.getAvailablePackagesCount() + " template packages.");
-    }
-
     public JahiaTemplatesPackage getPackage(File templateDir) {
         logger.debug("Reading the module in " + templateDir);
         JahiaTemplatesPackage pkg = JahiaTemplatesPackageHandler.build(templateDir);
@@ -549,7 +552,11 @@ class TemplatePackageDeployer {
 
         stopWatchdog();
         watchdog = new Timer(true);
-        templatesWatcher = new TemplatesWatcher(new File(settingsBean.getJahiaSharedTemplatesDiskPath()), new File(settingsBean.getJahiaTemplatesDiskPath()));
+
+        sharedTemplatesFolder = new File(settingsBean.getJahiaSharedTemplatesDiskPath());
+        deployedTemplatesFolder = new File(settingsBean.getJahiaTemplatesDiskPath());
+
+        templatesWatcher = new TemplatesWatcher();
         watchdog.schedule(templatesWatcher, interval, interval);
     }
 
@@ -565,40 +572,115 @@ class TemplatePackageDeployer {
                 File destFile = new File(settingsBean.getJahiaSharedTemplatesDiskPath(), warFile.getName());
                 FileUtils.copyFile(warFile, destFile);
                 File folder = deploymentHelper.deployPackage(destFile);
-                final JahiaTemplatesPackage pack = getPackage(folder);
-                try {
-                    JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
-                        public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            templatePackageRegistry.registerPackage(pack, true);
-
-                            if (pack.getContext() != null && pack.isActiveVersion()) {
-                                contextLoader.reload(pack);
-
-                                initializeModuleContent(pack, session);
-
-                                templatePackageRegistry.afterInitializationForModule(pack);
-                            } else {
-                                initializeModuleContent(pack, session);
-                            }
-                            return null;
-                        }
-                    });
-                } catch (RepositoryException e) {
-                    logger.error("Error when initializing modules", e);
-                }
-
+                Map<String,JahiaTemplatesPackage> res = deployPackageFolders(Collections.singleton(folder));
                 setTimestamp(destFile.getPath(), destFile.lastModified());
-                Collection<File> files = FileUtils.listFiles(folder, null, true);
-                for (File file : files) {
-                    setTimestamp(file.getPath(), file.lastModified());
-                }
 
-                return pack;
+                return res.get(folder.getPath());
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return null;
+    }
+
+    private Map<String,JahiaTemplatesPackage> deployPackageFolders(Collection<File> foldersToCheck) {
+        // list first level folders under /modules
+        Collection<File> files;
+        if (foldersToCheck == null) {
+            // If no folders specified, check for all deployed folder
+            files = FileUtils.listFiles(deployedTemplatesFolder,null, true);
+        } else {
+            files = new ArrayList<File>();
+            for (File folder : foldersToCheck) {
+                files = FileUtils.listFiles(folder, null, true);
+            }
+        }
+
+        List<File> modifiedPackageFolders = new ArrayList<File>();
+
+        final Map<String,Set<String>> deployDetails = new HashMap<String, Set<String>>();
+
+        for (File file : files) {
+            String path = file.getPath();
+            if (!timestamps.containsKey(path) || timestamps.get(path) != file.lastModified()) {
+                timestamps.put(path, file.lastModified());
+                File folder = file;
+                while (folder.getPath().split("/").length > deployedTemplatesFolder.getPath().split("/").length + 2) {
+                    folder = folder.getParentFile();
+                }
+
+                String nameWithVersion = folder.getParentFile().getName() + "/" + folder.getName();
+                Set<String> detailsForModule = deployDetails.get(nameWithVersion);
+                if (detailsForModule == null) {
+                    detailsForModule = new HashSet<String>();
+                    deployDetails.put(nameWithVersion, detailsForModule);
+                }
+
+                String fileName = file.getName().toLowerCase();
+                String filePath = file.getPath().toLowerCase();
+
+                if (fileName.startsWith("import") && (fileName.endsWith(".xml") || fileName.endsWith(".zip"))) {
+                    detailsForModule.add("import");
+                }
+                if (fileName.endsWith("cnd")) {
+                    detailsForModule.add("definitions");
+                }
+                if (filePath.contains("/meta-inf/spring/") && fileName.endsWith(".xml")) {
+                    detailsForModule.add("spring");
+                }
+                if (filePath.contains("/resources/") && fileName.endsWith(".properties")) {
+                    detailsForModule.add("resourceBundles");
+                }
+
+                modifiedPackageFolders.add(folder);
+            }
+        }
+
+        if (!modifiedPackageFolders.isEmpty()) {
+            LinkedHashSet<JahiaTemplatesPackage> modifiedPackages = new LinkedHashSet<JahiaTemplatesPackage>();
+            for (File pkgFolder : modifiedPackageFolders) {
+                JahiaTemplatesPackage packageHandler = getPackage(pkgFolder);
+                if (packageHandler != null) {
+                    modifiedPackages.add(packageHandler);
+                }
+            }
+            modifiedPackages.addAll(unresolvedDependencies);
+            final Map<String, JahiaTemplatesPackage> orderedPackages = getOrderedPackages(modifiedPackages);
+            try {
+                JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
+                    public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        for (final JahiaTemplatesPackage pack : orderedPackages.values()) {
+                            logger.info("Start deploying module package '{}' version {}", pack.getName(), pack.getVersion().toString());
+
+                            Set<String> detailsForModule = deployDetails.get(pack.getRootFolderWithVersion());
+
+                            unresolvedDependencies.remove(pack);
+                            templatePackageRegistry.registerPackage(pack, true);
+
+                            if (pack.getContext() != null && pack.isActiveVersion() && (detailsForModule == null || detailsForModule.contains("spring"))) {
+                                contextLoader.reload(pack);
+
+                                if (detailsForModule == null || detailsForModule.contains("import") || detailsForModule.contains("definitions")) {
+                                    initializeModuleContent(pack, session);
+                                }
+
+                                templatePackageRegistry.afterInitializationForModule(pack);
+                            } else {
+                                if (detailsForModule == null || detailsForModule.contains("import") || detailsForModule.contains("definitions")) {
+                                    initializeModuleContent(pack, session);
+                                }
+                            }
+                            logger.info("Module package '{}' version {} deployed.", pack.getName(), pack.getVersion().toString());
+                        }
+                        return null;
+                    }
+                });
+            } catch (RepositoryException e) {
+                logger.error("Error when initializing modules", e);
+            }
+            return orderedPackages;
+        }
+        return new HashMap<String, JahiaTemplatesPackage>();
     }
 
     public void undeployModule(JahiaTemplatesPackage pack, JCRSessionWrapper session) throws RepositoryException {
@@ -628,13 +710,9 @@ class TemplatePackageDeployer {
 // -------------------------- INNER CLASSES --------------------------
 
     class TemplatesWatcher extends TimerTask {
-        private File sharedTemplatesFolder;
-        private File deployedTemplatesFolder;
 
-        TemplatesWatcher(File sharedTemplatesFolder, File deployedTemplatesFolder) {
+        TemplatesWatcher() {
             super();
-            this.sharedTemplatesFolder = sharedTemplatesFolder;
-            this.deployedTemplatesFolder = deployedTemplatesFolder;
             initTimestamps();
         }
 
@@ -658,7 +736,7 @@ class TemplatePackageDeployer {
 
         @Override
         public synchronized void run() {
-            LinkedHashSet<File> remaining = new LinkedHashSet<File>();
+            LinkedHashSet<File> newUnzippedPackages = new LinkedHashSet<File>();
 
             // list WEB-INF/var/shared_modules
             File[] existingFiles = getPackageFiles(sharedTemplatesFolder);
@@ -668,8 +746,7 @@ class TemplatePackageDeployer {
                     try {
                         File folder = deploymentHelper.deployPackage(file);
                         if (folder != null) {
-                            unzippedPackages.add(folder.getName());
-                            remaining.add(folder);
+                            newUnzippedPackages.add(folder);
                         }
                         timestamps.put(file.getPath(), file.lastModified());
                     } catch (ZipException e) {
@@ -682,58 +759,11 @@ class TemplatePackageDeployer {
             }
 
             if (settingsBean.isDevelopmentMode()) {
-                // list first level folders under /modules
-                Collection<File> files = FileUtils.listFiles(deployedTemplatesFolder, new String[] {".xml",".cnd",".MF",".zip",".drl",".dsl",".properties"}, true);
-                for (File file : files) {
-                    if (!timestamps.containsKey(file.getPath()) || timestamps.get(file.getPath()) != file.lastModified()) {
-                        timestamps.put(file.getPath(), file.lastModified());
-                        while (file.getPath().split("/").length > deployedTemplatesFolder.getPath().split("/").length + 2) {
-                            file = file.getParentFile();
-                        }
-                        remaining.add(file);
-                    }
-                }
-            }
-
-            if (!remaining.isEmpty()) {
-                LinkedHashSet<JahiaTemplatesPackage> remainingPackages = new LinkedHashSet<JahiaTemplatesPackage>();
-                for (File pkgFolder : remaining) {
-                    JahiaTemplatesPackage packageHandler = getPackage(pkgFolder);
-                    if (packageHandler != null) {
-                        remainingPackages.add(packageHandler);
-                    }
-                }
-                remainingPackages.addAll(unresolvedDependencies);
-                final Map<String, JahiaTemplatesPackage> orderedPackages = getOrderedPackages(remainingPackages);
-                try {
-                    JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
-                        public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            // initialize modules (migration case)
-
-                            for (final JahiaTemplatesPackage pack : orderedPackages.values()) {
-                                if (unzippedPackages.contains(pack.getFilePath())) {
-                                    unzippedPackages.remove(pack.getFilePath());
-                                }
-                                unresolvedDependencies.remove(pack);
-                                templatePackageRegistry.registerPackage(pack, true);
-
-                                if (pack.getContext() != null && pack.isActiveVersion()) {
-                                    contextLoader.reload(pack);
-
-                                    initializeModuleContent(pack, session);
-
-                                    templatePackageRegistry.afterInitializationForModule(pack);
-                                } else {
-                                    initializeModuleContent(pack, session);
-                                }
-                            }
-                            return null;
-                        }
-                    });
-                } catch (RepositoryException e) {
-                    logger.error("Error when initializing modules", e);
-                }
+                deployPackageFolders(null);
+            } else {
+                deployPackageFolders(newUnzippedPackages);
             }
         }
     }
+
 }

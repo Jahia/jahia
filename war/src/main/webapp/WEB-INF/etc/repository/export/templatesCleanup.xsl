@@ -29,6 +29,18 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
+
+    <xsl:template match="@jcr:primaryType">
+        <xsl:choose>
+            <xsl:when test=".='jnt:moduleVersion'">
+                <xsl:attribute name="primaryType" namespace="http://www.jcp.org/jcr/1.0">jnt:module</xsl:attribute>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:copy/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
     <xsl:template match="*">
         <xsl:choose>
             <xsl:when test="@jcr:primaryType='jnt:permission'"/>
@@ -37,10 +49,10 @@
             <xsl:when test="@jcr:primaryType='jnt:componentFolder'"/>
             <xsl:when test="@jcr:primaryType='jnt:module'">
                 <xsl:element name="{name()}" namespace="{namespace-uri()}">
-					<xsl:for-each select="*">
-    	                <xsl:apply-templates select="node()|@*"/>
-					</xsl:for-each>
-				</xsl:element>
+                    <xsl:for-each select="*">
+                        <xsl:apply-templates select="node()|@*"/>
+                    </xsl:for-each>
+                </xsl:element>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:element name="{name()}" namespace="{namespace-uri()}">

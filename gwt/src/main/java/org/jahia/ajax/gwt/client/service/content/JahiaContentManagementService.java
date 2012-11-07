@@ -71,6 +71,7 @@ import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.Set;
 
 /**
@@ -106,7 +107,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     GWTJahiaNode createGoogleGadgetPortletInstance(String path, String name, String script) throws GWTJahiaServiceException;
 
-    GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties) throws GWTJahiaServiceException;
+    GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, Map<String, String> parentNodes) throws GWTJahiaServiceException;
 
     GWTJahiaNode createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties) throws GWTJahiaServiceException;
 

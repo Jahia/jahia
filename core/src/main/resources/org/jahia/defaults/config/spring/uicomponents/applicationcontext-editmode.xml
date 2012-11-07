@@ -1079,4 +1079,6 @@
 
     <bean id="Engine.Button.Cancel" class="org.jahia.ajax.gwt.client.widget.contentengine.CancelButtonItem" />
 
+    <bean id="Engine.Button.SaveAsNewView" class="org.jahia.ajax.gwt.client.widget.contentengine.SaveAsViewButtonItem" />
+
 </beans>

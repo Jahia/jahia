@@ -49,13 +49,10 @@ import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -267,7 +264,7 @@ public class AreaModule extends SimpleModule {
     public void createNode(final AsyncCallback<GWTJahiaNode> callback) {
         if (node == null) {
             JahiaContentManagementService.App.getInstance().createNode(path.substring(0, path.lastIndexOf('/')), path.substring(path.lastIndexOf('/') + 1),
-                    areaType, null,null,null,null,new AsyncCallback<GWTJahiaNode>() {
+                    areaType, null,null,null,null, null, new AsyncCallback<GWTJahiaNode>() {
                         public void onSuccess(GWTJahiaNode result) {
                             node = result;
                             callback.onSuccess(result);

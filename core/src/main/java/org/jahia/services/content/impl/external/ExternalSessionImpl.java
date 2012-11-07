@@ -120,8 +120,12 @@ public class ExternalSessionImpl implements Session {
     }
 
     public Item getItem(String path) throws PathNotFoundException, RepositoryException {
+        path = path.length() > 1 && path.endsWith("/")?path.substring(0,path.length()-1):path;
         if (deletedData.containsKey(path)) {
             throw new PathNotFoundException("This node has been deleted");
+        }
+        if (changedData.containsKey(path)) {
+            return  new ExternalNodeImpl(changedData.get(path),this);
         }
         ExternalData object = repository.getDataSource().getItemByPath(path);
         return new ExternalNodeImpl(object, this);

@@ -223,7 +223,7 @@ public class ContentActions {
             String nodeName = Window.prompt(windowHeaer, "untitled");
             if (nodeName != null && nodeName.length() > 0) {
                 linker.loading(Messages.get("statusbar.newfoldering.label"));
-                JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), nodeName, nodeType, null, null, null, null, new BaseAsyncCallback<GWTJahiaNode>() {
+                JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), nodeName, nodeType, null, null, null, null, null, new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode o) {
                         linker.setSelectPathAfterDataUpdate(Arrays.asList(o.getPath()));
                         linker.loaded();

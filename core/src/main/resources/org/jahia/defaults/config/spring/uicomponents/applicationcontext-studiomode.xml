@@ -336,6 +336,7 @@
                         <property name="editionButtons">
                             <list>
                                 <ref bean="Engine.Button.Update"/>
+                                <ref bean="Engine.Button.SaveAsNewView"/>
                             </list>
                         </property>
                         <property name="commonButtons">

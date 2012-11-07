@@ -166,12 +166,23 @@ public class ContentManagerHelper {
     }
 
     public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin,
-                                   List<GWTJahiaNodeProperty> props, JCRSessionWrapper currentUserSession, Locale uiLocale)
+                                   List<GWTJahiaNodeProperty> props, JCRSessionWrapper currentUserSession, Locale uiLocale, Map<String, String> parentNodesType)
             throws GWTJahiaServiceException {
         JCRNodeWrapper parentNode;
         final JCRSessionWrapper jcrSessionWrapper;
         try {
             jcrSessionWrapper = currentUserSession;
+            if (parentNodesType != null ) {
+                String currentPath = "";
+                for (String path : parentNodesType.keySet()) {
+                    try {
+                        jcrSessionWrapper.getNode(currentPath + "/" + path);
+                    } catch (PathNotFoundException e) {
+                        jcrSessionWrapper.getNode(currentPath).addNode(path, parentNodesType.get(path));
+                    }
+                    currentPath = currentPath + "/" + path;
+                }
+            }
             parentNode = jcrSessionWrapper.getNode(parentPath);
             String nodeName = JCRContentUtils.escapeLocalNodeName(name);
 
@@ -222,7 +233,7 @@ public class ContentManagerHelper {
         try {
             jcrSessionWrapper = currentUserSession;
             parentNode = jcrSessionWrapper.getNode(parentPath);
-            newNode = createNode(parentPath, name, parentNode.isNodeType("jnt:folder") ? "jnt:folder" : "jnt:contentList", null, null, currentUserSession, uiLocale);
+            newNode = createNode(parentPath, name, parentNode.isNodeType("jnt:folder") ? "jnt:folder" : "jnt:contentList", null, null, currentUserSession, uiLocale, null);
             currentUserSession.save();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -1409,7 +1420,7 @@ public class ContentManagerHelper {
             for (GWTJahiaNode condition : conditions) {
                 List<GWTJahiaNodeProperty> props = condition.<List<GWTJahiaNodeProperty>>get("gwtproperties");
                 if (condition.get("new-node") != null) {
-                    GWTJahiaNode n = createNode(path, condition.getName(), condition.getNodeTypes().get(0), new ArrayList<String>(), props, session, uiLocale);
+                    GWTJahiaNode n = createNode(path, condition.getName(), condition.getNodeTypes().get(0), new ArrayList<String>(), props, session, uiLocale, null);
                     condition.setUUID(n.getUUID());
                     condition.setPath(n.getPath());
                 } else {

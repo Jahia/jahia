@@ -398,7 +398,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      *          if node does not exist
      */
     public GWTJahiaNode getNode(String path) throws GWTJahiaServiceException {
-        return navigation.getNode(path, retrieveCurrentSession(), getUILocale());
+        return navigation.getNode(path, null, retrieveCurrentSession(), getUILocale());
     }
 
     /**
@@ -556,7 +556,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     private GWTJahiaGetPropertiesResult getProperties(String path, Locale locale) throws GWTJahiaServiceException {
-        final GWTJahiaNode node = navigation.getNode(path, retrieveCurrentSession(), getUILocale());
+        final GWTJahiaNode node = navigation.getNode(path, null, retrieveCurrentSession(), getUILocale());
         final HashMap<String, Object> map = new HashMap<String, Object>();
         try {
             JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
@@ -687,6 +687,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param removedTypes
      * @throws GWTJahiaServiceException
      */
+    @SuppressWarnings("unchecked")
     public void saveNode(GWTJahiaNode node, List<GWTJahiaNode> orderedChildrenNode, GWTJahiaNodeACL acl,
                          Map<String, List<GWTJahiaNodeProperty>> langCodeProperties,
                          List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes) throws GWTJahiaServiceException {
@@ -762,6 +763,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             workflow.updateWorkflowRules(node,
                     (Set<GWTJahiaWorkflowDefinition>) node.get("activeWorkflows"), jcrSessionWrapper);
         }
+        
+        GWTResourceBundle rb = node.get(GWTJahiaNode.RESOURCE_BUNDLE);
+        if (rb != null) {
+            ResourceBundleUtils.store(node, rb, jcrSessionWrapper);
+        }
+        
         try {
             jcrSessionWrapper.save();
         }
@@ -1305,8 +1312,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
 
+    @SuppressWarnings("unchecked")
     private List<String> getOpenPathsForRepository(String repositoryType) throws GWTJahiaServiceException {
-        return (List<String>) getSession().getAttribute(navigation.SAVED_OPEN_PATHS + repositoryType);
+        return (List<String>) getSession().getAttribute(NavigationHelper.SAVED_OPEN_PATHS + repositoryType);
     }
 
     private JahiaUser getUser() {

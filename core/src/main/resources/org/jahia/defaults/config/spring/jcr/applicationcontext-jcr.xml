@@ -598,6 +598,7 @@
                 <entry key="css" value="jnt:cssFile"/>
                 <entry key="js" value="jnt:javascriptFile"/>
                 <entry key="jsp" value="jnt:viewFile"/>
+                <entry key="properties" value="jnt:resourceBundleFile"/><!-- we will do an additoinal check in the ModulesDataSource if the parent is the jnt:resourceBundleFolder -->
             </util:map>
         </property>
     </bean>

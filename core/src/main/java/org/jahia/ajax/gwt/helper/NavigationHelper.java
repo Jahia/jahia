@@ -40,37 +40,20 @@
 
 package org.jahia.ajax.gwt.helper;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.data.ModelData;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
 import org.apache.lucene.queryParser.ParseException;
-import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
-import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRQueryNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.content.nodetypes.ConstraintsHelper;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
-import org.jahia.services.sites.SitesSettings;
-import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.services.visibility.VisibilityConditionRule;
-import org.jahia.services.visibility.VisibilityService;
-import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,9 +61,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
-import javax.jcr.version.Version;
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.util.*;
 
 /**
@@ -94,40 +75,10 @@ public class NavigationHelper {
     public final static String SAVED_OPEN_PATHS = "org.jahia.contentmanager.savedopenpaths.";
     public final static String SELECTED_PATH = "org.jahia.contentmanager.selectedpath.";
 
-    private JCRSessionFactory sessionFactory;
-    private JCRVersionService jcrVersionService;
-    private VisibilityService visibilityService;
-
-    private PublicationHelper publication;
-    private WorkflowHelper workflow;
-    private LanguageHelper languages;
-
     private Set<String> ignoreInUsages = Collections.emptySet();
+    
+    private NodeHelper nodeHelper;
 
-
-    public void setSessionFactory(JCRSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-
-    public void setPublication(PublicationHelper publication) {
-        this.publication = publication;
-    }
-
-    public void setWorkflow(WorkflowHelper workflow) {
-        this.workflow = workflow;
-    }
-
-    public void setLanguages(LanguageHelper languages) {
-        this.languages = languages;
-    }
-
-    public void setJcrVersionService(JCRVersionService jcrVersionService) {
-        this.jcrVersionService = jcrVersionService;
-    }
-
-    public void setVisibilityService(VisibilityService visibilityService) {
-        this.visibilityService = visibilityService;
-    }
 
     /**
      * like ls unix command on the folder
@@ -240,10 +191,12 @@ public class NavigationHelper {
             boolean mimeTypeFilter = matchesMimeTypeFilters(childNode, mimeTypes);
             boolean nameFilter = matchesFilters(childNode.getName(), nameFilters);
             boolean hasNodes = false;
-            try {
-                hasNodes = childNode.getNodes().hasNext();
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
+            if (!mimeTypeFilter) { // we do not need to check for sub-nodes if the mimeTypeFilter is already true
+                try {
+                    hasNodes = childNode.getNodes().hasNext();
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
             // collection condition is available only if the parent node is not a nt:query. Else, the node has to match the node type condition
             if (matchVisibilityFilter && matchNodeType && (mimeTypeFilter || hasNodes) && nameFilter) {
@@ -260,21 +213,7 @@ public class NavigationHelper {
         }
     }
 
-//    public String[] getFiltersToApply(String filter) {
-//        if (filter == null) {
-//            return ArrayUtils.EMPTY_STRING_ARRAY;
-//        }
-//        String[] filtersToApply =
-//                StringUtils.isNotEmpty(filter) ? StringUtils.split(filter, ',') : ArrayUtils.EMPTY_STRING_ARRAY;
-//        for (int i = 0; i < filtersToApply.length; i++) {
-//            filtersToApply[i] = StringUtils.trimToNull(filtersToApply[i]);
-//        }
-//
-//        return filtersToApply;
-//    }
-//
-
-    public boolean matchesFilters(String nodeName, List<String> filters) {
+    protected static boolean matchesFilters(String nodeName, List<String> filters) {
         if (CollectionUtils.isEmpty(filters)) {
             return true;
         }
@@ -288,7 +227,7 @@ public class NavigationHelper {
         return matches;
     }
 
-    public boolean matchesMimeTypeFilters(JCRNodeWrapper node, List<String> filters) {
+    protected static boolean matchesMimeTypeFilters(JCRNodeWrapper node, List<String> filters) {
         // no filters
         if (CollectionUtils.isEmpty(filters)) {
             return true;
@@ -303,7 +242,7 @@ public class NavigationHelper {
         return matchesFilters(node.getFileContent().getContentType(), filters);
     }
 
-    public boolean matchesNodeType(JCRNodeWrapper node, List<String> nodeTypes) {
+    protected static boolean matchesNodeType(JCRNodeWrapper node, List<String> nodeTypes) {
         if (CollectionUtils.isEmpty(nodeTypes)) {
             return true;
         }
@@ -334,7 +273,9 @@ public class NavigationHelper {
                                            JCRSessionWrapper currentUserSession, Locale uiLocale, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex)
             throws GWTJahiaServiceException {
         try {
-            logger.debug("open paths for getRoot : " + openPaths);
+            if (logger.isDebugEnabled()) {
+                logger.debug("open paths for getRoot : " + openPaths);
+            }
 
             final List<GWTJahiaNode> userNodes = retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, site, uiLocale, currentUserSession, checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex);
             List<GWTJahiaNode> allNodes = new ArrayList<GWTJahiaNode>(userNodes);
@@ -474,14 +415,16 @@ public class NavigationHelper {
      * Return a node if existing exception otherwise
      *
      *
-     * @param path               the path to test an dget the node if existing
-     * @param currentUserSession @return the existing node
+     * @param path               the path to test and get the node if it exists
+     * @param fields list of additional fields to be loaded for the node
+     * @param currentUserSession
      * @param uiLocale
+     * @return the existing node
      * @throws GWTJahiaServiceException it node does not exist
      */
-    public GWTJahiaNode getNode(String path, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
+    public GWTJahiaNode getNode(String path, List<String> fields, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         try {
-            return getGWTJahiaNode(currentUserSession.getNode(path));
+            return getGWTJahiaNode(currentUserSession.getNode(path), fields);
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(
                     new StringBuilder(path).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
@@ -540,17 +483,6 @@ public class NavigationHelper {
         }
     }
 
-    public String getDownloadPath(String path, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
-        JCRNodeWrapper node;
-        try {
-            node = currentUserSession.getNode(path);
-        } catch (RepositoryException e) {
-            logger.error(e.toString(), e);
-            throw new GWTJahiaServiceException(e.toString());
-        }
-        return node.getUrl();
-    }
-
     public String getAbsolutePath(String path, JCRSessionWrapper currentUserSession, final HttpServletRequest request, Locale uiLocale)
             throws GWTJahiaServiceException {
         JCRNodeWrapper node;
@@ -603,13 +535,13 @@ public class NavigationHelper {
             if (!reference.getPath().startsWith("/referencesKeeper")) {
                 JCRNodeWrapper refNode = reference.getParent();
                 if (!refNode.getPath().startsWith("/" + Constants.JCR_SYSTEM)) {
-					if (!ignoreInUsages.isEmpty()) {
-						String nt = refNode.getPrimaryNodeTypeName() + ".";
-						if (ignoreInUsages.contains(nt + "*")
-						        || ignoreInUsages.contains(nt + reference.getName())) {
-							continue;
-						}
-					}
+                    if (!ignoreInUsages.isEmpty()) {
+                        String nt = refNode.getPrimaryNodeTypeName() + ".";
+                        if (ignoreInUsages.contains(nt + "*")
+                                || ignoreInUsages.contains(nt + reference.getName())) {
+                            continue;
+                        }
+                    }
                     addUsage(result, refNode, "reference");
                 }
             }
@@ -779,601 +711,15 @@ public class NavigationHelper {
     }
 
     public GWTJahiaNode getGWTJahiaNode(JCRNodeWrapper node) {
-        return getGWTJahiaNode(node, GWTJahiaNode.DEFAULT_FIELDS);
+        return nodeHelper.getGWTJahiaNode(node);
     }
 
     public GWTJahiaNode getGWTJahiaNode(JCRNodeWrapper node, List<String> fields) {
-        if (fields == null) {
-            fields = Collections.emptyList();
-        }
-        List<String> inheritedTypes = new ArrayList<String>();
-        List<String> nodeTypes = null;
-        try {
-            nodeTypes = node.getNodeTypes();
-            for (String s : nodeTypes) {
-                ExtendedNodeType[] inh = NodeTypeRegistry.getInstance().getNodeType(s).getSupertypes();
-                for (ExtendedNodeType extendedNodeType : inh) {
-                    if (!inheritedTypes.contains(extendedNodeType.getName())) {
-                        inheritedTypes.add(extendedNodeType.getName());
-                    }
-                }
-            }
-        } catch (RepositoryException e) {
-            logger.debug("Error when getting nodetypes", e);
-        }
-        GWTJahiaNode n;
-
-        // get uuid
-        String uuid = null;
-        try {
-            uuid = node.getIdentifier();
-        } catch (RepositoryException e) {
-            logger.debug("Unable to get uuid for node " + node.getName(), e);
-        }
-
-        // get description
-        String description = "";
-        try {
-            if (node.hasProperty("jcr:description")) {
-                Value dValue = node.getProperty("jcr:description").getValue();
-                if (dValue != null) {
-                    description = dValue.getString();
-                }
-            }
-        } catch (RepositoryException e) {
-            logger.debug("Unable to get description property for node " + node.getName(), e);
-        }
-
-        n = new GWTJahiaNode();
-        n.setUUID(uuid);
-        n.setName(JCRContentUtils.unescapeLocalNodeName(node.getName()));
-        try {
-            n.setCanMarkForDeletion(node.canMarkForDeletion());
-        } catch (RepositoryException e) {
-            logger.error("Unable to check if the node " + node.getPath()
-                    + " supports marking for deletion. Cause: " + e.getMessage(), e);
-        }
-        try {
-            n.set("everPublished", Boolean.valueOf(node.hasProperty("j:published")));
-        } catch (RepositoryException e) {
-            logger.warn(
-                    "Unable to check existence of the j:published property on node "
-                            + node.getPath() + ". Cause: " + e.getMessage(), e);
-        }
-        try {
-            if (node.getPath().equals("/")) {
-                n.setDisplayName("root");
-                n.setName("root");
-            } else {
-                n.setDisplayName(WordUtils.abbreviate(JCRContentUtils.unescapeLocalNodeName(node.getDisplayableName()),70,90,"..."));
-            }
-        } catch (Exception e) {
-            logger.error("Error when getting name", e);
-        }
-        n.setNormalizedName(removeDiacritics(n.getName()));
-        
-        n.setDescription(description);
-        n.setPath(node.getPath());
-        n.setUrl(node.getUrl());
-        n.setNodeTypes(nodeTypes);
-        n.setInheritedNodeTypes(inheritedTypes);
-        n.setProviderKey(node.getProvider().getKey());
-
-        if (fields.contains(GWTJahiaNode.PERMISSIONS)) {
-            BitSet bs = node.getPermissionsAsBitSet();
-            if (bs != null) {
-                GWTBitSet gwtBs = new GWTBitSet(bs.size());
-
-                for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i+1)) {
-                    gwtBs.set(i);
-                }
-
-                n.setPermissions(gwtBs);
-
-                try {
-                    boolean hasAcl = node.hasNode("j:acl") && node.getNode("j:acl").hasNodes();
-                    n.setHasAcl(hasAcl);
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            }
-        }
-
-        if (fields.contains(GWTJahiaNode.LOCKS_INFO)) {
-            n.setLockable(node.isLockable());
-            try {
-                String username = node.getSession().getUser().getUsername();
-                n.setLocked(JCRContentUtils.isLockedAndCannotBeEdited(node));
-                Map<String, List<String>> infos = node.getLockInfos();
-                Map<String, List<String>> results = new HashMap<String, List<String>>(infos.size());
-                if (!infos.isEmpty()) {
-                    for (Map.Entry<String, List<String>> entry : infos.entrySet()) {
-                        for (String s : entry.getValue()) {
-                            JCRNodeLockType type = JCRContentUtils.getLockType(s);
-                            if (!results.containsKey(entry.getKey())) {
-                                results.put(entry.getKey(), new LinkedList<String>());
-                            }
-                            results.get(entry.getKey())
-                                    .add(JCRNodeLockType.USER.equals(type)
-                                            && StringUtils.isNotBlank(s) ? StringUtils
-                                            .substringBefore(s, ":") : ("label.locked.by." + type
-                                            .toString().toLowerCase()));
-                        }
-                    }
-                }
-                n.setLockInfos(results);
-                if (node.getSession().getLocale() != null) {
-                    String l = node.getSession().getLocale().toString();
-                    n.setCanLock(infos.isEmpty() || !infos.containsKey(l));
-                    n.setCanUnlock(infos.containsKey(null) && infos.get(null).contains(username+":user") && (infos.size() == 1 || infos.containsKey(l) && infos.get(l).contains(username+":user")));
-                } else {
-                    n.setCanLock(infos.isEmpty());
-                    n.setCanUnlock(infos.containsKey(null) && infos.get(null).contains(username+":user"));
-                }
-            } catch (RepositoryException e) {
-                logger.error("Error when getting lock", e);
-            }
-        }
-
-        if (fields.contains(GWTJahiaNode.VISIBILITY_INFO)) {
-            Map<JCRNodeWrapper, Boolean> conditionMatchesDetails = visibilityService.getConditionMatchesDetails(node);
-            Map<GWTJahiaNode,ModelData> visibilityInfo = new HashMap<GWTJahiaNode, ModelData>();
-            for (Map.Entry<JCRNodeWrapper, Boolean> entry : conditionMatchesDetails.entrySet()) {
-                ModelData data = new BaseModelData();
-                data.set("matches",entry.getValue());
-                VisibilityConditionRule visibilityConditionRule = null;
-                try {
-                    visibilityConditionRule = visibilityService.getConditions().get(
-                            entry.getKey().getPrimaryNodeTypeName());
-                    data.set("xtemplate", visibilityConditionRule.getGWTDisplayTemplate(node.getSession().getLocale()));
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                }
-                if(visibilityConditionRule!=null) {
-                    visibilityInfo.put(getGWTJahiaNode(entry.getKey(),visibilityConditionRule.getRequiredFieldNamesForTemplate()), data);
-                }
-            }
-            n.setVisibilityInfo(visibilityInfo);
-            n.setVisible(visibilityService.matchesConditions(node));
-        }
-
-        n.setThumbnailsMap(new HashMap<String, String>());
-        n.setVersioned(node.isVersioned());
-        n.setLanguageCode(node.getLanguage());
-        try {
-            JCRSiteNode site = node.getResolveSite();
-            if (site != null) {
-                n.setSiteUUID(site.getUUID());
-                n.setAclContext("site:" + site.getName());
-                n.setSiteKey(site.getSiteKey());
-            } else {
-                n.setAclContext("sharedOnly");
-            }
-        } catch (RepositoryException e) {
-            logger.error("Error when getting sitekey", e);
-        }
-        if (node.isFile()) {
-            n.setSize(node.getFileContent().getContentLength());
-
-        }
-        n.setFile(node.isFile());
-
-        n.setIsShared(false);
-        try {
-            if (node.isNodeType("mix:shareable") && node.getSharedSet().getSize() > 1) {
-                n.setIsShared(true);
-            }
-        } catch (RepositoryException e) {
-            logger.error("Error when getting shares", e);
-        }
-
-        try {
-            n.setReference(node.isNodeType("jmix:nodeReference"));
-        } catch (RepositoryException e1) {
-            logger.error("Error checking node type", e1);
-        }
-
-        if (fields.contains(GWTJahiaNode.CHILDREN_INFO)) {
-            boolean hasChildren = false;
-            if (node instanceof JCRMountPointNode) {
-                hasChildren = true;
-            } else if (!node.isFile()) {
-                try {
-                    final NodeIterator nodesIterator = node.getNodes();
-                    if (nodesIterator.hasNext()) {
-                        hasChildren = true;
-                    }
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            }
-            n.setHasChildren(hasChildren);
-        }
-
-        if (fields.contains(GWTJahiaNode.TAGS)) {
-            try {
-                if (node.hasProperty("j:tags")) {
-                    StringBuilder b = new StringBuilder();
-                    Value[] values = node.getProperty("j:tags").getValues();
-                    for (Value value : values) {
-                        Node tag = ((JCRValueWrapper) value).getNode();
-                        if (tag != null) {
-                            b.append(", ");
-                            b.append(tag.getName());
-                        }
-                    }
-                    if (b.length() > 0) {
-                        n.setTags(b.substring(2));
-                    }
-                }
-            } catch (RepositoryException e) {
-                logger.error("Error when getting tags", e);
-            }
-        }
-
-        if (node.isPortlet()) {
-            n.setPortlet(true);
-        }
-
-        // icons
-        if (fields.contains(GWTJahiaNode.ICON)) {
-            try {
-                n.setIcon(JCRContentUtils.getIconWithContext(node, true));
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-
-        // thumbnails
-        List<String> names = node.getThumbnails();
-        if (names.contains("thumbnail")) {
-            n.setPreview(node.getThumbnailUrl("thumbnail"));
-            n.setDisplayable(true);
-        }
-        for (String name : names) {
-            n.getThumbnailsMap().put(name, node.getThumbnailUrl(name));
-        }
-
-        //count
-        if (fields.contains(GWTJahiaNode.COUNT)) {
-            try {
-                n.set("count", JCRContentUtils.size(node.getWeakReferences()));
-            } catch (RepositoryException e) {
-                logger.warn("Unable to count node references for node");
-            }
-        }
-
-        boolean supportsPublication = false;
-        try {
-            Value descriptorValue = node.getSession().getProviderSession(node.getProvider()).getRepository().getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED);
-            if (descriptorValue != null) {
-                supportsPublication = descriptorValue.getBoolean();
-            }
-            n.set("supportsPublication", Boolean.valueOf(supportsPublication));
-        } catch (Exception e) {
-            logger.error("Cannot get repository infos",e);
-        }
-        try {
-            if (fields.contains(GWTJahiaNode.PUBLICATION_INFO) && supportsPublication && node.getSession().getLocale() != null) {
-                n.setAggregatedPublicationInfos(publication.getAggregatedPublicationInfosByLanguage(node,
-                        Collections.singleton(node.getSession().getLocale().toString()), node.getSession()));
-            }
-        } catch (UnsupportedRepositoryOperationException e) {
-            // do nothing
-            logger.debug(e.getMessage());
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        } catch (GWTJahiaServiceException e) {
-            logger.error(e.getMessage(), e);
-        }
-
-        if (fields.contains(GWTJahiaNode.PUBLICATION_INFOS) && supportsPublication) {
-            try {
-                JCRSiteNode siteNode = node.getResolveSite();
-                if (siteNode != null) {
-                    JCRSessionWrapper session = node.getSession();
-
-                    n.setAggregatedPublicationInfos(publication.getAggregatedPublicationInfosByLanguage(node,
-                            siteNode.getLanguages(), session));
-                    n.setFullPublicationInfos(publication.getFullPublicationInfosByLanguage(Arrays.asList(node.getIdentifier()), siteNode.getLanguages(),
-                                        session, false));
-                }
-            } catch (UnsupportedRepositoryOperationException e) {
-                // do nothing
-                logger.debug(e.getMessage());
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            } catch (GWTJahiaServiceException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-
-        if (fields.contains(GWTJahiaNode.WORKFLOW_INFO) || fields.contains(GWTJahiaNode.PUBLICATION_INFO)) {
-            try {
-                n.setWorkflowInfo(
-                        workflow.getWorkflowInfo(n.getPath(), node.getSession(), node.getSession().getLocale()));
-            } catch (UnsupportedRepositoryOperationException e) {
-//                 do nothing
-                logger.debug(e.getMessage());
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            } catch (GWTJahiaServiceException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-
-        if (fields.contains(GWTJahiaNode.WORKFLOW_INFOS)) {
-            try {
-                JCRSiteNode node1 = node.getResolveSite();
-                if (node1 != null) {
-                    Map<String, GWTJahiaWorkflowInfo> infoMap = new HashMap<String, GWTJahiaWorkflowInfo>();
-                    JCRSessionWrapper session = node.getSession();
-                    for (String code : node1.getLanguages()) {
-                        Locale locale = LanguageCodeConverters.languageCodeToLocale(code);
-                        JCRSessionWrapper localeSession =
-                                sessionFactory.getCurrentUserSession(session.getWorkspace().getName(), locale);
-                        GWTJahiaWorkflowInfo info = workflow.getWorkflowInfo(n.getPath(), localeSession, locale);
-                        infoMap.put(code, info);
-                    }
-                    n.setWorkflowInfos(infoMap);
-                }
-            } catch (UnsupportedRepositoryOperationException e) {
-//                 do nothing
-                logger.debug(e.getMessage());
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            } catch (GWTJahiaServiceException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-
-        if (fields.contains(GWTJahiaNode.AVAILABLE_WORKKFLOWS)) {
-            try {
-                if (node.hasProperty(GWTJahiaNode.AVAILABLE_WORKKFLOWS)) {
-                    final JCRPropertyWrapper property = node.getProperty(GWTJahiaNode.AVAILABLE_WORKKFLOWS);
-                    Value[] values = null;
-                    if (property.isMultiple()) {
-                        values = property.getValues();
-                    } else {
-                        values = new Value[]{property.getValue()};
-                    }
-                    List<String> vals = new LinkedList<String>();
-                    if (values != null) {
-                        for (Value value : values) {
-                            if (value != null) {
-                                vals.add(value.getString());
-                            }
-                        }
-                    }
-                    n.set(GWTJahiaNode.AVAILABLE_WORKKFLOWS, StringUtils.join(vals, ", "));
-                }
-            } catch (RepositoryException e) {
-                logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node " + node.getPath());
-            }
-        }
-
-        if (fields.contains(GWTJahiaNode.PRIMARY_TYPE_LABEL)) {
-            try {
-                n.set(GWTJahiaNode.PRIMARY_TYPE_LABEL, node.getPrimaryNodeType().getLabel(node.getSession().getLocale()));
-            } catch (RepositoryException e) {
-                logger.error("Cannot get property " + GWTJahiaNode.PRIMARY_TYPE_LABEL + " on node " + node.getPath());
-            }
-        }
-
-        if (n.isFile() && nodeTypes.contains("jmix:image")) {
-            fields = new LinkedList<String>(fields);
-            if (!fields.contains("j:height")) {
-                fields.add("j:height");
-            }
-            if (!fields.contains("j:width")) {
-                fields.add("j:width");
-            }
-        }
-
-        if (fields.contains(GWTJahiaNode.SITE_LANGUAGES)) {
-            try {
-                n.set(GWTJahiaNode.SITE_LANGUAGES, languages.getLanguages(node.getResolveSite(), node.getSession().getUser(), node.getSession().getLocale()));
-                n.set(GWTJahiaNode.SITE_MANDATORY_LANGUAGES, new ArrayList(node.getResolveSite().getMandatoryLanguages()));
-            } catch (RepositoryException e) {
-                logger.error("Cannot get sites languages");
-            }
-        }
-
-        if (fields.contains(GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO)) {
-            // reference types
-            try {
-                String cons = ConstraintsHelper.getConstraints(node);
-                if (cons != null) {
-                    n.set("referenceTypes", ConstraintsHelper.getReferenceTypes(cons, null));
-                }
-            } catch (RepositoryException e) {
-                logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node " + node.getPath());
-            }
-        }
-
-        if (fields.contains(GWTJahiaNode.DEFAULT_LANGUAGE)) {
-            try {
-                if (node.hasProperty(GWTJahiaNode.DEFAULT_LANGUAGE)) {
-                    Locale locale = LanguageCodeConverters.languageCodeToLocale(node.getProperty(GWTJahiaNode.DEFAULT_LANGUAGE).getString());
-                    n.set(GWTJahiaNode.DEFAULT_LANGUAGE, languages.getCurrentLang(locale));
-                }
-            } catch (RepositoryException e) {
-                logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node " + node.getPath());
-            }
-        }
-
-        if (fields.contains(GWTJahiaNode.HOMEPAGE_PATH) && (node instanceof JCRSiteNode)) {
-            try {
-                if (((JCRSiteNode) node).getHome() != null) {
-                 n.set(GWTJahiaNode.HOMEPAGE_PATH, ((JCRSiteNode) node).getHome().getPath());
-                }
-            } catch (RepositoryException e) {
-                logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node " + node.getPath());
-            }
-        }
-
-        JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-        try {
-            if (fields.contains("j:versionInfo") && node.isNodeType("jnt:module")) {
-                JahiaTemplatesPackage packageByFileName = templateManagerService.getTemplatePackageByFileName(node.getName());
-                JCRNodeWrapper versionInfo = node.getNode(packageByFileName.getVersion().toString() + "/j:versionInfo");
-                if (packageByFileName != null) {
-                    n.set(GWTJahiaNode.DISPLAY_NAME, packageByFileName.getName());
-                    n.set("j:versionInfo", packageByFileName.getVersion().toString());
-                    n.set("j:versionNumbers", packageByFileName.getVersion().getOrderedVersionNumbers());
-                    File sources = templateManagerService.getSources(packageByFileName, node.getSession());
-                    if (sources != null) {
-                        n.set("j:sourcesFolder", sources.getPath());
-                    }
-                    if (versionInfo.hasProperty("j:scmUrl")) {
-                        n.set("j:scmUrl", versionInfo.getProperty("j:scmUrl").getString());
-                    }
-                }
-            }
-        } catch (RepositoryException e) {
-            logger.error("Cannot get property module version");
-        }
-
-        // properties
-        for (String field : fields) {
-            if (!GWTJahiaNode.RESERVED_FIELDS.contains(field)) {
-                try {
-                    if (field.startsWith("fields-")) {
-                        String type = field.substring("fields-".length());
-                        PropertyIterator pi = node.getProperties();
-                        while (pi.hasNext()) {
-                            JCRPropertyWrapper property = (JCRPropertyWrapper) pi.next();
-                            if (((ExtendedPropertyDefinition)property.getDefinition()).getItemType().equals(type)) {
-                                setPropertyValue(n, property, node.getSession());
-                            }
-                        }
-
-                    } else if (node.hasProperty(field)) {
-//                        n.set(StringUtils.substringAfter(propName, ":"), node.getProperty(propName).getString());
-                        final JCRPropertyWrapper property = node.getProperty(field);
-                        setPropertyValue(n, property, node.getSession());
-                    } else if (node.isNodeType("jnt:module")) {
-                        JahiaTemplatesPackage templatePackageByFileName = templateManagerService.getTemplatePackageByFileName(node.getName());
-                        if (templatePackageByFileName != null) {
-                            JCRNodeWrapper versionNode = node.getNode(templatePackageByFileName.getVersion().toString());
-                            if (versionNode.hasProperty(field)) {
-                                final JCRPropertyWrapper property = versionNode.getProperty(field);
-                                setPropertyValue(n, property, node.getSession());
-                            }
-                        }
-                    }
-                } catch (RepositoryException e) {
-                    logger.error("Cannot get property " + field + " on node " + node.getPath());
-                }
-            }
-        }
-
-        // versions
-        if (fields.contains(GWTJahiaNode.VERSIONS) && node.isVersioned()) {
-            try {
-                n.setCurrentVersion(node.getBaseVersion().getName());
-                List<GWTJahiaNodeVersion> gwtJahiaNodeVersions = getVersions(node);
-                if (gwtJahiaNodeVersions != null && gwtJahiaNodeVersions.size() > 0) {
-                    n.setVersions(gwtJahiaNodeVersions);
-                }
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-
-        // references
-        try {
-            if (node.isNodeType("jmix:nodeReference") && node.hasProperty("j:node")) {
-                JCRNodeWrapper referencedNode = (JCRNodeWrapper) node.getProperty("j:node").getNode();
-                n.setReferencedNode(n.getUUID().equals(referencedNode.getIdentifier()) ? n : getGWTJahiaNode(referencedNode));
-            }
-        } catch (ItemNotFoundException e) {
-            logger.debug(e.getMessage(), e);
-        }
-        catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-
-        // sort
-        try {
-            if (node.getPrimaryNodeType().hasOrderableChildNodes()) {
-                n.set("hasOrderableChildNodes", Boolean.TRUE);
-                n.setSortField("index");
-            } else {
-                n.setSortField(GWTJahiaNode.NAME);
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-
-        // constraints
-        try {
-            n.setChildConstraints(ConstraintsHelper.getConstraints(node));
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-        
-        // WCAG checks
-        try {
-            n.setWCAGComplianceCheckEnabled(node.getResolveSite().hasProperty(
-                    SitesSettings.WCAG_COMPLIANCE_CHECKING_ENABLED)
-                    && node.getResolveSite()
-                            .getProperty(SitesSettings.WCAG_COMPLIANCE_CHECKING_ENABLED)
-                            .getBoolean());
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-
-        try {
-            // Invalid Languages
-            if(node.hasProperty("j:invalidLanguages")) {
-                final Value[] values = node.getProperty("j:invalidLanguages").getValues();
-                List<String> invalidLanguages = new ArrayList<String>(values.length);
-                for (Value value : values) {
-                    invalidLanguages.add(value.getString());
-                }
-                n.setInvalidLanguages(invalidLanguages);
-            } else {
-                n.setInvalidLanguages(new ArrayList<String>());
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return n;
-    }
-
-    private void setPropertyValue(GWTJahiaNode n, JCRPropertyWrapper property, JCRSessionWrapper session) throws RepositoryException {
-        if (property.isMultiple()) {
-            Value[] values = property.getValues();
-            List<Object> l = new ArrayList<Object>();
-            for (Value value : values) {
-                l.add(getPropertyValue(value, session));
-            }
-            n.set(property.getName(), l);
-        } else {
-            Value value = property.getValue();
-            n.set(property.getName(), getPropertyValue(value, session));
-        }
-    }
-
-    private Object getPropertyValue(Value value, JCRSessionWrapper session)
-            throws RepositoryException {
-        switch (value.getType()) {
-            case PropertyType.DATE:
-                return value.getDate().getTime();
-            case PropertyType.REFERENCE:
-            case PropertyType.WEAKREFERENCE:
-                try {
-                    return session.getNodeByUUID(value.getString()).getPath();
-                } catch (ItemNotFoundException e) {
-                }
-            default:
-                return value.getString();
-        }
+        return nodeHelper.getGWTJahiaNode(node, fields);
     }
 
     /**
-     * Get list of version as gwt bean list
+     * Get list of version as GWT bean list
      *
      * @param node
      * @return
@@ -1389,123 +735,7 @@ public class NavigationHelper {
      * @return
      */
     public List<GWTJahiaNodeVersion> getVersions(JCRNodeWrapper node, boolean publishedOnly) throws RepositoryException {
-        List<GWTJahiaNodeVersion> versions = new ArrayList<GWTJahiaNodeVersion>();
-        List<VersionInfo> versionInfos = jcrVersionService.getVersionInfos(node.getSession(), node);
-        for (VersionInfo versionInfo : versionInfos) {
-            if (!publishedOnly || versionInfo.getLabel().startsWith("live_")) {
-                Version v = versionInfo.getVersion();
-                GWTJahiaNode n = getGWTJahiaNode(node);
-                final String workspace = StringUtils.substringBefore(versionInfo.getLabel(), "_");
-                GWTJahiaNodeVersion jahiaNodeVersion =
-                        new GWTJahiaNodeVersion(v.getIdentifier(), v.getName(), v.getCreated().getTime(), versionInfo.getLabel(),
-                                workspace, n);
-                String url = getNodeURL(null, node, versionInfo.getVersion().getCreated().getTime(), versionInfo.getLabel(),
-                        workspace, node.getSession().getLocale());
-                jahiaNodeVersion.setUrl(url);
-                versions.add(jahiaNodeVersion);
-            }
-        }
-        return versions;
-    }
-
-    public String removeDiacritics(String name) {
-        if (name == null) {
-            return null;
-        }
-        StringBuffer sb = new StringBuffer(name.length());
-        for (int i = 0; i < name.length(); i++) {
-            char c = name.charAt(i);
-            if (c >= '\u0080') {
-                if (c >= '\u00C0' && c < '\u00C6') {
-                    sb.append('A');
-                } else if (c == '\u00C6') {
-                    sb.append("AE");
-                } else if (c == '\u00C7') {
-                    sb.append('C');
-                } else if (c >= '\u00C8' && c < '\u00CC') {
-                    sb.append('E');
-                } else if (c >= '\u00CC' && c < '\u00D0') {
-                    sb.append('I');
-                } else if (c == '\u00D0') {
-                    sb.append('D');
-                } else if (c == '\u00D1') {
-                    sb.append('N');
-                } else if (c >= '\u00D2' && c < '\u00D7') {
-                    sb.append('O');
-                } else if (c == '\u00D7') {
-                    sb.append('x');
-                } else if (c == '\u00D8') {
-                    sb.append('O');
-                } else if (c >= '\u00D9' && c < '\u00DD') {
-                    sb.append('U');
-                } else if (c == '\u00DD') {
-                    sb.append('Y');
-                } else if (c == '\u00DF') {
-                    sb.append("SS");
-                } else if (c >= '\u00E0' && c < '\u00E6') {
-                    sb.append('a');
-                } else if (c == '\u00E6') {
-                    sb.append("ae");
-                } else if (c == '\u00E7') {
-                    sb.append('c');
-                } else if (c >= '\u00E8' && c < '\u00EC') {
-                    sb.append('e');
-                } else if (c >= '\u00EC' && c < '\u00F0') {
-                    sb.append('i');
-                } else if (c == '\u00F0') {
-                    sb.append('d');
-                } else if (c == '\u00F1') {
-                    sb.append('n');
-                } else if (c >= '\u00F2' && c < '\u00FF') {
-                    sb.append('o');
-                } else if (c == '\u00F7') {
-                    sb.append('/');
-                } else if (c == '\u00F8') {
-                    sb.append('o');
-                } else if (c >= '\u00F9' && c < '\u00FF') {
-                    sb.append('u');
-                } else if (c == '\u00FD') {
-                    sb.append('y');
-                } else if (c == '\u00FF') {
-                    sb.append("y");
-                } else if (c == '\u0152') {
-                    sb.append("OE");
-                } else if (c == '\u0153') {
-                    sb.append("oe");
-                } else {
-                    sb.append('_');
-                }
-            } else {
-                sb.append(c);
-            }
-        }
-        return sb.toString();
-    }
-
-//    public Map<String, String> getNodetypeIcons() {
-//        return nodetypeIcons;
-//    }
-
-    /**
-     * Get children node as list: ToDo: remove this method and call directly getNodes() when nested for better performance
-     *
-     * @return
-     */
-    public List<JCRNodeWrapper> getNodesAsList(Node node) {
-        try {
-            if (node == null) {
-                return null;
-            }
-            NodeIterator nodesIterator = node.getNodes();
-            final List<JCRNodeWrapper> list = new ArrayList<JCRNodeWrapper>();
-            while (nodesIterator.hasNext()) {
-                list.add((JCRNodeWrapper) nodesIterator.next());
-            }
-            return list;
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            return null;
-        }
+        return nodeHelper.getVersions(node, publishedOnly);
     }
 
     /**
@@ -1517,37 +747,15 @@ public class NavigationHelper {
      */
     public String getNodeURL(String servlet, JCRNodeWrapper node, Date versionDate, String versionLabel, final String workspace,
                              final Locale locale) throws RepositoryException {
-        String url = Jahia.getContextPath();
-        if (servlet == null) {
-            servlet = "render";
-        }
-        url += "/cms/"+servlet + "/" + workspace + "/" + locale;
-
-
-        Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);
-        RenderContext renderContext = new RenderContext(null, null, node.getSession().getUser());
-        renderContext.setMainResource(resource);
-        renderContext.setServletPath("/cms/"+servlet);
-        Template template = RenderService.getInstance().resolveTemplate(resource, renderContext);
-        if (template != null) {
-            url += node.getPath() + ".html";
-        } else {
-            url += node.getPath() + ".content-template.html";
-        }
-
-
-        if (versionDate != null) {
-            url += "?v=" + (versionDate.getTime()) ;
-            if (versionLabel != null) {
-                url += "&l="+versionLabel;
-            }
-        }
-
-        return url;
+        return NodeHelper.getNodeURL(servlet, node, versionDate, versionLabel, workspace, locale);
     }
 
-	public void setIgnoreInUsages(Set<String> ignoreInUsages) {
+    public void setIgnoreInUsages(Set<String> ignoreInUsages) {
     	this.ignoreInUsages = ignoreInUsages;
+    }
+
+    public void setNodeHelper(NodeHelper nodeHelper) {
+        this.nodeHelper = nodeHelper;
     }
 
 }

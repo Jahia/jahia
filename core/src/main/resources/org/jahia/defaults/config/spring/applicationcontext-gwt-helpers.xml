@@ -36,16 +36,20 @@
     </bean>
 
     <bean name="NavigationHelper" class="org.jahia.ajax.gwt.helper.NavigationHelper">
-        <property name="sessionFactory" ref="jcrSessionFactory"/>
-        <property name="jcrVersionService" ref="jcrVersionService"/>
-        <property name="visibilityService" ref="visibilityService"/>
-        <property name="languages" ref="LanguagesHelper"/>
-        <property name="publication" ref="PublicationHelper"/>
-        <property name="workflow" ref="WorkflowHelper"/>
         <property name="ignoreInUsages">
         	<set>
         		<value>jnt:socialActivity.*</value>
         	</set>
+        </property>
+        <property name="nodeHelper">
+            <bean class="org.jahia.ajax.gwt.helper.NodeHelper">
+                <property name="sessionFactory" ref="jcrSessionFactory"/>
+                <property name="jcrVersionService" ref="jcrVersionService"/>
+                <property name="visibilityService" ref="visibilityService"/>
+                <property name="languages" ref="LanguagesHelper"/>
+                <property name="publication" ref="PublicationHelper"/>
+                <property name="workflow" ref="WorkflowHelper"/>
+            </bean>
         </property>
     </bean>
 

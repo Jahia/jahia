@@ -1,6 +1,7 @@
 package org.jahia.services.content.impl.external.modules;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileType;
@@ -27,6 +28,8 @@ import java.util.*;
  */
 public class ModulesDataSource extends VFSDataSource {
 
+    private static final List<String> JCR_CONTENT_LIST = Arrays.asList(Constants.JCR_CONTENT);
+
     private Map<String, String> fileTypeMapping;
 
     private Map<String, String> folderTypeMapping;
@@ -41,7 +44,7 @@ public class ModulesDataSource extends VFSDataSource {
             if (!path.endsWith("/"+Constants.JCR_CONTENT)) {
                 FileObject fileObject = getFile(path);
                 if (fileObject.getType() == FileType.FILE) {
-                    return Arrays.asList(Constants.JCR_CONTENT);
+                    return JCR_CONTENT_LIST;
                 } else if (fileObject.getType() == FileType.FOLDER) {
                     List<String> children = new ArrayList<String>();
                     for (FileObject object : fileObject.getChildren()) {
@@ -67,6 +70,14 @@ public class ModulesDataSource extends VFSDataSource {
         String type = fileObject.getType().equals(FileType.FOLDER) ? folderTypeMapping
                 .get(fileObject.getName().getBaseName()) : fileTypeMapping.get(fileObject.getName()
                 .getExtension());
+        if (type != null && Constants.JAHIANT_RESOURCEBUNDLE_FILE.equals(type)) {
+            // we've detected a properties file, check if its parent is of type jnt:resourceBundleFolder
+            // -> than this one gets the type jnt:resourceBundleFile; otherwise just jnt:file
+            FileObject parent = fileObject.getParent();
+            type = parent != null
+                    && StringUtils.equals(Constants.JAHIANT_RESOURCEBUNDLE_FOLDER,
+                            getDataType(parent)) ? type : null;
+        }
         return type != null ? type : super.getDataType(fileObject);
     }
 

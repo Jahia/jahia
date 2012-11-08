@@ -252,7 +252,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 if (PermissionsUtils.isPermitted("jcr:modifyProperties",node) && !node.isLocked()) {
                     setButtonsEnabled(true);
                 }
-                unmask();
+                loaded();
             }
 
             public void onApplicationFailure(Throwable throwable) {

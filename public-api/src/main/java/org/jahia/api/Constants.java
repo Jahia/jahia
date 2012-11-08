@@ -203,7 +203,8 @@ public class Constants {
     public static final String JAHIANT_VIEWFILE = "jnt:viewFile";
     public static final String JAHIAMIX_VIEWPROPERTIES = "jmix:viewProperties";
     public static final String JAHIANT_DEFINITIONFILE = "jnt:definitionFile";
-    public static final String JAHIANT_RESOURCEBUNDLEFOLDER = "jnt:resourceBundleFolder";
+    public static final String JAHIANT_RESOURCEBUNDLE_FILE = "jnt:resourceBundleFile";
+    public static final String JAHIANT_RESOURCEBUNDLE_FOLDER = "jnt:resourceBundleFolder";
 
     public static final String LASTPUBLISHED = "j:lastPublished";
     public static final String LASTPUBLISHEDBY = "j:lastPublishedBy";

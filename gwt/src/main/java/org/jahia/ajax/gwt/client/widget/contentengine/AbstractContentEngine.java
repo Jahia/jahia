@@ -77,11 +77,9 @@ import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionIte
 import java.util.*;
 
 /**
- * 
  * User: toto
  * Date: Jan 7, 2010
  * Time: 1:57:03 PM
- * 
  */
 public abstract class AbstractContentEngine extends LayoutContainer implements NodeHolder {
 
@@ -146,6 +144,14 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         initFooter();
 
         container.getPanel().setFooter(true);
+        loading();
+    }
+    
+    public void loaded() {
+        unmask();
+    }
+
+    public void loading() {
         mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
     }
 
@@ -321,60 +327,60 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
         JahiaContentManagementService.App.getInstance().getFieldInitializerValues(nodeTypeName, propertyName, parentPath,
                 dependentValues, new BaseAsyncCallback<GWTJahiaFieldInitializer>() {
-            public void onSuccess(GWTJahiaFieldInitializer result) {
-                initializersValues.put(propertyId, result);
-                if (result.getDisplayValues() != null) {
-                    for (TabItem tab : tabs.getItems()) {
-                        EditEngineTabItem item = tab.getData("item");
-                        if (item instanceof PropertiesTabItem) {
-                            PropertiesEditor pe = ((PropertiesTabItem) item)
-                                    .getPropertiesEditor();
-                            if (pe != null) {
-                                for (Field<?> field : pe.getFields()) {
-                                    if (field instanceof PropertiesEditor.PropertyAdapterField) {
-                                        field = ((PropertiesEditor.PropertyAdapterField) field).getField();
-                                    }
-                                    if (propertyName.equals(field.getName())) {
-                                        if (field instanceof DualListField<?>) {
-                                            DualListField<GWTJahiaValueDisplayBean> dualListField = (DualListField<GWTJahiaValueDisplayBean>) field;
-                                            ListStore<GWTJahiaValueDisplayBean> store = dualListField.getToField().getStore();
-                                            for (GWTJahiaValueDisplayBean toValue : store.getModels()) {
-                                                if (!result.getDisplayValues()
-                                                        .contains(toValue)) {
-                                                    store.remove(toValue);
+                    public void onSuccess(GWTJahiaFieldInitializer result) {
+                        initializersValues.put(propertyId, result);
+                        if (result.getDisplayValues() != null) {
+                            for (TabItem tab : tabs.getItems()) {
+                                EditEngineTabItem item = tab.getData("item");
+                                if (item instanceof PropertiesTabItem) {
+                                    PropertiesEditor pe = ((PropertiesTabItem) item)
+                                            .getPropertiesEditor();
+                                    if (pe != null) {
+                                        for (Field<?> field : pe.getFields()) {
+                                            if (field instanceof PropertiesEditor.PropertyAdapterField) {
+                                                field = ((PropertiesEditor.PropertyAdapterField)field).getField();
+                                            }
+                                            if (propertyName.equals(field.getName())) {
+                                                if (field instanceof DualListField<?>) {
+                                                    DualListField<GWTJahiaValueDisplayBean> dualListField = (DualListField<GWTJahiaValueDisplayBean>) field;
+                                                    ListStore<GWTJahiaValueDisplayBean> store = dualListField.getToField().getStore();
+                                                    for (GWTJahiaValueDisplayBean toValue : store.getModels()) {
+                                                        if (!result.getDisplayValues()
+                                                                .contains(toValue)) {
+                                                            store.remove(toValue);
+                                                        }
+                                                    }
+                                                    dualListField.getToField().getListView().refresh();
+                                                    
+                                                    store = dualListField.getFromField().getStore();
+                                                    store.removeAll();
+                                                    store.add(result.getDisplayValues());
+                                                    dualListField.getFromField().getListView().refresh();
+                                                } else if (field instanceof ComboBox<?>) {
+                                                    ComboBox<GWTJahiaValueDisplayBean> comboBox = (ComboBox<GWTJahiaValueDisplayBean>) field;
+                                                    if (comboBox.getValue() != null
+                                                            && !result
+                                                                    .getDisplayValues()
+                                                                    .contains(
+                                                                            comboBox.getValue())) {
+                                                        comboBox.clear();
+                                                    }
+                                                    ListStore<GWTJahiaValueDisplayBean> store = new ListStore<GWTJahiaValueDisplayBean>();
+                                                    store.add(result.getDisplayValues());
+                                                    comboBox.setStore(store);
                                                 }
                                             }
-                                            dualListField.getToField().getListView().refresh();
-
-                                            store = dualListField.getFromField().getStore();
-                                            store.removeAll();
-                                            store.add(result.getDisplayValues());
-                                            dualListField.getFromField().getListView().refresh();
-                                        } else if (field instanceof ComboBox<?>) {
-                                            ComboBox<GWTJahiaValueDisplayBean> comboBox = (ComboBox<GWTJahiaValueDisplayBean>) field;
-                                            if (comboBox.getValue() != null
-                                                    && !result
-                                                    .getDisplayValues()
-                                                    .contains(
-                                                            comboBox.getValue())) {
-                                                comboBox.clear();
-                                            }
-                                            ListStore<GWTJahiaValueDisplayBean> store = new ListStore<GWTJahiaValueDisplayBean>();
-                                            store.add(result.getDisplayValues());
-                                            comboBox.setStore(store);
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                }
-            }
 
-            public void onApplicationFailure(Throwable caught) {
-                Log.error("Unable to load avalibale mixin", caught);
-            }
-        });
+                    public void onApplicationFailure(Throwable caught) {
+                        Log.error("Unable to load avalibale mixin", caught);
+                    }
+                });
 
     }
 

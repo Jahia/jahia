@@ -186,7 +186,7 @@ public class CreateContentEngine extends AbstractContentEngine {
 
                 fillCurrentTab();
 
-                unmask();
+                loaded();
             }
 
             public void onApplicationFailure(Throwable caught) {

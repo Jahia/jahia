@@ -839,3 +839,5 @@ extends = jnt:content
  + * (nt:nodeType)
 
 [jnt:resourceBundleFolder] > jnt:folder
+
+[jnt:resourceBundleFile] > jnt:file

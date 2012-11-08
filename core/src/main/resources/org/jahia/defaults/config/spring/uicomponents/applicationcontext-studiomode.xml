@@ -275,39 +275,9 @@
         <!-- edit engine -->
         <property name="engineConfigurations">
             <map>
-                <entry key="nt:base">
-                    <bean class="org.jahia.services.uicomponents.bean.editmode.EngineConfiguration">
-                        <property name="engineTabs">
-                            <list>
-                                <ref bean="Engine.Tab.Content"/>
-                                <ref bean="Engine.Tab.ListOrdering"/>
-                                <ref bean="Engine.Tab.Layout"/>
-                                <ref bean="Engine.Tab.Options"/>
-                                <ref bean="Engine.Tab.RequiredPermissions"/>
-                                <ref bean="Engine.Tab.Usages"/>
-                                <ref bean="Engine.Tab.ContributeMode"/>
-                            </list>
-                        </property>
-                        <property name="creationButtons">
-                            <list>
-                                <ref bean="Engine.Button.Create"/>
-                                <ref bean="Engine.Button.CreateAndNew"/>
-                            </list>
-                        </property>
-                        <property name="editionButtons">
-                            <list>
-                                <ref bean="Engine.Button.Update"/>
-                            </list>
-                        </property>
-                        <property name="commonButtons">
-                            <list>
-                                <ref bean="Engine.Button.Cancel"/>
-                            </list>
-                        </property>
-                    </bean>
-                </entry>
+                <entry key="nt:base" value-ref="studioBaseEngineConfiguration"/>
                 <entry key="jnt:viewFile">
-                    <bean class="org.jahia.services.uicomponents.bean.editmode.EngineConfiguration">
+                    <bean parent="studioBaseEngineConfiguration">
                         <property name="engineTabs">
                             <list>
                                 <bean id="Engine.Tab.CodeEditor" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
@@ -336,21 +306,22 @@
                                 </bean>
                             </list>
                         </property>
-                        <property name="creationButtons">
+                    </bean>
+                </entry>
+                <entry key="jnt:resourceBundleFolder">
+                    <bean parent="studioBaseEngineConfiguration">
+                        <property name="engineTabs">
                             <list>
-                                <ref bean="Engine.Button.Create"/>
-                                <ref bean="Engine.Button.CreateAndNew"/>
+                                <ref bean="Engine.Tab.ResourceBundle"/>
                             </list>
                         </property>
-                        <property name="editionButtons">
+                    </bean>
+                </entry>
+                <entry key="jnt:resourceBundleFile">
+                    <bean parent="studioBaseEngineConfiguration">
+                        <property name="engineTabs">
                             <list>
-                                <ref bean="Engine.Button.Update"/>
-                                <ref bean="Engine.Button.SaveAsNewView"/>
-                            </list>
-                        </property>
-                        <property name="commonButtons">
-                            <list>
-                                <ref bean="Engine.Button.Cancel"/>
+                                <ref bean="Engine.Tab.ResourceBundle"/>
                             </list>
                         </property>
                     </bean>
@@ -732,7 +703,7 @@
                                     <ref bean="Toolbar.Item.NewContentFolder"/>
                                     <ref bean="Toolbar.Item.NewContent"/>
                                     <ref bean="Toolbar.Item.NewMenuAvailable"/>
-                                    <ref bean="Toolbar.Item.EditContent"/>
+                                    <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Undelete"/>
                                     <ref bean="Toolbar.Item.DeletePermanently"/>
@@ -749,5 +720,44 @@
 
         </property>
 
+    </bean>
+
+    <bean id="studioBaseEngineConfiguration" class="org.jahia.services.uicomponents.bean.editmode.EngineConfiguration">
+        <property name="engineTabs">
+            <list>
+                <ref bean="Engine.Tab.Content" />
+                <ref bean="Engine.Tab.ListOrdering" />
+                <ref bean="Engine.Tab.Layout" />
+                <ref bean="Engine.Tab.Options" />
+                <ref bean="Engine.Tab.RequiredPermissions" />
+                <ref bean="Engine.Tab.Usages" />
+                <ref bean="Engine.Tab.ContributeMode" />
+            </list>
+        </property>
+        <property name="creationButtons">
+            <list>
+                <ref bean="Engine.Button.Create" />
+                <ref bean="Engine.Button.CreateAndNew" />
+            </list>
+        </property>
+        <property name="editionButtons">
+            <list>
+                <ref bean="Engine.Button.Update" />
+            </list>
+        </property>
+        <property name="commonButtons">
+            <list>
+                <ref bean="Engine.Button.Cancel" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.ResourceBundle" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="resourceBundleEditor" />
+        <property name="titleKey" value="label.engineTab.resourceBundleEditor" />
+        <property name="tabItem">
+            <bean
+                class="org.jahia.ajax.gwt.client.widget.contentengine.ResourceBundleEditorTabItem" />
+        </property>
     </bean>
 </beans>

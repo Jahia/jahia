@@ -48,6 +48,7 @@ import com.extjs.gxt.ui.client.data.SortInfo;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
+import org.jahia.ajax.gwt.client.util.Collator;
 
 import java.io.Serializable;
 import java.util.*;
@@ -59,6 +60,7 @@ import java.util.*;
  * @version 19 juin 2008 - 15:57:38
  */
 public class GWTJahiaNode extends BaseTreeModel implements Serializable, Comparable<GWTJahiaNode>, ListLoadConfig {
+    private static final long serialVersionUID = -1918118279356793994L;
     public static final String TAGS = "tags";
     public static final String SITE_LANGUAGES = "siteLanguages";
     public static final String NAME = "name";
@@ -96,8 +98,9 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String VISIBILITY_INFO = "visibilityInfo";
     public static final String IS_VISIBLE = "isVisible";
     public static final String LOCKS_INFO = "locksInfo";
-    public static final String SUBNODES_CONSTRAINTS_INFO = "locksInfo";
+    public static final String SUBNODES_CONSTRAINTS_INFO = "subnodesConstraintsInfo";
     public static final String SITE_MANDATORY_LANGUAGES = "siteMandatoryLanguages";
+    public static final String RESOURCE_BUNDLE = "resourceBundle";
 
     public static final List<String> DEFAULT_FIELDS =
             Arrays.asList(ICON, TAGS, CHILDREN_INFO, "j:view", "j:width", "j:height", PERMISSIONS, LOCKS_INFO, PUBLICATION_INFO, SUBNODES_CONSTRAINTS_INFO);
@@ -113,15 +116,15 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final List<String> RESERVED_FIELDS =
             Arrays.asList(TAGS, NAME, PATH, ICON, LOCKED, LOCKABLE, PERMISSIONS, DELETEABLE, UUID, DISPLAY_NAME, FILE,
                     SIZE, NODE_TYPES, INHERITED_NODE_TYPES, ACL_CONTEXT, PROVIDER_KEY, PREVIEW, THUMBNAILS, SITE_UUID,
-                    CURRENT_VERSION, VERSIONS, CHILDREN_INFO, COUNT, AVAILABLE_WORKKFLOWS,DEFAULT_LANGUAGE,HOMEPAGE_PATH);
+                    CURRENT_VERSION, VERSIONS, CHILDREN_INFO, COUNT, AVAILABLE_WORKKFLOWS,DEFAULT_LANGUAGE,HOMEPAGE_PATH,
+                    LOCKS_INFO, VISIBILITY_INFO, PUBLICATION_INFO, PUBLICATION_INFOS, WORKFLOW_INFO, PRIMARY_TYPE_LABEL,
+                    SITE_LANGUAGES, SUBNODES_CONSTRAINTS_INFO, "j:versionInfo", RESOURCE_BUNDLE);
 
     private boolean displayable = false;
     private boolean isShared = false;
     private boolean reference = false;
     private String url;
     private boolean hasChildren = false;
-    private boolean portlet = false;
-    private String normalizedName = null;
     private boolean versioned = false;
     private SortInfo sortInfo = new SortInfo(null, Style.SortDir.ASC);
     private List<GWTJahiaNodeVersion> versions;
@@ -397,22 +400,10 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         this.matchFilters = matchFilters;
     }
 
-    public String getNormalizedName() {
-        if (normalizedName == null) {
-            return getName();
-        } else {
-            return normalizedName;
-        }
-    }
-
-    public void setNormalizedName(String normalizedName) {
-        this.normalizedName = normalizedName;
-    }
-
     public int compareTo(GWTJahiaNode o) {
         if (isFile()) {
             if (o.isFile()) {
-                return getNormalizedName().compareToIgnoreCase(o.getNormalizedName());
+                return Collator.getInstance().localeCompare(getName(), o.getName());
             } else {
                 return -1;
             }
@@ -420,7 +411,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
             if (o.isFile()) {
                 return 1;
             } else {
-                return getNormalizedName().compareToIgnoreCase(o.getNormalizedName());
+                return Collator.getInstance().localeCompare(getName(), o.getName());
             }
         }
     }
@@ -448,14 +439,6 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public void setSortInfo(SortInfo sortInfo) {
         this.sortInfo = sortInfo;
-    }
-
-    public boolean isPortlet() {
-        return portlet;
-    }
-
-    public void setPortlet(boolean portlet) {
-        this.portlet = portlet;
     }
 
     public void setVersions(List<GWTJahiaNodeVersion> versions) {

@@ -101,13 +101,13 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                             }
                         }
                         String newfileTemplateType = !"".equals(templateType.getValue()) ? templateType.getValue() : fileTemplateType;
-                        String newfileView = !"".equals(viewName.getValue()) ? viewName.getValue() : fileView;
+                        String newfileView = viewName.isDirty() ? viewName.getValue() != null? "." + viewName.getValue():"" : "." + fileView;
                         newModulePath = newModulePath + "/" +
                                 newModuleVersion + "/" +
                                 fileType + "/" +
                                 newfileTemplateType + "/";
 
-                        String newViewName = fileType.split("_")[1] + "." + newfileView + fileName.substring(fileName.lastIndexOf("."));
+                        String newViewName = fileType.split("_")[1] + newfileView + fileName.substring(fileName.lastIndexOf("."));
                         Map<String, String> parentNodesType = new LinkedHashMap<java.lang.String, java.lang.String>();
 
                         parentNodesType.put(filePath[1], "jnt:folder");

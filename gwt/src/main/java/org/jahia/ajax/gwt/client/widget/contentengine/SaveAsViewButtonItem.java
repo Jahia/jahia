@@ -8,15 +8,14 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -141,13 +140,12 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
 
     protected void prepareAndSave(final String modulePath,String viewName,Map<String, String> parentNodesType, final AbstractContentEngine engine,final GWTJahiaNode newModuleNode) {
 
-        JahiaContentManagementService.App.getInstance().createNode(modulePath, viewName, "jnt:viewFile", null, null, null, null, parentNodesType, new AsyncCallback<GWTJahiaNode>() {
+        JahiaContentManagementService.App.getInstance().createNode(modulePath, viewName, "jnt:viewFile", null, null, null, null, parentNodesType, new BaseAsyncCallback<GWTJahiaNode>() {
             @Override
             public void onFailure(Throwable throwable) {
                 MessageBox.alert("save not work as excpected",throwable.getMessage(),null);
             }
 
-            @Override
             public void onSuccess(GWTJahiaNode gwtJahiaNode) {
                 prepareAndSave(engine,true);
                 if (newModuleNode == null) {

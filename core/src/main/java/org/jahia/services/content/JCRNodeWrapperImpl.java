@@ -55,6 +55,7 @@ import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.util.Text;
+import org.jahia.services.content.impl.external.ExternalNodeImpl;
 import org.jahia.services.visibility.VisibilityService;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
@@ -381,6 +382,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 for (Privilege privilege1 : privilege.getAggregatePrivileges()) {
                     b.set(pr.indexOf(privilege1));
                 }
+            }
+            if(!"/".equals(getProvider().getMountPoint())) {
+                final JCRSiteNode resolveSite = getResolveSite();
+                final BitSet permissionsAsBitSet = resolveSite.getPermissionsAsBitSet();
+                b.or(permissionsAsBitSet);
             }
         } catch (RepositoryException e) {
             logger.error("Cannot check perm ", e);

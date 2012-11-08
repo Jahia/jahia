@@ -112,6 +112,11 @@ public class ExternalSessionImpl implements Session {
         if (!repository.getDataSource().isSupportsUuid()) {
             throw new ItemNotFoundException("This repository does not support UUID as identifiers");
         }
+        for(ExternalData d : changedData.values()) {
+            if (uuid.equals(d.getId())) {
+                return new ExternalNodeImpl(d, this);
+            }
+        }
         Node n = new ExternalNodeImpl(repository.getDataSource().getItemByIdentifier(uuid), this);
         if (deletedData.containsKey(n.getPath())) {
             throw new ItemNotFoundException("This node has been deleted");

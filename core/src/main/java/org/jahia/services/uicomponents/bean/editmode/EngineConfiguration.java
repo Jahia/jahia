@@ -48,6 +48,8 @@ import java.util.List;
 
 public class EngineConfiguration implements Serializable {
 
+    private static final long serialVersionUID = -5991528610464460659L;
+
     private List<EngineTab> engineTabs;
 
     private List<ButtonItem> creationButtons = new ArrayList<ButtonItem>();

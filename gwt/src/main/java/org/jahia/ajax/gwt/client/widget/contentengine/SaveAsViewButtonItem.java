@@ -18,6 +18,8 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem;
 
 import java.util.*;
 
@@ -161,11 +163,15 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                 MessageBox.alert("save not work as excpected", throwable.getMessage(), null);
             }
             public void onSuccess(GWTJahiaNode gwtJahiaNode) {
-                prepareAndSave(engine, true);
+                Linker linker = engine.getLinker();
+                engine.close();
                 if (newModuleNode == null) {
-                    engine.getLinker().refresh(Linker.REFRESH_SOURCES);
+                    linker.refresh(Linker.REFRESH_SOURCES);
                 } else {
-                    // have to handle refresh page
+                    JahiaGWTParameters.setSite(gwtJahiaNode, linker);
+                    linker.refresh(Linker.REFRESH_ALL);
+                    MainModule.staticGoTo(gwtJahiaNode.getPath(), null);
+                    SiteSwitcherActionItem.refreshAllSitesList(linker);
                 }
             }
         });
@@ -175,6 +181,5 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
 
     @Override
     protected void prepareAndSave(final AbstractContentEngine engine, boolean closeAfterSave) {
-        engine.close();
     }
 }

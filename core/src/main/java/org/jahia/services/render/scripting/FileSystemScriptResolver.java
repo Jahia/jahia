@@ -277,7 +277,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
 
 
         for (ExtendedNodeType type : nodeTypeList) {
-            Set<JahiaTemplatesPackage> packages = templateManagerService.getAvailableTemplatePackagesForModule(JCRContentUtils.replaceColon(type.getName()));
+            Set<JahiaTemplatesPackage> packages = templateManagerService.getModulesWithViewsForComponent(JCRContentUtils.replaceColon(type.getName()));
             for (JahiaTemplatesPackage aPackage : packages) {
                 String packageName = aPackage.getRootFolder();
                 if (installedModules == null) {

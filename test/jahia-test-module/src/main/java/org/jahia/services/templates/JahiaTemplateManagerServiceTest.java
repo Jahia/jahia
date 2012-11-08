@@ -40,12 +40,13 @@
 
 package org.jahia.services.templates;
 
-import org.codehaus.plexus.util.FileUtils;
 import org.jahia.api.Constants;
+import org.jahia.bin.Action;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -60,7 +61,6 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -124,28 +124,6 @@ public class JahiaTemplateManagerServiceTest {
         String moduleToBeDeployed = "forum";
         deployModule(moduleToBeDeployed);
     }
-
-    @Test
-    public void testWarWatcher() throws RepositoryException {
-        SettingsBean settingsBean = SettingsBean.getInstance();
-        File sharedTemplatesFolder = new File(settingsBean.getJahiaSharedTemplatesDiskPath());
-        File deployedTemplatesFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("jahia-test-module-war").getRootFolderWithVersion());
-
-        try {
-            FileUtils.copyFileToDirectory(new File(deployedTemplatesFolder, "resources/dummy-1.0-SNAPSHOT.war"), sharedTemplatesFolder);
-        } catch (IOException e) {
-
-        }
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-        JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("dummy1");
-        assertNotNull(pack);
-    }
-
 
     private void deployModule(String moduleToBeDeployed) throws RepositoryException {
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();

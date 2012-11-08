@@ -46,7 +46,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
@@ -103,7 +102,7 @@ class TemplatePackageRegistry {
     private Map<String, JahiaTemplatesPackage> fileNameRegistry = new TreeMap<String, JahiaTemplatesPackage>();
     private List<JahiaTemplatesPackage> templatePackages;
     private Map<String, Map<ModuleVersion,JahiaTemplatesPackage>> packagesWithVersion = new TreeMap<String, Map<ModuleVersion, JahiaTemplatesPackage>>();
-    private Map<String, Set<JahiaTemplatesPackage>> packagesPerModule = new HashMap<String, Set<JahiaTemplatesPackage>>();
+    private Map<String, Set<JahiaTemplatesPackage>> modulesWithViewsPerComponents = new HashMap<String, Set<JahiaTemplatesPackage>>();
     private List<RenderFilter> filters = new LinkedList<RenderFilter>();
     private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
     private Map<String,Action> actions;
@@ -142,8 +141,8 @@ class TemplatePackageRegistry {
         return errorHandlers;
     }
 
-    public Map<String, Set<JahiaTemplatesPackage>> getPackagesPerModule() {
-        return packagesPerModule;
+    public Map<String, Set<JahiaTemplatesPackage>> getModulesWithViewsPerComponents() {
+        return modulesWithViewsPerComponents;
     }
 
     public void setJcrStoreService(JCRStoreService jcrStoreService) {
@@ -413,11 +412,11 @@ class TemplatePackageRegistry {
         for (File file : files) {
             if (file.isDirectory() && file.getName().contains("_")) {
                 String key = file.getName();
-                if (!packagesPerModule.containsKey(key)) {
-                    packagesPerModule.put(key, new TreeSet<JahiaTemplatesPackage>(TEMPLATE_PACKAGE_COMPARATOR));
+                if (!modulesWithViewsPerComponents.containsKey(key)) {
+                    modulesWithViewsPerComponents.put(key, new TreeSet<JahiaTemplatesPackage>(TEMPLATE_PACKAGE_COMPARATOR));
                 }
-                packagesPerModule.get(key).remove(templatePackage);
-                packagesPerModule.get(key).add(templatePackage);
+                modulesWithViewsPerComponents.get(key).remove(templatePackage);
+                modulesWithViewsPerComponents.get(key).add(templatePackage);
             }
         }
         logger.info("Registered '{}' [{}] version {}", new Object[] { templatePackage.getName(),
@@ -509,6 +508,10 @@ class TemplatePackageRegistry {
             NodeTypeRegistry.getInstance().unregisterNodeTypes(templatePackage.getName());
         }
         packagesWithVersion.get(templatePackage.getRootFolder()).remove(templatePackage.getVersion());
+
+        for (Set<JahiaTemplatesPackage> packages : modulesWithViewsPerComponents.values()) {
+            packages.remove(templatePackage);
+        }
     }
 
     public void resetBeanModules() {

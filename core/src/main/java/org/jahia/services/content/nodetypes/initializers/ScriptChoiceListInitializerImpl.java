@@ -87,7 +87,7 @@ public class ScriptChoiceListInitializerImpl implements ChoiceListInitializer {
                 byName = null;
             }
             if (byName != null) {
-                final Set<JahiaTemplatesPackage> forModule = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(
+                final Set<JahiaTemplatesPackage> forModule = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getModulesWithViewsForComponent(
                         JCRContentUtils.replaceColon(epd.getDeclaringNodeType().getName()));
                 final Bindings bindings = byName.getBindings(ScriptContext.ENGINE_SCOPE);
                 bindings.put("values", values);

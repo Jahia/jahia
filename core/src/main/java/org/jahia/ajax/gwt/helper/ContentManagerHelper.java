@@ -1229,7 +1229,7 @@ public class ContentManagerHelper {
 
             scm.update();
 
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().compileAndDeploy(moduleName, sources);
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().compileAndDeploy(moduleName, sources, session);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1277,7 +1277,7 @@ public class ContentManagerHelper {
 
             if (nextVersion != null) {
                 templateManagerService.activateModuleVersion(moduleName, new ModuleVersion(nextVersion), session);
-                templateManagerService.undeployModule(moduleName, previous.getVersion().toString(), session);
+                templateManagerService.undeployModule(previous, session);
             }
 
             JCRNodeWrapper privateFolder = session.getNode(session.getUser().getLocalPath() + "/files/private");

@@ -242,7 +242,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
             setSCMConfigInPom(path, scmType, scmURI);
 
-            JahiaTemplatesPackage pack = compileAndDeploy(moduleName, path);
+            JahiaTemplatesPackage pack = compileAndDeploy(moduleName, path, session);
 
             JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
             node.getNode("j:versionInfo").setProperty("j:sourcesFolder", path.getPath());
@@ -313,7 +313,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
         }
 
-        JahiaTemplatesPackage pack = compileAndDeploy(moduleName, path);
+        JahiaTemplatesPackage pack = compileAndDeploy(moduleName, path, session);
 
         JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
         node.getNode("j:versionInfo").setProperty("j:sourcesFolder", path.getPath());
@@ -360,9 +360,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
-    public JahiaTemplatesPackage compileAndDeploy(final String moduleName, File sources) {
+    public JahiaTemplatesPackage deployModule(File warFile, JCRSessionWrapper session) {
+        return templatePackageDeployer.deployModule(warFile, session);
+    }
+
+    public JahiaTemplatesPackage compileAndDeploy(final String moduleName, File sources, JCRSessionWrapper session) {
         File warFile = compileModule(moduleName, sources);
-        return templatePackageDeployer.deployModule(warFile);
+        return templatePackageDeployer.deployModule(warFile, session);
     }
 
     public File compileModule(final String moduleName, File sources) {
@@ -442,7 +446,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             Element n = (Element) document.getRootElement().elementIterator("artifactId").next();
             String moduleName = n.getText();
 
-            JahiaTemplatesPackage pack = compileAndDeploy(moduleName, sources);
+            JahiaTemplatesPackage pack = compileAndDeploy(moduleName, sources, session);
 
             JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
             node.getNode("j:versionInfo").setProperty("j:sourcesFolder", sources.getPath());
@@ -612,7 +616,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
 
                 if (generatedWar != null) {
-                    JahiaTemplatesPackage pack = compileAndDeploy(module.getRootFolder(), sources);
+                    JahiaTemplatesPackage pack = compileAndDeploy(module.getRootFolder(), sources, session);
 
                     JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
                     node.getNode("j:versionInfo").setProperty("j:sourcesFolder", sources.getPath());
@@ -1395,11 +1399,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * Returns a sorted set of all available template packages having templates for a module.
      *
      * @return a sorted set of all available template packages
-     * @deprecated since Jahia 6.6 use {@link #getAvailableTemplatePackagesForModule(String)} instead
+     * @deprecated since Jahia 6.6 use {@link #getModulesWithViewsForComponent} instead
      */
     @Deprecated
     public Set<JahiaTemplatesPackage> getSortedAvailableTemplatePackagesForModule(String moduleName, final RenderContext context) {
-        return getAvailableTemplatePackagesForModule(moduleName);
+        return getModulesWithViewsForComponent(moduleName);
     }
 
     /**
@@ -1407,8 +1411,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      *
      * @return a set of all available template packages
      */
-    public Set<JahiaTemplatesPackage> getAvailableTemplatePackagesForModule(String moduleName) {
-        Set<JahiaTemplatesPackage> r = templatePackageRegistry.getPackagesPerModule().get(moduleName);
+    public Set<JahiaTemplatesPackage> getModulesWithViewsForComponent(String componentName) {
+        componentName = componentName.replace(":","_");
+        Set<JahiaTemplatesPackage> r = templatePackageRegistry.getModulesWithViewsPerComponents().get(componentName);
         if (r == null) {
             return Collections.emptySet();
         }
@@ -1489,11 +1494,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return module;
     }
 
-    public void undeployModule(String rootFolder, String version, JCRSessionWrapper session) throws RepositoryException {
-        JahiaTemplatesPackage pack = templatePackageRegistry.lookupByFileNameAndVersion(rootFolder, new ModuleVersion(version));
-        if (!pack.isActiveVersion() && !pack.isLastVersion()) {
-            templatePackageDeployer.undeployModule(pack, session, false);
-        }
+    public void undeployModule(JahiaTemplatesPackage pack, JCRSessionWrapper session) throws RepositoryException {
+        templatePackageDeployer.undeployModule(pack, session, false);
+    }
+
+    public void scanSharedModulesFolderNow() {
+        templatePackageDeployer.scanNow();
     }
 
     /**

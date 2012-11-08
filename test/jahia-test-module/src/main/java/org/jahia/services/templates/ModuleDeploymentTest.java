@@ -186,7 +186,7 @@ public class ModuleDeploymentTest {
                 JahiaTemplatesPackage pack = managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-1.0-SNAPSHOT.war"), session);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                 }
                 File spring = new File(settingsBean.getJahiaTemplatesDiskPath(), pack.getRootFolderWithVersion() + "/META-INF/spring/dummy1.xml");
@@ -213,7 +213,7 @@ public class ModuleDeploymentTest {
                 assertNotNull("Spring context is null", pack.getContext());
                 assertTrue("No action defined", !pack.getContext().getBeansOfType(Action.class).isEmpty());
                 assertTrue("Action not registered", managerService.getActions().containsKey("my-post-action"));
-                assertTrue("Action not registered", managerService.getActions().containsKey("my-new-post-action"));
+                assertTrue("New action not registered", managerService.getActions().containsKey("my-new-post-action"));
 
                 try {
                     NodeTypeRegistry.getInstance().getNodeType("jnt:testComponent1");
@@ -236,16 +236,19 @@ public class ModuleDeploymentTest {
                 File deployedTemplatesFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module-war").getRootFolderWithVersion());
                 JahiaTemplatesPackage pack = managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-1.0-SNAPSHOT.war"), session);
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                 }
+
+                TestInitializingBean.resetInstance();
+
                 File spring = new File(settingsBean.getJahiaTemplatesDiskPath(), pack.getRootFolderWithVersion() + "/META-INF/spring/dummy1.xml");
                 try {
                     SAXReader reader = new SAXReader();
                     Document document = reader.read(spring);
 
                     Element newBean = document.getRootElement().addElement("bean");
-                    newBean.addAttribute("class", "org.jahia.services.templates.ModuleDeploymentTest.TestInitializingBean");
+                    newBean.addAttribute("class", "org.jahia.services.templates.TestInitializingBean");
 
                     XMLWriter writer = new XMLWriter(new FileWriter(spring), OutputFormat.createPrettyPrint());
                     writer.write(document);
@@ -261,6 +264,9 @@ public class ModuleDeploymentTest {
                 assertTrue("No action defined", !pack.getContext().getBeansOfType(Action.class).isEmpty());
                 assertTrue("Action not registered", managerService.getActions().containsKey("my-post-action"));
 
+                assertNotNull("Bean not instantiated",TestInitializingBean.getInstance());
+                assertTrue("Bean not initialized",TestInitializingBean.getInstance().isInitialized());
+                assertTrue("Bean not started",TestInitializingBean.getInstance().isStarted());
                 try {
                     NodeTypeRegistry.getInstance().getNodeType("jnt:testComponent1");
                 } catch (NoSuchNodeTypeException e) {
@@ -268,27 +274,13 @@ public class ModuleDeploymentTest {
                 }
                 assertTrue("Module view is not correctly registered", managerService.getModulesWithViewsForComponent("jnt:testComponent1").contains(pack));
 
+                managerService.undeployModule(pack, session);
+
+                assertTrue("Bean stopped",TestInitializingBean.getInstance().isStopped());
                 return null;
             }
         });
     }
 
-
-    public class TestInitializingBean extends ContextLoaderListener implements JahiaAfterInitializationService {
-        public TestInitializingBean() {
-        }
-
-        @Override
-        public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
-        }
-
-        @Override
-        public void contextInitialized(ServletContextEvent event) {
-        }
-
-        @Override
-        public void contextDestroyed(ServletContextEvent event) {
-        }
-    }
 
 }

@@ -8,6 +8,7 @@ import javax.jcr.RepositoryException;
 public class TemplateNodeProcessor implements AttributeProcessor {
     public boolean process(JCRNodeWrapper node, String name, String value) throws RepositoryException {
         if (name.equals("j:templateNode")) {
+            value = value.replaceAll("_x002f_","/");
             String templateName = StringUtils.substringAfterLast(value, "/");
             node.setProperty("j:templateName", templateName);
             return true;

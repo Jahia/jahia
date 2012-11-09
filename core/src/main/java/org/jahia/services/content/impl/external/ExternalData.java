@@ -10,6 +10,7 @@ public class ExternalData {
     private String type;
     private List<String> mixin;
     private Map<String,String[]> properties;
+    private Map<String,Map<String,String[]>> i18nProperties;
     private Map<String,Binary[]> binaryProperties;
 
     public ExternalData(String id, String path, String type, Map<String, String[]> properties) {
@@ -35,6 +36,14 @@ public class ExternalData {
 
     public Map<String,String[]> getProperties() {
         return properties;
+    }
+
+    public Map<String,Map<String,String[]>> getI18nProperties() {
+        return i18nProperties;
+    }
+
+    public void setI18nProperties(Map<String, Map<String, String[]>> i18nProperties) {
+        this.i18nProperties = i18nProperties;
     }
 
     public Map<String, Binary[]> getBinaryProperties() {

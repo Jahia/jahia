@@ -841,3 +841,4 @@ extends = jnt:content
 [jnt:resourceBundleFolder] > jnt:folder
 
 [jnt:resourceBundleFile] > jnt:file
+ - * (string) i18n

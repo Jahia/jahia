@@ -77,16 +77,20 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
         for (Map.Entry<String, String[]> entry : data.getProperties().entrySet()) {
             ExtendedPropertyDefinition definition = getPropertyDefinition(entry.getKey());
             if (definition != null) {
+                int requiredType = definition.getRequiredType();
+                if (requiredType == PropertyType.UNDEFINED) {
+                    requiredType = PropertyType.STRING;
+                }
                 if (definition.isMultiple()) {
                     Value[] values = new Value[entry.getValue().length];
                     for (int i = 0; i < entry.getValue().length; i++) {
-                        values[i] = session.getValueFactory().createValue(entry.getValue()[i], definition.getRequiredType());
+                        values[i] = session.getValueFactory().createValue(entry.getValue()[i], requiredType);
                     }
                     properties.put(entry.getKey(),new ExternalPropertyImpl(new Name(entry.getKey(), NodeTypeRegistry.getInstance().getNamespaces()), this, session, values));
                 } else {
                     properties.put(entry.getKey(),
                             new ExternalPropertyImpl(new Name(entry.getKey(), NodeTypeRegistry.getInstance().getNamespaces()), this, session,
-                                    session.getValueFactory().createValue(entry.getValue()[0], definition.getRequiredType())));
+                                    session.getValueFactory().createValue(entry.getValue()[0], requiredType)));
                 }
             }
         }
@@ -122,7 +126,9 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
                 return propertyDefinitionsAsMap.get(name);
             }
         }
-
+        if (!getExtendedPrimaryNodeType().getUnstructuredPropertyDefinitions().isEmpty()) {
+            return getExtendedPrimaryNodeType().getUnstructuredPropertyDefinitions().values().iterator().next();
+        }
         return null;
     }
 
@@ -277,7 +283,13 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
     }
 
     public NodeIterator getNodes() throws RepositoryException {
-        final List<String> l = session.getRepository().getDataSource().getChildren(getPath());
+        List<String> l = session.getRepository().getDataSource().getChildren(getPath());
+        if (data.getI18nProperties() != null) {
+            l = new ArrayList<String>(l);
+            for (String lang : data.getI18nProperties().keySet()) {
+                l.add("j:translation_"+lang);
+            }
+        }
         return new ExternalNodeIterator(l);
     }
 
@@ -287,6 +299,11 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
         for (String path : l) {
             if (ChildrenCollectorFilter.matches(path,namePattern)) {
                 filteredList.add(path);
+            }
+        }
+        if (data.getI18nProperties() != null) {
+            for (String lang : data.getI18nProperties().keySet()) {
+                filteredList.add("j:translation_"+lang);
             }
         }
         return new ExternalNodeIterator(filteredList);

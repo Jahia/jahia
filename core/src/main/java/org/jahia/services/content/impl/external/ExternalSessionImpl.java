@@ -40,6 +40,7 @@
 
 package org.jahia.services.content.impl.external;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRSessionFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -55,9 +56,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.AccessControlException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -117,6 +116,12 @@ public class ExternalSessionImpl implements Session {
                 return new ExternalNodeImpl(d, this);
             }
         }
+        if (uuid.startsWith("translation:")) {
+            String u = StringUtils.substringAfter(uuid,"translation:");
+            String lang = StringUtils.substringBefore(u,":");
+            u = StringUtils.substringAfter(u,":");
+            return getNodeByUUID(u).getNode("j:translation_"+lang);
+        }
         Node n = new ExternalNodeImpl(repository.getDataSource().getItemByIdentifier(uuid), this);
         if (deletedData.containsKey(n.getPath())) {
             throw new ItemNotFoundException("This node has been deleted");
@@ -131,6 +136,18 @@ public class ExternalSessionImpl implements Session {
         }
         if (changedData.containsKey(path)) {
             return  new ExternalNodeImpl(changedData.get(path),this);
+        }
+        if (StringUtils.substringAfterLast(path,"/").startsWith("j:translation_")) {
+            String nodeName = StringUtils.substringAfterLast(path, "/");
+            String lang = StringUtils.substringAfterLast(nodeName, "_");
+            ExternalData parentObject = repository.getDataSource().getItemByPath(StringUtils.substringBeforeLast(path,"/"));
+            if (parentObject.getI18nProperties() == null || !parentObject.getI18nProperties().containsKey(lang)) {
+                throw new PathNotFoundException(path);
+            }
+            Map<String,String[]> i18nProps = new HashMap<String, String[]>(parentObject.getI18nProperties().get(lang));
+            i18nProps.put("jcr:language", new String[]{lang});
+            ExternalData i18n = new ExternalData("translation:" + lang + ":"+ parentObject.getId(),path,"jnt:translation",i18nProps);
+            return new ExternalNodeImpl(i18n, this);
         }
         ExternalData object = repository.getDataSource().getItemByPath(path);
         return new ExternalNodeImpl(object, this);

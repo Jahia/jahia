@@ -14,6 +14,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.Binary;
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -82,8 +83,18 @@ public class ModulesDataSource extends VFSDataSource {
     }
 
     @Override
+    public ExternalData getItemByIdentifier(String identifier) throws ItemNotFoundException {
+        ExternalData data = super.getItemByIdentifier(identifier);
+        return enhanceData(data.getPath(), data);
+    }
+
+    @Override
     public ExternalData getItemByPath(String path) throws PathNotFoundException {
         ExternalData data = super.getItemByPath(path);
+        return enhanceData(path, data);
+    }
+
+    private ExternalData enhanceData(String path, ExternalData data) {
         if (path.endsWith(".jsp")) {
             // set source code
             InputStream is = null;
@@ -129,6 +140,48 @@ public class ModulesDataSource extends VFSDataSource {
                 logger.error("Cannot read property file",e);
             } finally {
                 IOUtils.closeQuietly(is);
+            }
+        } else if (path.endsWith(".properties")) {
+            try {
+                Properties properties = new Properties();
+                FileObject file = getFile(path.substring(0, path.lastIndexOf(".")) + ".properties");
+
+                for (FileObject subfile : file.getParent().getChildren()) {
+                    String baseName = file.getName().getBaseName();
+                    baseName = StringUtils.substringBeforeLast(baseName, ".");
+
+                    String filename = subfile.getName().getBaseName();
+                    if (filename.startsWith(baseName + "_") && filename.endsWith(".properties")) {
+                        filename = StringUtils.substringBeforeLast(filename,".");
+                        String langCode = StringUtils.substringAfterLast(filename,"_");
+
+                        InputStream is = subfile.getContent().getInputStream();
+                        Properties i18nproperties = new Properties();
+                        i18nproperties.load(is);
+                        Map<String,String[]> dataProperties = new HashMap<String, String[]>();
+                        for (Iterator<?> iterator = i18nproperties.keySet().iterator(); iterator.hasNext();) {
+                            String k = (String) iterator.next();
+                            String v = i18nproperties.getProperty(k);
+                            dataProperties.put(k,new String[] { v });
+                        }
+                        if (data.getI18nProperties() == null) {
+                            data.setI18nProperties(new HashMap<String, Map<String, String[]>>());
+                        }
+                        data.getI18nProperties().put(langCode, dataProperties);
+                    }
+                }
+
+                InputStream is = file.getContent().getInputStream();
+                properties.load(is);
+                Map<String,String[]> dataProperties = new HashMap<String, String[]>();
+                for (Iterator<?> iterator = properties.keySet().iterator(); iterator.hasNext();) {
+                    String k = (String) iterator.next();
+                    String v = properties.getProperty(k);
+                    dataProperties.put(k,new String[] { v });
+                }
+                data.getProperties().putAll(dataProperties);
+            } catch (IOException e) {
+                logger.error("Cannot read property file",e);
             }
         }
         return data;

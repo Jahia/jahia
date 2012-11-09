@@ -45,9 +45,13 @@
         <artifactId>jahia-test-parent</artifactId>
         <groupId>org.jahia.test</groupId>
 <<<<<<< .working
+<<<<<<< .working
         <version>6.7.0.0-SNAPSHOT</version>
 =======
         <version>6.6.1.1</version>
+=======
+        <version>6.6.1.2-SNAPSHOT</version>
+>>>>>>> .merge-right.r43627
 >>>>>>> .merge-right.r43624
     </parent>
     <artifactId>jahia-test-module-war</artifactId>
@@ -92,9 +96,13 @@
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.7.0.0-SNAPSHOT</version>
 =======
             <version>6.6.1.1</version>
+=======
+            <version>6.6.1.2-SNAPSHOT</version>
+>>>>>>> .merge-right.r43627
 >>>>>>> .merge-right.r43624
             <scope>provided</scope>
             <exclusions>
@@ -115,9 +123,13 @@
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-gwt</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.7.0.0-SNAPSHOT</version>
 =======
             <version>6.6.1.1</version>
+=======
+            <version>6.6.1.2-SNAPSHOT</version>
+>>>>>>> .merge-right.r43627
 >>>>>>> .merge-right.r43624
             <scope>provided</scope>
         </dependency>
@@ -125,9 +137,13 @@
             <groupId>org.jahia.test</groupId>
             <artifactId>jahia-test-module</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.7.0.0-SNAPSHOT</version>
 =======
             <version>6.6.1.1</version>
+=======
+            <version>6.6.1.2-SNAPSHOT</version>
+>>>>>>> .merge-right.r43627
 >>>>>>> .merge-right.r43624
         </dependency>
     	<dependency>
@@ -360,9 +376,9 @@
 =======
 
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_1/jahia-test-parent/jahia-test-module-war</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_1/jahia-test-parent/jahia-test-module-war</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_1/jahia-test-parent/jahia-test-module-war</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH/jahia-test-parent/jahia-test-module-war</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH/jahia-test-parent/jahia-test-module-war</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH/jahia-test-parent/jahia-test-module-war</url>
   </scm>
 >>>>>>> .merge-right.r43624
 </project>

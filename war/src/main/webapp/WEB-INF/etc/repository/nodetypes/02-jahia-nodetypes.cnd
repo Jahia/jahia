@@ -834,6 +834,7 @@ extends = jnt:content
 
 [jnt:viewFile] > jnt:file, jmix:viewProperties
  - sourceCode (string) itemtype = codeEditor
+ - codeMirrorTemplate (string) multiple
 
 [jnt:definitionFile] > jnt:file
  + * (nt:nodeType)

@@ -260,7 +260,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                         // skip the node
                     }
                 } else {
-                    if (((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) && !externalSort && !infos.getMainNodeUuid().equals(node.getNodeId().toString())) {
+                    if (((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) && !externalSort && !infos.getMainNodeUuid().equals(node.getNodeId().toString()) && rows.containsKey(infos.getMainNodeUuid())) {
                         // we've got the translation node -> adjusting the position of the original node in the result list  
                         rows.put(infos.getMainNodeUuid(), rows.remove(infos.getMainNodeUuid()));
                     }

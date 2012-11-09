@@ -1,16 +1,21 @@
 package org.jahia.services.content.impl.external.modules;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileType;
 import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.content.impl.external.ExternalData;
 import org.jahia.services.content.impl.external.vfs.VFSDataSource;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.settings.SettingsBean;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.Binary;
@@ -19,6 +24,8 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -27,7 +34,7 @@ import java.util.*;
  * @author david
  * @since 6.7
  */
-public class ModulesDataSource extends VFSDataSource {
+public class ModulesDataSource extends VFSDataSource implements JahiaAfterInitializationService {
 
     private static final List<String> JCR_CONTENT_LIST = Arrays.asList(Constants.JCR_CONTENT);
 
@@ -38,6 +45,7 @@ public class ModulesDataSource extends VFSDataSource {
     private List<String> supportedNodeTypes;
 
     private JahiaTemplateManagerService templateManagerService;
+    private Map<String,List<String>> codeMirrorTemplates;
 
     @Override
     public List<String> getChildren(String path) {
@@ -109,6 +117,7 @@ public class ModulesDataSource extends VFSDataSource {
                 }
                 String[] propertyValue = {writer.toString()};
                 data.getProperties().put("sourceCode", propertyValue);
+                data.getProperties().put("codeMirrorTemplate",codeMirrorTemplates.get(".jsp").toArray(new String[codeMirrorTemplates.get(".jsp").size()]));
             } catch (Exception e) {
                 logger.error("Failed to read source code", e);
             } finally {
@@ -141,6 +150,15 @@ public class ModulesDataSource extends VFSDataSource {
             } finally {
                 IOUtils.closeQuietly(is);
             }
+            // Set source node type as a mixin
+            try {
+                FileObject fileObject = getFile(path);
+                String baseName = fileObject.getParent().getParent().getName().getBaseName();
+                data.setMixin(Arrays.asList(baseName.replaceAll("_",":")));
+            } catch (FileSystemException e) {
+                logger.error(e.getMessage(), e);
+            }
+
         } else if (path.endsWith(".properties")) {
             try {
                 Properties properties = new Properties();
@@ -297,5 +315,22 @@ public class ModulesDataSource extends VFSDataSource {
 
     public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
         this.templateManagerService = templateManagerService;
+    }
+
+    @Override
+    public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
+        try {
+            codeMirrorTemplates = new LinkedHashMap<String, List<String>>();
+            File directory = new File(SettingsBean.getInstance().getPathResolver().resolvePath(
+                    "/WEB-INF/etc/config/codeTemplates"));
+            Iterator<File> fileIterator = FileUtils.iterateFiles(directory, new String[]{"templates"},
+                    false);
+            while (fileIterator.hasNext()) {
+                File file = fileIterator.next();
+                codeMirrorTemplates.put("."+StringUtils.substringBeforeLast(file.getName(),"."),FileUtils.readLines(file,"UTF-8"));
+            }
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 }

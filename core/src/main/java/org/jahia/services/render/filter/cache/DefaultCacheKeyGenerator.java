@@ -64,6 +64,7 @@ import org.springframework.beans.factory.InitializingBean;
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import javax.jcr.security.AccessControlManager;
 import javax.servlet.http.HttpServletRequest;
 import java.text.FieldPosition;
 import java.text.MessageFormat;
@@ -373,11 +374,18 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         Resource mainResource = renderContext.getMainResource();
         Set<String> roles;
         if (mainResource != null) {
-            roles = ((JahiaAccessManager) ((JCRNodeWrapper) mainResource.getNode()).getAccessControlManager()).getRoles(
-                    path);
+            AccessControlManager accessControlManager = ((JCRNodeWrapper) mainResource.getNode()).getAccessControlManager();
+            if(accessControlManager instanceof JahiaAccessManager)
+                roles = ((JahiaAccessManager) accessControlManager).getRoles(path);
+            else
+                roles = Collections.emptySet();
         } else {
             JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path);
-            roles = ((JahiaAccessManager) ((JCRNodeWrapper) node).getAccessControlManager()).getRoles(path);
+            AccessControlManager accessControlManager = ((JCRNodeWrapper) node).getAccessControlManager();
+            if(accessControlManager instanceof JahiaAccessManager)
+                roles = ((JahiaAccessManager) accessControlManager).getRoles(path);
+            else
+                roles = Collections.emptySet();
         }
 
         b = new StringBuilder();

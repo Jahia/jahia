@@ -93,4 +93,15 @@ public class CodeMirrorField extends TextArea {
         var myCodeMirror = this.@org.jahia.ajax.gwt.client.widget.form.CodeMirrorField::codeMirror;
         return myCodeMirror.setSize(width, height);
     }-*/;
+
+    public void insertProperty(String value) {
+        if(codeMirror!=null && !"".equals(value)) {
+            insertPropertyAtCursor(value);
+        }
+    }
+
+    private native void insertPropertyAtCursor(String value)/*-{
+        var myCodeMirror = this.@org.jahia.ajax.gwt.client.widget.form.CodeMirrorField::codeMirror;
+        return myCodeMirror.replaceSelection(value);
+    }-*/;
 }

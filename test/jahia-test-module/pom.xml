@@ -44,7 +44,11 @@
     <parent>
         <artifactId>jahia-test-parent</artifactId>
         <groupId>org.jahia.test</groupId>
+<<<<<<< .working
         <version>6.7.0.0-SNAPSHOT</version>
+=======
+        <version>6.6.1.1</version>
+>>>>>>> .merge-right.r43624
     </parent>
     <artifactId>jahia-test-module</artifactId>
     <name>Jahia Test Module Package</name>
@@ -87,7 +91,11 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
+<<<<<<< .working
             <version>6.7.0.0-SNAPSHOT</version>
+=======
+            <version>6.6.1.1</version>
+>>>>>>> .merge-right.r43624
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -99,7 +107,11 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-gwt</artifactId>
+<<<<<<< .working
             <version>6.7.0.0-SNAPSHOT</version>
+=======
+            <version>6.6.1.1</version>
+>>>>>>> .merge-right.r43624
             <scope>provided</scope>
         </dependency>
     	<dependency>
@@ -273,4 +285,13 @@
             </plugin>
         </plugins>
     </build>
+<<<<<<< .working
+=======
+
+  <scm>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_1/jahia-test-parent/jahia-test-module</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_1/jahia-test-parent/jahia-test-module</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_1/jahia-test-parent/jahia-test-module</url>
+  </scm>
+>>>>>>> .merge-right.r43624
 </project>

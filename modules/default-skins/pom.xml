@@ -1,3 +1,4 @@
+<<<<<<< .working
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
     This file is part of Jahia, next-generation open source CMS:
@@ -142,3 +143,149 @@
         </profile>
     </profiles>
 </project>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    This file is part of Jahia, next-generation open source CMS:
+    Jahia's next-generation, open source CMS stems from a widely acknowledged vision
+    of enterprise application convergence - web, search, document, social and portal -
+    unified by the simplicity of web content management.
+ 
+    For more information, please visit http://www.jahia.com.
+ 
+    Copyright (C) 2002-2012 Jahia Solutions Group SA. All rights reserved.
+ 
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+ 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+ 
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ 
+    As a special exception to the terms and conditions of version 2.0 of
+    the GPL (or any later version), you may redistribute this Program in connection
+    with Free/Libre and Open Source Software ("FLOSS") applications as described
+    in Jahia's FLOSS exception. You should have received a copy of the text
+    describing the FLOSS exception, and it is also available here:
+    http://www.jahia.com/license
+ 
+    Commercial and Supported Versions of the program (dual licensing):
+    alternatively, commercial and supported versions of the program may be used
+    in accordance with the terms and conditions contained in a separate
+    written agreement between you and Jahia Solutions Group SA.
+ 
+    If you are unsure which license is appropriate for your use,
+    please contact the sales department at sales@jahia.com.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>jahia-modules</artifactId>
+        <groupId>org.jahia.modules</groupId>
+        <version>6.6.1.1</version>
+    </parent>
+    <groupId>org.jahia.modules</groupId>
+    <artifactId>default-skins</artifactId>
+    <name>Jahia Default Skins</name>
+    <packaging>war</packaging>
+    <description>This module provides default skins.</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>${project.build.directory}</directory>
+                            <includes>
+                                <include>site/**</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+	                <archive>
+	                    <manifestEntries>
+	                    	<Implementation-Title>${project.name}</Implementation-Title>
+	                    	<Implementation-Version>${project.version}</Implementation-Version>
+	                    	<Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
+	                    	<Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
+	                    	<Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
+	                    	<Specification-Title>${project.name}</Specification-Title>
+	                    	<Specification-Version>${project.version}</Specification-Version>
+	                    	<Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
+	                        <package-name>${project.name}</package-name>
+                            <depends>skins</depends>
+                            <root-folder>${project.artifactId}</root-folder>
+                            <module-type>module</module-type>
+	                    </manifestEntries>
+	                </archive>
+	                <archiveClasses>true</archiveClasses>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>${project.info.reports.plugin.version}</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>project-team</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+    <profiles>
+        <profile>
+            <id>maven-3</id>
+            <activation>
+                <file>
+                    <!--  This employs that the basedir expression is only recognized by Maven 3.x (see MNG-2363) -->
+                    <exists>${basedir}</exists>
+                </file>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-site-plugin</artifactId>
+                            <version>${maven3.site.plugin.version}</version>
+                            <configuration>
+                                <relativizeDecorationLinks>true</relativizeDecorationLinks>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-descriptor</id>
+                                <goals>
+                                    <goal>attach-descriptor</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
+>>>>>>> .merge-right.r43624

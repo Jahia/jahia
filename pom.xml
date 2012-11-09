@@ -5,7 +5,11 @@
     <artifactId>jahia-root</artifactId>
     <name>Jahia Project Root</name>
     <groupId>org.jahia.server</groupId>
+<<<<<<< .working
     <version>6.7.0.0-SNAPSHOT</version>
+=======
+    <version>6.6.1.1</version>
+>>>>>>> .merge-right.r43624
     <packaging>pom</packaging>
     <inceptionYear>2004</inceptionYear>
     <!--
@@ -77,9 +81,15 @@
     </properties>
 
     <scm>
+<<<<<<< .working
         <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk</connection>
         <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk</developerConnection>
         <url>https://devtools.jahia.com/svn/jahia/trunk</url>
+=======
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_1</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_1</developerConnection>
+        <url>https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_1</url>
+>>>>>>> .merge-right.r43624
     </scm>
     <developers>
         <developer>

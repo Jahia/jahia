@@ -42,15 +42,7 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
-<<<<<<< .working
-<<<<<<< .working
         <version>6.7.0.0-SNAPSHOT</version>
-=======
-        <version>6.6.1.1</version>
-=======
-        <version>6.6.1.2-SNAPSHOT</version>
->>>>>>> .merge-right.r43627
->>>>>>> .merge-right.r43624
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-taglib</artifactId>
@@ -62,15 +54,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-<<<<<<< .working
-<<<<<<< .working
             <version>6.7.0.0-SNAPSHOT</version>
-=======
-            <version>6.6.1.1</version>
-=======
-            <version>6.6.1.2-SNAPSHOT</version>
->>>>>>> .merge-right.r43627
->>>>>>> .merge-right.r43624
             <scope>provided</scope>
         </dependency>
         <dependency>

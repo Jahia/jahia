@@ -80,10 +80,14 @@ import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.MessageBox.MessageBoxType;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.TabPanel;
+import com.extjs.gxt.ui.client.widget.TabPanel.TabPosition;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
@@ -91,6 +95,7 @@ import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
@@ -99,6 +104,7 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 
 /**
  * Widget for editing resource bundles.
@@ -149,6 +155,8 @@ public class ResourceBundleEditor extends LayoutContainer {
     private String name;
 
     protected TextField<String> searchField;
+
+    private TabPanel tabPanel;
 
     protected Map<String, TextArea> valuesPerLanguage = new HashMap<String, TextArea>();
 
@@ -347,6 +355,97 @@ public class ResourceBundleEditor extends LayoutContainer {
         return panel;
     }
 
+    private TabItem createNewLanguageTab() {
+        // new language tab
+        TabItem newLangTab = new TabItem(Messages.get("label.new", "New") + "...");
+        newLangTab.setLayout(new CenterLayout());
+        newLangTab.setIcon(ToolbarIconProvider.getInstance().getIcon("newAction"));
+
+        FormPanel formPanel = new FormPanel();
+        formPanel.setHeight(150);
+        formPanel.setWidth(400);
+        formPanel.setFrame(true);
+        formPanel.setBorders(true);
+        formPanel.setButtonAlign(HorizontalAlignment.CENTER);
+        formPanel.setHeading("!!!Add new language to the resource bundle:");
+        final TextField<String> langField = new TextField<String>();
+        langField.setName("newLanguage");
+        langField.setFieldLabel(Messages.get("label.language", "Language"));
+        formPanel.add(langField);
+
+        Button btn = new Button(Messages.get("label.add", "Add"),
+                new SelectionListener<ButtonEvent>() {
+                    public void componentSelected(ButtonEvent event) {
+                        String newLang = langField.getValue();
+                        if (languages.contains(newLang)) {
+                            return;
+                        }
+                        languages.add(newLang);
+                        for (GWTResourceBundleEntry e : bundleView.getStore().getModels()) {
+                            e.setValue(newLang, null);
+                        }
+                        populateForm();
+                        tabPanel.setSelection(tabPanel.getItem(0));
+                    }
+                });
+
+        formPanel.addButton(btn);
+
+        newLangTab.add(formPanel);
+
+        return newLangTab;
+    }
+
+    private TabItem createPropertiesTab() {
+        TabItem tab = new TabItem(Messages.get("label.properties", "Properties"));
+        tab.setLayout(new BorderLayout());
+
+        ContentPanel cpLeft = new ContentPanel();
+        cpLeft.setScrollMode(Scroll.AUTO);
+        cpLeft.setHeaderVisible(false);
+        cpLeft.setBorders(true);
+        VBoxLayout westLayout = new VBoxLayout(VBoxLayoutAlign.STRETCH);
+        westLayout.setPadding(new Padding(5));
+        cpLeft.setLayout(westLayout);
+
+        bundleView = createView();
+        addButton = createAddButton();
+        searchField = createSearchField();
+
+        // trigger loading of data
+        loadData();
+
+        bundleView.setHeight("92%");
+        cpLeft.add(bundleView, new VBoxLayoutData(new Margins(0, 0, 5, 0)));
+        cpLeft.add(searchField, new VBoxLayoutData(new Margins(0)));
+        cpLeft.add(addButton, new VBoxLayoutData(new Margins(0)));
+
+        // layout and add left panel
+        BorderLayoutData ldLeft = new BorderLayoutData(LayoutRegion.WEST, 200, 100, 350);
+        ldLeft.setMargins(new Margins(5));
+        ldLeft.setSplit(true);
+        // add(cpLeft, ldLeft);
+        tab.add(cpLeft, ldLeft);
+
+        // center panel
+        ContentPanel cpCenter = new ContentPanel();
+        cpCenter.setHeaderVisible(false);
+        cpCenter.setLayout(new FitLayout());
+
+        form = createForm();
+        form.setHeight("100%");
+        form.setBorders(true);
+        cpCenter.add(form);
+
+        // layout and add center panel
+        BorderLayoutData ldCenter = new BorderLayoutData(LayoutRegion.CENTER);
+        ldCenter.setMargins(new Margins(5));
+        // add(cpCenter, ldCenter);
+        tab.add(cpCenter, ldCenter);
+
+        return tab;
+    }
+
     private TextField<String> createSearchField() {
         TextField<String> searchField = new TextField<String>();
         searchField.setName("bundleKeySearch");
@@ -425,21 +524,7 @@ public class ResourceBundleEditor extends LayoutContainer {
         return rb;
     }
 
-    protected void onLoad(GWTResourceBundle rb) {
-        this.name = rb.getName();
-        languages.clear();
-        languages.addAll(rb.getLanguages());
-
-        bundleView.getStore().removeAll();
-        bundleView.getStore().add(new ArrayList<GWTResourceBundleEntry>(rb.getEntries()));
-
-        populateForm();
-    }
-
-    @Override
-    protected void onRender(Element parent, int index) {
-        super.onRender(parent, index);
-        setLayout(new BorderLayout());
+    private void loadData() {
         if (engine instanceof AbstractContentEngine) {
             ((AbstractContentEngine) engine).loading();
         }
@@ -467,44 +552,34 @@ public class ResourceBundleEditor extends LayoutContainer {
                         }
                     }
                 });
+    }
 
-        ContentPanel cpLeft = new ContentPanel();
-        cpLeft.setScrollMode(Scroll.AUTO);
-        cpLeft.setHeaderVisible(false);
-        cpLeft.setBorders(true);
-        VBoxLayout westLayout = new VBoxLayout(VBoxLayoutAlign.STRETCH);
-        westLayout.setPadding(new Padding(5));
-        cpLeft.setLayout(westLayout);
+    protected void onLoad(GWTResourceBundle rb) {
+        this.name = rb.getName();
+        languages.clear();
+        languages.addAll(rb.getLanguages());
 
-        bundleView = createView();
-        addButton = createAddButton();
-        searchField = createSearchField();
+        bundleView.getStore().removeAll();
+        bundleView.getStore().add(new ArrayList<GWTResourceBundleEntry>(rb.getEntries()));
 
-        bundleView.setHeight("92%");
-        cpLeft.add(bundleView, new VBoxLayoutData(new Margins(0, 0, 5, 0)));
-        cpLeft.add(searchField, new VBoxLayoutData(new Margins(0)));
-        cpLeft.add(addButton, new VBoxLayoutData(new Margins(0)));
+        populateForm();
+    }
 
-        // layout and add left panel
-        BorderLayoutData ldLeft = new BorderLayoutData(LayoutRegion.WEST, 200, 100, 350);
-        ldLeft.setMargins(new Margins(5));
-        ldLeft.setSplit(true);
-        add(cpLeft, ldLeft);
+    @Override
+    protected void onRender(Element parent, int index) {
+        super.onRender(parent, index);
+        setLayout(new FitLayout());
 
-        // center panel
-        ContentPanel cpCenter = new ContentPanel();
-        cpCenter.setHeaderVisible(false);
-        cpCenter.setLayout(new FitLayout());
+        tabPanel = new TabPanel();
+        tabPanel.setWidth("100%");
+        tabPanel.setTabPosition(TabPosition.BOTTOM);
+        tabPanel.setMinTabWidth(100);
 
-        form = createForm();
-        form.setHeight("100%");
-        form.setBorders(true);
-        cpCenter.add(form);
+        tabPanel.add(createPropertiesTab());
 
-        // layout and add center panel
-        BorderLayoutData ldCenter = new BorderLayoutData(LayoutRegion.CENTER);
-        ldCenter.setMargins(new Margins(5));
-        add(cpCenter, ldCenter);
+        tabPanel.add(createNewLanguageTab());
+
+        add(tabPanel);
     }
 
     private void populateForm() {
@@ -535,5 +610,13 @@ public class ResourceBundleEditor extends LayoutContainer {
         }
 
         form.layout();
+
+        GWTResourceBundleEntry selectedItem = bundleView.getSelectionModel().getSelectedItem();
+        if (selectedItem != null) {
+            formBinding.bind(selectedItem);
+            for (TextArea textArea : valuesPerLanguage.values()) {
+                textArea.enable();
+            }
+        }
     }
 }

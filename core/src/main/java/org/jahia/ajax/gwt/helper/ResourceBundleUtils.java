@@ -43,12 +43,13 @@ package org.jahia.ajax.gwt.helper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.jcr.RepositoryException;
 
@@ -139,12 +140,21 @@ final public class ResourceBundleUtils {
 
             gwtBundle = new GWTResourceBundle();
 
+            Set<String> languages = new HashSet<String>();
             List<JCRNodeWrapper> rbFileNodes = JCRContentUtils.getChildrenOfType(
                     isFile ? node.getParent() : node, Constants.JAHIANT_RESOURCEBUNDLE_FILE);
             for (JCRNodeWrapper rbFileNode : rbFileNodes) {
-                populate(gwtBundle, rbFileNode);
+                populate(gwtBundle, rbFileNode, languages);
             }
-            logger.debug("Loaded resourdec bundle for node {} in {} ms", node.getPath(),
+            for (GWTResourceBundleEntry entry : gwtBundle.getEntryMap().values()) {
+                for (String l : languages) {
+                    if (entry.getValues().get(l) == null) {
+                        // add the language to that entry
+                        entry.setValue(l, null);
+                    }
+                }
+            }
+            logger.debug("Loaded resource bundle for node {} in {} ms", node.getPath(),
                     System.currentTimeMillis() - timer);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -153,7 +163,8 @@ final public class ResourceBundleUtils {
         return gwtBundle;
     }
 
-    private static void populate(GWTResourceBundle gwtBundle, JCRNodeWrapper node) {
+    private static void populate(GWTResourceBundle gwtBundle, JCRNodeWrapper node,
+            Set<String> languages) {
 
         String name = StringUtils.substringBeforeLast(node.getName(), ".properties");
         String lang = GWTResourceBundle.DEFAULT_LANG;
@@ -167,6 +178,7 @@ final public class ResourceBundleUtils {
         if (gwtBundle.getName() == null) {
             gwtBundle.setName(name);
         }
+        languages.add(lang);
 
         InputStream is = null;
         try {
@@ -200,20 +212,22 @@ final public class ResourceBundleUtils {
 
             for (String lang : bundle.getLanguages()) {
                 JCRNodeWrapper current = nodesByLanguage.remove(lang);
-                if (current == null) {
-                    logger.debug("Processing new resource bundle for language '{}'", lang);
-                    // new language
-                    // TODO handle new language
-                } else {
-                    logger.debug("Processing resource bundle {} for language '{}'",
-                            current.getPath(), lang);
-                    InputStream is = null;
-                    try {
-                        is = new ByteArrayInputStream(getAsString(lang, bundle).getBytes());
+                InputStream is = null;
+                try {
+                    is = new ByteArrayInputStream(getAsString(lang, bundle).getBytes());
+                    if (current == null) {
+                        // new language
+                        logger.debug("Processing new resource bundle for language '{}'", lang);
+                        node.uploadFile(bundle.getName() + "_" + lang + ".properties", is,
+                                "text/plain");
+                    } else {
+                        // updating existing language
+                        logger.debug("Processing resource bundle {} for language '{}'",
+                                current.getPath(), lang);
                         current.getFileContent().uploadFile(is, "text/plain");
-                    } finally {
-                        IOUtils.closeQuietly(is);
                     }
+                } finally {
+                    IOUtils.closeQuietly(is);
                 }
             }
 
@@ -240,7 +254,8 @@ final public class ResourceBundleUtils {
                 // we do not write entries with empty values
                 continue;
             }
-            out.append(entry.getKey()).append("=").append(EscapeUtils.convertUnicodeToEncoded(value)).append("\n");
+            out.append(entry.getKey()).append("=")
+                    .append(EscapeUtils.convertUnicodeToEncoded(value)).append("\n");
         }
 
         return out.toString();

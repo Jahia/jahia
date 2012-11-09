@@ -54,7 +54,9 @@ public class GWTResourceBundleEntry extends BaseModelData implements
     public GWTResourceBundleEntry() {
         super();
         setKey("<empty>");
-        setValues(new BaseModelData());
+        BaseModelData data = new BaseModelData();
+        data.setAllowNestedValues(false);
+        setValues(data);
     }
 
     public GWTResourceBundleEntry(String key) {

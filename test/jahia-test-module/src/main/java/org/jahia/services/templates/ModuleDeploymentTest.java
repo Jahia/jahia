@@ -6,27 +6,24 @@ import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
-import org.jahia.api.Constants;
 import org.jahia.bin.Action;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.JahiaAfterInitializationService;
-import org.jahia.services.content.*;
-import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.settings.SettingsBean;
-import org.junit.*;
-import org.springframework.web.context.ContextLoaderListener;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.servlet.ServletContextEvent;
-import java.io.*;
-import java.util.List;
-import java.util.Locale;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import static org.junit.Assert.*;
 
@@ -142,10 +139,6 @@ public class ModuleDeploymentTest {
                 File deployedTemplatesFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module-war").getRootFolderWithVersion());
                 JahiaTemplatesPackage pack = managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-1.0-SNAPSHOT.war"), session);
 
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                }
                 File def = new File(settingsBean.getJahiaTemplatesDiskPath(), pack.getRootFolderWithVersion() + "/META-INF/definitions.cnd");
                 try {
                     BufferedWriter w = new BufferedWriter(new FileWriter(def, true));
@@ -185,11 +178,8 @@ public class ModuleDeploymentTest {
                 File deployedTemplatesFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module-war").getRootFolderWithVersion());
                 JahiaTemplatesPackage pack = managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-1.0-SNAPSHOT.war"), session);
 
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                }
                 File spring = new File(settingsBean.getJahiaTemplatesDiskPath(), pack.getRootFolderWithVersion() + "/META-INF/spring/dummy1.xml");
+                File newspring = new File(settingsBean.getJahiaTemplatesDiskPath(), pack.getRootFolderWithVersion() + "/META-INF/spring/dummy1-modified.xml");
                 try {
                     SAXReader reader = new SAXReader();
                     Document document = reader.read(spring);
@@ -199,8 +189,8 @@ public class ModuleDeploymentTest {
                     Element prop = newBean.addElement("property");
                     prop.addAttribute("name","name");
                     prop.addAttribute("value","my-new-post-action");
-
-                    XMLWriter writer = new XMLWriter(new FileWriter(spring), OutputFormat.createPrettyPrint());
+                    spring.delete();
+                    XMLWriter writer = new XMLWriter(new FileWriter(newspring), OutputFormat.createPrettyPrint());
                     writer.write(document);
                     writer.close();
                 } catch (Exception e) {
@@ -235,22 +225,19 @@ public class ModuleDeploymentTest {
                 SettingsBean settingsBean = SettingsBean.getInstance();
                 File deployedTemplatesFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module-war").getRootFolderWithVersion());
                 JahiaTemplatesPackage pack = managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-1.0-SNAPSHOT.war"), session);
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                }
 
                 TestInitializingBean.resetInstance();
 
                 File spring = new File(settingsBean.getJahiaTemplatesDiskPath(), pack.getRootFolderWithVersion() + "/META-INF/spring/dummy1.xml");
+                File newspring = new File(settingsBean.getJahiaTemplatesDiskPath(), pack.getRootFolderWithVersion() + "/META-INF/spring/dummy1-modified-2.xml");
                 try {
                     SAXReader reader = new SAXReader();
                     Document document = reader.read(spring);
 
                     Element newBean = document.getRootElement().addElement("bean");
                     newBean.addAttribute("class", "org.jahia.services.templates.TestInitializingBean");
-
-                    XMLWriter writer = new XMLWriter(new FileWriter(spring), OutputFormat.createPrettyPrint());
+                    spring.delete();
+                    XMLWriter writer = new XMLWriter(new FileWriter(newspring), OutputFormat.createPrettyPrint());
                     writer.write(document);
                     writer.close();
                 } catch (Exception e) {

@@ -5,7 +5,7 @@
     <artifactId>jahia-root</artifactId>
     <name>Jahia Project Root</name>
     <groupId>org.jahia.server</groupId>
-    <version>6.6.1.1-SNAPSHOT</version>
+    <version>6.6.1.1</version>
     <packaging>pom</packaging>
     <inceptionYear>2004</inceptionYear>
     <!--
@@ -99,9 +99,9 @@
     </properties>
 
     <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH</developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH</url>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_1</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_1</developerConnection>
+        <url>https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_1</url>
     </scm>
     <developers>
         <developer>

@@ -202,7 +202,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
             if (scriptFactoryMap.containsKey(resolvedView.getFileExtension())) {
                 return scriptFactoryMap.get(resolvedView.getFileExtension()).createScript(resolvedView);
             }
-            return null;
+            throw new TemplateNotFoundException("Unable to script factory map extension handler for the resolved view " + resolvedView.getInfo());
         } catch (RepositoryException e) {
             throw new TemplateNotFoundException(e);
         }

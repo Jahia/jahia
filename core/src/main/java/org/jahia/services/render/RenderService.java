@@ -144,6 +144,10 @@ public class RenderService {
         this.scriptResolvers = scriptResolvers;
     }
 
+    public Collection<ScriptResolver> getScriptResolvers() {
+        return scriptResolvers;
+    }
+
     public void start() throws JahiaInitializationException {
 
     }
@@ -184,12 +188,16 @@ public class RenderService {
      */
     public Script resolveScript(Resource resource, RenderContext context) throws RepositoryException, TemplateNotFoundException {
         for (ScriptResolver scriptResolver : scriptResolvers) {
-            Script s = scriptResolver.resolveScript(resource, context);
-            if (s != null) {
-                return s;
+            try {
+                Script s = scriptResolver.resolveScript(resource, context);
+                if (s != null) {
+                    return s;
+                }
+            } catch (TemplateNotFoundException tnfe) {
+
             }
         }
-        return null;
+        throw new TemplateNotFoundException("Unable to find the template for resource " + resource);
     }
 
 

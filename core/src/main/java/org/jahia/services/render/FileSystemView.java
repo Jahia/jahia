@@ -64,7 +64,7 @@ import javax.servlet.RequestDispatcher;
  * Date: Sep 28, 2009
  * Time: 7:20:38 PM
  */
-public class FileSystemView implements Comparable<FileSystemView>, View {
+public class FileSystemView implements Comparable<View>, View {
     private static final Properties EMPTY_PROPERTIES = new Properties();
     private static Logger logger = LoggerFactory.getLogger(FileSystemView.class);
     private String path;
@@ -223,20 +223,20 @@ public class FileSystemView implements Comparable<FileSystemView>, View {
         return result;
     }
 
-    public int compareTo(FileSystemView template) {
+    public int compareTo(View template) {
         if (ownerPackage == null) {
-            if (template.ownerPackage != null ) {
+            if (template.getModule() != null ) {
                 return 1;
             } else {
-                return key.compareTo(template.key);
+                return key.compareTo(template.getKey());
             }
         } else {
-            if (template.ownerPackage == null ) {
+            if (template.getModule() == null ) {
                 return -1;
-            } else if (!ownerPackage.equals(template.ownerPackage)) {
-                return ownerPackage.getName().compareTo(template.ownerPackage.getName());
+            } else if (!ownerPackage.equals(template.getModule())) {
+                return ownerPackage.getName().compareTo(template.getModule().getName());
             } else {
-                return key.compareTo(template.key);
+                return key.compareTo(template.getKey());
             }
         }
     }

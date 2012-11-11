@@ -231,7 +231,7 @@
                                     <property name="useModuleType" value="false"/>
                                 </bean>
                             </property>
-                            <property name="titleKey" value="label.templateSets"/>
+                            <property name="titleKey" value="label.modules"/>
                         </bean>
                     </list>
                 </property>
@@ -278,6 +278,12 @@
                 <entry key="nt:base" value-ref="studioBaseEngineConfiguration"/>
                 <entry key="jnt:viewFile">
                     <bean parent="studioBaseEngineConfiguration">
+                        <property name="creationButtons">
+                            <list>
+                                <ref bean="Engine.Button.Create" />
+                                <ref bean="Engine.Button.CreateAndNew" />
+                            </list>
+                        </property>
                         <property name="engineTabs">
                             <list>
                                 <bean id="Engine.Tab.CodeEditor" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">

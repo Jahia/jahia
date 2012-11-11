@@ -706,6 +706,8 @@ extends = jnt:content
  + * (jmix:droppableContent) = jmix:droppableContent version
  + * (jnt:contentFolder) = jnt:contentFolder version
 
+
+// @deprecated use [jnt:modules]instead
 [jnt:templateSets] > nt:base, jmix:nodenameInfo, jmix:unversionedBasemetadata, jmix:list
  + * (jnt:virtualsite)
 

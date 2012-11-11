@@ -147,7 +147,7 @@
                                     <property name="root" value="/sites/*"/>
                                 </bean>
                             </property>
-                            <property name="titleKey" value="label.templateSets"/>
+                            <property name="titleKey" value="label.modules"/>
                         </bean>
                         <ref bean="Toolbar.Item.Fill"/>
                     </list>

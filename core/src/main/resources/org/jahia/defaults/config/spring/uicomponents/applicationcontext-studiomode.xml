@@ -278,10 +278,10 @@
                 <entry key="nt:base" value-ref="studioBaseEngineConfiguration"/>
                 <entry key="jnt:viewFile">
                     <bean parent="studioBaseEngineConfiguration">
-                        <property name="creationButtons">
+                        <property name="editionButtons">
                             <list>
-                                <ref bean="Engine.Button.Create" />
-                                <ref bean="Engine.Button.CreateAndNew" />
+                                <ref bean="Engine.Button.Update" />
+                                <ref bean="Engine.Button.SaveAsNewView"/>
                             </list>
                         </property>
                         <property name="engineTabs">

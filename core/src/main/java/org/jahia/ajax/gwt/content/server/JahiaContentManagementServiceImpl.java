@@ -148,6 +148,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private JCRContentUtils jcrContentUtils;
     private ChannelHelper channelHelper;
     private TranslationHelper translationHelper;
+    private StubHelper stubHelper;
 
     public void setAcl(ACLHelper acl) {
         this.acl = acl;
@@ -246,6 +247,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void setTranslationHelper(TranslationHelper translationHelper) {
         this.translationHelper = translationHelper;
+    }
+
+    public void setStubHelper(StubHelper stubHelper) {
+        this.stubHelper = stubHelper;
     }
 
 // ------------------------ INTERFACE METHODS ------------------------
@@ -2219,5 +2224,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
 
         return result;
+    }
+
+    public String getStub(String stubType) {
+        return stubHelper.getStub(stubType);
     }
 }

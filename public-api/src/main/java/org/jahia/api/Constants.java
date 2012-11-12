@@ -194,6 +194,7 @@ public class Constants {
     public static final String JAHIANT_AREA = "jnt:area";
     public static final String JAHIANT_QUERY = "jnt:query";
 
+    public static final String JAHIANT_MODULEVERSIONFOLDER = "jnt:moduleVersionFolder";
     public static final String JAHIANT_NODETYPEFOLDER = "jnt:nodeTypeFolder";
     public static final String JAHIANT_TEMPLATETYPEFOLDER = "jnt:templateTypeFolder";
     public static final String JAHIANT_CSSFOLDER = "jnt:cssFolder";

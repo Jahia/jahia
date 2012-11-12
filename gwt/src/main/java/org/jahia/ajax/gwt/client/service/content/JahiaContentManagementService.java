@@ -412,6 +412,8 @@ public interface JahiaContentManagementService extends RemoteService {
 
     GWTJahiaNodeProperty translate(GWTJahiaNodeProperty property, GWTJahiaItemDefinition definition, String srcLanguage, String destLanguage, String siteUUID) throws GWTJahiaServiceException;
 
+    String getStub(String stubType);
+
 // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

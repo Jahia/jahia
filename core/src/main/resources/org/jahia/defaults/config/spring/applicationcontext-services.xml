@@ -269,4 +269,7 @@
     <bean abstract="true" id="abstractTranslationProvider" class="org.jahia.services.translation.AbstractTranslationProvider" init-method="init">
         <property name="translationService" ref="TranslationService" />
     </bean>
+
+    <bean id="StubService" class="org.jahia.services.stub.StubService" />
+
 </beans>

@@ -53,13 +53,16 @@ import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.form.CodeMirrorField;
 
@@ -68,6 +71,7 @@ import java.util.*;
 public class CodeEditorTabItem extends EditEngineTabItem {
 
     private String codePropertyName;
+    private String stubType;
 
     private transient CodeMirrorField codeField;
     private transient GWTJahiaNodeProperty codeProperty;
@@ -75,7 +79,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
     private transient SimpleComboBox<String> mirrorTemplates;
 
     public CodeEditorTabItem() {
-        setHandleCreate(false);
+        setHandleCreate(true);
     }
 
     @Override
@@ -150,19 +154,40 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                 }
             }
             //Add code source
-            codeProperty = engine.getProperties().get(codePropertyName);
-            codeField = new CodeMirrorField();
-            codeField.setWidth("95%");
-            codeField.setHeight("90%");
-            List<GWTJahiaNodePropertyValue> values = codeProperty.getValues();
-            if (!values.isEmpty()) {
-                codeField.setValue(values.get(0).getString());
+            if (engine.getProperties().containsKey(codePropertyName)) {
+                codeProperty = engine.getProperties().get(codePropertyName);
+                initEditor(tab);
+            }  else {
+                JahiaContentManagementService.App.getInstance().getStub(stubType, new BaseAsyncCallback<String>() {
+                    @Override
+                    public void onApplicationFailure(Throwable caught) {
+                        super.onApplicationFailure(caught);
+                        codeProperty = new GWTJahiaNodeProperty(codePropertyName, "", GWTJahiaNodePropertyType.STRING);
+                        initEditor(tab);
+                    }
+
+                    @Override
+                    public void onSuccess(String stub) {
+                        codeProperty = new GWTJahiaNodeProperty(codePropertyName, stub, GWTJahiaNodePropertyType.STRING);
+                        initEditor(tab);
+                    }
+                });
             }
-            tab.add(codeField);
-            tab.layout();
-            tab.show();
-            tab.setProcessed(true);
         }
+    }
+
+    private void initEditor(final AsyncTabItem tab) {
+        codeField = new CodeMirrorField();
+        codeField.setWidth("95%");
+        codeField.setHeight("90%");
+        List<GWTJahiaNodePropertyValue> values = codeProperty.getValues();
+        if (!values.isEmpty()) {
+            codeField.setValue(values.get(0).getString());
+        }
+        tab.add(codeField);
+        tab.layout();
+        tab.show();
+        tab.setProcessed(true);
     }
 
     @Override
@@ -175,5 +200,9 @@ public class CodeEditorTabItem extends EditEngineTabItem {
 
     public void setCodePropertyName(String codePropertyName) {
         this.codePropertyName = codePropertyName;
+    }
+
+    public void setStubType(String stubType) {
+        this.stubType = stubType;
     }
 }

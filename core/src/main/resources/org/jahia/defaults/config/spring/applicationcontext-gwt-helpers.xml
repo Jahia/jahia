@@ -130,4 +130,8 @@
         <property name="translationService" ref="TranslationService" />
     </bean>
 
+    <bean name="StubHelper" class="org.jahia.ajax.gwt.helper.StubHelper">
+        <property name="stubService" ref="StubService" />
+    </bean>
+
 </beans>

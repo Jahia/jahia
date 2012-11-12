@@ -278,12 +278,6 @@
                 <entry key="nt:base" value-ref="studioBaseEngineConfiguration"/>
                 <entry key="jnt:viewFile">
                     <bean parent="studioBaseEngineConfiguration">
-                        <property name="editionButtons">
-                            <list>
-                                <ref bean="Engine.Button.Update" />
-                                <ref bean="Engine.Button.SaveAsNewView"/>
-                            </list>
-                        </property>
                         <property name="engineTabs">
                             <list>
                                 <bean id="Engine.Tab.CodeEditor" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
@@ -292,6 +286,7 @@
                                     <property name="tabItem">
                                         <bean class="org.jahia.ajax.gwt.client.widget.contentengine.CodeEditorTabItem">
                                             <property name="codePropertyName" value="sourceCode" />
+                                            <property name="stubType" value="jsp" />
                                         </bean>
                                     </property>
                                 </bean>
@@ -310,6 +305,22 @@
                                         </bean>
                                     </property>
                                 </bean>
+                            </list>
+                        </property>
+                        <property name="creationButtons">
+                            <list>
+                                <ref bean="Engine.Button.CreateView" />
+                            </list>
+                        </property>
+                        <property name="editionButtons">
+                            <list>
+                                <ref bean="Engine.Button.Update" />
+                                <ref bean="Engine.Button.SaveAsNewView" />
+                            </list>
+                        </property>
+                        <property name="commonButtons">
+                            <list>
+                                <ref bean="Engine.Button.Cancel" />
                             </list>
                         </property>
                     </bean>
@@ -686,7 +697,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.ModulesTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>/modulesFileSystem/$siteKey/$moduleversion/*</value>
+                                    <value>/modulesFileSystem/$siteKey/$moduleversion</value>
                                 </list>
                             </property>
                             <property name="folderTypes">
@@ -708,6 +719,13 @@
                                 <list>
                                     <ref bean="Toolbar.Item.NewContentFolder"/>
                                     <ref bean="Toolbar.Item.NewContent"/>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewViewActionItem" />
+                                        </property>
+                                        <property name="titleKey" value="label.addView"/>
+                                        <property name="icon" value="newContentTemplate"/>
+                                    </bean>
                                     <ref bean="Toolbar.Item.NewMenuAvailable"/>
                                     <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
                                     <ref bean="Toolbar.Item.Delete"/>

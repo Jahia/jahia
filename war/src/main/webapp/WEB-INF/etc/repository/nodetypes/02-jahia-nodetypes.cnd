@@ -811,6 +811,8 @@ extends = jnt:content
 // Modules filesystem nodes
 //---------------------------------------------------------
 
+[jnt:moduleVersionFolder] > jnt:folder
+
 [jnt:nodeTypeFolder] > jnt:folder
 
 [jnt:templateTypeFolder] > jnt:folder

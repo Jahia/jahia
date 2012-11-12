@@ -57,6 +57,7 @@
         <property name="JCRContentUtils" ref="JCRContentUtils"/>
         <property name="channelHelper" ref="ChannelHelper"/>
         <property name="translationHelper" ref="TranslationHelper"/>
+        <property name="stubHelper" ref="StubHelper"/>
     </bean>
 
     <bean name="toolbarServiceController" parent="abstractServiceController">

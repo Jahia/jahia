@@ -350,4 +350,6 @@ public interface JahiaContentManagementServiceAsync {
     void translate(List<GWTJahiaNodeProperty> properties, List<GWTJahiaItemDefinition> definitions, String srcLanguage, String destLanguage, String siteUUID, AsyncCallback<List<GWTJahiaNodeProperty>> async);
 
     void translate(GWTJahiaNodeProperty property, GWTJahiaItemDefinition definition, String srcLanguage, String destLanguage, String siteUUID, AsyncCallback<GWTJahiaNodeProperty> async);
+
+    void getStub(String stubType, AsyncCallback<String> async);
 }

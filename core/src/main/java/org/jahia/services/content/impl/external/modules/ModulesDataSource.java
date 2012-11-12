@@ -1,3 +1,43 @@
+/**
+ * This file is part of Jahia, next-generation open source CMS:
+ * Jahia's next-generation, open source CMS stems from a widely acknowledged vision
+ * of enterprise application convergence - web, search, document, social and portal -
+ * unified by the simplicity of web content management.
+ *
+ * For more information, please visit http://www.jahia.com.
+ *
+ * Copyright (C) 2002-2012 Jahia Solutions Group SA. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ *
+ * Commercial and Supported Versions of the program (dual licensing):
+ * alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms and conditions contained in a separate
+ * written agreement between you and Jahia Solutions Group SA.
+ *
+ * If you are unsure which license is appropriate for your use,
+ * please contact the sales department at sales@jahia.com.
+ */
+
 package org.jahia.services.content.impl.external.modules;
 
 import org.apache.commons.io.FileUtils;
@@ -76,9 +116,27 @@ public class ModulesDataSource extends VFSDataSource implements JahiaAfterInitia
 
     @Override
     public String getDataType(FileObject fileObject) throws FileSystemException {
-        String type = fileObject.getType().equals(FileType.FOLDER) ? folderTypeMapping
-                .get(fileObject.getName().getBaseName()) : fileTypeMapping.get(fileObject.getName()
-                .getExtension());
+        int relativeDepth = getFile("/").getName().getRelativeName(fileObject.getName()).split("/").length;
+        String type;
+        if (fileObject.getType().equals(FileType.FOLDER)) {
+            if (relativeDepth == 2) {
+                type = Constants.JAHIANT_MODULEVERSIONFOLDER;
+            } else {
+                type = folderTypeMapping.get(fileObject.getName().getBaseName());
+            }
+            if (type == null) {
+                if (relativeDepth == 3 && fileObject.getName().getBaseName().contains("_")) {
+                    type = Constants.JAHIANT_NODETYPEFOLDER;
+                } else {
+                    FileObject parent = fileObject.getParent();
+                    if (relativeDepth == 4 && parent != null && Constants.JAHIANT_NODETYPEFOLDER.equals(getDataType(parent))) {
+                        type = Constants.JAHIANT_TEMPLATETYPEFOLDER;
+                    }
+                }
+            }
+        } else {
+            type = fileTypeMapping.get(fileObject.getName().getExtension());
+        }
         if (type != null && Constants.JAHIANT_RESOURCEBUNDLE_FILE.equals(type)) {
             // we've detected a properties file, check if its parent is of type jnt:resourceBundleFolder
             // -> than this one gets the type jnt:resourceBundleFile; otherwise just jnt:file
@@ -121,13 +179,7 @@ public class ModulesDataSource extends VFSDataSource implements JahiaAfterInitia
             } catch (Exception e) {
                 logger.error("Failed to read source code", e);
             } finally {
-                if (is != null) {
-                    try {
-                        is.close();
-                    } catch (IOException e) {
-                        logger.error("Failed to close input stream",e);
-                    }
-                }
+                IOUtils.closeQuietly(is);
             }
 
             // set Properties

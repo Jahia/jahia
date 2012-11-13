@@ -43,6 +43,7 @@ package org.jahia.utils;
 import java.text.Collator;
 import java.util.*;
 
+import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
@@ -262,12 +263,8 @@ public class LanguageCodeConverters {
     }
 
     public static List<Locale> getSortedLocaleList(Locale currentLocale) {
-        Locale[] availableLocales = Locale.getAvailableLocales();
-        List<Locale> sortedLocaleList = new ArrayList<Locale>();
-        for (int i=0; i < availableLocales.length; i++) {
-          Locale curLocale = availableLocales[i];
-          sortedLocaleList.add(curLocale);
-        }
+        @SuppressWarnings("unchecked")
+        List<Locale> sortedLocaleList = new ArrayList<Locale>(LocaleUtils.availableLocaleList());
         Collections.sort(sortedLocaleList, LanguageCodeConverters.getLocaleDisplayNameComparator(currentLocale));
         return sortedLocaleList;
     }

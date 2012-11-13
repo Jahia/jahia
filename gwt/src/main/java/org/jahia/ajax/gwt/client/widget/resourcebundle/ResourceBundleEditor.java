@@ -547,6 +547,12 @@ public class ResourceBundleEditor extends LayoutContainer {
      * @return current resource bundle values
      */
     public GWTResourceBundle getResourceBundle() {
+        // check for changes in plain view tabs
+        TabItem selectedItem = tabPanel.getSelectedItem();
+        if (selectedItem != null && selectedItem.getItemId().startsWith(LANGUAGE_TAB_ID)) {
+            propagateChanges(selectedItem);
+        }
+        
         GWTResourceBundle rb = new GWTResourceBundle(name);
         for (GWTResourceBundleEntry entry : bundleView.getStore().getModels()) {
             rb.getEntryMap().put(entry.getKey(), entry);

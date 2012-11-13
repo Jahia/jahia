@@ -143,7 +143,6 @@ public class NewViewActionItem extends BaseActionItem  {
                 final String targetName = newNodeType.substring(newNodeType.indexOf(':') + 1) + "." + viewName + ".jsp";
 
                 JahiaContentManagementService.App.getInstance().getNodeType("jnt:viewFile", new BaseAsyncCallback<GWTJahiaNodeType>() {
-                    @Override
                     public void onSuccess(GWTJahiaNodeType nodeType) {
                         EngineLoader.showCreateEngine(linker, parent, nodeType, new HashMap<String, GWTJahiaNodeProperty>(), targetName, false);
                     }

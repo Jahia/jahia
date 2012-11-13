@@ -136,6 +136,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     private static Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
 
+    private static Pattern UNICODE_PATTERN = Pattern.compile("\\\\u([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})");
+
     private TemplatePackageDeployer templatePackageDeployer;
 
     private TemplatePackageRegistry templatePackageRegistry;
@@ -881,10 +883,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         Charset charset = Charsets.toCharset(encoding);
         List<String> targetContent = new ArrayList<String>();
         for (String s : sourceContent) {
-            Pattern p = Pattern.compile("\\\\u([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})");
             Matcher m;
             int start = 0;
-            while (( m = p.matcher(s)).find(start)) {
+            while (( m = UNICODE_PATTERN.matcher(s)).find(start)) {
                 String replacement = new String(new byte[]{(byte) Integer.parseInt(m.group(1), 16), (byte) Integer.parseInt(m.group(2), 16)}, "UTF-16");
                 if (charset.decode(charset.encode(replacement)).toString().equals(replacement)) {
                     s = m.replaceFirst(replacement);

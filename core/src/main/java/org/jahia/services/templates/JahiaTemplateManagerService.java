@@ -47,6 +47,7 @@ import difflib.myers.Equalizer;
 import difflib.myers.MyersDiff;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
+import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.NameFileFilter;
@@ -104,6 +105,7 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -829,16 +831,26 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     @SuppressWarnings("unchecked")
     private boolean saveFile(InputStream source, File target) throws IOException, PatchFailedException {
+        String transCodeTarget = null;
+        if (target.getParentFile().getName().equals("resources") && target.getName().endsWith(".properties")) {
+            transCodeTarget = "ISO-8859-1";
+        }
+
         if (!target.exists()) {
             target.getParentFile().mkdirs();
-            FileOutputStream output = new FileOutputStream(target);
-            IOUtils.copy(source, output);
-            output.close();
+            if (transCodeTarget != null) {
+                FileUtils.writeLines(target, transCodeTarget, convertToNativeEncoding(IOUtils.readLines(source, "UTF-8"), transCodeTarget), "\n");
+            } else {
+                FileUtils.copyInputStreamToFile(source, target);
+            }
             return true;
         } else {
-            List<String> targetContent = FileUtils.readLines(target);
+            List<String> targetContent = FileUtils.readLines(target, transCodeTarget != null ? transCodeTarget : "UTF-8");
             if (!isBinary(targetContent)) {
                 List<String> sourceContent = IOUtils.readLines(source, "UTF-8");
+                if (transCodeTarget != null) {
+                    sourceContent = convertToNativeEncoding(sourceContent, transCodeTarget);
+                }
                 Patch patch = DiffUtils.diff(targetContent, sourceContent, new MyersDiff(new Equalizer() {
                     public boolean equals(Object o, Object o1) {
                         String s1 = (String) o;
@@ -848,7 +860,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 }));
                 if (!patch.getDeltas().isEmpty()) {
                     targetContent = (List<String>) patch.applyTo(targetContent);
-                    FileUtils.writeLines(target, "UTF-8", targetContent, "\n");
+                    FileUtils.writeLines(target, transCodeTarget != null ? transCodeTarget : "UTF-8", targetContent, "\n");
                     return true;
                 }
             } else {
@@ -863,6 +875,25 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
         }
         return false;
+    }
+
+    private List<String> convertToNativeEncoding(List<String> sourceContent, String encoding) throws UnsupportedEncodingException {
+        Charset charset = Charsets.toCharset(encoding);
+        List<String> targetContent = new ArrayList<String>();
+        for (String s : sourceContent) {
+            Pattern p = Pattern.compile("\\\\u([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})");
+            Matcher m;
+            int start = 0;
+            while (( m = p.matcher(s)).find(start)) {
+                String replacement = new String(new byte[]{(byte) Integer.parseInt(m.group(1), 16), (byte) Integer.parseInt(m.group(2), 16)}, "UTF-16");
+                if (charset.decode(charset.encode(replacement)).toString().equals(replacement)) {
+                    s = m.replaceFirst(replacement);
+                }
+                start = m.start()+1;
+            }
+            targetContent.add(s);
+        }
+        return targetContent;
     }
 
     private boolean isBinary(List<String> text) {

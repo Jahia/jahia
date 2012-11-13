@@ -166,7 +166,6 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                         initEditor(tab);
                     }
 
-                    @Override
                     public void onSuccess(String stub) {
                         codeProperty = new GWTJahiaNodeProperty(codePropertyName, stub, GWTJahiaNodePropertyType.STRING);
                         initEditor(tab);

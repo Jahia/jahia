@@ -134,11 +134,33 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
     }
 
     public void setParentEditConfiguration(EditConfiguration config) {
-        config.getEngineTabs().add(this);
+        List<EngineTab> engineTabs = config.getEngineTabs();
+        EngineTab oldTab = null;
+        for (EngineTab tab : engineTabs) {
+            if (this.getId().equals(tab.getId())) {
+                oldTab = tab;
+                break;
+            }
+        }
+        if (oldTab != null) {
+            engineTabs.remove(oldTab);
+        }
+        engineTabs.add(this);
     }
 
     public void setParentManagerConfiguration(ManagerConfiguration config) {
-        config.getEngineTabs().add(this);
+        List<EngineTab> engineTabs = config.getEngineTabs();
+        EngineTab oldTab = null;
+        for (EngineTab tab : engineTabs) {
+            if (this.getId().equals(tab.getId())) {
+                oldTab = tab;
+                break;
+            }
+        }
+        if (oldTab != null) {
+            engineTabs.remove(oldTab);
+        }
+        engineTabs.add(this);
     }
 
     public int getOrder() {

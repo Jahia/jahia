@@ -134,10 +134,7 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
     }
 
     public void setParentEditConfiguration(EditConfiguration config) {
-<<<<<<< .working
-        config.getDefaultEditConfiguration().getEngineTabs().add(this);
-=======
-        List<EngineTab> engineTabs = config.getEngineTabs();
+        List<EngineTab> engineTabs = config.getDefaultEditConfiguration().getEngineTabs();
         EngineTab oldTab = null;
         for (EngineTab tab : engineTabs) {
             if (this.getId().equals(tab.getId())) {
@@ -149,7 +146,6 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
             engineTabs.remove(oldTab);
         }
         engineTabs.add(this);
->>>>>>> .merge-right.r43646
     }
 
     public void setParentManagerConfiguration(ManagerConfiguration config) {

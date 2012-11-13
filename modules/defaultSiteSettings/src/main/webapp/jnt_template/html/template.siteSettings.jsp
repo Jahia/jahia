@@ -28,7 +28,10 @@
 
 <body>
 
-<h1><fmt:message key="label.administration"/></h1>
+<div class="page-header">
+    <h1><fmt:message key="label.administration"/></h1>
+</div>
+
 
 <div class="bodywrapper"><!--start bodywrapper-->
     <template:area path="pagecontent"/>
@@ -38,7 +41,7 @@
 <c:if test="${renderContext.editMode}">
     <template:addResources type="css" resources="edit.css" />
 </c:if>
-<template:addResources type="css" resources="960.css,01web.css"/>
+<template:addResources type="css" resources="bootstrap.css,960.css,01web.css"/>
 <template:theme/>
 
 </body>

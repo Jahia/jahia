@@ -41,5 +41,8 @@ function updateSiteWcagCompliance(btn) {
 <form id="updateSiteForm" action="<c:url value='${url.base}${renderContext.mainResource.node.resolveSite.path}'/>" method="post">
     <input type="hidden" name="jcrMethodToCall" value="put"/>
     <input type="hidden" name="jcr:mixinTypes" value="jmix:htmlSettings"/>
-    <p><input type="checkbox" name="activateWcagCompliance" id="activateWcagCompliance" onclick="updateSiteWcagCompliance($(this)); return true;"${not empty propActivated && propActivated.boolean ? 'checked="checked"' : ''}/>&nbsp;<label for="activateWcagCompliance"><fmt:message key="label.active"/></label></p>
+
+ <label for="activateWcagCompliance" class="checkbox">
+<input type="checkbox" name="activateWcagCompliance" id="activateWcagCompliance" onclick="updateSiteWcagCompliance($(this)); return true;"${not empty propActivated && propActivated.boolean ? 'checked="checked"' : ''}/> &nbsp;<fmt:message key="label.active"/>
+</label>
 </form>

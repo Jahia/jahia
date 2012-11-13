@@ -26,7 +26,7 @@
 <strong><fmt:message key="org.jahia.admin.site.ManageSites.templateSet.label"/>:&nbsp;</strong>
 ${fn:escapeXml(templatePackageName)}&nbsp;(${templateSetPackage.lastVersion})
 </p>
-<table style="width: 100%;" cellpadding="0" cellspacing="0" border="1">
+<table class="table table-bordered table-hover" cellpadding="0" cellspacing="0" >
     <thead>
         <tr>
             <th>#</th>
@@ -39,7 +39,7 @@ ${fn:escapeXml(templatePackageName)}&nbsp;(${templateSetPackage.lastVersion})
     </thead>
     <tbody>
         <tr>
-            <td colspan="6"><strong><fmt:message key="label.modules"/></strong></td>
+            <td colspan="6"><h3><fmt:message key="label.modules"/></h3></td>
         </tr>
         <c:forEach var="pkg" items="${modules}" varStatus="status">
         <tr>
@@ -53,7 +53,7 @@ ${fn:escapeXml(templatePackageName)}&nbsp;(${templateSetPackage.lastVersion})
         </c:forEach>
         <c:if test="${not empty requiredModules}">
         <tr>
-            <td colspan="6"><strong><fmt:message key="siteSettings.requiredModules"/></strong></td>
+            <td colspan="6"><h3><fmt:message key="siteSettings.requiredModules"/></h3></td>
         </tr>
         <c:forEach var="pkg" items="${requiredModules}" varStatus="status">
         <tr>

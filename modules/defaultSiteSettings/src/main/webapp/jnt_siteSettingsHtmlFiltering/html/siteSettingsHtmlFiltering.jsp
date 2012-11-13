@@ -91,14 +91,17 @@ function updateSiteHtmlFiltering(btn) {
 <form id="updateSiteForm" action="<c:url value='${url.base}${renderContext.mainResource.node.resolveSite.path}'/>" method="post">
     <input type="hidden" name="jcrMethodToCall" value="put"/>
     <input type="hidden" name="jcr:mixinTypes" value="jmix:htmlSettings"/>
-    <p><input type="checkbox" name="activateTagFiltering" id="activateTagFiltering"${not empty propFilteringActivated && propFilteringActivated.boolean ? 'checked="checked"' : ''}/>&nbsp;<label for="activateTagFiltering"><fmt:message key="label.active"/></label></p>
-    <table id="tblHtmlTags" cellpadding="0" cellspacing="5" border="0">
-        <tbody>
-            <tr>
+
+    <label class="checkbox" for="activateTagFiltering">
+        <input type="checkbox" name="activateTagFiltering" id="activateTagFiltering"${not empty propFilteringActivated && propFilteringActivated.boolean ? 'checked="checked"' : ''}/>&nbsp;<fmt:message key="label.active"/>
+    </label>
+
                 <fmt:message key="label.add" var="i18nAdd"/>
-                <td><input type="text" name="newHtmlTag" id="newHtmlTag" value="" size="10"/></td>
-                <td><input type="image" id="addHtmlTag" title="${i18nAdd}" alt="${i18nAdd}" src="<c:url value='/css/images/andromeda/icons/add2.png'/>" width="16" height="16" /></td>
-            </tr>
+                <input type="text" name="newHtmlTag" id="newHtmlTag" value="" size="10"/>
+                <input type="image" id="addHtmlTag" title="${i18nAdd}" alt="${i18nAdd}" src="<c:url value='/css/images/andromeda/icons/add2.png'/>" width="16" height="16" />
+
+        <table id="tblHtmlTags" class="table table-striped" cellpadding="0" cellspacing="5" border="0">
+        <tbody>
             <c:forTokens var="tag" items="${filteredTags}" delims=", ">
                 <tr id="rowHtmlTag${tag}">
                     <td><strong class="htmlTagToFilter">${tag}</strong></td>
@@ -108,5 +111,5 @@ function updateSiteHtmlFiltering(btn) {
             </c:forTokens>
         </tbody>
     </table>
-    <p><input type="button" name="save" value="<fmt:message key='org.jahia.admin.saveChanges.label'/>" onclick="updateSiteHtmlFiltering($(this)); return false;"/></p>
+    <button class="btn" type="button" name="save" onclick="updateSiteHtmlFiltering($(this)); return false;"><i class="icon-ok-sign icon-white"></i> <fmt:message key='org.jahia.admin.saveChanges.label'/></button>
 </form>

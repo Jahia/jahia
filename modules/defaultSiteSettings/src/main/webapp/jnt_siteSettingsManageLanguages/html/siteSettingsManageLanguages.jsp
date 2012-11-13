@@ -125,7 +125,7 @@
 <form id="updateSiteForm" action="<c:url value='${url.base}${renderContext.mainResource.node.resolveSite.path}'/>" method="post">
     <input type="hidden" name="jcrMethodToCall" value="put"/>
     <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
-    <table style="width: 100%;" cellpadding="0" cellspacing="0" border="1">
+    <table class="table table-bordered table-hover" cellpadding="0" cellspacing="0" >
         <thead>
         <tr>
             <th><fmt:message key="siteSettings.label.language"/></th>
@@ -154,20 +154,22 @@
         </tbody>
     </table>
 
-    <input type="checkbox" name="mixLanguage" id="mixLanguages" value="true"${site.mixLanguagesActive ? ' checked="checked"' : ''} onchange="updateBoxes()"/>
-    <label for="mixLanguages">&nbsp;<fmt:message
-            key="org.jahia.admin.languages.ManageSiteLanguages.mixLanguages.label"/></label>
-    <br>
-    <input type="checkbox" name="allowsUnlistedLanguages" id="allowsUnlistedLanguages" value="true"${site.allowsUnlistedLanguages ? ' checked="checked"' : ''} />
-    <label for="allowsUnlistedLanguages">&nbsp;<fmt:message
-            key="org.jahia.admin.languages.ManageSiteLanguages.allowsUnlistedLanguages.label"/></label>
-    <br>
+
+   <label for="mixLanguages" class="checkbox">
+ <input type="checkbox" name="mixLanguage" id="mixLanguages" value="true"${site.mixLanguagesActive ? ' checked="checked"' : ''} onchange="updateBoxes()"/> &nbsp;<fmt:message
+            key="org.jahia.admin.languages.ManageSiteLanguages.mixLanguages.label"/>
+</label>
 
 
-    <div>
-        <b><fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.addLanguages.label"/></b><br/>
+    <label class="checkbox" for="allowsUnlistedLanguages">
+<input type="checkbox" name="allowsUnlistedLanguages" id="allowsUnlistedLanguages" value="true"${site.allowsUnlistedLanguages ? ' checked="checked"' : ''} />&nbsp;<fmt:message
+            key="org.jahia.admin.languages.ManageSiteLanguages.allowsUnlistedLanguages.label"/>
+</label>
+      <hr/>
 
-        <b><fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.availableLanguages.label"/></b><br/>
+       <h2><fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.addLanguages.label"/></h2>
+
+        <h3><fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.availableLanguages.label"/></h3>
         <select name="language_list" id="language_list" multiple="multiple" size="10">
             <c:forEach var="locale" items="${availableLocales}">
                 <c:set var="langAsString">${locale}</c:set>
@@ -176,12 +178,13 @@
                 </c:if>
             </c:forEach>
         </select>
-    </div>
 
-    <input type="button" class="button" id="updateSite_button" value="Submit" onclick="updateSite()" />
+    <button class="btn" type="button" id="updateSite_button" onclick="updateSite()"><i class="icon-plus-sign icon-white"></i> Submit</button>
 
 </form>
 
 <div style="display:none;" class="loading">
-    <h1><fmt:message key="org.jahia.admin.workInProgressTitle"/></h1>
+    <div class="alert alert-info">
+        <strong><fmt:message key="org.jahia.admin.workInProgressTitle"/></strong>
+    </div>
 </div>

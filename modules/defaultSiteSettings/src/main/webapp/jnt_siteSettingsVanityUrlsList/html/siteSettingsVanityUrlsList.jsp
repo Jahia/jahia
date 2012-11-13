@@ -16,19 +16,19 @@
 <template:include view="hidden.header"/>
 <c:set var="isEmpty" value="true"/>
 
-<form action="<c:url value='${url.base}${renderContext.mainResource.node.path}.vanityURLSetting.html'/>">
+<form class="form-inline" action="<c:url value='${url.base}${renderContext.mainResource.node.path}.vanityURLSetting.html'/>">
     <label for="vanityUrlSearch"><fmt:message key='label.urlmapping.filter'/></label>
-    <input id="vanityUrlSearch" name="vanityUrlSearch" value="${param['vanityUrlSearch']}" />
-    <input type="submit" value="Filter"/>
+    <input type="text" id="vanityUrlSearch" name="vanityUrlSearch" value="${param['vanityUrlSearch']}" />
+    <button class="btn" type="submit"><i class="icon-filter icon-white"></i> Filter</button>
 </form>
 
-<table style="width: 100%;" cellpadding="0" cellspacing="0" border="1">
+<table class="table table-bordered table-hover" cellpadding="0" cellspacing="0">
     <tr>
-        <th><b><fmt:message key='label.urlmapping.mapping'/></b></th>
-        <th><b><fmt:message key='label.page'/></b></th>
-        <th><b><fmt:message key='label.urlmapping.lang'/></b></th>
-        <th><b><fmt:message key='label.urlmapping.active'/></b></th>
-        <th><b><fmt:message key='label.urlmapping.default'/></b></th>
+        <th><fmt:message key='label.urlmapping.mapping'/></th>
+        <th><fmt:message key='label.page'/></th>
+        <th><fmt:message key='label.urlmapping.lang'/></th>
+        <th><fmt:message key='label.urlmapping.active'/></th>
+        <th><fmt:message key='label.urlmapping.default'/></th>
     </tr>
 
     <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}"

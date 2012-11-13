@@ -43,10 +43,12 @@ package org.jahia.ajax.gwt.helper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -55,6 +57,7 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.GWTResourceBundle;
 import org.jahia.ajax.gwt.client.data.GWTResourceBundleEntry;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -63,6 +66,7 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,6 +114,21 @@ final public class ResourceBundleUtils {
 
     private static Logger logger = LoggerFactory.getLogger(ResourceBundleUtils.class);
 
+    private static String getAsString(String lang, GWTResourceBundle bundle) {
+        StringBuilder out = new StringBuilder(512);
+        for (GWTResourceBundleEntry entry : bundle.getEntries()) {
+            String value = entry.getValue(lang);
+            if (StringUtils.isEmpty(value)) {
+                // we do not write entries with empty values
+                continue;
+            }
+            out.append(entry.getKey()).append("=")
+                    .append(EscapeUtils.convertUnicodeToEncoded(value)).append("\n");
+        }
+
+        return out.toString();
+    }
+
     private static String getLanguageCode(String resourceBundleFileName) {
         String name = StringUtils.substringBeforeLast(resourceBundleFileName, ".properties");
         String lang = GWTResourceBundle.DEFAULT_LANG;
@@ -128,7 +147,7 @@ final public class ResourceBundleUtils {
         return lang;
     }
 
-    public static GWTResourceBundle load(JCRNodeWrapper node) {
+    public static GWTResourceBundle load(JCRNodeWrapper node, Locale uiLocale) {
         GWTResourceBundle gwtBundle = null;
         long timer = System.currentTimeMillis();
         try {
@@ -154,8 +173,19 @@ final public class ResourceBundleUtils {
                     }
                 }
             }
-            logger.debug("Loaded resource bundle for node {} in {} ms", node.getPath(),
-                    System.currentTimeMillis() - timer);
+
+            // load available languages
+            List<GWTJahiaValueDisplayBean> availableLocales = new ArrayList<GWTJahiaValueDisplayBean>();
+            for (Locale l : LanguageCodeConverters.getSortedLocaleList(uiLocale)) {
+                availableLocales.add(new GWTJahiaValueDisplayBean(l.toString(), StringUtils
+                        .capitalize(l.getDisplayName(uiLocale))));
+            }
+            gwtBundle.setAvailableLanguages(availableLocales);
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("Loaded resource bundle for node {} in {} ms", node.getPath(),
+                        System.currentTimeMillis() - timer);
+            }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -244,21 +274,6 @@ final public class ResourceBundleUtils {
             throw new GWTJahiaServiceException(e.getMessage());
         }
 
-    }
-
-    private static String getAsString(String lang, GWTResourceBundle bundle) {
-        StringBuilder out = new StringBuilder(512);
-        for (GWTResourceBundleEntry entry : bundle.getEntries()) {
-            String value = entry.getValue(lang);
-            if (StringUtils.isEmpty(value)) {
-                // we do not write entries with empty values
-                continue;
-            }
-            out.append(entry.getKey()).append("=")
-                    .append(EscapeUtils.convertUnicodeToEncoded(value)).append("\n");
-        }
-
-        return out.toString();
     }
 
 }

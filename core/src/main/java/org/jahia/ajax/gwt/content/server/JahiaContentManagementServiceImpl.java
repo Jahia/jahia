@@ -274,7 +274,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
             config = uiConfig.getGWTManagerConfiguration(context, getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
                     getRequest(), name);
-            config.setSiteNode(navigation.getGWTJahiaNode(getSite(), GWTJahiaNode.DEFAULT_SITE_FIELDS));
+            config.setSiteNode(navigation.getGWTJahiaNode(getSite(), GWTJahiaNode.DEFAULT_SITE_FIELDS, getUILocale()));
             setAvailablePermissions(config);
         }catch (RepositoryException e) {
             logger.error("Cannot get node", e);
@@ -295,7 +295,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             JCRSessionWrapper session = retrieveCurrentSession();
             config = uiConfig.getGWTEditConfiguration(session.getNode(path), getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
                     getRequest(), name);
-            config.setSiteNode(navigation.getGWTJahiaNode(getSite(), GWTJahiaNode.DEFAULT_SITE_FIELDS));
+            config.setSiteNode(navigation.getGWTJahiaNode(getSite(), GWTJahiaNode.DEFAULT_SITE_FIELDS, getUILocale()));
 
             List<GWTJahiaNode> sites = getRoot(Arrays.asList(config.getSitesLocation()), Arrays.asList("jnt:virtualsite"), null, null, GWTJahiaNode.DEFAULT_SITE_FIELDS, null, null, false, false, null, null);
             String permission = ((EditConfiguration)SpringContextSingleton.getBean(name)).getRequiredPermission();
@@ -370,7 +370,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>();
         for (String path : paths) {
             try {
-                GWTJahiaNode gwtJahiaNode = navigation.getNode(path, fields, retrieveCurrentSession(getWorkspace(),getLocale(),true));
+                GWTJahiaNode gwtJahiaNode = navigation.getNode(path, fields, getUILocale(), retrieveCurrentSession(getWorkspace(),getLocale(),true));
                 list.add(gwtJahiaNode);
             } catch (GWTJahiaServiceException e) {
                 logger.debug(e.getMessage(), e);
@@ -1399,7 +1399,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             JCRSessionWrapper session = retrieveCurrentSession();
             GWTJahiaNode node = contentManager.releaseModule(moduleName, nextVersion, session);
             RpcMap r = new RpcMap();
-            r.put("newModule",navigation.getNode("/modules/"+moduleName, GWTJahiaNode.DEFAULT_SITE_FIELDS, session));
+            r.put("newModule",navigation.getNode("/modules/"+moduleName, GWTJahiaNode.DEFAULT_SITE_FIELDS, getUILocale(), session));
             r.put("filename",node.getName());
             r.put("downloadUrl",node.getUrl());
 

@@ -48,12 +48,14 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.GWTResourceBundle;
 import org.jahia.ajax.gwt.client.data.GWTResourceBundleEntry;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.contentengine.AbstractContentEngine;
 import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
 
@@ -74,13 +76,13 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -89,6 +91,7 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.TabPanel.TabPosition;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
@@ -104,7 +107,6 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
 
 /**
  * Widget for editing resource bundles.
@@ -140,7 +142,13 @@ public class ResourceBundleEditor extends LayoutContainer {
 
     public static final List<String> FIELDS = Arrays.asList(GWTJahiaNode.RESOURCE_BUNDLE);
 
+    private static final String LANGUAGE_TAB_ID = "jahia-rb-language-tab-";
+
+    private static final String NEW_LANGUAGE_TAB_ID = "jahia-rb-new-language-tab";
+
     protected Button addButton;
+
+    protected List<GWTJahiaValueDisplayBean> availableLanguages;
 
     protected AutoScrollableListView<GWTResourceBundleEntry> bundleView;
 
@@ -153,6 +161,8 @@ public class ResourceBundleEditor extends LayoutContainer {
     protected Set<String> languages = new TreeSet<String>();
 
     private String name;
+
+    private AsyncTabItem newLanguageTab;
 
     protected TextField<String> searchField;
 
@@ -355,43 +365,31 @@ public class ResourceBundleEditor extends LayoutContainer {
         return panel;
     }
 
-    private TabItem createNewLanguageTab() {
+    private AsyncTabItem createLanguageTab(String lang) {
+        AsyncTabItem langTab = new AsyncTabItem(getLanguageDisplayName(lang));
+        langTab.setLayout(new CenterLayout());
+        langTab.setItemId(LANGUAGE_TAB_ID + lang);
+        return langTab;
+    }
+
+    private void createLanguageTabs() {
+        int i = 1;
+        for (String l : languages) {
+            if (i == tabPanel.getItemCount() - 1
+                    || !tabPanel.getItem(i).getItemId().substring(LANGUAGE_TAB_ID.length())
+                            .equals(l)) {
+                tabPanel.insert(createLanguageTab(l), i);
+            }
+            i++;
+        }
+    }
+
+    private AsyncTabItem createNewLanguageTab() {
         // new language tab
-        TabItem newLangTab = new TabItem(Messages.get("label.new", "New") + "...");
+        AsyncTabItem newLangTab = new AsyncTabItem(Messages.get("label.new", "New") + "...");
         newLangTab.setLayout(new CenterLayout());
         newLangTab.setIcon(ToolbarIconProvider.getInstance().getIcon("newAction"));
-
-        FormPanel formPanel = new FormPanel();
-        formPanel.setHeight(150);
-        formPanel.setWidth(400);
-        formPanel.setFrame(true);
-        formPanel.setBorders(true);
-        formPanel.setButtonAlign(HorizontalAlignment.CENTER);
-        formPanel.setHeading("!!!Add new language to the resource bundle:");
-        final TextField<String> langField = new TextField<String>();
-        langField.setName("newLanguage");
-        langField.setFieldLabel(Messages.get("label.language", "Language"));
-        formPanel.add(langField);
-
-        Button btn = new Button(Messages.get("label.add", "Add"),
-                new SelectionListener<ButtonEvent>() {
-                    public void componentSelected(ButtonEvent event) {
-                        String newLang = langField.getValue();
-                        if (languages.contains(newLang)) {
-                            return;
-                        }
-                        languages.add(newLang);
-                        for (GWTResourceBundleEntry e : bundleView.getStore().getModels()) {
-                            e.setValue(newLang, null);
-                        }
-                        populateForm();
-                        tabPanel.setSelection(tabPanel.getItem(0));
-                    }
-                });
-
-        formPanel.addButton(btn);
-
-        newLangTab.add(formPanel);
+        newLangTab.setItemId(NEW_LANGUAGE_TAB_ID);
 
         return newLangTab;
     }
@@ -399,6 +397,7 @@ public class ResourceBundleEditor extends LayoutContainer {
     private TabItem createPropertiesTab() {
         TabItem tab = new TabItem(Messages.get("label.properties", "Properties"));
         tab.setLayout(new BorderLayout());
+        tab.setItemId("jahia-rb-properties-tab");
 
         ContentPanel cpLeft = new ContentPanel();
         cpLeft.setScrollMode(Scroll.AUTO);
@@ -510,6 +509,38 @@ public class ResourceBundleEditor extends LayoutContainer {
         return view;
     }
 
+    protected void fillCurrentTab() {
+        TabItem selectedTab = tabPanel.getSelectedItem();
+        if (selectedTab == null || !(selectedTab instanceof AsyncTabItem)) {
+            return;
+        }
+        AsyncTabItem currentTab = (AsyncTabItem) selectedTab;
+
+        if (currentTab.getItemId().startsWith(LANGUAGE_TAB_ID)) {
+            // language tab
+            populateLanguageTab(currentTab);
+        } else if (NEW_LANGUAGE_TAB_ID.equals(currentTab.getItemId())) {
+            // new language tab
+            populateNewLanguageTab();
+        }
+    }
+
+    protected String getLanguageDisplayName(String langCode) {
+        if (GWTResourceBundle.DEFAULT_LANG.equals(langCode)) {
+            return "[" + Messages.get("label.default", "Default") + "]";
+        }
+        String label = null;
+
+        for (GWTJahiaValueDisplayBean langBean : availableLanguages) {
+            if (langBean.getValue().equals(langCode)) {
+                label = langBean.getDisplay();
+                break;
+            }
+        }
+
+        return label;
+    }
+
     /**
      * Returns current resource bundle values
      * 
@@ -562,6 +593,8 @@ public class ResourceBundleEditor extends LayoutContainer {
         bundleView.getStore().removeAll();
         bundleView.getStore().add(new ArrayList<GWTResourceBundleEntry>(rb.getEntries()));
 
+        availableLanguages = rb.getAvailableLanguages();
+
         populateForm();
     }
 
@@ -576,8 +609,22 @@ public class ResourceBundleEditor extends LayoutContainer {
         tabPanel.setMinTabWidth(100);
 
         tabPanel.add(createPropertiesTab());
+        newLanguageTab = createNewLanguageTab();
+        tabPanel.add(newLanguageTab);
 
-        tabPanel.add(createNewLanguageTab());
+        tabPanel.addListener(Events.Select, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent event) {
+                fillCurrentTab();
+            }
+        });
+        tabPanel.addListener(Events.BeforeSelect, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent event) {
+                TabItem selectedItem = tabPanel.getSelectedItem();
+                if (selectedItem != null && selectedItem.getItemId().startsWith(LANGUAGE_TAB_ID)) {
+                    propagateChanges(selectedItem);
+                }
+            }
+        });
 
         add(tabPanel);
     }
@@ -600,8 +647,7 @@ public class ResourceBundleEditor extends LayoutContainer {
         for (String languageCode : languages) {
             lang = new TextArea();
             lang.setName(languageCode);
-            lang.setFieldLabel(!languageCode.equals(GWTResourceBundle.DEFAULT_LANG) ? languageCode
-                    : Messages.get("label.default", "Default"));
+            lang.setFieldLabel(getLanguageDisplayName(languageCode));
             lang.disable();
             formBinding.addFieldBinding(new FieldBinding(lang, "values." + languageCode));
 
@@ -617,6 +663,139 @@ public class ResourceBundleEditor extends LayoutContainer {
             for (TextArea textArea : valuesPerLanguage.values()) {
                 textArea.enable();
             }
+        }
+
+        createLanguageTabs();
+    }
+
+    private void populateLanguageTab(AsyncTabItem currentTab) {
+        TextArea sourceView = null;
+        if (!currentTab.isProcessed()) {
+            sourceView = new TextArea();
+            sourceView.setWidth("100%");
+            sourceView.setHeight("100%");
+            currentTab.add(sourceView);
+            currentTab.layout();
+            currentTab.setProcessed(true);
+        } else {
+            sourceView = (TextArea) currentTab.getItem(0);
+        }
+
+        String lang = currentTab.getItemId().substring(LANGUAGE_TAB_ID.length());
+
+        StringBuilder b = new StringBuilder();
+        for (GWTResourceBundleEntry e : bundleView.getStore().getModels()) {
+            String value = e.getValue(lang);
+            if (value != null && value.length() > 0) {
+                b.append(e.getKey()).append("=").append(value).append("\n");
+            }
+        }
+        sourceView.setValue(b.toString());
+    }
+
+    private void populateNewLanguageTab() {
+        if (newLanguageTab.isProcessed()) {
+            return;
+        }
+
+        FormPanel formPanel = new FormPanel();
+        formPanel.setHeight(150);
+        formPanel.setWidth(500);
+        formPanel.setLabelWidth(150);
+        formPanel.setFrame(true);
+        formPanel.setBorders(true);
+        formPanel.setButtonAlign(HorizontalAlignment.CENTER);
+        formPanel.setHeading(Messages.get("label.resourceBundle.addLanguage",
+                "Add new language to the resource bundle") + ":");
+
+        final ComboBox<GWTJahiaValueDisplayBean> languageSelector = new ComboBox<GWTJahiaValueDisplayBean>();
+        languageSelector.setFieldLabel(Messages.get("label.resourceBundle.addLanguage.choose",
+                "Choose"));
+        languageSelector.setStore(new ListStore<GWTJahiaValueDisplayBean>());
+        languageSelector.getStore().add(
+                new GWTJahiaValueDisplayBean(GWTResourceBundle.DEFAULT_LANG, "["
+                        + Messages.get("label.default", "Default") + "]"));
+        languageSelector.getStore().add(availableLanguages);
+        languageSelector.setDisplayField("display");
+        languageSelector.setTypeAhead(true);
+        languageSelector.setTriggerAction(ComboBox.TriggerAction.ALL);
+        languageSelector.setForceSelection(true);
+        formPanel.add(languageSelector);
+
+        final TextField<String> langField = new TextField<String>();
+        langField.setName("newLanguage");
+        langField.setFieldLabel(Messages.get("label.resourceBundle.addLanguage.type",
+                "or type the locale"));
+        formPanel.add(langField);
+
+        languageSelector
+                .addSelectionChangedListener(new SelectionChangedListener<GWTJahiaValueDisplayBean>() {
+                    @Override
+                    public void selectionChanged(SelectionChangedEvent<GWTJahiaValueDisplayBean> se) {
+                        if (se == null) {
+                            return;
+                        }
+                        langField.setValue(!GWTResourceBundle.DEFAULT_LANG.equals(se
+                                .getSelectedItem().getValue()) ? se.getSelectedItem().getValue()
+                                : "");
+                    }
+                });
+
+        Button btn = new Button(Messages.get("label.add", "Add"),
+                new SelectionListener<ButtonEvent>() {
+                    public void componentSelected(ButtonEvent event) {
+                        String newLang = langField.getValue();
+                        if (languages.contains(newLang)) {
+                            return;
+                        }
+                        languages.add(newLang);
+                        for (GWTResourceBundleEntry e : bundleView.getStore().getModels()) {
+                            e.setValue(newLang, null);
+                        }
+                        populateForm();
+                        tabPanel.setSelection(tabPanel.getItem(0));
+                    }
+                });
+
+        formPanel.addButton(btn);
+
+        newLanguageTab.add(formPanel);
+
+        newLanguageTab.setProcessed(true);
+
+        newLanguageTab.layout();
+    }
+
+    protected void propagateChanges(TabItem tab) {
+        String lang = tab.getItemId().substring(LANGUAGE_TAB_ID.length());
+        String text = ((TextArea) tab.getItem(0)).getValue();
+        String[] lines = text != null && text.length() > 0 ? text.split("\n") : new String[] {};
+        Map<String, String> rb = new HashMap<String, String>();
+        for (String line : lines) {
+            int pos = line.indexOf("=");
+            if (pos <= 0 && pos <= line.length() - 2) {
+                continue;
+            }
+            rb.put(line.substring(0, pos), line.substring(pos + 1));
+        }
+        for (GWTResourceBundleEntry e : bundleView.getStore().getModels()) {
+            e.setValue(lang, rb.remove(e.getKey()));
+        }
+
+        for (Map.Entry<String, String> rbe : rb.entrySet()) {
+            GWTResourceBundleEntry model = new GWTResourceBundleEntry(rbe.getKey());
+            for (String l : languages) {
+                model.setValue(l, null);
+            }
+            model.setValue(lang, rbe.getValue());
+
+            bundleView.getStore().add(model);
+        }
+
+        GWTResourceBundleEntry selectedItem = bundleView.getSelectionModel().getSelectedItem();
+        if (selectedItem != null && formBinding != null) {
+            formBinding.unbind();
+            formBinding.bind(selectedItem);
         }
     }
 }

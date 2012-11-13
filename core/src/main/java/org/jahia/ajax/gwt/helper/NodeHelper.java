@@ -190,10 +190,10 @@ class NodeHelper {
     private WorkflowHelper workflow;
 
     GWTJahiaNode getGWTJahiaNode(JCRNodeWrapper node) {
-        return getGWTJahiaNode(node, GWTJahiaNode.DEFAULT_FIELDS);
+        return getGWTJahiaNode(node, GWTJahiaNode.DEFAULT_FIELDS, null);
     }
 
-    GWTJahiaNode getGWTJahiaNode(JCRNodeWrapper node, List<String> fields) {
+    GWTJahiaNode getGWTJahiaNode(JCRNodeWrapper node, List<String> fields, Locale uiLocale) {
         if (fields == null) {
             fields = Collections.emptyList();
         }
@@ -386,7 +386,7 @@ class NodeHelper {
 
         // resource bundle
         if (fields.contains(GWTJahiaNode.RESOURCE_BUNDLE)) {
-            GWTResourceBundle b = ResourceBundleUtils.load(node);
+            GWTResourceBundle b = ResourceBundleUtils.load(node, uiLocale);
             if (b != null) {
                 n.set(GWTJahiaNode.RESOURCE_BUNDLE, b);
             }
@@ -901,7 +901,7 @@ class NodeHelper {
             if (visibilityConditionRule != null) {
                 visibilityInfo.put(
                         getGWTJahiaNode(entry.getKey(),
-                                visibilityConditionRule.getRequiredFieldNamesForTemplate()), data);
+                                visibilityConditionRule.getRequiredFieldNamesForTemplate(), null), data);
             }
         }
         n.setVisibilityInfo(visibilityInfo);

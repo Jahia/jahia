@@ -42,6 +42,7 @@ package org.jahia.ajax.gwt.client.data;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -74,6 +75,11 @@ public class GWTResourceBundle extends BaseModelData {
         set("entries", new TreeMap<String, GWTResourceBundleEntry>());
     }
 
+    @SuppressWarnings("unchecked")
+    public List<GWTJahiaValueDisplayBean> getAvailableLanguages() {
+        return (List<GWTJahiaValueDisplayBean>) get("availableLanguages");
+    }
+
     public Collection<GWTResourceBundleEntry> getEntries() {
         return getEntryMap().values();
     }
@@ -89,6 +95,10 @@ public class GWTResourceBundle extends BaseModelData {
 
     public String getName() {
         return get("name");
+    }
+
+    public void setAvailableLanguages(List<GWTJahiaValueDisplayBean> langs) {
+        set("availableLanguages", langs);
     }
 
     public void setName(String name) {

@@ -46,14 +46,13 @@ import java.util.List;
 /**
  * Field initializer GWT bean. 
  *
- * User: bpapez
+ * @author Benjamin Papez
  */
 public class GWTJahiaFieldInitializer implements Serializable {
-    /** The serialVersionUID. */
     private static final long serialVersionUID = -8594607579678260363L;
+    
     private List<String> dependentProperties;
     private List<GWTJahiaValueDisplayBean> displayValues;
-    private String defaultProperty;
 
     public GWTJahiaFieldInitializer() {
         super();

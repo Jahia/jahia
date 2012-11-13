@@ -386,7 +386,7 @@ public class NavigationHelper {
 //                        userNodes.add(node);
 //                    }
                 } else {
-                    GWTJahiaNode root = getNode(path, fields, currentUserSession);
+                    GWTJahiaNode root = getNode(path, fields, uiLocale, currentUserSession);
                     if (root != null) {
                         if (!StringUtils.isEmpty(displayName)) {
                             root.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
@@ -462,10 +462,10 @@ public class NavigationHelper {
         }
     }
 
-    public GWTJahiaNode getNode(String path, List<String> fields, JCRSessionWrapper currentUserSession)
+    public GWTJahiaNode getNode(String path, List<String> fields, Locale uiLocale, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         try {
-            return getGWTJahiaNode(currentUserSession.getNode(path), fields);
+            return getGWTJahiaNode(currentUserSession.getNode(path), fields, uiLocale);
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(
                     new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
@@ -715,7 +715,11 @@ public class NavigationHelper {
     }
 
     public GWTJahiaNode getGWTJahiaNode(JCRNodeWrapper node, List<String> fields) {
-        return nodeHelper.getGWTJahiaNode(node, fields);
+        return nodeHelper.getGWTJahiaNode(node, fields, null);
+    }
+
+    public GWTJahiaNode getGWTJahiaNode(JCRNodeWrapper node, List<String> fields, Locale uiLocale) {
+        return nodeHelper.getGWTJahiaNode(node, fields, uiLocale);
     }
 
     /**

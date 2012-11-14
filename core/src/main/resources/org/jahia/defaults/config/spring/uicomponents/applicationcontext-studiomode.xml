@@ -73,6 +73,13 @@
 
                                     <ref bean="Toolbar.Item.NewPage"/>
                                     <ref bean="Toolbar.Item.NewContent"/>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewViewActionItem" />
+                                        </property>
+                                        <property name="titleKey" value="label.addView"/>
+                                        <property name="icon" value="newContentTemplate"/>
+                                    </bean>
                                 </list>
                             </property>
                         </bean>
@@ -309,7 +316,7 @@
                         </property>
                         <property name="creationButtons">
                             <list>
-                                <ref bean="Engine.Button.CreateView" />
+                                <ref bean="Engine.Button.SaveAsNewView" />
                             </list>
                         </property>
                         <property name="editionButtons">
@@ -697,7 +704,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.ModulesTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>/modulesFileSystem/$siteKey/$moduleversion</value>
+                                    <value>/modulesFileSystem/$siteKey/$moduleversion/*</value>
                                 </list>
                             </property>
                             <property name="folderTypes">

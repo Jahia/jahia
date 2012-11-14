@@ -41,12 +41,14 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
+import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -61,6 +63,7 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
+import org.jahia.ajax.gwt.client.widget.edit.ContentTypeTree;
 
 import java.util.*;
 
@@ -74,116 +77,71 @@ public class NewViewActionItem extends BaseActionItem  {
     }
 
     public void onComponentSelection() {
-        final GWTJahiaNode parent = linker.getSelectionContext().getSingleSelection();
-        String parentType = parent.getNodeTypes().get(0);
+        final GWTJahiaNode selectedNode = linker.getSelectionContext().getSingleSelection();
+        String parentType = selectedNode.getNodeTypes().get(0);
+        String[] filePath = selectedNode.getPath().split("/");
+        final GWTJahiaNodeType fileNodeType = new GWTJahiaNodeType("jnt:viewFile");
 
-        final String[] filePath = parent.getPath().split("/");
-        final String basePath = "/" + filePath[1] + "/" + filePath[2] + "/" + filePath[3];
-        final String nodeType;
-        if (parentType.equals("jnt:nodeTypeFolder") || parentType.equals("jnt:templateTypeFolder")) {
-            nodeType = filePath[4].replaceFirst("_", ":");
-        } else {
-            nodeType = "";
-        }
-        final String templateType;
-        if (parentType.equals("jnt:templateTypeFolder")) {
-            templateType = filePath[5];
-        } else {
-            templateType = "";
-        }
+        if (!"modulesFileSystem".equals(filePath[1])) {
+            // Open popup to select nodeType
 
+            ArrayList<String> paths = new ArrayList<String>();
+            paths.add(JahiaGWTParameters.getSiteNode().getPath());
+            for (String s : (List<String>) JahiaGWTParameters.getSiteNode().getProperties().get("j:dependencies")) {
+                for (GWTJahiaNode n : JahiaGWTParameters.getSitesMap().values()) {
+                    if (n.getName().equals(s)) {
+                        paths.add(n.getPath());
 
-        // Open popup to select module
-
-        final com.extjs.gxt.ui.client.widget.Window popup = new com.extjs.gxt.ui.client.widget.Window();
-        popup.setHeading(Messages.get("label.addView", "Add view"));
-        popup.setHeight(200);
-        popup.setWidth(350);
-        popup.setModal(true);
-        FormPanel f = new FormPanel();
-        f.setHeaderVisible(false);
-
-        final TextField<String> nodeTypeField = new TextField<String>();
-        nodeTypeField.setFieldLabel(Messages.get("label.nodetype", "Nodetype"));
-        nodeTypeField.setValue(nodeType);
-        f.add(nodeTypeField);
-
-        final TextField<String> templateTypeField = new TextField<String>();
-        templateTypeField.setFieldLabel(Messages.get("label.templateType", "Template type"));
-        templateTypeField.setValue(templateType);
-        f.add(templateTypeField);
-
-        final TextField<String> viewNameField = new TextField<String>();
-        viewNameField.setFieldLabel(Messages.get("label.viewName", "View name"));
-        f.add(viewNameField);
-
-        Button b = new Button(Messages.get("label.submit", "submit"));
-        f.addButton(b);
-        b.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent buttonEvent) {
-                String newNodeType = nodeTypeField.getValue();
-                if (newNodeType == null || newNodeType.trim().equals("") || newNodeType.contains("/")) {
-                    Window.alert(Messages.get("label.nodetype.wrong", "Nodetype is not well formed."));
-                    return;
-                }
-                newNodeType = newNodeType.replaceAll(":", "_");
-                String newTemplateType = templateTypeField.getValue();
-                if (newTemplateType == null || newTemplateType.trim().equals("") || newTemplateType.contains("/")) {
-                    Window.alert(Messages.get("label.templateType.wrong", "Template type is not well formed."));
-                    return;
-                }
-                String viewName = viewNameField.getValue();
-                if (viewName == null || viewName.trim().equals("") || viewName.contains("/")) {
-                    Window.alert(Messages.get("label.viewName.wrong", "View name is not well formed."));
-                    return;
-                }
-                String parentPath = basePath + "/" + newNodeType + "/" + newTemplateType;
-//                parent.setPath(parentPath);
-                final String targetName = newNodeType.substring(newNodeType.indexOf(':') + 1) + "." + viewName + ".jsp";
-
-                JahiaContentManagementService.App.getInstance().getNodeType("jnt:viewFile", new BaseAsyncCallback<GWTJahiaNodeType>() {
-                    public void onSuccess(GWTJahiaNodeType nodeType) {
-                        EngineLoader.showCreateEngine(linker, parent, nodeType, new HashMap<String, GWTJahiaNodeProperty>(), targetName, false);
                     }
-                });
-
-                popup.hide();
+                }
             }
-        });
-        Button c = new Button(Messages.get("label.cancel", "Cancel"));
-        c.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent buttonEvent) {
-                popup.hide();
-            }
-        });
-        f.addButton(c);
-        f.setButtonAlign(Style.HorizontalAlignment.CENTER);
 
-        FormButtonBinding binding = new FormButtonBinding(f);
-        binding.addButton(b);
-        popup.add(f);
-        popup.show();
+
+            JahiaContentManagementService.App.getInstance().getContentTypesAsTree(paths, Arrays.asList("nt:base"), Arrays.asList("name"), true,  false,
+                    new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                        public void onSuccess(List<GWTJahiaNode> result) {
+                            final com.extjs.gxt.ui.client.widget.Window popup = new com.extjs.gxt.ui.client.widget.Window();
+                            popup.setHeading(Messages.get("label.addView", "Add view"));
+                            popup.setHeight(200);
+                            popup.setWidth(350);
+                            popup.setModal(true);
+                            popup.setLayout(new FillLayout());
+                            ContentTypeTree contentTypeTree = new ContentTypeTree();
+                            contentTypeTree.fillStore(result);
+                            TreeGrid treeGrid = contentTypeTree.getTreeGrid();
+                            treeGrid.sinkEvents(Event.ONDBLCLICK + Event.ONCLICK);
+                            treeGrid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
+                                public void handleEvent(BaseEvent baseEvent) {
+                                    GWTJahiaNodeType gwtJahiaNodeType = (GWTJahiaNodeType) (((TreeGridEvent) baseEvent).getModel()).get("componentNodeType");
+                                    if (gwtJahiaNodeType != null && linker != null && !gwtJahiaNodeType.isMixin()) {
+                                        createEngine(fileNodeType, selectedNode, gwtJahiaNodeType.getName().replaceAll(":", "_"));
+                                        popup.hide();
+                                    }
+                                }
+                            });
+                            popup.add(contentTypeTree);
+                            popup.show();
+                        }
+                    }
+            );
+
+
+        } else {
+            createEngine(fileNodeType,selectedNode,filePath[3]);
+        }
+    }
+
+    private void createEngine(GWTJahiaNodeType nodeType, GWTJahiaNode selectedNode, String targetName) {
+
+        EngineLoader.showCreateEngine(linker, selectedNode, nodeType, new HashMap<String, GWTJahiaNodeProperty>(), targetName, false);
     }
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         GWTJahiaNode n = lh.getSingleSelection();
-        if (n != null) {
-            boolean isValidParent = false;
-            for (String s : parentTypesAsList) {
-                isValidParent = n.getNodeTypes().contains(s) || n.getInheritedNodeTypes().contains(s);
-                if (isValidParent) {
-                    break;
-                }
-            }
-            setEnabled(isValidParent && !"".equals(n.getChildConstraints().trim())
-                    && !lh.isLocked()
-                    && hasPermission(lh.getSelectionPermissions())
-                    && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()));
-        } else {
-            setEnabled(false);
-        }
+        setEnabled(!"".equals(n.getChildConstraints().trim())
+                && !lh.isLocked()
+                && hasPermission(lh.getSelectionPermissions())
+                && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()));
     }
 }

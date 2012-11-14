@@ -79,16 +79,32 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 final String[] filePath = engine.getLinker().getSelectionContext().getMainNode().getPath().split("/");
-                if (filePath.length != 7) {
+
+                String mv;
+                String ft;
+                String ftt;
+                String fn = "";
+                if ("modulesFileSystem".equals(filePath[1])) {
+                    mv = filePath[3];
+                    ft = filePath[4];
+                    fn = filePath.length > 6?filePath[6]:ft.substring(ft.indexOf("_") + 1) + ".jsp";
+                    ftt = filePath.length >5?filePath[5]:"html";
+                } else if ("modules".equals(filePath[1])) {
+                    mv = (String) JahiaGWTParameters.getSiteNode().getProperties().get("j:versionInfo");
+                    ft = ((CreateContentEngine) engine).getTargetName();
+                    ftt = "html";
+                    fn = ft.substring(ft.indexOf("_") + 1) + ".jsp";
+                } else {
                     MessageBox.alert("save not work as expected", "An issue occurs when trying to resolve " + engine.getLinker().getSelectionContext().getMainNode().getPath(), null);
+                    return;
                 }
-                final String modulePath = "/" + filePath[1] + "/" + filePath[2];
+                final String modulePath = "/modulesFileSystem/" + filePath[2];
                 final String moduleName = filePath[2];
-                final String moduleVersion = filePath[3];
-                final String fileName = filePath[6];
+                final String moduleVersion = mv;
+                final String fileName = fn;
                 final String fileView = fileName.indexOf(".") == fileName.lastIndexOf(".") ? "" : fileName.substring(fileName.indexOf(".") + 1, fileName.lastIndexOf("."));
-                final String fileType = filePath[4];
-                final String fileTemplateType = filePath[5];
+                final String fileType = ft;
+                final String fileTemplateType = ftt;
 
 
                 // Open popup to select module
@@ -106,8 +122,8 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                     dependenciesCombo.setFieldLabel(Messages.get("label.module", "module"));
                     dependenciesCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
                     dependenciesCombo.add(moduleName);
-                    for (String s : (List<String>) JahiaGWTParameters.getSiteNode().getProperties().get("j:dependencies")) {
-                        dependenciesCombo.add(s);
+                    for (GWTJahiaNode n : JahiaGWTParameters.getSitesMap().values()) {
+                        dependenciesCombo.add(n.getName());
                     }
                     dependenciesCombo.setSimpleValue(moduleName);
                     f.add(dependenciesCombo);
@@ -136,7 +152,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                                 if (n.getName().equals(dependenciesCombo.getSimpleValue())) {
                                     newModuleNode = n;
                                     newModuleName = dependenciesCombo.getSimpleValue();
-                                    newModulePath = n.getPath().replace("/modules/", "/" + filePath[1] + "/");
+                                    newModulePath = n.getPath().replace("/modules/", "/modulesFileSystem/");
                                     newModuleVersion = (String) n.getProperties().get("j:versionInfo");
                                     break;
                                 }
@@ -152,7 +168,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                         String newViewName = fileType.split("_")[1] + newfileView + fileName.substring(fileName.lastIndexOf("."));
                         Map<String, String> parentNodesType = new LinkedHashMap<java.lang.String, java.lang.String>();
 
-                        parentNodesType.put(filePath[1], "jnt:folder");
+                        parentNodesType.put("modulesFileSystem", "jnt:folder");
                         parentNodesType.put(newModuleName, "jnt:folder");
                         parentNodesType.put(newModuleVersion, "jnt:folder");
                         parentNodesType.put(fileType, "jnt:folder");
@@ -191,12 +207,18 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
             EditEngineTabItem item = tab.getData("item");
             item.doSave(null, engine.getChangedProperties(), engine.getChangedI18NProperties(), addedTypes, removedTypes, engine.getAcl());
         }
-        for (GWTJahiaNodeProperty p : properties) {
-            for (GWTJahiaNodeProperty p1 : engine.getChangedProperties()) {
-                if (p.getName().equals(p1.getName())) {
-                    properties.get(properties.indexOf(p)).setValues(p1.getValues());
+        if (properties.size() > 0) {
+            // Edit
+            for (GWTJahiaNodeProperty p : properties) {
+                for (GWTJahiaNodeProperty p1 : engine.getChangedProperties()) {
+                    if (p.getName().equals(p1.getName())) {
+                        properties.get(properties.indexOf(p)).setValues(p1.getValues());
+                    }
                 }
             }
+        } else {
+            // Create
+            properties = engine.getChangedProperties();
         }
         JahiaContentManagementService.App.getInstance().createNode(modulePath, viewName, "jnt:viewFile", null, engine.getAcl(), properties, engine.changedI18NProperties, parentNodesType, new AsyncCallback<GWTJahiaNode>() {
             public void onFailure(Throwable throwable) {

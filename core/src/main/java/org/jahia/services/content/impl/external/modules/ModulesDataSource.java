@@ -59,10 +59,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
 import org.springframework.core.io.Resource;
 
-import javax.jcr.Binary;
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.io.*;
 import java.net.URISyntaxException;
@@ -319,12 +316,21 @@ public class ModulesDataSource extends VFSDataSource {
                                 }
                                 propertyValue.append(s);
                             }
-                            properties.put(property,propertyValue.toString());
+                            if (type.getDeclaredPropertyDefinitionsAsMap().get(property).getRequiredType() != PropertyType.BOOLEAN || !propertyValue.toString().equals("false")) {
+                                properties.put(property,propertyValue.toString());
+                            }
                         }
                     }
                 }
-                outputStream = getFile(data.getPath().substring(0,data.getPath().lastIndexOf(".")) + ".properties").getContent().getOutputStream();
-                properties.store(outputStream,data.getPath());
+                FileObject file = getFile(data.getPath().substring(0, data.getPath().lastIndexOf(".")) + ".properties");
+                if (!properties.isEmpty()) {
+                    outputStream = file.getContent().getOutputStream();
+                    properties.store(outputStream, data.getPath());
+                } else {
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                }
             } catch (FileSystemException e) {
                 logger.error(e.getMessage(), e);
             } catch (IOException e) {

@@ -419,7 +419,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         GWTJahiaNode tagNode = navigation.getTagNode(s, getSite());
         if (tagNode == null && create) {
             return createNode(navigation.getTagsNode(getSite()).getPath(), s, "jnt:tag", null, null,
-                    new ArrayList<GWTJahiaNodeProperty>(), null,null);
+                    new ArrayList<GWTJahiaNodeProperty>(), null,null,true);
         } else {
             return tagNode;
         }
@@ -791,6 +791,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      *
      *
      *
+     *
      * @param parentPath
      * @param name
      * @param nodeType
@@ -799,12 +800,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param props
      * @param langCodeProperties
      * @param parentNodesType
+     * @param forceCreation
      * @return
      * @throws GWTJahiaServiceException
      */
     public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin,
                                    GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props,
-                                   Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, Map<String, String> parentNodesType)
+                                   Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, Map<String, String> parentNodesType, boolean forceCreation)
             throws GWTJahiaServiceException {
         if (name == null) {
             if (langCodeProperties != null) {
@@ -822,7 +824,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
         }
         final JCRSessionWrapper session = retrieveCurrentSession();
-        GWTJahiaNode res = contentManager.createNode(parentPath, name, nodeType, mixin, props, session, getUILocale(), parentNodesType);
+        GWTJahiaNode res = contentManager.createNode(parentPath, name, nodeType, mixin, props, session, getUILocale(), parentNodesType, forceCreation);
         List<String> fields = Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.PERMISSIONS, GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
         GWTJahiaNode node;
         try {
@@ -890,7 +892,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         final GWTJahiaNode parentNode = navigation.getParentNode(path, retrieveCurrentSession());
 
         GWTJahiaNode jahiaNode =
-                createNode(parentNode.getPath(), name, nodeType, mixin, acl, properties, langCodeProperties,null);
+                createNode(parentNode.getPath(), name, nodeType, mixin, acl, properties, langCodeProperties,null,true);
 
         try {
             contentManager.moveOnTopOf(jahiaNode.getPath(), path, retrieveCurrentSession());
@@ -2051,7 +2053,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         createNode("/remotePublications", JCRContentUtils.generateNodeName(nodeName),
                 "jnt:remotePublication", null, null, gwtProps,
-                new HashMap<String, List<GWTJahiaNodeProperty>>(),null);
+                new HashMap<String, List<GWTJahiaNodeProperty>>(),null,true);
 
         return true;
     }

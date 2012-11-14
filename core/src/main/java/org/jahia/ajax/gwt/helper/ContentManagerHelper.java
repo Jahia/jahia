@@ -166,7 +166,7 @@ public class ContentManagerHelper {
     }
 
     public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin,
-                                   List<GWTJahiaNodeProperty> props, JCRSessionWrapper currentUserSession, Locale uiLocale, Map<String, String> parentNodesType)
+                                   List<GWTJahiaNodeProperty> props, JCRSessionWrapper currentUserSession, Locale uiLocale, Map<String, String> parentNodesType, boolean forceCreation)
             throws GWTJahiaServiceException {
         JCRNodeWrapper parentNode;
         final JCRSessionWrapper jcrSessionWrapper;
@@ -186,15 +186,15 @@ public class ContentManagerHelper {
             parentNode = jcrSessionWrapper.getNode(parentPath);
             String nodeName = JCRContentUtils.escapeLocalNodeName(name);
 
+            if (!forceCreation && checkExistence(parentPath + "/" + nodeName, currentUserSession, uiLocale)) {
+                throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.already.exists.with.name", uiLocale), nodeName));
+            }
+
             if (nodeName == null) {
                 nodeName = findAvailableName(parentNode, nodeType.substring(nodeType.lastIndexOf(":") + 1)
                 );
             } else {
                 nodeName = findAvailableName(parentNode, nodeName);
-            }
-
-            if (checkExistence(parentPath + "/" + nodeName, currentUserSession, uiLocale)) {
-                throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.already.exists.with.name", uiLocale), nodeName));
             }
 
             JCRNodeWrapper childNode = addNode(parentNode, nodeName, nodeType, mixin, props, uiLocale);
@@ -233,7 +233,7 @@ public class ContentManagerHelper {
         try {
             jcrSessionWrapper = currentUserSession;
             parentNode = jcrSessionWrapper.getNode(parentPath);
-            newNode = createNode(parentPath, name, parentNode.isNodeType("jnt:folder") ? "jnt:folder" : "jnt:contentList", null, null, currentUserSession, uiLocale, null);
+            newNode = createNode(parentPath, name, parentNode.isNodeType("jnt:folder") ? "jnt:folder" : "jnt:contentList", null, null, currentUserSession, uiLocale, null, true);
             currentUserSession.save();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -1420,7 +1420,7 @@ public class ContentManagerHelper {
             for (GWTJahiaNode condition : conditions) {
                 List<GWTJahiaNodeProperty> props = condition.<List<GWTJahiaNodeProperty>>get("gwtproperties");
                 if (condition.get("new-node") != null) {
-                    GWTJahiaNode n = createNode(path, condition.getName(), condition.getNodeTypes().get(0), new ArrayList<String>(), props, session, uiLocale, null);
+                    GWTJahiaNode n = createNode(path, condition.getName(), condition.getNodeTypes().get(0), new ArrayList<String>(), props, session, uiLocale, null, true);
                     condition.setUUID(n.getUUID());
                     condition.setPath(n.getPath());
                 } else {

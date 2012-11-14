@@ -51,6 +51,8 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -84,7 +86,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
 
     @Override
     public void init(final NodeHolder engine, final AsyncTabItem tab, String locale) {
-        tab.setLayout(new FlowLayout());
+        tab.setLayout(new BorderLayout());
         tab.setScrollMode(Style.Scroll.AUTO);
         if (!tab.isProcessed()) {
             // Add list of properties
@@ -150,7 +152,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                     horizontalPanel.add(label);
                     horizontalPanel.add(mirrorTemplates);
                     horizontalPanel.add(button);
-                    tab.add(horizontalPanel);
+                    tab.add(horizontalPanel, new BorderLayoutData(Style.LayoutRegion.NORTH, 40));
                 }
             }
             //Add code source
@@ -183,7 +185,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
         if (!values.isEmpty()) {
             codeField.setValue(values.get(0).getString());
         }
-        tab.add(codeField);
+        tab.add(codeField, new BorderLayoutData(Style.LayoutRegion.CENTER));
         tab.layout();
         tab.show();
         tab.setProcessed(true);

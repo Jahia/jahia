@@ -81,8 +81,7 @@ public class NewViewActionItem extends BaseActionItem  {
         String parentType = selectedNode.getNodeTypes().get(0);
         String[] filePath = selectedNode.getPath().split("/");
         final GWTJahiaNodeType fileNodeType = new GWTJahiaNodeType("jnt:viewFile");
-
-        if (!"modulesFileSystem".equals(filePath[1])) {
+        if (!"modulesFileSystem".equals(filePath[1]) || (filePath.length > 4 && !filePath[4].contains("_"))) {
             // Open popup to select nodeType
 
             ArrayList<String> paths = new ArrayList<String>();
@@ -127,7 +126,7 @@ public class NewViewActionItem extends BaseActionItem  {
 
 
         } else {
-            createEngine(fileNodeType,selectedNode,filePath[3]);
+            createEngine(fileNodeType,selectedNode,filePath[4]);
         }
     }
 
@@ -139,9 +138,16 @@ public class NewViewActionItem extends BaseActionItem  {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         GWTJahiaNode n = lh.getSingleSelection();
-        setEnabled(!"".equals(n.getChildConstraints().trim())
+        boolean enabled = !"".equals(n.getChildConstraints().trim())
                 && !lh.isLocked()
                 && hasPermission(lh.getSelectionPermissions())
-                && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()));
+                && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions());
+        setEnabled(enabled) ;
+        if (enabled && n.getPath().startsWith("/modulesFileSystem") && n.getName().contains("_")) {
+            updateTitle(getGwtToolbarItem().getTitle() + " : " + n.getDisplayName());
+        } else {
+            updateTitle(getGwtToolbarItem().getTitle());
+        }
     }
+
 }

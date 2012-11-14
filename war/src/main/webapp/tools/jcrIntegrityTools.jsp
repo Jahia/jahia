@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ page import="org.jahia.ajax.gwt.helper.CacheHelper" %>
 <%@ page import="org.jahia.api.Constants" %>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
@@ -7,6 +9,7 @@
 <%@ page import="org.jahia.services.content.JCRSessionWrapper" %>
 <%@ page import="org.jahia.services.content.JCRTemplate" %>
 <%@ page import="org.jahia.utils.RequestLoadAverage" %>
+<%@ page import="org.apache.commons.io.IOUtils" %>
 <%@ page import="org.quartz.JobDetail" %>
 <%@ page import="org.quartz.SchedulerException" %>
 <%@ page import="javax.jcr.*" %>
@@ -18,8 +21,6 @@
 <%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
@@ -100,7 +101,7 @@
         long bytesRead;
         long totalTime;
         final boolean referencesCheck = fix || !isParameterActive(request, "option", "noReferencesCheck");
-        final boolean binaryCheck = fix || !isParameterActive(request, "option", "noBinariesCheck");
+        final boolean binaryCheck = !isParameterActive(request, "option", "noBinariesCheck");
         if (fix) {
             printTestName(out, "JCR Integrity Fix");
         } else {
@@ -135,7 +136,7 @@
                             Workspace workspace = jcrSession.getWorkspace();
                             try {
                                 println(out, "Traversing " + workspace.getName() + " workspace ...");
-                                processNode(out, jcrRootNode, results, fix, binaryCheck, referencesCheck);
+                                processNode(out, jcrRootNode, results, fix, referencesCheck, binaryCheck);
                             } catch (IOException e) {
                                 throw new RepositoryException("IOException while running", e);
                             }
@@ -253,17 +254,32 @@
         int propertyType = propertyValue.getType();
         switch (propertyType) {
             case PropertyType.BINARY:
-                Binary binaryValue = propertyValue.getBinary();
-                binaryValue.getSize();
-                InputStream binaryInputStream = binaryValue.getStream();
+                if (!binaryCheck) {
+                    break;
+                }
+                Binary binaryValue = null;
+                //binaryValue.getSize();
                 long bytesRead = results.get("bytesRead");
-                while (binaryInputStream.read() != -1) {
-                    bytesRead++;
+                InputStream binaryInputStream = null;
+                try {
+                    binaryValue = propertyValue.getBinary();
+                    binaryInputStream = binaryValue.getStream();
+                    while (binaryInputStream.read() != -1) {
+                        bytesRead++;
+                    }
+                } finally {
+                    IOUtils.closeQuietly(binaryInputStream);
+                    if (binaryValue != null) {
+                        binaryValue.dispose();
+                    }
                 }
                 results.put("bytesRead", bytesRead);
                 break;
             case PropertyType.REFERENCE:
             case PropertyType.WEAKREFERENCE:
+                if (!referencesCheck) {
+                    break;
+                }
                 String uuid = propertyValue.getString();
                 try {
                     Node referencedNode = node.getSession().getNodeByIdentifier(uuid);
@@ -466,6 +482,7 @@
 %>
 <%
     if (request.getParameterMap().size() > 0) {
+        long timer = System.currentTimeMillis();
 
         if (isParameterActive(request, "operation", "runJCRTest")) {
             runJCRTest(out, request, pageContext, false);
@@ -479,14 +496,14 @@
             mustStop = true;
         }
 
-        out.println("<h2>Test completed.</h2>");
+        out.println("<h2>Test completed in " + (System.currentTimeMillis() - timer) + " ms.</h2>");
     } else {
         if (!running) {
             out.println("<form>");
             renderWorkspaceSelector(out);
             renderRadio(out, "runJCRTest", "Run Java Content Repository integrity check", true);
             renderCheckbox(out, "noReferencesCheck", "Do not check reference properties", false);
-            renderCheckbox(out, "noBinariesCheck", "Do not check binary properties", false);
+            renderCheckbox(out, "noBinariesCheck", "Do not check binary properties", true);
             renderRadio(out, "fixJCR", "Fix full Java Content Repository integrity (also performs check). DO NOT RUN IF PLATFORM IS ACTIVE (USERS, BACKGROUND JOBS ARE RUNNING !). Also this operation WILL DELETE node with invalid references so please backup your data before running this fix!", false);            
             out.println("<input type=\"submit\" name=\"submit\" value=\"Submit\">");
             out.println("</form>");

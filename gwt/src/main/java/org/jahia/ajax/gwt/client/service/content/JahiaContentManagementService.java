@@ -413,6 +413,8 @@ public interface JahiaContentManagementService extends RemoteService {
 
     String getStub(String stubType);
 
+    RpcMap initializeCodeEditor(String nodeType, String fileType) throws GWTJahiaServiceException;
+
 // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

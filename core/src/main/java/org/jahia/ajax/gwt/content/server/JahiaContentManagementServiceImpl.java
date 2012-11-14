@@ -2231,4 +2231,34 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public String getStub(String stubType) {
         return stubHelper.getStub(stubType);
     }
+
+    public RpcMap initializeCodeEditor(String nodeType, String fileType) throws GWTJahiaServiceException {
+
+        RpcMap r = new RpcMap();
+
+        r.put("nodeType", contentDefinition.getNodeType(nodeType, getUILocale()));
+
+        List<GWTJahiaValueDisplayBean> snippets = new ArrayList<GWTJahiaValueDisplayBean>();
+        String stub = stubHelper.getStub("snippets."+fileType);
+        for (String s : stub.split("\n")) {
+            snippets.add(new GWTJahiaValueDisplayBean(s, s));
+        }
+
+
+        Map<String, Set<String>> availableResources = template.getAvailableResources(getSite().getName());
+        r.put("availableResources", availableResources);
+
+        String addResourceStub = stubHelper.getStub("addResource.snippet." +fileType);
+        if (!StringUtils.isEmpty(addResourceStub)) {
+            for (Map.Entry<String, Set<String>> entry : availableResources.entrySet()) {
+                String addResource = addResourceStub.replace("__resourceType__",entry.getKey());
+                for (String s : entry.getValue()) {
+                    snippets.add(new GWTJahiaValueDisplayBean(addResource.replace("__resource__", s),"Add resource " + s));
+                }
+            }
+        }
+        r.put("snippets",snippets);
+
+        return r;
+    }
 }

@@ -40,10 +40,14 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
 import org.jahia.bin.Render;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelService;
@@ -237,6 +241,41 @@ public class TemplateHelper {
             }
         }
         return result;
+    }
+
+
+    public Map<String,Set<String>> getAvailableResources(String moduleName) {
+        Map<String, Set<String>> m  = new HashMap<String, Set<String>>();
+        m.put("css",getAvailableResources(moduleName, "css", ".css"));
+        m.put("javascript", getAvailableResources(moduleName, "javascript", ".js"));
+        return m;
+    }
+
+    public Set<String> getAvailableResources(String moduleName, String type, String ext) {
+        Set<String> resources = new HashSet<String>();
+
+        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName);
+
+        Set<JahiaTemplatesPackage> packages = new LinkedHashSet<JahiaTemplatesPackage>();
+        packages.add(aPackage);
+        for (JahiaTemplatesPackage pack : aPackage.getDependencies()) {
+            packages.add(pack);
+        }
+
+        for (JahiaTemplatesPackage pack : packages) {
+            String path = pack.getRootFolderPath() + "/" + pack.getVersion() +"/" + type + "/";
+
+            Set<String> paths = JahiaContextLoaderListener.getServletContext().getResourcePaths(path);
+            if (paths != null) {
+                for (String resourcePath : paths) {
+                    String resourceName = StringUtils.substringAfterLast(resourcePath, "/");
+                    if (resourceName.endsWith(ext)) {
+                        resources.add(resourceName);
+                    }
+                }
+            }
+        }
+        return resources;
     }
 
 }

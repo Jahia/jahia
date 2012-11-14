@@ -71,17 +71,33 @@ public class NewViewActionItem extends BaseActionItem  {
 
     protected List<String> parentTypesAsList;
 
+    private transient GWTJahiaNodeType fileNodeType;
+
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem, linker);
         parentTypesAsList = Arrays.asList("jnt:moduleVersionFolder", "jnt:nodeTypeFolder", "jnt:templateTypeFolder");
     }
 
     public void onComponentSelection() {
+        if (fileNodeType == null) {
+            linker.loading(Messages.get("label.loading", "Loading"));
+            JahiaContentManagementService.App.getInstance().getNodeType("jnt:viewFile", new BaseAsyncCallback<GWTJahiaNodeType>() {
+                @Override
+                public void onSuccess(GWTJahiaNodeType result) {
+                    fileNodeType = result;
+                    newView(linker, true);
+                }
+            });
+        } else {
+            newView(linker, false);
+        }
+    }
+
+    private void newView(final Linker linker, boolean isLoading) {
         final GWTJahiaNode selectedNode = linker.getSelectionContext().getSingleSelection();
-        String parentType = selectedNode.getNodeTypes().get(0);
-        String[] filePath = selectedNode.getPath().split("/");
-        final GWTJahiaNodeType fileNodeType = new GWTJahiaNodeType("jnt:viewFile");
-        if (!"modulesFileSystem".equals(filePath[1]) || (filePath.length > 4 && !filePath[4].contains("_"))) {
+        final String[] filePath = selectedNode.getPath().split("/");
+
+        if (!"modulesFileSystem".equals(filePath[1]) || !filePath[4].contains("_")) {
             // Open popup to select nodeType
 
             ArrayList<String> paths = new ArrayList<String>();
@@ -95,10 +111,13 @@ public class NewViewActionItem extends BaseActionItem  {
                 }
             }
 
-
+            if (!isLoading) {
+                linker.loading(Messages.get("label.loading", "Loading"));
+            }
             JahiaContentManagementService.App.getInstance().getContentTypesAsTree(paths, Arrays.asList("nt:base"), Arrays.asList("name"), true,  false,
                     new BaseAsyncCallback<List<GWTJahiaNode>>() {
                         public void onSuccess(List<GWTJahiaNode> result) {
+                            linker.loaded();
                             final com.extjs.gxt.ui.client.widget.Window popup = new com.extjs.gxt.ui.client.widget.Window();
                             popup.setHeading(Messages.get("label.addView", "Add view"));
                             popup.setHeight(200);
@@ -121,11 +140,21 @@ public class NewViewActionItem extends BaseActionItem  {
                             popup.add(contentTypeTree);
                             popup.show();
                         }
+
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            linker.loaded();
+                            super.onFailure(caught);
+                        }
                     }
+
             );
 
 
         } else {
+            if (isLoading) {
+                linker.loaded();
+            }
             createEngine(fileNodeType,selectedNode,filePath[4]);
         }
     }
@@ -139,15 +168,17 @@ public class NewViewActionItem extends BaseActionItem  {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         GWTJahiaNode n = lh.getSingleSelection();
+
+        String[] filePath = n.getPath().split("/");
         boolean enabled = !"".equals(n.getChildConstraints().trim())
                 && !lh.isLocked()
                 && hasPermission(lh.getSelectionPermissions())
                 && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions());
         setEnabled(enabled) ;
-        if (enabled && n.getPath().startsWith("/modulesFileSystem") && n.getName().contains("_")) {
-            updateTitle(getGwtToolbarItem().getTitle() + " : " + n.getDisplayName());
-        } else {
+        if (!enabled || !"modulesFileSystem".equals(filePath[1]) || !filePath[4].contains("_")) {
             updateTitle(getGwtToolbarItem().getTitle());
+        } else {
+            updateTitle(getGwtToolbarItem().getTitle() + " : " + filePath[4]);
         }
     }
 

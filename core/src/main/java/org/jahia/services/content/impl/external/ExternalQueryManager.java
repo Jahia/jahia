@@ -217,7 +217,7 @@ public class ExternalQueryManager implements QueryManager {
                     return r;
                 }
             }
-            return workspace.getSession().getRepository().getDataSource().search(root, type.getName(), search,null,-1);
+            return ((ExternalDataSource.Searchable)workspace.getSession().getRepository().getDataSource()).search(root, type.getName(), search,null,-1);
         }
 
         private void addConstraints(Map<String, String> search, Constraint constraint) throws RepositoryException {

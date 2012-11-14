@@ -166,10 +166,16 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
     }
 
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+        if (!(session.getRepository().getDataSource() instanceof ExternalDataSource.Writable)) {
+            throw new UnsupportedRepositoryOperationException();
+        }
         session.getDeletedData().put(getPath(),data);
     }
 
     public void removeProperty(String name) throws RepositoryException {
+        if (!(session.getRepository().getDataSource() instanceof ExternalDataSource.Writable)) {
+            throw new UnsupportedRepositoryOperationException();
+        }
         data.getBinaryProperties().remove(name);
         data.getProperties().remove(name);
         session.getChangedData().put(getPath(),data);
@@ -180,6 +186,9 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
     }
 
     public Node addNode(String relPath, String primaryNodeTypeName) throws ItemExistsException, PathNotFoundException, NoSuchNodeTypeException, LockException, VersionException, ConstraintViolationException, RepositoryException {
+        if (!(session.getRepository().getDataSource() instanceof ExternalDataSource.Writable)) {
+            throw new UnsupportedRepositoryOperationException();
+        }
         ExternalData data = new ExternalData(this.data.getId() + "/" + relPath ,getPath() + "/" + relPath,primaryNodeTypeName,new HashMap<String, String[]>());
         session.getChangedData().put(data.getPath(),data);
         return  new ExternalNodeImpl(data,session);
@@ -190,6 +199,9 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
     }
 
     public Property setProperty(String name, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        if (!(session.getRepository().getDataSource() instanceof ExternalDataSource.Writable)) {
+            throw new UnsupportedRepositoryOperationException();
+        }
         data.getProperties().put(name, new String[]{value.getString()});
         session.getChangedData().put(getPath(),data);
         return new ExternalPropertyImpl(new Name(name,NodeTypeRegistry.getInstance().getNamespaces()),this,(ExternalSessionImpl) getSession(), value);
@@ -200,6 +212,9 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
     }
 
     public Property setProperty(String name, Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        if (!(session.getRepository().getDataSource() instanceof ExternalDataSource.Writable)) {
+            throw new UnsupportedRepositoryOperationException();
+        }
         String[]  s = null;
         if (values != null) {
             s = new String[values.length];
@@ -240,6 +255,9 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
     }
 
     public Property setProperty(String name, InputStream value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        if (!(session.getRepository().getDataSource() instanceof ExternalDataSource.Writable)) {
+            throw new UnsupportedRepositoryOperationException();
+        }
         Value v = null;
         try{
             Binary[] b = {new BinaryImpl(value)};

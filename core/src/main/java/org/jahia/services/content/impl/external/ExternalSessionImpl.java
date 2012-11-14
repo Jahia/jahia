@@ -40,6 +40,7 @@
 
 package org.jahia.services.content.impl.external;
 
+import javassist.compiler.ast.InstanceOfExpr;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRSessionFactory;
 import org.xml.sax.ContentHandler;
@@ -169,14 +170,17 @@ public class ExternalSessionImpl implements Session {
     }
 
     public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
-        for(ExternalData data: changedData.values()) {
-            repository.getDataSource().saveItem(data);
+        if (repository.getDataSource() instanceof ExternalDataSource.Writable) {
+            ExternalDataSource.Writable writableDataSource = (ExternalDataSource.Writable) repository.getDataSource();
+            for(ExternalData data: changedData.values()) {
+                writableDataSource.saveItem(data);
+            }
+            changedData.clear();
+            for (String path : deletedData.keySet()) {
+                writableDataSource.removeItemByPath(path);
+            }
+            deletedData.clear();
         }
-        changedData.clear();
-        for (String path : deletedData.keySet()) {
-            repository.getDataSource().removeItemByPath(path);
-        }
-        deletedData.clear();
     }
 
     public void refresh(boolean b) throws RepositoryException {

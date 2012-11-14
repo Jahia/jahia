@@ -58,7 +58,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-public class VFSDataSource implements ExternalDataSource {
+public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Writable {
     private static final List<String> SUPPORTED_NODE_TYPES = Arrays.asList(Constants.JAHIANT_FILE, Constants.JAHIANT_FOLDER, Constants.JCR_CONTENT);
     public static final Logger logger = LoggerFactory.getLogger(VFSDataSource.class);
     private String root;
@@ -165,10 +165,6 @@ public class VFSDataSource implements ExternalDataSource {
 
     public void saveItem(ExternalData data) {
 
-    }
-
-    public List<String> search(String basePath, String type, Map<String, String> constraints, String orderBy, int limit) {
-        return new ArrayList<String>();
     }
 
     private ExternalData getFile(FileObject fileObject) throws FileSystemException {

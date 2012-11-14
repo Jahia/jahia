@@ -97,7 +97,10 @@ public class ExternalWorkspaceImpl implements Workspace {
     }
 
     public QueryManager getQueryManager() throws RepositoryException {
-        return new ExternalQueryManager(this);
+        if (session.getRepository().getDataSource() instanceof ExternalDataSource.Searchable) {
+            return new ExternalQueryManager(this);
+        }
+        return null;
     }
 
     public NamespaceRegistry getNamespaceRegistry() throws RepositoryException {

@@ -65,17 +65,22 @@
         </c:when>
 	</c:choose>
 </c:if>
-<p>Available actions:</p>
+<fieldset>
+<legend>On next Jahia startup</legend>
 <ul>
     <li><a href="?action=reindex">Repository re-indexing</a> - Do repository re-indexing on the next Jahia start</li>
     <li><a href="?action=index-fix">Repository index check and fix</a> - Do repository search indexes logical check and fix inconsistencies on the next Jahia start</li>
     <li><a href="?action=index-check">Repository index check (no repair)</a> - Do repository search indexes logical check just reporting inconsistencies in the log on the next Jahia start</li>
-    <br/>
-    <li><a href="?action=index-check-physical">Repository index physical check</a> - Do immediate repository search indexes physical consistency check and print out the results (Lucene CheckIndex tool)</li>
-    <br/>
-	<li><a href="?action=updateSpellCheckerIndex">Spell checker index update</a> - triggers an immediate update (no restart needed) of the spell checker
-	dictionary index used by the "Did you mean" search feature</li>
 </ul>
+</fieldset>
+<fieldset>
+<legend>Immediate</legend>
+<ul>
+    <li><a href="?action=index-check-physical">Repository index physical check</a> - Do immediate repository search indexes physical consistency check and print out the results (Lucene CheckIndex tool)</li>
+    <li><a href="?action=updateSpellCheckerIndex">Spell checker index update</a> - triggers an immediate update (no restart needed) of the spell checker
+    dictionary index used by the "Did you mean" search feature</li>
+</ul>
+</fieldset>
 <%@ include file="gotoIndex.jspf" %>
 </body>
 </html>

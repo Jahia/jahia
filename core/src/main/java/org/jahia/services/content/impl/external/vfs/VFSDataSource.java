@@ -40,6 +40,7 @@
 
 package org.jahia.services.content.impl.external.vfs;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.*;
 import org.apache.jackrabbit.util.ISO8601;
@@ -56,6 +57,8 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Writable {
@@ -164,7 +167,38 @@ public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Wr
     }
 
     public void saveItem(ExternalData data) {
+        if (data.getType().equals(Constants.NT_RESOURCE)) {
+            OutputStream outputStream = null;
+            try {
+                outputStream = getFile(data.getPath().substring(0, data.getPath().indexOf("/" + Constants.JCR_CONTENT))).getContent().getOutputStream();
+                final Binary[] binaries = data.getBinaryProperties().get(Constants.JCR_DATA);
+                for (Binary binary : binaries) {
+                    final InputStream stream = binary.getStream();
+                    byte[] bytes = new byte[(int) binary.getSize()];
+                    final int read = stream.read(bytes,0,(int) binary.getSize());
+                    outputStream.write(bytes,0, read);
+                }
+            } catch (FileSystemException e) {
+                logger.error(e.getMessage(), e);
+            } catch (UnsupportedEncodingException e) {
+                logger.error(e.getMessage(), e);
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            } finally {
+                IOUtils.closeQuietly(outputStream);
+            }
+        }
+    }
 
+    @Override
+    public void move(String oldPath, String newPath) throws PathNotFoundException {
+        try {
+            getFile(oldPath).moveTo(getFile(newPath));
+        } catch (FileSystemException e) {
+            throw new PathNotFoundException(oldPath);
+        }
     }
 
     private ExternalData getFile(FileObject fileObject) throws FileSystemException {
@@ -217,7 +251,6 @@ public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Wr
 
         ExternalData externalData = new ExternalData(null, path + "/"+Constants.JCR_CONTENT, Constants.NT_RESOURCE, properties);
         externalData.setBinaryProperties(binaryProperties);
-        externalData.setMixin(Arrays.asList("mix:mimeType"));
         return externalData;
     }
 
@@ -257,6 +290,9 @@ public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Wr
 
         public long getSize() throws RepositoryException {
             try {
+                if (!fileContent.getFile().exists()) {
+                    return 0;
+                }
                 return fileContent.getSize();
             } catch (FileSystemException e) {
                 throw new RepositoryException("Error retrieving file's size", e);

@@ -261,29 +261,9 @@ public class ModulesDataSource extends VFSDataSource {
 
     @Override
     public void saveItem(ExternalData data) {
+        super.saveItem(data);
         OutputStream outputStream = null;
-        if (data.getPath().endsWith(Constants.JCR_CONTENT)) {
-            try {
-                outputStream = getFile(data.getPath().substring(0, data.getPath().indexOf("/" + Constants.JCR_CONTENT))).getContent().getOutputStream();
-                final Binary[] binaries = data.getBinaryProperties().get(Constants.JCR_DATA);
-                for (Binary binary : binaries) {
-                    final InputStream stream = binary.getStream();
-                    byte[] bytes = new byte[(int) binary.getSize()];
-                    final int read = stream.read(bytes,0,(int) binary.getSize());
-                    outputStream.write(bytes,0, read);
-                }
-            } catch (FileSystemException e) {
-                logger.error(e.getMessage(), e);
-            } catch (UnsupportedEncodingException e) {
-                logger.error(e.getMessage(), e);
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            } finally {
-                IOUtils.closeQuietly(outputStream);
-            }
-        } else if (data.getType().equals(Constants.JAHIANT_VIEWFILE)) {
+        if (data.getType().equals(Constants.JAHIANT_VIEWFILE)) {
             // Handle source code
             try {
                 outputStream = getFile(data.getPath()).getContent().getOutputStream();

@@ -82,18 +82,27 @@ public class ExternalWorkspaceImpl implements Workspace {
     }
 
     public void copy(String s, String s1) throws ConstraintViolationException, VersionException, AccessDeniedException, PathNotFoundException, ItemExistsException, LockException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
     }
 
     public void copy(String s, String s1, String s2) throws NoSuchWorkspaceException, ConstraintViolationException, VersionException, AccessDeniedException, PathNotFoundException, ItemExistsException, LockException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
     }
 
     public void clone(String s, String s1, String s2, boolean b) throws NoSuchWorkspaceException, ConstraintViolationException, VersionException, AccessDeniedException, PathNotFoundException, ItemExistsException, LockException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
     }
 
-    public void move(String s, String s1) throws ConstraintViolationException, VersionException, AccessDeniedException, PathNotFoundException, ItemExistsException, LockException, RepositoryException {
+    public void move(String source, String dest) throws ConstraintViolationException, VersionException, AccessDeniedException, PathNotFoundException, ItemExistsException, LockException, RepositoryException {
+        if (session.getRepository().getDataSource() instanceof ExternalDataSource.Writable) {
+            ((ExternalDataSource.Writable) session.getRepository().getDataSource()).move(source, dest);
+        } else {
+            throw new UnsupportedRepositoryOperationException();
+        }
     }
 
     public void restore(Version[] versions, boolean b) throws ItemExistsException, UnsupportedRepositoryOperationException, VersionException, LockException, InvalidItemStateException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException();
     }
 
     public QueryManager getQueryManager() throws RepositoryException {

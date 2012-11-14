@@ -23,6 +23,8 @@ public interface ExternalDataSource {
     public interface Writable {
         void saveItem(ExternalData data) throws PathNotFoundException;
 
+        void move(String oldPath, String newPath) throws PathNotFoundException;
+
         void removeItemByPath(String path) throws PathNotFoundException;
     }
 

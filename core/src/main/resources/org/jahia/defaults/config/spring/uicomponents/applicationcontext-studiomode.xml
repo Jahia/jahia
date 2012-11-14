@@ -724,8 +724,6 @@
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
                                 <list>
-                                    <ref bean="Toolbar.Item.NewContentFolder"/>
-                                    <ref bean="Toolbar.Item.NewContent"/>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewViewActionItem" />
@@ -733,15 +731,14 @@
                                         <property name="titleKey" value="label.addView"/>
                                         <property name="icon" value="newContentTemplate"/>
                                     </bean>
-                                    <ref bean="Toolbar.Item.NewMenuAvailable"/>
+                                    <ref bean="Toolbar.Item.Upload"/>
+                                    <ref bean="Toolbar.Item.Download"/>
+                                    <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Undelete"/>
                                     <ref bean="Toolbar.Item.DeletePermanently"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
-                                    <ref bean="Toolbar.Item.PasteReference"/>
                                 </list>
                             </property>
                         </bean>

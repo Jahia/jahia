@@ -167,6 +167,12 @@ public class ExternalSessionImpl implements Session {
     }
 
     public void move(String source, String dest) throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+        //todo : store move in session and move node in save
+        if (repository.getDataSource() instanceof ExternalDataSource.Writable) {
+            ((ExternalDataSource.Writable) repository.getDataSource()).move(source, dest);
+        } else {
+            throw new UnsupportedRepositoryOperationException();
+        }
     }
 
     public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {

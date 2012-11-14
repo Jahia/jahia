@@ -812,6 +812,7 @@ extends = jnt:content
 //---------------------------------------------------------
 
 [jnt:moduleVersionFolder] > jnt:folder
+ - j:title (string) protected nofulltext primary
 
 [jnt:nodeTypeFolder] > jnt:folder
 

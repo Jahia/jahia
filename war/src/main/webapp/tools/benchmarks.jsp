@@ -466,8 +466,8 @@
         NodeIterator childNodeIterator = node.getNodes();
         while (childNodeIterator.hasNext()) {
             JCRNodeWrapper childNode = (JCRNodeWrapper) childNodeIterator.nextNode();
-            if (childNode.getName().equals("jcr:system")) {
-                println(out, "Ignoring jcr:system node and it's child objects");
+            if (childNode.getName().equals("jcr:system") || childNode.getPath().equals("/modulesFileSystem")) {
+                println(out, "Ignoring " + childNode.getName() + " node and it's child objects");
             } else {
                 if (!processNode(out, childNode, results)) {
                     break;

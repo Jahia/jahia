@@ -75,7 +75,7 @@ import java.util.*;
  * @author david
  * @since 6.7
  */
-public class ModulesDataSource extends VFSDataSource implements JahiaAfterInitializationService {
+public class ModulesDataSource extends VFSDataSource {
 
     private static final List<String> JCR_CONTENT_LIST = Arrays.asList(Constants.JCR_CONTENT);
 
@@ -86,7 +86,6 @@ public class ModulesDataSource extends VFSDataSource implements JahiaAfterInitia
     private List<String> supportedNodeTypes;
 
     private JahiaTemplateManagerService templateManagerService;
-    private Map<String,List<String>> codeMirrorTemplates;
 
     @Override
     public List<String> getChildren(String path) {
@@ -183,7 +182,7 @@ public class ModulesDataSource extends VFSDataSource implements JahiaAfterInitia
                 }
                 String[] propertyValue = {writer.toString()};
                 data.getProperties().put("sourceCode", propertyValue);
-                data.getProperties().put("codeMirrorTemplate",codeMirrorTemplates.get(".jsp").toArray(new String[codeMirrorTemplates.get(".jsp").size()]));
+                data.getProperties().put("nodeTypeName",new String[] { path.split("/")[3].replace("_",":") } );
             } catch (Exception e) {
                 logger.error("Failed to read source code", e);
             } finally {
@@ -210,15 +209,6 @@ public class ModulesDataSource extends VFSDataSource implements JahiaAfterInitia
             } finally {
                 IOUtils.closeQuietly(is);
             }
-            // Set source node type as a mixin
-            try {
-                FileObject fileObject = getFile(path);
-                String baseName = fileObject.getParent().getParent().getName().getBaseName();
-                data.setMixin(Arrays.asList(baseName.replaceAll("_",":")));
-            } catch (FileSystemException e) {
-                logger.error(e.getMessage(), e);
-            }
-
         } else if (path.endsWith(".properties")) {
             /* these properties should be read only on demand to avoid memory issues
             try {
@@ -379,20 +369,4 @@ public class ModulesDataSource extends VFSDataSource implements JahiaAfterInitia
         this.templateManagerService = templateManagerService;
     }
 
-    @Override
-    public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
-        try {
-            codeMirrorTemplates = new LinkedHashMap<String, List<String>>();
-            File directory = new File(SettingsBean.getInstance().getPathResolver().resolvePath(
-                    "/WEB-INF/etc/config/codeTemplates"));
-            Iterator<File> fileIterator = FileUtils.iterateFiles(directory, new String[]{"templates"},
-                    false);
-            while (fileIterator.hasNext()) {
-                File file = fileIterator.next();
-                codeMirrorTemplates.put("."+StringUtils.substringBeforeLast(file.getName(),"."),FileUtils.readLines(file,"UTF-8"));
-            }
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
 }

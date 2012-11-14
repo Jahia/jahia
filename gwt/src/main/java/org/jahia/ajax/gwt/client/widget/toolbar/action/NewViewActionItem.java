@@ -131,8 +131,9 @@ public class NewViewActionItem extends BaseActionItem  {
     }
 
     private void createEngine(GWTJahiaNodeType nodeType, GWTJahiaNode selectedNode, String targetName) {
-
-        EngineLoader.showCreateEngine(linker, selectedNode, nodeType, new HashMap<String, GWTJahiaNodeProperty>(), targetName, false);
+        HashMap<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>();
+        props.put("nodeTypeName", new GWTJahiaNodeProperty("nodeTypeName",targetName.replaceFirst("_",":")));
+        EngineLoader.showCreateEngine(linker, selectedNode, nodeType, props, targetName, false);
     }
 
     public void handleNewLinkerSelection() {

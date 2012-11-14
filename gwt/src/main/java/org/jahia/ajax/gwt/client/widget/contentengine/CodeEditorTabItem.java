@@ -90,71 +90,81 @@ public class CodeEditorTabItem extends EditEngineTabItem {
         tab.setScrollMode(Style.Scroll.AUTO);
         if (!tab.isProcessed()) {
             // Add list of properties
-            if (engine.getNodeTypes().size() >= 2) {
-                GWTJahiaNodeType nodeType = engine.getNodeTypes().get(1);
-                nodeProperties = new SimpleComboBox<String>();
-                nodeProperties.setTypeAhead(true);
-                nodeProperties.getListView().setStyleAttribute("font-size", "11px");
-                nodeProperties.setTriggerAction(ComboBox.TriggerAction.ALL);
-                nodeProperties.setForceSelection(true);
-                nodeProperties.setWidth(200);
-                nodeProperties.removeAllListeners();
-                nodeProperties.getStore().removeAll();
-                // fill modules type
-                Set<String> nodePropertiesSet = new LinkedHashSet<String>();
-                for (GWTJahiaItemDefinition definition : nodeType.getItems()) {
-                    if(!"*".equals(definition.getName()))
-                    nodePropertiesSet.add(definition.getName());
-                }
-                for (GWTJahiaItemDefinition definition : nodeType.getInheritedItems()) {
-                    if(!"*".equals(definition.getName()))
-                    nodePropertiesSet.add(definition.getName());
-                }
-                nodeProperties.add(new ArrayList<String>(nodePropertiesSet));
-                nodeProperties.getStore().sort("value", Style.SortDir.ASC);
-                nodeProperties.setAllowBlank(false);
-                GWTJahiaNodeProperty mirrorTemplate = engine.getProperties().get("codeMirrorTemplate");
-                if (mirrorTemplate != null && !mirrorTemplate.getValues().isEmpty()) {
-                    mirrorTemplates = new SimpleComboBox<String>();
-                    mirrorTemplates.setTypeAhead(true);
-                    mirrorTemplates.getListView().setStyleAttribute("font-size", "11px");
-                    mirrorTemplates.setTriggerAction(ComboBox.TriggerAction.ALL);
-                    mirrorTemplates.setForceSelection(true);
-                    mirrorTemplates.setWidth(200);
-                    mirrorTemplates.removeAllListeners();
-                    mirrorTemplates.getStore().removeAll();
-                    List<GWTJahiaNodePropertyValue> values = mirrorTemplate.getValues();
-                    Set<String> mirrorTemplatesSet = new LinkedHashSet<String>();
-                    for (GWTJahiaNodePropertyValue value : values) {
-                        mirrorTemplatesSet.add(value.getString());
-                    }
-                    mirrorTemplates.add(new ArrayList<String>(mirrorTemplatesSet));
-                    mirrorTemplates.getStore().sort("value", Style.SortDir.ASC);
-                    mirrorTemplates.setAllowBlank(false);
-                    Button button = new Button(Messages.get("label.add"));
-                    button.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                        @Override
-                        public void componentSelected(ButtonEvent buttonEvent) {
-                            String selectedProperty = nodeProperties.getSimpleValue();
-                            String mirrorTemplate = mirrorTemplates.getSimpleValue();
-                            codeField.insertProperty(mirrorTemplate.replaceAll("__value__", selectedProperty));
-                        }
-                    });
-                    HorizontalPanel horizontalPanel = new HorizontalPanel();
-                    horizontalPanel.setSpacing(10);
-                    horizontalPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
-                    Label label = new Label(Messages.get("label.properties"));
-                    label.setStyleAttribute("font-size", "11px");
-                    horizontalPanel.add(label);
-                    horizontalPanel.add(nodeProperties);
-                    label = new Label(Messages.get("label.codeMirrorTemplates","Code Template"));
-                    label.setStyleAttribute("font-size", "11px");
-                    horizontalPanel.add(label);
-                    horizontalPanel.add(mirrorTemplates);
-                    horizontalPanel.add(button);
-                    tab.add(horizontalPanel, new BorderLayoutData(Style.LayoutRegion.NORTH, 40));
-                }
+            GWTJahiaNodeProperty typeName = engine.getProperties().get("nodeTypeName");
+            if (typeName == null) {
+                typeName = engine.getPresetProperties().get("nodeTypeName");
             }
+
+            JahiaContentManagementService.App.getInstance().getNodeType(typeName.getValues().get(0).getString(),new BaseAsyncCallback<GWTJahiaNodeType>() {
+                @Override
+                public void onSuccess(GWTJahiaNodeType nodeType) {
+                    // fill modules type
+                    Set<String> nodePropertiesSet = new LinkedHashSet<String>();
+                    for (GWTJahiaItemDefinition definition : nodeType.getItems()) {
+                        if(!"*".equals(definition.getName()))
+                            nodePropertiesSet.add(definition.getName());
+                    }
+                    for (GWTJahiaItemDefinition definition : nodeType.getInheritedItems()) {
+                        if(!"*".equals(definition.getName()))
+                            nodePropertiesSet.add(definition.getName());
+                    }
+                    nodeProperties.add(new ArrayList<String>(nodePropertiesSet));
+                }
+            });
+
+            JahiaContentManagementService.App.getInstance().getStub(stubType + ".snippets", new BaseAsyncCallback<String>() {
+                public void onSuccess(String stub) {
+                    for (String s : stub.split("\n")) {
+                        mirrorTemplates.add(s);
+                    }
+                }
+            });
+
+
+            nodeProperties = new SimpleComboBox<String>();
+            nodeProperties.setTypeAhead(true);
+            nodeProperties.getListView().setStyleAttribute("font-size", "11px");
+            nodeProperties.setTriggerAction(ComboBox.TriggerAction.ALL);
+            nodeProperties.setForceSelection(true);
+            nodeProperties.setWidth(200);
+            nodeProperties.removeAllListeners();
+            nodeProperties.getStore().removeAll();
+            nodeProperties.getStore().sort("value", Style.SortDir.ASC);
+            nodeProperties.setAllowBlank(false);
+
+            mirrorTemplates = new SimpleComboBox<String>();
+            mirrorTemplates.setTypeAhead(true);
+            mirrorTemplates.getListView().setStyleAttribute("font-size", "11px");
+            mirrorTemplates.setTriggerAction(ComboBox.TriggerAction.ALL);
+            mirrorTemplates.setForceSelection(true);
+            mirrorTemplates.setWidth(200);
+            mirrorTemplates.removeAllListeners();
+            mirrorTemplates.getStore().removeAll();
+            mirrorTemplates.getStore().sort("value", Style.SortDir.ASC);
+            mirrorTemplates.setAllowBlank(false);
+            Button button = new Button(Messages.get("label.add"));
+            button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent buttonEvent) {
+                    String selectedProperty = nodeProperties.getSimpleValue();
+                    String mirrorTemplate = mirrorTemplates.getSimpleValue();
+                    codeField.insertProperty(mirrorTemplate.replaceAll("__value__", selectedProperty));
+                }
+            });
+            HorizontalPanel horizontalPanel = new HorizontalPanel();
+            horizontalPanel.setSpacing(10);
+            horizontalPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
+            Label label = new Label(Messages.get("label.properties"));
+            label.setStyleAttribute("font-size", "11px");
+            horizontalPanel.add(label);
+            horizontalPanel.add(nodeProperties);
+            label = new Label(Messages.get("label.codeMirrorTemplates","Code Template"));
+            label.setStyleAttribute("font-size", "11px");
+            horizontalPanel.add(label);
+            horizontalPanel.add(mirrorTemplates);
+            horizontalPanel.add(button);
+            tab.add(horizontalPanel, new BorderLayoutData(Style.LayoutRegion.NORTH, 40));
+
             //Add code source
             if (engine.getProperties().containsKey(codePropertyName)) {
                 codeProperty = engine.getProperties().get(codePropertyName);

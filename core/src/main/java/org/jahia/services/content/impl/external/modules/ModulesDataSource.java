@@ -220,6 +220,7 @@ public class ModulesDataSource extends VFSDataSource implements JahiaAfterInitia
             }
 
         } else if (path.endsWith(".properties")) {
+            /* these properties should be read only on demand to avoid memory issues
             try {
                 Properties properties = new Properties();
                 FileObject file = getFile(path.substring(0, path.lastIndexOf(".")) + ".properties");
@@ -261,6 +262,7 @@ public class ModulesDataSource extends VFSDataSource implements JahiaAfterInitia
             } catch (IOException e) {
                 logger.error("Cannot read property file",e);
             }
+            */
         }
         return data;
     }

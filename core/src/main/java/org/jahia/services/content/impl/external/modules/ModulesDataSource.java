@@ -49,6 +49,7 @@ import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileType;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.content.impl.external.ExternalData;
 import org.jahia.services.content.impl.external.vfs.VFSDataSource;
@@ -161,7 +162,14 @@ public class ModulesDataSource extends VFSDataSource implements JahiaAfterInitia
     }
 
     private ExternalData enhanceData(String path, ExternalData data) {
-        if (path.endsWith(".jsp")) {
+        if (data.getType().equals("jnt:moduleVersionFolder")) {
+            String v = StringUtils.substringAfterLast(data.getPath(), "/");
+            String name = StringUtils.substringBeforeLast(data.getPath(), "/");
+            name = StringUtils.substringAfterLast(name, "/");
+            name = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(name).getName();
+
+            data.getProperties().put("j:title", new String[]{name + " (" + v + ")"});
+        } else if (path.endsWith(".jsp")) {
             // set source code
             InputStream is = null;
             Writer writer = new StringWriter();

@@ -2237,6 +2237,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         RpcMap r = new RpcMap();
 
         r.put("nodeType", contentDefinition.getNodeType(nodeType, getUILocale()));
+        r.put("stub",  stubHelper.getStub(fileType));
 
         List<GWTJahiaValueDisplayBean> snippets = new ArrayList<GWTJahiaValueDisplayBean>();
         String stub = stubHelper.getStub("snippets."+fileType);

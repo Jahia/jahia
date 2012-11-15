@@ -44,6 +44,7 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.RpcMap;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -111,6 +112,11 @@ public class CodeEditorTabItem extends EditEngineTabItem {
 
                     List<GWTJahiaValueDisplayBean> snippets = (List<GWTJahiaValueDisplayBean>) result.get("snippets");
                     mirrorTemplates.getStore().add(snippets);
+
+                    if (!engine.getProperties().containsKey(codePropertyName)) {
+                        codeProperty = new GWTJahiaNodeProperty(codePropertyName, (String) result.get("stub"), GWTJahiaNodePropertyType.STRING);
+                        initEditor(tab);
+                    }
                 }
             });
 
@@ -133,6 +139,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
             mirrorTemplates.setForceSelection(true);
             mirrorTemplates.setWidth(300);
             mirrorTemplates.removeAllListeners();
+            mirrorTemplates.setStore(new ListStore<GWTJahiaValueDisplayBean>());
             mirrorTemplates.getStore().sort("display", Style.SortDir.ASC);
             mirrorTemplates.setAllowBlank(false);
             mirrorTemplates.setDisplayField("display");
@@ -163,20 +170,6 @@ public class CodeEditorTabItem extends EditEngineTabItem {
             if (engine.getProperties().containsKey(codePropertyName)) {
                 codeProperty = engine.getProperties().get(codePropertyName);
                 initEditor(tab);
-            }  else {
-                JahiaContentManagementService.App.getInstance().getStub(stubType, new BaseAsyncCallback<String>() {
-                    @Override
-                    public void onApplicationFailure(Throwable caught) {
-                        super.onApplicationFailure(caught);
-                        codeProperty = new GWTJahiaNodeProperty(codePropertyName, "", GWTJahiaNodePropertyType.STRING);
-                        initEditor(tab);
-                    }
-
-                    public void onSuccess(String stub) {
-                        codeProperty = new GWTJahiaNodeProperty(codePropertyName, stub, GWTJahiaNodePropertyType.STRING);
-                        initEditor(tab);
-                    }
-                });
             }
         }
     }

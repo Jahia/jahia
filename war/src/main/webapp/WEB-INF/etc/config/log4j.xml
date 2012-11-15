@@ -95,19 +95,11 @@
         <priority value="warn"/>
     </category>
 
-    <category name="org.apache.jackrabbit.core.state.ItemStateMap">
-        <priority value="error"/>
-    </category>
-
     <category name="org.apache.jackrabbit.spi.commons.nodetype.constraint.ValueConstraint">
         <priority value="error"/>
     </category>
 
     <category name="org.apache.commons">
-        <priority value="error"/>
-    </category>
-
-    <category name="org.apache.struts.action.RequestProcessor">
         <priority value="error"/>
     </category>
 
@@ -139,10 +131,6 @@
         <priority value="error"/>
     </category>
 
-    <category name="org.apache.jackrabbit.extractor">
-        <priority value="error"/>
-    </category>
-
     <category name="org.apache.jasper.compiler.TagLibraryInfoImpl">
         <priority value="error"/>
     </category>
@@ -153,18 +141,6 @@
 
     <category name="EventListener">
         <priority value="error"/>
-    </category>
-
-    <category name="org.jahia.hibernate">
-        <priority value="error"/>
-    </category>
-
-    <category name="org.jahia.hibernate.cache">
-        <priority value="info"/>
-    </category>
-
-    <category name="org.jahia.utils.i18n">
-        <priority value="warn"/>
     </category>
 
     <category name="org.quartz">

@@ -99,14 +99,6 @@ public class JahiaTemplatesPackage {
 
     private Set<JahiaTemplatesPackage> dependencies = new LinkedHashSet<JahiaTemplatesPackage>();
     
-    private List<JahiaTemplateDef> templateListReadOnly = Collections.emptyList();
-
-    private Map<String, JahiaTemplateDef> templatesReadOnly = Collections.emptyMap();
-
-    private Map<String, JahiaTemplateDef> templates = new TreeMap<String, JahiaTemplateDef>();
-
-    private boolean changesMade = false;
-
     // set the module-type property from the manifest
 
     private String moduleType;
@@ -185,16 +177,6 @@ public class JahiaTemplatesPackage {
             m_RootFolder = "";
             rootFolderPath = SettingsBean.getInstance().getTemplatesContext();
         }
-
-        // need to recalculate paths
-        for (JahiaTemplateDef tempDef : templates.values()) {
-            if (tempDef.getParent() == this) {
-                tempDef.setFilePath(new StringBuilder(64).append(
-                        getRootFolderPath()).append('/').append(
-                        tempDef.getFileName()).toString());
-            }
-        }
-        changesMade = true;
     }
 
     /**
@@ -238,64 +220,6 @@ public class JahiaTemplatesPackage {
     public void setThumbnail(String val) {
 
         m_Thumbnail = val;
-    }
-
-    /**
-     * Returns unmodifiable list of available templates.
-     *
-     * @return unmodifiable list of available templates
-     */
-    public List<JahiaTemplateDef> getTemplates() {
-        checkForChanges();
-        return templateListReadOnly;
-    }
-
-
-    /**
-     * Add a Template Definition in the Templates list
-     *
-     * @param tempDef
-     */
-    public void addTemplateDef(JahiaTemplateDef tempDef) {
-        addTemplateDef(tempDef, false);
-    }
-
-    /**
-     * Add a Template Definition in the Templates list
-     *
-     * @param tempDef                    tempDef
-     * @param inheritedFromParentPackage if the template is inherited from parent package
-     */
-    public void addTemplateDef(JahiaTemplateDef tempDef, boolean inheritedFromParentPackage) {
-        if (!inheritedFromParentPackage) {
-            tempDef.setParent(this);
-            tempDef.setFilePath(new StringBuffer(64)
-                    .append(getRootFolderPath()).append('/').append(
-                            tempDef.getFileName()).toString());
-        }
-        templates.put(tempDef.getName(), tempDef);
-        changesMade = true;
-    }
-
-    /**
-     * Add a list of Template Definitions into the Templates list
-     *
-     * @param templateList               a list of template definitions
-     * @param inheritedFromParentPackage if templates are inherited from parent package
-     */
-    public void addTemplateDefAll(List<JahiaTemplateDef> templateList,
-                                  boolean inheritedFromParentPackage) {
-        for (JahiaTemplateDef templateDef : templateList) {
-            addTemplateDef(templateDef, inheritedFromParentPackage);
-        }
-    }
-
-    /**
-     * Clears the list with the contained templates.
-     */
-    public void removeTemplates() {
-        templates.clear();
-        changesMade = true;
     }
 
     /**
@@ -354,33 +278,6 @@ public class JahiaTemplatesPackage {
     }
 
     /**
-     * Returns unmodified map with the all templates available in the package,
-     * keyed by the template name.
-     *
-     * @return unmodified map with the all templates available in the package,
-     *         keyed by the template name
-     */
-    public Map<String, JahiaTemplateDef> getTemplateMap() {
-        checkForChanges();
-        return templatesReadOnly;
-    }
-
-    private void checkForChanges() {
-        if (changesMade) {
-            List<JahiaTemplateDef> tmpList = new LinkedList<JahiaTemplateDef>();
-            tmpList.addAll(templates.values());
-            templateListReadOnly = Collections.unmodifiableList(tmpList);
-            Map<String, JahiaTemplateDef> tmpMap = new TreeMap<String, JahiaTemplateDef>();
-            for (JahiaTemplateDef def : templateListReadOnly) {
-                tmpMap.put(def.getName(), def);
-            }
-            templatesReadOnly = Collections.unmodifiableMap(tmpMap);
-
-            changesMade = false;
-        }
-    }
-
-    /**
      * Returns the source path of the root folder for the deployed template set.
      *
      * @return the source path of the root folder for the deployed template set
@@ -389,16 +286,6 @@ public class JahiaTemplatesPackage {
         return rootFolderPath;
     }
 
-
-    /**
-     * Returns the requested template definition by its name.
-     *
-     * @param name the template name
-     * @return the requested template definition by its name
-     */
-    public JahiaTemplateDef lookupTemplate(String name) {
-        return getTemplateMap().get(name);
-    }
 
     public String getDescription() {
         return description;

@@ -41,34 +41,32 @@
 package org.jahia.services.stub;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.SpringContextSingleton;
 import org.slf4j.Logger;
 import org.springframework.core.io.Resource;
 
 import java.io.*;
+import java.util.*;
 
 public class StubService {
 
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(StubService.class);
 
-    public String getStub(String stubType) {
-        String stub = "";
+    public Map<String,String> getCodeSnippets(String fileType, String snippetType) {
+        LinkedHashMap<String,String> stub = new LinkedHashMap<String, String>();
         InputStream is = null;
-        Writer writer = new StringWriter();
-        char[] buffer = new char[1024];
         try {
-            Resource[] resources = SpringContextSingleton.getInstance().getResources("WEB-INF/etc/stubs/stub." + stubType);
-            if (resources.length > 0) {
-                is = resources[0].getInputStream();
-                Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-                int n;
-                while ((n = reader.read(buffer)) != -1) {
-                    writer.write(buffer, 0, n);
+            Set<String> resources = JahiaContextLoaderListener.getServletContext().getResourcePaths("/WEB-INF/etc/snippets/"+fileType+"/"+snippetType+"/");
+            if (resources != null) {
+                for (String resource : resources) {
+                    InputStream st = JahiaContextLoaderListener.getServletContext().getResourceAsStream(resource);
+                    stub.put(StringUtils.substringAfterLast(resource,"/"), StringUtils.join(IOUtils.readLines(st), "\n"));
                 }
-                stub = writer.toString();
             }
         } catch (IOException e) {
-            logger.error("Failed to get stub for type " + stubType, e);
+            logger.error("Failed to read code snippets from " + fileType + "/" + snippetType, e);
         } finally {
             IOUtils.closeQuietly(is);
         }

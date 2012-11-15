@@ -218,7 +218,7 @@ class TemplatePackageDeployer {
         JahiaTemplatesPackage defaultPack = null;
 
         remaining = new LinkedHashSet<JahiaTemplatesPackage>(remaining);
-        for (Iterator<JahiaTemplatesPackage> iterator = remaining.iterator(); iterator.hasNext() && assetsPack == null && defaultPack == null; ) {
+        for (Iterator<JahiaTemplatesPackage> iterator = remaining.iterator(); iterator.hasNext() && (assetsPack == null || defaultPack == null); ) {
             JahiaTemplatesPackage pack = iterator.next();
             if (pack.getRootFolder().equals("assets")) {
                 assetsPack = pack;

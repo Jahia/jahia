@@ -152,7 +152,7 @@ public class WelcomeServlet extends HttpServlet {
         } else {
             JahiaUser user = (JahiaUser) request.getSession().getAttribute(ProcessingContext.SESSION_USER);
             String language = resolveLanguage(request, site, user);
-            String base;
+            String base = null;
 
             String pathInfo = request.getPathInfo();
             JCRNodeWrapper home = site.getHome();
@@ -175,10 +175,34 @@ public class WelcomeServlet extends HttpServlet {
                         defSite = (JCRSiteNode) JCRStoreService.getInstance().getSessionFactory()
                                 .getCurrentUserSession().getNode(site.getPath());
                     } catch (PathNotFoundException e) {
-                        redirect(request.getContextPath()+"/start", response);
-                        return;
+                        JahiaSite defaultSite = JahiaSitesBaseService
+                                .getInstance().getDefaultSite();
+                        if (!Url.isLocalhost(request.getServerName())
+                                && defaultSite != null
+                                && !site.getSiteKey().equals(
+                                        defaultSite.getSiteKey())
+                                && (!SettingsBean.getInstance()  // the check in this parenthesis is added to prevent immediate servername change in the url, which leads to the side effect with an automatic login on default site after logout on other site 
+                                        .isUrlRewriteUseAbsoluteUrls()
+                                        || site.getServerName().equals(
+                                                defaultSite.getServerName()) || Url
+                                            .isLocalhost(defaultSite
+                                                    .getServerName()))) {
+                            JCRSiteNode defaultSiteNode = (JCRSiteNode) JCRStoreService
+                                    .getInstance()
+                                    .getSessionFactory()
+                                    .getCurrentUserSession(
+                                            Constants.LIVE_WORKSPACE)
+                                    .getNode(defaultSite.getJCRLocalPath());
+                            if (defaultSiteNode.getHome() != null) {
+                                base = request.getContextPath()
+                                        + "/cms/render/"
+                                        + Constants.LIVE_WORKSPACE + "/"
+                                        + language
+                                        + defaultSiteNode.getHome().getPath();
+                            }
+                        }
                     }
-                    if (defSite.getHome() != null) {
+                    if (base == null && defSite != null && defSite.getHome() != null) {
                         if (defSite.getHome().hasPermission("editModeAccess")) {
                             base = request.getContextPath() + "/cms/edit/"
                                     + Constants.EDIT_WORKSPACE + "/" + language
@@ -187,20 +211,14 @@ public class WelcomeServlet extends HttpServlet {
                             base = request.getContextPath() + "/cms/contribute/"
                                     + Constants.EDIT_WORKSPACE + "/" + language
                                     + defSite.getHome().getPath();
-                        } else {
-                            redirect(request.getContextPath()+"/start", response);
-                            return;
-                        }
-                    } else {
-                        redirect(request.getContextPath()+"/start", response);
-                        return;
-                    }
-                } else {
-                    redirect(request.getContextPath()+"/start", response);
-                    return;
-                }
+                        } 
+                    } 
+                } 
             }
-
+            if (base == null) {
+                redirect(request.getContextPath() + "/start", response);
+                return;
+            }
             redirect = base + ".html";
         }
 

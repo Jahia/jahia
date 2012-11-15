@@ -66,6 +66,7 @@ import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorklowTypeRegistration;
+import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -426,15 +427,15 @@ class TemplatePackageRegistry {
     private void computeResourceBundleHierarchy(JahiaTemplatesPackage templatePackage) {
         templatePackage.getResourceBundleHierarchy().clear();
         if (templatePackage.getResourceBundleName() != null) {
-            templatePackage.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + templatePackage.getRootFolder() + "." + templatePackage.getVersion().toString().replaceAll("\\.","___") + "." + templatePackage.getResourceBundleName());
+            templatePackage.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + templatePackage.getRootFolder() + "." + Patterns.DOT.matcher(templatePackage.getVersion().toString()).replaceAll("___") + "." + templatePackage.getResourceBundleName());
         }
         for (JahiaTemplatesPackage dependency : templatePackage.getDependencies()) {
             if (!dependency.isDefault() && dependency.getResourceBundleName() != null) {
-                templatePackage.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + dependency.getRootFolder() + "." + dependency.getVersion().toString().replaceAll("\\.","___") + "." + dependency.getResourceBundleName());
+                templatePackage.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + dependency.getRootFolder() + "." + Patterns.DOT.matcher(dependency.getVersion().toString()).replaceAll("___") + "." + dependency.getResourceBundleName());
             }
         }
         if (!templatePackage.isDefault() && fileNameRegistry.containsKey("default")) {
-            	templatePackage.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + "default." + fileNameRegistry.get("default").getVersion().toString().replaceAll("\\.","___") + ".resources.DefaultJahiaTemplates");
+            	templatePackage.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + "default." + Patterns.DOT.matcher(fileNameRegistry.get("default").getVersion().toString()).replaceAll("___") + ".resources.DefaultJahiaTemplates");
             templatePackage.getResourceBundleHierarchy().add("JahiaTypesResources");
             templatePackage.getResourceBundleHierarchy().add("JahiaInternalResources");
         } else {

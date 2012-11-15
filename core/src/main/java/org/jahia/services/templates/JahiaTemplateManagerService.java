@@ -132,6 +132,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public static final String MODULE_TYPE_TEMPLATES_SET = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_TEMPLATES_SET;
 
+    private static final MyersDiff MYERS_DIFF = new MyersDiff(new Equalizer() {
+        public boolean equals(Object o, Object o1) {
+            String s1 = (String) o;
+            String s2 = (String) o1;
+            return s1.trim().equals(s2.trim());
+        }
+    });
+    
     private static final Pattern TEMPLATE_PATTERN = Pattern.compile("/modules/[^/]*/templates/(.*)");
 
     private static Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
@@ -283,7 +291,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
 
         String[] archetypeParams = {"archetype:generate",
-                "-DarchetypeCatalog=http://maven.jahia.org/maven2/archetype-catalog.xml", //"file:///Users/toto/Downloads/archetype-catalog.xml",
+                "-DarchetypeCatalog=http://maven.jahia.org/maven2/archetype-catalog.xml",
                 "-DarchetypeGroupId=org.jahia.archetypes",
                 "-DarchetypeArtifactId=jahia-" + moduleType + "-archetype",
                 "-DmoduleName=" + moduleName,
@@ -596,18 +604,37 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 } else {
                     versionElement.setText(releaseVersion);
                     File modifiedPom = new File(sources, "pom-modified.xml");
-                    XMLWriter writer = new XMLWriter(new FileWriter(modifiedPom), OutputFormat.createPrettyPrint());
-                    writer.write(document);
-                    writer.close();
-                    saveFile(new FileInputStream(modifiedPom), pom);
+                    XMLWriter writer = null;
+                    try {
+                        writer = new XMLWriter(new FileWriter(modifiedPom), OutputFormat.createPrettyPrint());
+                        writer.write(document);
+                    } finally {
+                        if (writer != null) {
+                            writer.close();
+                        }
+                    }
+                    FileInputStream source = new FileInputStream(modifiedPom);
+                    try {
+                        saveFile(source, pom);
+                    } finally {
+                        IOUtils.closeQuietly(source);
+                    }
 
                     generatedWar = compileModule(module.getRootFolder(), sources);
 
                     versionElement.setText(nextVersion);
                     writer = new XMLWriter(new FileWriter(modifiedPom), OutputFormat.createPrettyPrint());
-                    writer.write(document);
-                    writer.close();
-                    saveFile(new FileInputStream(modifiedPom), pom);
+                    try {
+                        writer.write(document);
+                    } finally {
+                            writer.close();
+                    }
+                    source = new FileInputStream(modifiedPom);
+                    try {
+                        saveFile(source, pom);
+                    } finally {
+                        IOUtils.closeQuietly(source);
+                    }
                 }
 
                 File releasedModules = new File(settingsBean.getJahiaVarDiskPath(), "released-modules");
@@ -749,30 +776,30 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     private void saveFolder(File sourceRoot, File targetRoot, File currentSource, List<File> modifiedFiles) throws IOException, PatchFailedException {
-        FileInputStream fileInputStream = null;
-        try {
-            FileFilter filter = new NotFileFilter(new NameFileFilter(new String[]{"versions", "import.zip", "MANIFEST.MF", "deployed.xml"}));
-            for (File sourceFile : currentSource.listFiles(filter)) {
-                if (sourceFile.isDirectory()) {
-//                    if (sourceFile.getName().equals(VERSIONS_FOLDER_NAME)) {
-//                        continue;
-//                    }
-                    saveFolder(sourceRoot, targetRoot, sourceFile, modifiedFiles);
-                } else {
-                    if (sourceFile.getName().equals("import.zip") || sourceFile.getName().equals("MANIFEST.MF") || sourceFile.getName().equals("deployed.xml")) {
-                        continue;
-                    }
-                    fileInputStream = new FileInputStream(sourceFile);
-                    File targetFile = new File(targetRoot, sourceFile.getPath().substring(sourceRoot.getPath().length() + 1));
+        FileFilter filter = new NotFileFilter(new NameFileFilter(new String[] { "versions",
+                "import.zip", "MANIFEST.MF", "deployed.xml" }));
+        for (File sourceFile : currentSource.listFiles(filter)) {
+            if (sourceFile.isDirectory()) {
+                // if (sourceFile.getName().equals(VERSIONS_FOLDER_NAME)) {
+                // continue;
+                // }
+                saveFolder(sourceRoot, targetRoot, sourceFile, modifiedFiles);
+            } else {
+                if (sourceFile.getName().equals("import.zip")
+                        || sourceFile.getName().equals("MANIFEST.MF")
+                        || sourceFile.getName().equals("deployed.xml")) {
+                    continue;
+                }
+                FileInputStream fileInputStream = new FileInputStream(sourceFile);
+                try {
+                    File targetFile = new File(targetRoot, sourceFile.getPath().substring(
+                            sourceRoot.getPath().length() + 1));
                     if (saveFile(fileInputStream, targetFile)) {
                         modifiedFiles.add(targetFile);
                     }
+                } finally {
                     IOUtils.closeQuietly(fileInputStream);
                 }
-            }
-        } finally {
-            if (fileInputStream != null) {
-                IOUtils.closeQuietly(fileInputStream);
             }
         }
     }
@@ -794,10 +821,18 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             root.setText(StringUtils.join(dependencies, ","));
             File modifiedPom = new File(sources, "pom-modified.xml");
             XMLWriter writer = new XMLWriter(new FileWriter(modifiedPom), OutputFormat.createPrettyPrint());
-            writer.write(document);
-            writer.close();
-            saveFile(new FileInputStream(modifiedPom), pom);
-            modifiedPom.delete();
+            try {
+                writer.write(document);
+            } finally {
+                writer.close();
+            }
+            FileInputStream source = new FileInputStream(modifiedPom);
+            try {
+                saveFile(source, pom);
+            } finally {
+                IOUtils.closeQuietly(source);
+                modifiedPom.delete();
+            }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -822,10 +857,18 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
             File modifiedPom = new File(sources, "pom-modified.xml");
             XMLWriter writer = new XMLWriter(new FileWriter(modifiedPom), OutputFormat.createPrettyPrint());
-            writer.write(document);
-            writer.close();
-            saveFile(new FileInputStream(modifiedPom), pom);
-            modifiedPom.delete();
+            try {
+                writer.write(document);
+            } finally {
+                writer.close();
+            }
+            FileInputStream source = new FileInputStream(modifiedPom);
+            try {
+                saveFile(source, pom);
+            } finally {
+                IOUtils.closeQuietly(source);
+                modifiedPom.delete();
+            }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -841,7 +884,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         if (!target.exists()) {
             target.getParentFile().mkdirs();
             if (transCodeTarget != null) {
-                FileUtils.writeLines(target, transCodeTarget, convertToNativeEncoding(IOUtils.readLines(source, "UTF-8"), transCodeTarget), "\n");
+                FileUtils.writeLines(target, transCodeTarget, convertToNativeEncoding(IOUtils.readLines(source, Charsets.UTF_8), transCodeTarget), "\n");
             } else {
                 FileUtils.copyInputStreamToFile(source, target);
             }
@@ -849,17 +892,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         } else {
             List<String> targetContent = FileUtils.readLines(target, transCodeTarget != null ? transCodeTarget : "UTF-8");
             if (!isBinary(targetContent)) {
-                List<String> sourceContent = IOUtils.readLines(source, "UTF-8");
+                List<String> sourceContent = IOUtils.readLines(source, Charsets.UTF_8);
                 if (transCodeTarget != null) {
                     sourceContent = convertToNativeEncoding(sourceContent, transCodeTarget);
                 }
-                Patch patch = DiffUtils.diff(targetContent, sourceContent, new MyersDiff(new Equalizer() {
-                    public boolean equals(Object o, Object o1) {
-                        String s1 = (String) o;
-                        String s2 = (String) o1;
-                        return s1.trim().equals(s2.trim());
-                    }
-                }));
+                Patch patch = DiffUtils.diff(targetContent, sourceContent, MYERS_DIFF);
                 if (!patch.getDeltas().isEmpty()) {
                     targetContent = (List<String>) patch.applyTo(targetContent);
                     FileUtils.writeLines(target, transCodeTarget != null ? transCodeTarget : "UTF-8", targetContent, "\n");
@@ -867,12 +904,18 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 }
             } else {
                 byte[] sourceArray = IOUtils.toByteArray(source);
-                byte[] targetArray = IOUtils.toByteArray(new FileInputStream(target));
-                if (!Arrays.equals(sourceArray, targetArray)) {
-                    FileOutputStream output = new FileOutputStream(target);
-                    IOUtils.write(sourceArray, output);
-                    output.close();
-                    return true;
+                FileInputStream input = new FileInputStream(target);
+                FileOutputStream output = null;
+                try {
+                    byte[] targetArray = IOUtils.toByteArray(input);
+                    if (!Arrays.equals(sourceArray, targetArray)) {
+                        output = new FileOutputStream(target);
+                        IOUtils.write(sourceArray, output);
+                        return true;
+                    }
+                } finally {
+                    IOUtils.closeQuietly(input);
+                    IOUtils.closeQuietly(output);
                 }
             }
         }

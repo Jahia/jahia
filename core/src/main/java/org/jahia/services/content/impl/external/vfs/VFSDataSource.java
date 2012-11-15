@@ -58,7 +58,6 @@ import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Writable {
@@ -170,18 +169,20 @@ public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Wr
         if (data.getType().equals(Constants.NT_RESOURCE)) {
             OutputStream outputStream = null;
             try {
-                outputStream = getFile(data.getPath().substring(0, data.getPath().indexOf("/" + Constants.JCR_CONTENT))).getContent().getOutputStream();
                 final Binary[] binaries = data.getBinaryProperties().get(Constants.JCR_DATA);
-                for (Binary binary : binaries) {
-                    final InputStream stream = binary.getStream();
-                    byte[] bytes = new byte[(int) binary.getSize()];
-                    final int read = stream.read(bytes,0,(int) binary.getSize());
-                    outputStream.write(bytes,0, read);
+                if (binaries.length > 0) {
+                    outputStream = getFile(data.getPath().substring(0, data.getPath().indexOf("/" + Constants.JCR_CONTENT))).getContent().getOutputStream();
+                    for (Binary binary : binaries) {
+                        InputStream stream = null;
+                        try {
+                            stream = binary.getStream();
+                            IOUtils.copy(stream, outputStream);
+                        } finally {
+                            IOUtils.closeQuietly(stream);
+                            binary.dispose();
+                        }
+                    }
                 }
-            } catch (FileSystemException e) {
-                logger.error(e.getMessage(), e);
-            } catch (UnsupportedEncodingException e) {
-                logger.error(e.getMessage(), e);
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
             } catch (RepositoryException e) {

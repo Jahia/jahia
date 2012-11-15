@@ -40,30 +40,24 @@
 
 package org.jahia.services.content.impl.external.modules;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileType;
 import org.jahia.api.Constants;
-import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.content.impl.external.ExternalData;
 import org.jahia.services.content.impl.external.vfs.VFSDataSource;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.settings.SettingsBean;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.io.*;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.*;
 
 /**
@@ -168,16 +162,9 @@ public class ModulesDataSource extends VFSDataSource {
         } else if (path.endsWith(".jsp")) {
             // set source code
             InputStream is = null;
-            Writer writer = new StringWriter();
-            char[] buffer = new char[1024];
             try {
                 is = getFile(path).getContent().getInputStream();
-                Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-                int n;
-                while ((n = reader.read(buffer)) != -1) {
-                    writer.write(buffer, 0, n);
-                }
-                String[] propertyValue = {writer.toString()};
+                String[] propertyValue = {IOUtils.toString(is, Charsets.UTF_8)};
                 data.getProperties().put("sourceCode", propertyValue);
                 data.getProperties().put("nodeTypeName",new String[] { path.split("/")[3].replace("_",":") } );
             } catch (Exception e) {

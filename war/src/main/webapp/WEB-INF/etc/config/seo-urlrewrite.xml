@@ -57,16 +57,6 @@
         <to last="true">/cms/render/live/$1</to>
     </rule>
 
-    <rule>
-        <note>Add the key of the site if it was resolved by server name, and if URL does not start with /sites</note>
-        <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
-        <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>
-        <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
-        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/files/(default|live|\{workspace\}|%7Bworkspace%7D)/sites/.*</condition>
-        <from>^/files/(.*)$</from>
-        <to last="true">/files/live/sites/%{attribute:jahiaSiteKeyForCurrentServerName}/files/$1</to>
-    </rule>
-
     <!-- Outbound rules -->
     <outbound-rule>
         <name>Perform outbound URL analysis</name>
@@ -148,25 +138,14 @@
     </outbound-rule>
 
     <outbound-rule>
-        <name>Handle files link to a resource of same site</name>
-        <note>
-            Removes the site key from the URL if the current server name is mapped to this site.
-        </note>
-        <condition type="attribute" name="jahiaSiteKeyMatchesCurrentServerName" operator="equal">^true$</condition>
-        <condition type="attribute" name="jahiaSeoServernameForLink" operator="equal">^$</condition>
-        <from>^(/[\p{Alnum}\-_]*)?/files/live/sites/([\p{Alnum}\-_]+)/files(/.*)$</from>
-        <to>$1/files$3</to>
-    </outbound-rule>
-
-    <outbound-rule>
         <name>Handles files link to a resource of another site: switch hostname</name>
         <note>
             Removes the site key from the URL and changes the server name.
             Removes the /live part.
         </note>
         <condition type="attribute" name="jahiaSeoServernameForLink" operator="notequal">^$</condition>
-        <from>^(/[\p{Alnum}\-_]*)?/files/live/sites/([\p{Alnum}\-_]+)/files(/.*)$</from>
-        <to>%{scheme}://%{attribute:jahiaSeoServernameForLink}$1/files$3</to>
+        <from>^(/[\p{Alnum}\-_]*)?(/files/live/.*)$</from>
+        <to>%{scheme}://%{attribute:jahiaSeoServernameForLink}$1$2</to>
     </outbound-rule>
 
 </urlrewrite>

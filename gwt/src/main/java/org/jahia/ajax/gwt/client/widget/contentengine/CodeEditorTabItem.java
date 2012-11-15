@@ -41,6 +41,7 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.data.RpcMap;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -55,11 +56,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -131,7 +128,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
             mirrorTemplates.setStore(new ListStore<GWTJahiaValueDisplayBean>());
             mirrorTemplates.getStore().sort("display", Style.SortDir.ASC);
             mirrorTemplates.setAllowBlank(false);
-            mirrorTemplates.setDisplayField("display");
+            mirrorTemplates.setTemplate(XTemplate.create(getTemplate()));
             Button button = new Button(Messages.get("label.add"));
             button.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 @Override
@@ -197,4 +194,8 @@ public class CodeEditorTabItem extends EditEngineTabItem {
     public void setCodeMirrorMode(String codeMirrorMode) {
         this.codeMirrorMode = codeMirrorMode;
     }
+
+    public native String getTemplate() /*-{
+        return ['<tpl for="."><div class="x-combo-list-item">{display}<div><code><pre>{text}</pre></code></div></div></tpl>'].join("");
+    }-*/;
 }

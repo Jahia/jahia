@@ -2259,18 +2259,23 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             GWTJahiaNodeType nodeType = contentDefinition.getNodeType(nodeTypeName, getUILocale());
             r.put("nodeType", nodeType);
             for (String snippetType : propertiesSnippetTypes) {
-                for (Map.Entry<String,String> propertySnippetEntry : stubHelper.getCodeSnippets(fileType, snippetType).entrySet()) {
+                for (Map.Entry<String, String> propertySnippetEntry : stubHelper.getCodeSnippets(fileType,
+                        snippetType).entrySet()) {
                     List<GWTJahiaItemDefinition> items = new ArrayList<GWTJahiaItemDefinition>(nodeType.getItems());
                     items.addAll(nodeType.getInheritedItems());
 
                     for (GWTJahiaItemDefinition definition : items) {
-                        if(!"*".equals(definition.getName()) && !definition.isNode() && !definition.isHidden()) {
-                            String propertySnippet = propertySnippetEntry.getValue().replace("__value__", definition.getName());
-                            String label = stubHelper.getLabel(fileType, snippetType, propertySnippetEntry.getKey(),getUILocale(),definition.getName());
-                            snippets.add(new GWTJahiaValueDisplayBean(propertySnippet, label));
+                        if (!"*".equals(definition.getName()) && !definition.isNode() && !definition.isHidden()) {
+                            String propertySnippet = propertySnippetEntry.getValue().replace("__value__",
+                                    definition.getName());
+                            String label = stubHelper.getLabel(fileType, snippetType, propertySnippetEntry.getKey(),
+                                    getUILocale(), definition.getName());
+                            GWTJahiaValueDisplayBean displayBean = new GWTJahiaValueDisplayBean(propertySnippet, label);
+                            displayBean.set("text", propertySnippet.replaceAll("<", "&lt;").replaceAll(">", "&gt;"));
+                            snippets.add(displayBean);
                         }
-                    }
 
+                    }
                 }
             }
         }

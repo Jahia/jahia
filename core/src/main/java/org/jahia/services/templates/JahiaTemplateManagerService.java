@@ -876,21 +876,21 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     @SuppressWarnings("unchecked")
     private boolean saveFile(InputStream source, File target) throws IOException, PatchFailedException {
-        String transCodeTarget = null;
+        Charset transCodeTarget = null;
         if (target.getParentFile().getName().equals("resources") && target.getName().endsWith(".properties")) {
-            transCodeTarget = "ISO-8859-1";
+            transCodeTarget = Charsets.ISO_8859_1;
         }
 
         if (!target.exists()) {
             target.getParentFile().mkdirs();
             if (transCodeTarget != null) {
-                FileUtils.writeLines(target, transCodeTarget, convertToNativeEncoding(IOUtils.readLines(source, Charsets.UTF_8), transCodeTarget), "\n");
+                FileUtils.writeLines(target, transCodeTarget.name(), convertToNativeEncoding(IOUtils.readLines(source, Charsets.UTF_8), transCodeTarget), "\n");
             } else {
                 FileUtils.copyInputStreamToFile(source, target);
             }
             return true;
         } else {
-            List<String> targetContent = FileUtils.readLines(target, transCodeTarget != null ? transCodeTarget : "UTF-8");
+            List<String> targetContent = FileUtils.readLines(target, transCodeTarget != null ? transCodeTarget : Charsets.UTF_8);
             if (!isBinary(targetContent)) {
                 List<String> sourceContent = IOUtils.readLines(source, Charsets.UTF_8);
                 if (transCodeTarget != null) {
@@ -899,7 +899,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 Patch patch = DiffUtils.diff(targetContent, sourceContent, MYERS_DIFF);
                 if (!patch.getDeltas().isEmpty()) {
                     targetContent = (List<String>) patch.applyTo(targetContent);
-                    FileUtils.writeLines(target, transCodeTarget != null ? transCodeTarget : "UTF-8", targetContent, "\n");
+                    FileUtils.writeLines(target, transCodeTarget != null ? transCodeTarget.name() : "UTF-8", targetContent, "\n");
                     return true;
                 }
             } else {
@@ -922,8 +922,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return false;
     }
 
-    private List<String> convertToNativeEncoding(List<String> sourceContent, String encoding) throws UnsupportedEncodingException {
-        Charset charset = Charsets.toCharset(encoding);
+    private List<String> convertToNativeEncoding(List<String> sourceContent, Charset charset) throws UnsupportedEncodingException {
         List<String> targetContent = new ArrayList<String>();
         for (String s : sourceContent) {
             Matcher m;

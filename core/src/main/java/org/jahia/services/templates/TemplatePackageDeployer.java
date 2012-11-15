@@ -52,6 +52,7 @@ import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +62,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.zip.ZipException;
 
 /**
@@ -597,23 +599,24 @@ class TemplatePackageDeployer {
             }
         }
 
-        List<File> modifiedPackageFolders = new ArrayList<File>();
+        Set<File> modifiedPackageFolders = new LinkedHashSet<File>();
 
         final Map<String, Set<String>> deployDetails = new HashMap<String, Set<String>>();
 
+        Pattern separatorPattern = File.separatorChar == '/' ? Patterns.SLASH : Patterns.BACKSLASH; 
         for (File file : files) {
             String path = file.getPath();
             if (!timestamps.containsKey(path) || timestamps.get(path) != file.lastModified()) {
                 setTimestamp(path, file.lastModified());
                 File folder = file;
-                while (folder.getPath().split("/").length > deployedTemplatesFolder.getPath().split("/").length + 2) {
+                while (separatorPattern.split(folder.getPath()).length > separatorPattern.split(deployedTemplatesFolder.getPath()).length + 2) {
                     folder = folder.getParentFile();
                 }
                 if (!folder.isDirectory()) {
                     continue;
                 }
 
-                String nameWithVersion = folder.getParentFile().getName() + "/" + folder.getName();
+                String nameWithVersion = folder.getParentFile().getName() + File.separator + folder.getName();
                 Set<String> detailsForModule = deployDetails.get(nameWithVersion);
                 if (detailsForModule == null) {
                     detailsForModule = new HashSet<String>();
@@ -629,10 +632,10 @@ class TemplatePackageDeployer {
                 if (fileName.endsWith("cnd")) {
                     detailsForModule.add("definitions");
                 }
-                if (filePath.contains("/meta-inf/spring/") && fileName.endsWith(".xml")) {
+                if (filePath.contains(File.separator + "meta-inf" + File.separator + "spring" + File.separator) && fileName.endsWith(".xml")) {
                     detailsForModule.add("spring");
                 }
-                if (filePath.contains("/resources/") && fileName.endsWith(".properties")) {
+                if (filePath.contains(File.separator + "resources" + File.separator) && fileName.endsWith(".properties")) {
                     detailsForModule.add("resourceBundles");
                 }
 

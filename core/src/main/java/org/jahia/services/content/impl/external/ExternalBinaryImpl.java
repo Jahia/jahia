@@ -40,9 +40,6 @@
 
 package org.jahia.services.content.impl.external;
 
-import org.apache.commons.vfs2.FileContent;
-import org.apache.commons.vfs2.FileSystemException;
-
 import javax.jcr.Binary;
 import javax.jcr.RepositoryException;
 import java.io.IOException;

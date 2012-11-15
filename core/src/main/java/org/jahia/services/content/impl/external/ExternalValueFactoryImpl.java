@@ -40,18 +40,18 @@
 
 package org.jahia.services.content.impl.external;
 
-import org.apache.jackrabbit.util.ISO8601;
-
-import javax.jcr.*;
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+
+import javax.jcr.Binary;
+import javax.jcr.Node;
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.ValueFactory;
+import javax.jcr.ValueFormatException;
+
+import org.apache.jackrabbit.util.ISO8601;
 
 /**
  * 

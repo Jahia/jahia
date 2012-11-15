@@ -726,7 +726,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         JCRSessionWrapper session1 = resource.getNode().getSession();
                         if (urlResolver.getSiteKey() != null && (site == null || !site.getSiteKey().equals(urlResolver.getSiteKey()))) {
                             site = (JCRSiteNode) session1.getNode("/sites/" + urlResolver.getSiteKey());
-                        } else if (urlResolver.getSiteKeyByServerName() != null && (site == null || !site.getSiteKey().equals(
+                        } else if (renderContext.isLiveMode() && urlResolver.getSiteKeyByServerName() != null && (site == null || !site.getSiteKey().equals(
                                 urlResolver.getSiteKeyByServerName()))) {
                             site = (JCRSiteNode) session1.getNode("/sites/" + urlResolver.getSiteKeyByServerName());
                         }

@@ -47,13 +47,18 @@ import com.google.gwt.user.client.Element;
 public class CodeMirrorField extends TextArea {
 
     private Object codeMirror;
+    private String mode = "htmlmixed";
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
 
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             public void execute() {
-                codeMirror = initEditor(getInputEl().dom);
+                codeMirror = initEditor(getInputEl().dom, mode);
                 updateSize();
             }
         });
@@ -65,8 +70,8 @@ public class CodeMirrorField extends TextArea {
         updateSize();
     }
 
-    private native Object initEditor(Element textArea)/*-{
-        var myCodeMirror = $wnd.CodeMirror.fromTextArea(textArea, {mode:"htmlmixed", lineNumbers:true, matchBrackets:true});
+    private native Object initEditor(Element textArea, String mode)/*-{
+        var myCodeMirror = $wnd.CodeMirror.fromTextArea(textArea, {mode:mode, lineNumbers:true, matchBrackets:true});
         return myCodeMirror;
     }-*/;
 

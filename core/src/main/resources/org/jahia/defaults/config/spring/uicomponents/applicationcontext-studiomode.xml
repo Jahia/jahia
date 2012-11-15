@@ -332,6 +332,76 @@
                         </property>
                     </bean>
                 </entry>
+                <entry key="jnt:cssFile">
+                    <bean parent="studioBaseEngineConfiguration">
+                        <property name="engineTabs">
+                            <list>
+                                <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                                    <property name="id" value="codeEditor"/>
+                                    <property name="titleKey" value="label.engineTab.codeEditor"/>
+                                    <property name="tabItem">
+                                        <bean class="org.jahia.ajax.gwt.client.widget.contentengine.CodeEditorTabItem">
+                                            <property name="codePropertyName" value="sourceCode" />
+                                            <property name="stubType" value="css" />
+                                            <property name="codeMirrorMode" value="css"/>
+                                        </bean>
+                                    </property>
+                                </bean>
+                            </list>
+                        </property>
+                        <property name="creationButtons">
+                            <list>
+                                <bean class="org.jahia.ajax.gwt.client.widget.contentengine.CreateButtonItem" >
+                                    <property name="useNamePopup" value="true"/>
+                                </bean>
+                            </list>
+                        </property>
+                        <property name="editionButtons">
+                            <list>
+                                <ref bean="Engine.Button.Update" />
+                            </list>
+                        </property>
+                        <property name="commonButtons">
+                            <list>
+                                <ref bean="Engine.Button.Cancel" />
+                            </list>
+                        </property>
+                    </bean>
+                </entry>
+                <entry key="jnt:javascriptFile">
+                    <bean parent="studioBaseEngineConfiguration">
+                        <property name="engineTabs">
+                            <list>
+                                <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                                    <property name="id" value="codeEditor"/>
+                                    <property name="titleKey" value="label.engineTab.codeEditor"/>
+                                    <property name="tabItem">
+                                        <bean class="org.jahia.ajax.gwt.client.widget.contentengine.CodeEditorTabItem">
+                                            <property name="codePropertyName" value="sourceCode" />
+                                            <property name="stubType" value="javascript" />
+                                            <property name="codeMirrorMode" value="javascript"/>
+                                        </bean>
+                                    </property>
+                                </bean>
+                            </list>
+                        </property>
+                        <property name="creationButtons">
+                            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.CreateButtonItem" >
+                                <property name="useNamePopup" value="true"/>
+                            </bean>
+                        </property>
+                        <property name="editionButtons">
+                            <list>
+                                <ref bean="Engine.Button.Update" />
+                            </list>
+                        </property>
+                        <property name="commonButtons">
+                            <list>
+                                <ref bean="Engine.Button.Cancel" />
+                            </list>
+                        </property>
+                    </bean>
+                </entry>
                 <entry key="jnt:resourceBundleFolder">
                     <bean parent="studioBaseEngineConfiguration">
                         <property name="engineTabs">
@@ -731,6 +801,28 @@
                                         <property name="titleKey" value="label.addView"/>
                                         <property name="icon" value="newContentTemplate"/>
                                     </bean>
+
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                                                <property name="parentTypes" value="jnt:cssFolder"/>
+                                                <property name="nodeTypes" value="jnt:cssFile"/>
+                                            </bean>
+                                        </property>
+                                        <property name="titleKey" value="label.newCssFile"/>
+                                        <property name="icon" value="newContent"/>
+                                    </bean>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                                                <property name="parentTypes" value="jnt:javascriptFolder"/>
+                                                <property name="nodeTypes" value="jnt:javascriptFile"/>
+                                            </bean>
+                                        </property>
+                                        <property name="titleKey" value="label.newJavascriptFile"/>
+                                        <property name="icon" value="newContent"/>
+                                    </bean>
+
                                     <ref bean="Toolbar.Item.Upload"/>
                                     <ref bean="Toolbar.Item.Download"/>
                                     <ref bean="Toolbar.Item.Rename"/>

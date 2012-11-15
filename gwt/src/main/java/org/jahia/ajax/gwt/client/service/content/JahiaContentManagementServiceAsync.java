@@ -351,6 +351,6 @@ public interface JahiaContentManagementServiceAsync {
 
     void translate(GWTJahiaNodeProperty property, GWTJahiaItemDefinition definition, String srcLanguage, String destLanguage, String siteUUID, AsyncCallback<GWTJahiaNodeProperty> async);
 
-    void initializeCodeEditor(String nodeType, String fileType, AsyncCallback<RpcMap> async);
+    void initializeCodeEditor(String path, boolean isNew, String nodeType, String fileType, AsyncCallback<RpcMap> async);
 
 }

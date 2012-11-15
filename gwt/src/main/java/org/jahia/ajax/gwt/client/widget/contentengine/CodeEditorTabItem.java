@@ -72,6 +72,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
 
     private String codePropertyName;
     private String stubType;
+    private String codeMirrorMode = "htmlmixed";
 
     private transient CodeMirrorField codeField;
     private transient GWTJahiaNodeProperty codeProperty;
@@ -93,23 +94,11 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                 typeName = engine.getPresetProperties().get("nodeTypeName");
             }
 
-            JahiaContentManagementService.App.getInstance().initializeCodeEditor(typeName.getValues().get(0).getString(), stubType, new BaseAsyncCallback<RpcMap>() {
+            String path = engine.isExistingNode() ? engine.getNode().getPath() : engine.getTargetNode().getPath();
+            String nodeType = typeName != null ? typeName.getValues().get(0).getString() : null;
+            JahiaContentManagementService.App.getInstance().initializeCodeEditor(path, !engine.isExistingNode(), nodeType, stubType, new BaseAsyncCallback<RpcMap>() {
                 @Override
                 public void onSuccess(RpcMap result) {
-                    GWTJahiaNodeType nodeType = (GWTJahiaNodeType) result.get("nodeType");
-
-                    // fill modules type
-                    Set<String> nodePropertiesSet = new LinkedHashSet<String>();
-                    for (GWTJahiaItemDefinition definition : nodeType.getItems()) {
-                        if(!"*".equals(definition.getName()))
-                            nodePropertiesSet.add(definition.getName());
-                    }
-                    for (GWTJahiaItemDefinition definition : nodeType.getInheritedItems()) {
-                        if(!"*".equals(definition.getName()))
-                            nodePropertiesSet.add(definition.getName());
-                    }
-                    nodeProperties.add(new ArrayList<String>(nodePropertiesSet));
-
                     List<GWTJahiaValueDisplayBean> snippets = (List<GWTJahiaValueDisplayBean>) result.get("snippets");
                     mirrorTemplates.getStore().add(snippets);
 
@@ -178,6 +167,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
         codeField = new CodeMirrorField();
         codeField.setWidth("95%");
         codeField.setHeight("90%");
+        codeField.setMode(codeMirrorMode);
         List<GWTJahiaNodePropertyValue> values = codeProperty.getValues();
         if (!values.isEmpty()) {
             codeField.setValue(values.get(0).getString());
@@ -202,5 +192,9 @@ public class CodeEditorTabItem extends EditEngineTabItem {
 
     public void setStubType(String stubType) {
         this.stubType = stubType;
+    }
+
+    public void setCodeMirrorMode(String codeMirrorMode) {
+        this.codeMirrorMode = codeMirrorMode;
     }
 }

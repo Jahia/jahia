@@ -152,91 +152,98 @@ public class ModulesDataSource extends VFSDataSource {
     }
 
     private ExternalData enhanceData(String path, ExternalData data) {
-        if (data.getType().equals("jnt:moduleVersionFolder")) {
-            String v = StringUtils.substringAfterLast(data.getPath(), "/");
-            String name = StringUtils.substringBeforeLast(data.getPath(), "/");
-            name = StringUtils.substringAfterLast(name, "/");
-            name = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(name).getName();
+        try {
+            ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(data.getType());
+            if (type.isNodeType("jnt:moduleVersionFolder")) {
+                String v = StringUtils.substringAfterLast(data.getPath(), "/");
+                String name = StringUtils.substringBeforeLast(data.getPath(), "/");
+                name = StringUtils.substringAfterLast(name, "/");
+                name = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(name).getName();
 
-            data.getProperties().put("j:title", new String[]{name + " (" + v + ")"});
-        } else if (path.endsWith(".jsp")) {
-            // set source code
-            InputStream is = null;
-            try {
-                is = getFile(path).getContent().getInputStream();
-                String[] propertyValue = {IOUtils.toString(is, Charsets.UTF_8)};
-                data.getProperties().put("sourceCode", propertyValue);
-                data.getProperties().put("nodeTypeName",new String[] { path.split("/")[3].replace("_",":") } );
-            } catch (Exception e) {
-                logger.error("Failed to read source code", e);
-            } finally {
-                IOUtils.closeQuietly(is);
-            }
-
-            // set Properties
-            Properties properties = new Properties();
-            is = null;
-            try {
-                is = getFile(path.substring(0, path.lastIndexOf(".")) + ".properties").getContent().getInputStream();
-                properties.load(is);
-                Map<String,String[]> dataProperties = new HashMap<String, String[]>();
-                for (Iterator<?> iterator = properties.keySet().iterator(); iterator.hasNext();) {
-                    String k = (String) iterator.next();
-                    String v = properties.getProperty(k);
-                    dataProperties.put(k,v.split(","));
+                data.getProperties().put("j:title", new String[]{name + " (" + v + ")"});
+            } else if (type.isNodeType("jnt:editableFile")) {
+                // set source code
+                InputStream is = null;
+                try {
+                    is = getFile(path).getContent().getInputStream();
+                    String[] propertyValue = {IOUtils.toString(is, Charsets.UTF_8)};
+                    data.getProperties().put("sourceCode", propertyValue);
+                    data.getProperties().put("nodeTypeName",new String[] { path.split("/")[3].replace("_",":") } );
+                } catch (Exception e) {
+                    logger.error("Failed to read source code", e);
+                } finally {
+                    IOUtils.closeQuietly(is);
                 }
-                data.getProperties().putAll(dataProperties);
-            } catch (FileSystemException e) {
-                //no properties files, do nothing
-            } catch (IOException e) {
-                logger.error("Cannot read property file",e);
-            } finally {
-                IOUtils.closeQuietly(is);
-            }
-        } else if (path.endsWith(".properties")) {
-            /* these properties should be read only on demand to avoid memory issues
-            try {
-                Properties properties = new Properties();
-                FileObject file = getFile(path.substring(0, path.lastIndexOf(".")) + ".properties");
 
-                for (FileObject subfile : file.getParent().getChildren()) {
-                    String baseName = file.getName().getBaseName();
-                    baseName = StringUtils.substringBeforeLast(baseName, ".");
-
-                    String filename = subfile.getName().getBaseName();
-                    if (filename.startsWith(baseName + "_") && filename.endsWith(".properties")) {
-                        filename = StringUtils.substringBeforeLast(filename,".");
-                        String langCode = StringUtils.substringAfterLast(filename,"_");
-
-                        InputStream is = subfile.getContent().getInputStream();
-                        Properties i18nproperties = new Properties();
-                        i18nproperties.load(is);
+                // set Properties
+                if (type.isNodeType(Constants.JAHIAMIX_VIEWPROPERTIES)) {
+                    Properties properties = new Properties();
+                    is = null;
+                    try {
+                        is = getFile(path.substring(0, path.lastIndexOf(".")) + ".properties").getContent().getInputStream();
+                        properties.load(is);
                         Map<String,String[]> dataProperties = new HashMap<String, String[]>();
-                        for (Iterator<?> iterator = i18nproperties.keySet().iterator(); iterator.hasNext();) {
+                        for (Iterator<?> iterator = properties.keySet().iterator(); iterator.hasNext();) {
                             String k = (String) iterator.next();
-                            String v = i18nproperties.getProperty(k);
-                            dataProperties.put(k,new String[] { v });
+                            String v = properties.getProperty(k);
+                            dataProperties.put(k,v.split(","));
                         }
-                        if (data.getI18nProperties() == null) {
-                            data.setI18nProperties(new HashMap<String, Map<String, String[]>>());
-                        }
-                        data.getI18nProperties().put(langCode, dataProperties);
+                        data.getProperties().putAll(dataProperties);
+                    } catch (FileSystemException e) {
+                        //no properties files, do nothing
+                    } catch (IOException e) {
+                        logger.error("Cannot read property file",e);
+                    } finally {
+                        IOUtils.closeQuietly(is);
                     }
                 }
+            } else if (path.endsWith(".properties")) {
+                /* these properties should be read only on demand to avoid memory issues
+                try {
+                    Properties properties = new Properties();
+                    FileObject file = getFile(path.substring(0, path.lastIndexOf(".")) + ".properties");
 
-                InputStream is = file.getContent().getInputStream();
-                properties.load(is);
-                Map<String,String[]> dataProperties = new HashMap<String, String[]>();
-                for (Iterator<?> iterator = properties.keySet().iterator(); iterator.hasNext();) {
-                    String k = (String) iterator.next();
-                    String v = properties.getProperty(k);
-                    dataProperties.put(k,new String[] { v });
+                    for (FileObject subfile : file.getParent().getChildren()) {
+                        String baseName = file.getName().getBaseName();
+                        baseName = StringUtils.substringBeforeLast(baseName, ".");
+
+                        String filename = subfile.getName().getBaseName();
+                        if (filename.startsWith(baseName + "_") && filename.endsWith(".properties")) {
+                            filename = StringUtils.substringBeforeLast(filename,".");
+                            String langCode = StringUtils.substringAfterLast(filename,"_");
+
+                            InputStream is = subfile.getContent().getInputStream();
+                            Properties i18nproperties = new Properties();
+                            i18nproperties.load(is);
+                            Map<String,String[]> dataProperties = new HashMap<String, String[]>();
+                            for (Iterator<?> iterator = i18nproperties.keySet().iterator(); iterator.hasNext();) {
+                                String k = (String) iterator.next();
+                                String v = i18nproperties.getProperty(k);
+                                dataProperties.put(k,new String[] { v });
+                            }
+                            if (data.getI18nProperties() == null) {
+                                data.setI18nProperties(new HashMap<String, Map<String, String[]>>());
+                            }
+                            data.getI18nProperties().put(langCode, dataProperties);
+                        }
+                    }
+
+                    InputStream is = file.getContent().getInputStream();
+                    properties.load(is);
+                    Map<String,String[]> dataProperties = new HashMap<String, String[]>();
+                    for (Iterator<?> iterator = properties.keySet().iterator(); iterator.hasNext();) {
+                        String k = (String) iterator.next();
+                        String v = properties.getProperty(k);
+                        dataProperties.put(k,new String[] { v });
+                    }
+                    data.getProperties().putAll(dataProperties);
+                } catch (IOException e) {
+                    logger.error("Cannot read property file",e);
                 }
-                data.getProperties().putAll(dataProperties);
-            } catch (IOException e) {
-                logger.error("Cannot read property file",e);
+                */
             }
-            */
+        } catch (NoSuchNodeTypeException e) {
+            logger.error("Unknown type",e);
         }
         return data;
     }
@@ -249,72 +256,78 @@ public class ModulesDataSource extends VFSDataSource {
     @Override
     public void saveItem(ExternalData data) {
         super.saveItem(data);
-        OutputStream outputStream = null;
-        if (data.getType().equals(Constants.JAHIANT_VIEWFILE)) {
-            // Handle source code
-            try {
-                outputStream = getFile(data.getPath()).getContent().getOutputStream();
-                byte[] sourceCode = data.getProperties().get("sourceCode")[0].getBytes();
-                outputStream.write(sourceCode);
-            } catch (Exception e) {
-                logger.error("Failed to write source code", e);
-            } finally {
-                if (outputStream != null) {
-                    try {
-                        outputStream.close();
-                    } catch (IOException e) {
-                        logger.error("Failed to close output stream", e);
-                    }
-                }
-            }
 
-            // Handle properties
-            try {
-                ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIAMIX_VIEWPROPERTIES);
-                Properties properties = new Properties();
-                for (String property  : data.getProperties().keySet()) {
-                    if (type.getDeclaredPropertyDefinitionsAsMap().containsKey(property)) {
-                        String[] v = data.getProperties().get(property);
-                        StringBuilder propertyValue = new StringBuilder();
-                        if (v!= null) {
-                            for (String s : v) {
-                                if (propertyValue.length() > 0) {
-                                    propertyValue.append(",");
-                                }
-                                propertyValue.append(s);
-                            }
-                            if (type.getDeclaredPropertyDefinitionsAsMap().get(property).getRequiredType() != PropertyType.BOOLEAN || !propertyValue.toString().equals("false")) {
-                                properties.put(property,propertyValue.toString());
-                            }
+        try {
+            ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(data.getType());
+
+            OutputStream outputStream = null;
+            if (type.isNodeType("jnt:editableFile")) {
+                // Handle source code
+                try {
+                    outputStream = getFile(data.getPath()).getContent().getOutputStream();
+                    byte[] sourceCode = data.getProperties().get("sourceCode")[0].getBytes();
+                    outputStream.write(sourceCode);
+                } catch (Exception e) {
+                    logger.error("Failed to write source code", e);
+                } finally {
+                    if (outputStream != null) {
+                        try {
+                            outputStream.close();
+                        } catch (IOException e) {
+                            logger.error("Failed to close output stream", e);
                         }
                     }
                 }
-                FileObject file = getFile(data.getPath().substring(0, data.getPath().lastIndexOf(".")) + ".properties");
-                if (!properties.isEmpty()) {
-                    outputStream = file.getContent().getOutputStream();
-                    properties.store(outputStream, data.getPath());
-                } else {
-                    if (file.exists()) {
-                        file.delete();
+
+                // Handle properties
+                if (type.isNodeType(Constants.JAHIAMIX_VIEWPROPERTIES)) {
+                    try {
+                        ExtendedNodeType propertiesType = NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIAMIX_VIEWPROPERTIES);
+                        Properties properties = new Properties();
+                        for (String property  : data.getProperties().keySet()) {
+                            if (propertiesType.getDeclaredPropertyDefinitionsAsMap().containsKey(property)) {
+                                String[] v = data.getProperties().get(property);
+                                StringBuilder propertyValue = new StringBuilder();
+                                if (v!= null) {
+                                    for (String s : v) {
+                                        if (propertyValue.length() > 0) {
+                                            propertyValue.append(",");
+                                        }
+                                        propertyValue.append(s);
+                                    }
+                                    if (propertiesType.getDeclaredPropertyDefinitionsAsMap().get(property).getRequiredType() != PropertyType.BOOLEAN || !propertyValue.toString().equals("false")) {
+                                        properties.put(property,propertyValue.toString());
+                                    }
+                                }
+                            }
+                        }
+                        FileObject file = getFile(data.getPath().substring(0, data.getPath().lastIndexOf(".")) + ".properties");
+                        if (!properties.isEmpty()) {
+                            outputStream = file.getContent().getOutputStream();
+                            properties.store(outputStream, data.getPath());
+                        } else {
+                            if (file.exists()) {
+                                file.delete();
+                            }
+                        }
+                    } catch (FileSystemException e) {
+                        logger.error(e.getMessage(), e);
+                    } catch (IOException e) {
+                        logger.error(e.getMessage(), e);
+                    }  catch (NoSuchNodeTypeException e) {
+                        logger.error("Unable to find type : " + data.getType() + " for node " + data.getPath(),e);
+                    } finally {
+                        try {
+                            outputStream.close();
+                        } catch (IOException e) {
+                            logger.error(e.getMessage(), e);
+                        }
                     }
                 }
-            } catch (FileSystemException e) {
-                logger.error(e.getMessage(), e);
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }  catch (NoSuchNodeTypeException e) {
-                logger.error("Unable to find type : " + data.getType() + " for node " + data.getPath(),e);
+
             }
-
-
-            finally {
-                try {
-                    outputStream.close();
-                } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            }
-
+        } catch (NoSuchNodeTypeException e) {
+            logger.error("Unknown type",e);
         }
     }
 

@@ -40,9 +40,17 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.FormButtonBinding;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -60,9 +68,22 @@ import java.util.*;
 
 public class CreateButtonItem extends SaveButtonItem {
 
+    private boolean useNamePopup = false;
+
+    public void setUseNamePopup(boolean useNamePopup) {
+        this.useNamePopup = useNamePopup;
+    }
+
     @Override
     protected void prepareAndSave(final AbstractContentEngine engine, final boolean closeAfterSave) {
-        String nodeName = ((CreateContentEngine)engine).getTargetName();
+        if (useNamePopup) {
+            showNamePopup(engine,closeAfterSave);
+        } else {
+            continuePrepareAndSave(engine, closeAfterSave, ((CreateContentEngine) engine).getTargetName());
+        }
+    }
+
+    protected void continuePrepareAndSave(final AbstractContentEngine engine, final boolean closeAfterSave, String nodeName) {
         GWTJahiaNodeACL newNodeACL = new GWTJahiaNodeACL();
         newNodeACL.setAce(new ArrayList<GWTJahiaNodeACE>());
 
@@ -154,4 +175,46 @@ public class CreateButtonItem extends SaveButtonItem {
             JahiaContentManagementService.App.getInstance().createNode(engine.getParentPath(), nodeName, engine.getType().getName(), mixin, newNodeACL, props, langCodeProperties, null, true, callback);
         }
     }
+
+    protected void showNamePopup(final AbstractContentEngine engine, final boolean closeAfterSave) {
+        final Window popup = new Window();
+        popup.setHeading(Messages.get("label.saveAsView", "Save as view"));
+        popup.setHeight(120);
+        popup.setWidth(350);
+        popup.setModal(true);
+        FormPanel f = new FormPanel();
+        f.setHeaderVisible(false);
+        f.setBorders(false);
+        final TextField<String> name = new TextField<String>();
+        name.setFieldLabel(Messages.get("label.name", "Name"));
+        name.setMinLength(1);
+        f.add(name);
+
+        Button b = new Button(Messages.get("label.submit", "submit"));
+        f.addButton(b);
+        b.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                continuePrepareAndSave(engine, closeAfterSave, name.getValue());
+                popup.hide();
+            }
+        });
+
+        Button c = new Button(Messages.get("label.cancel", "Cancel"));
+        c.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                popup.hide();
+            }
+        });
+        f.addButton(c);
+        f.setButtonAlign(Style.HorizontalAlignment.CENTER);
+
+        FormButtonBinding binding = new FormButtonBinding(f);
+        binding.addButton(b);
+        popup.add(f);
+        popup.show();
+    }
+
+
 }

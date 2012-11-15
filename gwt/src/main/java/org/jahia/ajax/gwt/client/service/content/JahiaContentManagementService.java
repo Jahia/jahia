@@ -411,7 +411,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     GWTJahiaNodeProperty translate(GWTJahiaNodeProperty property, GWTJahiaItemDefinition definition, String srcLanguage, String destLanguage, String siteUUID) throws GWTJahiaServiceException;
 
-    RpcMap initializeCodeEditor(String nodeType, String fileType) throws GWTJahiaServiceException;
+    RpcMap initializeCodeEditor(String path, boolean isNew, String nodeType, String fileType) throws GWTJahiaServiceException;
 
 // -------------------------- INNER CLASSES --------------------------
 

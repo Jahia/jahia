@@ -818,13 +818,16 @@ extends = jnt:content
 
 [jnt:templateTypeFolder] > jnt:folder
 
-[jnt:cssFile] > jnt:file
+[jnt:editableFile] > jnt:file
+ - sourceCode (string) itemtype = codeEditor
+
+[jnt:cssFile] > jnt:editableFile
 
 [jnt:cssFolder] > jnt:folder
 
 [jnt:javascriptFolder] > jnt:folder
 
-[jnt:javascriptFile] > jnt:file
+[jnt:javascriptFile] > jnt:editableFile
 
 [jmix:viewProperties] mixin
  itemtype = propertiesView
@@ -837,8 +840,7 @@ extends = jnt:content
  - addMixin (string)
  - type (string)
 
-[jnt:viewFile] > jnt:file, jmix:viewProperties
- - sourceCode (string) itemtype = codeEditor
+[jnt:viewFile] > jnt:editableFile, jmix:viewProperties
  - nodeTypeName (string)
 
 [jnt:definitionFile] > jnt:file

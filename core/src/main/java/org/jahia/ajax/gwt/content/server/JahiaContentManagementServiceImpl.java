@@ -2229,34 +2229,49 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return result;
     }
 
-    public RpcMap initializeCodeEditor(String nodeTypeName, String fileType) throws GWTJahiaServiceException {
-
+    public RpcMap initializeCodeEditor(String path, boolean isNew, String nodeTypeName, String fileType) throws GWTJahiaServiceException {
         RpcMap r = new RpcMap();
 
-        Map<String,String> stubs = stubHelper.getCodeSnippets(fileType, "stub");
-        if (!stubs.isEmpty()) {
-            r.put("stub", stubs.values().iterator().next());
-        } else {
-            r.put("stub", "");
+        try {
+            if (path != null && nodeTypeName == null) {
+                JCRNodeWrapper node = retrieveCurrentSession().getNode(path);
+                JCRNodeWrapper parent = node.isNodeType("jnt:nodeTypeFolder") ? node : JCRContentUtils.getParentOfType(node,"jnt:nodeTypeFolder");
+                if (parent != null) {
+                    nodeTypeName = parent.getName().replaceFirst("_", ":");
+                }
+            }
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
+
+        if (isNew) {
+            Map<String,String> stubs = stubHelper.getCodeSnippets(fileType, "stub");
+            if (!stubs.isEmpty()) {
+                r.put("stub", stubs.values().iterator().next());
+            } else {
+                r.put("stub", "");
+            }
         }
 
         List<GWTJahiaValueDisplayBean> snippets = new ArrayList<GWTJahiaValueDisplayBean>();
 
-        GWTJahiaNodeType nodeType = contentDefinition.getNodeType(nodeTypeName, getUILocale());
-        r.put("nodeType", nodeType);
-        for (String snippetType : propertiesSnippetTypes) {
-            for (Map.Entry<String,String> propertySnippetEntry : stubHelper.getCodeSnippets(fileType, snippetType).entrySet()) {
-                List<GWTJahiaItemDefinition> items = new ArrayList<GWTJahiaItemDefinition>(nodeType.getItems());
-                items.addAll(nodeType.getInheritedItems());
+        if (nodeTypeName != null) {
+            GWTJahiaNodeType nodeType = contentDefinition.getNodeType(nodeTypeName, getUILocale());
+            r.put("nodeType", nodeType);
+            for (String snippetType : propertiesSnippetTypes) {
+                for (Map.Entry<String,String> propertySnippetEntry : stubHelper.getCodeSnippets(fileType, snippetType).entrySet()) {
+                    List<GWTJahiaItemDefinition> items = new ArrayList<GWTJahiaItemDefinition>(nodeType.getItems());
+                    items.addAll(nodeType.getInheritedItems());
 
-                for (GWTJahiaItemDefinition definition : items) {
-                    if(!"*".equals(definition.getName()) && !definition.isNode() && !definition.isHidden()) {
-                        String propertySnippet = propertySnippetEntry.getValue().replace("__value__", definition.getName());
-                        String label = stubHelper.getLabel(fileType, snippetType, propertySnippetEntry.getKey(),getUILocale(),definition.getName());
-                        snippets.add(new GWTJahiaValueDisplayBean(propertySnippet, label));
+                    for (GWTJahiaItemDefinition definition : items) {
+                        if(!"*".equals(definition.getName()) && !definition.isNode() && !definition.isHidden()) {
+                            String propertySnippet = propertySnippetEntry.getValue().replace("__value__", definition.getName());
+                            String label = stubHelper.getLabel(fileType, snippetType, propertySnippetEntry.getKey(),getUILocale(),definition.getName());
+                            snippets.add(new GWTJahiaValueDisplayBean(propertySnippet, label));
+                        }
                     }
-                }
 
+                }
             }
         }
 

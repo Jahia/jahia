@@ -170,8 +170,10 @@ public class ContentTypeWindow extends Window {
         if ("studiomode".equals(linker.getConfig().getName())) {
             contentPath = "/modules/*";
         }
+        linker.loading(Messages.get("label.loading", "Loading"));
         JahiaContentManagementService.App.getInstance().getContentTypesAsTree(Arrays.asList(contentPath), nodeTypes, Arrays.asList("name"), includeSubTypes, false, new BaseAsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> result) {
+                linker.loaded();
                 if (result.size() == 1 && result.get(0).getChildren().isEmpty()) {
                     EngineLoader.showCreateEngine(linker, targetNode, (GWTJahiaNodeType) result.get(0).get("componentNodeType"), props,
                             name, createInParentAndMoveBefore);
@@ -186,6 +188,12 @@ public class ContentTypeWindow extends Window {
                     }
                     new ContentTypeWindow(linker, targetNode, result, props, name, createInParentAndMoveBefore).show();
                 }
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                linker.loaded();
+                super.onFailure(caught);
             }
 
             private GWTJahiaNodeType getTargetNodeType(String nodeTypeName, List<GWTJahiaNode> result,

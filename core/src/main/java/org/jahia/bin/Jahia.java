@@ -60,7 +60,6 @@ package org.jahia.bin;
 
 import org.apache.commons.io.IOUtils;
 import org.jahia.api.Constants;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
@@ -68,7 +67,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Version;
@@ -86,7 +84,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * This is the main servlet of Jahia.
@@ -105,7 +102,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     private static final long serialVersionUID = -4811687571425897497L;
     
     private static Logger logger = LoggerFactory.getLogger(Jahia.class);
-    private static Logger accessLogger = LoggerFactory.getLogger("accessLogger");
 
     static private final String INIT_PARAM_SUPPORTED_JDK_VERSIONS =
         "supported_jdk_versions";
@@ -116,8 +112,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     public final static String COPYRIGHT_TXT = "2012 Jahia Solutions Group SA" ;
 
     static private boolean maintenance = false;
-
-    static protected final String JDK_REQUIRED = "1.5";
 
     private static SettingsBean jSettings;
 
@@ -132,14 +126,8 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 
     static private String jahiaServletPath;
     static private String jahiaContextPath;
-    /**
-     * @deprecated since Jahia 6.5
-     */
-    @Deprecated
-    static private int jahiaHttpPort = -1;
 
     static private ThreadLocal<ProcessingContext> paramBeanThreadLocal = new ThreadLocal<ProcessingContext>();
-    static private ThreadLocal<HttpServlet> servletThreadLocal = new ThreadLocal<HttpServlet>();
 
     private static int BUILD_NUMBER = -1;
     private static int EE_BUILD_NUMBER = -1;
@@ -254,8 +242,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 	        staticServletConfig = aConfig;
 	        final ServletContext context = aConfig.getServletContext();
 	
-	        verifyJavaVersion(aConfig.getInitParameter(INIT_PARAM_SUPPORTED_JDK_VERSIONS));
-	
 	        jahiaEtcFilesPath = context.getRealPath("/WEB-INF/etc");
 	        jahiaVarFilesPath = context.getRealPath("/WEB-INF/var");
 	
@@ -308,14 +294,14 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 
 
 
-	private void verifyJavaVersion(String supportedJDKVersions) throws JahiaInitializationException {
+	public static void verifyJavaVersion(String supportedJDKVersions) throws JahiaInitializationException {
         if (supportedJDKVersions != null) {
                 Version currentJDKVersion;
                 try {
                     currentJDKVersion = new Version(System.getProperty("java.version"));
                     if (!isSupportedJDKVersion(currentJDKVersion, supportedJDKVersions)) {
                         StringBuffer jemsg = new StringBuffer();
-                        jemsg.append("WARNING<br/>\n");
+                        jemsg.append("WARNING\n\n");
                         jemsg.append(
                             "You are using an unsupported JDK version\n");
                         jemsg.append("or have an invalid ").append(
@@ -324,18 +310,18 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                         jemsg.append(
                             "the deployment descriptor file web.xml.\n");
                         jemsg.append(
-                            "<br/><br/>Here is the range specified in the web.xml file : ").
+                            "\n\nHere is the range specified in the web.xml file : ").
                                 append(supportedJDKVersions).append(".\n");
                         jemsg.append(
-                                "<br/>If you want to disable this warning, remove the ");
+                                "\nIf you want to disable this warning, remove the ");
                         jemsg.append(INIT_PARAM_SUPPORTED_JDK_VERSIONS);
                         jemsg.append("\n");
                         jemsg.append(
-                            "<br/>initialization parameter in the tomcat/webapps/jahia/WEB-INF/web.xml<br/>\n");
-                        jemsg.append("<br/><br/>Please note that if you deactivate this check or use unsupported versions<br/>\n");
-                        jemsg.append("<br/>You might run into serious problems and we cannot offer support for these.<br/>\n");
-                        jemsg.append("<br/>You may download a supported JDK from <a href=\"http://java.sun.com\" target=\"_newSunWindow\">http://java.sun.com</a>.");
-                        jemsg.append("<br/><br/>&nbsp;\n");
+                            "\ninitialization parameter in the WEB-INF/web.xml\n\n");
+                        jemsg.append("\n\nPlease note that if you deactivate this check or use unsupported versions\n\n");
+                        jemsg.append("\nYou might run into serious problems and we cannot offer support for these.\n\n");
+                        jemsg.append("\nYou may download a supported JDK from Oracle site: http://www.oracle.com/technetwork/java/javase/downloads/index.html");
+                        jemsg.append("\n\n&nbsp;\n");
                         JahiaInitializationException e = new JahiaInitializationException(jemsg.toString());
                         logger.error("Invalid JDK version", e);
                         throw e;
@@ -444,7 +430,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
      * a valid version object.
      * @param supportedJDKString
      */
-    private boolean isSupportedJDKVersion (final Version currentJDKVersion,
+    private static boolean isSupportedJDKVersion (final Version currentJDKVersion,
                                            final String supportedJDKString) {
         if (supportedJDKString == null) {
             // we deactivate the check if we specify no supported JDKs

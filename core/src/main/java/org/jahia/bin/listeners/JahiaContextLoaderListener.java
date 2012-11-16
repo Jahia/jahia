@@ -49,6 +49,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.pluto.driver.PortalStartupListener;
 import org.jahia.bin.Jahia;
+import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.applications.ApplicationsManagerServiceImpl;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader;
@@ -151,6 +153,13 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         }
         if (System.getProperty("jahia.license") == null) {
             System.setProperty("jahia.license", "");
+        }
+        
+        try {
+            // verify supported Java version
+            Jahia.verifyJavaVersion(servletContext.getInitParameter("supported_jdk_versions"));
+        } catch (JahiaInitializationException e) {
+            throw new JahiaRuntimeException(e);
         }
 
         writePID(servletContext);

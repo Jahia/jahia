@@ -7,7 +7,7 @@
     <display-name>Jahia</display-name>
 
     <context-param>
-    	<description>Required on IBM WebSphere 6.1 to disable deployment into a built-in portlet container and allow deployment into a custom portlet container (Pluto)</description>
+    	<description>Required on IBM WebSphere to disable deployment into a built-in portlet container and allow deployment into a custom portlet container (Pluto)</description>
         <param-name>com.ibm.websphere.portletcontainer.PortletDeploymentEnabled</param-name>
         <param-value>false</param-value>
     </context-param>
@@ -28,6 +28,15 @@
     <context-param>
         <param-name>log4jRefreshInterval</param-name>
         <param-value>60000</param-value>
+    </context-param>
+    
+    <context-param>
+        <!-- if you have trouble with the JDK detection code, you might want
+             to remove the following parameter. Please note that this is here
+             for a reason, and the versions below are the ones we recommend.
+        -->
+        <param-name>supported_jdk_versions</param-name>
+        <param-value>1.6 &lt;= x &lt; 1.8</param-value>
     </context-param>
 
     <filter>
@@ -253,14 +262,6 @@
     <servlet>
         <servlet-name>Jahia</servlet-name>
         <servlet-class>org.jahia.bin.Jahia</servlet-class>
-        <!-- if you have trouble with the JDK detection code, you might want
-             to remove the following parameter. Please note that this is here
-             for a reason, and the versions below are the ones we recommend.
-        -->
-        <init-param>
-            <param-name>supported_jdk_versions</param-name>
-            <param-value>1.5 &lt;= x &lt; 1.8</param-value>
-        </init-param>
         <load-on-startup>8</load-on-startup>
     </servlet>
 

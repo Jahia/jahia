@@ -11,6 +11,10 @@ import org.apache.jackrabbit.core.state.ItemStateReferenceCache
 import org.apache.log4j.Logger
 import org.apache.log4j.Level
 
+if (!org.jahia.settings.SettingsBean.getInstance().isProcessingServer()) {
+    return;
+}
+
 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
     public Object doInJCR(JCRSessionWrapper jcrsession) throws RepositoryException {
         JCRObservationManager.setEventsDisabled(Boolean.TRUE);

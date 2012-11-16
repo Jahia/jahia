@@ -2,6 +2,11 @@ import javax.jcr.*
 
 import org.jahia.services.content.*
 
+
+if (!org.jahia.settings.SettingsBean.getInstance().isProcessingServer()) {
+    return;
+}
+
 def log = log;
 
 log.info("Start granting CKEditor Basic toolbar permission to contributor and editor-in-chief roles...")

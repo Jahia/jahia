@@ -210,7 +210,7 @@ public class GWTInitializer {
         RenderContext renderContext = (RenderContext) request.getAttribute("renderContext");
 
         List<String> cssStyles = getConfig().getCssStyles();
-        if (renderContext.getServletPath().endsWith("frame")) {
+        if (renderContext != null && renderContext.getServletPath().endsWith("frame")) {
             cssStyles = getConfig().getCssStylesForFrame();
         }
         for (String css : cssStyles) {

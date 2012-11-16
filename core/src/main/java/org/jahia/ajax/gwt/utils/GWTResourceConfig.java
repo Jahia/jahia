@@ -62,6 +62,8 @@ public class GWTResourceConfig implements ApplicationListener<TemplatePackageRed
 
     private List<String> cssStyles = Collections.emptyList();
 
+    private List<String> cssStylesForFrame = Collections.emptyList();
+
     private boolean detectCustomCKEditorConfig = true;
 
     private List<String> javaScripts = Collections.emptyList();
@@ -98,6 +100,10 @@ public class GWTResourceConfig implements ApplicationListener<TemplatePackageRed
         return cssStyles;
     }
 
+    public List<String> getCssStylesForFrame() {
+        return cssStylesForFrame;
+    }
+
     public List<String> getJavaScripts() {
         return javaScripts;
     }
@@ -112,6 +118,10 @@ public class GWTResourceConfig implements ApplicationListener<TemplatePackageRed
 
     public void setCssStyles(List<String> cssStyles) {
         this.cssStyles = cssStyles;
+    }
+
+    public void setCssStylesForFrame(List<String> cssStylesForFrame) {
+        this.cssStylesForFrame = cssStylesForFrame;
     }
 
     public void setDetectCustomCKEditorConfig(boolean detectCKEditorResources) {

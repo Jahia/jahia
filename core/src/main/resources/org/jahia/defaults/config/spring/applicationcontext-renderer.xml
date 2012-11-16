@@ -256,6 +256,11 @@
             </list>
             -->
         </property>
+        <property name="cssStylesForFrame">
+            <list>
+                <value>/gwt/resources/css/edit.css</value>
+            </list>
+        </property>
         <property name="javaScripts">
             <list>
                 <value>/modules/assets/javascript/ckeditor/ckeditor.js</value>

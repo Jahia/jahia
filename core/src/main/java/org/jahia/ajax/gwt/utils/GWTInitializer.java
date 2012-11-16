@@ -206,7 +206,14 @@ public class GWTInitializer {
 
     private static void addCss(StringBuilder buf, HttpServletRequest request) {
         String context = request.getContextPath();
-        for (String css : getConfig().getCssStyles()) {
+
+        RenderContext renderContext = (RenderContext) request.getAttribute("renderContext");
+
+        List<String> cssStyles = getConfig().getCssStyles();
+        if (renderContext.getServletPath().endsWith("frame")) {
+            cssStyles = getConfig().getCssStylesForFrame();
+        }
+        for (String css : cssStyles) {
             buf.append("<link type=\"text/css\" href=\"").append(context).append(css)
                     .append("\" rel=\"stylesheet\"/>\n");
         }

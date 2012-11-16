@@ -5,6 +5,11 @@ import org.jahia.services.mail.MailSettings
 import org.jahia.settings.SettingsBean
 import org.jahia.utils.properties.PropertiesManager
 
+
+if (!org.jahia.settings.SettingsBean.getInstance().isProcessingServer()) {
+    return;
+}
+
 def log = log;
 
 log.info("Start migrating mail server settings...")

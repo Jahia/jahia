@@ -12,6 +12,10 @@ import javax.jcr.Value
 import org.jahia.services.templates.JahiaTemplateManagerService
 import org.jahia.data.templates.JahiaTemplatesPackage
 
+if (!org.jahia.settings.SettingsBean.getInstance().isProcessingServer()) {
+    return;
+}
+
 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
     public Object doInJCR(JCRSessionWrapper jcrsession) throws RepositoryException {
         JCRObservationManager.setEventsDisabled(Boolean.TRUE);

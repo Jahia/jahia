@@ -9,6 +9,10 @@ import org.apache.log4j.Level
 import org.apache.log4j.LogManager
 import org.apache.log4j.Logger
 
+if (!org.jahia.settings.SettingsBean.getInstance().isProcessingServer()) {
+    return;
+}
+
 def log = log;
 log.info("Start patch for social activity nodes")
 

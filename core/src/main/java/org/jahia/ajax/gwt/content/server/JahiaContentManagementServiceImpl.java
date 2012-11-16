@@ -404,7 +404,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      *          if node does not exist
      */
     public GWTJahiaNode getNode(String path) throws GWTJahiaServiceException {
-        return navigation.getNode(path, null, retrieveCurrentSession(), getUILocale());
+        return navigation.getNode(path, null, getUILocale(), retrieveCurrentSession());
     }
 
     /**
@@ -562,7 +562,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     private GWTJahiaGetPropertiesResult getProperties(String path, Locale locale) throws GWTJahiaServiceException {
-        final GWTJahiaNode node = navigation.getNode(path, null, retrieveCurrentSession(), getUILocale());
+        final GWTJahiaNode node = navigation.getNode(path, GWTJahiaNode.DEFAULT_FIELDS, getUILocale(),retrieveCurrentSession());
         final HashMap<String, Object> map = new HashMap<String, Object>();
         try {
             JCRSessionWrapper sessionWrapper = retrieveCurrentSession();

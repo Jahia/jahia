@@ -716,6 +716,7 @@ public class MainModule extends Module {
                 if (forceImageRefresh) {
                     refreshImages(body);
                 }
+                Hover.getInstance().removeAll();
                 ModuleHelper.initAllModules(MainModule.this, body);
                 ModuleHelper.buildTree(MainModule.this);
                 parse();

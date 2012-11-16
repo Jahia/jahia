@@ -118,7 +118,7 @@ public class SimpleModule extends Module {
                     if (selectable) {
                         Log.info("click" + path + " : " + scriptInfo);
                         mainModule.setCtrlActive(ce.isControlKey());
-                        if ((ce.isRightClick() && mainModule.getSelections().size() == 0) || !ce.isRightClick()) {
+                        if (!ce.isRightClick() || !mainModule.getSelections().containsKey(SimpleModule.this)) {
                             mainModule.getEditLinker().onModuleSelection(SimpleModule.this);
                         }
                     }

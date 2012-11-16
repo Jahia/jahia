@@ -104,7 +104,7 @@ public class EditModeDNDListener extends DNDListener {
     public static final String SOURCE_QUERY = "query";
 
     public static final String SOURCE_NODES = "sourceNodes";
-    public static final String SOURCE_MODULE = "sourceModule";
+    public static final String SOURCE_MODULES = "sourceModules";
     public static final String SOURCE_TEMPLATE = "sourceTemplate";
     public static final String SOURCE_NODETYPE = "sourceNodeType";
     public static final String OPERATION_CALLED = "operationCalled";

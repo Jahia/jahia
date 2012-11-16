@@ -46,7 +46,6 @@ import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.extjs.gxt.ui.client.dnd.Insert;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.util.Rectangle;
-import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -55,6 +54,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -159,10 +159,18 @@ public class ModuleDropTarget extends DropTarget {
                 listLimit = module.getListLimit();
                 childCount = module.getChildCount();
             }
-            EditModeDNDListener.SIMPLEMODULE_TYPE.equals(e.getStatus().getData(EditModeDNDListener.SOURCE_MODULE));
-            if (childCount >= listLimit && listLimit != -1 &&
-                    (e.getStatus().getData(EditModeDNDListener.SOURCE_MODULE) == null ||
-                    !parentModule.equals(((Module) e.getStatus().getData(EditModeDNDListener.SOURCE_MODULE)).getParentModule()))) {
+
+            List<GWTJahiaNode> sources = e.getStatus().getData(EditModeDNDListener.SOURCE_NODES);
+            int totalCount = childCount + sources.size();
+            if (e.getStatus().getData(EditModeDNDListener.SOURCE_MODULES) != null) {
+                Set<Module> modules = e.getStatus().getData(EditModeDNDListener.SOURCE_MODULES);
+                for (Module moduleToCopy : modules) {
+                    if (parentModule.equals(moduleToCopy.getParentModule())) {
+                        totalCount --;
+                    }
+                }
+            }
+            if (totalCount > listLimit && listLimit != -1) {
                 e.getStatus().setStatus(false);
                 e.setCancelled(false);
                 return;

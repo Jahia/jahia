@@ -49,7 +49,9 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDragSource;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -86,10 +88,17 @@ public class SimpleModuleDragSource extends EditModeDragSource {
 
     @Override
     protected void onDragStart(DNDEvent e) {
+        super.onDragStart(e);
+
         List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
-        for (Module m : getModule().getMainModule().getSelections().keySet()) {
+        MainModule mainModule = getModule().getMainModule();
+        Set<Module> moduleSet = new HashSet<Module>();
+        if (e.isControlKey() || mainModule.getSelections().containsKey(module)) {
+            moduleSet.addAll(mainModule.getSelections().keySet());
+        }
+        moduleSet.add(module);
+        for (Module m : moduleSet) {
             if (m.isDraggable()) {
-                super.onDragStart(e);
                 if (PermissionsUtils.isPermitted("jcr:removeNode", m.getNode()) && !m.getNode().isLocked()) {
                     e.setCancelled(false);
                     e.setData(this);
@@ -104,12 +113,17 @@ public class SimpleModuleDragSource extends EditModeDragSource {
                 } else {
                     e.setCancelled(true);
                 }
-                module.getMainModule().getSelections().get(m).hide();
-                e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
-                e.getStatus().setData(EditModeDNDListener.SOURCE_MODULE, m);
+                Selection selection = mainModule.getSelections().get(m);
+                if (selection != null) {
+                    selection.hide();
+                }
                 l.add(m.getNode());
-                e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);
             }
+        }
+        if (!l.isEmpty()) {
+            e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
+            e.getStatus().setData(EditModeDNDListener.SOURCE_MODULES, moduleSet);
+            e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);
         }
     }
 

@@ -177,7 +177,7 @@ public class ImageCrop extends Window {
 
             public void onSuccess(Object result) {
                 hide();
-                linker.refresh(Linker.REFRESH_MAIN);
+                linker.refresh(Linker.REFRESH_MAIN, null);
             }
         });
     }

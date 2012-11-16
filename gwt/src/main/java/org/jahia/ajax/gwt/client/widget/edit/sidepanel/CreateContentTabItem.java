@@ -48,6 +48,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Side panel tab that allows creation of new content items using drag and drop.
@@ -94,7 +95,7 @@ class CreateContentTabItem extends SidePanelTabItem {
     }
 
     @Override
-    public void refresh() {
+    public void refresh(Map data) {
         contentTypeTree.fillStore(paths, baseType != null ? Arrays.asList(baseType.split(" ")) : null, true, true);
         setRefreshed();
     }

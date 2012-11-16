@@ -71,12 +71,12 @@ public class ClearAllLocksActionItem extends BaseActionItem {
             public void onApplicationFailure(Throwable throwable) {
                 MessageBox.alert(Messages.get("label.error", "Error"), throwable.getLocalizedMessage(), null);
                 linker.loaded();
-                linker.refresh(Linker.REFRESH_MAIN);
+                linker.refresh(Linker.REFRESH_MAIN, null);
             }
 
             public void onSuccess(Object o) {
                 linker.loaded();
-                linker.refresh(Linker.REFRESH_MAIN);
+                linker.refresh(Linker.REFRESH_MAIN, null);
             }
         });
 

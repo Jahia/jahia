@@ -120,7 +120,7 @@ public class NewTemplatesSetActionItem extends BaseActionItem {
                         JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
                         JahiaGWTParameters.setSite(result, linker);
                         if (((EditLinker) linker).getSidePanel() != null) {
-                            ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
+                            ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL, null);
                         }
                         MainModule.staticGoTo(result.getPath(), null);
                         SiteSwitcherActionItem.refreshAllSitesList(linker);

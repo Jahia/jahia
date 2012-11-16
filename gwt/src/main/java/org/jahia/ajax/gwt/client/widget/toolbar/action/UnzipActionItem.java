@@ -77,7 +77,7 @@ public class UnzipActionItem extends BaseActionItem {
 
                 public void onSuccess(Object o) {
                     linker.loaded();
-                    linker.refresh(EditLinker.REFRESH_ALL);
+                    linker.refresh(EditLinker.REFRESH_ALL, null);
                 }
             });
         }

@@ -95,7 +95,7 @@ public class ContentManager extends TriPanelBrowserLayout {
                             selectedPaths,null,false, linker.isDisplayHiddenTypes(), config.getHiddenTypes(), config.getHiddenRegex(), new BaseAsyncCallback<List<GWTJahiaNode>>() {
                         public void onSuccess(List<GWTJahiaNode> gwtJahiaNode) {
                             linker.setLeftPanelSelectionWhenHidden(gwtJahiaNode.get(0));
-                            linker.refresh(Linker.REFRESH_ALL);
+                            linker.refresh(Linker.REFRESH_ALL, null);
                         }
 
                         public void onApplicationFailure(Throwable throwable) {

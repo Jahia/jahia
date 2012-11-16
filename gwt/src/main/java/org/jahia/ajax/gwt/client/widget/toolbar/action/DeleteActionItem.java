@@ -261,10 +261,10 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                                                         el = (EditLinker) linker;
                                                     }
                                                     if (el != null && l.contains(el.getSelectionContext().getMainNode().getPath())) {
-                                                        linker.refresh(EditLinker.REFRESH_PAGES);
+                                                        linker.refresh(EditLinker.REFRESH_PAGES, null);
                                                         linker.select(null);
                                                     } else {
-                                                        linker.refresh(EditLinker.REFRESH_ALL);
+                                                        linker.refresh(EditLinker.REFRESH_ALL, null);
                                                         linker.select(null);
                                                     }
                                                 }

@@ -109,6 +109,7 @@ public class SchedulerHelper {
             final String message = jobDataMap.getString(BackgroundJob.JOB_MESSAGE);
             final Long beginTime = getLong(jobDataMap, BackgroundJob.JOB_BEGIN);
             final Long endTime = getLong(jobDataMap, BackgroundJob.JOB_END);
+            final String site = jobDataMap.getString(BackgroundJob.JOB_SITEKEY);
             if (created == null && beginTime != null) {
                 // this can happen for cron scheduler jobs.
                 created = new Date(beginTime);
@@ -167,7 +168,7 @@ public class SchedulerHelper {
                 targetPaths.add(path);
                 targetPaths.add(extractNodePath);
             }
-            GWTJahiaJobDetail job = new GWTJahiaJobDetail(jobDetail.getName(), created, user, description,
+            GWTJahiaJobDetail job = new GWTJahiaJobDetail(jobDetail.getName(), created, user, site, description,
                     status, message, targetPaths,
                     jobDetail.getGroup(), jobDetail.getJobClass().getName(), beginTime, endTime, duration, jobLocale, fileName, targetNodeIdentifier, targetAction, targetWorkspace);
             job.setLabelKey("label." + jobDetail.getGroup() + ".task");

@@ -70,10 +70,7 @@ import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Side panel tab item for browsing the content repository.
@@ -235,7 +232,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
     }
 
     @Override
-    public void refresh() {
+    public void refresh(Map data) {
         fillStore();
         setRefreshed();
     }

@@ -49,7 +49,6 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -134,7 +133,7 @@ public class ImageRotate extends Window {
 
              public void onSuccess(Object result) {
                 hide();
-                m_linker.refresh(Linker.REFRESH_MAIN);
+                m_linker.refresh(Linker.REFRESH_MAIN, null);
              }
          });
     }

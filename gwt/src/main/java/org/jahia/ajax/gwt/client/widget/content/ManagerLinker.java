@@ -52,6 +52,7 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This is the linker that allow communication between all the browser components.
@@ -348,7 +349,7 @@ public class ManagerLinker implements Linker {
 
     }
 
-    public void refresh(int flag) {
+    public void refresh(int flag, Map data) {
         if (m_leftComponent != null) {
             if ((Linker.REFRESH_ALL & flag) != 0) {
                 m_leftComponent.refresh(Linker.REFRESH_OPEN_FOLDER);
@@ -411,7 +412,7 @@ public class ManagerLinker implements Linker {
 
     public void switchLanguage(GWTJahiaLanguage locale) {
         setLocale(locale);
-        refresh(Linker.REFRESH_ALL);
+        refresh(Linker.REFRESH_ALL, null);
     }
 
     public boolean isDisplayHiddenTypes() {

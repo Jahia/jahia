@@ -60,6 +60,7 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
 
 /**
@@ -168,10 +169,10 @@ public class EditLinker implements Linker {
         this.param = param;
     }
 
-    public void refresh(int flag) {
-        mainModule.refresh(flag);
+    public void refresh(int flag, Map data) {
+        mainModule.refresh(flag, data);
         if (sidePanel != null) {
-            sidePanel.refresh(flag);
+            sidePanel.refresh(flag, data);
         }
     }
 

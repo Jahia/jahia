@@ -56,6 +56,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 import java.util.Comparator;
+import java.util.Map;
 
 
 public class ModulesTabItem extends BrowseTabItem {
@@ -120,7 +121,7 @@ public class ModulesTabItem extends BrowseTabItem {
     }
 
     @Override
-    public void refresh() {
+    public void refresh(Map data) {
         tree.getTreeStore().removeAll();
         tree.getTreeStore().getLoader().load();
         listLoader.load();

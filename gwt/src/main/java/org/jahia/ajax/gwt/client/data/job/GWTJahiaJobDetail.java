@@ -61,6 +61,7 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
     public GWTJahiaJobDetail(String name,
                              Date creationTime,
                              String user,
+                             String site,
                              String description,
                              String status,
                              String message,
@@ -78,6 +79,7 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
         setName(name);
         setCreationTime(creationTime);
         setUser(user);
+        setSite(site);
         setDescription(description);
         setStatus(status);
         setMessage(message);
@@ -132,6 +134,14 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
 
     public void setUser(String user) {
         set("user", user);
+    }
+
+    public String getSite() {
+        return get("site");
+    }
+
+    public void setSite(String site) {
+        set("site", site);
     }
 
     public String getStatus() {

@@ -153,9 +153,9 @@ public class CreateButtonItem extends SaveButtonItem {
                             || node.getNodeTypes().contains("jnt:template") || node.getInheritedNodeTypes().contains("jnt:template")
                             || node.getInheritedNodeTypes().contains("jmix:visibleInPagesTree")) {
                         engine.getLinker().setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
-                        engine.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
+                        engine.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES, null);
                     } else {
-                        engine.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_FOLDERS);
+                        engine.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_FOLDERS, null);
                     }
                 } else {
                     engine.getTabs().removeAll();

@@ -109,7 +109,7 @@ public class ZipActionItem extends NodeTypeAwareBaseActionItem  {
 
             public void onSuccess(Object o) {
                 linker.loaded();
-                linker.refresh(Linker.REFRESH_MAIN);
+                linker.refresh(Linker.REFRESH_MAIN, null);
             }
         });
     }

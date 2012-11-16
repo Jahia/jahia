@@ -51,7 +51,6 @@ import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
@@ -70,6 +69,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeTreeGridDragSource;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Selection;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
@@ -154,6 +154,12 @@ public class PagesTabItem extends SidePanelTabItem {
             public void loaderLoad(LoadEvent le) {
                 for (GWTJahiaNode node : ((List<GWTJahiaNode>) le.getData())) {
                     nodesByPath.put(node.getPath(), node);
+                    ModuleHelper.setNodeForModule(node);
+
+                    MainModule mainModule = MainModule.getInstance();
+                    if (mainModule.getNode().getPath().equals(node.getPath())) {
+                        mainModule.getEditLinker().handleNewMainSelection();
+                    }
                 };
                 List<String> selectedPath = pageFactory.getSelectedPath();
                 if (selectedPath.size() == 1 && pageTree.getSelectionModel().getSelectedItem() == null && nodesByPath.containsKey(selectedPath.get(0))) {
@@ -204,7 +210,7 @@ public class PagesTabItem extends SidePanelTabItem {
     }
 
     @Override
-    public void refresh() {
+    public void refresh(Map data) {
         pageTree.getTreeStore().removeAll();
         pageTree.getTreeStore().getLoader().load();
         setRefreshed();
@@ -277,7 +283,7 @@ public class PagesTabItem extends SidePanelTabItem {
         public AsyncCallback<Object> getCallback() {
             AsyncCallback<Object> callback = new BaseAsyncCallback<Object>() {
                 public void onSuccess(Object o) {
-                    editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
+                    editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES, null);
                 }
 
                 public void onApplicationFailure(Throwable throwable) {

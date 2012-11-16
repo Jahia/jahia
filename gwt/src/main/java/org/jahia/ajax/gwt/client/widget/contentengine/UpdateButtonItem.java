@@ -162,7 +162,7 @@ public class UpdateButtonItem extends SaveButtonItem {
                 }
                 ((EditContentEngine) engine).closeEngine();
                 engine.getLinker().markForManualRefresh(Linker.REFRESH_PAGES);
-                engine.getLinker().refresh(refresh);
+                engine.getLinker().refresh(refresh, null);
             }
         });
     }

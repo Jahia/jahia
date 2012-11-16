@@ -186,7 +186,7 @@ public class AreaModule extends SimpleModule {
                 public void handleEvent(ComponentEvent be) {
                     createNode(new BaseAsyncCallback<GWTJahiaNode>() {
                         public void onSuccess(GWTJahiaNode result) {
-                            mainModule.getEditLinker().refresh(EditLinker.REFRESH_MAIN);
+                            mainModule.getEditLinker().refresh(EditLinker.REFRESH_MAIN, null);
                         }
                     });
                 }
@@ -206,7 +206,7 @@ public class AreaModule extends SimpleModule {
                 public void handleEvent(ComponentEvent be) {
                     JahiaContentManagementService.App.getInstance().deletePaths(Arrays.asList(path), new BaseAsyncCallback<GWTJahiaNode>() {
                         public void onSuccess(GWTJahiaNode result) {
-                            mainModule.getEditLinker().refresh(EditLinker.REFRESH_MAIN);
+                            mainModule.getEditLinker().refresh(EditLinker.REFRESH_MAIN, null);
                         }
                     });
                 }

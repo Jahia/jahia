@@ -127,7 +127,7 @@ public class BoundModule extends SimpleModule {
                         JahiaContentManagementService.App.getInstance()
                                 .saveProperties(Arrays.asList(node), properties, null, new BaseAsyncCallback() {
                                     public void onSuccess(Object o) {
-                                        getMainModule().getEditLinker().refresh(EditLinker.REFRESH_MAIN);
+                                        getMainModule().getEditLinker().refresh(EditLinker.REFRESH_MAIN, null);
                                     }
 
                                     public void onApplicationFailure(Throwable throwable) {
@@ -156,7 +156,7 @@ public class BoundModule extends SimpleModule {
                                     JahiaContentManagementService.App.getInstance()
                                             .saveProperties(Arrays.asList(node), properties, null, new BaseAsyncCallback() {
                                                 public void onSuccess(Object o) {
-                                                    getMainModule().getEditLinker().refresh(EditLinker.REFRESH_MAIN);
+                                                    getMainModule().getEditLinker().refresh(EditLinker.REFRESH_MAIN, null);
                                                 }
 
                                                 public void onApplicationFailure(Throwable throwable) {

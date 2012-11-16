@@ -54,7 +54,6 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.AbstractView;
 import org.jahia.ajax.gwt.client.widget.content.ContentViews;
 import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
-import org.jahia.ajax.gwt.client.widget.content.TableView;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
@@ -126,11 +125,7 @@ public class NodeTypeTableViewFiltering extends BaseActionItem {
         mainComponent.addSelectionChangedListener(new SelectionChangedListener<ModelData>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<ModelData> event) {
-                if (linker instanceof EditLinker) {
-                    ((EditLinker) linker).getMainModule().refresh(Linker.REFRESH_MAIN);
-                } else if (linker instanceof ManagerLinker) {
-                    ((ManagerLinker) linker).refresh(Linker.REFRESH_MAIN);
-                }
+                linker.refresh(Linker.REFRESH_MAIN, null);
             }
         });
         setEnabled(true);

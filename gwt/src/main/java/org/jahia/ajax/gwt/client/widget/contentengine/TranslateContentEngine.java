@@ -43,8 +43,6 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -214,7 +212,7 @@ public class TranslateContentEngine extends Window {
                 public void onSuccess(Object o) {
                     Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
                     TranslateContentEngine.this.hide();
-                    linker.refresh(Linker.REFRESH_MAIN);
+                    linker.refresh(Linker.REFRESH_MAIN, null);
                 }
             });
         }

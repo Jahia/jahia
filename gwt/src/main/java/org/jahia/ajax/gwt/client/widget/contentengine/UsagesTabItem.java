@@ -49,7 +49,6 @@ import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -89,7 +88,7 @@ public class UsagesTabItem extends EditEngineTabItem {
                          * @param result the return value of the remote produced call
                          */
                         public void onSuccess(Object result) {
-                            engine.getLinker().refresh(Linker.REFRESH_ALL);
+                            engine.getLinker().refresh(Linker.REFRESH_ALL, null);
                         }
                     });
                 }

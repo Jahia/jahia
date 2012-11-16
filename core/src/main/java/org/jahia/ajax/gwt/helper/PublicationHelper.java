@@ -54,6 +54,7 @@ import org.jahia.api.Constants;
 import org.jahia.bin.Render;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.notification.HttpClientService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.usermanager.JahiaUser;
@@ -401,7 +402,7 @@ public class PublicationHelper {
      * @param uuids    list of uuids of the nodes to publish
      * @param comments
      */
-    public void publish(List<String> uuids, JCRSessionWrapper session, List<GWTJahiaNodeProperty> properties, List<String> comments) throws GWTJahiaServiceException {
+    public void publish(List<String> uuids, JCRSessionWrapper session, JCRSiteNode site, List<GWTJahiaNodeProperty> properties, List<String> comments) throws GWTJahiaServiceException {
         try {
             // todo : if workflow started on untranslated node, translation will be created and not added into the publish tree calculated here
 
@@ -409,6 +410,7 @@ public class PublicationHelper {
 
             JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);
             JobDataMap jobDataMap = jobDetail.getJobDataMap();
+            jobDataMap.put(BackgroundJob.JOB_SITEKEY, site.getName());
             jobDataMap.put(PublicationJob.PUBLICATION_PROPERTIES, properties);
             jobDataMap.put(PublicationJob.PUBLICATION_COMMENTS, comments);
             jobDataMap.put(PublicationJob.PUBLICATION_UUIDS, uuids);

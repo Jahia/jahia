@@ -52,11 +52,9 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineContainer;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem;
@@ -140,7 +138,7 @@ public class PublicationStatusWindow extends LayoutContainer {
                                 WorkInProgressActionItem.removeStatus(status);
                                 Info.display(Messages.get("label.publication.unpublished"),
                                         Messages.get("label.publication.unpublished"));
-                                linker.refresh(Linker.REFRESH_ALL);
+                                linker.refresh(Linker.REFRESH_ALL, null);
                             }
                         });
             } else {
@@ -159,7 +157,7 @@ public class PublicationStatusWindow extends LayoutContainer {
                                 WorkInProgressActionItem.removeStatus(status);
                                 Info.display(Messages.get("message.content.published"),
                                         Messages.get("message.content.published"));
-                                linker.refresh(Linker.REFRESH_ALL);
+                                linker.refresh(Linker.REFRESH_ALL, null);
                             }
                         });
             }

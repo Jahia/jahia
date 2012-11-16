@@ -48,7 +48,6 @@ import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
@@ -150,7 +149,7 @@ public class ContentImport extends Window {
                 buttons.add(close);
 
                 layout();
-                m_linker.refresh(Linker.REFRESH_ALL);
+                m_linker.refresh(Linker.REFRESH_ALL, null);
             }
         });
     }

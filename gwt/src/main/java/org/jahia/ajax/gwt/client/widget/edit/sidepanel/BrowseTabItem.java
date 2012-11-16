@@ -63,6 +63,7 @@ import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Repository browser tab.
@@ -170,7 +171,7 @@ abstract class BrowseTabItem extends SidePanelTabItem {
         public AsyncCallback<Object> getCallback() {
             AsyncCallback<Object> callback = new BaseAsyncCallback<Object>() {
                 public void onSuccess(Object o) {
-                    refresh();
+                    refresh(null);
                 }
 
             };
@@ -179,7 +180,7 @@ abstract class BrowseTabItem extends SidePanelTabItem {
 
     }
 
-    @Override public void refresh() {
+    @Override public void refresh(Map data) {
         factory.getStore().removeAll();
         factory.getLoader().load();
         setRefreshed();

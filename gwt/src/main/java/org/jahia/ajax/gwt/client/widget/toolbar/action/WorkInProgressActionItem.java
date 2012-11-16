@@ -42,6 +42,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -51,7 +52,9 @@ import org.jahia.ajax.gwt.client.widget.job.JobListWindow;
 import org.jahia.ajax.gwt.client.widget.poller.ProcessPollingEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: toto
@@ -103,15 +106,27 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
     private void refreshStatus(List<GWTJahiaJobDetail> oldJobs) {
         refreshStatus();
         int refresh = 0;
+        Map refreshData = new HashMap();
+        int markRefresh = 0;
+
         if (oldJobs != null) {
             for (GWTJahiaJobDetail oldJob : oldJobs) {
-                if (oldJob.getGroup().equals("PublicationJob")) {
-                    refresh |= Linker.REFRESH_PAGES;
-                }
+                if (oldJob.getSite() == null || oldJob.getSite().equals(JahiaGWTParameters.getSiteKey()))
+                    if (oldJob.getGroup().equals("PublicationJob")) {
+                        if (oldJob.getUser().equals(JahiaGWTParameters.getCurrentUser())) {
+                            refresh |= Linker.REFRESH_PAGES;
+                            refreshData.put("publishedNodes", oldJob.getTargetPaths());
+                        } else {
+                            markRefresh |= Linker.REFRESH_PAGES;
+                        }
+                    }
             }
         }
+        if (markRefresh > 0) {
+            linker.markForManualRefresh(markRefresh);
+        }
         if (refresh > 0) {
-            linker.markForManualRefresh(refresh);
+            linker.refresh(refresh, refreshData);
         }
     }
 

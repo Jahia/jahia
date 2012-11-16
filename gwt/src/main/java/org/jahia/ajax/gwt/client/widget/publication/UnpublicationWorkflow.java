@@ -95,7 +95,7 @@ public class UnpublicationWorkflow extends PublicationWorkflow {
             public void onSuccess(Object result) {
                 WorkInProgressActionItem.removeStatus(status);
                 if (allUuids.size() < 20) {
-                    dialog.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
+                    dialog.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES, null);
                 }
             }
         };

@@ -43,6 +43,7 @@ package org.jahia.ajax.gwt.client.widget;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -67,7 +68,7 @@ public interface Linker {
 
     public void loading(String resource);
 
-    public void refresh(int flag);
+    public void refresh(int flag, Map data);
 
     public void markForManualRefresh(int flag);
 

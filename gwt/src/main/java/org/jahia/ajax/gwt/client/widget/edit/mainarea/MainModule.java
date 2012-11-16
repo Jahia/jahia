@@ -188,7 +188,7 @@ public class MainModule extends Module {
 
             head.addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
                 public void componentSelected(IconButtonEvent event) {
-                    refresh(EditLinker.REFRESH_MAIN);
+                    refresh(EditLinker.REFRESH_MAIN, null);
                 }
             }));
         }
@@ -322,7 +322,7 @@ public class MainModule extends Module {
         return editLinker;
     }
 
-    public void refresh(int flag) {
+    public void refresh(int flag, Map data) {
         if ((flag & Linker.REFRESH_MAIN) != 0) {
             goToUrl(getUrl(path, template), (flag & Linker.REFRESH_MAIN_IMAGES) != 0);
         }
@@ -458,13 +458,13 @@ public class MainModule extends Module {
 
     public void switchLanguage(GWTJahiaLanguage language) {
         editLinker.setLocale(language);
-        editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
+        editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES, null);
     }
 
     public void switchChannel(GWTJahiaChannel channel, String variant) {
         editLinker.setActiveChannelVariant(variant);
         editLinker.setActiveChannel(channel);
-        editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_CHANNELS);
+        editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_CHANNELS, null);
     }
 
     public void setNode(GWTJahiaNode node) {
@@ -477,7 +477,7 @@ public class MainModule extends Module {
             JahiaGWTParameters.setSite(node, editLinker);
             SiteSwitcherActionItem.refreshAllSitesList(editLinker);
             if (editLinker.getSidePanel() != null) {
-                editLinker.getSidePanel().refresh(EditLinker.REFRESH_ALL);
+                editLinker.getSidePanel().refresh(EditLinker.REFRESH_ALL, null);
             }
         }
 

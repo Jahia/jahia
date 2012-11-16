@@ -47,7 +47,6 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.PlaceholderModule;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ClipboardActionItem;
 
@@ -102,9 +101,9 @@ public class CopyPasteEngine {
                 linker.setSelectPathAfterDataUpdate(copiedPaths);
                 linker.loaded();
                 if (refresh) {
-                    linker.refresh(EditLinker.REFRESH_ALL);
+                    linker.refresh(EditLinker.REFRESH_ALL, null);
                 } else {
-                    linker.refresh(Linker.REFRESH_MAIN);
+                    linker.refresh(Linker.REFRESH_MAIN, null);
                 }
             }
         });

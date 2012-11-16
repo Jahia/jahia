@@ -330,7 +330,7 @@ public class TableView extends AbstractView {
                 final BaseAsyncCallback callback = new BaseAsyncCallback() {
                     public void onSuccess(Object o) {
                         getLinker().loaded();
-                        getLinker().refresh(EditLinker.REFRESH_ALL);
+                        getLinker().refresh(EditLinker.REFRESH_ALL, null);
                     }
                 };
 

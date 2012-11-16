@@ -106,9 +106,9 @@ public class UndeleteActionItem extends NodeTypeAwareBaseActionItem {
                                                              el = (EditLinker) linker;
                                                          }
                                                          if (el != null && l.contains(el.getSelectionContext().getMainNode().getPath())) {
-                                                             linker.refresh(EditLinker.REFRESH_PAGES);
+                                                             linker.refresh(EditLinker.REFRESH_PAGES, null);
                                                          } else {
-                                                             linker.refresh(EditLinker.REFRESH_ALL);
+                                                             linker.refresh(EditLinker.REFRESH_ALL, null);
                                                          }
                                                      }
                                                  });

@@ -1249,14 +1249,15 @@ public class JCRPublicationService extends JahiaService {
                 Date modProp = node.getLastModifiedAsDate();
                 Date pubProp = node.getLastPublishedAsDate();
                 Date liveModProp = publishedNode.getLastModifiedAsDate();
-                if (modProp == null || pubProp == null || liveModProp == null) {
+                if (pubProp == null) {
+                    pubProp = liveModProp;
+                }
+                if (modProp == null || pubProp == null) {
                     logger.warn(node.getPath() + " : Some property is null [last modified / last published / last modified (live)]: " + modProp + "/" + pubProp + "/" +
                             liveModProp);
                     status = PublicationInfo.MODIFIED;
                 } else {
-                    long mod = modProp.getTime();
-                    long pub = pubProp.getTime();
-                    if (mod > pub) {
+                    if (modProp.after(pubProp)) {
                         status = PublicationInfo.MODIFIED;
                     } else {
                         status = PublicationInfo.PUBLISHED;

@@ -205,7 +205,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                                 Info.display(Messages.get("label.workflow.start", "Start Workflow"), Messages.get(
                                         "message.workflow.started", "Workflow started"));
                                 WorkInProgressActionItem.removeStatus(status);
-                                dialog.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
+                                dialog.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES, null);
                             }
                         });
             }
@@ -251,9 +251,6 @@ public class PublicationWorkflow implements CustomWorkflow {
 
             public void onSuccess(Object result) {
                 WorkInProgressActionItem.removeStatus(status);
-                if (allUuids.size() < 20) {
-                    dialog.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
-                }
             }
         };
         JahiaContentManagementService.App.getInstance().publish(allUuids, nodeProperties, null, callback);

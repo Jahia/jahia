@@ -203,7 +203,7 @@ public class EditModeDNDListener extends DNDListener {
 
                                 public void onSuccess(GWTJahiaNode o) {
                                     Info.display(Messages.get("label.information", "Information"), Messages.get("message.success", "Node created"));
-                                    editLinker.refresh(Linker.REFRESH_MAIN);
+                                    editLinker.refresh(Linker.REFRESH_MAIN, null);
                                 }
                             });
                 } else {
@@ -260,7 +260,7 @@ public class EditModeDNDListener extends DNDListener {
 
                                 public void onSuccess(GWTJahiaNode o) {
                                     Info.display("", "Node created");
-                                    editLinker.refresh(Linker.REFRESH_MAIN);
+                                    editLinker.refresh(Linker.REFRESH_MAIN, null);
                                 }
                             });
                 } else {
@@ -294,7 +294,7 @@ public class EditModeDNDListener extends DNDListener {
                         }
                         if (!replacedPath.equals(selectedPath)) {
                             MainModule.staticGoTo(replacedPath, null);
-                            editLinker.refresh(Linker.REFRESH_PAGES);
+                            editLinker.refresh(Linker.REFRESH_PAGES, null);
                         } else if (e.getDropTarget() instanceof PagesTabItem.PageTreeGridDropTarget) {
                             ((PagesTabItem.PageTreeGridDropTarget) e.getDropTarget()).getCallback().onSuccess(result);
                         }
@@ -327,7 +327,7 @@ public class EditModeDNDListener extends DNDListener {
 
     private class DropAsyncCallback implements AsyncCallback {
         public void onSuccess(Object o) {
-            editLinker.getMainModule().refresh(Linker.REFRESH_MAIN);
+            editLinker.refresh(Linker.REFRESH_MAIN, null);
         }
 
         public void onFailure(Throwable throwable) {

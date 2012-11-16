@@ -162,10 +162,10 @@ public class CompareEngine extends Window {
         if (refreshOpener) {
             if (engine != null) {
                 engine.close();
-                engine.getLinker().refresh(Linker.REFRESH_ALL);
+                engine.getLinker().refresh(Linker.REFRESH_ALL, null);
             }
             if (linker != null) {
-                linker.refresh(Linker.REFRESH_ALL);
+                linker.refresh(Linker.REFRESH_ALL, null);
             }
         }
     }

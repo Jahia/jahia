@@ -105,7 +105,7 @@ public class PasswordPrompt extends Window {
                     public void onSuccess(Object o) {
                         hide();
                         item.setText(logoutLabel);
-                        m_linker.refresh(Linker.REFRESH_ALL);
+                        m_linker.refresh(Linker.REFRESH_ALL, null);
                     }
 
                     public void onApplicationFailure(Throwable throwable) {

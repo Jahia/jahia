@@ -55,6 +55,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 import java.util.Comparator;
+import java.util.Map;
 
 /**
  * Side panel tab item for browsing the pages tree.
@@ -124,7 +125,7 @@ public class TemplatesTabItem extends BrowseTabItem {
     }
 
     @Override
-    public void refresh() {
+    public void refresh(Map data) {
         tree.getTreeStore().removeAll();
         tree.getTreeStore().getLoader().load();
         listLoader.load();

@@ -163,7 +163,7 @@ public class SendNewsletterActionItem extends BaseActionItem {
                         linker.loaded();
                         unmask();
                         hide();
-                        linker.refresh(EditLinker.REFRESH_MAIN);
+                        linker.refresh(EditLinker.REFRESH_MAIN, null);
                     }
                 });
 
@@ -186,7 +186,7 @@ public class SendNewsletterActionItem extends BaseActionItem {
                     linker.loaded();
                     unmask();
                     hide();
-                    linker.refresh(EditLinker.REFRESH_MAIN);
+                    linker.refresh(EditLinker.REFRESH_MAIN, null);
                 }
 
                 @Override public void onApplicationFailure(Throwable caught) {

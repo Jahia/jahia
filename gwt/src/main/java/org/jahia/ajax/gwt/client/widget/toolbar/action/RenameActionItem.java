@@ -83,9 +83,9 @@ public class RenameActionItem extends NodeTypeAwareBaseActionItem {
                                 linker.setSelectPathAfterDataUpdate(Arrays.asList(newPath));
                                 linker.loaded();
                                 if (folder) {
-                                    linker.refresh(EditLinker.REFRESH_ALL);
+                                    linker.refresh(EditLinker.REFRESH_ALL, null);
                                 } else {
-                                    linker.refresh(Linker.REFRESH_MAIN);
+                                    linker.refresh(Linker.REFRESH_MAIN, null);
                                 }
                             }
                         });

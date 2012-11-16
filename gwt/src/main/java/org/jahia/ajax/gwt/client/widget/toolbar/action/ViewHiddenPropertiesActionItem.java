@@ -59,7 +59,7 @@ public class ViewHiddenPropertiesActionItem extends BaseActionItem {
     public void onComponentSelection() {
         if (linker instanceof ManagerLinker) {
             ((ManagerLinker) linker).setDisplayHiddenProperties(((CheckMenuItem) getMenuItem()).isChecked());
-            linker.refresh(Linker.REFRESH_ALL);
+            linker.refresh(Linker.REFRESH_ALL, null);
         }
     }
 }

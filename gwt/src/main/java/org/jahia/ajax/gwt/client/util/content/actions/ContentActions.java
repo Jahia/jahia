@@ -96,9 +96,9 @@ public class ContentActions {
                     copyPasteEngine.onPastedPath();
                     linker.loaded();
                     if (refresh) {
-                        linker.refresh(EditLinker.REFRESH_ALL);
+                        linker.refresh(EditLinker.REFRESH_ALL, null);
                     } else {
-                        linker.refresh(Linker.REFRESH_MAIN);
+                        linker.refresh(Linker.REFRESH_MAIN, null);
                     }
                 }
             });
@@ -131,9 +131,9 @@ public class ContentActions {
 
                 linker.loaded();
                 if (refresh) {
-                    linker.refresh(EditLinker.REFRESH_ALL);
+                    linker.refresh(EditLinker.REFRESH_ALL, null);
                 } else {
-                    linker.refresh(Linker.REFRESH_MAIN);
+                    linker.refresh(Linker.REFRESH_MAIN, null);
                 }
             }
         });
@@ -198,7 +198,7 @@ public class ContentActions {
                     public void onSuccess(GWTJahiaNode o) {
                         linker.setSelectPathAfterDataUpdate(Arrays.asList(o.getPath()));
                         linker.loaded();
-                        linker.refresh(Linker.REFRESH_ALL);
+                        linker.refresh(Linker.REFRESH_ALL, null);
                     }
                 });
             }
@@ -227,7 +227,7 @@ public class ContentActions {
                     public void onSuccess(GWTJahiaNode o) {
                         linker.setSelectPathAfterDataUpdate(Arrays.asList(o.getPath()));
                         linker.loaded();
-                        linker.refresh(EditLinker.REFRESH_ALL);
+                        linker.refresh(EditLinker.REFRESH_ALL, null);
                     }
 
                     public void onApplicationFailure(Throwable throwable) {
@@ -298,12 +298,12 @@ public class ContentActions {
                     public void onApplicationFailure(Throwable throwable) {
                         MessageBox.alert(Messages.get("label.error", "Error"), throwable.getLocalizedMessage(), null);
                         linker.loaded();
-                        linker.refresh(Linker.REFRESH_MAIN);
+                        linker.refresh(Linker.REFRESH_MAIN, null);
                     }
 
                     public void onSuccess(Object o) {
                         linker.loaded();
-                        linker.refresh(Linker.REFRESH_MAIN);
+                        linker.refresh(Linker.REFRESH_MAIN, null);
                     }
                 });
             }

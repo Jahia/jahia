@@ -51,6 +51,6 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 */
 public class RefreshActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        linker.refresh(Linker.REFRESH_ALL);
+        linker.refresh(Linker.REFRESH_ALL, null);
     }
 }

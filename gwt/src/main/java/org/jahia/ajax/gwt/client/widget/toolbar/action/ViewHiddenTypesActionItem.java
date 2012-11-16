@@ -40,16 +40,10 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
-
-import java.util.List;
 
 /**
  * User: David
@@ -65,7 +59,7 @@ public class ViewHiddenTypesActionItem extends BaseActionItem {
     public void onComponentSelection() {
         if (linker instanceof ManagerLinker) {
             ((ManagerLinker) linker).setDisplayHiddenTypes(((CheckMenuItem)getMenuItem()).isChecked());
-            linker.refresh(Linker.REFRESH_ALL);
+            linker.refresh(Linker.REFRESH_ALL, null);
         }
     }
 }

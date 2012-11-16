@@ -57,6 +57,7 @@ import org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Side panel widget that allows creation of new content using drag and drop from different sources
@@ -89,7 +90,7 @@ public class SidePanel extends ContentPanel {
             public void handleEvent(TabPanelEvent be) {
                 SidePanelTabItem selectedTab = ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem"));
                 if (selectedTab.isNeedAutoRefresh()) {
-                    selectedTab.refresh();
+                    selectedTab.refresh(selectedTab.getAutoRefreshData());
                 }
                 updateRefreshButton();
             }
@@ -111,7 +112,7 @@ public class SidePanel extends ContentPanel {
         }
         refreshButton = new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
-                ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem")).refresh();
+                ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem")).refresh(null);
                 DeployTemplatesActionItem.refreshAllMenus(editLinker);
                 updateRefreshButton();
             }
@@ -166,13 +167,13 @@ public class SidePanel extends ContentPanel {
         updateRefreshButton();
     }
 
-    public void refresh(int flag) {
+    public void refresh(int flag, Map data) {
         SidePanelTabItem selected = ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem"));
         for (SidePanelTabItem tab : tabs) {
             if (tab == selected) {
-                tab.refresh(flag);
+                tab.refresh(flag, data);
             } else {
-                tab.markForAutoRefresh(flag);
+                tab.markForAutoRefresh(flag, data);
             }
         }
         updateRefreshButton();

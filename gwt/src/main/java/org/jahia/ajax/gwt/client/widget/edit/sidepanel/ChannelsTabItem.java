@@ -157,7 +157,7 @@ public class ChannelsTabItem extends SidePanelTabItem {
     }
 
     @Override
-    public void refresh() {
+    public void refresh(Map data) {
         GWTJahiaChannel activeChannel = editLinker.getActiveChannel();
         int activeChannelIndex = 0;
 

@@ -51,7 +51,6 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.AdapterField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -131,7 +130,7 @@ public class Mounter extends Window {
                         bar.reset() ;
                         linker.loaded() ;
                         hide();
-                        linker.refresh(Linker.REFRESH_ALL);
+                        linker.refresh(Linker.REFRESH_ALL, null);
                     }
 
                 });

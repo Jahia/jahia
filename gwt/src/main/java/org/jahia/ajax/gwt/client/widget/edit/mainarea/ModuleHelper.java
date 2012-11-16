@@ -185,12 +185,7 @@ public class ModuleHelper {
 
                                 List<GWTJahiaNode> nodes = (List<GWTJahiaNode>) result.get("nodes");
                                 for (GWTJahiaNode gwtJahiaNode : nodes) {
-                                    final List<Module> moduleList = modulesByPath.get(gwtJahiaNode.getPath());
-                                    if (moduleList != null) {
-                                        for (Module module : moduleList) {
-                                            module.setNode(gwtJahiaNode);
-                                        }
-                                    }
+                                    setNodeForModule(gwtJahiaNode);
                                 }
 
                                 m.getEditLinker().onMainSelection(fmainPath, fmainTemplate, null);
@@ -203,6 +198,15 @@ public class ModuleHelper {
                             }
                         });
         GWT.log("Parsing : " + (System.currentTimeMillis() - start));
+    }
+
+    public static void setNodeForModule(GWTJahiaNode gwtJahiaNode) {
+        final List<Module> moduleList = modulesByPath.get(gwtJahiaNode.getPath());
+        if (moduleList != null) {
+            for (Module module : moduleList) {
+                module.setNode(gwtJahiaNode);
+            }
+        }
     }
 
     public static void buildTree(Module module) {

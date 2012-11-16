@@ -67,7 +67,7 @@ public class NewRemotePublicationActionItem extends BaseActionItem  {
             w.setWidth(700);
             w.add(new FormQuickRemotePublication() {
                 public void onRemotePublicationCreated() {
-                    linker.refresh(EditLinker.REFRESH_ALL);
+                    linker.refresh(EditLinker.REFRESH_ALL, null);
                 }
             });
             w.setScrollMode(Style.Scroll.AUTO);

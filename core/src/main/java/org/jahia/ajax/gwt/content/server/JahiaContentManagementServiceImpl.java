@@ -1257,7 +1257,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     public void publish(List<String> uuids,
                         List<GWTJahiaNodeProperty> properties, List<String> comments) throws GWTJahiaServiceException {
-        publication.publish(uuids, retrieveCurrentSession(), properties, comments);
+        publication.publish(uuids, retrieveCurrentSession(), getSite(), properties, comments);
     }
 
     /**

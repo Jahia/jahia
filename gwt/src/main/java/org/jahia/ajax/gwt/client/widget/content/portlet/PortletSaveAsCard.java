@@ -99,7 +99,7 @@ public class PortletSaveAsCard extends PortletWizardCard {
             public void onSuccess(GWTJahiaNode result) {
                 if (getLinker() != null) {
                     getLinker().setSelectPathAfterDataUpdate(Arrays.asList(result.getPath()));
-                    getLinker().refresh(Linker.REFRESH_MAIN);
+                    getLinker().refresh(Linker.REFRESH_MAIN, null);
                 }
                 getPortletWizardWindow().onPortletCreated();
                 getPortletWizardWindow().hide();

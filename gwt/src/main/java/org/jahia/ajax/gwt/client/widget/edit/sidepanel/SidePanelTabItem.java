@@ -42,6 +42,7 @@ package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
@@ -73,6 +74,7 @@ public class SidePanelTabItem implements Serializable {
     protected transient TabItem tab;
     protected transient EditLinker editLinker;
     protected transient boolean needAutoRefresh;
+    protected transient Map autoRefreshData;
     protected transient boolean needManualRefresh;
     protected transient int refreshFlag = 0;
 
@@ -105,33 +107,40 @@ public class SidePanelTabItem implements Serializable {
         }
     }
 
-    public void markForAutoRefresh(int refreshFlag) {
+    public void markForAutoRefresh(int refreshFlag, Map data) {
         if ((this.refreshFlag & refreshFlag) != 0) {
             needAutoRefresh = true;
+            autoRefreshData = data;
         }
     }
 
-    public void refresh(int refreshFlag) {
+    public void refresh(int refreshFlag, Map data) {
         if ((this.refreshFlag & refreshFlag) != 0) {
-            refresh();
+            refresh(data);
         }
     }
 
     /**
      * Refreshes the content of this tab if applicable. Does nothing by default.
      * Should be overridden in subclasses to implement the refresh.
+     * @param data
      */
-    public void refresh() {
+    public void refresh(Map data) {
         setRefreshed();
     }
 
     public void setRefreshed() {
         needAutoRefresh = false;
+        autoRefreshData = null;
         needManualRefresh = false;
     }
 
     public boolean isNeedAutoRefresh() {
         return needAutoRefresh;
+    }
+
+    public Map getAutoRefreshData() {
+        return autoRefreshData;
     }
 
     public boolean isNeedManualRefresh() {
@@ -203,8 +212,8 @@ public class SidePanelTabItem implements Serializable {
             editLinker.loading(resource);
         }
 
-        public void refresh(int flag) {
-            editLinker.refresh(flag);
+        public void refresh(int flag, Map data) {
+            editLinker.refresh(flag, null);
         }
 
         public void markForManualRefresh(int flag) {

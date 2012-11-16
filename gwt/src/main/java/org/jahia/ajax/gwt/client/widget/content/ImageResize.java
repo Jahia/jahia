@@ -50,7 +50,6 @@ import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -167,7 +166,7 @@ public class ImageResize extends Window {
 
              public void onSuccess(Object result) {
                 hide();
-                 linker.refresh(Linker.REFRESH_MAIN);
+                 linker.refresh(Linker.REFRESH_MAIN, null);
              }
          });
     }

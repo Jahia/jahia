@@ -76,7 +76,7 @@ public class UnmountActionItem extends BaseActionItem  {
 
                     public void onSuccess(Object o) {
                         linker.loaded();
-                        linker.refresh(Linker.REFRESH_FOLDERS);
+                        linker.refresh(Linker.REFRESH_FOLDERS, null);
                     }
                 });
             }

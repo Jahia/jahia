@@ -81,7 +81,7 @@ public class DeployPortletDefinitionActionItem extends BaseActionItem {
                         }
                         @Override
                         public void refreshParent() {
-                            linker.refresh(Linker.REFRESH_ALL);
+                            linker.refresh(Linker.REFRESH_ALL, null);
                         }
                     });
                     w.setScrollMode(Style.Scroll.AUTO);

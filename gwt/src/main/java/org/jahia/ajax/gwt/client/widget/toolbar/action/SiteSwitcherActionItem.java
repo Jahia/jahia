@@ -50,13 +50,10 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
@@ -216,7 +213,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
                 }
                 JahiaGWTParameters.setSite(jahiaNode, linker);
                 if (((EditLinker) linker).getSidePanel() != null) {
-                    ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
+                    ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL, null);
                 }
                 if (root.get(0).startsWith("/modules")) {
                     MainModule.staticGoTo(jahiaNode.getPath(), null);

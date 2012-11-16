@@ -47,12 +47,8 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -131,7 +127,7 @@ public class ReleaseModuleActionItem extends BaseActionItem {
                         JahiaGWTParameters.getSitesMap().put(newModule.getUUID(), newModule);
                         JahiaGWTParameters.setSite(newModule, linker);
                         if (((EditLinker) linker).getSidePanel() != null) {
-                            ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
+                            ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL, null);
                         }
                         MainModule.staticGoTo(newModule.getPath(), null);
                         SiteSwitcherActionItem.refreshAllSitesList(linker);

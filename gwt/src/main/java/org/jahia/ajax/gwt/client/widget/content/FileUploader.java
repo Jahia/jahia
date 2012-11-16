@@ -308,9 +308,9 @@ public class FileUploader extends Window {
 
     private void endUpload(CheckBox unzip, Linker linker) {
         if (unzip.getValue().booleanValue()) {
-            linker.refresh(Linker.REFRESH_ALL);
+            linker.refresh(Linker.REFRESH_ALL, null);
         } else {
-            linker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_FOLDERS);
+            linker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_FOLDERS, null);
         }
         unmask();
         hide();

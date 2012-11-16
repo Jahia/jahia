@@ -227,10 +227,10 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                 Linker linker = engine.getLinker();
                 engine.close();
                 if (newModuleNode == null) {
-                    linker.refresh(Linker.REFRESH_SOURCES);
+                    linker.refresh(Linker.REFRESH_SOURCES, null);
                 } else {
                     JahiaGWTParameters.setSite(gwtJahiaNode, linker);
-                    linker.refresh(Linker.REFRESH_ALL);
+                    linker.refresh(Linker.REFRESH_ALL, null);
                     MainModule.staticGoTo(gwtJahiaNode.getPath(), null);
                     SiteSwitcherActionItem.refreshAllSitesList(linker);
                 }

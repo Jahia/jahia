@@ -1,3 +1,26 @@
+.x-insert-bar {
+  position: absolute;
+
+  z-index: 99999;
+}
+
+.x-insert-bar td {
+  line-height: 1px;
+  font-size: 1px;
+}
+
+.x-insert-left {
+  background: url(../images/gxt/dd/insert-bg.gif) no-repeat;
+}
+
+.x-insert-mid {
+  background: url(../images/gxt/dd/insert-bg.gif) repeat-x 0 -12px;
+}
+
+.x-insert-right {
+  background: url(../images/gxt/dd/insert-bg.gif) no-repeat 0px -6px;
+}
+
 .x-panel-linker {
     background : #ffffcc url(../images/xtheme-jahia-andromeda/panel/panellinker.png) top left;
     color: #000 !important;

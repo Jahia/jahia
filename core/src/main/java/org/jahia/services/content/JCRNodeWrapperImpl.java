@@ -3729,7 +3729,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         try {
-            String path = getPath();
+            String path = getCanonicalPath();
             path = path.startsWith("/modulesFileSystem/")?path.replace("/modulesFileSystem/","/modules/"):path;
 
             if (path.startsWith("/sites/") || path.startsWith("/modules/")) {

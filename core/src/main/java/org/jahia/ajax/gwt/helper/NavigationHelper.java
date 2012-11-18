@@ -386,7 +386,7 @@ public class NavigationHelper {
 //                        userNodes.add(node);
 //                    }
                 } else {
-                    GWTJahiaNode root = getNode(path, fields, uiLocale, currentUserSession);
+                    GWTJahiaNode root = getNode(path, fields, currentUserSession, uiLocale);
                     if (root != null) {
                         if (!StringUtils.isEmpty(displayName)) {
                             root.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
@@ -409,6 +409,26 @@ public class NavigationHelper {
             logger.error(e.getMessage(), e);
         }
         return result;
+    }
+
+    /**
+     * Return a node if existing exception otherwise
+     *
+     *
+     * @param path               the path to test and get the node if it exists
+     * @param fields list of additional fields to be loaded for the node
+     * @param currentUserSession
+     * @param uiLocale
+     * @return the existing node
+     * @throws GWTJahiaServiceException it node does not exist
+     */
+    public GWTJahiaNode getNode(String path, List<String> fields, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
+        try {
+            return getGWTJahiaNode(currentUserSession.getNode(path), fields, uiLocale);
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(
+                    new StringBuilder(path).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
+        }
     }
 
     /**
@@ -453,16 +473,6 @@ public class NavigationHelper {
      * @return the existing node
      * @throws GWTJahiaServiceException it node does not exist
      */
-    public GWTJahiaNode getNode(String path, List<String> fields, Locale uiLocale, JCRSessionWrapper currentUserSession)
-            throws GWTJahiaServiceException {
-        try {
-            return getGWTJahiaNode(currentUserSession.getNode(path), fields, uiLocale);
-        } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(
-                    new StringBuilder(path).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
-        }
-    }
-
     public GWTJahiaNode getParentNode(String path, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         try {

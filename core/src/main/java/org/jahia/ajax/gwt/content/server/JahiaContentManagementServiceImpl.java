@@ -371,7 +371,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>();
         for (String path : paths) {
             try {
-                GWTJahiaNode gwtJahiaNode = navigation.getNode(path, fields, getUILocale(), retrieveCurrentSession(getWorkspace(),getLocale(),true));
+                GWTJahiaNode gwtJahiaNode = navigation.getNode(path, fields, retrieveCurrentSession(getWorkspace(),getLocale(),true), getUILocale());
                 list.add(gwtJahiaNode);
             } catch (GWTJahiaServiceException e) {
                 logger.debug(e.getMessage(), e);
@@ -404,7 +404,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      *          if node does not exist
      */
     public GWTJahiaNode getNode(String path) throws GWTJahiaServiceException {
-        return navigation.getNode(path, null, getUILocale(), retrieveCurrentSession());
+        return navigation.getNode(path, null, retrieveCurrentSession(), getUILocale());
     }
 
     /**
@@ -562,7 +562,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     private GWTJahiaGetPropertiesResult getProperties(String path, Locale locale) throws GWTJahiaServiceException {
-        final GWTJahiaNode node = navigation.getNode(path, GWTJahiaNode.DEFAULT_FIELDS, getUILocale(),retrieveCurrentSession());
+        final GWTJahiaNode node = navigation.getNode(path, GWTJahiaNode.DEFAULT_FIELDS, retrieveCurrentSession(), getUILocale());
         final HashMap<String, Object> map = new HashMap<String, Object>();
         try {
             JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
@@ -1402,7 +1402,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             JCRSessionWrapper session = retrieveCurrentSession();
             GWTJahiaNode node = contentManager.releaseModule(moduleName, nextVersion, session);
             RpcMap r = new RpcMap();
-            r.put("newModule",navigation.getNode("/modules/"+moduleName, GWTJahiaNode.DEFAULT_SITE_FIELDS, getUILocale(), session));
+            r.put("newModule",navigation.getNode("/modules/"+moduleName, GWTJahiaNode.DEFAULT_SITE_FIELDS, session, getUILocale()));
             r.put("filename",node.getName());
             r.put("downloadUrl",node.getUrl());
 
@@ -2242,7 +2242,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
         } catch (RepositoryException e) {
             e.printStackTrace();
-        }
+    }
 
         if (isNew) {
             Map<String,String> stubs = stubHelper.getCodeSnippets(fileType, "stub");
@@ -2273,7 +2273,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                             GWTJahiaValueDisplayBean displayBean = new GWTJahiaValueDisplayBean(propertySnippet, label);
                             displayBean.set("text", propertySnippet.replaceAll("<", "&lt;").replaceAll(">", "&gt;"));
                             snippets.add(displayBean);
-                        }
+        }
 
                     }
                 }
@@ -2292,7 +2292,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 }
             }
         }
-
         r.put("snippets",snippets);
 
         return r;

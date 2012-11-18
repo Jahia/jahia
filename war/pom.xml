@@ -990,7 +990,7 @@
                                 <cssSourceFile>diff.css</cssSourceFile>
                             </cssSourceFiles>
                             <cssTargetDir>gwt/resources/css</cssTargetDir>
-                            <cssFinalFile>gwt-1.3.css</cssFinalFile>
+                            <cssFinalFile>gwt-1.4.css</cssFinalFile>
                         </configuration>
                     </execution>
                 </executions>

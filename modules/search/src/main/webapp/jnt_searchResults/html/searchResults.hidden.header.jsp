@@ -16,7 +16,7 @@
 <c:set var="hitsName" value="hits_${currentNode.identifier}"/>
 <c:set var="hitsCountName" value="hitsCount_${currentNode.identifier}"/>
 <c:choose>
-    <c:when test='${empty searchMap[hitsName] }'>
+    <c:when test='${searchMap[hitsName] eq null }'>
         <s:results var="resultsHits">
             <c:set target="${moduleMap}" property="listTotalSize" value="${count}" />
             <c:set target="${moduleMap}" property="resultsHits" value="${resultsHits}" />

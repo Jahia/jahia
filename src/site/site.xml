@@ -180,10 +180,6 @@
                     <item name="Search results" href="jahia-modules/search/components.html#results"/>
                     <item name="JCR query" href="jahia-modules/search/components.html#query"/>
                 </item>
-                <item name="SEO" href="jahia-modules/seo/seo.html" collapse="true">
-                    <item name="URL mapping management" href="jahia-modules/seo/ui.html"/>
-                    <item name="Using rules" href="jahia-modules/seo/seo-rules.html"/>
-                </item>
                 <item name="Using search in templates" href="jahia-modules/search/forms.html">
                     <item name="Simple search form" href="jahia-modules/search/forms.html#Simple"/>
                     <item name="Advanced site search with metadata" href="jahia-modules/search/forms.html#site"/>
@@ -202,6 +198,10 @@
                 <item name="Search index configuration and maintenance" href="jahia-modules/search/searchIndex.html"/>
             </item>
             <item name="Skins" href="jahia-modules/skins/skins.html"/>
+            <item name="SEO" href="jahia-modules/seo/seo.html" collapse="true">
+                <item name="URL mapping management" href="jahia-modules/seo/ui.html"/>
+                <item name="Using rules" href="jahia-modules/seo/seo-rules.html"/>
+            </item>
             <item name="Tasks" href="jahia-modules/tasks/tasks.html"/>
             <item name="Visibility" href="jahia-modules/visibility/visibility.html"/>
             <item name="Optional Modules" collapse="true"

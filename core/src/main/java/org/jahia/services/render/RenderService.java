@@ -365,12 +365,13 @@ public class RenderService {
             if (rootTemplatePath.contains("/")) {
                 rootTemplatePath = StringUtils.substringAfterLast(rootTemplatePath,"/");
             }
+            if (!StringUtils.isEmpty(rootTemplatePath)) {
+                Template t = addTemplate(resource, renderContext, rootTemplatePath, modules, "jnt:template");
 
-            Template t = addTemplate(resource, renderContext, rootTemplatePath, modules, "jnt:template");
-
-            if (t != null) {
-                t.setNext(template);
-                return t;
+                if (t != null) {
+                    t.setNext(template);
+                    return t;
+                }
             }
         }
         return template;

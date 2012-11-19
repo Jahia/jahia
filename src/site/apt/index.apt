@@ -1,11 +1,12 @@
-Jahia 6.6
+Jahia 6.6.1
 
-  Today's web projects require much more than simply managing content:
-  Organizations now need to build "content smart" business solutions.
+[./images/xcm-features2.png]
 
-  Jahia brings a comprehensive answer to this evolution with version 6.6.
+  Today's web projects require much more than simply managing content: Organizations now need to build "content smart" business solutions.
 
-  It is much more than a simple WCM, it helps your organization build cutting edge user experiences and virtually any type of web applications, thanks to:
+  By helping companies to transform their online presence into business driven application, Jahia brings a comprehensive answer to this evolution with version 6.6.1.
+
+  It is much more than a simple WCM, Portal framework or Document Management system, it helps your organization build cutting edge user experiences and virtually any type of web and/or mobile applications, thanks to:
 
   * A modern <<Composite Content platform>>
   
@@ -14,9 +15,8 @@ Jahia 6.6
   * A compelling <<eXtended Content Management>> offering: We call it <<Jahia xCM>>
   
   * New social and collaboration capabilities with our <<Jahiapps, and support for any future apps!>>
+
   
-  []
+The New Jahia at a Glance:
   
-  The New Jahia at a Glance:
-  
-[./images/jahia-at-a-glance.png]
+[./images/architecture.png]

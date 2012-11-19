@@ -15,9 +15,14 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <c:set var="hitsName" value="hits_${currentNode.identifier}"/>
 <c:set var="hitsCountName" value="hitsCount_${currentNode.identifier}"/>
+<c:set var="limit" value="-1"/>
+<c:if test="${not empty moduleMap.pageSize and not empty moduleMap.pageStart}">
+    <c:set var="limit" value="${moduleMap.pageSize + moduleMap.pageStart}"/>
+</c:if>
+
 <c:choose>
     <c:when test='${searchMap[hitsName] eq null }'>
-        <s:results var="resultsHits">
+        <s:results var="resultsHits" limit="${limit}">
             <c:set target="${moduleMap}" property="listTotalSize" value="${count}" />
             <c:set target="${moduleMap}" property="resultsHits" value="${resultsHits}" />
             <c:set target="${moduleMap}" property="displaySearchParams" value="true" />

@@ -748,11 +748,11 @@ public class SearchCriteria implements Serializable {
 
     private String lastModifiedBy;
 
-    private int limit;
+    private long limit;
 
     private String nodeType;
 
-    private int offset;
+    private long offset;
 
     private String originSiteKey;
     
@@ -813,7 +813,7 @@ public class SearchCriteria implements Serializable {
      * Returns the maximum hit count to be returned. If the limit was not set, returns 0.
      * @return the maximum hit count to be returned. If the limit was not set, returns 0
      */
-    public int getLimit() {
+    public long getLimit() {
         return limit;
     }
 
@@ -825,7 +825,7 @@ public class SearchCriteria implements Serializable {
      * Returns the start offset of the search hit list. If the offset was not set, returns 0.  
      * @return the start offset of the search hit list. If the offset was not set, returns 0
      */
-    public int getOffset() {
+    public long getOffset() {
         return offset;
     }
 
@@ -958,7 +958,7 @@ public class SearchCriteria implements Serializable {
      * Sets the maximum size of the result set to <code>limit</code>.
      * @param limit the maximum hot count to be returned
      */
-    public void setLimit(int limit) {
+    public void setLimit(long limit) {
         this.limit = limit;
     }
 
@@ -970,7 +970,7 @@ public class SearchCriteria implements Serializable {
      * Sets the start offset of the result set to <code>offset</code>.
      * @param offset the start offset of the search hit list
      */
-    public void setOffset(int offset) {
+    public void setOffset(long offset) {
         this.offset = offset;
     }
 

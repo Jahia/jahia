@@ -52,6 +52,10 @@ import java.util.List;
 public class SearchResponse {
     private List<Hit<?>> results = Collections.emptyList();
 
+    private long offset = 0;
+    private long limit = -1;
+    private boolean hasMore = false;
+
     /**
      * Initializes an instance of this class.
      */
@@ -74,5 +78,29 @@ public class SearchResponse {
      */
     public void setResults(List<Hit<?>> results) {
         this.results = results;
+    }
+
+    public long getOffset() {
+        return offset;
+    }
+
+    public void setOffset(long offset) {
+        this.offset = offset;
+    }
+
+    public long getLimit() {
+        return limit;
+    }
+
+    public void setLimit(long limit) {
+        this.limit = limit;
+    }
+
+    public boolean hasMore() {
+        return hasMore;
+    }
+
+    public void setHasMore(boolean hasMore) {
+        this.hasMore = hasMore;
     }
 }

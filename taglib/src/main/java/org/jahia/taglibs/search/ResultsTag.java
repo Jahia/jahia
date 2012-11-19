@@ -51,6 +51,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.search.Hit;
 import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchCriteriaFactory;
+import org.jahia.services.search.SearchResponse;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 /**
@@ -64,6 +65,7 @@ public class ResultsTag extends AbstractJahiaTag {
 
     private String countVar;
 
+    private SearchResponse searchResponse;
     private List<Hit<?>> hits;
 
     private String searchCriteriaBeanName;
@@ -75,6 +77,9 @@ public class ResultsTag extends AbstractJahiaTag {
     private String var;
 
     private boolean allowEmptySearchTerm = false;
+
+    private long limit = -1;
+    private long offset = 0;
 
     @Override
     public int doEndTag() throws JspException {
@@ -97,8 +102,12 @@ public class ResultsTag extends AbstractJahiaTag {
             return SKIP_BODY;
         }
 
+        criteria.setLimit(limit);
+        criteria.setOffset(offset);
+
         if (allowEmptySearchTerm || !criteria.isEmpty()) {
-            hits = ServicesRegistry.getInstance().getSearchService().search(criteria, renderContext).getResults();
+            searchResponse = ServicesRegistry.getInstance().getSearchService().search(criteria, renderContext);
+            hits = searchResponse.getResults();
         } else {
             hits = Collections.emptyList();
         }
@@ -106,7 +115,11 @@ public class ResultsTag extends AbstractJahiaTag {
         int count = hits.size();
 
         pageContext.setAttribute(getVar(), hits);
-        pageContext.setAttribute(getCountVar(), Integer.valueOf(count));
+        if (searchResponse.hasMore()) {
+            pageContext.setAttribute(getCountVar(), Integer.MAX_VALUE);
+        } else {
+            pageContext.setAttribute(getCountVar(), Integer.valueOf(count));
+        }
         pageContext.setAttribute(getSearchCriteriaVar(), criteria);
         if (!criteria.getTerms().isEmpty() && !criteria.getTerms().get(0).isEmpty()) {
         	pageContext.setAttribute(getTermVar(), criteria.getTerms().get(0).getTerm());
@@ -184,11 +197,14 @@ public class ResultsTag extends AbstractJahiaTag {
     protected void resetState() {
         var = null;
         countVar = null;
+        searchResponse = null;
         hits = null;
         searchCriteriaBeanName = null;
         searchCriteriaVar = null;
         termVar = null;
         allowEmptySearchTerm = false;
+        limit = -1;
+        offset = 0;
         super.resetState();
     }
 
@@ -208,7 +224,15 @@ public class ResultsTag extends AbstractJahiaTag {
     	this.termVar = termVar;
     }
 
-	public void setVar(String var) {
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
+    public void setVar(String var) {
         this.var = var;
     }
 

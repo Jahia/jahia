@@ -165,6 +165,20 @@
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.Boolean</type>
         </attribute>
+        <attribute>
+        	<description>Limit</description>
+            <name>limit</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Long</type>
+        </attribute>
+        <attribute>
+        	<description>Results offset</description>
+            <name>offset</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Long</type>
+        </attribute>
     </tag>
 
     <tag>

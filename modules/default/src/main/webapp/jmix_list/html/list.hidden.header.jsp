@@ -71,7 +71,7 @@
     </query:definition>
     
     <c:choose>
-        <c:when test='${empty queryMap[resultName] }'>
+        <c:when test='${queryMap[resultName] eq null}'>
             <jcr:jqom var="result" qomBeanName="listQuery"/>
             <c:if test='${queryMap == null}'>
                 <jsp:useBean id="queryMap" class="java.util.HashMap" scope="request"/>

@@ -77,7 +77,11 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
-                final String[] filePath = engine.getLinker().getSelectionContext().getMainNode().getPath().split("/");
+                GWTJahiaNode node = engine.getNode();
+                if (node == null) {
+                    node = engine.getLinker().getSelectionContext().getSingleSelection();
+                }
+                final String[] filePath = node.getPath().split("/");
 
                 String mv;
                 String ft;
@@ -94,14 +98,14 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                     ftt = "html";
                     fn = ft.substring(ft.indexOf("_") + 1) + ".jsp";
                 } else {
-                    MessageBox.alert("save not work as expected", "An issue occurs when trying to resolve " + engine.getLinker().getSelectionContext().getMainNode().getPath(), null);
+                    MessageBox.alert("save not work as expected", "An issue occurs when trying to resolve " + node.getPath(), null);
                     return;
                 }
                 final String modulePath = "/modulesFileSystem/" + filePath[2];
                 final String moduleName = filePath[2];
                 final String moduleVersion = mv;
                 final String fileName = fn;
-                final String fileView = fileName.indexOf(".") == fileName.lastIndexOf(".") ? "" : fileName.substring(fileName.indexOf(".") + 1, fileName.lastIndexOf("."));
+                final String fileView = fileName.indexOf(".") == fileName.lastIndexOf(".") ? "default" : fileName.substring(fileName.indexOf(".") + 1, fileName.lastIndexOf("."));
                 final String fileType = ft;
                 final String fileTemplateType = ftt;
 
@@ -158,7 +162,13 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                             }
                         }
                         String newfileTemplateType = !"".equals(templateType.getValue()) ? templateType.getValue() : fileTemplateType;
-                        String newfileView = viewName.isDirty() ? viewName.getValue() != null? "." + viewName.getValue():"" : "." + fileView;
+                        String newfileView;
+                        String viewNameValue = viewName.getValue();
+                        if (viewNameValue == null || viewNameValue.equals("default") || viewNameValue.trim().equals("")) {
+                            newfileView = "";
+                        } else {
+                            newfileView = "." + viewNameValue;
+                        }
                         newModulePath = newModulePath + "/" +
                                 newModuleVersion + "/" +
                                 fileType + "/" +

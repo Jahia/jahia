@@ -180,6 +180,10 @@
                     <item name="Search results" href="jahia-modules/search/components.html#results"/>
                     <item name="JCR query" href="jahia-modules/search/components.html#query"/>
                 </item>
+                <item name="SEO" href="jahia-modules/seo/seo.html" collapse="true">
+                    <item name="URL mapping management" href="jahia-modules/seo/ui.html"/>
+                    <item name="Using rules" href="jahia-modules/seo/seo-rules.html"/>
+                </item>
                 <item name="Using search in templates" href="jahia-modules/search/forms.html">
                     <item name="Simple search form" href="jahia-modules/search/forms.html#Simple"/>
                     <item name="Advanced site search with metadata" href="jahia-modules/search/forms.html#site"/>
@@ -238,10 +242,7 @@
                     <item name="JSON JQuery Template" href="jahia-modules/jahia-default-modules/rating/json_jquery.html"/>
                     <item name="Recommender" href="jahia-modules/jahia-default-modules/rating/recommender.html"/>
                 </item>
-                <item name="SEO" href="jahia-modules/jahia-default-modules/seo/seo.html" collapse="true">
-                    <item name="URL mapping management" href="jahia-modules/jahia-default-modules/seo/ui.html"/>
-                    <item name="Using rules" href="jahia-modules/jahia-default-modules/seo/seo-rules.html"/>
-                </item>
+
                 <item name="Sitemap" href="jahia-modules/jahia-default-modules/sitemap/sitemap.html"/>
                 <item name="Top Stories" href="jahia-modules/jahia-default-modules/topstories/topstories.html" collapse="true">
                     <item name="Usage" href="jahia-modules/jahia-default-modules/topstories/topstories-usage.html" collapse="false">

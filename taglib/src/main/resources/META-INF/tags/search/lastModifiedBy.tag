@@ -9,6 +9,6 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 <c:set var="display" value="${functions:default(display, true)}"/>
 <c:set target="${attributes}" property="type" value="${display ? 'text' : 'hidden'}"/>
-<c:set target="${attributes}" property="name" value="src_lastEditor"/>
-<c:set var="value" value="${functions:default(param['src_lastEditor'], value)}"/>
+<c:set target="${attributes}" property="name" value="src_lastModifiedBy"/>
+<c:set var="value" value="${functions:default(param['src_lastModifiedBy'], value)}"/>
 <input ${functions:attributes(attributes)} value="${fn:escapeXml(value)}"/>

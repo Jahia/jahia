@@ -529,6 +529,7 @@
                     <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
                 </bean>
                 <bean class="org.jahia.services.importexport.validation.MissingNodetypesValidator"/>
+                <bean class="org.jahia.services.importexport.validation.MissingPortletsValidator"/>
             </list>
         </property>
     </bean>

@@ -99,6 +99,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                     boolean flushParent = false;
                     boolean flushChilds = false;
                     boolean flushRoles = false;
+                    boolean flushForVanityUrl = false;
                     if (path.contains("j:view")) {
                         flushParent = true;
                     }
@@ -118,7 +119,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                         flushParent = true;
                     }
                     if(path.contains("vanityUrlMapping")) {
-                        flushParent=true;
+                        flushForVanityUrl=true;
                     }
                     if (path.contains("j:acl") || path.contains("jnt:group") || flushRoles || type == Event.NODE_MOVED) {
                         // Flushing cache of acl key for users as a group or an acl has been updated
@@ -157,6 +158,18 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                             }
                         }
                         flushRegexpDependenciesOfPath(regexpDepCache,path, propageToOtherClusterNodes);
+                    }
+
+                    if(flushForVanityUrl) {
+                        path = StringUtils.substringBeforeLast(path, "/vanityUrlMapping");
+                        flushDependenciesOfPath(depCache, flushed, path, propageToOtherClusterNodes);
+                        try {
+                            flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propageToOtherClusterNodes);
+                        } catch (PathNotFoundException e) {
+                            if(event instanceof EventImpl && (((EventImpl) event).getChildId() != null)) {
+                                flushDependenciesOfPath(depCache, flushed,((EventImpl)event).getChildId().toString(), propageToOtherClusterNodes);
+                            }
+                        }
                     }
                 }
 

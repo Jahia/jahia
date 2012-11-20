@@ -40,6 +40,7 @@
 
 package org.apache.jackrabbit.core.query.lucene;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.commons.predicate.Predicate;
 import org.apache.jackrabbit.core.NodeImpl;
@@ -64,6 +65,7 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.search.facets.JahiaQueryParser;
+import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -148,7 +150,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                 IndexedNodeInfo infos = getIndexedNodeInfo(node, reader);
                 if (foundIds.add(infos.getMainNodeUuid())) {  // <-- Added by jahia
                     try {
-                        String[] acls = infos.getAclUuid() != null ? infos.getAclUuid().split(" ") : new String[0];
+                        String[] acls = infos.getAclUuid() != null ? Patterns.SPACE.split(infos.getAclUuid()) : ArrayUtils.EMPTY_STRING_ARRAY;
                         boolean canRead = true;
 
                         for (String acl : acls) {

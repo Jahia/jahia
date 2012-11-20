@@ -156,10 +156,10 @@
                                 </list>
                             </property>
                             <property name="operationTypes">
-                                <list value-type="java.lang.Integer">
+                                <set value-type="java.lang.Integer">
                                     <value type="java.lang.Integer">1</value>
                                     <value type="java.lang.Integer">13</value>
-                                </list>
+                                </set>
                             </property>
                         </bean>
                         <bean class="org.jahia.services.content.textextraction.TextExtractionListener">
@@ -212,10 +212,10 @@
                                 </list>
                             </property>
                             <property name="operationTypes">
-                                <list value-type="java.lang.Integer">
+                                <set value-type="java.lang.Integer">
                                     <value type="java.lang.Integer">1</value>
                                     <value type="java.lang.Integer">13</value>
-                                </list>
+                                </set>
                             </property>
                         </bean>
                         <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
@@ -243,11 +243,11 @@
                             </property>
                             <property name="availableDuringPublish" value="true"/>
                             <property name="operationTypes">
-                                <list value-type="java.lang.Integer">
+                                <set value-type="java.lang.Integer">
                                     <value type="java.lang.Integer">1</value>
                                     <value type="java.lang.Integer">13</value>
                                     <value type="java.lang.Integer">4</value>
-                                </list>
+                                </set>
                             </property>
                         </bean>
                         <bean class="org.jahia.services.content.files.FileCacheListener">
@@ -256,6 +256,13 @@
                         <bean class="org.jahia.services.render.filter.cache.HtmlCacheEventListener">
                             <property name="cacheProvider" ref="ModuleCacheProvider"/>
                             <property name="availableDuringPublish" value="true"/>
+                            <property name="operationTypes">
+                                <set value-type="java.lang.Integer">
+                                    <value type="java.lang.Integer">1</value>
+                                    <value type="java.lang.Integer">13</value>
+                                    <value type="java.lang.Integer">4</value>
+                                </set>
+                            </property>
                         </bean>
                         <bean class="org.jahia.services.render.filter.cache.RenderServiceTemplateCacheEventListener">
                             <property name="availableDuringPublish" value="true"/>

@@ -246,15 +246,20 @@ public class JCRObservationManager implements ObservationManager {
 
     public static void consume(List<EventWrapper> list, JCRSessionWrapper session, int operationType) throws RepositoryException {
         for (EventConsumer consumer : listeners) {
-            if (consumer.session.getWorkspace().getName().equals(session.getWorkspace().getName())) {
-                if (!Boolean.TRUE.equals(eventsDisabled.get()) || ((DefaultEventListener) consumer.listener).isAvailableDuringPublish()) {
+            DefaultEventListener castListener = consumer.listener instanceof DefaultEventListener ? (DefaultEventListener) consumer.listener : null;
+            // check if the required workspace condition is matched
+            // check if the events are not disabled or the listener is still available during publication
+            // check if the event is not eternal or consumer accepts external events
+            if (consumer.session.getWorkspace().getName().equals(session.getWorkspace().getName()) &&
+                (!Boolean.TRUE.equals(eventsDisabled.get()) || (castListener != null && castListener.isAvailableDuringPublish()))
+                        && (consumer.useExternalEvents || operationType != EXTERNAL_SYNC)) {
                     List<EventWrapper> filteredEvents = new ArrayList<EventWrapper>();
                     for (EventWrapper event : list) {
                         if ((consumer.eventTypes & event.getType()) != 0 &&
-                                (consumer.useExternalEvents || operationType != EXTERNAL_SYNC) &&
                                 (consumer.absPath == null || (consumer.isDeep && event.getPath().startsWith(consumer.absPath)) || consumer.isDeep && event.getPath().equals(consumer.absPath)) &&
                                 (consumer.nodeTypeName == null || checkNodeTypeNames(event.getNodeTypes(), consumer.nodeTypeName)) &&
-                                (consumer.uuid == null || checkUuids(event.getIdentifier(), consumer.nodeTypeName))) {
+                                (consumer.uuid == null || checkUuids(event.getIdentifier(), consumer.nodeTypeName)) &&
+                                (castListener == null || castListener.isSupportedOperationType(operationType))) {
                             filteredEvents.add(event);
                         }
                     }
@@ -266,7 +271,7 @@ public class JCRObservationManager implements ObservationManager {
                     } catch (Exception e) {
                         logger.warn("Error processing event by listener. Cause: " + e.getMessage(), e);
                     }
-                }
+                
             }
         }
     }

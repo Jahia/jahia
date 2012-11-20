@@ -46,6 +46,7 @@ import org.apache.jackrabbit.api.observation.JackrabbitEvent;
 import org.jahia.services.content.JCRObservationManager.EventWrapper;
 
 import javax.jcr.observation.Event;
+import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.EventListener;
 import java.util.HashSet;
 import java.util.Set;
@@ -61,6 +62,7 @@ public abstract class DefaultEventListener implements EventListener {
     protected Set<String> propertiesToIgnore;
     protected String workspace;
     protected boolean availableDuringPublish = false;
+    protected Set<Integer> operationTypes;
 
     protected DefaultEventListener() {
         propertiesToIgnore = new HashSet<String>();
@@ -106,6 +108,10 @@ public abstract class DefaultEventListener implements EventListener {
         }
         return false;
     }
+    
+    protected boolean isSupportedOperationType(int operationType) {
+        return operationTypes == null || operationTypes.contains(operationType);
+    }
 
     public abstract int getEventTypes();
 
@@ -135,5 +141,13 @@ public abstract class DefaultEventListener implements EventListener {
 
     public String getWorkspace() {
         return workspace;
+    }
+
+    public void setOperationTypes(Set<Integer> operationTypes) {
+        this.operationTypes = operationTypes;
+    }
+
+    public Set<Integer> getOperationTypes() {
+        return operationTypes;
     }
 }

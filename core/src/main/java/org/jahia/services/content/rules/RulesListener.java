@@ -45,6 +45,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -73,7 +74,7 @@ import java.util.*;
  * Time: 18:03:47
  */
 public class RulesListener extends DefaultEventListener implements DisposableBean {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(RulesListener.class);
+    private static Logger logger = LoggerFactory.getLogger(RulesListener.class);
 
     private static List<RulesListener> instances = new ArrayList<RulesListener>();
 
@@ -92,8 +93,6 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     private Map<String, Object> globalObjects;
 
     private List<String> filesAccepted;
-    private List<Integer> operationTypes;
-
     public RulesListener() {
         instances.add(this);
         dslFiles = new LinkedList<File>();
@@ -251,9 +250,6 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     public void onEvent(EventIterator eventIterator) {
         final int operationType = ((JCREventIterator) eventIterator).getOperationType();
-        if (!operationTypes.contains(operationType)) {
-            return;
-        }
 
         final JCRSessionWrapper session = ((JCREventIterator) eventIterator).getSession();
         final String userId = session.getUser() != null ? session.getUser().getName() : null;
@@ -598,14 +594,6 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     public void setFilesAccepted(List<String> fileAccepted) {
         this.filesAccepted = fileAccepted;
-    }
-
-    public void setOperationTypes(List<Integer> operationTypes) {
-        this.operationTypes = operationTypes;
-    }
-
-    public List<Integer> getOperationTypes() {
-        return operationTypes;
     }
 
     String getNodeFactOperationType(int operationType) {

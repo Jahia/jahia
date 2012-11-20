@@ -123,10 +123,9 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                     }
                     if (path.contains("j:acl") || path.contains("jnt:group") || flushRoles || type == Event.NODE_MOVED) {
                         // Flushing cache of acl key for users as a group or an acl has been updated
-                        CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
-                        if (cacheKeyGenerator instanceof DefaultCacheKeyGenerator) {
-                            DefaultCacheKeyGenerator generator = (DefaultCacheKeyGenerator) cacheKeyGenerator;
-                            generator.flushUsersGroupsKey(propageToOtherClusterNodes);
+                        AclCacheKeyPartGenerator cacheKeyGenerator = (AclCacheKeyPartGenerator) cacheProvider.getKeyGenerator().getPartGenerator("acls");
+                        if (cacheKeyGenerator != null) {
+                            cacheKeyGenerator.flushUsersGroupsKey(propageToOtherClusterNodes);
                         }
                         flushParent = true;
                         flushChilds = true;

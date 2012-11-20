@@ -38,6 +38,26 @@ when we flush this entry we will flush the whole cache
     </bean>
 
     <bean id="cacheKeyGenerator" class="org.jahia.services.render.filter.cache.DefaultCacheKeyGenerator">
+        <property name="partGenerators">
+            <list>
+                <bean class="org.jahia.services.render.filter.cache.LanguageCacheKeyPartGenerator"/>
+                <bean class="org.jahia.services.render.filter.cache.PathCacheKeyPartGenerator"/>
+                <bean class="org.jahia.services.render.filter.cache.TemplateCacheKeyPartGenerator"/>
+                <bean class="org.jahia.services.render.filter.cache.TemplateTypeCacheKeyPartGenerator"/>
+                <ref bean="aclCacheKeyPartGenerator"/>
+                <bean class="org.jahia.services.render.filter.cache.ContextCacheKeyPartGenerator"/>
+                <bean class="org.jahia.services.render.filter.cache.WrappedCacheKeyPartGenerator"/>
+                <bean class="org.jahia.services.render.filter.cache.CustomCacheKeyPartGenerator"/>
+                <bean class="org.jahia.services.render.filter.cache.QueryStringCacheKeyPartGenerator"/>
+                <bean class="org.jahia.services.render.filter.cache.TemplateNodesCacheKeyPartGenerator"/>
+                <bean class="org.jahia.services.render.filter.cache.ResourceIDCacheKeyPartGenerator"/>
+                <bean class="org.jahia.services.render.filter.cache.InAreaCacheKeyPartGenerator"/>
+                <bean class="org.jahia.services.render.filter.cache.SiteCacheKeyPartGenerator"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="aclCacheKeyPartGenerator" class="org.jahia.services.render.filter.cache.AclCacheKeyPartGenerator">
         <property name="groupManagerService" ref="JahiaGroupManagerService"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
         <property name="cacheProvider" ref="ehCacheProvider"/>

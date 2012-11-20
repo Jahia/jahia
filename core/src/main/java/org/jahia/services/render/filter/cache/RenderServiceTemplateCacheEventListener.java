@@ -61,7 +61,7 @@ public class RenderServiceTemplateCacheEventListener extends DefaultEventListene
             RenderServiceTemplateCacheEventListener.class);
 
     private RenderService renderService;
-    private CacheKeyGenerator cacheKeyGenerator;
+    private AclCacheKeyPartGenerator aclCacheKeyPartGenerator;
 
     @Override
     public int getEventTypes() {
@@ -99,10 +99,7 @@ public class RenderServiceTemplateCacheEventListener extends DefaultEventListene
                         if (path.contains("j:acl") || path.contains("jnt:group") || flushRoles ||
                             type == Event.NODE_MOVED) {
                             // Flushing cache of acl key for users as a group or an acl has been updated
-                            if (cacheKeyGenerator instanceof DefaultCacheKeyGenerator) {
-                                DefaultCacheKeyGenerator generator = (DefaultCacheKeyGenerator) cacheKeyGenerator;
-                                generator.flushUsersGroupsKey();
-                            }
+                            aclCacheKeyPartGenerator.flushUsersGroupsKey();
                         }
                     }
                 }
@@ -113,8 +110,8 @@ public class RenderServiceTemplateCacheEventListener extends DefaultEventListene
         }
     }
 
-    public void setCacheKeyGenerator(CacheKeyGenerator cacheKeyGenerator) {
-        this.cacheKeyGenerator = cacheKeyGenerator;
+    public void setAclCacheKeyPartGenerator(AclCacheKeyPartGenerator aclCacheKeyPartGenerator) {
+        this.aclCacheKeyPartGenerator = aclCacheKeyPartGenerator;
     }
 
     public void setRenderService(RenderService renderService) {

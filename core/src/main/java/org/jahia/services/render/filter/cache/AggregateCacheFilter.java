@@ -73,7 +73,6 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.jahia.api.Constants.JAHIAMIX_REFERENCES_IN_FIELD;
@@ -96,9 +95,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public static final Pattern ESI_INCLUDE_STOPTAG_REGEXP = Pattern.compile("<!-- /cache:include -->");
     protected static final Pattern CLEANUP_REGEXP = Pattern.compile(
             "<!-- cache:include src=\\\"(.*)\\\" -->\n|\n<!-- /cache:include -->");
-    protected static final Pattern QUERYSTRING_REGEXP = Pattern.compile("(.*)(_qs\\[([^\\]]+)\\]_)(.*)");
-
-    protected static final Pattern P_REGEXP = Pattern.compile("_p_");
 
     public static final Set<String> notCacheableFragment = new HashSet<String>(512);
     protected static final Set<String> guestMainResourceRequestParameters = new LinkedHashSet<String>();
@@ -140,7 +136,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             cacheable = false;
         }
         String perUserKey = replacePlaceholdersInCacheKey(renderContext, key);
-        perUserKey = replaceAclPlaceHolder(renderContext, key, perUserKey);
         LinkedList<String> userKeysLinkedList = userKeys.get();
         if (userKeysLinkedList == null) {
             userKeysLinkedList = new LinkedList<String>();
@@ -247,7 +242,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             key = cacheProvider.getKeyGenerator().replaceField(key, "acls", "dynamicRolesAcls");
             chain.pushAttribute(renderContext.getRequest(), "cache.dynamicRolesAcls", Boolean.FALSE);
         }*/
-        perUserKey = replaceAclPlaceHolder(renderContext, key, perUserKey);
         if (debugEnabled) {
             logger.debug("Generating content for node: {}", perUserKey);
         }
@@ -258,7 +252,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 if (resource.getDependencies().size() > nbOfDependencies) {
                     key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
                     perUserKey = replacePlaceholdersInCacheKey(renderContext, key);
-                    perUserKey = replaceAclPlaceHolder(renderContext, key, perUserKey);
                 }
                 String perUser = (String) renderContext.getRequest().getAttribute("perUser");
                 if (perUser != null && "true".equals(perUser.toLowerCase())) {
@@ -266,7 +259,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     // The value of the node property from the mixin jmix:cache are only checked in the TemplatesAttributesFilter
                     // So we need to recalculate the key as we were not aware that this content needed to be cached by user
                     // We need to store content with the previously calculated cache to avoid lock up.
-                    key = cacheProvider.getKeyGenerator().replaceField(key, "acls", DefaultCacheKeyGenerator.PER_USER);
+                    key = cacheProvider.getKeyGenerator().replaceField(key, "acls", AclCacheKeyPartGenerator.PER_USER);
                     perUserKey = replacePlaceholdersInCacheKey(renderContext, key);
                 }
 
@@ -379,15 +372,18 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(properties.getProperty("cache.mainResource", "false")));
             }
             String requestParameters = properties.getProperty("cache.requestParameters");
-            if (SettingsBean.getInstance().isDevelopmentMode()) {
-                StringBuilder stringBuilder = new StringBuilder(requestParameters != null ? requestParameters : "");
-                if (stringBuilder.length() == 0) {
-                    stringBuilder.append("cacheinfo,moduleinfo");
-                } else {
-                    stringBuilder.append(",cacheinfo,moduleinfo");
-                }
-                requestParameters = stringBuilder.toString();
+
+            StringBuilder stringBuilder = new StringBuilder(requestParameters != null ? requestParameters : "");
+            if (stringBuilder.length() == 0) {
+                stringBuilder.append("ec,v");
+            } else {
+                stringBuilder.append(",ec,v");
             }
+            if (SettingsBean.getInstance().isDevelopmentMode()) {
+                stringBuilder.append(",cacheinfo,moduleinfo");
+            }
+            requestParameters = stringBuilder.toString();
+
             if (requestParameters != null && !"".equals(requestParameters.trim())) {
                 chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", Patterns.COMMA.split(
                         requestParameters));
@@ -454,49 +450,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         return cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long.valueOf(properties.getProperty("cache.expiration", "-1"));
     }
 
-    protected String replaceAclPlaceHolder(RenderContext renderContext, String key, String perUserKey)
-            throws ParseException, RepositoryException {
-        if (!key.contains(DefaultCacheKeyGenerator.PER_USER)) {
-            Map<String, String> keyAttrbs = cacheProvider.getKeyGenerator().parse(key);
-            String[] split = P_REGEXP.split(keyAttrbs.get("acls"));
-            String nodePath = "/" + StringUtils.substringAfter(split[1], "/");
-            String acls = ((DefaultCacheKeyGenerator) cacheProvider.getKeyGenerator()).getAclsKeyPart(renderContext,
-                    Boolean.parseBoolean(StringUtils.substringBefore(split[1], "/")), nodePath, true, keyAttrbs.get(
-                    "acls"));
-            perUserKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "acls", acls);
-        }
-        return perUserKey;
-    }
-
     protected String replacePlaceholdersInCacheKey(RenderContext renderContext, String key) {
-        Matcher m = QUERYSTRING_REGEXP.matcher(key);
-        if (m.matches()) {
-            Map parameterMap = renderContext.getRequest().getParameterMap();
-            String qsString = m.group(2);
-            String[] params = Patterns.COMMA.split(m.group(3));
-
-            SortedMap<String, String> qs = new TreeMap<String, String>();
-            for (String param : params) {
-                param = param.trim();
-                if (param.endsWith("*")) {
-                    param = param.substring(0, param.length() - 1);
-                    for (Map.Entry o : (Iterable<? extends Map.Entry>) parameterMap.entrySet()) {
-                        String k = (String) o.getKey();
-                        if (k.startsWith(param)) {
-                            qs.put(k, Arrays.toString((String[]) o.getValue()));
-                        }
-                    }
-                } else if (parameterMap.containsKey(param)) {
-                    qs.put(param, Arrays.toString((String[]) parameterMap.get(param)));
-                }
-            }
-            key = key.replace(qsString, qs.toString());
-        }
-
-        return DefaultCacheKeyGenerator.mainResourcePattern.matcher(DefaultCacheKeyGenerator.perUserPattern.matcher(key).replaceAll(
-                renderContext.getUser().getUsername())).replaceAll(
-                renderContext.getMainResource().getNode().getCanonicalPath() +
-                        renderContext.getMainResource().getResolvedTemplate());
+        return cacheProvider.getKeyGenerator().replacePlaceholdersInCacheKey(renderContext, key);
     }
 
     /**
@@ -544,47 +499,18 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     logger.debug(segment.toString());
                 }
                 String cacheKey = segment.getAttributeValue("src");
-                CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
-                if (!cacheKey.contains(DefaultCacheKeyGenerator.PER_USER) && keyGenerator instanceof DefaultCacheKeyGenerator) {
-                    DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
-                    try {
-                        Map<String, String> keyAttrbs = keyGenerator.parse(cacheKey);
-                        String[] split = P_REGEXP.split(keyAttrbs.get("acls"));
-                        String nodePath = "/" + StringUtils.substringAfter(split[1], "/");
-                        String acls = defaultCacheKeyGenerator.getAclsKeyPart(renderContext, Boolean.parseBoolean(StringUtils.substringBefore(split[1], "/")), nodePath, true, keyAttrbs.get("acls"));
-                        cacheKey = keyGenerator.replaceField(cacheKey, "acls", acls);
-                        if (renderContext.getRequest().getParameter("ec") != null &&
-                                renderContext.getRequest().getParameter("ec").equals(keyAttrbs.get("resourceID"))) {
-                            cacheKey = keyGenerator.replaceField(cacheKey, "queryString",
-                                    renderContext.getRequest().getQueryString());
-                        }
-                        if (renderContext.isLoggedIn() && renderContext.getRequest().getParameter("v") != null) {
-                            cacheKey = keyGenerator.replaceField(cacheKey, "queryString", UUID.randomUUID().toString());
-                        }
-                    } catch (ParseException e) {
-                        logger.error(e.getMessage(), e);
-                    } catch (PathNotFoundException e) {
-                        try {
-                            cacheKey = keyGenerator.replaceField(cacheKey, "acls", "invalid");
-                        } catch (ParseException e1) {
-                            logger.error(e1.getMessage(), e1);
-                        }
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
 
-                String mrCacheKey = replacePlaceholdersInCacheKey(renderContext, cacheKey);
-                cacheKey = DefaultCacheKeyGenerator.perUserPattern.matcher(cacheKey).replaceAll(renderContext.getUser().getUsername());
+                String replacedCacheKey = replacePlaceholdersInCacheKey(renderContext, cacheKey);
+                cacheKey = AclCacheKeyPartGenerator.PER_USER_PATTERN.matcher(cacheKey).replaceAll(renderContext.getUser().getUsername());
 
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Check if {} is in cache", mrCacheKey);
+                    logger.debug("Check if {} is in cache", replacedCacheKey);
                 }
-                if (cache.isKeyInCache(mrCacheKey)) {
-                    final Element element = cache.get(mrCacheKey);
+                if (cache.isKeyInCache(replacedCacheKey)) {
+                    final Element element = cache.get(replacedCacheKey);
                     if (element != null && element.getValue() != null) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("{} has been found in cache", mrCacheKey);
+                            logger.debug("{} has been found in cache", replacedCacheKey);
                         }
                         @SuppressWarnings("unchecked")
                         final CacheEntry<String> cacheEntry = (CacheEntry<String>) element.getValue();
@@ -611,15 +537,15 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
                         cacheKeyStack.pop();
                     } else {
-                        cache.put(new Element(mrCacheKey, null));
+                        cache.put(new Element(replacedCacheKey, null));
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Missing content: {}", mrCacheKey);
+                            logger.debug("Missing content: {}", replacedCacheKey);
                         }
                         generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams, areaIdentifier);
                     }
                 } else {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Missing content: {}", mrCacheKey);
+                        logger.debug("Missing content: {}", replacedCacheKey);
                     }
                     generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams, areaIdentifier);
                 }
@@ -719,8 +645,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             } else {
                 renderContext.getRequest().removeAttribute("previousTemplate");
             }
-        } catch (ParseException e) {
-            logger.error(e.getMessage(), e);
         } catch (RenderException e) {
             logger.error(e.getMessage(), e);
         } catch (RepositoryException e) {

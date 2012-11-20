@@ -69,7 +69,7 @@ public interface CacheKeyGenerator {
      * @return the resource path, parsed from the provided key
      * @throws ParseException in case of a malformed key
      */
-    String getPath(String key) throws ParseException;
+    String getPath(String key);
 
     /**
      * Parses the specified key into separate fields.
@@ -78,7 +78,7 @@ public interface CacheKeyGenerator {
      * @return a map with key field values
      * @throws ParseException in case of a malformed key
      */
-    Map<String, String> parse(String key) throws ParseException;
+    Map<String, String> parse(String key);
 
     /**
      * Decomposes the key, replaces the specified field with the provided value
@@ -91,5 +91,9 @@ public interface CacheKeyGenerator {
      *         specified field
      * @throws ParseException in case of a malformed key
      */
-    String replaceField(String key, String fieldName, String newValue) throws ParseException;
+    String replaceField(String key, String fieldName, String newValue) ;
+
+    CacheKeyPartGenerator getPartGenerator(String field);
+
+    String replacePlaceholdersInCacheKey(RenderContext renderContext, String key);
 }

@@ -52,7 +52,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.render.filter.RenderServiceAware;
-import org.jahia.services.render.filter.cache.DefaultCacheKeyGenerator;
+import org.jahia.services.render.filter.cache.AclCacheKeyPartGenerator;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.render.scripting.ScriptResolver;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -80,10 +80,10 @@ public class RenderService {
 
     private CacheImplementation<String,Template> templatesCache;
 
-    private DefaultCacheKeyGenerator cacheKeyGenerator;
+    private AclCacheKeyPartGenerator aclCacheKeyPartGenerator;
 
-    public void setCacheKeyGenerator(DefaultCacheKeyGenerator cacheKeyGenerator) {
-        this.cacheKeyGenerator = cacheKeyGenerator;
+    public void setAclCacheKeyPartGenerator(AclCacheKeyPartGenerator aclCacheKeyPartGenerator) {
+        this.aclCacheKeyPartGenerator = aclCacheKeyPartGenerator;
     }
 
     @SuppressWarnings("unchecked")
@@ -394,7 +394,7 @@ public class RenderService {
                                   JCRNodeWrapper templateNode, String type) throws RepositoryException {
         String key = new StringBuffer(templateNode.getPath()).append(type).append(
                 templateName != null ? templateName : "default").toString() + renderContext.getServletPath() + resource.getWorkspace() + renderContext.isLoggedIn() +
-                resource.getNode().getNodeTypes()+cacheKeyGenerator.appendAcls(resource, renderContext, false);
+                resource.getNode().getNodeTypes()+ aclCacheKeyPartGenerator.appendAcls(resource, renderContext, false);
 
         Template template = templatesCache.get(key);
 

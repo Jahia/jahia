@@ -176,7 +176,7 @@
                         </bean>
                         <bean class="org.jahia.services.content.JCRUserPropertyModificationListener"/>
                         <bean class="org.jahia.services.render.filter.cache.RenderServiceTemplateCacheEventListener">
-                            <property name="cacheKeyGenerator" ref="cacheKeyGenerator"/>
+                            <property name="aclCacheKeyPartGenerator" ref="aclCacheKeyPartGenerator"/>
                         </bean>
                         <ref bean="urlResolverListener" />
                         <bean class="org.jahia.services.history.NodeVersionHistoryListener">
@@ -266,7 +266,7 @@
                         </bean>
                         <bean class="org.jahia.services.render.filter.cache.RenderServiceTemplateCacheEventListener">
                             <property name="availableDuringPublish" value="true"/>
-                            <property name="cacheKeyGenerator" ref="cacheKeyGenerator"/>
+                            <property name="aclCacheKeyPartGenerator" ref="aclCacheKeyPartGenerator"/>
                         </bean>
                         <bean class="org.jahia.services.content.JCRUserPropertyModificationListener"/>
                         <ref bean="urlResolverListener" />

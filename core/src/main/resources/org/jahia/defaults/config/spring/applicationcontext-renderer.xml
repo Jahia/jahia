@@ -43,7 +43,7 @@
 				</bean>
 			</list>
 		</property>
-        <property name="cacheKeyGenerator" ref="cacheKeyGenerator"/>
+        <property name="aclCacheKeyPartGenerator" ref="aclCacheKeyPartGenerator"/>
         <property name="cacheProvider" ref="ehCacheProvider"/>
 	</bean>
 

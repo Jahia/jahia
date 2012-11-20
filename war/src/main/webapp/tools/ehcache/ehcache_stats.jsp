@@ -6,6 +6,7 @@
 <%@ page import="org.jahia.services.render.filter.cache.ModuleCacheProvider" %>
 <%@ page import="java.util.Collections" %>
 <%@ page import="java.util.List" %>
+<%@ page import="org.jahia.services.render.filter.cache.AclCacheKeyPartGenerator" %>
 <%--
   Output cache monitoring JSP.
   User: rincevent
@@ -55,7 +56,7 @@
             depCache.flush();
             depCache.clearStatistics();
             depCache.removeAll();
-            ((DefaultCacheKeyGenerator) cacheProvider.getKeyGenerator()).flushUsersGroupsKey();
+            ((AclCacheKeyPartGenerator) cacheProvider.getKeyGenerator().getPartGenerator("acls")).flushUsersGroupsKey();
         }
         pageContext.setAttribute("cache", cache);
         pageContext.setAttribute("stats", cache.getStatistics());

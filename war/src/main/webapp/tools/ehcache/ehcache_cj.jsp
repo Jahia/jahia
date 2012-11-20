@@ -11,6 +11,7 @@
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.List" %>
 <%@ page import="org.jahia.services.render.filter.cache.AggregateCacheFilter" %>
+<%@ page import="org.jahia.services.render.filter.cache.AclCacheKeyPartGenerator" %>
 <%--
   Output cache monitoring JSP.
   User: rincevent
@@ -93,7 +94,7 @@
             depCache.flush();
             depCache.clearStatistics();
             depCache.removeAll();
-            ((DefaultCacheKeyGenerator) cacheProvider.getKeyGenerator()).flushUsersGroupsKey();
+            ((AclCacheKeyPartGenerator) cacheProvider.getKeyGenerator().getPartGenerator("acls")).flushUsersGroupsKey();
             AggregateCacheFilter.notCacheableFragment.clear();
         }
         List keys = cache.getKeys();

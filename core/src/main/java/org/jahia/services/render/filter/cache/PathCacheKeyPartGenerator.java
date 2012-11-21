@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 public class PathCacheKeyPartGenerator implements CacheKeyPartGenerator {
     public static final String MAIN_RESOURCE_KEY = "_mr_";
-    public static Pattern mainResourcePattern = Pattern.compile(MAIN_RESOURCE_KEY);
+    public static final Pattern MAIN_RESOURCE_PATTERN = Pattern.compile(MAIN_RESOURCE_KEY);
 
     @Override
     public String getKey() {
@@ -26,12 +26,12 @@ public class PathCacheKeyPartGenerator implements CacheKeyPartGenerator {
     }
 
     public String getPath(String key) {
-        return mainResourcePattern.matcher(key).replaceAll("");
+        return MAIN_RESOURCE_PATTERN.matcher(key).replaceAll("");
     }
 
     @Override
     public String replacePlaceholders(RenderContext renderContext, String keyPart) {
-        return mainResourcePattern.matcher(keyPart).replaceAll(
+        return MAIN_RESOURCE_PATTERN.matcher(keyPart).replaceAll(
                 renderContext.getMainResource().getNode().getCanonicalPath() + renderContext.getMainResource().getResolvedTemplate());
     }
 }

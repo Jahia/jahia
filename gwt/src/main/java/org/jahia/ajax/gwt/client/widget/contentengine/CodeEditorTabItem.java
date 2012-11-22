@@ -94,7 +94,6 @@ public class CodeEditorTabItem extends EditEngineTabItem {
             String path = engine.isExistingNode() ? engine.getNode().getPath() : engine.getTargetNode().getPath();
             String nodeType = typeName != null ? typeName.getValues().get(0).getString() : null;
             JahiaContentManagementService.App.getInstance().initializeCodeEditor(path, !engine.isExistingNode(), nodeType, stubType, new BaseAsyncCallback<RpcMap>() {
-                @Override
                 public void onSuccess(RpcMap result) {
                     List<GWTJahiaValueDisplayBean> snippets = (List<GWTJahiaValueDisplayBean>) result.get("snippets");
                     mirrorTemplates.getStore().add(snippets);

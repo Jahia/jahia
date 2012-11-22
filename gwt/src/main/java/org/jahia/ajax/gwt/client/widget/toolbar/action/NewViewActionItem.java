@@ -82,7 +82,6 @@ public class NewViewActionItem extends BaseActionItem  {
         if (fileNodeType == null) {
             linker.loading(Messages.get("label.loading", "Loading"));
             JahiaContentManagementService.App.getInstance().getNodeType("jnt:viewFile", new BaseAsyncCallback<GWTJahiaNodeType>() {
-                @Override
                 public void onSuccess(GWTJahiaNodeType result) {
                     fileNodeType = result;
                     newView(linker, true);

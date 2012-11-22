@@ -60,7 +60,7 @@
         <maven3.site.plugin.version>3.0</maven3.site.plugin.version>
         <site.plugin.version>2.2</site.plugin.version>
         <war.plugin.version>2.2</war.plugin.version>
-        <enforcer.plugin.version>1.0</enforcer.plugin.version>
+        <enforcer.plugin.version>1.1.1</enforcer.plugin.version>
         <compiler.plugin.version>2.3.2</compiler.plugin.version>
         <buildnumber.plugin.version>1.0</buildnumber.plugin.version>
         <source.plugin.version>2.1.2</source.plugin.version>
@@ -548,10 +548,10 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>2.1</version>
+                                    <version>[3.0,)</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
-                                    <version>1.6</version>
+                                    <version>[1.6,)</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>

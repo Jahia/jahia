@@ -41,44 +41,25 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.google.gwt.user.client.Window;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.URL;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
-import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+public class GoToViewDefinitionActionItem extends BaseActionItem {
 
-public class EditViewActionItem extends BaseActionItem {
-
-    private static String SCRIPT_INFO_PREFIX = "Path dispatch: /modules/";
+    private static String MODULES_BASE_PATH = "/modules";
+    private static String SCRIPT_INFO_PREFIX = "Path dispatch: " + MODULES_BASE_PATH;
 
     @Override
     public void onComponentSelection() {
         if (linker instanceof EditLinker) {
             String scriptInfo = ((EditLinker) linker).getSelectedModule().getScriptInfo();
             if (scriptInfo.startsWith(SCRIPT_INFO_PREFIX)) {
-                String path = "/modulesFileSystem/" + scriptInfo.substring(SCRIPT_INFO_PREFIX.length());
-                JahiaContentManagementService.App.getInstance().getNodes(Arrays.asList(path), new ArrayList<String>(),
-                        new BaseAsyncCallback<List<GWTJahiaNode>>() {
-                            public void onSuccess(List<GWTJahiaNode> result) {
-                                if (!result.isEmpty()) {
-                                    GWTJahiaNode node = result.get(0);
-                                    JahiaGWTParameters.setSite(node, linker);
-                                    linker.refresh(Linker.REFRESH_ALL, null);
-                                    MainModule.staticGoTo(node.getPath(), null);
-                                    SiteSwitcherActionItem.refreshAllSitesList(linker);
-                                    EngineLoader.showEditEngine(linker, node);
-                                }
-                            }
-                        });
+                String url = JahiaGWTParameters.getParam("studioUrl");
+                url = url.substring(0, url.indexOf(MODULES_BASE_PATH));
+                url += "/modulesFileSystem" + scriptInfo.substring(SCRIPT_INFO_PREFIX.length()) + ".html";
+                Window.Location.assign(url);
             }
         }
     }

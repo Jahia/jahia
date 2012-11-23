@@ -273,7 +273,7 @@
                         <ref bean="Toolbar.Item.ClearLock"/>
                         <ref bean="Toolbar.Item.ClearAllLocks"/>
                         <ref bean="Toolbar.Item.OpenInContentManager"/>
-                        <ref bean="Toolbar.Item.EditView"/>
+                        <ref bean="Toolbar.Item.GoToViewDefinition"/>
                     </list>
                 </property>
             </bean>
@@ -879,13 +879,6 @@
             <bean
                 class="org.jahia.ajax.gwt.client.widget.contentengine.ResourceBundleEditorTabItem" />
         </property>
-    </bean>
-
-    <bean id="Toolbar.Item.EditView" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.EditViewActionItem" />
-        </property>
-        <property name="titleKey" value="label.editView"/>
     </bean>
 
 </beans>

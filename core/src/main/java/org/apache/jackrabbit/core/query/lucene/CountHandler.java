@@ -44,12 +44,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
-import org.jahia.services.content.impl.external.ValueImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
-import javax.jcr.query.Row;
 import javax.jcr.query.qom.PropertyValue;
 import java.util.Map;
 
@@ -58,7 +56,7 @@ import java.util.Map;
  */
 public class CountHandler {
 
-    public static enum CountType {NO_COUNT, SKIP_VISIBILITY, EXACT_COUNT}
+    public static enum CountType {NO_COUNT, SKIP_CHECKS, APPROX_COUNT, EXACT_COUNT}
 
     /**
      * The logger instance for this class
@@ -82,8 +80,10 @@ public class CountHandler {
             for (String column : columns.keySet()) {
 
                 if (column.trim().startsWith(repCount)) {
-                    if (StringUtils.substringAfter(column, repCount).contains("skipVisibility=1")) {
-                        return CountType.SKIP_VISIBILITY;
+                    if (StringUtils.substringAfter(column, repCount).contains("skipChecks=1")) {
+                        return CountType.SKIP_CHECKS;
+                    } else if (StringUtils.substringAfter(column, repCount).contains("approximate=1")) {
+                        return CountType.APPROX_COUNT;
                     } else {
                         return CountType.EXACT_COUNT;
                     }

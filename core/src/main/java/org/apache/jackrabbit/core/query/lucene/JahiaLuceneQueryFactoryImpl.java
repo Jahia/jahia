@@ -65,6 +65,7 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.search.facets.JahiaQueryParser;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,13 +144,21 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             hits = searcher.evaluate(qp.mainQuery, sort, offset+limit);
             int currentNode = 0;
             int addedNodes = 0;
-            long resultCount = 0;
+            int resultCount = 0;
+            int hitsSize = 0;
+            int queryApproxCountLimit = SettingsBean.getInstance().getQueryApproxCountLimit();
 
             ScoreNode node = hits.nextScoreNode();
             Map<String, Boolean> checkedAcls = new HashMap<String, Boolean>();
 
             while (node != null) {
-                if (countType == CountHandler.CountType.SKIP_VISIBILITY) {
+                if (countType == CountHandler.CountType.APPROX_COUNT) {
+                    hitsSize++;
+                    if (hitsSize > queryApproxCountLimit) {
+                        continue;
+                    }
+                }
+                if (countType == CountHandler.CountType.SKIP_CHECKS) {
                     resultCount++;
                 } else {
                     IndexedNodeInfo infos = getIndexedNodeInfo(node, reader);
@@ -195,7 +204,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                                 objectNode = (NodeImpl) objectNode
                                                         .getParent();
                                             }
-                                            if (countType == CountHandler.CountType.EXACT_COUNT) {
+                                            if (countType == CountHandler.CountType.EXACT_COUNT || countType == CountHandler.CountType.APPROX_COUNT) {
                                                 resultCount++;
                                             } else {
                                                 row = new LazySelectorRow(
@@ -207,7 +216,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                                     node.getScore());
                                             }
                                         } else {
-                                            if (countType == CountHandler.CountType.EXACT_COUNT) {
+                                            if (countType == CountHandler.CountType.EXACT_COUNT || countType == CountHandler.CountType.APPROX_COUNT) {
                                                 resultCount++;
                                             } else {
                                                 row = new LazySelectorRow(columns,
@@ -246,7 +255,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                         objectNode = (NodeImpl) objectNode
                                                 .getParent();
                                     }
-                                    if (countType == CountHandler.CountType.EXACT_COUNT) {
+                                    if (countType == CountHandler.CountType.EXACT_COUNT || countType == CountHandler.CountType.APPROX_COUNT) {
                                         resultCount++;
                                     } else {
                                         Row row = new SelectorRow(columns, evaluator,
@@ -308,6 +317,9 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                 h.handleFacets(reader);
                 rowList.add(0, h.getFacetsRow());
             } else if (countType != CountHandler.CountType.NO_COUNT) {
+                if (countType == CountHandler.CountType.APPROX_COUNT && hitsSize > queryApproxCountLimit) {
+                    resultCount = hitsSize * resultCount / queryApproxCountLimit;
+                }
                 rowList.add(0,CountHandler.createCountRow(resultCount));
             }
             // End

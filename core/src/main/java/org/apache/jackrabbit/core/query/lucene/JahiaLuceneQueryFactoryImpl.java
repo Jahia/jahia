@@ -65,8 +65,12 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.search.facets.JahiaQueryParser;
+<<<<<<< .working
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
+=======
+import org.jahia.utils.Patterns;
+>>>>>>> .merge-right.r43754
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,6 +156,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             Map<String, Boolean> checkedAcls = new HashMap<String, Boolean>();
 
             while (node != null) {
+<<<<<<< .working
                 if (countType == CountHandler.CountType.APPROX_COUNT) {
                     hitsSize++;
                     if (hitsSize > queryApproxCountLimit) {
@@ -166,6 +171,13 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                         try {
                             String[] acls = infos.getAclUuid() != null ? Patterns.SPACE.split(infos.getAclUuid()) : ArrayUtils.EMPTY_STRING_ARRAY;
                             boolean canRead = true;
+=======
+                IndexedNodeInfo infos = getIndexedNodeInfo(node, reader);
+                if (foundIds.add(infos.getMainNodeUuid())) {  // <-- Added by jahia
+                    try {
+                        String[] acls = infos.getAclUuid() != null ? Patterns.SPACE.split(infos.getAclUuid()) : new String[0];
+                        boolean canRead = true;
+>>>>>>> .merge-right.r43754
 
                             for (String acl : acls) {
                                 Boolean aclChecked = checkedAcls.get(acl);

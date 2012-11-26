@@ -95,6 +95,7 @@ public class LegacyImportHandler extends DefaultHandler {
     private final static int CTX_FIELD = 3;
     private final static int CTX_SKIP = 4;
     private final static int CTX_SHAREABLE = 5;
+    private final static int CTX_DIRECTSUBNODES = 6;
     // private final static int CTX_MERGED = 5;
 
     private final static int CTX_NAVLINK = 7;
@@ -214,12 +215,12 @@ public class LegacyImportHandler extends DefaultHandler {
                         setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG,"acl"));
                     } else {
                         logger.warn(
-                                "Unexpected " + localName + " element in import file - skipping it and its subtree");
+                                "Unexpected " + localName + " element ("+ uuid +") in import file - skipping it and its subtree (more info in debug mode)");
                         if (logger.isDebugEnabled() && localName.endsWith("List")) {
                             if (getCurrentContentType() == null) {
                                 logger.debug("CurrentContentType is null!");
                             } else {
-                                logger.debug("Only the following elements are allowed: " + getCurrentContentType().getChildNodeDefinitionsAsMap().keySet().toString());
+                                logger.debug("Only the following elements are allowed sccording to the source definitions: " + getCurrentContentType().getChildNodeDefinitionsAsMap().keySet().toString());
                             }
                         }
                         currentCtx.peek().pushSkip();
@@ -236,8 +237,10 @@ public class LegacyImportHandler extends DefaultHandler {
 
                         try {
                             createContentList(nodeDef, uuid, getMetadataForNodeCreation(attributes));
+                            if (currentCtx.peek().ctx.peek() != CTX_DIRECTSUBNODES) {
                             setMetadata(attributes);
                             setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
+                            }
                         } catch (ConstraintViolationException cve) {
                             logger.error(MessageFormat.format("Error when creating contentList with def={0} (localname={1} , uuid={2} , currentContentType={3})",
                                     nodeDef.getName(), localName, uuid, getCurrentContentType().getName()));
@@ -344,6 +347,17 @@ public class LegacyImportHandler extends DefaultHandler {
                     } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && localName.equals("url")) {
                         createExternalLink(page, title, uuid, attributes.getValue("jahia:value"), "jnt:externalLink", getMetadataForNodeCreation(attributes));
                     }
+
+                    break;
+                case CTX_DIRECTSUBNODES:
+                    String ctnPt = attributes.getValue(Name.NS_JCR_URI, "primaryType");
+                    if (ctnPt == null && StringUtils.startsWith(originatingJahiaRelease, "5")) {
+                        ctnPt = qName;
+                    }
+
+                    createContent(ctnPt, uuid, attributes.getValue("jahia:jahiaLinkActivation_picker_relationship"), getMetadataForNodeCreation(attributes));
+                    setMetadata(attributes);
+                    setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
 
                     break;
             }
@@ -635,6 +649,8 @@ public class LegacyImportHandler extends DefaultHandler {
             currentCtx.peek().pushSkip();
         } else if ("#navlink".equals(nodeName) || "#navlink".equals(mappedNodeType)) {
             currentCtx.peek().pushNavLink(listDefinition.getRequiredPrimaryTypes()[0], null);
+        } else if ("#directSubNodes".equals(nodeName) || "#directSubNodes".equals(mappedNodeType)) {
+            currentCtx.peek().pushDirectContainer();
         } else {
             JCRNodeWrapper parent = getCurrentContentNode();
             if (StringUtils.contains(nodeName, "/")) {
@@ -1234,6 +1250,15 @@ public class LegacyImportHandler extends DefaultHandler {
             acls.push(null);
             properties.push(properties.peek());
             ctx.push(CTX_CTN);
+        }
+
+        void pushDirectContainer() {
+            contents.push(getCurrentContentNode());
+            contentsType.push(null);
+            propertyNames.push(null);
+            acls.push(null);
+            properties.push(null);
+            ctx.push(CTX_DIRECTSUBNODES);
         }
 
         void pushField(String propertyName) {

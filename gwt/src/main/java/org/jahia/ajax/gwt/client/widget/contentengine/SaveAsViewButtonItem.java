@@ -79,7 +79,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
             public void componentSelected(ButtonEvent event) {
                 GWTJahiaNode node = engine.getNode();
                 if (node == null) {
-                    node = engine.getLinker().getSelectionContext().getSingleSelection();
+                    node = engine.getTargetNode();
                 }
                 final String[] filePath = node.getPath().split("/");
 
@@ -89,7 +89,11 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                 String fn = "";
                 if ("modulesFileSystem".equals(filePath[1])) {
                     mv = filePath[3];
-                    ft = filePath[4];
+                    if (engine instanceof CreateContentEngine) {
+                        ft = ((CreateContentEngine) engine).getTargetName();
+                    } else {
+                        ft = filePath[4];
+                    }
                     fn = filePath.length > 6?filePath[6]:ft.substring(ft.indexOf("_") + 1) + ".jsp";
                     ftt = filePath.length >5?filePath[5]:"html";
                 } else if ("modules".equals(filePath[1])) {

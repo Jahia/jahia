@@ -57,6 +57,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
+import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
 import java.util.*;
 
@@ -206,14 +207,20 @@ public class SiteSwitcherActionItem extends BaseActionItem {
         sitesCombo.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
+                EditLinker editLinker = null;
+                if (linker instanceof  EditLinker) {
+                    editLinker = (EditLinker) linker;
+                } else if (linker instanceof SidePanelTabItem.SidePanelLinker) {
+                    editLinker = ((SidePanelTabItem.SidePanelLinker) linker).getEditLinker();
+                }
                 final GWTJahiaNode jahiaNode = event.getSelection().get(0);
                 if (jahiaNode.get("j:languages") != null &&
                     !((List<String>) jahiaNode.get("j:languages")).contains(JahiaGWTParameters.getLanguage())) {
-                    ((EditLinker) linker).setLocale((GWTJahiaLanguage) jahiaNode.get(GWTJahiaNode.DEFAULT_LANGUAGE));
+                    editLinker.setLocale((GWTJahiaLanguage) jahiaNode.get(GWTJahiaNode.DEFAULT_LANGUAGE));
                 }
                 JahiaGWTParameters.setSite(jahiaNode, linker);
-                if (((EditLinker) linker).getSidePanel() != null) {
-                    ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL, null);
+                if (editLinker.getSidePanel() != null) {
+                    editLinker.getSidePanel().refresh(EditLinker.REFRESH_ALL, null);
                 }
                 if (root.get(0).startsWith("/modules")) {
                     MainModule.staticGoTo(jahiaNode.getPath(), null);

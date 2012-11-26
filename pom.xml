@@ -45,7 +45,7 @@
 
         <driver.derby.version>10.9.1.0</driver.derby.version>
         <driver.mysql.version>5.1.22</driver.mysql.version>
-        <driver.postgresql.version>9.2-1001.jdbc4</driver.postgresql.version>
+        <driver.postgresql.version>9.2-1002.jdbc4</driver.postgresql.version>
 
         <!-- Meta information -->
         <jahia.manifest.vendor.name>Jahia Solutions Group SA</jahia.manifest.vendor.name>

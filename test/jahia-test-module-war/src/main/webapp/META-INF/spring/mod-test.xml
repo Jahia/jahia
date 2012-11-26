@@ -22,7 +22,7 @@
                 <value>org.apache.jackrabbit.test.api.version.simple.TestAll</value>
                 <value>org.jahia.bin.FindPrincipalTest</value>
                 <value>org.jahia.bin.FindTest</value>
-                <!-- 
+                <!--
                 <value>org.jahia.bin.RenderTest</value>
                 <value>org.jahia.services.acl.AclTest</value>
                 <value>org.jahia.services.applications.ApplicationsManagerServiceTest</value>
@@ -44,6 +44,7 @@
                 <value>org.jahia.services.notification.CamelNotificationServiceTest</value>
                 <value>org.jahia.services.notification.HtmlExternalizationServiceTest</value>
                 <value>org.jahia.services.publication.PublicationTest</value>
+                <value>org.jahia.services.providers.ModulesProviderTest</value>
                 <value>org.jahia.services.query.FacetedQueryTest</value>
                 <value>org.jahia.services.query.IndexOptionsTest</value>
                 <value>org.jahia.services.query.QueryModificationTest</value>

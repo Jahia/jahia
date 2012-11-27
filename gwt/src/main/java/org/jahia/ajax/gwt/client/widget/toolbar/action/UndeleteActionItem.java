@@ -86,7 +86,7 @@ public class UndeleteActionItem extends NodeTypeAwareBaseActionItem {
                     message,
                                      new Listener<MessageBoxEvent>() {
                                          public void handleEvent(MessageBoxEvent be) {
-                                             if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {
+                                             if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
                                                  final List<String> l = new ArrayList<String>();
                                                  for (GWTJahiaNode node : lh.getMultipleSelection()) {
                                                      l.add(node.getPath());

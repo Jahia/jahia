@@ -334,7 +334,7 @@ public class SubscriptionManager extends LayoutContainer {
 				                new Listener<MessageBoxEvent>() {
 					                public void handleEvent(MessageBoxEvent be) {
 						                if (Dialog.YES.equalsIgnoreCase(be.getButtonClicked()
-						                        .getText())) {
+						                        .getItemId())) {
 							                doRemove();
 						                }
 					                }
@@ -360,7 +360,7 @@ public class SubscriptionManager extends LayoutContainer {
 				                new Listener<MessageBoxEvent>() {
 					                public void handleEvent(MessageBoxEvent be) {
 						                if (Dialog.YES.equalsIgnoreCase(be.getButtonClicked()
-						                        .getText())) {
+						                        .getItemId())) {
 							                doSuspend();
 						                }
 					                }
@@ -383,7 +383,7 @@ public class SubscriptionManager extends LayoutContainer {
 				                new Listener<MessageBoxEvent>() {
 					                public void handleEvent(MessageBoxEvent be) {
 						                if (Dialog.YES.equalsIgnoreCase(be.getButtonClicked()
-						                        .getText())) {
+						                        .getItemId())) {
 							                doResume();
 						                }
 					                }

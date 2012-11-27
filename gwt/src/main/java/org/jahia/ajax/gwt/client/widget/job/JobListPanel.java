@@ -461,7 +461,7 @@ public class JobListPanel extends LayoutContainer {
         dialog.setHideOnButtonClick(true);
         dialog.addListener(Events.Hide, new Listener<WindowEvent>() {
             public void handleEvent(WindowEvent be) {
-                if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {
+                if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
                 	if (deleteAllCompleted) {
                         service.deleteAllCompletedJobs(new BaseAsyncCallback<Integer>() {
                             public void onApplicationFailure(Throwable caught) {

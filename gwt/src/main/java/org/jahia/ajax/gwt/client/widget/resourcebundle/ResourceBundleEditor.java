@@ -298,7 +298,7 @@ public class ResourceBundleEditor extends LayoutContainer {
                         "Do you really want to remove the selected resource {0}?",
                         new Object[] { selectedItem.getKey() }), new Listener<MessageBoxEvent>() {
                     public void handleEvent(MessageBoxEvent be) {
-                        if (Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getText())) {
+                        if (Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getItemId())) {
                             bundleView.getStore().remove(selectedItem);
                         }
                     }

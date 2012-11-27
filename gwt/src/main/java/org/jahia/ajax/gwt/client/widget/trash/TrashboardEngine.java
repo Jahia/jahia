@@ -154,7 +154,7 @@ public class TrashboardEngine extends LayoutContainer {
                                                 new String[] { ((GWTJahiaNode)gwtJahiaNode).getDisplayName() }),
                                new Listener<MessageBoxEvent>() {
                                    public void handleEvent(MessageBoxEvent be) {
-                                       if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {
+                                       if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
                                            service.undeletePaths(Arrays.asList(gwtJahiaNode.getPath()), new BaseAsyncCallback() {
                                                @Override
                                                public void onApplicationFailure(Throwable throwable) {
@@ -200,7 +200,7 @@ public class TrashboardEngine extends LayoutContainer {
                                                " from the repository.</span>"),
                                new Listener<MessageBoxEvent>() {
                                    public void handleEvent(MessageBoxEvent be) {
-                                       if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {
+                                       if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
                                            service.deletePaths(Arrays.asList(gwtJahiaNode.getPath()), new BaseAsyncCallback() {
                                                @Override
                                                public void onApplicationFailure(Throwable throwable) {

@@ -79,6 +79,26 @@
                                         </property>
                                         <property name="titleKey" value="label.addView"/>
                                     </bean>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                                                <property name="parentTypes" value="jnt:folder"/>
+                                                <property name="nodeTypes" value="jnt:cssFile"/>
+                                            </bean>
+                                        </property>
+                                        <property name="titleKey" value="label.newCssFile"/>
+                                        <property name="icon" value="newContent"/>
+                                    </bean>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                                                <property name="parentTypes" value="jnt:folder"/>
+                                                <property name="nodeTypes" value="jnt:javascriptFile"/>
+                                            </bean>
+                                        </property>
+                                        <property name="titleKey" value="label.newJavascriptFile"/>
+                                        <property name="icon" value="newContent"/>
+                                    </bean>
                                 </list>
                             </property>
                         </bean>
@@ -351,8 +371,9 @@
                         </property>
                         <property name="creationButtons">
                             <list>
-                                <bean class="org.jahia.ajax.gwt.client.widget.contentengine.CreateButtonItem" >
-                                    <property name="useNamePopup" value="true"/>
+                                <bean class="org.jahia.ajax.gwt.client.widget.contentengine.CreateResourceButtonItem" >
+                                    <property name="defaultContainerFolder" value="css"/>
+                                    <property name="fileExtension" value="css"/>
                                 </bean>
                             </list>
                         </property>
@@ -386,9 +407,12 @@
                             </list>
                         </property>
                         <property name="creationButtons">
-                            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.CreateButtonItem" >
-                                <property name="useNamePopup" value="true"/>
-                            </bean>
+                            <list>
+                                <bean class="org.jahia.ajax.gwt.client.widget.contentengine.CreateResourceButtonItem" >
+                                    <property name="defaultContainerFolder" value="javascript"/>
+                                    <property name="fileExtension" value="js"/>
+                                </bean>
+                            </list>
                         </property>
                         <property name="editionButtons">
                             <list>

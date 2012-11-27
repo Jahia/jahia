@@ -124,7 +124,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                 FormPanel f = new FormPanel();
                 f.setHeaderVisible(false);
                 final SimpleComboBox<String> dependenciesCombo = new SimpleComboBox<String>();
-                if (JahiaGWTParameters.getSiteNode() != null && JahiaGWTParameters.getSiteNode().getProperties().get("j:dependencies") != null) {
+                if (JahiaGWTParameters.getSiteNode() != null) {
                     dependenciesCombo.setStore(new ListStore<SimpleComboValue<String>>());
                     dependenciesCombo.setFieldLabel(Messages.get("label.module", "module"));
                     dependenciesCombo.setTriggerAction(ComboBox.TriggerAction.ALL);

@@ -344,7 +344,8 @@ public class NavigationHelper {
                 path = path.replace("$siteKey", site.getSiteKey());
             }
             if (path.contains("$moduleversion/") || path.endsWith("$moduleversion")) {
-                path = path.replace("$moduleversion", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(site.getSiteKey()).getVersion().toString());
+                String moduleName = path.split("/")[2];
+                path = path.replace("$moduleversion", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName).getVersion().toString());
             }
             if (path.contains("$systemsite/") || path.endsWith("$systemsite")) {
                 String systemSiteKey = JCRContentUtils.getSystemSitePath();
@@ -377,7 +378,11 @@ public class NavigationHelper {
                 if (path.endsWith("/*")) {
 //                    NodeIterator ni =
 //                            currentUserSession.getNode(StringUtils.substringBeforeLast(path, "/*")).getNodes();
-                    getMatchingChilds(nodeTypes, mimeTypes, filters, fields, currentUserSession.getNode(StringUtils.substringBeforeLast(path, "/*")), userNodes ,checkSubChild, displayHiddenTypes, hiddenTypes,hiddenRegex,false, uiLocale);
+                    try {
+                        getMatchingChilds(nodeTypes, mimeTypes, filters, fields, currentUserSession.getNode(StringUtils.substringBeforeLast(path, "/*")), userNodes ,checkSubChild, displayHiddenTypes, hiddenTypes,hiddenRegex,false, uiLocale);
+                    } catch (PathNotFoundException e) {
+                        // do nothing is the path is not found
+                    }
 //                    while (ni.hasNext()) {
 //                        GWTJahiaNode node = getGWTJahiaNode((JCRNodeWrapper) ni.next(), fields);
 //                        if (displayName != "") {

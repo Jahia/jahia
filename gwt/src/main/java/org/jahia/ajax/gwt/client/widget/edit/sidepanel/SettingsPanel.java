@@ -9,6 +9,9 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
@@ -44,7 +47,8 @@ public class SettingsPanel implements Serializable {
     protected transient ListStore<GWTJahiaNode> contentStore;
 
     private transient ContentPanel settingsPanel;
-    private List<String> paths = new ArrayList<String>();
+    private transient  GWTJahiaNodeTreeFactory factory;
+    private String settingTemplateRoot;
     private String label;
     protected List<String> folderTypes = new ArrayList<String>();
     private String requiredPermission;
@@ -64,7 +68,16 @@ public class SettingsPanel implements Serializable {
         treeContainer.setBorders(false);
         treeContainer.setScrollMode(Style.Scroll.AUTO);
         treeContainer.setLayout(new FitLayout());
-        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(paths);
+        // resolve paths from dependencies
+
+        List<String> paths = new ArrayList<String>();
+        if (JahiaGWTParameters.getSiteNode() != null && JahiaGWTParameters.getSiteNode().getProperties().get("j:installedModules") != null) {
+            for (String module : ((List<String>) JahiaGWTParameters.getSiteNode().get("j:installedModules"))) {
+                    paths.add("/modules/" + module + "/$moduleversion/templates/" + settingTemplateRoot + "/*");
+            }
+        }
+
+        factory = new GWTJahiaNodeTreeFactory(paths);
         factory.setNodeTypes(Arrays.asList("jnt:contentTemplate"));
 
         NodeColumnConfigList columns = new NodeColumnConfigList(Arrays.asList(new GWTColumn("displayName", "", -1)));
@@ -132,8 +145,8 @@ public class SettingsPanel implements Serializable {
         return settingsPanel;
     }
 
-    public void setPaths(List<String> paths) {
-        this.paths = paths;
+    public void setSettingsTemplateRoot(String settingTemplateRoot) {
+        this.settingTemplateRoot = settingTemplateRoot;
     }
 
     public void setFolderTypes(List<String> folderTypes) {
@@ -150,5 +163,10 @@ public class SettingsPanel implements Serializable {
 
     public String getRequiredPermission() {
         return requiredPermission;
+    }
+
+    public void refresh() {
+        factory.getStore().removeAll();
+        factory.getLoader().load();
     }
 }

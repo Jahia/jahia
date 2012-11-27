@@ -15,6 +15,7 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: david
@@ -71,5 +72,13 @@ public class SettingsTabItem extends BrowseTabItem {
             }
         }
 
+    }
+
+    @Override
+    public void refresh(Map data) {
+        for (SettingsPanel panel : settingsPanelList) {
+           panel.refresh();
+        }
+        setRefreshed();
     }
 }

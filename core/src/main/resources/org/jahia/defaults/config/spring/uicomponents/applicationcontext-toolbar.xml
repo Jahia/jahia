@@ -1356,11 +1356,20 @@
         <property name="icon" value="copy"/>
     </bean>
 
+    <bean id="Toolbar.Item.AddView" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewViewActionItem" />
+        </property>
+        <property name="titleKey" value="label.addView"/>
+        <property name="icon" value="add-view"/>
+    </bean>
+
     <bean id="Toolbar.Item.GoToViewDefinition" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GoToViewDefinitionActionItem" />
         </property>
         <property name="titleKey" value="label.goToViewDefinition"/>
+        <property name="icon" value="goto-view"/>
     </bean>
 
 </beans>

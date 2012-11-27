@@ -73,12 +73,7 @@
 
                                     <ref bean="Toolbar.Item.NewPage"/>
                                     <ref bean="Toolbar.Item.NewContent"/>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewViewActionItem" />
-                                        </property>
-                                        <property name="titleKey" value="label.addView"/>
-                                    </bean>
+                                    <ref bean="Toolbar.Item.AddView"/>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
@@ -818,13 +813,7 @@
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
                                 <list>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewViewActionItem" />
-                                        </property>
-                                        <property name="titleKey" value="label.addView"/>
-                                        <property name="icon" value="newContentTemplate"/>
-                                    </bean>
+                                    <ref bean="Toolbar.Item.AddView"/>
 
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">

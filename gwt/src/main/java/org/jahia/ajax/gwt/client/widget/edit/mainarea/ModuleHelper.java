@@ -328,9 +328,15 @@ public class ModuleHelper {
         int nb = DOM.getChildCount(parent);
 
         if (parent.getNodeName().toUpperCase().equals("A")) {
-            String link = DOM.getElementAttribute(parent, "href");
-            if (link != null && link.length() > 0) {
-                list.add(parent);
+            try {
+                String link = DOM.getElementAttribute(parent, "href");
+                if (link != null && link.length() > 0) {
+                    list.add(parent);
+                }
+            } catch (Exception e) {
+                if (e != null) {
+                    Log.error(e.getMessage(), e);
+                }
             }
         }
         for (int i = 0; i < nb; i++) {

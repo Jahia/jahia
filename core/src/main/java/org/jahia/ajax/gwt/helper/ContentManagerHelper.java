@@ -528,6 +528,7 @@ public class ContentManagerHelper {
                     }
                 }
             }
+            node.getSession().getUuidMapping().put("top-" + node.getIdentifier(), StringUtils.EMPTY);
             node.copy(targetNode, name, true, null, SettingsBean.getInstance().getImportMaxBatch());
         }
         return targetNode.getNode(name);

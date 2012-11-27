@@ -40,6 +40,7 @@
 
 package org.jahia.modules.defaultmodule.actions;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
@@ -80,6 +81,7 @@ public class MultiplePasteAction extends Action {
                         continue;
                     }
                     session.checkout(node);
+                    session.getUuidMapping().put("top-" + uuid, StringUtils.EMPTY);
                     node.copy(targetNode, JCRContentUtils.findAvailableNodeName(targetNode, node.getName()), true, null, SettingsBean.getInstance().getImportMaxBatch());
                 }
                 session.save();

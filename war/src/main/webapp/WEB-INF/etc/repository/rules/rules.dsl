@@ -4,6 +4,8 @@
 [condition][]A node is deleted=node : DeletedNodeFact ( )
 [condition][]A node is moved=node : MovedNodeFact ( )
 [condition][]A node is published=node : PublishedNodeFact ( )
+[condition][]A node is copied=node : CopiedNodeFact ( )
+[condition][]A node is a top copy=node : CopiedNodeFact ( top == true )
 [condition][]A property has been set on a node=property : ChangedPropertyFact ( propertyName : name, propertyValue : stringValues , node : node )
 [condition][]A property has been removed from a node=property : DeletedPropertyFact ( propertyName : name, node : node )
 [condition][]A property {property} has been set on a node=property : ChangedPropertyFact ( name == "{property}" , propertyValue : stringValues , propertyValueAsString : stringValue , node : node )
@@ -25,6 +27,7 @@
 [condition][]The rule {ruleName} is executing = job : JobRuleExecution ( ruleToExecute=={ruleName}) and node : AddedNodeFact() from job.node
 [condition][]- it has the extension type {type}=types contains "{type}"
 [condition][]- it has the type {type}=types contains "{type}"
+[condition][]- it has no type {type}=types not contains "{type}"
 [condition][]- it is in {path}=node.path matches "{path}/*"
 [condition][]- its name is not {name}=name != "{name}"
 [condition][]- its name is {name}=name == "{name}"

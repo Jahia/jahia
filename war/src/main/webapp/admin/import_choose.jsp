@@ -1,14 +1,13 @@
 <%@include file="/admin/include/header.inc" %>
-<%@page import="org.jahia.bin.JahiaAdministration" %>
-<%@ page import="org.jahia.params.ProcessingContext" %>
-<%@ page import="java.text.DateFormat" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.io.File" %>
-<%@ page import="java.util.*" %>
-<%@ page import="org.jahia.data.templates.JahiaTemplatesPackage" %>
-<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
-<%@ page import="org.jahia.data.JahiaData" %>
+<%@page import="org.jahia.services.SpringContextSingleton" %>
 <%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
+<%@ page import="org.jahia.services.importexport.SiteImportDefaults" %>
+<%@ page import="org.slf4j.LoggerFactory" %>
+<%@ page import="java.io.File" %>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="java.util.Iterator" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -22,6 +21,16 @@
     }
     List importsInfosSorted = (List) session.getAttribute("importsInfosSorted");
     List tpls = (List) request.getAttribute("tmplSets");
+
+    SiteImportDefaults siteImportDefaults = null;
+    final Map<String, SiteImportDefaults> siteImportDefaultsMap = SpringContextSingleton.getInstance().getModuleContext().getBeansOfType(SiteImportDefaults.class);
+    if (siteImportDefaultsMap != null && siteImportDefaultsMap.size() > 0) {
+        if (siteImportDefaultsMap.size() > 1) {
+            LoggerFactory.getLogger(JahiaAdministration.class).error("Found several beans of type org.jahia.services.importexport.SiteImportDefaults whereas only one is allowed, skipping");
+        } else {
+            siteImportDefaults = siteImportDefaultsMap.values().iterator().next();
+        }
+    }
     ProcessingContext jParams = null;
     if (jData != null) {
         jParams = jData.getProcessingContext();
@@ -97,6 +106,7 @@
                             String filename = (String) infos.get("importFileName");
                             String fileType = (String) infos.get("type");
                             String siteKey = file.getName();
+                            String oldSiteKey = (String) infos.get("oldsitekey");
                             String lineClass = "oddLine";
                             if (lineCounter % 2 == 0) {
                                 lineClass = "evenLine";
@@ -144,7 +154,7 @@
                                         </div></c:if>
                                     </td>
                                     <td>
-                                        <input type="hidden" name="<%=siteKey+"oldSiteKey"%>" value="<%= infos.get("oldsitekey") %>"><input class="input" type="text" name="<%=siteKey+"siteKey"%>" value="${fn:escapeXml(infos.sitekey)}" size="<%=inputSize%>" maxlength="50">
+                                        <input type="hidden" name="<%=siteKey+"oldSiteKey"%>" value="<%= oldSiteKey %>"><input class="input" type="text" name="<%=siteKey+"siteKey"%>" value="${fn:escapeXml(infos.sitekey)}" size="<%=inputSize%>" maxlength="50">
                                     </td>
                                 </tr>
                                 <tr>
@@ -153,6 +163,15 @@
                                         <fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;
                                     </td>
                                     <td>
+                                        <%
+                                            String selectedTmplSet;
+                                            if (((Boolean) infos.get("legacyImport")) && siteImportDefaults != null) {
+                                                selectedTmplSet = siteImportDefaults.getDefaultTemplateSet(oldSiteKey);
+                                            } else {
+                                                selectedTmplSet = (String) infos.get("templates");
+                                            }
+                                            pageContext.setAttribute("selectedTmplSet", selectedTmplSet);
+                                        %>
                                         <select name="<%=siteKey%>templates">
                                             <c:if test="${not empty requestScope.templateSetsMissingCounts}">
                                                 <c:forEach var="tmplSet" items="${requestScope.templateSetsMissingCounts}">
@@ -162,7 +181,7 @@
                                                         </fmt:message>
                                                         <c:set var="i18nMissingTemplates" value=" (${fn:escapeXml(i18nMissingTemplates)})"/>
                                                     </c:if>
-                                                    <option value="${tmplSet.key}"${infos.templates==tmplSet.key ? 'selected="selected"' : ''}${not empty i18nMissingTemplates ? 'style="color: #ADB7BD"' : ''}>${tmplSet.key}${i18nMissingTemplates}</option>
+                                                    <option value="${tmplSet.key}"${selectedTmplSet==tmplSet.key ? 'selected="selected"' : ''}${not empty i18nMissingTemplates ? 'style="color: #ADB7BD"' : ''}>${tmplSet.key}${i18nMissingTemplates}</option>
                                                 </c:forEach>
                                             </c:if>
                                             <c:if test="${empty requestScope.templateSetsMissingCounts}">
@@ -170,7 +189,7 @@
                                                 for (Iterator iterator1 = tpls.iterator(); iterator1.hasNext();) {
                                                     JCRNodeWrapper pack = (JCRNodeWrapper) iterator1.next();
                                             %>
-                                            <option value="<%=pack.getName()%>"<% if (pack.getName().equals(infos.get("templates"))) { %>selected<% } %>><%=pack.getName() %></option>
+                                            <option value="<%=pack.getName()%>"<% if (pack.getName().equals(selectedTmplSet)) { %>selected="selected"<% } %>><%=pack.getName() %></option>
 
                                             <%
                                                     } %>
@@ -192,9 +211,15 @@
                                         <select name="<%=siteKey%>legacyMapping">
                                             <option value="">No Mapping file or zip internal mapping file</option>
                                             <%
+                                                String selectedMappingFile;
+                                                if (siteImportDefaults != null) {
+                                                    selectedMappingFile = siteImportDefaults.getDefaultMappingFile(oldSiteKey);
+                                                } else {
+                                                    selectedMappingFile = (String) infos.get("templates");
+                                                }
                                                 for (File legacyMapping : legacyMappings) {
                                             %>
-                                            <option value="<%=legacyMapping.getAbsolutePath()%>" <% if (legacyMapping.getName().equals(infos.get("templates"))) { %>selected<% } %>><%=legacyMapping.getName()%>
+                                            <option value="<%=legacyMapping.getAbsolutePath()%>" <% if (legacyMapping.getName().equals(selectedMappingFile)) { %>selected="selected"<% } %>><%=legacyMapping.getName()%>
                                             </option>
                                             <%
                                                 }
@@ -217,9 +242,15 @@
                                         <select name="<%=siteKey%>legacyDefinitions">
                                             <option value="">No definitions file or zip internal definitions file</option>
                                             <%
+                                                String selectedSourceDefinitionsFile;
+                                                if (siteImportDefaults != null) {
+                                                    selectedSourceDefinitionsFile = siteImportDefaults.getDefaultSourceDefinitionsFile(oldSiteKey);
+                                                } else {
+                                                    selectedSourceDefinitionsFile = (String) infos.get("templates");
+                                                }
                                                 for (File legacyDefinition : legacyDefinitions) {
                                             %>
-                                            <option value="<%=legacyDefinition.getAbsolutePath()%>" <% if (legacyDefinition.getName().equals(infos.get("templates"))) { %>selected<% } %>><%=legacyDefinition.getName()%>
+                                            <option value="<%=legacyDefinition.getAbsolutePath()%>" <% if (legacyDefinition.getName().equals(selectedSourceDefinitionsFile)) { %>selected<% } %>><%=legacyDefinition.getName()%>
                                             </option>
                                             <%
                                                 }

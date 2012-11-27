@@ -72,7 +72,7 @@
                             <package-name>${project.name}</package-name>
                             <depends>Default Jahia Templates</depends>
                             <root-folder>${project.artifactId}</root-folder>
-                            <deploy-on-site>systemsite</deploy-on-site>
+                            <deploy-on-site>all</deploy-on-site>
                             <module-type>system</module-type>
                         </manifestEntries>
                     </archive>

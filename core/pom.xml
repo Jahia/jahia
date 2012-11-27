@@ -103,17 +103,6 @@
             <version>1.4</version>
         </dependency>
         <dependency>
-            <groupId>commons-digester</groupId>
-            <artifactId>commons-digester</artifactId>
-            <version>1.8.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-beanutils</groupId>
-                    <artifactId>commons-beanutils</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <version>1.2.2</version>
@@ -1167,13 +1156,6 @@
         </dependency>
         -->
         <!-- End of OSGi dependencies -->
-        
-        <dependency>
-        	<groupId>net.sourceforge.nekohtml</groupId>
-        	<artifactId>nekohtml</artifactId>
-        	<version>1.9.14</version>
-        </dependency>
-        
         <dependency>
         	<!-- We use it for bi-derectional encryption of passwords for remote publication -->
         	<groupId>org.jasypt</groupId>

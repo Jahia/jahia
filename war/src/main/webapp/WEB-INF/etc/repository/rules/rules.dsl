@@ -48,6 +48,7 @@
 [condition][]- the node is of type {type}=type == "{type}"
 [condition][]The {node} has not been added=not AddedNodeFact ( path == ({node}.getPath()) )
 [condition][]The {node} has not been moved=not MovedNodeFact ( path == ({node}.getPath()) )
+[condition][]The {node} has not been copied=not CopiedNodeFact ( path == ({node}.getPath()) )
 [condition][]The {node} is not moved=not MovedNodeFact ( originalPath == ({node}.getPath()) )
 [condition][]Not in operation {operation}=not OperationTypeFact( operationType == "{operation}")
 [condition][]In operation {operation}=OperationTypeFact( operationType == "{operation}")

@@ -49,6 +49,7 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.SurefireJUnitXMLResultFormatter;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.junit.internal.requests.FilterRequest;
 import org.junit.runner.Description;
@@ -158,8 +159,13 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
                 Pattern testNamePattern = StringUtils.isNotEmpty(pathInfo) ? Pattern
                         .compile(pathInfo.length() > 1 && pathInfo.startsWith("/") ? pathInfo
                                 .substring(1) : pathInfo) : null;
-                WebApplicationContext webApplicationContext = (WebApplicationContext) servletContext.getAttribute(WebApplicationContext.class.getName() + ".jahiaModules");
-                Map<String,TestBean> testBeans = webApplicationContext.getBeansOfType(TestBean.class);
+                Map<String,TestBean> testBeans = new HashMap<String, TestBean>();
+                for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
+                    if (aPackage.getContext() != null) {
+                        testBeans.putAll(aPackage.getContext().getBeansOfType(TestBean.class));
+                    }
+                }
+                
 
                 PrintWriter pw = httpServletResponse.getWriter();
                 // Return the lists of available tests

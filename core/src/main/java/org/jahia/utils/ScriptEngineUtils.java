@@ -104,7 +104,11 @@ public class ScriptEngineUtils {
     private void initEngine(ScriptEngine engine) {
         if (engine.getFactory().getNames().contains("velocity")) {
             Properties velocityProperties = new Properties();
-            velocityProperties.setProperty("runtime.log.logsystem.log4j.logger", "velocity");
+            if(System.getProperty("runtime.log.logsystem.log4j.logger")!=null)  {
+            	velocityProperties.setProperty("runtime.log.logsystem.log4j.logger", System.getProperty("runtime.log.logsystem.log4j.logger")); 
+            } else {
+              velocityProperties.setProperty("runtime.log.logsystem.log4j.logger", "velocity");
+            }
             engine.getContext().setAttribute("com.sun.script.velocity.properties", velocityProperties, ScriptContext.GLOBAL_SCOPE);
         }
     }

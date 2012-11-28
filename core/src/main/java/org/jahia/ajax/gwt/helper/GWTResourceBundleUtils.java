@@ -76,7 +76,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Sergiy Shyrkov
  */
-final public class ResourceBundleUtils {
+final public class GWTResourceBundleUtils {
 
     /**
      * Unicode escaping utility. Code from the ResourceBundle Editor Eclipse plugin (http://eclipse-rbe.sourceforge.net)
@@ -112,7 +112,7 @@ final public class ResourceBundleUtils {
         }
     }
 
-    private static Logger logger = LoggerFactory.getLogger(ResourceBundleUtils.class);
+    private static Logger logger = LoggerFactory.getLogger(GWTResourceBundleUtils.class);
 
     private static String getAsString(String lang, GWTResourceBundle bundle) {
         StringBuilder out = new StringBuilder(512);

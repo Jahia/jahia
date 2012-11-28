@@ -385,7 +385,7 @@ class NodeHelper {
 
         // resource bundle
         if (fields.contains(GWTJahiaNode.RESOURCE_BUNDLE)) {
-            GWTResourceBundle b = ResourceBundleUtils.load(node, uiLocale);
+            GWTResourceBundle b = GWTResourceBundleUtils.load(node, uiLocale);
             if (b != null) {
                 n.set(GWTJahiaNode.RESOURCE_BUNDLE, b);
             }

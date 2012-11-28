@@ -772,7 +772,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         
         GWTResourceBundle rb = node.get(GWTJahiaNode.RESOURCE_BUNDLE);
         if (rb != null) {
-            ResourceBundleUtils.store(node, rb, jcrSessionWrapper);
+            GWTResourceBundleUtils.store(node, rb, jcrSessionWrapper);
         }
         
         try {
@@ -2275,7 +2275,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                             GWTJahiaValueDisplayBean displayBean = new GWTJahiaValueDisplayBean(propertySnippet, label);
                             displayBean.set("text", propertySnippet.replaceAll("<", "&lt;").replaceAll(">", "&gt;"));
                             snippetsByType.add(displayBean);
-                       }
+        }
+
                     }
                     snippets.put(snippetType, snippetsByType);
                 }

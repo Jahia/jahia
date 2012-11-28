@@ -58,7 +58,6 @@ import org.junit.runner.Request;
 import org.junit.runner.Result;
 import org.junit.runner.manipulation.Filter;
 import org.springframework.web.context.ServletContextAware;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import org.apache.commons.io.IOUtils;
@@ -239,8 +238,12 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
     }
     
     private Set<String> getIgnoreTests() {
-        WebApplicationContext webApplicationContext = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("jahia-test-module-war").getContext();
-        Map<String,TestBean> testBeans = webApplicationContext.getBeansOfType(TestBean.class);
+    	Map<String,TestBean> testBeans = new HashMap<String, TestBean>();
+        JahiaTemplatesPackage jahiaTestModule = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("jahia-test-module-war");
+        
+        if (jahiaTestModule.getContext() != null) {
+        	testBeans = jahiaTestModule.getContext().getBeansOfType(TestBean.class);
+        }
 
         // Return the lists of available tests
         Set<String> ignoreTests = new HashSet<String>();

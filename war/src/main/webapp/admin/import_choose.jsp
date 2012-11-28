@@ -8,6 +8,15 @@
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
+<%@page import="org.jahia.bin.JahiaAdministration" %>
+<%@ page import="org.jahia.params.ProcessingContext" %>
+<%@ page import="java.text.DateFormat" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.io.File" %>
+<%@ page import="java.util.*" %>
+<%@ page import="org.jahia.data.templates.JahiaTemplatesPackage" %>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
+<%@ page import="org.jahia.data.JahiaData" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -23,7 +32,7 @@
     List tpls = (List) request.getAttribute("tmplSets");
 
     SiteImportDefaults siteImportDefaults = null;
-    final Map<String, SiteImportDefaults> siteImportDefaultsMap = SpringContextSingleton.getInstance().getModuleContext().getBeansOfType(SiteImportDefaults.class);
+    final Map<String, SiteImportDefaults> siteImportDefaultsMap = SpringContextSingleton.getInstance().getContext().getBeansOfType(SiteImportDefaults.class);
     if (siteImportDefaultsMap != null && siteImportDefaultsMap.size() > 0) {
         if (siteImportDefaultsMap.size() > 1) {
             LoggerFactory.getLogger(JahiaAdministration.class).error("Found several beans of type org.jahia.services.importexport.SiteImportDefaults whereas only one is allowed, skipping");

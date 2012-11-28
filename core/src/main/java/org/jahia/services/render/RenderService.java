@@ -78,7 +78,7 @@ public class RenderService {
 
     public static final String RENDER_SERVICE_TEMPLATES_CACHE = "RenderService.TemplatesCache";
 
-    private CacheImplementation<String,Template> templatesCache;
+    private CacheImplementation<String,SortedSet<OrderedContentTemplate>> templatesCache;
 
     private AclCacheKeyPartGenerator aclCacheKeyPartGenerator;
 
@@ -88,7 +88,7 @@ public class RenderService {
 
     @SuppressWarnings("unchecked")
     public void setCacheProvider(CacheProvider cacheProvider) {
-        templatesCache = (CacheImplementation<String, Template>) cacheProvider.newCacheImplementation(RENDER_SERVICE_TEMPLATES_CACHE);
+        templatesCache = (CacheImplementation<String, SortedSet<OrderedContentTemplate>>) cacheProvider.newCacheImplementation(RENDER_SERVICE_TEMPLATES_CACHE);
     }
 
     public static class RenderServiceBeanPostProcessor implements BeanPostProcessor {
@@ -107,7 +107,7 @@ public class RenderService {
             return bean;
         }
     }
-    
+
     private static final Logger logger = LoggerFactory.getLogger(RenderService.class);
 
     private void addFilter(RenderFilter renderFilter) {
@@ -228,7 +228,7 @@ public class RenderService {
 
     /**
      * Returns a new instance of the {@link RenderChain} with all filters.
-     * 
+     *
      * @return a new instance of the {@link RenderChain} with all filters
      */
     public RenderChain getRenderChainInstance() {
@@ -242,7 +242,7 @@ public class RenderService {
         }
         return set;
     }
-    
+
     public Template resolveTemplate(Resource resource, RenderContext renderContext) throws AccessDeniedException {
         final JCRNodeWrapper node = resource.getNode();
         String templateName = resource.getTemplate();
@@ -378,59 +378,48 @@ public class RenderService {
     }
 
     private Template addTemplate(Resource resource, RenderContext renderContext, String templateName, List<String> installedModules, String type) throws RepositoryException {
+        SortedSet<OrderedContentTemplate> templates = new TreeSet<OrderedContentTemplate>();
         for (String s : installedModules) {
             JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName(s);
             if (pack != null) {
-                Template template = addTemplates(resource, renderContext, templateName, resource.getNode().getSession().getNode("/modules/"+s+"/"+pack.getVersion()), type);
-                if (template != null) {
-                    return template;
-                }
+                JCRNodeWrapper templateNode = resource.getNode().getSession().getNode("/modules/" + s + "/" + pack.getVersion());
+                    templates.addAll(addTemplates(resource, renderContext, templateName, templateNode, type));
             }
         }
-        return null;
+        return templates.last().getTemplate();
     }
 
-    private Template addTemplates(Resource resource, RenderContext renderContext, String templateName,
-                                  JCRNodeWrapper templateNode, String type) throws RepositoryException {
+    private SortedSet<OrderedContentTemplate> addTemplates(Resource resource, RenderContext renderContext, String templateName,
+                                                    JCRNodeWrapper templateNode, String type) throws RepositoryException {
         String key = new StringBuffer(templateNode.getPath()).append(type).append(
                 templateName != null ? templateName : "default").toString() + renderContext.getServletPath() + resource.getWorkspace() + renderContext.isLoggedIn() +
                 resource.getNode().getNodeTypes()+ aclCacheKeyPartGenerator.appendAcls(resource, renderContext, false);
-
-        Template template = templatesCache.get(key);
-
-        if (template == null) {
-            String query =
-                    "select * from [" + type + "] as w where isdescendantnode(w, ['" + templateNode.getPath() +
-                    "'])";
-            if (templateName != null) {
-                query += " and name(w)='" + templateName + "'";
-            } else {
-                query += " and [j:defaultTemplate]=true";
-            }
-            query += " order by [j:priority] desc";
-            Query q = templateNode.getSession().getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
-            QueryResult result = q.execute();
-            NodeIterator ni = result.getNodes();
-
-            List<Template> templates = new ArrayList<Template>();
-            while (ni.hasNext()) {
-                final JCRNodeWrapper contentTemplateNode = (JCRNodeWrapper) ni.nextNode();
-                addTemplate(resource, renderContext, contentTemplateNode, templates);
-            }
-
-            if (templates.isEmpty()) {
-                templatesCache.put(key, null, new EmptyTemplate(null,null,null,null));
-                return null;
-            } else {
-                templatesCache.put(key,null, templates.get(0));
-                return templates.get(0);
-            }
-        } else {
-            return template.getClass().getName().equals(EmptyTemplate.class.getName()) ? null : template;
+        if (templatesCache.containsKey(key)) {
+            return templatesCache.get(key);
         }
+        String query =
+                "select * from [" + type + "] as w where isdescendantnode(w, ['" + templateNode.getPath() +
+                        "'])";
+        if (templateName != null) {
+            query += " and name(w)='" + templateName + "'";
+        } else {
+            query += " and [j:defaultTemplate]=true";
+        }
+        query += " order by [j:priority] desc";
+        Query q = templateNode.getSession().getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
+        QueryResult result = q.execute();
+        NodeIterator ni = result.getNodes();
+
+        SortedSet<OrderedContentTemplate> templates = new TreeSet<OrderedContentTemplate>();
+        while (ni.hasNext()) {
+            final JCRNodeWrapper contentTemplateNode = (JCRNodeWrapper) ni.nextNode();
+            addTemplate(resource, renderContext, contentTemplateNode, templates);
+        }
+        templatesCache.put(key,null, templates);
+        return templates;
     }
 
-    private void addTemplate(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode, List<Template> templates)
+    private void addTemplate(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode, SortedSet<OrderedContentTemplate> templates)
             throws RepositoryException {
         boolean ok = true;
         if (templateNode.hasProperty("j:applyOn")) {
@@ -450,9 +439,10 @@ public class RenderService {
         if (!checkTemplatePermission(resource, renderContext, templateNode)) return;
 
         if (ok) {
-            templates.add(new Template(
+            Template template = new Template(
                     templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                            null, templateNode.getIdentifier(), null, templateNode.getName()));
+                            null, templateNode.getIdentifier(), null, templateNode.getName());
+            templates.add(new OrderedContentTemplate(template,templateNode.hasProperty("j:priority")?(int) templateNode.getProperty("j:priority").getLong():0));
         }
     }
 
@@ -505,9 +495,10 @@ public class RenderService {
         }
         return !invert;
     }
-    
+
     public void flushCache() {
         templatesCache.flushAll(true);
     }
+
 
 }

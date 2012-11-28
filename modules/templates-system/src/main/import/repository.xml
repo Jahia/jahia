@@ -445,13 +445,16 @@
               </custom-rows-960gs-1>
             </pagecontent>
           </documentFolderTemplate>
-            <editable-code-file j:applyOn="jnt:editableFile" j:defaultTemplate="true" j:hiddenTemplate="true" j:invertCondition="false" j:priority="10" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="" jcr:primaryType="jnt:contentTemplate">
-                <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="editable code file " />
+        </base>
+        <baseempty j:hiddenTemplate="false" j:view="system.empty" jcr:primaryType="jnt:template">
+            <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="baseEmpty" />
+            <editable-code-file j:applyOn="jnt:editableFile" j:defaultTemplate="true" j:hiddenTemplate="true" j:invertCondition="false" j:priority="15" j:requireLoggedUser="false" j:requirePrivilegedUser="false" jcr:primaryType="jnt:contentTemplate">
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="editable code file " />
                 <pagecontent jcr:primaryType="jnt:contentList">
                     <main-resource-display j:mainResourceView="display" jcr:primaryType="jnt:mainResourceDisplay" />
                 </pagecontent>
             </editable-code-file>
-        </base>
+        </baseempty>
       </templates>
       <categories j:originWS="default" jcr:primaryType="jnt:category" jcr:title="Categories"/>
       <home j:isHomePage="true" j:originWS="default" j:templateNode="/modules/templates-system/templates/base/home" jcr:primaryType="jnt:page">

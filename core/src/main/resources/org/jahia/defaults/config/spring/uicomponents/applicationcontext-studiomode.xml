@@ -262,6 +262,7 @@
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
+                        <ref bean="Toolbar.Item.EditContent"/>
                         <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>
                     </list>
                 </property>

@@ -67,6 +67,7 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.search.facets.JahiaQueryParser;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,7 +132,11 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             // Added by jahia
             Set<String> foundIds = new HashSet<String>();
             int hasFacets = FacetHandler.hasFacetFunctions(columns, session);
-            BitSet bitset = (hasFacets & FacetHandler.FACET_COLUMNS) == 0 ? null : new BitSet();            
+            CountHandler.CountType countType = CountHandler.hasCountFunction(columns, session);
+            BitSet bitset = (hasFacets & FacetHandler.FACET_COLUMNS) == 0 ? null : new BitSet();
+            int resultCount = 0;
+            int hitsSize = 0;
+            int queryApproxCountLimit = SettingsBean.getInstance().getQueryApproxCountLimit();
             // End
 
             List<Row> rows = new ArrayList<Row>();
@@ -140,91 +145,118 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             Map<String, Boolean> checkedAcls = new HashMap<String, Boolean>();
             
             while (node != null) {
-                IndexedNodeInfo infos = getIndexedNodeInfo(node, reader);
-                if (foundIds.add(infos.getMainNodeUuid())) {  // <-- Added by jahia
-                    try {
-                        String[] acls = infos.getAclUuid() != null ? Patterns.SPACE.split(infos.getAclUuid()) : new String[0];
-                        boolean canRead = true;
+                if (countType == CountHandler.CountType.APPROX_COUNT) {
+                    hitsSize++;
+                    if (hitsSize > queryApproxCountLimit) {
+                        node = hits.nextScoreNode();
+                        continue;
+                    }
+                }
+                if (countType == CountHandler.CountType.SKIP_CHECKS) {
+                    resultCount++;
+                } else {
+                    IndexedNodeInfo infos = getIndexedNodeInfo(node, reader);
+                    if (foundIds.add(infos.getMainNodeUuid())) {  // <-- Added by jahia
+                        try {
+                            String[] acls = infos.getAclUuid() != null ? Patterns.SPACE.split(infos.getAclUuid()) : new String[0];
+                            boolean canRead = true;
 
-                        for (String acl : acls) {
-                            Boolean aclChecked = checkedAcls.get(acl);
-                            if (aclChecked == null) {
-                                try {
-                                    canRead = session.getAccessManager().canRead(null, new NodeId(acl));
-                                    checkedAcls.put(acl, canRead);
-                                } catch (RepositoryException e) {
-                                }
-                            } else {
-                                canRead = aclChecked;
-                            }
-                            if (canRead) {
-                                break;
-                            }
-                        }
-                        if (canRead
-                                && (!Constants.LIVE_WORKSPACE.equals(session
-                                        .getWorkspace().getName())
-                                        || infos.getPublished() == null || "true"
-                                            .equals(infos.getPublished()))) {
-                            if (filter == Predicate.TRUE) { // <-- Added by jahia
-                                if ((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) {
-                                    Row row = null;
-
-                                    if ("1".equals(infos.getCheckVisibility())) {
-                                        NodeImpl objectNode = session
-                                                .getNodeById(node.getNodeId());
-                                        if (objectNode
-                                                .isNodeType("jnt:translation")) {
-                                            objectNode = (NodeImpl) objectNode
-                                                    .getParent();
-                                        }
-                                        row = new LazySelectorRow(
-                                                columns,
-                                                evaluator,
-                                                selector.getSelectorName(),
-                                                provider.getNodeWrapper(
-                                                        objectNode, jcrSession),
-                                                node.getScore());
-                                    } else {
-                                        row = new LazySelectorRow(columns,
-                                                evaluator,
-                                                selector.getSelectorName(),
-                                                node.getNodeId(),
-                                                node.getScore());
+                            for (String acl : acls) {
+                                Boolean aclChecked = checkedAcls.get(acl);
+                                if (aclChecked == null) {
+                                    try {
+                                        canRead = session.getAccessManager().canRead(null, new NodeId(acl));
+                                        checkedAcls.put(acl, canRead);
+                                    } catch (RepositoryException e) {
                                     }
-
-                                    rows.add(row);
+                                } else {
+                                    canRead = aclChecked;
                                 }
-                                if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
-                                    bitset.set(infos.getDocNumber()); // <-- Added by jahia
+                                if (canRead) {
+                                    break;
                                 }
-
-                            } else {
-                                NodeImpl objectNode = session.getNodeById(node
-                                        .getNodeId());
-                                if (objectNode.isNodeType("jnt:translation")) {
-                                    objectNode = (NodeImpl) objectNode
-                                            .getParent();
-                                }
-                                Row row = new SelectorRow(columns, evaluator,
-                                        selector.getSelectorName(),
-                                        provider.getNodeWrapper(objectNode,
-                                                jcrSession), node.getScore());
-                                if (filter.evaluate(row)) {
+                            }
+                            if (canRead
+                                    && (!Constants.LIVE_WORKSPACE.equals(session
+                                    .getWorkspace().getName())
+                                    || infos.getPublished() == null || "true"
+                                    .equals(infos.getPublished()))) {
+                                if (filter == Predicate.TRUE) { // <-- Added by jahia
                                     if ((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) {
+                                        Row row = null;
+
+                                        if ("1".equals(infos.getCheckVisibility())) {
+                                            NodeImpl objectNode = session
+                                                    .getNodeById(node.getNodeId());
+                                            if (objectNode
+                                                    .isNodeType("jnt:translation")) {
+                                                objectNode = (NodeImpl) objectNode
+                                                        .getParent();
+                                            }
+                                            if (countType == CountHandler.CountType.EXACT_COUNT || countType == CountHandler.CountType.APPROX_COUNT) {
+                                                resultCount++;
+                                            } else {
+                                                row = new LazySelectorRow(
+                                                        columns,
+                                                        evaluator,
+                                                        selector.getSelectorName(),
+                                                        provider.getNodeWrapper(
+                                                                objectNode, jcrSession),
+                                                        node.getScore());
+                                            }
+                                        } else {
+                                            if (countType == CountHandler.CountType.EXACT_COUNT || countType == CountHandler.CountType.APPROX_COUNT) {
+                                                resultCount++;
+                                            } else {
+                                                row = new LazySelectorRow(columns,
+                                                        evaluator,
+                                                        selector.getSelectorName(),
+                                                        node.getNodeId(),
+                                                        node.getScore());
+                                            }
+                                        }
+
+                                        if (row == null)  {
+                                            continue;
+                                        }
+
                                         rows.add(row);
                                     }
                                     if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
                                         bitset.set(infos.getDocNumber()); // <-- Added by jahia
                                     }
+
+                                } else {
+                                    NodeImpl objectNode = session.getNodeById(node
+                                            .getNodeId());
+                                    if (objectNode.isNodeType("jnt:translation")) {
+                                        objectNode = (NodeImpl) objectNode
+                                                .getParent();
+                                    }
+                                    if (countType == CountHandler.CountType.EXACT_COUNT || countType == CountHandler.CountType.APPROX_COUNT) {
+                                        resultCount++;
+                                    } else {
+                                        Row row = new SelectorRow(columns, evaluator,
+                                                selector.getSelectorName(),
+                                                provider.getNodeWrapper(objectNode,
+                                                        jcrSession), node.getScore());
+                                        if (filter.evaluate(row)) {
+                                            if ((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) {
+                                                rows.add(row);
+                                            }
+                                            if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
+                                                bitset.set(infos.getDocNumber()); // <-- Added by jahia
+                                            }
+                                        }
+                                    }
                                 }
                             }
+                        } catch (PathNotFoundException e) {
+                        } catch (ItemNotFoundException e) {
+                            // skip the node
                         }
-                    } catch (PathNotFoundException e) {
-                    } catch (ItemNotFoundException e) {
-                        // skip the node
-                    }
-                }  // <-- Added by jahia
+                    }  // <-- Added by jahia
+                }
                 node = hits.nextScoreNode();
             }
 
@@ -235,6 +267,11 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                 FacetHandler h = new FacetHandler(columns, selector, docIdSet, index, session);
                 h.handleFacets(reader);
                 rows.add(0, h.getFacetsRow());
+            } else if (countType != CountHandler.CountType.NO_COUNT) {
+                if (countType == CountHandler.CountType.APPROX_COUNT && hitsSize > queryApproxCountLimit) {
+                    resultCount = hitsSize * resultCount / queryApproxCountLimit;
+                }
+                rows.add(0, CountHandler.createCountRow(resultCount));
             }
             // End
 

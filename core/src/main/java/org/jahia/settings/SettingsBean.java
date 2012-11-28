@@ -205,6 +205,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     private int accessManagerPathPermissionCacheMaxSize = 100;
 
+    private int queryApproxCountLimit;
+
     /**
      * Default constructor.
      *
@@ -375,6 +377,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             expandImportedFilesOnDiskPath = getString("expandImportedFilesOnDiskPath","/tmp");
 
             accessManagerPathPermissionCacheMaxSize = getInt("accessManagerPathPermissionCacheMaxSize", 100);
+
+            queryApproxCountLimit = getInt("queryApproxCountLimit", 100);
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
@@ -1082,5 +1086,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public int getAccessManagerPathPermissionCacheMaxSize() {
         return accessManagerPathPermissionCacheMaxSize;
+    }
+
+    public int getQueryApproxCountLimit() {
+        return queryApproxCountLimit;
     }
 }

@@ -44,6 +44,8 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.data.RpcMap;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
@@ -51,6 +53,7 @@ import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -73,7 +76,8 @@ public class CodeEditorTabItem extends EditEngineTabItem {
 
     private transient CodeMirrorField codeField;
     private transient GWTJahiaNodeProperty codeProperty;
-    private transient SimpleComboBox<String> nodeProperties;
+    private transient Map<String, List<GWTJahiaValueDisplayBean>> snippets;
+    private transient ComboBox<GWTJahiaValueDisplayBean> snippetType;
     private transient ComboBox<GWTJahiaValueDisplayBean> mirrorTemplates;
 
     public CodeEditorTabItem() {
@@ -91,31 +95,24 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                 typeName = engine.getPresetProperties().get("nodeTypeName");
             }
 
-            String path = engine.isExistingNode() ? engine.getNode().getPath() : engine.getTargetNode().getPath();
-            String nodeType = typeName != null ? typeName.getValues().get(0).getString() : null;
-            JahiaContentManagementService.App.getInstance().initializeCodeEditor(path, !engine.isExistingNode(), nodeType, stubType, new BaseAsyncCallback<RpcMap>() {
-                public void onSuccess(RpcMap result) {
-                    List<GWTJahiaValueDisplayBean> snippets = (List<GWTJahiaValueDisplayBean>) result.get("snippets");
-                    mirrorTemplates.getStore().add(snippets);
-
-                    if (!engine.getProperties().containsKey(codePropertyName)) {
-                        codeProperty = new GWTJahiaNodeProperty(codePropertyName, (String) result.get("stub"), GWTJahiaNodePropertyType.STRING);
-                        initEditor(tab);
-                    }
+            snippetType = new ComboBox<GWTJahiaValueDisplayBean>();
+            snippetType.setTypeAhead(true);
+            snippetType.getListView().setStyleAttribute("font-size", "11px");
+            snippetType.setTriggerAction(ComboBox.TriggerAction.ALL);
+            snippetType.setForceSelection(true);
+            snippetType.setWidth(200);
+            snippetType.removeAllListeners();
+            snippetType.setStore(new ListStore<GWTJahiaValueDisplayBean>());
+            snippetType.getStore().sort("display", Style.SortDir.ASC);
+            snippetType.setAllowBlank(false);
+            snippetType.setDisplayField("display");
+            snippetType.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaValueDisplayBean>() {
+                @Override
+                public void selectionChanged(SelectionChangedEvent<GWTJahiaValueDisplayBean> se) {
+                    mirrorTemplates.getStore().removeAll();
+                    mirrorTemplates.getStore().add(snippets.get(se.getSelectedItem().getValue()));
                 }
             });
-
-
-            nodeProperties = new SimpleComboBox<String>();
-            nodeProperties.setTypeAhead(true);
-            nodeProperties.getListView().setStyleAttribute("font-size", "11px");
-            nodeProperties.setTriggerAction(ComboBox.TriggerAction.ALL);
-            nodeProperties.setForceSelection(true);
-            nodeProperties.setWidth(200);
-            nodeProperties.removeAllListeners();
-            nodeProperties.getStore().removeAll();
-            nodeProperties.getStore().sort("value", Style.SortDir.ASC);
-            nodeProperties.setAllowBlank(false);
 
             mirrorTemplates = new ComboBox<GWTJahiaValueDisplayBean>();
             mirrorTemplates.setTypeAhead(true);
@@ -127,29 +124,43 @@ public class CodeEditorTabItem extends EditEngineTabItem {
             mirrorTemplates.setStore(new ListStore<GWTJahiaValueDisplayBean>());
             mirrorTemplates.getStore().sort("display", Style.SortDir.ASC);
             mirrorTemplates.setAllowBlank(false);
-            mirrorTemplates.setTemplate(XTemplate.create(getTemplate()));
+            mirrorTemplates.setDisplayField("display");
             Button button = new Button(Messages.get("label.add"));
             button.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent buttonEvent) {
-                    String selectedProperty = nodeProperties.getSimpleValue();
-                    GWTJahiaValueDisplayBean mirrorTemplate = mirrorTemplates.getValue();
-                    codeField.insertProperty(mirrorTemplate.getValue().replaceAll("__value__", selectedProperty));
+                    codeField.insertProperty(mirrorTemplates.getValue().getValue());
                 }
             });
             HorizontalPanel horizontalPanel = new HorizontalPanel();
             horizontalPanel.setSpacing(10);
             horizontalPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
-            Label label = new Label(Messages.get("label.properties"));
+            Label label = new Label(Messages.get("label.snippetType", "Snippet Type"));
             label.setStyleAttribute("font-size", "11px");
             horizontalPanel.add(label);
-            horizontalPanel.add(nodeProperties);
+            horizontalPanel.add(snippetType);
             label = new Label(Messages.get("label.codeMirrorTemplates","Code Template"));
             label.setStyleAttribute("font-size", "11px");
             horizontalPanel.add(label);
             horizontalPanel.add(mirrorTemplates);
             horizontalPanel.add(button);
             tab.add(horizontalPanel, new BorderLayoutData(Style.LayoutRegion.NORTH, 40));
+
+            String path = engine.isExistingNode() ? engine.getNode().getPath() : engine.getTargetNode().getPath();
+            String nodeType = typeName != null ? typeName.getValues().get(0).getString() : null;
+            JahiaContentManagementService.App.getInstance().initializeCodeEditor(path, !engine.isExistingNode(), nodeType, stubType, new BaseAsyncCallback<RpcMap>() {
+                public void onSuccess(RpcMap result) {
+                    snippets = (Map<String, List<GWTJahiaValueDisplayBean>>) result.get("snippets");
+                    for (String type : snippets.keySet()) {
+                        snippetType.getStore().add(new GWTJahiaValueDisplayBean(type, Messages.get("label.snippetType." + type, type)));
+                    }
+
+                    if (!engine.getProperties().containsKey(codePropertyName)) {
+                        codeProperty = new GWTJahiaNodeProperty(codePropertyName, (String) result.get("stub"), GWTJahiaNodePropertyType.STRING);
+                        initEditor(tab);
+                    }
+                }
+            });
 
             //Add code source
             if (engine.getProperties().containsKey(codePropertyName)) {
@@ -194,7 +205,4 @@ public class CodeEditorTabItem extends EditEngineTabItem {
         this.codeMirrorMode = codeMirrorMode;
     }
 
-    public native String getTemplate() /*-{
-        return ['<tpl for="."><div class="x-combo-list-item">{display}<div><code><pre>{text}</pre></code></div></div></tpl>'].join("");
-    }-*/;
 }

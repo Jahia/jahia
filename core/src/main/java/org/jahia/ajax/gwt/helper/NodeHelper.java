@@ -121,11 +121,10 @@ class NodeHelper {
     static String getNodeURL(String servlet, JCRNodeWrapper node, Date versionDate,
             String versionLabel, final String workspace, final Locale locale)
             throws RepositoryException {
-        String url = Jahia.getContextPath();
         if (servlet == null) {
             servlet = "render";
         }
-        url += "/cms/" + servlet + "/" + workspace + "/" + locale;
+        String url = Jahia.getContextPath() + "/cms/" + servlet + "/" + workspace + "/" + locale;
 
         Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);
         RenderContext renderContext = new RenderContext(null, null, node.getSession().getUser());

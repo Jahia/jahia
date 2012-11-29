@@ -154,11 +154,11 @@
 
 }
 
-.bodywrapper .label-placeholder,.bodywrapper div.button-placeholder  {
+ .label-placeholder, div.button-placeholder  {
     display:inline-block;
 }
 
-.bodywrapper button.button-placeholder,.bodywrapper div.button-placeholder {
+ button.button-placeholder, div.button-placeholder {
 	font-family:tahoma,arial,verdana,sans-serif;
 	font-size:9px;
 	font-weight:bold;
@@ -179,7 +179,7 @@
     cursor:pointer;
     line-height:15px !important;
 }
-.bodywrapper button.button-placeholder:hover, .bodywrapper div.button-placeholder:hover {
+ button.button-placeholder:hover,  div.button-placeholder:hover {
 	background: #009800 url(../images/xtheme-jahia-andromeda/panel/bg-button-placeholder-on.png) repeat-x scroll left top;
 	color: #fff;
 }
@@ -310,7 +310,7 @@
 }
 
 /****************************************************************************/
-.bodywrapper .deleted-overlay {
+ .deleted-overlay {
 	overflow: hidden;
     background :#eaeaea url(images/deleted-overlay.png) top left;
 	color:#f00;
@@ -318,7 +318,7 @@
 	font-weight:bold;
 }
 
-.bodywrapper .area {
+ .area {
 	height:200px;
 	overflow: hidden;
 	background-color:#d8effb;
@@ -327,7 +327,7 @@
 	position:relative;
 	border: 1px dashed #99ccff;
 }
-.bodywrapper .areaTemplate{
+ .areaTemplate{
 	background-color: #336699;
 	border:1px solid #003366;
 	color:#fff;
@@ -347,10 +347,10 @@
 	-webkit-box-shadow: 0 1px 3px #999;
 	box-shadow: 0 1px 3px #999;
 }
-.bodywrapper .AreaInformation{
+ .AreaInformation{
 	color:#666;
 }
-.bodywrapper .absoluteArea {
+ .absoluteArea {
 	height:200px;
 	overflow: hidden;
 	background-color:#ffcccc;
@@ -359,7 +359,7 @@
 	position:relative;
 	border: 1px dashed #cc6666;
 }
-.bodywrapper .absoluteAreaTemplate{
+ .absoluteAreaTemplate{
 	background-color: #c30;
 	border:1px solid #990000;
 	color:#fff;
@@ -379,7 +379,7 @@
 	-webkit-box-shadow: 0 1px 3px #999;
 	box-shadow: 0 1px 3px #999;
 }
-.bodywrapper .mainResourceDisplay {
+ .mainResourceDisplay {
 	height:200px;
 	overflow:hidden;
 	background-color:#eaeaea;
@@ -388,7 +388,7 @@
 	position:relative;
 	border: 1px dashed #333;
 }
-.bodywrapper .mainResourceDisplayTemplate{
+ .mainResourceDisplayTemplate{
 	background-color: #333;
 	border:1px solid #000;
 	color:#fff;
@@ -408,7 +408,7 @@
 	-webkit-box-shadow: 0 1px 3px #999;
 	box-shadow: 0 1px 3px #999;
 }
-.bodywrapper .authorDisplayArea {
+ .authorDisplayArea {
 	height:200px;
 	overflow: hidden;
 	padding:5px;
@@ -417,7 +417,7 @@
 	border: 1px dashed #99ccff;
 	background:#d8effb url(images/authorDisplayArea-bg.png) no-repeat scroll 50% 100% ;
 }
-.bodywrapper .authorDisplayTemplate{
+ .authorDisplayTemplate{
 	background-color: #336699;
 	border:1px solid #003366;
 	color:#fff;
@@ -437,7 +437,7 @@
 	-webkit-box-shadow: 0 1px 3px #999;
 	box-shadow: 0 1px 3px #999;
 }
-.bodywrapper .area-liveOnly {
+ .area-liveOnly {
 	min-height:100px;
 	overflow: hidden;
 	background:#ccffcc url(images/area-liveonly-bg.png) no-repeat scroll 50% 50% ;
@@ -446,16 +446,16 @@
 	position:relative;
 	border: 1px dashed #99cc99;
 }
-.bodywrapper .dashedArea {
+ .dashedArea {
     background : url(images/placeholder-area.png) top left;
     height:100%;
 }
-.bodywrapper .area-notcreated .dashedArea {
+ .area-notcreated .dashedArea {
     background : url(images/area-notcreated.png) top left;
     height:100%;
 }
 
-.bodywrapper .area-liveOnly .dashedArea {
+ .area-liveOnly .dashedArea {
     background : url(images/area-liveOnly.png) top left;
     height:100%;
 }

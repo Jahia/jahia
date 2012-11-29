@@ -33,7 +33,7 @@
             <item name="Node types definitions" href="./definitions/definitions.html"/>
             <item name="Notifications" href="notifications/notifications.html"/>
             <item name="Users batch creation" href="./users_batch_creation.html"/>
-            <item name="Development">
+            <item name="Development" href="#">
                 <item name="From development to production" href="./development/fromdevtoprod.html"/>
                 <item name="Development tips" href="./development/devtips.html"/>
                 <item name="Production tips" href="./development/prodtips.html"/>

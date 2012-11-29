@@ -20,4 +20,8 @@
     <!-- <extend-property name="locale" values="fr"/>
     <extend-property name="locale" values="en"/>
     <extend-property name="locale" values="de"/>-->
+    
+    <extend-property name="locale" values="en,fr,de"/> 
+	<set-property-fallback name="locale" value="en"/> 
+	<set-property name="locale" value="en,fr,de"/>
 </module>

@@ -51,6 +51,11 @@
 
     <properties>
         <singleModuleName>org.jahia.ajax.gwt.module.edit.Edit</singleModuleName>
+        <AdminModuleName>org.jahia.ajax.gwt.module.admin.DevAdmin</AdminModuleName>
+        <ContentManagerModuleName>org.jahia.ajax.gwt.module.contentmanager.DevContentManager</ContentManagerModuleName>
+        <ContentPickerModuleName>org.jahia.ajax.gwt.module.contentpicker.DevContentPicker</ContentPickerModuleName>
+        <EditModuleName>org.jahia.ajax.gwt.module.edit.DevEdit</EditModuleName>
+        <ResourcesModuleName>org.jahia.ajax.gwt.module.resources.DevResources</ResourcesModuleName>        
     </properties>
 
     <profiles>
@@ -105,11 +110,11 @@
                             <webappDirectory>${project.build.directory}/jahia/gwt</webappDirectory>
                             <skip>${jahia.gwt.skip}</skip>
                             <modules>
-                                <module>org.jahia.ajax.gwt.module.admin.Admin</module>
-                                <module>org.jahia.ajax.gwt.module.contentmanager.ContentManager</module>
-                                <module>org.jahia.ajax.gwt.module.contentpicker.ContentPicker</module>
-                                <module>org.jahia.ajax.gwt.module.edit.Edit</module>
-                                <module>org.jahia.ajax.gwt.module.resources.Resources</module>
+                                <module>${AdminModuleName}</module>
+                                <module>${ContentManagerModuleName}</module>
+                                <module>${ContentPickerModuleName}</module>
+                                <module>${EditModuleName}</module>
+                                <module>${ResourcesModuleName}</module>
                             </modules>
                             <!--
                             <style>DETAILED</style>

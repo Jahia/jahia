@@ -13,7 +13,7 @@
 <c:set var="level" value="${currentNode.properties['j:level'].long}" />
 <c:choose>
     <c:when test="${not empty inWrapper and inWrapper eq false}">
-        <div class="absoluteArea<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
+        <div class="absoluteArea <c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
             <div class="absoluteAreaTemplate">
                 <c:if test="${empty level}" >
                     <span>Absolute Area : ${currentNode.resolveSite.home.name}</span>

@@ -53,14 +53,14 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import java.util.*;
 
 /**
- * 
+ *
  * User: toto
  * Date: Dec 18, 2009
  * Time: 11:58:07 AM
- * 
+ *
  */
 public class ReferencesHelper {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(LegacyImportHandler.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ReferencesHelper.class);
 
     public static int maxBatch = 5000;
 

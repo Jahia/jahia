@@ -70,10 +70,10 @@
                             <Specification-Version>${project.version}</Specification-Version>
                             <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
-                            <depends>Default Jahia Templates</depends>
+                            <depends>Default Jahia Templates,defaultSiteSettings</depends>
                             <root-folder>${project.artifactId}</root-folder>
                             <deploy-on-site>all</deploy-on-site>
-                            <module-type>system</module-type>
+                            <module-type>module</module-type>
                         </manifestEntries>
                     </archive>
                     <archiveClasses>true</archiveClasses>

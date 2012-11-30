@@ -204,7 +204,17 @@ try {
         q.setOffset(Long.valueOf((String) pageContext.getAttribute("offset")));
         QueryResult result = q.execute();
         pageContext.setAttribute("count", JCRContentUtils.size(result.getNodes()));
-        if (result.getSelectorNames().length == 1) {
+        String countColumnName = null;
+        for (String columnName : result.getColumnNames()) {
+            if (columnName.startsWith("rep:count(")) {
+                countColumnName = columnName;
+                break;
+            }
+        }
+        if (countColumnName != null) {
+            pageContext.setAttribute("countColumnName", countColumnName);
+            pageContext.setAttribute("countResult", result.getRows().nextRow().getValue(countColumnName).getLong());
+        } else if (result.getSelectorNames().length == 1) {
             pageContext.setAttribute("nodes", result.getNodes());
         } else {
             pageContext.setAttribute("selectorNames", result.getSelectorNames());
@@ -226,6 +236,9 @@ try {
 <% pageContext.setAttribute("maxIntValue", Integer.MAX_VALUE); %>
 <ol start="${offset + 1}">
 <c:choose>
+<c:when test="${not empty countResult}">
+    <li><strong>${countColumnName}: </strong>${countResult}</li>
+</c:when>
 <c:when test="${empty rows}">
 <c:forEach var="node" items="${nodes}" varStatus="status" end="${displayLimit != 0 ? displayLimit - 1 : maxIntValue}">
     <li>

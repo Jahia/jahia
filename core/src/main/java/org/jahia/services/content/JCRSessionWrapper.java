@@ -127,6 +127,7 @@ public class JCRSessionWrapper implements Session {
     private Map<String, String> pathMapping = new LinkedHashMap<String, String>();
 
     private boolean isSystem;
+    private boolean isCurrentUserSession = false;
     private Date versionDate;
 
     private Locale fallbackLocale;
@@ -782,7 +783,7 @@ public class JCRSessionWrapper implements Session {
                 } else {
                     username = user.getUsername();
                 }
-                if (!simpleCredentials.getUserID().startsWith(JahiaLoginModule.SYSTEM)) {
+                if (isCurrentUserSession() && !simpleCredentials.getUserID().startsWith(JahiaLoginModule.SYSTEM)) {
                     s = provider.getSessionFactory().findSameSession(provider,username,workspace.getName());
                 }
                 if (s == null) {
@@ -1166,5 +1167,15 @@ public class JCRSessionWrapper implements Session {
 
     protected JCRNodeWrapper getCachedNode(String uuid) {
         return sessionCacheByIdentifier.get(uuid);
+    }
+
+
+    public boolean isCurrentUserSession() {
+        return isCurrentUserSession;
+    }
+
+
+    public void setCurrentUserSession(boolean isCurrentUserSession) {
+        this.isCurrentUserSession = isCurrentUserSession;
     }
 }

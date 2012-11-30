@@ -189,6 +189,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
             } else {
                 s = login(JahiaLoginModule.getGuestCredentials(), workspace, locale, fallbackLocale);
             }
+            s.setCurrentUserSession(true);
             wsMap.put(key, s);
             //} else {
             // In cluster, this will perform a cluster node sync, which is an expensive operation.

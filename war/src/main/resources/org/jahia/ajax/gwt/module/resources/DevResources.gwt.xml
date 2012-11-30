@@ -1,6 +1,4 @@
-
 <module rename-to="resources">
-    <inherits name="org.jahia.ajax.gwt.JahiaGWT"/>
-    <entry-point class='org.jahia.ajax.gwt.module.resources.client.SimpleEntryPoint'/>
+    <inherits name="org.jahia.ajax.gwt.module.resources.Resources"/>
     <collapse-all-properties />
 </module>

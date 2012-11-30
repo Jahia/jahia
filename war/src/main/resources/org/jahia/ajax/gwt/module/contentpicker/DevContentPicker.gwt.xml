@@ -1,5 +1,4 @@
-<module rename-to="org.jahia.ajax.gwt.module.contentpicker.client.ContentPickerEntryPoint">
-	<inherits name="org.jahia.ajax.gwt.JahiaGWT" />
-    <entry-point class='org.jahia.ajax.gwt.module.contentpicker.client.ContentPickerEntryPoint'/>
+<module rename-to="org.jahia.ajax.gwt.module.contentpicker.ContentPicker">
+    <inherits name="org.jahia.ajax.gwt.module.contentpicker.ContentPicker"/>
 	<collapse-all-properties />
 </module>

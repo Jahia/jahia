@@ -198,7 +198,9 @@ public class FindTest {
         }
 
         // Read the response body.
-        String responseBody = method.getResponseBodyAsString();
+        StringBuilder responseBodyBuilder = new StringBuilder();
+        responseBodyBuilder.append("[").append(method.getResponseBodyAsString()).append("]");
+        String responseBody = responseBodyBuilder.toString();
 
         logger.debug("Status code=" + statusCode +" JSON response=[" + responseBody + "]");
 
@@ -236,7 +238,9 @@ public class FindTest {
         }
 
         // Read the response body.
-        String responseBody = method.getResponseBodyAsString();
+        StringBuilder responseBodyBuilder = new StringBuilder();
+        responseBodyBuilder.append("[").append(method.getResponseBodyAsString()).append("]");
+        String responseBody = responseBodyBuilder.toString();
 
         logger.debug("Status code=" + statusCode +" JSON response=[" + responseBody + "]");
 
@@ -274,9 +278,11 @@ public class FindTest {
         }
 
         // Read the response body.
-        String responseBody = method.getResponseBodyAsString();
+        StringBuilder responseBodyBuilder = new StringBuilder();
+        responseBodyBuilder.append("[").append(method.getResponseBodyAsString()).append("]");
+        String responseBody = responseBodyBuilder.toString();
 
-        logger.debug("Status code=" + statusCode + " JSON response=[" + responseBody + "]");
+        logger.debug("Status code=" + statusCode + " JSON response=" + responseBody + "");
         
         JSONArray jsonResults = new JSONArray(responseBody);
 
@@ -306,19 +312,31 @@ public class FindTest {
     }
 
     private void validateFindJSONResults(JSONArray jsonResults, String textToValidate) throws JSONException {
-        for (int i=0; i < jsonResults.length(); i++) {
-            JSONObject jsonObject = (JSONObject) jsonResults.get(i);
-            if (jsonObject.has("jcr:score")) {
-                // we are handling a row, let's extract the node from it.
-                jsonObject = jsonObject.getJSONObject("node");
-            }
-            JSONArray matchingPropertiesJSONArray = jsonObject.getJSONArray("matchingProperties");
-            assertEquals("Expected two matching properties : jcr:title and body", 2, matchingPropertiesJSONArray.length());
-            for (int j=0; j < matchingPropertiesJSONArray.length(); j++) {
-                String matchingPropertyName = (String) matchingPropertiesJSONArray.get(j);
-                String propertyValue = jsonObject.getString(matchingPropertyName);
-                assertNotNull("Property " + matchingPropertyName + " not found or null !", propertyValue);
-                assertTrue("Expected matching property " + matchingPropertyName + " to start with value " + textToValidate, propertyValue.startsWith(textToValidate));
+        for (int i = 0; i < jsonResults.length(); i++) {
+            JSONArray jsonArray = (JSONArray) jsonResults.get(i);
+            for (int j = 0; j < jsonArray.length(); j++) {
+                JSONObject jsonObject = (JSONObject) jsonArray.get(j);
+                if (jsonObject.has("jcr:score")) {
+                    // we are handling a row, let's extract the node from it.
+                    jsonObject = jsonObject.getJSONObject("node");
+                }
+                JSONArray matchingPropertiesJSONArray = jsonObject
+                        .getJSONArray("matchingProperties");
+                assertEquals(
+                        "Expected two matching properties : jcr:title and body",
+                        2, matchingPropertiesJSONArray.length());
+                for (int k = 0; k < matchingPropertiesJSONArray.length(); k++) {
+                    String matchingPropertyName = (String) matchingPropertiesJSONArray
+                            .get(k);
+                    String propertyValue = jsonObject
+                            .getString(matchingPropertyName);
+                    assertNotNull("Property " + matchingPropertyName
+                            + " not found or null !", propertyValue);
+                    assertTrue("Expected matching property "
+                            + matchingPropertyName + " to start with value "
+                            + textToValidate,
+                            propertyValue.startsWith(textToValidate));
+                }
             }
         }
     }

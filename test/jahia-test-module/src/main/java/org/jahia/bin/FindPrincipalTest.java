@@ -167,7 +167,9 @@ public class FindPrincipalTest {
         }
 
         // Read the response body.
-        String responseBody = method.getResponseBodyAsString();
+        StringBuilder responseBodyBuilder = new StringBuilder();
+        responseBodyBuilder.append("[").append(method.getResponseBodyAsString()).append("]");
+        String responseBody = responseBodyBuilder.toString();
 
         JSONArray jsonResults = new JSONArray(responseBody);
 
@@ -197,7 +199,9 @@ public class FindPrincipalTest {
         }
 
         // Read the response body.
-        String responseBody = method.getResponseBodyAsString();
+        StringBuilder responseBodyBuilder = new StringBuilder();
+        responseBodyBuilder.append("[").append(method.getResponseBodyAsString()).append("]");
+        String responseBody = responseBodyBuilder.toString();
 
         JSONArray jsonResults = new JSONArray(responseBody);
 

@@ -71,36 +71,7 @@ public class JahiaMessageInterpolator implements MessageInterpolator {
      * @return Interpolated error message.
      */
     public String interpolate(String messageTemplate, Context context) {
-        ResourceBundle resourceBundle = JahiaResourceBundle.lookupBundle(
-                ResourceBundleMessageInterpolator.DEFAULT_VALIDATION_MESSAGES, LocaleContextHolder.getLocale(), null,
-                false);
-        String key = messageTemplate.substring(1, messageTemplate.length() - 1);
-        if (resourceBundle != null && resourceBundle.containsKey(key)) {
-            return replaceAnnotationAttributes(resourceBundle.getString(key), context.getConstraintDescriptor().getAttributes());
-        }
-        final List<JahiaTemplatesPackage> availableTemplatePackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages();
-        List<String> processedRB = new ArrayList<String>(availableTemplatePackages.size() * 2);
-        for (JahiaTemplatesPackage availableTemplatePackage : availableTemplatePackages) {
-            final List<String> resourceBundleHierarchy = availableTemplatePackage.getResourceBundleHierarchy();
-            for (String resourceBundleName : resourceBundleHierarchy) {
-                if (!processedRB.contains(resourceBundleName)) {
-                    final JahiaTemplatesRBLoader instance = JahiaTemplatesRBLoader.getInstance(
-                            Thread.currentThread().getContextClassLoader(), availableTemplatePackage.getName());
-                    try {
-                        resourceBundle = JahiaResourceBundle.lookupBundle(resourceBundleName,
-                                LocaleContextHolder.getLocale(), instance, false);
-                        processedRB.add(resourceBundleName);
-                        if (resourceBundle != null && resourceBundle.containsKey(key)) {
-                            return replaceAnnotationAttributes(resourceBundle.getString(key), context.getConstraintDescriptor().getAttributes());
-                        }
-                    } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-            }
-        }
-
-        return messageTemplate;
+        return interpolate(messageTemplate, context, LocaleContextHolder.getLocale());
     }
 
     /**

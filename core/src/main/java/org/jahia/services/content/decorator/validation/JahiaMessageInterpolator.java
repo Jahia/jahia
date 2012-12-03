@@ -76,7 +76,7 @@ public class JahiaMessageInterpolator implements MessageInterpolator {
                 false);
         String key = messageTemplate.substring(1, messageTemplate.length() - 1);
         if (resourceBundle != null && resourceBundle.containsKey(key)) {
-            return resourceBundle.getString(key);
+            return replaceAnnotationAttributes(resourceBundle.getString(key), context.getConstraintDescriptor().getAttributes());
         }
         final List<JahiaTemplatesPackage> availableTemplatePackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages();
         List<String> processedRB = new ArrayList<String>(availableTemplatePackages.size() * 2);
@@ -117,7 +117,7 @@ public class JahiaMessageInterpolator implements MessageInterpolator {
                 ResourceBundleMessageInterpolator.DEFAULT_VALIDATION_MESSAGES, locale, null, false);
         String key = messageTemplate.substring(1, messageTemplate.length() - 1);
         if (resourceBundle != null && resourceBundle.containsKey(key)) {
-            return resourceBundle.getString(key);
+            return replaceAnnotationAttributes(resourceBundle.getString(key), context.getConstraintDescriptor().getAttributes());
         }
         final List<JahiaTemplatesPackage> availableTemplatePackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages();
         List<String> processedRB = new ArrayList<String>(availableTemplatePackages.size() * 2);

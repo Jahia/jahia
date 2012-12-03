@@ -198,11 +198,15 @@ public class FindTest {
         }
 
         // Read the response body.
-        StringBuilder responseBodyBuilder = new StringBuilder();
-        responseBodyBuilder.append("[").append(method.getResponseBodyAsString()).append("]");
-        String responseBody = responseBodyBuilder.toString();
+        String responseBody = method.getResponseBodyAsString();
+        if (!responseBody.startsWith("[")) {
+            StringBuilder responseBodyBuilder = new StringBuilder();
+            responseBodyBuilder.append("[")
+                    .append(method.getResponseBodyAsString()).append("]");
+            responseBody = responseBodyBuilder.toString();
+        }
 
-        logger.debug("Status code=" + statusCode +" JSON response=[" + responseBody + "]");
+        logger.debug("Status code=" + statusCode +" JSON response=" + responseBody);
 
         JSONArray jsonResults = new JSONArray(responseBody);
 
@@ -238,11 +242,15 @@ public class FindTest {
         }
 
         // Read the response body.
-        StringBuilder responseBodyBuilder = new StringBuilder();
-        responseBodyBuilder.append("[").append(method.getResponseBodyAsString()).append("]");
-        String responseBody = responseBodyBuilder.toString();
+        String responseBody = method.getResponseBodyAsString();
+        if (!responseBody.startsWith("[")) {
+            StringBuilder responseBodyBuilder = new StringBuilder();
+            responseBodyBuilder.append("[")
+                    .append(method.getResponseBodyAsString()).append("]");
+            responseBody = responseBodyBuilder.toString();
+        }
 
-        logger.debug("Status code=" + statusCode +" JSON response=[" + responseBody + "]");
+        logger.debug("Status code=" + statusCode +" JSON response=" + responseBody);
 
         JSONArray jsonResults = new JSONArray(responseBody);
 
@@ -278,11 +286,16 @@ public class FindTest {
         }
 
         // Read the response body.
-        StringBuilder responseBodyBuilder = new StringBuilder();
-        responseBodyBuilder.append("[").append(method.getResponseBodyAsString()).append("]");
-        String responseBody = responseBodyBuilder.toString();
+        String responseBody = method.getResponseBodyAsString();
+        if (!responseBody.startsWith("[")) {
+            StringBuilder responseBodyBuilder = new StringBuilder();
+            responseBodyBuilder.append("[")
+                    .append(method.getResponseBodyAsString()).append("]");
+            responseBody = responseBodyBuilder.toString();
+        }
 
-        logger.debug("Status code=" + statusCode + " JSON response=" + responseBody + "");
+
+        logger.debug("Status code=" + statusCode + " JSON response=" + responseBody);
         
         JSONArray jsonResults = new JSONArray(responseBody);
 
@@ -313,32 +326,36 @@ public class FindTest {
 
     private void validateFindJSONResults(JSONArray jsonResults, String textToValidate) throws JSONException {
         for (int i = 0; i < jsonResults.length(); i++) {
-            JSONArray jsonArray = (JSONArray) jsonResults.get(i);
-            for (int j = 0; j < jsonArray.length(); j++) {
-                JSONObject jsonObject = (JSONObject) jsonArray.get(j);
-                if (jsonObject.has("jcr:score")) {
-                    // we are handling a row, let's extract the node from it.
-                    jsonObject = jsonObject.getJSONObject("node");
+            if (jsonResults.get(i) instanceof JSONArray) { 
+                JSONArray jsonArray = (JSONArray) jsonResults.get(i);
+                for (int j = 0; j < jsonArray.length(); j++) {
+                    validateFindJSONResults((JSONObject)jsonResults.get(j), textToValidate);
                 }
-                JSONArray matchingPropertiesJSONArray = jsonObject
-                        .getJSONArray("matchingProperties");
-                assertEquals(
-                        "Expected two matching properties : jcr:title and body",
-                        2, matchingPropertiesJSONArray.length());
-                for (int k = 0; k < matchingPropertiesJSONArray.length(); k++) {
-                    String matchingPropertyName = (String) matchingPropertiesJSONArray
-                            .get(k);
-                    String propertyValue = jsonObject
-                            .getString(matchingPropertyName);
-                    assertNotNull("Property " + matchingPropertyName
-                            + " not found or null !", propertyValue);
-                    assertTrue("Expected matching property "
-                            + matchingPropertyName + " to start with value "
-                            + textToValidate,
-                            propertyValue.startsWith(textToValidate));
-                }
+            } else {
+                validateFindJSONResults((JSONObject)jsonResults.get(i), textToValidate);                
             }
         }
     }
-    
+
+    private void validateFindJSONResults(JSONObject jsonObject,
+            String textToValidate) throws JSONException {
+        if (jsonObject.has("jcr:score")) {
+            // we are handling a row, let's extract the node from it.
+            jsonObject = jsonObject.getJSONObject("node");
+        }
+        JSONArray matchingPropertiesJSONArray = jsonObject
+                .getJSONArray("matchingProperties");
+        assertEquals("Expected two matching properties : jcr:title and body",
+                2, matchingPropertiesJSONArray.length());
+        for (int k = 0; k < matchingPropertiesJSONArray.length(); k++) {
+            String matchingPropertyName = (String) matchingPropertiesJSONArray
+                    .get(k);
+            String propertyValue = jsonObject.getString(matchingPropertyName);
+            assertNotNull("Property " + matchingPropertyName
+                    + " not found or null !", propertyValue);
+            assertTrue("Expected matching property " + matchingPropertyName
+                    + " to start with value " + textToValidate,
+                    propertyValue.startsWith(textToValidate));
+        }
+    }
 }

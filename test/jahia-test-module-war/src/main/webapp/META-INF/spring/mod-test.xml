@@ -73,6 +73,7 @@
         <property name="ignoredTests">
             <list>
                 <!-- UnsupportedRepositoryOperationException -->
+                <value>testGetDepth(org.apache.jackrabbit.test.api.NodeReadMethodsTest)</value>                
                 <value>testGetNodesNamePatternArray(org.apache.jackrabbit.test.api.NodeReadMethodsTest)</value>
                 <value>testGetPropertiesNamePatternArray(org.apache.jackrabbit.test.api.NodeReadMethodsTest)</value>
                 <value>testCloneNodesReferenceableNodesOriginalUUID(org.apache.jackrabbit.test.api.WorkspaceCloneReferenceableTest)</value>
@@ -251,6 +252,7 @@
                 <value>testSetSingleValueArrayValueFormatExceptionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
                 <value>testSetMixedValueArrayValueFormatException(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
                 <value>testSetSingleValueArrayValueFormatException(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
+                <value>testGetPrimaryItemName(org.apache.jackrabbit.test.api.nodetype.NodeTypeTest)</value>
                 <value>testFile(org.apache.jackrabbit.test.api.nodetype.PredefinedNodeTypeTest)</value>
                 <value>testLinkedFile(org.apache.jackrabbit.test.api.nodetype.PredefinedNodeTypeTest)</value>
                 <value>testMixLastModified(org.apache.jackrabbit.test.api.nodetype.PredefinedNodeTypeTest)</value>
@@ -291,9 +293,13 @@
                 <value>testValueType(org.apache.jackrabbit.test.api.ValueFactoryTest)</value>
                 <value>testItemExistsException(org.apache.jackrabbit.test.api.query.SaveTest)</value>
                 <value>testExportDocView_handler_session_skipBinary_recurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>
-                <value>testExportDocView_handler_session_saveBinary_recurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>
+                <value>testExportDocView_handler_session_skipBinary_noRecurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>
+                <value>testExportDocView_handler_session_saveBinary_recurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>                
+                <value>testExportDocView_handler_session_saveBinary_noRecurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>
                 <value>testExportDocView_stream_session_skipBinary_recurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>
-                <value>testExportDocView_stream_session_saveBinary_recurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>
+                <value>testExportDocView_stream_session_skipBinary_noRecurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>
+                <value>testExportDocView_stream_session_saveBinary_recurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>                                
+                <value>testExportDocView_stream_session_saveBinary_noRecurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>
                 <value>testStringConstraintViolationExceptionBecauseOfInvalidTypeParameter(org.apache.jackrabbit.test.api.SetPropertyAssumeTypeTest)</value>
                 <value>testRemoveItem2(org.apache.jackrabbit.test.api.SessionRemoveItemTest)</value>
                 <value>testNoSuchWorkspaceException(org.apache.jackrabbit.test.api.RepositoryLoginTest)</value>
@@ -320,6 +326,7 @@
                 <value>testAlterReference(org.apache.jackrabbit.test.api.ReferencesTest)</value>
                 <value>testSaveReferentialIntegrityException(org.apache.jackrabbit.test.api.NodeUUIDTest)</value>
                 <value>testSaveReferentialIntegrityException(org.apache.jackrabbit.test.api.SessionUUIDTest)</value>
+                <value>testChildAxisRoot(org.apache.jackrabbit.test.api.query.SQLPathTest)</value>
                 <!-- Error due to using value wrappers, which have problems with identity checks implemented in StringValue.equals and DateValu.equals-->
                 <value>testValueSession(org.apache.jackrabbit.test.api.SetValueStringTest)</value>
                 <value>testValueParent(org.apache.jackrabbit.test.api.SetValueStringTest)</value>

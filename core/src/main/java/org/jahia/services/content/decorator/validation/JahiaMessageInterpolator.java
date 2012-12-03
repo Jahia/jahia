@@ -47,10 +47,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by IntelliJ IDEA.
+ * Interpolate a given constraint violation message using Jahia resource bundle.
  *
- * @author : rincevent
- * @since : JAHIA 6.1
+ * @author rincevent
+ * @since : JAHIA 6.7
  *        Created : 19/10/12
  */
 public class JahiaMessageInterpolator implements MessageInterpolator {

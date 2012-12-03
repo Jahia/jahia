@@ -52,6 +52,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Utility class used to collect validation result for engine decoration.
+ *
+ * @since : JAHIA 6.7
+ */
 public class EngineValidation {
     private TabPanel tabs;
     private String selectedLanguage;
@@ -70,6 +75,11 @@ public class EngineValidation {
         public String firstErrorLang = null;
     }
 
+    /**
+     * Generate {ValidateResult} based on the GWT fields validation.
+     *
+     * @return the {ValidateResult}.
+     */
     public ValidateResult validateData() {
         ValidateResult validateResult = new ValidateResult();
 
@@ -129,6 +139,11 @@ public class EngineValidation {
         return validateResult;
     }
 
+    /**
+     * Generate {ValidateResult} based on the exception returned by the JCR session.
+     *
+     * @return the {ValidateResult}.
+     */
     public ValidateResult getValidationFromException(List<GWTConstraintViolationException> errors) {
         Map<String, GWTConstraintViolationException> errorMap = new HashMap<String, GWTConstraintViolationException>();
         for (GWTConstraintViolationException error : errors) {

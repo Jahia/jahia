@@ -49,11 +49,11 @@
         <version>6.7.0.0-SNAPSHOT</version>
     </parent>
     <groupId>org.jahia.test</groupId>
-    <artifactId>dummy1</artifactId>
-    <name>dummy1</name>
+    <artifactId>dummy2</artifactId>
+    <name>dummy2</name>
     <version>1.0-SNAPSHOT</version>    
     <packaging>war</packaging>
-    <description>This is the custom module (dummy1) for running on a Jahia server.</description>
+    <description>This is the custom module (dummy2) for running on a Jahia server.</description>
     
     <repositories>
         <repository>
@@ -120,9 +120,9 @@
 		                    <Specification-Version>${project.version}</Specification-Version>
 		                    <Specification-Vendor></Specification-Vendor>
                             <package-name>${project.name}</package-name>
-                            <depends>Default Jahia Templates</depends>
+                            <depends>Default Jahia Templates,dummy1</depends>
                             <root-folder>${artifactId}</root-folder>
-                            <module-type>module</module-type>
+                            <module-type>templatesSet</module-type>
                         </manifestEntries>
                     </archive>
                     <archiveClasses>true</archiveClasses>

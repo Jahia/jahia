@@ -12,5 +12,6 @@
 
     <modules>
         <module>dummy1</module>
+        <module>dummy2</module>
     </modules>
 </project>

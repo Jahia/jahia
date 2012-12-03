@@ -350,7 +350,7 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
     }
 
     public Item getPrimaryItem() throws ItemNotFoundException, RepositoryException {
-        return null;
+        throw new ItemNotFoundException("External node does not support getPrimaryItem");
     }
 
     public String getUUID() throws UnsupportedRepositoryOperationException, RepositoryException {

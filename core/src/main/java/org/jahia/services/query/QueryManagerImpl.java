@@ -173,7 +173,11 @@ public class QueryManagerImpl implements QueryManager {
     }
 
     public Query createQuery(String statement, String language) throws InvalidQueryException, RepositoryException {
-        return new QueryWrapper(statement, language, session, sessionFactory);
+        QueryWrapper queryWrapper = new QueryWrapper(statement, language, session, sessionFactory);
+        if (queryWrapper.getQueries().isEmpty()) {
+            throw new InvalidQueryException("No query could be created for the unknown query language '" + language + "'");
+        }
+        return queryWrapper;
     }
 
     public QueryObjectModelFactory getQOMFactory() {

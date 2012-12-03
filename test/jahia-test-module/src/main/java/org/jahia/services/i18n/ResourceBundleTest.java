@@ -40,9 +40,12 @@
 
 package org.jahia.services.i18n;
 
-import junit.framework.TestCase;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-
+import org.junit.*;
+import static org.junit.Assert.*;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import java.util.*;
 
 /**
@@ -52,13 +55,15 @@ import java.util.*;
  * Time: 12:35:43 PM
  * 
  */
-public class ResourceBundleTest extends TestCase {
+public class ResourceBundleTest {
 
     /**
      * Test that the value is unique and doest corresponds to several keys
      *
      * @throws Exception
      */
+
+    @Test
     public void testUniqueValue() throws Exception {
         final ResourceBundle resourceBundle = ResourceBundle.getBundle(JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES, Locale.ENGLISH);
         assertNotNull(resourceBundle);
@@ -91,6 +96,36 @@ public class ResourceBundleTest extends TestCase {
             }
             assertFalse(duplicatedValue);
         }
+    }
+
+    /**
+     * Unit test for resource resolution with bundle hierarchy
+     */
+    @Test
+    public void lookupBundleTest() {
+        String lookupModuleName= "Jahia Web Templates Space";
+        // Lookup a key that is present directly in the JahiaWebTemplatesSpace.properties
+        testResource("jmix_skinnable.j_skin.skins.acmebox3","ACME Box 3 Plain ",lookupModuleName,Locale.ENGLISH);
+        // Lookup a key which is not present in the JahiaWebTemplatesSpace.properties but is present in one of the RBs of dependent modules
+        testResource("jmix_skinnable.j_skin.skins.box2","Border, light title, light content",lookupModuleName,Locale.ENGLISH);
+        // Lookup a key that is only present in the DefaultJahiaTemplates.properties
+        testResource("jnt_displayMetadata.categories","Display the categories",lookupModuleName,Locale.ENGLISH);
+        // Lookup a key that is only present in the JahiaTypesResources.properties
+        testResource("jmix_contentmetadata.j_lastPublishingDate","Last publication",lookupModuleName,Locale.ENGLISH);
+        // Lookup a key that is only present in the JahiaInternalResources.properties
+        testResource("column.modifiedBy.label","Modified by",lookupModuleName,Locale.ENGLISH);
+        // Lookup a key that is not present anywhere
+        testResource("dummy.column.modifiedBy.label","Modified by",lookupModuleName,Locale.ENGLISH);
+        // another locale, Lookup a key which is not present in the JahiaWebTemplatesSpace.properties but is present in one of the RBs of dependent modules
+        testResource("jmix_skinnable.j_skin.skins.box2","Avec cadre, fond de titre clair, fond du corps clair",lookupModuleName,Locale.FRENCH);
+
+    }
+
+    private void testResource(String searchedKey, String expectedResult, String modulePackageName, Locale locale) {
+        String notFound = "notFound";
+        JahiaResourceBundle moduleResource = new JahiaResourceBundle(locale, modulePackageName);
+        String result = moduleResource.get(searchedKey,notFound);
+        assertEquals("looking for \""+ searchedKey + "\" in Jahia Web Templates (" + modulePackageName +") but found \""+ result +"\" instead of \"" + expectedResult + "\"",expectedResult,result);
     }
 
 }

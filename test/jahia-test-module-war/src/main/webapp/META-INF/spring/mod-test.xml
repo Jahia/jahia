@@ -38,6 +38,7 @@
                 <value>org.jahia.services.content.interceptor.URLInterceptorTest</value>
                 <value>org.jahia.services.content.impl.vfs.VFSContentStoreProviderTest</value>
                 <value>org.jahia.services.htmlvalidator.WAIValidatorTest</value>
+                <value>org.jahia.services.i18n.ResourceBundleTest</value>
                 <value>org.jahia.services.importexport.ImportExportTest</value>
                 <value>org.jahia.services.logging.ServiceLoggingTest</value>
                 <value>org.jahia.services.logout.LogoutTest</value>

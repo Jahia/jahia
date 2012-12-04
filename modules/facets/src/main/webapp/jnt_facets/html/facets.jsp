@@ -170,44 +170,50 @@
         </c:forEach>
     </query:definition>
     <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>
-    <div class="facets">
-        <%@include file="activeFacets.jspf"%>
-        <c:if test="${facet:isUnappliedFacetExisting(result, activeFacetsVars[activeFacetMapVarName])}">
-            <h4><fmt:message key="facets.SelectFilter"/></h4> <br/>
-        </c:if>
-        <c:forEach items="${result.facetFields}" var="currentFacet">
-            <%@include file="facetDisplay.jspf"%>
-        </c:forEach>
-        <c:forEach items="${result.facetDates}" var="currentFacet">
-            <%@include file="facetDisplay.jspf"%>
-        </c:forEach>
-        <c:set var="currentFacetLabel" value=""/>
-        <c:set var="mappedFacetLabel" value=""/>
-        <c:forEach items="${result.facetQuery}" var="facetValue" varStatus="iterationStatus">
-            <facet:facetLabel currentActiveFacet="${facetValue}" facetLabels="${facetLabels}" display="false"/>
-            <c:if test="${iterationStatus.first or (mappedFacetLabel != currentFacetLabel and not empty mappedFacetLabel)}">
-                <c:set var="currentFacetLabel" value="${mappedFacetLabel}"/>
-                <c:if test="${not empty currentFacetLabel}">
-                    </ul>
-                </c:if>
 
-                <div class="facetsList">
-                <h5>${mappedFacetLabel}</h5>
-                <ul>
+    <c:forEach items="${result.facetFields}" var="facetfield">
+        <c:set var="sumfacetFields" value="${sumfacetFields + facetfield.valueCount}" />
+    </c:forEach>
+    <c:if test="${(sumfacetFields gt 0)}">
+        <div class="facets">
+            <%@include file="activeFacets.jspf"%>
+            <c:if test="${facet:isUnappliedFacetExisting(result, activeFacetsVars[activeFacetMapVarName])}">
+                <h4><fmt:message key="facets.SelectFilter"/></h4> <br/>
             </c:if>
-            <c:if test="${not facet:isFacetValueApplied(facetValue, activeFacetsVars[activeFacetMapVarName])}">
-                <c:set var="facetDrillDownUrl" value="${facet:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName])}"/>
-                <c:url var="facetUrl" value="${url.mainResource}">
-                    <c:param name="${facetParamVarName}" value="${functions:encodeUrlParam(facetDrillDownUrl)}"/>
-                </c:url>
-                <li><a href="${facetUrl}"><facet:facetValueLabel currentActiveFacetValue="${facetValue}" facetValueLabels="${facetValueLabels}"/></a> (${facetValue.value})<br/></li>
+            <c:forEach items="${result.facetFields}" var="currentFacet">
+                <%@include file="facetDisplay.jspf"%>
+            </c:forEach>
+            <c:forEach items="${result.facetDates}" var="currentFacet">
+                <%@include file="facetDisplay.jspf"%>
+            </c:forEach>
+            <c:set var="currentFacetLabel" value=""/>
+            <c:set var="mappedFacetLabel" value=""/>
+            <c:forEach items="${result.facetQuery}" var="facetValue" varStatus="iterationStatus">
+                <facet:facetLabel currentActiveFacet="${facetValue}" facetLabels="${facetLabels}" display="false"/>
+                <c:if test="${iterationStatus.first or (mappedFacetLabel != currentFacetLabel and not empty mappedFacetLabel)}">
+                    <c:set var="currentFacetLabel" value="${mappedFacetLabel}"/>
+                    <c:if test="${not empty currentFacetLabel}">
+                        </ul>
+                    </c:if>
+
+                    <div class="facetsList">
+                    <h5>${mappedFacetLabel}</h5>
+                    <ul>
+                </c:if>
+                <c:if test="${not facet:isFacetValueApplied(facetValue, activeFacetsVars[activeFacetMapVarName])}">
+                    <c:set var="facetDrillDownUrl" value="${facet:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName])}"/>
+                    <c:url var="facetUrl" value="${url.mainResource}">
+                        <c:param name="${facetParamVarName}" value="${functions:encodeUrlParam(facetDrillDownUrl)}"/>
+                    </c:url>
+                    <li><a href="${facetUrl}"><facet:facetValueLabel currentActiveFacetValue="${facetValue}" facetValueLabels="${facetValueLabels}"/></a> (${facetValue.value})<br/></li>
+                </c:if>
+            </c:forEach>
+            <c:if test="${not empty currentFacetLabel}">
+                </ul>
+                </div>
             </c:if>
-        </c:forEach>
-        <c:if test="${not empty currentFacetLabel}">
-            </ul>
-            </div>
-        </c:if>
-    </div>
+        </div>
+    </c:if>
 </c:if>
 <c:if test="${editableModule}">
     <fmt:message key="facets.facetsSet"/> :

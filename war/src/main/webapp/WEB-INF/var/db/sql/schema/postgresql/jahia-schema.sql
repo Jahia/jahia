@@ -3,6 +3,8 @@
 
     drop table jahia_db_test;
 
+    drop table jahia_external_mapping;
+
     create table jahia_contenthistory (
         id varchar(32) not null,
         entry_action varchar(255),
@@ -18,4 +20,11 @@
     create table jahia_db_test (
         testfield varchar(255) not null,
         primary key (testfield)
+    );
+
+    create table jahia_external_mapping (
+        internalUuid varchar(36) not null,
+        externalId varchar(255) not null,
+        providerKey varchar(255) not null,
+        primary key (internalUuid)
     );

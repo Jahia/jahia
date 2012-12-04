@@ -43,9 +43,16 @@ package org.jahia.services.content.impl.external;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ChildrenCollectorFilter;
 import org.apache.jackrabbit.value.BinaryImpl;
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
+import org.hibernate.SessionFactory;
+import org.hibernate.StatelessSession;
+import org.hibernate.classic.*;
+import org.hibernate.criterion.Restrictions;
 import org.jahia.services.content.nodetypes.*;
 
 import javax.jcr.*;
+import javax.jcr.Session;
 import javax.jcr.lock.Lock;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -548,7 +555,33 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
 
     public String getIdentifier() throws RepositoryException {
         if (session.getRepository().getDataSource().isSupportsUuid()) {
-            return data.getId();
+            SessionFactory hibernateSession = ((ExternalSessionImpl) getSession()).getRepository().getStoreProvider().getHibernateSession();
+            org.hibernate.classic.Session statelessSession = hibernateSession.openSession();
+            try {
+                Criteria criteria = statelessSession.createCriteria(UuidMapping.class);
+                String key = ((ExternalSessionImpl) getSession()).getRepository().getStoreProvider().getKey();
+                criteria.add(Restrictions.eq("externalId", data.getId())).add(Restrictions.eq("providerKey", key));
+                List list = criteria.list();
+                if (list.size() > 0) {
+                    return ((UuidMapping) list.get(0)).getInternalUuid();
+                } else {
+                    UUID uuid = UUID.randomUUID();
+                    UuidMapping uuidMapping = new UuidMapping();
+                    uuidMapping.setExternalId(data.getId());
+                    uuidMapping.setProviderKey(key);
+                    uuidMapping.setInternalUuid(uuid.toString());
+                    try {
+                        statelessSession.beginTransaction();
+                        statelessSession.save(uuidMapping);
+                        statelessSession.getTransaction().commit();
+                    } catch (HibernateException e) {
+                        statelessSession.getTransaction().rollback();
+                    }
+                    return uuid.toString();
+                }
+            } finally {
+                statelessSession.close();
+            }
         }
         throw new UnsupportedRepositoryOperationException();
     }

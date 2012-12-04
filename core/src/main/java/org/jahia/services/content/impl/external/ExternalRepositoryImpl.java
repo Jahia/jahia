@@ -59,7 +59,7 @@ public class ExternalRepositoryImpl implements Repository {
 
     private static final transient Logger logger = LoggerFactory.getLogger(ExternalRepositoryImpl.class);
 
-    private JCRStoreProvider storeProvider;
+    private ExternalContentStoreProvider storeProvider;
     private ExternalDataSource dataSource;
 
     private Map<String, Object> repositoryDescriptors = new HashMap<String, Object>();
@@ -181,7 +181,7 @@ public class ExternalRepositoryImpl implements Repository {
         repositoryDescriptors.put(Repository.OPTION_XML_IMPORT_SUPPORTED, new ValueImpl(false));
     }
 
-    public ExternalRepositoryImpl(JCRStoreProvider storeProvider, ExternalDataSource dataSource, ExternalAccessControlManager accessControlManager) {
+    public ExternalRepositoryImpl(ExternalContentStoreProvider storeProvider, ExternalDataSource dataSource, ExternalAccessControlManager accessControlManager) {
         initDescriptors();
         this.storeProvider = storeProvider;
         this.dataSource = dataSource;
@@ -242,7 +242,7 @@ public class ExternalRepositoryImpl implements Repository {
         return accessControlManager;
     }
 
-    public JCRStoreProvider getStoreProvider() {
+    public ExternalContentStoreProvider getStoreProvider() {
         return storeProvider;
     }
 

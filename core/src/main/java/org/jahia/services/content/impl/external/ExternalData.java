@@ -18,8 +18,6 @@ public class ExternalData {
         this.path = path;
         this.type = type;
         this.properties = properties;
-
-        properties.put("jcr:uuid", new String[]{id});
     }
 
     public String getId() {

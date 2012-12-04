@@ -41,6 +41,7 @@
 package org.jahia.services.content.impl.external;
 
 import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
+import org.hibernate.SessionFactory;
 import org.jahia.services.content.JCRStoreProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +69,7 @@ public class ExternalContentStoreProvider extends JCRStoreProvider {
     private Repository repo;
     
     private ExternalDataSource dataSource;
+    private SessionFactory hibernateSession;
 
     public Repository getRepository(){
         if (repo == null) {
@@ -106,5 +108,13 @@ public class ExternalContentStoreProvider extends JCRStoreProvider {
 
     public void setDataSource(ExternalDataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+    public void setHibernateSession(SessionFactory hibernateSession) {
+        this.hibernateSession = hibernateSession;
+    }
+
+    public SessionFactory getHibernateSession() {
+        return hibernateSession;
     }
 }

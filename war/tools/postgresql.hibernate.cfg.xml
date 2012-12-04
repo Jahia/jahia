@@ -8,6 +8,7 @@
 		<property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
 		<mapping class="org.jahia.hibernate.model.JahiaDbTest" />
 		<mapping class="org.jahia.services.history.HistoryEntry" />
+        <mapping class="org.jahia.services.content.impl.external.UuidMapping" />
 	</session-factory>
 </hibernate-configuration>
 

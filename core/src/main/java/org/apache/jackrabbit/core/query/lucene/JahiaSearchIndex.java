@@ -125,29 +125,14 @@ public class JahiaSearchIndex extends SearchIndex {
             final IndexReader reader = getIndexReader();
             final Searcher searcher = new IndexSearcher(reader);
             try {
-                int removeSubListStart = 0;
-                int removeSubListEnd = Math.min(removeList.size(), BooleanQuery.getMaxClauseCount());
-                while (removeSubListStart < removeList.size()) {
-                    BooleanQuery query = new BooleanQuery();
-                    for (final NodeId nodeId : new ArrayList<NodeId>(removeList.subList(removeSubListStart, removeSubListEnd))) {
-                        TermQuery termQuery = new TermQuery(new Term(JahiaNodeIndexer.FACET_HIERARCHY, nodeId.toString()));
-                        query.add(new BooleanClause(termQuery, BooleanClause.Occur.SHOULD));
-                    }
-                    searcher.search(query, new HitCollector() {
-                        public void collect(int doc, float score) {
-                            try {
-                                String uuid = reader.document(doc).get("_:UUID");
-                                addIdToBeIndexed(new NodeId(uuid), addedIds, removedIds, addList, removeList);
-                            } catch (Exception e) {
-                                log.warn("Documents referencing moved/renamed hierarchy facet nodes may not be updated", e);
-                            }
-                        }
-                    });
-                    removeSubListStart += BooleanQuery.getMaxClauseCount();
-                    removeSubListEnd =  Math.min(removeList.size(), removeSubListEnd + BooleanQuery.getMaxClauseCount());
-    
+            int removeSubListStart = 0;
+            int removeSubListEnd = Math.min(removeList.size(), BooleanQuery.getMaxClauseCount());
+            while (removeSubListStart < removeList.size()) {
+                BooleanQuery query = new BooleanQuery();
+                for (final NodeId nodeId : new ArrayList<NodeId>(removeList.subList(removeSubListStart, removeSubListEnd))) {
+                    TermQuery termQuery = new TermQuery(new Term(JahiaNodeIndexer.FACET_HIERARCHY, nodeId.toString()));
+                    query.add(new BooleanClause(termQuery, BooleanClause.Occur.SHOULD));
                 }
-<<<<<<< .working
                 searcher.search(query, new AbstractHitCollector() {
                     public void collect(int doc, float score) {
                         try {
@@ -161,11 +146,10 @@ public class JahiaSearchIndex extends SearchIndex {
                 removeSubListStart += BooleanQuery.getMaxClauseCount();
                 removeSubListEnd =  Math.min(removeList.size(), removeSubListEnd + BooleanQuery.getMaxClauseCount());
 
-=======
+            }
             } finally {
                 searcher.close();
                 Util.closeOrRelease(reader);
->>>>>>> .merge-right.r43869
             }
         }
 

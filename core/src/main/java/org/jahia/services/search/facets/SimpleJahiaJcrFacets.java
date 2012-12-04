@@ -44,6 +44,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.query.lucene.FieldNames;
 import org.apache.jackrabbit.core.query.lucene.JahiaNodeIndexer;
 import org.apache.jackrabbit.core.query.lucene.NamePathResolverImpl;
+import org.apache.jackrabbit.core.query.lucene.NamespaceMappings;
 import org.apache.jackrabbit.core.query.lucene.SearchIndex;
 import org.apache.jackrabbit.spi.commons.conversion.NamePathResolver;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
@@ -63,6 +64,7 @@ import org.apache.lucene.util.OpenBitSet;
 import org.apache.lucene.util.OpenBitSetDISI;
 import org.apache.solr.common.SolrException;
 import org.apache.solr.common.params.FacetParams;
+import org.apache.solr.common.params.MapSolrParams;
 import org.apache.solr.common.params.RequiredSolrParams;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.common.params.FacetParams.FacetDateOther;
@@ -92,6 +94,8 @@ import java.util.EnumSet;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
@@ -109,6 +113,9 @@ public class SimpleJahiaJcrFacets {
     private static final Logger logger = LoggerFactory.getLogger(SimpleJahiaJcrFacets.class);
 
     public static final String PROPNAME_INDEX_SEPARATOR = "#";
+    
+    private static final Pattern propertyFieldPrefix = Pattern.compile("\\d+:[0-9a-zA-Z]+\\[(.*)");    
+    private static final Pattern nameFieldPrefix = Pattern.compile("(\\d+):(.*)");    
 
     /** The main set of documents all facet counts should be relative to */
     protected OpenBitSet docs;
@@ -126,16 +133,19 @@ public class SimpleJahiaJcrFacets {
     /**
      * Name and Path resolver.
      */
-    protected final Session session;    
+    protected final Session session;
+    
+    private NamespaceMappings nsMappings;
 
     public SimpleJahiaJcrFacets(IndexSearcher searcher, OpenBitSet docs,
-            SolrParams params, SearchIndex index, Session session) {
+            SolrParams params, SearchIndex index, Session session, NamespaceMappings nsMappings) {
         this.searcher = searcher;
         this.docs = docs;
         this.params = params;
         this.resolver = NamePathResolverImpl.create(index.getNamespaceMappings());
         this.defaultAnalyzer = index.getTextAnalyzer();
         this.session = session;
+        this.nsMappings = nsMappings;
     }
 
     /**
@@ -260,10 +270,10 @@ public class SimpleJahiaJcrFacets {
                     ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(
                             params.get("f." + f + ".facet.nodetype")).getPropertyDefinition(
                             fieldName);
-                    String fieldNameInIndex = getFieldNameInIndex(fieldName, epd, locale);
+                    String fieldNameInIndex = getFieldNameInIndex(f, fieldName, epd, locale, true);
                     res.add(StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR)
                             + PROPNAME_INDEX_SEPARATOR + fieldNameInIndex,
-                            ensureSorting(params.getFieldParam(f, "facet.sort"), getTermCounts(f, epd, fieldNameInIndex, locale), epd, params.getFieldParam(f, "facet.labelRenderer"), LanguageCodeConverters.getLocaleFromCode(locale)));
+                            ensureSortingAndNameResolution(params.getFieldParam(f, "facet.sort"), getTermCounts(f, epd, fieldNameInIndex, locale), epd, params.getFieldParam(f, "facet.labelRenderer"), LanguageCodeConverters.getLocaleFromCode(locale), fieldNameInIndex));
                 } catch (RepositoryException e) {
                     logger.error("Cant display facets for: " + f, e);
                 }
@@ -272,12 +282,48 @@ public class SimpleJahiaJcrFacets {
         return res;
     }
     
-    private NamedList<Object> ensureSorting(String fieldSort,
+    private NamedList<Object> ensureSortingAndNameResolution(String fieldSort,
             NamedList<Object> values, ExtendedPropertyDefinition fieldPropertyType,
-            String facetValueRenderer, Locale locale) {
+            String facetValueRenderer, Locale locale, String fieldName) {
         ChoiceListRenderer renderer = !StringUtils.isEmpty(facetValueRenderer) ? ChoiceListRendererService
                 .getInstance().getRenderers().get(facetValueRenderer)
                 : null;
+        if (FieldNames.PROPERTIES.equals(fieldName)) {
+            NamedList<Object> resolvedValues = new NamedList<Object>();
+            for (Map.Entry<String, Object> facetValue : values) {
+                String facetValueKey = facetValue.getKey(); 
+                facetValueKey = propertyFieldPrefix.matcher(facetValueKey).replaceFirst("$1") + "##q->##" + facetValue.getKey();
+                resolvedValues.add(facetValueKey, facetValue.getValue());
+            }
+            values = resolvedValues;
+        }
+        if (fieldPropertyType.getRequiredType() == PropertyType.NAME) {
+            NamedList<Object> resolvedValues = new NamedList<Object>();
+            for (Map.Entry<String, Object> facetValue : values) {
+                String facetValueKey = facetValue.getKey();                
+                Matcher matcher = nameFieldPrefix.matcher(facetValueKey);
+                if (matcher.matches()) {
+                    String nsPrefix = matcher.group(1);
+                    try {
+                        nsPrefix = session.getNamespacePrefix(nsMappings.getURI(nsPrefix));
+                    } catch (RepositoryException e) {
+                        // use the unconverted prefix
+                    }
+                    StringBuilder facetValueBuilder = new StringBuilder();
+                    facetValueBuilder.append(nsPrefix);
+                    if (facetValueBuilder.length() > 0) {
+                        facetValueBuilder.append(":");
+                    }
+                    facetValueBuilder.append("$2");
+                    facetValueKey = matcher.replaceFirst(facetValueBuilder.toString());
+                    if (!FieldNames.PROPERTIES.equals(fieldName)) {
+                        facetValueKey = facetValueKey + "##q->##" + facetValue.getKey(); 
+                    }
+                }
+                resolvedValues.add(facetValueKey, facetValue.getValue());
+            }
+            values = resolvedValues;
+        }
         if (values.size() > 1
                 && (fieldSort != null && (fieldSort.equals("false") || fieldSort.equals("index")))
                 && renderer != null) {
@@ -571,16 +617,29 @@ public class SimpleJahiaJcrFacets {
         return res;
     }
 
-    public String getFieldNameInIndex(String field, ExtendedPropertyDefinition epd, String langCode) {
-        String fieldName = field;
+    public String getFieldNameInIndex(String field, String propertyFieldName, ExtendedPropertyDefinition epd, String langCode, boolean useJackrabbitField) {
+        String fieldName = propertyFieldName;
         try {
             fieldName = resolver.getJCRName(NameFactoryImpl.getInstance().create(session.getNamespaceURI(epd.getPrefix()),
                     epd.getLocalName()));
             int idx = fieldName.indexOf(':');
-            fieldName = fieldName.substring(0, idx + 1)
-                    + (epd != null && epd.isFacetable() ? JahiaNodeIndexer.FACET_PREFIX
-                            : FieldNames.FULLTEXT_PREFIX)
-                    + fieldName.substring(idx + 1);
+            if (epd != null && epd.isFacetable()) {
+                fieldName = fieldName.substring(0, idx + 1)
+                        + JahiaNodeIndexer.FACET_PREFIX
+                        + fieldName.substring(idx + 1);
+            } else if ((epd == null || !epd.isFacetable())
+                    && useJackrabbitField && params instanceof MapSolrParams) {
+                String prefix = params.getFieldParam(field,
+                        FacetParams.FACET_PREFIX);
+                ((MapSolrParams) params).getMap().put(
+                        "f." + field + '.' + FacetParams.FACET_PREFIX,
+                        fieldName + (prefix != null ? prefix : ""));
+                fieldName = FieldNames.PROPERTIES;
+            } else {
+                fieldName = fieldName.substring(0, idx + 1)
+                        + FieldNames.FULLTEXT_PREFIX
+                        + fieldName.substring(idx + 1);
+            }
         } catch (RepositoryException e) {
             // will never happen
         }
@@ -608,8 +667,8 @@ public class SimpleJahiaJcrFacets {
             final NamedList<Object> resInner = new SimpleOrderedMap<Object>();
             String fieldName = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);            
             ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(params.get("f."+f+".facet.nodetype")).getPropertyDefinition(fieldName);
-            String fieldNameInIndex = getFieldNameInIndex(fieldName, epd, params.getFieldParam(f,
-                    "facet.locale"));
+            String fieldNameInIndex = getFieldNameInIndex(f, fieldName, epd, params.getFieldParam(f,
+                    "facet.locale"), false);
             
             resOuter.add(fieldName + PROPNAME_INDEX_SEPARATOR + fieldNameInIndex, resInner);
             

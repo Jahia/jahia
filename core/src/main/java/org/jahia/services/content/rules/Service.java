@@ -43,13 +43,14 @@ package org.jahia.services.content.rules;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.drools.FactException;
@@ -65,6 +66,7 @@ import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
+import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.JahiaSitesService;
@@ -73,7 +75,6 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.services.workflow.WorkflowService;
-import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.*;
 
 import javax.jcr.*;
@@ -699,11 +700,11 @@ public class Service extends JahiaService {
     }
 
     public void createPermission(final String path, final String name, final KnowledgeHelper drools) throws RepositoryException {
-        String id = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
             public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JCRNodeWrapper node = session.getNode(path);
                 if (!node.hasNode(name)) {
-                    JCRNodeWrapper n = node.addNode(name, "jnt:permission");
+                    node.addNode(name, "jnt:permission");
                 }
                 session.save();
                 return null;
@@ -736,40 +737,6 @@ public class Service extends JahiaService {
         if (site == null) {
             return;
         }
-        boolean needPrivileged = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                QueryManager q = session.getWorkspace().getQueryManager();
-                String sql = "select * from [jnt:ace] as ace where ace.[j:aceType]='GRANT' and ace.[j:principal] = '"+fPrincipal+"' and isdescendantnode(ace, ['"+site.getPath()+"'])";
-                QueryResult qr = q.createQuery(sql, Query.JCR_SQL2).execute();
-                NodeIterator ni = qr.getNodes();
-                Set<String> roles = new HashSet<String>();
-                while (ni.hasNext()) {
-                    JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
-                    if (next.hasProperty("j:roles")) {
-                        Value[] vals = next.getProperty("j:roles").getValues();
-                        for (Value val : vals) {
-                            roles.add(val.getString());
-                        }
-                    } else {
-                        logger.warn("Missing roles property for acl on "+next.getPath());
-                    }
-                }
-
-                boolean needPrivileged = false;
-                for (String role : roles) {
-                    try {
-                        JCRNodeWrapper roleNode = session.getNode("/roles/"+role);
-                        if (roleNode.hasProperty("j:privilegedAccess") && roleNode.getProperty("j:privilegedAccess").getBoolean()) {
-                            needPrivileged = true;
-                            break;
-                        }
-                    } catch (PathNotFoundException e) {
-                    }
-                }
-
-                return needPrivileged;
-            }
-        });
 
         JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         final JahiaGroup priv = groupService.lookupGroup(site.getID(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
@@ -780,6 +747,30 @@ public class Service extends JahiaService {
             p = groupService.lookupGroup(site.getID(), principal.substring(2));
         }
         if (p != null) {
+            boolean needPrivileged = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    QueryManager q = session.getWorkspace().getQueryManager();
+                    String sql = "select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where ace.[j:aceType]='GRANT' and ace.[j:principal] = '"+fPrincipal+"' and isdescendantnode(ace, ['"+site.getPath()+"'])";
+                    QueryResultWrapper qr = (QueryResultWrapper)q.createQuery(sql, Query.JCR_SQL2).execute();
+
+                    boolean needPrivileged = false;
+                    for (FacetField facetField : qr.getFacetFields()) {
+                        for (Count facetFieldValue : facetField.getValues()) {
+                            try {
+                                JCRNodeWrapper roleNode = session.getNode("/roles/"+facetFieldValue.getName());
+                                if (roleNode.hasProperty("j:privilegedAccess") && roleNode.getProperty("j:privilegedAccess").getBoolean()) {
+                                    needPrivileged = true;
+                                    break;
+                                }
+                            } catch (PathNotFoundException e) {
+                            }
+                        }
+                    }
+
+                    return needPrivileged;
+                }
+            });
+            
             if (needPrivileged && !priv.isMember(p)) {
                 logger.info(principal + " need privileged access");
                 priv.addMember(p);

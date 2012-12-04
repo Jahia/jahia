@@ -449,6 +449,52 @@
                         </property>
                     </bean>
                 </entry>
+                <entry key="nt:nodeType">
+                    <bean parent="studioBaseEngineConfiguration">
+                        <property name="engineTabs">
+                            <list>
+                                <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                                    <property name="id" value="baseProperties"/>
+                                    <property name="titleKey" value="label.engineTab.definitions.baseAttributes"/>
+                                    <property name="tabItem">
+                                        <bean class="org.jahia.ajax.gwt.client.widget.definitionsmodeler.BaseAttributesTabItem"/>
+                                    </property>
+                                </bean>
+                                <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                                    <property name="id" value="baseProperties"/>
+                                    <property name="titleKey" value="label.engineTab.definitions.properties"/>
+                                    <property name="tabItem">
+                                        <bean class="org.jahia.ajax.gwt.client.widget.definitionsmodeler.ChildItemsTabItem">
+                                            <property name="displayNodes" value="false"/>
+                                            <property name="columns">
+                                                <list>
+                                                    <!--<value>name,*,label.name</value>-->
+                                                    <!--<value>type,*,label.type</value>-->
+                                                    <!--<value>defaultValue,*,label.defaultValue</value>-->
+                                                    <!--<value>isInternationalized,*,label.isInternationalized</value>-->
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </property>
+                                </bean>
+                                <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                                    <property name="id" value="baseProperties"/>
+                                    <property name="titleKey" value="label.engineTab.definitions.nodes"/>
+                                    <property name="tabItem">
+                                        <bean class="org.jahia.ajax.gwt.client.widget.definitionsmodeler.ChildItemsTabItem">
+                                            <property name="displayNodes" value="true"/>
+                                            <property name="columns">
+                                                <list>
+                                                    <!--<value>name,*,label.name</value>-->
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </property>
+                                </bean>
+                            </list>
+                        </property>
+                    </bean>
+                </entry>
             </map>
         </property>
 

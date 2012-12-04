@@ -40,15 +40,15 @@
 
 package org.jahia.services.importexport;
 
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.TextExtractor;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.value.InternalValueFactory;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.util.ISO8601;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -58,7 +58,6 @@ import org.jahia.services.importexport.DefinitionsMapping.Action;
 import org.jahia.services.importexport.DefinitionsMapping.AddMixin;
 import org.jahia.services.importexport.DefinitionsMapping.AddNode;
 import org.jahia.services.importexport.DefinitionsMapping.SetProperties;
-import org.jahia.services.textextraction.TextExtractionService;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.slf4j.Logger;
@@ -71,7 +70,6 @@ import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
-import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.DateFormat;
@@ -722,7 +720,7 @@ public class LegacyImportHandler extends DefaultHandler {
             } else {
                 try {
                     ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType(nodeType);
-                    if (StringUtils.startsWith(originatingJahiaRelease, "5") && nt.isNodeType("jmix:nodeReference")) {
+                    if (StringUtils.startsWith(originatingJahiaRelease, "5") && nt.isNodeType("jnt:nodeLink")) {
                         currentCtx.peek().pushNavLink(getCurrentContentType(),null);
                         return;
                     }
@@ -1088,13 +1086,7 @@ public class LegacyImportHandler extends DefaultHandler {
                                         value = value.substring(propertyDefinition.getResourceBundleKey().length() + 1);
                                     }
                                 } else if ("jcr:description".equals(propertyName)) {
-                                    try {
-                                        TextExtractionService textExtractor = (TextExtractionService) SpringContextSingleton.getBean("org.jahia.services.textextraction.TextExtractionService");
-                                        value = textExtractor.parse(new ByteArrayInputStream(((String) value)
-                                                .getBytes(InternalValueFactory.DEFAULT_ENCODING)), "text/html");
-                                    } catch (Exception e) {
-                                        logger.warn("Unable to parse description", e);
-                                    }
+                                    value = removeHtmlTags(value);
                                 }
 
                                 value = baseType != null ? mapping.getMappedPropertyValue(baseType, localName, value) :
@@ -1197,6 +1189,15 @@ public class LegacyImportHandler extends DefaultHandler {
             }
         }
         return value;
+    }
+
+    private String removeHtmlTags(String value) {
+        Source source = new Source(value);
+        TextExtractor textExtractor = source.getTextExtractor();
+        textExtractor.setExcludeNonHTMLElements(true);
+        textExtractor.setConvertNonBreakingSpaces(false);
+        textExtractor.setIncludeAttributes(false);
+        return textExtractor.toString();
     }
 
     private JCRNodeWrapper getCurrentPageNode() {

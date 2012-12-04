@@ -60,6 +60,8 @@ import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.settings.SettingsBean;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -90,13 +92,13 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     private ThreadLocal<Boolean> inRules = new ThreadLocal<Boolean>();
 
-    private List<File> dslFiles;
+    private List<Resource> dslFiles;
     private Map<String, Object> globalObjects;
 
     private List<String> filesAccepted;
     public RulesListener() {
         instances.add(this);
-        dslFiles = new LinkedList<File>();
+        dslFiles = new LinkedList<Resource>();
         globalObjects = new LinkedHashMap<String, Object>();
         inRules = new ThreadLocal<Boolean>();
     }
@@ -158,7 +160,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         ruleBase = RuleBaseFactory.newRuleBase(conf);
 
         dslFiles.add(
-                new File(SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/rules/rules.dsl"));
+                new FileSystemResource(SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/rules/rules.dsl"));
 
         for (String s : ruleFiles) {
             addRules(new File(SettingsBean.getInstance().getJahiaEtcDiskPath() + s));
@@ -169,17 +171,40 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     private String getDslFiles() throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
-        for (File dslFile : dslFiles) {
-            stringBuilder.append(FileUtils.readFileToString(dslFile, "UTF-8")).append("\n");
+        for (Resource dslFile : dslFiles) {
+            InputStream dslFileInputStream = null;
+            try {
+                dslFileInputStream = dslFile.getInputStream();
+                stringBuilder.append(IOUtils.toString(dslFileInputStream, "UTF-8")).append("\n");
+            } finally {
+                IOUtils.closeQuietly(dslFileInputStream);
+            }
         }
         return stringBuilder.toString();
     }
 
     public void addRules(File dsrlFile) {
+        addRules(dsrlFile == null ? null : new FileSystemResource(dsrlFile));
+    }
+
+    public void addRules(Resource dsrlFile) {
         InputStreamReader drl = null;
         long start = System.currentTimeMillis();
         try {
-            File pkgFile = new File(dsrlFile.getPath() + ".pkg");
+            File compiledRulesDir = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/compiledRules");
+            if (!compiledRulesDir.exists()) {
+                compiledRulesDir.mkdirs();
+            }
+            // first let's test if the file exists in the same location, if it was pre-packaged as a compiled rule
+            File pkgFile = new File(dsrlFile.getURL().getPath() + ".pkg");
+            if (!pkgFile.exists()) {
+                // we didn't find it, let's see if it's available in the compiled location.
+                String modulesDiskPath = SettingsBean.getInstance().getJahiaTemplatesDiskPath();
+                String dsrlFilePath = dsrlFile.getURL().getPath();
+                if (dsrlFilePath.startsWith(dsrlFilePath)) {
+                    pkgFile = new File(compiledRulesDir, dsrlFilePath.substring(modulesDiskPath.length()) + ".pkg");
+                }
+            }
             if (pkgFile.exists() && pkgFile.lastModified() > dsrlFile.lastModified()) {
                 ObjectInputStream ois = null;
                 try {
@@ -193,7 +218,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                     IOUtils.closeQuietly(ois);
                 }
             } else {
-                drl = new InputStreamReader(new BufferedInputStream(new FileInputStream(dsrlFile)));
+                drl = new InputStreamReader(new BufferedInputStream(dsrlFile.getInputStream()));
 
                 Properties properties = new Properties();
                 properties.setProperty("drools.dialect.java.compiler", "JANINO");
@@ -212,10 +237,11 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
                     ObjectOutputStream oos = null; 
                     try {
+                        pkgFile.getParentFile().mkdirs();
                         oos = new ObjectOutputStream(new FileOutputStream(pkgFile));
                         oos.writeObject(pkg);
                     } catch (IOException e) {
-                        logger.error("Error writing rule package to a file.", e);
+                        logger.error("Error writing rule package to file " + pkgFile, e);
                     } finally {
                     	IOUtils.closeQuietly(oos);
                     }
@@ -539,7 +565,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     }
 
     public void addRulesDescriptor(File file) {
-        dslFiles.add(file);
+        dslFiles.add(file == null ? null : new FileSystemResource(file));
     }
 
     public void setGlobalObjects(Map<String, Object> globalObjects) {

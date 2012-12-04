@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
+  <modules jcr:primaryType="jnt:modules">
+    <org.jahia.bundles.modules.testtemplate j:dependencies="default" j:installedModules="osgitesttemplate" j:moduleType="templatesSet" j:title="osgitesttemplate" jcr:primaryType="jnt:module">
+      <templates jcr:primaryType="jnt:templatesFolder">
+        <files jcr:primaryType="jnt:folder">
+          <themes jcr:primaryType="jnt:folder">
+            <default jcr:primaryType="jnt:folder" />
+          </themes>
+        </files>
+        <contents jcr:primaryType="jnt:contentFolder" />
+        <base j:theme="/modules/osgitesttemplate/1.0-SNAPSHOT/templates/files/themes/default" j:view="osgitesttemplate" jcr:mixinTypes="jmix:theme" jcr:primaryType="jnt:template">
+          <home jcr:primaryType="jnt:pageTemplate" />
+          <simple jcr:primaryType="jnt:pageTemplate" />
+        </base>
+        <content-template j:applyOn="jnt:content" j:hiddenTemplate="true" j:priority="1" j:view="osgitesttemplate" jcr:primaryType="jnt:contentTemplate">
+          <pagecontent jcr:primaryType="jnt:contentList">
+            <main-resource-display j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
+          </pagecontent>
+        </content-template>
+      </templates>
+      <home j:isHomePage="true" j:templateName="home" jcr:primaryType="jnt:page" />
+      <portlets jcr:primaryType="jnt:portletFolder" />
+      <files jcr:primaryType="jnt:folder" />
+      <contents jcr:primaryType="jnt:contentFolder" />
+    </org.jahia.bundles.modules.testtemplate>
+  </modules>
+</content>
+

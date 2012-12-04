@@ -74,6 +74,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.services.workflow.WorkflowService;
 import org.quartz.*;
+import org.springframework.core.io.FileSystemResource;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
@@ -396,7 +397,7 @@ public class Service extends JahiaService {
             File file = (File) infos.get("importFile");
             if (infos.get("type").equals("files")) {
                 try {
-                    ImportExportBaseService.getInstance().importSiteZip(file, ctx.getSite(), infos);
+                    ImportExportBaseService.getInstance().importSiteZip(file == null ? null : new FileSystemResource(file), ctx.getSite(), infos);
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }
@@ -413,7 +414,7 @@ public class Service extends JahiaService {
                         sitesService.addSite(user, (String) infos.get(
                                 "sitetitle"), (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
                                 ctx.getLocale(), tpl,
-                                "fileImport", file,
+                                "fileImport", file == null ? null : new FileSystemResource(file),
                                 (String) infos.get(
                                         "importFileName"), true,
                                 false, (String) infos.get("originatingJahiaRelease"));
@@ -722,7 +723,7 @@ public class Service extends JahiaService {
             }
             if (!depends.equals(pack.getDepends())) {
                 ServicesRegistry.getInstance().getJahiaTemplateManagerService().updateDependencies(pack, depends);
-                ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateManifest(pack, node.getNode().getSession());
+//                ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateManifest(pack, node.getNode().getSession());
             }
         }
     }

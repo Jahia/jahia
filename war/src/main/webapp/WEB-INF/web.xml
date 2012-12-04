@@ -254,11 +254,11 @@
     <listener>
         <listener-class>org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet</listener-class>
     </listener>
-<!--
+
     <listener>
         <listener-class>org.jahia.osgi.http.bridge.StartupListener</listener-class>
     </listener>
--->
+
     <servlet>
         <servlet-name>Jahia</servlet-name>
         <servlet-class>org.jahia.bin.Jahia</servlet-class>
@@ -575,13 +575,11 @@
 <!-- End of Quercus PHP servlet -->
 
     <!-- OSGi Proxy Servlet -->
-<!--
     <servlet>
         <servlet-name>osgiProxy</servlet-name>
         <servlet-class>org.apache.felix.http.proxy.ProxyServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>    
--->
 
     <!-- This servlet is used to indicate the end of the initialization process of Jahia, so it should always have
          the highest load-on-startup value. This servlet may also be queried to check if the server has completed
@@ -775,12 +773,10 @@
         <url-pattern>*.php</url-pattern>
     </servlet-mapping>
 
-<!--
     <servlet-mapping>
         <servlet-name>osgiProxy</servlet-name>
         <url-pattern>/osgi/*</url-pattern>
     </servlet-mapping>
--->
 
     <servlet-mapping>
         <servlet-name>initializationCompletedServlet</servlet-name>

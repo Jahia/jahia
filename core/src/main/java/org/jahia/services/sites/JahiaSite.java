@@ -332,7 +332,7 @@ public class JahiaSite implements Serializable {
 
     public String getTemplateFolder() {
         return ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                .getTemplatePackage(getTemplatePackageName()).getRootFolder();
+                .getAnyDeployedTemplatePackage(getTemplatePackageName()).getRootFolder();
     }
 
     /**

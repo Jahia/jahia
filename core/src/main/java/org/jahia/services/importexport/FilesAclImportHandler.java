@@ -56,6 +56,7 @@ import org.jahia.services.content.nodetypes.SelectorType;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.i18n.ResourceBundleMarker;
+import org.springframework.core.io.Resource;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -82,7 +83,7 @@ import java.util.regex.Pattern;
 public class FilesAclImportHandler extends DefaultHandler {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(FilesAclImportHandler.class);
 
-    private File archive;
+    private Resource archive;
     private NoCloseZipInputStream zis;
     private ZipEntry nextEntry;
     private List<String> fileList = new ArrayList<String>();
@@ -95,7 +96,7 @@ public class FilesAclImportHandler extends DefaultHandler {
 
     public static final DateFormat DATE_FORMAT = new SimpleDateFormat(ImportExportService.DATE_FORMAT);
 
-    public FilesAclImportHandler(JahiaSite site, DefinitionsMapping mapping, File archive, List<String> fileList) {
+    public FilesAclImportHandler(JahiaSite site, DefinitionsMapping mapping, Resource archive, List<String> fileList) {
         this.site = site;
         this.mapping = mapping;
         this.archive = archive;
@@ -386,7 +387,7 @@ public class FilesAclImportHandler extends DefaultHandler {
             return false;
         }
         if (zis == null) {
-            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(archive)));
+            zis = new NoCloseZipInputStream(new BufferedInputStream(archive.getInputStream()));
             nextEntry = zis.getNextEntry();
         }
 
@@ -396,7 +397,7 @@ public class FilesAclImportHandler extends DefaultHandler {
         if (fileIndex != -1) {
             if (fileList.indexOf("/" + nextEntry.getName().replace('\\', '/')) > fileIndex) {
                 zis.reallyClose();
-                zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(archive)));
+                zis = new NoCloseZipInputStream(new BufferedInputStream(archive.getInputStream()));
             }
             do {
                 nextEntry = zis.getNextEntry();

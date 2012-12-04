@@ -46,10 +46,13 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRNodeDecoratorDefinition;
+import org.jahia.services.content.impl.external.ExternalContentStoreProvider;
+import org.jahia.services.content.impl.external.modules.ModulesDataSource;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ModuleChoiceListInitializer;
@@ -66,12 +69,14 @@ import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorklowTypeRegistration;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Workspace;
@@ -86,7 +91,7 @@ import java.util.*;
  *
  * @author Sergiy Shyrkov
  */
-class TemplatePackageRegistry {
+public class TemplatePackageRegistry {
     private static Logger logger = LoggerFactory.getLogger(TemplatePackageRegistry.class);
     
     private final static String MODULES_ROOT_PATH = "modules.";
@@ -103,6 +108,7 @@ class TemplatePackageRegistry {
     private Map<String, JahiaTemplatesPackage> fileNameRegistry = new TreeMap<String, JahiaTemplatesPackage>();
     private List<JahiaTemplatesPackage> templatePackages;
     private Map<String, Map<ModuleVersion,JahiaTemplatesPackage>> packagesWithVersion = new TreeMap<String, Map<ModuleVersion, JahiaTemplatesPackage>>();
+    private Map<String, Map<ModuleVersion,JahiaTemplatesPackage>> packagesWithVersionByFilename = new TreeMap<String, Map<ModuleVersion, JahiaTemplatesPackage>>();
     private Map<String, Set<JahiaTemplatesPackage>> modulesWithViewsPerComponents = new HashMap<String, Set<JahiaTemplatesPackage>>();
     private List<RenderFilter> filters = new LinkedList<RenderFilter>();
     private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
@@ -157,7 +163,8 @@ class TemplatePackageRegistry {
 // -------------------------- OTHER METHODS --------------------------
 
     public void activateModuleVersion(JahiaTemplatesPackage module) {
-        File rootFile = new File(module.getFilePath()).getParentFile();
+        File rootFile = new File(SettingsBean.getInstance().getJahiaVarDiskPath()+"/deployedModules", module.getRootFolder());
+        rootFile.mkdirs();
         File activeVersionFile = new File(rootFile, "activeVersion");
 
         try {
@@ -173,17 +180,23 @@ class TemplatePackageRegistry {
         afterInitializationForModule(module);
     }
 
-    private void computeDependencies(Set<JahiaTemplatesPackage> dependencies,  JahiaTemplatesPackage pack) {
+    private boolean computeDependencies(Set<JahiaTemplatesPackage> dependencies,  JahiaTemplatesPackage pack) {
         for (String depends : pack.getDepends()) {
             JahiaTemplatesPackage dependentPack = registry.get(depends);
             if (dependentPack == null) {
                 dependentPack = fileNameRegistry.get(depends);
             }
+            if (dependentPack == null) {
+                return false;
+            }
             if (!dependencies.contains(dependentPack)) {
                 dependencies.add(dependentPack);
-                computeDependencies(dependencies, dependentPack);
+                if (!computeDependencies(dependencies, dependentPack)) {
+                    return false;
+                }
             }
         }
+        return true;
     }
 
     public void afterInitializationForModules() {
@@ -256,7 +269,13 @@ class TemplatePackageRegistry {
     }
 
     public Set<ModuleVersion> getAvailableVersionsForModule(String rootFolder) {
-        return Collections.unmodifiableSet(packagesWithVersion.get(rootFolder).keySet());
+        if (packagesWithVersionByFilename.containsKey(rootFolder)) {
+            return Collections.unmodifiableSet(packagesWithVersionByFilename.get(rootFolder).keySet());
+        }
+        if (packagesWithVersion.containsKey(rootFolder)) {
+            return Collections.unmodifiableSet(packagesWithVersion.get(rootFolder).keySet());
+        }
+        return Collections.EMPTY_SET;
     }
 
     public Set<String> getPackageFileNames() {
@@ -305,9 +324,24 @@ class TemplatePackageRegistry {
                 : null;
     }
 
+    public JahiaTemplatesPackage lookupByNameAndVersion(String fileName, ModuleVersion moduleVersion) {
+        if (fileName == null || registry == null) return null;
+        Map<ModuleVersion,JahiaTemplatesPackage> packageVersions = packagesWithVersion.get(fileName);
+        if (packageVersions != null) {
+            return packageVersions.get(moduleVersion);
+        } else {
+            return null;
+        }
+    }
+
     public JahiaTemplatesPackage lookupByFileNameAndVersion(String fileName, ModuleVersion moduleVersion) {
         if (fileName == null || registry == null) return null;
-        return packagesWithVersion.get(fileName).get(moduleVersion);
+        Map<ModuleVersion,JahiaTemplatesPackage> packageVersions = packagesWithVersionByFilename.get(fileName);
+        if (packageVersions != null) {
+            return packageVersions.get(moduleVersion);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -332,12 +366,10 @@ class TemplatePackageRegistry {
 
     public void registerPackage(JahiaTemplatesPackage pack, boolean startContext) {
         try {
-            if (!packagesWithVersion.containsKey(pack.getRootFolder())) {
-                packagesWithVersion.put(pack.getRootFolder(), new HashMap<ModuleVersion, JahiaTemplatesPackage>());
-            }
-            packagesWithVersion.get(pack.getRootFolder()).put(pack.getVersion(), pack);
+            registerPackageVersion(pack);
 
-            File rootFile = new File(pack.getFilePath()).getParentFile();
+            File rootFile = new File(SettingsBean.getInstance().getJahiaVarDiskPath()+"/deployedModules", pack.getRootFolder());
+            rootFile.mkdirs();
             File activeVersionFile = new File(rootFile, "activeVersion");
             if (!activeVersionFile.exists()) {
                 FileUtils.write(activeVersionFile, pack.getVersion().toString(), "UTF-8");
@@ -356,7 +388,7 @@ class TemplatePackageRegistry {
             } else {
                 String lastVersion = FileUtils.readFileToString(lastVersionFile, "UTF-8");
                 if (new ModuleVersion(lastVersion).compareTo(pack.getVersion()) < 0) {
-                    packagesWithVersion.get(pack.getRootFolder()).get(new ModuleVersion(lastVersion)).setLastVersion(false);
+                    packagesWithVersionByFilename.get(pack.getRootFolder()).get(new ModuleVersion(lastVersion)).setLastVersion(false);
                     FileUtils.write(lastVersionFile, pack.getVersion().toString(), "UTF-8");
                     pack.setLastVersion(true);
                 } else if (pack.getVersion().toString().equals(lastVersion)) {
@@ -372,11 +404,22 @@ class TemplatePackageRegistry {
                 register(pack);
                 if (startContext) {
                     templatePackageApplicationContextLoader.createWebApplicationContext(pack);
-            }
+                }
             }
         } catch (IOException e) {
             logger.error("Cannot get active versions of module " + pack.getRootFolder(),e);
         }
+    }
+
+    public void registerPackageVersion(JahiaTemplatesPackage pack) {
+        if (!packagesWithVersionByFilename.containsKey(pack.getRootFolder())) {
+            packagesWithVersionByFilename.put(pack.getRootFolder(), new HashMap<ModuleVersion, JahiaTemplatesPackage>());
+        }
+        Map<ModuleVersion, JahiaTemplatesPackage> map = packagesWithVersionByFilename.get(pack.getRootFolder());
+        if (!packagesWithVersion.containsKey(pack.getName())) {
+            packagesWithVersion.put(pack.getName(), map);
+        }
+        map.put(pack.getVersion(), pack);
     }
 
     /**
@@ -397,7 +440,6 @@ class TemplatePackageRegistry {
 
         registry.put(templatePackage.getName(), templatePackage);
         fileNameRegistry.put(templatePackage.getRootFolder(), templatePackage);
-        File rootFolder = new File(templatePackage.getFilePath());
 
         // handle dependencies
         for (JahiaTemplatesPackage pack : registry.values()) {
@@ -406,13 +448,13 @@ class TemplatePackageRegistry {
 
         // handle resource bundles
 //        for (JahiaTemplatesPackage sourcePack : registry.values()) {
-        computeResourceBundleHierarchy(templatePackage);
+//        computeResourceBundleHierarchy(templatePackage);
 //        }
         
-        File[] files = rootFolder.listFiles();
-        for (File file : files) {
-            if (file.isDirectory() && file.getName().contains("_")) {
-                String key = file.getName();
+        Resource[] rootResources = templatePackage.getResources("");
+        for (Resource rootResource : rootResources) {
+            if (templatePackage.getResources(rootResource.getFilename()).length > 0 && rootResource.getFilename().contains("_")) {
+                String key = rootResource.getFilename();
                 if (!modulesWithViewsPerComponents.containsKey(key)) {
                     modulesWithViewsPerComponents.put(key, new TreeSet<JahiaTemplatesPackage>(TEMPLATE_PACKAGE_COMPARATOR));
                 }
@@ -420,6 +462,22 @@ class TemplatePackageRegistry {
                 modulesWithViewsPerComponents.get(key).add(templatePackage);
             }
         }
+
+        if (templatePackage.getSourcesFolder() != null) {
+            ModulesDataSource dataSource = (ModulesDataSource) SpringContextSingleton.getBean("ModulesDataSourcePrototype");
+            dataSource.setRoot(templatePackage.getSourcesFolder().toURI().toString()+"src/main/resources");
+            dataSource.setModule(templatePackage);
+            ExternalContentStoreProvider ex = (ExternalContentStoreProvider) SpringContextSingleton.getBean("ModulesStoreProviderPrototype");
+            ex.setKey("module-"+templatePackage.getRootFolder()+"-"+templatePackage.getVersion().toString());
+            ex.setMountPoint("/modules/" + templatePackage.getRootFolderWithVersion() + "/sources");
+            ex.setDataSource(dataSource);
+            try {
+                ex.start();
+            } catch (JahiaInitializationException e) {
+                e.printStackTrace();
+            }
+        }
+
         logger.info("Registered '{}' [{}] version {}", new Object[] { templatePackage.getName(),
                 templatePackage.getRootFolder(), templatePackage.getVersion() });
     }
@@ -444,9 +502,13 @@ class TemplatePackageRegistry {
         }
     }
 
-    public void computeDependencies(JahiaTemplatesPackage pack) {
+    public boolean computeDependencies(JahiaTemplatesPackage pack) {
         pack.getDependencies().clear();
-        computeDependencies(pack.getDependencies(), pack);
+        if (computeDependencies(pack.getDependencies(), pack)) {
+            computeResourceBundleHierarchy(pack);
+            return true;
+        }
+        return false;
     }
 
     public void registerDefinitions(JahiaTemplatesPackage templatePackage) {
@@ -456,7 +518,7 @@ class TemplatePackageRegistry {
                 for (String name : templatePackage.getDefinitionsFiles()) {
                     NodeTypeRegistry.getInstance().addDefinitionsFile(
                             new File(rootFolder, name),
-                            templatePackage.getName());
+                            templatePackage.getRootFolder(), templatePackage.getVersion());
                 }
                 jcrStoreService.deployDefinitions(templatePackage.getName());
             } catch (Exception e) {
@@ -504,11 +566,20 @@ class TemplatePackageRegistry {
             registry.remove(templatePackage.getName());
             fileNameRegistry.remove(templatePackage.getRootFolder());
             templatePackages = null;
+            if (templatePackage.getSourcesFolder() != null) {
+                JCRStoreProvider provider = jcrStoreService.getSessionFactory().getProviders().get("module-"+templatePackage.getRootFolder()+"-"+templatePackage.getVersion().toString());
+                if (provider != null) {
+                    provider.stop();
+                }
+            }
         }
         if (templatePackage.isLastVersion()) {
-            NodeTypeRegistry.getInstance().unregisterNodeTypes(templatePackage.getName());
+            NodeTypeRegistry.getInstance().unregisterNodeTypes(templatePackage.getRootFolder());
         }
-        packagesWithVersion.get(templatePackage.getRootFolder()).remove(templatePackage.getVersion());
+
+//        if (packagesWithVersion.containsKey(templatePackage.getRootFolder())) {
+//            packagesWithVersion.get(templatePackage.getRootFolder()).remove(templatePackage.getVersion());
+//        }
 
         for (Set<JahiaTemplatesPackage> packages : modulesWithViewsPerComponents.values()) {
             packages.remove(templatePackage);

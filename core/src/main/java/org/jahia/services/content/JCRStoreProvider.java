@@ -70,6 +70,7 @@ import org.jahia.tools.patches.GroovyPatcher;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.PropertyDefinition;
@@ -132,7 +133,6 @@ public class JCRStoreProvider {
     private JahiaSitesService sitesService;
 
     private JCRStoreService service;
-    private JCRPublicationService publicationService;
 
     protected JCRSessionFactory sessionFactory;
     protected Repository repo = null;
@@ -301,14 +301,6 @@ public class JCRStoreProvider {
         this.sessionFactory = sessionFactory;
     }
 
-    public JCRPublicationService getPublicationService() {
-        return publicationService;
-    }
-
-    public void setPublicationService(JCRPublicationService publicationService) {
-        this.publicationService = publicationService;
-    }
-
     public long getSessionKeepAliveCheckInterval() {
         return sessionKeepAliveCheckInterval;
     }
@@ -361,26 +353,14 @@ public class JCRStoreProvider {
     protected void initNodeTypes() throws RepositoryException, IOException {
 //        JahiaUser root = getGroupManagerService().getAdminUser(0);
         if (canRegisterCustomNodeTypes()) {
-
-            File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/definitions.properties");
-            Properties p = new Properties();
+            Properties p = NodeTypeRegistry.getInstance().getDeploymentProperties();
 
             JCRSessionWrapper session = getSystemSession();
             try {
                 Workspace workspace = session.getProviderSession(this).getWorkspace();
                 workspace.getNodeTypeManager().getNodeType("jmix:droppableContent");
-
-                if (f.exists()) {
-                    InputStream stream = new BufferedInputStream(new FileInputStream(f));
-                    try {
-                        p.load(stream);
-                    } finally {
-                        IOUtils.closeQuietly(stream);
-                    }
-                }
-
             } catch (RepositoryException e) {
-                f.delete();
+
             } finally {
                 session.logout();
             }
@@ -392,12 +372,7 @@ public class JCRStoreProvider {
             }
 
             if (needUpdate) {
-                OutputStream out = new BufferedOutputStream(new FileOutputStream(f));
-                try {
-                    p.store(out, "");
-                } finally {
-                    IOUtils.closeQuietly(out);
-                }
+                NodeTypeRegistry.getInstance().saveProperties();
             }
         }
     }
@@ -526,24 +501,8 @@ public class JCRStoreProvider {
 
     public void deployDefinitions(String systemId) {
         try {
-            File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/definitions.properties");
-            Properties p = new Properties();
-            if (f.exists()) {
-                InputStream stream = new BufferedInputStream(new FileInputStream(f));
-                try {
-                    p.load(stream);
-                } finally {
-                    IOUtils.closeQuietly(stream);
-                }
-            }
-
-            if (deployDefinitions(systemId, p)) {
-                OutputStream out = new BufferedOutputStream(new FileOutputStream(f));
-                try {
-                    p.store(out, "");
-                } finally {
-                    IOUtils.closeQuietly(out);
-                }
+            if (deployDefinitions(systemId, NodeTypeRegistry.getInstance().getDeploymentProperties())) {
+                NodeTypeRegistry.getInstance().saveProperties();
             }
         } catch (IOException e) {
             logger.error("Cannot save definitions timestamps", e);
@@ -551,12 +510,18 @@ public class JCRStoreProvider {
     }
 
     private boolean deployDefinitions(String systemId, Properties p) {
-        List<File> files = NodeTypeRegistry.getInstance().getFiles(systemId);
+        List<Resource> files = NodeTypeRegistry.getInstance().getFiles(systemId);
         boolean needUpdate = false;
-        for (File file : files) {
-            if (p.getProperty(file.getPath()) == null || Long.parseLong(p.getProperty(file.getPath())) != file.lastModified()) {
+        for (Resource file : files) {
+            try {
+                String propKey = file.getURL().toString() + ".lastRegistered."+key;
+                if (file.exists() && (p.getProperty(propKey) == null || Long.parseLong(p.getProperty(propKey)) != file.lastModified())) {
+                    needUpdate = true;
+                    p.setProperty(propKey, Long.toString(file.lastModified()));
+                }
+            } catch (IOException e) {
+                logger.error("Couldn't retrieve last modification date for file " + file + " will force updating !", e);
                 needUpdate = true;
-                p.setProperty(file.getPath(), Long.toString(file.lastModified()));
             }
         }
         if (needUpdate) {

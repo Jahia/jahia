@@ -55,6 +55,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
+import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
 import java.io.InputStream;
@@ -98,7 +99,7 @@ public class ImportJob extends BackgroundJob {
             if (f != null) {
                 File file = JCRContentUtils.downloadFileContent(f, File.createTempFile("import", ".zip"));
                 try {
-                    ServicesRegistry.getInstance().getImportExportService().importSiteZip(file, site, jobDataMap);
+                    ServicesRegistry.getInstance().getImportExportService().importSiteZip(file == null ? null : new FileSystemResource(file), site, jobDataMap);
                     f.remove();
                     session.save();
                 } finally {
@@ -131,7 +132,7 @@ public class ImportJob extends BackgroundJob {
             }
             if ("application/zip".equals(contentType)) {
                 try {
-                    importExport.importZip(parentPath, item.getFile(),
+                    importExport.importZip(parentPath, item.getFile() == null ? null : new FileSystemResource(item.getFile()),
                             replaceContent ? DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE : DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE);
                 } finally {
                     item.dispose();

@@ -48,14 +48,13 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
+import org.springframework.core.io.Resource;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -92,16 +91,15 @@ public class ScriptChoiceListInitializerImpl implements ChoiceListInitializer {
                 final Bindings bindings = byName.getBindings(ScriptContext.ENGINE_SCOPE);
                 bindings.put("values", values);
                 for (JahiaTemplatesPackage template : forModule) {
-                    final File scriptPath = new File(
-                            template.getFilePath() + File.separator + "scripts" + File.separator + param);
+                    final Resource scriptPath = template.getResource(File.separator + "scripts" + File.separator + param);
                     if (scriptPath.exists()) {
-                        FileReader scriptContent = null;
+                        Reader scriptContent = null;
                         try {
-                            scriptContent = new FileReader(scriptPath);
+                            scriptContent = new InputStreamReader(scriptPath.getInputStream());
                             return (List<ChoiceListValue>) byName.eval(scriptContent, bindings);
                         } catch (ScriptException e) {
                             logger.error("Error while executing script " + scriptPath, e);
-                        } catch (FileNotFoundException e) {
+                        } catch (IOException e) {
                             logger.error(e.getMessage(), e);
                         } finally {
                             if (scriptContent != null) {

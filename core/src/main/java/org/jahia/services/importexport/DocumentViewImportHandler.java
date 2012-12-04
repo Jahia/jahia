@@ -69,6 +69,7 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.zip.ZipEntry;
+import org.springframework.core.io.Resource;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -103,7 +104,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     private int batchCount = 0;
 
     private Locator documentLocator;
-    private File archive;
+    private Resource archive;
     private NoCloseZipInputStream zis;
     private ZipEntry nextEntry;
     private List<String> fileList = new ArrayList<String>();
@@ -154,7 +155,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     }
 
     @SuppressWarnings("unchecked")
-    public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath, File archive, List<String> fileList) throws IOException {
+    public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath, Resource archive, List<String> fileList) throws IOException {
         super(session);
         JCRNodeWrapper node = null;
         try {
@@ -666,7 +667,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             return false;
         }
         if (zis == null) {
-            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(archive)));
+            zis = new NoCloseZipInputStream(new BufferedInputStream(archive.getInputStream()));
             nextEntry = zis.getNextEntry();
         }
         String path = pathes.peek();
@@ -685,7 +686,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         if (fileIndex != -1) {
             if (fileList.indexOf("/" + nextEntry.getName().replace('\\', '/')) > fileIndex) {
                 zis.reallyClose();
-                zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(archive)));
+                zis = new NoCloseZipInputStream(new BufferedInputStream(archive.getInputStream()));
             }
             do {
                 nextEntry = zis.getNextEntry();

@@ -50,10 +50,15 @@ package org.jahia.data.templates;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.ModuleVersion;
+import org.jahia.services.templates.SourceControlManagement;
 import org.jahia.settings.SettingsBean;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -122,6 +127,10 @@ public class JahiaTemplatesPackage {
     private String autoDeployOnSite;
 
     private XmlWebApplicationContext context;
+
+    private File sourcesFolder;
+
+    private SourceControlManagement sourceControl;
 
     private boolean isActiveVersion = false;
 
@@ -418,4 +427,42 @@ public class JahiaTemplatesPackage {
     public void setLastVersion(boolean lastVersion) {
         isLastVersion = lastVersion;
     }
+
+    public File getSourcesFolder() {
+        return sourcesFolder;
+    }
+
+    public void setSourcesFolder(File sourcesFolder) {
+        this.sourcesFolder = sourcesFolder;
+    }
+
+    public SourceControlManagement getSourceControl() {
+        return sourceControl;
+    }
+
+    public void setSourceControl(SourceControlManagement sourceControl) {
+        this.sourceControl = sourceControl;
+    }
+
+    public Resource getResource(String relativePath) {
+        if (relativePath != null) {
+            return new FileSystemResource(new File(getFilePath(), relativePath));
+        } else {
+            return null;
+        }
+    }
+
+    public Resource[] getResources(String relativePath) {
+        File parentPath = new File(getFilePath(), relativePath);
+        if (!parentPath.exists() || !parentPath.isDirectory()) {
+            return new Resource[0];
+        }
+        List<Resource> resources = new ArrayList<Resource>();
+        File[] files = parentPath.listFiles();
+        for (File file : files) {
+            resources.add(new FileSystemResource(file));
+        }
+        return resources.toArray(new Resource[resources.size()]);
+    }
+
 }

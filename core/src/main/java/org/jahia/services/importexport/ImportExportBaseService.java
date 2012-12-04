@@ -87,6 +87,7 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.jdom.transform.XSLTransformer;
+import org.springframework.core.io.Resource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -594,17 +595,17 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         importSiteZip(zis, uri, null, nodeWrapper.getSession());
     }
 
-    public void importSiteZip(File file) throws RepositoryException, IOException, JahiaException {
+    public void importSiteZip(Resource file) throws RepositoryException, IOException, JahiaException {
         importSiteZip(file, null);
     }
 
-    public void importSiteZip(File file, JCRSessionWrapper session) throws RepositoryException, IOException {
-        ZipInputStream zis = new ZipInputStream(new FileInputStream(file));
+    public void importSiteZip(Resource file, JCRSessionWrapper session) throws RepositoryException, IOException {
+        ZipInputStream zis = new ZipInputStream(file.getInputStream());
 
         importSiteZip(zis, null, file, session);
     }
 
-    private void importSiteZip(ZipInputStream zis2, final String uri, final File fileImport, JCRSessionWrapper session) throws IOException {
+    private void importSiteZip(ZipInputStream zis2, final String uri, final Resource fileImport, JCRSessionWrapper session) throws IOException {
         ZipEntry z;
         final Properties infos = new Properties();
         while ((z = zis2.getNextEntry()) != null) {
@@ -678,15 +679,15 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
     }
 
-    public void importSiteZip(final File file, final JahiaSite site, final Map<Object, Object> infos) throws RepositoryException, IOException {
+    public void importSiteZip(final Resource file, final JahiaSite site, final Map<Object, Object> infos) throws RepositoryException, IOException {
         importSiteZip(file, site, infos, null, null);
     }
 
-    public void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath, String legacyDefinitionsFilePath) throws RepositoryException, IOException {
+    public void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath, String legacyDefinitionsFilePath) throws RepositoryException, IOException {
         importSiteZip(file, site, infos, legacyMappingFilePath, legacyDefinitionsFilePath,  jcrStoreService.getSessionFactory().getCurrentUserSession(null, null, null));
     }
 
-    public void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath, String legacyDefinitionsFilePath,JCRSessionWrapper session) throws RepositoryException, IOException {
+    public void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath, String legacyDefinitionsFilePath,JCRSessionWrapper session) throws RepositoryException, IOException {
         long timerSite = System.currentTimeMillis();
         logger.info("Start import for site {}", site != null ? site.getSiteKey() : "");
         
@@ -711,7 +712,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         NoCloseZipInputStream zis;
         if (sizes.containsKey(USERS_XML)) {
             // Import users first
-            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
+            zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
             try {
                 while (true) {
                     ZipEntry zipentry = zis.getNextEntry();
@@ -738,7 +739,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
 
         if (sizes.containsKey(SITE_PROPERTIES)) {
-            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
+            zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
             try {
                 while (true) {
                     ZipEntry zipentry = zis.getNextEntry();
@@ -758,7 +759,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         if (sizes.containsKey(REPOSITORY_XML)) {
             // Parse import file to detect sites
-            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
+            zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
             try {
                 while (true) {
                     ZipEntry zipentry = zis.getNextEntry();
@@ -813,7 +814,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         // and eventual plain file from 5.x imports
         if (!sizes.containsKey(REPOSITORY_XML) || sizes.containsKey(SITE_PROPERTIES) || sizes.containsKey(CATEGORIES_XML)
                 || sizes.containsKey(SITE_PERMISSIONS_XML) || sizes.containsKey(DEFINITIONS_CND) || sizes.containsKey(DEFINITIONS_MAP)) {
-            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
+            zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
             try {
                 while (true) {
                     ZipEntry zipentry = zis.getNextEntry();
@@ -862,14 +863,16 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         catProps = importCategoriesAndGetUuidProps(zis, categoriesImportHandler);
                     } else if (name.equals(DEFINITIONS_CND)) {
                         reg = new NodeTypeRegistry();
+                        reg.initSystemDefinitions();
+
                         try {
                             if (legacyImport) {
                                 JahiaCndReaderLegacy r = new JahiaCndReaderLegacy(new InputStreamReader(zis, "UTF-8"), zipentry.getName(),
-                                        file.getName(), reg);
+                                        file.getURL().getPath(), reg);
                                 r.parse();
                             } else {
                                 JahiaCndReader r = new JahiaCndReader(new InputStreamReader(zis, "UTF-8"), zipentry.getName(),
-                                        file.getName(), reg);
+                                        file.getURL().getPath(), reg);
                                 r.parse();
                             }
                         } catch (ParseException e) {
@@ -897,10 +900,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
             if(legacyDefinitionsFilePath!=null) {
                 reg = new NodeTypeRegistry();
+                reg.initSystemDefinitions();
                 try {
                     File cndFile = new File(legacyDefinitionsFilePath);
                     JahiaCndReaderLegacy r = new JahiaCndReaderLegacy(new InputStreamReader(new FileInputStream(legacyDefinitionsFilePath), "UTF-8"), cndFile.getName(),
-                            file.getName(), reg);
+                            file.getURL().getPath(), reg);
                     r.parse();
                 } catch (ParseException e) {
                     logger.error(e.getMessage(), e);
@@ -909,7 +913,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             // Old import
             JCRNodeWrapper siteFolder = session.getNode("/sites/" + site.getSiteKey());
 
-            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
+            zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
             try {
                 while (true) {
                     ZipEntry zipentry = zis.getNextEntry();
@@ -932,7 +936,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
                         InputStream documentInput = zis;
                         if (this.xmlContentTransformers != null && this.xmlContentTransformers.size() > 0) {
-                            documentInput = new ZipInputStream(new FileInputStream(file));
+                            documentInput = new ZipInputStream(file.getInputStream());
                             while (!name.equals(((ZipInputStream) documentInput).getNextEntry().getName())) ;
                             byte[] buffer = new byte[2048];
                             File document = File.createTempFile("export_" + languageCode + "_initial_", ".xml");
@@ -1094,7 +1098,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     }
 
-    private void importFilesAcl(JahiaSite site, File file, InputStream is, DefinitionsMapping mapping, List<String> fileList) {
+    private void importFilesAcl(JahiaSite site, Resource file, InputStream is, DefinitionsMapping mapping, List<String> fileList) {
         handleImport(is, new FilesAclImportHandler(site, mapping, file, fileList));
     }
 
@@ -1144,7 +1148,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         try {
             if (!installedModules.contains(templateSet)) {
-                templateManagerService.installModule(templateManagerService.getTemplatePackageByFileName(templateSet), "/sites/" + site.getSiteKey(), session);
+                templateManagerService.installModule(templateManagerService.getAnyDeployedTemplatePackage(templateSet), "/sites/" + site.getSiteKey(), session);
             }
         } catch (RepositoryException e) {
             logger.error("Cannot deploy module "+templateSet,e);
@@ -1200,7 +1204,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 sitesService.setDefaultSite(site);
             } else if (firstKey.equals("installedModules")) {
                 if (!installedModules.contains(value) && !templateSet.equals(value)) {
-                    modules.add(templateManagerService.getTemplatePackageByFileName(value));
+                    modules.add(templateManagerService.getAnyDeployedTemplatePackage(value));
                 }
             }
         }
@@ -1422,7 +1426,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     }
 
-    public void importZip(final String parentNodePath, final File file, final int rootBehavior) throws IOException, RepositoryException {
+    public void importZip(final String parentNodePath, final Resource file, final int rootBehavior) throws IOException, RepositoryException {
         if (JCRSessionFactory.getInstance().getCurrentUser() != null) {
             JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null, null, null);
             importZip(parentNodePath, file, rootBehavior, session);
@@ -1487,12 +1491,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         return documentViewValidationHandler.getResults();
     }
 
-    public void importZip(String parentNodePath, File file, int rootBehaviour, JCRSessionWrapper session)
+    public void importZip(String parentNodePath, Resource file, int rootBehaviour, JCRSessionWrapper session)
             throws IOException, RepositoryException {
         importZip(parentNodePath, file, rootBehaviour, session, Collections.<String>emptySet());
     }
 
-    public void importZip(String parentNodePath, File file, int rootBehaviour, JCRSessionWrapper session, Set<String> filesToIgnore)
+    public void importZip(String parentNodePath, Resource file, int rootBehaviour, JCRSessionWrapper session, Set<String> filesToIgnore)
             throws IOException, RepositoryException {
         long timer = System.currentTimeMillis();
         logger.info("Start importing file {} into path {} ", file, parentNodePath != null ? parentNodePath : "/");
@@ -1510,7 +1514,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         List<String> liveUuids = null;
         if (importLive) {
             // Import live content
-            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
+            zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
             try {
                 while (true) {
                     ZipEntry zipentry = zis.getNextEntry();
@@ -1577,7 +1581,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
 
         // Import repository content
-        zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
+        zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
         try {
             while (true) {
                 ZipEntry zipentry = zis.getNextEntry();
@@ -1631,7 +1635,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         if (importLive) {
             // Import user generated content
-            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
+            zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
             try {
                 while (true) {
                     ZipEntry zipentry = zis.getNextEntry();
@@ -1676,8 +1680,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         logger.info("Done importing file {} in {} ms", file, System.currentTimeMillis() - timer);
     }
 
-    private void getFileList(File file, Map<String, Long> sizes, List<String> fileList) throws IOException {
-        NoCloseZipInputStream zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
+    private void getFileList(Resource file, Map<String, Long> sizes, List<String> fileList) throws IOException {
+        NoCloseZipInputStream zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
         try {
             while (true) {
                 ZipEntry zipentry = zis.getNextEntry();

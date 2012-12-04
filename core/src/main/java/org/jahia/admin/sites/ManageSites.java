@@ -95,6 +95,7 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Url;
+import org.springframework.core.io.FileSystemResource;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
@@ -920,7 +921,7 @@ public class ManageSites extends AbstractAdministrationModule {
             site = jsms.addSite(currentUser, site.getTitle(), site.getServerName(), site.getSiteKey(), site.getDescr(),
                     selectedLocale, (String) request.getAttribute("selectedTmplSet"),
                     jParams.getParameterValues("selectedModules"),
-                    (String) request.getAttribute("firstImport"), (File) request.getAttribute("fileImport"),
+                    (String) request.getAttribute("firstImport"), request.getAttribute("fileImport") == null ? null : new FileSystemResource((File) request.getAttribute("fileImport")),
                     (String) request.getAttribute("fileImportName"), (Boolean) request.getAttribute("asAJob"),
                     (Boolean) request.getAttribute("doImportServerPermissions"), (String) request.getAttribute("originatingJahiaRelease"));
             if (site != null) {
@@ -987,6 +988,8 @@ public class ManageSites extends AbstractAdministrationModule {
                 return false;
             }
         } catch (Exception ex) {
+            logger.error("Error while adding site", ex);
+
             // clean site
             try {
                 delete(site, jParams.getUser(), true);
@@ -995,7 +998,6 @@ public class ManageSites extends AbstractAdministrationModule {
                 logger.error("Error while cleaning site", t);
             }
 
-            logger.error("Error while adding site", ex);
 
             warningMsg =
                     getMessage("label.error.processingRequestError");
@@ -2154,7 +2156,7 @@ public class ManageSites extends AbstractAdministrationModule {
                                 pathMapping.put("/shared/files/", "/sites/" + system.getSiteKey() + "/files/");
                                 pathMapping.put("/shared/mashups/", "/sites/" + system.getSiteKey() + "/portlets/");
 
-                                ImportExportBaseService.getInstance().importSiteZip(file, system, infos);
+                                ImportExportBaseService.getInstance().importSiteZip(file == null ? null : new FileSystemResource(file), system, infos);
                             } catch (Exception e) {
                                 logger.error("Error when getting templates", e);
                             }
@@ -2194,7 +2196,7 @@ public class ManageSites extends AbstractAdministrationModule {
                                                 JahiaSite site = jahiaSitesService
                                                         .addSite(jParams.getUser(), (String) infos.get("sitetitle"),
                                                                 (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
-                                                                defaultLocale, finalTpl, null, "fileImport", file,
+                                                                defaultLocale, finalTpl, null, "fileImport", file == null ? null : new FileSystemResource(file),
                                                                 (String) infos.get("importFileName"), false, false, (String) infos.get("originatingJahiaRelease"),finalLegacyImportFilePath,finalLegacyDefinitionsFilePath);
                                                 session.setAttribute(ProcessingContext.SESSION_SITE, site);
                                                 jParams.setSite(site);

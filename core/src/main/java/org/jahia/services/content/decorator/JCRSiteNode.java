@@ -392,10 +392,12 @@ public class JCRSiteNode extends JCRNodeDecorator {
             if (hasProperty("j:templatesSet")) {
                 final JahiaTemplatesPackage templatePackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(
                         getProperty("j:templatesSet").getString());
-                final Set<JahiaTemplatesPackage> dependencies = templatePackage.getDependencies();
-                for (JahiaTemplatesPackage dependency : dependencies) {
-                    if(!modules.contains(dependency.getRootFolder())) {
-                        modules.add(dependency.getRootFolder());
+                if (templatePackage != null) {
+                    final Set<JahiaTemplatesPackage> dependencies = templatePackage.getDependencies();
+                    for (JahiaTemplatesPackage dependency : dependencies) {
+                        if(!modules.contains(dependency.getRootFolder())) {
+                            modules.add(dependency.getRootFolder());
+                        }
                     }
                 }
             }

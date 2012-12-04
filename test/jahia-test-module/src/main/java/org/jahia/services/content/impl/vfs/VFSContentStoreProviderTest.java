@@ -163,7 +163,6 @@ public class VFSContentStoreProviderTest {
         JCRSessionFactory jcrSessionFactory = (JCRSessionFactory) SpringContextSingleton.getInstance().getContext().getBean("jcrSessionFactory");
         vfsProvider.setSessionFactory(jcrSessionFactory);
         JCRPublicationService jcrPublicationService = (JCRPublicationService) SpringContextSingleton.getInstance().getContext().getBean("jcrPublicationService");
-        vfsProvider.setPublicationService(jcrPublicationService);
         vfsProvider.start();
 
         try {

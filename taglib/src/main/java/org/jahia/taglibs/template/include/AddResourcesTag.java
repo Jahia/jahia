@@ -50,6 +50,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.Patterns;
+import org.springframework.core.io.Resource;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -123,10 +124,14 @@ public class AddResourcesTag extends AbstractJahiaTag {
         String[] strings = Patterns.COMMA.split(resources);
 
         Set<JahiaTemplatesPackage> packages = new LinkedHashSet<JahiaTemplatesPackage>();
-        packages.add(aPackage);
-        if (checkDependencies) {
-            for (JahiaTemplatesPackage pack : aPackage.getDependencies()) {
-                packages.add(pack);
+        if (aPackage != null) {
+            packages.add(aPackage);
+            if (checkDependencies) {
+                for (JahiaTemplatesPackage pack : aPackage.getDependencies()) {
+                    if (pack != null) {
+                        packages.add(pack);
+                    }
+                }
             }
         }
         StringBuilder builder = new StringBuilder();
@@ -149,30 +154,27 @@ public class AddResourcesTag extends AbstractJahiaTag {
                     String pathWithContext = renderContext.getRequest().getContextPath().isEmpty() ? path : renderContext.getRequest().getContextPath() + path;
                     String pathWithVersion = pack.getRootFolderPath() + "/" + pack.getVersion() + "/" + type + "/" + resource;
 //                    String pathWithVersionAndContext = renderContext.getRequest().getContextPath().isEmpty() ? pathWithVersion : renderContext.getRequest().getContextPath() + pathWithVersion;
-                    try {
-                        if (pageContext.getServletContext().getResource(pathWithVersion) != null) {
-                            // we found it
+                    Resource templateResource = pack.getResource("/" + type + "/" + resource);
+                    if (templateResource != null && templateResource.exists()) {
+                        // we found it
 
-                            // apply mapping
-                            if (mapping.containsKey(path)) {
-                                for (String mappedResource : mapping.get(path).split(" ")) {
-                                    path = mappedResource;
-                                    pathWithContext = !path.startsWith("http://") && !path.startsWith("https://") ? renderContext.getRequest().getContextPath() + path : path;
-                                    writeResourceTag(type, pathWithContext, resource);
-                                }
-                            } else {
+                        // apply mapping
+                        if (mapping.containsKey(path)) {
+                            for (String mappedResource : mapping.get(path).split(" ")) {
+                                path = mappedResource;
+                                pathWithContext = !path.startsWith("http://") && !path.startsWith("https://") ? renderContext.getRequest().getContextPath() + path : path;
                                 writeResourceTag(type, pathWithContext, resource);
                             }
-
-                            found = true;
-                            if (builder.length() > 0) {
-                                builder.append(",");
-                            }
-                            builder.append(pathWithContext);
-                            break;
+                        } else {
+                            writeResourceTag(type, pathWithContext, resource);
                         }
-                    } catch (MalformedURLException e) {
-                        logger.warn(e.getMessage(), e);
+
+                        found = true;
+                        if (builder.length() > 0) {
+                            builder.append(",");
+                        }
+                        builder.append(pathWithContext);
+                        break;
                     }
                 }
             }

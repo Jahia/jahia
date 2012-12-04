@@ -50,6 +50,7 @@ import org.jahia.services.JahiaService;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.sites.JahiaSite;
+import org.springframework.core.io.Resource;
 
 import java.util.Iterator;
 import java.util.Locale;
@@ -109,7 +110,7 @@ public abstract class JahiaSitesService extends JahiaService {
     /**
      * return a site looking at its server name
      *
-     * @param String site name
+     * @param name site name
      *
      * @return JahiaSite the JahiaSite bean or null
      */
@@ -125,7 +126,7 @@ public abstract class JahiaSitesService extends JahiaService {
      * @auhtor NK
      */
     public abstract JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
-                                      Locale selectedLocale, String selectTmplSet, String firstImport, File fileImport, String fileImportName,
+                                      Locale selectedLocale, String selectTmplSet, String firstImport, Resource fileImport, String fileImportName,
                                       Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException;
 
     /**
@@ -150,7 +151,7 @@ public abstract class JahiaSitesService extends JahiaService {
      * @since Jahia 6.6
      */
     public abstract JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
-                                      Locale selectedLocale, String selectTmplSet, String[] modulesToDeploy, String firstImport, File fileImport, String fileImportName,
+                                      Locale selectedLocale, String selectTmplSet, String[] modulesToDeploy, String firstImport, Resource fileImport, String fileImportName,
                                       Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException;
     /**
      * Add a new site
@@ -175,12 +176,12 @@ public abstract class JahiaSitesService extends JahiaService {
      * @since Jahia 6.6
      */
     public abstract JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
-                                      Locale selectedLocale, String selectTmplSet, String[] modulesToDeploy, String firstImport, File fileImport, String fileImportName,
+                                      Locale selectedLocale, String selectTmplSet, String[] modulesToDeploy, String firstImport, Resource fileImport, String fileImportName,
                                       Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease,
                                       String legacyMappingFilePath, String legacyDefinitionsFilePath) throws JahiaException, IOException;
 
     public abstract JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
-                                      Locale selectedLocale, String selectTmplSet, String[] modulesToDeploy, String firstImport, File fileImport, String fileImportName,
+                                      Locale selectedLocale, String selectTmplSet, String[] modulesToDeploy, String firstImport, Resource fileImport, String fileImportName,
                                       Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease,
                                       String legacyMappingFilePath, String legacyDefinitionsFilePath, JCRSessionWrapper session) throws JahiaException, IOException;
 
@@ -189,7 +190,7 @@ public abstract class JahiaSitesService extends JahiaService {
     /**
      * remove a site
      *
-     * @param JahiaSite the JahiaSite bean
+     * @param site the JahiaSite bean
      */
     public abstract void removeSite (JahiaSite site)
             throws JahiaException;
@@ -198,7 +199,7 @@ public abstract class JahiaSitesService extends JahiaService {
     /**
      * Update a JahiaSite definition
      *
-     * @param JahiaSite the site bean object
+     * @param site the site bean object
      */
     public abstract void updateSite (JahiaSite site)
             throws JahiaException;

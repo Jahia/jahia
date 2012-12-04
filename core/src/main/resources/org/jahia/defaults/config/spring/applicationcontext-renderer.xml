@@ -82,8 +82,8 @@
 		<property name="applyOnConfigurations" value="page,gwt" />
 		<property name="applyOnTemplateTypes" value="html,edit,html-.*" />
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
-        <property name="ajaxTemplate" value="/modules/assets/WEB-INF/scripts/ajaxResources.groovy"/>
-        <property name="template" value="/modules/assets/WEB-INF/scripts/resources.groovy"/>
+        <property name="ajaxTemplate" value="/WEB-INF/scripts/ajaxResources.groovy"/>
+        <property name="template" value="/WEB-INF/scripts/resources.groovy"/>
         <property name="aggregateAndCompress" value="${aggregateAndCompressAssets:true}"/>
         <property name="excludesFromAggregateAndCompress">
             <list>
@@ -124,7 +124,7 @@
         <property name="priority" value="10" />
         <property name="description" value="Filters out content in preview mode that is marked for deletion"/>
         <property name="applyOnModes" value="preview" />
-        <property name="template" value="/modules/assets/WEB-INF/scripts/markedForDeletionPreview.groovy"/>
+        <property name="template" value="/WEB-INF/scripts/markedForDeletionPreview.groovy"/>
     </bean>
 
 	<bean class="org.jahia.services.render.filter.BaseAttributesFilter">

@@ -233,11 +233,9 @@ public class URLGenerator {
     public String getCurrentModule() {
         View view = ((Script) context.getRequest().getAttribute(
                 "script")).getView();
-        return getTemplatesPath()
-                + "/"
-                + view.getModule().getRootFolder()
-                + (view.getModuleVersion() != null ? "/"
-                + view.getModuleVersion() : StringUtils.EMPTY);
+        return view.getModule().getRootFolderPath();
+//                + (view.getModuleVersion() != null ? "/"
+//                + view.getModuleVersion() : StringUtils.EMPTY);
     }
 
     public String getCurrent() {

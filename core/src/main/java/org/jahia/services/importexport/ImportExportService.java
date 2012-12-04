@@ -47,6 +47,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.importexport.validation.ValidationResults;
 import org.jahia.services.sites.JahiaSite;
 import org.jdom.JDOMException;
+import org.springframework.core.io.Resource;
 import org.xml.sax.SAXException;
 
 import javax.jcr.RepositoryException;
@@ -170,7 +171,7 @@ public interface ImportExportService {
      * @throws RepositoryException
      * @throws JahiaException
      */
-    void importZip(String parentNodePath, File file, int rootBehavior) throws IOException, RepositoryException;
+    void importZip(String parentNodePath, Resource file, int rootBehavior) throws IOException, RepositoryException;
 
     /**
      * Performs an import of the ZIP file. The format of XML files will be detected, as if they were imported with
@@ -184,7 +185,7 @@ public interface ImportExportService {
      * @throws RepositoryException
      * @throws JahiaException
      */
-    void importZip(String parentNodePath, File file, int rootBehavior, JCRSessionWrapper session) throws IOException, RepositoryException;
+    void importZip(String parentNodePath, Resource file, int rootBehavior, JCRSessionWrapper session) throws IOException, RepositoryException;
 
     /**
      * Validates a JCR content import file in document format and returns expected failures.
@@ -203,9 +204,9 @@ public interface ImportExportService {
 
     void importSiteZip(JCRNodeWrapper nodeWrapper) throws RepositoryException, IOException, JahiaException;
 
-    void importSiteZip(File nodeWrapper) throws RepositoryException, IOException, JahiaException;
+    void importSiteZip(Resource nodeWrapper) throws RepositoryException, IOException, JahiaException;
 
-    void importSiteZip(File nodeWrapper, JCRSessionWrapper session) throws RepositoryException, IOException, JahiaException;
+    void importSiteZip(Resource nodeWrapper, JCRSessionWrapper session) throws RepositoryException, IOException, JahiaException;
 
     /**
      * Import a full site zip into a newly created site.
@@ -217,9 +218,9 @@ public interface ImportExportService {
      * @throws RepositoryException
      * @throws IOException
      */
-    void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos) throws RepositoryException, IOException;
+    void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos) throws RepositoryException, IOException;
 
-    void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath, String legacyDefinitionsFilePath) throws RepositoryException, IOException;
+    void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath, String legacyDefinitionsFilePath) throws RepositoryException, IOException;
 
     void importCategories(Category rootCategory, InputStream is);
 

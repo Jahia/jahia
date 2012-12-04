@@ -57,9 +57,12 @@ public abstract class SourceControlManagement {
 
     protected File rootFolder;
 
-    protected void executeCommand(String command, String arguments) {
+    protected ExecutionResult executeCommand(String command, String arguments) {
         try {
-            ProcessHelper.execute(command, arguments, null, rootFolder, null, null);
+            StringBuilder resultOut = new StringBuilder();
+            StringBuilder resultErr = new StringBuilder();
+            int res = ProcessHelper.execute(command, arguments, null, rootFolder, resultOut, resultErr);
+            return new ExecutionResult(res, resultOut.toString(), resultErr.toString());
         } catch (Exception e) {
             // TODO can we find a way to not call "svn add" on already versioned files? 
             if (command.equals("svn") && arguments.startsWith("add")) {
@@ -67,6 +70,19 @@ public abstract class SourceControlManagement {
             } else {
                 logger.error("Failed to execute command " + command + (arguments != null ? (" " + arguments) : ""), e);
             }
+        }
+        return null;
+    }
+
+    class ExecutionResult {
+        int resultCode;
+        String out;
+        String err;
+
+        ExecutionResult(int resultCode, String out, String err) {
+            this.resultCode = resultCode;
+            this.out = out;
+            this.err = err;
         }
     }
 
@@ -144,6 +160,8 @@ public abstract class SourceControlManagement {
     protected abstract void initWithWorkingDirectory(File workingDirectory) throws Exception;
 
     protected abstract void initFromURI(File workingDirectory, String uri) throws Exception;
+
+    public abstract String getURI() throws Exception;
 
     public abstract void setModifiedFile(List<File> files) throws Exception;
 

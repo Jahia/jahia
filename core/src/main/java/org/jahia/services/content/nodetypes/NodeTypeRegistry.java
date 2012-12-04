@@ -42,8 +42,12 @@ package org.jahia.services.content.nodetypes;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.io.IOUtils;
+import org.jahia.services.templates.ModuleVersion;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 
 import javax.jcr.nodetype.*;
 import javax.jcr.RepositoryException;
@@ -66,14 +70,26 @@ public class NodeTypeRegistry implements NodeTypeManager {
 
     private Map<String,String> namespaces = new HashMap<String,String>();
 
-    private Map<String,List<File>> files = new ListOrderedMap();
+    private Map<String,List<Resource>> files = new ListOrderedMap();
 
     private Map<ExtendedNodeType,Set<ExtendedNodeType>> mixinExtensions = new HashMap<ExtendedNodeType,Set<ExtendedNodeType>>();
     private Map<String,Set<ExtendedItemDefinition>> typedItems = new HashMap<String,Set<ExtendedItemDefinition>>();
 
-    private static final NodeTypeRegistry instance = new NodeTypeRegistry();
+    private boolean propertiesLoaded = false;
+    private final Properties deploymentProperties = new Properties();
+
+    private static NodeTypeRegistry instance;
 
     public static NodeTypeRegistry getInstance() {
+        if (instance == null) {
+            instance = new NodeTypeRegistry();
+            try {
+                instance.initPropertiesFile();
+                instance.initSystemDefinitions();
+            } catch (IOException e) {
+                logger.error("Cannot load definition deployment properties");
+            }
+        }
         return instance;
     }
     
@@ -89,64 +105,107 @@ public class NodeTypeRegistry implements NodeTypeManager {
         }
     }
 
-    public NodeTypeRegistry() {
+    public void initSystemDefinitions() throws IOException {
+        String cnddir = SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/nodetypes";
         try {
-            String cnddir = org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/nodetypes";
-            try {
-                File f = new File(cnddir);
-                SortedSet<File> cndfiles = new TreeSet<File>(Arrays.asList(f.listFiles()));
-                for (File file : cndfiles) {
-                    addDefinitionsFile(file, SYSTEM + "-" + Patterns.DASH.split(file.getName())[1]);
-                }
-            } catch (ParseException e) {
-                logger.error(e.getMessage(), e);
+            File f = new File(cnddir);
+            SortedSet<File> cndfiles = new TreeSet<File>(Arrays.asList(f.listFiles()));
+            for (File file : cndfiles) {
+                addDefinitionsFile(file, SYSTEM + "-" + Patterns.DASH.split(file.getName())[1], null);
             }
-
-        } catch (Exception e) {
+        } catch (ParseException e) {
             logger.error(e.getMessage(), e);
         }
     }
 
-    public void addDefinitionsFile(File file, String systemId) throws ParseException, IOException {
-        String ext = file.getName().substring(file.getName().lastIndexOf('.'));
-        if (ext.equalsIgnoreCase(".cnd")) {
-            FileReader defsReader = null;
+    public void initPropertiesFile() throws IOException  {
+        File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/definitions.properties");
+        if (f.exists()) {
+            InputStream stream = new BufferedInputStream(new FileInputStream(f));
             try {
-                defsReader = new FileReader(file);
-                JahiaCndReader r = new JahiaCndReader(defsReader, file.getPath(), systemId, this);
+                deploymentProperties.load(stream);
+            } finally {
+                IOUtils.closeQuietly(stream);
+            }
+        }
+        propertiesLoaded = true;
+    }
+
+    public void saveProperties() throws IOException {
+        if (propertiesLoaded) {
+            synchronized (deploymentProperties) {
+                File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/definitions.properties");
+                OutputStream out = new BufferedOutputStream(new FileOutputStream(f));
+                try {
+                    deploymentProperties.store(out, "");
+                } finally {
+                    IOUtils.closeQuietly(out);
+                }
+            }
+        }
+    }
+
+    public Properties getDeploymentProperties() {
+        return deploymentProperties;
+    }
+
+    public void addDefinitionsFile(Resource resource, String systemId, ModuleVersion version) throws IOException, ParseException {
+        if (version != null) {
+            String key = systemId + ".version";
+            if (deploymentProperties.containsKey(key)) {
+                ModuleVersion lastDeployed = new ModuleVersion(deploymentProperties.getProperty(key));
+                if (lastDeployed.compareTo(version) > 0) {
+                    return;
+                }
+            }
+            deploymentProperties.put(key, version.toString());
+            saveProperties();
+        }
+
+        String ext = resource.getURL().getPath().substring(resource.getURL().getPath().lastIndexOf('.'));
+        if (ext.equalsIgnoreCase(".cnd")) {
+            Reader resourceReader = null;
+            try {
+                resourceReader = new InputStreamReader(resource.getInputStream());
+                JahiaCndReader r = new JahiaCndReader(resourceReader, resource.toString(), systemId, this);
                 r.parse();
             } finally {
-                IOUtils.closeQuietly(defsReader);
+                IOUtils.closeQuietly(resourceReader);
             }
         } else if (ext.equalsIgnoreCase(".grp")) {
-            FileReader defsReader = null;
+            Reader resourceReader = null;
             try {
-                defsReader = new FileReader(file);
-                JahiaGroupingFileReader r = new JahiaGroupingFileReader(defsReader, file.getName(),systemId, this);
-                r.parse();            
+                resourceReader = new InputStreamReader(resource.getInputStream());
+                JahiaGroupingFileReader r = new JahiaGroupingFileReader(resourceReader, resource.toString(),systemId, this);
+                r.parse();
             } finally {
-                IOUtils.closeQuietly(defsReader);
+                IOUtils.closeQuietly(resourceReader);
             }
         }
 
         if (!files.containsKey(systemId)) {
-            files.put(systemId, new ArrayList<File>());
+            files.put(systemId, new ArrayList<Resource>());
         }
-        files.get(systemId).add(file);
+        files.get(systemId).add(resource);
+
     }
 
-    public List<ExtendedNodeType> getDefinitionsFromFile(File file, String systemId) throws ParseException, IOException {
-        String ext = file.getName().substring(file.getName().lastIndexOf('.'));
+    public void addDefinitionsFile(File file, String systemId, ModuleVersion version) throws ParseException, IOException {
+        addDefinitionsFile(file == null ? null : new FileSystemResource(file), systemId, version);
+    }
+
+    public List<ExtendedNodeType> getDefinitionsFromFile(Resource resource, String systemId) throws ParseException, IOException {
+        String ext = resource.getURL().getPath().substring(resource.getURL().getPath().lastIndexOf('.'));
         if (ext.equalsIgnoreCase(".cnd")) {
-            FileReader defsReader = null;
+            Reader resourceReader = null;
             try {
-                defsReader = new FileReader(file);
-                JahiaCndReader r = new JahiaCndReader(defsReader, file.getPath(), systemId, this);
+                resourceReader = new InputStreamReader(resource.getInputStream());
+                JahiaCndReader r = new JahiaCndReader(resourceReader, resource.getURL().getPath(), systemId, this);
                 r.setDoRegister(false);
                 r.parse();
                 return r.getNodeTypesList();
             } finally {
-                IOUtils.closeQuietly(defsReader);
+                IOUtils.closeQuietly(resourceReader);
             }
         }
         return Collections.emptyList();
@@ -156,7 +215,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
         return new ArrayList<String>(files.keySet());
     }
 
-    public List<File> getFiles(String systemId) {
+    public List<Resource> getFiles(String systemId) {
         return files.get(systemId);
     }
 

@@ -849,23 +849,25 @@ class NodeHelper {
 
             JahiaTemplatesPackage packageByFileName = templateManagerService
                     .getTemplatePackageByFileName(node.getName());
-            JCRNodeWrapper versionInfo = node.getNode(packageByFileName.getVersion().toString()
-                    + "/j:versionInfo");
             if (packageByFileName != null) {
-                n.set(GWTJahiaNode.DISPLAY_NAME, packageByFileName.getName());
-                n.set("j:versionInfo", packageByFileName.getVersion().toString());
-                n.set("j:versionNumbers", packageByFileName.getVersion().getOrderedVersionNumbers());
-                File sources = templateManagerService.getSources(packageByFileName,
-                        node.getSession());
-                if (sources != null) {
-                    n.set("j:sourcesFolder", sources.getPath());
-                }
-                if (versionInfo.hasProperty("j:scmUrl")) {
-                    n.set("j:scmUrl", versionInfo.getProperty("j:scmUrl").getString());
+                JCRNodeWrapper versionInfo = node.getNode(packageByFileName.getVersion().toString()
+                        + "/j:versionInfo");
+                if (packageByFileName != null) {
+                    n.set(GWTJahiaNode.DISPLAY_NAME, packageByFileName.getName());
+                    n.set("j:versionInfo", packageByFileName.getVersion().toString());
+                    n.set("j:versionNumbers", packageByFileName.getVersion().getOrderedVersionNumbers());
+                    File sources = templateManagerService.getSources(packageByFileName,
+                            node.getSession());
+                    if (sources != null) {
+                        n.set("j:sourcesFolder", sources.getPath());
+                    }
+                    if (versionInfo.hasProperty("j:scmUrl")) {
+                        n.set("j:scmUrl", versionInfo.getProperty("j:scmUrl").getString());
+                    }
                 }
             }
         } catch (RepositoryException e) {
-            logger.error("Cannot get property module version");
+            logger.error("Cannot get property module version " + n.getPath());
         }
     }
 

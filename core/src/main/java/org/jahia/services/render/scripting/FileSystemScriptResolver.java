@@ -288,15 +288,13 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                     for (String templateType : templateTypes) {
                         getViewsSet(type, views, templateType, packageName ,aPackage, aPackage.getVersion());
                     }
-                } else if (site.getPath().startsWith("/sites/")) {
-                    for (String templateType : templateTypes) {
-                        getViewsSet(type, views, templateType, packageName, aPackage, aPackage.getVersion());
-                    }
                 }
             }
             for (String templateType : templateTypes) {
                 JahiaTemplatesPackage defaultModule = templateManagerService.getTemplatePackageByFileName("default");
-                getViewsSet(type, views, templateType, "default", defaultModule, defaultModule.getVersion());
+                if (defaultModule != null) {
+                    getViewsSet(type, views, templateType, "default", defaultModule, defaultModule.getVersion());
+                }
             }
         }
         return new TreeSet<View>(views.values());

@@ -42,8 +42,11 @@ package org.jahia.services.templates;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 
 public class SvnSourceControlManagement extends SourceControlManagement {
@@ -63,6 +66,21 @@ public class SvnSourceControlManagement extends SourceControlManagement {
         this.rootFolder = workingDirectory.getParentFile();
         executeCommand("svn", "checkout " + uri + " " + workingDirectory.getName());
         this.rootFolder = workingDirectory;
+    }
+
+    @Override
+    public String getURI() throws Exception {
+        ExecutionResult result = executeCommand("svn", "info");
+        String uri = (String) CollectionUtils.find(Arrays.asList(result.out.split("\n")), new Predicate() {
+            @Override
+            public boolean evaluate(Object object) {
+                return object.toString().startsWith("URL:");
+            }
+        });
+        if (uri != null) {
+            uri = StringUtils.substringAfter(uri,"URL:").trim();
+        }
+        return uri;
     }
 
     @Override

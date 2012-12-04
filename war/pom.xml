@@ -843,6 +843,178 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-provisioned-bundles</id>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <!-- OSGi -->
+                                <artifactItem>
+                                    <groupId>org.slf4j</groupId>
+                                    <artifactId>slf4j-api</artifactId>
+                                    <version>${slf4j.version}</version>
+                                    <type>jar</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.slf4j</groupId>
+                                    <artifactId>slf4j-log4j12</artifactId>
+                                    <version>${slf4j.version}</version>
+                                    <type>jar</type>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.log</artifactId>
+                                    <version>${felix.log.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.bundlerepository</artifactId>
+                                    <version>${felix.bundlerepository.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.http.api</artifactId>
+                                    <version>${felix.http.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.http.bridge</artifactId>
+                                    <version>${felix.http.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.http.whiteboard</artifactId>
+                                    <version>${felix.http.version}</version>
+                                </artifactItem>
+                                <!-- Felix WebConsole dependencies -->
+                                <artifactItem>
+                                    <groupId>commons-io</groupId>
+                                    <artifactId>commons-io</artifactId>
+                                    <version>2.4</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>commons-fileupload</groupId>
+                                    <artifactId>commons-fileupload</artifactId>
+                                    <version>1.2.2</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.geronimo.bundles</groupId>
+                                    <artifactId>json</artifactId>
+                                    <version>20090211_1</version>
+                                </artifactItem>
+                                <!-- End of Felix WebConsole dependencies -->
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.webconsole</artifactId>
+                                    <version>${felix.webconsole.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.configadmin</artifactId>
+                                    <version>${felix.configadmin.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.fileinstall</artifactId>
+                                    <version>${felix.fileinstall.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.gogo.runtime</artifactId>
+                                    <version>${gogo.runtime.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.gogo.shell</artifactId>
+                                    <version>${gogo.shell.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.gogo.command</artifactId>
+                                    <version>${gogo.command.version}</version>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>org.ops4j.pax.web</groupId>
+                                    <artifactId>pax-web-api</artifactId>
+                                    <!--version>${pax.web.version}</version-->
+                                    <version>3.0.0-20121108.224257-85</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.ops4j.pax.web</groupId>
+                                    <artifactId>pax-web-jsp</artifactId>
+                                    <!--version>${pax.web.version}</version-->
+                                    <version>3.0.0-20121108.224409-79</version>
+                                </artifactItem>
+                               <!-- End of OSGi -->
+                                <artifactItem>
+                                    <groupId>org.jahia.bundles</groupId>
+                                    <artifactId>org.jahia.bundles.extender.jahiamodules</artifactId>
+                                    <version>6.7.0.0-SNAPSHOT</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jahia.bundles</groupId>
+                                    <artifactId>org.jahia.bundles.url.jahiawar</artifactId>
+                                    <version>6.7.0.0-SNAPSHOT</version>
+                                </artifactItem>
+
+                            </artifactItems>
+                            <stripVersion>false</stripVersion>
+                            <outputDirectory>
+                                ${project.build.directory}/provisioned-bundles
+                            </outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-watched-bundles</id>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jahia.server</groupId>
+                                    <artifactId>jahia-taglib</artifactId>
+                                    <version>6.7.0.0-SNAPSHOT</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jahia.bundles</groupId>
+                                    <artifactId>org.jahia.bundles.servlet.basic</artifactId>
+                                    <version>6.7.0.0-SNAPSHOT</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jahia.bundles</groupId>
+                                    <artifactId>org.jahia.bundles.jsp.tests</artifactId>
+                                    <version>6.7.0.0-SNAPSHOT</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jahia.bundles</groupId>
+                                    <artifactId>org.jahia.bundles.modules.test</artifactId>
+                                    <version>6.7.0.0-SNAPSHOT</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jahia.bundles</groupId>
+                                    <artifactId>org.jahia.bundles.modules.testtemplate</artifactId>
+                                    <version>6.7.0.0-SNAPSHOT</version>
+                                </artifactItem>
+                               <!-- End of OSGi -->
+
+                            </artifactItems>
+                            <stripVersion>false</stripVersion>
+                            <outputDirectory>
+                                ${project.build.directory}/watched-bundles
+                            </outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <warSourceExcludes>*Resources*.properties</warSourceExcludes>
@@ -856,6 +1028,26 @@
                             <filtering>true</filtering>
                             <includes>
                                 <include>WEB-INF/ibm-web-bnd.xmi</include>
+                            </includes>
+                        </resource>
+                        <resource>
+                            <directory>
+                                ${project.build.directory}/provisioned-bundles
+                            </directory>
+                            <targetPath>WEB-INF/bundles</targetPath>
+                        </resource>
+                        <resource>
+                            <directory>
+                                ${project.build.directory}/watched-bundles
+                            </directory>
+                            <targetPath>WEB-INF/var/bundles</targetPath>
+                        </resource>
+                        <resource>
+                            <directory>.</directory>
+                            <targetPath>META-INF</targetPath>
+                            <includes>
+                                <include>LICENSE</include>
+                                <include>NOTICE</include>
                             </includes>
                         </resource>
                     </webResources>

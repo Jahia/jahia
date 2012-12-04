@@ -52,6 +52,7 @@ import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.util.CollectionUtils;
 
 import javax.jcr.ItemExistsException;
@@ -175,13 +176,13 @@ public class TestHelper {
             }
             if (sharedZIPFile != null) {
                 try {
-                    ImportExportBaseService.getInstance().importSiteZip(sharedZIPFile, null, null);
+                    ImportExportBaseService.getInstance().importSiteZip(sharedZIPFile != null ? new FileSystemResource(sharedZIPFile) : null, null, null);
                 } catch (RepositoryException e) {
                     logger.warn("shared.zip could not be imported", e);
                 }
             }
             site = service.addSite(admin, name, serverName, name, name, ctx.getLocale(),
-                    templateSet, modulesToDeploy, siteZIPFile == null ? "noImport" : "fileImport", siteZIPFile,
+                    templateSet, modulesToDeploy, siteZIPFile == null ? "noImport" : "fileImport", siteZIPFile != null ? new FileSystemResource(siteZIPFile) : null,
                     null, false, false, null);
             ctx.setSite(site);
         } finally {

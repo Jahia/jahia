@@ -145,7 +145,6 @@ public class JCRMountPointNode extends JCRNodeDecorator {
                 pd.getWriteMethod().invoke(provider, k.getValue());
             }
             provider.setSessionFactory(getProvider().getSessionFactory());
-            provider.setPublicationService(getProvider().getPublicationService());
             provider.start();
             return provider;
         } catch (Exception e) {

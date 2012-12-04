@@ -1,0 +1,80 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.jahia.bundles</groupId>
+        <artifactId>jahia-modules-bundles</artifactId>
+        <version>6.7.0.0-SNAPSHOT</version>
+    </parent>
+
+    <name>Jahia Jahia OSGi Test module</name>
+    <artifactId>org.jahia.bundles.modules.test</artifactId>
+    <packaging>bundle</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Import-Package>*,
+                            org.jahia.bundles.extender.jahiamodules,
+                            org.jahia.taglibs,
+                            org.jahia.taglibs.template.include,
+                            org.jahia.taglibs.jcr,
+                            org.jahia.taglibs.jcr.node,
+                            org.jahia.services.content,
+                            org.osgi.framework,
+                            org.osgi.service.http,org.osgi.util.tracker,
+                            org.springframework.beans.factory.xml
+                        </Import-Package>
+                        <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
+                        <Embed-Transitive>true</Embed-Transitive>
+                        <Package-name>${project.name}</Package-name>
+                        <Module-type>module</Module-type>
+                        <Root-folder>${project.artifactId}</Root-folder>
+                        <Source-Folders>${project.basedir}</Source-Folders>
+                        <Jahia-Static-Resources>/css</Jahia-Static-Resources>
+                        <_removeheaders>
+                            Include-Resource,
+                            Private-Package,
+                            Embed-Dependency,
+                            Embed-Transitive
+                        </_removeheaders>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jahia.bundles</groupId>
+            <artifactId>org.jahia.bundles.extender.jahiamodules</artifactId>
+            <version>6.7.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>${osgi.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-impl</artifactId>
+            <version>6.7.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-taglib</artifactId>
+            <version>6.7.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+</project>

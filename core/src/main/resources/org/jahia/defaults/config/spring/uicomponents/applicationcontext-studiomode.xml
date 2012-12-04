@@ -65,6 +65,15 @@
                                     </bean>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewTemplatesSetActionItem">
+                                                <property name="siteType" value="osgimodule"/>
+                                            </bean>
+                                        </property>
+                                        <property name="titleKey" value="label.newOSGiModule"/>
+                                        <property name="icon" value="newTemplatesSet"/>
+                                    </bean>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DuplicateTemplatesSetActionItem"/>
                                         </property>
                                         <property name="titleKey" value="label.duplicateTemplatesSet"/>
@@ -794,7 +803,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.ModulesTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>/modulesFileSystem/$siteKey/$moduleversion/*</value>
+                                    <value>/modules/$siteKey/$moduleversion/sources</value>
                                 </list>
                             </property>
                             <property name="folderTypes">

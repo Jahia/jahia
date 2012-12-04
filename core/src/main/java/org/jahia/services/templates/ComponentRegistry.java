@@ -40,8 +40,6 @@
 
 package org.jahia.services.templates;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
@@ -346,7 +344,9 @@ public class ComponentRegistry {
         List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
         for (String s : pkg.getDefinitionsFiles()) {
             try {
-                types.addAll(NodeTypeRegistry.getInstance().getDefinitionsFromFile(new File(pkg.getFilePath() + "/" + s), pkg.getName()));
+                if (pkg.getResource(s) != null) {
+                    types.addAll(NodeTypeRegistry.getInstance().getDefinitionsFromFile(pkg.getResource(s), pkg.getRootFolder()));
+                }
             } catch (ParseException e) {
                 logger.error("Cannot parse definitions file "+s,e);
             } catch (IOException e) {

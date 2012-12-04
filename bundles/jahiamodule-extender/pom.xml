@@ -1,0 +1,140 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.jahia.bundles</groupId>
+        <artifactId>jahia-bundles</artifactId>
+        <version>6.7.0.0-SNAPSHOT</version>
+    </parent>
+
+    <name>Jahia Module OSGi Extender bundle</name>
+    <description>This OSGi module provides an extender that recogizes Jahia modules and installs them in the Jahia xCM
+        server.
+    </description>
+    <artifactId>org.jahia.bundles.extender.jahiamodules</artifactId>
+    <packaging>bundle</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Activator>
+                            org.jahia.bundles.extender.jahiamodules.Activator
+                        </Bundle-Activator>
+                        <Private-Package>
+                            org.jahia.bundles.extender.jahiamodules.*
+                        </Private-Package>
+                        <Import-Package>*,
+                            javax.el,
+                            javax.servlet.jsp,
+                            javax.servlet.jsp.tagext,
+                            org.osgi.service.packageadmin,
+                            org.apache.jasper.runtime,
+                            org.apache.taglibs.standard.functions,
+                            org.apache.taglibs.standard.tei,
+                            org.apache.taglibs.standard.tlv
+                        </Import-Package>
+                        <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
+                        <Embed-Transitive>true</Embed-Transitive>
+                        <_removeheaders>
+                            Include-Resource,
+                            Private-Package,
+                            Embed-Dependency,
+                            Embed-Transitive
+                        </_removeheaders>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+
+        <!-- Provided dependencies -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>provided</scope>
+            <version>2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
+            <version>${osgi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+            <scope>provided</scope>
+            <version>${osgi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.fileinstall</artifactId>
+            <scope>provided</scope>
+            <version>${felix.fileinstall.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.http.api</artifactId>
+            <scope>provided</scope>
+            <version>${felix.http.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.http.whiteboard</artifactId>
+            <version>${felix.http.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-impl</artifactId>
+            <version>6.7.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-taglib</artifactId>
+            <version>6.7.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.bundles</groupId>
+            <artifactId>org.jahia.bundles.url.jahiawar</artifactId>
+            <version>6.7.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.ops4j.pax.web</groupId>
+          <artifactId>pax-web-jsp</artifactId>
+          <version>3.0.0-SNAPSHOT</version>
+          <scope>provided</scope>
+        </dependency>
+
+        <!-- Embedded dependencies -->
+        <dependency>
+            <groupId>org.ops4j.pax.swissbox</groupId>
+            <artifactId>pax-swissbox-extender</artifactId>
+            <version>${pax.swissbox.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.swissbox</groupId>
+            <artifactId>pax-swissbox-core</artifactId>
+            <version>${pax.swissbox.version}</version>
+        </dependency>
+
+    </dependencies>
+
+</project>

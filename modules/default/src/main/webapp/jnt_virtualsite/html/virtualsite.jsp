@@ -81,7 +81,7 @@
     <%
         JCRNodeWrapper currentNode = (JCRNodeWrapper) pageContext.findAttribute("currentNode");
         JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(currentNode.getName());
-        NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(pack.getName());
+        NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(pack.getRootFolder());
         pageContext.setAttribute("nodeTypes",nti);
     %>
     <c:if test="${nodeTypes.size > 0}">

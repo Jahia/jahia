@@ -55,6 +55,7 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NodeIterator;
@@ -71,7 +72,7 @@ import java.util.zip.ZipException;
  * @author Sergiy Shyrkov
  * @author Thomas Draier
  */
-class TemplatePackageDeployer {
+public class TemplatePackageDeployer {
 
     private static Logger logger = LoggerFactory.getLogger(TemplatePackageDeployer.class);
 
@@ -310,14 +311,14 @@ class TemplatePackageDeployer {
         }
     }
 
-    private void initializeModuleContent(JahiaTemplatesPackage aPackage, JCRSessionWrapper session) throws RepositoryException {
+    public void initializeModuleContent(JahiaTemplatesPackage aPackage, JCRSessionWrapper session) throws RepositoryException {
         resetModuleNodes(aPackage, session);
 
         logger.info("Starting import for the module package '" + aPackage.getName() + "' including: "
                 + aPackage.getInitialImports());
         for (String imp : aPackage.getInitialImports()) {
             String targetPath = "/" + StringUtils.substringAfter(StringUtils.substringBeforeLast(imp, "."), "import-").replace('-', '/');
-            File importFile = new File(aPackage.getFilePath(), imp);
+            Resource importFile = aPackage.getResource(imp);
             logger.info("... importing " + importFile + " into " + targetPath);
             session.getPathMapping().put("/templateSets/", "/modules/");
             session.getPathMapping().put("/modules/" + aPackage.getRootFolder() + "/", "/modules/" + aPackage.getRootFolder() + "/" + aPackage.getVersion() + "/");
@@ -326,7 +327,7 @@ class TemplatePackageDeployer {
                 if (imp.toLowerCase().endsWith(".xml")) {
                     InputStream is = null;
                     try {
-                        is = new BufferedInputStream(new FileInputStream(importFile));
+                        is = new BufferedInputStream(importFile.getInputStream());
                         session.importXML(targetPath, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE);
                     } finally {
                         IOUtils.closeQuietly(is);
@@ -347,7 +348,15 @@ class TemplatePackageDeployer {
                 throw new RepositoryException(e);
             }
 
-            importFile.delete();
+            File realImportFile = null;
+            try {
+                realImportFile = importFile.getFile();
+            } catch (IOException ioe) {
+                realImportFile = null;
+            }
+            if (realImportFile != null) {
+                realImportFile.delete();
+            }
             session.save(JCRObservationManager.IMPORT);
         }
         cloneModuleInLive(aPackage);
@@ -384,13 +393,13 @@ class TemplatePackageDeployer {
 
     private void resetModuleNodes(JahiaTemplatesPackage pkg, JCRSessionWrapper session) throws RepositoryException {
         clearModuleNodes(pkg, session);
-        if (initModuleNode(session, pkg, false)) {
+        if (initModuleNode(session, pkg, true)) {
             resetModuleAttributes(session, pkg);
         }
         session.save();
     }
 
-    private void clearModuleNodes(JahiaTemplatesPackage pkg, JCRSessionWrapper session) throws RepositoryException {
+    public void clearModuleNodes(JahiaTemplatesPackage pkg, JCRSessionWrapper session) throws RepositoryException {
         if (session.nodeExists("/modules/" + pkg.getRootFolder() + "/" + pkg.getVersion())) {
             JCRNodeWrapper moduleNode = session.getNode("/modules/" + pkg.getRootFolder() + "/" + pkg.getVersion());
             NodeIterator nodeIterator = moduleNode.getNodes();
@@ -442,12 +451,19 @@ class TemplatePackageDeployer {
         } else {
             v = m.getNode("j:versionInfo");
         }
-        if (v.hasProperty("j:version")) {
+        if (!v.hasProperty("j:version")) {
             v.setProperty("j:version", pack.getVersion().toString());
             modified = true;
-        } else {
-            v.setProperty("j:version", pack.getVersion().toString());
-            modified = true;
+        }
+        if (pack.getSourcesFolder() != null) {
+            v.setProperty("j:sourcesFolder",pack.getSourcesFolder().getPath());
+        }
+        if (pack.getSourceControl() != null) {
+            try {
+                v.setProperty("j:scmUrl",pack.getSourceControl().getURI());
+            } catch (Exception e) {
+                logger.error("Cannot get SCM url");
+            }
         }
         if (updateDeploymentDate) {
             v.setProperty("j:deployementDate", new GregorianCalendar());
@@ -698,7 +714,8 @@ class TemplatePackageDeployer {
             }
             templatePackageRegistry.unregister(pack);
 
-            File rootFile = new File(pack.getFilePath()).getParentFile();
+            File rootFile = new File(SettingsBean.getInstance().getJahiaVarDiskPath()+"/deployedModules", pack.getRootFolder());
+            rootFile.mkdirs();
 
             clearModuleNodes(pack, session);
 

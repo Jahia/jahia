@@ -73,6 +73,7 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
 
 import org.slf4j.Logger;
+import org.springframework.core.io.FileSystemResource;
 import org.xml.sax.SAXException;
 
 import static org.junit.Assert.*;
@@ -1093,7 +1094,7 @@ public class ImportExportTest {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
-                    importExport.importZip(parentPath, zipFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_RENAME);
+                    importExport.importZip(parentPath, zipFile != null ? new FileSystemResource(zipFile) : null, DocumentViewImportHandler.ROOT_BEHAVIOUR_RENAME);
                     session.save();
                 } catch (Exception e) {
                     logger.error("Cannot create or publish site", e);

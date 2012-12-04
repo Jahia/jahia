@@ -43,8 +43,11 @@ package org.jahia.services.templates;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -71,6 +74,16 @@ public class GitSourceControlManagement extends SourceControlManagement {
         this.rootFolder = workingDirectory.getParentFile();
         executeCommand("git", "clone " + uri + " " + workingDirectory.getName());
         this.rootFolder = workingDirectory;
+    }
+
+    @Override
+    public String getURI() throws Exception {
+        ExecutionResult result = executeCommand("git", "remote -v");
+        String uri = StringUtils.substringBefore(StringUtils.substringAfter(result.out,"origin"),"(").trim();
+        if (!StringUtils.isEmpty(uri)) {
+            return uri;
+        }
+        return null;
     }
 
     @Override

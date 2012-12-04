@@ -598,7 +598,11 @@ public class ContentDefinitionHelper {
                 if (def.getSelector() == GWTJahiaNodeSelectorType.PICKER) {
                     JCRValueWrapper value = val instanceof JCRValueWrapper ? (JCRValueWrapper) val : new JCRValueWrapperImpl(val, def,
                             JCRSessionFactory.getInstance().getCurrentUserSession());
-                    return new GWTJahiaNodePropertyValue(theValue, navigation.getGWTJahiaNode((JCRNodeWrapper) value.getNode()), type);
+                    if (value.getNode() != null) {
+                        return new GWTJahiaNodePropertyValue(theValue, navigation.getGWTJahiaNode((JCRNodeWrapper) value.getNode()), type);
+                    } else {
+                        return null;
+                    }
                 } 
                 break;
             case PropertyType.UNDEFINED:

@@ -47,7 +47,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-taglib</artifactId>
     <name>Jahia Tag Libraries</name>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
 
     <dependencies>
         <!--Cross project dependencies-->
@@ -85,6 +85,7 @@
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>1.6</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -102,13 +103,35 @@
 
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>${jar.plugin.version}</version>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>${maven.bundle.plugin.version}</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>bundle</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>bundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
-                    <archive>
-                        <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
-                    </archive>
+                    <instructions>
+                        <Specification-Title>${project.name}</Specification-Title>
+                        <Implementation-Title>${project.name}</Implementation-Title>
+                        <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                        <Implementation-Vendor-Id>org.jahia</Implementation-Vendor-Id>
+                        <Extension-Name>org.jahia.taglibs</Extension-Name>
+                        <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
+                        <Embed-Transitive>true</Embed-Transitive>
+                        <_removeheaders>
+                            Include-Resource,
+                            Private-Package,
+                            Embed-Dependency,
+                            Embed-Transitive
+                        </_removeheaders>
+                    </instructions>
                 </configuration>
             </plugin>
             <plugin>

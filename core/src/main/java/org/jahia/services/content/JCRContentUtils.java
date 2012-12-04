@@ -163,17 +163,13 @@ public final class JCRContentUtils implements ServletContextAware {
     public static boolean check(String icon) {
         Boolean present = iconsPresence.get(icon);
         if (present == null) {
-            try {
-                String moduleName = StringUtils.substringBefore(icon, "/");
-                String pathAfter = StringUtils.substringAfter(icon, "/");
-                JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName);
-                icon = module.getRootFolder() + "/" + module.getVersion() + "/" + pathAfter;
-                present = Jahia.getStaticServletConfig().getServletContext().getResource("/modules/" + icon + ".png") != null;
-                iconsPresence.put(icon, present);
-            } catch (MalformedURLException e) {
-                logger.warn(e.getMessage(), e);
-                present = Boolean.FALSE;
-            }
+            String moduleName = StringUtils.substringBefore(icon, "/");
+            String pathAfter = StringUtils.substringAfter(icon, "/");
+            JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName);
+            icon = module.getRootFolder() + "/" + module.getVersion() + "/" + pathAfter;
+            Resource r = module.getResource(pathAfter + ".png");
+            present = r != null && r.exists();
+            iconsPresence.put(icon, present);
         }
         return present;
     }
@@ -710,7 +706,7 @@ public final class JCRContentUtils implements ServletContextAware {
     public static String getIconsFolder(final ExtendedNodeType primaryNodeType) throws RepositoryException {
         String systemId = primaryNodeType.getSystemId();
         JahiaTemplatesPackage aPackage = !systemId.startsWith("system-") ? ServicesRegistry
-                .getInstance().getJahiaTemplateManagerService().getTemplatePackage(systemId) : null;
+                .getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(systemId) : null;
 
         return aPackage != null ? aPackage.getRootFolder() + "/icons/" : "assets/icons/";
     }

@@ -19,9 +19,16 @@
         <property name="sitesService" ref="JahiaSitesService"/>
         <property name="service" ref="JCRStoreService"/>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
-        <property name="publicationService" ref="jcrPublicationService"/>
         <property name="sessionKeepAliveCheckInterval" value="${jahia.jcr.observers.sessionKeepAliveCheckInterval:5000}" />
-        <property name="groovyPatcher" ref="groovyPatcher" />
+    </bean>
+
+    <bean id="AbstractJCRStoreProviderPrototype" class="org.jahia.services.content.JCRStoreProvider" abstract="true" destroy-method="stop" scope="prototype">
+        <property name="userManagerService" ref="JahiaUserManagerService"/>
+        <property name="groupManagerService" ref="JahiaGroupManagerService"/>
+        <property name="sitesService" ref="JahiaSitesService"/>
+        <property name="service" ref="JCRStoreService"/>
+        <property name="sessionFactory" ref="jcrSessionFactory"/>
+        <property name="sessionKeepAliveCheckInterval" value="${jahia.jcr.observers.sessionKeepAliveCheckInterval:5000}" />
     </bean>
 
     <bean id="DefaulJCRStoreProvider" class="org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider"
@@ -30,6 +37,7 @@
         <property name="repository" ref="jackrabbit"/>
         <property name="mountPoint" value="/"/>
         <property name="webdavPath" value="/repository"/>
+        <property name="groovyPatcher" ref="groovyPatcher" />
         <!--
         <property name="rmibind" value="jackrabbit"/>
         -->
@@ -571,14 +579,11 @@
         <!--<property name="mountPoint" value="/tmp2"/>-->
     <!--</bean>-->
 
-    <bean id="ModulestoreProvider" class="org.jahia.services.content.impl.external.ExternalContentStoreProvider"  parent="AbstractJCRStoreProvider">
-        <property name="key" value="module"/>
-        <property name="dataSource" ref="ModulesDataSource"/>
-        <property name="mountPoint" value="/modulesFileSystem"/>
+    <bean id="ModulesStoreProviderPrototype" class="org.jahia.services.content.impl.external.ExternalContentStoreProvider" parent="AbstractJCRStoreProviderPrototype" scope="prototype">
+
     </bean>
-    
-    <bean id="ModulesDataSource" class="org.jahia.services.content.impl.external.modules.ModulesDataSource">
-        <property name="rootResource" value="/modules"/>
+
+    <bean id="ModulesDataSourcePrototype" class="org.jahia.services.content.impl.external.modules.ModulesDataSource" scope="prototype">
         <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
         <property name="supportedNodeTypes">
             <list>
@@ -610,4 +615,5 @@
             </util:map>
         </property>
     </bean>
+
 </beans>

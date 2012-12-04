@@ -172,7 +172,7 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
 
             Resource[] resources = new Resource[patches.size()];
             for (int i = 0; i < patches.size(); i++) {
-                resources[i] = new FileSystemResource(patches.get(i));
+                resources[i] = patches.get(i) == null ? null : new FileSystemResource(patches.get(i));
             }
 
             executeScripts(resources);

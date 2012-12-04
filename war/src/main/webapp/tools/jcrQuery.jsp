@@ -21,6 +21,7 @@
 <%@page import="org.jahia.services.content.JCRSessionWrapper"%>
 <%@page import="org.jahia.utils.LanguageCodeConverters"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="facet" uri="http://www.jahia.org/tags/facetLib" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
@@ -205,9 +206,14 @@ try {
         QueryResult result = q.execute();
         pageContext.setAttribute("count", JCRContentUtils.size(result.getNodes()));
         String countColumnName = null;
+   
         for (String columnName : result.getColumnNames()) {
             if (columnName.startsWith("rep:count(")) {
                 countColumnName = columnName;
+                break;
+            } else if (columnName.startsWith("rep:facet(")) {
+                pageContext.setAttribute("hasFacets", true);
+                pageContext.setAttribute("result", result);                
                 break;
             }
         }
@@ -234,6 +240,35 @@ try {
     </c:if>
 <c:if test="${displayLimit != -1}">
 <% pageContext.setAttribute("maxIntValue", Integer.MAX_VALUE); %>
+<c:if test="${hasFacets}">
+    <div class="facets">Facets:
+    <c:forEach items="${result.facetFields}" var="currentFacet">
+        <h5><facet:facetLabel currentFacetField="${currentFacet}"/></h5>
+        <ul>
+		<c:forEach items="${currentFacet.values}" var="facetValue">
+		    <li><facet:facetValueLabel currentFacetField="${currentFacet}" facetValueCount="${facetValue}"/> (${facetValue.count})<br/></li>
+		</c:forEach>
+		</ul>
+    </c:forEach>
+    <c:forEach items="${result.facetDates}" var="currentFacet">
+        <h5><facet:facetLabel currentFacetField="${currentFacet}"/></h5>
+        <ul>
+		<c:forEach items="${currentFacet.values}" var="facetValue">
+		    <li><facet:facetValueLabel currentFacetField="${currentFacet}" facetValueCount="${facetValue}"/> (${facetValue.count})<br/></li>
+		</c:forEach>
+		</ul>        
+    </c:forEach>
+    <c:forEach items="${result.facetQuery}" var="facetValue" varStatus="iterationStatus">
+        <c:if test="${iterationStatus.first}">
+            <ul>
+        </c:if>
+        <li><facet:facetValueLabel currentActiveFacetValue="${facetValue}"/> (${facetValue.value})<br/></li>
+        <c:if test="${iterationStatus.last}">
+            </ul>
+        </c:if>        
+    </c:forEach>    
+    </div>
+</c:if>
 <ol start="${offset + 1}">
 <c:choose>
 <c:when test="${not empty countResult}">

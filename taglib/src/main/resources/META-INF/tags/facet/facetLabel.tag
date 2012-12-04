@@ -3,7 +3,7 @@
 <%@ attribute name="var" required="false" type="java.lang.String" description="Request scoped attribute name for setting the label."%>
 <%@ attribute name="currentFacetField" required="false" type="org.apache.solr.client.solrj.response.FacetField" description="Either the FacetField for the current facet." %>
 <%@ attribute name="currentActiveFacet" required="false" type="java.lang.Object" description="Alternatively the Map.Entry with KeyValue from the active facet filters variable." %>
-<%@ attribute name="facetLabels" required="true" type="java.util.Map" description="Mapping between facet name and label." %>
+<%@ attribute name="facetLabels" required="false" type="java.util.Map" description="Mapping between facet name and label." %>
 <%@ variable name-given="facetLabel" scope="AT_END"%>
 <%@ variable name-given="mappedFacetLabel" scope="AT_END"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>

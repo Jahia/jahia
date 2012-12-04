@@ -803,7 +803,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.ModulesTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>/modules/$siteKey/$moduleversion/sources</value>
+                                    <value>/modulesFileSystem/$siteKey/$moduleversion/*</value>
                                 </list>
                             </property>
                             <property name="folderTypes">

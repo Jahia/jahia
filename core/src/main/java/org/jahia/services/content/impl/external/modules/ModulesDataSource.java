@@ -40,8 +40,6 @@
 
 package org.jahia.services.content.impl.external.modules;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -49,7 +47,6 @@ import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileType;
 import org.jahia.api.Constants;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.impl.external.ExternalData;
 import org.jahia.services.content.impl.external.vfs.VFSDataSource;
@@ -73,8 +70,6 @@ public class ModulesDataSource extends VFSDataSource {
 
     private static final List<String> JCR_CONTENT_LIST = Arrays.asList(Constants.JCR_CONTENT);
 
-    private JahiaTemplatesPackage module;
-
     private Map<String, String> fileTypeMapping;
 
     private Map<String, String> folderTypeMapping;
@@ -85,14 +80,29 @@ public class ModulesDataSource extends VFSDataSource {
 
     @Override
     public List<String> getChildren(String path) {
-        List<String> children = super.getChildren(path);
-        CollectionUtils.filter(children, new Predicate() {
-            @Override
-            public boolean evaluate(Object object) {
-                return !object.toString().startsWith(".");
+        try {
+            if (!path.endsWith("/"+Constants.JCR_CONTENT)) {
+                FileObject fileObject = getFile(path);
+                if (fileObject.getType() == FileType.FILE) {
+                    return JCR_CONTENT_LIST;
+                } else if (fileObject.getType() == FileType.FOLDER) {
+                    List<String> children = new ArrayList<String>();
+                    for (FileObject object : fileObject.getChildren()) {
+                        if (path.equals("/") && templateManagerService.getTemplatePackageByFileName(object.getName().getBaseName()) != null)  {
+                            children.add(object.getName().getBaseName());
+                        } else if (!path.equals("/")) {
+                            children.add(object.getName().getBaseName());
+                        }
+                    }
+                    return children;
+                } else {
+                    logger.warn("Found non file or folder entry, maybe an alias. VFS file type=" + fileObject.getType());
+                }
             }
-        });
-        return children;
+        } catch (FileSystemException e) {
+            logger.error("Cannot get node children",e);
+        }
+        return new ArrayList<String>();
     }
 
     @Override
@@ -100,17 +110,17 @@ public class ModulesDataSource extends VFSDataSource {
         int relativeDepth = getFile("/").getName().getRelativeName(fileObject.getName()).split("/").length;
         String type;
         if (fileObject.getType().equals(FileType.FOLDER)) {
-            if (fileObject.getName().equals(getFile("/").getName())) {
+            if (relativeDepth == 2) {
                 type = Constants.JAHIANT_MODULEVERSIONFOLDER;
             } else {
                 type = folderTypeMapping.get(fileObject.getName().getBaseName());
             }
             if (type == null) {
-                if (relativeDepth == 1 && fileObject.getName().getBaseName().contains("_")) {
+                if (relativeDepth == 3 && fileObject.getName().getBaseName().contains("_")) {
                     type = Constants.JAHIANT_NODETYPEFOLDER;
                 } else {
                     FileObject parent = fileObject.getParent();
-                    if (relativeDepth == 2 && parent != null && Constants.JAHIANT_NODETYPEFOLDER.equals(getDataType(parent))) {
+                    if (relativeDepth == 4 && parent != null && Constants.JAHIANT_NODETYPEFOLDER.equals(getDataType(parent))) {
                         type = Constants.JAHIANT_TEMPLATETYPEFOLDER;
                     }
                 }
@@ -145,8 +155,11 @@ public class ModulesDataSource extends VFSDataSource {
         try {
             ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(data.getType());
             if (type.isNodeType("jnt:moduleVersionFolder")) {
-                String name = module.getName();
-                String v = module.getVersion().toString();
+                String v = StringUtils.substringAfterLast(data.getPath(), "/");
+                String name = StringUtils.substringBeforeLast(data.getPath(), "/");
+                name = StringUtils.substringAfterLast(name, "/");
+                name = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(name).getName();
+
                 data.getProperties().put("j:title", new String[]{name + " (" + v + ")"});
             } else if (type.isNodeType("jnt:editableFile")) {
                 // set source code
@@ -155,7 +168,7 @@ public class ModulesDataSource extends VFSDataSource {
                     is = getFile(path).getContent().getInputStream();
                     String[] propertyValue = {IOUtils.toString(is, Charsets.UTF_8)};
                     data.getProperties().put("sourceCode", propertyValue);
-                    data.getProperties().put("nodeTypeName",new String[] { path.split("/")[1].replace("_", ":") } );
+                    data.getProperties().put("nodeTypeName",new String[] { path.split("/")[3].replace("_",":") } );
                 } catch (Exception e) {
                     logger.error("Failed to read source code", e);
                 } finally {
@@ -342,11 +355,4 @@ public class ModulesDataSource extends VFSDataSource {
         this.templateManagerService = templateManagerService;
     }
 
-    public JahiaTemplatesPackage getModule() {
-        return module;
-    }
-
-    public void setModule(JahiaTemplatesPackage module) {
-        this.module = module;
-    }
 }

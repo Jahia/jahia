@@ -66,6 +66,8 @@ import javax.jcr.query.qom.PropertyValue;
 import javax.jcr.query.qom.Selector;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Handle facet queries
@@ -94,7 +96,7 @@ public class FacetHandler {
 
     private static final String FIELD_SPECIFIC_PREFIX = "f.";
 
-
+    private static final Pattern valueWithQuery = Pattern.compile("(.*)##q\\-\\>##(.*)");    
 
     // Facet stuff
     boolean facetsResolved = false;
@@ -121,13 +123,16 @@ public class FacetHandler {
     OpenBitSet docIdSet;
 
     SearchIndex index;
+    
+    NamespaceMappings nsMappings;
 
-    public FacetHandler(Map<String, PropertyValue> columns, Selector selector, OpenBitSet docIdSet, SearchIndex index, SessionImpl session) {
+    public FacetHandler(Map<String, PropertyValue> columns, Selector selector, OpenBitSet docIdSet, SearchIndex index, SessionImpl session, NamespaceMappings nsMappings) {
         this.columns = columns;
         this.selector = selector;
         this.session = session;
         this.docIdSet = docIdSet;
         this.index = index;
+        this.nsMappings = nsMappings;
         totalSize = docIdSet.cardinality();
     }
 
@@ -163,7 +168,6 @@ public class FacetHandler {
             String facetFunctionPrefix = session.getJCRName(REP_FACET_LPAR);
             NamedList<Object> parameters = new NamedList<Object>();
             int counter = 0;
-            Set<Integer> selectorIndexes = new HashSet<Integer>();
             for (Map.Entry<String, PropertyValue> column : columns.entrySet()) {
                 if (isFacetFunction(column.getKey(), session)) {
                     String facetOptions = StringUtils.substring(column.getKey(), StringUtils
@@ -251,20 +255,12 @@ public class FacetHandler {
                                     .getValue().getSelectorName(), column.getValue().getPropertyName()));
                         }
                     }
-                    int i = 0;
-//                    for (String selectorName : getSelectorNames()) {
-//                        if (selectorName.equals(column.getValue().getSelectorName())) {
-//                            selectorIndexes.add(i);
-//                            break;
-//                        }
-//                        i++;
-//                    }
                     counter++;
                 }
             }
 
             SimpleJahiaJcrFacets facets = new SimpleJahiaJcrFacets(searcher,
-                    docIdSet, SolrParams.toSolrParams(parameters), index, session);
+                    docIdSet, SolrParams.toSolrParams(parameters), index, session, nsMappings);
             extractFacetInfo(facets.getFacetCounts());
         } catch (Exception ex) {
             log.warn("Problem creating facets: ", ex);
@@ -333,10 +329,17 @@ public class FacetHandler {
                         SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR);
                 FacetField f = new FacetField(key);
                 for (Map.Entry<String, Number> entry : facet.getValue()) {
-                    f.add(entry.getKey(), entry.getValue().longValue());
+                    String facetValue = entry.getKey();
+                    String query = entry.getKey();                    
+                    Matcher matcher = valueWithQuery.matcher(facetValue);
+                    if (matcher.matches()) {
+                        query = matcher.group(2);
+                        facetValue = matcher.replaceFirst("$1");
+                    }
+                    f.add(facetValue, entry.getValue().longValue());
                     f.getValues().get(f.getValueCount() - 1).setFilterQuery(
                             ClientUtils.escapeQueryChars(fieldInIndex) + ":"
-                                    + ClientUtils.escapeQueryChars(entry.getKey()));
+                                    + ClientUtils.escapeQueryChars(query));
                 }
 
                 _facetFields.add(f);

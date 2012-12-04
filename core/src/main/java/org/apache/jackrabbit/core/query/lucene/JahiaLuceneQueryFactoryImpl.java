@@ -314,7 +314,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
                 OpenBitSet docIdSet = new OpenBitSetDISI(new DocIdBitSet(bitset).iterator(), bitset.size());
                 
-                FacetHandler h = new FacetHandler(columns, selector, docIdSet, index, session);
+                FacetHandler h = new FacetHandler(columns, selector, docIdSet, index, session, nsMappings);
                 h.handleFacets(reader);
                 rowList.add(0, h.getFacetsRow());
             } else if (countType != CountHandler.CountType.NO_COUNT) {

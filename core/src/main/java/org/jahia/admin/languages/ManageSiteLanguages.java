@@ -204,8 +204,11 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
             JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
             service.updateSite(site);
             JahiaSite jahiaSite = service.getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
-            jahiaSite.getLanguages().addAll(site.getLanguages());
-            service.updateSite(jahiaSite);
+            // update the system site only if it does not yet contain at least one of the site languages
+            if (!jahiaSite.getLanguages().containsAll(site.getLanguages())) {
+                jahiaSite.getLanguages().addAll(site.getLanguages());
+                service.updateSite(jahiaSite);
+            }
         } catch (JahiaException e) {
             logger.error(e.getMessage(), e);
         }

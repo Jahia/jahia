@@ -970,8 +970,11 @@ public class ManageSites extends AbstractAdministrationModule {
                 sMgr.updateSite(site);
 
                 JahiaSite jahiaSite = sMgr.getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
-                jahiaSite.getLanguages().addAll(site.getLanguages());
-                sMgr.updateSite(jahiaSite);
+                // update the system site only if it does not yet contain at least one of the site languages
+                if (!jahiaSite.getLanguages().containsAll(site.getLanguages())) {
+                    jahiaSite.getLanguages().addAll(site.getLanguages());
+                    sMgr.updateSite(jahiaSite);
+                }
             } else {
                 warningMsg =
                         getMessage("label.error.processingRequestError");

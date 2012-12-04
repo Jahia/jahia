@@ -117,8 +117,11 @@ public class AdminCreateSiteAction extends AdminAction {
                 }
 
                 JahiaSite systemSite = sitesService.getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
-                systemSite.getLanguages().addAll(site.getLanguages());
-                sitesService.updateSite(systemSite);
+                // update the system site only if it does not yet contain at least one of the site languages
+                if (!systemSite.getLanguages().containsAll(site.getLanguages())) {
+                    systemSite.getLanguages().addAll(site.getLanguages());
+                    sitesService.updateSite(systemSite);
+                }
             } else {
                 result.put("warn", getMessage(renderContext.getUILocale(), "label.error.processingRequestError"));
                 return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject(result));

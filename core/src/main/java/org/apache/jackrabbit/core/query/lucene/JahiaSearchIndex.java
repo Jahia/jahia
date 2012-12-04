@@ -124,14 +124,30 @@ public class JahiaSearchIndex extends SearchIndex {
         if (!removeList.isEmpty()) {
             final IndexReader reader = getIndexReader();
             final Searcher searcher = new IndexSearcher(reader);
-            int removeSubListStart = 0;
-            int removeSubListEnd = Math.min(removeList.size(), BooleanQuery.getMaxClauseCount());
-            while (removeSubListStart < removeList.size()) {
-                BooleanQuery query = new BooleanQuery();
-                for (final NodeId nodeId : new ArrayList<NodeId>(removeList.subList(removeSubListStart, removeSubListEnd))) {
-                    TermQuery termQuery = new TermQuery(new Term(JahiaNodeIndexer.FACET_HIERARCHY, nodeId.toString()));
-                    query.add(new BooleanClause(termQuery, BooleanClause.Occur.SHOULD));
+            try {
+                int removeSubListStart = 0;
+                int removeSubListEnd = Math.min(removeList.size(), BooleanQuery.getMaxClauseCount());
+                while (removeSubListStart < removeList.size()) {
+                    BooleanQuery query = new BooleanQuery();
+                    for (final NodeId nodeId : new ArrayList<NodeId>(removeList.subList(removeSubListStart, removeSubListEnd))) {
+                        TermQuery termQuery = new TermQuery(new Term(JahiaNodeIndexer.FACET_HIERARCHY, nodeId.toString()));
+                        query.add(new BooleanClause(termQuery, BooleanClause.Occur.SHOULD));
+                    }
+                    searcher.search(query, new HitCollector() {
+                        public void collect(int doc, float score) {
+                            try {
+                                String uuid = reader.document(doc).get("_:UUID");
+                                addIdToBeIndexed(new NodeId(uuid), addedIds, removedIds, addList, removeList);
+                            } catch (Exception e) {
+                                log.warn("Documents referencing moved/renamed hierarchy facet nodes may not be updated", e);
+                            }
+                        }
+                    });
+                    removeSubListStart += BooleanQuery.getMaxClauseCount();
+                    removeSubListEnd =  Math.min(removeList.size(), removeSubListEnd + BooleanQuery.getMaxClauseCount());
+    
                 }
+<<<<<<< .working
                 searcher.search(query, new AbstractHitCollector() {
                     public void collect(int doc, float score) {
                         try {
@@ -145,6 +161,11 @@ public class JahiaSearchIndex extends SearchIndex {
                 removeSubListStart += BooleanQuery.getMaxClauseCount();
                 removeSubListEnd =  Math.min(removeList.size(), removeSubListEnd + BooleanQuery.getMaxClauseCount());
 
+=======
+            } finally {
+                searcher.close();
+                Util.closeOrRelease(reader);
+>>>>>>> .merge-right.r43869
             }
         }
 
@@ -172,7 +193,14 @@ public class JahiaSearchIndex extends SearchIndex {
             }
         }
 
+        long timer = System.currentTimeMillis();
+        
         super.updateNodes(removeList.iterator(), addList.iterator());
+        
+        if (log.isDebugEnabled()) {
+            log.info("Re-indexed nodes in {} ms: {} removed, {} added", new Object[] {
+                    (System.currentTimeMillis() - timer), removeList.size(), addList.size() });
+        }
     }
     
     private void recurseTreeForAclIdSetting (NodeState node, Set<NodeId> addedIds, Set<NodeId> removedIds, List<NodeState> addList, List<NodeId> removeList, ItemStateManager itemStateManager) throws ItemStateException {

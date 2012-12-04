@@ -547,6 +547,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
         try {
             NodeState node = (NodeState) stateProvider.getItemState(itemId);
             Name typeName = node.getNodeTypeName();
+            boolean isCategoryType = typeName.toString().equals("{" + Constants.JAHIANT_NS + "}" + "category");
             NodeState parent = (NodeState) stateProvider.getItemState(node
                     .getParentId());
 
@@ -558,11 +559,13 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 parent = (NodeState) stateProvider.getItemState(node
                         .getParentId());
             }
-            while (!"/".equals(resolver.getJCRPath(hierarchyMgr.getPath(node
-                    .getNodeId())))) {
+            String jcrPath = resolver.getJCRPath(hierarchyMgr.getPath(node.getNodeId()));
+            // we stop either at the root (/) or in case of categories also at /sites/systemsite 
+            while (!"/".equals(jcrPath) && (!isCategoryType || !("0:/0:sites/0:systemsite").equals(jcrPath))) {
                 parentIds.add(node.getNodeId().toString());
                 node = (NodeState) stateProvider.getItemState(node
                         .getParentId());
+                jcrPath = resolver.getJCRPath(hierarchyMgr.getPath(node.getNodeId()));
             }
         } catch (ItemStateException e) {
             logger.error(e.getMessage(), e);

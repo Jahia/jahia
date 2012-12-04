@@ -1,0 +1,4 @@
+<module rename-to="org.jahia.ajax.gwt.module.admin.Admin">
+    <inherits name="org.jahia.ajax.gwt.module.admin.Admin"/>
+    <collapse-all-properties />
+</module>

@@ -1,0 +1,4 @@
+<module rename-to="org.jahia.ajax.gwt.module.edit.Edit">
+    <inherits name="org.jahia.ajax.gwt.module.edit.Edit"/>
+    <collapse-all-properties />
+</module>

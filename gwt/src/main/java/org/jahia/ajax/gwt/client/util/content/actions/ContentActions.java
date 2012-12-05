@@ -277,7 +277,7 @@ public class ContentActions {
     }
     
     public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent, String name, boolean includeSubTypes, Set<String> displayedNodeTypes) {
-        if (parent != null && !parent.isFile()) {
+        if (parent != null) {
             ContentTypeWindow.createContent(linker, name, nodeTypes != null ? Arrays.asList(nodeTypes.split(" ")) : null, new HashMap<String, GWTJahiaNodeProperty>(), parent, includeSubTypes, false, displayedNodeTypes);
         }
     }

@@ -110,10 +110,10 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
             final String link;
             if (onLanguageSwitch == null || onLanguageSwitch.length() == 0 || InitLangBarAttributes.STAY_ON_CURRENT_PAGE.equals(
                     onLanguageSwitch)) {
-                link = generateCurrentNodeLangSwitchLink(languageCode);
+                link = appendRequestParameters(generateCurrentNodeLangSwitchLink(languageCode));
 
             } else if (isRedirectToHomePageActivated) {
-                link = generateNodeLangSwitchLink(rootPage, languageCode);
+                link = appendRequestParameters(generateNodeLangSwitchLink(rootPage, languageCode));
 
             } else {
                 throw new JspTagException("Unknown onLanguageSwitch attribute value " + onLanguageSwitch);
@@ -174,7 +174,17 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
 
         return SKIP_BODY;
     }
-
+    private String appendRequestParameters(String link) {
+		java.util.Enumeration<String> paramNames = getRenderContext().getRequest().getParameterNames();
+    	java.lang.StringBuffer params = new java.lang.StringBuffer();
+    	char seperator = '?';
+    	while(paramNames.hasMoreElements()) {
+    		String param = paramNames.nextElement();
+    		params.append(seperator).append(param).append("=").append(getRenderContext().getRequest().getParameter(param));
+    		seperator = '&';
+    	}
+    	return link + params;
+    }
     public int doEndTag() {
         onLanguageSwitch = null;
         redirectCssClassName = null;

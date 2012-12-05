@@ -449,7 +449,7 @@
                         </property>
                     </bean>
                 </entry>
-                <entry key="nt:nodeType">
+                <entry key="jnt:nodeType">
                     <bean parent="studioBaseEngineConfiguration">
                         <property name="engineTabs">
                             <list>
@@ -457,7 +457,7 @@
                                     <property name="id" value="baseProperties"/>
                                     <property name="titleKey" value="label.engineTab.definitions.baseAttributes"/>
                                     <property name="tabItem">
-                                        <bean class="org.jahia.ajax.gwt.client.widget.definitionsmodeler.BaseAttributesTabItem"/>
+                                        <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ContentTabItem"/>
                                     </property>
                                 </bean>
                                 <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
@@ -892,6 +892,16 @@
                                         </property>
                                         <property name="titleKey" value="label.newJavascriptFile"/>
                                         <property name="icon" value="newContent"/>
+                                    </bean>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                                                <property name="parentTypes" value="jnt:definitionFile"/>
+                                                <property name="nodeTypes" value="jnt:primaryNodeType jnt:mixinNodeType"/>
+                                            </bean>
+                                        </property>
+                                        <property name="titleKey" value="label.newDefinition"/>
+                                        <property name="icon" value="newDefinition"/>
                                     </bean>
 
                                     <ref bean="Toolbar.Item.Upload"/>

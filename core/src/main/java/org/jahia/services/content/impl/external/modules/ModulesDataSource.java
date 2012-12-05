@@ -40,6 +40,12 @@
 
 package org.jahia.services.content.impl.external.modules;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -55,8 +61,10 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.utils.LanguageCodeConverters;
 import org.springframework.core.io.Resource;
 
+import javax.annotation.Nullable;
 import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeTypeIterator;
@@ -236,15 +244,31 @@ public class ModulesDataSource extends VFSDataSource {
         if (!mixins.isEmpty()) {
             properties.put("j:mixins", mixins.toArray(new String[mixins.size()]));
         }
+
         properties.put("j:isAbstract", new String[]{String.valueOf(nodeType.isAbstract())});
         properties.put("j:isQueryable", new String[]{String.valueOf(nodeType.isQueryable())});
-        properties.put("j:isMixin", new String[]{String.valueOf(nodeType.isMixin())});
         properties.put("j:hasOrderableChildNodes", new String[]{String.valueOf(nodeType.hasOrderableChildNodes())});
+        properties.put("j:itemsType", new String[]{String.valueOf(nodeType.getItemsType())});
+
+        Function<ExtendedNodeType,String> transformName = new Function<ExtendedNodeType,String>() {
+            public String apply(@Nullable ExtendedNodeType from) { return from != null ? from.getName() : null; }
+        };
+        properties.put("j:mixinExtends", Collections2.<ExtendedNodeType,String>transform(nodeType.getMixinExtends(), transformName).toArray(new String[nodeType.getMixinExtends().size()]));
         String primaryItemName = nodeType.getPrimaryItemName();
         if (primaryItemName != null) {
             properties.put("j:primaryItemName", new String[]{primaryItemName});
         }
-        ExternalData externalData = new ExternalData(path, path, "jnt:nodeType", properties);
+        ExternalData externalData = new ExternalData(path, path, nodeType.isMixin() ? "jnt:mixinNodeType" : "jnt:primaryNodeType", properties);
+        Map<String, Map<String,String[]>> i18nProperties = new HashMap<String, Map<String,String[]>>();
+
+        i18nProperties.put("jcr:title",new HashMap<String, String[]>());
+        i18nProperties.put("jcr:description",new HashMap<String, String[]>());
+        for (Locale locale : LanguageCodeConverters.getAvailableBundleLocales()) {
+            i18nProperties.get("jcr:title").put(locale.toString(), new String[] { nodeType.getLabel(locale) });
+            i18nProperties.get("jcr:description").put(locale.toString(), new String[] { nodeType.getDescription(locale) });
+        }
+
+        externalData.setI18nProperties(i18nProperties);
         return externalData;
     }
 

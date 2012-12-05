@@ -115,8 +115,15 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                     path = StringUtils.substringBeforeLast(path, "//*");
                     subTree = true;
                 }
-                final JCRSessionWrapper jcrSessionWrapper = sessionFactory.getCurrentUserSession(null, locale, fallbackLocale);
-                final JCRNodeWrapper node = jcrSessionWrapper.getNode(path);
+                JCRSessionWrapper jcrSessionWrapper = contextNode.getSession();
+                JCRNodeWrapper node;
+                if (path.equals(".")) {
+                    node = contextNode;
+                } else if (path.startsWith("./")) {
+                    node = contextNode.getNode(path.substring(2));
+                } else {
+                    node = jcrSessionWrapper.getNode(path);
+                }
                 addSubnodes(listValues, nodetype, node, subTree, returnType);
             } catch (PathNotFoundException e) {
             } catch (Exception e) {

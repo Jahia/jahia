@@ -46,6 +46,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeTypeIterator;
 import java.util.*;
@@ -64,17 +65,26 @@ public class NodeTypesChoiceListInitializerImpl implements ChoiceListInitializer
         if (StringUtils.isEmpty(param)) {
             param = "jmix:editorialContent";
         }
+        NodeTypeIterator nti;
         try {
-            ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(param);
-            NodeTypeIterator nti = nodeType.getSubtypes();
+            if (param.startsWith("MIXIN")) {
+                nti = NodeTypeRegistry.getInstance().getMixinNodeTypes();
+            } else if (param.startsWith("PRIMARY")) {
+                nti = NodeTypeRegistry.getInstance().getPrimaryNodeTypes();
+            } else if (param.startsWith("ALL")) {
+                nti = NodeTypeRegistry.getInstance().getAllNodeTypes();
+            } else {
+                ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(param);
+                nti = nodeType.getSubtypes();
+            }
             while (nti.hasNext()) {
                 ExtendedNodeType type = (ExtendedNodeType) nti.next();
                 listValues.add(new ChoiceListValue(type.getLabel(locale), type.getName()));
             }
-        } catch (NoSuchNodeTypeException e) {
+        } catch (RepositoryException e) {
             logger.error("Cannot get type",e);
         }
-        
+
         Collections.sort(listValues);
         
         return listValues;

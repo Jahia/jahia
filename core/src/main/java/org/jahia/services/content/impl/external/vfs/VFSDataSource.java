@@ -97,13 +97,24 @@ public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Wr
         } catch (IllegalArgumentException iae) {
             // this is expected, we should not be using UUIDs
         }
-        FileObject fileObject = null;
-        try {
-            fileObject = manager.resolveFile(identifier);
-            if (!fileObject.exists()) {
+        if (identifier.startsWith("/")) {
+            try {
+                return getItemByPath(identifier);
+            } catch (PathNotFoundException e) {
                 throw new ItemNotFoundException(identifier);
             }
-            return getFile(fileObject);
+        }
+        FileObject fileObject = null;
+        try {
+            if (identifier.startsWith(root)) {
+                fileObject = manager.resolveFile(identifier);
+                if (!fileObject.exists()) {
+                    throw new ItemNotFoundException(identifier);
+                }
+                return getFile(fileObject);
+            } else {
+                throw new ItemNotFoundException("File system exception while trying to retrieve " + identifier);
+            }
         } catch (FileSystemException fse) {
             throw new ItemNotFoundException("File system exception while trying to retrieve " + identifier, fse);
         }
@@ -250,7 +261,7 @@ public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Wr
 
         String path = content.getFile().getName().getPath().substring(rootPath.length());
 
-        ExternalData externalData = new ExternalData(null, path + "/"+Constants.JCR_CONTENT, Constants.NT_RESOURCE, properties);
+        ExternalData externalData = new ExternalData(path + "/"+Constants.JCR_CONTENT, path + "/"+Constants.JCR_CONTENT, Constants.NT_RESOURCE, properties);
         externalData.setBinaryProperties(binaryProperties);
         return externalData;
     }

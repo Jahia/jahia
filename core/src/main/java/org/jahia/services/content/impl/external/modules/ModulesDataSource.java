@@ -341,7 +341,7 @@ public class ModulesDataSource extends VFSDataSource {
 
     public void setRootResource(Resource root) {
         try {
-            super.setRoot(root.getFile().getPath());
+            super.setRoot("file://"+root.getFile().getPath());
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }

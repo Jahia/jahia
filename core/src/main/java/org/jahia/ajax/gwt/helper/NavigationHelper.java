@@ -114,9 +114,6 @@ public class NavigationHelper {
         if (node == null) {
             throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.parent.node.is.null",uiLocale));
         }
-        if (node.isFile()) {
-            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.can.t.list.the.children.of.a.file",uiLocale));
-        }
         final List<GWTJahiaNode> gwtNodeChildren = new ArrayList<GWTJahiaNode>();
         try {
             getMatchingChilds(nodeTypes, mimeTypes, nameFilters, fields, node, gwtNodeChildren, checkSubChild,
@@ -205,6 +202,15 @@ public class NavigationHelper {
                 if (hasOrderableChildren) {
                     gwtChildNode.set("index", new Integer(i++));
                 }
+                NodeIterator ni = childNode.getNodes();
+                gwtChildNode.setHasChildren(false);
+                while (ni.hasNext()) {
+                    Node n = ni.nextNode();
+                    if (matchesNodeType(n, nodeTypes) && matchesFilters(n.getName(), nameFilters)) {
+                        gwtChildNode.setHasChildren(true);
+                        break;
+                    }
+                }
                 gwtNodeChildren.add(gwtChildNode);
             } else if (checkSubChild && childNode.hasNodes()) {
                 getMatchingChilds(nodeTypes, mimeTypes, nameFilters, fields, childNode, gwtNodeChildren, checkSubChild,
@@ -236,13 +242,12 @@ public class NavigationHelper {
         // there are filters, but not a file
         if (!node.isFile()) {
             return true;
+        } else {
+            return matchesFilters(node.getFileContent().getContentType(), filters);
         }
-
-        // do filter
-        return matchesFilters(node.getFileContent().getContentType(), filters);
     }
 
-    protected static boolean matchesNodeType(JCRNodeWrapper node, List<String> nodeTypes) {
+    protected static boolean matchesNodeType(Node node, List<String> nodeTypes) {
         if (CollectionUtils.isEmpty(nodeTypes)) {
             return true;
         }

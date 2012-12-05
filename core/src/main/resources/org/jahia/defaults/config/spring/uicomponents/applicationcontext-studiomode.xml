@@ -461,7 +461,7 @@
                                     </property>
                                 </bean>
                                 <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                                    <property name="id" value="baseProperties"/>
+                                    <property name="id" value="properties"/>
                                     <property name="titleKey" value="label.engineTab.definitions.properties"/>
                                     <property name="tabItem">
                                         <bean class="org.jahia.ajax.gwt.client.widget.definitionsmodeler.ChildItemsTabItem">
@@ -478,7 +478,7 @@
                                     </property>
                                 </bean>
                                 <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                                    <property name="id" value="baseProperties"/>
+                                    <property name="id" value="childItems"/>
                                     <property name="titleKey" value="label.engineTab.definitions.nodes"/>
                                     <property name="tabItem">
                                         <bean class="org.jahia.ajax.gwt.client.widget.definitionsmodeler.ChildItemsTabItem">
@@ -857,6 +857,7 @@
                                     <value>jnt:folder</value>
                                     <value>jnt:file</value>
                                     <value>jnt:nodeType</value>
+                                    <value>jnt:definitionFile</value>
                                 </list>
                             </property>
                         </bean>

@@ -472,20 +472,11 @@ class NodeHelper {
     }
 
     private void populateChildrenInfo(GWTJahiaNode n, JCRNodeWrapper node) {
-        boolean hasChildren = false;
-        if (node instanceof JCRMountPointNode) {
-            hasChildren = true;
-        } else if (!node.isFile()) {
-            try {
-                final NodeIterator nodesIterator = node.getNodes();
-                if (nodesIterator.hasNext()) {
-                    hasChildren = true;
-                }
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
+        try {
+            n.setHasChildren(n.isNodeType("jnt:mountPoint") || node.hasNodes());
+        } catch (RepositoryException e) {
+           logger.error(e.getMessage(),e);
         }
-        n.setHasChildren(hasChildren);
     }
 
     private void populateCount(GWTJahiaNode n, JCRNodeWrapper node) {

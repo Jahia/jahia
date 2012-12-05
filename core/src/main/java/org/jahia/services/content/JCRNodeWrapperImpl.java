@@ -62,6 +62,7 @@ import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRFileContent;
+import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.decorator.JCRPlaceholderNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRVersion;
@@ -121,6 +122,21 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     
     private Map<String, ExtendedPropertyDefinition> applicablePropertyDefinition = new HashMap<String, ExtendedPropertyDefinition>();
     private Map<String, Boolean> hasPropertyCache = new HashMap<String, Boolean>();
+    
+    private static boolean doCopy(JCRNodeWrapper source, JCRNodeWrapper dest, String name,
+            boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes,
+            int maxBatch, MutableInt batchCount, boolean isTopObject) throws RepositoryException {
+        if (source instanceof JCRNodeWrapperImpl) {
+            return ((JCRNodeWrapperImpl) source).internalCopy(dest, name, allowsExternalSharedNodes, references,
+                    ignoreNodeTypes, maxBatch, batchCount, isTopObject);
+        } else if (source instanceof JCRNodeDecorator) {
+            return ((JCRNodeDecorator) source).internalCopy(dest, name, allowsExternalSharedNodes, references,
+                    ignoreNodeTypes, maxBatch, batchCount, isTopObject);
+        } else {
+            return source
+                    .copy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batchCount);
+        }
+    }
 
     protected JCRNodeWrapperImpl(Node objectNode, String path, JCRNodeWrapper parent, JCRSessionWrapper session, JCRStoreProvider provider) {
         super(session, provider);
@@ -2338,6 +2354,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes, int maxBatch, MutableInt batchCount) throws RepositoryException {
+        return internalCopy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batchCount, true);
+    }
+
+    public boolean internalCopy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes, int maxBatch, MutableInt batchCount, boolean isTopObject) throws RepositoryException {
+        if (isTopObject) {
+            getSession().getUuidMapping().put("top-" + getIdentifier(), StringUtils.EMPTY);
+        }
         JCRNodeWrapper copy = null;
         try {
             copy = (JCRNodeWrapper) session
@@ -2406,10 +2429,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 } else if (allowsExternalSharedNodes) {
                     copy.clone(source, source.getName());
                 } else {
-                    source.copy(copy, source.getName(), allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batchCount);
+                    doCopy(source, copy, source.getName(), allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batchCount, false);
                 }
             } else if (!source.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
-                source.copy(copy, source.getName(), allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batchCount);
+                doCopy(source, copy, source.getName(), allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batchCount, false);
             }
         }
 

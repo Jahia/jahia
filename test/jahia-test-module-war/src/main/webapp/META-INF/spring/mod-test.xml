@@ -22,7 +22,6 @@
                 <value>org.apache.jackrabbit.test.api.version.simple.TestAll</value>
                 <value>org.jahia.bin.FindPrincipalTest</value>
                 <value>org.jahia.bin.FindTest</value>
-                <!--
                 <value>org.jahia.bin.RenderTest</value>
                 <value>org.jahia.services.acl.AclTest</value>
                 <value>org.jahia.services.applications.ApplicationsManagerServiceTest</value>
@@ -66,7 +65,6 @@
                 <value>org.jahia.services.visibility.VisibilityServiceTest</value>
                 <value>org.jahia.services.workflow.StateSequenceTest</value>
                 <value>org.jahia.services.workflow.WorkflowServiceTest</value>
-                 -->
             </list>
         </property>
 

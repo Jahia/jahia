@@ -1178,32 +1178,32 @@
         <dependency>
             <groupId>org.atmosphere</groupId>
             <artifactId>atmosphere-compat-tomcat</artifactId>
-            <version>1.0.0</version>
+            <version>${atmosphere.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.atmosphere</groupId>
             <artifactId>atmosphere-runtime</artifactId>
-            <version>1.0.0</version>
+            <version>${atmosphere.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.atmosphere</groupId>
             <artifactId>atmosphere-annotations</artifactId>
-            <version>1.0.0</version>
+            <version>${atmosphere.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.atmosphere</groupId>
             <artifactId>atmosphere-jersey</artifactId>
-            <version>1.0.0</version>
+            <version>${atmosphere.version}</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.atmosphere</groupId>
             <artifactId>atmosphere-gwt-server</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.4</version>
         </dependency>
 
     </dependencies>

@@ -65,7 +65,7 @@
         <dependency>
             <groupId>org.atmosphere</groupId>
             <artifactId>atmosphere-gwt-client</artifactId>
-            <version>1.0.0</version>
+            <version>${atmosphere.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gwt-log</groupId>

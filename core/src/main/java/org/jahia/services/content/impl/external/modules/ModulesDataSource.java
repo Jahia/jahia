@@ -75,6 +75,8 @@ import java.util.*;
 public class ModulesDataSource extends VFSDataSource {
 
     private static final List<String> JCR_CONTENT_LIST = Arrays.asList(Constants.JCR_CONTENT);
+    protected static final String UNSTRUCTURED_PROPERTY = "__UNSTRUCTURED_PROPERTY__";
+    protected static final String UNSTRUCTURED_CHILD_NODE = "__UNSTRUCTURED_CHILD_NODE__";
 
     private Map<String, String> fileTypeMapping;
 
@@ -100,8 +102,14 @@ public class ModulesDataSource extends VFSDataSource {
                 String nodeTypeName = splitPath[splitPath.length - 1];
                 try {
                     ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(nodeTypeName);
-                    children.addAll(nodeType.getPropertyDefinitionsAsMap().keySet());
-                    children.addAll(nodeType.getChildNodeDefinitionsAsMap().keySet());
+                    children.addAll(nodeType.getDeclaredPropertyDefinitionsAsMap().keySet());
+                    for (int type : nodeType.getDeclaredUnstructuredPropertyDefinitions().keySet()) {
+                        children.add(UNSTRUCTURED_PROPERTY + String.valueOf(type));
+                    }
+                    children.addAll(nodeType.getDeclaredChildNodeDefinitionsAsMap().keySet());
+                    for (String type : nodeType.getDeclaredUnstructuredChildNodeDefinitions().keySet()) {
+                        children.add(UNSTRUCTURED_CHILD_NODE + type);
+                    }
                 } catch (NoSuchNodeTypeException e) {
                     logger.error("Failed to get node type " + nodeTypeName, e);
                 }
@@ -190,9 +198,17 @@ public class ModulesDataSource extends VFSDataSource {
                 if (propertyDefinitionsAsMap.containsKey(itemDefinitionName)) {
                     return getPropertyDefinitionData(path, propertyDefinitionsAsMap.get(itemDefinitionName));
                 }
+                if (itemDefinitionName.startsWith(UNSTRUCTURED_PROPERTY)) {
+                    int type = Integer.parseInt(itemDefinitionName.substring(UNSTRUCTURED_PROPERTY.length()));
+                    return getPropertyDefinitionData(path, nodeType.getUnstructuredPropertyDefinitions().get(type));
+                }
                 Map<String, ExtendedNodeDefinition> childNodeDefinitionsAsMap = nodeType.getChildNodeDefinitionsAsMap();
                 if (childNodeDefinitionsAsMap.containsKey(itemDefinitionName)) {
                     return getChildNodeDefinitionData(path, childNodeDefinitionsAsMap.get(itemDefinitionName));
+                }
+                if (itemDefinitionName.startsWith(UNSTRUCTURED_CHILD_NODE)) {
+                    String type = itemDefinitionName.substring(UNSTRUCTURED_CHILD_NODE.length());
+                    return getChildNodeDefinitionData(path, nodeType.getUnstructuredChildNodeDefinitions().get(type));
                 }
             } catch (NoSuchNodeTypeException e) {
                 throw new PathNotFoundException("Failed to get node type " + nodeTypeName, e);
@@ -204,17 +220,29 @@ public class ModulesDataSource extends VFSDataSource {
 
     private ExternalData getNodeTypeData(String path, ExtendedNodeType nodeType) {
         Map<String, String[]> properties = new HashMap<String, String[]>();
-        String[] declaredSupertypeNames = nodeType.getDeclaredSupertypeNames();
-        if (declaredSupertypeNames != null) {
-            properties.put("jcr:supertypes", declaredSupertypeNames);
+        ExtendedNodeType[] declaredSupertypes = nodeType.getDeclaredSupertypes();
+        String supertype = null;
+        List<String> mixins = new ArrayList<String>();
+        for (ExtendedNodeType declaredSupertype : declaredSupertypes) {
+            if (declaredSupertype.isMixin()) {
+                mixins.add(declaredSupertype.getName());
+            } else if (supertype == null) {
+                supertype = declaredSupertype.getName();
+            }
         }
-        properties.put("jcr:isAbstract", new String[]{String.valueOf(nodeType.isAbstract())});
-        properties.put("jcr:isQueryable", new String[]{String.valueOf(nodeType.isQueryable())});
-        properties.put("jcr:isMixin", new String[]{String.valueOf(nodeType.isMixin())});
-        properties.put("jcr:hasOrderableChildNodes", new String[]{String.valueOf(nodeType.hasOrderableChildNodes())});
+        if (supertype != null) {
+            properties.put("j:supertype", new String[]{supertype});
+        }
+        if (!mixins.isEmpty()) {
+            properties.put("j:mixins", mixins.toArray(new String[mixins.size()]));
+        }
+        properties.put("j:isAbstract", new String[]{String.valueOf(nodeType.isAbstract())});
+        properties.put("j:isQueryable", new String[]{String.valueOf(nodeType.isQueryable())});
+        properties.put("j:isMixin", new String[]{String.valueOf(nodeType.isMixin())});
+        properties.put("j:hasOrderableChildNodes", new String[]{String.valueOf(nodeType.hasOrderableChildNodes())});
         String primaryItemName = nodeType.getPrimaryItemName();
         if (primaryItemName != null) {
-            properties.put("jcr:primaryItemName", new String[]{primaryItemName});
+            properties.put("j:primaryItemName", new String[]{primaryItemName});
         }
         ExternalData externalData = new ExternalData(path, path, "jnt:nodeType", properties);
         return externalData;
@@ -222,15 +250,15 @@ public class ModulesDataSource extends VFSDataSource {
 
     private ExternalData getPropertyDefinitionData(String path, ExtendedPropertyDefinition propertyDefinition) {
         Map<String, String[]> properties = new HashMap<String, String[]>();
-        properties.put("jcr:name", new String[]{propertyDefinition.getName()});
-        properties.put("jcr:autoCreated", new String[]{String.valueOf(propertyDefinition.isAutoCreated())});
-        properties.put("jcr:mandatory", new String[]{String.valueOf(propertyDefinition.isMandatory())});
-        properties.put("jcr:onParentVersion", new String[]{OnParentVersionAction.nameFromValue(propertyDefinition.getOnParentVersion())});
-        properties.put("jcr:protected", new String[]{String.valueOf(propertyDefinition.isProtected())});
-        properties.put("jcr:requiredType", new String[]{PropertyType.nameFromValue(propertyDefinition.getRequiredType())});
+        properties.put("j:name", new String[]{propertyDefinition.getName()});
+        properties.put("j:autoCreated", new String[]{String.valueOf(propertyDefinition.isAutoCreated())});
+        properties.put("j:mandatory", new String[]{String.valueOf(propertyDefinition.isMandatory())});
+        properties.put("j:onParentVersion", new String[]{OnParentVersionAction.nameFromValue(propertyDefinition.getOnParentVersion())});
+        properties.put("j:protected", new String[]{String.valueOf(propertyDefinition.isProtected())});
+        properties.put("j:requiredType", new String[]{PropertyType.nameFromValue(propertyDefinition.getRequiredType())});
         String[] valueConstraints = propertyDefinition.getValueConstraints();
         if (valueConstraints != null) {
-            properties.put("jcr:valueConstraints", valueConstraints);
+            properties.put("j:valueConstraints", valueConstraints);
         }
         Value[] defaultValues = propertyDefinition.getDefaultValues();
         if (defaultValues != null) {
@@ -242,35 +270,35 @@ public class ModulesDataSource extends VFSDataSource {
                     logger.error("Failed to get default value", e);
                 }
             }
-            properties.put("jcr:defaultValues", defaultValuesAsString.toArray(new String[defaultValuesAsString.size()]));
+            properties.put("j:defaultValues", defaultValuesAsString.toArray(new String[defaultValuesAsString.size()]));
         }
-        properties.put("jcr:multiple", new String[]{String.valueOf(propertyDefinition.isMultiple())});
+        properties.put("j:multiple", new String[]{String.valueOf(propertyDefinition.isMultiple())});
         String[] availableQueryOperators = propertyDefinition.getAvailableQueryOperators();
         if (availableQueryOperators != null) {
-            properties.put("jcr:availableQueryOperators", availableQueryOperators);
+            properties.put("j:availableQueryOperators", availableQueryOperators);
         }
-        properties.put("jcr:isFullTextSearchable", new String[]{String.valueOf(propertyDefinition.isFullTextSearchable())});
-        properties.put("jcr:isQueryOrderable", new String[]{String.valueOf(propertyDefinition.isQueryOrderable())});
-        properties.put("jcr:isFacetable", new String[]{String.valueOf(propertyDefinition.isFacetable())});
-        properties.put("jcr:isHierarchical", new String[]{String.valueOf(propertyDefinition.isHierarchical())});
+        properties.put("j:isFullTextSearchable", new String[]{String.valueOf(propertyDefinition.isFullTextSearchable())});
+        properties.put("j:isQueryOrderable", new String[]{String.valueOf(propertyDefinition.isQueryOrderable())});
+        properties.put("j:isFacetable", new String[]{String.valueOf(propertyDefinition.isFacetable())});
+        properties.put("j:isHierarchical", new String[]{String.valueOf(propertyDefinition.isHierarchical())});
         ExternalData externalData = new ExternalData(path, path, "jnt:propertyDefinition", properties);
         return externalData;
     }
 
     private ExternalData getChildNodeDefinitionData(String path, ExtendedNodeDefinition nodeDefinition) {
         Map<String, String[]> properties = new HashMap<String, String[]>();
-        properties.put("jcr:name", new String[]{nodeDefinition.getName()});
-        properties.put("jcr:autoCreated", new String[]{String.valueOf(nodeDefinition.isAutoCreated())});
-        properties.put("jcr:mandatory", new String[]{String.valueOf(nodeDefinition.isMandatory())});
-        properties.put("jcr:onParentVersion", new String[]{OnParentVersionAction.nameFromValue(nodeDefinition.getOnParentVersion())});
-        properties.put("jcr:protected", new String[]{String.valueOf(nodeDefinition.isProtected())});
+        properties.put("j:name", new String[]{nodeDefinition.getName()});
+        properties.put("j:autoCreated", new String[]{String.valueOf(nodeDefinition.isAutoCreated())});
+        properties.put("j:mandatory", new String[]{String.valueOf(nodeDefinition.isMandatory())});
+        properties.put("j:onParentVersion", new String[]{OnParentVersionAction.nameFromValue(nodeDefinition.getOnParentVersion())});
+        properties.put("j:protected", new String[]{String.valueOf(nodeDefinition.isProtected())});
         String[] requiredPrimaryTypeNames = nodeDefinition.getRequiredPrimaryTypeNames();
         if (requiredPrimaryTypeNames != null) {
-            properties.put("jcr:requiredPrimaryTypes", requiredPrimaryTypeNames);
+            properties.put("j:requiredPrimaryTypes", requiredPrimaryTypeNames);
         }
         String defaultPrimaryTypeName = nodeDefinition.getDefaultPrimaryTypeName();
         if (defaultPrimaryTypeName != null) {
-            properties.put("jnt:defaultPrimaryType", new String[]{defaultPrimaryTypeName});
+            properties.put("j:defaultPrimaryType", new String[]{defaultPrimaryTypeName});
         }
         ExternalData externalData = new ExternalData(path, path, "jnt:childNodeDefinition", properties);
         return externalData;

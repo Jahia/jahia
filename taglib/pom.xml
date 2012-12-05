@@ -123,6 +123,7 @@
                         <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
                         <Implementation-Vendor-Id>org.jahia</Implementation-Vendor-Id>
                         <Extension-Name>org.jahia.taglibs</Extension-Name>
+                        <Export-Package>org.jahia.taglibs.*</Export-Package>
                         <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <_removeheaders>

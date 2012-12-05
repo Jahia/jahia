@@ -280,14 +280,21 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     }
 
     public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes, int maxBatch, MutableInt batch) throws RepositoryException {
-        return node.copy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batch);
+        return internalCopy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batch, true);
+    }
+
+    public boolean internalCopy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes, int maxBatch, MutableInt batch, boolean isTopObject) throws RepositoryException {
+        if (!isTopObject && node instanceof JCRNodeWrapperImpl) {
+            return ((JCRNodeWrapperImpl) node).internalCopy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batch, isTopObject);
+        } else {
+            return node.copy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batch);
+        }
     }
 
     public void copyProperties(JCRNodeWrapper destinationNode, Map<String, List<String>> references) throws RepositoryException {
         node.copyProperties(destinationNode, references);
     }
-
-
+    
     public boolean lockAndStoreToken(String type, String userID) throws RepositoryException {
         return node.lockAndStoreToken(type, userID);
     }

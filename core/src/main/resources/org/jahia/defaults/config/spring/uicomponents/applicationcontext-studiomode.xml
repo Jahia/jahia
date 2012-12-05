@@ -856,7 +856,7 @@
                                 <list>
                                     <value>jnt:folder</value>
                                     <value>jnt:file</value>
-                                    <value>nt:nodeType</value>
+                                    <value>jnt:nodeType</value>
                                 </list>
                             </property>
                         </bean>

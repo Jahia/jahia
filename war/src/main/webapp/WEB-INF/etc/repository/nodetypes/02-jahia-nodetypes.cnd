@@ -844,7 +844,48 @@ extends = jnt:content
  - nodeTypeName (string)
 
 [jnt:definitionFile] > jnt:folder
- + * (nt:nodeType)
+ + * (jnt:nodeType)
+
+[jnt:nodeType]
+ - jcr:supertype (NAME)
+ - jcr:mixins (NAME) multiple
+ - jcr:isAbstract (BOOLEAN) mandatory
+ - jcr:isQueryable (BOOLEAN) mandatory
+ - jcr:isMixin (BOOLEAN) mandatory
+ - jcr:hasOrderableChildNodes (BOOLEAN) mandatory
+ - jcr:primaryItemName (NAME)
+ + * (jnt:propertyDefinition) = jnt:propertyDefinition
+ + * (jnt:childNodeDefinition) = jnt:childNodeDefinition
+
+[jnt:propertyDefinition]
+ - jcr:name (NAME) mandatory
+ - jcr:autoCreated (BOOLEAN) mandatory
+ - jcr:mandatory (BOOLEAN) mandatory
+ - jcr:onParentVersion (STRING) mandatory nofulltext
+     < 'COPY', 'VERSION', 'INITIALIZE', 'COMPUTE', 'IGNORE', 'ABORT'
+ - jcr:protected (BOOLEAN) mandatory
+ - jcr:requiredType (STRING) mandatory nofulltext
+   < 'STRING', 'URI', 'BINARY', 'LONG', 'DOUBLE',
+     'DECIMAL', 'BOOLEAN', 'DATE', 'NAME', 'PATH',
+     'REFERENCE', 'WEAKREFERENCE', 'UNDEFINED'
+ - jcr:valueConstraints (STRING) multiple nofulltext
+ - jcr:defaultValues (STRING) multiple
+ - jcr:multiple (BOOLEAN) mandatory
+ - jcr:availableQueryOperators (NAME) mandatory multiple
+ - jcr:isFullTextSearchable (BOOLEAN) mandatory
+ - jcr:isQueryOrderable (BOOLEAN) mandatory
+ - jcr:isFacetable (BOOLEAN) mandatory
+ - jcr:isHierarchical (BOOLEAN) mandatory
+
+[jnt:childNodeDefinition]
+  - jcr:name (NAME) mandatory
+  - jcr:autoCreated (BOOLEAN) mandatory
+  - jcr:mandatory (BOOLEAN) mandatory
+  - jcr:onParentVersion (STRING) mandatory nofulltext
+      < 'COPY', 'VERSION', 'INITIALIZE', 'COMPUTE', 'IGNORE', 'ABORT'
+  - jcr:protected (BOOLEAN) mandatory
+  - jcr:requiredPrimaryTypes (NAME) = 'nt:base' mandatory multiple
+  - jcr:defaultPrimaryType (NAME)
 
 [jnt:resourceBundleFolder] > jnt:folder
 

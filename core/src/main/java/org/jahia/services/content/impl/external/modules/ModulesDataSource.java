@@ -52,12 +52,21 @@ import org.jahia.services.content.impl.external.ExternalData;
 import org.jahia.services.content.impl.external.vfs.VFSDataSource;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.services.templates.ModuleVersion;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 
-import javax.jcr.*;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.PropertyType;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
-import java.io.*;
+import javax.jcr.nodetype.NodeTypeIterator;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.*;
 
 /**
@@ -81,7 +90,14 @@ public class ModulesDataSource extends VFSDataSource {
     @Override
     public List<String> getChildren(String path) {
         try {
-            if (!path.endsWith("/"+Constants.JCR_CONTENT)) {
+            if (path.endsWith(".cnd")) {
+                List<String> children = new ArrayList<String>();
+                NodeTypeIterator nodeTypes = NodeTypeRegistry.getInstance().getNodeTypes(path.split("/")[1]);
+                while (nodeTypes.hasNext()) {
+                    children.add(nodeTypes.nextNodeType().getName());
+                }
+                return children;
+            } else if (!path.endsWith("/"+Constants.JCR_CONTENT)) {
                 FileObject fileObject = getFile(path);
                 if (fileObject.getType() == FileType.FILE) {
                     return JCR_CONTENT_LIST;
@@ -147,8 +163,36 @@ public class ModulesDataSource extends VFSDataSource {
 
     @Override
     public ExternalData getItemByPath(String path) throws PathNotFoundException {
+        if (path.contains(".cnd/")) {
+            String nodeTypeName = path.substring(path.lastIndexOf("/") + 1);
+            try {
+                ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(nodeTypeName);
+                return getDataFromNodeType(path, nodeType);
+            } catch (NoSuchNodeTypeException e) {
+                throw new PathNotFoundException("Failed to get node type " + nodeTypeName, e);
+            }
+        }
         ExternalData data = super.getItemByPath(path);
         return enhanceData(path, data);
+    }
+
+    private ExternalData getDataFromNodeType(String path, ExtendedNodeType nodeType) {
+        Map<String, String[]> properties = new HashMap<String, String[]>();
+        properties.put("jcr:nodeTypeName", new String[]{nodeType.getName()});
+        String[] declaredSupertypeNames = nodeType.getDeclaredSupertypeNames();
+        if (declaredSupertypeNames != null) {
+            properties.put("jcr:supertypes", declaredSupertypeNames);
+        }
+        properties.put("jcr:isAbstract", new String[]{String.valueOf(nodeType.isAbstract())});
+        properties.put("jcr:isQueryable", new String[]{String.valueOf(nodeType.isQueryable())});
+        properties.put("jcr:isMixin", new String[]{String.valueOf(nodeType.isMixin())});
+        properties.put("jcr:hasOrderableChildNodes", new String[]{String.valueOf(nodeType.hasOrderableChildNodes())});
+        String primaryItemName = nodeType.getPrimaryItemName();
+        if (primaryItemName != null) {
+            properties.put("jcr:primaryItemName", new String[]{primaryItemName});
+        }
+        ExternalData externalData = new ExternalData(path, path, Constants.NT_NODETYPE, properties);
+        return externalData;
     }
 
     private ExternalData enhanceData(String path, ExternalData data) {

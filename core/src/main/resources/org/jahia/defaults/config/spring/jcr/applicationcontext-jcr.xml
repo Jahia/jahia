@@ -599,6 +599,7 @@
                 <value>jnt:javascriptFile</value>
                 <value>jnt:viewFile</value>
                 <value>jnt:definitionFile</value>
+                <value>nt:nodeType</value>
                 <value>jnt:resourceBundleFolder</value>
             </list>
         </property>

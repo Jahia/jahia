@@ -843,7 +843,7 @@ extends = jnt:content
 [jnt:viewFile] > jnt:editableFile, jmix:viewProperties
  - nodeTypeName (string)
 
-[jnt:definitionFile] > jnt:file
+[jnt:definitionFile] > jnt:folder
  + * (nt:nodeType)
 
 [jnt:resourceBundleFolder] > jnt:folder

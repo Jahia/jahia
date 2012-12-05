@@ -113,10 +113,17 @@ public class InitPagerTag extends TagSupport {
 
             int begin = beginStr == null ? 0 : Integer.parseInt(beginStr);
             int end = endStr == null ? pageSize - 1 : Integer.parseInt(endStr);
+
+            int currentPage = begin / pageSize + 1;
+
             long nbPages = totalSize / pageSize;
             if (nbPages * pageSize < totalSize) {
                 nbPages++;
             }
+            if (totalSize == Integer.MAX_VALUE) {
+                nbPages = currentPage;// + 1;
+            }
+
             if (totalSize < pageSize) {
                 begin = 0;
             } else if (begin > totalSize) {
@@ -128,9 +135,10 @@ public class InitPagerTag extends TagSupport {
             moduleMap.put("end", end);
             moduleMap.put("pageSize", pageSize);
             moduleMap.put("nbPages", nbPages);
-            moduleMap.put("currentPage", begin / pageSize + 1);
+            moduleMap.put("currentPage", currentPage);
             moduleMap.put("paginationActive", true);
             moduleMap.put("totalSize", totalSize);
+            moduleMap.put("totalSizeUnknown", totalSize == Integer.MAX_VALUE);
             pageContext.setAttribute("moduleMap",moduleMap);
             pageContext.setAttribute("begin_"+id,begin,PageContext.REQUEST_SCOPE);
             pageContext.setAttribute("end_"+id,end,PageContext.REQUEST_SCOPE);

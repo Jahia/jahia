@@ -132,8 +132,9 @@ public class JahiaJCRSearchProvider implements SearchProvider {
      */
     public SearchResponse search(SearchCriteria criteria, RenderContext context) {
         SearchResponse response = new SearchResponse();
-
         List<Hit<?>> results = new LinkedList<Hit<?>>();
+        response.setResults(results);
+
         Set<String> addedHits = new HashSet<String>();
         Set<String> addedNodes = new HashSet<String>();
 
@@ -145,6 +146,11 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     .getCurrentUserSession(context.getMainResource().getWorkspace(),
                             context.getMainResource().getLocale(), context.getFallbackLocale());
             Query query = buildQuery(criteria, session);
+            final int offset = criteria.getOffset() < 0 ? 0 : (int) criteria.getOffset();
+            final int limit = criteria.getLimit() < 0 ? Integer.MAX_VALUE : (int) criteria.getLimit();
+            response.setOffset(offset);
+            response.setLimit(limit);
+            int index = 0;
             if (query != null) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Executing search query [{}]", query.getStatement());
@@ -192,7 +198,14 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                                 SearchServiceImpl.executeURLModificationRules(hit, context);
 
                                 if (addedHits.add(hit.getLink())) {
-                                    results.add(hit);
+                                    if (index >= offset) {
+                                        if (index>=limit+offset) {
+                                            response.setHasMore(true);
+                                            return response;
+                                        }
+                                        results.add(hit);
+                                    }
+                                    index++;
                                 }
                             }
                         }
@@ -224,8 +237,6 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         if (logger.isDebugEnabled()) {
             logger.debug("Search query has {} results", results.size());
         }
-        response.setResults(results);
-
         return response;
     }
 
@@ -1054,14 +1065,6 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         if (!StringUtils.isEmpty(xpathQuery)) {
             QueryManager qm = session.getWorkspace().getQueryManager();
             query = qm.createQuery(xpathQuery, Query.XPATH);
-            if (criteria.getLimit() > 0) {
-                // set maximum hit count
-                query.setLimit(criteria.getLimit());
-            }
-            if (criteria.getOffset() > 0) {
-                // set offset for pagination
-                query.setOffset(criteria.getOffset());
-            }
         }
 
         return query;

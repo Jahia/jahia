@@ -73,7 +73,12 @@
     </c:if>
 	<c:if test="${moduleMap['listTotalSize'] > 0}">
         <c:set var="termKey" value="src_terms[0].term"/>
+        <c:if test="${moduleMap['listTotalSize'] eq 2147483647}">
+        <h3><fmt:message key="search.results.found"><fmt:param value="${fn:escapeXml(param[termKey])}"/><fmt:param value="more"/></fmt:message></h3>
+        </c:if>
+        <c:if test="${moduleMap['listTotalSize'] < 2147483647}">
         <h3><fmt:message key="search.results.found"><fmt:param value="${fn:escapeXml(param[termKey])}"/><fmt:param value="${moduleMap['listTotalSize']}"/></fmt:message></h3>
+        </c:if>
         <c:set var="beginName" value="begin_${currentNode.identifier}"/>
         <c:set var="endName" value="end_${currentNode.identifier}"/>
         <c:if test="${not empty requestScope[beginName]}">

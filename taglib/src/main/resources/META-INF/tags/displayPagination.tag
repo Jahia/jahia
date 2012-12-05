@@ -68,9 +68,14 @@
     <c:set target="${moduleMap}" property="basePaginationUrl" value="${basePaginationUrl}"/>
     ${extraParams}
     <div class="pagination"><!--start pagination-->
-
-        <div class="paginationPosition"><span><fmt:message key="pagination.pageOf.withTotal"><fmt:param value="${moduleMap.currentPage}"/><fmt:param value="${moduleMap.nbPages}"/><fmt:param value="${moduleMap.totalSize}"/></fmt:message></span>
-        </div>
+        <c:if test="${moduleMap.totalSizeUnknown}">
+            <div class="paginationPosition"><span><fmt:message key="pagination.pageOf.withUnknownTotal"><fmt:param value="${moduleMap.currentPage}"/></fmt:message></span>
+            </div>
+        </c:if>
+        <c:if test="${not moduleMap.totalSizeUnknown}">
+            <div class="paginationPosition"><span><fmt:message key="pagination.pageOf.withTotal"><fmt:param value="${moduleMap.currentPage}"/><fmt:param value="${moduleMap.nbPages}"/><fmt:param value="${moduleMap.totalSize}"/></fmt:message></span>
+            </div>
+        </c:if>
         <div class="paginationNavigation">
 					<c:if test="${empty displayNumberOfItemsPerPage || displayNumberOfItemsPerPage eq 'true'}">        
                 <label for="pageSizeSelector${currentNode.identifier}"><fmt:message key="pagination.itemsPerPage"/>:</label>
@@ -161,7 +166,7 @@
                 </c:if>
             </c:forEach>
 
-            <c:if test="${moduleMap.currentPage<moduleMap.nbPages}">
+            <c:if test="${moduleMap.currentPage<moduleMap.nbPages or moduleMap.totalSizeUnknown}">
                 <c:url value="${basePaginationUrl}" context="/" var="nextUrl">
                     <c:param name="${beginid}" value="${ moduleMap.currentPage * moduleMap.pageSize }"/>
                     <c:param name="${endid}" value="${ (moduleMap.currentPage+1)*moduleMap.pageSize-1}"/>
@@ -180,6 +185,7 @@
                     <c:param name="${endid}" value="${(moduleMap.nbPages-1) * moduleMap.pageSize +  moduleMap.pageSize}"/>
                     <c:param name="${pagesizeid}" value="${moduleMap.pageSize}"/>
                 </c:url>
+                <c:if test="${not moduleMap.totalSizeUnknown}">
                 <c:if test="${not empty modeDispatcherId}">
                     <c:set var="ajaxUrl" value="${functions:escapeJavaScript(fn:replace(endUrl,'.html' ,'.html.ajax'))}"/>
                     <c:set var="endUrl" value="$('\#${modeDispatcherId}').load('${ajaxUrl}')"/>
@@ -187,6 +193,7 @@
                 </c:if>
                 <c:if test="${empty modeDispatcherId}">
                     <a class="pagerLink nextLink" href="${fn:escapeXml(endUrl)}"><fmt:message key="pagination.end"/></a>
+                </c:if>
                 </c:if>
             </c:if>
         </div>

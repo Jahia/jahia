@@ -17,8 +17,8 @@
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty boundComponent and jcr:isNodeType(boundComponent, 'jmix:list')}">
     <template:addCacheDependency node="${boundComponent}"/>
-    <template:option node="${boundComponent}" nodetype="${boundComponent.primaryNodeTypeName},jmix:list" view="hidden.header"/>
     <c:set var="pagesizeid" value="pagesize${boundComponent.identifier}"/>
+    <c:set var="beginid" value="begin${boundComponent.identifier}"/>
     <c:choose>
         <c:when test="${not empty param[pagesizeid]}">
             <c:set var="pageSize" value="${param[pagesizeid]}"/>
@@ -30,6 +30,9 @@
             <c:set var="pageSize" value="${currentNode.properties['pageSize'].long}"/>
         </c:otherwise>
     </c:choose>
+    <c:set target="${moduleMap}" property="pageSize" value="${pageSize}"/>
+    <c:set target="${moduleMap}" property="pageStart" value="${param[beginid]}"/>
+    <template:option node="${boundComponent}" nodetype="${boundComponent.primaryNodeTypeName},jmix:list" view="hidden.header"/>
     <template:initPager totalSize="${moduleMap.listTotalSize}" pageSize="${pageSize}" id="${boundComponent.identifier}"/>
     <jsp:useBean id="pagerLimits" class="java.util.HashMap" scope="request"/>
     <c:set target="${pagerLimits}" property="${boundComponent.identifier}" value="${moduleMap.end}"/>

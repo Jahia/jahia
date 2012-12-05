@@ -215,6 +215,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                 .getAnyDeployedTemplatePackage(s.getString());
         if (aPackage != null) {
             site.setTemplatePackageName(aPackage.getName());
+            site.setTemplateFolder(aPackage.getRootFolder());
         }
 
         List<String> installedModules = new ArrayList<String>();
@@ -472,8 +473,12 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                              Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease, String legacyMappingFilePath, String legacyDefinitionsFilePath, JCRSessionWrapper session) throws JahiaException, IOException {
         JahiaSite site = new JahiaSite(-1, title, serverName, siteKey, descr, null, "/sites/" + siteKey);
 
+        final JahiaTemplateManagerService templateService = ServicesRegistry
+                .getInstance().getJahiaTemplateManagerService();
+
         if (selectTmplSet != null) {
             site.setTemplatePackageName(selectTmplSet);
+            site.setTemplateFolder(templateService.getAnyDeployedTemplatePackage(selectTmplSet).getRootFolder());
         }
         // create site language
         site.setDefaultLanguage(selectedLocale.toString());
@@ -488,7 +493,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
             if (getSiteByKey(site.getSiteKey()) == null) {
                 final String siteKey1 = site.getSiteKey();
-                final String templatePackage = site.getTemplatePackageName();
+                final String templatePackage = site.getTemplateFolder();
 
                 site.setInstalledModules(new ArrayList<String>(Collections.singleton(templatePackage /*+ ":" + aPackage.getLastVersion()*/)));
 
@@ -548,9 +553,6 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                         siteNode.setProperty("j:templatesSet", templatePackage);
 
                         siteNode.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(templatePackage /*+ ":" + aPackage.getLastVersion()*/)});
-
-                        JahiaTemplateManagerService templateService = ServicesRegistry
-                                .getInstance().getJahiaTemplateManagerService();
 
                         List<JahiaTemplatesPackage> modules = new ArrayList<JahiaTemplatesPackage>(
                                 2 + (modulesToDeploy != null ? modulesToDeploy.length : 0));
@@ -802,6 +804,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
                 legacySite.setInstalledModules(node.getInstalledModules());
                 legacySite.setTemplatePackageName(node.getTemplatePackageName());
+                legacySite.setTemplateFolder(node.getTemplateFolder());
 
                 if (node.getName().equals(SYSTEM_SITE_KEY)) {
                     try {

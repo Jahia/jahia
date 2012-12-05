@@ -159,6 +159,7 @@ public class JahiaSite implements Serializable {
     private String mTitle = "";
 
     private String templatePackageName;
+    private String templateFolder;
 
 
     private String uuid;
@@ -330,11 +331,6 @@ public class JahiaSite implements Serializable {
         return mSiteKey;
     }
 
-    public String getTemplateFolder() {
-        return ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                .getAnyDeployedTemplatePackage(getTemplatePackageName()).getRootFolder();
-    }
-
     /**
      * Returns the corresponding template set name of this virtual site.
      *
@@ -342,6 +338,10 @@ public class JahiaSite implements Serializable {
      */
     public String getTemplatePackageName() {
         return templatePackageName;
+    }
+
+    public String getTemplateFolder() {
+        return templateFolder;
     }
 
     public String getTitle() {
@@ -488,6 +488,10 @@ public class JahiaSite implements Serializable {
      */
     public void setTemplatePackageName(String packageName) {
         this.templatePackageName = packageName;
+    }
+
+    public void setTemplateFolder(String packageName) {
+        this.templateFolder = packageName;
     }
 
     public void setTitle(String value) {

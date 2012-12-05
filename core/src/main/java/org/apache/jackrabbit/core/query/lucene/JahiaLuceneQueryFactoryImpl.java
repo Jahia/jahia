@@ -155,15 +155,20 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                 if (countType == CountHandler.CountType.APPROX_COUNT) {
                     hitsSize++;
                     if (hitsSize > queryApproxCountLimit) {
-                        node = hits.nextScoreNode();
-                        continue;
+                        if (hits.getSize() > 0) {
+                            hitsSize = hits.getSize();
+                            break;
+                        } else {
+                            node = hits.nextScoreNode();
+                            continue;
+                        }
                     }
                 }
-                if (countType == CountHandler.CountType.SKIP_CHECKS) {
-                    resultCount++;
-                } else {
-                    IndexedNodeInfo infos = getIndexedNodeInfo(node, reader);
-                    if (foundIds.add(infos.getMainNodeUuid())) {  // <-- Added by jahia
+                IndexedNodeInfo infos = getIndexedNodeInfo(node, reader, countType == CountHandler.CountType.SKIP_CHECKS);
+                if (foundIds.add(infos.getMainNodeUuid())) { // <-- Added by jahia
+                    if (countType == CountHandler.CountType.SKIP_CHECKS) {
+                        resultCount++;
+                    } else {                        
                         try {
                             String[] acls = infos.getAclUuid() != null ? Patterns.SPACE.split(infos.getAclUuid()) : ArrayUtils.EMPTY_STRING_ARRAY;
                             boolean canRead = true;
@@ -341,23 +346,21 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
      * [2] "1" if visibility rule is set for node
      * [3] "true" node is published / "false" node is not published
      */
-    private IndexedNodeInfo getIndexedNodeInfo (ScoreNode sn, IndexReader reader) throws IOException {
+    private IndexedNodeInfo getIndexedNodeInfo (ScoreNode sn, IndexReader reader, final boolean onlyMainNodeUuid) throws IOException {
         IndexedNodeInfo info = new IndexedNodeInfo(sn.getDoc(reader));
 
         @SuppressWarnings("serial")
         Document doc = reader.document(info.getDocNumber(), new FieldSelector() {
             public FieldSelectorResult accept(String fieldName) {
-                if (FieldNames.UUID == fieldName) {
-                    return FieldSelectorResult.LOAD;
-                } else if (JahiaNodeIndexer.TRANSLATED_NODE_PARENT == fieldName) {
+                if (JahiaNodeIndexer.TRANSLATED_NODE_PARENT == fieldName) {
                     return FieldSelectorResult.LOAD;
                 } else if (FieldNames.PARENT == fieldName) {
                     return FieldSelectorResult.LOAD;
-                } else if (JahiaNodeIndexer.ACL_UUID == fieldName) {
+                } else if (!onlyMainNodeUuid && JahiaNodeIndexer.ACL_UUID == fieldName) {
                     return FieldSelectorResult.LOAD;
-                } else if (JahiaNodeIndexer.CHECK_VISIBILITY == fieldName) {
+                } else if (!onlyMainNodeUuid && JahiaNodeIndexer.CHECK_VISIBILITY == fieldName) {
                     return FieldSelectorResult.LOAD;                
-                } else if (JahiaNodeIndexer.PUBLISHED == fieldName) {
+                } else if (!onlyMainNodeUuid && JahiaNodeIndexer.PUBLISHED == fieldName) {
                     return FieldSelectorResult.LOAD;                                    
                 } else {
                     return FieldSelectorResult.NO_LOAD;
@@ -370,18 +373,21 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         } else {
             info.setMainNodeUuid(sn.getNodeId().toString());
         }
-        Field aclUuidField = doc.getField(JahiaNodeIndexer.ACL_UUID);
-        if (aclUuidField != null) {
-            info.setAclUuid(aclUuidField.stringValue());
+        if (!onlyMainNodeUuid) {
+            Field aclUuidField = doc.getField(JahiaNodeIndexer.ACL_UUID);
+            if (aclUuidField != null) {
+                info.setAclUuid(aclUuidField.stringValue());
+            }
+            Field checkVisibilityField = doc
+                    .getField(JahiaNodeIndexer.CHECK_VISIBILITY);
+            if (checkVisibilityField != null) {
+                info.setCheckVisibility(checkVisibilityField.stringValue());
+            }
+            Field publishedField = doc.getField(JahiaNodeIndexer.PUBLISHED);
+            if (publishedField != null) {
+                info.setPublished(publishedField.stringValue());
+            }
         }
-        Field checkVisibilityField = doc.getField(JahiaNodeIndexer.CHECK_VISIBILITY);
-        if (checkVisibilityField != null) {
-            info.setCheckVisibility(checkVisibilityField.stringValue());
-        }
-        Field publishedField = doc.getField(JahiaNodeIndexer.PUBLISHED);
-        if (publishedField != null) {
-            info.setPublished(publishedField.stringValue());
-        }        
         return info;
     }
 

@@ -604,7 +604,7 @@ public class LegacyImportHandler extends DefaultHandler {
                 node.getOrCreateI18N(locale, created, createdBy, lastModified, lastModifiedBy);
             } catch(ConstraintViolationException cve) {
                 throw new ConstraintViolationException(MessageFormat.format("Error while adding node {0} of type {1} to node {2}",
-                        nodeName, nodeType, parent.getPath()));
+                        nodeName, nodeType, parent.getPath()), cve);
             }
             if (!CollectionUtils.isEmpty(followingNodeNames)) {
                 boolean takeNextName = false;

@@ -10,7 +10,7 @@
 
     <name>Jahia Jahia OSGi Test module</name>
     <artifactId>org.jahia.bundles.modules.test</artifactId>
-    <version>6.6.0.0</version>
+    <version>6.6.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <build>

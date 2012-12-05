@@ -187,7 +187,7 @@ public class ExternalSessionImpl implements Session {
         try {
             Criteria criteria = statelessSession.createCriteria(UuidMapping.class);
             String key = getRepository().getStoreProvider().getKey();
-            criteria.add(Restrictions.eq("externalId", path)).add(Restrictions.eq("providerKey", key));
+            criteria.add(Restrictions.eq("externalId", object.getId())).add(Restrictions.eq("providerKey", key));
             List list = criteria.list();
             if (list.isEmpty()) {
                 try {

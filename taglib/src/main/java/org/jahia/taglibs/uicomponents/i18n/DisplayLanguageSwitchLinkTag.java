@@ -220,8 +220,8 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
     }
 
     private String appendRequestParameters(String link) {
-		java.util.Enumeration<String> paramNames = getRenderContext().getRequest().getParameterNames();
-    	java.lang.StringBuffer params = new java.lang.StringBuffer();
+		Enumeration<String> paramNames = getRenderContext().getRequest().getParameterNames();
+    	StringBuffer params = new java.lang.StringBuffer();
     	char seperator = '?';
     	while(paramNames.hasMoreElements()) {
     		String param = paramNames.nextElement();

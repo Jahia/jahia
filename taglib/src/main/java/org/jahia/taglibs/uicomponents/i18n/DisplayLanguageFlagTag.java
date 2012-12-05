@@ -48,6 +48,7 @@ import org.jahia.utils.LanguageCodeConverters;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Locale;
 
 /**
@@ -175,8 +176,8 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
         return SKIP_BODY;
     }
     private String appendRequestParameters(String link) {
-		java.util.Enumeration<String> paramNames = getRenderContext().getRequest().getParameterNames();
-    	java.lang.StringBuffer params = new java.lang.StringBuffer();
+		Enumeration<String> paramNames = getRenderContext().getRequest().getParameterNames();
+    	StringBuffer params = new java.lang.StringBuffer();
     	char seperator = '?';
     	while(paramNames.hasMoreElements()) {
     		String param = paramNames.nextElement();

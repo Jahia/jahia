@@ -6,7 +6,7 @@
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
 [jmix:channelSelection] mixin
- extends = jnt:content, jnt:area,jnt:page,jnt:nodeLink,jnt:externalLink
+ extends = jnt:content, jnt:area,jnt:page
  itemtype = channels
  - j:channelSelection (string,choicelist[channels]) multiple
  - j:channelIncludeOrExclude (string,choicelist[resourceBundle]) = exclude autocreated < 'exclude','include'

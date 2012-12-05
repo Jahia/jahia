@@ -118,13 +118,15 @@ public class ExternalSessionImpl implements Session {
     }
 
     public Node getNodeByUUID(String uuid) throws ItemNotFoundException, RepositoryException {
-        if (!repository.getDataSource().isSupportsUuid()) {
-            throw new ItemNotFoundException("This repository does not support UUID as identifiers");
-        }
         for (ExternalData d : changedData.values()) {
+
+
+            System.out.println("kkjkljklj");
             if (uuid.equals(d.getId())) {
                 return new ExternalNodeImpl(d, this);
             }
+
+
         }
         if (uuid.startsWith("translation:")) {
             String u = StringUtils.substringAfter(uuid, "translation:");
@@ -137,21 +139,24 @@ public class ExternalSessionImpl implements Session {
         SessionFactory hibernateSession = repository.getStoreProvider().getHibernateSession();
         StatelessSession statelessSession = hibernateSession.openStatelessSession();
         try {
-            Criteria criteria = statelessSession.createCriteria(UuidMapping.class);
-            criteria.add(Restrictions.eq("internalUuid", uuid));
-            List list = criteria.list();
-            if (list.size() > 0) {
-                String externalId = ((UuidMapping) list.get(0)).getExternalId();
-                Node n = new ExternalNodeImpl(repository.getDataSource().getItemByIdentifier(externalId), this);
-                if (deletedData.containsKey(n.getPath())) {
-                    throw new ItemNotFoundException("This node has been deleted");
+            if (!repository.getDataSource().isSupportsUuid()) {
+                Criteria criteria = statelessSession.createCriteria(UuidMapping.class);
+                criteria.add(Restrictions.eq("internalUuid", uuid));
+                List list = criteria.list();
+                if (list.size() > 0) {
+                    uuid = ((UuidMapping) list.get(0)).getExternalId();
+                } else {
+                    throw new ItemNotFoundException("Item " + uuid + " could not been found in this repository");
                 }
-                return n;
             }
+            Node n = new ExternalNodeImpl(repository.getDataSource().getItemByIdentifier(uuid), this);
+            if (deletedData.containsKey(n.getPath())) {
+                throw new ItemNotFoundException("This node has been deleted");
+            }
+            return n;
         } finally {
             statelessSession.close();
         }
-        throw new ItemNotFoundException("Item " + uuid + " could not been found in this repository");
     }
 
     public Item getItem(String path) throws PathNotFoundException, RepositoryException {
@@ -189,7 +194,7 @@ public class ExternalSessionImpl implements Session {
                     statelessSession.beginTransaction();
                     UUID uuid = UUID.randomUUID();
                     UuidMapping uuidMapping = new UuidMapping();
-                    uuidMapping.setExternalId(path);
+                    uuidMapping.setExternalId(object.getId());
                     uuidMapping.setProviderKey(key);
                     uuidMapping.setInternalUuid(uuid.toString());
                     statelessSession.save(uuidMapping);

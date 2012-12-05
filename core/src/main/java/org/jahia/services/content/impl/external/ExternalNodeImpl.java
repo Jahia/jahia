@@ -555,6 +555,8 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
 
     public String getIdentifier() throws RepositoryException {
         if (session.getRepository().getDataSource().isSupportsUuid()) {
+            return data.getId();
+        } else {
             SessionFactory hibernateSession = ((ExternalSessionImpl) getSession()).getRepository().getStoreProvider().getHibernateSession();
             org.hibernate.classic.Session statelessSession = hibernateSession.openSession();
             try {
@@ -583,7 +585,6 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
                 statelessSession.close();
             }
         }
-        throw new UnsupportedRepositoryOperationException();
     }
 
     public PropertyIterator getReferences(String name) throws RepositoryException {

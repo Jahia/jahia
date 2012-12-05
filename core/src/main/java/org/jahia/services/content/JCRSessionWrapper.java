@@ -368,21 +368,22 @@ public class JCRSessionWrapper implements Session {
     private JCRNodeWrapper dereference(JCRNodeWrapper parent, String refPath) throws RepositoryException {
         JCRStoreProvider provider = parent.getProvider();
         JCRNodeWrapper wrapper;
-        Node referencedNode = ((JCRNodeWrapper) parent.getProperty("j:node").getNode()).getRealNode();
+        JCRNodeWrapper referencedNode = ((JCRNodeWrapper) parent.getProperty("j:node").getNode());
+        Node realReferencedNode = ((JCRNodeWrapper) parent.getProperty("j:node").getNode()).getRealNode();
         String fullPath = parent.getPath() + DEREF_SEPARATOR + refPath;
         if (parent.getPath().startsWith(referencedNode.getPath()+ "/")) {
             throw new PathNotFoundException(fullPath);
         }
         String refRootName = StringUtils.substringBefore(refPath, "/");
-        if (!referencedNode.getName().equals(refRootName)) {
+        if (!realReferencedNode.getName().equals(refRootName)) {
             throw new PathNotFoundException(fullPath);
         }
         refPath = StringUtils.substringAfter(refPath, "/");
         if (refPath.equals("")) {
-            wrapper = provider.getNodeWrapper(referencedNode, fullPath, parent, this);
+            wrapper = referencedNode.getProvider().getNodeWrapper(realReferencedNode, fullPath, parent, this);
         } else {
-            Node node = referencedNode.getNode(refPath);
-            wrapper = provider.getNodeWrapper(node, fullPath, null, this);
+            Node node = realReferencedNode.getNode(refPath);
+            wrapper = referencedNode.getProvider().getNodeWrapper(node, fullPath, null, this);
         }
         sessionCacheByPath.put(fullPath, wrapper);
         return wrapper;

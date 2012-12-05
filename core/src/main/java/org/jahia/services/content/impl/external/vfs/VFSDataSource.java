@@ -79,7 +79,7 @@ public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Wr
     }
 
     public boolean isSupportsUuid() {
-        return true;
+        return false;
     }
 
     public boolean isSupportsSearch() {

@@ -145,11 +145,11 @@ public class Connection extends URLConnection {
                         }
                     }
                     if (inputManifest.getMainAttributes().getValue("Implementation-Title") != null) {
-                        String newEntryName = "org/jahia/bundles/modules/" + inputManifest.getMainAttributes().getValue("Implementation-Title").replaceAll("[ -]", "");
+                        String newEntryName = inputManifest.getMainAttributes().getValue("Implementation-Title").replaceAll("[ -]", "");
                         addFakeEntries(jos, entryNames, mostRecentTime, newEntryName);
                     }
                     if (inputManifest.getMainAttributes().getValue("root-folder") != null) {
-                        String newEntryName = "org/jahia/bundles/modules/" + inputManifest.getMainAttributes().getValue("root-folder").replaceAll("[ -]", "");
+                        String newEntryName = inputManifest.getMainAttributes().getValue("root-folder").replaceAll("[ -]", "");
                         addFakeEntries(jos, entryNames, mostRecentTime, newEntryName);
                     }
                     jos.finish();
@@ -222,9 +222,9 @@ public class Connection extends URLConnection {
 
         String rootFolder = inputManifest.getMainAttributes().getValue("root-folder");
         if (rootFolder != null) {
-            String rootFolderPackageName = "org.jahia.bundles.modules." + rootFolder.replaceAll("[ -]", "");
+            String packagePrefix = rootFolder.replaceAll("[ -]", "");
 
-            bndProperties.put("Bundle-SymbolicName", rootFolderPackageName);
+            bndProperties.put("Bundle-SymbolicName", rootFolder);
             StringBuilder exportPackage = new StringBuilder("");
             if (exportPackageExcludes.size() > 0) {
                 for (String exportPackageExclude : exportPackageExcludes) {
@@ -236,18 +236,15 @@ public class Connection extends URLConnection {
             } else {
                 exportPackage.append("*,");
             }
-            exportPackage.append("org.jahia.bundles.modules." + inputManifest.getMainAttributes().getValue("Implementation-Title").replaceAll("[ -]", ""));
+            exportPackage.append(inputManifest.getMainAttributes().getValue("Implementation-Title").replaceAll("[ -]", ""));
             exportPackage.append(",");
-            exportPackage.append(rootFolderPackageName);
+            exportPackage.append(packagePrefix);
             bndProperties.put("Export-Package", exportPackage.toString());
 
             if (depends == null) {
                 depends = "";
             }
-            if (!depends.contains("default") &&
-                !depends.contains("Default Jahia Templates") &&
-                !rootFolder.equals("assets") &&
-                !rootFolder.equals("default")) {
+            if (!depends.contains("default") && !depends.contains("Default Jahia Templates") && !rootFolder.equals("assets") && !rootFolder.equals("default")) {
                 if (!depends.equals("")) {
                     depends += ",";
                 }
@@ -262,7 +259,7 @@ public class Connection extends URLConnection {
                 if (!"".equals(dep)) {
                     importPackage.append(",");
                     dep = dep.replaceAll("[ -]", "");
-                    importPackage.append("org.jahia.bundles.modules." + dep);
+                    importPackage.append(dep);
                 }
             }
 

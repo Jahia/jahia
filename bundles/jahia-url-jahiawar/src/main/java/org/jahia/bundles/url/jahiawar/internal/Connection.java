@@ -136,7 +136,7 @@ public class Connection extends URLConnection {
                         // we will not export it.
                         int lastSlashPos = newName.lastIndexOf("/");
                         if (lastSlashPos > -1) {
-                            String directoryName = newName.substring(0, lastSlashPos);
+                            String directoryName = newName.substring(0, lastSlashPos).replaceAll("/", ".");
                             if (importPackages.contains(directoryName)) {
                                 exportPackageExcludes.add(directoryName);
                             }

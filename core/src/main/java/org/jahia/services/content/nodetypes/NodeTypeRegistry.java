@@ -92,7 +92,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
         }
         return instance;
     }
-    
+
     public static void flushLabels() {
         for (ExtendedNodeType nodeType : getInstance().nodetypes.values()) {
             nodeType.clearLabels();

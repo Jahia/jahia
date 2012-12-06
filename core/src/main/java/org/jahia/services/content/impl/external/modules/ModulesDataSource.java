@@ -41,11 +41,7 @@
 package org.jahia.services.content.impl.external.modules;
 
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -53,16 +49,15 @@ import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileType;
 import org.jahia.api.Constants;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.impl.external.ExternalData;
 import org.jahia.services.content.impl.external.vfs.VFSDataSource;
-import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 
 import javax.annotation.Nullable;
 import javax.jcr.*;
@@ -94,13 +89,15 @@ public class ModulesDataSource extends VFSDataSource {
 
     private JahiaTemplateManagerService templateManagerService;
 
+    private Map<String, NodeTypeRegistry> nodeTypeRegistryMap = new HashMap<String, NodeTypeRegistry>();
+
     @Override
     public List<String> getChildren(String path) {
         String[] splitPath = path.split("/");
         try {
             if (path.endsWith(".cnd")) {
                 List<String> children = new ArrayList<String>();
-                NodeTypeIterator nodeTypes = NodeTypeRegistry.getInstance().getNodeTypes(splitPath[1]);
+                NodeTypeIterator nodeTypes = loadRegistry(path, splitPath[1]).getNodeTypes(splitPath[1]);
                 while (nodeTypes.hasNext()) {
                     children.add(nodeTypes.nextNodeType().getName());
                 }
@@ -109,7 +106,7 @@ public class ModulesDataSource extends VFSDataSource {
                 List<String> children = new ArrayList<String>();
                 String nodeTypeName = splitPath[splitPath.length - 1];
                 try {
-                    ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(nodeTypeName);
+                    ExtendedNodeType nodeType = loadRegistry(StringUtils.substringBeforeLast(path,"/"), splitPath[1]).getNodeType(nodeTypeName);
                     children.addAll(nodeType.getDeclaredPropertyDefinitionsAsMap().keySet());
                     for (int type : nodeType.getDeclaredUnstructuredPropertyDefinitions().keySet()) {
                         children.add(UNSTRUCTURED_PROPERTY + String.valueOf(type));
@@ -192,7 +189,7 @@ public class ModulesDataSource extends VFSDataSource {
         if (splitPath.length >= 2 && splitPath[splitPath.length - 2].endsWith(".cnd")) {
             String nodeTypeName = splitPath[splitPath.length - 1];
             try {
-                ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(nodeTypeName);
+                ExtendedNodeType nodeType = loadRegistry(StringUtils.substringBeforeLast(path,"/"), splitPath[1]).getNodeType(nodeTypeName);
                 return getNodeTypeData(path, nodeType);
             } catch (NoSuchNodeTypeException e) {
                 throw new PathNotFoundException("Failed to get node type " + nodeTypeName, e);
@@ -201,7 +198,8 @@ public class ModulesDataSource extends VFSDataSource {
             String nodeTypeName = splitPath[splitPath.length - 2];
             String itemDefinitionName = splitPath[splitPath.length - 1];
             try {
-                ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(nodeTypeName);
+                String definitionsPath = StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/");
+                ExtendedNodeType nodeType = loadRegistry(definitionsPath, splitPath[1]).getNodeType(nodeTypeName);
                 Map<String,ExtendedPropertyDefinition> propertyDefinitionsAsMap = nodeType.getPropertyDefinitionsAsMap();
                 if (propertyDefinitionsAsMap.containsKey(itemDefinitionName)) {
                     return getPropertyDefinitionData(path, propertyDefinitionsAsMap.get(itemDefinitionName), false);
@@ -506,6 +504,32 @@ public class ModulesDataSource extends VFSDataSource {
             }
         } catch (NoSuchNodeTypeException e) {
             logger.error("Unknown type",e);
+        }
+    }
+
+    private synchronized NodeTypeRegistry loadRegistry(String path, String module) {
+        if (nodeTypeRegistryMap.containsKey(module)) {
+            return nodeTypeRegistryMap.get(module);
+        } else {
+            NodeTypeRegistry ntr = new NodeTypeRegistry();
+            try {
+                ntr.initSystemDefinitions();
+                JahiaTemplatesPackage templatesPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(module);
+                List<JahiaTemplatesPackage> dependencies = new ArrayList<JahiaTemplatesPackage>(templatesPackage.getDependencies());
+                Collections.reverse(dependencies);
+                for (JahiaTemplatesPackage depend : dependencies) {
+                    for (String s : depend.getDefinitionsFiles()) {
+                        ntr.addDefinitionsFile(depend.getResource(s), depend.getRootFolder(), null);
+                    }
+                }
+                ntr.addDefinitionsFile(new UrlResource(getFile(path).getURL()),module,null);
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (ParseException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+            nodeTypeRegistryMap.put(module, ntr);
+            return ntr;
         }
     }
 

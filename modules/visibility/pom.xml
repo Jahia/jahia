@@ -69,7 +69,7 @@
 		                    <Specification-Version>${project.version}</Specification-Version>
 		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
-                            <depends>default,cache</depends>
+                            <depends>default</depends>
                             <root-folder>${project.artifactId}</root-folder>
                             <module-type>system</module-type>
                         </manifestEntries>

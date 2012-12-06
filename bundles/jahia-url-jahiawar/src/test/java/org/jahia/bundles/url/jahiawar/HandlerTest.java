@@ -1,6 +1,6 @@
 package org.jahia.bundles.url.jahiawar;
 
-import org.junit.Assert;
+import junit.framework.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -41,11 +41,11 @@ public class HandlerTest {
         dumpJarEntries(jarInputStream);
         String[] importPackages = mainAttributes.get("Import-Package").split(",");
         List<String> importPackageList = Arrays.asList(importPackages);
-        Assert.assertTrue("'default' module missing from Import-Package header", importPackageList.contains("org.jahia.bundles.modules.default"));
+        Assert.assertTrue("'default' module missing from Import-Package header", importPackageList.contains("default"));
 
         String[] exportPackages = mainAttributes.get("Export-Package").split(",");
         List<String> exportPackageList = Arrays.asList(exportPackages);
-        Assert.assertTrue("'JahiaForum' module missing from Export-Package header", exportPackageList.contains("org.jahia.bundles.modules.JahiaForum"));
+        Assert.assertTrue("'JahiaForum' module missing from Export-Package header", exportPackageList.contains("JahiaForum"));
 
         // now let's try with another module
         jahiaWarURL = new URL(null, "jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/translateworkflow/1.2/translateworkflow-1.2.war", new Handler());

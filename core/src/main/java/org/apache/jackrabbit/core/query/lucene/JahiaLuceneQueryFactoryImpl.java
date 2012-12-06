@@ -154,21 +154,19 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             while (node != null) {
                 if (countType == CountHandler.CountType.APPROX_COUNT) {
                     hitsSize++;
-                    if (hitsSize > queryApproxCountLimit) {
-                        if (hits.getSize() > 0) {
-                            hitsSize = hits.getSize();
-                            break;
-                        } else {
-                            node = hits.nextScoreNode();
-                            continue;
-                        }
+                    if (hits.getSize() > 0) {
+                        hitsSize = hits.getSize();
+                        break;
+                    } else {
+                        node = hits.nextScoreNode();
+                        continue;
                     }
                 }
-                IndexedNodeInfo infos = getIndexedNodeInfo(node, reader, countType == CountHandler.CountType.SKIP_CHECKS);
-                if (foundIds.add(infos.getMainNodeUuid())) { // <-- Added by jahia
-                    if (countType == CountHandler.CountType.SKIP_CHECKS) {
-                        resultCount++;
-                    } else {                        
+                if (countType == CountHandler.CountType.SKIP_CHECKS) {
+                    resultCount++;
+                } else {
+                    IndexedNodeInfo infos = getIndexedNodeInfo(node, reader, countType == CountHandler.CountType.SKIP_CHECKS);
+                    if (foundIds.add(infos.getMainNodeUuid())) { // <-- Added by jahia
                         try {
                             String[] acls = infos.getAclUuid() != null ? Patterns.SPACE.split(infos.getAclUuid()) : ArrayUtils.EMPTY_STRING_ARRAY;
                             boolean canRead = true;

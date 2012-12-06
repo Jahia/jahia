@@ -58,11 +58,23 @@ public class Studio extends Render {
 
     private static final long serialVersionUID = -6694346322793374119L;
     public static final String STUDIO_MODE = "studiomode";
+    public static final String STUDIO_LAYOUT_MODE = "studiolayoutmode";
+    private static final String LAYOUT_MODE = "isInLayoutMode";
 
     protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
         RenderContext context = super.createRenderContext(req, resp, user);
         context.setEditMode(true);
-        context.setEditModeConfigName(STUDIO_MODE);
+        Object attribute = req.getSession().getAttribute(LAYOUT_MODE);
+        if(req.getParameter("studioMode")!=null) {
+            req.getSession().removeAttribute(LAYOUT_MODE);
+            attribute=null;
+        }
+        if(req.getParameter("layoutMode")!=null || (attribute!=null && attribute ==Boolean.TRUE)) {
+            req.getSession().setAttribute(LAYOUT_MODE,Boolean.TRUE);
+            context.setEditModeConfigName(STUDIO_LAYOUT_MODE);
+        } else {
+            context.setEditModeConfigName(STUDIO_MODE);
+        }
 //        context.setServletPath(getStudioServletPath());
         return context;
     }

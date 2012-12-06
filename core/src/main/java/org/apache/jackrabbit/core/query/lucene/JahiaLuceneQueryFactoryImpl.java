@@ -154,19 +154,21 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             while (node != null) {
                 if (countType == CountHandler.CountType.APPROX_COUNT) {
                     hitsSize++;
-                    if (hits.getSize() > 0) {
-                        hitsSize = hits.getSize();
-                        break;
-                    } else {
-                        node = hits.nextScoreNode();
-                        continue;
+                    if (hitsSize > queryApproxCountLimit) {
+                        if (hits.getSize() > 0) {
+                            hitsSize = hits.getSize();
+                            break;
+                        } else {
+                            node = hits.nextScoreNode();
+                            continue;
+                        }
                     }
                 }
-                if (countType == CountHandler.CountType.SKIP_CHECKS) {
-                    resultCount++;
-                } else {
-                    IndexedNodeInfo infos = getIndexedNodeInfo(node, reader, countType == CountHandler.CountType.SKIP_CHECKS);
-                    if (foundIds.add(infos.getMainNodeUuid())) { // <-- Added by jahia
+                IndexedNodeInfo infos = getIndexedNodeInfo(node, reader, countType == CountHandler.CountType.SKIP_CHECKS);
+                if (foundIds.add(infos.getMainNodeUuid())) { // <-- Added by jahia
+                    if (countType == CountHandler.CountType.SKIP_CHECKS) {
+                        resultCount++;
+                    } else {                        
                         try {
                             String[] acls = infos.getAclUuid() != null ? Patterns.SPACE.split(infos.getAclUuid()) : ArrayUtils.EMPTY_STRING_ARRAY;
                             boolean canRead = true;
@@ -296,13 +298,18 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                         } catch (ItemNotFoundException e) {
                             // skip the node
                         }
-                    } else {
-                        if (((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) && countType == CountHandler.CountType.NO_COUNT && !externalSort && !infos.getMainNodeUuid().equals(node.getNodeId().toString()) && rows.containsKey(infos.getMainNodeUuid())) {
-                            // we've got the translation node -> adjusting the position of the original node in the result list
-                            rows.put(infos.getMainNodeUuid(), rows.remove(infos.getMainNodeUuid()));
-                        }
                     }
-                }  // <-- Added by jahia
+                } else {
+                    if (((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0)
+                            && countType == CountHandler.CountType.NO_COUNT
+                            && !externalSort
+                            && !infos.getMainNodeUuid().equals(
+                                    node.getNodeId().toString())
+                            && rows.containsKey(infos.getMainNodeUuid())) {
+                        // we've got the translation node -> adjusting the position of the original node in the result list
+                        rows.put(infos.getMainNodeUuid(), rows.remove(infos.getMainNodeUuid()));
+                    }
+                }// <-- Added by jahia
                 node = hits.nextScoreNode();
             }
 

@@ -29,30 +29,16 @@ public class HandlerTest {
         URL jahiaWarURL = new URL(null, "jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/forum/1.3/forum-1.3.war", new Handler());
         JarInputStream jarInputStream = new JarInputStream(jahiaWarURL.openStream());
         JarEntry jarEntry = null;
-        /*
-        System.out.println("MANIFEST.MF:");
-        System.out.println("------------");
-        */
         // copy the attributes to sort them
         Map<String, String> mainAttributes = new TreeMap<String, String>();
         for (Map.Entry<Object, Object> attribute : jarInputStream.getManifest().getMainAttributes().entrySet()) {
             mainAttributes.put(attribute.getKey().toString(), attribute.getValue().toString());
         }
-        /*
-        for (Map.Entry<String, String> attribute : mainAttributes.entrySet()) {
-            System.out.println(attribute.getKey() + ": " + attribute.getValue());
-        }
-        */
+        dumpManifestEntries(mainAttributes);
         Assert.assertEquals("Bundle-ClassPath header is not valid", ".,forum-1.3.jar", mainAttributes.get("Bundle-ClassPath"));
         Assert.assertEquals("Bundle-Version header is not valid", "1.3", mainAttributes.get("Bundle-Version"));
 
-        /*
-        System.out.println("JAR contents:");
-        System.out.println("-------------");
-        while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
-            System.out.println(jarEntry.getName());
-        }
-        */
+        dumpJarEntries(jarInputStream);
         String[] importPackages = mainAttributes.get("Import-Package").split(",");
         List<String> importPackageList = Arrays.asList(importPackages);
         Assert.assertTrue("'default' module missing from Import-Package header", importPackageList.contains("default"));
@@ -61,6 +47,34 @@ public class HandlerTest {
         List<String> exportPackageList = Arrays.asList(exportPackages);
         Assert.assertTrue("'JahiaForum' module missing from Export-Package header", exportPackageList.contains("JahiaForum"));
 
+        // now let's try with another module
+        jahiaWarURL = new URL(null, "jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/translateworkflow/1.2/translateworkflow-1.2.war", new Handler());
+        jarInputStream = new JarInputStream(jahiaWarURL.openStream());
+        // copy the attributes to sort them
+        mainAttributes.clear();
+        for (Map.Entry<Object, Object> attribute : jarInputStream.getManifest().getMainAttributes().entrySet()) {
+            mainAttributes.put(attribute.getKey().toString(), attribute.getValue().toString());
+        }
+        dumpManifestEntries(mainAttributes);
+        dumpJarEntries(jarInputStream);
+
+    }
+
+    private void dumpJarEntries(JarInputStream jarInputStream) throws IOException {
+        JarEntry jarEntry;
+        System.out.println("JAR contents:");
+        System.out.println("-------------");
+        while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
+            System.out.println(jarEntry.getName());
+        }
+    }
+
+    private void dumpManifestEntries(Map<String, String> mainAttributes) {
+        System.out.println("MANIFEST.MF:");
+        System.out.println("------------");
+        for (Map.Entry<String, String> attribute : mainAttributes.entrySet()) {
+            System.out.println(attribute.getKey() + ": " + attribute.getValue());
+        }
     }
 
 }

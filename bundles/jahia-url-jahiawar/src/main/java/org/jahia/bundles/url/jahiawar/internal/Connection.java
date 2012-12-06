@@ -25,6 +25,7 @@ public class Connection extends URLConnection {
     private Parser parser;
     private final Configuration configuration;
     private List<String> classPathEntries = new ArrayList<String>();
+    private Set<String> exportPackageExcludes = new HashSet<String>();
 
     // @todo this list should be configurable
     private String[] hardcodedImports = new String[]{
@@ -68,6 +69,8 @@ public class Connection extends URLConnection {
             "org.apache.commons.id"
     };
 
+    public Set<String> importPackages = new HashSet<String>();
+
     public Connection(final URL url, final Configuration configuration)
             throws MalformedURLException {
         super(url);
@@ -76,6 +79,7 @@ public class Connection extends URLConnection {
         NullArgumentException.validateNotNull(configuration, "Service configuration");
 
         this.configuration = configuration;
+        importPackages.addAll(Arrays.asList(hardcodedImports));
         parser = new Parser(url.getPath());
     }
 
@@ -118,10 +122,6 @@ public class Connection extends URLConnection {
                             classPathEntries.add(newName);
                         } else if (newName.startsWith("WEB-INF/")) {
                             newName = jarEntry.getName().substring("WEB-INF/".length());
-//                        } else if (newName.startsWith("META-INF/")) {
-//                            we don't move anything in META-INF
-//                        } else {
-//                            newName = rootFolderPrefix + newName;
                         }
                         JarEntry newJarEntry = new JarEntry(newName);
                         if (jarEntry.getTime() > mostRecentTime) {
@@ -132,6 +132,17 @@ public class Connection extends URLConnection {
                         StreamUtils.copyStream(jarInputStream, jos, false);
                         jos.closeEntry();
                         entryNames.add(newName);
+                        // now let's see if the new entry starts with an existing package import, in which case
+                        // we will not export it.
+                        int lastSlashPos = newName.lastIndexOf("/");
+                        if (lastSlashPos > -1) {
+                            String directoryName = newName.substring(0, lastSlashPos);
+                            if (importPackages.contains(directoryName)) {
+                                exportPackageExcludes.add(directoryName);
+                            }
+                        } else {
+                            // do nothing this is not a directory.
+                        }
                     }
                     if (inputManifest.getMainAttributes().getValue("Implementation-Title") != null) {
                         String newEntryName = inputManifest.getMainAttributes().getValue("Implementation-Title").replaceAll("[ -]", "");
@@ -214,7 +225,17 @@ public class Connection extends URLConnection {
             String packagePrefix = rootFolder.replaceAll("[ -]", "");
 
             bndProperties.put("Bundle-SymbolicName", rootFolder);
-            StringBuilder exportPackage = new StringBuilder("*,");
+            StringBuilder exportPackage = new StringBuilder("");
+            if (exportPackageExcludes.size() > 0) {
+                for (String exportPackageExclude : exportPackageExcludes) {
+                    exportPackage.append("!");
+                    exportPackage.append(exportPackageExclude);
+                    exportPackage.append(",");
+                }
+                exportPackage.append(",*,");
+            } else {
+                exportPackage.append("*,");
+            }
             exportPackage.append(inputManifest.getMainAttributes().getValue("Implementation-Title").replaceAll("[ -]", ""));
             exportPackage.append(",");
             exportPackage.append(packagePrefix);
@@ -242,10 +263,10 @@ public class Connection extends URLConnection {
                 }
             }
 
-            for (String hardcodedImport : hardcodedImports) {
-                if (!importPackage.toString().contains(hardcodedImport)) {
+            for (String curImportPackage : importPackages) {
+                if (!importPackage.toString().contains(curImportPackage)) {
                     importPackage.append(",");
-                    importPackage.append(hardcodedImport);
+                    importPackage.append(curImportPackage);
                 }
             }
 

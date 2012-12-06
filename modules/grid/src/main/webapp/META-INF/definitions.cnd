@@ -1,13 +1,13 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jnt:customRow] > jnt:content, jmix:layoutComponentContent
+[jnt:customRow] > jnt:content, jmix:layoutComponentContent, jmix:studioLayout
  - divID (string) indexed=no
  - divClass (string) indexed=no
  - customColumn (string) indexed=no
  - colNames (string) indexed=no
  + * (nt:base) = nt:base version
 
-[jnt:row]  > jnt:content, jmix:layoutComponentContent
+[jnt:row]  > jnt:content, jmix:layoutComponentContent, jmix:studioLayout
  - column (string,choicelist[resourceBundle,moduleImage='png']) = '1col16' indexed=no < '1col16','2col412','2col124','2col511','2col115','2col610','2col106','2col88','3col448','3col466','3col484','3col664','3col844','4col4444'
  + * (nt:base) = nt:base version

@@ -385,7 +385,9 @@
  - j:templateNode (weakreference,choicelist[templatesNode]) hidden < jnt:template
  - j:templateName (string,choicelist[templatesNode]) mandatory
 
-[jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:requiredPermissions, jmix:renderable, jmix:observable, jmix:hasIcon, mix:title
+[jmix:studioLayout] mixin
+
+[jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:requiredPermissions, jmix:renderable, jmix:observable, jmix:hasIcon, mix:title, jmix:studioLayout
  - j:hiddenTemplate (boolean)
  - j:moduleTemplate (string) hidden nofulltext
  - j:sourceTemplate (weakreference) hidden nofulltext
@@ -415,7 +417,7 @@
 
 [jnt:mainResourceDisplay] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, jmix:renderableMainResource, jmix:layoutComponentContent, jmix:mockupStyle, jmix:studioOnly
 
-[jnt:area] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, jmix:renderableArea, jmix:layoutComponentContent, jmix:listRestrictions, jmix:mockupStyle, jmix:studioOnly
+[jnt:area] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, jmix:renderableArea, jmix:layoutComponentContent, jmix:listRestrictions, jmix:mockupStyle, jmix:studioOnly, jmix:studioLayout
  + * (jmix:droppableContent) = jmix:droppableContent version
 
 [jnt:absoluteArea] > jnt:area, jmix:layoutComponentContent, jmix:studioOnly
@@ -686,7 +688,7 @@ extends = jnt:content
 
 [jnt:content] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata
 
-[jnt:contentList] > jnt:content, jmix:listContent, mix:title, jmix:list, jmix:renderableList
+[jnt:contentList] > jnt:content, jmix:listContent, mix:title, jmix:list, jmix:renderableList, jmix:studioLayout
  orderable
  + * (jmix:droppableContent) = jmix:droppableContent version
 

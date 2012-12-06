@@ -149,17 +149,28 @@ public class NodeTypeRegistry implements NodeTypeManager {
         return deploymentProperties;
     }
 
-    public void addDefinitionsFile(Resource resource, String systemId, ModuleVersion version) throws IOException, ParseException {
+
+    public boolean isLatestDefinitions(String systemId, ModuleVersion version) {
         if (version != null) {
             String key = systemId + ".version";
             if (deploymentProperties.containsKey(key)) {
                 ModuleVersion lastDeployed = new ModuleVersion(deploymentProperties.getProperty(key));
                 if (lastDeployed.compareTo(version) > 0) {
-                    return;
+                    return false;
                 }
             }
-            deploymentProperties.put(key, version.toString());
-            saveProperties();
+        }
+        return true;
+    }
+
+    public void addDefinitionsFile(Resource resource, String systemId, ModuleVersion version) throws IOException, ParseException {
+        if (version != null) {
+            if (isLatestDefinitions(systemId, version)) {
+                deploymentProperties.put(systemId + ".version", version.toString());
+                saveProperties();
+            } else {
+                return;
+            }
         }
 
         String ext = resource.getURL().getPath().substring(resource.getURL().getPath().lastIndexOf('.'));

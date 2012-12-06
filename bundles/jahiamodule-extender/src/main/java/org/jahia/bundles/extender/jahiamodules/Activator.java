@@ -13,6 +13,7 @@ import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.scripting.ScriptFactory;
 import org.jahia.services.render.scripting.ScriptResolver;
@@ -300,8 +301,12 @@ public class Activator implements BundleActivator {
         registeredBundles.put(bundle, jahiaBundleTemplatesPackage);
         templatePackageRegistry.registerPackageVersion(jahiaBundleTemplatesPackage);
 
-        List<URL> foundURLs = cndScanner.scan(bundle);
-        addResources(bundle, foundURLs, cndBundleObserver);
+        boolean latestDefinitions = NodeTypeRegistry.getInstance().isLatestDefinitions(bundle.getSymbolicName(), jahiaBundleTemplatesPackage.getVersion());
+        if (latestDefinitions) {
+            List<URL> foundURLs = cndScanner.scan(bundle);
+            addResources(bundle, foundURLs, cndBundleObserver);
+        }
+
         logger.info("--- Done parsing Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + bundle.getVersion() + " --");
 
         if (installedBundles.contains(bundle)) {
@@ -322,8 +327,10 @@ public class Activator implements BundleActivator {
             logger.info("--- Done installing Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + bundle.getVersion() + " --");
         }
 
-        parseDependantBundles(jahiaBundleTemplatesPackage.getRootFolder());
-        parseDependantBundles(jahiaBundleTemplatesPackage.getName());
+        if (latestDefinitions) {
+            parseDependantBundles(jahiaBundleTemplatesPackage.getRootFolder());
+            parseDependantBundles(jahiaBundleTemplatesPackage.getName());
+        }
         if (toBeStarted.contains(bundle)) {
             toBeStarted.remove(bundle);
             try {

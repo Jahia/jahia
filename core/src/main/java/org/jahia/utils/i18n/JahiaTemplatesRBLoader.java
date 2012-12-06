@@ -40,6 +40,7 @@
 
 package org.jahia.utils.i18n;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
@@ -47,11 +48,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.HashMap;
@@ -154,11 +151,20 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
                 if (aPackage != null) {
                     String path = aPackage.getRootFolderPath() + (!fileName.startsWith("/") ? "/" : "") + fileName;
                     path = JahiaContextLoaderListener.getServletContext().getResourceAsStream(path) != null ? path : null;
+
                     if (path != null) {
                         stream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(path);
                     }
                     if (stream == null) {
                     	stream = JahiaContextLoaderListener.getServletContext().getResourceAsStream((!name.startsWith("/") ? "/" : "") + NAME_PATTERN.matcher(name).replaceAll("/"));
+                    }
+                    if (stream == null) {
+                        String resourcePath = "resources/" + StringUtils.substringAfter(fileName,"/resources/");
+                        try {
+                            stream = aPackage.getResource(resourcePath).getInputStream();
+                        } catch (IOException e) {
+                            logger.warn(e.getMessage(), e);
+                        }
                     }
                     if (stream != null) {
                     	return stream;

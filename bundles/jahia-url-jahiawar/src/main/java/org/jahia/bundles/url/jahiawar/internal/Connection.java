@@ -283,8 +283,9 @@ public class Connection extends URLConnection {
                     staticResources.append(folder);
                 }
             }
-
-            bndProperties.put("Jahia-Static-Resources", staticResources.substring(1));
+            if (staticResources.length() > 0) {
+                bndProperties.put("Jahia-Static-Resources", staticResources.substring(1));
+            }
         }
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
 

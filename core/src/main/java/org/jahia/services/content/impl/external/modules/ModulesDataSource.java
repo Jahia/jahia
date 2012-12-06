@@ -261,11 +261,11 @@ public class ModulesDataSource extends VFSDataSource {
         ExternalData externalData = new ExternalData(path, path, nodeType.isMixin() ? "jnt:mixinNodeType" : "jnt:primaryNodeType", properties);
         Map<String, Map<String,String[]>> i18nProperties = new HashMap<String, Map<String,String[]>>();
 
-        i18nProperties.put("jcr:title",new HashMap<String, String[]>());
-        i18nProperties.put("jcr:description",new HashMap<String, String[]>());
         for (Locale locale : LanguageCodeConverters.getAvailableBundleLocales()) {
-            i18nProperties.get("jcr:title").put(locale.toString(), new String[] { nodeType.getLabel(locale) });
-            i18nProperties.get("jcr:description").put(locale.toString(), new String[] { nodeType.getDescription(locale) });
+            HashMap<String, String[]> value = new HashMap<String, String[]>();
+            i18nProperties.put(locale.toString(), value);
+            value.put("jcr:title", new String[] { nodeType.getLabel(locale) });
+            value.put("jcr:description", new String[] { nodeType.getDescription(locale) });
         }
 
         externalData.setI18nProperties(i18nProperties);

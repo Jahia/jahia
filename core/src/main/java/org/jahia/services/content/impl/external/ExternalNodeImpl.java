@@ -118,8 +118,10 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
                     }
                 }
             }
-
         }
+        properties.put("jcr:uuid",
+                new ExternalPropertyImpl(new Name("jcr:uuid", NodeTypeRegistry.getInstance().getNamespaces()), this, session,
+                        session.getValueFactory().createValue(getIdentifier())));
     }
 
     private ExtendedPropertyDefinition getPropertyDefinition(String name) throws RepositoryException {
@@ -554,9 +556,7 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
     }
 
     public String getIdentifier() throws RepositoryException {
-        if (session.getRepository().getDataSource().isSupportsUuid()) {
-            return data.getId();
-        } else {
+        if (!session.getRepository().getDataSource().isSupportsUuid() || data.getId().startsWith("translation:")) {
             SessionFactory hibernateSession = ((ExternalSessionImpl) getSession()).getRepository().getStoreProvider().getHibernateSession();
             org.hibernate.classic.Session statelessSession = hibernateSession.openSession();
             try {
@@ -584,6 +584,8 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
             } finally {
                 statelessSession.close();
             }
+        } else {
+            return data.getId();
         }
     }
 

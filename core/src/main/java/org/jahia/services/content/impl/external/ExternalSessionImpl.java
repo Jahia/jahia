@@ -45,7 +45,6 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
-import org.hibernate.classic.*;
 import org.hibernate.criterion.Restrictions;
 import org.jahia.services.content.JCRSessionFactory;
 import org.xml.sax.ContentHandler;
@@ -118,28 +117,11 @@ public class ExternalSessionImpl implements Session {
     }
 
     public Node getNodeByUUID(String uuid) throws ItemNotFoundException, RepositoryException {
-        for (ExternalData d : changedData.values()) {
-
-
-            System.out.println("kkjkljklj");
-            if (uuid.equals(d.getId())) {
-                return new ExternalNodeImpl(d, this);
-            }
-
-
-        }
-        if (uuid.startsWith("translation:")) {
-            String u = StringUtils.substringAfter(uuid, "translation:");
-            String lang = StringUtils.substringBefore(u, ":");
-            u = StringUtils.substringAfter(u, ":");
-            return getNodeByUUID(u).getNode("j:translation_" + lang);
-        }
-
-        // Translate uuid to external mapping
-        SessionFactory hibernateSession = repository.getStoreProvider().getHibernateSession();
-        StatelessSession statelessSession = hibernateSession.openStatelessSession();
-        try {
-            if (!repository.getDataSource().isSupportsUuid()) {
+        if (!repository.getDataSource().isSupportsUuid() || uuid.startsWith("translation:")) {
+            // Translate uuid to external mapping
+            SessionFactory hibernateSession = repository.getStoreProvider().getHibernateSession();
+            StatelessSession statelessSession = hibernateSession.openStatelessSession();
+            try {
                 Criteria criteria = statelessSession.createCriteria(UuidMapping.class);
                 criteria.add(Restrictions.eq("internalUuid", uuid));
                 List list = criteria.list();
@@ -148,15 +130,32 @@ public class ExternalSessionImpl implements Session {
                 } else {
                     throw new ItemNotFoundException("Item " + uuid + " could not been found in this repository");
                 }
+            } finally {
+                statelessSession.close();
             }
-            Node n = new ExternalNodeImpl(repository.getDataSource().getItemByIdentifier(uuid), this);
-            if (deletedData.containsKey(n.getPath())) {
-                throw new ItemNotFoundException("This node has been deleted");
-            }
-            return n;
-        } finally {
-            statelessSession.close();
         }
+        return getNodeByLocalIdentifier(uuid);
+    }
+
+    private Node getNodeByLocalIdentifier(String uuid) throws RepositoryException {
+        for (ExternalData d : changedData.values()) {
+            if (uuid.equals(d.getId())) {
+                return new ExternalNodeImpl(d, this);
+            }
+        }
+
+        if (uuid.startsWith("translation:")) {
+            String u = StringUtils.substringAfter(uuid, "translation:");
+            String lang = StringUtils.substringBefore(u, ":");
+            u = StringUtils.substringAfter(u, ":");
+            return getNodeByLocalIdentifier(u).getNode("j:translation_" + lang);
+        }
+
+        Node n = new ExternalNodeImpl(repository.getDataSource().getItemByIdentifier(uuid), this);
+        if (deletedData.containsKey(n.getPath())) {
+            throw new ItemNotFoundException("This node has been deleted");
+        }
+        return n;
     }
 
     public Item getItem(String path) throws PathNotFoundException, RepositoryException {
@@ -181,32 +180,7 @@ public class ExternalSessionImpl implements Session {
                     "jnt:translation", i18nProps);
             return new ExternalNodeImpl(i18n, this);
         }
-        ExternalData object = repository.getDataSource().getItemByPath(path);
-        SessionFactory hibernateSession = getRepository().getStoreProvider().getHibernateSession();
-        org.hibernate.classic.Session statelessSession = hibernateSession.openSession();
-        try {
-            Criteria criteria = statelessSession.createCriteria(UuidMapping.class);
-            String key = getRepository().getStoreProvider().getKey();
-            criteria.add(Restrictions.eq("externalId", object.getId())).add(Restrictions.eq("providerKey", key));
-            List list = criteria.list();
-            if (list.isEmpty()) {
-                try {
-                    statelessSession.beginTransaction();
-                    UUID uuid = UUID.randomUUID();
-                    UuidMapping uuidMapping = new UuidMapping();
-                    uuidMapping.setExternalId(object.getId());
-                    uuidMapping.setProviderKey(key);
-                    uuidMapping.setInternalUuid(uuid.toString());
-                    statelessSession.save(uuidMapping);
-                    statelessSession.getTransaction().commit();
-                } catch (HibernateException e) {
-                    statelessSession.getTransaction().rollback();
-                }
-            }
-        } finally {
-            statelessSession.close();
-        }
-        return new ExternalNodeImpl(object, this);
+        return new ExternalNodeImpl(repository.getDataSource().getItemByPath(path), this);
     }
 
     public boolean itemExists(String path) throws RepositoryException {

@@ -83,8 +83,8 @@ import java.util.*;
 public class ModulesDataSource extends VFSDataSource {
 
     private static final List<String> JCR_CONTENT_LIST = Arrays.asList(Constants.JCR_CONTENT);
-    protected static final String UNSTRUCTURED_PROPERTY = "__UNSTRUCTURED_PROPERTY__";
-    protected static final String UNSTRUCTURED_CHILD_NODE = "__UNSTRUCTURED_CHILD_NODE__";
+    protected static final String UNSTRUCTURED_PROPERTY = "__prop__";
+    protected static final String UNSTRUCTURED_CHILD_NODE = "__node__";
 
     private Map<String, String> fileTypeMapping;
 
@@ -204,19 +204,19 @@ public class ModulesDataSource extends VFSDataSource {
                 ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(nodeTypeName);
                 Map<String,ExtendedPropertyDefinition> propertyDefinitionsAsMap = nodeType.getPropertyDefinitionsAsMap();
                 if (propertyDefinitionsAsMap.containsKey(itemDefinitionName)) {
-                    return getPropertyDefinitionData(path, propertyDefinitionsAsMap.get(itemDefinitionName));
+                    return getPropertyDefinitionData(path, propertyDefinitionsAsMap.get(itemDefinitionName), false);
                 }
                 if (itemDefinitionName.startsWith(UNSTRUCTURED_PROPERTY)) {
                     int type = Integer.parseInt(itemDefinitionName.substring(UNSTRUCTURED_PROPERTY.length()));
-                    return getPropertyDefinitionData(path, nodeType.getUnstructuredPropertyDefinitions().get(type));
+                    return getPropertyDefinitionData(path, nodeType.getUnstructuredPropertyDefinitions().get(type), true);
                 }
                 Map<String, ExtendedNodeDefinition> childNodeDefinitionsAsMap = nodeType.getChildNodeDefinitionsAsMap();
                 if (childNodeDefinitionsAsMap.containsKey(itemDefinitionName)) {
-                    return getChildNodeDefinitionData(path, childNodeDefinitionsAsMap.get(itemDefinitionName));
+                    return getChildNodeDefinitionData(path, childNodeDefinitionsAsMap.get(itemDefinitionName), false);
                 }
                 if (itemDefinitionName.startsWith(UNSTRUCTURED_CHILD_NODE)) {
                     String type = itemDefinitionName.substring(UNSTRUCTURED_CHILD_NODE.length());
-                    return getChildNodeDefinitionData(path, nodeType.getUnstructuredChildNodeDefinitions().get(type));
+                    return getChildNodeDefinitionData(path, nodeType.getUnstructuredChildNodeDefinitions().get(type), true);
                 }
             } catch (NoSuchNodeTypeException e) {
                 throw new PathNotFoundException("Failed to get node type " + nodeTypeName, e);
@@ -272,9 +272,8 @@ public class ModulesDataSource extends VFSDataSource {
         return externalData;
     }
 
-    private ExternalData getPropertyDefinitionData(String path, ExtendedPropertyDefinition propertyDefinition) {
+    private ExternalData getPropertyDefinitionData(String path, ExtendedPropertyDefinition propertyDefinition, boolean unstructured) {
         Map<String, String[]> properties = new HashMap<String, String[]>();
-        properties.put("j:name", new String[]{propertyDefinition.getName()});
         properties.put("j:autoCreated", new String[]{String.valueOf(propertyDefinition.isAutoCreated())});
         properties.put("j:mandatory", new String[]{String.valueOf(propertyDefinition.isMandatory())});
         properties.put("j:onParentVersion", new String[]{OnParentVersionAction.nameFromValue(propertyDefinition.getOnParentVersion())});
@@ -305,13 +304,14 @@ public class ModulesDataSource extends VFSDataSource {
         properties.put("j:isQueryOrderable", new String[]{String.valueOf(propertyDefinition.isQueryOrderable())});
         properties.put("j:isFacetable", new String[]{String.valueOf(propertyDefinition.isFacetable())});
         properties.put("j:isHierarchical", new String[]{String.valueOf(propertyDefinition.isHierarchical())});
-        ExternalData externalData = new ExternalData(path, path, "jnt:propertyDefinition", properties);
+        properties.put("j:isInternationalized", new String[]{String.valueOf(propertyDefinition.isInternationalized())});
+        ExternalData externalData = new ExternalData(path, path,
+                unstructured ? "jnt:unstructuredPropertyDefinition" : "jnt:structuredPropertyDefinition", properties);
         return externalData;
     }
 
-    private ExternalData getChildNodeDefinitionData(String path, ExtendedNodeDefinition nodeDefinition) {
+    private ExternalData getChildNodeDefinitionData(String path, ExtendedNodeDefinition nodeDefinition, boolean unstructured) {
         Map<String, String[]> properties = new HashMap<String, String[]>();
-        properties.put("j:name", new String[]{nodeDefinition.getName()});
         properties.put("j:autoCreated", new String[]{String.valueOf(nodeDefinition.isAutoCreated())});
         properties.put("j:mandatory", new String[]{String.valueOf(nodeDefinition.isMandatory())});
         properties.put("j:onParentVersion", new String[]{OnParentVersionAction.nameFromValue(nodeDefinition.getOnParentVersion())});
@@ -324,7 +324,8 @@ public class ModulesDataSource extends VFSDataSource {
         if (defaultPrimaryTypeName != null) {
             properties.put("j:defaultPrimaryType", new String[]{defaultPrimaryTypeName});
         }
-        ExternalData externalData = new ExternalData(path, path, "jnt:childNodeDefinition", properties);
+        ExternalData externalData = new ExternalData(path, path,
+                unstructured ? "jnt:unstructuredChildNodeDefinition" : "jnt:structuredChildNodeDefinition", properties);
         return externalData;
     }
 

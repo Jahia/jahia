@@ -846,7 +846,7 @@ extends = jnt:content
 [jnt:definitionFile] > jnt:file
  + * (jnt:nodeType)
 
-[jnt:nodeType] > nt:base, mix:title orderable
+[jnt:nodeType] > nt:base, mix:title orderable abstract
  - jcr:description (string,textarea) i18n itemtype = content
  + * (jnt:propertyDefinition) = jnt:propertyDefinition
  + * (jnt:childNodeDefinition) = jnt:childNodeDefinition
@@ -866,8 +866,7 @@ extends = jnt:content
  - j:primaryItemName (NAME,choicelist[nodes='.;nt:base'])
  - j:itemsType (string,choicelist) < 'content','metadata','layout','options'
 
-[jnt:propertyDefinition]
- - j:name (NAME) mandatory
+[jnt:propertyDefinition] abstract
  - j:autoCreated (BOOLEAN) mandatory
  - j:mandatory (BOOLEAN) mandatory
  - j:onParentVersion (STRING) mandatory nofulltext
@@ -885,16 +884,24 @@ extends = jnt:content
  - j:isQueryOrderable (BOOLEAN) mandatory
  - j:isFacetable (BOOLEAN) mandatory
  - j:isHierarchical (BOOLEAN) mandatory
+ - j:isInternationalized (BOOLEAN) mandatory
 
-[jnt:childNodeDefinition]
-  - j:name (NAME) mandatory
-  - j:autoCreated (BOOLEAN) mandatory
-  - j:mandatory (BOOLEAN) mandatory
-  - j:onParentVersion (STRING) mandatory nofulltext
-      < 'COPY', 'VERSION', 'INITIALIZE', 'COMPUTE', 'IGNORE', 'ABORT'
-  - j:protected (BOOLEAN) mandatory
-  - j:requiredPrimaryTypes (NAME) = 'nt:base' mandatory multiple
-  - j:defaultPrimaryType (NAME)
+[jnt:structuredPropertyDefinition] > jnt:propertyDefinition
+
+[jnt:unstructuredPropertyDefinition] > jnt:propertyDefinition
+
+[jnt:childNodeDefinition] abstract
+ - j:autoCreated (BOOLEAN) mandatory
+ - j:mandatory (BOOLEAN) mandatory
+ - j:onParentVersion (STRING) mandatory nofulltext
+     < 'COPY', 'VERSION', 'INITIALIZE', 'COMPUTE', 'IGNORE', 'ABORT'
+ - j:protected (BOOLEAN) mandatory
+ - j:requiredPrimaryTypes (NAME) = 'nt:base' mandatory multiple
+ - j:defaultPrimaryType (NAME)
+
+[jnt:structuredChildNodeDefinition] > jnt:childNodeDefinition
+
+[jnt:unstructuredChildNodeDefinition] > jnt:childNodeDefinition
 
 [jnt:resourceBundleFolder] > jnt:folder
 

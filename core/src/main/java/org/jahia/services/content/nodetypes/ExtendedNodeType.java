@@ -814,8 +814,7 @@ public class ExtendedNodeType implements NodeType {
         if (!getSystemId().startsWith("system-")) {
             try {
                 pkg = ServicesRegistry.getInstance()
-                        .getJahiaTemplateManagerService().getTemplatePackage(
-                                getSystemId());
+                        .getJahiaTemplateManagerService().getTemplatePackageByFileName(getSystemId());
             } catch (Exception e) {
                 logger.warn(
                         "Unable to get the template package for the node with system id '"

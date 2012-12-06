@@ -164,7 +164,7 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
     private String getTemplatePackageName(ExtendedPropertyDefinition definition) {
         String systemId = definition.getDeclaringNodeType().getSystemId();
         if(systemId.equals("system-jahia")) {
-            systemId = "Default Jahia Templates";
+            systemId = "default";
         }
         final JahiaTemplatesPackage tpkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
                 .getTemplatePackageByFileName(systemId);

@@ -47,6 +47,7 @@ import org.jahia.api.Constants;
 import org.jahia.bin.*;
 import org.jahia.params.valves.LoginConfig;
 import org.jahia.params.valves.LogoutConfig;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -92,6 +93,7 @@ public class URLGenerator {
     private String preview;
     private String contribute;
     private String studio;
+    private String studioLayout;
     private String find;
     private String initializers;
     private Resource resource;
@@ -199,17 +201,49 @@ public class URLGenerator {
                     try {
                         if (context.getSite().hasProperty("j:templatesSet")) {
                             studio += "/" + context.getSite().getProperty("j:templatesSet").getString();
-                            studio += ".html";
+                            studio += ".html?studioMode=true";
+                        } else if (context.getSite().getPath().startsWith("/modules")) {
+                            studio = Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + context.getSite().getPath();
+                            studio += ".html?studioMode=true";
                         }
                     } catch (RepositoryException e) {
                         logger.error("Cannot get studio url", e);
                     }
                 } else {
-                    studio += ".html";
+                    studio += ".html?studioMode=true";
                 }
             }
         }
         return studio;
+    }
+
+    public String getStudioLayout() {
+        if (!SettingsBean.getInstance().isDistantPublicationServerMode() && !SettingsBean.getInstance().isProductionMode()) {
+            if (studioLayout == null) {
+                studioLayout = Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/modules";
+                if (context.getSite() != null) {
+                    try {
+                        if (context.getSite().hasProperty("j:templatesSet")) {
+                            studioLayout += "/" + context.getSite().getProperty("j:templatesSet").getString();
+                            studioLayout += ".html?layoutMode=true";
+                        } else if (context.getSite().getPath().startsWith("/modules")) {
+                            studioLayout = Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + context.getSite().getPath();
+                            studioLayout += ".html?layoutMode=true";
+                        }
+                    } catch (RepositoryException e) {
+                        logger.error("Cannot get studio url", e);
+                    }
+                } else {
+                    try {
+                        studioLayout += "/" + ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite().getNode().getProperty("j:templatesSet").getString();
+                        studioLayout += ".html?layoutMode=true";
+                    } catch (RepositoryException e) {
+                        logger.error("Cannot get studio url", e);
+                    }
+                }
+            }
+        }
+        return studioLayout;
     }
 
     public String getFind() {

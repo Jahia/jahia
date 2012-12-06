@@ -305,6 +305,37 @@
         </property>
     </bean>
 
+    <bean id="Toolbar.Item.StudioLayoutMode" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectOrOpenWindowActionItem"/>
+        </property>
+        <property name="titleKey" value="label.studio.layout"/>
+        <property name="icon" value="studio"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="js.url"/>
+                    <property name="value" value="studioLayoutUrl"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="target"/>
+                    <property name="value" value="_blank"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="no-options"/>
+                    <property name="value" value=""/>
+                </bean>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="permission" value="studioModeAccess"/>
+                <property name="contextNodePath" value="/modules"/>
+                <property name="operatingMode" value="development"/>
+            </bean>
+        </property>
+    </bean>
+
     <!-- My settings-->
     <!--
     <bean id="Toolbar.Item.MySettings" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">

@@ -79,6 +79,7 @@ public class JahiaGWTParameters {
     public static final String SERVLET_PATH = "servletPath";
     public static final String QUERY_STRING = "queryString";
     public static final String STUDIO_URL = "studioUrl";
+    public static final String STUDIO_LAYOUT_URL = "studioLayoutUrl";
     public static final String BASE_URL = "baseUrl";
     public static final String DEVELOPMENT_MODE = "developmentMode";
 

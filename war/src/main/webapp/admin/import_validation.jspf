@@ -118,6 +118,23 @@
                 </ul>
             </div>
         </c:if>
+        <c:if test="${checks.class.name == 'org.jahia.services.importexport.validation.MissingPortletsValidationResult'}">
+            <fmt:message key="failure.import.missingPortlets" var="errorSummary">
+                <fmt:param value="${fn:length(checks.missingPortlets)}"/>
+            </fmt:message>
+            <div style="display: block">
+                <span style="color: red">${fn:escapeXml(errorSummary)}</span>&nbsp;
+                <fmt:message key="label.detailed" var="i18nHelp"/><c:set var="i18nHelp" value="${fn:escapeXml(i18nHelp)}"/>
+                <a href="#details" onclick="toggle('validationErrorsDetailsTemplates'); return false;" title="${i18nHelp}"><img src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16" height="16" alt="${i18nHelp}" title="${i18nHelp}"></a>
+            </div>
+            <div id="validationErrorsDetailsTemplates" style="display: none">
+                <ul>
+                    <c:forEach var="portlet" items="${checks.missingPortlets}">
+                        <li>${fn:escapeXml(portlet)}</li>
+                    </c:forEach>
+                </ul>
+            </div>
+        </c:if>        
     </c:if>
     <c:if test="${checks.class.name == 'org.jahia.services.importexport.validation.MissingTemplatesValidationResult'}">
         <c:set var="templateSetsMissingCounts" value="${checks.templateSetsMissingCounts}" scope="request" />

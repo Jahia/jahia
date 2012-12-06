@@ -263,7 +263,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
 
                     final Resource imagePath = view.getModule().getResource(File.separator + "img" + File.separator + c.getValue().getString() + ".png");
 
-                    if (imagePath.exists()) {
+                    if (imagePath != null && imagePath.exists()) {
                         String s = Jahia.getContextPath();
                         if (s.equals("/")) {
                             s = "";

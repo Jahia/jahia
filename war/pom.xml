@@ -957,17 +957,6 @@
                                     <version>3.0.0-20121108.224409-79</version>
                                 </artifactItem>
                                <!-- End of OSGi -->
-                                <artifactItem>
-                                    <groupId>org.jahia.bundles</groupId>
-                                    <artifactId>org.jahia.bundles.extender.jahiamodules</artifactId>
-                                    <version>6.7.0.0-SNAPSHOT</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.jahia.bundles</groupId>
-                                    <artifactId>org.jahia.bundles.url.jahiawar</artifactId>
-                                    <version>6.7.0.0-SNAPSHOT</version>
-                                </artifactItem>
-
                             </artifactItems>
                             <stripVersion>false</stripVersion>
                             <outputDirectory>
@@ -987,7 +976,17 @@
                                     <artifactId>jahia-taglib</artifactId>
                                     <version>6.7.0.0-SNAPSHOT</version>
                                 </artifactItem>
-
+                                <artifactItem>
+                                    <groupId>org.jahia.bundles</groupId>
+                                    <artifactId>org.jahia.bundles.extender.jahiamodules</artifactId>
+                                    <version>6.7.0.0-SNAPSHOT</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jahia.bundles</groupId>
+                                    <artifactId>org.jahia.bundles.url.jahiawar</artifactId>
+                                    <version>6.7.0.0-SNAPSHOT</version>
+                                </artifactItem>
+                               <!-- End of OSGi -->
                             </artifactItems>
                             <stripVersion>false</stripVersion>
                             <outputDirectory>

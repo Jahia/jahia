@@ -45,6 +45,7 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.filter.AbstractFilter;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
@@ -264,46 +265,59 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         throw new JspException(e);
                     }
                 }
-
-                try {
-                    boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext, resource.getNode()) && !isExcluded(renderContext, resource) && checkStudioLock(renderContext);
-
-                    pageContext.getRequest().setAttribute("editableModule", canEdit);
-                    if (canEdit) {
-                        String type = getModuleType(renderContext);
-                        List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
-                        String oldNodeTypes = nodeTypes;
-                        String add = null;
-                        if (contributeTypes != null) {
-                            nodeTypes = StringUtils.join(contributeTypes, " ");
-                            add = "editable=\"false\"";
+                boolean isVisibleInstudiModeLayout = true;
+                if(!SettingsBean.getInstance().isDistantPublicationServerMode() && !SettingsBean.getInstance().isProductionMode() && Studio.STUDIO_LAYOUT_MODE.equals(renderContext.getEditModeConfigName())) {
+                    try {
+                        if(!node.isNodeType("jmix:studioLayout")) {
+                            isVisibleInstudiModeLayout = false;
                         }
-                        Script script = null;
-                        try {
-                            script = RenderService.getInstance().resolveScript(resource, renderContext);
-                            printModuleStart(type, node.getPath(), resource.getResolvedTemplate(),
-                                    script.getView().getInfo(), add);
-                        } catch (TemplateNotFoundException e) {
-                            printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), "Script not found",
-                                    add);
-                        }
-                        nodeTypes = oldNodeTypes;
-                        currentResource.getDependencies().add(node.getCanonicalPath());
-                        render(renderContext, resource);
-                        //Copy dependencies to parent Resource (only for include of the same node)
-                        currentResource.getRegexpDependencies().addAll(resource.getRegexpDependencies());
-                        currentResource.getDependencies().addAll(resource.getDependencies());
-                        printModuleEnd();
-                    } else {
-//                        resource.getModuleParams().put("readOnly", Boolean.TRUE);
-                        currentResource.getDependencies().add(node.getCanonicalPath());
-                        render(renderContext, resource);
-                        //Copy dependencies to parent Resource (only for include of the same node)
-                        currentResource.getRegexpDependencies().addAll(resource.getRegexpDependencies());
-                        currentResource.getDependencies().addAll(resource.getDependencies());
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
                     }
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
+                }
+                if (isVisibleInstudiModeLayout) {
+                    try {
+                        boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext,
+                                resource.getNode()) && !isExcluded(renderContext, resource) && checkStudioLock(
+                                renderContext);
+
+                        pageContext.getRequest().setAttribute("editableModule", canEdit);
+                        if (canEdit) {
+                            String type = getModuleType(renderContext);
+                            List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
+                            String oldNodeTypes = nodeTypes;
+                            String add = null;
+                            if (contributeTypes != null) {
+                                nodeTypes = StringUtils.join(contributeTypes, " ");
+                                add = "editable=\"false\"";
+                            }
+                            Script script = null;
+                            try {
+                                script = RenderService.getInstance().resolveScript(resource, renderContext);
+                                printModuleStart(type, node.getPath(), resource.getResolvedTemplate(),
+                                        script.getView().getInfo(), add);
+                            } catch (TemplateNotFoundException e) {
+                                printModuleStart(type, node.getPath(), resource.getResolvedTemplate(),
+                                        "Script not found", add);
+                            }
+                            nodeTypes = oldNodeTypes;
+                            currentResource.getDependencies().add(node.getCanonicalPath());
+                            render(renderContext, resource);
+                            //Copy dependencies to parent Resource (only for include of the same node)
+                            currentResource.getRegexpDependencies().addAll(resource.getRegexpDependencies());
+                            currentResource.getDependencies().addAll(resource.getDependencies());
+                            printModuleEnd();
+                        } else {
+//                        resource.getModuleParams().put("readOnly", Boolean.TRUE);
+                            currentResource.getDependencies().add(node.getCanonicalPath());
+                            render(renderContext, resource);
+                            //Copy dependencies to parent Resource (only for include of the same node)
+                            currentResource.getRegexpDependencies().addAll(resource.getRegexpDependencies());
+                            currentResource.getDependencies().addAll(resource.getDependencies());
+                        }
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                    }
                 }
             }
         } catch (IOException ex) {
@@ -466,6 +480,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     protected boolean checkStudioLock(RenderContext renderContext) {
         if ("studiomode".equals(renderContext.getEditModeConfigName())) {
             try {
+                if(node!=null && node.isNodeType("jmix:studioLayout")) {
+                    return false;
+                }
                 if (renderContext.getMainResource().getNode().getLockInfos().get(null) == null ||
                         !renderContext.getMainResource().getNode().getLockInfos().get(null).contains(renderContext.getUser().getUsername()+":user")) {
                     return false;

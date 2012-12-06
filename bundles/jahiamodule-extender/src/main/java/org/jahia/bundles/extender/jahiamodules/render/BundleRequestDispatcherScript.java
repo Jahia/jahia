@@ -65,14 +65,14 @@ public class BundleRequestDispatcherScript implements Script {
                 Object oldLocalizationContext = request.getAttribute("javax.servlet.jsp.jstl.fmt.localizationContext.request");
                 try {
                     Locale locale = (Locale) oldLocalizationContext.getClass().getMethod("getLocale").invoke(oldLocalizationContext);
-                    ResourceBundle bundle = (ResourceBundle) oldLocalizationContext.getClass().getMethod("getResourceBundle").invoke(oldLocalizationContext);
-                    request.setAttribute("javax.servlet.jsp.jstl.fmt.localizationContext.request", new LocalizationContext(bundle,locale));
+                    ResourceBundle oldBundle = (ResourceBundle) oldLocalizationContext.getClass().getMethod("getResourceBundle").invoke(oldLocalizationContext);
+                    request.setAttribute("javax.servlet.jsp.jstl.fmt.localizationContext.request", new LocalizationContext(oldBundle,locale));
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error("Error setting localization context", e);
                 } catch (InvocationTargetException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error("Error setting localization context", e);
                 } catch (NoSuchMethodException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error("Error setting localization context", e);
                 }
                 Object oldRequestUri = request.getAttribute("javax.servlet.include.request_uri");
                 Object oldContextPath = request.getAttribute("javax.servlet.include.context_path");

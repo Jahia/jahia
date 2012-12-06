@@ -885,6 +885,7 @@ extends = jnt:content
  - j:isFacetable (BOOLEAN) mandatory
  - j:isHierarchical (BOOLEAN) mandatory
  - j:isInternationalized (BOOLEAN) mandatory
+ - j:isHidden (BOOLEAN) mandatory
 
 [jnt:structuredPropertyDefinition] > jnt:propertyDefinition
 

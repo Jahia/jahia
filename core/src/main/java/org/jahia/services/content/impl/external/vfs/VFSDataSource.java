@@ -63,9 +63,9 @@ import java.util.*;
 public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Writable {
     private static final List<String> SUPPORTED_NODE_TYPES = Arrays.asList(Constants.JAHIANT_FILE, Constants.JAHIANT_FOLDER, Constants.JCR_CONTENT);
     public static final Logger logger = LoggerFactory.getLogger(VFSDataSource.class);
-    private String root;
-    private String rootPath;
-    private FileSystemManager manager;
+    protected String root;
+    protected String rootPath;
+    protected FileSystemManager manager;
 
     public void setRoot(String root) {
         this.root = root;

@@ -245,6 +245,8 @@ public class VFSContentStoreProviderTest {
             // we must recycle session because of internal session caches.
             session.refresh(false);
             session.logout();
+            
+            JCRSessionFactory.getInstance().closeAllSessions();            
 
             session = JCRSessionFactory.getInstance().getCurrentUserSession();
 

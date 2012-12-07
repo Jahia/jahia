@@ -6,7 +6,7 @@
 
 <property>
   <name>plugin.includes</name>
-  <value>protocol-httpclient|parse-(text|html|js)|urlfilter-regex|urlnormalizer-regex</value>
+  <value>protocol-httpclient|parse-(html|tika|js)|urlfilter-regex|urlnormalizer-regex</value>
   <description>Enable required plugins.</description>
 </property>
 

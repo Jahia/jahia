@@ -190,8 +190,12 @@ public class CrawlingPageVisitorTest {
             HttpClient client = new HttpClient();
 
             client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("jahia", "password"));
+            
+            String url = getPrecompileServletURL() + "?compile_type=all&jsp_precompile=true";
 
-            GetMethod get = new GetMethod(getPrecompileServletURL() + "?compile_type=all&jsp_precompile=true");
+            logger.info("Starting the precompileServlet with the following url: " + url);
+            
+            GetMethod get = new GetMethod(url);
             try {
                 get.setDoAuthentication(true);
 
@@ -303,15 +307,18 @@ public class CrawlingPageVisitorTest {
             int depth = 5;
             int threads = 4;
             for (int i = 0; i < depth; i++) { // generate new segment
-                Path generatedSegment = g.generate(crawldbPath, segmentsPath, 1, Long.MAX_VALUE, Long.MAX_VALUE, false,
+                Path[] generatedSegments = g.generate(crawldbPath, segmentsPath, 1, Long.MAX_VALUE, Long.MAX_VALUE, false,
                         false);
 
-                if (generatedSegment == null) {
+                if (generatedSegments == null) {
                     logger.info("Stopping at depth=" + i + " - no more URLs to fetch.");
                     break;
                 }
-                fetcher.fetch(generatedSegment, threads, true);
-                crawlDbTool.update(crawldbPath, new Path[] { generatedSegment }, true, true);
+                for (Path generatedSegment : generatedSegments) {
+                    fetcher.fetch(generatedSegment, threads);
+                    crawlDbTool.update(crawldbPath,
+                            new Path[] { generatedSegment }, true, true);
+                }
             }
         } catch (IOException e) {
             logger.error("Exception while crawling", e);

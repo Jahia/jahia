@@ -25,7 +25,7 @@
       <library name="parse-html.jar">
          <export name="*"/>
       </library>
-      <library name="tagsoup-1.2.jar"/>
+      <library name="tagsoup-1.2.1.jar"/>
    </runtime>
 
    <requires>
@@ -39,13 +39,7 @@
 
       <implementation id="org.apache.nutch.parse.html.HtmlParser"
                       class="org.apache.nutch.parse.html.HtmlParser">
-        <parameter name="contentType" value="text/html"/>
-        <parameter name="pathSuffix" value=""/>
-      </implementation>
-
-      <implementation id="org.apache.nutch.parse.html.HtmlParser"
-                      class="org.apache.nutch.parse.html.HtmlParser">
-        <parameter name="contentType" value="application/xhtml+xml"/>
+        <parameter name="contentType" value="text/html|application/xhtml+xml"/>
         <parameter name="pathSuffix" value=""/>
       </implementation>
 

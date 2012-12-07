@@ -414,7 +414,7 @@ public class ContentTest {
             try {
                 session.move(testFile.getPath(), providerRoot + "/" + collectionName + "/" + testFile.getName());
             } catch (RepositoryException e) {
-                fail(providerRoot + " : move throwed exception :" + e);
+                fail(providerRoot + " : move threw exception :" + e);
             }
 
 
@@ -585,6 +585,7 @@ public class ContentTest {
 
             logger.debug("Create a new page");
             JCRNodeWrapper page = siteNode.addNode("page" + System.currentTimeMillis(), "jnt:page");
+            page.setProperty("j:templateName", "simple");
 
             // create a new collection with several children
             logger.debug("Create a new list");
@@ -659,6 +660,7 @@ public class ContentTest {
             logger.debug("Create a new page");
             JCRNodeWrapper page = siteNode.addNode("page" + System.currentTimeMillis(), "jnt:page");
             page.setProperty("jcr:title","test");
+            page.setProperty("j:templateName", "simple");
             logger.debug("Create a new list");
             JCRNodeWrapper listNode = page.addNode("list" + System.currentTimeMillis(), "jnt:contentList");
 

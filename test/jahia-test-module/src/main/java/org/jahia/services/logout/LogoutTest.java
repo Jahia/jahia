@@ -94,7 +94,7 @@ public class LogoutTest {
         }
         catch (PathNotFoundException e){
             JCRNodeWrapper n = session.getNode("/sites/"+SITE_KEY+"/home").addNode("pubPage","jnt:page");
-            n.setProperty("j:templateNode", session.getNode("/sites/"+SITE_KEY+"/templates/base/simple"));
+            n.setProperty("j:templateName", "simple");
             n.setProperty("jcr:title", "title0");
             session.save();
         }
@@ -103,7 +103,7 @@ public class LogoutTest {
         }
         catch (PathNotFoundException e){
             JCRNodeWrapper n = session.getNode("/sites/"+SITE_KEY+"/home").addNode("privPage","jnt:page");
-            n.setProperty("j:templateNode", session.getNode("/sites/"+SITE_KEY+"/templates/base/simple"));
+            n.setProperty("j:templateName", "simple");
             n.setProperty("jcr:title", "title1");
             session.save();
         }

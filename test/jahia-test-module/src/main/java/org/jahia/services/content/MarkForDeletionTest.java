@@ -422,33 +422,46 @@ public class MarkForDeletionTest {
         
         JCRNodeWrapper pages = home.addNode("pages", "jnt:page");
         pages.setProperty("jcr:title", "Source");
+        pages.setProperty("j:templateName", "simple");
         JCRNodeWrapper page1 = pages.addNode("page1", "jnt:page");
         page1.setProperty("jcr:title", "Page1");
+        page1.setProperty("j:templateName", "simple");        
         JCRNodeWrapper page2 = pages.addNode("page2", "jnt:page");
         page2.setProperty("jcr:title", "Page2");
+        page2.setProperty("j:templateName", "simple");        
         JCRNodeWrapper page3 = pages.addNode("page3", "jnt:page");
         page3.setProperty("jcr:title", "Page3");
+        page3.setProperty("j:templateName", "simple");        
         
         JCRNodeWrapper page11 = page1.addNode("page11", "jnt:page");
         page11.setProperty("jcr:title", "Page1-1");
+        page11.setProperty("j:templateName", "simple");        
         JCRNodeWrapper page12 = page1.addNode("page12", "jnt:page");
         page12.setProperty("jcr:title", "Page1-2");
+        page12.setProperty("j:templateName", "simple");        
         JCRNodeWrapper page13 = page1.addNode("page13", "jnt:page");
-        page13.setProperty("jcr:title", "Page1-3");        
+        page13.setProperty("jcr:title", "Page1-3");
+        page13.setProperty("j:templateName", "simple");        
         
         JCRNodeWrapper page21 = page2.addNode("page21", "jnt:page");
         page21.setProperty("jcr:title", "Page2-1");
+        page21.setProperty("j:templateName", "simple");        
         JCRNodeWrapper page22 = page2.addNode("page22", "jnt:page");
         page22.setProperty("jcr:title", "Page2-2");
+        page22.setProperty("j:templateName", "simple");        
         JCRNodeWrapper page23 = page2.addNode("page23", "jnt:page");
         page23.setProperty("jcr:title", "Page2-3");
+        page23.setProperty("j:templateName", "simple");        
 
         JCRNodeWrapper page31 = page3.addNode("page31", "jnt:page");
         page31.setProperty("jcr:title", "Page3-1");
+        page31.setProperty("j:templateName", "simple");        
         JCRNodeWrapper page32 = page3.addNode("page32", "jnt:page");
         page32.setProperty("jcr:title", "Page3-2");
+        page32.setProperty("j:templateName", "simple");        
         JCRNodeWrapper page33 = page3.addNode("page33", "jnt:page");
-        page33.setProperty("jcr:title", "Page3-3");        
+        page33.setProperty("jcr:title", "Page3-3");
+        page33.setProperty("j:templateName", "simple");        
         
         session.save();
     }

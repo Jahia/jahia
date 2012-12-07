@@ -40,6 +40,8 @@ public class Connection extends URLConnection {
     private String[] hardcodedImports = new String[]{
             "org.jahia.bundles.extender.jahiamodules",
             "org.jahia.data.viewhelper.principal",
+            "org.jahia.exceptions",
+            "org.jahia.params.valves",
             "org.jahia.taglibs",
             "org.jahia.taglibs.facet",
             "org.jahia.taglibs.functions",
@@ -68,6 +70,9 @@ public class Connection extends URLConnection {
             "org.jahia.taglibs.workflow",
             "org.jahia.services.content",
             "org.jahia.services.usermanager",
+            "org.jahia.services.render",
+            "org.jahia.services.search",
+            "org.jahia.services.sites",
             "org.jahia.utils",
             "org.osgi.framework",
             "org.osgi.service.http",
@@ -75,7 +80,8 @@ public class Connection extends URLConnection {
             "org.springframework.beans.factory.xml",
             "org.apache.commons.lang",
             "org.apache.commons.lang.math",
-            "org.apache.commons.id"
+            "org.apache.commons.id",
+            "org.apache.taglibs.unstandard"
     };
 
     public Set<String> extensionsToExport = new HashSet<String>();

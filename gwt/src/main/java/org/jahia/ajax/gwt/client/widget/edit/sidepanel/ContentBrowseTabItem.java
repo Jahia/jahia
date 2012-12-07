@@ -95,14 +95,10 @@ class ContentBrowseTabItem extends BrowseTabItem {
             protected void load(Object gwtJahiaFolder, AsyncCallback<PagingLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 if (gwtJahiaFolder != null) {
                     Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
-                    try {
-                        List<String> tableColumnKeys = new ArrayList<String> (config.getTableColumnKeys());
-                        tableColumnKeys.addAll(Arrays.asList(GWTJahiaNode.PERMISSIONS,GWTJahiaNode.LOCKABLE, GWTJahiaNode.LOCKED, GWTJahiaNode.LOCKS_INFO));
-                        JahiaContentManagementService.App.getInstance()
-                                .lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.CONTENT_NODETYPES, null, null, tableColumnKeys, false, -1, -1, false, null, null,false, listAsyncCallback);
-                    } catch (org.jahia.ajax.gwt.client.service.GWTJahiaServiceException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                    }
+                    List<String> tableColumnKeys = new ArrayList<String> (config.getTableColumnKeys());
+                    tableColumnKeys.addAll(Arrays.asList(GWTJahiaNode.PERMISSIONS,GWTJahiaNode.LOCKABLE, GWTJahiaNode.LOCKED, GWTJahiaNode.LOCKS_INFO));
+                    JahiaContentManagementService.App.getInstance()
+                            .lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.CONTENT_NODETYPES, null, null, tableColumnKeys, false, -1, -1, false, null, null,false, listAsyncCallback);
                 } else {
                     contentContainer.unmask();
                 }

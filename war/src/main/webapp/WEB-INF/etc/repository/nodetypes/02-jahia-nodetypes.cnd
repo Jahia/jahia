@@ -868,13 +868,15 @@ extends = jnt:content
  - j:primaryItemName (NAME,choicelist[nodes='.;nt:base'])
  - j:itemsType (string,choicelist) < 'content','metadata','layout','options'
 
-[jnt:propertyDefinition] abstract
+[jnt:itemDefinition] abstract
+
+[jnt:propertyDefinition] > jnt:itemDefinition abstract
  - j:autoCreated (BOOLEAN) mandatory
  - j:mandatory (BOOLEAN) mandatory
- - j:onParentVersion (STRING) mandatory nofulltext
+ - j:onParentVersion (STRING,choicelist) mandatory nofulltext
      < 'COPY', 'VERSION', 'INITIALIZE', 'COMPUTE', 'IGNORE', 'ABORT'
  - j:protected (BOOLEAN) mandatory
- - j:requiredType (STRING) mandatory nofulltext
+ - j:requiredType (STRING,choicelist) mandatory nofulltext
    < 'STRING', 'URI', 'BINARY', 'LONG', 'DOUBLE',
      'DECIMAL', 'BOOLEAN', 'DATE', 'NAME', 'PATH',
      'REFERENCE', 'WEAKREFERENCE', 'UNDEFINED'
@@ -893,7 +895,7 @@ extends = jnt:content
 
 [jnt:unstructuredPropertyDefinition] > jnt:propertyDefinition
 
-[jnt:childNodeDefinition] abstract
+[jnt:childNodeDefinition] > jnt:itemDefinition abstract
  - j:autoCreated (BOOLEAN) mandatory
  - j:mandatory (BOOLEAN) mandatory
  - j:onParentVersion (STRING) mandatory nofulltext

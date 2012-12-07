@@ -466,16 +466,16 @@
                                     <property name="titleKey" value="label.engineTab.definitions.properties"/>
                                     <property name="tabItem">
                                         <bean class="org.jahia.ajax.gwt.client.widget.definitionsmodeler.ChildItemsTabItem">
-                                            <property name="displayNodes" value="false"/>
+                                            <property name="type" value="jnt:propertyDefinition"/>
                                             <property name="columnsConfig">
                                                 <list>
                                                     <value>name,*,label.name</value>
-                                                    <value>type,*,label.type</value>
-                                                    <value>defaultValue,*,label.defaultValue</value>
-                                                    <value>isInternationalized,*,label.isInternationalized</value>
-                                                    <value>isMandatory,*,label.isMandatory</value>
-                                                    <value>isProtected,*,label.isProtected</value>
-                                                    <value>isHidden,*,label.isHidden</value>
+                                                    <value>j:requiredType,*,label.type</value>
+                                                    <value>j:defaultValues,*,label.defaultValue</value>
+                                                    <value>j:isInternationalized,*,label.isInternationalized</value>
+                                                    <value>j:mandatory,*,label.isMandatory</value>
+                                                    <value>j:protected,*,label.isProtected</value>
+                                                    <value>j:isHidden,*,label.isHidden</value>
                                                 </list>
                                             </property>
                                         </bean>
@@ -486,7 +486,7 @@
                                     <property name="titleKey" value="label.engineTab.definitions.nodes"/>
                                     <property name="tabItem">
                                         <bean class="org.jahia.ajax.gwt.client.widget.definitionsmodeler.ChildItemsTabItem">
-                                            <property name="displayNodes" value="true"/>
+                                            <property name="type" value="jnt:childNodeDefinition"/>
                                             <property name="columnsConfig">
                                                 <list>
                                                     <value>name,*,label.name</value>
@@ -1409,7 +1409,6 @@
                                     <property name="titleKey" value="label.engineTab.definitions.properties"/>
                                     <property name="tabItem">
                                         <bean class="org.jahia.ajax.gwt.client.widget.definitionsmodeler.ChildItemsTabItem">
-                                            <property name="displayNodes" value="false"/>
                                             <property name="columnsConfig">
                                                 <list>
                                                     <!--<value>name,*,label.name</value>-->
@@ -1426,7 +1425,6 @@
                                     <property name="titleKey" value="label.engineTab.definitions.nodes"/>
                                     <property name="tabItem">
                                         <bean class="org.jahia.ajax.gwt.client.widget.definitionsmodeler.ChildItemsTabItem">
-                                            <property name="displayNodes" value="true"/>
                                             <property name="columnsConfig">
                                                 <list>
                                                     <!--<value>name,*,label.name</value>-->

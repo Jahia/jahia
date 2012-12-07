@@ -76,20 +76,16 @@ public class CommonEntryPoint implements EntryPoint {
     protected void checkSession() {
         sessionCheckTimer = new Timer() {
             public void run() {
-                try {
-                    getContentManagementService().isValidSession(new BaseAsyncCallback<Integer>() {
-                        public void onSuccess(Integer val) {
-                            if (val > 0) {
-                               schedule(val);
-                            } else if (val == 0) {
-                               cancel();
-                               handleSessionExpired(this);
-                            }
+                getContentManagementService().isValidSession(new BaseAsyncCallback<Integer>() {
+                    public void onSuccess(Integer val) {
+                        if (val > 0) {
+                            schedule(val);
+                        } else if (val == 0) {
+                            cancel();
+                            handleSessionExpired(this);
                         }
-                    });
-                } catch (GWTJahiaServiceException e) {
-                    e.printStackTrace();
-                }
+                    }
+                });
             }
         };
         sessionCheckTimer.run();

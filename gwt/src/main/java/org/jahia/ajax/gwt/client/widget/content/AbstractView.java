@@ -94,26 +94,22 @@ public abstract class AbstractView extends TopRightComponent {
             protected void load(Object config, AsyncCallback<PagingLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 Log.debug("retrieving children with type " + configuration.getNodeTypes() + " of " +
                         root.getPath());
-                try {
-                    if (config instanceof ListLoadConfig) {
-                        ListLoadConfig listLoadConfig = (ListLoadConfig) config;
-                        listLoadConfig.setSortField(store.getSortField());
-                        listLoadConfig.setSortDir(store.getSortDir());
-                    }
-                    List<String> keys = new ArrayList<String>(configuration.getTableColumnKeys());
-                    if (configuration.isEditableGrid()) {
-                        keys.add("fields-content");
-                    }
-                    keys.add(GWTJahiaNode.PUBLICATION_INFO);
-                    keys.add(GWTJahiaNode.PERMISSIONS);
-                    keys.add(GWTJahiaNode.LOCKS_INFO);
-                    JahiaContentManagementService.App.getInstance().lsLoad(root,
-                            configuration.getNodeTypes(),
-                            configuration.getMimeTypes(), configuration.getFilters(), keys,
-                            false, -1, -1, getLinker().isDisplayHiddenTypes(), configuration.getHiddenTypes(), configuration.getHiddenRegex(), configuration.isShowOnlyNodesWithTemplates(), listAsyncCallback);
-                } catch (org.jahia.ajax.gwt.client.service.GWTJahiaServiceException e) {
-                    e.printStackTrace();
+                if (config instanceof ListLoadConfig) {
+                    ListLoadConfig listLoadConfig = (ListLoadConfig) config;
+                    listLoadConfig.setSortField(store.getSortField());
+                    listLoadConfig.setSortDir(store.getSortDir());
                 }
+                List<String> keys = new ArrayList<String>(configuration.getTableColumnKeys());
+                if (configuration.isEditableGrid()) {
+                    keys.add("fields-content");
+                }
+                keys.add(GWTJahiaNode.PUBLICATION_INFO);
+                keys.add(GWTJahiaNode.PERMISSIONS);
+                keys.add(GWTJahiaNode.LOCKS_INFO);
+                JahiaContentManagementService.App.getInstance().lsLoad(root,
+                        configuration.getNodeTypes(),
+                        configuration.getMimeTypes(), configuration.getFilters(), keys,
+                        false, -1, -1, getLinker().isDisplayHiddenTypes(), configuration.getHiddenTypes(), configuration.getHiddenRegex(), configuration.isShowOnlyNodesWithTemplates(), listAsyncCallback);
             }
         };
 

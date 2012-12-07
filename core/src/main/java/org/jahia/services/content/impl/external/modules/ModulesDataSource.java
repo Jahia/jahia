@@ -117,6 +117,8 @@ public class ModulesDataSource extends VFSDataSource {
                     logger.error("Failed to get node type " + nodeTypeName, e);
                 }
                 return children;
+            } else if (splitPath.length >= 3 && splitPath[splitPath.length - 3].endsWith(".cnd")) {
+
             } else if (!path.endsWith("/"+Constants.JCR_CONTENT)) {
                 FileObject fileObject = getFile(path);
                 if (fileObject.getType() == FileType.FILE) {

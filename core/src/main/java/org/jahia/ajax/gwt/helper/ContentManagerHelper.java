@@ -303,10 +303,8 @@ public class ContentManagerHelper {
             }
 
             // reorder existing ones
-            if (newChildrenList != null) {
-                for (GWTJahiaNode childNode : newChildrenList) {
-                    targetNode.orderBefore(childNode.getName(), null);
-                }
+            for (GWTJahiaNode childNode : newChildrenList) {
+                targetNode.orderBefore(childNode.getName(), null);
             }
             currentUserSession.save();
         } catch (RepositoryException e) {

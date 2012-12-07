@@ -113,12 +113,8 @@ public class ManualListOrderingEditor extends ContentPanel {
             @Override
             protected void load(Object gwtJahiaFolder, AsyncCallback<PagingLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getPath());
-                try {
-                    JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.MANUALLY_ORDERABLE_NODETYPES, null, null,
-                            Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.DISPLAY_NAME, GWTJahiaNode.NAME, "jcr:created", "jcr:createdBy", "jcr:lastModified", "jcr:lastModifiedBy"), false, -1, -1, false, null, null,false, listAsyncCallback);
-                } catch (org.jahia.ajax.gwt.client.service.GWTJahiaServiceException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
+                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.MANUALLY_ORDERABLE_NODETYPES, null, null,
+                        Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.DISPLAY_NAME, GWTJahiaNode.NAME, "jcr:created", "jcr:createdBy", "jcr:lastModified", "jcr:lastModifiedBy"), false, -1, -1, false, null, null,false, listAsyncCallback);
                 childrenGrid.unmask();
             }
 

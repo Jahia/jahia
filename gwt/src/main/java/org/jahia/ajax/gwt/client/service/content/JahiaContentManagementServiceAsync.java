@@ -260,9 +260,9 @@ public interface JahiaContentManagementServiceAsync {
 
     void initializeEditEngine(List<String> paths, boolean tryToLockNode, AsyncCallback<GWTJahiaEditEngineInitBean> async);
 
-    void isValidSession(AsyncCallback<Integer> async) throws GWTJahiaServiceException;
+    void isValidSession(AsyncCallback<Integer> async);
 
-    public void lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, boolean showOnlyNodesWithTemplates, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async) throws GWTJahiaServiceException;
+    public void lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, boolean showOnlyNodesWithTemplates, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);
 
     void markForDeletion(List<String> paths, String comment, AsyncCallback async);
 

@@ -185,7 +185,9 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
         if (!(session.getRepository().getDataSource() instanceof ExternalDataSource.Writable)) {
             throw new UnsupportedRepositoryOperationException();
         }
-        data.getBinaryProperties().remove(name);
+        if (data.getBinaryProperties() != null) {
+            data.getBinaryProperties().remove(name);
+        }
         data.getProperties().remove(name);
         session.getChangedData().put(getPath(),data);
     }

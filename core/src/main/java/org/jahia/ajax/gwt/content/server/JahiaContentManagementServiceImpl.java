@@ -737,6 +737,23 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             saveProperties(Arrays.asList(node), props, removedTypes, currentLangCode);
         }
 
+        if (node.get(GWTJahiaNode.INCLUDE_CHILDREN) != null) {
+            try {
+                JCRNodeWrapper nodeWrapper = jcrSessionWrapper.getNodeByUUID(node.getUUID());
+                for (ModelData modelData : node.getChildren()) {
+                    GWTJahiaNode subNode = ((GWTJahiaNode)modelData);
+                    if (nodeWrapper.hasNode(subNode.getName())) {
+                        saveNode(subNode, null, null,(Map<String, List<GWTJahiaNodeProperty>>) subNode.get("nodeLangCodeProperties"),(List<GWTJahiaNodeProperty>) subNode.get("nodeProperties"),new HashSet<String>());
+                    } else {
+                        createNode(node.getPath(), subNode.getName(), subNode.getNodeTypes().get(0), subNode.getNodeTypes().subList(1, subNode.getNodeTypes().size()), null,
+                                (List<GWTJahiaNodeProperty>) subNode.get("nodeProperties"), (Map<String, List<GWTJahiaNodeProperty>>) subNode.get("nodeLangCodeProperties"),null,true);
+
+                    }
+                }
+            } catch (RepositoryException e) {
+                throw new GWTJahiaServiceException(e);
+            }
+        }
         // save children orders
         contentManager.updateChildren(node, orderedChildrenNode, jcrSessionWrapper);
 

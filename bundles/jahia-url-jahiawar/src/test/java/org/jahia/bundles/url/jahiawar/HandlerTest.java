@@ -66,6 +66,13 @@ public class HandlerTest {
         System.out.println("-------------");
         while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
             System.out.println(jarEntry.getName());
+            if (jarEntry.getName().endsWith(".jar")) {
+                JarInputStream embeddedJar = new JarInputStream(jarInputStream);
+                JarEntry embeddedJarEntry = null;
+                while ((embeddedJarEntry = embeddedJar.getNextJarEntry()) != null) {
+                    System.out.println("    " + embeddedJarEntry.getName());
+                }
+            }
         }
     }
 

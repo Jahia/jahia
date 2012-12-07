@@ -2,7 +2,6 @@ package org.jahia.bundles.url.jahiawar.internal;
 
 import org.ops4j.io.StreamUtils;
 import org.ops4j.lang.NullArgumentException;
-import org.ops4j.monitors.stream.StreamMonitor;
 import org.ops4j.net.URLUtils;
 import org.ops4j.pax.swissbox.bnd.BndUtils;
 
@@ -15,7 +14,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
-import java.util.zip.ZipEntry;
 
 /**
  * Url connection for jahiawar protocol handler.
@@ -25,7 +23,18 @@ public class Connection extends URLConnection {
     private Parser parser;
     private final Configuration configuration;
     private List<String> classPathEntries = new ArrayList<String>();
-    private Set<String> exportPackageExcludes = new HashSet<String>();
+    private Set<String> exportPackageExcludes = new TreeSet<String>(new Comparator<String>() {
+        @Override
+        public int compare(String s, String s1) {
+            if (s.length() > s1.length()) {
+                return -1;
+            } else if (s.length() < s1.length()) {
+                return 1;
+            } else {
+                return s.compareTo(s1);
+            }
+        }
+    });
 
     // @todo this list should be configurable
     private String[] hardcodedImports = new String[]{
@@ -69,6 +78,8 @@ public class Connection extends URLConnection {
             "org.apache.commons.id"
     };
 
+    public Set<String> extensionsToExport = new HashSet<String>();
+
     public Set<String> importPackages = new HashSet<String>();
 
     public Connection(final URL url, final Configuration configuration)
@@ -80,6 +91,8 @@ public class Connection extends URLConnection {
 
         this.configuration = configuration;
         importPackages.addAll(Arrays.asList(hardcodedImports));
+        extensionsToExport.add(".class");
+        extensionsToExport.add(".tld");
         parser = new Parser(url.getPath());
     }
 
@@ -94,109 +107,87 @@ public class Connection extends URLConnection {
         final Manifest inputManifest = new Manifest(jarInputStream.getManifest());
         String depends = inputManifest.getMainAttributes().getValue("depends");
 
-        final PipedOutputStream pos = new PipedOutputStream();
-        final PipedInputStream pis = new PipedInputStream(pos);
-        new Thread() {
+        final Set<String> exportPackageIncludes = new HashSet<String>();
+        final Set<String> allNonEmptyDirectories = new HashSet<String>();
+        final Set<String> directoryEntries = new HashSet<String>();
 
-            public void run() {
-                JarOutputStream jos = null;
-                try {
-                    jos = new JarOutputStream(pos, inputManifest);
-                    JarEntry jarEntry = null;
-                    Set<String> entryNames = new HashSet<String>();
-                    long mostRecentTime = Long.MIN_VALUE;
-//                    String rootFolderPrefix = inputManifest.getMainAttributes().getValue("root-folder").replaceAll("[ -]", "") + "/";
-//                    entryNames.add(rootFolderPrefix);
-                    while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
-                        String newName = jarEntry.getName();
-                        if (newName.equals("WEB-INF/web.xml") ||
-                                newName.equals("WEB-INF/") ||
-                                newName.equals("WEB-INF/classes/") ||
-                                newName.equals("WEB-INF/lib/")) {
-                            continue;
-                        }
-                        if (newName.startsWith("WEB-INF/classes/")) {
-                            newName = jarEntry.getName().substring("WEB-INF/classes/".length());
-                        } else if (newName.startsWith("WEB-INF/lib/")) {
-                            newName = jarEntry.getName().substring("WEB-INF/lib/".length());
-                            classPathEntries.add(newName);
-                        } else if (newName.startsWith("WEB-INF/")) {
-                            newName = jarEntry.getName().substring("WEB-INF/".length());
-                        }
-                        JarEntry newJarEntry = new JarEntry(newName);
-                        if (jarEntry.getTime() > mostRecentTime) {
-                            mostRecentTime = jarEntry.getTime();
-                        }
-                        newJarEntry.setTime(jarEntry.getTime());
-                        jos.putNextEntry(newJarEntry);
-                        StreamUtils.copyStream(jarInputStream, jos, false);
-                        jos.closeEntry();
-                        entryNames.add(newName);
-                        // now let's see if the new entry starts with an existing package import, in which case
-                        // we will not export it.
-                        int lastSlashPos = newName.lastIndexOf("/");
-                        if (lastSlashPos > -1) {
-                            String directoryName = newName.substring(0, lastSlashPos).replaceAll("/", ".");
-                            if (importPackages.contains(directoryName)) {
-                                exportPackageExcludes.add(directoryName);
-                            }
-                        } else {
-                            // do nothing this is not a directory.
-                        }
-                    }
-                    if (inputManifest.getMainAttributes().getValue("Implementation-Title") != null) {
-                        String newEntryName = inputManifest.getMainAttributes().getValue("Implementation-Title").replaceAll("[ -]", "");
-                        addFakeEntries(jos, entryNames, mostRecentTime, newEntryName);
-                    }
-                    if (inputManifest.getMainAttributes().getValue("root-folder") != null) {
-                        String newEntryName = inputManifest.getMainAttributes().getValue("root-folder").replaceAll("[ -]", "");
-                        addFakeEntries(jos, entryNames, mostRecentTime, newEntryName);
-                    }
-                    jos.finish();
-                } catch (IOException e) {
-                    throw new RuntimeException("Could not process resources", e);
-                } finally {
-                    try {
-                        if (jos != null) {
-                            jos.close();
-                        }
-                    } catch (Exception ignore) {
-                        //  ignore
-                    }
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        JarOutputStream jos = null;
+        try {
+            jos = new JarOutputStream(byteArrayOutputStream, inputManifest);
+            JarEntry jarEntry = null;
+            Set<String> entryNames = new HashSet<String>();
+            long mostRecentTime = Long.MIN_VALUE;
+            while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
+
+                InputStream entryInputStream = jarInputStream;
+                if (jarEntry.isDirectory()) {
+                    directoryEntries.add(jarEntry.getName());
                 }
-            }
-        }.start();
 
-        final JarInputStream jarInputStream2 = new JarInputStream(URLUtils.prepareInputStream(
-                parser.getWrappedJarURL(),
-                !configuration.getCertificateCheck()
-        ));
-        Set<String> entries = new HashSet<String>();
-        ZipEntry zipEntry;
-        while ((zipEntry = jarInputStream2.getNextEntry()) != null) {
-            if (zipEntry.isDirectory()) {
-                entries.add(zipEntry.getName());
+                String newName = jarEntry.getName();
+                if (newName.equals("WEB-INF/web.xml") ||
+                        newName.equals("WEB-INF/") ||
+                        newName.equals("WEB-INF/classes/") ||
+                        newName.equals("WEB-INF/lib/")) {
+                    continue;
+                }
+                if (newName.startsWith("WEB-INF/classes/")) {
+                    newName = jarEntry.getName().substring("WEB-INF/classes/".length());
+                } else if (newName.startsWith("WEB-INF/lib/")) {
+                    newName = jarEntry.getName().substring("WEB-INF/lib/".length());
+                    classPathEntries.add(newName);
+                    ByteArrayOutputStream entryOutputStream = new ByteArrayOutputStream();
+                    StreamUtils.copyStream(entryInputStream, entryOutputStream, false);
+                    ByteArrayInputStream tempEntryInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());
+                    JarInputStream embeddedJar = new JarInputStream(tempEntryInputStream);
+                    JarEntry embeddedJarEntry = null;
+                    while ((embeddedJarEntry = embeddedJar.getNextJarEntry()) != null) {
+                        updateExportTracking(embeddedJarEntry.getName(), exportPackageIncludes, allNonEmptyDirectories);
+                    }
+                    embeddedJar.close();
+                    tempEntryInputStream.close();
+                    tempEntryInputStream = null;
+                    entryInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());
+                } else if (newName.startsWith("WEB-INF/")) {
+                    newName = jarEntry.getName().substring("WEB-INF/".length());
+                }
+                JarEntry newJarEntry = new JarEntry(newName);
+                if (jarEntry.getTime() > mostRecentTime) {
+                    mostRecentTime = jarEntry.getTime();
+                }
+                newJarEntry.setTime(jarEntry.getTime());
+                jos.putNextEntry(newJarEntry);
+                StreamUtils.copyStream(entryInputStream, jos, false);
+                if (entryInputStream != jarInputStream) {
+                    entryInputStream.close();
+                    entryInputStream = null;
+                }
+                jos.closeEntry();
+                entryNames.add(newName);
+                updateExportTracking(newName, exportPackageIncludes, allNonEmptyDirectories);
+
+            }
+            if (inputManifest.getMainAttributes().getValue("Implementation-Title") != null) {
+                String newEntryName = inputManifest.getMainAttributes().getValue("Implementation-Title").replaceAll("[ -]", "");
+                addFakeEntries(jos, entryNames, mostRecentTime, newEntryName);
+            }
+            if (inputManifest.getMainAttributes().getValue("root-folder") != null) {
+                String newEntryName = inputManifest.getMainAttributes().getValue("root-folder").replaceAll("[ -]", "");
+                addFakeEntries(jos, entryNames, mostRecentTime, newEntryName);
+            }
+            jos.finish();
+        } catch (IOException e) {
+            throw new RuntimeException("Could not process resources", e);
+        } finally {
+            try {
+                if (jos != null) {
+                    jos.close();
+                }
+            } catch (Exception ignore) {
+                //  ignore
             }
         }
-
-        // now we read the full input stream into memory to make sure we collect all dependencies.
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        StreamUtils.copyStream(new StreamMonitor() {
-
-            @Override
-            public void notifyUpdate(URL url, int expected, int count) {
-            }
-
-            @Override
-            public void notifyCompletion(URL url) {
-            }
-
-            @Override
-            public void notifyError(URL url, String message) {
-            }
-
-        }, parser.getWrappedJarURL(), 0, pis, byteArrayOutputStream, false);
-        byteArrayOutputStream.close();
 
         Properties bndProperties = new Properties();
         if (classPathEntries.size() > 0) {
@@ -220,22 +211,35 @@ public class Connection extends URLConnection {
             bndProperties.put("Bundle-Version", versionStr);
         }
 
+        // calculate export package exclusions that are all non-empty directories minus the ones that contain
+        // resources to export.
+        exportPackageExcludes.addAll(allNonEmptyDirectories);
+        exportPackageExcludes.removeAll(exportPackageIncludes);
+
         String rootFolder = inputManifest.getMainAttributes().getValue("root-folder");
         if (rootFolder != null) {
             String packagePrefix = rootFolder.replaceAll("[ -]", "");
 
             bndProperties.put("Bundle-SymbolicName", rootFolder);
             StringBuilder exportPackage = new StringBuilder("");
+            if (exportPackageIncludes.size() > 0) {
+                for (String exportPackageInclude : exportPackageIncludes) {
+                    exportPackage.append(exportPackageInclude);
+                    exportPackage.append(",");
+                }
+            }
+            /*
             if (exportPackageExcludes.size() > 0) {
                 for (String exportPackageExclude : exportPackageExcludes) {
                     exportPackage.append("!");
                     exportPackage.append(exportPackageExclude);
-                    exportPackage.append(",");
+                    exportPackage.append(".*,");
                 }
-                exportPackage.append(",*,");
+                //exportPackage.append("*,");
             } else {
-                exportPackage.append("*,");
+                //exportPackage.append("*,");
             }
+            */
             exportPackage.append(inputManifest.getMainAttributes().getValue("Implementation-Title").replaceAll("[ -]", ""));
             exportPackage.append(",");
             exportPackage.append(packagePrefix);
@@ -273,7 +277,7 @@ public class Connection extends URLConnection {
             bndProperties.put("Import-Package", importPackage.toString());
 
             Set<String> rootFolders = new HashSet<String>();
-            for (String entry : entries) {
+            for (String entry : directoryEntries) {
                 rootFolders.add(entry.substring(0,entry.indexOf("/")));
             }
             StringBuilder staticResources = new StringBuilder("");
@@ -294,6 +298,45 @@ public class Connection extends URLConnection {
                 url.toExternalForm(),
                 parser.getOverwriteMode()
         );
+    }
+
+    private void updateExportTracking(String newName, Set<String> exportPackageIncludes, Set<String> allNonEmptyDirectories) {
+        // now let's see if the new entry starts with an existing package import, in which case
+        // we will not export it.
+        for (String extensionToExport : extensionsToExport) {
+            if (newName.endsWith(extensionToExport)) {
+                int lastSlashPos = newName.lastIndexOf("/");
+                if (lastSlashPos > -1) {
+                    String directoryName = newName.substring(0, lastSlashPos).replaceAll("/", ".");
+                    if (!directoryName.startsWith("META-INF")) {
+                        if (!exportPackageIncludes.contains(directoryName)) {
+                            exportPackageIncludes.add(directoryName);
+                        }
+                        if (!allNonEmptyDirectories.contains(directoryName)) {
+                            allNonEmptyDirectories.add(directoryName);
+                        }
+                    }
+                } else {
+                    // do nothing this is a top level file.
+                }
+            } else {
+                if (newName.endsWith("/")) {
+                    // for a directory we do nothing, we only treat directories that have content.
+                } else {
+                    int lastSlashPos = newName.lastIndexOf("/");
+                    if (lastSlashPos > -1) {
+                        String directoryName = newName.substring(0, lastSlashPos).replaceAll("/", ".");
+                        if (!directoryName.startsWith("META-INF")) {
+                            if (!allNonEmptyDirectories.contains(directoryName)) {
+                                allNonEmptyDirectories.add(directoryName);
+                            }
+                        }
+                    } else {
+                        // do nothing this is a top level file.
+                    }
+                }
+            }
+        }
     }
 
     private void addFakeEntries(JarOutputStream jos, Set<String> entryNames, long mostRecentTime, String newEntryName) throws IOException {

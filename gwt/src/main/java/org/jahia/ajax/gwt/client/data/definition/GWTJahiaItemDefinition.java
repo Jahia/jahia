@@ -40,6 +40,9 @@
 
 package org.jahia.ajax.gwt.client.data.definition;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
+
 import java.io.Serializable;
 import java.util.Map;
 import java.util.HashMap;
@@ -51,7 +54,7 @@ import java.util.HashMap;
  * Time: 7:37:42 PM
  * 
  */
-public class GWTJahiaItemDefinition implements Serializable {
+public class GWTJahiaItemDefinition extends BaseModelData implements Serializable {
 
     private String name;
     private String label;
@@ -71,6 +74,7 @@ public class GWTJahiaItemDefinition implements Serializable {
     private String tooltip;
 
     public GWTJahiaItemDefinition() {
+        setAllowNestedValues(false);
     }
 
     public boolean isNode() {

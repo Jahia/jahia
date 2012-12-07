@@ -1,21 +1,19 @@
 package org.jahia.ajax.gwt.client.widget.definitionsmodeler;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
-import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
 import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,48 +22,74 @@ public class ChildItemsTabItem extends EditEngineTabItem {
     private static final long serialVersionUID = 1L;
 
     private boolean displayNodes;
-    private List<GWTColumn> columns;
+    private List<String> columnsConfig;
 
-    protected transient ListStore<ModelData> store;
+    protected transient ListStore<GWTJahiaItemDefinition> store;
 
     public ChildItemsTabItem() {
     }
 
 
     @Override
-    public void init(NodeHolder engine, AsyncTabItem tab, String language) {
-        store = new ListStore<ModelData>();
+    public void init(NodeHolder engine,final AsyncTabItem tab, String language) {
+        store = new ListStore<GWTJahiaItemDefinition>();
 
         JahiaContentManagementService.App.getInstance().getNodeType(engine.getNode().getName(), new BaseAsyncCallback<GWTJahiaNodeType>() {
             @Override
             public void onSuccess(GWTJahiaNodeType result) {
                 for (GWTJahiaItemDefinition itemDefinition : result.getItems()) {
-                    if (itemDefinition.isNode() == displayNodes) {
-                        BaseModelData data = new BaseModelData();
-                        data.set("name", itemDefinition.getName());
-                        data.set("isMandatory", Boolean.valueOf(itemDefinition.isMandatory()));
-                        data.set("isInternationalized", Boolean.valueOf(itemDefinition.isInternationalized()));
-                        data.set("isProtected", Boolean.valueOf(itemDefinition.isProtected()));
-                        data.set("isHidden", Boolean.valueOf(itemDefinition.isHidden()));
-                        data.set("definition", itemDefinition);
-
-                        if (!itemDefinition.isNode()) {
-                            GWTJahiaPropertyDefinition propertyDefinition = (GWTJahiaPropertyDefinition) itemDefinition;
-                            data.set("type", propertyDefinition.getRequiredType());
-                        } else {
-                            GWTJahiaNodeDefinition nodeDefinition = (GWTJahiaNodeDefinition) itemDefinition;
-
-                        }
-                        store.add(data);
-                    }
+                    store.add(itemDefinition);
                 }
             }
         });
+        List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-        NodeColumnConfigList config = new NodeColumnConfigList(columns);
-        Grid<ModelData> grid = new Grid<ModelData>(store,new ColumnModel(config));
-
+        for(String columnConfig : columnsConfig) {
+            String[] config = columnConfig.split(",");
+            ColumnConfig colConfig = new ColumnConfig();
+            colConfig.setId(config[0]);
+            if (!"*".equals(config[1])) {
+                colConfig.setWidth(new Integer(config[1]));
+            } else {
+                colConfig.setWidth(100);
+            }
+            colConfig.setHeader(Messages.get(config[2],config[2]));
+            colConfig.setRenderer(new GridCellRenderer() {
+                @Override
+                public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore store, Grid grid) {
+                    GWTJahiaItemDefinition def = (GWTJahiaItemDefinition) model;
+                    if ("name".equals(property)) {
+                        return def.getName();
+                    } else if ("type".equals(property)) {
+                        return def.getDeclaringNodeType();
+                    } else if ("defaultValue".equals(property)) {
+                        if (def instanceof GWTJahiaPropertyDefinition) {
+                            GWTJahiaPropertyDefinition prop = (GWTJahiaPropertyDefinition) def;
+                            String r = "";
+                            for (GWTJahiaNodePropertyValue s : prop.getDefaultValues()) {
+                                r += " " + s.getString();
+                            }
+                            return r;
+                        }
+                        return "";
+                    } else if ("isInternationalized".equals(property)) {
+                        return def.isInternationalized();
+                    } else if ("isMandatory".equals(property)) {
+                        return def.isMandatory();
+                    } else if ("isProtected".equals(property)) {
+                        return def.isProtected();
+                    } else if ("isHidden".equals(property)) {
+                        return def.isHidden();
+                    }
+                    return "property " + property + "not set";
+                }
+            });
+            columns.add(colConfig);
+        }
+        Grid<GWTJahiaItemDefinition> grid = new Grid<GWTJahiaItemDefinition>(store,new ColumnModel(columns));
+        grid.setHeight(200);
         tab.add(grid);
+        tab.layout();
 
     }
 
@@ -86,7 +110,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         this.displayNodes = displayNodes;
     }
 
-    public void setColumns(List<GWTColumn> columns) {
-        this.columns = columns;
+    public void setColumnsConfig(List<String>columnsConfig) {
+        this.columnsConfig = columnsConfig;
     }
 }

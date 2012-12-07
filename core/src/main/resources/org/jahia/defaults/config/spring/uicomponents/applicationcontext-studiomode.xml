@@ -467,12 +467,15 @@
                                     <property name="tabItem">
                                         <bean class="org.jahia.ajax.gwt.client.widget.definitionsmodeler.ChildItemsTabItem">
                                             <property name="displayNodes" value="false"/>
-                                            <property name="columns">
+                                            <property name="columnsConfig">
                                                 <list>
-                                                    <!--<value>name,*,label.name</value>-->
-                                                    <!--<value>type,*,label.type</value>-->
-                                                    <!--<value>defaultValue,*,label.defaultValue</value>-->
-                                                    <!--<value>isInternationalized,*,label.isInternationalized</value>-->
+                                                    <value>name,*,label.name</value>
+                                                    <value>type,*,label.type</value>
+                                                    <value>defaultValue,*,label.defaultValue</value>
+                                                    <value>isInternationalized,*,label.isInternationalized</value>
+                                                    <value>isMandatory,*,label.isMandatory</value>
+                                                    <value>isProtected,*,label.isProtected</value>
+                                                    <value>isHidden,*,label.isHidden</value>
                                                 </list>
                                             </property>
                                         </bean>
@@ -484,9 +487,9 @@
                                     <property name="tabItem">
                                         <bean class="org.jahia.ajax.gwt.client.widget.definitionsmodeler.ChildItemsTabItem">
                                             <property name="displayNodes" value="true"/>
-                                            <property name="columns">
+                                            <property name="columnsConfig">
                                                 <list>
-                                                    <!--<value>name,*,label.name</value>-->
+                                                    <value>name,*,label.name</value>
                                                 </list>
                                             </property>
                                         </bean>

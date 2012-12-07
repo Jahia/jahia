@@ -10,19 +10,34 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<c:set var="level" value="${currentNode.properties['j:level'].long}" />
+<c:set var="level" value="${currentNode.properties['j:level'].long}"/>
 <c:choose>
     <c:when test="${not empty inWrapper and inWrapper eq false}">
-        <div class="absoluteArea <c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
-            <div class="absoluteAreaTemplate">
-                <c:if test="${empty level}" >
-                    <span>Absolute Area : ${currentNode.resolveSite.home.name}</span>
-                </c:if>
-                <c:if test="${not empty level}" >
-                    <span>Absolute Area : ${currentNode.name} - Level ${level}</span>
-                </c:if>
-            </div>
-        </div>
+        <c:choose>
+            <c:when test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
+                <div class="absoluteArea <c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
+                    <div class="absoluteAreaTemplate">
+                        <c:if test="${empty level}">
+                            <span>Absolute Area : ${currentNode.resolveSite.home.name}</span>
+                        </c:if>
+                        <c:if test="${not empty level}">
+                            <span>Absolute Area : ${currentNode.name} - Level ${level}</span>
+                        </c:if>
+                    </div>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <div style="background-color: #adff2f;border: 1px dashed #99CCFF;height: 100px;overflow: hidden;position: relative;">
+                    <c:if test="${empty level}">
+                        <span>Absolute Area : ${currentNode.resolveSite.home.name}</span>
+                        <p>Reserved space for editors content</p>
+                    </c:if>
+                    <c:if test="${not empty level}">
+                        <span>Absolute Area : ${currentNode.name} - Level ${level}</span>
+                        <p>Reserved space for editors content</p>
+                    </c:if></div>
+            </c:otherwise>
+        </c:choose>
     </c:when>
     <c:otherwise>
         <jcr:nodeProperty node="${currentNode}" name="j:allowedTypes" var="restrictions"/>
@@ -41,7 +56,7 @@
             <c:set var="listLimit" value="${-1}"/>
         </c:if>
 
-        <c:if test="${empty level}" >
+        <c:if test="${empty level}">
             <template:area view="${currentNode.properties['j:referenceView'].string}"
                            path="${currentNode.name}"
                            nodeTypes="${nodeTypes}" listLimit="${listLimit}" moduleType="absoluteArea">
@@ -54,7 +69,7 @@
                 </c:if>
             </template:area>
         </c:if>
-        <c:if test="${not empty level}" >
+        <c:if test="${not empty level}">
             <template:area level="${level}" view="${currentNode.properties['j:referenceView'].string}"
                            path="${currentNode.name}"
                            nodeTypes="${nodeTypes}" listLimit="${listLimit}" moduleType="absoluteArea">

@@ -16,21 +16,22 @@
     <c:when test="${not empty inWrapper and inWrapper eq false}">
 
         <c:set value="${currentNode.nodes}" var="currentList" scope="request"/>
-
-        <div class="area<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
-            <div class="areaTemplate"> <img src="<c:url value='${url.currentModule}/images/icons/edit.png'/>" alt="edit" style="display: inline;"/>
-                <span>Area : ${currentNode.name}</span>
-            </div>
-            <%--<c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}"--%>
-                       <%--end="${moduleMap.end}">--%>
-                <%--<template:module node="${subchild}"/>--%>
-            <%--</c:forEach>--%>
-            <%--<c:if test="${renderContext.editMode}">--%>
-                <%--<fmt:message key="label.studio.add.archetype" /> <template:module path="*"/>--%>
-            <%--</c:if>--%>
-        </div>
-
-
+        <c:choose>
+            <c:when test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
+                <div class="area<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
+                    <div class="areaTemplate"><img src="<c:url value='${url.currentModule}/images/icons/edit.png'/>"
+                                                   alt="edit" style="display: inline;"/>
+                        <span>Area : ${currentNode.name}</span>
+                    </div>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <div style="background-color: #adff2f;border: 1px dashed #99CCFF;height: 100px;overflow: hidden;position: relative;">
+                    <span>Area : ${currentNode.name}</span>
+                    <p>Reserved space for editors content</p>
+                </div>
+            </c:otherwise>
+        </c:choose>
     </c:when>
     <c:otherwise>
         <jcr:nodeProperty node="${currentNode}" name="j:allowedTypes" var="restrictions" scope="request"/>
@@ -49,7 +50,8 @@
             <c:set var="listLimit" value="${-1}"/>
         </c:if>
         <template:area view="${currentNode.properties['j:areaView'].string}" listLimit="${listLimit}"
-                                 path="${currentNode.name}" nodeTypes="${nodeTypes}" mockupStyle="${currentNode.properties['j:mockupStyle'].string}">
+                       path="${currentNode.name}" nodeTypes="${nodeTypes}"
+                       mockupStyle="${currentNode.properties['j:mockupStyle'].string}">
             <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">
                 <template:param name="subNodesView" value="${currentNode.properties['j:subNodesView'].string}"/>
             </c:if>

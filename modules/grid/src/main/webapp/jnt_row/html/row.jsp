@@ -72,16 +72,22 @@
     </c:otherwise>
 </c:choose>
 <div class="container_16">
-<c:if test="${editableModule}">
+<c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
     <div class="grid_16">${jcr:label(currentNode.primaryNodeType,currentResource.locale)} ${currentNode.name} : ${column.string}</div>
 </c:if>
 <c:forEach items="${colMap}" var="col" varStatus="count">
     <!--start grid_${col.value}-->
     <div class='grid_${col.value}'>
+        <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
+        <div style="border: 1px solid #999977; padding: 10px">
+            </c:if>
         <template:area path="${currentNode.name}-${col.key}" areaAsSubNode="true"/>
         <c:if test="${pageScope['org.jahia.emptyArea']}">
             &nbsp;&nbsp;
         </c:if>
+                <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
+        </div>
+            </c:if>
         <div class='clear'></div>
     </div>
     <!--stop grid_${col.value}-->

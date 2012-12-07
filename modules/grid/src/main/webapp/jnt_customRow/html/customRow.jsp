@@ -28,9 +28,10 @@
 <div class="container_16">
     <c:if test="${!empty currentNode.properties.divClass}"><div class="${currentNode.properties.divClass.string}"></c:if>
 
-    <c:if test="${editableModule}">
+        <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
         <div class="grid_${nbCols}">
             <p>${jcr:label(currentNode.primaryNodeType,currentResource.locale)} ${currentNode.name} : ${column.string}</p>
+            <p><fmt:message key="label.grid.number.columns"/>: ${nbAreas}</p>
             <c:if test="${nbNames != nbAreas}">
                 <p><fmt:message key="label.generatedNames"/></p>
             </c:if>
@@ -54,6 +55,9 @@
         </c:if>
         <!--start grid_${column}-->
         <div class='grid_${column} ${colCss}'>
+            <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
+            <div style="border: 1px solid #999977; padding: 10px">
+            </c:if>
             <c:if test="${nbNames == nbAreas}">
                 <c:forTokens items="${currentNode.properties.colNames.string}" var="colName" delims="," varStatus="vs1">
                     <c:if test="${count.count == vs1.count}">
@@ -67,6 +71,9 @@
             <c:if test="${pageScope['org.jahia.emptyArea']}">
                 &nbsp;&nbsp;
             </c:if>
+                <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
+            </div>
+                </c:if>
             <div class='clear'></div>
         </div>
         <!--stop grid_${column}-->

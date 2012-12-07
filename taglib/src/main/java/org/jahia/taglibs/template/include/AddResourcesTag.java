@@ -40,25 +40,23 @@
 
 package org.jahia.taglibs.template.include;
 
-import org.apache.commons.lang.StringUtils;
-import org.jahia.registries.ServicesRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jahia.bin.Studio;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.Patterns;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URLEncoder;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -68,7 +66,7 @@ import java.util.Set;
  *
  * @author rincevent
  * @since JAHIA 6.5
- * Created : 27 oct. 2009
+ *        Created : 27 oct. 2009
  */
 public class AddResourcesTag extends AbstractJahiaTag {
     private static final long serialVersionUID = -552052631291168495L;
@@ -92,17 +90,27 @@ public class AddResourcesTag extends AbstractJahiaTag {
      */
     @Override
     public int doEndTag() throws JspException {
-        JahiaTemplatesPackage templatesPackage = (JahiaTemplatesPackage) pageContext.getAttribute("currentModule", PageContext.REQUEST_SCOPE);
-        JahiaTemplatesPackage templatesSetPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(getRenderContext().getSite().getTemplatePackageName());
-        if (!addResources(getRenderContext(), templatesSetPackage, false)) {
-            addResources(getRenderContext(), templatesPackage, true);
+        org.jahia.services.render.Resource currentResource =
+                (org.jahia.services.render.Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
+        try {
+            if (!Studio.STUDIO_LAYOUT_MODE.equals(getRenderContext().getEditModeConfigName()) || (!currentResource.getNode().isNodeType("jnt:template") && currentResource.getNode().isNodeType("jmix:studioLayout"))) {
+                JahiaTemplatesPackage templatesPackage = (JahiaTemplatesPackage) pageContext.getAttribute("currentModule",
+                        PageContext.REQUEST_SCOPE);
+                JahiaTemplatesPackage templatesSetPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(
+                        getRenderContext().getSite().getTemplatePackageName());
+                if (!addResources(getRenderContext(), templatesSetPackage, false)) {
+                    addResources(getRenderContext(), templatesPackage, true);
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
-
         resetState();
         return super.doEndTag();
     }
 
-    protected boolean addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage, boolean checkDependencies) {
+    protected boolean addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage,
+                                   boolean checkDependencies) {
         if (logger.isDebugEnabled()) {
             logger.debug("Package : " + aPackage.getName() + " type : " + type + " resources : " + resources);
         }
@@ -151,8 +159,10 @@ public class AddResourcesTag extends AbstractJahiaTag {
             } else {
                 for (JahiaTemplatesPackage pack : packages) {
                     String path = pack.getRootFolderPath() + "/" + type + "/" + resource;
-                    String pathWithContext = renderContext.getRequest().getContextPath().isEmpty() ? path : renderContext.getRequest().getContextPath() + path;
-                    String pathWithVersion = pack.getRootFolderPath() + "/" + pack.getVersion() + "/" + type + "/" + resource;
+                    String pathWithContext = renderContext.getRequest().getContextPath().isEmpty() ? path :
+                                             renderContext.getRequest().getContextPath() + path;
+                    String pathWithVersion =
+                            pack.getRootFolderPath() + "/" + pack.getVersion() + "/" + type + "/" + resource;
 //                    String pathWithVersionAndContext = renderContext.getRequest().getContextPath().isEmpty() ? pathWithVersion : renderContext.getRequest().getContextPath() + pathWithVersion;
                     Resource templateResource = pack.getResource("/" + type + "/" + resource);
                     if (templateResource != null && templateResource.exists()) {
@@ -162,7 +172,8 @@ public class AddResourcesTag extends AbstractJahiaTag {
                         if (mapping.containsKey(path)) {
                             for (String mappedResource : mapping.get(path).split(" ")) {
                                 path = mappedResource;
-                                pathWithContext = !path.startsWith("http://") && !path.startsWith("https://") ? renderContext.getRequest().getContextPath() + path : path;
+                                pathWithContext = !path.startsWith("http://") && !path.startsWith("https://") ?
+                                                  renderContext.getRequest().getContextPath() + path : path;
                                 writeResourceTag(type, pathWithContext, resource);
                             }
                         } else {
@@ -238,7 +249,8 @@ public class AddResourcesTag extends AbstractJahiaTag {
 
     @SuppressWarnings("unchecked")
     protected Map<String, String> getStaticAssetMapping() {
-        return (Map<String, String>) SpringContextSingleton.getBean("org.jahia.services.render.StaticAssetMappingRegistry");
+        return (Map<String, String>) SpringContextSingleton.getBean(
+                "org.jahia.services.render.StaticAssetMappingRegistry");
     }
 
     private void writeResourceTag(String type, String path, String resource) {

@@ -1,11 +1,10 @@
 package org.jahia.services.providers;
 
+import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.junit.Before;
 import org.junit.Test;
 
 import javax.jcr.Node;
@@ -13,7 +12,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Test class for modules provider
@@ -22,7 +20,8 @@ import static org.junit.Assert.assertEquals;
  * Time: 10:23 AM
  */
 public class ModulesProviderTest {
-
+    private static transient Logger logger = Logger.getLogger(ModulesProviderTest.class);
+    
     private final static String mountPoint = "/modulesFileSystem";
     private Node root;
     private JahiaTemplatesPackage artPackage;
@@ -47,7 +46,7 @@ public class ModulesProviderTest {
             readType("jnt:definitionFile", "/META-INF/definitions.cnd");
 
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -92,7 +91,7 @@ public class ModulesProviderTest {
             assertTrue("cache.requestParameters not set to carcheTest",viewNode.getProperty("cache.requestParameters").getString().equals("carcheTest"));
 
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 

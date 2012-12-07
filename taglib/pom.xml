@@ -87,6 +87,11 @@
             <version>1.6</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>taglibs-unstandard</artifactId>
+            <version>20060829</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -123,8 +128,8 @@
                         <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
                         <Implementation-Vendor-Id>org.jahia</Implementation-Vendor-Id>
                         <Extension-Name>org.jahia.taglibs</Extension-Name>
-                        <Export-Package>org.jahia.taglibs.*</Export-Package>
-                        <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
+                        <Export-Package>org.jahia.taglibs.*,org.apache.taglibs.unstandard</Export-Package>
+                        <Embed-Dependency>*; scope=compile; type=!pom; inline=false</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <_removeheaders>
                             Include-Resource,

@@ -39,6 +39,7 @@ public class Connection extends URLConnection {
     // @todo this list should be configurable
     private String[] hardcodedImports = new String[]{
             "javax.servlet.jsp.tagext",
+            "org.jahia.api",
             "org.jahia.bundles.extender.jahiamodules",
             "org.jahia.data.viewhelper.principal",
             "org.jahia.exceptions",

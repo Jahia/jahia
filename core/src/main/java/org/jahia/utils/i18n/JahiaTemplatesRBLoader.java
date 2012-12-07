@@ -163,7 +163,7 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
                         try {
                             stream = aPackage.getResource(resourcePath).getInputStream();
                         } catch (IOException e) {
-                            logger.warn(e.getMessage(), e);
+                            //
                         }
                     }
                     if (stream != null) {

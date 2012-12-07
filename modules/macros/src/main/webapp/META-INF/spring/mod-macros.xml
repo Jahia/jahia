@@ -8,7 +8,7 @@
         <property name="applyOnConfigurations" value="page" />
         <property name="applyOnTemplateTypes" value="html,html-.+" />
         <property name="macrosRegexp"><value>##([a-zA-Z0-9_]*)(\(([^"#]*)(\s*,\s*[^"#]*)*\))?##</value></property>
-        <property name="macroLookupPath" value="/modules/**/WEB-INF/macros/**/{macro}.*"/>
+        <property name="macroLookupPath" value="macros,WEB-INF/macros"/>
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
     </bean>
     <bean name="ModuleMacrosFilter" class="org.jahia.modules.macros.filter.MacrosFilter">
@@ -17,7 +17,7 @@
         <property name="skipOnConfigurations" value="page,gwt" />
         <property name="applyOnTemplateTypes" value="html,html-.+" />
         <property name="macrosRegexp"><value>##([a-zA-Z0-9_]*)(\(([^"#]*)(\s*,\s*[^"#]*)*\))?##</value></property>
-        <property name="macroLookupPath" value="/modules/**/WEB-INF/modules-macros/**/{macro}.*"/>
+        <property name="macroLookupPath" value="modules-macros,WEB-INF/modules-macros"/>
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
         <property name="replaceByErrorMessageOnMissingMacros" value="false"/>
     </bean>

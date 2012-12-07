@@ -40,12 +40,11 @@
 
 package org.jahia.services.i18n;
 
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.junit.*;
 import static org.junit.Assert.*;
-import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.slf4j.Logger;
+
 import java.util.*;
 
 /**
@@ -56,7 +55,8 @@ import java.util.*;
  * 
  */
 public class ResourceBundleTest {
-
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ResourceBundleTest.class);
+    
     /**
      * Test that the value is unique and doest corresponds to several keys
      *
@@ -71,28 +71,26 @@ public class ResourceBundleTest {
         if (resourceBundle != null) {
             boolean duplicatedValue = false;
             final Map<String, String> valueKeyMap = new HashMap<String, String>();
-            try {
-                Enumeration<String> enume = resourceBundle.getKeys();
-                while (enume.hasMoreElements()) {
-                    String key = enume.nextElement();
-                    String value = resourceBundle.getString(key);
+            Enumeration<String> enume = resourceBundle.getKeys();
+            while (enume.hasMoreElements()) {
+                String key = enume.nextElement();
+                String value = resourceBundle.getString(key);
 
-                    // check if value exist for different key
-                    boolean valueExist = valueKeyMap.containsKey(value);
-                    if (valueExist) {
-                        System.err.println(key + " = " + value);
-                        System.err.println(valueKeyMap.get(value) + " = " + value);
-                    } else {
-                        // put value in map
-                        valueKeyMap.put(value, key);
-                    }
-
-                    duplicatedValue = duplicatedValue || valueExist;
-
-
+                // check if value exist for different key
+                boolean valueExist = valueKeyMap.containsKey(value);
+                if (valueExist) {
+                    logger.error("Duplicated value found in JahiaInternalResources_en.properties: "
+                            + key
+                            + " = "
+                            + value
+                            + " and "
+                            + valueKeyMap.get(value) + " = " + value);
+                } else {
+                    // put value in map
+                    valueKeyMap.put(value, key);
                 }
-            } catch (MissingResourceException e) {
-                e.printStackTrace();
+
+                duplicatedValue = duplicatedValue || valueExist;
             }
             assertFalse(duplicatedValue);
         }

@@ -368,7 +368,9 @@
                 <value>testInitialNodePredecessors(org.apache.jackrabbit.test.api.version.VersionGraphTest)</value>
                 <value>testInitialNodePredecessorsJcr2(org.apache.jackrabbit.test.api.version.VersionGraphTest)</value>
                 
+                <!--Not working tests or uninteresting results-->
                 <value>testPublishUnpublishPageWithContent(org.jahia.services.publication.PublicationTest)</value>
+                <value>testUniqueValue(org.jahia.services.i18n.ResourceBundleTest)</value>
             </list>   
         </property>
 

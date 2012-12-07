@@ -267,11 +267,13 @@ public class Connection extends URLConnection {
                 }
             }
 
+            List<String> alreadyImportedPackages = new ArrayList<String>(Arrays.asList(importPackage.toString().split(",")));
             for (String curImportPackage : importPackages) {
-                // if (!importPackage.toString().contains(curImportPackage)) {
+                if (!alreadyImportedPackages.contains(curImportPackage)) {
                     importPackage.append(",");
                     importPackage.append(curImportPackage);
-                // }
+                    alreadyImportedPackages.add(curImportPackage);
+                }
             }
 
             bndProperties.put("Import-Package", importPackage.toString());

@@ -80,7 +80,7 @@ public class Connection extends URLConnection {
 
     public Set<String> extensionsToExport = new HashSet<String>();
 
-    public Set<String> importPackages = new HashSet<String>();
+    public Set<String> importPackages = new TreeSet<String>();
 
     public Connection(final URL url, final Configuration configuration)
             throws MalformedURLException {
@@ -268,10 +268,10 @@ public class Connection extends URLConnection {
             }
 
             for (String curImportPackage : importPackages) {
-                if (!importPackage.toString().contains(curImportPackage)) {
+                // if (!importPackage.toString().contains(curImportPackage)) {
                     importPackage.append(",");
                     importPackage.append(curImportPackage);
-                }
+                // }
             }
 
             bndProperties.put("Import-Package", importPackage.toString());

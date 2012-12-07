@@ -856,7 +856,7 @@ extends = jnt:content
 [jnt:mixinNodeType] > jnt:nodeType
  - j:mixins (NAME,choicelist[nodetypes=MIXIN,resourceBundle]) multiple
  - j:isQueryable (BOOLEAN) mandatory
- - j:itemsType (string,choicelist[itemtypes])
+ - j:itemsType (string,choicelist) < 'content','metadata','layout','options'
  - j:mixinExtends (string,choicelist[nodetypes=PRIMARY]) multiple
 
 [jnt:primaryNodeType] > jnt:nodeType

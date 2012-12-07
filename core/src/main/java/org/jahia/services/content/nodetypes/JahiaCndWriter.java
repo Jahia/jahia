@@ -40,11 +40,14 @@
 
 package org.jahia.services.content.nodetypes;
 
+import org.apache.commons.lang.StringUtils;
+
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeIterator;
+import javax.jcr.query.qom.QueryObjectModelConstants;
 import javax.jcr.version.OnParentVersionAction;
 import java.io.IOException;
 import java.io.Writer;
@@ -109,7 +112,7 @@ public class JahiaCndWriter {
 
     private void writeNamespaces(Map<String,String> namespaces) throws IOException {
         for (Map.Entry<String,String> k : namespaces.entrySet()) {
-            out.write("< "+k + " = '"+k.getValue()+"' >\n");
+            out.write("<" + k.getKey() + " = '" + k.getValue() + "'>\n");
         }
     }
 
@@ -157,18 +160,34 @@ public class JahiaCndWriter {
      */
     private void writeOptions(ExtendedNodeType ntd) throws IOException {
         if (ntd.hasOrderableChildNodes()) {
-            out.write("\n" + INDENT);
-            out.write("orderable");
-            if (ntd.isMixin()) {
-                out.write(" mixin");
-            }
-        } else if (ntd.isMixin()) {
-            out.write("\n" + INDENT);
-            out.write("mixin");
+            out.write(" orderable");
+        }
+        if (ntd.isMixin()) {
+            out.write(" mixin");
         }
         if (ntd.isAbstract()) {
+            out.write(" abstract");
+        }
+        if (!ntd.isQueryable()) {
+            out.write(" noquery");
+        }
+        List<ExtendedNodeType> mixinExtends = ntd.getMixinExtends();
+        if (mixinExtends != null && !mixinExtends.isEmpty()) {
             out.write("\n" + INDENT);
-            out.write("abstract");            
+            out.write("extends = ");
+            Iterator<ExtendedNodeType> it = mixinExtends.iterator();
+            while (it.hasNext()) {
+                out.write(it.next().getName());
+                if (it.hasNext()) {
+                    out.write(", ");
+                }
+            }
+        }
+        String itemsType = ntd.getItemsType();
+        if (itemsType != null) {
+            out.write("\n" + INDENT);
+            out.write("itemtype = ");
+            out.write(itemsType);
         }
     }
 
@@ -213,6 +232,9 @@ public class JahiaCndWriter {
         if (pd.isMultiple()) {
             out.write(" multiple");
         }
+        if (pd.isHidden()) {
+            out.write(" hidden");
+        }
         if (pd.isInternationalized()) {
             out.write(" internationalized");
         }
@@ -231,17 +253,62 @@ public class JahiaCndWriter {
         }
 
         if (pd.getScoreboost() != 1.) {
-            out.write(" scoreboost="+pd.getScoreboost());
+            out.write(" scoreboost=" + pd.getScoreboost());
         }
-        if ( pd.getAnalyzer() != null) {
-            out.write(" analyzer="+pd.getAnalyzer());
+        if (pd.getAnalyzer() != null) {
+            out.write(" analyzer=" + pd.getAnalyzer());
+        }
+        if (pd.isFacetable()) {
+            out.write(" facetable");
+        }
+        if (pd.isHierarchical()) {
+            out.write(" hierarchical");
+        }
+        if (!pd.isQueryOrderable()) {
+            out.write(" noqueryorder");
+        }
+        if (!pd.isFullTextSearchable()) {
+            out.write(" nofulltext");
         }
         if (pd.getOnParentVersion() != OnParentVersionAction.COPY) {
             out.write(" ");
             out.write(OnParentVersionAction.nameFromValue(pd.getOnParentVersion()).toLowerCase());
         }
+        String[] availableQueryOperators = pd.getAvailableQueryOperators();
+        if (availableQueryOperators != null && availableQueryOperators.length > 0) {
+            writeQueryOperators(availableQueryOperators);
+        }
 
         writeValueConstraints(pd.getValueConstraintsAsValue());
+    }
+
+    private void writeQueryOperators(String[] availableQueryOperators) throws IOException {
+        if (Arrays.equals(availableQueryOperators, Lexer.ALL_OPERATORS)) {
+            return;
+        }
+        out.write(" queryops '");
+        for (int i = 0; i < availableQueryOperators.length; i++) {
+            if (i > 0) {
+                out.write(",");
+            }
+            String op = availableQueryOperators[i];
+            if (QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO.equals(op)) {
+                out.write(Lexer.QUEROPS_EQUAL);
+            } else if (QueryObjectModelConstants.JCR_OPERATOR_NOT_EQUAL_TO.equals(op)) {
+                out.write(Lexer.QUEROPS_NOTEQUAL);
+            } else if (QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN.equals(op)) {
+                out.write(Lexer.QUEROPS_LESSTHAN);
+            } else if (QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO.equals(op)) {
+                out.write(Lexer.QUEROPS_LESSTHANOREQUAL);
+            } else if (QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN.equals(op)) {
+                out.write(Lexer.QUEROPS_GREATERTHAN);
+            } else if (QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO.equals(op)) {
+                out.write(Lexer.QUEROPS_GREATERTHANOREQUAL);
+            } else if (QueryObjectModelConstants.JCR_OPERATOR_LIKE.equals(op)) {
+                out.write(Lexer.QUEROPS_LIKE);
+            }
+        }
+        out.write("'");
     }
 
     /**

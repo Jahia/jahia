@@ -259,7 +259,7 @@ public class ExtendedNodeType implements NodeType {
     }
 
 
-    void validate() throws NoSuchNodeTypeException {
+    public void validate() throws NoSuchNodeTypeException {
         this.declaredSupertypes = new ExtendedNodeType[declaredSupertypeNames.length];
         int mixIndex = 0;
         for (int i = 0; i < declaredSupertypeNames.length; i++) {
@@ -273,11 +273,13 @@ public class ExtendedNodeType implements NodeType {
             }
             nodeType.addSubType(this);
         }
+        List<ExtendedNodeType> newMixinExtend = new ArrayList<ExtendedNodeType>();
         for (String s : mixinExtendNames) {
             final ExtendedNodeType type = registry.getNodeType(s);
             registry.addMixinExtension(this, type);
-            mixinExtend.add(type);
+            newMixinExtend.add(type);
         }
+        mixinExtend = newMixinExtend;
         for (ExtendedItemDefinition itemDefinition : items) {
             if (itemDefinition.getItemType() != null) {
                 registry.addTypedItem(itemDefinition);
@@ -803,6 +805,10 @@ public class ExtendedNodeType implements NodeType {
 
     public void addMixinExtend(String mixinExtension) {
         this.mixinExtendNames.add(mixinExtension);
+    }
+
+    public void setMixinExtendNames(List<String> mixinExtendNames) {
+        this.mixinExtendNames = mixinExtendNames;
     }
 
     public List<ExtendedNodeType> getMixinExtends() {

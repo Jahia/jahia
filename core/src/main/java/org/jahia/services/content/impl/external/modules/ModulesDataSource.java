@@ -518,10 +518,16 @@ public class ModulesDataSource extends VFSDataSource {
         String path = data.getPath();
         String[] splitPath = path.split("/");
         String module = splitPath[1];
+        String nodeTypeName = splitPath[splitPath.length - 1];
         NodeTypeRegistry nodeTypeRegistry = loadRegistry(path, module);
-        ExtendedNodeType nodeType = new ExtendedNodeType(nodeTypeRegistry, module);
-        Name name = new Name(splitPath[splitPath.length - 1], nodeTypeRegistry.getNamespaces());
-        nodeType.setName(name);
+        ExtendedNodeType nodeType = null;
+        try {
+            nodeType = nodeTypeRegistry.getNodeType(nodeTypeName);
+        } catch (NoSuchNodeTypeException e) {}
+        if (nodeType == null) {
+            nodeType = new ExtendedNodeType(nodeTypeRegistry, module);
+            nodeType.setName(new Name(nodeTypeName, nodeTypeRegistry.getNamespaces()));
+        }
         Map<String, String[]> properties = data.getProperties();
         List<String> declaredSupertypes = new ArrayList<String>();
         String[] values = properties.get("j:supertype");
@@ -555,9 +561,7 @@ public class ModulesDataSource extends VFSDataSource {
         }
         values = properties.get("j:mixinExtends");
         if (values != null) {
-            for (String mixinExtension : values) {
-                nodeType.addMixinExtend(mixinExtension);
-            }
+            nodeType.setMixinExtendNames(new ArrayList(Arrays.asList(values)));
         }
         values = properties.get("j:primaryItemName");
         if (values != null && values.length > 0) {
@@ -568,8 +572,15 @@ public class ModulesDataSource extends VFSDataSource {
         } else {
             nodeType.setMixin(false);
         }
-        nodeTypeRegistry.addNodeType(name, nodeType);
-        writeDefinitionFile(nodeTypeRegistry, StringUtils.substringBeforeLast(path, "/"));
+        nodeTypeRegistry.addNodeType(nodeType.getNameObject(), nodeType);
+        try {
+            nodeType.validate();
+        } catch (NoSuchNodeTypeException e) {
+            logger.error("Failed to save child node definition", e);
+            nodeTypeRegistryMap.remove(module);
+            return;
+        }
+        writeDefinitionFile(nodeTypeRegistry, StringUtils.substringBeforeLast(path, "/"), splitPath[1]);
     }
 
     private void savePropertyDefinition(ExternalData data) {
@@ -616,8 +627,7 @@ public class ModulesDataSource extends VFSDataSource {
             List<Value> valueConstraints = new ArrayList<Value>();
             if (values != null) {
                 for (String valueConstraint : values) {
-                    // TODO: Handle dynamic values
-                    valueConstraints.add(new ValueImpl(valueConstraint, requiredType, true));
+                    valueConstraints.add(getValueFromString(valueConstraint, requiredType, propertyDefinition));
                 }
                 if (!valueConstraints.isEmpty()) {
                     propertyDefinition.setValueConstraints(valueConstraints.toArray(new Value[valueConstraints.size()]));
@@ -627,8 +637,7 @@ public class ModulesDataSource extends VFSDataSource {
             List<Value> defaultValues = new ArrayList<Value>();
             if (values != null) {
                 for (String defaultValue : values) {
-                    // TODO: Handle dynamic values
-                    defaultValues.add(new ValueImpl(defaultValue, requiredType, false));
+                    defaultValues.add(getValueFromString(defaultValue, requiredType, propertyDefinition));
                 }
                 if (!defaultValues.isEmpty()) {
                     propertyDefinition.setDefaultValues(defaultValues.toArray(new Value[defaultValues.size()]));
@@ -668,9 +677,26 @@ public class ModulesDataSource extends VFSDataSource {
             }
             propertyDefinition.setDeclaringNodeType(nodeType);
             writeDefinitionFile(nodeTypeRegistry,
-                    StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/"));
+                    StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/"), splitPath[1]);
         } catch (NoSuchNodeTypeException e) {
-            logger.error("Failed to save property definition", e);
+            logger.error("Failed to save child node definition", e);
+            nodeTypeRegistryMap.remove(module);
+        }
+    }
+
+    private Value getValueFromString(String value, int requiredType, ExtendedPropertyDefinition propertyDefinition) {
+        if (value.contains("(")) {
+            String[] params = StringUtils.substringBetween(value, "(", ")").split(",");
+            List<String> paramList = new ArrayList<String>();
+            for (String param : params) {
+                param = param.trim();
+                if (!"".equals(param)) {
+                    paramList.add(param);
+                }
+            }
+            return new DynamicValueImpl(value, paramList, requiredType, true, propertyDefinition);
+        } else {
+            return new ValueImpl(value, requiredType, true);
         }
     }
 
@@ -718,18 +744,21 @@ public class ModulesDataSource extends VFSDataSource {
             }
             childNodeDefinition.setDeclaringNodeType(nodeType);
             writeDefinitionFile(nodeTypeRegistry,
-                    StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/"));
+                    StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/"), splitPath[1]);
         } catch (NoSuchNodeTypeException e) {
             logger.error("Failed to save child node definition", e);
+            nodeTypeRegistryMap.remove(module);
         }
     }
 
-    private void writeDefinitionFile(NodeTypeRegistry nodeTypeRegistry, String path) {
+    private void writeDefinitionFile(NodeTypeRegistry nodeTypeRegistry, String path, String module) {
         try {
             Writer writer = null;
             try {
                 writer = new OutputStreamWriter(new FileOutputStream(new File(rootPath + path)));
-                new JahiaCndWriter(nodeTypeRegistry.getAllNodeTypes(), nodeTypeRegistry.getNamespaces(), writer);
+                Map<String, String> namespaces = nodeTypeRegistry.getNamespaces();
+                namespaces.remove("rep");
+                new JahiaCndWriter(nodeTypeRegistry.getNodeTypes(module), namespaces, writer);
             } finally {
                 IOUtils.closeQuietly(writer);
             }

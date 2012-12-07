@@ -211,6 +211,8 @@ public class ImportExportTest {
     private final static Set<String> optionalProperties = Sets.newHashSet("jcr:mixinTypes", "j:published", "j:lastPublished",
             "j:lastPublishedBy", "j:deletedChildren", "j:fullpath", "j:allowsUnlistedLanguages");
     
+    private final static Set<String> optionalNodes = Sets.newHashSet("templates");    
+    
     private final static Set<String> optionalMixins = Sets.newHashSet("jmix:deletedChildren");
     
     private static boolean readyForUGCTest = false; 
@@ -489,7 +491,7 @@ public class ImportExportTest {
                         childPage = englishLiveSiteHomeNode.getNode("renamed-child");
                         JCRNodeWrapper addedNode = childPage.addNode("added-ugc-page-to-renamed-page", "jnt:page");
                         addedNode.setProperty("jcr:title", "Added UGC pageto renamed page");
-                        newPage.setProperty("j:templateName", "simple");
+                        addedNode.setProperty("j:templateName", "simple");
 
                         TestHelper.createList(addedNode, "contentListUGC", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
 
@@ -739,11 +741,15 @@ public class ImportExportTest {
 
                 while (sourceSiteIt.hasNext()) {
                     JCRNodeWrapper node = (JCRNodeWrapper) sourceSiteIt.next();
-                    sourceChildNodes.put(node.getName(), node);
+                    if (!optionalNodes.contains(node.getName())) {                    
+                        sourceChildNodes.put(node.getName(), node);
+                    }
                 }
                 while (targetSiteIt.hasNext()) {
                     JCRNodeWrapper node = (JCRNodeWrapper) targetSiteIt.next();
-                    targetChildNodes.put(node.getName(), node);
+                    if (!optionalNodes.contains(node.getName())) {
+                        targetChildNodes.put(node.getName(), node);
+                    }
                 }
                 if (sourceChildNodes.size() != targetChildNodes.size()) {
                     logger.error("Number of childnodes do not match for parent nodes: " + sourceSiteNode.toString() + "("
@@ -885,7 +891,7 @@ public class ImportExportTest {
                     String sourceReferencePath = "";
                     String targetReferencePath = "";
                     if ("j:fullpath".equals(sourceEntry.getKey()) || "j:nodename".equals(sourceEntry.getKey())
-                            || "j:title".equals(sourceEntry.getKey())) {
+                            || "j:title".equals(sourceEntry.getKey()) || "j:description".equals(sourceEntry.getKey())) {
                         sourceValue = ((Value)sourceValue).getString().replace(sourceRootPath, "");
                         targetValue = ((Value)targetValue).getString().replace(targetRootPath, "");
                         sourceValue = ((String)sourceValue).replace(TESTSITE_NAME, "");

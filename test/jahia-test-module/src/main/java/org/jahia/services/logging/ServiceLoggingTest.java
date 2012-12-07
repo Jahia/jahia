@@ -120,8 +120,6 @@ public class ServiceLoggingTest {
     private void deleteAllTags() throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                session.getWorkspace().getVersionManager()
-                        .checkout("/sites/" + TESTSITE_NAME + "/tags");
                 NodeIterator nodeIterator = session
                         .getWorkspace()
                         .getQueryManager()
@@ -139,7 +137,6 @@ public class ServiceLoggingTest {
                         // duplicate results
                     }
                 }
-                session.getWorkspace().getVersionManager().checkout("/sites/" + TESTSITE_NAME);
                 try {
                     session.getNode("/sites/" + TESTSITE_NAME + "/tags-content").remove();
                 } catch (PathNotFoundException e) {

@@ -34,6 +34,7 @@ package org.jahia.services.atmosphere;
 
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncCompletionHandler;
+import com.ning.http.client.AsyncHttpClientConfig.Builder;
 import com.ning.http.client.Response;
 import org.atmosphere.cpr.HeaderConfig;
 import org.jahia.api.Constants;
@@ -73,7 +74,10 @@ public class AtmosphereTest {
 
         final CountDownLatch latch = new CountDownLatch(1);
         long t1 = System.currentTimeMillis();
-        AsyncHttpClient c = new AsyncHttpClient();
+        Builder builder = new Builder();
+        builder.setConnectionTimeoutInMs(Integer.MAX_VALUE);
+        builder.setRequestTimeoutInMs(Integer.MAX_VALUE);        
+        AsyncHttpClient c = new AsyncHttpClient(builder.build());
         try {
             // Suspend
             c.preparePost(urlTarget).addParameter("message", "cacheme").execute().get();
@@ -163,10 +167,11 @@ public class AtmosphereTest {
             JCRNodeWrapper englishEditSiteHomeNode = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home");
             testHomeEdit = englishEditSiteHomeNode.addNode("test"+System.currentTimeMillis(), "jnt:page");
             testHomeEdit.setProperty("jcr:title", "Test page");
+            testHomeEdit.setProperty("j:templateName", "simple");            
             englishEditSession.save();
             jcrService.publishByMainId(testHomeEdit.getIdentifier());
         } catch (RepositoryException e) {
-            fail("Cannot get session");
+            fail("Cannot setup test" + e.getMessage());
         }
     }
 

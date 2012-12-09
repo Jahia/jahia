@@ -314,7 +314,7 @@
     </bean>
 
     <bean id="jcrPublicationService" class="org.jahia.services.content.JCRPublicationService"
-          factory-method="getInstance">
+          factory-method="getInstance" depends-on="loggingService">
         <property name="sessionFactory" ref="jcrSessionFactory"/>
         <property name="loggingService" ref="loggingService"/>
     </bean>

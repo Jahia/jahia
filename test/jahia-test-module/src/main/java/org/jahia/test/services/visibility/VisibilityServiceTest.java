@@ -71,6 +71,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.visibility.VisibilityService;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -87,7 +88,7 @@ import com.google.common.collect.ImmutableSet;
  * Date: Mar 14, 2010
  * Time: 1:40:10 PM
  */
-public class VisibilityServiceTest {
+public class VisibilityServiceTest extends JahiaTestCase {
 
     private static final String INVISIBLE_TEXT = "This is an invisible text";
     private static Logger logger = LoggerFactory.getLogger(VisibilityServiceTest.class);
@@ -137,7 +138,7 @@ public class VisibilityServiceTest {
 
     private boolean isPresent(String relativeUrl) {
         String body = StringUtils.EMPTY;
-        GetMethod getMethod = new GetMethod("http://localhost:8080" + Jahia.getContextPath()
+        GetMethod getMethod = new GetMethod(getBaseServerURL() + Jahia.getContextPath()
                 + relativeUrl);
         try {
             int responseCode = client.executeMethod(getMethod);
@@ -171,7 +172,7 @@ public class VisibilityServiceTest {
         // Create an instance of HttpClient.
         client = new HttpClient();
 
-        PostMethod loginMethod = new PostMethod("http://localhost:8080" + Jahia.getContextPath()
+        PostMethod loginMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath()
                 + "/cms/login");
         loginMethod.addParameter("username", USERNAME);
         loginMethod.addParameter("password", PASSWORD);
@@ -193,7 +194,7 @@ public class VisibilityServiceTest {
 
         JCRSessionFactory.getInstance().closeAllSessions();
 
-        PostMethod logoutMethod = new PostMethod("http://localhost:8080" + Jahia.getContextPath()
+        PostMethod logoutMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath()
                 + "/cms/logout");
         logoutMethod.addParameter("redirectActive", "false");
 

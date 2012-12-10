@@ -40,6 +40,16 @@
 
 package org.jahia.test.services.render.filter.channels;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.jcr.ImportUUIDBehavior;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
@@ -52,20 +62,14 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
-import org.jahia.test.services.content.*;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 
-import javax.jcr.ImportUUIDBehavior;
-import java.io.IOException;
-import java.io.InputStream;
-
-import static org.junit.Assert.*;
-
-public class ChannelResolutionAndExclusionTest {
+public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ChannelResolutionAndExclusionTest.class);
     private static final String TESTSITE_NAME = "channelsTestSite";
@@ -108,7 +112,7 @@ public class ChannelResolutionAndExclusionTest {
     public void testGenericChannelResolution() throws Exception {
         HttpClient client = new HttpClient();
         GetMethod nodeGet = new GetMethod(
-                "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" +
+        		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/live/en" +
                         SITECONTENT_ROOT_NODE + "/home.html");
         String response = null;
         try {
@@ -127,7 +131,7 @@ public class ChannelResolutionAndExclusionTest {
         client.getParams().setParameter(HttpMethodParams.USER_AGENT,
                 "Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3");
         GetMethod nodeGet = new GetMethod(
-                "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" +
+        		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/live/en" +
                         SITECONTENT_ROOT_NODE + "/home.html");
         String response = null;
         try {
@@ -146,7 +150,7 @@ public class ChannelResolutionAndExclusionTest {
         client.getParams().setParameter(HttpMethodParams.USER_AGENT,
                 "Mozilla/5.0 (SymbianOS/9.4; Series60/5.0 NokiaN97-1/12.0.024; Profile/MIDP-2.1 Configuration/CLDC-1.1; en-us) AppleWebKit/525 (KHTML, like Gecko) BrowserNG/7.1.12344");
         GetMethod nodeGet = new GetMethod(
-                "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" +
+        		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/live/en" +
                         SITECONTENT_ROOT_NODE + "/home.html");
         String response = null;
         try {
@@ -165,7 +169,7 @@ public class ChannelResolutionAndExclusionTest {
         client.getParams().setParameter(HttpMethodParams.USER_AGENT,
                 "Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3");
         GetMethod nodeGet = new GetMethod(
-                "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" +
+        		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/live/en" +
                         SITECONTENT_ROOT_NODE + "/home.html");
         String response = null;
         try {
@@ -184,7 +188,7 @@ public class ChannelResolutionAndExclusionTest {
         client.getParams().setParameter(HttpMethodParams.USER_AGENT,
                 "Mozilla/5.0 (iPad; CPU OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3");
         GetMethod nodeGet = new GetMethod(
-                "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" +
+        		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/live/en" +
                         SITECONTENT_ROOT_NODE + "/home.html");
         String response = null;
         try {

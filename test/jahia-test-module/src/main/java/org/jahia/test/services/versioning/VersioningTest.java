@@ -40,6 +40,32 @@
 
 package org.jahia.test.services.versioning;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.version.Version;
+import javax.jcr.version.VersionHistory;
+import javax.jcr.version.VersionIterator;
+import javax.jcr.version.VersionManager;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -59,31 +85,17 @@ import org.jahia.services.content.JCRVersionService;
 import org.jahia.services.content.PublicationInfo;
 import org.jahia.services.content.VersionInfo;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
-import org.jahia.test.services.content.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.version.Version;
-import javax.jcr.version.VersionHistory;
-import javax.jcr.version.VersionIterator;
-import javax.jcr.version.VersionManager;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static org.junit.Assert.*;
-
 /**
  * Unit test to test version listing created during publication
  */
-public class VersioningTest {
+public class VersioningTest extends JahiaTestCase {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(VersioningTest.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "jcrVersioningTest_" + System.currentTimeMillis();
@@ -114,7 +126,7 @@ public class VersioningTest {
 
         // todo we should really insert content to test the find.
 
-        PostMethod loginMethod = new PostMethod("http://localhost:8080" + Jahia.getContextPath() + "/cms/login");
+        PostMethod loginMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/login");
         loginMethod.addParameter("username", "root");
         loginMethod.addParameter("password", "root1234");
         loginMethod.addParameter("redirectActive", "false");
@@ -340,7 +352,7 @@ public class VersioningTest {
 
     @After
     public void tearDown() throws Exception {
-        PostMethod logoutMethod = new PostMethod("http://localhost:8080" + Jahia.getContextPath() + "/cms/logout");
+        PostMethod logoutMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/logout");
         logoutMethod.addParameter("redirectActive", "false");
 
         int statusCode = client.executeMethod(logoutMethod);
@@ -378,7 +390,7 @@ public class VersioningTest {
 
             // Do this to create nodes associated to templates
             GetMethod versionGet = new GetMethod(
-                    "http://localhost:8080" + Jahia.getContextPath() + "/cms/edit/default/en" +
+            		getBaseServerURL() + Jahia.getContextPath() + "/cms/edit/default/en" +
                     subPageEditNode.getPath() + ".html");
             try {
                 int responseCode = client.executeMethod(versionGet);
@@ -506,7 +518,7 @@ public class VersioningTest {
                     SITECONTENT_ROOT_NODE + "/templates/base/double"));
             editSession.save();
             // Do this to create nodes associated to templates
-            versionGet = new GetMethod("http://localhost:8080" + Jahia.getContextPath() + "/cms/edit/default/en" +
+            versionGet = new GetMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/edit/default/en" +
                                        newSubPageEditNode.getPath() + ".html");
             try {
                 int responseCode = client.executeMethod(versionGet);

@@ -40,24 +40,34 @@
 
 package org.jahia.test.services.render.filter.cache;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+
+import javax.jcr.ImportUUIDBehavior;
+import javax.jcr.RepositoryException;
+
 import net.sf.ehcache.Element;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.usermanager.jcr.JCRGroup;
-import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
-import org.jahia.services.usermanager.jcr.JCRUser;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
-import org.jahia.utils.Patterns;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
@@ -87,19 +97,20 @@ import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.jcr.JCRGroup;
+import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
+import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.test.JahiaAdminUser;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
-import org.jahia.test.services.content.*;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-import java.util.regex.Matcher;
-
-import javax.jcr.ImportUUIDBehavior;
-import javax.jcr.RepositoryException;
-
-import static org.junit.Assert.*;
+import org.jahia.utils.Patterns;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.slf4j.Logger;
 /**
  * 
  *
@@ -107,7 +118,7 @@ import static org.junit.Assert.*;
  * @since JAHIA 6.5
  *        Created : 12 janv. 2010
  */
-public class CacheFilterTest {
+public class CacheFilterTest extends JahiaTestCase {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CacheFilterTest.class);
     private final static String TESTSITE_NAME = "test";    
 
@@ -238,7 +249,7 @@ public class CacheFilterTest {
         final JCRNodeWrapper node = liveSession.getNode("/sites/"+TESTSITE_NAME+"/home/testContent");        
         HttpClient client = new HttpClient();
         GetMethod nodeGet = new GetMethod(
-            "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" +
+        		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/live/en" +
             node.getPath() + ".html");
         try {
             int responseCode = client.executeMethod(nodeGet);
@@ -457,7 +468,7 @@ public class CacheFilterTest {
     private void checkContentForUser(JCRNodeWrapper node, String username, CharSequence firstContent, CharSequence secondContent,
                                      String missingContent) throws IOException, RepositoryException {
         HttpClient client = new HttpClient();
-        PostMethod loginMethod = new PostMethod("http://localhost:8080" + Jahia.getContextPath() + "/cms/login");
+        PostMethod loginMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/login");
         loginMethod.addParameter("username", username);
         loginMethod.addParameter("password", "password");
         loginMethod.addParameter("redirectActive", "false");
@@ -467,7 +478,7 @@ public class CacheFilterTest {
         
         // Use httpclient to render page
         GetMethod nodeGet = new GetMethod(
-                "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" +
+        		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/live/en" +
                 node.getPath() + ".html");
         try {
             int responseCode = client.executeMethod(nodeGet);
@@ -482,7 +493,7 @@ public class CacheFilterTest {
         } finally {
             nodeGet.releaseConnection();
         }
-        String baseurl = "http://localhost:8080" + Jahia.getContextPath();
+        String baseurl = getBaseServerURL() + Jahia.getContextPath();
         HttpMethod method = new GetMethod(baseurl + "/cms/logout");
         try {
             client.executeMethod(method);

@@ -42,10 +42,8 @@ package org.jahia.services.render;
 
 import junit.framework.TestCase;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.cookie.CookiePolicy;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.settings.SettingsBean;
 import org.junit.After;
@@ -126,7 +124,10 @@ public class JSessionIDTest extends TestCase {
         SettingsBean.getInstance().setJsessionIdParameterName(jsessionid);
 
         GetMethod displayLoginMethod = new GetMethod("http://localhost:8080"+ Jahia.getContextPath()+"/administration");
-        httpClient.executeMethod(displayLoginMethod);
+        int statusCode = httpClient.executeMethod(displayLoginMethod);
+        
+        assertEquals("Method failed: " + displayLoginMethod.getStatusLine(), HttpStatus.SC_OK, statusCode);        
+        
         String responseBodyAsString = displayLoginMethod.getResponseBodyAsString();
 
         Pattern p = Pattern.compile("action=\"([^\"]*)\"");

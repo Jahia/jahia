@@ -60,6 +60,7 @@ import org.junit.*;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -128,9 +129,7 @@ public class FindPrincipalTest {
         loginMethod.addParameter(LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER, "1");
 
         int statusCode = client.executeMethod(loginMethod);
-        if (statusCode != HttpStatus.SC_OK) {
-            logger.error("Method failed: " + loginMethod.getStatusLine());
-        }
+        assertEquals("Method failed: " + loginMethod.getStatusLine(), HttpStatus.SC_OK, statusCode);        
     }
 
     @After
@@ -140,9 +139,7 @@ public class FindPrincipalTest {
         logoutMethod.addParameter("redirectActive", "false");
 
         int statusCode = client.executeMethod(logoutMethod);
-        if (statusCode != HttpStatus.SC_OK) {
-            logger.error("Method failed: " + logoutMethod.getStatusLine());
-        }
+        assertEquals("Method failed: " + logoutMethod.getStatusLine(), HttpStatus.SC_OK, statusCode);
 
         logoutMethod.releaseConnection();
 
@@ -162,9 +159,7 @@ public class FindPrincipalTest {
         // Execute the method.
         int statusCode = client.executeMethod(method);
 
-        if (statusCode != HttpStatus.SC_OK) {
-            logger.error("Method failed: " + method.getStatusLine());
-        }
+        assertEquals("Method failed: " + method.getStatusLine(), HttpStatus.SC_OK, statusCode);
 
         // Read the response body.
         StringBuilder responseBodyBuilder = new StringBuilder();
@@ -194,9 +189,7 @@ public class FindPrincipalTest {
         // Execute the method.
         int statusCode = client.executeMethod(method);
 
-        if (statusCode != HttpStatus.SC_OK) {
-            logger.error("Method failed: " + method.getStatusLine());
-        }
+        assertEquals("Method failed: " + method.getStatusLine(), HttpStatus.SC_OK, statusCode);
 
         // Read the response body.
         StringBuilder responseBodyBuilder = new StringBuilder();

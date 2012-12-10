@@ -156,9 +156,7 @@ public class FindTest {
         loginMethod.addParameter(LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER, "1");
 
         int statusCode = client.executeMethod(loginMethod);
-        if (statusCode != HttpStatus.SC_OK) {
-            logger.error("Method failed: " + loginMethod.getStatusLine());
-        }
+        assertEquals("Unexpected response code", HttpStatus.SC_OK, statusCode);
     }
 
     @After
@@ -168,9 +166,7 @@ public class FindTest {
         logoutMethod.addParameter("redirectActive", "false");
 
         int statusCode = client.executeMethod(logoutMethod);
-        if (statusCode != HttpStatus.SC_OK) {
-            logger.error("Method failed: " + logoutMethod.getStatusLine());
-        }
+        assertEquals("Unexpected response code", HttpStatus.SC_OK, statusCode);
 
         logoutMethod.releaseConnection();
     }
@@ -192,10 +188,7 @@ public class FindTest {
 
         // Execute the method.
         int statusCode = client.executeMethod(method);
-
-        if (statusCode != HttpStatus.SC_OK) {
-            logger.error("Method failed: " + method.getStatusLine());
-        }
+        assertEquals("Method failed: " + method.getStatusLine(), HttpStatus.SC_OK, statusCode);
 
         // Read the response body.
         String responseBody = method.getResponseBodyAsString();
@@ -237,9 +230,7 @@ public class FindTest {
         // Execute the method.
         int statusCode = client.executeMethod(method);
 
-        if (statusCode != HttpStatus.SC_OK) {
-            logger.error("Method failed: " + method.getStatusLine());
-        }
+        assertEquals("Method failed: " + method.getStatusLine(), HttpStatus.SC_OK, statusCode);
 
         // Read the response body.
         String responseBody = method.getResponseBodyAsString();
@@ -281,9 +272,7 @@ public class FindTest {
         // Execute the method.
         int statusCode = client.executeMethod(method);
 
-        if (statusCode != HttpStatus.SC_OK) {
-            logger.error("Method failed: " + method.getStatusLine());
-        }
+        assertEquals("Method failed: " + method.getStatusLine(), HttpStatus.SC_OK, statusCode);
 
         // Read the response body.
         String responseBody = method.getResponseBodyAsString();

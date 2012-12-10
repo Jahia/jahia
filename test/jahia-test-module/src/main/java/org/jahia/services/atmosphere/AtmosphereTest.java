@@ -36,6 +36,8 @@ import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClientConfig.Builder;
 import com.ning.http.client.Response;
+
+import org.apache.commons.httpclient.HttpStatus;
 import org.atmosphere.cpr.HeaderConfig;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -105,7 +107,7 @@ public class AtmosphereTest {
             }
 
             assertNotNull(r);
-            assertEquals(r.getStatusCode(), 200);
+            assertEquals(HttpStatus.SC_OK, r.getStatusCode());
             assertEquals(r.getResponseBody(), "cacheme\ncachememe\n");
         } catch (Exception e) {
             logger.error("test failed", e);
@@ -226,7 +228,7 @@ public class AtmosphereTest {
             }
             Response r = response.get();
             assertNotNull(r);
-            assertEquals(r.getStatusCode(), 200);
+            assertEquals(HttpStatus.SC_OK, r.getStatusCode());
             assertTrue(r.getResponseBody().contains("\"name\":\"contentList1_text0\""));
         } catch (Exception e) {
             logger.error("test failed", e);

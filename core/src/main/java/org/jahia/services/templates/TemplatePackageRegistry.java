@@ -520,7 +520,7 @@ public class TemplatePackageRegistry {
                             new File(rootFolder, name),
                             templatePackage.getRootFolder(), templatePackage.getVersion());
                 }
-                jcrStoreService.deployDefinitions(templatePackage.getName());
+                jcrStoreService.deployDefinitions(templatePackage.getRootFolder());
             } catch (Exception e) {
                 logger.warn("Cannot parse definitions for "+templatePackage.getName(),e);
             }

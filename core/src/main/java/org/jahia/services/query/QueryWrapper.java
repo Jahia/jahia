@@ -70,7 +70,7 @@ import java.util.*;
  *
  * @author Thomas Draier
  */
-class QueryWrapper implements Query {
+public class QueryWrapper implements Query {
 
     public static final Logger logger = LoggerFactory.getLogger(QueryWrapper.class);
 

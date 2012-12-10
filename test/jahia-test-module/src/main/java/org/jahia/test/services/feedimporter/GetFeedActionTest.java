@@ -40,14 +40,17 @@
 
 package org.jahia.test.services.feedimporter;
 
-import junit.framework.TestCase;
+import java.io.IOException;
+import java.net.URL;
+
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -55,14 +58,12 @@ import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import javax.jcr.RepositoryException;
-import java.io.IOException;
-import java.net.URL;
+import org.slf4j.Logger;
 
 /**
  * Unit test for feed importer action.
@@ -71,7 +72,7 @@ import java.net.URL;
  *         Date: May 21, 2010
  *         Time: 3:22:09 PM
  */
-public class GetFeedActionTest extends TestCase {
+public class GetFeedActionTest extends JahiaTestCase {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(GetFeedActionTest.class);
     private JahiaSite site;
@@ -138,7 +139,7 @@ public class GetFeedActionTest extends TestCase {
         HttpClient client = new HttpClient();
         client.getParams().setAuthenticationPreemptive(true);
 
-        String baseurl = "http://localhost:8080" + Jahia.getContextPath() + "/cms";
+        String baseurl = getBaseServerURL() + Jahia.getContextPath() + "/cms";
         final URL url = new URL(baseurl + "/render/default/en" + sdaFeedNode.getPath() + ".getfeed.do");
 
         Credentials defaultcreds = new UsernamePasswordCredentials("root", "root1234");

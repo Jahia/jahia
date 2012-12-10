@@ -40,12 +40,20 @@
 
 package org.jahia.test.bin;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.util.Locale;
+
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Find;
 import org.jahia.bin.Jahia;
@@ -59,19 +67,18 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
-import org.jahia.test.services.content.*;
 import org.jahia.utils.LanguageCodeConverters;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.*;
-
-import javax.jcr.RepositoryException;
-import java.io.IOException;
-import java.util.Locale;
-
-import static org.junit.Assert.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.slf4j.Logger;
 
 /**
  * Test case for find servlet.
@@ -80,7 +87,7 @@ import static org.junit.Assert.*;
  * Time: 7:18:29 AM
  * 
  */
-public class FindTest {
+public class FindTest extends JahiaTestCase {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(FindTest.class);
     
@@ -295,12 +302,7 @@ public class FindTest {
         validateFindJSONResults(jsonResults, COMPLEX_QUERY_VALUE);
 
     }
-
-    private String getBaseServerURL() {
-        return "http://localhost:8080";
-    }
-
-
+    
     private String getLoginServletURL() {
         return getBaseServerURL()+ Jahia.getContextPath() + "/cms/login";
     }

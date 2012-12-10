@@ -40,12 +40,17 @@
 
 package org.jahia.test.bin;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.io.IOException;
+
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.slf4j.Logger;
 import org.jahia.bin.FindPrincipal;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
@@ -54,15 +59,16 @@ import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.junit.*;
-
-import javax.jcr.RepositoryException;
-import java.io.IOException;
-
-import static org.junit.Assert.assertNotNull;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.slf4j.Logger;
 
 /**
  * Test of the find principal servlet.
@@ -71,7 +77,7 @@ import static org.junit.Assert.assertNotNull;
  *         Date: Jun 16, 2010
  *         Time: 12:03:19 PM
  */
-public class FindPrincipalTest {
+public class FindPrincipalTest extends JahiaTestCase {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(FindPrincipalTest.class);
 
@@ -208,11 +214,6 @@ public class FindPrincipalTest {
         // @todo we need to add more tests to validate results.
 
     }
-
-    private String getBaseServerURL() {
-        return "http://localhost:8080";
-    }
-
 
     private String getLoginServletURL() {
         return getBaseServerURL()+ Jahia.getContextPath() + "/cms/login";

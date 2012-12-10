@@ -1,6 +1,16 @@
 package org.jahia.test.services.logout;
 
-import org.apache.commons.httpclient.*;
+import static org.junit.Assert.assertEquals;
+
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+
+import javax.jcr.PathNotFoundException;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.StringUtils;
@@ -17,19 +27,13 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.seo.urlrewrite.UrlRewriteService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import javax.jcr.PathNotFoundException;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,7 +42,7 @@ import static org.junit.Assert.assertEquals;
  * Time: 2:13 PM
  * To change this template use File | Settings | File Templates.
  */
-public class LogoutTest {
+public class LogoutTest extends JahiaTestCase {
 
     private static final String SITE_KEY = "logoutSite";
 
@@ -184,7 +188,7 @@ public class LogoutTest {
     }
     
     protected void login() throws Exception {
-        String baseurl = "http://localhost:8080" + Jahia.getContextPath() + "/cms";
+        String baseurl = getBaseServerURL() + Jahia.getContextPath() + "/cms";
         client = new HttpClient();
         PostMethod loginMethod = new PostMethod(baseurl + "/login");
         loginMethod.addParameter("username", "root");
@@ -198,7 +202,7 @@ public class LogoutTest {
     }
 
     protected String logout(String url) throws Exception {
-        String baseurl = "http://localhost:8080" + Jahia.getContextPath();
+        String baseurl = getBaseServerURL() + Jahia.getContextPath();
         HttpMethod method = new GetMethod(baseurl + "/cms/logout");
         if (url.equals("/administration")) {
             method.setQueryString(new NameValuePair[]{

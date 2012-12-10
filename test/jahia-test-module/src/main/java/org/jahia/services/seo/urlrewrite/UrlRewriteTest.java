@@ -249,7 +249,7 @@ public class UrlRewriteTest {
 
         // files
         rewrite(FILES_SERVLET + "/live/sites/urlRewriteSite/files/path/to/my/file.txt",
-                FILES_SERVLET + "/path/to/my/file.txt");
+                FILES_SERVLET + "/live/sites/urlRewriteSite/files/path/to/my/file.txt");
 
     }
 

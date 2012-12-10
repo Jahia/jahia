@@ -229,6 +229,7 @@ public class TestHelper {
         }
         for (int i = 0; i < nbChildren; i++) {
             Node newSubPage = currentNode.addNode("child" + Integer.toString(i), "jnt:page");
+            newSubPage.setProperty("j:templateName", "simple");
             if (titlePrefix != null) {
                 newSubPage.setProperty("jcr:title",
                         titlePrefix + Integer.toString(i));

@@ -71,7 +71,7 @@ public class Activator implements BundleActivator {
     Map<BundleURLScanner, BundleObserver> extensionObservers = new HashMap<BundleURLScanner, BundleObserver>();
     private BundleURLScanner cndScanner;
     private Map<String,List<Bundle>> toBeParsed = new HashMap<String, List<Bundle>>();
-    private Set<Bundle> toBeStarted = new HashSet<Bundle>();
+    private Map<String,List<Bundle>> toBeStarted = new HashMap<String, List<Bundle>>();
 
     @Override
     public void start(BundleContext context) throws Exception {
@@ -86,7 +86,7 @@ public class Activator implements BundleActivator {
         cndBundleObserver.setJcrStoreService(jcrStoreService);
         cndBundleObserver.setTemplatePackageRegistry(templatePackageRegistry);
         cndScanner = new BundleURLScanner("META-INF", "*.cnd", false);
-        extensionObservers.put(cndScanner, cndBundleObserver);
+//        extensionObservers.put(cndScanner, cndBundleObserver);
 
         Collection<ScriptResolver> scriptResolvers = renderService.getScriptResolvers();
         for (ScriptResolver scriptResolver : scriptResolvers) {
@@ -186,7 +186,7 @@ public class Activator implements BundleActivator {
                             break;
                     }
                 } catch (Exception e) {
-                    logger.error("Error when handling event",e);
+                    logger.error("Error when handling event", e);
                 }
             }
 
@@ -331,14 +331,6 @@ public class Activator implements BundleActivator {
             parseDependantBundles(jahiaBundleTemplatesPackage.getRootFolder());
             parseDependantBundles(jahiaBundleTemplatesPackage.getName());
         }
-        if (toBeStarted.contains(bundle)) {
-            toBeStarted.remove(bundle);
-            try {
-                bundle.start();
-            } catch (BundleException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-        }
     }
 
     private void parseDependantBundles(String key) {
@@ -373,9 +365,25 @@ public class Activator implements BundleActivator {
 
     private synchronized void start(Bundle bundle) {
         JahiaBundleTemplatesPackage jahiaBundleTemplatesPackage = (JahiaBundleTemplatesPackage) templatePackageRegistry.lookupByFileNameAndVersion(bundle.getSymbolicName(), new ModuleVersion(bundle.getVersion().toString()));
-        if (jahiaBundleTemplatesPackage == null) {
-            toBeStarted.add(bundle);
-            return;
+
+        List<String> dependsList = jahiaBundleTemplatesPackage.getDepends();
+        if (!dependsList.contains("default") && !dependsList.contains("Default Jahia Templates") && !bundle.getSymbolicName().equals("assets")&& !bundle.getSymbolicName().equals("default")) {
+            dependsList.add("default");
+        }
+
+        for (String depend : dependsList) {
+            JahiaTemplatesPackage pack = templatePackageRegistry.lookupByFileName(depend);
+            if (pack == null) {
+                pack = templatePackageRegistry.lookup(depend);
+            }
+            if (pack == null) {
+                System.out.println("req------------->"+depend);
+                if (!toBeStarted.containsKey(depend)) {
+                    toBeStarted.put(depend, new ArrayList<Bundle>());
+                }
+                toBeStarted.get(depend).add(bundle);
+                return;
+            }
         }
 
         logger.info("--- Start Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + bundle.getVersion() + " --");
@@ -398,6 +406,20 @@ public class Activator implements BundleActivator {
 
         long totalTime = System.currentTimeMillis() - startTime;
         logger.info("--- Finished starting Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + bundle.getVersion() + " in "+totalTime+"ms --");
+
+        startDependantBundles(jahiaBundleTemplatesPackage.getRootFolder());
+        startDependantBundles(jahiaBundleTemplatesPackage.getName());
+    }
+
+    private void startDependantBundles(String key) {
+        if (toBeStarted.get(key) != null) {
+            System.out.println("key------------->"+key);
+
+            for (Bundle bundle1 : toBeStarted.get(key)) {
+                start(bundle1);
+            }
+            toBeStarted.remove(key);
+        }
     }
 
     private synchronized void stopping(Bundle bundle) {

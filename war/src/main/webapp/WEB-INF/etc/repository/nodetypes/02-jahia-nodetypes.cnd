@@ -871,25 +871,29 @@ extends = jnt:content
 [jnt:itemDefinition] abstract
 
 [jnt:propertyDefinition] > jnt:itemDefinition abstract
- - j:autoCreated (BOOLEAN) mandatory
- - j:mandatory (BOOLEAN) mandatory
- - j:onParentVersion (STRING,choicelist) mandatory nofulltext
-     < 'COPY', 'VERSION', 'INITIALIZE', 'COMPUTE', 'IGNORE', 'ABORT'
- - j:protected (BOOLEAN) mandatory
- - j:requiredType (STRING,choicelist) mandatory nofulltext
-   < 'STRING', 'URI', 'BINARY', 'LONG', 'DOUBLE',
-     'DECIMAL', 'BOOLEAN', 'DATE', 'NAME', 'PATH',
-     'REFERENCE', 'WEAKREFERENCE', 'UNDEFINED'
- - j:valueConstraints (STRING) multiple nofulltext
+ - j:requiredType (STRING,choicelist) = 'String' mandatory nofulltext
+   < 'String', 'URI', 'Binary', 'Long', 'Double',
+     'Decimal', 'Boolean', 'Date', 'Name', 'Path',
+     'Reference', 'WeakReference', 'undefined'
+ - j:selectorType (STRING,choicelist) nofulltext
+   < 'Text','RichText','DateTimePicker','DatePicker',
+     'TextArea','ContentPicker','FileUpload','Checkbox',
+     'Color','Category','Choicelist'
+ - j:multiple (BOOLEAN)
  - j:defaultValues (STRING) multiple
- - j:multiple (BOOLEAN) mandatory
- - j:availableQueryOperators (NAME) mandatory multiple
- - j:isFullTextSearchable (BOOLEAN) mandatory
- - j:isQueryOrderable (BOOLEAN) mandatory
- - j:isFacetable (BOOLEAN) mandatory
- - j:isHierarchical (BOOLEAN) mandatory
- - j:isInternationalized (BOOLEAN) mandatory
- - j:isHidden (BOOLEAN) mandatory
+ - j:valueConstraints (STRING) multiple nofulltext
+ - j:isInternationalized (BOOLEAN)
+ - j:mandatory (BOOLEAN)
+ - j:protected (BOOLEAN) mandatory
+ - j:isHidden (BOOLEAN)
+ - j:autoCreated (BOOLEAN)
+ - j:onParentVersion (STRING,choicelist) = 'VERSION' nofulltext
+     < 'COPY', 'VERSION', 'INITIALIZE', 'COMPUTE', 'IGNORE', 'ABORT'
+ - j:availableQueryOperators (NAME) multiple
+ - j:isFullTextSearchable (BOOLEAN)
+ - j:isQueryOrderable (BOOLEAN)
+ - j:isFacetable (BOOLEAN)
+ - j:isHierarchical (BOOLEAN)
 
 [jnt:structuredPropertyDefinition] > jnt:propertyDefinition
 

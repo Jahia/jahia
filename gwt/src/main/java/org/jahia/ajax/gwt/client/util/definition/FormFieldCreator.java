@@ -41,10 +41,10 @@
 package org.jahia.ajax.gwt.client.util.definition;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.IconButtonEvent;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
@@ -54,6 +54,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 
+import com.google.gwt.user.client.ui.Accessibility;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
@@ -373,6 +374,10 @@ public class FormFieldCreator {
             field.setHideLabel(true);
             ((CheckBox) field).setBoxLabel(field.getFieldLabel());
         }
+        if (field instanceof CustomDualListField) {
+            CustomDualListField<GWTJahiaValueDisplayBean> lists = (CustomDualListField<GWTJahiaValueDisplayBean>) field;
+            lists.setAllowBlank(!definition.isMandatory());
+        }
         if (!definition.isNode()) {
             GWTJahiaPropertyDefinition propDefinition = (GWTJahiaPropertyDefinition) definition;
             switch (propDefinition.getRequiredType()) {
@@ -597,7 +602,7 @@ public class FormFieldCreator {
             '<tpl for=".">',
             '<div class="x-combo-list-item">',
             '<tpl if="image != &quot;&quot;">',
-                '<img src="{image}"/> ',
+            '<img src="{image}"/> ',
             '</tpl>',
             '{display}</div>',
             '</tpl>'
@@ -608,10 +613,32 @@ public class FormFieldCreator {
         private List<D> originalValue = new ArrayList<D>();
 
         private StoreFilterField<D> filterField;
+        private boolean allowBlank;
 
         public void setCustomOriginalValue(List<D> originalValue) {
             this.originalValue = originalValue;
         }
+
+        /**
+         * Returns the field's allow blank state.
+         *
+         * @return true if toList can be empty
+         */
+
+        public boolean isAllowBlank() {
+            return allowBlank;
+        }
+
+        /**
+         * Returns the field's allow blank state.
+         *
+         * @return true if toList can be empty
+         */
+        public void setAllowBlank(boolean allowBlank) {
+            this.allowBlank = allowBlank;
+        }
+
+
 
         @Override
         public boolean isDirty() {
@@ -623,6 +650,16 @@ public class FormFieldCreator {
             super.onRender(target, index);
             getFromList().getListView().el().makePositionable();
             getToList().getListView().el().makePositionable();
+            if (GXT.isAriaEnabled()) {
+                if (!allowBlank) {
+                    Accessibility.setState(getToList().getElement(),"aria-required", "true");
+                }
+            }
+            toField.getStore().addListener(ListStore.Add, new Listener<BaseEvent>() {
+                public void handleEvent(BaseEvent be) {
+                    validate();
+                }
+            });
         }
 
         @Override
@@ -675,6 +712,25 @@ public class FormFieldCreator {
                 fromField.setHeight(fromField.getHeight() - (FILTER_FIELD_HEIGHT / 2));
                 filterField.setWidth(fromField.getWidth());
             }
+        }
+
+        @Override
+        protected boolean validateValue(String value) {
+            boolean b = !allowBlank && toField.getStore().getCount() == 0;
+            if (b) {
+                toField.markInvalid(getMessages().getInvalidText());
+                toField.getListView().setBorders(true);
+                toField.getListView().removeStyleName("x-combo-list");
+                toField.getListView().removeStyleName("x-border");
+                toField.getListView().addStyleName("x-form-invalid");
+                return false;
+            }
+            toField.getListView().addStyleName("x-combo-list");
+            toField.getListView().addStyleName("x-border");
+            toField.getListView().setBorders(false);
+            toField.getListView().removeStyleName("x-form-invalid");
+            toField.clearInvalid();
+            return true;
         }
     }
 }

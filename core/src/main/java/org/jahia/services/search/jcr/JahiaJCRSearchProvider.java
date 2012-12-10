@@ -147,7 +147,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                             context.getMainResource().getLocale(), context.getFallbackLocale());
             Query query = buildQuery(criteria, session);
             final int offset = criteria.getOffset() < 0 ? 0 : (int) criteria.getOffset();
-            final int limit = criteria.getLimit() < 0 ? Integer.MAX_VALUE : (int) criteria.getLimit();
+            final int limit = criteria.getLimit() <= 0 ? Integer.MAX_VALUE : (int) criteria.getLimit();
             response.setOffset(offset);
             response.setLimit(limit);
             int index = 0;

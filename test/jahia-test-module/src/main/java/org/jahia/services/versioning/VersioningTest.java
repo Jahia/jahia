@@ -50,6 +50,7 @@ import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.junit.After;
 import org.junit.Before;
@@ -73,7 +74,7 @@ import static org.junit.Assert.*;
 /**
  * Unit test to test version listing created during publication
  */
-public class VersioningTest {
+public class VersioningTest extends JahiaTestCase {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(VersioningTest.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "jcrVersioningTest_" + System.currentTimeMillis();
@@ -104,7 +105,7 @@ public class VersioningTest {
 
         // todo we should really insert content to test the find.
 
-        PostMethod loginMethod = new PostMethod("http://localhost:8080" + Jahia.getContextPath() + "/cms/login");
+        PostMethod loginMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/login");
         loginMethod.addParameter("username", "root");
         loginMethod.addParameter("password", "root1234");
         loginMethod.addParameter("redirectActive", "false");
@@ -330,7 +331,7 @@ public class VersioningTest {
 
     @After
     public void tearDown() throws Exception {
-        PostMethod logoutMethod = new PostMethod("http://localhost:8080" + Jahia.getContextPath() + "/cms/logout");
+        PostMethod logoutMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/logout");
         logoutMethod.addParameter("redirectActive", "false");
 
         int statusCode = client.executeMethod(logoutMethod);
@@ -368,7 +369,7 @@ public class VersioningTest {
 
             // Do this to create nodes associated to templates
             GetMethod versionGet = new GetMethod(
-                    "http://localhost:8080" + Jahia.getContextPath() + "/cms/edit/default/en" +
+            		getBaseServerURL() + Jahia.getContextPath() + "/cms/edit/default/en" +
                     subPageEditNode.getPath() + ".html");
             try {
                 int responseCode = client.executeMethod(versionGet);
@@ -496,7 +497,7 @@ public class VersioningTest {
                     SITECONTENT_ROOT_NODE + "/templates/base/double"));
             editSession.save();
             // Do this to create nodes associated to templates
-            versionGet = new GetMethod("http://localhost:8080" + Jahia.getContextPath() + "/cms/edit/default/en" +
+            versionGet = new GetMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/edit/default/en" +
                                        newSubPageEditNode.getPath() + ".html");
             try {
                 int responseCode = client.executeMethod(versionGet);

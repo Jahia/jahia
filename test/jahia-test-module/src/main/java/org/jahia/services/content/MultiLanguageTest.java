@@ -40,8 +40,11 @@
 
 package org.jahia.services.content;
 
-import junit.framework.TestCase;
-import org.slf4j.Logger;
+import java.io.IOException;
+import java.util.Locale;
+
+import javax.jcr.PathNotFoundException;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.drools.util.StringUtils;
@@ -49,16 +52,16 @@ import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
 
 import com.google.common.collect.Sets;
-
-import javax.jcr.PathNotFoundException;
-
-import java.io.IOException;
-import java.util.Locale;
 
 /**
  * Regroups tests that test multi-lingual features of Jahia.
@@ -67,7 +70,7 @@ import java.util.Locale;
  *         Date: Jan 27, 2010
  *         Time: 2:16:51 PM
  */
-public class MultiLanguageTest extends TestCase {
+public class MultiLanguageTest extends JahiaTestCase {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(MultiLanguageTest.class);
     private JahiaSite site;
@@ -77,7 +80,7 @@ public class MultiLanguageTest extends TestCase {
 
     private boolean isTextPresentInResponse(String relativeUrl, String text) {
         String body = StringUtils.EMPTY;
-        GetMethod getMethod = new GetMethod("http://localhost:8080" + Jahia.getContextPath()
+        GetMethod getMethod = new GetMethod(getBaseServerURL() + Jahia.getContextPath()
                 + relativeUrl);
         try {
             int responseCode = client.executeMethod(getMethod);

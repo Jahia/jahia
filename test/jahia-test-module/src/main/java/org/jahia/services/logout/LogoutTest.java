@@ -17,6 +17,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.seo.urlrewrite.UrlRewriteService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 import org.junit.After;
@@ -38,7 +39,7 @@ import static org.junit.Assert.assertEquals;
  * Time: 2:13 PM
  * To change this template use File | Settings | File Templates.
  */
-public class LogoutTest {
+public class LogoutTest extends JahiaTestCase {
 
     private static final String SITE_KEY = "logoutSite";
 
@@ -184,7 +185,7 @@ public class LogoutTest {
     }
     
     protected void login() throws Exception {
-        String baseurl = "http://localhost:8080" + Jahia.getContextPath() + "/cms";
+        String baseurl = getBaseServerURL() + Jahia.getContextPath() + "/cms";
         client = new HttpClient();
         PostMethod loginMethod = new PostMethod(baseurl + "/login");
         loginMethod.addParameter("username", "root");
@@ -198,7 +199,7 @@ public class LogoutTest {
     }
 
     protected String logout(String url) throws Exception {
-        String baseurl = "http://localhost:8080" + Jahia.getContextPath();
+        String baseurl = getBaseServerURL() + Jahia.getContextPath();
         HttpMethod method = new GetMethod(baseurl + "/cms/logout");
         if (url.equals("/administration")) {
             method.setQueryString(new NameValuePair[]{

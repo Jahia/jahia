@@ -32,25 +32,11 @@
  */
 package org.jahia.services.atmosphere;
 
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.AsyncCompletionHandler;
-import com.ning.http.client.AsyncHttpClientConfig.Builder;
-import com.ning.http.client.Response;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import org.apache.commons.httpclient.HttpStatus;
-import org.atmosphere.cpr.HeaderConfig;
-import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.*;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.test.TestHelper;
-import org.junit.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -59,16 +45,43 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.junit.Assert.*;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+
+import org.apache.commons.httpclient.HttpStatus;
+import org.atmosphere.cpr.HeaderConfig;
+import org.jahia.api.Constants;
+import org.jahia.bin.Jahia;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPublicationService;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRValueFactoryImpl;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.test.JahiaTestCase;
+import org.jahia.test.TestHelper;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.ning.http.client.AsyncCompletionHandler;
+import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.AsyncHttpClientConfig.Builder;
+import com.ning.http.client.Response;
 
 /**
  * @author rincevent
  * @since JAHIA 6.7
  *        Created : 01/10/12
  */
-public class AtmosphereTest {
+public class AtmosphereTest extends JahiaTestCase {
     private transient static Logger logger = LoggerFactory.getLogger(AtmosphereTest.class);
-    private String urlTarget = "http://localhost:8080"+ Jahia.getContextPath()+"/atmosphere/alert/testChannel";
+    private String urlTarget = getBaseServerURL() + Jahia.getContextPath()+"/atmosphere/alert/testChannel";
 
     @Test
     public void testHeaderBroadcasterCache() throws IllegalAccessException, ClassNotFoundException, InstantiationException {
@@ -205,7 +218,7 @@ public class AtmosphereTest {
 
             //Suspend
             final AtomicReference<Response> response = new AtomicReference<Response>();
-            c.prepareGet("http://localhost:8080"+ Jahia.getContextPath()+"/atmosphere/sites/jcrAtmosphereTest-en").execute(new AsyncCompletionHandler<Response>() {
+            c.prepareGet(getBaseServerURL() + Jahia.getContextPath()+"/atmosphere/sites/jcrAtmosphereTest-en").execute(new AsyncCompletionHandler<Response>() {
 
                 @Override
                 public Response onCompleted(Response r) throws Exception {

@@ -40,6 +40,27 @@
 
 package org.jahia.bin;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.GregorianCalendar;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.version.Version;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -47,8 +68,15 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.jahia.api.Constants;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPublicationService;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRVersionService;
+import org.jahia.services.content.PublicationInfo;
+import org.jahia.services.content.VersionInfo;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.comparator.NumericStringComparator;
@@ -59,23 +87,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.version.Version;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static org.junit.Assert.*;
-
 /**
  * 
  * User: loom
  * Date: Mar 14, 2010
  * Time: 1:40:10 PM
  */
-public class RenderTest {
+public class RenderTest extends JahiaTestCase {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(RenderTest.class);
     private JahiaSite site;
@@ -103,7 +121,7 @@ public class RenderTest {
 
         // todo we should really insert content to test the find.
 
-        PostMethod loginMethod = new PostMethod("http://localhost:8080" + Jahia.getContextPath() + "/cms/login");
+        PostMethod loginMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/login");
         loginMethod.addParameter("username", "root");
         loginMethod.addParameter("password", "root1234");
         loginMethod.addParameter("redirectActive", "false");
@@ -126,7 +144,7 @@ public class RenderTest {
         }
         JCRSessionFactory.getInstance().closeAllSessions();
 
-        PostMethod logoutMethod = new PostMethod("http://localhost:8080" + Jahia.getContextPath() + "/cms/logout");
+        PostMethod logoutMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/logout");
         logoutMethod.addParameter("redirectActive", "false");
 
         int statusCode = client.executeMethod(logoutMethod);
@@ -230,7 +248,7 @@ public class RenderTest {
             Version version = curVersionInfo.getVersion();
             if (version.getCreated() != null && curVersionInfo.getLabel()!=null) {
                 GetMethod versionGet = new GetMethod(
-                        "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" +
+                		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/live/en" +
                         subPagePublishedNode.getPath() + ".html?v=" +
                         ((yyyy_mm_dd_hh_mm_ss.parse(curVersionInfo.getLabel().split("_at_")[1]).getTime()+5000l)));
                 try {
@@ -272,7 +290,7 @@ public class RenderTest {
         editSession.save();
 
         PostMethod createPost = new PostMethod(
-                "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/default/en" + SITECONTENT_ROOT_NODE +
+        		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/default/en" + SITECONTENT_ROOT_NODE +
                 "/home/listA/*");
         createPost.addRequestHeader("x-requested-with", "XMLHttpRequest");
         createPost.addRequestHeader("accept", "application/json");

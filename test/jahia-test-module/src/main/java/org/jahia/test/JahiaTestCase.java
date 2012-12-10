@@ -14,7 +14,7 @@ public class JahiaTestCase extends TestCase {
 
 	private static Logger logger = Logger.getLogger(JahiaTestCase.class);
 
-	private String baseUrl = "http://localhost:8080";
+	private String baseUrl = "http://localhost:9090";
 	
 	protected String getBaseServerURL() {
 		 	logger.info("Base URL for tests is: " + baseUrl);

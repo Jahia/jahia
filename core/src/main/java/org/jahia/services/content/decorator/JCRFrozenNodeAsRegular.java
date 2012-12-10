@@ -86,6 +86,7 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
         this.versionLabel = versionLabel;
         if (path == null) {
             localPath = internalGetPath();
+            localPathInProvider = localPath;
         }
     }
 

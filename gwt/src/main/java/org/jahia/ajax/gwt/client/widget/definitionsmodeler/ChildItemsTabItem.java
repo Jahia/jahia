@@ -64,7 +64,6 @@ public class ChildItemsTabItem extends EditEngineTabItem {
 
         JahiaContentManagementService.App.getInstance().lsLoad(engine.getNode(), Arrays.asList(type),null,
                 null, keys, false, -1,0, false, null, null, false, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
-            @Override
             public void onSuccess(PagingLoadResult<GWTJahiaNode> result) {
                 for (GWTJahiaNode itemDefinition : result.getData()) {
                     engine.getNode().add(itemDefinition);
@@ -82,7 +81,6 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
                 final GWTJahiaNode item = se.getSelectedItem();
                 JahiaContentManagementService.App.getInstance().getProperties(item.getPath(),engine.getDefaultLanguageCode(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
-                    @Override
                     public void onSuccess(GWTJahiaGetPropertiesResult result) {
                         if (propertiesEditor != null) {
                             tab.remove(propertiesEditor);

@@ -377,7 +377,6 @@ public class Activator implements BundleActivator {
                 pack = templatePackageRegistry.lookup(depend);
             }
             if (pack == null) {
-                System.out.println("req------------->"+depend);
                 if (!toBeStarted.containsKey(depend)) {
                     toBeStarted.put(depend, new ArrayList<Bundle>());
                 }
@@ -413,8 +412,6 @@ public class Activator implements BundleActivator {
 
     private void startDependantBundles(String key) {
         if (toBeStarted.get(key) != null) {
-            System.out.println("key------------->"+key);
-
             for (Bundle bundle1 : toBeStarted.get(key)) {
                 start(bundle1);
             }

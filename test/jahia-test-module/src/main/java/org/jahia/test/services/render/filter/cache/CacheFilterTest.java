@@ -118,7 +118,7 @@ import org.slf4j.Logger;
  * @since JAHIA 6.5
  *        Created : 12 janv. 2010
  */
-public class CacheFilterTest extends JahiaTestCase {
+public class CacheFilterTest extends AggregateCacheFilter {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CacheFilterTest.class);
     private final static String TESTSITE_NAME = "test";    
 

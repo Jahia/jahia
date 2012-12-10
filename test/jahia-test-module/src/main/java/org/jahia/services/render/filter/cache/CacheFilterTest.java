@@ -232,11 +232,14 @@ public class CacheFilterTest extends JahiaTestCase {
         String result = chain.doFilter(context, resource);
         // AggregateCacheFilter will replace the value of the query string param by their real value as we have no params in the request we have to empty it
         // Trouble here was that it is an empty treemap to string and not empty string or null
+        
+        /*
         Matcher m = AggregateCacheFilter.QUERYSTRING_REGEXP.matcher(key);
         if (m.matches()) {
             String qsString = m.group(2);
             key = key.replace(qsString,new TreeMap<String, String>().toString());
         }
+        */
         final Element element = moduleCacheProvider.getCache().get(key);
         assertNotNull("Html Cache does not contains our html rendering", element);
         assertTrue("Content Cache and rendering are not equals",((String)((CacheEntry<?>)element.getValue()).getObject()).contains(result));

@@ -171,6 +171,12 @@ public class JahiaCndWriter {
         if (!ntd.isQueryable()) {
             out.write(" noquery");
         }
+        String primaryItemName = ntd.getPrimaryItemName();
+        if (primaryItemName != null) {
+            out.write("\n" + INDENT);
+            out.write("primaryitem = ");
+            out.write(primaryItemName);
+        }
         List<ExtendedNodeType> mixinExtends = ntd.getMixinExtends();
         if (mixinExtends != null && !mixinExtends.isEmpty()) {
             out.write("\n" + INDENT);
@@ -239,16 +245,16 @@ public class JahiaCndWriter {
             out.write(" internationalized");
         }
 
-        out.write(" indexed=");
         switch (pd.getIndex()) {
             case ExtendedPropertyDefinition.INDEXED_NO:
-                out.write("no");
+                out.write("indexed=no");
                 break;
             case ExtendedPropertyDefinition.INDEXED_TOKENIZED:
-                out.write("tokenized");
+                // no need to write it as it's the default value
+//                out.write("indexed=tokenized");
                 break;
             case ExtendedPropertyDefinition.INDEXED_UNTOKENIZED:
-                out.write("untokenized");
+                out.write("indexed=untokenized");
                 break;
         }
 
@@ -270,7 +276,7 @@ public class JahiaCndWriter {
         if (!pd.isFullTextSearchable()) {
             out.write(" nofulltext");
         }
-        if (pd.getOnParentVersion() != OnParentVersionAction.COPY) {
+        if (pd.getOnParentVersion() != OnParentVersionAction.VERSION) {
             out.write(" ");
             out.write(OnParentVersionAction.nameFromValue(pd.getOnParentVersion()).toLowerCase());
         }
@@ -386,7 +392,7 @@ public class JahiaCndWriter {
         if (nd.allowsSameNameSiblings()) {
             out.write(" multiple");
         }
-        if (nd.getOnParentVersion() != OnParentVersionAction.COPY) {
+        if (nd.getOnParentVersion() != OnParentVersionAction.VERSION) {
             out.write(" ");
             out.write(OnParentVersionAction.nameFromValue(nd.getOnParentVersion()).toLowerCase());
         }

@@ -246,12 +246,17 @@ public class ModulesDataSource extends VFSDataSource {
         properties.put("j:isAbstract", new String[]{String.valueOf(nodeType.isAbstract())});
         properties.put("j:isQueryable", new String[]{String.valueOf(nodeType.isQueryable())});
         properties.put("j:hasOrderableChildNodes", new String[]{String.valueOf(nodeType.hasOrderableChildNodes())});
-        properties.put("j:itemsType", new String[]{String.valueOf(nodeType.getItemsType())});
-
-        Function<ExtendedNodeType,String> transformName = new Function<ExtendedNodeType,String>() {
-            public String apply(@Nullable ExtendedNodeType from) { return from != null ? from.getName() : null; }
-        };
-        properties.put("j:mixinExtends", Collections2.<ExtendedNodeType,String>transform(nodeType.getMixinExtends(), transformName).toArray(new String[nodeType.getMixinExtends().size()]));
+        String itemsType = nodeType.getItemsType();
+        if (itemsType != null) {
+            properties.put("j:itemsType", new String[]{itemsType});
+        }
+        List<ExtendedNodeType> mixinExtends = nodeType.getMixinExtends();
+        if (mixinExtends != null && !mixinExtends.isEmpty()) {
+            Function<ExtendedNodeType,String> transformName = new Function<ExtendedNodeType,String>() {
+                public String apply(@Nullable ExtendedNodeType from) { return from != null ? from.getName() : null; }
+            };
+            properties.put("j:mixinExtends", Collections2.<ExtendedNodeType,String>transform(mixinExtends, transformName).toArray(new String[mixinExtends.size()]));
+        }
         String primaryItemName = nodeType.getPrimaryItemName();
         if (primaryItemName != null) {
             properties.put("j:primaryItemName", new String[]{primaryItemName});
@@ -278,11 +283,11 @@ public class ModulesDataSource extends VFSDataSource {
         properties.put("j:protected", new String[]{String.valueOf(propertyDefinition.isProtected())});
         properties.put("j:requiredType", new String[]{PropertyType.nameFromValue(propertyDefinition.getRequiredType())});
         String[] valueConstraints = propertyDefinition.getValueConstraints();
-        if (valueConstraints != null) {
+        if (valueConstraints != null && valueConstraints.length > 0) {
             properties.put("j:valueConstraints", valueConstraints);
         }
         Value[] defaultValues = propertyDefinition.getDefaultValues();
-        if (defaultValues != null) {
+        if (defaultValues != null && defaultValues.length > 0) {
             List<String> defaultValuesAsString = new ArrayList<String>();
             for (Value value: defaultValues) {
                 try {
@@ -295,7 +300,7 @@ public class ModulesDataSource extends VFSDataSource {
         }
         properties.put("j:multiple", new String[]{String.valueOf(propertyDefinition.isMultiple())});
         String[] availableQueryOperators = propertyDefinition.getAvailableQueryOperators();
-        if (availableQueryOperators != null) {
+        if (availableQueryOperators != null && availableQueryOperators.length > 0) {
             properties.put("j:availableQueryOperators", availableQueryOperators);
         }
         properties.put("j:isFullTextSearchable", new String[]{String.valueOf(propertyDefinition.isFullTextSearchable())});
@@ -431,6 +436,51 @@ public class ModulesDataSource extends VFSDataSource {
     }
 
     @Override
+    public void removeItemByPath(String path) throws PathNotFoundException {
+        String[] splitPath = path.split("/");
+        if (path.endsWith(".cnd")) {
+            nodeTypeRegistryMap.remove(splitPath[1]);
+            super.removeItemByPath(path);
+        } else if (splitPath.length >= 2 && splitPath[splitPath.length - 2].endsWith(".cnd")) {
+            String nodeTypeName = splitPath[splitPath.length - 1];
+            try {
+                NodeTypeRegistry nodeTypeRegistry = loadRegistry(StringUtils.substringBeforeLast(path, "/"), splitPath[1]);
+                nodeTypeRegistry.unregisterNodeType(nodeTypeName);
+                writeDefinitionFile(nodeTypeRegistry, StringUtils.substringBeforeLast(path, "/"), splitPath[1]);
+            } catch (NoSuchNodeTypeException e) {
+                throw new PathNotFoundException("Failed to remove node type " + nodeTypeName, e);
+            }
+        } else if (splitPath.length >= 3 && splitPath[splitPath.length - 3].endsWith(".cnd")) {
+            String nodeTypeName = splitPath[splitPath.length - 2];
+            String itemDefinitionName = splitPath[splitPath.length - 1];
+            try {
+                String definitionsPath = StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/");
+                ExtendedNodeType nodeType = loadRegistry(definitionsPath, splitPath[1]).getNodeType(nodeTypeName);
+                Map<String,ExtendedPropertyDefinition> propertyDefinitionsAsMap = nodeType.getPropertyDefinitionsAsMap();
+                if (propertyDefinitionsAsMap.containsKey(itemDefinitionName)) {
+//                    return getPropertyDefinitionData(path, propertyDefinitionsAsMap.get(itemDefinitionName), false);
+                }
+                if (itemDefinitionName.startsWith(UNSTRUCTURED_PROPERTY)) {
+                    int type = Integer.parseInt(itemDefinitionName.substring(UNSTRUCTURED_PROPERTY.length()));
+//                    return getPropertyDefinitionData(path, nodeType.getUnstructuredPropertyDefinitions().get(type), true);
+                }
+                Map<String, ExtendedNodeDefinition> childNodeDefinitionsAsMap = nodeType.getChildNodeDefinitionsAsMap();
+                if (childNodeDefinitionsAsMap.containsKey(itemDefinitionName)) {
+//                    return getChildNodeDefinitionData(path, childNodeDefinitionsAsMap.get(itemDefinitionName), false);
+                }
+                if (itemDefinitionName.startsWith(UNSTRUCTURED_CHILD_NODE)) {
+                    String type = itemDefinitionName.substring(UNSTRUCTURED_CHILD_NODE.length());
+//                    return getChildNodeDefinitionData(path, nodeType.getUnstructuredChildNodeDefinitions().get(type), true);
+                }
+            } catch (NoSuchNodeTypeException e) {
+                throw new PathNotFoundException("Failed to get node type " + nodeTypeName, e);
+            }
+        } else {
+            super.removeItemByPath(path);
+        }
+    }
+
+    @Override
     public void saveItem(ExternalData data) {
         super.saveItem(data);
 
@@ -540,9 +590,7 @@ public class ModulesDataSource extends VFSDataSource {
                 declaredSupertypes.add(mixin);
             }
         }
-        if (!declaredSupertypes.isEmpty()) {
-            nodeType.setDeclaredSupertypes(declaredSupertypes.toArray(new String[declaredSupertypes.size()]));
-        }
+        nodeType.setDeclaredSupertypes(declaredSupertypes.toArray(new String[declaredSupertypes.size()]));
         values = properties.get("j:isAbstract");
         if (values != null && values.length > 0) {
             nodeType.setAbstract(Boolean.parseBoolean(values[0]));
@@ -550,22 +598,32 @@ public class ModulesDataSource extends VFSDataSource {
         values = properties.get("j:isQueryable");
         if (values != null && values.length > 0) {
             nodeType.setQueryable(Boolean.parseBoolean(values[0]));
+        } else {
+            nodeType.setQueryable(true);
         }
         values = properties.get("j:hasOrderableChildNodes");
         if (values != null && values.length > 0) {
             nodeType.setHasOrderableChildNodes(Boolean.parseBoolean(values[0]));
+        } else {
+            nodeType.setHasOrderableChildNodes(false);
         }
         values = properties.get("j:itemsType");
         if (values != null && values.length > 0) {
             nodeType.setItemsType(values[0]);
+        } else {
+            nodeType.setItemsType(null);
         }
         values = properties.get("j:mixinExtends");
         if (values != null) {
             nodeType.setMixinExtendNames(new ArrayList(Arrays.asList(values)));
+        } else {
+            nodeType.setMixinExtendNames(new ArrayList<String>());
         }
         values = properties.get("j:primaryItemName");
         if (values != null && values.length > 0) {
             nodeType.setPrimaryItemName(values[0]);
+        } else {
+            nodeType.setPrimaryItemName(null);
         }
         if ("jnt:mixinNodeType".equals(data.getType())) {
             nodeType.setMixin(true);
@@ -604,76 +662,96 @@ public class ModulesDataSource extends VFSDataSource {
             String[] values = properties.get("j:autoCreated");
             if (values != null && values.length > 0) {
                 propertyDefinition.setAutoCreated(Boolean.parseBoolean(values[0]));
+            } else {
+                propertyDefinition.setAutoCreated(false);
             }
             values = properties.get("j:mandatory");
             if (values != null && values.length > 0) {
                 propertyDefinition.setMandatory(Boolean.parseBoolean(values[0]));
+            } else {
+                propertyDefinition.setMandatory(false);
             }
             values = properties.get("j:onParentVersion");
             if (values != null && values.length > 0) {
                 propertyDefinition.setOnParentVersion(OnParentVersionAction.valueFromName(values[0]));
+            } else {
+                propertyDefinition.setOnParentVersion(OnParentVersionAction.VERSION);
             }
             values = properties.get("j:protected");
             if (values != null && values.length > 0) {
                 propertyDefinition.setProtected(Boolean.parseBoolean(values[0]));
+            } else {
+                propertyDefinition.setProtected(false);
             }
             values = properties.get("j:requiredType");
             int requiredType = 0;
             if (values != null && values.length > 0) {
                 requiredType = PropertyType.valueFromName(values[0]);
-                propertyDefinition.setRequiredType(requiredType);
             }
+            propertyDefinition.setRequiredType(requiredType);
             values = properties.get("j:valueConstraints");
             List<Value> valueConstraints = new ArrayList<Value>();
             if (values != null) {
                 for (String valueConstraint : values) {
                     valueConstraints.add(getValueFromString(valueConstraint, requiredType, propertyDefinition));
                 }
-                if (!valueConstraints.isEmpty()) {
-                    propertyDefinition.setValueConstraints(valueConstraints.toArray(new Value[valueConstraints.size()]));
-                }
             }
+            propertyDefinition.setValueConstraints(valueConstraints.toArray(new Value[valueConstraints.size()]));
             values = properties.get("j:defaultValues");
             List<Value> defaultValues = new ArrayList<Value>();
             if (values != null) {
                 for (String defaultValue : values) {
                     defaultValues.add(getValueFromString(defaultValue, requiredType, propertyDefinition));
                 }
-                if (!defaultValues.isEmpty()) {
-                    propertyDefinition.setDefaultValues(defaultValues.toArray(new Value[defaultValues.size()]));
-                }
             }
+            propertyDefinition.setDefaultValues(defaultValues.toArray(new Value[defaultValues.size()]));
             values = properties.get("j:multiple");
             if (values != null && values.length > 0) {
                 propertyDefinition.setMultiple(Boolean.parseBoolean(values[0]));
+            } else {
+                propertyDefinition.setMultiple(false);
             }
             values = properties.get("j:availableQueryOperators");
             if (values != null) {
                 propertyDefinition.setAvailableQueryOperators(values);
+            } else {
+                propertyDefinition.setAvailableQueryOperators(Lexer.ALL_OPERATORS);
             }
             values = properties.get("j:isFullTextSearchable");
             if (values != null && values.length > 0) {
                 propertyDefinition.setFullTextSearchable(Boolean.parseBoolean(values[0]));
+            } else {
+                propertyDefinition.setFullTextSearchable(true);
             }
             values = properties.get("j:isQueryOrderable");
             if (values != null && values.length > 0) {
                 propertyDefinition.setQueryOrderable(Boolean.parseBoolean(values[0]));
+            } else {
+                propertyDefinition.setQueryOrderable(true);
             }
             values = properties.get("j:isFacetable");
             if (values != null && values.length > 0) {
                 propertyDefinition.setFacetable(Boolean.parseBoolean(values[0]));
+            } else {
+                propertyDefinition.setFacetable(false);
             }
             values = properties.get("j:isHierarchical");
             if (values != null && values.length > 0) {
                 propertyDefinition.setHierarchical(Boolean.parseBoolean(values[0]));
+            } else {
+                propertyDefinition.setHierarchical(false);
             }
             values = properties.get("j:isInternationalized");
             if (values != null && values.length > 0) {
                 propertyDefinition.setInternationalized(Boolean.parseBoolean(values[0]));
+            } else {
+                propertyDefinition.setInternationalized(false);
             }
             values = properties.get("j:isHidden");
             if (values != null && values.length > 0) {
                 propertyDefinition.setHidden(Boolean.parseBoolean(values[0]));
+            } else {
+                propertyDefinition.setHidden(false);
             }
             propertyDefinition.setDeclaringNodeType(nodeType);
             writeDefinitionFile(nodeTypeRegistry,
@@ -721,26 +799,34 @@ public class ModulesDataSource extends VFSDataSource {
             String[] values = properties.get("j:autoCreated");
             if (values != null && values.length > 0) {
                 childNodeDefinition.setAutoCreated(Boolean.parseBoolean(values[0]));
+            } else {
+                childNodeDefinition.setAutoCreated(false);
             }
             values = properties.get("j:mandatory");
             if (values != null && values.length > 0) {
                 childNodeDefinition.setMandatory(Boolean.parseBoolean(values[0]));
+            } else {
+                childNodeDefinition.setMandatory(false);
             }
             values = properties.get("j:onParentVersion");
             if (values != null && values.length > 0) {
                 childNodeDefinition.setOnParentVersion(OnParentVersionAction.valueFromName(values[0]));
+            } else {
+                childNodeDefinition.setOnParentVersion(OnParentVersionAction.VERSION);
             }
             values = properties.get("j:protected");
             if (values != null && values.length > 0) {
                 childNodeDefinition.setProtected(Boolean.parseBoolean(values[0]));
+            } else {
+                childNodeDefinition.setProtected(false);
             }
             values = properties.get("j:requiredPrimaryTypes");
-            if (values != null) {
-                childNodeDefinition.setRequiredPrimaryTypes(values);
-            }
+            childNodeDefinition.setRequiredPrimaryTypes(values);
             values = properties.get("j:defaultPrimaryType");
             if (values != null && values.length > 0) {
                 childNodeDefinition.setDefaultPrimaryType(values[0]);
+            } else {
+                childNodeDefinition.setDefaultPrimaryType(null);
             }
             childNodeDefinition.setDeclaringNodeType(nodeType);
             writeDefinitionFile(nodeTypeRegistry,

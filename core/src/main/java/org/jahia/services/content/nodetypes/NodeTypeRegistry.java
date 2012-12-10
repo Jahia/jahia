@@ -400,11 +400,16 @@ public class NodeTypeRegistry implements NodeTypeManager {
         throw new UnsupportedRepositoryOperationException();
     }
 
-    public void unregisterNodeType(String name) throws UnsupportedRepositoryOperationException, NoSuchNodeTypeException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+    public void unregisterNodeType(String name) throws NoSuchNodeTypeException {
+        ExtendedNodeType res = nodetypes.remove(new Name(name, namespaces));
+        if (res == null) {
+            throw new NoSuchNodeTypeException(name);
+        }
     }
 
-    public void unregisterNodeTypes(String[] names) throws UnsupportedRepositoryOperationException, NoSuchNodeTypeException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+    public void unregisterNodeTypes(String[] names) throws NoSuchNodeTypeException {
+        for (String name : names) {
+            unregisterNodeType(name);
+        }
     }
 }

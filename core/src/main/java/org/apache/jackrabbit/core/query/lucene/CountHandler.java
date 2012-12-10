@@ -74,6 +74,12 @@ public class CountHandler {
     private static final Name REP_COUNT_LPAR = NameFactoryImpl.getInstance().create(
             Name.NS_REP_URI, COUNT_FUNC_LPAR);
 
+    /**
+     * Checks if there is a count function in the column names and return the count type based on its parameters.
+     * @param columns
+     * @param session
+     * @return the count type
+     */
     public static CountType hasCountFunction(Map<String, PropertyValue> columns, SessionImpl session) {
         try {
             String repCount = session.getJCRName(REP_COUNT_LPAR);
@@ -93,6 +99,11 @@ public class CountHandler {
         return CountType.NO_COUNT;
     }
 
+    /**
+     * Wrap a count result in a fake query result row
+     * @param count
+     * @return the row
+     */
     public static CountRow createCountRow(long count) {
         return new CountRow(count);
     }

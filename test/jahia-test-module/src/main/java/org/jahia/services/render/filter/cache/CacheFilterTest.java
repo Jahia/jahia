@@ -38,7 +38,7 @@
  * please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.test.services.render.filter.cache;
+package org.jahia.services.render.filter.cache;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -118,7 +118,7 @@ import org.slf4j.Logger;
  * @since JAHIA 6.5
  *        Created : 12 janv. 2010
  */
-public class CacheFilterTest extends AggregateCacheFilter {
+public class CacheFilterTest extends JahiaTestCase {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CacheFilterTest.class);
     private final static String TESTSITE_NAME = "test";    
 

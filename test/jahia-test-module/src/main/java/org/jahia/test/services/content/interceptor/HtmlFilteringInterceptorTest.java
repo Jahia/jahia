@@ -70,7 +70,7 @@ import org.junit.Test;
  * 
  * @author Sergiy Shyrkov
  */
-public class HtmlFilteringInterceptorTest {
+public class HtmlFilteringInterceptorTest extends HtmlFilteringInterceptor {
 	private static JCRNodeWrapper node;
 	private static JCRSessionWrapper session;
 
@@ -122,18 +122,17 @@ public class HtmlFilteringInterceptorTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void testFilteringDisabled() throws Exception {
 		String source = "abc";
 		assertEquals("Filtering should nor be done as the tag set is empty", source,
-		        HtmlFilteringInterceptor.filterTags(source, Collections.EMPTY_SET));
+		        HtmlFilteringInterceptor.filterTags(source, Collections.EMPTY_SET, false));
 	}
 
 	@Test
 	public void testHr() throws Exception {
 		String source = loadContent("hr.txt");
 		
-		String out = HtmlFilteringInterceptor.filterTags(source, new HashSet<String>(Arrays.asList("script", "object", "hr")));
+		String out = HtmlFilteringInterceptor.filterTags(source, new HashSet<String>(Arrays.asList("script", "object", "hr")), false);
 		assertFalse("<hr/> tag was not removed", out.contains("<hr"));
 		assertTrue("other elements were incorrectly removed", out.contains("My separated text"));
 		assertTrue("other elements were incorrectly removed", out.contains("My separated text 2"));
@@ -143,7 +142,7 @@ public class HtmlFilteringInterceptorTest {
 	public void testFormatting() throws Exception {
 		String source = loadContent("formatting.txt");
 		
-		String out = HtmlFilteringInterceptor.filterTags(source, new HashSet<String>(Arrays.asList("b", "i", "strong")));
+		String out = HtmlFilteringInterceptor.filterTags(source, new HashSet<String>(Arrays.asList("b", "i", "strong")), false);
 		assertFalse("<strong/> tag was not removed", out.contains("<strong"));
 		assertFalse("<i/> tag was not removed", out.contains("<i"));
 		assertFalse("<b/> tag was not removed", out.contains("<b"));

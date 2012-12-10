@@ -564,10 +564,12 @@ public class PropertiesEditor extends FormPanel {
                 if(propDef.isMultiple()) {
                     Object fldValue = fld.getValue();
                     if(propDef.getSelector()==GWTJahiaNodeSelectorType.SMALLTEXT) {
-                        String[] strings = fldValue.toString().split("(,|;) ?");
-                        for (String string : strings) {
-                            if(!"".equals(string.trim())) {
-                                values.add(getPropertyValue(string.trim(),propDef.getRequiredType()));
+                        if (fldValue != null) {
+                            String[] strings = fldValue.toString().split("(,|;) ?");
+                            for (String string : strings) {
+                                if(!"".equals(string.trim())) {
+                                    values.add(getPropertyValue(string.trim(),propDef.getRequiredType()));
+                                }
                             }
                         }
                     }

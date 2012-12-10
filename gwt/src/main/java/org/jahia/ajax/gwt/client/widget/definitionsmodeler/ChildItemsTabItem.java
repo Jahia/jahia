@@ -102,6 +102,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                     public void handleEvent(MessageBoxEvent be) {
                         GWTJahiaNode itemDefinition = new GWTJahiaNode();
                         itemDefinition.setName(be.getValue());
+                        itemDefinition.setNodeTypes(Arrays.asList(type));
                         initValues(itemDefinition);
                         engine.getNode().add(itemDefinition);
                         store.add(itemDefinition);
@@ -149,13 +150,18 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         HashMap<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>();
         for (GWTJahiaItemDefinition definition : nodeType.getItems()) {
             if (definition instanceof GWTJahiaPropertyDefinition) {
-                List<GWTJahiaNodePropertyValue> defaultValues = ((GWTJahiaPropertyDefinition)definition).getDefaultValues();
+                GWTJahiaPropertyDefinition propertyDefinition = (GWTJahiaPropertyDefinition) definition;
+                List<GWTJahiaNodePropertyValue> defaultValues = propertyDefinition.getDefaultValues();
                 if (defaultValues != null) {
                     GWTJahiaNodeProperty value = new GWTJahiaNodeProperty(definition.getName(), (GWTJahiaNodePropertyValue) null);
-                    value.setMultiple(((GWTJahiaPropertyDefinition) definition).isMultiple());
+                    value.setMultiple(propertyDefinition.isMultiple());
                     value.setValues(defaultValues);
                     properties.put(definition.getName(), value);
-                    item.set(definition.getName(), value);
+                    if (propertyDefinition.isMultiple()) {
+                        item.set(definition.getName(), value.getValues());
+                    } else if (!value.getValues().isEmpty()){
+                        item.set(definition.getName(), value.getValues().get(0));
+                    }
                 }
             }
         }
@@ -198,7 +204,8 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             for (GWTJahiaNode itemDefinition : store.getModels()) {
                 if (propertiesEditors.containsKey(itemDefinition)) {
                     PropertiesEditor pe = propertiesEditors.get(itemDefinition);
-                    itemDefinition.set("nodeProperties", pe.getProperties(false,true,true));
+                    boolean isNew = itemDefinition.getPath() == null;
+                    itemDefinition.set("nodeProperties", pe.getProperties(false,true,!isNew));
                     itemDefinition.set("nodeLangCodeProperties", new HashMap<String, List<GWTJahiaNodeProperty>>());
                 } else {
                     itemDefinition.set("nodeProperties", new ArrayList<GWTJahiaNodeProperty>());

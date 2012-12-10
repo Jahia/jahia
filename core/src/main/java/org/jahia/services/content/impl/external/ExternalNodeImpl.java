@@ -214,6 +214,8 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
             throw new UnsupportedRepositoryOperationException();
         }
         data.getProperties().put(name, new String[]{value.getString()});
+
+        properties.put(name, new ExternalPropertyImpl(new Name(name, NodeTypeRegistry.getInstance().getNamespaces()), this, session, value));
         session.getChangedData().put(getPath(),data);
         return new ExternalPropertyImpl(new Name(name,NodeTypeRegistry.getInstance().getNamespaces()),this,(ExternalSessionImpl) getSession(), value);
     }
@@ -332,7 +334,9 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
         }
         if (data.getI18nProperties() != null) {
             for (String lang : data.getI18nProperties().keySet()) {
-                filteredList.add("j:translation_"+lang);
+                if (ChildrenCollectorFilter.matches("j:translation_"+lang,namePattern)) {
+                    filteredList.add("j:translation_"+lang);
+                }
             }
         }
         return new ExternalNodeIterator(filteredList);

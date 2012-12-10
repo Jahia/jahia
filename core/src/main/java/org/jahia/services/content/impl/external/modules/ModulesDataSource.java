@@ -599,7 +599,7 @@ public class ModulesDataSource extends VFSDataSource {
                 qualifiedName = splitPath[splitPath.length - 1];
             }
             Name name = new Name(qualifiedName, nodeTypeRegistry.getNamespaces());
-            nodeType.setName(name);
+            propertyDefinition.setName(name);
             Map<String, String[]> properties = data.getProperties();
             String[] values = properties.get("j:autoCreated");
             if (values != null && values.length > 0) {

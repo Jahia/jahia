@@ -103,47 +103,57 @@ public class CacheFilterTest {
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
-        try {
-            JahiaSite site = TestHelper.createSite(TESTSITE_NAME);
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
-            JCRNodeWrapper siteNode = (JCRSiteNode) session.getNode("/sites/"+site.getSiteKey());
-            
-            String templatesFolder = "/sites/"+site.getSiteKey() + "/templates";
-            InputStream importStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("imports/importTemplatesForCacheTest.xml");
-            session.importXML(templatesFolder + "/base", importStream,
-                    ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING);
-            importStream.close();
-            session.save();   
-            
-            JCRNodeWrapper shared = siteNode.getNode("home");
-            if (shared.hasNode("testContent")) {
-                shared.getNode("testContent").remove();
-            }
-            if(shared.isVersioned()) session.checkout(shared);
-            JCRNodeWrapper node = shared.addNode("testContent", "jnt:page");
-            node.setProperty("jcr:title", "English test page");
-            node.setProperty("j:templateNode", session.getNode(
-                    templatesFolder + "/base/pagetemplate/subpagetemplate"));            
-            node.addNode("testType2", "jnt:mainContent");
-            session.save();
-            final JCRPublicationService service = JCRPublicationService.getInstance();
-            
-            List<PublicationInfo> infoList = service.getPublicationInfo(
-                    session.getNode(
-                            templatesFolder + "/base/pagetemplate").getIdentifier(), new LinkedHashSet<String>(Arrays.asList(Locale.ENGLISH.toString())),
-                    true, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
-            service.publishByInfoList(infoList, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,Collections.<String>emptyList());
-            
-            infoList = service.getPublicationInfo(
-                    shared.getIdentifier(), new LinkedHashSet<String>(Arrays.asList(Locale.ENGLISH.toString())),
-                    true, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
-            service.publishByInfoList(infoList, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,Collections.<String>emptyList());
-            
-            session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
-            node = session.getNode("/sites/"+site.getSiteKey()+"/home/testContent");
-        } catch (Exception e) {
-            logger.warn("Exception during test setUp", e);
+        JahiaSite site = TestHelper.createSite(TESTSITE_NAME);
+        JCRSessionWrapper session = JCRSessionFactory
+                .getInstance()
+                .getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+        JCRNodeWrapper siteNode = (JCRSiteNode) session.getNode("/sites/"
+                + site.getSiteKey());
+
+        String templatesFolder = "/sites/" + site.getSiteKey() + "/templates";
+        InputStream importStream = Thread.currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("imports/importTemplatesForCacheTest.xml");
+        session.importXML(templatesFolder + "/base", importStream,
+                ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING);
+        importStream.close();
+        session.save();
+
+        JCRNodeWrapper shared = siteNode.getNode("home");
+        if (shared.hasNode("testContent")) {
+            shared.getNode("testContent").remove();
         }
+        if (shared.isVersioned())
+            session.checkout(shared);
+        JCRNodeWrapper node = shared.addNode("testContent", "jnt:page");
+        node.setProperty("jcr:title", "English test page");
+        node.setProperty("j:templateName", "subpagetemplate");
+        node.addNode("testType2", "jnt:mainContent");
+        session.save();
+        final JCRPublicationService service = JCRPublicationService
+                .getInstance();
+
+        List<PublicationInfo> infoList = service.getPublicationInfo(
+                session.getNode(templatesFolder + "/base/pagetemplate")
+                        .getIdentifier(),
+                new LinkedHashSet<String>(Arrays.asList(Locale.ENGLISH
+                        .toString())), true, true, true,
+                Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
+        service.publishByInfoList(infoList, Constants.EDIT_WORKSPACE,
+                Constants.LIVE_WORKSPACE, Collections.<String> emptyList());
+
+        infoList = service.getPublicationInfo(
+                shared.getIdentifier(),
+                new LinkedHashSet<String>(Arrays.asList(Locale.ENGLISH
+                        .toString())), true, true, true,
+                Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
+        service.publishByInfoList(infoList, Constants.EDIT_WORKSPACE,
+                Constants.LIVE_WORKSPACE, Collections.<String> emptyList());
+
+        session = JCRSessionFactory.getInstance().getCurrentUserSession(
+                Constants.LIVE_WORKSPACE, Locale.ENGLISH);
+        node = session.getNode("/sites/" + site.getSiteKey()
+                + "/home/testContent");
     }
 
     @AfterClass
@@ -230,14 +240,11 @@ public class CacheFilterTest {
         GetMethod nodeGet = new GetMethod(
             "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" +
             node.getPath() + ".html");
-        try {
-            int responseCode = client.executeMethod(nodeGet);
-            assertEquals("Response code " + responseCode, 200, responseCode);
-            firstResponse = nodeGet.getResponseBodyAsString();
-            logger.info("Response body=[" + firstResponse + "]");
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
+        
+        int responseCode = client.executeMethod(nodeGet);
+        assertEquals("Response code " + responseCode, 200, responseCode);
+        firstResponse = nodeGet.getResponseBodyAsString();
+        logger.info("Response body=[" + firstResponse + "]");
         
         JCRTemplate.getInstance().doExecuteWithSystemSession(
                 JahiaUserManagerService.GUEST_USERNAME,
@@ -293,19 +300,16 @@ public class CacheFilterTest {
                     }
                 });
 
-        try {
-            int responseCode = client.executeMethod(nodeGet);
-            assertEquals("Response code " + responseCode, 200, responseCode);
-            String responseBody = nodeGet.getResponseBodyAsString();
-            logger.info("Response body=[" + responseBody + "]");
-            if (firstResponse != null) {
-                assertTrue(
-                        "First and second response are not equal",
-                        responseBody.replaceAll("(?m)^[ \t]*\r?\n", "").replaceAll("(?m)^[ \t]+", "").replaceAll("\r\n", "\n").equals(
-                                firstResponse.replaceAll("(?m)^[ \t]*\r?\n", "").replaceAll("(?m)^[ \t]+", "").replaceAll("\r\n", "\n")));
-            }
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+
+        responseCode = client.executeMethod(nodeGet);
+        assertEquals("Response code " + responseCode, 200, responseCode);
+        String responseBody = nodeGet.getResponseBodyAsString();
+        logger.info("Response body=[" + responseBody + "]");
+        if (firstResponse != null) {
+            assertTrue(
+                    "First and second response are not equal",
+                    responseBody.replaceAll("(?m)^[ \t]*\r?\n", "").replaceAll("(?m)^[ \t]+", "").replaceAll("\r\n", "\n").equals(
+                            firstResponse.replaceAll("(?m)^[ \t]*\r?\n", "").replaceAll("(?m)^[ \t]+", "").replaceAll("\r\n", "\n")));
         }
     }    
     
@@ -406,8 +410,7 @@ public class CacheFilterTest {
         if(shared.isVersioned()) session.checkout(shared);
         JCRNodeWrapper node = shared.addNode("testAclContent", "jnt:page");
         node.setProperty("jcr:title", "English test page");
-        node.setProperty("j:templateNode", session.getNode(
-                templatesFolder + "/base/pagetemplate/subpagetemplate"));
+        node.setProperty("j:templateName", "subpagetemplate");
         final JCRNodeWrapper list = node.addNode("maincontent", "jnt:contentList");
         final JCRNodeWrapper contentA = list.addNode("contentA", "jnt:mainContent");
         contentA.setProperty("body","Content__A__");
@@ -467,8 +470,6 @@ public class CacheFilterTest {
             assertTrue("Page for "+username+" should contains "+firstContent,firstResponse.contains(firstContent));
             assertTrue("Page for "+username+" should contains "+secondContent,firstResponse.contains(secondContent));
             assertFalse("Page for "+username+" should not contains "+missingContent,firstResponse.contains(missingContent));
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
         } finally {
             nodeGet.releaseConnection();
         }

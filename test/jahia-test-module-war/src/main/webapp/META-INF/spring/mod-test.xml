@@ -4,7 +4,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean class="org.jahia.bin.TestBean">
+    <bean class="org.jahia.test.bin.TestBean">
         <property name="priority" value="40"/>
 
         <property name="testCases">
@@ -20,6 +20,7 @@
                 <value>org.apache.jackrabbit.test.api.util.TestAll</value>
                 <value>org.apache.jackrabbit.test.api.version.TestAll</value>
                 <value>org.apache.jackrabbit.test.api.version.simple.TestAll</value>
+<<<<<<< .working
                 <value>org.jahia.bin.FindPrincipalTest</value>
                 <value>org.jahia.bin.FindTest</value>
                 <value>org.jahia.bin.RenderTest</value>
@@ -65,6 +66,48 @@
                 <value>org.jahia.services.visibility.VisibilityServiceTest</value>
                 <value>org.jahia.services.workflow.StateSequenceTest</value>
                 <value>org.jahia.services.workflow.WorkflowServiceTest</value>
+=======
+                <value>org.jahia.test.bin.FindPrincipalTest</value>
+                <value>org.jahia.test.bin.FindTest</value>
+                <value>org.jahia.test.bin.RenderTest</value>
+                <value>org.jahia.test.services.acl.AclTest</value>
+                <value>org.jahia.test.services.applications.ApplicationsManagerServiceTest</value>
+                <value>org.jahia.test.services.categories.CategoryTest</value>
+                <value>org.jahia.test.services.content.AutoSplittingTest</value>
+                <value>org.jahia.test.services.content.ContentTest</value>
+                <value>org.jahia.test.services.content.MarkForDeletionTest</value>
+                <value>org.jahia.test.services.content.MultiLanguageTest</value>
+                <value>org.jahia.test.services.content.ReferencesTest</value>
+                <value>org.jahia.test.services.content.interceptor.HtmlFilteringInterceptorTest</value>
+                <value>org.jahia.test.services.content.interceptor.URLInterceptorTest</value>
+                <value>org.jahia.test.services.content.impl.vfs.VFSContentStoreProviderTest</value>
+                <value>org.jahia.test.services.htmlvalidator.WAIValidatorTest</value>
+                <value>org.jahia.test.services.importexport.ImportExportTest</value>
+                <value>org.jahia.test.services.logging.ServiceLoggingTest</value>
+                <value>org.jahia.test.services.logout.LogoutTest</value>
+                <value>org.jahia.test.services.notification.CamelNotificationServiceTest</value>
+                <value>org.jahia.test.services.notification.HtmlExternalizationServiceTest</value>
+                <value>org.jahia.test.services.publication.PublicationTest</value>
+                <value>org.jahia.test.services.query.FacetedQueryTest</value>
+                <value>org.jahia.test.services.query.IndexOptionsTest</value>
+                <value>org.jahia.test.services.query.QueryModificationTest</value>
+                <value>org.jahia.test.services.query.QueryResultTest</value>
+                <value>org.jahia.test.services.render.JSessionIDTest</value>
+                <value>org.jahia.test.services.render.filter.ConditionalFilterTest</value>
+                <value>org.jahia.test.services.render.filter.EmailObfuscatorFilterTest</value>
+                <value>org.jahia.test.services.render.filter.URLFilterTest</value>
+                <value>org.jahia.test.services.render.filter.cache.CacheFilterTest</value>
+                <value>org.jahia.test.services.render.filter.channels.ChannelResolutionAndExclusionTest</value>                
+                <value>org.jahia.test.services.search.SimpleSearchTest</value>
+                <value>org.jahia.test.services.seo.urlrewrite.UrlRewriteTest</value>
+                <value>org.jahia.test.services.tags.TaggingTest</value>
+                <value>org.jahia.test.services.templates.JahiaTemplateManagerServiceTest</value>                
+                <value>org.jahia.test.services.usermanager.JahiaGroupManagerServiceTest</value>
+                <value>org.jahia.test.services.versioning.VersioningTest</value>
+                <value>org.jahia.test.services.visibility.VisibilityServiceTest</value>
+                <value>org.jahia.test.services.workflow.StateSequenceTest</value>
+                <value>org.jahia.test.services.workflow.WorkflowServiceTest</value>
+>>>>>>> .merge-right.r43992
             </list>
         </property>
 
@@ -175,8 +218,8 @@
                 <value>testMerge(org.apache.jackrabbit.test.api.version.VersionHistoryTest)</value>
                 <value>testUnlockJcr2(org.apache.jackrabbit.test.api.version.VersionHistoryTest)</value>
                 <value>testCheckout(org.apache.jackrabbit.test.api.version.VersionHistoryTest)</value>
-                <value>testWithJoins(org.jahia.services.query.QueryModificationTest)</value>
-                <value>testWithReferences(org.jahia.services.query.QueryModificationTest)</value>
+                <value>testWithJoins(org.jahia.test.services.query.QueryModificationTest)</value>
+                <value>testWithReferences(org.jahia.test.services.query.QueryModificationTest)</value>
                 <value>testRestoreWithUUIDConflict(org.apache.jackrabbit.test.api.version.simple.RestoreTest)</value>
                 <value>testRestoreName(org.apache.jackrabbit.test.api.version.simple.RestoreTest)</value>
                 <value>testExpandedNameValue(org.apache.jackrabbit.test.api.NameTest)</value>
@@ -317,8 +360,8 @@
                 <value>testAddRemoveLockToken(org.apache.jackrabbit.test.api.lock.LockTest)</value>
                 <value>testDerefMultiPropWithNodeStar(org.apache.jackrabbit.test.api.query.DerefQueryLevel1Test)</value>
                 <value>testDerefMultiPropWithNodeTest(org.apache.jackrabbit.test.api.query.DerefQueryLevel1Test)</value>
-                <value>testEntryPointDefinitions(org.jahia.services.applications.ApplicationsManagerServiceTest)</value>
-                <value>testEntryPointInstance(org.jahia.services.applications.ApplicationsManagerServiceTest)</value>
+                <value>testEntryPointDefinitions(org.jahia.test.services.applications.ApplicationsManagerServiceTest)</value>
+                <value>testEntryPointInstance(org.jahia.test.services.applications.ApplicationsManagerServiceTest)</value>
                 <value>testReferences(org.apache.jackrabbit.test.api.ReferencesTest)</value>
                 <value>testGetReferencesWithName(org.apache.jackrabbit.test.api.ReferencesTest)</value>
                 <value>testAlterReference(org.apache.jackrabbit.test.api.ReferencesTest)</value>
@@ -368,8 +411,12 @@
                 <value>testInitialNodePredecessors(org.apache.jackrabbit.test.api.version.VersionGraphTest)</value>
                 <value>testInitialNodePredecessorsJcr2(org.apache.jackrabbit.test.api.version.VersionGraphTest)</value>
                 
+<<<<<<< .working
                 <!--Not working tests or uninteresting results-->
                 <value>testPublishUnpublishPageWithContent(org.jahia.services.publication.PublicationTest)</value>
+=======
+                <value>testPublishUnpublishPageWithContent(org.jahia.test.services.publication.PublicationTest)</value>
+>>>>>>> .merge-right.r43992
                 <value>testUniqueValue(org.jahia.services.i18n.ResourceBundleTest)</value>
             </list>   
         </property>

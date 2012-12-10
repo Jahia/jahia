@@ -57,6 +57,7 @@
         <div class='grid_${column} ${colCss}'>
             <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
             <div style="border: 1px solid #999977; padding: 10px">
+                <span>Size : ${column}</span>
             </c:if>
             <c:if test="${nbNames == nbAreas}">
                 <c:forTokens items="${currentNode.properties.colNames.string}" var="colName" delims="," varStatus="vs1">

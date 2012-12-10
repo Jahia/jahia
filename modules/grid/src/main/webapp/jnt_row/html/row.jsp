@@ -80,6 +80,7 @@
     <div class='grid_${col.value}'>
         <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
         <div style="border: 1px solid #999977; padding: 10px">
+            <span>Size : ${col.value}</span>
             </c:if>
         <template:area path="${currentNode.name}-${col.key}" areaAsSubNode="true"/>
         <c:if test="${pageScope['org.jahia.emptyArea']}">

@@ -40,6 +40,9 @@ public class ChildItemsTabItem extends EditEngineTabItem {
 
     @Override
     public void init(final NodeHolder engine,final AsyncTabItem tab, String language) {
+        if (tab.isProcessed()) {
+            return;
+        }
         tab.setLayout(new BorderLayout());
 
         store = new ListStore<GWTJahiaNode>();
@@ -99,6 +102,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             }
         });
         tab.layout();
+        tab.setProcessed(true);
 
     }
 

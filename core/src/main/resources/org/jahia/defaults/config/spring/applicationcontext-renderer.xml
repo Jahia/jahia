@@ -65,7 +65,7 @@
     <bean class="org.jahia.services.render.filter.EditModeFilter">
    		<property name="priority" value="-2" />
            <property name="description" value="Filter that embeds edit mode frame around content"/>
-   		<property name="applyOnModes" value="edit,studio,contribute" />
+   		<property name="applyOnModes" value="edit,studio,studiolayout,contribute" />
    		<property name="applyOnConfigurations" value="page" />
    	</bean>
 	<bean class="org.jahia.services.render.filter.ExternalizeHtmlFilter">

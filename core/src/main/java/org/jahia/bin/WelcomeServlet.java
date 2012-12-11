@@ -64,12 +64,14 @@ import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
@@ -156,14 +158,21 @@ public class WelcomeServlet extends HttpServlet {
 
             String pathInfo = request.getPathInfo();
             JCRNodeWrapper home = site.getHome();
-            if (pathInfo != null && "/edit".equals(pathInfo) && !SettingsBean.getInstance().isDistantPublicationServerMode()) {
+            if (pathInfo != null && pathInfo.endsWith("mode")) {
+                EditConfiguration editConfiguration = (EditConfiguration) SpringContextSingleton.getInstance().getContext().getBean(StringUtils.substringAfter(pathInfo, "/"));
+                String mapping = editConfiguration.getDefaultUrlMapping();
                 // edit mode was requested
-                if(home!=null) {
-                    base = request.getContextPath() + Edit.getEditServletPath() + "/"
-                        + Constants.EDIT_WORKSPACE + "/" + language + home.getPath();
+                if (editConfiguration.isModulesOnly()) {
+                    base = request.getContextPath() + mapping + "/"
+                            + Constants.EDIT_WORKSPACE + "/" + language + "/modules/default";
                 } else {
-                    base = request.getContextPath() + Edit.getEditServletPath() + "/"
-                        + Constants.EDIT_WORKSPACE + "/" + language + resolveSite(request, Constants.EDIT_WORKSPACE).getHome().getPath();
+                    if(home!=null) {
+                        base = request.getContextPath() + mapping + "/"
+                                + Constants.EDIT_WORKSPACE + "/" + language + home.getPath();
+                    } else {
+                        base = request.getContextPath() + mapping + "/"
+                                + Constants.EDIT_WORKSPACE + "/" + language + resolveSite(request, Constants.EDIT_WORKSPACE).getHome().getPath();
+                    }
                 }
             } else {
                 if (home != null) {

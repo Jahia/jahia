@@ -62,9 +62,11 @@ import javax.servlet.http.HttpServletResponse;
 public class Edit extends Render {
     private static final long serialVersionUID = -6197445426874881036L;
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(Edit.class);
-    public static final String EDIT_MODE = "editmode";
 
     private EditConfiguration editConfiguration;
+
+    private boolean availableInProductionMode = true;
+    private boolean availableInDistantPublicationServerMode = true;
 
     protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
         RenderContext context = super.createRenderContext(req, resp, user);
@@ -72,14 +74,9 @@ public class Edit extends Render {
         if ("contributemode".equals(editConfiguration.getName())) {
             context.setContributionMode(true);
         }
-        context.setEditModeConfigName(editConfiguration.getName());
+        context.setEditModeConfig(editConfiguration);
 //        context.setServletPath(editConfiguration.getDefaultUrlMapping());
         return context;
-    }
-
-    public static String getEditServletPath() {
-        // TODO move this into configuration
-        return "/cms/edit";
     }
 
     protected boolean hasAccess(JCRNodeWrapper node) {
@@ -100,7 +97,8 @@ public class Edit extends Render {
 
     @Override
     protected boolean isDisabled() {
-        return settingsBean.isDistantPublicationServerMode();
+        return (settingsBean.isDistantPublicationServerMode() && !isAvailableInDistantPublicationServerMode()) ||
+                (settingsBean.isProductionMode() && !isAvailableInProductionMode());
     }
 
     public EditConfiguration getEditConfiguration() {
@@ -110,4 +108,21 @@ public class Edit extends Render {
     public void setEditConfiguration(EditConfiguration editConfiguration) {
         this.editConfiguration = editConfiguration;
     }
+
+    public boolean isAvailableInProductionMode() {
+        return availableInProductionMode;
+    }
+
+    public void setAvailableInProductionMode(boolean availableInProductionMode) {
+        this.availableInProductionMode = availableInProductionMode;
+    }
+
+    public boolean isAvailableInDistantPublicationServerMode() {
+        return availableInDistantPublicationServerMode;
+    }
+
+    public void setAvailableInDistantPublicationServerMode(boolean availableInDistantPublicationServerMode) {
+        this.availableInDistantPublicationServerMode = availableInDistantPublicationServerMode;
+    }
+
 }

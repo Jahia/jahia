@@ -149,7 +149,7 @@
               </custom-rows-960gs>
             </pagecontent>
           </fileTemplate>
-          <siteTemplate j:applyOn="jnt:virtualsite" j:defaultTemplate="true" j:hiddenTemplate="false" j:originWS="default" j:requiredMode="studio"  jcr:primaryType="jnt:contentTemplate">
+          <siteTemplate j:applyOn="jnt:module" j:defaultTemplate="true" j:hiddenTemplate="false" j:originWS="default" jcr:primaryType="jnt:contentTemplate">
             <pagecontent j:originWS="default" jcr:primaryType="jnt:contentList">
                 <custom-rows-960gs customColumn="16" divID="content" j:originWS="default" jcr:primaryType="jnt:customRow">
                     <custom-rows-960gs-col1 j:originWS="default" jcr:primaryType="jnt:contentList">

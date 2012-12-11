@@ -155,13 +155,14 @@ public class TemplateHelper {
 
             RenderContext renderContext = new RenderContext(request, response, currentUserSession.getUser());
             renderContext.setEditMode(editMode);
-            renderContext.setEditModeConfigName(configName);
             renderContext.setMainResource(r);
 
             EditConfiguration editConfiguration = null;
             if (configName != null) {
                 editConfiguration= (EditConfiguration) SpringContextSingleton.getBean(configName);
             }
+            renderContext.setEditModeConfig(editConfiguration);
+
             String permission = null;
             if (editConfiguration != null) {
                 permission = editConfiguration.getRequiredPermission();

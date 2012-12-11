@@ -25,17 +25,30 @@
     <bean name="org.jahia.bin.Edit" parent="abstractRender" class="org.jahia.bin.Edit">
         <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
         <property name="editConfiguration" ref="editmode" />
+        <property name="availableInDistantPublicationServerMode" value="false"/>
         <property name="workspace" value="default" />
     </bean>
     <bean name="org.jahia.bin.Contribute" parent="abstractRender" class="org.jahia.bin.Edit">
         <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
         <property name="editConfiguration" ref="contributemode" />
+        <property name="availableInDistantPublicationServerMode" value="false"/>
         <property name="workspace" value="default" />
     </bean>
-    <bean name="org.jahia.bin.Studio" parent="abstractRender"
-        class="org.jahia.bin.Studio">
+    <bean name="org.jahia.bin.Studio" parent="abstractRender" class="org.jahia.bin.Edit">
         <property name="sessionExpiryTime" value="60" />
+        <property name="editConfiguration" ref="studiomode" />
         <property name="requiredPermission" value="studioModeAccess" />
+        <property name="availableInProductionMode" value="false"/>
+        <property name="availableInDistantPublicationServerMode" value="false"/>
+        <property name="workspace" value="default" />
+    </bean>
+
+    <bean name="org.jahia.bin.StudioLayout" parent="abstractRender" class="org.jahia.bin.Edit">
+        <property name="sessionExpiryTime" value="60" />
+        <property name="editConfiguration" ref="studiolayoutmode" />
+        <property name="requiredPermission" value="studioModeAccess" />
+        <property name="availableInProductionMode" value="false"/>
+        <property name="availableInDistantPublicationServerMode" value="false"/>
         <property name="workspace" value="default" />
     </bean>
 
@@ -61,6 +74,8 @@
                 <entry key="/contributeframe/**" value-ref="org.jahia.bin.Contribute"/>
                 <entry key="/studio/**" value-ref="org.jahia.bin.Studio"/>
                 <entry key="/studioframe/**" value-ref="org.jahia.bin.Studio"/>
+                <entry key="/studiolayout/**" value-ref="org.jahia.bin.StudioLayout"/>
+                <entry key="/studiolayoutframe/**" value-ref="org.jahia.bin.StudioLayout"/>
                 <entry key="/find/**">
                     <bean class="org.jahia.bin.Find">
                         <property name="urlResolverFactory" ref="urlResolverFactory" />

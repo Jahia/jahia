@@ -79,6 +79,8 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private String requiredPermission;
     private String defaultUrlMapping;
 
+    private boolean modulesOnly = true;
+
     public void addTab(SidePanelTab tab) {
         tabs.add(tab);
     }
@@ -198,5 +200,13 @@ public class EditConfiguration implements Serializable, BeanNameAware {
                 }
             }
         }
+    }
+
+    public boolean isModulesOnly() {
+        return modulesOnly;
+    }
+
+    public void setModulesOnly(boolean modulesOnly) {
+        this.modulesOnly = modulesOnly;
     }
 }

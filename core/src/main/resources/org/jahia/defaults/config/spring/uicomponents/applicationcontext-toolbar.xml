@@ -254,8 +254,8 @@
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="js.url"/>
-                    <property name="value" value="studioUrl"/>
+                    <property name="name" value="url"/>
+                    <property name="value" value="$context/welcome/studiomode"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="target"/>
@@ -286,7 +286,7 @@
             <list>
 				<bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
 					<property name="name" value="url" />
-					<property name="value" value="$context/welcome/edit" />
+					<property name="value" value="$context/welcome/editmode" />
 				</bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="target"/>
@@ -314,8 +314,8 @@
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="js.url"/>
-                    <property name="value" value="studioLayoutUrl"/>
+                    <property name="name" value="url"/>
+                    <property name="value" value="$context/welcome/studiolayoutmode"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="target"/>

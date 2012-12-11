@@ -49,7 +49,6 @@ import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
-import org.jahia.bin.Studio;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
@@ -266,7 +265,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     }
                 }
                 boolean isVisibleInstudiModeLayout = true;
-                if(!SettingsBean.getInstance().isDistantPublicationServerMode() && !SettingsBean.getInstance().isProductionMode() && Studio.STUDIO_LAYOUT_MODE.equals(renderContext.getEditModeConfigName())) {
+                if(!SettingsBean.getInstance().isDistantPublicationServerMode() && !SettingsBean.getInstance().isProductionMode() && "studiolayoutmode".equals(renderContext.getEditModeConfigName())) {
                     try {
                         if(!node.isNodeType("jmix:studioLayout")) {
                             isVisibleInstudiModeLayout = false;
@@ -641,7 +640,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             type = "list";
         } else if (node.isNodeType("jmix:bindedComponent")) {
             type = "bindedComponent";
-        } else if (renderContext.getEditModeConfigName().equals(Studio.STUDIO_MODE) && !node.isNodeType("jmix:layoutComponentContent")) {
+        } else if (renderContext.getEditModeConfigName().equals("studiomode") && !node.isNodeType("jmix:layoutComponentContent")) {
             type = "existingNodeWithHeader";
         }
         return type;

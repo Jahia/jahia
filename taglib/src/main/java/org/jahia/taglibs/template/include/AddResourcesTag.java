@@ -40,7 +40,6 @@
 
 package org.jahia.taglibs.template.include;
 
-import org.jahia.bin.Studio;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
@@ -93,7 +92,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
         org.jahia.services.render.Resource currentResource =
                 (org.jahia.services.render.Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
         try {
-            if (!Studio.STUDIO_LAYOUT_MODE.equals(getRenderContext().getEditModeConfigName()) || (!currentResource.getNode().isNodeType("jnt:template") && currentResource.getNode().isNodeType("jmix:studioLayout"))) {
+            if (!"studiolayoutmode".equals(getRenderContext().getEditModeConfigName()) || (!currentResource.getNode().isNodeType("jnt:template") && currentResource.getNode().isNodeType("jmix:studioLayout"))) {
                 JahiaTemplatesPackage templatesPackage = (JahiaTemplatesPackage) pageContext.getAttribute("currentModule",
                         PageContext.REQUEST_SCOPE);
                 JahiaTemplatesPackage templatesSetPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(

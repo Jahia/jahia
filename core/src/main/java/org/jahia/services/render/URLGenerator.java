@@ -140,7 +140,7 @@ public class URLGenerator {
         baseLive = Render.getRenderServletPath() + "/" + Constants.LIVE_WORKSPACE + "/" + resource.getLocale();
         live = baseLive + resourcePath;
         if (!SettingsBean.getInstance().isDistantPublicationServerMode()) {
-            baseEdit = Edit.getEditServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
+            baseEdit = "/cms/edit/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
             edit = baseEdit + resourcePath;
             baseContribute = "/cms/contribute/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
             contribute = baseContribute + resourcePath;
@@ -196,21 +196,21 @@ public class URLGenerator {
     public String getStudio() {
         if (!SettingsBean.getInstance().isDistantPublicationServerMode() && !SettingsBean.getInstance().isProductionMode()) {
             if (studio == null) {
-                studio = Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/modules";
+                studio = "/cms/studio/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/modules";
                 if (context.getSite() != null) {
                     try {
                         if (context.getSite().hasProperty("j:templatesSet")) {
                             studio += "/" + context.getSite().getProperty("j:templatesSet").getString();
-                            studio += ".html?studioMode=true";
+                            studio += ".html";
                         } else if (context.getSite().getPath().startsWith("/modules")) {
-                            studio = Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + context.getSite().getPath();
-                            studio += ".html?studioMode=true";
+                            studio = "/cms/studio/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + context.getSite().getPath();
+                            studio += ".html";
                         }
                     } catch (RepositoryException e) {
                         logger.error("Cannot get studio url", e);
                     }
                 } else {
-                    studio += ".html?studioMode=true";
+                    studio += ".html";
                 }
             }
         }
@@ -220,15 +220,15 @@ public class URLGenerator {
     public String getStudioLayout() {
         if (!SettingsBean.getInstance().isDistantPublicationServerMode() && !SettingsBean.getInstance().isProductionMode()) {
             if (studioLayout == null) {
-                studioLayout = Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/modules";
+                studioLayout = "/cms/studiolayout/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/modules";
                 if (context.getSite() != null) {
                     try {
                         if (context.getSite().hasProperty("j:templatesSet")) {
                             studioLayout += "/" + context.getSite().getProperty("j:templatesSet").getString();
-                            studioLayout += ".html?layoutMode=true";
+                            studioLayout += ".html";
                         } else if (context.getSite().getPath().startsWith("/modules")) {
-                            studioLayout = Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + context.getSite().getPath();
-                            studioLayout += ".html?layoutMode=true";
+                            studioLayout = "/cms/studiolayout/" + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + context.getSite().getPath();
+                            studioLayout += ".html";
                         }
                     } catch (RepositoryException e) {
                         logger.error("Cannot get studio url", e);
@@ -236,7 +236,7 @@ public class URLGenerator {
                 } else {
                     try {
                         studioLayout += "/" + ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite().getNode().getProperty("j:templatesSet").getString();
-                        studioLayout += ".html?layoutMode=true";
+                        studioLayout += ".html";
                     } catch (RepositoryException e) {
                         logger.error("Cannot get studio url", e);
                     }
@@ -400,7 +400,7 @@ public class URLGenerator {
             }
         } else {
             if (context.isEditMode()) {
-                if (context.getEditModeConfigName().equals(Studio.STUDIO_MODE)) {
+                if (context.getEditModeConfigName().equals("studiomode")) {
                     return getStudio();
                 }
                 return getEdit();

@@ -57,6 +57,7 @@ import org.jahia.services.channels.Channel;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
+import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
@@ -80,7 +81,7 @@ public class RenderContext {
 
     private boolean isContributionMode = false;
     private boolean isEditMode = false;
-    private String editModeConfigName;
+    private EditConfiguration editModeConfig;
     private String servletPath;
     private String workspace = "default";
 
@@ -165,11 +166,15 @@ public class RenderContext {
     }
 
     public String getEditModeConfigName() {
-        return editModeConfigName;
+        return editModeConfig != null ? editModeConfig.getName() : null;
     }
 
-    public void setEditModeConfigName(String editModeConfigName) {
-        this.editModeConfigName = editModeConfigName;
+    public EditConfiguration getEditModeConfig() {
+        return editModeConfig;
+    }
+
+    public void setEditModeConfig(EditConfiguration editModeConfig) {
+        this.editModeConfig = editModeConfig;
     }
 
     public String getServletPath() {

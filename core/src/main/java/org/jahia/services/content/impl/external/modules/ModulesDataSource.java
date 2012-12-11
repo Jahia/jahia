@@ -309,6 +309,17 @@ public class ModulesDataSource extends VFSDataSource {
         properties.put("j:isHierarchical", new String[]{String.valueOf(propertyDefinition.isHierarchical())});
         properties.put("j:isInternationalized", new String[]{String.valueOf(propertyDefinition.isInternationalized())});
         properties.put("j:isHidden", new String[]{String.valueOf(propertyDefinition.isHidden())});
+        properties.put("j:index", new String[]{String.valueOf(propertyDefinition.getIndex())});
+        properties.put("j:scoreboost", new String[]{String.valueOf(propertyDefinition.getScoreboost())});
+        String analyzer = propertyDefinition.getAnalyzer();
+        if (analyzer != null) {
+            properties.put("j:analyzer", new String[]{analyzer});
+        }
+        properties.put("j:onConflictAction", new String[]{OnConflictAction.nameFromValue(propertyDefinition.getOnConflict())});
+        String itemType = propertyDefinition.getLocalItemType();
+        if (itemType != null) {
+            properties.put("j:itemType", new String[]{itemType});
+        }
         ExternalData externalData = new ExternalData(path, path,
                 unstructured ? "jnt:unstructuredPropertyDefinition" : "jnt:structuredPropertyDefinition", properties);
         return externalData;
@@ -753,7 +764,38 @@ public class ModulesDataSource extends VFSDataSource {
             } else {
                 propertyDefinition.setHidden(false);
             }
+            values = properties.get("j:index");
+            if (values != null && values.length > 0) {
+                propertyDefinition.setIndex(Integer.parseInt(values[0]));
+            } else {
+                propertyDefinition.setIndex(ExtendedPropertyDefinition.INDEXED_TOKENIZED);
+            }
+            values = properties.get("j:scoreboost");
+            if (values != null && values.length > 0) {
+                propertyDefinition.setScoreboost(Double.parseDouble(values[0]));
+            } else {
+                propertyDefinition.setScoreboost(1.);
+            }
+            values = properties.get("j:analyzer");
+            if (values != null && values.length > 0) {
+                propertyDefinition.setAnalyzer(values[0]);
+            } else {
+                propertyDefinition.setAnalyzer(null);
+            }
+            values = properties.get("j:onConflictAction");
+            if (values != null && values.length > 0) {
+                propertyDefinition.setOnConflict(OnConflictAction.valueFromName(values[0]));
+            } else {
+                propertyDefinition.setOnConflict(OnConflictAction.USE_LATEST);
+            }
+            values = properties.get("j:itemType");
+            if (values != null && values.length > 0) {
+                propertyDefinition.setItemType(values[0]);
+            } else {
+                propertyDefinition.setItemType(null);
+            }
             propertyDefinition.setDeclaringNodeType(nodeType);
+            nodeType.validate();
             writeDefinitionFile(nodeTypeRegistry,
                     StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/"), splitPath[1]);
         } catch (NoSuchNodeTypeException e) {
@@ -829,6 +871,7 @@ public class ModulesDataSource extends VFSDataSource {
                 childNodeDefinition.setDefaultPrimaryType(null);
             }
             childNodeDefinition.setDeclaringNodeType(nodeType);
+            nodeType.validate();
             writeDefinitionFile(nodeTypeRegistry,
                     StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/"), splitPath[1]);
         } catch (NoSuchNodeTypeException e) {

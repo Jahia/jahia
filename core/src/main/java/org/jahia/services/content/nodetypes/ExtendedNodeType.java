@@ -765,9 +765,12 @@ public class ExtendedNodeType implements NodeType {
             } else {
                 unstructuredProperties.put(p.getRequiredType(), p);
             }
+            allUnstructuredProperties = null;
         } else {
             properties.put(name, p);
+            allProperties = null;
         }
+        items.remove(p);
         items.add(p);
     }
 
@@ -785,9 +788,12 @@ public class ExtendedNodeType implements NodeType {
                 s.append(s1).append(" ");
             }
             unstructuredNodes.put(s.toString().trim(), p);
+            allUnstructuredNodes = null;
         } else {
             nodes.put(name, p);
+            allNodes = null;
         }
+        items.remove(p);
         items.add(p);
     }
 

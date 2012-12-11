@@ -58,4 +58,64 @@ public class OnConflictAction {
     public static final int NUMERIC_USE_MAX = 7;
     public static final int NUMERIC_SUM = 8;
     public static final int TEXT_MERGE = 9;
+
+    /**
+     * The names of the defined on-conflict actions, as used in serialization.
+     */
+    public static final String ACTIONNAME_USE_OLDEST = "OLDEST";
+    public static final String ACTIONNAME_USE_LATEST = "LATEST";
+    public static final String ACTIONNAME_NUMERIC_USE_MIN = "MIN";
+    public static final String ACTIONNAME_NUMERIC_USE_MAX = "MAX";
+    public static final String ACTIONNAME_NUMERIC_SUM = "SUM";
+
+    /**
+     * Returns the name of the specified <code>action</code>, as used in
+     * serialization.
+     *
+     * @param action the on-conflict action
+     * @return the name of the specified <code>action</code>
+     * @throws IllegalArgumentException if <code>action</code> is not a valid
+     *                                  on-conflict action.
+     */
+    public static String nameFromValue(int action) {
+        switch (action) {
+            case USE_OLDEST:
+                return ACTIONNAME_USE_OLDEST;
+            case USE_LATEST:
+                return ACTIONNAME_USE_LATEST;
+            case NUMERIC_USE_MIN:
+                return ACTIONNAME_NUMERIC_USE_MIN;
+            case NUMERIC_USE_MAX:
+                return ACTIONNAME_NUMERIC_USE_MAX;
+            case NUMERIC_SUM:
+                return ACTIONNAME_NUMERIC_SUM;
+            default:
+                throw new IllegalArgumentException("unknown on-conflict action: " + action);
+        }
+    }
+
+    /**
+     * Returns the numeric constant value of the on-conflict action with the
+     * specified name.
+     *
+     * @param name the name of the on-conflict action
+     * @return the numeric constant value
+     * @throws IllegalArgumentException if <code>name</code> is not a valid
+     *                                  on-conflict action name.
+     */
+    public static int valueFromName(String name) {
+        if (name.equals(ACTIONNAME_USE_OLDEST)) {
+            return USE_OLDEST;
+        } else if (name.equals(ACTIONNAME_USE_LATEST)) {
+            return USE_LATEST;
+        } else if (name.equals(ACTIONNAME_NUMERIC_USE_MIN)) {
+            return NUMERIC_USE_MIN;
+        } else if (name.equals(ACTIONNAME_NUMERIC_USE_MAX)) {
+            return NUMERIC_USE_MAX;
+        } else if (name.equals(ACTIONNAME_NUMERIC_SUM)) {
+            return NUMERIC_SUM;
+        } else {
+            throw new IllegalArgumentException("unknown on-conflict action: " + name);
+        }
+    }
 }

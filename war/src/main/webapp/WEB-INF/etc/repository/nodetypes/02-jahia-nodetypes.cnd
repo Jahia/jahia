@@ -865,8 +865,8 @@ extends = jnt:content
  - j:isAbstract (BOOLEAN) mandatory
  - j:isQueryable (BOOLEAN) mandatory
  - j:hasOrderableChildNodes (BOOLEAN) mandatory
- - j:primaryItemName (NAME,choicelist[nodes='.;nt:base'])
- - j:itemsType (string,choicelist) < 'content','metadata','layout','options'
+ - j:primaryItemName (NAME,choicelist[nodes='.;nt:base;name'])
+ - j:itemsType (STRING,choicelist) < 'content','metadata','layout','options'
 
 [jnt:itemDefinition] abstract
 
@@ -890,10 +890,17 @@ extends = jnt:content
  - j:onParentVersion (STRING,choicelist) = 'VERSION' nofulltext
      < 'COPY', 'VERSION', 'INITIALIZE', 'COMPUTE', 'IGNORE', 'ABORT'
  - j:availableQueryOperators (NAME) multiple
- - j:isFullTextSearchable (BOOLEAN)
- - j:isQueryOrderable (BOOLEAN)
+ - j:isFullTextSearchable (BOOLEAN) = true
+ - j:isQueryOrderable (BOOLEAN) = true
  - j:isFacetable (BOOLEAN)
  - j:isHierarchical (BOOLEAN)
+ - j:index (STRING,choicelist) = 'TOKENIZED' nofulltext
+     < 'NO', 'TOKENIZED', 'UNTOKENIZED'
+ - j:scoreboost (DOUBLE) = 1
+ - j:analyzer (STRING)
+ - j:onConflictAction (STRING,choicelist) = 'LATEST' nofulltext
+     < 'LATEST', 'OLDEST', 'MIN', 'MAX', 'SUM'
+ - j:itemType (STRING,choicelist) < 'content','metadata','layout','options'
 
 [jnt:structuredPropertyDefinition] > jnt:propertyDefinition
 

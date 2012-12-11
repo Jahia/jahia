@@ -174,7 +174,7 @@ public class JahiaCndWriter {
         String primaryItemName = ntd.getPrimaryItemName();
         if (primaryItemName != null) {
             out.write("\n" + INDENT);
-            out.write("primaryitem = ");
+            out.write("primaryitem ");
             out.write(primaryItemName);
         }
         List<ExtendedNodeType> mixinExtends = ntd.getMixinExtends();
@@ -244,6 +244,9 @@ public class JahiaCndWriter {
         if (pd.isInternationalized()) {
             out.write(" internationalized");
         }
+        if (pd.getOnConflict() != OnConflictAction.USE_LATEST) {
+            out.write(" onconflict=" + OnConflictAction.nameFromValue(pd.getOnConflict()));
+        }
 
         switch (pd.getIndex()) {
             case ExtendedPropertyDefinition.INDEXED_NO:
@@ -275,6 +278,9 @@ public class JahiaCndWriter {
         }
         if (!pd.isFullTextSearchable()) {
             out.write(" nofulltext");
+        }
+        if (pd.getLocalItemType() != null) {
+            out.write(" itemtype = " + pd.getLocalItemType());
         }
         if (pd.getOnParentVersion() != OnParentVersionAction.VERSION) {
             out.write(" ");

@@ -247,11 +247,16 @@ public class ExtendedItemDefinition implements ItemDefinition {
 
     public String getItemType() {
         if (itemType == null) {
-            itemType = getDeclaringNodeType().getItemsType();
-            if (itemType == null) {
-                itemType = "content";
+            String inheritedItemType = getDeclaringNodeType().getItemsType();
+            if (inheritedItemType == null) {
+                inheritedItemType = "content";
             }
+            return inheritedItemType;
         }
+        return itemType;
+    }
+
+    public String getLocalItemType() {
         return itemType;
     }
 

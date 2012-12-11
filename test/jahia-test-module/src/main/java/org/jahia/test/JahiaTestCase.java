@@ -54,15 +54,7 @@ public class JahiaTestCase extends TestCase {
 
     private static Logger logger = Logger.getLogger(JahiaTestCase.class);
 
-<<<<<<< .working
-	private String baseUrl = "http://localhost:9090";
-	
-	protected String getBaseServerURL() {
-		 	logger.info("Base URL for tests is: " + baseUrl);
-	        return baseUrl;
-	    }
-=======
-    private final static String PORT = "8080";
+    private final static String PORT = "9090";
     private final static String baseUrl = "http://localhost:" + PORT;
 
     protected String getBaseServerURL() {
@@ -73,5 +65,4 @@ public class JahiaTestCase extends TestCase {
     protected String getBaseServerURLPort() {
         return PORT;
     }
->>>>>>> .merge-right.r44037
 }

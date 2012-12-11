@@ -98,6 +98,18 @@
                     <artifactId>commons-cli</artifactId>
                     <groupId>commons-cli</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>commons-codec</artifactId>
+                    <groupId>commons-codec</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>icu4j</artifactId>
+                    <groupId>com.ibm.icu</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jcommon</artifactId>
+                    <groupId>jfree</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -123,8 +135,8 @@
                     <groupId>ant</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>commons-cli</artifactId>
-                    <groupId>commons-cli</groupId>
+                    <artifactId>icu4j</artifactId>
+                    <groupId>com.ibm.icu</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -186,6 +198,10 @@
                     <artifactId>jbpm-log</artifactId>
                     <groupId>org.jbpm.jbpm4</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>mockejb</artifactId>
+                    <groupId>org.mockejb</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -239,6 +255,10 @@
             	<exclusion>
             		<artifactId>xml-apis</artifactId>
             		<groupId>xml-apis</groupId>
+            	</exclusion>
+            	<exclusion>
+            	    <artifactId>jcommon</artifactId>
+            	    <groupId>jfree</groupId>
             	</exclusion>
             </exclusions>
         </dependency>

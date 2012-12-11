@@ -48,8 +48,6 @@ import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
-
-import java.util.Enumeration;
 import java.util.Locale;
 
 /**
@@ -130,15 +128,15 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
                 final String link;
                 if (onLanguageSwitch == null || onLanguageSwitch.length() == 0
                         || InitLangBarAttributes.STAY_ON_CURRENT_PAGE.equals(onLanguageSwitch)) {
-                    link = appendRequestParameters(generateCurrentNodeLangSwitchLink(languageCode));
+                    link = generateCurrentNodeLangSwitchLink(languageCode);
 
                 } else if (isRedirectToHomePageActivated) {
-                    link = appendRequestParameters(generateNodeLangSwitchLink(rootPage, languageCode));
+                    link = generateNodeLangSwitchLink(rootPage, languageCode);
 
                 } else {
                     throw new JspTagException("Unknown onLanguageSwitch attribute value " + onLanguageSwitch);
                 }
-                
+
                 buff.append(StringEscapeUtils.escapeXml(link));
                 if (urlVar != null && urlVar.length() > 0) {
                     pageContext.setAttribute(urlVar, link);
@@ -219,17 +217,7 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
         return SKIP_BODY;
     }
 
-    private String appendRequestParameters(String link) {
-		Enumeration<String> paramNames = getRenderContext().getRequest().getParameterNames();
-    	StringBuffer params = new java.lang.StringBuffer();
-    	char seperator = '?';
-    	while(paramNames.hasMoreElements()) {
-    		String param = paramNames.nextElement();
-    		params.append(seperator).append(param).append("=").append(getRenderContext().getRequest().getParameter(param));
-    		seperator = '&';
-    	}
-    	return link + params;
-    }
+
     public String getIsoLocaleCountryCode() {
         return ISOLOCALECOUNTRY_CODE;
     }

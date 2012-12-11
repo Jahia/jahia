@@ -57,13 +57,17 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Unit test for feed importer action.
@@ -74,29 +78,20 @@ import org.slf4j.Logger;
  */
 public class GetFeedActionTest extends JahiaTestCase {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(GetFeedActionTest.class);
-    private JahiaSite site;
     private final static String TESTSITE_NAME = "jcrFeedImportTest";
+    private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;    
 
-    @Override
-    protected void setUp() throws Exception {
-        try {
-            site = TestHelper.createSite(TESTSITE_NAME);
-            assertNotNull(site);
-        } catch (Exception ex) {
-            logger.warn("Exception during test setUp", ex);
-        }
+    @BeforeClass
+    public static void oneTimeSetup() throws Exception {
+        TestHelper.createSite(TESTSITE_NAME);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        try {
-            TestHelper.deleteSite(TESTSITE_NAME);
-        } catch (Exception ex) {
-            logger.warn("Exception during test tearDown", ex);
-        }
+    @AfterClass
+    public static void oneTimeTearDown() throws Exception {
+        TestHelper.deleteSite(TESTSITE_NAME);
     }
 
+    @Test    
     public void testGetFeedAction() throws Exception {
         /*JCRSessionWrapper session = JCRSessionFactory.getInstance()
                 .getCurrentUserSession(Constants.EDIT_WORKSPACE,
@@ -118,8 +113,10 @@ public class GetFeedActionTest extends JahiaTestCase {
 
         session.save();*/
     }
-
+   
     private void testFeed(String nodeName, String feedURL, String testNodeName) throws RepositoryException, IOException, JSONException {
+        JCRSessionWrapper baseSession = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRSiteNode site = (JCRSiteNode) baseSession.getNode(SITECONTENT_ROOT_NODE);        
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance()
                 .getCurrentUserSession(Constants.EDIT_WORKSPACE,

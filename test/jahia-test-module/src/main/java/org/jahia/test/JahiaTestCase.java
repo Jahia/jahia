@@ -40,8 +40,6 @@
 
 package org.jahia.test;
 
-import junit.framework.TestCase;
-
 import org.apache.log4j.Logger;
 
 /**
@@ -50,7 +48,7 @@ import org.apache.log4j.Logger;
  * @author Guillaume Lucazeau
  * 
  */
-public class JahiaTestCase extends TestCase {
+public class JahiaTestCase {
 
     private static Logger logger = Logger.getLogger(JahiaTestCase.class);
 

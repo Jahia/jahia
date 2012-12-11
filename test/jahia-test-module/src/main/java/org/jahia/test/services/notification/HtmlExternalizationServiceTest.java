@@ -40,9 +40,6 @@
 
 package org.jahia.test.services.notification;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -58,6 +55,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.notification.HtmlExternalizationService;
+import org.jahia.test.JahiaTestCase;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -69,7 +67,7 @@ import org.junit.Test;
  * 
  * @author Sergiy Shyrkov
  */
-public class HtmlExternalizationServiceTest {
+public class HtmlExternalizationServiceTest extends JahiaTestCase {
 
     private static HtmlExternalizationService service;
     
@@ -96,7 +94,7 @@ public class HtmlExternalizationServiceTest {
         IOUtils.closeQuietly(is);
         source = writer.toString();
         assertTrue("Resource cannot be read or is empty", StringUtils.isNotEmpty(source));
-        serverUrl = "http://www.jahia-test.org:8080"+ Jahia.getContextPath();
+        serverUrl = "http://www.jahia-test.org:"+ getBaseServerURLPort() + Jahia.getContextPath();
     }
 
     @After

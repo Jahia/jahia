@@ -161,7 +161,7 @@ public class ModuleDropTarget extends DropTarget {
             }
 
             List<GWTJahiaNode> sources = e.getStatus().getData(EditModeDNDListener.SOURCE_NODES);
-            int totalCount = childCount + sources.size();
+            int totalCount = childCount + (sources == null ? 1 : sources.size());
             if (e.getStatus().getData(EditModeDNDListener.SOURCE_MODULES) != null) {
                 Set<Module> modules = e.getStatus().getData(EditModeDNDListener.SOURCE_MODULES);
                 for (Module moduleToCopy : modules) {

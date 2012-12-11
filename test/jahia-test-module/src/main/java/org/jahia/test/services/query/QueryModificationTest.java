@@ -157,11 +157,11 @@ public class QueryModificationTest {
             if (queryManager != null) {
                 String query = "SELECT * FROM [jnt:news] as news WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (length(news.[desc]) > 100 OR news.[date] > '+2001-01-01T01:02:03.000Z') ORDER BY news.[jcr:title]";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(news.desc) > 100 OR news.date > '+2001-01-01T01:02:03.000Z') AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(news.desc) > CAST('100' AS LONG) OR news.date > '+2001-01-01T01:02:03.000Z') AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
                 
                 query = "SELECT news.* FROM [jnt:news] AS news WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(news.desc) > 100 OR news.date > '+2001-01-01T01:02:03.000Z') AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(news.desc) > 100 OR news.date > '+2001-01-01T01:02:03.000Z') AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(news.desc) > CAST('100' AS LONG) OR news.date > '+2001-01-01T01:02:03.000Z') AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
 
 // TODO: uncomment when we install a Jackrabbit patch                
 //                query = "SELECT * FROM [jnt:news] as news WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (length(news.[j:nodename]) > 100 OR news.[date] > '+2001-01-01T01:02:03.000Z')";

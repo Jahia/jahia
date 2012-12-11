@@ -206,13 +206,15 @@ public class ImportExportTest {
 
     private final static Set<String> ignoredProperties = Sets.newHashSet("jcr:baseVersion", "jcr:created", "j:deletedChildren",
             "j:installedModules", "jcr:lastModified", "jcr:lastModifiedBy", "j:lastPublished", "jcr:predecessors", "j:serverName",
-            "j:siteId", "j:templateNode", "jcr:uuid", "jcr:versionHistory", "result", "j:fullpath");
+            "j:siteId", "j:templateNode", "jcr:uuid", "jcr:versionHistory", "result", "j:fullpath", "j:allowsUnlistedLanguages");
 
     private final static Set<String> notExportedProperties = Sets.newHashSet("jcr:lockIsDeep", "j:lockTypes", "jcr:lockOwner",
             "j:locktoken");
 
     private final static Set<String> optionalProperties = Sets.newHashSet("jcr:mixinTypes", "j:published", "j:lastPublished",
-            "j:lastPublishedBy", "j:deletedChildren", "j:fullpath");
+            "j:lastPublishedBy", "j:deletedChildren", "j:fullpath", "j:allowsUnlistedLanguages");
+    
+    private final static Set<String> optionalNodes = Sets.newHashSet("templates");    
     
     private final static Set<String> optionalMixins = Sets.newHashSet("jmix:deletedChildren");
     
@@ -314,11 +316,14 @@ public class ImportExportTest {
                         }
                         JCRNodeWrapper newPage = englishEditSiteHomeNode.addNode("added-child", "jnt:page");
                         newPage.setProperty("jcr:title", "Added child");
+                        newPage.setProperty("j:templateName", "simple");                        
 
                         newPage = englishEditSiteHomeNode.addNode("added-child-with-subpage", "jnt:page");
                         newPage.setProperty("jcr:title", "Added child with subpage");
+                        newPage.setProperty("j:templateName", "simple");                        
                         newPage = newPage.addNode("subpage", "jnt:page");
                         newPage.setProperty("jcr:title", "Subpage");
+                        newPage.setProperty("j:templateName", "simple");                        
 
                         JCRNodeWrapper childPage = englishEditSiteHomeNode.getNode("child2");
                         if (!childPage.isCheckedOut()) {
@@ -326,6 +331,7 @@ public class ImportExportTest {
                         }
                         newPage = childPage.addNode("added-child-to-existing-subpage", "jnt:page");
                         newPage.setProperty("jcr:title", "Added child to existing subpage");
+                        newPage.setProperty("j:templateName", "simple");                        
                         session.save();
 
                         // updates
@@ -336,6 +342,7 @@ public class ImportExportTest {
                         childPage.rename("renamed-child");
                         newPage = childPage.addNode("added-page-to-renamed-page", "jnt:page");
                         newPage.setProperty("jcr:title", "Added page to renamed page");
+                        newPage.setProperty("j:templateName", "simple");
 
                         JCRNodeWrapper textNode = childPage.getNode("child1/contentList0/contentList0_text2");
                         if (!textNode.isCheckedOut()) {
@@ -465,11 +472,14 @@ public class ImportExportTest {
                         }
                         JCRNodeWrapper newPage = englishLiveSiteHomeNode.addNode("added-ugc-child", "jnt:page");
                         newPage.setProperty("jcr:title", "Added UGC child");
+                        newPage.setProperty("j:templateName", "simple");
 
                         newPage = englishLiveSiteHomeNode.addNode("added-ugc-child-with-subpage", "jnt:page");
                         newPage.setProperty("jcr:title", "Added UGC child with subpage");
+                        newPage.setProperty("j:templateName", "simple");
                         newPage = newPage.addNode("ugc-subpage", "jnt:page");
                         newPage.setProperty("jcr:title", "UGC subpage");
+                        newPage.setProperty("j:templateName", "simple");
 
                         JCRNodeWrapper childPage = englishLiveSiteHomeNode.getNode("child2");
                         if (!childPage.isCheckedOut()) {
@@ -477,12 +487,14 @@ public class ImportExportTest {
                         }
                         newPage = childPage.addNode("added-ugc-child-to-existing-subpage", "jnt:page");
                         newPage.setProperty("jcr:title", "Added UGC child to existing subpage");
+                        newPage.setProperty("j:templateName", "simple");
                         session.save();
 
                         // updates
                         childPage = englishLiveSiteHomeNode.getNode("renamed-child");
                         JCRNodeWrapper addedNode = childPage.addNode("added-ugc-page-to-renamed-page", "jnt:page");
                         addedNode.setProperty("jcr:title", "Added UGC pageto renamed page");
+                        addedNode.setProperty("j:templateName", "simple");
 
                         TestHelper.createList(addedNode, "contentListUGC", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
 
@@ -732,11 +744,15 @@ public class ImportExportTest {
 
                 while (sourceSiteIt.hasNext()) {
                     JCRNodeWrapper node = (JCRNodeWrapper) sourceSiteIt.next();
-                    sourceChildNodes.put(node.getName(), node);
+                    if (!optionalNodes.contains(node.getName())) {                    
+                        sourceChildNodes.put(node.getName(), node);
+                    }
                 }
                 while (targetSiteIt.hasNext()) {
                     JCRNodeWrapper node = (JCRNodeWrapper) targetSiteIt.next();
-                    targetChildNodes.put(node.getName(), node);
+                    if (!optionalNodes.contains(node.getName())) {
+                        targetChildNodes.put(node.getName(), node);
+                    }
                 }
                 if (sourceChildNodes.size() != targetChildNodes.size()) {
                     logger.error("Number of childnodes do not match for parent nodes: " + sourceSiteNode.toString() + "("
@@ -878,7 +894,7 @@ public class ImportExportTest {
                     String sourceReferencePath = "";
                     String targetReferencePath = "";
                     if ("j:fullpath".equals(sourceEntry.getKey()) || "j:nodename".equals(sourceEntry.getKey())
-                            || "j:title".equals(sourceEntry.getKey())) {
+                            || "j:title".equals(sourceEntry.getKey()) || "j:description".equals(sourceEntry.getKey())) {
                         sourceValue = ((Value)sourceValue).getString().replace(sourceRootPath, "");
                         targetValue = ((Value)targetValue).getString().replace(targetRootPath, "");
                         sourceValue = ((String)sourceValue).replace(TESTSITE_NAME, "");
@@ -1097,7 +1113,7 @@ public class ImportExportTest {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
-                    importExport.importZip(parentPath, new FileSystemResource(zipFile), DocumentViewImportHandler.ROOT_BEHAVIOUR_RENAME);
+                    importExport.importZip(parentPath, zipFile != null ? new FileSystemResource(zipFile) : null, DocumentViewImportHandler.ROOT_BEHAVIOUR_RENAME);
                     session.save();
                 } catch (Exception e) {
                     logger.error("Cannot create or publish site", e);

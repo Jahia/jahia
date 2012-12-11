@@ -40,15 +40,21 @@
 
 package org.jahia.test.services.content;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+
 import org.slf4j.Logger;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 import org.junit.*;
@@ -56,6 +62,8 @@ import org.junit.*;
 import com.google.common.collect.Sets;
 
 import javax.jcr.PathNotFoundException;
+
+import java.io.IOException;
 import java.util.Locale;
 
 /**
@@ -65,13 +73,31 @@ import java.util.Locale;
  *         Date: Jan 27, 2010
  *         Time: 2:16:51 PM
  */
-public class MultiLanguageTest extends TestCase {
+public class MultiLanguageTest extends JahiaTestCase {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(MultiLanguageTest.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "jcrMultiLanguageTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
+    private HttpClient client;
 
+    private boolean isTextPresentInResponse(String relativeUrl, String text) {
+        String body = StringUtils.EMPTY;
+        GetMethod getMethod = new GetMethod(getBaseServerURL() + Jahia.getContextPath()
+                + relativeUrl);
+        try {
+            int responseCode = client.executeMethod(getMethod);
+            assertEquals("Response code is not OK: " + responseCode, 200, responseCode);
+            body = getMethod.getResponseBodyAsString();
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            getMethod.releaseConnection();
+        }
+        
+        return body.contains(text);
+    }
+    
     @Before
     public void setUp() throws Exception {
         site = TestHelper.createSite(TESTSITE_NAME, Sets.newHashSet(Locale.ENGLISH.toString(), Locale.FRENCH.toString()), null, true);
@@ -80,7 +106,7 @@ public class MultiLanguageTest extends TestCase {
         session.save();
     }
 
-    @org.junit.Test
+    @Test
     public void testFallBackLanguage() throws Exception {
         JCRPublicationService jcrService = ServicesRegistry.getInstance()
                 .getJCRPublicationService();
@@ -108,7 +134,7 @@ public class MultiLanguageTest extends TestCase {
         assertEquals("English text node should be available in edit workspace when mixed language is activated.", "English text", frenchTextPropertyValue);
 
         // now let's test without mix language active.
-        frenchEditSession.logout();
+        JCRSessionFactory.getInstance().closeAllSessions();
         site.setMixLanguagesActive(false);
         ServicesRegistry.getInstance().getJahiaSitesService().updateSite(site);
 
@@ -129,7 +155,7 @@ public class MultiLanguageTest extends TestCase {
         assertEquals("English text node should be available in live workspace when mixed language is activated.", "English text", frenchLiveTextPropertyValue);
 
         // now let's test without mix language active.
-        frenchLiveSession.logout();
+        JCRSessionFactory.getInstance().closeAllSessions();
         site.setMixLanguagesActive(false);
         ServicesRegistry.getInstance().getJahiaSitesService().updateSite(site);
 
@@ -143,12 +169,106 @@ public class MultiLanguageTest extends TestCase {
 
     }
 
+    @Test
+    public void testLanguageInvalidity() throws Exception {
+        JCRPublicationService jcrService = ServicesRegistry.getInstance()
+                .getJCRPublicationService();
+
+        String defaultLanguage = site.getDefaultLanguage();
+
+        JCRSessionFactory sf = jcrService.getSessionFactory();
+        Locale defLocale = LanguageCodeConverters.languageCodeToLocale(defaultLanguage);
+        JCRSessionWrapper englishEditSession = sf.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH, defLocale);
+        JCRSessionWrapper englishLiveSession = sf.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH, defLocale);
+        JCRNodeWrapper stageRootNode = englishEditSession.getNode(SITECONTENT_ROOT_NODE);
+        englishLiveSession.getNode(SITECONTENT_ROOT_NODE);
+        JCRNodeWrapper stageNode = (JCRNodeWrapper) stageRootNode.getNode("home").getNode("listA");
+
+        JCRNodeWrapper textNode1 = stageNode.addNode("textInvalidLanguage", "jnt:text");
+        final String englishText = "English text";
+        textNode1.setProperty("text", englishText);
+
+        englishEditSession.save();
+        
+        JCRSessionWrapper frenchEditSession = sf.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.FRENCH, defLocale);
+        
+        final String frenchText = "French text";
+        frenchEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/listA/textInvalidLanguage").setProperty("text", frenchText);
+        
+        frenchEditSession.save();
+
+        jcrService.publishByMainId(stageRootNode.getIdentifier());
+
+        JCRNodeWrapper englishLiveSessionNode = englishLiveSession.getNode(textNode1.getPath());
+        String string = englishLiveSessionNode.getProperty("text").getValue().getString();
+        assertEquals(string,englishText);
+
+        assertEquals(frenchText, sf.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.FRENCH, defLocale).getNode(SITECONTENT_ROOT_NODE + "/home/listA/textInvalidLanguage").getProperty("text").getValue().getString());
+        
+        client = new HttpClient();
+
+        // Validate that EN and FR content is visible in live
+        String url = "/cms/render/live/en/sites/" + TESTSITE_NAME + "/home.html";
+        assertTrue("Not found expected value (" + englishText + ") in response body for url: " + url, isTextPresentInResponse(url, englishText));
+        // and once again for the cached page
+        assertTrue("Not found expected value (" + englishText + ") in response body for url: " + url, isTextPresentInResponse(url, englishText));
+        url = "/cms/render/live/fr/sites/" + TESTSITE_NAME + "/home.html";
+        assertTrue("Not found expected value (" + frenchText + ") in response body for url: " + url, isTextPresentInResponse(url, frenchText));
+        // and once again for the cached page
+        assertTrue("Not found expected value (" + frenchText + ") in response body for url: " + url, isTextPresentInResponse(url, frenchText));
+        
+        // deactivate FR 
+        textNode1.setProperty("j:invalidLanguages", new String[] { "fr" });
+        englishEditSession.save();
+        
+        // publish inactivation
+        jcrService.publishByMainId(stageRootNode.getIdentifier());
+
+        JCRSessionFactory.getInstance().closeAllSessions();
+        assertEquals(englishText, sf.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH, defLocale).getNode(SITECONTENT_ROOT_NODE + "/home/listA/textInvalidLanguage").getProperty("text").getString());
+        assertFalse("French node should not be available in live",  sf.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.FRENCH, defLocale).nodeExists(SITECONTENT_ROOT_NODE + "/home/listA/textInvalidLanguage"));
+        
+        // Validate that EN content is still visible in live
+        url = "/cms/render/live/en/sites/" + TESTSITE_NAME + "/home.html";
+        assertTrue("Not found expected value (" + englishText + ") in response body for url: " + url, isTextPresentInResponse(url, englishText));
+        // and once again for the cached page
+        assertTrue("Not found expected value (" + englishText + ") in response body for url: " + url, isTextPresentInResponse(url, englishText));
+
+        // Validate that FR content is NOT visible in live
+        url = "/cms/render/live/fr/sites/" + TESTSITE_NAME + "/home.html";
+        assertFalse("Found unexpected value (" + frenchText + ") in response body for url: " + url, isTextPresentInResponse(url, frenchText));
+        // and once again for the cached page
+        assertFalse("Found unexpected value (" + frenchText + ") in response body for url: " + url, isTextPresentInResponse(url, frenchText));
+
+        englishEditSession = sf.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH, defLocale);
+        // activate FR 
+        englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/listA/textInvalidLanguage").getProperty("j:invalidLanguages").remove();
+        englishEditSession.save();
+        
+        // publish activation
+        jcrService.publishByMainId(stageRootNode.getIdentifier());
+
+        JCRSessionFactory.getInstance().closeAllSessions();
+        assertEquals(englishText, sf.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH, defLocale).getNode(SITECONTENT_ROOT_NODE + "/home/listA/textInvalidLanguage").getProperty("text").getString());
+        assertEquals(frenchText, sf.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.FRENCH, defLocale).getNode(SITECONTENT_ROOT_NODE + "/home/listA/textInvalidLanguage").getProperty("text").getString());
+        
+        // Validate that EN and FR are visible in live
+        url = "/cms/render/live/en/sites/" + TESTSITE_NAME + "/home.html";
+        assertTrue("Not found expected value (" + englishText + ") in response body for url: " + url, isTextPresentInResponse(url, englishText));
+        // and once again for the cached page
+        assertTrue("Not found expected value (" + englishText + ") in response body for url: " + url, isTextPresentInResponse(url, englishText));
+        url = "/cms/render/live/fr/sites/" + TESTSITE_NAME + "/home.html";
+        assertTrue("Not found expected value (" + frenchText + ") in response body for url: " + url, isTextPresentInResponse(url, frenchText));
+        // and once again for the cached page
+        assertTrue("Not found expected value (" + frenchText + ") in response body for url: " + url, isTextPresentInResponse(url, frenchText));
+    }
+
     @After
     public void tearDown() throws Exception {
         TestHelper.deleteSite(TESTSITE_NAME);
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
         session.save();
-        session.logout();
+        JCRSessionFactory.getInstance().closeAllSessions();
     }
 
 

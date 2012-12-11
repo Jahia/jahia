@@ -171,9 +171,7 @@ public class FindTest extends JahiaTestCase {
         loginMethod.addParameter(LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER, "1");
 
         int statusCode = client.executeMethod(loginMethod);
-        if (statusCode != HttpStatus.SC_OK) {
-            logger.error("Method failed: " + loginMethod.getStatusLine());
-        }
+        assertEquals("Unexpected response code", HttpStatus.SC_OK, statusCode);
     }
 
     @After
@@ -183,9 +181,7 @@ public class FindTest extends JahiaTestCase {
         logoutMethod.addParameter("redirectActive", "false");
 
         int statusCode = client.executeMethod(logoutMethod);
-        if (statusCode != HttpStatus.SC_OK) {
-            logger.error("Method failed: " + logoutMethod.getStatusLine());
-        }
+        assertEquals("Unexpected response code", HttpStatus.SC_OK, statusCode);
 
         logoutMethod.releaseConnection();
     }
@@ -207,15 +203,18 @@ public class FindTest extends JahiaTestCase {
 
         // Execute the method.
         int statusCode = client.executeMethod(method);
-
-        if (statusCode != HttpStatus.SC_OK) {
-            logger.error("Method failed: " + method.getStatusLine());
-        }
+        assertEquals("Method failed: " + method.getStatusLine(), HttpStatus.SC_OK, statusCode);
 
         // Read the response body.
         String responseBody = method.getResponseBodyAsString();
+        if (!responseBody.startsWith("[")) {
+            StringBuilder responseBodyBuilder = new StringBuilder();
+            responseBodyBuilder.append("[")
+                    .append(method.getResponseBodyAsString()).append("]");
+            responseBody = responseBodyBuilder.toString();
+        }
 
-        logger.debug("Status code=" + statusCode +" JSON response=[" + responseBody + "]");
+        logger.debug("Status code=" + statusCode +" JSON response=" + responseBody);
 
         JSONArray jsonResults = new JSONArray(responseBody);
 
@@ -246,14 +245,18 @@ public class FindTest extends JahiaTestCase {
         // Execute the method.
         int statusCode = client.executeMethod(method);
 
-        if (statusCode != HttpStatus.SC_OK) {
-            logger.error("Method failed: " + method.getStatusLine());
-        }
+        assertEquals("Method failed: " + method.getStatusLine(), HttpStatus.SC_OK, statusCode);
 
         // Read the response body.
         String responseBody = method.getResponseBodyAsString();
+        if (!responseBody.startsWith("[")) {
+            StringBuilder responseBodyBuilder = new StringBuilder();
+            responseBodyBuilder.append("[")
+                    .append(method.getResponseBodyAsString()).append("]");
+            responseBody = responseBodyBuilder.toString();
+        }
 
-        logger.debug("Status code=" + statusCode +" JSON response=[" + responseBody + "]");
+        logger.debug("Status code=" + statusCode +" JSON response=" + responseBody);
 
         JSONArray jsonResults = new JSONArray(responseBody);
 
@@ -284,14 +287,19 @@ public class FindTest extends JahiaTestCase {
         // Execute the method.
         int statusCode = client.executeMethod(method);
 
-        if (statusCode != HttpStatus.SC_OK) {
-            logger.error("Method failed: " + method.getStatusLine());
-        }
+        assertEquals("Method failed: " + method.getStatusLine(), HttpStatus.SC_OK, statusCode);
 
         // Read the response body.
         String responseBody = method.getResponseBodyAsString();
+        if (!responseBody.startsWith("[")) {
+            StringBuilder responseBodyBuilder = new StringBuilder();
+            responseBodyBuilder.append("[")
+                    .append(method.getResponseBodyAsString()).append("]");
+            responseBody = responseBodyBuilder.toString();
+        }
 
-        logger.debug("Status code=" + statusCode + " JSON response=[" + responseBody + "]");
+
+        logger.debug("Status code=" + statusCode + " JSON response=" + responseBody);
         
         JSONArray jsonResults = new JSONArray(responseBody);
 
@@ -316,21 +324,37 @@ public class FindTest extends JahiaTestCase {
     }
 
     private void validateFindJSONResults(JSONArray jsonResults, String textToValidate) throws JSONException {
-        for (int i=0; i < jsonResults.length(); i++) {
-            JSONObject jsonObject = (JSONObject) jsonResults.get(i);
-            if (jsonObject.has("jcr:score")) {
-                // we are handling a row, let's extract the node from it.
-                jsonObject = jsonObject.getJSONObject("node");
-            }
-            JSONArray matchingPropertiesJSONArray = jsonObject.getJSONArray("matchingProperties");
-            assertEquals("Expected two matching properties : jcr:title and body", 2, matchingPropertiesJSONArray.length());
-            for (int j=0; j < matchingPropertiesJSONArray.length(); j++) {
-                String matchingPropertyName = (String) matchingPropertiesJSONArray.get(j);
-                String propertyValue = jsonObject.getString(matchingPropertyName);
-                assertNotNull("Property " + matchingPropertyName + " not found or null !", propertyValue);
-                assertTrue("Expected matching property " + matchingPropertyName + " to start with value " + textToValidate, propertyValue.startsWith(textToValidate));
+        for (int i = 0; i < jsonResults.length(); i++) {
+            if (jsonResults.get(i) instanceof JSONArray) { 
+                JSONArray jsonArray = (JSONArray) jsonResults.get(i);
+                for (int j = 0; j < jsonArray.length(); j++) {
+                    validateFindJSONResults((JSONObject)jsonResults.get(j), textToValidate);
+                }
+            } else {
+                validateFindJSONResults((JSONObject)jsonResults.get(i), textToValidate);                
             }
         }
     }
-    
+
+    private void validateFindJSONResults(JSONObject jsonObject,
+            String textToValidate) throws JSONException {
+        if (jsonObject.has("jcr:score")) {
+            // we are handling a row, let's extract the node from it.
+            jsonObject = jsonObject.getJSONObject("node");
+        }
+        JSONArray matchingPropertiesJSONArray = jsonObject
+                .getJSONArray("matchingProperties");
+        assertEquals("Expected two matching properties : jcr:title and body",
+                2, matchingPropertiesJSONArray.length());
+        for (int k = 0; k < matchingPropertiesJSONArray.length(); k++) {
+            String matchingPropertyName = (String) matchingPropertiesJSONArray
+                    .get(k);
+            String propertyValue = jsonObject.getString(matchingPropertyName);
+            assertNotNull("Property " + matchingPropertyName
+                    + " not found or null !", propertyValue);
+            assertTrue("Expected matching property " + matchingPropertyName
+                    + " to start with value " + textToValidate,
+                    propertyValue.startsWith(textToValidate));
+        }
+    }
 }

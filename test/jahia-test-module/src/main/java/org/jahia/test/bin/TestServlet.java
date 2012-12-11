@@ -43,11 +43,13 @@ package org.jahia.test.bin;
 import org.jahia.params.ProcessingContextFactory;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ParamBean;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.SurefireJUnitXMLResultFormatter;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.junit.internal.requests.FilterRequest;
 import org.junit.runner.Description;
@@ -93,6 +95,8 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
     private ServletContext servletContext;
     
     protected void handleGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
+
+        httpServletRequest.getSession().setAttribute(ProcessingContext.SESSION_LOCALE, Locale.ENGLISH);
 
         final ProcessingContextFactory pcf = (ProcessingContextFactory) SpringContextSingleton.
                 getInstance().getContext().getBean(ProcessingContextFactory.class.getName());
@@ -155,8 +159,13 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
                 Pattern testNamePattern = StringUtils.isNotEmpty(pathInfo) ? Pattern
                         .compile(pathInfo.length() > 1 && pathInfo.startsWith("/") ? pathInfo
                                 .substring(1) : pathInfo) : null;
-                WebApplicationContext webApplicationContext = (WebApplicationContext) servletContext.getAttribute(WebApplicationContext.class.getName() + ".jahiaModules");
-                Map<String,TestBean> testBeans = webApplicationContext.getBeansOfType(TestBean.class);
+                Map<String,TestBean> testBeans = new HashMap<String, TestBean>();
+                for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
+                    if (aPackage.getContext() != null) {
+                        testBeans.putAll(aPackage.getContext().getBeansOfType(TestBean.class));
+                    }
+                }
+                
 
                 PrintWriter pw = httpServletResponse.getWriter();
                 // Return the lists of available tests
@@ -230,8 +239,12 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
     }
     
     private Set<String> getIgnoreTests() {
-        WebApplicationContext webApplicationContext = (WebApplicationContext) servletContext.getAttribute(WebApplicationContext.class.getName() + ".jahiaModules");
-        Map<String,TestBean> testBeans = webApplicationContext.getBeansOfType(TestBean.class);
+    	Map<String,TestBean> testBeans = new HashMap<String, TestBean>();
+        JahiaTemplatesPackage jahiaTestModule = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("jahia-test-module-war");
+        
+        if (jahiaTestModule.getContext() != null) {
+        	testBeans = jahiaTestModule.getContext().getBeansOfType(TestBean.class);
+        }
 
         // Return the lists of available tests
         Set<String> ignoreTests = new HashSet<String>();

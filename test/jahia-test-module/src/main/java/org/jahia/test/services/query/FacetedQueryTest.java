@@ -43,6 +43,7 @@ package org.jahia.test.services.query;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.RangeFacet;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -167,7 +168,7 @@ public class FacetedQueryTest {
         }                
 
         // test facet options : sort=false  - lexicographic order
-        res = doQuery(session, "eventsType", "rep:facet(facet.mincount=1&sort=false)");
+        res = doQuery(session, "eventsType", "rep:facet(facet.mincount=1&sort=index)");
         field = res.getFacetField("eventsType");
         assertNotNull("Facet field is null",field);
         assertNotNull("Facet values are null",field.getValues());
@@ -210,8 +211,8 @@ public class FacetedQueryTest {
         
         Iterator<FacetField.Count> counts = field.getValues().iterator();
 
-        checkFacet(counts.next(), "2000-01-01T00:00:00.000Z", 14);
-        checkFacet(counts.next(), "2000-02-01T00:00:00.000Z", 13);
+        checkFacet(counts.next(), "2000-01-01T00:00:00Z", 14);
+        checkFacet(counts.next(), "2000-02-01T00:00:00Z", 13);
         
         for (FacetField.Count count : field.getValues()) {
             QueryResultWrapper resCheck = doQuery(session, "rep:filter(startDate)", count.getAsFilterQuery());
@@ -224,13 +225,98 @@ public class FacetedQueryTest {
         assertEquals("Query did not return correct number of facets", 1, field.getValues().size());
         counts = field.getValues().iterator();
 
-        checkFacet(counts.next(), "2000-01-01T00:00:00.000Z", 27);
+        checkFacet(counts.next(), "2000-01-01T00:00:00Z", 27);
         
         for (FacetField.Count count : field.getValues()) {
             QueryResultWrapper resCheck = doQuery(session, "rep:filter(startDate)", count.getAsFilterQuery());
             checkResultSize(resCheck, (int) count.getCount());
-        }        
+        }
+        
+        res = doQuery(session, "startDate", "rep:facet(facet.mincount=1&date.start=2000-01-10T00:00:00Z&date.end=2000-01-31T00:00:00Z&date.gap=+7DAYS&date.include=lower&date.include=upper&date.include=edge&date.other=all)");
+        field = res.getFacetDate("startDate");
+
+        assertEquals("Query did not return correct number of facets", 6, field.getValues().size());
+        
+        counts = field.getValues().iterator();
+
+        checkFacet(counts.next(), "2000-01-10T00:00:00Z", 4);
+        checkFacet(counts.next(), "2000-01-17T00:00:00Z", 2);
+        checkFacet(counts.next(), "2000-01-24T00:00:00Z", 2);
+        checkFacet(counts.next(), "before", 4);
+        checkFacet(counts.next(), "after", 15);
+        checkFacet(counts.next(), "between", 8);
+        
+        for (FacetField.Count count : field.getValues()) {
+            QueryResultWrapper resCheck = doQuery(session, "rep:filter(startDate)", count.getAsFilterQuery());
+            checkResultSize(resCheck, (int) count.getCount());
+        }
     }
+    
+    @Test    
+    public void testRangeFacets() throws Exception {
+
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
+
+        RangeFacet field;
+        QueryResultWrapper res;
+
+        // test date facets
+        res = doQuery(session, "startDate", "rep:facet(range.start=2000-01-01T00:00:00Z&range.end=2002-01-01T00:00:00Z&range.gap=+1MONTH&range.include=lower&range.include=upper&range.include=edge)");
+        field = res.getRangeFacet("startDate");
+
+        assertEquals("Query did not return correct number of facets", 24, field.getCounts().size());
+        
+        res = doQuery(session, "startDate", "rep:facet(facet.mincount=1&range.start=2000-01-01T00:00:00Z&range.end=2002-01-01T00:00:00Z&range.gap=+1MONTH&range.include=lower&range.include=upper&range.include=edge)");
+        field = res.getRangeFacet("startDate");
+
+        assertEquals("Query did not return correct number of facets", 2, field.getCounts().size());
+        
+        Iterator<RangeFacet.Count> counts = field.getCounts().iterator();
+
+        checkFacet(counts.next(), "2000-01-01T00:00:00Z", 14);
+        checkFacet(counts.next(), "2000-02-01T00:00:00Z", 13);
+        
+        for (Iterator<RangeFacet.Count> it = field.getCounts().iterator(); it.hasNext();) {
+            RangeFacet.Count count = it.next();
+            QueryResultWrapper resCheck = doQuery(session, "rep:filter(startDate)", count.getAsFilterQuery());
+            checkResultSize(resCheck, (int) count.getCount());
+        }
+
+        res = doQuery(session, "startDate", "rep:facet(facet.mincount=1&range.start=2000-01-01T00:00:00Z&range.end=2002-01-01T00:00:00Z&range.gap=+1YEAR&range.include=lower&range.include=upper&range.include=edge)");
+        field = res.getRangeFacet("startDate");
+
+        assertEquals("Query did not return correct number of facets", 1, field.getCounts().size());
+        counts = field.getCounts().iterator();
+
+        checkFacet(counts.next(), "2000-01-01T00:00:00Z", 27);
+        
+        for (Iterator<RangeFacet.Count> it = field.getCounts().iterator(); it.hasNext();) {
+            RangeFacet.Count count = it.next();
+            QueryResultWrapper resCheck = doQuery(session, "rep:filter(startDate)", count.getAsFilterQuery());
+            checkResultSize(resCheck, (int) count.getCount());
+        }
+        
+        res = doQuery(session, "startDate", "rep:facet(facet.mincount=1&range.start=2000-01-10T00:00:00Z&range.end=2000-01-31T00:00:00Z&range.gap=+7DAYS&range.include=lower&range.include=upper&range.include=edge&range.other=all)");
+        field = res.getRangeFacet("startDate");
+
+        assertEquals("Query did not return correct number of facets", 6, field.getCounts().size());
+        
+        counts = field.getCounts().iterator();
+
+        checkFacet(counts.next(), "2000-01-10T00:00:00Z", 4);
+        checkFacet(counts.next(), "2000-01-17T00:00:00Z", 2);
+        checkFacet(counts.next(), "2000-01-24T00:00:00Z", 2);
+        checkFacet(counts.next(), "before", 4);
+        checkFacet(counts.next(), "after", 15);
+        checkFacet(counts.next(), "between", 8);        
+        
+        for (Iterator<RangeFacet.Count> it = field.getCounts().iterator(); it.hasNext();) {
+            RangeFacet.Count count = it.next();
+            QueryResultWrapper resCheck = doQuery(session, "rep:filter(startDate)", count.getAsFilterQuery());
+            checkResultSize(resCheck, (int) count.getCount());
+        }        
+    }    
     
     @Test
     public void testI18NFacets() throws Exception {
@@ -331,8 +417,8 @@ public class FacetedQueryTest {
         assertEquals("Query did not return correct number of facet values", 2, field.getValues().size());
         counts = field.getValues().iterator();
 
-        checkFacet(counts.next(), "2000-01-01T00:00:00.000Z", 14);
-        checkFacet(counts.next(), "2000-02-01T00:00:00.000Z", 13);
+        checkFacet(counts.next(), "2000-01-01T00:00:00Z", 14);
+        checkFacet(counts.next(), "2000-02-01T00:00:00Z", 13);
         
         for (FacetField.Count count : field.getValues()) {
             QueryResultWrapper resCheck = doQuery(session, "rep:filter(startDate)", count.getAsFilterQuery(), "eventsType", "rep:facet(facet.mincount=1&key=1)");
@@ -345,7 +431,7 @@ public class FacetedQueryTest {
             nestedField = resCheck.getFacetField("eventsType");
             Iterator<FacetField.Count> nestedCounts = nestedField.getValues().iterator();
             
-            if ("2000-01-01T00:00:00.000Z".equals(count.getName())) {
+            if ("2000-01-01T00:00:00Z".equals(count.getName())) {
                 checkFacet(nestedCounts.next(), CONFERENCE, 5);
                 checkFacet(nestedCounts.next(), ROAD_SHOW, 4);
                 checkFacet(nestedCounts.next(), CONSUMER_SHOW, 3);
@@ -383,17 +469,17 @@ public class FacetedQueryTest {
         resCheck = doQuery(session, "rep:filter()", "0\\:FACET\\:eventsType:[p TO z]");
         checkResultSize(resCheck, 17);            
 
-        res = doQuery(session, "startDate", "rep:facet(facet.query=0\\:FACET\\:startDate:[2000-01-01T00:00:00.000Z TO 2000-01-01T00:00:00.000Z+1MONTH]&facet.query=0\\:FACET\\:startDate:[2000-01-01T00:00:00.000Z+1MONTH TO 2000-01-01T00:00:00.000Z+2MONTH])");
+        res = doQuery(session, "startDate", "rep:facet(facet.query=0\\:FACET\\:startDate:[2000-01-01T00:00:00Z TO 2000-01-01T00:00:00Z+1MONTH]&facet.query=0\\:FACET\\:startDate:[2000-01-01T00:00:00Z+1MONTH TO 2000-01-01T00:00:00Z+2MONTH])");
         queryFacet = res.getFacetQuery();
         assertNotNull("Query facet result is null",queryFacet);
         assertEquals("Query did not return correct number of facets", 2, queryFacet.size());
         
-        assertEquals("Facet count is incorrect", 14, queryFacet.get("0\\:FACET\\:startDate:[2000-01-01T00:00:00.000Z TO 2000-01-01T00:00:00.000Z+1MONTH]").longValue());
-        assertEquals("Facet count is incorrect", 13, queryFacet.get("0\\:FACET\\:startDate:[2000-01-01T00:00:00.000Z+1MONTH TO 2000-01-01T00:00:00.000Z+2MONTH]").longValue());        
+        assertEquals("Facet count is incorrect", 14, queryFacet.get("0\\:FACET\\:startDate:[2000-01-01T00:00:00Z TO 2000-01-01T00:00:00Z+1MONTH]").longValue());
+        assertEquals("Facet count is incorrect", 13, queryFacet.get("0\\:FACET\\:startDate:[2000-01-01T00:00:00Z+1MONTH TO 2000-01-01T00:00:00Z+2MONTH]").longValue());        
         
-        resCheck = doQuery(session, "rep:filter()", "0\\:FACET\\:startDate:[2000-01-01T00:00:00.000Z TO 2000-01-01T00:00:00.000Z+1MONTH]");
+        resCheck = doQuery(session, "rep:filter()", "0\\:FACET\\:startDate:[2000-01-01T00:00:00Z TO 2000-01-01T00:00:00Z+1MONTH]");
         checkResultSize(resCheck, 14);
-        resCheck = doQuery(session, "rep:filter()", "0\\:FACET\\:startDate:[2000-01-01T00:00:00.000Z+1MONTH TO 2000-01-01T00:00:00.000Z+2MONTH]");
+        resCheck = doQuery(session, "rep:filter()", "0\\:FACET\\:startDate:[2000-01-01T00:00:00Z+1MONTH TO 2000-01-01T00:00:00Z+2MONTH]");
         checkResultSize(resCheck, 13);        
     }
 
@@ -402,7 +488,7 @@ public class FacetedQueryTest {
         Calendar calendar = new GregorianCalendar(2000, 0, 1, 12, 0);
 
         JCRNodeWrapper cats = session.getNode("/sites/systemsite/categories");
-        session.getWorkspace().getVersionManager().checkout(cats.getPath());
+
         if (!cats.hasNode("cat1")) cats.addNode("cat1", "jnt:category");
         if (!cats.hasNode("cat2")) cats.addNode("cat2", "jnt:category");
         if (!cats.hasNode("cat3")) cats.addNode("cat3", "jnt:category");
@@ -512,6 +598,11 @@ public class FacetedQueryTest {
         assertEquals("Facet are not correctly ordered or has incorrect name", name, c.getName());
         assertEquals("Facet count is incorrect", count, c.getCount());
     }
+    
+    private void checkFacet(RangeFacet.Count c, final String name, final int count) {
+        assertEquals("Facet are not correctly ordered or has incorrect name", name, c.getValue());
+        assertEquals("Facet count is incorrect", count, c.getCount());
+    }    
 
     private static void createEvent(JCRNodeWrapper node, final String eventType, String location, Calendar calendar,
                              JCRNodeWrapper category, int i)

@@ -110,6 +110,7 @@ public class URLFilterTest {
         }
         JCRNodeWrapper pageNode = siteNode.addNode("testPage", Constants.JAHIANT_PAGE);
         pageNode.setProperty("jcr:title", "English test page");
+        pageNode.setProperty("j:templateName", "simple");        
         pageNode.addNode("testContent", "jnt:mainContent");
 
         session.save();

@@ -137,10 +137,12 @@ public class PublicationTest {
             JCRNodeWrapper englishEditSiteHomeNode = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home");
             testHomeEdit = englishEditSiteHomeNode.addNode("test"+System.currentTimeMillis(), "jnt:page");
             testHomeEdit.setProperty("jcr:title", "Test page");
+            testHomeEdit.setProperty("j:templateName", "simple");
             englishEditSession.save();
             jcrService.publishByMainId(testHomeEdit.getIdentifier());
         } catch (RepositoryException e) {
-            fail("Cannot get session");
+            logger.error(e.getMessage(), e);
+            fail("Cannot setUp test: " + e.getMessage());
         }
     }
 
@@ -153,7 +155,8 @@ public class PublicationTest {
             englishLiveSession.getNodeByIdentifier(testHomeEdit.getIdentifier()).remove();
             englishLiveSession.save();
         } catch (RepositoryException e) {
-            fail("Cannot remove nodes");
+            logger.error(e.getMessage(), e);
+            fail("Cannot remove nodes: " + e.getMessage());
         }
     }
 
@@ -306,7 +309,7 @@ public class PublicationTest {
         jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, null);
 
         // Case 8 : now let's move it to yet another list, modify it, then publish it.
-        JCRNodeWrapper editContentList1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1");
+        englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1");
         JCRNodeWrapper editContentList2 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList2");
 
         englishEditSession.move(testHomeEdit.getPath() + "/contentList1/contentList1_text1", testHomeEdit.getPath() + "/contentList2/contentList1_text1");
@@ -336,14 +339,14 @@ public class PublicationTest {
         jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, null);
 
         // Case 9 : Let's move to yet another list, and then modify it's location in the list twice.
-        JCRNodeWrapper editContentList3 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList3");
+        englishEditSession.getNode(testHomeEdit.getPath() + "/contentList3");
         JCRNodeWrapper editContentList4 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList4");
 
         englishEditSession.move(testHomeEdit.getPath() + "/contentList3/contentList3_text1", testHomeEdit.getPath() + "/contentList4/contentList3_text1");
         editContentList4.orderBefore("contentList3_text1", "contentList4_text1");
         editContentList4.orderBefore("contentList3_text1", "contentList4_text0");
         englishEditSession.save();
-        JCRNodeWrapper editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList4/contentList3_text1");
+        englishEditSession.getNode(testHomeEdit.getPath() + "/contentList4/contentList3_text1");
 
         getCleanSession();
         jcrService.publishByMainId(editContentList4.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);

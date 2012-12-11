@@ -186,8 +186,7 @@ public class RenderTest extends JahiaTestCase {
 
         editSession.checkout(stageNode);
         JCRNodeWrapper stagedSubPage = stageNode.addNode("home_subpage1", "jnt:page");
-        stagedSubPage.setProperty("j:templateNode", editSession.getNode(
-                    SITECONTENT_ROOT_NODE + "/templates/base/simple"));
+        stagedSubPage.setProperty("j:templateName", "simple");
         stagedSubPage.setProperty("jcr:title", "title0");
         editSession.save();
         Set<String> languagesStringSet = new LinkedHashSet<String>();

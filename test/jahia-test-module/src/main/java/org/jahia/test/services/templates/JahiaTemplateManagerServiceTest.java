@@ -56,7 +56,6 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.TestHelper;
-import org.jahia.test.services.content.*;
 import org.junit.*;
 import org.slf4j.Logger;
 
@@ -65,9 +64,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import java.util.*;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -101,7 +98,7 @@ public class JahiaTemplateManagerServiceTest {
         JahiaGroupManagerService groupManager = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         assertNotNull("JahiaGroupManagerService cannot be retrieved", groupManager);
         if (site != null) {
-            JahiaGroup group = groupManager.lookupGroup(site.getID(), "site-privileged");
+            JahiaGroup group = groupManager.lookupGroup(site.getSiteKey(), "site-privileged");
             group.addMember(user);
         }
     }
@@ -130,27 +127,25 @@ public class JahiaTemplateManagerServiceTest {
     }
 
     private void deployModule(String moduleToBeDeployed) throws RepositoryException {
-// TODO: fix method as it does no longer compile
-        
-//        JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-//        List<JahiaTemplatesPackage> availableTemplatePackages = templateManagerService.getAvailableTemplatePackages();
-//        assertNotNull(availableTemplatePackages);
-//        assertFalse(availableTemplatePackages.isEmpty());
-//        JahiaTemplatesPackage articlePackage = null;
-//        for (JahiaTemplatesPackage availableTemplatePackage : availableTemplatePackages) {
-//            if (availableTemplatePackage.getFileName().equals(moduleToBeDeployed)) {
-//                articlePackage = availableTemplatePackage;
-//            }
-//        }
-//        assertNotNull(articlePackage);
-//        String modulePath = "/templateSets/" + articlePackage.getFileName();
-//        templateManagerService.deployModule(modulePath, SITE_CONTENT_ROOT_NODE, "root");
-//        JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
-//        JCRSessionWrapper session = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
-//        JCRSiteNode siteNode = (JCRSiteNode) session.getNode(SITE_CONTENT_ROOT_NODE);
-//        assertTrue(siteNode.getInstalledModules().contains(moduleToBeDeployed));
-//        JCRNodeWrapper node = session.getNode(modulePath);
-//        assertTrue(compareNodeNamesTreeStopOnError(node, modulePath, SITE_CONTENT_ROOT_NODE, session));
+        JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+        List<JahiaTemplatesPackage> availableTemplatePackages = templateManagerService.getAvailableTemplatePackages();
+        assertNotNull(availableTemplatePackages);
+        assertFalse(availableTemplatePackages.isEmpty());
+        JahiaTemplatesPackage articlePackage = null;
+        for (JahiaTemplatesPackage availableTemplatePackage : availableTemplatePackages) {
+            if (availableTemplatePackage.getRootFolder().equals(moduleToBeDeployed)) {
+                articlePackage = availableTemplatePackage;
+            }
+        }
+        assertNotNull(articlePackage);
+        String modulePath = "/modules/" + articlePackage.getRootFolderWithVersion();
+        templateManagerService.installModule(articlePackage, SITE_CONTENT_ROOT_NODE, "root");
+        JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
+        JCRSessionWrapper session = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+        JCRSiteNode siteNode = (JCRSiteNode) session.getNode(SITE_CONTENT_ROOT_NODE);
+        assertTrue(siteNode.getInstalledModules().contains(moduleToBeDeployed));
+        JCRNodeWrapper node = session.getNode(modulePath);
+        assertModuleIsInstalledInSite(node, modulePath, SITE_CONTENT_ROOT_NODE, session);
     }
 
     @Test
@@ -168,25 +163,21 @@ public class JahiaTemplateManagerServiceTest {
 
     }
 
-    private boolean compareNodeNamesTreeStopOnError(JCRNodeWrapper node, String oldPrefix, String newPrefix, JCRSessionWrapper session) {
+    private void assertModuleIsInstalledInSite(JCRNodeWrapper node, String oldPrefix, String newPrefix, JCRSessionWrapper session) {
         if (!excludedNodeName.contains(node.getName())) {
             try {
                 // StudioOnly node are not deployed on sites
-                if(!node.isNodeType("jmix:studioOnly")) {
-                    session.getNode(node.getPath().replaceAll(oldPrefix, newPrefix).replaceAll("forum\\-base", "base/forum-base"));
-                }
-                NodeIterator nodeIterator = node.getNodes();
-                while (nodeIterator.hasNext()) {
-                    if (!compareNodeNamesTreeStopOnError((JCRNodeWrapper) nodeIterator.nextNode(), oldPrefix, newPrefix, session)) {
-                        return false;
+                if(!node.isNodeType("jmix:studioOnly") && !node.isNodeType("jnt:templatesFolder")) {
+                    session.getNode(node.getPath().replaceAll(oldPrefix, newPrefix));
+                    NodeIterator nodeIterator = node.getNodes();
+                    while (nodeIterator.hasNext()) {
+                        assertModuleIsInstalledInSite((JCRNodeWrapper) nodeIterator.nextNode(), oldPrefix, newPrefix, session);
                     }
                 }
             } catch (RepositoryException e) {
-                logger.error("Error while getting node " + node.getPath().replaceAll(oldPrefix, newPrefix));
-                return false;
+                fail("Error while getting node " + node.getPath().replaceAll(oldPrefix, newPrefix));
             }
         }
-        return true;
     }
 
     class CheckPermission implements JCRCallback<Boolean> {

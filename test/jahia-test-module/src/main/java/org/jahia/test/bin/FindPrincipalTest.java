@@ -70,6 +70,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 
+import static org.junit.Assert.*;
+
 /**
  * Test of the find principal servlet.
  *
@@ -136,9 +138,7 @@ public class FindPrincipalTest extends JahiaTestCase {
         loginMethod.addParameter(LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER, "1");
 
         int statusCode = client.executeMethod(loginMethod);
-        if (statusCode != HttpStatus.SC_OK) {
-            logger.error("Method failed: " + loginMethod.getStatusLine());
-        }
+        assertEquals("Method failed: " + loginMethod.getStatusLine(), HttpStatus.SC_OK, statusCode);        
     }
 
     @After
@@ -148,9 +148,7 @@ public class FindPrincipalTest extends JahiaTestCase {
         logoutMethod.addParameter("redirectActive", "false");
 
         int statusCode = client.executeMethod(logoutMethod);
-        if (statusCode != HttpStatus.SC_OK) {
-            logger.error("Method failed: " + logoutMethod.getStatusLine());
-        }
+        assertEquals("Method failed: " + logoutMethod.getStatusLine(), HttpStatus.SC_OK, statusCode);
 
         logoutMethod.releaseConnection();
 
@@ -170,12 +168,12 @@ public class FindPrincipalTest extends JahiaTestCase {
         // Execute the method.
         int statusCode = client.executeMethod(method);
 
-        if (statusCode != HttpStatus.SC_OK) {
-            logger.error("Method failed: " + method.getStatusLine());
-        }
+        assertEquals("Method failed: " + method.getStatusLine(), HttpStatus.SC_OK, statusCode);
 
         // Read the response body.
-        String responseBody = method.getResponseBodyAsString();
+        StringBuilder responseBodyBuilder = new StringBuilder();
+        responseBodyBuilder.append("[").append(method.getResponseBodyAsString()).append("]");
+        String responseBody = responseBodyBuilder.toString();
 
         JSONArray jsonResults = new JSONArray(responseBody);
 
@@ -200,12 +198,12 @@ public class FindPrincipalTest extends JahiaTestCase {
         // Execute the method.
         int statusCode = client.executeMethod(method);
 
-        if (statusCode != HttpStatus.SC_OK) {
-            logger.error("Method failed: " + method.getStatusLine());
-        }
+        assertEquals("Method failed: " + method.getStatusLine(), HttpStatus.SC_OK, statusCode);
 
         // Read the response body.
-        String responseBody = method.getResponseBodyAsString();
+        StringBuilder responseBodyBuilder = new StringBuilder();
+        responseBodyBuilder.append("[").append(method.getResponseBodyAsString()).append("]");
+        String responseBody = responseBodyBuilder.toString();
 
         JSONArray jsonResults = new JSONArray(responseBody);
 

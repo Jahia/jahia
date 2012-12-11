@@ -45,6 +45,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.jahia.bin.Jahia;
 import org.jahia.settings.SettingsBean;
@@ -125,7 +126,10 @@ public class JSessionIDTest extends JahiaTestCase {
         SettingsBean.getInstance().setJsessionIdParameterName(jsessionid);
 
         GetMethod displayLoginMethod = new GetMethod(getBaseServerURL() + Jahia.getContextPath()+"/administration");
-        httpClient.executeMethod(displayLoginMethod);
+        int statusCode = httpClient.executeMethod(displayLoginMethod);
+        
+        assertEquals("Method failed: " + displayLoginMethod.getStatusLine(), HttpStatus.SC_OK, statusCode);
+        
         String responseBodyAsString = displayLoginMethod.getResponseBodyAsString();
 
         Pattern p = Pattern.compile("action=\"([^\"]*)\"");

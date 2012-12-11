@@ -25,9 +25,11 @@
                 <value>org.jahia.test.bin.RenderTest</value>
                 <value>org.jahia.test.services.acl.AclTest</value>
                 <value>org.jahia.test.services.applications.ApplicationsManagerServiceTest</value>
+                <value>org.jahia.test.services.atmosphere.AtmosphereTest</value>                
                 <value>org.jahia.test.services.categories.CategoryTest</value>
                 <value>org.jahia.test.services.content.AutoSplittingTest</value>
                 <value>org.jahia.test.services.content.ContentTest</value>
+                <value>org.jahia.test.services.content.CrawlingPageVisitorTest</value>                
                 <value>org.jahia.test.services.content.MarkForDeletionTest</value>
                 <value>org.jahia.test.services.content.MultiLanguageTest</value>
                 <value>org.jahia.test.services.content.ReferencesTest</value>
@@ -35,14 +37,17 @@
                 <value>org.jahia.test.services.content.interceptor.URLInterceptorTest</value>
                 <value>org.jahia.test.services.content.impl.vfs.VFSContentStoreProviderTest</value>
                 <value>org.jahia.test.services.htmlvalidator.WAIValidatorTest</value>
+                <value>org.jahia.test.services.i18n.ResourceBundleTest</value>                
                 <value>org.jahia.test.services.importexport.ImportExportTest</value>
                 <value>org.jahia.test.services.logging.ServiceLoggingTest</value>
                 <value>org.jahia.test.services.logout.LogoutTest</value>
                 <value>org.jahia.test.services.notification.CamelNotificationServiceTest</value>
                 <value>org.jahia.test.services.notification.HtmlExternalizationServiceTest</value>
                 <value>org.jahia.test.services.publication.PublicationTest</value>
+                <value>org.jahia.test.services.providers.ModulesProviderTest</value>                
                 <value>org.jahia.test.services.query.FacetedQueryTest</value>
                 <value>org.jahia.test.services.query.IndexOptionsTest</value>
+                <value>org.jahia.test.services.query.NativeSortTest</value>                
                 <value>org.jahia.test.services.query.QueryModificationTest</value>
                 <value>org.jahia.test.services.query.QueryResultTest</value>
                 <value>org.jahia.test.services.render.JSessionIDTest</value>
@@ -54,8 +59,10 @@
                 <value>org.jahia.test.services.search.SimpleSearchTest</value>
                 <value>org.jahia.test.services.seo.urlrewrite.UrlRewriteTest</value>
                 <value>org.jahia.test.services.tags.TaggingTest</value>
-                <value>org.jahia.test.services.templates.JahiaTemplateManagerServiceTest</value>                
+                <value>org.jahia.test.services.templates.JahiaTemplateManagerServiceTest</value>
+                <value>org.jahia.test.services.templates.ModuleDeploymentTest</value>                
                 <value>org.jahia.services.usermanager.JahiaGroupManagerServiceTest</value>
+                <value>org.jahia.test.services.validation.ValidationTest</value>                
                 <value>org.jahia.test.services.versioning.VersioningTest</value>
                 <value>org.jahia.test.services.visibility.VisibilityServiceTest</value>
                 <value>org.jahia.test.services.workflow.StateSequenceTest</value>

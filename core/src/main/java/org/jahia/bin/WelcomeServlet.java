@@ -147,16 +147,27 @@ public class WelcomeServlet extends HttpServlet {
             ServletContext context) throws Exception {
         request.getSession(true);
         final JCRSiteNode site = resolveSite(request, Constants.LIVE_WORKSPACE);
+        JahiaUser user = (JahiaUser) request.getSession().getAttribute(ProcessingContext.SESSION_USER);
         String redirect = null;
+        String pathInfo = request.getPathInfo();
+        String language = resolveLanguage(request, site, user);
+        if (site == null && pathInfo != null && pathInfo.endsWith("mode")) {
+            EditConfiguration editConfiguration = (EditConfiguration) SpringContextSingleton.getInstance().getContext().getBean(StringUtils.substringAfter(pathInfo, "/"));
+            String mapping = editConfiguration.getDefaultUrlMapping();
+            // edit mode was requested
+            if (editConfiguration.isModulesOnly()) {
+                redirect(request.getContextPath() + mapping + "/"
+                       + Constants.EDIT_WORKSPACE + "/" + language + "/modules/default.html",response);
+                return;
+            }
+        }
+
         if (site == null) {
             userRedirect(request, response, context);
             return;
         } else {
-            JahiaUser user = (JahiaUser) request.getSession().getAttribute(ProcessingContext.SESSION_USER);
-            String language = resolveLanguage(request, site, user);
             String base = null;
 
-            String pathInfo = request.getPathInfo();
             JCRNodeWrapper home = site.getHome();
             if (pathInfo != null && pathInfo.endsWith("mode")) {
                 EditConfiguration editConfiguration = (EditConfiguration) SpringContextSingleton.getInstance().getContext().getBean(StringUtils.substringAfter(pathInfo, "/"));

@@ -264,17 +264,17 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         throw new JspException(e);
                     }
                 }
-                boolean isVisibleInstudiModeLayout = true;
-                if(!SettingsBean.getInstance().isDistantPublicationServerMode() && !SettingsBean.getInstance().isProductionMode() && "studiolayoutmode".equals(renderContext.getEditModeConfigName())) {
+                boolean isVisibleInStudioModeLayout = true;
+                if("studiolayoutmode".equals(renderContext.getEditModeConfigName())) {
                     try {
                         if(!node.isNodeType("jmix:studioLayout")) {
-                            isVisibleInstudiModeLayout = false;
+                            isVisibleInStudioModeLayout = false;
                         }
                     } catch (RepositoryException e) {
                         logger.error(e.getMessage(), e);
                     }
                 }
-                if (isVisibleInstudiModeLayout) {
+                if (isVisibleInStudioModeLayout) {
                     try {
                         boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext,
                                 resource.getNode()) && !isExcluded(renderContext, resource) && checkStudioLock(

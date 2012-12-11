@@ -23,9 +23,26 @@ public class JspBundleObserver extends ScriptBundleObserver {
 
     private BundleDispatcherServlet bundleDispatcherServlet = null;
     private Map<Bundle, HttpService> bundleHttpServices = new HashMap<Bundle,HttpService>();
-    private Map<Bundle, List<URL>> pendingRegistrations = new HashMap<Bundle, List<URL>>();
-    private Map<Bundle, List<URL>> pendingUnregistrations = new HashMap<Bundle, List<URL>>();
+    private Map<Bundle, List<JspRegistration>> pendingRegistrations = new HashMap<Bundle, List<JspRegistration>>();
     private Map<Bundle, Set<String>> registeredAliases = new HashMap<Bundle, Set<String>>();
+
+    class JspRegistration {
+        private boolean registration;
+        private List<URL> urls;
+
+        public JspRegistration(boolean registration, List<URL> urls) {
+            this.registration = registration;
+            this.urls = urls;
+        }
+
+        public boolean isRegistration() {
+            return registration;
+        }
+
+        public List<URL> getUrls() {
+            return urls;
+        }
+    }
 
     public JspBundleObserver(BundleScriptResolver bundleScriptResolver, BundleDispatcherServlet bundleDispatcherServlet) {
         super(bundleScriptResolver);
@@ -44,15 +61,15 @@ public class JspBundleObserver extends ScriptBundleObserver {
             bundleHttpServices.remove(bundle);
         } else {
             bundleHttpServices.put(bundle, httpService);
-            // process pending registrations
-            if (pendingUnregistrations.containsKey(bundle)) {
-                List<URL> urls = pendingUnregistrations.get(bundle);
-                unregisterJSPs(bundle, urls, httpService);
-                pendingUnregistrations.remove(bundle);
-            }
             if (pendingRegistrations.containsKey(bundle)) {
-                List<URL> urls = pendingRegistrations.get(bundle);
-                registerJSPs(bundle, urls, httpService);
+                List<JspRegistration> bundleJspRegistrations = pendingRegistrations.get(bundle);
+                for (JspRegistration jspRegistration : bundleJspRegistrations) {
+                    if (jspRegistration.isRegistration()) {
+                        registerJSPs(bundle, jspRegistration.getUrls(), httpService);
+                    } else {
+                        unregisterJSPs(bundle, jspRegistration.getUrls(), httpService);
+                    }
+                }
                 pendingRegistrations.remove(bundle);
             }
         }
@@ -61,7 +78,12 @@ public class JspBundleObserver extends ScriptBundleObserver {
     @Override
     public void addingEntries(Bundle bundle, List<URL> urls) {
         if (!bundleHttpServices.containsKey(bundle)) {
-            pendingRegistrations.put(bundle, urls);
+            List<JspRegistration> pendingBundleRegistrations = pendingRegistrations.get(bundle);
+            if (pendingBundleRegistrations == null) {
+                pendingBundleRegistrations = new ArrayList<JspRegistration>();
+            }
+            pendingBundleRegistrations.add(new JspRegistration(true, urls));
+            pendingRegistrations.put(bundle, pendingBundleRegistrations);
         } else {
             HttpService bundleHttpService = bundleHttpServices.get(bundle);
             registerJSPs(bundle, urls, bundleHttpService);
@@ -85,8 +107,9 @@ public class JspBundleObserver extends ScriptBundleObserver {
                 if (registeredBundleAliases.contains(urlAlias)) {
                     logger.warn("URL Alias " + urlAlias + " already registered, unregistering old servlet...");
                     bundleHttpService.unregister(urlAlias);
+                    registeredBundleAliases.remove(urlAlias);
                 }
-                logger.info("Registering JSP " + urlAlias);
+                logger.info("Registering JSP " + urlAlias + " for bundle " + bundle.getSymbolicName() + " v" + bundle.getVersion());
                 bundleHttpService.registerServlet(urlAlias, jspServlet, props, httpContext);
                 registeredBundleAliases.add(urlAlias);
 
@@ -102,7 +125,12 @@ public class JspBundleObserver extends ScriptBundleObserver {
     @Override
     public void removingEntries(Bundle bundle, List<URL> urls) {
         if (!bundleHttpServices.containsKey(bundle)) {
-            pendingUnregistrations.put(bundle, urls);
+            List<JspRegistration> pendingBundleRegistrations = pendingRegistrations.get(bundle);
+            if (pendingBundleRegistrations == null) {
+                pendingBundleRegistrations = new ArrayList<JspRegistration>();
+            }
+            pendingBundleRegistrations.add(new JspRegistration(false, urls));
+            pendingRegistrations.put(bundle, pendingBundleRegistrations);
         } else {
             HttpService bundleHttpService = bundleHttpServices.get(bundle);
             unregisterJSPs(bundle, urls, bundleHttpService);
@@ -113,10 +141,11 @@ public class JspBundleObserver extends ScriptBundleObserver {
     private void unregisterJSPs(Bundle bundle, List<URL> urls, HttpService bundleHttpService) {
         for (URL url : urls) {
             String urlAlias = url.getPath();
-            logger.info("Unregistering JSP " + urlAlias);
+            logger.info("Unregistering JSP " + urlAlias + " for bundle " + bundle.getSymbolicName() + " v" + bundle.getVersion());
             Set<String> registeredBundleAliases = registeredAliases.get(bundle);
             if (registeredBundleAliases != null && registeredBundleAliases.contains(urlAlias)) {
                 bundleHttpService.unregister(urlAlias);
+                registeredBundleAliases.remove(urlAlias);
             }
             bundleDispatcherServlet.getJspMappings().remove(urlAlias);
         }

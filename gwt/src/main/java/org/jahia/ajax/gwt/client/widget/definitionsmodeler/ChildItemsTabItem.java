@@ -5,6 +5,7 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
@@ -99,13 +100,15 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                 final MessageBox box = MessageBox.prompt("Name", "Please enter the item name:");
                 box.addCallback(new Listener<MessageBoxEvent>() {
                     public void handleEvent(MessageBoxEvent be) {
-                        GWTJahiaNode itemDefinition = new GWTJahiaNode();
-                        itemDefinition.setName(be.getValue());
-                        itemDefinition.setNodeTypes(Arrays.asList(type));
-                        initValues(itemDefinition);
-                        engine.getNode().add(itemDefinition);
-                        store.add(itemDefinition);
-                        grid.getSelectionModel().select(itemDefinition, false);
+                        if (Dialog.OK.equalsIgnoreCase(be.getButtonClicked().getItemId())) {
+                            GWTJahiaNode itemDefinition = new GWTJahiaNode();
+                            itemDefinition.setName(be.getValue());
+                            itemDefinition.setNodeTypes(Arrays.asList(type));
+                            initValues(itemDefinition);
+                            engine.getNode().add(itemDefinition);
+                            store.add(itemDefinition);
+                            grid.getSelectionModel().select(itemDefinition, false);
+                        }
                     }
                 });
             }
@@ -123,21 +126,25 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                 }
                 if (propertiesEditors.containsKey(item)) {
                     propertiesEditor = propertiesEditors.get(item);
+                    tab.add(propertiesEditor, new RowData(1,1,new Margins(2)));
+                    tab.layout();
                 } else {
                     if (item.getPath() != null) {
                         JahiaContentManagementService.App.getInstance().getProperties(item.getPath(),engine.getDefaultLanguageCode(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
                             public void onSuccess(GWTJahiaGetPropertiesResult result) {
                                 displayProperties(item, result.getNodeTypes(), result.getProperties());
+                                tab.add(propertiesEditor, new RowData(1,1,new Margins(2)));
+                                tab.layout();
                             }
                         });
                     } else {
+                        item.setPath(engine.getNode().getPath()+"/"+item.getName());
                         displayProperties(item, Arrays.asList(nodeType), (Map<String, GWTJahiaNodeProperty>) item.get("default-properties"));
                         item.remove("default-properties");
+                        tab.add(propertiesEditor, new RowData(1,1,new Margins(2)));
+                        tab.layout();
                     }
                 }
-
-                tab.add(propertiesEditor, new RowData(1,1,new Margins(2)));
-                tab.layout();
             }
         });
         tab.layout();

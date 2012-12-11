@@ -50,7 +50,6 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         }
 
         JahiaContentManagementService.App.getInstance().getNodeType(type, new BaseAsyncCallback<GWTJahiaNodeType>() {
-            @Override
             public void onSuccess(GWTJahiaNodeType result) {
                 nodeType = result;
             }
@@ -176,7 +175,6 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             if (propertiesEditor.getFieldsMap().containsKey(key)) {
                 final PropertiesEditor.PropertyAdapterField field = propertiesEditor.getFieldsMap().get(key);
                 field.addListener(Events.Change, new Listener<BaseEvent>() {
-                    @Override
                     public void handleEvent(BaseEvent be) {
                         Object value = field.getValue();
                         if (value instanceof GWTJahiaValueDisplayBean) {

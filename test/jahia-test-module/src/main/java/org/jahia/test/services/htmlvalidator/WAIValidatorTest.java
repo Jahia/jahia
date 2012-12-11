@@ -100,7 +100,7 @@ public class WAIValidatorTest {
     }
 
     private void findAndTestScripts(boolean shouldFail) throws Exception {
-        String[] res = getResourceListing(WAIValidatorTest.class,"org/jahia/services/htmlvalidator/"+(shouldFail ? "fail" : "pass"));
+        String[] res = getResourceListing(WAIValidatorTest.class,"org/jahia/test/services/htmlvalidator/"+(shouldFail ? "fail" : "pass"));
         WAIValidator validator = new WAIValidator(Locale.ENGLISH);
         for (String re : res) {
             String content = IOUtils.toString(WAIValidatorTest.class.getResourceAsStream("/" + re));

@@ -66,7 +66,7 @@ public class StateSequenceTest {
         repositoryService = jBPMProvider.getRepositoryService();
         executionService = jBPMProvider.getExecutionService();
         deploymentId = repositoryService.createDeployment().addResourceFromClasspath(
-                "org/jahia/services/workflow/sequence_process.jpdl.xml").deploy();
+                "org/jahia/test/services/workflow/sequence_process.jpdl.xml").deploy();
     }
 
     @AfterClass

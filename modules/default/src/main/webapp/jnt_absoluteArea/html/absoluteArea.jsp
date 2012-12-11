@@ -13,31 +13,16 @@
 <c:set var="level" value="${currentNode.properties['j:level'].long}"/>
 <c:choose>
     <c:when test="${not empty inWrapper and inWrapper eq false}">
-        <c:choose>
-            <c:when test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
-                <div class="absoluteArea <c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
-                    <div class="absoluteAreaTemplate">
-                        <c:if test="${empty level}">
-                            <span>Absolute Area : ${currentNode.resolveSite.home.name}</span>
-                        </c:if>
-                        <c:if test="${not empty level}">
-                            <span>Absolute Area : ${currentNode.name} - Level ${level}</span>
-                        </c:if>
-                    </div>
-                </div>
-            </c:when>
-            <c:otherwise>
-                <div style="background-color: #adff2f;border: 1px dashed #99CCFF;height: 100px;overflow: hidden;position: relative;">
-                    <c:if test="${empty level}">
-                        <span>Absolute Area : ${currentNode.resolveSite.home.name}</span>
-                        <p>Reserved space for editors content</p>
-                    </c:if>
-                    <c:if test="${not empty level}">
-                        <span>Absolute Area : ${currentNode.name} - Level ${level}</span>
-                        <p>Reserved space for editors content</p>
-                    </c:if></div>
-            </c:otherwise>
-        </c:choose>
+        <div class="${renderContext.editModeConfigName}absoluteArea <c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
+            <div class="${renderContext.editModeConfigName}absoluteAreaTemplate">
+                <c:if test="${empty level}" >
+                    <span>Absolute Area : ${currentNode.resolveSite.home.name}</span>
+                </c:if>
+                <c:if test="${not empty level}" >
+                    <span>Absolute Area : ${currentNode.name} - Level ${level}</span>
+                </c:if>
+            </div>
+        </div>
     </c:when>
     <c:otherwise>
         <jcr:nodeProperty node="${currentNode}" name="j:allowedTypes" var="restrictions"/>

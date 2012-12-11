@@ -274,11 +274,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         logger.error(e.getMessage(), e);
                     }
                 }
-                if (isVisibleInStudioModeLayout) {
+//                if (isVisibleInStudioModeLayout) {
                     try {
                         boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext,
-                                resource.getNode()) && !isExcluded(renderContext, resource) && checkStudioLock(
-                                renderContext);
+                                resource.getNode()) && !isExcluded(renderContext, resource);
 
                         pageContext.getRequest().setAttribute("editableModule", canEdit);
                         if (canEdit) {
@@ -286,6 +285,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                             List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
                             String oldNodeTypes = nodeTypes;
                             String add = null;
+                            if (!checkStudioLock(renderContext) || !isVisibleInStudioModeLayout) {
+                                add = "editable=\"false\"";
+                            }
                             if (contributeTypes != null) {
                                 nodeTypes = StringUtils.join(contributeTypes, " ");
                                 add = "editable=\"false\"";
@@ -301,7 +303,11 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                             }
                             nodeTypes = oldNodeTypes;
                             currentResource.getDependencies().add(node.getCanonicalPath());
-                            render(renderContext, resource);
+                            if (isVisibleInStudioModeLayout) {
+                                render(renderContext, resource);
+                            } else {
+                                pageContext.getOut().print("");
+                            }
                             //Copy dependencies to parent Resource (only for include of the same node)
                             currentResource.getRegexpDependencies().addAll(resource.getRegexpDependencies());
                             currentResource.getDependencies().addAll(resource.getDependencies());
@@ -317,7 +323,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     } catch (RepositoryException e) {
                         logger.error(e.getMessage(), e);
                     }
-                }
+//                }
             }
         } catch (IOException ex) {
             throw new JspException(ex);
@@ -482,10 +488,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 if(node!=null && node.isNodeType("jmix:studioLayout")) {
                     return false;
                 }
-                if (renderContext.getMainResource().getNode().getLockInfos().get(null) == null ||
-                        !renderContext.getMainResource().getNode().getLockInfos().get(null).contains(renderContext.getUser().getUsername()+":user")) {
-                    return false;
-                }
+//                if (renderContext.getMainResource().getNode().getLockInfos().get(null) == null ||
+//                        !renderContext.getMainResource().getNode().getLockInfos().get(null).contains(renderContext.getUser().getUsername()+":user")) {
+//                    return false;
+//                }
             } catch (RepositoryException e) {
 
             }

@@ -318,69 +318,123 @@
 	font-weight:bold;
 }
 
- .area {
-	height:200px;
-	overflow: hidden;
-	background-color:#d8effb;
-	/*padding:5px;*/
-	color:#666;
-	position:relative;
-	border: 1px dashed #99ccff;
+.studiomodearea {
+    overflow: hidden;
+    background-color:#d8effb;
+    /*padding:5px;*/
+    color:#666;
+    position:relative;
+    border: 1px dashed #99ccff;
 }
- .areaTemplate{
-	background-color: #336699;
-	border:1px solid #003366;
-	color:#fff;
-	padding:5px;
-	position:absolute;
-	left: 25%;
-	top: 25%;
-	width: 50%;
-	margin-left: auto;
-	margin-right: auto;
-	text-align:center;
+.studiomodeareaTemplate{
+    background-color: #336699;
+    border:1px solid #003366;
+    color:#fff;
+    padding:5px;
+    left: 25%;
+    top: 25%;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align:center;
     font-family: tahoma, arial, verdana, sans-serif;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	-moz-box-shadow: 0 1px 3px #999;
-	-webkit-box-shadow: 0 1px 3px #999;
-	box-shadow: 0 1px 3px #999;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -moz-box-shadow: 0 1px 3px #999;
+    -webkit-box-shadow: 0 1px 3px #999;
+    box-shadow: 0 1px 3px #999;
 }
- .AreaInformation{
-	color:#666;
+.studiolayoutmodearea {
+    height:200px;
+    overflow: hidden;
+    background-color:#d8effb;
+    /*padding:5px;*/
+    color:#666;
+    position:relative;
+    border: 1px dashed #99ccff;
 }
- .absoluteArea {
-	height:200px;
-	overflow: hidden;
-	background-color:#ffcccc;
-	/*padding:5px;*/
-	color:#666;
-	position:relative;
-	border: 1px dashed #cc6666;
-}
- .absoluteAreaTemplate{
-	background-color: #c30;
-	border:1px solid #990000;
-	color:#fff;
-	padding:5px;
-	position:absolute;
-	left: 25%;
-	top: 25%;
-	width: 50%;
-	margin-left: auto;
-	margin-right: auto;
-	text-align:center;
+.studiolayoutmodeareaTemplate{
+    background-color: #336699;
+    border:1px solid #003366;
+    color:#fff;
+    padding:5px;
+    position:absolute;
+    left: 25%;
+    top: 25%;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align:center;
     font-family: tahoma, arial, verdana, sans-serif;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	-moz-box-shadow: 0 1px 3px #999;
-	-webkit-box-shadow: 0 1px 3px #999;
-	box-shadow: 0 1px 3px #999;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -moz-box-shadow: 0 1px 3px #999;
+    -webkit-box-shadow: 0 1px 3px #999;
+    box-shadow: 0 1px 3px #999;
 }
- .mainResourceDisplay {
-	height:200px;
+.AreaInformation{
+    color:#666;
+}
+.studiomodeabsoluteArea {
+    overflow: hidden;
+    background-color:#ffcccc;
+    /*padding:5px;*/
+    color:#666;
+    position:relative;
+    border: 1px dashed #cc6666;
+}
+.studiomodeabsoluteAreaTemplate{
+    background-color: #c30;
+    border:1px solid #990000;
+    color:#fff;
+    padding:5px;
+    left: 25%;
+    top: 25%;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align:center;
+    font-family: tahoma, arial, verdana, sans-serif;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -moz-box-shadow: 0 1px 3px #999;
+    -webkit-box-shadow: 0 1px 3px #999;
+    box-shadow: 0 1px 3px #999;
+}
+.studiolayoutmodeabsoluteArea {
+    height:200px;
+    overflow: hidden;
+    background-color:#ffcccc;
+    /*padding:5px;*/
+    color:#666;
+    position:relative;
+    border: 1px dashed #cc6666;
+}
+.studiolayoutmodeabsoluteAreaTemplate{
+    background-color: #c30;
+    border:1px solid #990000;
+    color:#fff;
+    padding:5px;
+    position:absolute;
+    left: 25%;
+    top: 25%;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align:center;
+    font-family: tahoma, arial, verdana, sans-serif;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -moz-box-shadow: 0 1px 3px #999;
+    -webkit-box-shadow: 0 1px 3px #999;
+    box-shadow: 0 1px 3px #999;
+}
+.mainResourceDisplay {
+    height:200px;
 	overflow:hidden;
 	background-color:#eaeaea;
 	/*padding:5px;*/

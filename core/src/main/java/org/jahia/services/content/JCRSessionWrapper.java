@@ -136,7 +136,7 @@ public class JCRSessionWrapper implements Session {
     private static AtomicLong activeSessions = new AtomicLong(0L);
 
     private Exception thisSessionTrace;
-    private static List<Exception> activeSessionsTraces = new ArrayList<Exception>();
+    private static List<JCRSessionWrapper> activeSessionsObjects = new ArrayList<JCRSessionWrapper>();
 
     public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale,
                              JCRSessionFactory sessionFactory, Locale fallbackLocale) {
@@ -155,7 +155,7 @@ public class JCRSessionWrapper implements Session {
         this.sessionFactory = sessionFactory;
         activeSessions.incrementAndGet();
         thisSessionTrace = new Exception();
-        activeSessionsTraces.add(thisSessionTrace);
+        activeSessionsObjects.add(this);
     }
 
 
@@ -714,7 +714,7 @@ public class JCRSessionWrapper implements Session {
         }
         isLive = false;
         activeSessions.decrementAndGet();
-        activeSessionsTraces.remove(thisSessionTrace);
+        activeSessionsObjects.remove(this);
     }
 
     public boolean isLive() {
@@ -1157,8 +1157,8 @@ public class JCRSessionWrapper implements Session {
         return activeSessions;
     }
 
-    public static List<Exception> getActiveSessionsTraces() {
-        return activeSessionsTraces;
+    public static List<JCRSessionWrapper> getActiveSessionsObjects() {
+        return activeSessionsObjects;
     }
 
     protected void flushCaches() {
@@ -1178,5 +1178,9 @@ public class JCRSessionWrapper implements Session {
 
     public void setCurrentUserSession(boolean isCurrentUserSession) {
         this.isCurrentUserSession = isCurrentUserSession;
+    }
+
+    public Exception getSessionTrace() {
+        return thisSessionTrace;
     }
 }

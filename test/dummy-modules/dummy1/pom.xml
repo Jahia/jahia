@@ -113,15 +113,15 @@
                         <manifestEntries>
 		                	<Implementation-Title>${project.name}</Implementation-Title>
 		                    <Implementation-Version>${project.version}</Implementation-Version>
-		                    <Implementation-Vendor></Implementation-Vendor>
-		                    <Implementation-Vendor-Id></Implementation-Vendor-Id>
-		                    <Implementation-URL></Implementation-URL>
+		                    <Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
+		                    <Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
+		                    <Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
 		                    <Specification-Title>${project.name}</Specification-Title>
 		                    <Specification-Version>${project.version}</Specification-Version>
-		                    <Specification-Vendor></Specification-Vendor>
+		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
-                            <depends>Default Jahia Templates</depends>
-                            <root-folder>${artifactId}</root-folder>
+                            <depends>default</depends>
+                            <root-folder>${project.artifactId}</root-folder>
                             <module-type>module</module-type>
                         </manifestEntries>
                     </archive>

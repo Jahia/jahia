@@ -46,10 +46,8 @@
         <groupId>org.jahia.modules</groupId>
         <version>6.7.0.0-SNAPSHOT</version>
     </parent>
-    <groupId>org.jahia.modules</groupId>
     <artifactId>profile</artifactId>
     <name>Jahia User Profile</name>
-    <version>6.7.0.0-SNAPSHOT</version>
     <packaging>war</packaging>
     <description>This is the custom module (profile) for running on a Jahia server.</description>
 

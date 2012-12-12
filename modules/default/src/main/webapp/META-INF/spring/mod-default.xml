@@ -95,7 +95,6 @@
         <property name="name" value="addMember"/>
         <property name="jahiaGroupManagerService" ref="JahiaGroupManagerService"/>
         <property name="jahiaUserManagerService" ref="JahiaUserManagerService"/>
-        <property name="jahiaSitesService" ref="JahiaSitesService"/>
         <property name="requiredPermission" value="addMemberToGroup" />
     </bean>
 

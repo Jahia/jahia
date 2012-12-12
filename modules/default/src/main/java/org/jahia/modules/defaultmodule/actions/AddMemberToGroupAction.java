@@ -46,8 +46,6 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -70,7 +68,6 @@ public class AddMemberToGroupAction extends Action {
 
     private JahiaGroupManagerService jahiaGroupManagerService;
     private JahiaUserManagerService jahiaUserManagerService;
-    private JahiaSitesService jahiaSitesService;
 
     public void setJahiaGroupManagerService(JahiaGroupManagerService jahiaGroupManagerService) {
         this.jahiaGroupManagerService = jahiaGroupManagerService;
@@ -78,10 +75,6 @@ public class AddMemberToGroupAction extends Action {
 
     public void setJahiaUserManagerService(JahiaUserManagerService jahiaUserManagerService) {
         this.jahiaUserManagerService = jahiaUserManagerService;
-    }
-
-    public void setJahiaSitesService(JahiaSitesService jahiaSitesService) {
-        this.jahiaSitesService = jahiaSitesService;
     }
 
     @Override

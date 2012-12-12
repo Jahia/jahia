@@ -40,10 +40,8 @@
 
 package org.jahia.modules.defaultmodule;
 
-import org.jahia.ajax.gwt.helper.ContentManagerHelper;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;

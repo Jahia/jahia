@@ -4,8 +4,6 @@ import org.jahia.bin.ActionResult;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.sites.JahiaSite;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -17,7 +15,6 @@ import java.util.Map;
  * Delete a site.
  */
 public class AdminDeleteSiteAction extends AdminSiteAction {
-    private static Logger logger = LoggerFactory.getLogger(AdminDeleteSiteAction.class);
 
     @Override
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, JahiaSite site, JCRSessionWrapper session, Map<String, List<String>> parameters) throws Exception {

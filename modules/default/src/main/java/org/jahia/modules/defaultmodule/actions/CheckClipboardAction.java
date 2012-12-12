@@ -67,6 +67,7 @@ import java.util.Map;
 public class CheckClipboardAction extends Action {
     public static final String UUIDS = "uuids[]";
 
+    @SuppressWarnings("unchecked")
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         List<String> uuids = (List<String>) req.getSession().getAttribute(MultipleCopyAction.UUIDS_TO_COPY);

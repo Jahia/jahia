@@ -66,6 +66,7 @@ import java.util.Map;
 public class MultiplePasteAction extends Action {
     private transient static Logger logger = Logger.getLogger(MultiplePasteAction.class);
 
+    @SuppressWarnings("unchecked")
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         List<String> uuids = (List<String>) req.getSession().getAttribute(MultipleCopyAction.UUIDS_TO_COPY);

@@ -41,7 +41,6 @@
 package org.jahia.modules.defaultmodule.actions;
 
 import org.apache.commons.collections.list.SetUniqueList;
-import org.apache.log4j.Logger;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.Action;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -54,16 +53,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 
- *
  * @author : rincevent
  * @since JAHIA 6.5
- *        Created : 24 nov. 2010
+ * Created : 24 nov. 2010
  */
 public class MultipleCutAction extends Action {
-    private transient static Logger logger = Logger.getLogger(MultipleCutAction.class);
     public static final String UUIDS_TO_CUT="org.jahia.uuids.to.cut";
 
+    @SuppressWarnings("unchecked")
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         List<String> uuids = parameters.get(MultipleCopyAction.UUIDS);

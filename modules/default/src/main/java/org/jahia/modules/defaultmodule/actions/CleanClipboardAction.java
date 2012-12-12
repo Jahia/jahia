@@ -40,7 +40,6 @@
 
 package org.jahia.modules.defaultmodule.actions;
 
-import org.apache.log4j.Logger;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -60,7 +59,6 @@ import java.util.Map;
  *        Created : 24 nov. 2010
  */
 public class CleanClipboardAction extends Action {
-    private transient static Logger logger = Logger.getLogger(CleanClipboardAction.class);
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {

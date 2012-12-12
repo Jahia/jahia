@@ -34,7 +34,7 @@ public class AdminEditSiteAction extends AdminSiteAction {
 
         boolean defaultSite = (getParameter(parameters, "defaultSite") != null);
 
-        Map result = new HashMap();
+        Map<String, String> result = new HashMap<String, String>();
 
         try {
             // check validity...

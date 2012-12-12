@@ -1,6 +1,5 @@
 package org.jahia.modules.defaultmodule.actions.admin;
 
-import org.jahia.admin.sites.ManageSites;
 import org.jahia.bin.ActionResult;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;

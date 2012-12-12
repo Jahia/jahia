@@ -46,7 +46,6 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
-import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -68,7 +67,6 @@ public class AddPrincipalsInRolesAction extends Action {
 
     private JahiaGroupManagerService jahiaGroupManagerService;
     private JahiaUserManagerService jahiaUserManagerService;
-    private JahiaSitesService jahiaSitesService;
 
     public void setJahiaGroupManagerService(JahiaGroupManagerService jahiaGroupManagerService) {
         this.jahiaGroupManagerService = jahiaGroupManagerService;
@@ -93,7 +91,7 @@ public class AddPrincipalsInRolesAction extends Action {
                         logger.warn("User " + userKey + " could not be found, will not add to roles");
                         return ActionResult.BAD_REQUEST;
                     }
-                    resource.getNode().grantRoles(principalKey, new HashSet(roles));
+                    resource.getNode().grantRoles(principalKey, new HashSet<String>(roles));
                     session.save();
                 } else if (principalKey.startsWith("g:")) {
                     String groupKey = principalKey.substring("g:".length());
@@ -102,7 +100,7 @@ public class AddPrincipalsInRolesAction extends Action {
                         logger.warn("Group " + groupKey + " could not be found, will not add to roles");
                         return ActionResult.BAD_REQUEST;
                     }
-                    resource.getNode().grantRoles(principalKey, new HashSet(roles));
+                    resource.getNode().grantRoles(principalKey, new HashSet<String>(roles));
                     session.save();
                 }
             }

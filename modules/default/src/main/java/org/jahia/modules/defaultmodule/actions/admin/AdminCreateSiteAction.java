@@ -3,18 +3,13 @@ package org.jahia.modules.defaultmodule.actions.admin;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.admin.sites.ManageSites;
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.JahiaAdministration;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.sites.*;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Url;
 import org.json.JSONObject;
@@ -23,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.util.*;
 
 /**
@@ -54,7 +48,7 @@ public class AdminCreateSiteAction extends AdminAction {
         String siteKey = StringUtils.left(StringUtils.defaultString(getParameter(parameters, "siteKey")).trim(), 50);
         String siteDescr = StringUtils.left(StringUtils.defaultString(getParameter(parameters, "siteDescr")).trim(), 250);
 
-        Map result = new HashMap();
+        Map<String, String> result = new HashMap<String, String>();
 
         JahiaSite site = null;
         // create jahia site object if checks are in green light...
@@ -95,9 +89,6 @@ public class AdminCreateSiteAction extends AdminAction {
             if (lang != null) {
                 selectedLocale = LanguageCodeConverters.getLocaleFromCode(lang);
             }
-
-            // get services...
-            JahiaUserManagerService jums = ServicesRegistry.getInstance().getJahiaUserManagerService();
 
             // add the site in siteManager...
             site = sitesService.addSite(session.getUser(), site.getTitle(), site.getServerName(), site.getSiteKey(), site.getDescr(),

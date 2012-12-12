@@ -41,13 +41,10 @@ package org.jahia.modules.defaultmodule.actions;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
@@ -57,9 +54,7 @@ import java.io.InputStream;
  *
  * @author Thomas Draier
  */
-public class WorkflowImageController  extends HttpServlet implements Controller, ServletContextAware {
-
-    private ServletContext servletContext;
+public class WorkflowImageController implements Controller {
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String wfKey = request.getParameter("workflowKey");
@@ -81,9 +76,5 @@ public class WorkflowImageController  extends HttpServlet implements Controller,
         }
         response.setStatus(HttpServletResponse.SC_OK);
         return null;
-    }
-
-    public void setServletContext(ServletContext servletContext) {
-        this.servletContext = servletContext;
     }
 }

@@ -10,7 +10,7 @@
         entry_action varchar(255),
         entry_date bigint,
         message varchar(255),
-        entry_path clob(255),
+        entry_path clob,
         property_name varchar(50),
         user_key varchar(255),
         uuid varchar(36),

@@ -60,7 +60,7 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.WebUtils;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.ResourceBundles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
@@ -104,8 +104,7 @@ public class MarkedForDeletionFilter extends AbstractFilter implements
             Bindings bindings = engine.createBindings();
             bindings.put("renderContext", renderContext);
             bindings.put("resource", resource);
-            final ResourceBundle bundle = JahiaResourceBundle.lookupBundle(
-                    JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES, renderContext.getUILocale());
+            final ResourceBundle bundle = ResourceBundles.getInternal(renderContext.getUILocale());
             bindings.put("bundle", bundle);
             bindings.put("i18n",
                     LazyMap.decorate(new HashMap<String, String>(2), new Transformer() {

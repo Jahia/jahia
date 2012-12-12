@@ -54,7 +54,7 @@ import org.jahia.services.importexport.DocumentViewExporter;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.xml.sax.ContentHandler;
@@ -515,7 +515,7 @@ public class JCRSessionWrapper implements Session {
                             if (ccve == null) {
                                 ccve = new CompositeConstraintViolationException();
                             }
-                            ccve.addException(new PropertyConstraintViolationException(node, JahiaResourceBundle.getJahiaInternalResource("label.error.mandatoryField", LocaleContextHolder.getLocale(), "Field is mandatory"), errorLocale, propertyDefinition));
+                            ccve.addException(new PropertyConstraintViolationException(node, Messages.getInternal("label.error.mandatoryField", LocaleContextHolder.getLocale(), "Field is mandatory"), errorLocale, propertyDefinition));
                         }
                     }
                 }

@@ -51,6 +51,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.render.RenderContext;
+import org.jahia.utils.i18n.ResourceBundles;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
@@ -99,7 +100,7 @@ public class PortletModesTag extends TagSupport {
 
     private String namePostFix = "";
     private String name = null;
-    private String resourceBundle = "JahiaInternalResources";
+    private String resourceBundle = ResourceBundles.JAHIA_INTERNAL_RESOURCES;
     private String listCSSClass = "portletModes";
     private String currentCSSClass = "current";
     private JCRNodeWrapper node = null;
@@ -271,7 +272,7 @@ public class PortletModesTag extends TagSupport {
         // pooling.
         namePostFix = "";
         name = null;
-        resourceBundle = "JahiaInternalResources";
+        resourceBundle = ResourceBundles.JAHIA_INTERNAL_RESOURCES;
         listCSSClass = "portletModes";
         currentCSSClass = "current";
         node = null;

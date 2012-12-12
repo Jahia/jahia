@@ -64,7 +64,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.Url;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -817,7 +817,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private boolean isWebflowRequest(HttpServletRequest req) {
         boolean webflowRequest = false;
         if (req.getMethod().equals(METHOD_POST)) {
-            Enumeration parameterNames = req.getParameterNames();
+            Enumeration<?> parameterNames = req.getParameterNames();
             while (parameterNames.hasMoreElements()) {
                 String s = (String) parameterNames.nextElement();
                 if (s.startsWith("webflow-execution")) {
@@ -853,7 +853,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 for (Map.Entry<String, List<String>> params : set) {
                     formDatas.put(params.getKey(), params.getValue().toArray(new String[params.getValue().size()]));
                 }
-                String errorMessage = JahiaResourceBundle.getJahiaInternalResource("failure.captcha", urlResolver.getLocale(), "Your captcha is invalid");
+                String errorMessage = Messages.getInternal("failure.captcha", urlResolver.getLocale(), "Your captcha is invalid");
                 if (!isAjaxRequest) {
                     req.getSession().setAttribute("formDatas", formDatas);
                     req.getSession().setAttribute("formError", errorMessage);

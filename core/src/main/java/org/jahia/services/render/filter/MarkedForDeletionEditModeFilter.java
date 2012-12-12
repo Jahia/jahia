@@ -46,7 +46,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 
 /**
  * Filter adds overlays for modules in edit mode that are marked for deletion.
@@ -68,7 +68,7 @@ public class MarkedForDeletionEditModeFilter extends AbstractFilter {
 
         return MessageFormat.format(
                 template,
-                JahiaResourceBundle.getJahiaInternalResource("label.deleted",
+                Messages.getInternal("label.deleted",
                         renderContext.getUILocale(), "Deleted"), previousOut);
     }
 

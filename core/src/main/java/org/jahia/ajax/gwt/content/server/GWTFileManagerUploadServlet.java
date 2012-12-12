@@ -49,6 +49,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.helper.VersioningHelper;
 import org.jahia.ajax.gwt.helper.ZipHelper;
@@ -59,13 +60,12 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRVersionService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.*;
-import java.text.MessageFormat;
 import java.util.*;
 
 /**
@@ -75,13 +75,14 @@ import java.util.*;
  * @version 2 avr. 2008 - 16:51:39
  */
 public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSessionListener {
+    private static final long serialVersionUID = 1048509772346464862L;
     public static final int OK = 0;
     public static final int EXISTS = 1;
     public static final int READONLY = 2;
     public static final int BAD_LOCATION = 3;
     public static final int UNKNOWN_ERROR = 9;
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(GWTFileManagerUploadServlet.class);
+    private static Logger logger = LoggerFactory.getLogger(GWTFileManagerUploadServlet.class);
 
     @SuppressWarnings("unchecked")
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -120,9 +121,8 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
             Locale locale = (Locale) request.getSession().getAttribute(ParamBean.SESSION_LOCALE);
             String locMsg = null;
             try {
-                String msg = JahiaResourceBundle.getJahiaInternalResource("fileSizeError.label", locale);
-                locMsg = MessageFormat.format(msg,
-                        Jahia.getSettings().getJahiaFileUploadMaxSize());
+                locMsg = Messages.getInternalWithArguments("fileSizeError.label", locale, Jahia
+                        .getSettings().getJahiaFileUploadMaxSize());
             } catch (Exception ex) {
                 logger.debug("Error while using default engine resource bundle (internal) with locale " + locale, ex);
             }

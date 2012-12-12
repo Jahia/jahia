@@ -52,7 +52,7 @@ import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.services.notification.Subscription;
 import org.jahia.utils.PaginatedList;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -120,7 +120,7 @@ public class SubscriptionServiceImpl extends JahiaRemoteService implements Subsc
 
         GWTFileManagerUploadServlet.Item fileItem = GWTFileManagerUploadServlet.getItem(subscribersFile);
         if (fileItem == null) {
-            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.unable.to.locate.uploaded.file",getUILocale()));
+            throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.unable.to.locate.uploaded.file",getUILocale()));
         }
 
         try {

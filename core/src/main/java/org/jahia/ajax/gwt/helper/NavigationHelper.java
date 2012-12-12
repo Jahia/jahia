@@ -54,7 +54,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRQueryNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.*;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
@@ -112,7 +112,7 @@ public class NavigationHelper {
         }
 
         if (node == null) {
-            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.parent.node.is.null",uiLocale));
+            throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.parent.node.is.null",uiLocale));
         }
         final List<GWTJahiaNode> gwtNodeChildren = new ArrayList<GWTJahiaNode>();
         try {
@@ -143,7 +143,7 @@ public class NavigationHelper {
         boolean hasOrderableChildren = node.getPrimaryNodeType().hasOrderableChildNodes();
 
         if (nodesIterator == null) {
-            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.children.list.is.null", uiLocale));
+            throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.children.list.is.null", uiLocale));
         }
 
         int i = 1;
@@ -376,8 +376,7 @@ public class NavigationHelper {
             }
             if (path.contains("$user")) {
                 path = path.replace("$user", currentUserSession.getUser().getLocalPath());
-                displayName = JahiaResourceBundle
-                        .getJahiaInternalResource("label.personalFolder", uiLocale, "label.personalFolder");
+                displayName = Messages.getInternal("label.personalFolder", uiLocale, "label.personalFolder");
             }
             if (path.startsWith("/")) {
                 if (path.endsWith("/*")) {
@@ -437,7 +436,7 @@ public class NavigationHelper {
             return getGWTJahiaNode(currentUserSession.getNode(path), fields, uiLocale);
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(
-                    new StringBuilder(path).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
+                    new StringBuilder(path).append(Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
         }
     }
 
@@ -502,7 +501,7 @@ public class NavigationHelper {
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(
-                    new StringBuilder(path).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
+                    new StringBuilder(path).append(Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
         }
         return node.getAbsoluteWebdavUrl(request);
     }
@@ -517,7 +516,7 @@ public class NavigationHelper {
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 throw new GWTJahiaServiceException(
-                        new StringBuilder(path).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
+                        new StringBuilder(path).append(Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
             }
             try {
                 NodeIterator usages = node.getSharedSet();

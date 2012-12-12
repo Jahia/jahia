@@ -43,9 +43,10 @@ package org.jahia.taglibs.utility.i18n;
 import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.ResourceBundles;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
@@ -100,10 +101,10 @@ public class SetBundleTag extends AbstractJahiaTag {
             }
             ResourceBundle resourceBundle = null;
             try {
-                resourceBundle = new JahiaResourceBundle(basename,
-                        locale,templateName!=null?templateName:
+                resourceBundle = ResourceBundles.get(basename,
+                        templateName!=null?ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(templateName):
                         context != null && context.getSite() != null && context.getSite().getSession().isLive() ? context
-                                .getSite().getTemplatePackageName() : null);
+                                .getSite().getTemplatePackage() : null, locale);
             } catch (RepositoryException e) {
                 logger.warn(e.getMessage(), e);
             }

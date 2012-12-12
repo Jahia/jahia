@@ -47,7 +47,8 @@ import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.renderer.AbstractChoiceListRenderer;
 import org.jahia.services.render.RenderContext;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
+import org.jahia.utils.i18n.ResourceBundles;
 
 import javax.jcr.RepositoryException;
 
@@ -64,13 +65,14 @@ public class ResourceBundleChoiceListInitializerImpl extends AbstractChoiceListR
 
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {
-        JahiaResourceBundle rb = new JahiaResourceBundle(null, locale, getTemplatePackageName(epd));
+        JahiaTemplatesPackage pkg = epd.getDeclaringNodeType().getTemplatePackage();
+        ResourceBundle rb = ResourceBundles.get(pkg != null ? pkg : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage("Default Jahia Templates"), locale);
 
         if (values == null || values.size() == 0) {
             List<ChoiceListValue> l = new ArrayList<ChoiceListValue>();
             String[] constr = epd.getValueConstraints();
             for (String s : constr) {
-                ChoiceListValue bean = new ChoiceListValue(rb.get(epd.getResourceBundleKey() + "."
+                ChoiceListValue bean = new ChoiceListValue(Messages.get(rb, epd.getResourceBundleKey() + "."
                         + JCRContentUtils.replaceColon(s), s), s);
 
                 l.add(bean);
@@ -79,7 +81,7 @@ public class ResourceBundleChoiceListInitializerImpl extends AbstractChoiceListR
         } else {
             for (ChoiceListValue choiceListValue : values) {
                 final String displayName = choiceListValue.getDisplayName();
-                choiceListValue.setDisplayName(rb.get(epd.getResourceBundleKey() + "." + JCRContentUtils.replaceColon(displayName),
+                choiceListValue.setDisplayName(Messages.get(rb, epd.getResourceBundleKey() + "." + JCRContentUtils.replaceColon(displayName),
                                                       displayName));
             }
             return values;
@@ -98,20 +100,8 @@ public class ResourceBundleChoiceListInitializerImpl extends AbstractChoiceListR
 
         String propValue = propertyValue.toString();
 
-        JahiaResourceBundle rb = new JahiaResourceBundle(null, locale, getTemplatePackageName(propDef));
-
-        return rb
-                .get(propDef.getResourceBundleKey() + "." + JCRContentUtils.replaceColon(propValue), propValue);
-    }
-
-    private String getTemplatePackageName(ExtendedPropertyDefinition definition) {
-        String systemId = definition.getDeclaringNodeType().getSystemId();
-        if(systemId.equals("system-jahia")) {
-            systemId = "default";
-        }
-        final JahiaTemplatesPackage tpkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                .getTemplatePackageByFileName(systemId);
-
-        return tpkg != null ? tpkg.getName() : null;
+        JahiaTemplatesPackage pkg = propDef.getDeclaringNodeType().getTemplatePackage();
+        return Messages.get(pkg != null ? pkg : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("default"),
+                propDef.getResourceBundleKey() + "." + JCRContentUtils.replaceColon(propValue), locale, propValue);
     }
 }

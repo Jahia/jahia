@@ -158,7 +158,6 @@ public class TemplateScriptFilter extends AbstractFilter {
     }
 
     private static String getErrorMessage(RenderContext ctx, Resource resource) {
-//        return JahiaResourceBundle.getString(null, "templates.modules.onError", resource.getLocale(), ctx.getSite().getTemplatePackageName());
         return "Module error";
     }
 

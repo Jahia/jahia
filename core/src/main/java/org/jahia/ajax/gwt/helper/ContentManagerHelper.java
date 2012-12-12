@@ -76,7 +76,7 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.slf4j.Logger;
@@ -87,7 +87,6 @@ import javax.jcr.lock.LockException;
 import javax.jcr.query.Query;
 import javax.jcr.security.Privilege;
 import java.io.*;
-import java.text.MessageFormat;
 import java.util.*;
 
 import static org.jahia.api.Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT;
@@ -156,11 +155,11 @@ public class ContentManagerHelper {
             properties.setProperties(childNode, props);
         } catch (Exception e) {
             logger.error("Exception", e);
-            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource(
+            throw new GWTJahiaServiceException(Messages.getInternal(
                     "label.gwt.error.cannot.get.node", uiLocale) + e.getMessage());
         }
         if (childNode == null) {
-            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.creation.failed", uiLocale));
+            throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.node.creation.failed", uiLocale));
         }
         return childNode;
     }
@@ -187,7 +186,7 @@ public class ContentManagerHelper {
             String nodeName = JCRContentUtils.escapeLocalNodeName(name);
 
             if (!forceCreation && checkExistence(parentPath + "/" + nodeName, currentUserSession, uiLocale)) {
-                throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.already.exists.with.name", uiLocale), nodeName));
+                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.node.already.exists.with.name", uiLocale, nodeName));
             }
 
             if (nodeName == null) {
@@ -203,7 +202,7 @@ public class ContentManagerHelper {
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(
-                    new StringBuilder(parentPath).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
+                    new StringBuilder(parentPath).append(Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
         }
     }
 
@@ -238,7 +237,7 @@ public class ContentManagerHelper {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(
-                    new StringBuilder(parentPath).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
+                    new StringBuilder(parentPath).append(Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
         }
         return newNode;
     }
@@ -256,7 +255,7 @@ public class ContentManagerHelper {
             exists = false;
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
-            throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error", uiLocale), e.toString()));
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error", uiLocale, e.toString()));
         }
         return exists;
     }
@@ -303,9 +302,9 @@ public class ContentManagerHelper {
             }
 
             // reorder existing ones
-            for (GWTJahiaNode childNode : newChildrenList) {
-                targetNode.orderBefore(childNode.getName(), null);
-            }
+                for (GWTJahiaNode childNode : newChildrenList) {
+                    targetNode.orderBefore(childNode.getName(), null);
+                }
             currentUserSession.save();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -381,19 +380,19 @@ public class ContentManagerHelper {
                     node = currentUserSession.getNode(aNode);
                 } catch (RepositoryException e) {
                     logger.error(e.toString(), e);
-                    missedPaths.add(new StringBuilder(aNode).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale))
+                    missedPaths.add(new StringBuilder(aNode).append(Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale))
                             .append(e.toString()).toString());
                     continue;
                 }
                 if (!node.hasPermission(Privilege.JCR_ADD_CHILD_NODES)) {
-                    missedPaths.add(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.has.no.write.access.to", uiLocale),user.getUsername(),node.getName()));
+                    missedPaths.add(Messages.getInternalWithArguments("label.gwt.error.has.no.write.access.to", uiLocale, user.getUsername(), node.getName()));
                 } else if (node.isLocked() && !node.getLockOwner().equals(user.getUsername())) {
-                    missedPaths.add(new StringBuilder(node.getName()).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.locked.by", uiLocale))
+                    missedPaths.add(new StringBuilder(node.getName()).append(Messages.getInternal("label.gwt.error.locked.by", uiLocale))
                             .append(user.getUsername()).toString());
                 }
             }
             if (missedPaths.size() > 0) {
-                StringBuilder errors = new StringBuilder(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.following.files.could.not.be.cut",uiLocale));
+                StringBuilder errors = new StringBuilder(Messages.getInternal("label.gwt.error.following.files.could.not.be.cut",uiLocale));
                 for (String err : missedPaths) {
                     errors.append("\n").append(err);
                 }
@@ -567,7 +566,7 @@ public class ContentManagerHelper {
                     nodeToDelete.saveSession();
                 }
             } catch (PathNotFoundException e) {
-                missedPaths.add(new StringBuilder(path).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale))
+                missedPaths.add(new StringBuilder(path).append(Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale))
                         .append(e.toString()).toString());
             } catch (AccessDeniedException e) {
                 missedPaths.add(new StringBuilder(nodeToDelete != null ? nodeToDelete.getPath() : "").append(" - ACCESS DENIED").toString());
@@ -579,7 +578,7 @@ public class ContentManagerHelper {
             }
         }
         if (missedPaths.size() > 0) {
-            StringBuilder errors = new StringBuilder(JahiaResourceBundle.getJahiaInternalResource("label.error.nodes.not.deleted", uiLocale, "The following nodes could not be deleted:"));
+            StringBuilder errors = new StringBuilder(Messages.getInternal("label.error.nodes.not.deleted", uiLocale, "The following nodes could not be deleted:"));
             for (String err : missedPaths) {
                 errors.append("\n").append(err);
             }
@@ -601,7 +600,7 @@ public class ContentManagerHelper {
                     nodeToUndelete.saveSession();
                 }
             } catch (PathNotFoundException e) {
-                missedPaths.add(new StringBuilder(path).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale))
+                missedPaths.add(new StringBuilder(path).append(Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale))
                         .append(e.toString()).toString());
             } catch (AccessDeniedException e) {
                 missedPaths.add(new StringBuilder(nodeToUndelete != null ? nodeToUndelete.getPath() : "").append(" - ACCESS DENIED").toString());
@@ -611,7 +610,7 @@ public class ContentManagerHelper {
             }
         }
         if (missedPaths.size() > 0) {
-            StringBuilder errors = new StringBuilder(JahiaResourceBundle.getJahiaInternalResource("label.error.nodes.not.deleted", uiLocale, "The following nodes could not be undeleted:"));
+            StringBuilder errors = new StringBuilder(Messages.getInternal("label.error.nodes.not.deleted", uiLocale, "The following nodes could not be undeleted:"));
             for (String err : missedPaths) {
                 errors.append("\n").append(err);
             }
@@ -631,24 +630,24 @@ public class ContentManagerHelper {
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(
-                    new StringBuilder(path).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
+                    new StringBuilder(path).append(Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
         }
         try {
             if (node.isLocked() && !node.getLockOwner().equals(currentUserSession.getUser().getUsername())) {
-                throw new GWTJahiaServiceException(new StringBuilder(node.getName()).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.locked.by", uiLocale))
+                throw new GWTJahiaServiceException(new StringBuilder(node.getName()).append(Messages.getInternal("label.gwt.error.locked.by", uiLocale))
                         .append(currentUserSession.getUser().getUsername()).toString());
             } else if (!node.hasPermission(Privilege.JCR_WRITE)) {
                 throw new GWTJahiaServiceException(
                         new StringBuilder(node.getName()).append(" - ACCESS DENIED").toString());
             } else if (!node.rename(JCRContentUtils.escapeLocalNodeName(newName))) {
                 throw new GWTJahiaServiceException(
-                        MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.rename.file",uiLocale) ,node.getName(),newName));
+                        Messages.getInternalWithArguments("label.gwt.error.could.not.rename.file",uiLocale,node.getName(),newName));
             }
         } catch (ItemExistsException e) {
-            throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.already.exists",uiLocale),newName));
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.already.exists",uiLocale,newName));
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
-            throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.rename.file",uiLocale) ,node.getName(),newName));
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.rename.file",uiLocale,node.getName(),newName));
         }
         try {
             node.saveSession();
@@ -692,26 +691,16 @@ public class ContentManagerHelper {
                         if (result instanceof MissingModulesValidationResult) {
                             MissingModulesValidationResult missingModule = ((MissingModulesValidationResult)result);
                             if (missingModule.isTargetTemplateSetPresent()) {
-                                String message = JahiaResourceBundle.getJahiaInternalResource("failure.import.missingTemplateSet",uiLocale);
-                                message = MessageFormat.format(message, missingModule.getTargetTemplateSet());
-                                buffer.append(message);
+                                buffer.append(Messages.getInternalWithArguments("failure.import.missingTemplateSet",uiLocale, missingModule.getTargetTemplateSet()));
                             }
                             if (!missingModule.getMissingModules().isEmpty()) {
-                                String message = JahiaResourceBundle.getJahiaInternalResource("failure.import.missingModules",uiLocale);
-                                message = MessageFormat.format(message, missingModule.getMissingModules().size());
-                                message += missingModule.getMissingModules();
-                                buffer.append(message);
+                                buffer.append(Messages.getInternalWithArguments("failure.import.missingModules",uiLocale, missingModule.getMissingModules().size()) + missingModule.getMissingModules());
                             }
                         } else if (result instanceof MissingNodetypesValidationResult) {
-                            String message = JahiaResourceBundle.getJahiaInternalResource("failure.import.missingNodetypes",uiLocale);
-                            message = MessageFormat.format(message, ((MissingNodetypesValidationResult)result).getMissingNodetypes(),((MissingNodetypesValidationResult)result).getMissingMixins());
-                            buffer.append(message);
+                            buffer.append(Messages.getInternalWithArguments("failure.import.missingNodetypes",uiLocale, ((MissingNodetypesValidationResult)result).getMissingNodetypes(),((MissingNodetypesValidationResult)result).getMissingMixins()));
                         } else if (result instanceof MissingTemplatesValidationResult) {
                             MissingTemplatesValidationResult missingTemplates = ((MissingTemplatesValidationResult)result);
-                            String message = JahiaResourceBundle.getJahiaInternalResource("failure.import.missingTemplates",uiLocale);
-                            message = MessageFormat.format(message, missingTemplates.getMissingTemplates().size());
-                            message += missingTemplates.getMissingTemplates().keySet();
-                            buffer.append(message);
+                            buffer.append(Messages.getInternalWithArguments("failure.import.missingTemplates",uiLocale, missingTemplates.getMissingTemplates().size()) + missingTemplates.getMissingTemplates().keySet());
                         }
                     }
                 }
@@ -733,7 +722,7 @@ public class ContentManagerHelper {
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(
-                    new StringBuilder(path).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
+                    new StringBuilder(path).append(Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
         }
         Map<String, List<String[]>> m = node.getAclEntries();
 
@@ -986,11 +975,11 @@ public class ContentManagerHelper {
                 JCRContentUtils.clearAllLocks(path, processChildNodes, currentUserSession);
             } else {
                 logger.error("Error when clearing all locks on node " + path);
-                throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.when.clearing.all.locks.on.node", uiLocale), path, currentUserSession.getUser().getUserKey()));
+                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.when.clearing.all.locks.on.node", uiLocale, path, currentUserSession.getUser().getUserKey()));
             }
         } catch (RepositoryException e) {
             logger.error("Repository error when clearing all locks on node " + path, e);
-            throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.when.clearing.all.locks.on.node",uiLocale), path, currentUserSession.getUser().getUserKey()));
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.when.clearing.all.locks.on.node",uiLocale, path, currentUserSession.getUser().getUserKey()));
         }
     }
 
@@ -1097,7 +1086,7 @@ public class ContentManagerHelper {
                     JCRNodeWrapper node = (JCRNodeWrapper) parent.getNode(newName);
                     if (node == null) {
                         throw new GWTJahiaServiceException(
-                                MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.new.version.file.not.found",uiLocale), location, newName));
+                                Messages.getInternalWithArguments("label.gwt.error.new.version.file.not.found",uiLocale, location, newName));
                     }
                     versioning.addNewVersionFile(node, tmpName);
                     break;
@@ -1105,7 +1094,7 @@ public class ContentManagerHelper {
                     newName = findAvailableName(parent, newName);
                 case 0:
                     if (parent.hasNode(newName)) {
-                        throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.file.exists",uiLocale));
+                        throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.file.exists",uiLocale));
                     }
                 default:
                     GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(tmpName);
@@ -1391,11 +1380,11 @@ public class ContentManagerHelper {
                 }
             }
         } catch (RepositoryException e) {
-            missedPaths.add(new StringBuilder(path).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(
+            missedPaths.add(new StringBuilder(path).append(Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale)).append(
                     e.toString()).toString());
         }
         if (missedPaths.size() > 0) {
-            StringBuilder errors = new StringBuilder(JahiaResourceBundle.getJahiaInternalResource(
+            StringBuilder errors = new StringBuilder(Messages.getInternal(
                     "label.error.nodes.not.deleted", uiLocale));
             for (String err : missedPaths) {
                 errors.append("\n").append(err);
@@ -1429,7 +1418,7 @@ public class ContentManagerHelper {
             try {
                 session.save();
             } catch (RepositoryException e) {
-                throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.occur.when.trying.to.save.the.node", uiLocale), node.getPath() + " (saveVisibilityConditions)"));
+                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.occur.when.trying.to.save.the.node", uiLocale, node.getPath() + " (saveVisibilityConditions)"));
             }
             for (GWTJahiaNode condition : conditions) {
                 if (condition.get("node-removed") != null) {

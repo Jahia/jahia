@@ -61,7 +61,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowRule;
 import org.jahia.services.workflow.WorkflowService;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
@@ -482,25 +482,25 @@ public class PublicationHelper {
 				logger.warn("Connection to URL: {} failed with status {}", url,
 				        post.getStatusLine());
 				throw new GWTJahiaServiceException(
-                        MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.connection.failed.with.the.status",uiLocale), post.getStatusLine()));
+				        Messages.getInternalWithArguments("label.gwt.error.connection.failed.with.the.status",uiLocale, post.getStatusLine()));
 			}
 		} catch (RepositoryException e) {
 			logger.error("Unable to get source node with identifier: " + props.get("node")
 			        + ". Cause: " + e.getMessage(), e);
 			throw new GWTJahiaServiceException(
-                    MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.connection.failed.with.the.an.error", uiLocale), e.getMessage()));
+			        Messages.getInternalWithArguments("label.gwt.error.connection.failed.with.the.an.error", uiLocale, e.getMessage()));
 		} catch (HttpException e) {
 			logger.error(
 			        "Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(),
 			        e);
 			throw new GWTJahiaServiceException(
-                    MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.connection.failed.with.the.an.error",uiLocale), e.getMessage()));
+			        Messages.getInternalWithArguments("label.gwt.error.connection.failed.with.the.an.error",uiLocale, e.getMessage()));
 		} catch (IOException e) {
 			logger.error(
 			        "Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(),
 			        e);
 			throw new GWTJahiaServiceException(
-                    MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.connection.failed.with.the.an.error",uiLocale), e.getMessage()));
+			        Messages.getInternalWithArguments("label.gwt.error.connection.failed.with.the.an.error",uiLocale, e.getMessage()));
 		} finally {
 			if (post != null) {
 				post.releaseConnection();

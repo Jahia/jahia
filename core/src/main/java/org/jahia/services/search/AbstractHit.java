@@ -48,7 +48,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.search.jcr.JahiaExcerptProvider;
 import org.jahia.utils.Patterns;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,15 +97,9 @@ public abstract class AbstractHit<T> implements Hit<T> {
                         String type = "";
                         for (String s : Patterns.COMMA.split(excerptValue
                                 .getString())) {
-                            String s2 = s
-                                    .contains(JahiaExcerptProvider.TAG_TYPE) ? JahiaResourceBundle
-                                    .getJahiaInternalResource("label.tags",
-                                            context.getRequest().getLocale())
-                                    : JahiaResourceBundle
-                                            .getJahiaInternalResource(
-                                                    "label.category", context
-                                                            .getRequest()
-                                                            .getLocale());
+                            String s2 = Messages.getInternal(s
+                                    .contains(JahiaExcerptProvider.TAG_TYPE) ? "label.tags"
+                                    : "label.category", context.getRequest().getLocale());
                             String s1 = s.substring(s.indexOf("###"),
                                     s.lastIndexOf("###"));
                             String identifier = s1.substring(s1

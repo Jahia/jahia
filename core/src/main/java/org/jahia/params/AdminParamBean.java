@@ -54,10 +54,10 @@ import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
 import org.jahia.exceptions.JahiaException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.settings.SettingsBean;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.ResourceBundles;
 
 /**
  * This object contains most of the request context, including object such as
@@ -94,8 +94,13 @@ public final class AdminParamBean extends ParamBean {
         resolveUILocale();
         Config.set(request, Config.FMT_LOCALE, getUILocale());
         // init localization context
-        Config.set(request, Config.FMT_LOCALIZATION_CONTEXT,
-                new LocalizationContext(new JahiaResourceBundle(getUILocale(), getSite()
-                        .getTemplatePackageName()), getUILocale()));            
+        String templatePackageName = getSite().getTemplatePackageName();
+        Config.set(
+                request,
+                Config.FMT_LOCALIZATION_CONTEXT,
+                new LocalizationContext(templatePackageName != null ? ResourceBundles.get(
+                        ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                                .getTemplatePackage(templatePackageName), getUILocale())
+                        : ResourceBundles.getInternal(getUILocale())));
     }
 }

@@ -54,8 +54,7 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.*;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 
 import javax.servlet.ServletRequest;
 import java.io.Serializable;
@@ -299,8 +298,7 @@ public class PrincipalViewHelper implements Serializable {
      */
     public static String getGroupDisplayName(String groupName, Locale locale) {
         if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupName)) {
-            JahiaResourceBundle rb = new JahiaResourceBundle(null, locale != null ? locale : getLocale(), SettingsBean.getInstance().getGuestGroupResourceModuleName());
-            groupName = rb.get(SettingsBean.getInstance().getGuestGroupResourceKey(), groupName);
+            groupName = Messages.get(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(SettingsBean.getInstance().getGuestGroupResourceModuleName()), SettingsBean.getInstance().getGuestGroupResourceKey(), locale != null ? locale : getLocale(), groupName);
         }
         return groupName;
     }
@@ -324,8 +322,7 @@ public class PrincipalViewHelper implements Serializable {
      */
     public static String getUserDisplayName(String userName, Locale locale) {
         if (Constants.GUEST_USERNAME.equals(userName)) {
-            JahiaResourceBundle rb = new JahiaResourceBundle(null, locale != null ? locale : getLocale(), SettingsBean.getInstance().getGuestUserResourceModuleName());
-            userName = rb.get(SettingsBean.getInstance().getGuestUserResourceKey(), userName);
+            userName = Messages.get(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(SettingsBean.getInstance().getGuestUserResourceModuleName()), SettingsBean.getInstance().getGuestUserResourceKey(), locale != null ? locale : getLocale(), userName);
         }
         return userName;
     }
@@ -782,7 +779,7 @@ public class PrincipalViewHelper implements Serializable {
     private static String getI18n(String key, String defaultValue) {
         Locale locale = getLocale();
 
-        return JahiaResourceBundle.getJahiaInternalResource(key, locale, defaultValue);
+        return Messages.getInternal(key, locale, defaultValue);
     }
 
     private static Locale getLocale() {

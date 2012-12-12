@@ -48,7 +48,7 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.ScriptEngineUtils;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.ResourceBundles;
 import org.jbpm.api.Execution;
 import org.jbpm.api.JbpmException;
 import org.jbpm.api.ProcessEngine;
@@ -355,7 +355,7 @@ public class JBPMMailProducer extends MailProducerImpl {
         final Map<String, Object> vars = ((ExecutionImpl) execution).getVariables();
         Locale locale = (Locale) vars.get("locale");
         final Bindings bindings = new MyBindings(environment);
-        ResourceBundle resourceBundle = JahiaResourceBundle.lookupBundle(
+        ResourceBundle resourceBundle = ResourceBundles.get(
                 "org.jahia.services.workflow." + ((ExecutionImpl) execution).getProcessDefinition().getKey(), locale);
         bindings.put("bundle", resourceBundle);
         // user is the one that initiate the Execution  (WorkflowService.startProcess)

@@ -70,7 +70,7 @@ import org.jahia.services.visibility.VisibilityService;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorklowTypeRegistration;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.Patterns;
+import org.jahia.utils.i18n.ResourceBundles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -94,8 +94,6 @@ import java.util.*;
 public class TemplatePackageRegistry {
     private static Logger logger = LoggerFactory.getLogger(TemplatePackageRegistry.class);
     
-    private final static String MODULES_ROOT_PATH = "modules.";
-
     private static final Comparator<JahiaTemplatesPackage> TEMPLATE_PACKAGE_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
         public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
             if (o1.isDefault()) return 99;
@@ -273,8 +271,8 @@ public class TemplatePackageRegistry {
             return Collections.unmodifiableSet(packagesWithVersionByFilename.get(rootFolder).keySet());
         }
         if (packagesWithVersion.containsKey(rootFolder)) {
-            return Collections.unmodifiableSet(packagesWithVersion.get(rootFolder).keySet());
-        }
+        return Collections.unmodifiableSet(packagesWithVersion.get(rootFolder).keySet());
+    }
         return Collections.EMPTY_SET;
     }
 
@@ -404,7 +402,7 @@ public class TemplatePackageRegistry {
                 register(pack);
                 if (startContext) {
                     templatePackageApplicationContextLoader.createWebApplicationContext(pack);
-                }
+            }
             }
         } catch (IOException e) {
             logger.error("Cannot get active versions of module " + pack.getRootFolder(),e);
@@ -485,20 +483,20 @@ public class TemplatePackageRegistry {
     private void computeResourceBundleHierarchy(JahiaTemplatesPackage templatePackage) {
         templatePackage.getResourceBundleHierarchy().clear();
         if (templatePackage.getResourceBundleName() != null) {
-            templatePackage.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + templatePackage.getRootFolder() + "." + Patterns.DOT.matcher(templatePackage.getVersion().toString()).replaceAll("___") + "." + templatePackage.getResourceBundleName());
+            templatePackage.getResourceBundleHierarchy().add(templatePackage.getResourceBundleName());
         }
         for (JahiaTemplatesPackage dependency : templatePackage.getDependencies()) {
             if (!dependency.isDefault() && dependency.getResourceBundleName() != null) {
-                templatePackage.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + dependency.getRootFolder() + "." + Patterns.DOT.matcher(dependency.getVersion().toString()).replaceAll("___") + "." + dependency.getResourceBundleName());
+                templatePackage.getResourceBundleHierarchy().add(dependency.getResourceBundleName());
             }
         }
         if (!templatePackage.isDefault() && fileNameRegistry.containsKey("default")) {
-            	templatePackage.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + "default." + Patterns.DOT.matcher(fileNameRegistry.get("default").getVersion().toString()).replaceAll("___") + ".resources.DefaultJahiaTemplates");
-            templatePackage.getResourceBundleHierarchy().add("JahiaTypesResources");
-            templatePackage.getResourceBundleHierarchy().add("JahiaInternalResources");
+            templatePackage.getResourceBundleHierarchy().add(fileNameRegistry.get("default").getResourceBundleName());
+            templatePackage.getResourceBundleHierarchy().add(ResourceBundles.JAHIA_TYPES_RESOURCES);
+            templatePackage.getResourceBundleHierarchy().add(ResourceBundles.JAHIA_INTERNAL_RESOURCES);
         } else {
-            templatePackage.getResourceBundleHierarchy().add("JahiaTypesResources");
-            templatePackage.getResourceBundleHierarchy().add("JahiaInternalResources");
+            templatePackage.getResourceBundleHierarchy().add(ResourceBundles.JAHIA_TYPES_RESOURCES);
+            templatePackage.getResourceBundleHierarchy().add(ResourceBundles.JAHIA_INTERNAL_RESOURCES);
         }
     }
 

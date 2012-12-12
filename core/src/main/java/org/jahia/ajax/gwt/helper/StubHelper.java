@@ -42,9 +42,8 @@ package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.stub.StubService;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -58,8 +57,7 @@ public class StubHelper {
 
     public String getLabel(String fileType, String snippetType, String fileName, Locale locale, Object... args) {
         fileName = StringUtils.substringBeforeLast(fileName,".");
-        JahiaResourceBundle bundle = new JahiaResourceBundle(JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES, locale);
-        return bundle.getFormatted("label.codesnippets." + fileType + "." + snippetType + "." + fileName, fileName, args);
+        return Messages.format(Messages.getInternal("label.codesnippets." + fileType + "." + snippetType + "." + fileName, locale, fileName), args);
     }
 
     public void setStubService(StubService stubService) {

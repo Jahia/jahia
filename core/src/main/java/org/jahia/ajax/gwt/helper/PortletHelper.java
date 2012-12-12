@@ -41,7 +41,7 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.jahia.utils.Patterns;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -60,7 +60,6 @@ import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.applications.PortletEntryPointDefinition;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.applications.ApplicationsManagerService;
-import org.jahia.services.applications.ApplicationsManagerServiceImpl;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -69,12 +68,10 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.RepositoryException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Pattern;
 
 /**
  * Portlet management helper.
@@ -184,7 +181,7 @@ public class PortletHelper {
                 name = Patterns.SLASH.matcher(gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName()).replaceAll("___") + Math.round(Math.random() * 1000000l);
             }
             if (contentManager.checkExistence(parentPath + "/" + name, currentUserSession, uiLocale)) {
-                throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.already.exists.with.name",uiLocale), name));
+                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.node.already.exists.with.name",uiLocale, name));
             }
             JCRNodeWrapper parentNode = currentUserSession.getNode(parentPath);
             if (!parentNode.isCheckedOut()) {
@@ -222,12 +219,12 @@ public class PortletHelper {
                 parentNode.save();
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
-                throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.system.error.happened",uiLocale));
+                throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.system.error.happened",uiLocale));
             }
             return navigation.getGWTJahiaNode(node);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error",uiLocale));
+            throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error",uiLocale));
         }
     }
 

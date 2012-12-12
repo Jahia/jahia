@@ -37,35 +37,51 @@
  * If you are unsure which license is appropriate for your use,
  * please contact the sales department at sales@jahia.com.
  */
+package org.jahia.utils.i18n;
 
-package org.jahia.services.uicomponents.bean.toolbar;
-
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.utils.i18n.Messages;
-
-import java.util.Locale;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.MissingResourceException;
+import java.util.PropertyResourceBundle;
 
 /**
- * User: jahia
- * Date: 11 juil. 2008
- * Time: 10:04:15
+ * Slightly modified implementation of the {@link PropertyResourceBundle} that is not throwing {@link MissingResourceException} in case the
+ * key is not found.
+ * 
+ * @author Sergiy Shyrkov
  */
-public class ResourceBundleProperty extends Property {
+class JahiaPropertyResourceBundle extends PropertyResourceBundle {
 
-    private static final long serialVersionUID = -7876984557083490535L;
-    
-    private String key;
-
-    public String getKey() {
-        return key;
+    JahiaPropertyResourceBundle(InputStream stream) throws IOException {
+        super(stream);
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    /**
+     * Gets an object for the given key from this resource bundle or one of its parents. This method first tries to obtain the object from
+     * this resource bundle using {@link #handleGetObject(java.lang.String) handleGetObject}. If not successful, and the parent resource
+     * bundle is not null, it calls the parent's <code>getObject</code> method. If still not successful, it returns <code>null</code>.
+     * 
+     * @param key
+     *            the key for the desired object
+     * @exception NullPointerException
+     *                if <code>key</code> is <code>null</code>
+     * @return the object for the given key or <code>null</code> if it cannot be found in the resource bundle or its parent
+     */
+    String getStringInternal(String key) {
+        Object obj = handleGetObject(key);
+        if (obj == null && parent != null) {
+            if (parent instanceof JahiaPropertyResourceBundle) {
+                obj = ((JahiaPropertyResourceBundle) parent).getStringInternal(key);
+            } else {
+                try {
+                    obj = parent.getObject(key);
+                } catch (MissingResourceException e) {
+                    // suppress it
+                }
+            }
+        }
+
+        return (String) obj;
     }
 
-    public String getRealValue(JCRSiteNode site, JahiaUser user, Locale locale) {
-        return Messages.getInternal(key, locale);
-    }
 }

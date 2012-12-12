@@ -47,7 +47,8 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
+import org.jahia.utils.i18n.ResourceBundles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -236,10 +237,11 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
     }
     
     public static String getMessage(String key) {
-        return JahiaResourceBundle.getJahiaInternalResource(key, Jahia.getThreadParamBean().getUILocale());
+        return Messages.getInternal(key, Jahia.getThreadParamBean().getUILocale());
     }
 
     public LocalizationContext getLocalizationContext() {
-        return new LocalizationContext(new JahiaResourceBundle(JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES,Jahia.getThreadParamBean().getUILocale()));
+        return new LocalizationContext(
+                ResourceBundles.getInternal(Jahia.getThreadParamBean().getUILocale()));
     }
 }

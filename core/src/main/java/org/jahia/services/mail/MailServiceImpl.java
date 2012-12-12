@@ -67,12 +67,13 @@ import org.springframework.context.ApplicationListener;
 import org.jahia.api.Constants;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.bin.listeners.JahiaContextLoaderListener.RootContextInitializedEvent;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.templates.TemplateUtils;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.ResourceBundles;
 
 /**
  * This service define method to send e-mails.
@@ -324,9 +325,9 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
                         Patterns.SLASH.matcher(
                                 StringUtils.substringAfter(Patterns.WEB_INF.matcher(template)
                                         .replaceAll(""), "/")).replaceAll("."), ".");
-                resourceBundle = JahiaResourceBundle.lookupBundle(resourceBundleName, locale);
+                resourceBundle = ResourceBundles.get(resourceBundleName, locale);
             } else {
-                resourceBundle = new JahiaResourceBundle(locale, templatePackageName);
+                resourceBundle = ResourceBundles.get(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(templatePackageName), locale);
             }
             final Bindings bindings = new SimpleBindings();
             bindings.put("bundle", resourceBundle);

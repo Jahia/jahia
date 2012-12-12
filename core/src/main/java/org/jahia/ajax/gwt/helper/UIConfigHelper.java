@@ -67,14 +67,13 @@ import org.jahia.services.uicomponents.bean.toolbar.Property;
 import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.ScriptEngineUtils;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.script.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.StringWriter;
-import java.text.MessageFormat;
 import java.util.*;
 
 /**
@@ -111,7 +110,7 @@ public class UIConfigHelper {
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.during.loading.toolbars",uiLocale), e.getMessage()));
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.during.loading.toolbars",uiLocale, e.getMessage()));
         }
     }
 
@@ -175,7 +174,7 @@ public class UIConfigHelper {
             return gwtJahiaStateInfo;
         } catch (Exception e) {
             logger.error("Error when triing to load Jahia state info due to", e);
-            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.when.trying.to.load.jahia.state",uiLocale));
+            throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.when.trying.to.load.jahia.state",uiLocale));
         }
     }
 
@@ -350,7 +349,7 @@ public class UIConfigHelper {
                 return gwtConfig;
             } else {
                 logger.error("Config. " + name + " not found.");
-                throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.config.not.found",uiLocale), name));
+                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.config.not.found",uiLocale, name));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -561,7 +560,7 @@ public class UIConfigHelper {
                 gwtConfig.setEnableDragAndDrop(config.isEnableDragAndDrop());
                 return gwtConfig;
             } else {
-                throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.bean.editconfig.not.found.in.spring.config.file",uiLocale));
+                throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.bean.editconfig.not.found.in.spring.config.file",uiLocale));
             }
         } catch (GWTJahiaServiceException e) {
             logger.error(e.getMessage(), e);
@@ -686,21 +685,22 @@ public class UIConfigHelper {
      * @return
      */
     private String getResources(String key, Locale locale, JCRSiteNode site, JahiaUser jahiaUser) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Resources key: " + key);
-        }
         if (key == null || key.length() == 0) {
             return key;
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("Resources key: " + key);
         }
         String baseName = null;
         if (key.contains("@")) {
             baseName = StringUtils.substringAfter(key, "@");
             key = StringUtils.substringBefore(key, "@");
         }
+
         
-        String value = new JahiaResourceBundle(baseName, locale, site != null ? site.getTemplatePackageName() : null).get(key, null);
+        String value = Messages.get(baseName, site != null ? site.getTemplatePackage() : null, key, locale, key);
         if (value == null || value.length() == 0) {
-            value = JahiaResourceBundle.getJahiaInternalResource(key, locale);
+            value = Messages.getInternal(key, locale);
         }
         if (logger.isDebugEnabled()) {
             logger.debug("Resources value: " + value);

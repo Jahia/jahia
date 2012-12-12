@@ -43,7 +43,7 @@ package org.jahia.services.content.nodetypes.initializers;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -254,10 +254,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                             param.equals(map.get("type"))) &&
                     !view.getKey().startsWith("wrapper.") && !view.getKey().contains("hidden.")
                     ) {
-                JahiaResourceBundle rb = new JahiaResourceBundle(null, locale, view.getModule().getName());
-
-                String displayName = rb.get(declaringPropertyDefinition.getResourceBundleKey() + "." + JCRContentUtils.replaceColon(view.getKey()),
-                        view.getKey());
+                String displayName = Messages.get(view.getModule(), declaringPropertyDefinition.getResourceBundleKey() + "." + JCRContentUtils.replaceColon(view.getKey()), locale, view.getKey());
                 ChoiceListValue c =  new ChoiceListValue(displayName, map, new ValueImpl(view.getKey(), PropertyType.STRING, false));
                 try {
 

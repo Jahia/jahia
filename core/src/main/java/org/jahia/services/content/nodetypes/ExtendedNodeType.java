@@ -52,8 +52,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.ExternalReferenceValue;
 import org.jahia.services.content.JCRContentUtils;
-import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
+import org.jahia.utils.i18n.Messages;
 
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
@@ -106,9 +105,12 @@ public class ExtendedNodeType implements NodeType {
 
     private Map<Locale, String> labels = new ConcurrentHashMap<Locale, String>(1);
     private Map<Locale, String> descriptions = new ConcurrentHashMap<Locale, String>(1);
+    private boolean systemType;
+    private JahiaTemplatesPackage templatesPackage; 
     public ExtendedNodeType(NodeTypeRegistry registry, String systemId) {
         this.registry = registry;
         this.systemId = systemId;
+        this.systemType = systemId.startsWith("system-");
     }
 
     public String getSystemId() {
@@ -820,33 +822,31 @@ public class ExtendedNodeType implements NodeType {
     }
 
     public JahiaTemplatesPackage getTemplatePackage() {
-        JahiaTemplatesPackage pkg = null;
-        if (!getSystemId().startsWith("system-")) {
+        if (!systemType && templatesPackage == null) {
             try {
-                pkg = ServicesRegistry.getInstance()
-                        .getJahiaTemplateManagerService().getTemplatePackageByFileName(getSystemId());
+                templatesPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                        .getTemplatePackageByFileName(getSystemId());
             } catch (Exception e) {
                 logger.warn(
                         "Unable to get the template package for the node with system id '"
                                 + getSystemId() + "'", e);
             }
         }
-
-        return pkg;
+        
+        return templatesPackage;
     }
 
-    protected String getResourceBundleId() {
+    protected String lookupLabel(String key, Locale locale, String defaultValue) {
         JahiaTemplatesPackage pkg = getTemplatePackage();
-        return pkg != null ? "modules." + pkg.getRootFolder() + "." + pkg.getResourceBundleName() : "JahiaTypesResources";
+        return pkg != null ? Messages.get(pkg, key, locale, defaultValue) : Messages.getTypes(key, locale,
+                defaultValue);
     }
 
     public String getLabel(Locale locale) {
         String label = labels.get(locale);
         if (label == null) {
             String key = JCRContentUtils.replaceColon(getName());
-            String tpl = getTemplatePackage() != null ? getTemplatePackage().getName() : null;
-            label = new JahiaResourceBundle(getResourceBundleId(), locale, tpl, JahiaTemplatesRBLoader
-                    .getInstance(Thread.currentThread().getContextClassLoader(), tpl)).getString(key, StringUtils.substringAfter(getName(),":"));
+            label = lookupLabel(key, locale, StringUtils.substringAfter(getName(),":"));
             labels.put(locale, label);
         }
         return label;
@@ -856,9 +856,7 @@ public class ExtendedNodeType implements NodeType {
         String description = descriptions.get(locale);
         if (description == null) {
             String key = JCRContentUtils.replaceColon(getName()) + "_description";
-            String tpl = getTemplatePackage() != null ? getTemplatePackage().getName() : null;
-            description = new JahiaResourceBundle(getResourceBundleId(), locale, tpl, JahiaTemplatesRBLoader
-                    .getInstance(Thread.currentThread().getContextClassLoader(), tpl)).getString(key, "");
+            description = lookupLabel(key, locale, StringUtils.EMPTY);
             descriptions.put(locale, description);
         }
         return description;

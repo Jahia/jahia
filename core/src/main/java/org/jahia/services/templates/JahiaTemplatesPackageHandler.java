@@ -162,6 +162,14 @@ final class JahiaTemplatesPackageHandler {
                 }
             }
         }
+        if (templatePackage.getResourceBundleName() != null
+                && !templatePackage.getResourceBundleName().startsWith("modules.")) {
+            templatePackage.setResourceBundleName("modules."
+                    + templatePackage.getRootFolder()
+                    + "."
+                    + Patterns.DOT.matcher(templatePackage.getVersion().toString()).replaceAll(
+                            "___") + "." + templatePackage.getResourceBundleName());
+        }
 
         if (templatePackage.getInitialImports().isEmpty()) {
             List<File> files = Arrays.asList(file.listFiles((FilenameFilter) new WildcardFileFilter(new String[]{

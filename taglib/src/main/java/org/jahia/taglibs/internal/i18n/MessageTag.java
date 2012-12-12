@@ -43,7 +43,6 @@ package org.jahia.taglibs.internal.i18n;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.MissingResourceException;
-import java.text.MessageFormat;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -53,7 +52,9 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.jahia.engines.EngineMessage;
 import org.jahia.params.ProcessingContext;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Support for Jahia Message ResourceBundle within Jahia
@@ -95,14 +96,11 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
  * &lt;content:message key=\"org.jahia.bin.JahiaConfigurationWizard.root.adminUserName.label\" /&gt;
  * <p/>
  * </attriInfo>"
- * @see JahiaResourceBundle
- *      see SetAdminResourceBundleTag
- *      see JahiaInternalResources.properties
  */
 @SuppressWarnings("serial")
 public class MessageTag extends TagSupport {
 
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(MessageTag.class);
+    private static final Logger logger = LoggerFactory.getLogger(MessageTag.class);
 
     private String key = null;
     private String name = null;
@@ -179,11 +177,11 @@ public class MessageTag extends TagSupport {
         String resValue = null;
         try {
             if (key != null) {
-                resValue = JahiaResourceBundle.getJahiaInternalResource(key, currentLocale);
+                resValue = Messages.getInternal(key, currentLocale);
             } else if (name != null) {
                 final EngineMessage message = (EngineMessage) pageContext.findAttribute(name);
                 if (message != null) {
-                    resValue = message.isResource() ? MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource(message.getKey(), currentLocale), message.getValues()) : message.getKey();
+                    resValue = message.isResource() ? Messages.getInternalWithArguments(message.getKey(), currentLocale, message.getValues()) : message.getKey();
                 } else {
                     logger.error("Couldn't find any EngineMessage bean with name " + name + "!");
                 }

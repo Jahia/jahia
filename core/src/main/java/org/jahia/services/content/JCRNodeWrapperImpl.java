@@ -55,7 +55,6 @@ import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.util.Text;
-import org.jahia.services.content.impl.external.ExternalNodeImpl;
 import org.jahia.services.visibility.VisibilityService;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
@@ -75,7 +74,7 @@ import org.jahia.services.query.QueryManagerImpl;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -3901,10 +3900,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
             for (String module : site.getInstalledModules()) {
                 try {
-                    return JahiaResourceBundle.interpolateResourceBunldeMacro(title, locale != null ? locale
-                            : session.getFallbackLocale(),
-                            ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(module).getName());
+                    return Messages.interpolateResourceBunldeMacro(title,
+                            locale != null ? locale : session.getFallbackLocale(), ServicesRegistry.getInstance()
+                                    .getJahiaTemplateManagerService().getTemplatePackageByFileName(module));
                 } catch (Exception e) {
+                    // ignore
                 }
             }
         } catch (RepositoryException e) {

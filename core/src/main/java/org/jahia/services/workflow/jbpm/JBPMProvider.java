@@ -52,7 +52,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
 import org.jahia.utils.FileUtils;
 import org.jahia.utils.Patterns;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.ResourceBundles;
 import org.jbpm.api.*;
 import org.jbpm.api.activity.ActivityBehaviour;
 import org.jbpm.api.cmd.Command;
@@ -78,6 +78,7 @@ import org.jbpm.pvm.internal.svc.HistoryServiceImpl;
 import org.jbpm.pvm.internal.task.TaskDefinitionImpl;
 import org.jbpm.pvm.internal.wire.usercode.UserCodeActivityBehaviour;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
@@ -85,7 +86,6 @@ import javax.jcr.RepositoryException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.MessageFormat;
 import java.util.*;
 
 /**
@@ -96,7 +96,7 @@ import java.util.*;
  *        Created : 2 févr. 2010
  */
 public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEventGeneratorInterceptor.JBPMEventListener, WorkflowObservationManagerAware {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JBPMProvider.class);
+    private transient static Logger logger = LoggerFactory.getLogger(JBPMProvider.class);
     private String key;
     private CacheService cacheService;
     private WorkflowService workflowService;
@@ -332,8 +332,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
 
     public List<WorkflowDefinition> getAvailableWorkflows(Locale locale) {
         if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("List of all available process ({0}) : ",
-                    repositoryService.createProcessDefinitionQuery().count()));
+            logger.debug("List of all available process ({}):",
+                    repositoryService.createProcessDefinitionQuery().count());
         }
         final List<ProcessDefinition> definitionList = repositoryService.createProcessDefinitionQuery().list();
 
@@ -374,8 +374,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
 
     private ProcessDefinition getProcessDefinitionByKey(String key) {
         if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("List of all available process ({0}) : ",
-                    repositoryService.createProcessDefinitionQuery().count()));
+            logger.debug("List of all available process ({}): ",
+                    repositoryService.createProcessDefinitionQuery().count());
         }
         final List<ProcessDefinition> definitionList =
                 repositoryService.createProcessDefinitionQuery().processDefinitionKey(key).list();
@@ -393,8 +393,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
 
     private ProcessDefinition getProcessDefinitionById(String id) {
         if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("List of all available process ({0}) : ",
-                    repositoryService.createProcessDefinitionQuery().count()));
+            logger.debug("List of all available process ({}): ",
+                    repositoryService.createProcessDefinitionQuery().count());
         }
         final List<ProcessDefinition> definitionList =
                 repositoryService.createProcessDefinitionQuery().processDefinitionId(id).list();
@@ -1032,9 +1032,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
 
     private ResourceBundle getResourceBundle(Locale locale, final String definitionKey) {
         try {
-            return JahiaResourceBundle
-                    .lookupBundle(WorkflowService.class.getPackage().getName() + "." + Patterns.SPACE.matcher(definitionKey).replaceAll(""),
-                            locale);
+            return ResourceBundles
+                    .get(WorkflowService.class.getPackage().getName() + "." + Patterns.SPACE.matcher(definitionKey).replaceAll(""), locale);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return null;

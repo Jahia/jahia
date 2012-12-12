@@ -55,9 +55,7 @@ import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowObservationManager;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorkflowVariable;
-import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jbpm.api.model.OpenExecution;
 import org.jbpm.api.model.Transition;
 import org.jbpm.api.task.Assignable;
@@ -180,16 +178,7 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
                     task.setProperty("possibleOutcomes", outcomes.toArray(new Value[outcomes.size()]));
                     task.setProperty("state", "active");
                     task.setProperty("type", "workflow");
-                    /*//todo : get titles for all locales
-                    List<Locale> locales = LanguageCodeConverters.getAvailableBundleLocales(bundle, locale);
-                    for (Locale aLocale : locales) {
-                        try {
-                            String taskname = JahiaResourceBundle.lookupBundle(bundle, aLocale).getString(Patterns.SPACE.matcher(wfTask.getName()).replaceAll(".").trim().toLowerCase());*/
-                            task.setProperty("jcr:title", "##resourceBundle("+Patterns.SPACE.matcher(wfTask.getName()).replaceAll(".").trim().toLowerCase() + ","+ bundle + ")## : " + session.getNodeByIdentifier(uuid).getDisplayableName());
-                        /*} catch (MissingResourceException e) {
-                            task.setProperty("jcr:title", wfTask.getName() + " : " + session.getNodeByIdentifier(uuid).getDisplayableName());
-                        }
-                    }*/
+                    task.setProperty("jcr:title", "##resourceBundle("+Patterns.SPACE.matcher(wfTask.getName()).replaceAll(".").trim().toLowerCase() + ","+ bundle + ")## : " + session.getNodeByIdentifier(uuid).getDisplayableName());
 
                     if (execution.getVariable("jcr:title") instanceof List && ((List<WorkflowVariable>)execution.getVariable("jcr:title")).size() > 0) {
                         task.setProperty("description", ((List<WorkflowVariable>)execution.getVariable("jcr:title")).get(0).getValue());

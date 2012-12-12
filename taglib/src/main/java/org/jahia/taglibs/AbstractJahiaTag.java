@@ -52,6 +52,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.taglibs.utility.Utils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.ResourceBundles;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -169,9 +170,9 @@ public class AbstractJahiaTag extends BodyTagSupport {
             bundle = localizationCtx.getResourceBundle();
         }
         if (bundle == null) {
-            bundle = new JahiaResourceBundle(resourceBundle,
-                    getRenderContext().getMainResourceLocale(), getRenderContext()
-                            .getSite().getTemplatePackageName());
+            bundle = ResourceBundles.get(resourceBundle, getRenderContext()
+                            .getSite().getTemplatePackage(),
+                            getRenderContext().getMainResourceLocale());
         }
         return bundle;
     }

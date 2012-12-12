@@ -90,7 +90,8 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
+import org.jahia.utils.i18n.ResourceBundles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -323,7 +324,7 @@ public class JahiaAdministration extends HttpServlet {
                     }
 
                     Config.set(request, Config.FMT_LOCALIZATION_CONTEXT,
-                            new LocalizationContext(new JahiaResourceBundle(uiLocale, site.getTemplatePackageName()), uiLocale));
+                            new LocalizationContext(ResourceBundles.get(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(site.getTemplatePackageName()), uiLocale)));
 
                     AdministrationModulesRegistry modulesRegistry = (AdministrationModulesRegistry) SpringContextSingleton.getInstance().getContext().getBean("administrationModulesRegistry");
                     AdministrationModule currentModule = modulesRegistry.getServerAdministrationModule(operation);
@@ -617,15 +618,12 @@ public class JahiaAdministration extends HttpServlet {
                 siteID = currentSite.getID();
             }
         } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle
-                    .getJahiaInternalResource(
-                            "message.invalidUsernamePassword",
-                            request.getLocale());
             request.setAttribute(JahiaAdministration.CLASS_NAME
-                    + "jahiaDisplayMessage", dspMsg);
+                    + "jahiaDisplayMessage", Messages.getInternal("message.invalidUsernamePassword",
+                    request.getLocale()));
         }
 
-        // set the new site id to administrate...
+        // set the new site id to administer...
         request.setAttribute("site", currentSite);
         session.setAttribute(CLASS_NAME + "manageSiteID", siteID);
 

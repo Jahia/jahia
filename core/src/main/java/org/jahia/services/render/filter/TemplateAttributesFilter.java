@@ -41,7 +41,6 @@
 package org.jahia.services.render.filter;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -49,8 +48,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.scripting.Script;
-import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.ResourceBundles;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
@@ -93,9 +91,12 @@ public class TemplateAttributesFilter extends AbstractFilter {
         }
 
         Script script = (Script) request.getAttribute("script");
-        chain.pushAttribute(context.getRequest(), Config.FMT_LOCALIZATION_CONTEXT + ".request", new LocalizationContext(
-                new JahiaResourceBundle(resource.getLocale(), script.getView().getModule().getName(), context.getSite().getTemplatePackageName()),
-                resource.getLocale()));
+        chain.pushAttribute(
+                context.getRequest(),
+                Config.FMT_LOCALIZATION_CONTEXT + ".request",
+                new LocalizationContext(ResourceBundles.get(context.getSite().getTemplatePackage()
+                        .getResourceBundleName(), script.getView().getModule(),
+                        resource.getLocale())));
         return null;
     }
 

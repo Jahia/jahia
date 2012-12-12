@@ -40,13 +40,12 @@
 
 package org.jahia.taglibs.internal.uicomponents;
 
-import org.jahia.data.JahiaData;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.render.RenderContext;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
@@ -223,28 +222,18 @@ public class DisplayIconTag extends AbstractJahiaTag {
     }
 
     public void setLang(String lang) {
-        this._lang = lang;
+        // do nothing
     }
 
     public int doStartTag () {
 
-        // Recover 'jData'
-        // @todo FIXME : This code is repeated in a lot of button taglibs
-        HttpServletRequest request = (HttpServletRequest) pageContext.
-                                     getRequest();
-        /*
-        JahiaData jData = (JahiaData) request.getAttribute(
-            "org.jahia.data.JahiaData");
-            */
         // final ProcessingContext jParams = jData.getProcessingContext();
         RenderContext renderContext = (RenderContext) pageContext.findAttribute("renderContext");
-
-		final String contextPath = request.getContextPath();
 
         // now let's resolve the alt text if resource bundle keys are being
 		// used.
         if (altKey != null) {
-            _alt = JahiaResourceBundle.getString(altBundle, altKey, renderContext.getMainResourceLocale(), renderContext.getSite().getTemplatePackageName());
+            _alt = Messages.get(altBundle, renderContext.getSite().getTemplatePackage(), altKey, renderContext.getMainResourceLocale());
         }
 
         // Produce the HTML code
@@ -275,7 +264,7 @@ public class DisplayIconTag extends AbstractJahiaTag {
     					(_lang != null ? "&flaglang=" + _lang : "")).toString();
     		} else {
     		*/
-    			imagePath = JahiaResourceBundle.getString(getResourceBundle(),_src,renderContext.getMainResourceLocale(),renderContext.getSite().getTemplatePackageName());
+    			imagePath = Messages.get(getResourceBundle(),renderContext.getSite().getTemplatePackage(),_src,renderContext.getMainResourceLocale());
             /*
     		}
     		*/
@@ -336,7 +325,6 @@ public class DisplayIconTag extends AbstractJahiaTag {
         _width = null;
         _align = "";
         _id = "";
-        _lang = "";
         return EVAL_PAGE;
     }
 
@@ -350,10 +338,9 @@ public class DisplayIconTag extends AbstractJahiaTag {
     private Integer _width = null;
     private String _align = "";
     private String _id = "";
-    private String _lang = "";
 
-    private static org.slf4j.Logger logger =
-        org.slf4j.LoggerFactory.getLogger(DisplayIconTag.class);
+    private static Logger logger = LoggerFactory.getLogger(DisplayIconTag.class);
+    
     private void jbInit ()
         throws Exception {
     }

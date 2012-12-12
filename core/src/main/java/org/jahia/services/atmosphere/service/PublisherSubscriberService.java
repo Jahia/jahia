@@ -47,7 +47,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -76,8 +76,8 @@ public class PublisherSubscriberService {
             for (Locale activeLanguagesAsLocale : activeLanguagesAsLocales) {
                 JSONObject jsonObject = new JSONObject();
                 try {
-                    jsonObject.put("body", JahiaResourceBundle.getString(null, message, activeLanguagesAsLocale,
-                            resolveSite.getTemplatePackageName()));
+                    jsonObject.put("body", Messages.get(resolveSite.getTemplatePackage(), message,
+                            activeLanguagesAsLocale));
                 } catch (MissingResourceException e) {
                     logger.warn(e.getMessage(), e);
                     jsonObject.put("body", message + " is missing or cannot be resolved");
@@ -107,8 +107,8 @@ public class PublisherSubscriberService {
             for (Locale activeLanguagesAsLocale : activeLanguagesAsLocales) {
                 JSONObject jsonObject = new JSONObject();
                 try {
-                    jsonObject.put("body", JahiaResourceBundle.getString(null, message, activeLanguagesAsLocale,
-                            resolveSite.getTemplatePackageName()));
+                    jsonObject.put("body", Messages.get(resolveSite.getTemplatePackage(), message,
+                            activeLanguagesAsLocale));
                 } catch (MissingResourceException e) {
                     logger.warn(e.getMessage(), e);
                     jsonObject.put("body", message + " is missing or cannot be resolved");

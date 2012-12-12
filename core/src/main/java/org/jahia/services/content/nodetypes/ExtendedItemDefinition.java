@@ -46,12 +46,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.jcr.nodetype.ItemDefinition;
 import javax.jcr.version.OnParentVersionAction;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.JCRContentUtils;
-import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 
 /**
  * Jahia specific {@link ItemDefinition} implementation.
@@ -177,10 +175,6 @@ public class ExtendedItemDefinition implements ItemDefinition {
         this.override = override;
     }
 
-    protected String getResourceBundleId() {
-        return ((ExtendedNodeType)getDeclaringNodeType()).getResourceBundleId();
-    }
-
     public String getResourceBundleKey() {
         return getResourceBundleKey(getDeclaringNodeType());
     }
@@ -195,10 +189,7 @@ public class ExtendedItemDefinition implements ItemDefinition {
     public String getLabel(Locale locale) {
         String label = labels.get(locale);
         if (label == null) {
-            JahiaTemplatesPackage aPackage = getDeclaringNodeType().getTemplatePackage();
-            label = new JahiaResourceBundle(getResourceBundleId(), locale, aPackage!=null ? aPackage.getName(): null, JahiaTemplatesRBLoader
-                    .getInstance(Thread.currentThread().getContextClassLoader(), null)).getString(
-                    getResourceBundleKey(), JCRContentUtils.replaceColon(getName()));
+            label = getDeclaringNodeType().lookupLabel(getResourceBundleKey(), locale, JCRContentUtils.replaceColon(getName()));
             labels.put(locale, label);
         }
         return label;
@@ -214,11 +205,11 @@ public class ExtendedItemDefinition implements ItemDefinition {
             labelsByNodeType.put(locale,labelNodeType);
         }
         String label = labelNodeType.get(nodeType.getName());
-        if(label==null) {
-            JahiaTemplatesPackage aPackage = nodeType.getTemplatePackage();
-            label = new JahiaResourceBundle(nodeType.getResourceBundleId(), locale, aPackage!=null ? aPackage.getName(): null, JahiaTemplatesRBLoader
-                    .getInstance(Thread.currentThread().getContextClassLoader(), null)).getString(
-                    getResourceBundleKey(nodeType), getLabel(locale));
+        if (label == null) {
+            label = nodeType.lookupLabel(getResourceBundleKey(nodeType), locale, null);
+            if (label == null) {
+                label = getLabel(locale);
+            }
             labelNodeType.put(nodeType.getName(), label);
         }
         return label;
@@ -235,11 +226,8 @@ public class ExtendedItemDefinition implements ItemDefinition {
             tooltipsByNodeType.put(locale,labelNodeType);
         }
         String label = labelNodeType.get(nodeType.getName());
-        if(label==null) {
-            JahiaTemplatesPackage aPackage = nodeType.getTemplatePackage();
-            label = new JahiaResourceBundle(nodeType.getResourceBundleId(), locale, aPackage!=null ? aPackage.getName(): null, JahiaTemplatesRBLoader
-                    .getInstance(Thread.currentThread().getContextClassLoader(), null)).getString(
-                    getResourceBundleKey(nodeType)+".ui.tooltip", "");
+        if (label == null) {
+            label = nodeType.lookupLabel(getResourceBundleKey(nodeType)+".ui.tooltip", locale, StringUtils.EMPTY);
             labelNodeType.put(nodeType.getName(), label);
         }
         return label;

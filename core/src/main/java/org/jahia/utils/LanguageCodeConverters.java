@@ -45,7 +45,7 @@ import java.util.*;
 
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.ResourceBundles;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -360,7 +360,7 @@ public class LanguageCodeConverters {
 
     public static List<Locale> getAvailableBundleLocales() {
         if (availableBundleLocales == null) {
-            availableBundleLocales = getAvailableBundleLocales(JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES, null);
+            availableBundleLocales = getAvailableBundleLocales(ResourceBundles.JAHIA_INTERNAL_RESOURCES, null);
         }
         return availableBundleLocales;
     }
@@ -369,7 +369,7 @@ public class LanguageCodeConverters {
             Locale currentLocale) {
         Map<String, Locale> sortedLocales = new TreeMap<String, Locale>();
         for (Locale locale : getAvailableBundleLocales(
-                JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES, null)) {
+                ResourceBundles.JAHIA_INTERNAL_RESOURCES, null)) {
             sortedLocales.put(locale.getDisplayName(currentLocale), locale);
         }
         return new LinkedList<Locale>(sortedLocales.values());
@@ -377,7 +377,7 @@ public class LanguageCodeConverters {
     public static List<Locale> getAvailableBundleLocalesSorted() {
         Map<String, Locale> sortedLocales = new TreeMap<String, Locale>();
         for (Locale locale : getAvailableBundleLocales(
-                JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES, null)) {
+                ResourceBundles.JAHIA_INTERNAL_RESOURCES, null)) {
             sortedLocales.put(locale.getDisplayName(locale), locale);
         }
         return new LinkedList<Locale>(sortedLocales.values());

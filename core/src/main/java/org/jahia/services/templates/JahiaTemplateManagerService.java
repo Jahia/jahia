@@ -50,8 +50,6 @@ import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.filefilter.NameFileFilter;
-import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.cli.MavenCli;
 import org.codehaus.plexus.classworlds.ClassWorld;
@@ -68,7 +66,6 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
@@ -85,8 +82,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
-import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
+import org.jahia.utils.i18n.ResourceBundles;
 import org.jdom.JDOMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,7 +108,6 @@ import java.util.jar.Manifest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -217,8 +212,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
         } else if (event instanceof TemplatePackageRedeployedEvent) {
             // flush resource bundle cache
-            JahiaTemplatesRBLoader.clearCache();
-            JahiaResourceBundle.flushCache();
+            ResourceBundles.flushCache();
             NodeTypeRegistry.flushLabels();
         }
     }
@@ -263,6 +257,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             setSCMConfigInPom(path, scmType, scmURI);
 
             JahiaTemplatesPackage pack = compileAndDeploy(moduleName, path, session);
+
             JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
             setSourcesFolderInPackageAndNode(pack, path, node);
             session.save();
@@ -332,6 +327,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
 
         JahiaTemplatesPackage pack = compileAndDeploy(moduleName, path, session);
+
         JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
         setSourcesFolderInPackageAndNode(pack,path,node);
         session.save();
@@ -493,11 +489,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public boolean checkValidSources(JahiaTemplatesPackage pack, File sources) {
-        SAXReader reader = new SAXReader();
-        File pom = new File(sources, "pom.xml");
+                SAXReader reader = new SAXReader();
+                File pom = new File(sources, "pom.xml");
         if (pom.exists()) {
-            try {
-                Document document = reader.read(pom);
+                try {
+                    Document document = reader.read(pom);
                 Element element = document.getRootElement();
                 Iterator iterator = element.elementIterator("version");
                 if (iterator.hasNext()) {
@@ -509,13 +505,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 String sourceVersion = element.getText();
                 if (sourceVersion.equals(pack.getVersion().toString())) {
                     return true;
+                    }
+                } catch (DocumentException e) {
+                    logger.error("Cannot parse pom file", e);
                 }
-            } catch (DocumentException e) {
-                logger.error("Cannot parse pom file", e);
             }
-        }
         return false;
-    }
+        }
 
     public File releaseModule(String moduleName, String nextVersion, JCRSessionWrapper session) throws RepositoryException, IOException {
         JahiaTemplatesPackage pack = templatePackageRegistry.lookupByFileName(moduleName);
@@ -811,8 +807,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 //                if (sourceFile.getName().equals("import.zip")
 //                        || sourceFile.getName().equals("MANIFEST.MF")
 //                        || sourceFile.getName().equals("deployed.xml")) {
-//                    continue;
-//                }
+                // continue;
+                // }
 //                FileInputStream fileInputStream = new FileInputStream(sourceFile);
 //                try {
 //                    File targetFile = new File(targetRoot, sourceFile.getPath().substring(

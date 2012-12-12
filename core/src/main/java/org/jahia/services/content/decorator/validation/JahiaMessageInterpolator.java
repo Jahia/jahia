@@ -36,9 +36,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
+import org.jahia.utils.i18n.Messages;
+import org.jahia.utils.i18n.ResourceBundles;
 import org.springframework.context.i18n.LocaleContextHolder;
 
 import javax.validation.MessageInterpolator;
@@ -50,7 +49,7 @@ import java.util.regex.Pattern;
  * Interpolate a given constraint violation message using Jahia resource bundle.
  *
  * @author rincevent
- * @since : JAHIA 6.7
+ * @since JAHIA 6.7
  *        Created : 19/10/12
  */
 public class JahiaMessageInterpolator implements MessageInterpolator {
@@ -62,7 +61,7 @@ public class JahiaMessageInterpolator implements MessageInterpolator {
     private static final Pattern MESSAGE_PARAMETER_PATTERN = Pattern.compile("(\\{[^\\}]+?\\})");
 
     /**
-     * Interpolate the message template based on the contraint validation context.
+     * Interpolate the message template based on the constraint validation context.
      * The locale is defaulted according to the <code>MessageInterpolator</code>
      * implementation. See the implementation documentation for more detail.
      *
@@ -75,7 +74,7 @@ public class JahiaMessageInterpolator implements MessageInterpolator {
     }
 
     /**
-     * Interpolate the message template based on the contraint validation context.
+     * Interpolate the message template based on the constraint validation context.
      * The <code>Locale</code> used is provided as a parameter.
      *
      * @param messageTemplate The message to interpolate.
@@ -84,31 +83,32 @@ public class JahiaMessageInterpolator implements MessageInterpolator {
      * @return Interpolated error message.
      */
     public String interpolate(String messageTemplate, Context context, Locale locale) {
-        ResourceBundle resourceBundle = JahiaResourceBundle.lookupBundle(
-                ResourceBundleMessageInterpolator.DEFAULT_VALIDATION_MESSAGES, locale, null, false);
+        ResourceBundle resourceBundle = ResourceBundles.get(ResourceBundleMessageInterpolator.DEFAULT_VALIDATION_MESSAGES, locale);
         String key = messageTemplate.substring(1, messageTemplate.length() - 1);
         if (resourceBundle != null && resourceBundle.containsKey(key)) {
             return replaceAnnotationAttributes(resourceBundle.getString(key), context.getConstraintDescriptor().getAttributes());
         }
         final List<JahiaTemplatesPackage> availableTemplatePackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages();
-        List<String> processedRB = new ArrayList<String>(availableTemplatePackages.size() * 2);
-        for (JahiaTemplatesPackage availableTemplatePackage : availableTemplatePackages) {
-            final List<String> resourceBundleHierarchy = availableTemplatePackage.getResourceBundleHierarchy();
-            for (String resourceBundleName : resourceBundleHierarchy) {
-                if (!processedRB.contains(resourceBundleName)) {
-                    final JahiaTemplatesRBLoader instance = JahiaTemplatesRBLoader.getInstance(
-                            Thread.currentThread().getContextClassLoader(), availableTemplatePackage.getName());
-                    try {
-                        resourceBundle = JahiaResourceBundle.lookupBundle(resourceBundleName, locale, instance, false);
-                        processedRB.add(resourceBundleName);
-                        if (resourceBundle != null && resourceBundle.containsKey(key)) {
-                            return replaceAnnotationAttributes(resourceBundle.getString(key), context.getConstraintDescriptor().getAttributes());
-                        }
-                    } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
+        Set<String> processedRB = new HashSet<String>();
+        for (JahiaTemplatesPackage pkg : availableTemplatePackages) {
+            String rbName = pkg.getResourceBundleName();
+            if (rbName == null || processedRB.contains(rbName)) {
+                continue;
             }
+            processedRB.add(rbName);
+            try {
+                ResourceBundle rb = ResourceBundles.get(rbName, locale);
+                if (rb != null && rb.containsKey(key)) {
+                    return replaceAnnotationAttributes(rb.getString(key), context.getConstraintDescriptor()
+                            .getAttributes());
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        String msg = Messages.getInternal(key, locale, null);
+        if (msg != null) {
+            return replaceAnnotationAttributes(msg, context.getConstraintDescriptor().getAttributes());
         }
 
         return messageTemplate;

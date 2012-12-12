@@ -43,7 +43,7 @@ package org.jahia.bin;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.mail.MailServiceImpl;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,7 +95,7 @@ public class Notifications extends JahiaMultiActionController {
             if (!MailService.isValidEmailAddress(to, true)) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().append(
-                        JahiaResourceBundle.getJahiaInternalResource(
+                        Messages.getInternal(
                                 "org.jahia.admin.JahiaDisplayMessage.enterValidEmailAdmin.label",
                                 locale, "Please provide a valid administrator e-mail address"));
                 return;
@@ -103,16 +103,16 @@ public class Notifications extends JahiaMultiActionController {
             if (!MailService.isValidEmailAddress(from, false)) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().append(
-                        JahiaResourceBundle.getJahiaInternalResource(
+                        Messages.getInternal(
                                 "org.jahia.admin.JahiaDisplayMessage.enterValidEmailFrom.label",
                                 locale, "Please provide a valid sender e-mail address"));
                 return;
             }
 
-            String subject = JahiaResourceBundle.getJahiaInternalResource(
+            String subject = Messages.getInternal(
                     "org.jahia.admin.server.ManageServer.testSettings.mailSubject", locale,
                     "[Jahia] Test message");
-            String text = JahiaResourceBundle.getJahiaInternalResource(
+            String text = Messages.getInternal(
                     "org.jahia.admin.server.ManageServer.testSettings.mailText", locale,
                     "Test message");
 

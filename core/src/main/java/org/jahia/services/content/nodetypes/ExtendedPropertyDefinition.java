@@ -44,9 +44,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.commons.nodetype.InvalidConstraintException;
 import org.apache.jackrabbit.spi.commons.nodetype.constraint.ValueConstraint;
 import org.slf4j.Logger;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.Value;
 import javax.jcr.RepositoryException;
@@ -56,14 +54,12 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 
  * User: toto
  * Date: 4 janv. 2008
  * Time: 14:02:49
- * 
  */
 public class ExtendedPropertyDefinition extends ExtendedItemDefinition implements PropertyDefinition {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ExtendedPropertyDefinition.class);
+    private static Logger logger = LoggerFactory.getLogger(ExtendedPropertyDefinition.class);
 
     private NodeTypeRegistry registry;
 
@@ -284,10 +280,9 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
         }
         String message = messageMap.get(msgKeySuffix);
         if (message == null) {
-            JahiaTemplatesPackage aPackage = getDeclaringNodeType().getTemplatePackage();
-            message = new JahiaResourceBundle(getResourceBundleId(), locale, aPackage!=null ? aPackage.getName(): null, JahiaTemplatesRBLoader
-                    .getInstance(Thread.currentThread().getContextClassLoader(), null)).getString(
-                    getResourceBundleKey() + (!StringUtils.isEmpty(msgKeySuffix) ? "." + msgKeySuffix : ""), "");
+            message = getDeclaringNodeType().lookupLabel(
+                    !StringUtils.isEmpty(msgKeySuffix) ? getResourceBundleKey() + "."
+                            + msgKeySuffix : getResourceBundleKey(), locale, "");
             messageMap.put(msgKeySuffix, message);
         }
         return message;

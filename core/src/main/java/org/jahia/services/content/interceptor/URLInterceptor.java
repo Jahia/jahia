@@ -52,7 +52,7 @@ import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
 import org.jahia.utils.WebUtils;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -381,7 +381,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
             // Remove CMS context part
             Matcher m = cmsPattern.matcher(pathPart);
             if (!m.matches()) {
-                throw new PropertyConstraintViolationException(node, JahiaResourceBundle.getJahiaInternalResource("label.error.invalidlink", LocaleContextHolder.getLocale(), "Invalid link") + pathPart, definition.isInternationalized() ? locale : null,definition);
+                throw new PropertyConstraintViolationException(node, Messages.getInternal("label.error.invalidlink", LocaleContextHolder.getLocale(), "Invalid link") + pathPart, definition.isInternationalized() ? locale : null,definition);
             }
             pathPart = m.group(5);
             isCmsContext = true;
@@ -440,7 +440,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                         value = DOC_CONTEXT_PLACEHOLDER + StringUtils.substringAfter(value, dmsContext);
                     }
                 } catch (PathNotFoundException e) {
-                    throw new PropertyConstraintViolationException(node,  JahiaResourceBundle.getJahiaInternalResource("label.error.invalidlink", LocaleContextHolder.getLocale(), "Invalid link") + path, definition.isInternationalized() ? locale : null,definition);
+                    throw new PropertyConstraintViolationException(node,  Messages.getInternal("label.error.invalidlink", LocaleContextHolder.getLocale(), "Invalid link") + path, definition.isInternationalized() ? locale : null,definition);
                 }
                 String id = reference.getIdentifier();
                 if (!newRefs.containsKey(id)) {

@@ -64,7 +64,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageR
 import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.WebUtils;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
@@ -340,7 +340,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                 "org.jahia.StaticAssetFilter.doNotModifyDocumentTitle"))) {
                     for (Element title : element.getAllElements(HTMLElementName.TITLE)) {
                         int idx = title.getBegin() + title.toString().indexOf(">");
-                        String str = JahiaResourceBundle.getJahiaInternalResource("label.preview", renderContext.getUILocale());
+                        String str = Messages.getInternal("label.preview", renderContext.getUILocale());
                         str = ">" + str + " - ";
                         outputDocument.replace(idx, idx + 1, str);
                     }

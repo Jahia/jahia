@@ -44,6 +44,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRContentUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.ajax.gwt.client.core.SessionExpirationException;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
@@ -55,7 +56,7 @@ import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 import org.springframework.web.context.ServletContextAware;
 
 import javax.jcr.ItemNotFoundException;
@@ -73,7 +74,7 @@ import java.util.Locale;
  */
 public abstract class JahiaRemoteService implements RemoteService, ServletContextAware, RequestResponseAware {
 
-    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaRemoteService.class);
+    private static final transient Logger logger = LoggerFactory.getLogger(JahiaRemoteService.class);
 
     private HttpServletRequest request;
     private HttpServletResponse response;
@@ -112,7 +113,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
             return JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale, useSiteFallbackLanguage ? getFallbackLocale() : null);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.cannot.open.user.session",getUILocale()));
+            throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.cannot.open.user.session", getUILocale()));
         }
     }
 
@@ -143,7 +144,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
             return null;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.cannot.open.user.session", getUILocale()));
+            throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.cannot.open.user.session", getUILocale()));
         }
     }
 
@@ -223,33 +224,6 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
     public HttpServletRequest getRequest() {
         return request;
     }
-
-    /**
-     * Get resources
-     *
-     * @param key
-     * @param locale
-     * @param site
-     * @return
-     */
-    public String getResources(String key, Locale locale, JCRSiteNode site) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Resources key: " + key);
-        }
-        if (key == null || key.length() == 0) {
-            return key;
-        }
-        String value = new JahiaResourceBundle(locale, site != null ? site.getTemplatePackageName() : null).get(key, null);
-        if (value == null || value.length() == 0) {
-            value = JahiaResourceBundle.getJahiaInternalResource(key, locale);
-        }
-        if (logger.isDebugEnabled()) {
-            logger.debug("Resources value: " + value);
-        }
-
-        return value;
-    }
-
 
     public HttpServletResponse getResponse() {
         return response;

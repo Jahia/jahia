@@ -43,8 +43,10 @@ package org.jahia.taglibs.jcr.node;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
+import org.jahia.utils.i18n.ResourceBundles;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
@@ -65,7 +67,7 @@ import java.util.*;
  */
 public class JCRPropertyInitializerTag extends AbstractJahiaTag {
     private static final long serialVersionUID = 3235254134426302521L;
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRPropertyInitializerTag.class);
+    private transient static Logger logger = LoggerFactory.getLogger(JCRPropertyInitializerTag.class);
     private JCRNodeWrapper node;
     private String nodeType;
     private String name;
@@ -139,12 +141,13 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
                                 pageContext.setAttribute(var, listValues);
                             }
                         } else if (definition instanceof ExtendedPropertyDefinition) {
-                            JahiaResourceBundle rb = new JahiaResourceBundle(null, getRenderContext().getMainResourceLocale(), getTemplatePackageName((ExtendedPropertyDefinition) definition));
+                            JahiaTemplatesPackage pkg = ((ExtendedPropertyDefinition) definition).getDeclaringNodeType().getTemplatePackage();
+                            ResourceBundle rb = ResourceBundles.get(pkg != null ? pkg : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("default"), getRenderContext().getMainResourceLocale());
                             final ExtendedPropertyDefinition propertyDefinition = (ExtendedPropertyDefinition) definition;
-                            propertyDefinition.getValueConstraints();
                             List<ChoiceListValue> listValues = new ArrayList<ChoiceListValue>();
+                            String resourceBundleKey = definition.getResourceBundleKey();
                             for (String value : propertyDefinition.getValueConstraints()) {
-                                String display = rb.get(definition.getResourceBundleKey() + "." + JCRContentUtils.replaceColon(value), value);
+                                String display = Messages.get(rb, resourceBundleKey + "." + JCRContentUtils.replaceColon(value), value);
                                 listValues.add(new ChoiceListValue(display, null, new ValueImpl(value, propertyDefinition.getRequiredType())));
                             }
                             pageContext.setAttribute(var, listValues);
@@ -160,18 +163,6 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
         }
         return EVAL_PAGE;
     }
-
-    private String getTemplatePackageName(ExtendedPropertyDefinition definition) {
-        String systemId = definition.getDeclaringNodeType().getSystemId();
-        if(systemId.equals("system-jahia")) {
-            systemId = "default";
-        }
-        final JahiaTemplatesPackage tpkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                .getTemplatePackageByFileName(systemId);
-
-        return tpkg != null ? tpkg.getName() : null;
-    }
-
 
     /**
      * Specify the name of the property you want to get value of.

@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
 
 import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 
 import com.ibm.icu.text.MessageFormat;
 
@@ -130,7 +130,7 @@ final class PolicyEnforcementResultConvertor {
     }
     
     private static String getMsg(String key, Object[] args) {
-    	String msg = JahiaResourceBundle.getJahiaInternalResource(key, Locale.ENGLISH);
+    	String msg = Messages.getInternal(key, Locale.ENGLISH);
     	if (args != null && args.length > 0 && msg != null && msg.contains("{0}")) {
     		msg = MessageFormat.format(msg, args);
     	}

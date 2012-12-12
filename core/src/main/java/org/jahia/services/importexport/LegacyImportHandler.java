@@ -69,7 +69,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.query.Query;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.DateFormat;
@@ -240,8 +239,8 @@ public class LegacyImportHandler extends DefaultHandler {
                             setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
                             }
                         } catch (ConstraintViolationException cve) {
-                            logger.error(MessageFormat.format("Error when creating contentList with def={0} (localname={1} , uuid={2} , currentContentType={3})",
-                                    nodeDef.getName(), localName, uuid, getCurrentContentType().getName()));
+                            logger.error("Error when creating contentList with def={} (localname={} , uuid={} , currentContentType={})",
+                                    new Object[] {nodeDef.getName(), localName, uuid, getCurrentContentType().getName()});
                         }
                     } else {
                         logger.debug("create field " + localName);
@@ -255,8 +254,8 @@ public class LegacyImportHandler extends DefaultHandler {
                             logger.warn("Definition not found for field " + localName + " in node " + getCurrentContentType().getName() + " , uuid=" + uuid);
                         } else if (logger.isDebugEnabled()) {
                             if (itemDef.isNode()) {
-                                logger.debug(MessageFormat.format("The field {0} is a subnode of the node type {1} (child node definition = {2})"
-                                        , localName, getCurrentContentType().getName(), itemDef.getName()));
+                                logger.debug("The field {} is a subnode of the node type {} (child node definition = {})"
+                                        , new Object[] {localName, getCurrentContentType().getName(), itemDef.getName()});
                             } else {
                                 logger.debug("The field is a property: " + localName);
                             }
@@ -741,9 +740,9 @@ public class LegacyImportHandler extends DefaultHandler {
                 for (Map.Entry<String, String> entry : currentCtx.peek().properties.peek().entrySet()) {
                     final ExtendedNodeType currentContentType = getCurrentContentType();
                     final String fieldName = entry.getKey();
-                    logger.debug(MessageFormat.format("About to import field {0}/{1}", currentContentType.getName(), fieldName));
+                    logger.debug("About to import field {}/{}", currentContentType.getName(), fieldName);
                     if (!setPropertyField(currentContentType, fieldName, entry.getValue()) && !"#skip".equals(fieldName)) {
-                        logger.warn(MessageFormat.format("Not imported field {0}/{1}", currentContentType.getName(), fieldName));
+                        logger.warn("Not imported field {}/{}", currentContentType.getName(), fieldName);
                     }
                 }
             }
@@ -772,7 +771,7 @@ public class LegacyImportHandler extends DefaultHandler {
         if (logger.isDebugEnabled()) {
             final StringBuilder sb = new StringBuilder();
             for (String p : properties.keySet()) sb.append(MessageFormat.format("[{0}={1}]", p, properties.get(p)));
-            logger.debug(MessageFormat.format("setProperties action called on {0} with values : {1}", node.getPath(), sb.toString()));
+            logger.debug("setProperties action called on {} with values : {}", node.getPath(), sb.toString());
         }
         if (properties == null) {
             return;
@@ -1087,7 +1086,7 @@ public class LegacyImportHandler extends DefaultHandler {
                                     }
                                 } else if ("jcr:description".equals(propertyName)) {
                                     value = removeHtmlTags(value);
-                                }
+                                    }
 
                                 value = baseType != null ? mapping.getMappedPropertyValue(baseType, localName, value) :
                                         value;

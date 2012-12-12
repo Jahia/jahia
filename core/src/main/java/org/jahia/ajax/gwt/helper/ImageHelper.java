@@ -48,14 +48,13 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.image.Image;
 import org.jahia.services.image.JahiaImageService;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.text.MessageFormat;
 import java.util.Locale;
 
 public class ImageHelper {
@@ -112,7 +111,7 @@ public class ImageHelper {
             if (contentManager
                     .checkExistence(node.getPath().replace(node.getName(), target), session, uiLocale) &&
                     !forceReplace) {
-                throw new ExistingFileException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("file.already.exists", uiLocale), target));
+                throw new ExistingFileException(Messages.getInternalWithArguments("file.already.exists", uiLocale, target));
             }
             Image image = imageService.getImage(node);
             String fileExtension = FilenameUtils.getExtension(node.getName());
@@ -146,7 +145,7 @@ public class ImageHelper {
             if (contentManager
                     .checkExistence(node.getPath().replace(node.getName(), target), session, uiLocale) &&
                     !forceReplace) {
-                throw new ExistingFileException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("file.already.exists", uiLocale), target));
+                throw new ExistingFileException(Messages.getInternalWithArguments("file.already.exists", uiLocale, target));
             }
             Image image = imageService.getImage(node);
             String fileExtension = FilenameUtils.getExtension(node.getName());

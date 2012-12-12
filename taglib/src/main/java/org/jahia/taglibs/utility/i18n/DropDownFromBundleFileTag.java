@@ -41,12 +41,13 @@
 package org.jahia.taglibs.utility.i18n;
 
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
+import org.jahia.utils.i18n.ResourceBundles;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import java.util.Enumeration;
+import java.util.ResourceBundle;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.io.IOException;
@@ -72,7 +73,7 @@ public class DropDownFromBundleFileTag extends AbstractJahiaTag {
      */
     @Override
     public int doStartTag() throws JspException {
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle(bundleName, getRenderContext().getMainResourceLocale(), JahiaTemplatesRBLoader.getInstance(this.getClass().getClassLoader(), getRenderContext().getSite().getTemplatePackageName()));
+        ResourceBundle bundle = ResourceBundles.get(bundleName, getRenderContext().getMainResourceLocale());
         if (bundle != null) {
             SortedSet<String> values = new TreeSet<String>();
             Enumeration<String> keys = bundle.getKeys();

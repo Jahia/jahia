@@ -93,6 +93,8 @@ public class JCRSiteNode extends JCRNodeDecorator {
 
     private Map<String,String> modules;
 
+    private JahiaTemplatesPackage templatePackage;
+
     public JCRSiteNode(JCRNodeWrapper node) {
         super(node);
     }
@@ -110,6 +112,7 @@ public class JCRSiteNode extends JCRNodeDecorator {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Set<String> getInactiveLiveLanguages() {
         if (inactiveLiveLanguages == null) {
             Set<String> langs = new HashSet<String>();
@@ -135,7 +138,6 @@ public class JCRSiteNode extends JCRNodeDecorator {
      *
      * @return a set of active site languages
      */
-    @SuppressWarnings("unchecked")
     public Set<String> getActiveLiveLanguages() {
         Set<String> langs = new HashSet<String>(getLanguages()) ;
         langs.removeAll(getInactiveLiveLanguages());
@@ -161,6 +163,7 @@ public class JCRSiteNode extends JCRNodeDecorator {
         return localeList;
     }
 
+    @SuppressWarnings("unchecked")
     public Set<String> getInactiveLanguages() {
         if (inactiveLanguages == null) {
             Set<String> langs = new HashSet<String>();
@@ -393,13 +396,13 @@ public class JCRSiteNode extends JCRNodeDecorator {
                 final JahiaTemplatesPackage templatePackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(
                         getProperty("j:templatesSet").getString());
                 if (templatePackage != null) {
-                    final Set<JahiaTemplatesPackage> dependencies = templatePackage.getDependencies();
-                    for (JahiaTemplatesPackage dependency : dependencies) {
-                        if(!modules.contains(dependency.getRootFolder())) {
-                            modules.add(dependency.getRootFolder());
-                        }
+                final Set<JahiaTemplatesPackage> dependencies = templatePackage.getDependencies();
+                for (JahiaTemplatesPackage dependency : dependencies) {
+                    if(!modules.contains(dependency.getRootFolder())) {
+                        modules.add(dependency.getRootFolder());
                     }
                 }
+            }
             }
         } catch (RepositoryException e) {
             logger.error("Cannot get site property", e);
@@ -431,12 +434,22 @@ public class JCRSiteNode extends JCRNodeDecorator {
      * @return the corresponding template set name of this virtual site
      */
     public String getTemplatePackageName() {
-        JahiaTemplatesPackage templatePackageByFileName = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                .getTemplatePackageByFileName(getTemplateFolder());
-        if (templatePackageByFileName == null ) {
-            return null;
+        JahiaTemplatesPackage pkg = getTemplatePackage();
+        return pkg != null ? pkg.getName() : null;
+    }
+
+    /**
+     * Returns the corresponding template set of this virtual site.
+     *
+     * @return the corresponding template set of this virtual site
+     */
+    public JahiaTemplatesPackage getTemplatePackage() {
+        if (templatePackage == null) {
+            templatePackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                    .getTemplatePackageByFileName(getTemplateFolder());
         }
-        return templatePackageByFileName.getName();
+
+        return templatePackage;
     }
 
     public String getTitle() {

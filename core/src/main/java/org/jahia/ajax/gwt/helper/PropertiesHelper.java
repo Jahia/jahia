@@ -60,7 +60,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.EncryptionUtils;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -100,7 +100,7 @@ public class PropertiesHelper {
             objectNode = currentUserSession.getNode(path);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
-            throw new GWTJahiaServiceException(new StringBuilder(path).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
+            throw new GWTJahiaServiceException(new StringBuilder(path).append(Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
         }
         Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>();
         String propName = "null";

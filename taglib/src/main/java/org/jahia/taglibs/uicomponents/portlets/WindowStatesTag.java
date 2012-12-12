@@ -44,7 +44,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.render.RenderContext;
 import org.jahia.settings.SettingsBean;
 import org.jahia.taglibs.utility.Utils;
-import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.i18n.ResourceBundles;
 import org.jahia.data.beans.portlets.PortletWindowBean;
 import org.jahia.data.beans.portlets.WindowStateBean;
 
@@ -120,7 +120,7 @@ public class WindowStatesTag extends TagSupport {
 
     private String namePostFix = "";
     private String name = null;
-    private String resourceBundle = "JahiaInternalResources";
+    private String resourceBundle = ResourceBundles.JAHIA_INTERNAL_RESOURCES;
     private String listCSSClass = "windowStates";
     private String currentCSSClass = "current";
 
@@ -238,7 +238,7 @@ public class WindowStatesTag extends TagSupport {
         // pooling.
         namePostFix = "";
         name = null;
-        resourceBundle = "JahiaInternalResources";
+        resourceBundle = ResourceBundles.JAHIA_INTERNAL_RESOURCES;
         listCSSClass = "windowStates";
         currentCSSClass = "current";
         return EVAL_PAGE;

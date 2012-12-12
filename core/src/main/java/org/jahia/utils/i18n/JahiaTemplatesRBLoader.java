@@ -40,23 +40,31 @@
 
 package org.jahia.utils.i18n;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.utils.Patterns;
 
-import java.io.*;
-import java.lang.reflect.Field;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.WeakHashMap;
 import java.util.regex.Pattern;
 
+/**
+ * @deprecated use {@link ResourceBundles} or {@link Messages} instead
+ */
+@Deprecated
 public class JahiaTemplatesRBLoader extends ClassLoader {
     private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaTemplatesRBLoader.class);
     private static final Pattern NAME_PATTERN = Pattern.compile("\\\\.");
@@ -100,14 +108,6 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
      */
     public static void clearCache() {
         loadersCache.clear();
-        try {
-            Field cacheList = ResourceBundle.class
-                    .getDeclaredField("cacheList");
-            cacheList.setAccessible(true);
-            ((Map<?, ?>) cacheList.get(ResourceBundle.class)).clear();
-        } catch (Exception e) {
-            logger.warn("Unable to flush resource bundle cache", e);
-        }
     }
     
     private JahiaTemplatesRBLoader(ClassLoader loader, String templatePackageName) {
@@ -141,7 +141,7 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
     }
 
     public InputStream getResourceAsStream(String name) {
-        name = name.replaceAll("___",".");
+        name = Patterns.TRIPPLE_UNDERSCORE.matcher(name).replaceAll(".");
         if (loader != null) {
             InputStream stream = loader.getResourceAsStream(name);
             if (stream != null) {
@@ -151,7 +151,6 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
                 if (aPackage != null) {
                     String path = aPackage.getRootFolderPath() + (!fileName.startsWith("/") ? "/" : "") + fileName;
                     path = JahiaContextLoaderListener.getServletContext().getResourceAsStream(path) != null ? path : null;
-
                     if (path != null) {
                         stream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(path);
                     }

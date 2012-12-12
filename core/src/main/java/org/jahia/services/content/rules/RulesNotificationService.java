@@ -54,7 +54,7 @@ import org.jahia.services.mail.MailService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.ResourceBundles;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -238,7 +238,7 @@ public class RulesNotificationService {
                                     .replaceAll(""), "/")).replaceAll("."), ".");
             String subject = "";
             try {
-                ResourceBundle resourceBundle = JahiaResourceBundle.lookupBundle(resourceBundleName, locale);
+                ResourceBundle resourceBundle = ResourceBundles.get(resourceBundleName, locale);
                 bindings.put("bundle", resourceBundle);
                 subject = resourceBundle.getString("subject");
             } catch (MissingResourceException e) {
@@ -246,7 +246,7 @@ public class RulesNotificationService {
                     final Value[] values = node.getResolveSite().getProperty("j:installedModules").getValues();
                     for (Value value : values) {
                         try {
-                            ResourceBundle resourceBundle = new JahiaResourceBundle(null,locale,ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(value.getString()).getName());
+                            ResourceBundle resourceBundle = ResourceBundles.get(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(value.getString()).getName(), locale);
                             subject = resourceBundle.getString(drools.getRule().getName().toLowerCase().replaceAll(" ",".")+".subject");
                             bindings.put("bundle", resourceBundle);
                         } catch (MissingResourceException ee) {

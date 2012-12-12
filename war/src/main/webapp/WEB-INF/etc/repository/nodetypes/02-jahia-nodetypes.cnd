@@ -905,6 +905,11 @@ extends = jnt:content
 [jnt:structuredPropertyDefinition] > jnt:propertyDefinition
 
 [jnt:unstructuredPropertyDefinition] > jnt:propertyDefinition
+ - j:requiredType (STRING,choicelist) = 'String' mandatory nofulltext hidden
+   < 'String', 'URI', 'Binary', 'Long', 'Double',
+     'Decimal', 'Boolean', 'Date', 'Name', 'Path',
+     'Reference', 'WeakReference', 'undefined'
+ - j:mandatory (BOOLEAN) hidden
 
 [jnt:childNodeDefinition] > jnt:itemDefinition abstract
  - j:autoCreated (BOOLEAN) mandatory
@@ -918,6 +923,7 @@ extends = jnt:content
 [jnt:structuredChildNodeDefinition] > jnt:childNodeDefinition
 
 [jnt:unstructuredChildNodeDefinition] > jnt:childNodeDefinition
+ - j:requiredPrimaryTypes (NAME) = 'nt:base' mandatory multiple hidden
 
 [jnt:resourceBundleFolder] > jnt:folder
 

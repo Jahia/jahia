@@ -770,7 +770,6 @@ public class ExtendedNodeType implements NodeType {
             properties.put(name, p);
             allProperties = null;
         }
-        items.remove(p);
         items.add(p);
     }
 
@@ -793,7 +792,6 @@ public class ExtendedNodeType implements NodeType {
             nodes.put(name, p);
             allNodes = null;
         }
-        items.remove(p);
         items.add(p);
     }
 

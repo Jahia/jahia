@@ -658,17 +658,29 @@ public class ModulesDataSource extends VFSDataSource {
         String module = splitPath[1];
         NodeTypeRegistry nodeTypeRegistry = loadRegistry(path, module);
         String nodeTypeName = splitPath[splitPath.length - 2];
+        String lastPathSegment = splitPath[splitPath.length - 1];
         try {
             ExtendedNodeType nodeType = nodeTypeRegistry.getNodeType(nodeTypeName);
-            ExtendedPropertyDefinition propertyDefinition = new ExtendedPropertyDefinition(nodeTypeRegistry);
-            String qualifiedName;
-            if ("jnt:unstructuredPropertyDefinition".equals(data.getType())) {
-                qualifiedName = "*";
+            boolean unstructured = "jnt:unstructuredPropertyDefinition".equals(data.getType());
+            ExtendedPropertyDefinition propertyDefinition;
+            if (unstructured) {
+                Integer key = Integer.valueOf(StringUtils.substringAfter(lastPathSegment, UNSTRUCTURED_PROPERTY));
+                propertyDefinition = nodeType.getDeclaredUnstructuredPropertyDefinitions().get(key);
             } else {
-                qualifiedName = splitPath[splitPath.length - 1];
+                propertyDefinition = nodeType.getDeclaredPropertyDefinitionsAsMap().get(lastPathSegment);
             }
-            Name name = new Name(qualifiedName, nodeTypeRegistry.getNamespaces());
-            propertyDefinition.setName(name);
+            if (propertyDefinition == null) {
+                propertyDefinition = new ExtendedPropertyDefinition(nodeTypeRegistry);
+                String qualifiedName;
+                if (unstructured) {
+                    qualifiedName = "*";
+                } else {
+                    qualifiedName = lastPathSegment;
+                }
+                Name name = new Name(qualifiedName, nodeTypeRegistry.getNamespaces());
+                propertyDefinition.setName(name);
+                propertyDefinition.setDeclaringNodeType(nodeType);
+            }
             Map<String, String[]> properties = data.getProperties();
             String[] values = properties.get("j:autoCreated");
             if (values != null && values.length > 0) {
@@ -794,7 +806,6 @@ public class ModulesDataSource extends VFSDataSource {
             } else {
                 propertyDefinition.setItemType(null);
             }
-            propertyDefinition.setDeclaringNodeType(nodeType);
             nodeType.validate();
             writeDefinitionFile(nodeTypeRegistry,
                     StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/"), splitPath[1]);
@@ -826,17 +837,29 @@ public class ModulesDataSource extends VFSDataSource {
         String module = splitPath[1];
         NodeTypeRegistry nodeTypeRegistry = loadRegistry(path, module);
         String nodeTypeName = splitPath[splitPath.length - 2];
+        String lastPathSegment = splitPath[splitPath.length - 1];
         try {
             ExtendedNodeType nodeType = nodeTypeRegistry.getNodeType(nodeTypeName);
-            ExtendedNodeDefinition childNodeDefinition = new ExtendedNodeDefinition(nodeTypeRegistry);
-            String qualifiedName;
-            if ("jnt:unstructuredChildNodeDefinition".equals(data.getType())) {
-                qualifiedName = "*";
+            boolean unstructured = "jnt:unstructuredChildNodeDefinition".equals(data.getType());
+            ExtendedNodeDefinition childNodeDefinition;
+            if (unstructured) {
+                String key = StringUtils.substringAfter(lastPathSegment, UNSTRUCTURED_CHILD_NODE);
+                childNodeDefinition = nodeType.getDeclaredUnstructuredChildNodeDefinitions().get(key);
             } else {
-                qualifiedName = splitPath[splitPath.length - 1];
+                childNodeDefinition = nodeType.getDeclaredChildNodeDefinitionsAsMap().get(lastPathSegment);
             }
-            Name name = new Name(qualifiedName, nodeTypeRegistry.getNamespaces());
-            nodeType.setName(name);
+            if (childNodeDefinition == null) {
+                childNodeDefinition = new ExtendedNodeDefinition(nodeTypeRegistry);
+                String qualifiedName;
+                if (unstructured) {
+                    qualifiedName = "*";
+                } else {
+                    qualifiedName = lastPathSegment;
+                }
+                Name name = new Name(qualifiedName, nodeTypeRegistry.getNamespaces());
+                childNodeDefinition.setName(name);
+                childNodeDefinition.setDeclaringNodeType(nodeType);
+            }
             Map<String, String[]> properties = data.getProperties();
             String[] values = properties.get("j:autoCreated");
             if (values != null && values.length > 0) {
@@ -870,7 +893,6 @@ public class ModulesDataSource extends VFSDataSource {
             } else {
                 childNodeDefinition.setDefaultPrimaryType(null);
             }
-            childNodeDefinition.setDeclaringNodeType(nodeType);
             nodeType.validate();
             writeDefinitionFile(nodeTypeRegistry,
                     StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/"), splitPath[1]);

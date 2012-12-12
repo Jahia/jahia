@@ -1,8 +1,7 @@
 package org.jahia.modules.defaultmodule.actions.admin;
 
 import org.jahia.bin.Action;
-import org.jahia.bin.Jahia;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 
 import java.util.Locale;
 
@@ -12,7 +11,7 @@ import java.util.Locale;
 public abstract class AdminAction extends Action {
 
     public String getMessage(Locale locale, String key) {
-        return JahiaResourceBundle.getJahiaInternalResource(key, locale);
+        return Messages.getInternal(key, locale);
     }
 
 }

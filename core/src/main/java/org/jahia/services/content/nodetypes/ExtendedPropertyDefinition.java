@@ -292,4 +292,18 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
         }
         return message;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ExtendedPropertyDefinition that = (ExtendedPropertyDefinition) o;
+        if (name.toString().equals("*")) {
+            if (requiredType != that.requiredType) return false;
+        }
+
+        return super.equals(o);
+    }
 }

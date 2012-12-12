@@ -61,8 +61,8 @@ import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
  */
 public class ExtendedItemDefinition implements ItemDefinition {
 
-    private ExtendedNodeType declaringNodeType;
-    private Name name;
+    protected ExtendedNodeType declaringNodeType;
+    protected Name name;
     private boolean isProtected = false;
     private boolean autoCreated = false;
     private boolean mandatory = false;

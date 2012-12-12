@@ -46,6 +46,8 @@ import javax.jcr.nodetype.NodeDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+
 /**
  * 
  * User: toto
@@ -144,4 +146,18 @@ public class ExtendedNodeDefinition extends ExtendedItemDefinition implements No
         return true;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ExtendedNodeDefinition that = (ExtendedNodeDefinition) o;
+
+        if (name.toString().equals("*")) {
+            if (!Arrays.equals(requiredPrimaryTypes, that.requiredPrimaryTypes)) return false;
+        }
+
+        return super.equals(o);
+    }
 }

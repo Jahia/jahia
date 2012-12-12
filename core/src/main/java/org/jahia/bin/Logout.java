@@ -158,7 +158,6 @@ public class Logout implements Controller {
             }
         }
         if (StringUtils.isNotEmpty(redirect)) {
-            UrlRewriteService rewriteService = (UrlRewriteService) SpringContextSingleton.getBean("UrlRewriteService");
             try {
                 final String r = redirect;
                 HttpServletRequestWrapper wrapper = new HttpServletRequestWrapper(request) {
@@ -176,8 +175,8 @@ public class Logout implements Controller {
                     }
                 };
 
-                if (rewriteService.prepareInbound(wrapper, response)) {
-                    RewrittenUrl restored = rewriteService.rewriteInbound(wrapper, response);
+                if (urlRewriteService.prepareInbound(wrapper, response)) {
+                    RewrittenUrl restored = urlRewriteService.rewriteInbound(wrapper, response);
                     if (restored != null) {
                         redirect = request.getContextPath() + restored.getTarget();
                     }
@@ -220,7 +219,7 @@ public class Logout implements Controller {
                         } else {
                             redirect = request.getContextPath() + "/";
                         }
-                        redirect = rewriteService.rewriteOutbound(redirect, request, response);
+                        redirect = urlRewriteService.rewriteOutbound(redirect, request, response);
                         response.sendRedirect(response.encodeRedirectURL(redirect));
                         return;
                     } catch (Exception e) {

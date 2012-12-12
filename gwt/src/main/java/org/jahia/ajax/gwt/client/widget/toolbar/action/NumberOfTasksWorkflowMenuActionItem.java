@@ -41,8 +41,6 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -84,7 +82,7 @@ public class NumberOfTasksWorkflowMenuActionItem extends BaseActionItem implemen
 
     private void updateLabel(Integer nb) {
         if (nb == 0) {
-            updateTitle(getGwtToolbarItem().getProperties().get("noTasks").getValue());
+            updateTitle(Messages.get("label.numberoftasksforuser.notasks", "No Waiting tasks"));
         } else {
             updateTitle(getGwtToolbarItem().getTitle() + " (" + nb + ")");
         }

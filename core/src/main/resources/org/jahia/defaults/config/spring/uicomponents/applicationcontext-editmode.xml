@@ -83,14 +83,6 @@
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NumberOfTasksWorkflowMenuActionItem"/>
                             </property>
                             <property name="titleKey" value="label.numberoftasksforuser"/>
-                            <property name="properties">
-                                <list>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ResourceBundleProperty">
-                                        <property name="name" value="noTasks"/>
-                                        <property name="key" value="label.numberoftasksforuser.notasks"/>
-                                    </bean>
-                                </list>
-                            </property>
                         </bean>
                         <ref bean="editmode.managers.menu"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">

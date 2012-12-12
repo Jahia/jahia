@@ -56,6 +56,8 @@ import net.htmlparser.jericho.StartTag;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser;
@@ -149,7 +151,20 @@ public class HtmlExternalizationService {
                 if (useServletContextResources || request == null || response == null) {
                     if (request != null && StringUtils.startsWith(href, request.getContextPath())) {
                         href = StringUtils.substringAfter(href, request.getContextPath());
-                    }                    
+                    }
+                    if (href.startsWith("/modules/")) {
+                        String after = StringUtils.substringAfter(href, "/modules/");
+                        String module = StringUtils.substringBefore(after, "/");
+                        JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                                .getTemplatePackageByFileName(module);
+                        if (pack != null) {
+                            String version = pack.getVersion().toString();
+                            String prefixWithVersion = "/modules/" + module + "/" + version;
+                            if (!href.startsWith(prefixWithVersion)) {
+                                href = prefixWithVersion + "/" + StringUtils.substringAfter(after, "/");
+                            }
+                        }
+                    }
                     styleSheetContent = httpClientService.getResourceAsString(href);
                 } else {
                     styleSheetContent = httpClientService.getResourceAsString(href, request, response);

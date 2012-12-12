@@ -400,14 +400,33 @@ public class NodeTypeRegistry implements NodeTypeManager {
         throw new UnsupportedRepositoryOperationException();
     }
 
-    public void unregisterNodeType(String name) throws NoSuchNodeTypeException {
-        ExtendedNodeType res = nodetypes.remove(new Name(name, namespaces));
-        if (res == null) {
-            throw new NoSuchNodeTypeException(name);
+    public void unregisterNodeType(String name) throws ConstraintViolationException {
+        Name n = new Name(name, namespaces);
+        if (nodetypes.containsKey(n)) {
+            for (ExtendedNodeType type : nodeTypesList) {
+                if (!type.getName().equals(name)) {
+                    for (ExtendedNodeType nt : type.getSupertypes()) {
+                        if (nt.getName().equals(name)) {
+                            throw new ConstraintViolationException("Cannot unregister node type " + name + " because " + type.getName() + " extends it.");
+                        }
+                    }
+                    for (ExtendedNodeDefinition ntd : type.getChildNodeDefinitions()) {
+                        if (Arrays.asList(ntd.getRequiredPrimaryTypeNames()).contains(name)) {
+                            throw new ConstraintViolationException("Cannot unregister node type " + name + " because a child node definition of " + type.getName() + " requires it.");
+                        }
+                    }
+                    for (ExtendedNodeDefinition ntd : type.getUnstructuredChildNodeDefinitions().values()) {
+                        if (Arrays.asList(ntd.getRequiredPrimaryTypeNames()).contains(name)) {
+                            throw new ConstraintViolationException("Cannot unregister node type " + name + " because a child node definition of " + type.getName() + " requires it.");
+                        }
+                    }
+                }
+            }
+            nodeTypesList.remove(nodetypes.remove(n));
         }
     }
 
-    public void unregisterNodeTypes(String[] names) throws NoSuchNodeTypeException {
+    public void unregisterNodeTypes(String[] names) throws ConstraintViolationException {
         for (String name : names) {
             unregisterNodeType(name);
         }

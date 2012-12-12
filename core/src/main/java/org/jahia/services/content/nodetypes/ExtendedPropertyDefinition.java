@@ -302,4 +302,8 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
 
         return super.equals(o);
     }
+
+    public void remove() {
+        declaringNodeType.removePropertyDefinition(this);
+    }
 }

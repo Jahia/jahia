@@ -775,6 +775,22 @@ public class ExtendedNodeType implements NodeType {
         items.add(p);
     }
 
+    void removePropertyDefinition(ExtendedPropertyDefinition p) {
+        String pdName = p.getName();
+        if (pdName.equals("*")) {
+            if (p.isMultiple()) {
+                unstructuredProperties.remove(256 + p.getRequiredType());
+            } else {
+                unstructuredProperties.remove(p.getRequiredType());
+            }
+            allUnstructuredProperties = null;
+        } else {
+            properties.remove(pdName);
+            allProperties = null;
+        }
+        items.remove(p);
+    }
+
     public ExtendedPropertyDefinition getPropertyDefinition(String name) {
         return properties.get(name);
     }
@@ -795,6 +811,18 @@ public class ExtendedNodeType implements NodeType {
             allNodes = null;
         }
         items.add(p);
+    }
+
+    void removeNodeDefinition(ExtendedNodeDefinition p) {
+        String ndName = p.getName();
+        if (ndName.equals("*")) {
+            unstructuredNodes.remove(StringUtils.join(p.getRequiredPrimaryTypeNames(), " "));
+            allUnstructuredNodes = null;
+        } else {
+            nodes.remove(ndName);
+            allNodes = null;
+        }
+        items.remove(p);
     }
 
     public ExtendedNodeDefinition getNodeDefinition(String name) {
@@ -846,7 +874,7 @@ public class ExtendedNodeType implements NodeType {
         String label = labels.get(locale);
         if (label == null) {
             String key = JCRContentUtils.replaceColon(getName());
-            label = lookupLabel(key, locale, StringUtils.substringAfter(getName(),":"));
+            label = lookupLabel(key, locale, StringUtils.substringAfter(getName(), ":"));
             labels.put(locale, label);
         }
         return label;

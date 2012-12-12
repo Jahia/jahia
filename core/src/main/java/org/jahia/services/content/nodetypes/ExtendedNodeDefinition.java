@@ -160,4 +160,8 @@ public class ExtendedNodeDefinition extends ExtendedItemDefinition implements No
 
         return super.equals(o);
     }
+
+    public void remove() {
+        declaringNodeType.removeNodeDefinition(this);
+    }
 }

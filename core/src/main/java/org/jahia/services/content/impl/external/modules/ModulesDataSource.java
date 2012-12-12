@@ -61,6 +61,7 @@ import org.springframework.core.io.UrlResource;
 
 import javax.annotation.Nullable;
 import javax.jcr.*;
+import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.version.OnParentVersionAction;
@@ -106,8 +107,8 @@ public class ModulesDataSource extends VFSDataSource {
                 try {
                     ExtendedNodeType nodeType = loadRegistry(StringUtils.substringBeforeLast(path,"/"), splitPath[1]).getNodeType(nodeTypeName);
                     children.addAll(nodeType.getDeclaredPropertyDefinitionsAsMap().keySet());
-                    for (int type : nodeType.getDeclaredUnstructuredPropertyDefinitions().keySet()) {
-                        children.add(UNSTRUCTURED_PROPERTY + String.valueOf(type));
+                    for (Integer type : nodeType.getDeclaredUnstructuredPropertyDefinitions().keySet()) {
+                        children.add(UNSTRUCTURED_PROPERTY + type.toString());
                     }
                     children.addAll(nodeType.getDeclaredChildNodeDefinitionsAsMap().keySet());
                     for (String type : nodeType.getDeclaredUnstructuredChildNodeDefinitions().keySet()) {
@@ -200,21 +201,21 @@ public class ModulesDataSource extends VFSDataSource {
             try {
                 String definitionsPath = StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/");
                 ExtendedNodeType nodeType = loadRegistry(definitionsPath, splitPath[1]).getNodeType(nodeTypeName);
-                Map<String,ExtendedPropertyDefinition> propertyDefinitionsAsMap = nodeType.getPropertyDefinitionsAsMap();
+                Map<String,ExtendedPropertyDefinition> propertyDefinitionsAsMap = nodeType.getDeclaredPropertyDefinitionsAsMap();
                 if (propertyDefinitionsAsMap.containsKey(itemDefinitionName)) {
                     return getPropertyDefinitionData(path, propertyDefinitionsAsMap.get(itemDefinitionName), false);
                 }
                 if (itemDefinitionName.startsWith(UNSTRUCTURED_PROPERTY)) {
-                    int type = Integer.parseInt(itemDefinitionName.substring(UNSTRUCTURED_PROPERTY.length()));
-                    return getPropertyDefinitionData(path, nodeType.getUnstructuredPropertyDefinitions().get(type), true);
+                    Integer type = Integer.valueOf(itemDefinitionName.substring(UNSTRUCTURED_PROPERTY.length()));
+                    return getPropertyDefinitionData(path, nodeType.getDeclaredUnstructuredPropertyDefinitions().get(type), true);
                 }
-                Map<String, ExtendedNodeDefinition> childNodeDefinitionsAsMap = nodeType.getChildNodeDefinitionsAsMap();
+                Map<String, ExtendedNodeDefinition> childNodeDefinitionsAsMap = nodeType.getDeclaredChildNodeDefinitionsAsMap();
                 if (childNodeDefinitionsAsMap.containsKey(itemDefinitionName)) {
                     return getChildNodeDefinitionData(path, childNodeDefinitionsAsMap.get(itemDefinitionName), false);
                 }
                 if (itemDefinitionName.startsWith(UNSTRUCTURED_CHILD_NODE)) {
                     String type = itemDefinitionName.substring(UNSTRUCTURED_CHILD_NODE.length());
-                    return getChildNodeDefinitionData(path, nodeType.getUnstructuredChildNodeDefinitions().get(type), true);
+                    return getChildNodeDefinitionData(path, nodeType.getDeclaredUnstructuredChildNodeDefinitions().get(type), true);
                 }
             } catch (NoSuchNodeTypeException e) {
                 throw new PathNotFoundException("Failed to get node type " + nodeTypeName, e);
@@ -458,7 +459,7 @@ public class ModulesDataSource extends VFSDataSource {
                 NodeTypeRegistry nodeTypeRegistry = loadRegistry(StringUtils.substringBeforeLast(path, "/"), splitPath[1]);
                 nodeTypeRegistry.unregisterNodeType(nodeTypeName);
                 writeDefinitionFile(nodeTypeRegistry, StringUtils.substringBeforeLast(path, "/"), splitPath[1]);
-            } catch (NoSuchNodeTypeException e) {
+            } catch (ConstraintViolationException e) {
                 throw new PathNotFoundException("Failed to remove node type " + nodeTypeName, e);
             }
         } else if (splitPath.length >= 3 && splitPath[splitPath.length - 3].endsWith(".cnd")) {
@@ -466,23 +467,25 @@ public class ModulesDataSource extends VFSDataSource {
             String itemDefinitionName = splitPath[splitPath.length - 1];
             try {
                 String definitionsPath = StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/");
-                ExtendedNodeType nodeType = loadRegistry(definitionsPath, splitPath[1]).getNodeType(nodeTypeName);
-                Map<String,ExtendedPropertyDefinition> propertyDefinitionsAsMap = nodeType.getPropertyDefinitionsAsMap();
+                NodeTypeRegistry nodeTypeRegistry = loadRegistry(definitionsPath, splitPath[1]);
+                ExtendedNodeType nodeType = nodeTypeRegistry.getNodeType(nodeTypeName);
+                Map<String,ExtendedPropertyDefinition> propertyDefinitionsAsMap = nodeType.getDeclaredPropertyDefinitionsAsMap();
                 if (propertyDefinitionsAsMap.containsKey(itemDefinitionName)) {
-//                    return getPropertyDefinitionData(path, propertyDefinitionsAsMap.get(itemDefinitionName), false);
+                    propertyDefinitionsAsMap.get(itemDefinitionName).remove();
                 }
                 if (itemDefinitionName.startsWith(UNSTRUCTURED_PROPERTY)) {
-                    int type = Integer.parseInt(itemDefinitionName.substring(UNSTRUCTURED_PROPERTY.length()));
-//                    return getPropertyDefinitionData(path, nodeType.getUnstructuredPropertyDefinitions().get(type), true);
+                    Integer type = Integer.valueOf(itemDefinitionName.substring(UNSTRUCTURED_PROPERTY.length()));
+                    nodeType.getDeclaredUnstructuredPropertyDefinitions().get(type).remove();
                 }
-                Map<String, ExtendedNodeDefinition> childNodeDefinitionsAsMap = nodeType.getChildNodeDefinitionsAsMap();
+                Map<String, ExtendedNodeDefinition> childNodeDefinitionsAsMap = nodeType.getDeclaredChildNodeDefinitionsAsMap();
                 if (childNodeDefinitionsAsMap.containsKey(itemDefinitionName)) {
-//                    return getChildNodeDefinitionData(path, childNodeDefinitionsAsMap.get(itemDefinitionName), false);
+                    childNodeDefinitionsAsMap.get(itemDefinitionName).remove();
                 }
                 if (itemDefinitionName.startsWith(UNSTRUCTURED_CHILD_NODE)) {
                     String type = itemDefinitionName.substring(UNSTRUCTURED_CHILD_NODE.length());
-//                    return getChildNodeDefinitionData(path, nodeType.getUnstructuredChildNodeDefinitions().get(type), true);
+                    nodeType.getDeclaredUnstructuredChildNodeDefinitions().get(type).remove();
                 }
+                writeDefinitionFile(nodeTypeRegistry, definitionsPath, splitPath[1]);
             } catch (NoSuchNodeTypeException e) {
                 throw new PathNotFoundException("Failed to get node type " + nodeTypeName, e);
             }

@@ -40,7 +40,6 @@
 
 package org.jahia.modules.defaultmodule.actions;
 
-import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 import org.jahia.ajax.gwt.helper.PublicationHelper;
@@ -53,23 +52,19 @@ import org.jahia.services.render.URLResolver;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorkflowVariable;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 
 import javax.jcr.PropertyType;
 import javax.servlet.http.HttpServletRequest;
 import java.text.DateFormat;
-import java.text.MessageFormat;
 import java.util.*;
 
 /**
- * 
- *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
  *        Created : 24 nov. 2010
  */
 public class MultiplePublishAction extends Action {
-    private transient static Logger logger = Logger.getLogger(MultiplePublishAction.class);
     private WorkflowService workflowService;
     private PublicationHelper publicationHelper;
 
@@ -101,7 +96,7 @@ public class MultiplePublishAction extends Action {
             final HashMap<String, Object> map = new HashMap<String, Object>();
             map.put("customWorkflowInfo", entry.getKey());
 
-            String title = MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.workflow.start.message", session.getLocale(), "{0} started by {1} on {2} - {3} content items involved"),
+            String title = Messages.format(Messages.getInternal("label.workflow.start.message", session.getLocale(), "{0} started by {1} on {2} - {3} content items involved"),
                     entry.getValue().getDisplayName(), session.getUser().getName(), DateFormat.getDateInstance(DateFormat.SHORT, session.getLocale()).format(new Date()), pubInfos.size());
 
             WorkflowVariable var = new WorkflowVariable(title, PropertyType.STRING);

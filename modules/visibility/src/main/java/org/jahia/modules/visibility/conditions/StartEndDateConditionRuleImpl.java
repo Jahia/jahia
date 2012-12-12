@@ -46,9 +46,10 @@ import java.util.Locale;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.visibility.BaseVisibilityConditionRule;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +72,7 @@ public class StartEndDateConditionRuleImpl extends BaseVisibilityConditionRule {
      * @return Return the associated display template that will be used by gwt.
      */
     public String getGWTDisplayTemplate(Locale locale) {
-        return JahiaResourceBundle.getString("JahiaVisibility", "label.startEndDateCondition.xtemplate",locale, "Jahia Visibility");
+        return Messages.get(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage("Jahia Visibility"), "label.startEndDateCondition.xtemplate", locale);
     }
 
     public boolean matches(JCRNodeWrapper nodeWrapper) {

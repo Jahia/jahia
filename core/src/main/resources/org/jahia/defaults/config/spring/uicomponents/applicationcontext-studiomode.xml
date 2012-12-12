@@ -490,7 +490,9 @@
                                             <property name="type" value="jnt:childNodeDefinition"/>
                                             <property name="columnsConfig">
                                                 <list>
-                                                    <value>name,*,label.name</value>
+                                                    <value>name,200,label.name</value>
+                                                    <value>j:requiredPrimaryTypes,*,label.type</value>
+                                                    <value>j:mandatory,*,label.isMandatory</value>
                                                 </list>
                                             </property>
                                         </bean>

@@ -146,27 +146,27 @@ public class AreaModule extends SimpleModule {
             add(ctn);
 //            add(dash);
             setBorders(false);
-        } else if (childCount == 0 && editable) {
-            addStyleName("area-empty");
-            headerText += " (" + Messages.get("label.empty", "empty")+ ")";
-
-            addStyleName(moduleType);
-            if (mockupStyle != null) {
-                addStyleName(mockupStyle);
-            }
-            removeAll();
-
-            LayoutContainer dash = new LayoutContainer();
-            dash.setId("JahiaGxtArea__" + areaTitle);
-            dash.addStyleName("dashedArea");
-
-            ctn = new LayoutContainer();
-            ctn.addStyleName(moduleType+"Template");
-            ctn.addText(headerText);
-
-            dash.add(ctn);
-            dash.add(html);
-            add(dash);
+//        } else if (childCount == 0 && editable) {
+//            addStyleName("area-empty");
+//            headerText += " (" + Messages.get("label.empty", "empty")+ ")";
+//
+//            addStyleName(moduleType);
+//            if (mockupStyle != null) {
+//                addStyleName(mockupStyle);
+//            }
+//            removeAll();
+//
+//            LayoutContainer dash = new LayoutContainer();
+//            dash.setId("JahiaGxtArea__" + areaTitle);
+//            dash.addStyleName("dashedArea");
+//
+//            ctn = new LayoutContainer();
+//            ctn.addStyleName(moduleType+"Template");
+//            ctn.addText(headerText);
+//
+//            dash.add(ctn);
+//            dash.add(html);
+//            add(dash);
         } else {
             setBorders(false);
         }
@@ -193,67 +193,49 @@ public class AreaModule extends SimpleModule {
             });
             ctn.add(p);
             ctn.layout();
-        } else if (childCount == 0 && editable) {
-            AbstractImagePrototype icon =  ToolbarIconProvider.getInstance().getIcon("disableArea");
-            LayoutContainer p = new HorizontalPanel();
-            p.add(icon.createImage());
-            if (getWidth() > 150) {
-                p.add(new Text(Messages.get("label.areaDisable", "Disable area")));
-            }
-            p.sinkEvents(Event.ONCLICK);
-            p.addStyleName("button-placeholder");
-            p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
-                public void handleEvent(ComponentEvent be) {
-                    JahiaContentManagementService.App.getInstance().deletePaths(Arrays.asList(path), new BaseAsyncCallback<GWTJahiaNode>() {
-                        public void onSuccess(GWTJahiaNode result) {
-                            mainModule.getEditLinker().refresh(EditLinker.REFRESH_MAIN, null);
-                        }
-                    });
-                }
-            });
-
-            ctn.add(p);
-
-            if (mainModule.getConfig().isEnableDragAndDrop()) {
-                DropTarget target = new ModuleDropTarget(this, node == null ? EditModeDNDListener.EMPTYAREA_TYPE : EditModeDNDListener.PLACEHOLDER_TYPE);
-                target.setOperation(DND.Operation.COPY);
-                target.setFeedback(DND.Feedback.INSERT);
-                target.addDNDListener(mainModule.getEditLinker().getDndListener());
-            }
-            if (getNodeTypes() != null) {
-                String[] nodeTypesArray = getNodeTypes().split(" ");
-                for (final String s : nodeTypesArray) {
-                    GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(s);
-                    if (nodeType != null) {
-                        Boolean canUseComponentForCreate = (Boolean) nodeType.get("canUseComponentForCreate");
-                        if (canUseComponentForCreate != null && !canUseComponentForCreate) {
-                            continue;
-                        }
-                    }
-                    icon = ContentModelIconProvider.getInstance().getIcon(nodeType);
-                    p = new HorizontalPanel();
-                    p.add(icon.createImage());
-                    if (getWidth() > 150) {
-                        p.add(new Text(nodeType != null ? nodeType.getLabel() : s));
-                    }
-                    p.sinkEvents(Event.ONCLICK);
-                    p.addStyleName("button-placeholder");
-                    p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
-                        public void handleEvent(ComponentEvent be) {
-                            createNode(new BaseAsyncCallback<GWTJahiaNode>() {
-                                public void onSuccess(GWTJahiaNode result) {
-                                    if (node != null && PermissionsUtils.isPermitted("jcr:addChildNodes", node) && !node.isLocked()) {
-                                        ContentActions.showContentWizard(mainModule.getEditLinker(), s, node, true);
-                                    }
-                                }
-                            });
-                        }
-                    });
-
-                    ctn.add(p);
-                }
-            }
-            ctn.layout();
+//        } else if (childCount == 0 && editable) {
+//            ctn.add(p);
+//
+//            if (mainModule.getConfig().isEnableDragAndDrop()) {
+//                DropTarget target = new ModuleDropTarget(this, node == null ? EditModeDNDListener.EMPTYAREA_TYPE : EditModeDNDListener.PLACEHOLDER_TYPE);
+//                target.setOperation(DND.Operation.COPY);
+//                target.setFeedback(DND.Feedback.INSERT);
+//                target.addDNDListener(mainModule.getEditLinker().getDndListener());
+//            }
+//            if (getNodeTypes() != null) {
+//                String[] nodeTypesArray = getNodeTypes().split(" ");
+//                for (final String s : nodeTypesArray) {
+//                    GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(s);
+//                    if (nodeType != null) {
+//                        Boolean canUseComponentForCreate = (Boolean) nodeType.get("canUseComponentForCreate");
+//                        if (canUseComponentForCreate != null && !canUseComponentForCreate) {
+//                            continue;
+//                        }
+//                    }
+//                    icon = ContentModelIconProvider.getInstance().getIcon(nodeType);
+//                    p = new HorizontalPanel();
+//                    p.add(icon.createImage());
+//                    if (getWidth() > 150) {
+//                        p.add(new Text(nodeType != null ? nodeType.getLabel() : s));
+//                    }
+//                    p.sinkEvents(Event.ONCLICK);
+//                    p.addStyleName("button-placeholder");
+//                    p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+//                        public void handleEvent(ComponentEvent be) {
+//                            createNode(new BaseAsyncCallback<GWTJahiaNode>() {
+//                                public void onSuccess(GWTJahiaNode result) {
+//                                    if (node != null && PermissionsUtils.isPermitted("jcr:addChildNodes", node) && !node.isLocked()) {
+//                                        ContentActions.showContentWizard(mainModule.getEditLinker(), s, node, true);
+//                                    }
+//                                }
+//                            });
+//                        }
+//                    });
+//
+//                    ctn.add(p);
+//                }
+//            }
+//            ctn.layout();
         }
     }
 

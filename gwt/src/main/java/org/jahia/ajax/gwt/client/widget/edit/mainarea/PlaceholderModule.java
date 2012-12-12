@@ -51,14 +51,17 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
 import java.util.Arrays;
@@ -123,6 +126,27 @@ public class PlaceholderModule extends Module {
         }
         if (getWidth() > 300) {
             html.setHTML("<div class=\"label-placeholder\">"+Messages.get("label.addTo") + "&nbsp;" + headerText + " : &nbsp;"+"</div>");
+        }
+
+        if (getParentModule() instanceof AreaModule && getParentModule().getChildCount() == 0 && ((AreaModule) getParentModule()).editable) {
+            AbstractImagePrototype icon =  ToolbarIconProvider.getInstance().getIcon("disableArea");
+            LayoutContainer p = new HorizontalPanel();
+            p.add(icon.createImage());
+            if (getWidth() > 150) {
+                p.add(new Text(Messages.get("label.areaDisable", "Disable area")));
+            }
+            p.sinkEvents(Event.ONCLICK);
+            p.addStyleName("button-placeholder");
+            p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+                public void handleEvent(ComponentEvent be) {
+                    JahiaContentManagementService.App.getInstance().deletePaths(Arrays.asList(parentModule.path), new BaseAsyncCallback<GWTJahiaNode>() {
+                        public void onSuccess(GWTJahiaNode result) {
+                            mainModule.getEditLinker().refresh(EditLinker.REFRESH_MAIN, null);
+                        }
+                    });
+                }
+            });
+            panel.add(p);
         }
 
         String[] nodeTypesArray = null;

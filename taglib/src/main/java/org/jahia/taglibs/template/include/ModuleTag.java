@@ -485,7 +485,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     protected boolean checkStudioLock(RenderContext renderContext) {
         if ("studiomode".equals(renderContext.getEditModeConfigName())) {
             try {
-                if(node!=null && node.isNodeType("jmix:studioLayout")) {
+                if(node!=null && node.isNodeType("jmix:studioLayout") || (node == null && this instanceof AreaTag)) {
                     return false;
                 }
 //                if (renderContext.getMainResource().getNode().getLockInfos().get(null) == null ||

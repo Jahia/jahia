@@ -877,7 +877,7 @@ extends = jnt:content
      'Reference', 'WeakReference', 'undefined'
  - j:selectorType (STRING,choicelist) nofulltext
    < 'Text','RichText','DateTimePicker','DatePicker',
-     'TextArea','ContentPicker','FileUpload','Checkbox',
+     'TextArea','Picker','FileUpload','Checkbox',
      'Color','Category','Choicelist'
  - j:multiple (BOOLEAN)
  - j:defaultValues (STRING) multiple
@@ -888,18 +888,18 @@ extends = jnt:content
  - j:isHidden (BOOLEAN)
  - j:autoCreated (BOOLEAN)
  - j:onParentVersion (STRING,choicelist) = 'VERSION' nofulltext
-     < 'COPY', 'VERSION', 'INITIALIZE', 'COMPUTE', 'IGNORE', 'ABORT'
+   < 'COPY', 'VERSION', 'INITIALIZE', 'COMPUTE', 'IGNORE', 'ABORT'
  - j:availableQueryOperators (NAME) multiple
  - j:isFullTextSearchable (BOOLEAN) = true
  - j:isQueryOrderable (BOOLEAN) = true
  - j:isFacetable (BOOLEAN)
  - j:isHierarchical (BOOLEAN)
  - j:index (STRING,choicelist) = 'TOKENIZED' nofulltext
-     < 'NO', 'TOKENIZED', 'UNTOKENIZED'
+   < 'NO', 'TOKENIZED', 'UNTOKENIZED'
  - j:scoreboost (DOUBLE) = 1
  - j:analyzer (STRING)
  - j:onConflictAction (STRING,choicelist) = 'LATEST' nofulltext
-     < 'LATEST', 'OLDEST', 'MIN', 'MAX', 'SUM'
+   < 'LATEST', 'OLDEST', 'MIN', 'MAX', 'SUM'
  - j:itemType (STRING,choicelist) < 'content','metadata','layout','options'
 
 [jnt:structuredPropertyDefinition] > jnt:propertyDefinition
@@ -914,8 +914,8 @@ extends = jnt:content
 [jnt:childNodeDefinition] > jnt:itemDefinition abstract
  - j:autoCreated (BOOLEAN)
  - j:mandatory (BOOLEAN)
- - j:onParentVersion (STRING) nofulltext
-     < 'COPY', 'VERSION', 'INITIALIZE', 'COMPUTE', 'IGNORE', 'ABORT'
+ - j:onParentVersion (STRING,choicelist) = 'VERSION' nofulltext
+   < 'COPY', 'VERSION', 'INITIALIZE', 'COMPUTE', 'IGNORE', 'ABORT'
  - j:protected (BOOLEAN)
  - j:requiredPrimaryTypes (NAME) = 'nt:base' mandatory multiple
  - j:defaultPrimaryType (NAME)

@@ -72,7 +72,7 @@ public class SelectorType {
     public static final String SELECTORNAME_DATETIMEPICKER = "DateTimePicker";
     public static final String SELECTORNAME_DATEPICKER = "DatePicker";
     public static final String SELECTORNAME_TEXTAREA = "TextArea";
-    public static final String SELECTORNAME_CONTENTPICKER = "ContentPicker";
+    public static final String SELECTORNAME_CONTENTPICKER = "Picker";
     public static final String SELECTORNAME_FILEUPLOAD = "FileUpload";
     public static final String SELECTORNAME_CHECKBOX = "Checkbox";
     public static final String SELECTORNAME_COLOR = "Color";

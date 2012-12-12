@@ -250,14 +250,14 @@ public class JahiaCndWriter {
 
         switch (pd.getIndex()) {
             case ExtendedPropertyDefinition.INDEXED_NO:
-                out.write("indexed=no");
+                out.write(" indexed=no");
                 break;
             case ExtendedPropertyDefinition.INDEXED_TOKENIZED:
                 // no need to write it as it's the default value
-//                out.write("indexed=tokenized");
+//                out.write(" indexed=tokenized");
                 break;
             case ExtendedPropertyDefinition.INDEXED_UNTOKENIZED:
-                out.write("indexed=untokenized");
+                out.write(" indexed=untokenized");
                 break;
         }
 

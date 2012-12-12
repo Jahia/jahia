@@ -302,6 +302,7 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
         ExtendedPropertyDefinition that = (ExtendedPropertyDefinition) o;
         if (name.toString().equals("*")) {
             if (requiredType != that.requiredType) return false;
+            if (multiple != that.multiple) return false;
         }
 
         return super.equals(o);

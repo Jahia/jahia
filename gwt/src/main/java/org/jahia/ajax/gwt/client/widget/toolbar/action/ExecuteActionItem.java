@@ -74,7 +74,7 @@ public class ExecuteActionItem extends BaseActionItem {
                             + action + ". Do you want to continue?"),
                     new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
-                            if (Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getText())) {
+                            if (Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getItemId())) {
                                 doAction();
                             }
                         }

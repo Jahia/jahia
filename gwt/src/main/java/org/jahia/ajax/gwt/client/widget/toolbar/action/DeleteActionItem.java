@@ -246,7 +246,7 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                                 box.setIcon(icon);
                                 box.addCallback(new Listener<MessageBoxEvent>() {
                                     public void handleEvent(MessageBoxEvent be) {
-                                        if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {
+                                        if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
                                             BaseAsyncCallback<Object> baseAsyncCallback = new BaseAsyncCallback<Object>() {
                                                 public void onApplicationFailure(Throwable throwable) {
                                                     Log.error(throwable.getMessage(), throwable);

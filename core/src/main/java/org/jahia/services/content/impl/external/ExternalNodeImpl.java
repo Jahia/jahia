@@ -235,6 +235,7 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
                 s[i] = values[i].getString();
             }
             data.getProperties().put(name,s);
+            properties.put(name, new ExternalPropertyImpl(new Name(name, NodeTypeRegistry.getInstance().getNamespaces()), this, session, values));
             session.getChangedData().put(getPath(),data);
         }
         return new ExternalPropertyImpl(new Name(name,NodeTypeRegistry.getInstance().getNamespaces()),this,(ExternalSessionImpl) getSession(), values);

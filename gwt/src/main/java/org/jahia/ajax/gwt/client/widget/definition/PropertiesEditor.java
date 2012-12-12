@@ -247,6 +247,10 @@ public class PropertiesEditor extends FormPanel {
                     defaultedProperties.add(definition.getName());
                 }
                 currentProperties.put(definition.getName(), property);
+            } else {
+                if (!definition.isNode() && ((GWTJahiaPropertyDefinition) definition).getDefaultValues() != null && ((GWTJahiaPropertyDefinition) definition).getDefaultValues().size() > 0) {
+                    defaultedProperties.add(definition.getName());
+                }
             }
 
 

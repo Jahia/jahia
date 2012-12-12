@@ -305,6 +305,25 @@
         </property>
     </bean>
 
+    <bean id="Toolbar.Item.SwitchConfigActionToStudioLayout" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="titleKey" value="label.studio.layout"/>
+        <property name="icon" value="studio"/>
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
+                <property name="configurationName" value="studiolayoutmode"/>
+            </bean>
+        </property>
+    </bean>
+    <bean id="Toolbar.Item.SwitchConfigActionToStudio" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="titleKey" value="label.studio"/>
+        <property name="icon" value="studio"/>
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
+                <property name="configurationName" value="studiomode"/>
+            </bean>
+        </property>
+    </bean>
+
     <bean id="Toolbar.Item.StudioLayoutMode" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectOrOpenWindowActionItem"/>

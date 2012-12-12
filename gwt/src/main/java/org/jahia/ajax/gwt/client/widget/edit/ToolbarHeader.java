@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget.edit;
 
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
@@ -68,6 +69,14 @@ public class ToolbarHeader extends Header {
     public ToolbarHeader() {
         super();
         setHeight("22");
+    }
+
+    public void removeAllTools() {
+        List<Component> tools = new ArrayList<Component>(getTools());
+        for (Component component : tools) {
+            removeTool(component);
+        }
+        actionItems.clear();
     }
 
     public void addItem(Linker linker, GWTJahiaToolbarItem gwtToolbarItem) {

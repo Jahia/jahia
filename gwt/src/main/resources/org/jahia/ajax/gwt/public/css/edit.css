@@ -346,7 +346,7 @@
     box-shadow: 0 1px 3px #999;
 }
 .studiolayoutmodearea {
-    height:200px;
+    height:100px;
     overflow: hidden;
     background-color:#d8effb;
     /*padding:5px;*/
@@ -405,7 +405,7 @@
     box-shadow: 0 1px 3px #999;
 }
 .studiolayoutmodeabsoluteArea {
-    height:200px;
+    height:100px;
     overflow: hidden;
     background-color:#ffcccc;
     /*padding:5px;*/
@@ -434,7 +434,7 @@
     box-shadow: 0 1px 3px #999;
 }
 .mainResourceDisplay {
-    height:200px;
+    height:100px;
 	overflow:hidden;
 	background-color:#eaeaea;
 	/*padding:5px;*/
@@ -463,7 +463,7 @@
 	box-shadow: 0 1px 3px #999;
 }
  .authorDisplayArea {
-	height:200px;
+	height:100px;
 	overflow: hidden;
 	padding:5px;
 	color:#666;

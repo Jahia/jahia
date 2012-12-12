@@ -158,6 +158,10 @@ public class JahiaGWTParameters {
         setNativeLanguage(newLanguage.getLanguage());
     }
 
+    public static void changeServletMapping(String oldMapping, String newMapping) {
+        baseUrl = baseUrl.replaceFirst(oldMapping, newMapping);
+    }
+
     private static native void setNativeLanguage(String newLanguage) /*-{
         $wnd.jahiaGWTParameters.lang  = newLanguage;
         if ($wnd.contextJsParameters) {

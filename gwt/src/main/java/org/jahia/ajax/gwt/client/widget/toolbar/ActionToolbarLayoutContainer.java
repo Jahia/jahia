@@ -75,6 +75,12 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
         this.toolbarSet = toolbarSet;
     }
 
+    public void setToolbarSet(List<GWTJahiaToolbar> toolbarSet) {
+        removeAll();
+        this.toolbarSet = toolbarSet;
+        this.actionToolbars = new ArrayList<ActionToolbar>();
+    }
+
     /**
      * Create Toolbar UI
      *
@@ -112,7 +118,7 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
         }
         // add to widget
         add(actionToolbar);
-
+        layout();
         // add to toolbars list
         actionToolbars.add(actionToolbar);
 

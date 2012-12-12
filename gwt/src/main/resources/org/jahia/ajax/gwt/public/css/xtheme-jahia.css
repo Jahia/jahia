@@ -57,6 +57,27 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 .x-viewport-studiomode .x-toolbar-first .x-btn-mc em.x-btn-arrow {
 background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
 }
+/*Studio layout Mode*/
+.x-viewport-studiolayoutmode .x-toolbar-first{
+	background:none !important;
+	background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/studioMode-bg.png) no-repeat top right !important;
+	border-color:#333333!important;
+}
+.x-viewport-studiolayoutmode .x-toolbar-first button {
+	color:#fff !important;
+}
+.x-viewport-studiolayoutmode .x-toolbar-first .x-btn-tl, .x-viewport-studiolayoutmode .x-toolbar-first .x-btn-tr, .x-viewport-studiolayoutmode .x-toolbar-first .x-btn-tc, .x-viewport-studiolayoutmode .x-toolbar-first .x-btn-ml, .x-viewport-studiolayoutmode .x-toolbar-first .x-btn-mr, .x-viewport-studiolayoutmode .x-toolbar-first .x-btn-mc, .x-viewport-studiolayoutmode .x-toolbar-first .x-btn-bl, .x-viewport-studiolayoutmode .x-toolbar-first .x-btn-br, .x-viewport-studiolayoutmode .x-toolbar-first .x-btn-bc{
+	background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+}
+.x-viewport-studiolayoutmode .x-toolbar-first .xtb-sep {
+	background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+}
+.x-viewport-studiolayoutmode .x-toolbar-first .x-btn-over button {
+    color:#000 !important;
+}
+.x-viewport-studiolayoutmode .x-toolbar-first .x-btn-mc em.x-btn-arrow {
+background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
+}
 /*Edit Mode*/
 .x-viewport-editmode .x-toolbar-first{
 	background:none !important;

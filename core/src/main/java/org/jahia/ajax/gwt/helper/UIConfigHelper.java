@@ -558,6 +558,7 @@ public class UIConfigHelper {
                 gwtConfig.setEngineConfigurations(createGWTEngineConfigurations(contextNode, site, jahiaUser, locale, uiLocale, request, config.getEngineConfigurations()));
                 gwtConfig.setSitesLocation(config.getSitesLocation());
                 gwtConfig.setEnableDragAndDrop(config.isEnableDragAndDrop());
+                gwtConfig.setDefaultUrlMapping(config.getDefaultUrlMapping());
                 return gwtConfig;
             } else {
                 throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.bean.editconfig.not.found.in.spring.config.file",uiLocale));

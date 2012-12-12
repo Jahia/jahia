@@ -76,8 +76,6 @@ public class SidePanel extends ContentPanel {
         super(new FitLayout());
         this.head = new ToolbarHeader();
 
-        this.config = config;
-
         tabs = new ArrayList<SidePanelTabItem>();
 
         tabPanel = new TabPanel();
@@ -96,20 +94,28 @@ public class SidePanel extends ContentPanel {
             }
         });
 
+        initTabs(config);
+
+        add(tabPanel);
+    }
+
+    public void initTabs(GWTEditConfiguration config) {
+        tabPanel.removeAll();
+        this.config = config;
         for (GWTSidePanelTab tabConfig : config.getTabs()) {
             SidePanelTabItem tabItem = tabConfig.getTabItem();
             tabs.add(tabItem);
 
             tabPanel.add(tabItem.create(tabConfig));
         }
-
-        add(tabPanel);
     }
 
     public void initWithLinker(final EditLinker editLinker) {
+        ((ToolbarHeader) head).removeAllTools();
         for (GWTJahiaToolbarItem item : config.getSidePanelToolbar().getGwtToolbarItems()) {
             ((ToolbarHeader)head).addItem(editLinker, item);
         }
+        layout();
         refreshButton = new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
                 ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem")).refresh(null);

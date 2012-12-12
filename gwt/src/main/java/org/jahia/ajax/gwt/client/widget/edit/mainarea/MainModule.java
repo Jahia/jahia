@@ -182,6 +182,7 @@ public class MainModule extends Module {
 
 
         if (head != null) {
+            ((ToolbarHeader) head).removeAllTools();
             for (GWTJahiaToolbarItem item : config.getMainModuleToolbar().getGwtToolbarItems()) {
                 ((ToolbarHeader) head).addItem(linker, item);
             }
@@ -494,6 +495,13 @@ public class MainModule extends Module {
         return config;
     }
 
+    public void setConfig(GWTEditConfiguration config) {
+        JahiaGWTParameters.changeServletMapping(this.config.getDefaultUrlMapping(), config.getDefaultUrlMapping());
+        this.config = config;
+        setHashMarker(getUrl(path, template));
+        refresh(EditLinker.REFRESH_MAIN, null);
+    }
+
     public void handleNewModuleSelection(Module selectedModule) {
         Selection l = new Selection(selectedModule);
         if (!ctrlActive || selectedModule == null) {
@@ -745,11 +753,13 @@ public class MainModule extends Module {
 
         @Override
         public void setUrl(String url) {
-            if (isAttached()) {
-                this.url = url;
-                super.setUrl(url);
-            } else {
-                this.url = url;
+            if (url.startsWith(config.getDefaultUrlMapping()+"frame/")) {
+                if (isAttached()) {
+                    this.url = url;
+                    super.setUrl(url);
+                } else {
+                    this.url = url;
+                }
             }
         }
 

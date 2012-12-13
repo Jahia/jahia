@@ -24,7 +24,7 @@
 
     create table jahia_external_mapping (
         internalUuid varchar(36) not null,
-        externalId varchar(255) not null,
+        externalId clob not null,
         providerKey varchar(255) not null,
         primary key (internalUuid)
     );

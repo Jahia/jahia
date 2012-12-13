@@ -75,18 +75,19 @@ public class ModulesProviderTest {
             assertTrue("article source not match",viewNode.getProperty("sourceCode").getString().startsWith("<%@ taglib prefix=\"jcr\" uri=\"http://www.jahia.org/tags/jcr\" %>"));
 
             // write properties
-            viewNode.setProperty("sourceCode",viewNode.getProperty("sourceCode").getString() + "TEST");
+            String testString = "\n<% //" + System.currentTimeMillis() + " %>";
+            viewNode.setProperty("sourceCode",viewNode.getProperty("sourceCode").getString() + testString);
             viewNode.setProperty("cache.perUser",true);
             viewNode.setProperty("cache.requestParameters","carcheTest");
             s.save();
 
             // read properties
             s.logout();
+            s = JCRSessionFactory.getInstance().getCurrentUserSession();
             artPackage = templateManagerService.getTemplatePackageByFileName("article");
             root = s.getNode(mountPoint);
             viewNode = root.getNode( artPackage.getRootFolderWithVersion() + "/jnt_article/html/article.jsp");
-            s = JCRSessionFactory.getInstance().getCurrentUserSession();
-            assertTrue("article source not match",viewNode.getProperty("sourceCode").getString().endsWith("TEST"));
+            assertTrue("article source not match",viewNode.getProperty("sourceCode").getString().endsWith(testString));
             assertTrue("cache.perUser not set to true",viewNode.getProperty("cache.perUser").getBoolean());
             assertTrue("cache.requestParameters not set to carcheTest",viewNode.getProperty("cache.requestParameters").getString().equals("carcheTest"));
 

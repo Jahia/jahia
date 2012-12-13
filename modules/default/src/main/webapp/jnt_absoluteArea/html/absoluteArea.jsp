@@ -12,7 +12,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <c:set var="level" value="${currentNode.properties['j:level'].long}"/>
 <c:choose>
-    <c:when test="${not empty inWrapper and inWrapper eq false}">
+    <c:when test="${(not empty inWrapper and inWrapper eq false)}">
         <div class="${renderContext.editModeConfigName}absoluteArea <c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
             <div class="${renderContext.editModeConfigName}absoluteAreaTemplate">
                 <c:if test="${empty level}" >

@@ -77,7 +77,7 @@ public class SimpleModule extends Module {
         hasDragDrop = !"false".equals(DOM.getElementAttribute(divElement, "dragdrop"));
         editable = !"false".equals(DOM.getElementAttribute(divElement, "editable"));
 
-        if (header) {
+        if (header && editable) {
             head = new Header();
             add(head);
             setHeaderText(Messages.get("label.content") + " : " + path.substring(path.lastIndexOf('/') + 1));

@@ -45,7 +45,6 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.filter.AbstractFilter;
-import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
@@ -76,9 +75,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     private static final long serialVersionUID = -8968618483176483281L;
 
     private static Logger logger = LoggerFactory.getLogger(ModuleTag.class);
-    
+
     private static AbstractFilter exclusionFilter = null;
-    
+
     private static boolean exclusionFilterChecked;
 
     protected String path;
@@ -264,65 +263,66 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         throw new JspException(e);
                     }
                 }
-                boolean isVisibleInStudioModeLayout = true;
-                if("studiolayoutmode".equals(renderContext.getEditModeConfigName())) {
-                    try {
-                        if(!node.isNodeType("jmix:studioLayout")) {
-                            isVisibleInStudioModeLayout = false;
-                        }
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-//                if (isVisibleInStudioModeLayout) {
-                    try {
-                        boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext,
-                                resource.getNode()) && !isExcluded(renderContext, resource);
+                boolean isVisible = true;
 
-                        pageContext.getRequest().setAttribute("editableModule", canEdit);
-                        if (canEdit) {
-                            String type = getModuleType(renderContext);
-                            List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
-                            String oldNodeTypes = nodeTypes;
-                            String add = null;
-                            if (!checkStudioLock(renderContext) || !isVisibleInStudioModeLayout) {
-                                add = "editable=\"false\"";
-                            }
-                            if (contributeTypes != null) {
-                                nodeTypes = StringUtils.join(contributeTypes, " ");
-                                add = "editable=\"false\"";
-                            }
-                            Script script = null;
-                            try {
-                                script = RenderService.getInstance().resolveScript(resource, renderContext);
-                                printModuleStart(type, node.getPath(), resource.getResolvedTemplate(),
-                                        script.getView().getInfo(), add);
-                            } catch (TemplateNotFoundException e) {
-                                printModuleStart(type, node.getPath(), resource.getResolvedTemplate(),
-                                        "Script not found", add);
-                            }
-                            nodeTypes = oldNodeTypes;
-                            currentResource.getDependencies().add(node.getCanonicalPath());
-                            if (isVisibleInStudioModeLayout) {
-                                render(renderContext, resource);
-                            } else {
-                                pageContext.getOut().print("");
-                            }
-                            //Copy dependencies to parent Resource (only for include of the same node)
-                            currentResource.getRegexpDependencies().addAll(resource.getRegexpDependencies());
-                            currentResource.getDependencies().addAll(resource.getDependencies());
-                            printModuleEnd();
-                        } else {
-//                        resource.getModuleParams().put("readOnly", Boolean.TRUE);
-                            currentResource.getDependencies().add(node.getCanonicalPath());
-                            render(renderContext, resource);
-                            //Copy dependencies to parent Resource (only for include of the same node)
-                            currentResource.getRegexpDependencies().addAll(resource.getRegexpDependencies());
-                            currentResource.getDependencies().addAll(resource.getDependencies());
+                try {
+                    isVisible = renderContext.getEditModeConfig() == null || renderContext.getEditModeConfig().isVisible(node);
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
+
+                try {
+                    boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext,
+                            resource.getNode()) && !isExcluded(renderContext, resource);
+
+                    pageContext.getRequest().setAttribute("editableModule", canEdit && checkStudioLock(renderContext, node));
+                    if (canEdit) {
+                        String type = getModuleType(renderContext);
+                        List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
+                        String oldNodeTypes = nodeTypes;
+                        String add = null;
+                        if (!checkStudioLock(renderContext, node)) {
+                            add = "editable=\"false\"";
                         }
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
+                        if (contributeTypes != null) {
+                            nodeTypes = StringUtils.join(contributeTypes, " ");
+                            add = "editable=\"false\"";
+                        }
+                        Script script = null;
+                        try {
+                            script = RenderService.getInstance().resolveScript(resource, renderContext);
+                            printModuleStart(type, node.getPath(), resource.getResolvedTemplate(),
+                                    script.getView().getInfo(), add);
+                        } catch (TemplateNotFoundException e) {
+                            printModuleStart(type, node.getPath(), resource.getResolvedTemplate(),
+                                    "Script not found", add);
+                        }
+                        nodeTypes = oldNodeTypes;
+                        currentResource.getDependencies().add(node.getCanonicalPath());
+                        if (isVisible) {
+                            render(renderContext, resource);
+                        } else {
+                            pageContext.getOut().print("");
+                        }
+                        //Copy dependencies to parent Resource (only for include of the same node)
+                        currentResource.getRegexpDependencies().addAll(resource.getRegexpDependencies());
+                        currentResource.getDependencies().addAll(resource.getDependencies());
+                        printModuleEnd();
+                    } else {
+//                        resource.getModuleParams().put("readOnly", Boolean.TRUE);
+                        currentResource.getDependencies().add(node.getCanonicalPath());
+                        if (isVisible) {
+                            render(renderContext, resource);
+                        } else {
+                            pageContext.getOut().print("");
+                        }
+                        //Copy dependencies to parent Resource (only for include of the same node)
+                        currentResource.getRegexpDependencies().addAll(resource.getRegexpDependencies());
+                        currentResource.getDependencies().addAll(resource.getDependencies());
                     }
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
 //                }
             }
         } catch (IOException ex) {
@@ -370,7 +370,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
         return false;
     }
-    
+
     private AbstractFilter getExclusionFilter() {
         if (!exclusionFilterChecked) {
             try {
@@ -396,7 +396,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
         try {
             if (node.hasProperty("j:contributeTypes")) {
-                contributeNode = node; 
+                contributeNode = node;
             }
             if (contributeNode != null && contributeNode.hasProperty("j:contributeTypes")) {
                 LinkedHashSet<String> l = new LinkedHashSet<String>();
@@ -428,6 +428,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         }
         return null;
     }
+
     private boolean contributeAccess(RenderContext renderContext, JCRNodeWrapper node) {
         if (!"contributemode".equals(renderContext.getEditModeConfigName())) {
             return true;
@@ -482,19 +483,17 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         return Resource.CONFIGURATION_MODULE;
     }
 
-    protected boolean checkStudioLock(RenderContext renderContext) {
-        if ("studiomode".equals(renderContext.getEditModeConfigName())) {
-            try {
-                if(node!=null && node.isNodeType("jmix:studioLayout") || (node == null && this instanceof AreaTag)) {
-                    return false;
-                }
-//                if (renderContext.getMainResource().getNode().getLockInfos().get(null) == null ||
-//                        !renderContext.getMainResource().getNode().getLockInfos().get(null).contains(renderContext.getUser().getUsername()+":user")) {
-//                    return false;
-//                }
-            } catch (RepositoryException e) {
-
+    protected boolean checkStudioLock(RenderContext renderContext, JCRNodeWrapper node) {
+        try {
+            if (node != null && !renderContext.getEditModeConfig().isEditable(node)) {
+                return false;
             }
+////                if (renderContext.getMainResource().getNode().getLockInfos().get(null) == null ||
+////                        !renderContext.getMainResource().getNode().getLockInfos().get(null).contains(renderContext.getUser().getUsername()+":user")) {
+////                    return false;
+////                }
+        } catch (RepositoryException e) {
+
         }
         return true;
     }
@@ -502,7 +501,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     protected boolean canEdit(RenderContext renderContext) {
         return renderContext.isEditMode() && editable &&
                 !Boolean.TRUE.equals(renderContext.getRequest().getAttribute("inWrapper")) &&
-                renderContext.getRequest().getAttribute("inArea") == null ;
+                renderContext.getRequest().getAttribute("inArea") == null;
     }
 
     protected void printModuleStart(String type, String path, String resolvedTemplate, String scriptInfo,
@@ -628,7 +627,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             if (!(e.getCause() instanceof AccessDeniedException)) {
                 logger.error(e.getMessage(), e);
             }
-            if(renderContext.isEditMode() && ((e.getCause() instanceof TemplateNotFoundException) || (e.getCause() instanceof AccessDeniedException))){
+            if (renderContext.isEditMode() && ((e.getCause() instanceof TemplateNotFoundException) || (e.getCause() instanceof AccessDeniedException))) {
                 buffer.append(e.getCause().getMessage());
                 if (var == null) {
                     pageContext.getOut().print(buffer);
@@ -667,7 +666,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         }
 
 
-        if (canEdit(renderContext) && checkStudioLock(renderContext) && contributeAccess(renderContext, currentResource.getNode())) {
+        if (canEdit(renderContext) && checkStudioLock(renderContext, currentResource.getNode()) && contributeAccess(renderContext, currentResource.getNode())) {
             if (currentResource.getNode().hasPermission("jcr:addChildNodes")) {
                 List<String> contributeTypes = contributeTypes(renderContext, currentResource.getNode());
                 if (contributeTypes != null) {

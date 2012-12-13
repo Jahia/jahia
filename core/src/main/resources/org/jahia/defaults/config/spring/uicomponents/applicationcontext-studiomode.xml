@@ -24,6 +24,16 @@
     <bean id="studiomode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         <property name="requiredPermission" value="studioModeAccess"/>
         <property name="modulesOnly" value="true"/>
+        <property name="componentsPaths">
+            <list>
+                <value>/modules/*</value>
+            </list>
+        </property>
+        <property name="nonEditableTypes">
+            <set>
+                <value>jmix:layoutComponentContent</value>
+            </set>
+        </property>
         <property name="defaultUrlMapping" value="/cms/studio"/>
         <property name="sitesLocation" value="/modules/*"/>
         <property name="topToolbar">
@@ -972,6 +982,22 @@
     <bean id="studiolayoutmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         <property name="requiredPermission" value="studioModeAccess"/>
         <property name="modulesOnly" value="true"/>
+        <property name="componentsPaths">
+            <list>
+                <value>/modules/*</value>
+            </list>
+        </property>
+        <property name="visibleTypes">
+            <set>
+                <value>jmix:layoutComponentContent</value>
+                <value>jmix:list</value>
+            </set>
+        </property>
+        <property name="editableTypes">
+            <set>
+                <value>jmix:layoutComponentContent</value>
+            </set>
+        </property>
         <property name="defaultUrlMapping" value="/cms/studiolayout"/>
         <property name="sitesLocation" value="/modules/*"/>
         <property name="topToolbar">
@@ -1540,7 +1566,7 @@
                     <property name="icon" value="tab-createcontent"/>
                     <property name="tabItem">
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.CreateContentTabItem">
-                            <property name="baseType" value="jmix:studioLayout"/>
+                            <property name="baseType" value="jmix:layoutComponentContent"/>
                             <property name="paths">
                                 <list>
                                     <!--<value>$site/components/*</value>-->

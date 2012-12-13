@@ -55,9 +55,7 @@ import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Handler for the &lt;template:module/&gt; tag, used to render content objects.
@@ -108,7 +106,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
     protected void missingResource(RenderContext renderContext, Resource resource)
             throws RepositoryException, IOException {
-        if (renderContext.isEditMode() && checkStudioLock(renderContext)) {
+        if (renderContext.isEditMode() && checkStudioLock(renderContext, node)) {
             try {
                 constraints = ConstraintsHelper
                         .getConstraints(Arrays.asList(NodeTypeRegistry.getInstance().getNodeType(areaType)), null);
@@ -239,8 +237,14 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     }
                     boolean found = false;
                     boolean notMainResource = false;
+
+                    Set<String> allPaths = new HashSet<String>();
+                    for (Resource resource : renderContext.getResourcesStack()) {
+                        allPaths.add(resource.getNode().getPath());
+                    }
+
                     for (JCRNodeWrapper node : nodes) {
-                        if (!path.equals("*") && node.hasNode(path)) {
+                        if (!path.equals("*") && node.hasNode(path) && !allPaths.contains(node.getPath()+"/"+path)) {
                             notMainResource = mainResource.getNode() != node && !node.getPath().startsWith(renderContext.getMainResource().getNode().getPath());
                             this.node = node.getNode(path);
                             if (currentResource.getNode().getParent().getPath().equals(this.node.getPath())) {

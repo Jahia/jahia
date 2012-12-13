@@ -59,7 +59,6 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.contentengine.ButtonItem;
-import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEngine;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 
 import java.util.Arrays;
@@ -166,12 +165,8 @@ public class ContentTypeWindow extends Window {
     }
     
     public static void createContent(final Linker linker, final String name, final List<String> nodeTypes, final Map<String, GWTJahiaNodeProperty> props, final GWTJahiaNode targetNode, boolean includeSubTypes, final boolean createInParentAndMoveBefore, final Set<String> displayedNodeTypes) {
-        String contentPath = "$site/components/*";
-        if ("studiomode".equals(linker.getConfig().getName())) {
-            contentPath = "/modules/*";
-        }
         linker.loading(Messages.get("label.loading", "Loading"));
-        JahiaContentManagementService.App.getInstance().getContentTypesAsTree(Arrays.asList(contentPath), nodeTypes, Arrays.asList("name"), includeSubTypes, false, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+        JahiaContentManagementService.App.getInstance().getContentTypesAsTree(linker.getConfig().getComponentsPaths(), nodeTypes, Arrays.asList("name"), includeSubTypes, false, new BaseAsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> result) {
                 linker.loaded();
                 if (result.size() == 1 && result.get(0).getChildren().isEmpty()) {

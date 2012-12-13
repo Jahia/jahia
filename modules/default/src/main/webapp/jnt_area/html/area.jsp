@@ -13,8 +13,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
 <c:choose>
-    <c:when test="${not empty inWrapper and inWrapper eq false}">
-
+    <c:when test="${(not empty inWrapper and inWrapper eq false) and editableModule}">
         <c:set value="${currentNode.nodes}" var="currentList" scope="request"/>
 
         <div class="${renderContext.editModeConfigName}area<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">

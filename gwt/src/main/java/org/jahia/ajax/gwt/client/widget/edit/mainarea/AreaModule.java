@@ -129,8 +129,7 @@ public class AreaModule extends SimpleModule {
         }
         
         if (missingList && editable) {
-//            addStyleName("area-notcreated");
-//            addStyleName(moduleType);
+            addStyleName(mainModule.getConfig().getName()+"area");
             headerText += " (" + Messages.get("label.notCreated", "not created")+ ")";
             if (mockupStyle != null) {
                 addStyleName(mockupStyle);
@@ -139,34 +138,23 @@ public class AreaModule extends SimpleModule {
 
             ctn = new LayoutContainer();
             ctn.setId("JahiaGxtArea__" + areaTitle);
-//            ctn.addStyleName(moduleType+"Template");
             ctn.addText(headerText);
 
             removeAll();
-            add(ctn);
-//            add(dash);
+
+            LayoutContainer dash = new LayoutContainer();
+            dash.setId("JahiaGxtArea__" + areaTitle);
+            dash.addStyleName(mainModule.getConfig().getName()+"areaTemplate");
+
+            ctn = new LayoutContainer();
+            ctn.addStyleName(moduleType+"Template");
+            ctn.addText(headerText);
+
+            dash.add(ctn);
+            dash.add(html);
+
+            add(dash);
             setBorders(false);
-//        } else if (childCount == 0 && editable) {
-//            addStyleName("area-empty");
-//            headerText += " (" + Messages.get("label.empty", "empty")+ ")";
-//
-//            addStyleName(moduleType);
-//            if (mockupStyle != null) {
-//                addStyleName(mockupStyle);
-//            }
-//            removeAll();
-//
-//            LayoutContainer dash = new LayoutContainer();
-//            dash.setId("JahiaGxtArea__" + areaTitle);
-//            dash.addStyleName("dashedArea");
-//
-//            ctn = new LayoutContainer();
-//            ctn.addStyleName(moduleType+"Template");
-//            ctn.addText(headerText);
-//
-//            dash.add(ctn);
-//            dash.add(html);
-//            add(dash);
         } else {
             setBorders(false);
         }
@@ -245,6 +233,11 @@ public class AreaModule extends SimpleModule {
 
     public void createNode(final AsyncCallback<GWTJahiaNode> callback) {
         if (node == null) {
+            String areaType = this.areaType;
+            if (mainModule.getConfig().getName().contains("layout")) {
+                // move this config property
+                areaType = "jnt:layoutContentList";
+            }
             JahiaContentManagementService.App.getInstance().createNode(path.substring(0, path.lastIndexOf('/')), path.substring(path.lastIndexOf('/') + 1),
                     areaType, null,null,null,null, null, true, new AsyncCallback<GWTJahiaNode>() {
                         public void onSuccess(GWTJahiaNode result) {

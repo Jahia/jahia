@@ -91,8 +91,16 @@ public class AddResourcesTag extends AbstractJahiaTag {
     public int doEndTag() throws JspException {
         org.jahia.services.render.Resource currentResource =
                 (org.jahia.services.render.Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
+
+        boolean isVisible = true;
+
         try {
-            if (!"studiolayoutmode".equals(getRenderContext().getEditModeConfigName()) || (!currentResource.getNode().isNodeType("jnt:template") && currentResource.getNode().isNodeType("jmix:studioLayout"))) {
+            isVisible = getRenderContext().getEditModeConfig() == null || getRenderContext().getEditModeConfig().isVisible(currentResource.getNode());
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+//        try {
+            if (isVisible) {
                 JahiaTemplatesPackage templatesPackage = (JahiaTemplatesPackage) pageContext.getAttribute("currentModule",
                         PageContext.REQUEST_SCOPE);
                 JahiaTemplatesPackage templatesSetPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(
@@ -101,9 +109,9 @@ public class AddResourcesTag extends AbstractJahiaTag {
                     addResources(getRenderContext(), templatesPackage, true);
                 }
             }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
+//        } catch (RepositoryException e) {
+//            logger.error(e.getMessage(), e);
+//        }
         resetState();
         return super.doEndTag();
     }

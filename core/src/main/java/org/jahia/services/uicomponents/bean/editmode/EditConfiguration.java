@@ -40,14 +40,14 @@
 
 package org.jahia.services.uicomponents.bean.editmode;
 
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 import org.springframework.beans.factory.BeanNameAware;
 
+import javax.jcr.RepositoryException;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Represent edit mode configuration, including side panel and side panel toolbar,
@@ -80,6 +80,13 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private String defaultUrlMapping;
 
     private boolean modulesOnly = true;
+
+    private List<String> componentsPaths = Arrays.asList("$site/components/*");
+
+    private Set<String> editableTypes;
+    private Set<String> nonEditableTypes;
+    private Set<String> visibleTypes;
+    private Set<String> nonVisibleTypes;
 
     public void addTab(SidePanelTab tab) {
         tabs.add(tab);
@@ -209,4 +216,75 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     public void setModulesOnly(boolean modulesOnly) {
         this.modulesOnly = modulesOnly;
     }
+
+    public List<String> getComponentsPaths() {
+        return componentsPaths;
+    }
+
+    public void setComponentsPaths(List<String> componentsPaths) {
+        this.componentsPaths = componentsPaths;
+    }
+
+    public Set<String> getEditableTypes() {
+        return editableTypes;
+    }
+
+    public void setEditableTypes(Set<String> editableTypes) {
+        this.editableTypes = editableTypes;
+    }
+
+    public Set<String> getNonEditableTypes() {
+        return nonEditableTypes;
+    }
+
+    public void setNonEditableTypes(Set<String> nonEditableTypes) {
+        this.nonEditableTypes = nonEditableTypes;
+    }
+
+    public Set<String> getVisibleTypes() {
+        return visibleTypes;
+    }
+
+    public void setVisibleTypes(Set<String> visibleTypes) {
+        this.visibleTypes = visibleTypes;
+    }
+
+    public Set<String> getNonVisibleTypes() {
+        return nonVisibleTypes;
+    }
+
+    public void setNonVisibleTypes(Set<String> nonVisibleTypes) {
+        this.nonVisibleTypes = nonVisibleTypes;
+    }
+
+    public boolean isVisible(JCRNodeWrapper node) throws RepositoryException {
+        if (getNonVisibleTypes() != null && isNodeOfType(node, getNonVisibleTypes())) {
+            return false;
+        } else if (getVisibleTypes() != null && !isNodeOfType(node, getVisibleTypes())) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isEditable( JCRNodeWrapper node) throws RepositoryException{
+        if (getNonEditableTypes() != null && isNodeOfType(node, getNonEditableTypes())) {
+            return false;
+        } else if (getEditableTypes() != null && !isNodeOfType(node, getEditableTypes())) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isNodeOfType(JCRNodeWrapper node, Set<String> types) throws RepositoryException {
+        if (types != null && node != null) {
+            for (String s : types) {
+                if (node.isNodeType(s)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
 }

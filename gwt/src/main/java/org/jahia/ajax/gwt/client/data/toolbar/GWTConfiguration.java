@@ -63,6 +63,7 @@ public class GWTConfiguration implements IsSerializable, Serializable {
     private String sitesLocation;
     private Map<String, GWTJahiaNode> sitesMap;
     private List<GWTJahiaChannel> channels;
+    private List<String> componentsPaths;
 
     public GWTConfiguration() {
     	super();
@@ -158,5 +159,13 @@ public class GWTConfiguration implements IsSerializable, Serializable {
 
     public void setChannels(List<GWTJahiaChannel> channels) {
         this.channels = channels;
+    }
+
+    public List<String> getComponentsPaths() {
+        return componentsPaths;
+    }
+
+    public void setComponentsPaths(List<String> componentsPaths) {
+        this.componentsPaths = componentsPaths;
     }
 }

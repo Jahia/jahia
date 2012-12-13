@@ -194,7 +194,7 @@ public class MainModule extends Module {
             }));
         }
 
-        if ("".equals(Window.Location.getHash())) {
+        if ("".equals(Window.Location.getHash()) || !isValidUrl(Window.Location.getHash())) {
             goToUrl(getUrl(path, template), true);
         } else {
             String hash = URL.decode(Window.Location.getHash());
@@ -234,6 +234,10 @@ public class MainModule extends Module {
         }
 
         infoLayers.initWithLinker(linker);
+    }
+
+    private boolean isValidUrl(String url) {
+        return url.startsWith(config.getDefaultUrlMapping() + "frame/");
     }
 
     private void layoutChannel() {
@@ -753,7 +757,7 @@ public class MainModule extends Module {
 
         @Override
         public void setUrl(String url) {
-            if (url.startsWith(config.getDefaultUrlMapping()+"frame/")) {
+            if (isValidUrl(url)) {
                 if (isAttached()) {
                     this.url = url;
                     super.setUrl(url);

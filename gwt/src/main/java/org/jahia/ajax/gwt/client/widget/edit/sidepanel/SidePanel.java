@@ -108,6 +108,7 @@ public class SidePanel extends ContentPanel {
 
             tabPanel.add(tabItem.create(tabConfig));
         }
+        tabPanel.setSelection(tabPanel.getItem(0));
     }
 
     public void initWithLinker(final EditLinker editLinker) {

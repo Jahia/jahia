@@ -60,6 +60,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.jcr.ItemExistsException;
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
@@ -128,6 +129,8 @@ public class ContentTest {
         for (String providerRoot : mountPoints.keySet()) {
             if (providerRoot.equals("/")) {
                 providerRoot = "/sites/systemsite";
+            } else if (providerRoot.equals("/modulesFileSystem")) {
+                continue;
             }
             Object[] parameter = new Object[1];
             parameter[0] = providerRoot;
@@ -172,7 +175,11 @@ public class ContentTest {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     for (String node : nodes) {
-                        session.getNodeByIdentifier(node).remove();
+                        try {
+                            session.getNodeByIdentifier(node).remove();
+                        } catch (ItemNotFoundException e) {
+                            // ignore
+                        }
                     }
                     session.save();
                 } catch (RepositoryException e) {

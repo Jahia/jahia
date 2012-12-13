@@ -124,6 +124,7 @@ public class ExternalSessionImpl implements Session {
             try {
                 Criteria criteria = statelessSession.createCriteria(UuidMapping.class);
                 criteria.add(Restrictions.eq("internalUuid", uuid));
+                criteria.add(Restrictions.eq("providerKey", repository.getProviderKey()));
                 List list = criteria.list();
                 if (list.size() > 0) {
                     uuid = ((UuidMapping) list.get(0)).getExternalId();

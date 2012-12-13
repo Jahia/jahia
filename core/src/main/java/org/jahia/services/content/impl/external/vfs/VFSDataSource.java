@@ -91,12 +91,6 @@ public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Wr
     }
 
     public ExternalData getItemByIdentifier(String identifier) throws ItemNotFoundException {
-        try {
-            UUID.fromString(identifier);
-            throw new ItemNotFoundException("This repository does not support UUID as identifiers");
-        } catch (IllegalArgumentException iae) {
-            // this is expected, we should not be using UUIDs
-        }
         if (identifier.startsWith("/")) {
             try {
                 return getItemByPath(identifier);
@@ -104,20 +98,7 @@ public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Wr
                 throw new ItemNotFoundException(identifier);
             }
         }
-        FileObject fileObject = null;
-        try {
-            if (identifier.startsWith(root)) {
-                fileObject = manager.resolveFile(identifier);
-                if (!fileObject.exists()) {
-                    throw new ItemNotFoundException(identifier);
-                }
-                return getFile(fileObject);
-            } else {
-                throw new ItemNotFoundException("File system exception while trying to retrieve " + identifier);
-            }
-        } catch (FileSystemException fse) {
-            throw new ItemNotFoundException("File system exception while trying to retrieve " + identifier, fse);
-        }
+        throw new ItemNotFoundException(identifier);
     }
 
     public ExternalData getItemByPath(String path) throws PathNotFoundException {
@@ -236,7 +217,7 @@ public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Wr
             path = "/" + path;
         }
 
-        return new ExternalData(identifier, path, type, properties);
+        return new ExternalData(path, path, type, properties);
     }
 
     public String getDataType(FileObject fileObject) throws FileSystemException {

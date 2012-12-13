@@ -66,7 +66,7 @@ public class ExternalContentStoreProvider extends JCRStoreProvider {
 
     private boolean readOnly;
 
-    private Repository repo;
+    private ExternalRepositoryImpl repo;
     
     private ExternalDataSource dataSource;
     private SessionFactory hibernateSession;
@@ -77,6 +77,7 @@ public class ExternalContentStoreProvider extends JCRStoreProvider {
                 if (repo == null) {
                     accessControlManager = new ExternalAccessControlManager(readOnly);
                     repo = new ExternalRepositoryImpl(this, dataSource, accessControlManager);
+                    repo.setProviderKey(getKey());
                     if (rmibind != null) {
                         try {
                             Naming.rebind(rmibind, new ServerAdapterFactory().getRemoteRepository(repo));
@@ -108,6 +109,14 @@ public class ExternalContentStoreProvider extends JCRStoreProvider {
 
     public void setDataSource(ExternalDataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+    @Override
+    public void setKey(String key) {
+        super.setKey(key);
+        if (repo != null) {
+            repo.setProviderKey(getKey());
+        }
     }
 
     public void setHibernateSession(SessionFactory hibernateSession) {

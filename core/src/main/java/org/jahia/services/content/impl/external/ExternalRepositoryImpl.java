@@ -66,6 +66,8 @@ public class ExternalRepositoryImpl implements Repository {
 
     private ExternalAccessControlManager accessControlManager;
 
+    private String providerKey;
+
     private static final Set<String> STANDARD_KEYS = new HashSet<String>() {{
         add(Repository.QUERY_FULL_TEXT_SEARCH_SUPPORTED);
         add(Repository.QUERY_JOINS);
@@ -248,5 +250,13 @@ public class ExternalRepositoryImpl implements Repository {
 
     public ExternalDataSource getDataSource() {
         return dataSource;
+    }
+
+    public String getProviderKey() {
+        return providerKey;
+    }
+
+    public void setProviderKey(String providerKey) {
+        this.providerKey = providerKey;
     }
 }

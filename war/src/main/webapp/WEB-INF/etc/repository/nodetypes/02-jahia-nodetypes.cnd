@@ -879,6 +879,7 @@ extends = jnt:content
    < 'Text','RichText','DateTimePicker','DatePicker',
      'TextArea','Picker','FileUpload','Checkbox',
      'Color','Category','Choicelist'
+ - j:selectorOptions (STRING) multiple nofulltext
  - j:multiple (BOOLEAN)
  - j:defaultValues (STRING) multiple
  - j:valueConstraints (STRING) multiple nofulltext
@@ -894,8 +895,8 @@ extends = jnt:content
  - j:isQueryOrderable (BOOLEAN) = true
  - j:isFacetable (BOOLEAN)
  - j:isHierarchical (BOOLEAN)
- - j:index (STRING,choicelist) = 'TOKENIZED' nofulltext
-   < 'NO', 'TOKENIZED', 'UNTOKENIZED'
+ - j:index (STRING,choicelist) = 'tokenized' nofulltext
+   < 'no', 'tokenized', 'untokenized'
  - j:scoreboost (DOUBLE) = 1
  - j:analyzer (STRING)
  - j:onConflictAction (STRING,choicelist) = 'LATEST' nofulltext

@@ -223,6 +223,23 @@ public class JahiaCndWriter {
         out.write(PropertyType.nameFromValue(pd.getRequiredType()).toLowerCase());
         out.write(",");
         out.write(SelectorType.nameFromValue(pd.getSelector()).toLowerCase());
+        Map<String, String> selectorOptions = pd.getSelectorOptions();
+        if (!selectorOptions.isEmpty()) {
+            out.write("[");
+            Iterator<String> keys = selectorOptions.keySet().iterator();
+            while (keys.hasNext()) {
+                String key = keys.next();
+                out.write(key);
+                String value = selectorOptions.get(key);
+                if (StringUtils.isNotBlank(value)) {
+                    out.write("='" + value + "'");
+                }
+                if (keys.hasNext()) {
+                    out.write(",");
+                }
+            }
+            out.write("]");
+        }
         out.write(")");
         writeDefaultValues(pd.getDefaultValues());
         out.write(ntd.getPrimaryItemName() != null && ntd.getPrimaryItemName().equals(pd.getName()) ? " primary" : "");
@@ -248,17 +265,8 @@ public class JahiaCndWriter {
             out.write(" onconflict=" + OnConflictAction.nameFromValue(pd.getOnConflict()));
         }
 
-        switch (pd.getIndex()) {
-            case ExtendedPropertyDefinition.INDEXED_NO:
-                out.write(" indexed=no");
-                break;
-            case ExtendedPropertyDefinition.INDEXED_TOKENIZED:
-                // no need to write it as it's the default value
-//                out.write(" indexed=tokenized");
-                break;
-            case ExtendedPropertyDefinition.INDEXED_UNTOKENIZED:
-                out.write(" indexed=untokenized");
-                break;
+        if (pd.getIndex() != IndexType.TOKENIZED) {
+            out.write(" indexed=" + IndexType.nameFromValue(pd.getIndex()));
         }
 
         if (pd.getScoreboost() != 1.) {

@@ -72,14 +72,14 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
 
     private boolean multiple;
 
-    public static final int INDEXED_NO = 0;
-    public static final int INDEXED_TOKENIZED = 1;
-    public static final int INDEXED_UNTOKENIZED = 2;
+    public static final int INDEXED_NO = IndexType.NO;
+    public static final int INDEXED_TOKENIZED = IndexType.TOKENIZED;
+    public static final int INDEXED_UNTOKENIZED = IndexType.UNTOKENIZED;
     public static final int STORE_YES = 0;
     public static final int STORE_NO = 1;
     public static final int STORE_COMPRESS = 2;
 
-    private int index = INDEXED_TOKENIZED;
+    private int index = IndexType.TOKENIZED;
     private double scoreboost = 1.;
     private String analyzer;
     

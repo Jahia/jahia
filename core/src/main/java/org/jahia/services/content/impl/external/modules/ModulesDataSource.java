@@ -67,6 +67,7 @@ import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.version.OnParentVersionAction;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Data source provider that is mapped to the /modules filesystem folder with deployed Jahia modules.
@@ -283,6 +284,18 @@ public class ModulesDataSource extends VFSDataSource {
         properties.put("j:onParentVersion", new String[]{OnParentVersionAction.nameFromValue(propertyDefinition.getOnParentVersion())});
         properties.put("j:protected", new String[]{String.valueOf(propertyDefinition.isProtected())});
         properties.put("j:requiredType", new String[]{PropertyType.nameFromValue(propertyDefinition.getRequiredType())});
+        properties.put("j:selectorType", new String[]{SelectorType.nameFromValue(propertyDefinition.getSelector())});
+        Map<String, String> selectorOptions = propertyDefinition.getSelectorOptions();
+        List<String> selectorOptionsList = new ArrayList<String>();
+        for (String key : selectorOptions.keySet()) {
+            String option = key;
+            String value = selectorOptions.get(key);
+            if (StringUtils.isNotBlank(value)) {
+                option += "='" + value + "'";
+            }
+            selectorOptionsList.add(option);
+        }
+        properties.put("j:selectorOptions", selectorOptionsList.toArray(new String[selectorOptionsList.size()]));
         String[] valueConstraints = propertyDefinition.getValueConstraints();
         if (valueConstraints != null && valueConstraints.length > 0) {
             properties.put("j:valueConstraints", valueConstraints);
@@ -310,7 +323,7 @@ public class ModulesDataSource extends VFSDataSource {
         properties.put("j:isHierarchical", new String[]{String.valueOf(propertyDefinition.isHierarchical())});
         properties.put("j:isInternationalized", new String[]{String.valueOf(propertyDefinition.isInternationalized())});
         properties.put("j:isHidden", new String[]{String.valueOf(propertyDefinition.isHidden())});
-        properties.put("j:index", new String[]{String.valueOf(propertyDefinition.getIndex())});
+        properties.put("j:index", new String[]{IndexType.nameFromValue(propertyDefinition.getIndex())});
         properties.put("j:scoreboost", new String[]{String.valueOf(propertyDefinition.getScoreboost())});
         String analyzer = propertyDefinition.getAnalyzer();
         if (analyzer != null) {
@@ -709,6 +722,25 @@ public class ModulesDataSource extends VFSDataSource {
             } else {
                 propertyDefinition.setProtected(false);
             }
+            values = properties.get("j:selectorType");
+            int selectorType = 0;
+            if (values != null && values.length > 0) {
+                selectorType = SelectorType.valueFromName(values[0]);
+            }
+            propertyDefinition.setSelector(selectorType);
+            values = properties.get("j:selectorOptions");
+            ConcurrentHashMap<String, String> selectorOptions = new ConcurrentHashMap<String, String>();
+            if (values != null) {
+                for (String option : values) {
+                    String[] keyValue = option.split("=");
+                    if (keyValue.length > 1) {
+                        selectorOptions.put(keyValue[0].trim(), StringUtils.strip(keyValue[1].trim(), "'"));
+                    } else {
+                        selectorOptions.put(keyValue[0].trim(), "");
+                    }
+                }
+            }
+            propertyDefinition.setSelectorOptions(selectorOptions);
             values = properties.get("j:requiredType");
             int requiredType = 0;
             if (values != null && values.length > 0) {
@@ -781,9 +813,9 @@ public class ModulesDataSource extends VFSDataSource {
             }
             values = properties.get("j:index");
             if (values != null && values.length > 0) {
-                propertyDefinition.setIndex(Integer.parseInt(values[0]));
+                propertyDefinition.setIndex(IndexType.valueFromName(values[0]));
             } else {
-                propertyDefinition.setIndex(ExtendedPropertyDefinition.INDEXED_TOKENIZED);
+                propertyDefinition.setIndex(IndexType.TOKENIZED);
             }
             values = properties.get("j:scoreboost");
             if (values != null && values.length > 0) {
@@ -828,9 +860,9 @@ public class ModulesDataSource extends VFSDataSource {
                     paramList.add(param);
                 }
             }
-            return new DynamicValueImpl(value, paramList, requiredType, true, propertyDefinition);
+            return new DynamicValueImpl(value, paramList, requiredType, false, propertyDefinition);
         } else {
-            return new ValueImpl(value, requiredType, true);
+            return new ValueImpl(value, requiredType, false);
         }
     }
 

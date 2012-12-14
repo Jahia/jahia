@@ -1,6 +1,7 @@
 <%@ include file="../../common/declarations.jspf" %>
 <jsp:useBean id="colMap" class="java.util.LinkedHashMap"/>
 <template:addResources type="css" resources="960.css" />
+<template:addResources type="javascript" resources="jquery.min.js"/>
 
 <jcr:nodeProperty node="${currentNode}" name="column" var="column"/>
 <c:choose>
@@ -77,7 +78,8 @@
 </c:if>
 <c:forEach items="${colMap}" var="col" varStatus="count">
     <!--start grid_${col.value}-->
-    <div class='grid_${col.value}'>
+    <div class='grid_${col.value} grid_${fn:replace(currentNode.identifier,'-','_')}'
+                     id='grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}'>
         <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
         <div style="border: 1px solid #999977; padding: 10px">
             <span>Size : ${col.value}</span>

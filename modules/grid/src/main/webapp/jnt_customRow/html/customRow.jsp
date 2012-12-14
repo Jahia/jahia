@@ -26,7 +26,10 @@
 </c:forTokens>
 
 <c:if test="${!empty currentNode.properties.divID}"> <div id="${currentNode.properties.divID.string}"></c:if>
-<div class="container_16" id="container_16_${fn:replace(currentNode.identifier,'-','_')}">
+   <div <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
+                    style="background-color: #FFFFFF;background-image: url('${url.currentModule}/img/960_16_10_10.png');background-repeat: repeat-y;"
+                </c:if>
+    class="container_16" id="container_16_${fn:replace(currentNode.identifier,'-','_')}">
     <c:if test="${!empty currentNode.properties.divClass}">
     <div class="${currentNode.properties.divClass.string}"></c:if>
 
@@ -56,7 +59,7 @@
             <div class='grid_${column} ${colCss} grid_${fn:replace(currentNode.identifier,'-','_')}'
                  id='grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}' style="position:relative;">
                 <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
-                <div style="border: 1px solid #999977; padding: 10px">
+                <div style="border: 1px dashed #999; padding: 5px">
                     <span>Size : ${column}</span>
                     </c:if>
                     <c:if test="${nbNames == nbAreas}">
@@ -148,9 +151,9 @@
                 </c:forEach>
 
 
-        $('#grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}').append($('<div class="grid_${fn:replace(currentNode.identifier,'-','_')}_resizer" style="width: 16px;  background-color: black; height:32px; position: absolute; left: ' + (cont.width()) + 'px; top: ' + ((cont.height() / 2)-16) + 'px;">' +
-                '<img onclick="postRow${fn:replace(currentNode.identifier,'-','_')}(\'${left}\')" src="/icons/enableArea.png"/>' +
-                '<img onclick="postRow${fn:replace(currentNode.identifier,'-','_')}(\'${right}\')" src="/icons/disableArea.png""/>' +
+        $('#grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}').append($('<div class="grid_${fn:replace(currentNode.identifier,'-','_')}_resizer" style="cursor:pointer; width: 16px; height:32px; position: absolute; left: ' + (cont.width()) + 'px; top: ' + ((cont.height() / 2)-16) + 'px;">' +
+                '<img onclick="postRow${fn:replace(currentNode.identifier,'-','_')}(\'${left}\')" src="${url.currentModule}/img/navigate_left.png"/>' +
+                '<img onclick="postRow${fn:replace(currentNode.identifier,'-','_')}(\'${right}\')" src="${url.currentModule}/img/navigate_right.png""/>' +
                 '</div>'))
         </c:if>
         </c:forEach>

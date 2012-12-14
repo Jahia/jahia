@@ -13,6 +13,7 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
@@ -59,7 +60,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             }
         });
 
-        JahiaContentManagementService.App.getInstance().getFieldInitializerValues("jnt:childNodeDefinition", "j:defaultPrimaryType", engine.getNode().getPath(), new HashMap<String, List<GWTJahiaNodePropertyValue>>(),new BaseAsyncCallback<GWTJahiaFieldInitializer>(){
+        JahiaContentManagementService.App.getInstance().getFieldInitializerValues("jnt:childNodeDefinition", "j:defaultPrimaryType", engine.getNode().getPath(), new HashMap<String, List<GWTJahiaNodePropertyValue>>(), new BaseAsyncCallback<GWTJahiaFieldInitializer>() {
             @Override
             public void onSuccess(GWTJahiaFieldInitializer result) {
                 initializerMap.put("jnt:childNodeDefinition.j:defaultPrimaryType", result);
@@ -96,10 +97,10 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                     String cellValue = "";
                     if (node.get(property) != null) {
                         if (node.get(property) instanceof ArrayList) {
-                            for (String s :(ArrayList<String>) node.get(property)) {
-                                cellValue = cellValue.equals("")?s : cellValue + "," + s;
+                            for (String s : (ArrayList<String>) node.get(property)) {
+                                cellValue = cellValue.equals("") ? s : cellValue + "," + s;
                             }
-                        }  else {
+                        } else {
                             cellValue = node.get(property);
                         }
                         if (cellValue.startsWith("__")) {
@@ -126,7 +127,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         tab.add(grid, new RowData(1,200, new Margins(2)));
 
         ToolBar toolBar = new ToolBar();
-        Button add = new Button("Add");
+        Button add = new Button(Messages.get("label.add", "Add"));
         add.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -147,6 +148,25 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             }
         });
         toolBar.add(add);
+        Button remove = new Button(Messages.get("label.remove", "Remove"));
+        remove.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (propertiesEditor != null) {
+                    tab.remove(propertiesEditor);
+                    propertiesEditor = null;
+                    tab.layout();
+                }
+                grid.getSelectionModel().setFiresEvents(false);
+                List<GWTJahiaNode> selection = grid.getSelectionModel().getSelection();
+                for (GWTJahiaNode node : selection) {
+                    engine.getNode().remove(node);
+                    store.remove(node);
+                }
+                grid.getSelectionModel().setFiresEvents(true);
+            }
+        });
+        toolBar.add(remove);
         tab.add(toolBar, new RowData(1,-1, new Margins(2)));
 
         grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
@@ -157,7 +177,10 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                 if (propertiesEditor != null) {
                     tab.remove(propertiesEditor);
                 }
-                if (propertiesEditors.containsKey(item)) {
+                if (item == null) {
+                    propertiesEditor = null;
+                    tab.layout();
+                } else if (propertiesEditors.containsKey(item)) {
                     propertiesEditor = propertiesEditors.get(item);
                     tab.add(propertiesEditor, new RowData(1,1,new Margins(2)));
                     tab.layout();

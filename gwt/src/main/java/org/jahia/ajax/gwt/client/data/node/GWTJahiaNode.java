@@ -146,6 +146,8 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     private boolean wcagCompliance;
     private List<String> invalidLanguages;
 
+    protected Set<String> removedChildrenPaths = new HashSet<String>();
+
     public GWTJahiaNode() {
     }
 
@@ -635,5 +637,36 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public void setInvalidLanguages(List<String> invalidLanguages) {
         this.invalidLanguages = invalidLanguages;
+    }
+
+    public List<String> getRemovedChildrenPaths() {
+        return new ArrayList<String>(removedChildrenPaths);
+    }
+
+    public void clearRemovedChildrenPaths() {
+        removedChildrenPaths = new HashSet<String>();
+    }
+
+    @Override
+    public void remove(int index) {
+        String path = ((GWTJahiaNode) children.get(index)).getPath();
+        removedChildrenPaths.add(path);
+        super.remove(index);
+    }
+
+    @Override
+    public void remove(ModelData child) {
+        if (children.contains(child)) {
+            removedChildrenPaths.add(((GWTJahiaNode)child).getPath());
+        }
+        super.remove(child);
+    }
+
+    @Override
+    public void removeAll() {
+        for (ModelData child : children) {
+            removedChildrenPaths.add(((GWTJahiaNode)child).getPath());
+        }
+        super.removeAll();
     }
 }

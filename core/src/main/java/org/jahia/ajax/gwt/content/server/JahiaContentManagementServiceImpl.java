@@ -739,6 +739,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         if (node.get(GWTJahiaNode.INCLUDE_CHILDREN) != null) {
             try {
                 JCRNodeWrapper nodeWrapper = jcrSessionWrapper.getNodeByUUID(node.getUUID());
+                List<String> removedChildrenPaths = node.getRemovedChildrenPaths();
+                if (!removedChildrenPaths.isEmpty()) {
+                    deletePaths(removedChildrenPaths);
+                    node.clearRemovedChildrenPaths();
+                }
                 for (ModelData modelData : node.getChildren()) {
                     GWTJahiaNode subNode = ((GWTJahiaNode)modelData);
                     if (nodeWrapper.hasNode(subNode.getName())) {

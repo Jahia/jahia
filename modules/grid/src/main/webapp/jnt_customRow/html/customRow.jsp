@@ -123,6 +123,7 @@
             <%--$(this).height(maxHeight)--%>
         <%--})--%>
 
+        <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
         <c:forEach items="${colMap}" var="col" varStatus="count">
         <c:if test="${not count.last}">
         cont = $('#grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}')
@@ -153,6 +154,7 @@
                 '</div>'))
         </c:if>
         </c:forEach>
+        </c:if>
 
     });
 </script>

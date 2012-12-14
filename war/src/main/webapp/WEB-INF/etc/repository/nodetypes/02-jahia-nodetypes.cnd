@@ -688,13 +688,9 @@ extends = jnt:content
 
 [jnt:content] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata
 
-[jnt:contentList] > jnt:content, jmix:listContent, mix:title, jmix:list, jmix:renderableList
+[jnt:contentList] > jnt:content, jmix:listContent, mix:title, jmix:list, jmix:renderableList, jmix:studioLayout
  orderable
  + * (jmix:droppableContent) = jmix:droppableContent version
-
-[jnt:layoutContentList] > jnt:content, jmix:layoutComponentContent, mix:title, jmix:list, jmix:renderableList, jmix:studioLayout
- orderable
- + * (jmix:layoutComponentContent) = jmix:layoutComponentContent version
 
 [jmix:orderedList] mixin
  itemtype = listOrdering
@@ -883,7 +879,6 @@ extends = jnt:content
    < 'Text','RichText','DateTimePicker','DatePicker',
      'TextArea','Picker','FileUpload','Checkbox',
      'Color','Category','Choicelist'
- - j:selectorOptions (STRING) multiple nofulltext
  - j:multiple (BOOLEAN)
  - j:defaultValues (STRING) multiple
  - j:valueConstraints (STRING) multiple nofulltext
@@ -899,8 +894,8 @@ extends = jnt:content
  - j:isQueryOrderable (BOOLEAN) = true
  - j:isFacetable (BOOLEAN)
  - j:isHierarchical (BOOLEAN)
- - j:index (STRING,choicelist) = 'tokenized' nofulltext
-   < 'no', 'tokenized', 'untokenized'
+ - j:index (STRING,choicelist) = 'TOKENIZED' nofulltext
+   < 'NO', 'TOKENIZED', 'UNTOKENIZED'
  - j:scoreboost (DOUBLE) = 1
  - j:analyzer (STRING)
  - j:onConflictAction (STRING,choicelist) = 'LATEST' nofulltext
@@ -922,13 +917,13 @@ extends = jnt:content
  - j:onParentVersion (STRING,choicelist) = 'VERSION' nofulltext
    < 'COPY', 'VERSION', 'INITIALIZE', 'COMPUTE', 'IGNORE', 'ABORT'
  - j:protected (BOOLEAN)
- - j:requiredPrimaryTypes (NAME) = 'nt:base' mandatory multiple
- - j:defaultPrimaryType (NAME)
+ - j:requiredPrimaryTypes (NAME, choicelist[nodetypes=ALL,resourceBundle]) = 'nt:base' mandatory multiple
+ - j:defaultPrimaryType (NAME, choicelist[nodetypes=ALL,resourceBundle])
 
 [jnt:structuredChildNodeDefinition] > jnt:childNodeDefinition
 
 [jnt:unstructuredChildNodeDefinition] > jnt:childNodeDefinition
- - j:requiredPrimaryTypes (NAME) = 'nt:base' mandatory multiple hidden
+ - j:requiredPrimaryTypes (NAME,choicelist[nodetypes=ALL,resourceBundle]) = 'nt:base' mandatory multiple hidden
 
 [jnt:resourceBundleFolder] > jnt:folder
 

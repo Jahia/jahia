@@ -1,6 +1,7 @@
 package org.jahia.ajax.gwt.client.widget.definitionsmodeler;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -9,9 +10,11 @@ import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.*;
@@ -39,7 +42,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
     private String type;
     private transient List<String> columnsKeys;
     private transient GWTJahiaNodeType nodeType;
-
+    private transient Map<String, GWTJahiaFieldInitializer> initializerMap = new HashMap<String, GWTJahiaFieldInitializer>();
     public ChildItemsTabItem() {
     }
 
@@ -53,6 +56,17 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         JahiaContentManagementService.App.getInstance().getNodeType(type, new BaseAsyncCallback<GWTJahiaNodeType>() {
             public void onSuccess(GWTJahiaNodeType result) {
                 nodeType = result;
+            }
+        });
+
+        JahiaContentManagementService.App.getInstance().getFieldInitializerValues("jnt:childNodeDefinition", "j:defaultPrimaryType", engine.getNode().getPath(), new HashMap<String, List<GWTJahiaNodePropertyValue>>(),new BaseAsyncCallback<GWTJahiaFieldInitializer>(){
+            @Override
+            public void onSuccess(GWTJahiaFieldInitializer result) {
+                initializerMap.put("jnt:childNodeDefinition.j:defaultPrimaryType", result);
+                initializerMap.put("jnt:childNodeDefinition.j:requiredPrimaryTypes", result);
+                initializerMap.put("jnt:unstructuredChildNodeDefinition.j:requiredPrimaryTypes", result);
+                initializerMap.put("jnt:childNodeDefinition.j:requiredPrimaryTypes", result);
+                initializerMap.put("jnt:unstructuredChildNodeDefinition.j:requiredPrimaryTypes", result);
             }
         });
 
@@ -76,6 +90,25 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             }
             colConfig.setHeader(Messages.get(config[2],config[2]));
             columns.add(colConfig);
+            colConfig.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
+                @Override
+                public Object render(GWTJahiaNode node, String property, ColumnData config, int rowIndex, int colIndex, ListStore store, Grid grid) {
+                    String cellValue = "";
+                    if (node.get(property) != null) {
+                        if (node.get(property) instanceof ArrayList) {
+                            for (String s :(ArrayList<String>) node.get(property)) {
+                                cellValue = cellValue.equals("")?s : cellValue + "," + s;
+                            }
+                        }  else {
+                            cellValue = node.get(property);
+                        }
+                        if (cellValue.startsWith("__")) {
+                            cellValue = "*";
+                        }
+                    }
+                    return cellValue;
+                }
+            });
         }
 
         JahiaContentManagementService.App.getInstance().lsLoad(engine.getNode(), Arrays.asList(type),null,
@@ -176,6 +209,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
 
     private void displayProperties(final GWTJahiaNode item, List<GWTJahiaNodeType> nodeTypes, Map<String, GWTJahiaNodeProperty> properties) {
         propertiesEditor = new PropertiesEditor(nodeTypes, properties, null);
+        propertiesEditor.setInitializersValues(initializerMap);
         propertiesEditors.put(item, propertiesEditor);
         propertiesEditor.renderNewFormPanel();
         for (final String key : columnsKeys) {

@@ -688,9 +688,13 @@ extends = jnt:content
 
 [jnt:content] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata
 
-[jnt:contentList] > jnt:content, jmix:listContent, mix:title, jmix:list, jmix:renderableList, jmix:studioLayout
+[jnt:contentList] > jnt:content, jmix:listContent, mix:title, jmix:list, jmix:renderableList
  orderable
  + * (jmix:droppableContent) = jmix:droppableContent version
+
+[jnt:layoutContentList] > jnt:content, jmix:layoutComponentContent, mix:title, jmix:list, jmix:renderableList, jmix:studioLayout
+ orderable
+ + * (jmix:layoutComponentContent) = jmix:layoutComponentContent version
 
 [jmix:orderedList] mixin
  itemtype = listOrdering

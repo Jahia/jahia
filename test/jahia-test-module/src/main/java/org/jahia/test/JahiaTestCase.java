@@ -41,6 +41,8 @@
 package org.jahia.test;
 
 import org.apache.log4j.Logger;
+import org.jahia.bin.Jahia;
+import org.jahia.params.ProcessingContext;
 
 /**
  * Super class for Jahia tests
@@ -56,11 +58,14 @@ public class JahiaTestCase {
     private final static String baseUrl = "http://localhost:" + PORT;
 
     protected String getBaseServerURL() {
-        logger.info("Base URL for tests is: " + baseUrl);
-        return baseUrl;
+        ProcessingContext ctx = Jahia.getThreadParamBean();
+        String url = ctx != null ? ctx.getScheme() + "://" + ctx.getServerName() + ":" + ctx.getServerPort() : baseUrl;
+        logger.info("Base URL for tests is: " + url);
+        return url;
     }
 
     protected String getBaseServerURLPort() {
-        return PORT;
+        ProcessingContext ctx = Jahia.getThreadParamBean();
+        return ctx !=  null ? String.valueOf(ctx.getServerPort()) : PORT;
     }
 }

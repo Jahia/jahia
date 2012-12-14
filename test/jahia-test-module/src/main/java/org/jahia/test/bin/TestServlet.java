@@ -49,6 +49,7 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.SurefireJUnitXMLResultFormatter;
+import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.junit.internal.requests.FilterRequest;
@@ -58,27 +59,22 @@ import org.junit.runner.Request;
 import org.junit.runner.Result;
 import org.junit.runner.manipulation.Filter;
 import org.springframework.web.context.ServletContextAware;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import java.io.*;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Pattern;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
@@ -87,8 +83,7 @@ import junit.framework.TestSuite;
  * Date: Feb 11, 2009
  * Time: 4:07:40 PM
  */
-@SuppressWarnings("serial")
-public class TestServlet extends HttpServlet implements Controller, ServletContextAware {
+public class TestServlet implements Controller, ServletContextAware {
     
     private transient static Logger logger = LoggerFactory.getLogger(TestServlet.class);
     
@@ -117,6 +112,8 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
             JahiaUser admin = JahiaAdminUser.getAdminUser(0);
             JCRSessionFactory.getInstance().setCurrentUser(admin);
             ctx.setTheUser(admin);
+            
+            Jahia.setThreadParamBean(ctx);
         } catch (JahiaException e) {
             logger.error("Error getting user", e);
         }
@@ -131,8 +128,8 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
                     JUnitCore junitcore = new JUnitCore();
                     SurefireJUnitXMLResultFormatter xmlResultFormatter = new SurefireJUnitXMLResultFormatter(httpServletResponse.getOutputStream());
                     junitcore.addListener(xmlResultFormatter);
-                    Class testClass = Class.forName(className);
-                    List<Class> classes = getTestClasses(testClass, new ArrayList<Class>());
+                    Class<?> testClass = Class.forName(className);
+                    List<Class<?>> classes = getTestClasses(testClass, new ArrayList<Class<?>>());
                     if (classes.isEmpty()) {
                         Description description = Description.createSuiteDescription(testClass);
                         xmlResultFormatter.testRunStarted(description);
@@ -184,6 +181,7 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
                 }
             }
         } finally {
+            Jahia.setThreadParamBean(null);
             try {
                 ctx.setUserGuest();
             } catch (JahiaException e) {
@@ -193,7 +191,7 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
 
     }
     
-    private List<Class> getTestClasses(Class testClass, List<Class> classes) {
+    private List<Class<?>> getTestClasses(Class<?> testClass, List<Class<?>> classes) {
         Method suiteMethod = null;
         try {
             // check if there is a suite method
@@ -219,12 +217,12 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
         return classes;
     }
     
-    private List<Class> getTestClasses(Test test, List<Class> classes) {
+    private List<Class<?>> getTestClasses(Test test, List<Class<?>> classes) {
         if (test instanceof TestSuite) {
             // if there is a suite method available, then try
             // to extract the suite from it. If there is an error
             // here it will be caught below and reported.
-            Set<Class> tempClasses = new HashSet<Class>();
+            Set<Class<?>> tempClasses = new HashSet<Class<?>>();
             for (Enumeration<Test> tests = ((TestSuite)test).tests(); tests.hasMoreElements(); ) {
                 Test currentTest = tests.nextElement();
                 if (currentTest instanceof TestSuite || !tempClasses.contains(currentTest.getClass())) {
@@ -259,42 +257,6 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
         return ignoreTests;
     }
 
-    private boolean isMethodAnnotationPresent(Class<?> checkedClass, Class<? extends Annotation> annotationClass) {
-        boolean isPresent = false;
-        for (Method method : checkedClass.getMethods()) {
-            if (method.isAnnotationPresent(annotationClass)) {
-                isPresent = true;
-                break;
-            }
-        }
-        return isPresent;
-    }
-    
-    private Class<?> getTestClass(String line) {
-        Class<?> clazz = null;
-        if (StringUtils.isNotBlank(line) && !line.trim().startsWith("#") && !line.trim().startsWith("//")) {
-            String clazzName = null;
-            if (line.contains("/")) {
-                // assume that it is a path for .class file
-                clazzName = line.trim();
-                clazzName = clazzName.replace('/','.').substring(0, clazzName.lastIndexOf('.'));
-            } else {
-                // assume it is fully qualified class name
-                clazzName = line.trim();
-            }
-            try {
-                Class<?> c = Class.forName(clazzName);
-                if (TestCase.class.isAssignableFrom(c) || isMethodAnnotationPresent(c, org.junit.Test.class)) {
-                    clazz = c;
-                }
-            } catch (ClassNotFoundException e) {
-                logger.error("Error finding class for name " + line, e);
-            }
-        }
-        
-        return clazz;
-    }
-
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         if (request.getMethod().equalsIgnoreCase("get")) {
             handleGet(request, response);
@@ -306,36 +268,5 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
 
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
-    }
-    
-    private List<String> readTests(String resource, boolean verify) {
-        InputStream is = getClass().getClassLoader().getResourceAsStream(resource);
-        List<String> tests = Collections.emptyList();
-        try {
-	        if (is != null) {
-	        	tests = new LinkedList<String>();
-	            @SuppressWarnings("unchecked")
-                List<String> lines = IOUtils.readLines(is);
-	            for (String line : lines) {
-	            	if (verify) {
-	            		// check the class
-		                Class<?> c = getTestClass(line);
-		                if (c != null) {
-		                    tests.add(c.getName());
-		                }
-	            	} else if (StringUtils.isNotBlank(line) && !line.trim().startsWith("#") && !line.trim().startsWith("//")){
-	            		// just add an non-empty line
-	            		tests.add(line);
-	            	}
-	            }
-	        }
-        }
-        catch (Exception e) {
-        	logger.warn("Unable to read class names from the resource " + resource);
-        } finally {
-            IOUtils.closeQuietly(is);
-        }
-        
-        return tests;
     }
 }

@@ -75,33 +75,35 @@ public class BoundModule extends SimpleModule {
 
         final HorizontalPanel leftWidgetPanel = new HorizontalPanel();
 
-        head = new Header() {
-            @Override
-            protected void onRender(Element target, int index) {
-                super.onRender(target, index);
-                adopt(leftWidgetPanel);
-                leftWidgetPanel.addStyleName("x-panel-toolbar");
-                leftWidgetPanel.setLayoutOnChange(true);
-                leftWidgetPanel.setStyleAttribute("float", "left");
-                leftWidgetPanel.getAriaSupport().setPresentation(true);
+        if (editable) {
+            head = new Header() {
+                @Override
+                protected void onRender(Element target, int index) {
+                    super.onRender(target, index);
+                    adopt(leftWidgetPanel);
+                    leftWidgetPanel.addStyleName("x-panel-toolbar");
+                    leftWidgetPanel.setLayoutOnChange(true);
+                    leftWidgetPanel.setStyleAttribute("float", "left");
+                    leftWidgetPanel.getAriaSupport().setPresentation(true);
 
-                leftWidgetPanel.render(getElement());
-                adopt(leftWidgetPanel);
-            }
+                    leftWidgetPanel.render(getElement());
+                    adopt(leftWidgetPanel);
+                }
 
-            @Override
-            protected void doAttachChildren() {
-                super.doAttachChildren();
-                ComponentHelper.doAttach(leftWidgetPanel);
-            }
+                @Override
+                protected void doAttachChildren() {
+                    super.doAttachChildren();
+                    ComponentHelper.doAttach(leftWidgetPanel);
+                }
 
-            @Override
-            protected void doDetachChildren() {
-                super.doDetachChildren();
-                ComponentHelper.doDetach(leftWidgetPanel);
-            }
+                @Override
+                protected void doDetachChildren() {
+                    super.doDetachChildren();
+                    ComponentHelper.doDetach(leftWidgetPanel);
+                }
 
-        };
+            };
+        }
 
         remove(html);
         add(head);

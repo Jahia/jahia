@@ -51,6 +51,7 @@ import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.NodeList;
@@ -720,7 +721,7 @@ public class MainModule extends Module {
 
         public void onBrowserEvent(Event event) {
             if (event.getTypeInt() == Event.ONLOAD) {
-                IFrameElement iframe = IFrameElement.as(frame.getElement());
+                final IFrameElement iframe = IFrameElement.as(frame.getElement());
                 Document contentDocument = iframe.getContentDocument();
                 Element body = (Element) contentDocument.getElementsByTagName("body").getItem(0);
 
@@ -746,6 +747,12 @@ public class MainModule extends Module {
                             GWT.log("event:" + event.getTypeInt());
                             scrollContainer.onBrowserEvent(event);
                         }
+                    }
+                });
+                Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                        onGWTFrameReady(iframe);
                     }
                 });
             }
@@ -786,5 +793,14 @@ public class MainModule extends Module {
            return iFrameElement.contentWindow.location.href;
          }-*/;
 
+        public final native String onGWTFrameReady(IFrameElement iFrameElement) /*-{
+            var onFrameLoaded = iFrameElement.contentWindow.onGWTFrameLoaded;
+            for (var i = 0; i < onFrameLoaded.length; i++) {
+                onFrameLoaded[i]()
+            }
+            iFrameElement.contentWindow.onGWTFrameLoaded = []
+         }-*/;
+
     }
+
 }

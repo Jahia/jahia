@@ -182,6 +182,10 @@ public class GWTInitializer {
         // add jahia parameter dictionary
         buf.append("<script type=\"text/javascript\">\n");
         buf.append(getJahiaGWTConfig(params));
+        buf.append("        var onGWTFrameLoaded = [];\n");
+        buf.append("        function onGWTFrameLoad(fun) {\n");
+        buf.append("            onGWTFrameLoaded[onGWTFrameLoaded.length] = fun;\n");
+        buf.append("        }\n");
         buf.append("\n</script>\n");
         
         addJavaScript(buf, request);

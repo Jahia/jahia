@@ -56,10 +56,9 @@
                 </c:forTokens>
             </c:if>
             <!--start grid_${column}-->
-            <div class='grid_${column} ${colCss} grid_${fn:replace(currentNode.identifier,'-','_')}'
-                 id='grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}' style="position:relative;">
+            <div class='grid_${column} ${colCss}'>
                 <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
-                <div style="border: 1px dashed #999; padding: 5px">
+                <div style="border: 1px dashed #999; padding: 5px; position:relative;" class="grid_${fn:replace(currentNode.identifier,'-','_')}" id="grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}" >
                     <span>Size : ${column}</span>
                     </c:if>
                     <c:if test="${nbNames == nbAreas}">
@@ -101,32 +100,26 @@
         );
     }
 
-    $(document).ready(function () {
-        <%--maxHeight = 0;--%>
-        <%--$('.grid_${fn:replace(currentNode.identifier,'-','_')}').each(function () {--%>
-            <%--totalHeight = 0;--%>
-            <%--$('#' + $(this).attr('id') + ' .studiolayoutmodearea').each(function () {--%>
-                <%--totalHeight += $(this).height();--%>
-            <%--})--%>
-            <%--maxHeight = totalHeight > maxHeight ? totalHeight : maxHeight--%>
-        <%--})--%>
+   onGWTFrameLoad(function () {
+       <%--<c:forEach items="${colMap}" var="col" varStatus="count">--%>
+       <%--if ($("#grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count} > div").size() == 1) {--%>
+           <%--$("#grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}").append($('<div class="${renderContext.editModeConfigName}area">' +--%>
+                       <%--'<div class="${renderContext.editModeConfigName}areaTemplate">'+--%>
+                           <%--'<span>Empty content : ${currentNode.name}</span></div></div>'));--%>
+       <%--}--%>
+       <%--</c:forEach>--%>
 
-        <%--$('.grid_${fn:replace(currentNode.identifier,'-','_')}').each(function () {--%>
-            <%--num = $('#' + $(this).attr('id') + ' .studiolayoutmodearea').size();--%>
-            <%--$('#' + $(this).attr('id') + ' .studiolayoutmodearea').each(function () {--%>
-                <%--$(this).height(maxHeight / num);--%>
-            <%--})--%>
-        <%--});--%>
-
-        <%--maxHeight = 0;--%>
-        <%--$('.grid_${fn:replace(currentNode.identifier,'-','_')} > div').each(function () {--%>
-            <%--maxHeight = $(this).height() > maxHeight ? $(this).height() : maxHeight--%>
-        <%--})--%>
-        <%--$('.grid_${fn:replace(currentNode.identifier,'-','_')} > div').each(function () {--%>
-            <%--$(this).height(maxHeight)--%>
-        <%--})--%>
+        maxHeight = 0;
+        $('.grid_${fn:replace(currentNode.identifier,'-','_')}').each(function () {
+            maxHeight = $(this).height() > maxHeight ? $(this).height() : maxHeight
+        })
+        $('.grid_${fn:replace(currentNode.identifier,'-','_')}').each(function () {
+            $(this).height(maxHeight)
+        })
 
         <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
+
+
         <c:forEach items="${colMap}" var="col" varStatus="count">
         <c:if test="${not count.last}">
         cont = $('#grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}')
@@ -151,13 +144,12 @@
                 </c:forEach>
 
 
-        $('#grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}').append($('<div class="grid_${fn:replace(currentNode.identifier,'-','_')}_resizer" style="cursor:pointer; width: 16px; height:32px; position: absolute; left: ' + (cont.width()) + 'px; top: ' + ((cont.height() / 2)-16) + 'px;">' +
+        $('#grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}').append($('<div class="grid_${fn:replace(currentNode.identifier,'-','_')}_resizer" style="cursor:pointer; width: 16px; height:32px; position: absolute; left: ' + (cont.width()+12) + 'px; top: ' + ((cont.height() / 2)-11) + 'px;">' +
                 '<img onclick="postRow${fn:replace(currentNode.identifier,'-','_')}(\'${left}\')" src="${url.currentModule}/img/navigate_left.png"/>' +
                 '<img onclick="postRow${fn:replace(currentNode.identifier,'-','_')}(\'${right}\')" src="${url.currentModule}/img/navigate_right.png""/>' +
                 '</div>'))
         </c:if>
         </c:forEach>
         </c:if>
-
     });
 </script>

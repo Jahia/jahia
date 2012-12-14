@@ -78,10 +78,10 @@
 </c:if>
 <c:forEach items="${colMap}" var="col" varStatus="count">
     <!--start grid_${col.value}-->
-    <div class='grid_${col.value} grid_${fn:replace(currentNode.identifier,'-','_')}'
+    <div class='grid_${col.value}'
                      id='grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}'>
         <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
-        <div style="border: 1px solid #999977; padding: 10px">
+        <div style="border: 1px solid #999977; padding: 10px" class='grid_${fn:replace(currentNode.identifier,'-','_')}'>
             <span>Size : ${col.value}</span>
             </c:if>
         <template:area path="${currentNode.name}-${col.key}" areaAsSubNode="true"/>
@@ -97,3 +97,16 @@
 </c:forEach>
 <div class='clear'></div>
 </div>
+
+
+<script type="text/javascript">
+   onGWTFrameLoad(function () {
+       maxHeight = 0;
+       $('.grid_${fn:replace(currentNode.identifier,'-','_')}').each(function () {
+           maxHeight = $(this).height() > maxHeight ? $(this).height() : maxHeight
+       })
+       $('.grid_${fn:replace(currentNode.identifier,'-','_')}').each(function () {
+           $(this).height(maxHeight)
+       })
+    });
+</script>

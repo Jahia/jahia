@@ -43,6 +43,7 @@ package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;

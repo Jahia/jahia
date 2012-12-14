@@ -75,6 +75,9 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
+        logger.info("== Starting Jahia Extender ============================================================== ");
+        long startTime = System.currentTimeMillis();
+
         parentWebApplicationContext = (WebApplicationContext) SpringContextSingleton.getInstance().getContext();
         renderService = (RenderService) parentWebApplicationContext.getBean("RenderService");
         jcrStoreService = (JCRStoreService) parentWebApplicationContext.getBean("JCRStoreService");
@@ -140,14 +143,21 @@ public class Activator implements BundleActivator {
             extensionObservers.put(new BundleURLScanner("/", "*." + scriptExtension, true), scriptBundleObserver);
         }
 
-        setupBundleListener(context);
-
         // now let's register artifact transformer to legacy Jahia module
         serviceRegistrations.add(context.registerService(
             new String[] {ArtifactUrlTransformer.class.getName(), ArtifactListener.class.getName()},
             new JahiaLegacyModuleTransformer(),
             new Hashtable()
         ));
+
+        setupBundleListener(context);
+
+        for (Bundle bundle : context.getBundles()) {
+            parseBundle(bundle);
+        }
+
+        long totalTime = System.currentTimeMillis() - startTime;
+        logger.info("== Jahia Extender started in "+totalTime+"ms ============================================================== ");
 
     }
 
@@ -159,7 +169,7 @@ public class Activator implements BundleActivator {
                 if (bundle == null || bundle.getHeaders().get("module-type") == null) {
                     return;
                 }
-
+                logger.debug("Received event " + bundleEvent.getType() + " for bundle " + bundleEvent.getBundle().getSymbolicName() + " v" + bundleEvent.getBundle().getVersion());
                 try {
                     switch (bundleEvent.getType()) {
                         case BundleEvent.INSTALLED:
@@ -179,7 +189,7 @@ public class Activator implements BundleActivator {
                             stopping(bundle);
                             break;
                         case BundleEvent.UNRESOLVED:
-                            unnresolve(bundle);
+                            unresolve(bundle);
                             break;
                         case BundleEvent.UNINSTALLED:
                             uninstall(bundle);
@@ -192,17 +202,18 @@ public class Activator implements BundleActivator {
 
         }
         );
-        for (Bundle bundle : context.getBundles()) {
-            parseBundle(bundle);
-        }
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
+
+        logger.info("== Stopping Jahia Extender ============================================================== ");
+        long startTime = System.currentTimeMillis();
+
         context.removeBundleListener(bundleListener);
 
         for (Bundle bundle : new HashSet<Bundle>(registeredBundles.keySet())) {
-            unnresolve(bundle);
+            unresolve(bundle);
         }
 
         bundleListener = null;
@@ -216,6 +227,9 @@ public class Activator implements BundleActivator {
         for (ServiceRegistration serviceRegistration : serviceRegistrations) {
             serviceRegistration.unregister();
         }
+
+        long totalTime = System.currentTimeMillis() - startTime;
+        logger.info("== Jahia Extender stopped in "+totalTime+"ms ============================================================== ");
 
     }
 
@@ -345,7 +359,7 @@ public class Activator implements BundleActivator {
     private synchronized void resolve(Bundle bundle) {
     }
 
-    private synchronized void unnresolve(Bundle bundle) {
+    private synchronized void unresolve(Bundle bundle) {
     }
 
     private synchronized void starting(Bundle bundle) {
@@ -355,6 +369,7 @@ public class Activator implements BundleActivator {
                 if (!(jahiaTemplatesPackage instanceof JahiaBundleTemplatesPackage)) {
                     logger.warn("Error, a non OSGi module conflicts with an OSGi module, please fix this for module name :" + bundle.getSymbolicName());
                 } else {
+                    logger.info("Stopping module "+bundle.getSymbolicName() + " v" + bundle.getVersion()+" before activating new version...");
                     ((JahiaBundleTemplatesPackage) jahiaTemplatesPackage).getBundle().stop();
                 }
             } catch (BundleException e) {
@@ -420,7 +435,7 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void stopping(Bundle bundle) {
-        logger.info("--- Stop Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + bundle.getVersion() + " --");
+        logger.info("--- Stopping Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + bundle.getVersion() + " --");
         long startTime = System.currentTimeMillis();
 
         JahiaBundleTemplatesPackage jahiaBundleTemplatesPackage = (JahiaBundleTemplatesPackage) templatePackageRegistry.lookupByFileNameAndVersion(bundle.getSymbolicName(), new ModuleVersion(bundle.getVersion().toString()));

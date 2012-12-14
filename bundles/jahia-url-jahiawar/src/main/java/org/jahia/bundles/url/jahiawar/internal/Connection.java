@@ -303,11 +303,23 @@ public class Connection extends URLConnection {
         }
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
 
-        return BndUtils.createBundle(byteArrayInputStream,
+        InputStream bndResultInputStream = BndUtils.createBundle(byteArrayInputStream,
                 bndProperties,
                 url.toExternalForm(),
                 parser.getOverwriteMode()
         );
+
+        // we copy the stream to memory once again to avoid pipe issues.
+
+        ByteArrayOutputStream bndByteArrayOutputStream = new ByteArrayOutputStream();
+        StreamUtils.copyStream(bndResultInputStream, bndByteArrayOutputStream, false);
+
+        bndResultInputStream.close();
+        byteArrayInputStream.close();
+        byteArrayInputStream = null;
+
+        ByteArrayInputStream resultInputStream = new ByteArrayInputStream(bndByteArrayOutputStream.toByteArray());
+        return resultInputStream;
     }
 
     private void updateExportTracking(String newName, Set<String> exportPackageIncludes, Set<String> allNonEmptyDirectories) {

@@ -29,4 +29,13 @@ public class Handler
         return new Connection( url, config );
     }
 
+    @Override
+    protected void parseURL(URL url, String s, int i, int i1) {
+        super.parseURL(url, s, i, i1);    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    @Override
+    protected String toExternalForm(URL url) {
+        return super.toExternalForm(url);    //To change body of overridden methods use File | Settings | File Templates.
+    }
 }

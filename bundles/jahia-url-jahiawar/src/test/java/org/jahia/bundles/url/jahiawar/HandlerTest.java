@@ -4,6 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +26,7 @@ public class HandlerTest {
      */
     @Test
     public void use()
-            throws IOException {
+            throws IOException, URISyntaxException {
         // System.setProperty( "java.protocol.handler.pkgs", "org.jahia.bundles.url.jahiawar" );
         URL jahiaWarURL = new URL(null, "jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/forum/1.3/forum-1.3.war", new Handler());
         JarInputStream jarInputStream = new JarInputStream(jahiaWarURL.openStream());
@@ -57,6 +59,9 @@ public class HandlerTest {
         }
         dumpManifestEntries(mainAttributes);
         dumpJarEntries(jarInputStream);
+
+        URI firstModuleURI = new URI("jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/forum/1.3/forum-1.3.war");
+        String modulePath = firstModuleURI.getPath();
 
     }
 

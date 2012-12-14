@@ -145,7 +145,7 @@ public final class Messages {
         return get(ResourceBundles.JAHIA_TYPES_RESOURCES, key, locale, defaultValue);
     }
 
-    public static String interpolateResourceBunldeMacro(String input, Locale locale, JahiaTemplatesPackage module) {
+    public static String interpolateResourceBundleMacro(String input, Locale locale, JahiaTemplatesPackage module) {
         if (StringUtils.isEmpty(input)) {
             return input;
         }

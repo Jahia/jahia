@@ -247,8 +247,8 @@ public class JahiaResourceBundle extends ResourceBundle {
     }
     
     public static String interpolateResourceBunldeMacro(String input, Locale locale, String templatePackageName) {
-        return Messages.interpolateResourceBunldeMacro(input, locale, ServicesRegistry.getInstance()
-                .getJahiaTemplateManagerService().getTemplatePackage(templatePackageName));
+        return Messages.interpolateResourceBundleMacro(input, locale,
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(templatePackageName));
     }
 
     /**

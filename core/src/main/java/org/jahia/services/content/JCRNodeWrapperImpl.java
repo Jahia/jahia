@@ -3900,9 +3900,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
             for (String module : site.getInstalledModules()) {
                 try {
-                    return Messages.interpolateResourceBunldeMacro(title,
-                            locale != null ? locale : session.getFallbackLocale(), ServicesRegistry.getInstance()
-                                    .getJahiaTemplateManagerService().getTemplatePackageByFileName(module));
+                    return Messages.interpolateResourceBundleMacro(title,
+                            locale != null ? locale : session.getFallbackLocale(),
+                            ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(
+                                    module));
                 } catch (Exception e) {
                     // ignore
                 }

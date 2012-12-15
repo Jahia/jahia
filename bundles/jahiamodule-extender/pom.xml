@@ -134,6 +134,11 @@
             <artifactId>pax-swissbox-core</artifactId>
             <version>${pax.swissbox.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.ops4j.base</groupId>
+            <artifactId>ops4j-base-io</artifactId>
+            <version>1.4.0</version>
+        </dependency>
 
     </dependencies>
 

@@ -2,6 +2,7 @@ package org.jahia.bundles.extender.jahiamodules;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactListener;
+import org.apache.felix.fileinstall.ArtifactTransformer;
 import org.apache.felix.fileinstall.ArtifactUrlTransformer;
 import org.jahia.bundles.extender.jahiamodules.render.BundleDispatcherServlet;
 import org.jahia.bundles.extender.jahiamodules.render.BundleJSR223ScriptFactory;
@@ -144,10 +145,17 @@ public class Activator implements BundleActivator {
         }
 
         // now let's register artifact transformer to legacy Jahia module
+        /*
         serviceRegistrations.add(context.registerService(
             new String[] {ArtifactUrlTransformer.class.getName(), ArtifactListener.class.getName()},
             new JahiaLegacyModuleTransformer(),
             new Hashtable()
+        ));
+        */
+        serviceRegistrations.add(context.registerService(
+                new String[]{ArtifactTransformer.class.getName(), ArtifactListener.class.getName()},
+                new JahiaLegacyModuleTransformer(),
+                new Hashtable()
         ));
 
         setupBundleListener(context);

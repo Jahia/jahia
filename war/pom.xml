@@ -51,7 +51,6 @@
 
     <properties>
         <singleModuleName>org.jahia.ajax.gwt.module.edit.DevEdit</singleModuleName>
-        <AdminModuleName>org.jahia.ajax.gwt.module.admin.DevAdmin</AdminModuleName>
         <ContentManagerModuleName>org.jahia.ajax.gwt.module.contentmanager.DevContentManager</ContentManagerModuleName>
         <ContentPickerModuleName>org.jahia.ajax.gwt.module.contentpicker.DevContentPicker</ContentPickerModuleName>
         <EditModuleName>org.jahia.ajax.gwt.module.edit.DevEdit</EditModuleName>
@@ -93,7 +92,6 @@
 		<profile>
 			<id>gwt-production</id>
 			<properties>
-				<AdminModuleName>org.jahia.ajax.gwt.module.admin.Admin</AdminModuleName>
 				<ContentManagerModuleName>org.jahia.ajax.gwt.module.contentmanager.ContentManager</ContentManagerModuleName>
 				<ContentPickerName>org.jahia.ajax.gwt.module.contentpicker.ContentPicker</ContentPickerName>
 				<EditModuleName>org.jahia.ajax.gwt.module.edit.Edit</EditModuleName>
@@ -121,7 +119,6 @@
                             <webappDirectory>${project.build.directory}/jahia/gwt</webappDirectory>
                             <skip>${jahia.gwt.skip}</skip>
                             <modules>
-                                <module>${AdminModuleName}</module>
                                 <module>${ContentManagerModuleName}</module>
                                 <module>${ContentPickerModuleName}</module>
                                 <module>${EditModuleName}</module>

@@ -76,11 +76,7 @@ public class ContentPickerEntryPoint extends CommonEntryPoint {
      * On module load
      */
     public void onModuleLoad() {
-        /* todo The following two lines are a hack to get development mode to work on Mac OS X, should be removed once this
-           problem is fixed.
-         */
-        @SuppressWarnings("unused")
-        Layout junk = new AnchorLayout();
+        super.onModuleLoad();
         final RootPanel panel = RootPanel.get("contentpicker");
         if (panel != null) {
             final String jahiaContextPath = DOM.getElementAttribute(panel.getElement(), "jahiaContextPath");

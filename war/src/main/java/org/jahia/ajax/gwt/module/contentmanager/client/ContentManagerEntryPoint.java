@@ -66,11 +66,7 @@ import java.util.List;
 public class ContentManagerEntryPoint extends CommonEntryPoint {
 
     public void onModuleLoad() {
-        /* todo The following two lines are a hack to get development mode to work on Mac OS X, should be removed once this
-           problem is fixed.
-         */
-        @SuppressWarnings("unused")
-        Layout junk = new AnchorLayout();
+        super.onModuleLoad();
         checkSession();
         final RootPanel panel = RootPanel.get("contentmanager");
         if (panel != null) {

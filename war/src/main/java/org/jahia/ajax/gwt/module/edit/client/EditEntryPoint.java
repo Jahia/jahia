@@ -40,12 +40,17 @@
 
 package org.jahia.ajax.gwt.module.edit.client;
 
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
+import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
+import org.jahia.ajax.gwt.client.service.UserManagerService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.WorkInProgress;
 import org.jahia.ajax.gwt.client.widget.edit.EditPanelViewport;
 import org.jahia.ajax.gwt.client.widget.subscription.SubscriptionManager;
 
@@ -57,6 +62,10 @@ import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder;
+import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupSelect;
+
+import java.util.List;
 
 /**
  * Edit mode GWT entry point.
@@ -66,6 +75,9 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public class EditEntryPoint extends CommonEntryPoint {
     public void onModuleLoad() {
+        super.onModuleLoad();
+        WorkInProgress.init();
+        exposeFunctions();
         @SuppressWarnings("unused")
         Layout junk = new AnchorLayout();
         checkSession();
@@ -91,4 +103,67 @@ public class EditEntryPoint extends CommonEntryPoint {
             });
         }
     }
+    private native void exposeFunctions() /*-{
+        $wnd.openUserGroupSelect = function (mode,id,pattern) { @org.jahia.ajax.gwt.module.edit.client.EditEntryPoint::openUserGroupSelect(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(mode,id,pattern) };
+        if (!$wnd.jahia) {
+            $wnd.jahia = new Object();
+        }
+        $wnd.jahia.alert = function (title, message) {@org.jahia.ajax.gwt.module.edit.client.EditEntryPoint::alert(Ljava/lang/String;Ljava/lang/String;)(title, message); };
+
+    }-*/;
+
+    /**
+     * Alert message
+     * @param title
+     * @param message
+     */
+    static void alert(String title, String message) {
+        MessageBox.alert(title != null ? title : "Info", message, null);
+    }
+
+
+    /**
+     * User/group picker
+     * @param mode
+     * @param id
+     * @param pattern
+     */
+    public static void openUserGroupSelect(final String mode, final String id, final String pattern) {
+        int viewMode = UserGroupSelect.VIEW_TABS;
+        if ("users".equals(mode)) viewMode = UserGroupSelect.VIEW_USERS;
+        if ("groups".equals(mode)) viewMode = UserGroupSelect.VIEW_GROUPS;
+
+        new UserGroupSelect(new UserGroupAdder() {
+            public void addUsers(List<GWTJahiaUser> users) {
+                for (GWTJahiaUser user : users) {
+                    UserManagerService.App.getInstance().getFormattedPrincipal(user.getUserKey(), 'u', pattern.split("\\|"), new BaseAsyncCallback<String[]>() {
+                        public void onSuccess(String[] strings) {
+                            add(strings[0], strings[1]);
+                        }
+                    });
+                }
+            }
+
+            public void addGroups(List<GWTJahiaGroup> groups) {
+                for (GWTJahiaGroup group : groups) {
+                    UserManagerService.App.getInstance().getFormattedPrincipal(group.getGroupKey(), 'g', pattern.split("\\|"), new BaseAsyncCallback<String[]>() {
+                        public void onSuccess(String[] strings) {
+                            add(strings[0], strings[1]);
+                        }
+                    });
+                }
+            }
+        }, viewMode, "currentSite");
+    }
+
+    /**
+     * Add option
+     * @param text
+     * @param value
+     */
+    public static native void add(String text, String value) /*-{
+        try {
+            eval('$wnd.addOptions')(text, value);
+        } catch (e) {};
+    }-*/;
 }

@@ -8,7 +8,7 @@
 <br/>
  <c:if test="${empty requestScope['jahia.engines.gwtModuleIncluded']}">
 <internal:gwtGenerateDictionary/>        
-<internal:gwtImport module="org.jahia.ajax.gwt.module.admin.Admin"/>
+<internal:gwtImport module="org.jahia.ajax.gwt.module.edit.Edit"/>
 </c:if>
 </body>
 </html>

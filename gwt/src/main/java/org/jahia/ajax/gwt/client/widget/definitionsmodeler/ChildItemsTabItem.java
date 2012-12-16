@@ -13,6 +13,8 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
@@ -97,11 +99,20 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                     String cellValue = "";
                     if (node.get(property) != null) {
                         if (node.get(property) instanceof ArrayList) {
-                            for (String s : (ArrayList<String>) node.get(property)) {
-                                cellValue = cellValue.equals("") ? s : cellValue + "," + s;
+                            for (Object s : (ArrayList<Object>) node.get(property)) {
+                                if (s instanceof GWTJahiaNodePropertyValue) {
+                                    cellValue = cellValue.equals("") ? ((GWTJahiaNodePropertyValue) s).getString() : cellValue + "," + ((GWTJahiaNodePropertyValue) s).getString();
+                                } else if (s instanceof String) {
+                                    cellValue = cellValue.equals("") ? (String) s : cellValue + "," + s;
+                                }
                             }
                         } else {
-                            cellValue = node.get(property);
+                            Object p = node.get(property);
+                            if (p instanceof GWTJahiaNodePropertyValue) {
+                                cellValue = ((GWTJahiaNodePropertyValue) p).getString();
+                            } else if (p instanceof String) {
+                                cellValue = (String) p;
+                            }
                         }
                         if (cellValue.startsWith("__")) {
                             cellValue = "*";

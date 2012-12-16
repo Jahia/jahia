@@ -47,18 +47,19 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.content.ContentManagerViewPort;
 import org.jahia.ajax.gwt.client.widget.content.ContentManager;
+import org.jahia.ajax.gwt.client.widget.content.ContentPickerViewport;
+import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
- * 
+ *
  *
  * @author rfelden
  * @version 10 juil. 2008 - 16:58:16
@@ -68,8 +69,8 @@ public class ContentManagerEntryPoint extends CommonEntryPoint {
     public void onModuleLoad() {
         super.onModuleLoad();
         checkSession();
-        final RootPanel panel = RootPanel.get("contentmanager");
-        if (panel != null) {
+        if (RootPanel.get("contentmanager") != null) {
+            final RootPanel panel = RootPanel.get("contentmanager");
             final boolean embedded = Boolean.valueOf(DOM.getElementAttribute(panel.getElement(), "embedded"));
             final String filtersString = DOM.getElementAttribute(panel.getElement(), "filters");
             final List<String> filters = filtersString.length() > 0 ? Arrays.asList(filtersString.split(",")) : null;
@@ -101,6 +102,35 @@ public class ContentManagerEntryPoint extends CommonEntryPoint {
             });
 
 
+        } else if (RootPanel.get("contentpicker") != null) {
+            final  RootPanel panel = RootPanel.get("contentpicker");
+            final String jahiaContextPath = DOM.getElementAttribute(panel.getElement(), "jahiaContextPath");
+            final String jahiaServletPath = DOM.getElementAttribute(panel.getElement(), "jahiaServletPath");
+            final String filesServletPath = DOM.getElementAttribute(panel.getElement(), "filesServletPath");
+            final String selectionLabel = DOM.getElementAttribute(panel.getElement(), "selectionLabel");
+            final Map<String, String> selectorOptions = new HashMap<String, String>();
+            final List<GWTJahiaNode> selectedNodes = ContentHelper.getSelectedContentNodesFromHTML();
+            final String filtersString = DOM.getElementAttribute(panel.getElement(), "filters");
+            final List<String> filters = filtersString.length() > 0 ? Arrays.asList(filtersString.split(",")) : null;
+            final String mimeTypesString = DOM.getElementAttribute(panel.getElement(), "mimeTypes");
+            final List<String> mimeTypes = mimeTypesString.length() > 0 ? Arrays.asList(mimeTypesString.split(",")) : null;
+            final String conf = DOM.getElementAttribute(panel.getElement(), "config");
+            final boolean multiple = Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "multiple"));
+            final String callback = DOM.getElementAttribute(panel.getElement(), "callback");
+
+
+            JahiaContentManagementService.App.getInstance().getManagerConfiguration(conf, null, new BaseAsyncCallback<GWTManagerConfiguration>() {
+                public void onSuccess(GWTManagerConfiguration config) {
+                    PermissionsUtils.loadPermissions(config.getPermissions());
+                    panel.add(new ContentPickerViewport(jahiaContextPath, jahiaServletPath, filesServletPath,
+                            selectionLabel,
+                            selectorOptions, selectedNodes, filters, mimeTypes, config, multiple, callback));
+                }
+
+                public void onApplicationFailure(Throwable throwable) {
+                    Log.error("Error while loading user permission", throwable);
+                }
+            });
         }
     }
 

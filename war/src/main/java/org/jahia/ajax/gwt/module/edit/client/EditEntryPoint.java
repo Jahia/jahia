@@ -78,8 +78,6 @@ public class EditEntryPoint extends CommonEntryPoint {
         super.onModuleLoad();
         WorkInProgress.init();
         exposeFunctions();
-        @SuppressWarnings("unused")
-        Layout junk = new AnchorLayout();
         checkSession();
         final RootPanel panel = RootPanel.get("editmode");
         if (panel != null) {

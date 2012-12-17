@@ -314,6 +314,7 @@ public class Activator implements BundleActivator {
                 if (!toBeParsed.containsKey(depend)) {
                     toBeParsed.put(depend, new ArrayList<Bundle>());
                 }
+                logger.debug("Delaying module " + bundle.getSymbolicName() + " parsing because it depends on module " + depend + " that is not yet parsed.");
                 toBeParsed.get(depend).add(bundle);
                 return;
             }
@@ -403,6 +404,7 @@ public class Activator implements BundleActivator {
                 if (!toBeStarted.containsKey(depend)) {
                     toBeStarted.put(depend, new ArrayList<Bundle>());
                 }
+                logger.debug("Delaying module " + bundle.getSymbolicName() + " startup because it depends on module " + depend + " that is not yet started.");
                 toBeStarted.get(depend).add(bundle);
                 return;
             }

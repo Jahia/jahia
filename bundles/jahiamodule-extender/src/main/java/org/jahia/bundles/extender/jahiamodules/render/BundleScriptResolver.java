@@ -297,7 +297,7 @@ public class BundleScriptResolver implements ScriptResolver {
                         }
                     }
                 } else {
-                    logger.error("Couldn't find module directory for module '" + installedModules.get(i) + "' installed in site '" + site.getPath() + "'");
+                    logger.error("Couldn't find module package for module '" + installedModules.get(i) + "' installed in site '" + site.getPath() + "'");
                 }
             }
         } else if (site != null && site.getPath().startsWith("/modules/")) {

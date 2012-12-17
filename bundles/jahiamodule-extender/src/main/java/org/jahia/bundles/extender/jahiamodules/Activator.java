@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.ArtifactTransformer;
 import org.apache.felix.fileinstall.ArtifactUrlTransformer;
+import org.apache.felix.service.command.CommandProcessor;
 import org.jahia.bundles.extender.jahiamodules.render.BundleDispatcherServlet;
 import org.jahia.bundles.extender.jahiamodules.render.BundleJSR223ScriptFactory;
 import org.jahia.bundles.extender.jahiamodules.render.BundleRequestDispatcherScriptFactory;
@@ -73,6 +74,11 @@ public class Activator implements BundleActivator {
     private BundleURLScanner cndScanner;
     private Map<String,List<Bundle>> toBeParsed = new HashMap<String, List<Bundle>>();
     private Map<String,List<Bundle>> toBeStarted = new HashMap<String, List<Bundle>>();
+
+    public static enum ModuleState {
+        UNINSTALLED, UNRESOLVED, RESOLVED, WAITING_TO_BE_PARSED, PARSED, INSTALLED, UPDATED, STOPPED, STOPPING, STARTING, WAITING_TO_BE_STARTED, STARTED;
+    }
+    private Map<Bundle, ModuleState> moduleStates = new TreeMap<Bundle, ModuleState>();
 
     @Override
     public void start(BundleContext context) throws Exception {
@@ -164,6 +170,12 @@ public class Activator implements BundleActivator {
             parseBundle(bundle);
         }
 
+        Dictionary<String, Object> dict = new Hashtable<String, Object>();
+        dict.put(CommandProcessor.COMMAND_SCOPE, "jahia");
+        dict.put(CommandProcessor.COMMAND_FUNCTION, new String[] {"modules"});
+        ShellCommands shellCommands = new ShellCommands(this);
+        serviceRegistrations.add(context.registerService(ShellCommands.class.getName(), shellCommands, dict));
+
         long totalTime = System.currentTimeMillis() - startTime;
         logger.info("== Jahia Extender started in "+totalTime+"ms ============================================================== ");
 
@@ -181,25 +193,35 @@ public class Activator implements BundleActivator {
                 try {
                     switch (bundleEvent.getType()) {
                         case BundleEvent.INSTALLED:
+                            moduleStates.put(bundle, ModuleState.INSTALLED);
+                            install(bundle);
+                            break;
                         case BundleEvent.UPDATED:
+                            moduleStates.put(bundle, ModuleState.UPDATED);
                             install(bundle);
                             break;
                         case BundleEvent.RESOLVED:
+                            moduleStates.put(bundle, ModuleState.RESOLVED);
                             resolve(bundle);
                             break;
                         case BundleEvent.STARTING:
+                            moduleStates.put(bundle, ModuleState.STARTING);
                             starting(bundle);
                             break;
                         case BundleEvent.STARTED:
+                            moduleStates.put(bundle, ModuleState.STARTED);
                             start(bundle);
                             break;
                         case BundleEvent.STOPPING:
+                            moduleStates.put(bundle, ModuleState.STOPPING);
                             stopping(bundle);
                             break;
                         case BundleEvent.UNRESOLVED:
+                            moduleStates.put(bundle, ModuleState.UNRESOLVED);
                             unresolve(bundle);
                             break;
                         case BundleEvent.UNINSTALLED:
+                            moduleStates.put(bundle, ModuleState.UNINSTALLED);
                             uninstall(bundle);
                             break;
                     }
@@ -276,6 +298,7 @@ public class Activator implements BundleActivator {
         if (bundle.getHeaders().get("Implementation-Title") != null) {
             jahiaBundleTemplatesPackage.setName((String) bundle.getHeaders().get("Implementation-Title"));
         } else {
+            logger.warn("No Implementation-Title header found, using bundle symbolic name '"+bundle.getSymbolicName()+"' as module name");
             jahiaBundleTemplatesPackage.setName(bundle.getSymbolicName());
         }
         // @todo the list of definition files should come either from the header or from a bundle watcher
@@ -315,6 +338,7 @@ public class Activator implements BundleActivator {
                     toBeParsed.put(depend, new ArrayList<Bundle>());
                 }
                 logger.debug("Delaying module " + bundle.getSymbolicName() + " parsing because it depends on module " + depend + " that is not yet parsed.");
+                moduleStates.put(bundle, ModuleState.WAITING_TO_BE_PARSED);
                 toBeParsed.get(depend).add(bundle);
                 return;
             }
@@ -359,6 +383,7 @@ public class Activator implements BundleActivator {
     private void parseDependantBundles(String key) {
         if (toBeParsed.get(key) != null) {
             for (Bundle bundle1 : toBeParsed.get(key)) {
+                logger.debug("Parsing module " + bundle1.getSymbolicName() + " since it is dependent on just started module " + key);
                 parseBundle(bundle1);
             }
             toBeParsed.remove(key);
@@ -406,6 +431,7 @@ public class Activator implements BundleActivator {
                 }
                 logger.debug("Delaying module " + bundle.getSymbolicName() + " startup because it depends on module " + depend + " that is not yet started.");
                 toBeStarted.get(depend).add(bundle);
+                moduleStates.put(bundle, ModuleState.WAITING_TO_BE_STARTED);
                 return;
             }
         }
@@ -438,6 +464,7 @@ public class Activator implements BundleActivator {
     private void startDependantBundles(String key) {
         if (toBeStarted.get(key) != null) {
             for (Bundle bundle1 : toBeStarted.get(key)) {
+                logger.debug("Starting module " + bundle1.getSymbolicName() + " since it is dependent on just started module " + key);
                 start(bundle1);
             }
             toBeStarted.remove(key);
@@ -604,4 +631,11 @@ public class Activator implements BundleActivator {
         }
     }
 
+    public Map<Bundle, JahiaBundleTemplatesPackage> getRegisteredBundles() {
+        return registeredBundles;
+    }
+
+    public Map<Bundle, ModuleState> getModuleStates() {
+        return moduleStates;
+    }
 }

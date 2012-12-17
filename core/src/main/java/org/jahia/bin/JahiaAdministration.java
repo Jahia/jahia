@@ -323,8 +323,14 @@ public class JahiaAdministration extends HttpServlet {
                         user.setProperty("preferredLanguage", uiLocale.toString());
                     }
 
-                    Config.set(request, Config.FMT_LOCALIZATION_CONTEXT,
-                            new LocalizationContext(ResourceBundles.get(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(site.getTemplatePackageName()), uiLocale)));
+                    String templatePackageName = site.getTemplatePackageName();
+                    Config.set(
+                            request,
+                            Config.FMT_LOCALIZATION_CONTEXT,
+                            new LocalizationContext(templatePackageName != null ? ResourceBundles.get(
+                                    ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                                            .getTemplatePackage(site.getTemplatePackageName()), uiLocale) : ResourceBundles
+                                    .getInternal(uiLocale)));
 
                     AdministrationModulesRegistry modulesRegistry = (AdministrationModulesRegistry) SpringContextSingleton.getInstance().getContext().getBean("administrationModulesRegistry");
                     AdministrationModule currentModule = modulesRegistry.getServerAdministrationModule(operation);

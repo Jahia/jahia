@@ -106,10 +106,12 @@ public class SwitchConfigActionItem extends BaseActionItem {
     public void handleNewMainNodeLoaded(GWTJahiaNode node) {
         if (node.get("compatibilityMode") != Boolean.TRUE) {
             setEnabled(true);
-//            linker.getConfig().setNonEditableTypes(nonEditableTypes);
+            linker.getConfig().setNonEditableTypes(nonEditableTypes);
+            linker.refresh(Linker.REFRESH_COMPONENTS,null);
         } else {
             setEnabled(false);
-//            linker.getConfig().setNonEditableTypes(null);
+            linker.getConfig().setNonEditableTypes(null);
+            linker.refresh(Linker.REFRESH_COMPONENTS,null);
         }
 
     }

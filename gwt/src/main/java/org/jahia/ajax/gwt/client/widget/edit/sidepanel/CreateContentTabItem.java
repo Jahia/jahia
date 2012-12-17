@@ -81,19 +81,23 @@ class CreateContentTabItem extends SidePanelTabItem {
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
 
-        excludedNodeTypes = new ArrayList<String>();
-        if (linker.getConfig().getNonEditableTypes() != null) {
-            excludedNodeTypes.addAll(linker.getConfig().getNonEditableTypes());
-        }
-        if (linker.getConfig().getNonVisibleTypes() != null) {
-            excludedNodeTypes.addAll(linker.getConfig().getNonVisibleTypes());
-        }
+        initExcludedNodeTypes(linker);
 
         contentTypeTree.fillStore(paths, baseTypes, excludedNodeTypes, true, true);
 //        contentTypeTree.setLinker(linker);
         if (linker.getConfig().isEnableDragAndDrop()) {
             gridDragSource = new CreateGridDragSource(contentTypeTree.getTreeGrid());
             gridDragSource.addDNDListener(linker.getDndListener());
+        }
+    }
+
+    private void initExcludedNodeTypes(EditLinker linker) {
+        excludedNodeTypes = new ArrayList<String>();
+        if (linker.getConfig().getNonEditableTypes() != null) {
+            excludedNodeTypes.addAll(linker.getConfig().getNonEditableTypes());
+        }
+        if (linker.getConfig().getNonVisibleTypes() != null) {
+            excludedNodeTypes.addAll(linker.getConfig().getNonVisibleTypes());
         }
     }
 
@@ -111,6 +115,7 @@ class CreateContentTabItem extends SidePanelTabItem {
 
     @Override
     public void refresh(Map data) {
+        initExcludedNodeTypes(editLinker);
         contentTypeTree.fillStore(paths, baseTypes, excludedNodeTypes, true, true);
         setRefreshed();
     }

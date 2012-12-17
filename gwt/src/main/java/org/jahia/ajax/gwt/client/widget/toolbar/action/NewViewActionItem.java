@@ -40,20 +40,13 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
@@ -113,7 +106,7 @@ public class NewViewActionItem extends BaseActionItem  {
             if (!isLoading) {
                 linker.loading(Messages.get("label.loading", "Loading"));
             }
-            JahiaContentManagementService.App.getInstance().getContentTypesAsTree(paths, Arrays.asList("nt:base"), Arrays.asList("name"), true,  false,
+            JahiaContentManagementService.App.getInstance().getContentTypesAsTree(paths, Arrays.asList("nt:base"), null, Arrays.asList("name"), true,  false,
                     new BaseAsyncCallback<List<GWTJahiaNode>>() {
                         public void onSuccess(List<GWTJahiaNode> result) {
                             linker.loaded();

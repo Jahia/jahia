@@ -25,6 +25,9 @@
     create table jahia_external_mapping (
         internalUuid varchar(36) not null,
         externalId clob not null,
+        externalIdHash integer,
         providerKey varchar(255) not null,
         primary key (internalUuid)
     );
+
+    create index jahia_external_mapping_index1 on jahia_external_mapping (externalIdHash, providerKey);

@@ -46,8 +46,6 @@ import org.apache.jackrabbit.value.BinaryImpl;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
-import org.hibernate.StatelessSession;
-import org.hibernate.classic.*;
 import org.hibernate.criterion.Restrictions;
 import org.jahia.services.content.nodetypes.*;
 
@@ -569,8 +567,8 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
             try {
                 Criteria criteria = statelessSession.createCriteria(UuidMapping.class);
                 String key = ((ExternalSessionImpl) getSession()).getRepository().getStoreProvider().getKey();
-                criteria.add(Restrictions.eq("externalId", data.getId())).add(Restrictions.eq("providerKey", key));
-                List list = criteria.list();
+                criteria.add(Restrictions.eq("externalIdHash", data.getId().hashCode())).add(Restrictions.eq("providerKey", key));
+                List<?> list = criteria.list();
                 if (list.size() > 0) {
                     return ((UuidMapping) list.get(0)).getInternalUuid();
                 } else {

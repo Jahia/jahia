@@ -42,6 +42,8 @@ package org.jahia.services.content.impl.external;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.Index;
+
 @Entity
 @Table(name = "jahia_external_mapping")
 public class UuidMapping {
@@ -64,6 +66,7 @@ public class UuidMapping {
     }
 
     @Column(nullable = false)
+    @Index(name = "jahia_external_mapping_index1")
     public String getProviderKey() {
         return providerKey;
     }
@@ -78,8 +81,18 @@ public class UuidMapping {
         return externalId;
     }
 
+    @Column()
+    @Index(name = "jahia_external_mapping_index1")
+    public int getExternalIdHash() {
+        return externalId != null ? externalId.hashCode() : 0;
+    }
+
     public void setExternalId(String externalId) {
         this.externalId = externalId;
+    }
+
+    public void setExternalIdHash(int externalIdHash) {
+        // do nothing
     }
 
     @Override

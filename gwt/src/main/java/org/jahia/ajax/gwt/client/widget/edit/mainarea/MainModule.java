@@ -238,7 +238,7 @@ public class MainModule extends Module {
     }
 
     private boolean isValidUrl(String url) {
-        return url.startsWith(config.getDefaultUrlMapping() + "frame/");
+        return url.startsWith(JahiaGWTParameters.getContextPath() + config.getDefaultUrlMapping() + "frame/");
     }
 
     private void layoutChannel() {

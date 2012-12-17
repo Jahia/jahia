@@ -191,8 +191,8 @@ public interface JahiaContentManagementService extends RemoteService {
      */
     Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getContentTypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement) throws GWTJahiaServiceException;
 
-    List<GWTJahiaNode> getContentTypesAsTree(List<String> paths, List<String> nodeTypes, List<String> fields,
-                                             boolean includeSubTypes,  boolean includeNonDependentModules) throws GWTJahiaServiceException;
+    List<GWTJahiaNode> getContentTypesAsTree(List<String> paths, List<String> nodeTypes, List<String> excludedNodeTypes, List<String> fields,
+                                             boolean includeSubTypes, boolean includeNonDependentModules) throws GWTJahiaServiceException;
 
     GWTEditConfiguration getEditConfiguration(String path, String name) throws GWTJahiaServiceException;
 

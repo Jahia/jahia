@@ -2170,9 +2170,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return contentDefinition.getContentTypes(baseTypes, new HashMap<String, Object>(), getUILocale(), includeSubTypes, displayStudioElement);
     }
 
-    public List<GWTJahiaNode> getContentTypesAsTree(List<String> paths, List<String> nodeTypes, List<String> fields,
+    public List<GWTJahiaNode> getContentTypesAsTree(List<String> paths, List<String> nodeTypes, List<String> excludedNodeTypes, List<String> fields,
                                                     boolean includeSubTypes, boolean includeNonDependentModules) throws GWTJahiaServiceException {
-        List<GWTJahiaNode> result = contentDefinition.getContentTypesAsTree(paths, nodeTypes, fields, includeSubTypes, includeNonDependentModules, getSite(), getUILocale(), retrieveCurrentSession(getUILocale()));
+        List<GWTJahiaNode> result = contentDefinition.getContentTypesAsTree(paths, nodeTypes, excludedNodeTypes, fields, includeSubTypes, includeNonDependentModules, getSite(), getUILocale(), retrieveCurrentSession(getUILocale()));
         return result;
     }
 

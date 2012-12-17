@@ -772,7 +772,7 @@ public class ContentDefinitionHelper {
     }
 
 
-    public List<GWTJahiaNode> getContentTypesAsTree(List<String> paths, List<String> nodeTypes, List<String> fields, boolean includeSubTypes, boolean includeNonDependentModules, final JCRSiteNode site,
+    public List<GWTJahiaNode> getContentTypesAsTree(List<String> paths, List<String> nodeTypes, List<String> excludedNodeTypes, List<String> fields, boolean includeSubTypes, boolean includeNonDependentModules, final JCRSiteNode site,
                                                     Locale uiLocale, JCRSessionWrapper session)
             throws GWTJahiaServiceException {
         try {
@@ -843,7 +843,7 @@ public class ContentDefinitionHelper {
 
                 for (int j = 0; j < list.size(); j++) {
                     GWTJahiaNode child = list.get(j);
-                    if (session.getNodeByIdentifier(child.getUUID()).hasPermission("useComponentForCreate")) {
+                    if (session.getNodeByIdentifier(child.getUUID()).hasPermission("useComponentForCreate") && !isNodeType(excludedNodeTypes, child.getName())) {
                         GWTJahiaNodeType type = getNodeType(child.getName(), uiLocale);
                         child.set("componentNodeType", type);
                         if (child.getInheritedNodeTypes().contains("jnt:component") && nodeTypes != null && type != null) {
@@ -894,6 +894,23 @@ public class ContentDefinitionHelper {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
+    }
+
+    private boolean isNodeType(List<String> nodeTypes, String name) {
+        if (nodeTypes != null) {
+            try {
+                ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(name);
+                for (String nodeType : nodeTypes) {
+                    if (type.isNodeType(nodeType)) {
+                        return true;
+                    }
+                }
+                return false;
+            } catch (NoSuchNodeTypeException e) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

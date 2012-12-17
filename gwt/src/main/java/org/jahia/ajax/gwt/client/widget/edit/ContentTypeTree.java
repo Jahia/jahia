@@ -52,11 +52,9 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
-import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -343,9 +341,9 @@ public class ContentTypeTree extends LayoutContainer {
         }
     }
 
-    public void fillStore(List<String> paths, List<String> types, boolean includeSubTypes, boolean includeNonDependentModules) {
+    public void fillStore(List<String> paths, List<String> types, List<String> excludedTypes, boolean includeSubTypes, boolean includeNonDependentModules) {
         store.removeAll();
-        JahiaContentManagementService.App.getInstance().getContentTypesAsTree(paths, types, Arrays.asList("name"), includeSubTypes,  includeNonDependentModules,
+        JahiaContentManagementService.App.getInstance().getContentTypesAsTree(paths, types, excludedTypes, Arrays.asList("name"), includeSubTypes,  includeNonDependentModules,
                 new BaseAsyncCallback<List<GWTJahiaNode>>() {
                     public void onSuccess(List<GWTJahiaNode> result) {
                         fillStore(result);

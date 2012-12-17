@@ -61,10 +61,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.contentengine.ButtonItem;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 
@@ -166,7 +163,14 @@ public class ContentTypeWindow extends Window {
     
     public static void createContent(final Linker linker, final String name, final List<String> nodeTypes, final Map<String, GWTJahiaNodeProperty> props, final GWTJahiaNode targetNode, boolean includeSubTypes, final boolean createInParentAndMoveBefore, final Set<String> displayedNodeTypes) {
         linker.loading(Messages.get("label.loading", "Loading"));
-        JahiaContentManagementService.App.getInstance().getContentTypesAsTree(linker.getConfig().getComponentsPaths(), nodeTypes, Arrays.asList("name"), includeSubTypes, false, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+        List<String> excluded = new ArrayList<String>();
+        if (linker.getConfig().getNonEditableTypes() != null) {
+            excluded.addAll(linker.getConfig().getNonEditableTypes());
+        }
+        if (linker.getConfig().getNonVisibleTypes() != null) {
+            excluded.addAll(linker.getConfig().getNonVisibleTypes());
+        }
+        JahiaContentManagementService.App.getInstance().getContentTypesAsTree(linker.getConfig().getComponentsPaths(), nodeTypes, excluded, Arrays.asList("name"), includeSubTypes, false, new BaseAsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> result) {
                 linker.loaded();
                 if (result.size() == 1 && result.get(0).getChildren().isEmpty()) {

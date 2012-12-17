@@ -49,6 +49,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * User: toto
@@ -64,6 +65,10 @@ public class GWTConfiguration implements IsSerializable, Serializable {
     private Map<String, GWTJahiaNode> sitesMap;
     private List<GWTJahiaChannel> channels;
     private List<String> componentsPaths;
+    private Set<String> editableTypes;
+    private Set<String> nonEditableTypes;
+    private Set<String> visibleTypes;
+    private Set<String> nonVisibleTypes;
 
     public GWTConfiguration() {
     	super();
@@ -167,5 +172,37 @@ public class GWTConfiguration implements IsSerializable, Serializable {
 
     public void setComponentsPaths(List<String> componentsPaths) {
         this.componentsPaths = componentsPaths;
+    }
+
+    public Set<String> getEditableTypes() {
+        return editableTypes;
+    }
+
+    public void setEditableTypes(Set<String> editableTypes) {
+        this.editableTypes = editableTypes;
+    }
+
+    public Set<String> getNonEditableTypes() {
+        return nonEditableTypes;
+    }
+
+    public void setNonEditableTypes(Set<String> nonEditableTypes) {
+        this.nonEditableTypes = nonEditableTypes;
+    }
+
+    public Set<String> getVisibleTypes() {
+        return visibleTypes;
+    }
+
+    public void setVisibleTypes(Set<String> visibleTypes) {
+        this.visibleTypes = visibleTypes;
+    }
+
+    public Set<String> getNonVisibleTypes() {
+        return nonVisibleTypes;
+    }
+
+    public void setNonVisibleTypes(Set<String> nonVisibleTypes) {
+        this.nonVisibleTypes = nonVisibleTypes;
     }
 }

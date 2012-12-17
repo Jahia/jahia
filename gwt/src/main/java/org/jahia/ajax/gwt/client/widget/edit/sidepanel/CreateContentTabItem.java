@@ -46,6 +46,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeTree;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +61,8 @@ class CreateContentTabItem extends SidePanelTabItem {
 
     private transient ContentTypeTree contentTypeTree;
     private transient CreateGridDragSource gridDragSource;
-    private String baseType = null;
+    private List<String> baseTypes = null;
+    private List<String> excludedNodeTypes = null;
     private List<String> paths;
 
     public TabItem create(GWTSidePanelTab config) {
@@ -69,7 +71,6 @@ class CreateContentTabItem extends SidePanelTabItem {
         tab.setLayout(new FitLayout());
 
         contentTypeTree = new ContentTypeTree(config.getTreeColumns());
-        contentTypeTree.fillStore(paths, baseType != null ? Arrays.asList(baseType.split(" ")) : null, true, true);
 
         tab.add(contentTypeTree);
         tab.setId("JahiaGxtCreateContentTab");
@@ -79,6 +80,16 @@ class CreateContentTabItem extends SidePanelTabItem {
     @Override
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
+
+        excludedNodeTypes = new ArrayList<String>();
+        if (linker.getConfig().getNonEditableTypes() != null) {
+            excludedNodeTypes.addAll(linker.getConfig().getNonEditableTypes());
+        }
+        if (linker.getConfig().getNonVisibleTypes() != null) {
+            excludedNodeTypes.addAll(linker.getConfig().getNonVisibleTypes());
+        }
+
+        contentTypeTree.fillStore(paths, baseTypes, excludedNodeTypes, true, true);
 //        contentTypeTree.setLinker(linker);
         if (linker.getConfig().isEnableDragAndDrop()) {
             gridDragSource = new CreateGridDragSource(contentTypeTree.getTreeGrid());
@@ -87,7 +98,11 @@ class CreateContentTabItem extends SidePanelTabItem {
     }
 
     public void setBaseType(String baseType) {
-        this.baseType = baseType;
+        this.baseTypes = Arrays.asList(baseType);
+    }
+
+    public void setBaseTypes(List<String> baseTypes) {
+        this.baseTypes = baseTypes;
     }
 
     public void setPaths(List<String> paths) {
@@ -96,7 +111,7 @@ class CreateContentTabItem extends SidePanelTabItem {
 
     @Override
     public void refresh(Map data) {
-        contentTypeTree.fillStore(paths, baseType != null ? Arrays.asList(baseType.split(" ")) : null, true, true);
+        contentTypeTree.fillStore(paths, baseTypes, excludedNodeTypes, true, true);
         setRefreshed();
     }
 }

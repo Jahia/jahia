@@ -72,7 +72,9 @@
         <c:set target="${colMap}" property="col2" value="6"/>
     </c:otherwise>
 </c:choose>
-<div class="container_16">
+<div <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
+    style="background-color: #FFFFFF;background-image: url('${url.currentModule}/img/960_16_10_10.png');background-repeat: repeat-y;"
+</c:if> class="container_16">
 <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
     <div class="grid_16">${jcr:label(currentNode.primaryNodeType,currentResource.locale)} ${currentNode.name} : ${column.string}</div>
 </c:if>
@@ -80,7 +82,7 @@
     <!--start grid_${col.value}-->
     <div class='grid_${col.value}'>
         <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
-        <div style="border: 1px solid #999977; padding: 10px" class='grid_${fn:replace(currentNode.identifier,'-','_')}' id='grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}'>
+        <div style="border: 1px dashed #999; padding: 5px; position:relative;" class='grid_${fn:replace(currentNode.identifier,'-','_')}' id='grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}'>
             <span>Size : ${col.value}</span>
             </c:if>
         <template:area path="${currentNode.name}-${col.key}" areaAsSubNode="true"/>

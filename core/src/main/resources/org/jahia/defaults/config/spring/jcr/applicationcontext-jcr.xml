@@ -583,7 +583,7 @@
         <property name="hibernateSession" ref="sessionFactory"/>
     </bean>
     
-    <bean id="ModulestoreProvider" parent="ExternalContentStoreProvider">
+    <bean id="ModuleStoreProvider" parent="ExternalContentStoreProvider">
         <property name="key" value="module"/>
         <property name="dataSource" ref="ModulesDataSource"/>
         <property name="mountPoint" value="/modulesFileSystem"/>

@@ -3,7 +3,6 @@ package org.jahia.bundles.extender.jahiamodules;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.ArtifactTransformer;
-import org.apache.felix.fileinstall.ArtifactUrlTransformer;
 import org.apache.felix.service.command.CommandProcessor;
 import org.jahia.bundles.extender.jahiamodules.render.BundleDispatcherServlet;
 import org.jahia.bundles.extender.jahiamodules.render.BundleJSR223ScriptFactory;
@@ -355,6 +354,7 @@ public class Activator implements BundleActivator {
         }
 
         logger.info("--- Done parsing Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + bundle.getVersion() + " --");
+        moduleStates.put(bundle, ModuleState.PARSED);
 
         if (installedBundles.contains(bundle)) {
             logger.info("--- Installing Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + bundle.getVersion() + " --");
@@ -372,6 +372,8 @@ public class Activator implements BundleActivator {
                 logger.error("Error while initializing module content for module " + jahiaBundleTemplatesPackage, e);
             }
             logger.info("--- Done installing Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + bundle.getVersion() + " --");
+            moduleStates.put(bundle, ModuleState.INSTALLED);
+
         }
 
         if (latestDefinitions) {
@@ -456,6 +458,7 @@ public class Activator implements BundleActivator {
 
         long totalTime = System.currentTimeMillis() - startTime;
         logger.info("--- Finished starting Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + bundle.getVersion() + " in "+totalTime+"ms --");
+        moduleStates.put(bundle, ModuleState.STARTED);
 
         startDependantBundles(jahiaBundleTemplatesPackage.getRootFolder());
         startDependantBundles(jahiaBundleTemplatesPackage.getName());
@@ -463,11 +466,22 @@ public class Activator implements BundleActivator {
 
     private void startDependantBundles(String key) {
         if (toBeStarted.get(key) != null) {
-            for (Bundle bundle1 : toBeStarted.get(key)) {
-                logger.debug("Starting module " + bundle1.getSymbolicName() + " since it is dependent on just started module " + key);
-                start(bundle1);
+            List<Bundle> startedBundles = new ArrayList<Bundle>();
+            for (Bundle bundle : toBeStarted.get(key)) {
+                logger.debug("Starting module " + bundle.getSymbolicName() + " since it is dependent on just started module " + key);
+                moduleStates.put(bundle, ModuleState.STARTING);
+                try {
+                    start(bundle);
+                    startedBundles.add(bundle);
+                } catch (Throwable t) {
+                    logger.error("Error during startup of dependent module " + bundle.getSymbolicName() + ", module is not started !", t);
+                    moduleStates.put(bundle, ModuleState.WAITING_TO_BE_STARTED);
+                }
             }
-            toBeStarted.remove(key);
+            toBeStarted.get(key).removeAll(startedBundles);
+            if (toBeStarted.get(key).size() == 0) {
+                toBeStarted.remove(key);
+            }
         }
     }
 

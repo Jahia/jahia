@@ -31,6 +31,7 @@ public class ShellCommands {
         }
 
         for (Activator.ModuleState moduleState : modulesByState.keySet()) {
+            System.out.println("");
             System.out.println("Module State: " + moduleState);
             System.out.println("----------------------------------------");
             Set<Bundle> bundlesInState = modulesByState.get(moduleState);

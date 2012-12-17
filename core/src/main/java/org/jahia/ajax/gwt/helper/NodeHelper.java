@@ -341,6 +341,15 @@ class NodeHelper {
             logger.error("Cannot get property module version");
         }
 
+        try {
+            if (node.isNodeType("jnt:template")) {
+                Boolean value = JCRContentUtils.getChildrenOfType(node, "jnt:layoutContentList").isEmpty() && !JCRContentUtils.getChildrenOfType(node, "jnt:contentList").isEmpty();
+                n.set("compatibilityMode", value);
+            }
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
         // properties
         for (String field : fields) {
             if (!GWTJahiaNode.RESERVED_FIELDS.contains(field)) {

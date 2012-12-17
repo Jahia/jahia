@@ -244,7 +244,6 @@
                         </bean>
                         <ref bean="Toolbar.Item.Admin"/>
                         <ref bean="Toolbar.Item.EditMode"/>
-                        <ref bean="Toolbar.Item.SwitchConfigActionToStudioLayout"/>
                         <ref bean="Toolbar.Item.ClipBoard"/>
                         <ref bean="Toolbar.Item.Separator"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
@@ -283,6 +282,7 @@
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
+                        <ref bean="Toolbar.Item.SwitchConfigActionToStudioLayout"/>
                         <ref bean="Toolbar.Item.EditContent"/>
                         <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>
                     </list>
@@ -996,6 +996,7 @@
         <property name="editableTypes">
             <set>
                 <value>jmix:layoutComponentContent</value>
+                <value>jnt:template</value>
             </set>
         </property>
         <property name="defaultUrlMapping" value="/cms/studiolayout"/>
@@ -1207,7 +1208,6 @@
                         </bean>
                         <ref bean="Toolbar.Item.Admin"/>
                         <ref bean="Toolbar.Item.EditMode"/>
-                        <ref bean="Toolbar.Item.SwitchConfigActionToStudio"/>
                         <ref bean="Toolbar.Item.ClipBoard"/>
                         <ref bean="Toolbar.Item.Separator"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
@@ -1245,6 +1245,7 @@
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
+                        <ref bean="Toolbar.Item.SwitchConfigActionToStudio"/>
                         <ref bean="Toolbar.Item.EditContent"/>
                         <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>
                     </list>

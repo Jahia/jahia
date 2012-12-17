@@ -63,9 +63,14 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditPanelViewport;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class SwitchConfigActionItem extends BaseActionItem {
     private String configurationName;
     private transient GWTEditConfiguration config;
+
+    private transient Set<String> nonEditableTypes;
 
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
@@ -84,6 +89,8 @@ public class SwitchConfigActionItem extends BaseActionItem {
                 }
             });
         }
+
+        nonEditableTypes = linker.getConfig().getNonEditableTypes();
     }
 
     @Override
@@ -93,5 +100,17 @@ public class SwitchConfigActionItem extends BaseActionItem {
 
     public void setConfigurationName(String configurationName) {
         this.configurationName = configurationName;
+    }
+
+    @Override
+    public void handleNewMainNodeLoaded(GWTJahiaNode node) {
+        if (node.get("compatibilityMode") != Boolean.TRUE) {
+            setEnabled(true);
+//            linker.getConfig().setNonEditableTypes(nonEditableTypes);
+        } else {
+            setEnabled(false);
+//            linker.getConfig().setNonEditableTypes(null);
+        }
+
     }
 }

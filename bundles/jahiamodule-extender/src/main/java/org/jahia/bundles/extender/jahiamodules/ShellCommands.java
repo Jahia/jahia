@@ -2,10 +2,7 @@ package org.jahia.bundles.extender.jahiamodules;
 
 import org.osgi.framework.Bundle;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Basic Jahia extender shell commands
@@ -22,12 +19,12 @@ public class ShellCommands {
     public void modules() {
         Map<Bundle, Activator.ModuleState> moduleStates = activator.getModuleStates();
 
-        Map<Activator.ModuleState, List<Bundle>> modulesByState = new TreeMap<Activator.ModuleState, List<Bundle>>();
+        Map<Activator.ModuleState, Set<Bundle>> modulesByState = new TreeMap<Activator.ModuleState, Set<Bundle>>();
         for (Bundle bundle : moduleStates.keySet()) {
             Activator.ModuleState moduleState = moduleStates.get(bundle);
-            List<Bundle> bundlesInState = modulesByState.get(moduleState);
+            Set<Bundle> bundlesInState = modulesByState.get(moduleState);
             if (bundlesInState == null) {
-                bundlesInState = new ArrayList<Bundle>();
+                bundlesInState = new TreeSet<Bundle>();
             }
             bundlesInState.add(bundle);
             modulesByState.put(moduleState, bundlesInState);
@@ -36,14 +33,14 @@ public class ShellCommands {
         for (Activator.ModuleState moduleState : modulesByState.keySet()) {
             System.out.println("Module State: " + moduleState);
             System.out.println("----------------------------------------");
-            List<Bundle> bundlesInState = modulesByState.get(moduleState);
+            Set<Bundle> bundlesInState = modulesByState.get(moduleState);
             for (Bundle bundleInState : bundlesInState) {
                 JahiaBundleTemplatesPackage modulePackage = activator.getRegisteredBundles().get(bundleInState);
-                List<String> dependsOn = new ArrayList<String>();
+                String dependsOn = "";
                 if (modulePackage != null) {
-                    dependsOn = modulePackage.getDepends();
+                    dependsOn = " depends on " + modulePackage.getDepends();
                 }
-                System.out.println(bundleInState.getSymbolicName() + " v" + bundleInState.getVersion() + " depends on:" + dependsOn);
+                System.out.println(bundleInState.getBundleId() + " : " + bundleInState.getSymbolicName() + " v" + bundleInState.getVersion() + dependsOn);
             }
         }
     }

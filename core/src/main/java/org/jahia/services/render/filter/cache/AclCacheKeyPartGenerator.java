@@ -160,7 +160,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                 e.printStackTrace();
             }
         } else {
-            PER_USER_PATTERN.matcher(keyPart).replaceAll(renderContext.getUser().getUsername());
+            keyPart = PER_USER_PATTERN.matcher(keyPart).replaceAll(renderContext.getUser().getUsername());
         }
 
         return keyPart;

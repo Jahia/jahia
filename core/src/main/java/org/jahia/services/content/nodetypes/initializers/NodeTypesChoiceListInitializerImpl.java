@@ -41,13 +41,14 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeTypeIterator;
 import java.util.*;
 
@@ -67,12 +68,25 @@ public class NodeTypesChoiceListInitializerImpl implements ChoiceListInitializer
         }
         NodeTypeIterator nti;
         try {
+            List<String> systemIds = null;
+            if (param.indexOf(";fromDependencies") > -1) {
+                systemIds = new ArrayList<String>();
+                JahiaTemplatesPackage templatePackage = ((JCRNodeWrapper) context.get("contextNode")).getResolveSite().getTemplatePackage();
+                systemIds.add(templatePackage.getRootFolder());
+                for (JahiaTemplatesPackage dependency : templatePackage.getDependencies()) {
+                    systemIds.add(dependency.getRootFolder());
+                }
+                systemIds.add("system-extension");
+                systemIds.add("system-standard");
+                systemIds.add("system-jahia");
+                systemIds.add("system-system");
+            }
             if (param.startsWith("MIXIN")) {
-                nti = NodeTypeRegistry.getInstance().getMixinNodeTypes();
+                nti = NodeTypeRegistry.getInstance().getMixinNodeTypes(systemIds);
             } else if (param.startsWith("PRIMARY")) {
-                nti = NodeTypeRegistry.getInstance().getPrimaryNodeTypes();
+                nti = NodeTypeRegistry.getInstance().getPrimaryNodeTypes(systemIds);
             } else if (param.startsWith("ALL")) {
-                nti = NodeTypeRegistry.getInstance().getAllNodeTypes();
+                nti = NodeTypeRegistry.getInstance().getAllNodeTypes(systemIds);
             } else {
                 ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(param);
                 nti = nodeType.getSubtypes();

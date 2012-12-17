@@ -242,6 +242,17 @@ public class NodeTypeRegistry implements NodeTypeManager {
         return new JahiaNodeTypeIterator(nodeTypesList.iterator(),nodeTypesList.size());
     }
 
+    public NodeTypeIterator getAllNodeTypes(List<String> systemIds) {
+        List<ExtendedNodeType> res = new ArrayList<ExtendedNodeType>();
+        for (Iterator<ExtendedNodeType> iterator = nodetypes.values().iterator(); iterator.hasNext();) {
+            ExtendedNodeType nt = iterator.next();
+            if (systemIds == null || systemIds.contains(nt.getSystemId())) {
+                res.add(nt);
+            }
+        }
+        return new JahiaNodeTypeIterator(res.iterator(), res.size());
+    }
+
     public NodeTypeIterator getNodeTypes(String systemId) {
         List<ExtendedNodeType> l = new ArrayList<ExtendedNodeType>();
         for (ExtendedNodeType nt : nodeTypesList) {
@@ -255,12 +266,15 @@ public class NodeTypeRegistry implements NodeTypeManager {
     public Map<String, String> getNamespaces() {
         return namespaces;
     }
-
     public NodeTypeIterator getPrimaryNodeTypes() throws RepositoryException {
+        return getPrimaryNodeTypes(null);
+    }
+
+    public NodeTypeIterator getPrimaryNodeTypes(List<String> systemIds) throws RepositoryException {
         List<ExtendedNodeType> res = new ArrayList<ExtendedNodeType>();
         for (Iterator<ExtendedNodeType> iterator = nodetypes.values().iterator(); iterator.hasNext();) {
             ExtendedNodeType nt = iterator.next();
-            if (!nt.isMixin()) {
+            if (!nt.isMixin() && (systemIds == null || systemIds.contains(nt.getSystemId()))) {
                 res.add(nt);
             }
         }
@@ -268,10 +282,14 @@ public class NodeTypeRegistry implements NodeTypeManager {
     }
 
     public NodeTypeIterator getMixinNodeTypes() throws RepositoryException {
+        return getMixinNodeTypes(null);
+    }
+
+    public NodeTypeIterator getMixinNodeTypes(List<String> systemIds) throws RepositoryException {
         List<ExtendedNodeType> res = new ArrayList<ExtendedNodeType>();
         for (Iterator<ExtendedNodeType> iterator = nodetypes.values().iterator(); iterator.hasNext();) {
             ExtendedNodeType nt = iterator.next();
-            if (nt.isMixin()) {
+            if (nt.isMixin() && (systemIds == null || systemIds.contains(nt.getSystemId()))) {
                 res.add(nt);
             }
         }

@@ -858,14 +858,14 @@ extends = jnt:content
  + * (jnt:childNodeDefinition) = jnt:childNodeDefinition
 
 [jnt:mixinNodeType] > jnt:nodeType
- - j:mixins (NAME,choicelist[nodetypes=MIXIN,resourceBundle]) multiple
+ - j:mixins (NAME,choicelist[nodetypes='MIXIN;fromDependencies',resourceBundle]) multiple
  - j:isQueryable (BOOLEAN) mandatory
  - j:itemsType (string,choicelist) < 'content','metadata','layout','options'
- - j:mixinExtends (string,choicelist[nodetypes=PRIMARY]) multiple
+ - j:mixinExtends (string,choicelist[nodetypes='PRIMARY;fromDependencies']) multiple
 
 [jnt:primaryNodeType] > jnt:nodeType
- - j:supertype (NAME,choicelist[nodetypes=PRIMARY,resourceBundle])
- - j:mixins (NAME,choicelist[nodetypes=MIXIN,resourceBundle]) multiple
+ - j:supertype (NAME,choicelist[nodetypes='PRIMARY;fromDependencies',resourceBundle])
+ - j:mixins (NAME,choicelist[nodetypes='MIXIN;fromDependencies',resourceBundle]) multiple
  - j:isAbstract (BOOLEAN) mandatory
  - j:isQueryable (BOOLEAN) mandatory
  - j:hasOrderableChildNodes (BOOLEAN) mandatory
@@ -921,13 +921,13 @@ extends = jnt:content
  - j:onParentVersion (STRING,choicelist) = 'VERSION' nofulltext
    < 'COPY', 'VERSION', 'INITIALIZE', 'COMPUTE', 'IGNORE', 'ABORT'
  - j:protected (BOOLEAN)
- - j:requiredPrimaryTypes (NAME, choicelist[nodetypes=ALL,resourceBundle]) = 'nt:base' mandatory multiple
- - j:defaultPrimaryType (NAME, choicelist[nodetypes=ALL,resourceBundle])
+ - j:requiredPrimaryTypes (NAME, choicelist[nodetypes='ALL;fromDependencies',resourceBundle]) = 'nt:base' mandatory multiple
+ - j:defaultPrimaryType (NAME, choicelist[nodetypes='ALL;fromDependencies',resourceBundle])
 
 [jnt:structuredChildNodeDefinition] > jnt:childNodeDefinition
 
 [jnt:unstructuredChildNodeDefinition] > jnt:childNodeDefinition
- - j:requiredPrimaryTypes (NAME,choicelist[nodetypes=ALL,resourceBundle]) = 'nt:base' mandatory multiple hidden
+ - j:requiredPrimaryTypes (NAME,choicelist[nodetypes='ALL;fromDependencies',resourceBundle]) = 'nt:base' mandatory multiple hidden
 
 [jnt:resourceBundleFolder] > jnt:folder
 

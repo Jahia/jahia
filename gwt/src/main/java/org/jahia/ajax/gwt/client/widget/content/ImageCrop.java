@@ -43,14 +43,23 @@ package org.jahia.ajax.gwt.client.widget.content;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.layout.ColumnData;
+import com.extjs.gxt.ui.client.widget.layout.ColumnLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.ui.Image;
@@ -78,12 +87,24 @@ public class ImageCrop extends Window {
         this.linker = linker;
         setHeading(Messages.get("label.crop"));
         setId("JahiaGxtImageCrop");
-        FormPanel form = new FormPanel();
+
+        FormData formData = new FormData("100%");  
+        FormPanel form = new FormPanel();  
         form.setFrame(false);
         form.setHeaderVisible(false);
         form.setBorders(false);
+        form.setLabelWidth(70);
+      
+        LayoutContainer main = new LayoutContainer();  
+        main.setLayout(new ColumnLayout());  
+      
+        LayoutContainer lcName = new LayoutContainer();  
+        lcName.setStyleAttribute("paddingRight", "10px");  
+        lcName.setLayout(new FormLayout(LabelAlign.LEFT));
+      
         final TextField<String> newname = new TextField<String>();
         newname.setName("newname");
+        newname.setFieldLabel(Messages.get("label.rename", "Rename"));
         int extIndex = n.getName().lastIndexOf(".");
         if (extIndex > 0) {
             String dotExt = n.getName().substring(extIndex);
@@ -91,8 +112,50 @@ public class ImageCrop extends Window {
         } else {
             newname.setValue(n.getName() + "_crop");
         }
-        newname.setFieldLabel(Messages.get("label.rename"));
-        form.add(newname);
+
+        lcName.add(newname, formData);
+
+        LayoutContainer lcWidth = new LayoutContainer();  
+        lcWidth.setStyleAttribute("paddingRight", "10px");  
+        FormLayout formLayout = new FormLayout(LabelAlign.RIGHT);
+        formLayout.setLabelWidth(40);
+        lcWidth.setLayout(formLayout);
+      
+        final NumberField width = new NumberField();  
+        width.setFieldLabel(Messages.get("label.width", "Width"));  
+        width.setName("width");
+        width.setId("width");
+        lcWidth.add(width, formData);
+      
+        LayoutContainer lcHeight = new LayoutContainer();  
+        lcHeight.setStyleAttribute("paddingLeft", "10px");  
+        formLayout = new FormLayout(LabelAlign.RIGHT);
+        formLayout.setLabelWidth(40);
+        lcHeight.setLayout(formLayout);  
+      
+        final NumberField height = new NumberField();  
+        height.setFieldLabel(Messages.get("label.height", "Height"));  
+        height.setName("height");
+        height.setId("height");
+        lcHeight.add(height, formData);
+      
+        main.add(lcName, new ColumnData(.6));
+        main.add(lcWidth, new ColumnData(.2));
+        main.add(lcHeight, new ColumnData(.2));  
+      
+        form.add(main, new FormData("100%"));
+        
+        final Image image = new Image();
+        image.addLoadHandler(new LoadHandler() {
+            public void onLoad(LoadEvent event) {
+                initJcrop();
+            }
+        });
+        // Point the image at a real URL.
+        image.getElement().setId("cropbox");
+        image.setUrl(n.getUrl());
+
+        form.add(image);
         
         final NumberField top = new NumberField();
         top.setName("top");
@@ -104,33 +167,6 @@ public class ImageCrop extends Window {
         left.setId("left");
         left.setVisible(false);
         form.add(left);
-        final NumberField width = new NumberField();
-        width.setFieldLabel(Messages.get("label.width", "Width"));
-        width.setStyleName("stylewidth");
-        width.setName("width");
-        width.setId("width");
-        width.setVisible(true);
-        width.setEnabled(false);
-        form.add(width);
-        final NumberField height = new NumberField();
-        height.setFieldLabel(Messages.get("label.height", "Height"));
-        height.setStyleName("stylehight");
-        height.setName("height");
-        height.setId("height");
-        height.setVisible(true);
-        height.setEnabled(false);
-        form.add(height);
-        
-        final Image image = new Image();
-        image.addLoadHandler(new LoadHandler() {
-            public void onLoad(LoadEvent event) {
-                initJcrop();
-            }
-        });
-        // Point the image at a real URL.
-        image.getElement().setId("cropbox");
-        image.setUrl(n.getUrl());
-        form.add(image);
         
         ButtonBar buttons = new ButtonBar();
         Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
@@ -151,15 +187,40 @@ public class ImageCrop extends Window {
         setButtonAlign(Style.HorizontalAlignment.CENTER);
         setBottomComponent(buttons);
 
+        Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent be) {
+                if (width.getValue() != null && height.getValue() != null) {
+                    setDimensions(width.getValue().intValue(), height.getValue().intValue());
+                }
+            }
+        };
+        width.addListener(Events.Change, listener);
+        height.addListener(Events.Change, listener);
+        
         add(form);
-
+        
         setModal(true);
         setHeaderVisible(true);
         setAutoHide(false);
     }
     
+    private native void setDimensions(int w, int h) /*-{
+        try {
+            var jcapi=$wnd.jQuery('#cropbox').data('Jcrop');
+            var c=jcapi.tellSelect();
+            jcapi.setSelect([c.x, c.y, c.x + w, c.y + h]);
+        } catch (e) { }
+    }-*/;
+    
     private native void initJcrop() /*-{
-        $wnd.jQuery('#cropbox').Jcrop({ boxWidth: 700, boxHeight: 400, onSelect: function(c) { $wnd.jQuery('#left-input').val(c.x); $wnd.jQuery('#top-input').val(c.y); $wnd.jQuery('#width-input').val(c.w); $wnd.jQuery('#height-input').val(c.h); }});        
+        $wnd.jQuery('#cropbox').Jcrop({
+            boxWidth: 700,
+            boxHeight: 400,
+            onChange: function(c) {
+                $wnd.jQuery('#left-input').val(c.x); $wnd.jQuery('#top-input').val(c.y); $wnd.jQuery('#width-input').val(c.w); $wnd.jQuery('#height-input').val(c.h);
+            }
+        });        
     }-*/;
 
     private void cropImage(final String path, final String targetName, final int top, final int left, final int width, final int height, final boolean force) {

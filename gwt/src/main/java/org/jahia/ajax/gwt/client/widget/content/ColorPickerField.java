@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.widget.form.AdapterField;
 import com.extjs.gxt.ui.client.widget.menu.ColorMenu;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -59,5 +60,11 @@ public class ColorPickerField extends AdapterField {
         if (value != null) {
             text.setValue(value.toString());
         }
+    }
+
+    @Override
+    protected void onRender(Element target, int index) {
+        text.setName(name);
+        super.onRender(target, index);
     }
 }

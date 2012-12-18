@@ -224,6 +224,7 @@ public class CKEditorField extends Field<String> {
     @Override
     protected void onRender(Element target, int index) {
         final Component component = getComponent();
+        ckeditor.setName(name);
         if (!component.isRendered()) {
             component.render(target, index);
         }

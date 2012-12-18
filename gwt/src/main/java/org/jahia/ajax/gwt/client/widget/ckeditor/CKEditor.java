@@ -62,6 +62,7 @@ public class CKEditor extends Component {
     private boolean isDetached = false;
 	private CKEditorField field;
     private boolean focus=false;
+    private String name;
 
     public CKEditor(CKEditorConfig config, CKEditorField field) {
     	super();
@@ -82,6 +83,7 @@ public class CKEditor extends Component {
     @Override
     protected void onRender(Element target, int index) {
         Element ele = DOM.createTextArea();
+        DOM.setElementAttribute(target, "name", name);
         DOM.setElementAttribute(ele, "width", config.getWidth());
         DOM.setElementAttribute(ele, "height", config.getHeight());
         setElement(ele, target, index);
@@ -195,6 +197,10 @@ public class CKEditor extends Component {
     }
     public void onBlur() {
         field.onBlur();
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getInstanceId() {

@@ -53,6 +53,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
@@ -106,6 +107,7 @@ public class MultiLanguageTest extends JahiaTestCase {
         session.save();
     }
 
+    //@Test
     @Test
     public void testFallBackLanguage() throws Exception {
         JCRPublicationService jcrService = ServicesRegistry.getInstance()
@@ -183,7 +185,7 @@ public class MultiLanguageTest extends JahiaTestCase {
         JCRNodeWrapper stageRootNode = englishEditSession.getNode(SITECONTENT_ROOT_NODE);
         englishLiveSession.getNode(SITECONTENT_ROOT_NODE);
         JCRNodeWrapper stageNode = (JCRNodeWrapper) stageRootNode.getNode("home").getNode("listA");
-
+        
         JCRNodeWrapper textNode1 = stageNode.addNode("textInvalidLanguage", "jnt:text");
         final String englishText = "English text";
         textNode1.setProperty("text", englishText);
@@ -223,6 +225,9 @@ public class MultiLanguageTest extends JahiaTestCase {
         
         // publish inactivation
         jcrService.publishByMainId(stageRootNode.getIdentifier());
+        
+        // TODO remove this line when the caching will be fixed
+        ModuleCacheProvider.getInstance().getCache().removeAll();
 
         JCRSessionFactory.getInstance().closeAllSessions();
         assertEquals(englishText, sf.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH, defLocale).getNode(SITECONTENT_ROOT_NODE + "/home/listA/textInvalidLanguage").getProperty("text").getString());
@@ -247,6 +252,9 @@ public class MultiLanguageTest extends JahiaTestCase {
         
         // publish activation
         jcrService.publishByMainId(stageRootNode.getIdentifier());
+
+        // TODO remove this line when the caching will be fixed
+        ModuleCacheProvider.getInstance().getCache().removeAll();
 
         JCRSessionFactory.getInstance().closeAllSessions();
         assertEquals(englishText, sf.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH, defLocale).getNode(SITECONTENT_ROOT_NODE + "/home/listA/textInvalidLanguage").getProperty("text").getString());

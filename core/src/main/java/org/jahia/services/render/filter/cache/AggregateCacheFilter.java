@@ -495,23 +495,23 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             OutputDocument outputDocument = new OutputDocument(htmlContent);
             for (Tag esiIncludeTag : esiIncludeTags) {
                 StartTag segment = (StartTag) esiIncludeTag;
-                if (logger.isDebugEnabled()) {
+                /*if (logger.isDebugEnabled()) {
                     logger.debug(segment.toString());
-                }
+                }*/
                 String cacheKey = segment.getAttributeValue("src");
 
                 String replacedCacheKey = replacePlaceholdersInCacheKey(renderContext, cacheKey);
                 cacheKey = AclCacheKeyPartGenerator.PER_USER_PATTERN.matcher(cacheKey).replaceAll(renderContext.getUser().getUsername());
 
-                if (logger.isDebugEnabled()) {
+                /*if (logger.isDebugEnabled()) {
                     logger.debug("Check if {} is in cache", replacedCacheKey);
-                }
+                }*/
                 if (cache.isKeyInCache(replacedCacheKey)) {
                     final Element element = cache.get(replacedCacheKey);
                     if (element != null && element.getValue() != null) {
-                        if (logger.isDebugEnabled()) {
+                        /*if (logger.isDebugEnabled()) {
                             logger.debug("{} has been found in cache", replacedCacheKey);
-                        }
+                        }*/
                         @SuppressWarnings("unchecked")
                         final CacheEntry<String> cacheEntry = (CacheEntry<String>) element.getValue();
                         String content = cacheEntry.getObject();
@@ -580,7 +580,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     renderContext.getFallbackLocale());
             JCRNodeWrapper node = null;
             try {
-                node = currentUserSession.getNode(keyAttrbs.get("path"));
+                node = currentUserSession.getNode(keyAttrbs.get("path").replaceAll("_mr_",""));
             } catch (PathNotFoundException e) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Node {} is no longer available." + " Replacing output with empty content.",

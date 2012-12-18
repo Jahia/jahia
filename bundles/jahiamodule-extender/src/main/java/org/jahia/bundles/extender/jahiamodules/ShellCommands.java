@@ -17,19 +17,8 @@ public class ShellCommands {
     }
 
     public void modules() {
-        Map<Bundle, Activator.ModuleState> moduleStates = activator.getModuleStates();
 
-        Map<Activator.ModuleState, Set<Bundle>> modulesByState = new TreeMap<Activator.ModuleState, Set<Bundle>>();
-        for (Bundle bundle : moduleStates.keySet()) {
-            Activator.ModuleState moduleState = moduleStates.get(bundle);
-            Set<Bundle> bundlesInState = modulesByState.get(moduleState);
-            if (bundlesInState == null) {
-                bundlesInState = new TreeSet<Bundle>();
-            }
-            bundlesInState.add(bundle);
-            modulesByState.put(moduleState, bundlesInState);
-        }
-
+        Map<Activator.ModuleState, Set<Bundle>> modulesByState = activator.getModulesByState();
         for (Activator.ModuleState moduleState : modulesByState.keySet()) {
             System.out.println("");
             System.out.println("Module State: " + moduleState);

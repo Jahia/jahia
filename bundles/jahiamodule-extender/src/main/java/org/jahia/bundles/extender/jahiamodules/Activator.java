@@ -75,7 +75,7 @@ public class Activator implements BundleActivator {
     private Map<String,List<Bundle>> toBeStarted = new HashMap<String, List<Bundle>>();
 
     public static enum ModuleState {
-        UNINSTALLED, UNRESOLVED, RESOLVED, WAITING_TO_BE_PARSED, PARSED, INSTALLED, UPDATED, STOPPED, STOPPING, STARTING, WAITING_TO_BE_STARTED, STARTED;
+        UNINSTALLED, UNRESOLVED, RESOLVED, WAITING_TO_BE_PARSED, PARSED, INSTALLED, UPDATED, STOPPED, STOPPING, STARTING, WAITING_TO_BE_STARTED, ERROR_DURING_START, STARTED;
     }
     private Map<Bundle, ModuleState> moduleStates = new TreeMap<Bundle, ModuleState>();
 
@@ -475,7 +475,7 @@ public class Activator implements BundleActivator {
                     startedBundles.add(bundle);
                 } catch (Throwable t) {
                     logger.error("Error during startup of dependent module " + bundle.getSymbolicName() + ", module is not started !", t);
-                    moduleStates.put(bundle, ModuleState.WAITING_TO_BE_STARTED);
+                    moduleStates.put(bundle, ModuleState.ERROR_DURING_START);
                 }
             }
             toBeStarted.get(key).removeAll(startedBundles);
@@ -651,5 +651,19 @@ public class Activator implements BundleActivator {
 
     public Map<Bundle, ModuleState> getModuleStates() {
         return moduleStates;
+    }
+
+    public Map<ModuleState, Set<Bundle>> getModulesByState() {
+        Map<Activator.ModuleState, Set<Bundle>> modulesByState = new TreeMap<Activator.ModuleState, Set<Bundle>>();
+        for (Bundle bundle : moduleStates.keySet()) {
+            Activator.ModuleState moduleState = moduleStates.get(bundle);
+            Set<Bundle> bundlesInState = modulesByState.get(moduleState);
+            if (bundlesInState == null) {
+                bundlesInState = new TreeSet<Bundle>();
+            }
+            bundlesInState.add(bundle);
+            modulesByState.put(moduleState, bundlesInState);
+        }
+        return modulesByState;
     }
 }

@@ -154,7 +154,6 @@ public class AreaModule extends SimpleModule {
             dash.add(html);
 
             add(dash);
-            setBorders(false);
         } else {
             setBorders(false);
         }

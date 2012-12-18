@@ -64,6 +64,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
+import org.jahia.ajax.gwt.client.widget.content.MultipleTextField;
 
 import java.util.*;
 
@@ -564,22 +565,13 @@ public class PropertiesEditor extends FormPanel {
                             new GWTJahiaNodePropertyValue(node, propDef.getRequiredType());
                     values.add(propertyValue);
                 }
-            } else {
-                if(propDef.isMultiple()) {
-                    Object fldValue = fld.getValue();
-                    if(propDef.getSelector()==GWTJahiaNodeSelectorType.SMALLTEXT) {
-                        if (fldValue != null) {
-                            String[] strings = fldValue.toString().split("(,|;) ?");
-                            for (String string : strings) {
-                                if(!"".equals(string.trim())) {
-                                    values.add(getPropertyValue(string.trim(),propDef.getRequiredType()));
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    values.add(getPropertyValue(fld.getValue(), propDef.getRequiredType()));
+            } else if (fld instanceof MultipleTextField) {
+                List l = (List) fld.getValue();
+                for (Object s : l) {
+                    values.add(getPropertyValue(s, propDef.getRequiredType()));
                 }
+            } else {
+                values.add(getPropertyValue(fld.getValue(), propDef.getRequiredType()));
             }
         }
 

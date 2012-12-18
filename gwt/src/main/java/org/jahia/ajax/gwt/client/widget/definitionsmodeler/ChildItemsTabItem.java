@@ -242,6 +242,22 @@ public class ChildItemsTabItem extends EditEngineTabItem {
     }
 
     private void displayProperties(final GWTJahiaNode item, List<GWTJahiaNodeType> nodeTypes, Map<String, GWTJahiaNodeProperty> properties) {
+        // change property
+        for (GWTJahiaNodeType nt: nodeTypes) {
+            if (nt.getName().equals("jnt:unstructuredChildNodeDefinition") ||
+                    nt.getSuperTypes().contains("jnt:unstructuredChildNodeDefinition") ||
+                    nt.getName().equals("jnt:unstructuredPropertyDefinition") ||
+                    nt.getSuperTypes().contains("jnt:unstructuredPropertyDefinition")) {
+
+                for (GWTJahiaItemDefinition def : nt.getInheritedItems()) {
+                    if (def.isHidden()) {
+                        def.setHidden(false);
+                        def.setProtected(true);
+                    }
+                }
+
+            }
+        }
         propertiesEditor = new PropertiesEditor(nodeTypes, properties, null);
         propertiesEditor.setInitializersValues(initializerMap);
         propertiesEditors.put(item, propertiesEditor);

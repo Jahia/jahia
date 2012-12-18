@@ -896,8 +896,8 @@ extends = jnt:content
  - j:isQueryOrderable (BOOLEAN) = true
  - j:isFacetable (BOOLEAN)
  - j:isHierarchical (BOOLEAN)
- - j:index (STRING,choicelist) = 'TOKENIZED' nofulltext
-   < 'NO', 'TOKENIZED', 'UNTOKENIZED'
+ - j:index (STRING,choicelist) = 'tokenized' nofulltext
+   < 'no', 'tokenized', 'untokenized'
  - j:scoreboost (DOUBLE) = 1
  - j:analyzer (STRING)
  - j:onConflictAction (STRING,choicelist) = 'LATEST' nofulltext
@@ -911,7 +911,7 @@ extends = jnt:content
    < 'String', 'URI', 'Binary', 'Long', 'Double',
      'Decimal', 'Boolean', 'Date', 'Name', 'Path',
      'Reference', 'WeakReference', 'undefined'
- - j:mandatory (BOOLEAN) hidden
+ - j:multiple (BOOLEAN) hidden
 
 [jnt:childNodeDefinition] > jnt:itemDefinition abstract
  - j:autoCreated (BOOLEAN)

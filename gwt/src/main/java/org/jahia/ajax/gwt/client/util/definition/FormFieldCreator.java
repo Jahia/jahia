@@ -715,6 +715,18 @@ public class FormFieldCreator {
         }
 
         @Override
+        public void setReadOnly(boolean readOnly) {
+            if (readOnly) {
+                buttonBar.disable();
+                fromField.disable();
+            } else {
+                buttonBar.enable();
+                fromField.enable();
+            }
+            super.setReadOnly(readOnly);
+        }
+
+        @Override
         protected boolean validateValue(String value) {
             boolean b = !allowBlank && toField.getStore().getCount() == 0;
             if (b) {

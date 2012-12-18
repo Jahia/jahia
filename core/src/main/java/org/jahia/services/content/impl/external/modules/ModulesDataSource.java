@@ -508,6 +508,39 @@ public class ModulesDataSource extends VFSDataSource {
     }
 
     @Override
+    public void move(String oldPath, String newPath) throws PathNotFoundException {
+        String[] splitOldPath = oldPath.split("/");
+        String[] splitNewPath = newPath.split("/");
+        if (oldPath.endsWith(".cnd")) {
+            nodeTypeRegistryMap.remove(splitOldPath[1]);
+            super.move(oldPath, newPath);
+        } else if (splitOldPath.length >= 2 && splitOldPath[splitOldPath.length - 2].endsWith(".cnd")
+                && splitNewPath.length >= 2 && splitNewPath[splitNewPath.length - 2].endsWith(".cnd")) { // nodeType rename
+            String oldNodeTypeName = splitOldPath[splitOldPath.length - 1];
+            String newNodeTypeName = splitNewPath[splitNewPath.length - 1];
+            String module = splitOldPath[1];
+            try {
+                NodeTypeRegistry nodeTypeRegistry = loadRegistry(StringUtils.substringBeforeLast(oldPath, "/"), module);
+                ExtendedNodeType nodeType = nodeTypeRegistry.getNodeType(oldNodeTypeName);
+                nodeTypeRegistry.unregisterNodeType(oldNodeTypeName);
+                Name name = new Name(newNodeTypeName, nodeTypeRegistry.getNamespaces());
+                nodeType.setName(name);
+                nodeTypeRegistry.addNodeType(name, nodeType);
+                nodeType.validate();
+                writeDefinitionFile(nodeTypeRegistry, StringUtils.substringBeforeLast(oldPath, "/"), module);
+            } catch (ConstraintViolationException e) {
+                throw new PathNotFoundException("Failed to move node type " + oldNodeTypeName, e);
+            } catch (NoSuchNodeTypeException e) {
+                nodeTypeRegistryMap.remove(module);
+                throw new PathNotFoundException("Failed to move node type " + oldNodeTypeName, e);
+            }
+        } else if (splitOldPath.length >= 3 && splitOldPath[splitOldPath.length - 3].endsWith(".cnd")) {
+        } else {
+            super.move(oldPath, newPath);
+        }
+    }
+
+    @Override
     public void saveItem(ExternalData data) {
         super.saveItem(data);
 

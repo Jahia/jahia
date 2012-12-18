@@ -220,7 +220,7 @@ public class PropertiesHelper {
      */
     public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, Set<String> removedTypes, JahiaUser user, JCRSessionWrapper currentUserSession, Locale uiLocale) throws RepositoryException {
         for (GWTJahiaNode aNode : nodes) {
-            JCRNodeWrapper objectNode = currentUserSession.getNodeByUUID(aNode.getUUID());
+            JCRNodeWrapper objectNode = currentUserSession.getNode(aNode.getPath());
             List<String> types = aNode.getNodeTypes();
             if (removedTypes != null) {
                 for (ExtendedNodeType mixin : objectNode.getMixinNodeTypes()) {

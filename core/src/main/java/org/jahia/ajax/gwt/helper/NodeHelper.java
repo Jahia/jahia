@@ -343,8 +343,8 @@ class NodeHelper {
 
         try {
             if (node.isNodeType("jnt:template")) {
-                Boolean value = JCRContentUtils.getChildrenOfType(node, "jnt:layoutContentList").isEmpty() && !JCRContentUtils.getChildrenOfType(node, "jnt:contentList").isEmpty();
-                n.set("compatibilityMode", value);
+                Boolean value = !JCRContentUtils.getChildrenOfType(node, "jnt:layoutContentList").isEmpty() || JCRContentUtils.getChildrenOfType(node, "jnt:contentList").isEmpty();
+                n.set("supportsLayoutMode", value);
             }
         } catch (RepositoryException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

@@ -309,7 +309,7 @@
         <property name="titleKey" value="label.studio.layout"/>
         <property name="icon" value="studio"/>
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchToLayoutConfigActionItem">
                 <property name="configurationName" value="studiolayoutmode"/>
             </bean>
         </property>

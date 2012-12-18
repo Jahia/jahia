@@ -82,8 +82,12 @@ class HierarchicalResourceBundle extends ResourceBundle {
     private ResourceBundle getBundle() {
         if (bundle == null) {
             try {
-                bundle = ResourceBundle.getBundle(lookupChain.get(0), sourceLocale,
-                        JahiaResourceBundleControl.getInstance());
+                if (lookupChain.get(0) != null) {
+                    bundle = ResourceBundle.getBundle(lookupChain.get(0), sourceLocale,
+                            JahiaResourceBundleControl.getInstance());
+                } else {
+                    bundle = NONEXISTENT_BUNDLE;
+                }
             } catch (MissingResourceException e) {
                 bundle = NONEXISTENT_BUNDLE;
             }

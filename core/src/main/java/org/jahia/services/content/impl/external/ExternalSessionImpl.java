@@ -200,7 +200,26 @@ public class ExternalSessionImpl implements Session {
             throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
         //todo : store move in session and move node in save
         if (repository.getDataSource() instanceof ExternalDataSource.Writable) {
+            ExternalData oldData = repository.getDataSource().getItemByPath(source);
             ((ExternalDataSource.Writable) repository.getDataSource()).move(source, dest);
+            ExternalData newData = repository.getDataSource().getItemByPath(dest);
+            if (!oldData.getId().equals(newData.getId())) {
+                SessionFactory hibernateSession = repository.getStoreProvider().getHibernateSession();
+                StatelessSession statelessSession = hibernateSession.openStatelessSession();
+                try {
+                    Criteria criteria = statelessSession.createCriteria(UuidMapping.class);
+                    criteria.add(Restrictions.eq("internalUuid", oldData.getId()));
+                    criteria.add(Restrictions.eq("providerKey", repository.getProviderKey()));
+                    List list = criteria.list();
+                    if (list.size() > 0) {
+                        UuidMapping uuidMapping = (UuidMapping) list.get(0);
+                        uuidMapping.setExternalId(newData.getId());
+                        statelessSession.update(uuidMapping);
+                    }
+                } finally {
+                    statelessSession.close();
+                }
+            }
         } else {
             throw new UnsupportedRepositoryOperationException();
         }

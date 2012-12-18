@@ -43,6 +43,7 @@ package org.jahia.services.content.nodetypes.initializers;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -71,15 +72,21 @@ public class NodeTypesChoiceListInitializerImpl implements ChoiceListInitializer
             List<String> systemIds = null;
             if (param.indexOf(";fromDependencies") > -1) {
                 systemIds = new ArrayList<String>();
-                JahiaTemplatesPackage templatePackage = ((JCRNodeWrapper) context.get("contextNode")).getResolveSite().getTemplatePackage();
-                systemIds.add(templatePackage.getRootFolder());
-                for (JahiaTemplatesPackage dependency : templatePackage.getDependencies()) {
-                    systemIds.add(dependency.getRootFolder());
+                JCRNodeWrapper contextNode = (JCRNodeWrapper) context.get("contextNode");
+                if (contextNode != null) {
+                    JCRSiteNode site = contextNode.getResolveSite();
+                    if (site != null) {
+                        JahiaTemplatesPackage templatePackage = site.getTemplatePackage();
+                        systemIds.add(templatePackage.getRootFolder());
+                        for (JahiaTemplatesPackage dependency : templatePackage.getDependencies()) {
+                            systemIds.add(dependency.getRootFolder());
+                        }
+                        systemIds.add("system-extension");
+                        systemIds.add("system-standard");
+                        systemIds.add("system-jahia");
+                        systemIds.add("system-system");
+                    }
                 }
-                systemIds.add("system-extension");
-                systemIds.add("system-standard");
-                systemIds.add("system-jahia");
-                systemIds.add("system-system");
             }
             if (param.startsWith("MIXIN")) {
                 nti = NodeTypeRegistry.getInstance().getMixinNodeTypes(systemIds);

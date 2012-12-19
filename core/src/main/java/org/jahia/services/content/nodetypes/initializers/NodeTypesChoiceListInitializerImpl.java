@@ -72,9 +72,12 @@ public class NodeTypesChoiceListInitializerImpl implements ChoiceListInitializer
             List<String> systemIds = null;
             if (param.indexOf(";fromDependencies") > -1) {
                 systemIds = new ArrayList<String>();
-                JCRNodeWrapper contextNode = (JCRNodeWrapper) context.get("contextNode");
-                if (contextNode != null) {
-                    JCRSiteNode site = contextNode.getResolveSite();
+                JCRNodeWrapper node = (JCRNodeWrapper) context.get("contextNode");
+                if (node == null) {
+                    node = (JCRNodeWrapper) context.get("contextParent");
+                }
+                if (node != null) {
+                    JCRSiteNode site = node.getResolveSite();
                     if (site != null) {
                         JahiaTemplatesPackage templatePackage = site.getTemplatePackage();
                         systemIds.add(templatePackage.getRootFolder());

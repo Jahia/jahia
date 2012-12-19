@@ -112,21 +112,7 @@ public class ModulesDataSource extends VFSDataSource {
                     ExtendedNodeType nodeType = loadRegistry(StringUtils.substringBeforeLast(path,"/"), splitPath[1]).getNodeType(nodeTypeName);
                     for  (ExtendedItemDefinition itemDefinition : nodeType.getDeclaredItems()) {
                         if (itemDefinition.isUnstructured()) {
-                            if (itemDefinition.isNode()) {
-                                String s = "";
-                                for (ExtendedNodeType e : ((ExtendedNodeDefinition) itemDefinition).getRequiredPrimaryTypes()) {
-                                    s += e.getName() + " ";
-                                }
-                                children.add(UNSTRUCTURED_CHILD_NODE + s.trim());
-                            } else {
-                                if (((ExtendedPropertyDefinition) itemDefinition).isMultiple()) {
-                                    int i = 256 + ((ExtendedPropertyDefinition) itemDefinition).getRequiredType();
-                                    children.add(UNSTRUCTURED_PROPERTY + i);
-                                }   else {
-                                    children.add(UNSTRUCTURED_PROPERTY + ((ExtendedPropertyDefinition) itemDefinition).getRequiredType());
-                                }
-
-                            }
+                            children.add(computeUntructuredItemName(itemDefinition));
                         } else {
                             children.add(itemDefinition.getName());
                         }
@@ -190,7 +176,7 @@ public class ModulesDataSource extends VFSDataSource {
             FileObject parent = fileObject.getParent();
             type = parent != null
                     && StringUtils.equals(Constants.JAHIANT_RESOURCEBUNDLE_FOLDER,
-                            getDataType(parent)) ? type : null;
+                    getDataType(parent)) ? type : null;
         }
         return type != null ? type : super.getDataType(fileObject);
     }
@@ -588,8 +574,18 @@ public class ModulesDataSource extends VFSDataSource {
                 Comparator<ExtendedItemDefinition> c =  new Comparator<ExtendedItemDefinition>() {
                     @Override
                     public int compare(ExtendedItemDefinition o1, ExtendedItemDefinition o2) {
-                        String s1 = o1.getName();
-                        String s2 = o2.getName();
+                        String s1;
+                        String s2;
+                        if (o1.isUnstructured()) {
+                            s1 = computeUntructuredItemName(o1);
+                        } else {
+                            s1 = o1.getName();
+                        }
+                        if (o2.isUnstructured()) {
+                            s2 = computeUntructuredItemName(o2);
+                        }else {
+                            s2 = o2.getName();
+                        }
                         if (s1 != null && s2 != null) {
                             int i1 = children.indexOf(s1);
                             int i2 = children.indexOf(s2);
@@ -612,6 +608,25 @@ public class ModulesDataSource extends VFSDataSource {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
+    }
+
+    private String computeUntructuredItemName(ExtendedItemDefinition o1) {
+        String s1;
+        if (o1.isNode()) {
+            String s = "";
+            for (ExtendedNodeType e : ((ExtendedNodeDefinition) o1).getRequiredPrimaryTypes()) {
+                s += e.getName() + " ";
+            }
+            s1 = UNSTRUCTURED_CHILD_NODE + s.trim();
+        } else {
+            if (((ExtendedPropertyDefinition) o1).isMultiple()) {
+                int i = 256 + ((ExtendedPropertyDefinition) o1).getRequiredType();
+                s1 = UNSTRUCTURED_PROPERTY + i;
+            }   else {
+                s1 = UNSTRUCTURED_PROPERTY + ((ExtendedPropertyDefinition) o1).getRequiredType();
+            }
+        }
+        return s1;
     }
 
     @Override

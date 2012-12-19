@@ -53,7 +53,6 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
@@ -226,9 +225,6 @@ public class MultiLanguageTest extends JahiaTestCase {
         // publish inactivation
         jcrService.publishByMainId(stageRootNode.getIdentifier());
         
-        // TODO remove this line when the caching will be fixed
-        ModuleCacheProvider.getInstance().getCache().removeAll();
-
         JCRSessionFactory.getInstance().closeAllSessions();
         assertEquals(englishText, sf.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH, defLocale).getNode(SITECONTENT_ROOT_NODE + "/home/listA/textInvalidLanguage").getProperty("text").getString());
         assertFalse("French node should not be available in live",  sf.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.FRENCH, defLocale).nodeExists(SITECONTENT_ROOT_NODE + "/home/listA/textInvalidLanguage"));
@@ -252,9 +248,6 @@ public class MultiLanguageTest extends JahiaTestCase {
         
         // publish activation
         jcrService.publishByMainId(stageRootNode.getIdentifier());
-
-        // TODO remove this line when the caching will be fixed
-        ModuleCacheProvider.getInstance().getCache().removeAll();
 
         JCRSessionFactory.getInstance().closeAllSessions();
         assertEquals(englishText, sf.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH, defLocale).getNode(SITECONTENT_ROOT_NODE + "/home/listA/textInvalidLanguage").getProperty("text").getString());

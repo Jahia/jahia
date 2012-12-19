@@ -1,10 +1,17 @@
 .x-hide-display {
   display: none !important;
 }
-
+.x-panel-buttons-layer {
+  top:17px;
+  left:0;
+  position:absolute;
+  z-index: 99999;
+    background-color:#fff;
+    border:1px solid #ccc;
+    padding:10px;
+}
 .x-insert-bar {
   position: absolute;
-
   z-index: 99999;
 }
 
@@ -29,7 +36,7 @@
     background : #ffffcc url(../images/xtheme-jahia-andromeda/panel/panellinker.png) top left;
     color: #000 !important;
 	font-weight: bold;
-    font-size: 9px;
+    font-size: 10px;
     border:1px solid #ffcc33;
 	padding: 10px 5px ;
 	vertical-align: middle;
@@ -38,7 +45,7 @@
 	margin-top:5px;
     text-align:center;
     font-family: tahoma, arial, verdana, sans-serif;
-    font-size: 9px;
+    font-size: 10px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
@@ -60,123 +67,68 @@
 /** styles added for list module in order to make them as nice as jahia6 **/
 
 .x-panel-header-simplemodule {
-    background : #ccc url(../images/xtheme-jahia-andromeda/panel/simplemodule.png) top left;
+    background : #eaeaea;
+    border: 1px solid #E5E5E5;
 	padding: 4px;
     color: #333 !important;
 	font-weight: bold;
-    font-size: 9px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	-moz-box-shadow: 0 1px 3px #999;
-	-webkit-box-shadow: 0 1px 3px #999;
-	box-shadow: 0 1px 3px #999;
-    border:none;
-	padding: 2px 5px ;
-	vertical-align: middle;
+    font-size: 10px;
 	margin-bottom:2px;
-	display:inline;
+	display:block;
 }
 
 .x-panel-header-listmodule {
-    background : #333333 url(../images/xtheme-jahia-andromeda/panel/lismodule.png) top left;
+    background : #333333;
+    border: 1px solid #000;
 	padding: 4px;
     color: #fff !important;
 	font-weight: bold;
-    font-size: 9px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	-moz-box-shadow: 0 1px 3px #999;
-	-webkit-box-shadow: 0 1px 3px #999;
-	box-shadow: 0 1px 3px #999;
-    border:none;
-	padding: 2px 5px ;
-	vertical-align: middle;
+    font-size: 10px;
 	margin-bottom:2px;
-	display:inline;
+	display:block;
 }
 
 .x-panel-header-areamodule {
-    background : #5f7f94 url(../images/xtheme-jahia-andromeda/panel/areamodule.png) top left;
+    background : #333;
+    border: 1px solid #000;
 	padding: 4px;
     color: #fff !important;
 	font-weight: bold;
-    font-size: 9px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	-moz-box-shadow: 0 1px 3px #999;
-	-webkit-box-shadow: 0 1px 3px #999;
-	box-shadow: 0 1px 3px #999;
-    border:none;
-	padding: 2px 5px ;
-	vertical-align: middle;
+    font-size: 10px;
 	margin-bottom:2px;
-	display:inline;
+	display:block;
 }
 .x-panel-header-absoluteAreamodule {
     background : #ff5555;
+    border: 1px solid #c00;
 	padding: 4px;
-    color: #fff !important;
+    color: #000 !important;
 	font-weight: bold;
-    font-size: 9px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	-moz-box-shadow: 0 1px 3px #999;
-	-webkit-box-shadow: 0 1px 3px #999;
-	box-shadow: 0 1px 3px #999;
-    border:none;
-	padding: 2px 5px ;
-	vertical-align: middle;
+    font-size: 10px;
 	margin-bottom:2px;
-	display:inline;
+	display:block;
 }
 
 .x-panel-header-lockedmodule {
-    background : #660000 url(../images/xtheme-jahia-andromeda/panel/lockedmodule.png) top left;
+    background : #660000;
+    border: 1px solid #c00;
+	padding: 4px;
     color: #ffcccc !important;
+	font-weight: bold;
+    font-size: 10px;
+	margin-bottom:2px;
+	display:block;
 }
 
 .x-panel-placeholder {
-    background : #e1ebf1 url(../images/xtheme-jahia-andromeda/panel/placeholder.png) top left;
-    color: #333 !important;
+    background : #dfe8f6 url(../images/placeholder-area.png) top left;
+    border: 1px solid #a3bae9;
+	padding: 4px;
+    color: #111 !important;
 	font-weight: bold;
-    font-size: 9px;
-    border:1px solid #bfcfd9;
-	padding: 0px 5px ;
-	vertical-align: middle;
-    horizontal-align:middle;
+    font-size: 10px;
 	margin-bottom:2px;
-    text-align:left;
-    font-family: tahoma, arial, verdana, sans-serif;
-    font-size: 9px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-
-}
-
-.x-panel-buttons-layer {
-    background : #e1ebf1 url(../images/xtheme-jahia-andromeda/panel/placeholder.png) top left;
-    color: #333 !important;
-	font-weight: bold;
-    font-size: 9px;
-    position: absolute;
-    z-index: 1500;
-    border:1px solid #bfcfd9;
-	padding: 0px 5px ;
-	vertical-align: middle;
-    horizontal-align:middle;
-	margin-bottom:2px;
-    text-align:left;
-    font-family: tahoma, arial, verdana, sans-serif;
-    font-size: 9px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-
+	display:block;
 }
 
  .label-placeholder, div.button-placeholder  {
@@ -185,7 +137,7 @@
 
  button.button-placeholder, div.button-placeholder {
 	font-family:tahoma,arial,verdana,sans-serif;
-	font-size:9px;
+	font-size:10px;
 	font-weight:bold;
 	text-align:center;
 	text-transform:none;
@@ -337,23 +289,26 @@
 /****************************************************************************/
  .deleted-overlay {
 	overflow: hidden;
-    background :#eaeaea url(images/deleted-overlay.png) top left;
+    background :#eaeaea url(../images/deleted-overlay.png) top left;
 	color:#f00;
 	border: 1px dashed #ccc;
 	font-weight:bold;
 }
 
 .studiomodearea {
+    min-height:100px;
     overflow: hidden;
     background-color:#d8effb;
-    /*padding:5px;*/
-    color:#666;
+    padding:2px;
+    color:#111;
     position:relative;
     border: 1px dashed #99ccff;
+    font-family: tahoma, arial, verdana, sans-serif;
+    font-size:11px;
 }
 .studiomodeareaTemplate{
-/*    background-color: #336699;*/
-    /*border:1px solid #003366;*/
+    /* background-color: #336699;
+    border:1px solid #003366;
     color:#111;
     padding:5px;
     left: 25%;
@@ -363,25 +318,27 @@
     margin-right: auto;
     text-align:center;
     font-family: tahoma, arial, verdana, sans-serif;
-    /*-moz-border-radius: 3px;*/
-    /*-webkit-border-radius: 3px;*/
-    /*border-radius: 3px;*/
-    /*-moz-box-shadow: 0 1px 3px #999;*/
-    /*-webkit-box-shadow: 0 1px 3px #999;*/
-    /*box-shadow: 0 1px 3px #999;*/
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -moz-box-shadow: 0 1px 3px #999;
+    -webkit-box-shadow: 0 1px 3px #999;
+    box-shadow: 0 1px 3px #999;*/
 }
 .studiolayoutmodearea {
-    height:100px;
+    min-height:100px;
     overflow: hidden;
     background-color:#d8effb;
-    /*padding:5px;*/
-    color:#666;
+    padding:2px;
+    color:#111;
     position:relative;
     border: 1px dashed #99ccff;
+    font-family: tahoma, arial, verdana, sans-serif;
+    font-size:11px;
 }
 .studiolayoutmodeareaTemplate{
     /*background-color: #336699;*/
-    /*border:1px solid #003366;*/
+    /*border:1px solid #003366;
     color:#111;
     padding:5px;
     position:absolute;
@@ -392,27 +349,30 @@
     margin-right: auto;
     text-align:center;
     font-family: tahoma, arial, verdana, sans-serif;
-    /*-moz-border-radius: 3px;*/
-    /*-webkit-border-radius: 3px;*/
-    /*border-radius: 3px;*/
-    /*-moz-box-shadow: 0 1px 3px #999;*/
-    /*-webkit-box-shadow: 0 1px 3px #999;*/
-    /*box-shadow: 0 1px 3px #999;*/
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -moz-box-shadow: 0 1px 3px #999;
+    -webkit-box-shadow: 0 1px 3px #999;
+    box-shadow: 0 1px 3px #999;*/
 }
 .AreaInformation{
     color:#666;
 }
 .studiomodeabsoluteArea {
+    min-height:100px;
     overflow: hidden;
     background-color:#ffcccc;
-    /*padding:5px;*/
-    color:#666;
+    padding:2px;
+    color:#111;
     position:relative;
     border: 1px dashed #cc6666;
+    font-family: tahoma, arial, verdana, sans-serif;
+    font-size:11px;
 }
 .studiomodeabsoluteAreaTemplate{
-    /*background-color: #c30;*/
-    /*border:1px solid #990000;*/
+    /*background-color: #c30;
+    border:1px solid #990000;
     color:#111;
     padding:5px;
     left: 25%;
@@ -422,25 +382,27 @@
     margin-right: auto;
     text-align:center;
     font-family: tahoma, arial, verdana, sans-serif;
-    /*-moz-border-radius: 3px;*/
-    /*-webkit-border-radius: 3px;*/
-    /*border-radius: 3px;*/
-    /*-moz-box-shadow: 0 1px 3px #999;*/
-    /*-webkit-box-shadow: 0 1px 3px #999;*/
-    /*box-shadow: 0 1px 3px #999;*/
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -moz-box-shadow: 0 1px 3px #999;
+    -webkit-box-shadow: 0 1px 3px #999;
+    box-shadow: 0 1px 3px #999;*/
 }
 .studiolayoutmodeabsoluteArea {
-    height:100px;
+    min-height:100px;
     overflow: hidden;
     background-color:#ffcccc;
-    /*padding:5px;*/
-    color:#666;
+    padding:2px;
+    color:#111;
     position:relative;
     border: 1px dashed #cc6666;
+    font-family: tahoma, arial, verdana, sans-serif;
+    font-size:11px;
 }
 .studiolayoutmodeabsoluteAreaTemplate{
-    /*background-color: #c30;*/
-    /*border:1px solid #990000;*/
+    /*background-color: #c30;
+    border:1px solid #990000;
     color:#111;
     padding:5px;
     position:absolute;
@@ -451,24 +413,26 @@
     margin-right: auto;
     text-align:center;
     font-family: tahoma, arial, verdana, sans-serif;
-    /*-moz-border-radius: 3px;*/
-    /*-webkit-border-radius: 3px;*/
-    /*border-radius: 3px;*/
-    /*-moz-box-shadow: 0 1px 3px #999;*/
-    /*-webkit-box-shadow: 0 1px 3px #999;*/
-    /*box-shadow: 0 1px 3px #999;*/
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -moz-box-shadow: 0 1px 3px #999;
+    -webkit-box-shadow: 0 1px 3px #999;
+    box-shadow: 0 1px 3px #999;*/
 }
 .mainResourceDisplay {
-    height:100px;
+    min-height:100px;
 	overflow:hidden;
 	background-color:#eaeaea;
-	/*padding:5px;*/
-	color:#666;
+	padding:2px;
+	color:#111;
 	position:relative;
 	border: 1px dashed #333;
+    font-family: tahoma, arial, verdana, sans-serif;
+    font-size:11px;
 }
  .mainResourceDisplayTemplate{
-	background-color: #333;
+	/*background-color: #333;
 	border:1px solid #000;
 	color:#fff;
 	padding:5px;
@@ -485,19 +449,21 @@
 	border-radius: 3px;
 	-moz-box-shadow: 0 1px 3px #999;
 	-webkit-box-shadow: 0 1px 3px #999;
-	box-shadow: 0 1px 3px #999;
+	box-shadow: 0 1px 3px #999;*/
 }
  .authorDisplayArea {
-	height:100px;
+	min-height:100px;
 	overflow: hidden;
-	padding:5px;
-	color:#666;
+	padding:2px;
+	color:#111;
 	position:relative;
 	border: 1px dashed #99ccff;
-	background:#d8effb url(images/authorDisplayArea-bg.png) no-repeat scroll 50% 100% ;
+	background:#d8effb url(../images/authorDisplayArea-bg.png) no-repeat scroll 50% 100% ;
+    font-family: tahoma, arial, verdana, sans-serif;
+    font-size:11px;
 }
  .authorDisplayTemplate{
-	background-color: #336699;
+	/*background-color: #336699;
 	border:1px solid #003366;
 	color:#fff;
 	padding:5px;
@@ -514,28 +480,30 @@
 	border-radius: 3px;
 	-moz-box-shadow: 0 1px 3px #999;
 	-webkit-box-shadow: 0 1px 3px #999;
-	box-shadow: 0 1px 3px #999;
+	box-shadow: 0 1px 3px #999; */
 }
  .area-liveOnly {
 	min-height:100px;
 	overflow: hidden;
-	background:#ccffcc url(images/area-liveonly-bg.png) no-repeat scroll 50% 50% ;
-	/*padding:5px;*/
-	color:#666;
+	background:#ccffcc url(../images/area-liveonly-bg.png) no-repeat scroll 50% 50% ;
+	padding:2px;
+	color:#111;
 	position:relative;
 	border: 1px dashed #99cc99;
+    font-family: tahoma, arial, verdana, sans-serif;
+    font-size:11px;
 }
  .dashedArea {
-    background : url(images/placeholder-area.png) top left;
+    background : url(../images/placeholder-area.png) top left;
     height:100%;
 }
  .area-notcreated .dashedArea {
-    background : url(images/area-notcreated.png) top left;
+    background : url(../images/area-notcreated.png) top left;
     height:100%;
 }
 
  .area-liveOnly .dashedArea {
-    background : url(images/area-liveOnly.png) top left;
+    background : url(../images/area-liveOnly.png) top left;
     height:100%;
 }
 
@@ -550,7 +518,7 @@
     text-align:center;
     margin-left: auto;
     margin-right: auto;
-    text-transform: uppercase; 
+    text-transform: uppercase;
 }
 
 .markedForDeletion {
@@ -560,3 +528,4 @@
 .noEditModeAccess {
     background: #FF9999;
 }
+

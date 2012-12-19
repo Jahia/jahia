@@ -360,9 +360,6 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
             final Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties =
                     new HashMap<String, List<GWTJahiaNodeProperty>>();
 
-            // node
-            List<GWTJahiaNode> orderedChildrenNodes = null;
-
             for (TabItem tab : tabs.getItems()) {
                 EditEngineTabItem item = (EditEngineTabItem) tab.getData("item");
                 // case of contentTabItem
@@ -371,12 +368,6 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                         String nodeName = ((ContentTabItem) item).getName().getValue();
                         getNode().setName(nodeName);
                     }
-                }
-
-                if (item instanceof ListOrderingContentTabItem) {
-
-                    // if the manual ranking was activated update new ranking
-                    orderedChildrenNodes = ((ListOrderingContentTabItem) item).getNewManualOrderedChildrenList();
                 }
 
                 item.doSave(getNode(), changedProperties, changedI18NProperties, addedTypes, removedTypes, acl);
@@ -429,7 +420,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
                 } else {
                     JahiaContentManagementService.App.getInstance()
-                            .saveNode(getNode(), orderedChildrenNodes, acl, changedI18NProperties, changedProperties,
+                            .saveNode(getNode(), acl, changedI18NProperties, changedProperties,
                                     removedTypes, callback);
                 }
             }

@@ -46,6 +46,8 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -53,6 +55,8 @@ import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Edit engine tab for performing actions on the list of items:
@@ -143,22 +147,24 @@ public class ListOrderingContentTabItem extends ContentTabItem {
         tab.add(fieldSet);
     }
 
-    /**
-     * Get manual ordered children list
-     * @return
-     */
-    public List<GWTJahiaNode> getNewManualOrderedChildrenList() {
-        if (manualListOrderingEditor == null || !useManualRanking.getValue()) {
-            return null;
-        }
-        return manualListOrderingEditor.getOrderedNodes();
-    }
-    
     public void setProcessed(boolean processed) {
         if (!processed && langPropertiesEditorMap != null) {
             manualListOrderingEditor = null;
         }
         super.setProcessed(processed);
     }
-    
+
+    @Override
+    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, GWTJahiaNodeACL acl) {
+        if (manualListOrderingEditor != null) {
+            for (GWTJahiaNode child : manualListOrderingEditor.getOrderedNodes()) {
+                node.add(child);
+            }
+            for (GWTJahiaNode child : manualListOrderingEditor.getRemovedNodes()) {
+                node.add(child);
+                node.remove(child);
+            }
+            node.set(GWTJahiaNode.INCLUDE_CHILDREN, Boolean.TRUE);
+        }
+    }
 }

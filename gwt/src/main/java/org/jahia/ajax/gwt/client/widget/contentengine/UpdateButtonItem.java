@@ -68,8 +68,6 @@ public class UpdateButtonItem extends SaveButtonItem {
     @Override
     protected void prepareAndSave(final AbstractContentEngine engine, final boolean closeAfterSave) {
         // node
-        List<GWTJahiaNode> orderedChildrenNodes = new ArrayList<GWTJahiaNode>();
-
         final Set<String> addedTypes = new HashSet<String>();
         final Set<String> removedTypes = new HashSet<String>();
 
@@ -123,15 +121,6 @@ public class UpdateButtonItem extends SaveButtonItem {
                 }
             }
 
-            if (item instanceof ListOrderingContentTabItem) {
-                // if the manual ranking was activated update new ranking
-                orderedChildrenNodes = ((ListOrderingContentTabItem) item).getNewManualOrderedChildrenList();
-            }
-
-            if (item instanceof ChildItemsTabItem && ((AsyncTabItem) tab).isProcessed()) {
-                orderedChildrenNodes.addAll(((ChildItemsTabItem) item).getOrderedNodes());
-            }
-
             // case of right tab
             item.doSave(engine.getNode(), engine.getChangedProperties(), engine.getChangedI18NProperties(), addedTypes, removedTypes, engine.getAcl());
         }
@@ -140,7 +129,7 @@ public class UpdateButtonItem extends SaveButtonItem {
         engine.getNode().getNodeTypes().addAll(addedTypes);
 
         JahiaContentManagementService.App.getInstance().saveNode(engine.getNode(),
-                orderedChildrenNodes, engine.getAcl(), engine.getChangedI18NProperties(), engine.getChangedProperties(),
+                engine.getAcl(), engine.getChangedI18NProperties(), engine.getChangedProperties(),
                 removedTypes, new BaseAsyncCallback<Object>() {
             public void onApplicationFailure(Throwable throwable) {
                 failSave(engine, throwable);

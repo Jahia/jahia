@@ -74,6 +74,7 @@ public class ManualListOrderingEditor extends ContentPanel {
     private GWTJahiaNode node;
     private ListLoader<ListLoadResult<GWTJahiaNode>> loader;
     private Grid<GWTJahiaNode> childrenGrid;
+    private List<GWTJahiaNode> removedNodes = new ArrayList<GWTJahiaNode>();
 
     public ManualListOrderingEditor() {
         this(null);
@@ -87,6 +88,10 @@ public class ManualListOrderingEditor extends ContentPanel {
 
     public List<GWTJahiaNode> getOrderedNodes() {
         return childrenGrid.getStore().getModels();
+    }
+
+    public List<GWTJahiaNode> getRemovedNodes() {
+        return removedNodes;
     }
 
     private void init() {
@@ -243,6 +248,7 @@ public class ManualListOrderingEditor extends ContentPanel {
             public void componentSelected(ButtonEvent ce) {
                 for (GWTJahiaNode node : childrenGrid.getSelectionModel().getSelectedItems()) {
                     childrenGrid.getStore().remove(node);
+                    removedNodes.add(node);
                 }
                 childrenGrid.getView().refresh(false);
             }

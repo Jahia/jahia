@@ -684,8 +684,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      *
      *
      *
+     *
      * @param node
-     * @param orderedChildrenNode
      * @param acl
      * @param langCodeProperties
      * @param sharedProperties
@@ -693,7 +693,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     @SuppressWarnings("unchecked")
-    public void saveNode(GWTJahiaNode node, List<GWTJahiaNode> orderedChildrenNode, GWTJahiaNodeACL acl,
+    public void saveNode(GWTJahiaNode node, GWTJahiaNodeACL acl,
                          Map<String, List<GWTJahiaNodeProperty>> langCodeProperties,
                          List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes) throws GWTJahiaServiceException {
         closeEditEngine(node.getPath());
@@ -744,22 +744,37 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     deletePaths(removedChildrenPaths);
                     node.clearRemovedChildrenPaths();
                 }
+                List<String> newNames = new ArrayList<String>();
                 for (ModelData modelData : node.getChildren()) {
                     GWTJahiaNode subNode = ((GWTJahiaNode)modelData);
-                    if (nodeWrapper.hasNode(subNode.getName())) {
-                        saveNode(subNode, null, null,(Map<String, List<GWTJahiaNodeProperty>>) subNode.get("nodeLangCodeProperties"),(List<GWTJahiaNodeProperty>) subNode.get("nodeProperties"),new HashSet<String>());
-                    } else {
-                        createNode(node.getPath(), subNode.getName(), subNode.getNodeTypes().get(0), subNode.getNodeTypes().subList(1, subNode.getNodeTypes().size()), null,
-                                (List<GWTJahiaNodeProperty>) subNode.get("nodeProperties"), (Map<String, List<GWTJahiaNodeProperty>>) subNode.get("nodeLangCodeProperties"),null,true);
+                    if (subNode.get("nodeLangCodeProperties") != null && subNode.get("nodeProperties") != null) {
+                        if (nodeWrapper.hasNode(subNode.getName())) {
+                            saveNode(subNode, null,(Map<String, List<GWTJahiaNodeProperty>>) subNode.get("nodeLangCodeProperties"),(List<GWTJahiaNodeProperty>) subNode.get("nodeProperties"),new HashSet<String>());
+                        } else {
+                            createNode(node.getPath(), subNode.getName(), subNode.getNodeTypes().get(0), subNode.getNodeTypes().subList(1, subNode.getNodeTypes().size()), null,
+                                    (List<GWTJahiaNodeProperty>) subNode.get("nodeProperties"), (Map<String, List<GWTJahiaNodeProperty>>) subNode.get("nodeLangCodeProperties"),null,true);
 
+                        }
+                    }
+                    newNames.add(subNode.getName());
+                }
+                List<String> oldNames = new ArrayList<String>();
+                NodeIterator oldChildrenNodes = nodeWrapper.getNodes();
+                while (oldChildrenNodes.hasNext()) {
+                    JCRNodeWrapper next = (JCRNodeWrapper) oldChildrenNodes.next();
+                    if (newNames.contains(next.getName())) {
+                        oldNames.add(next.getName());
+                    }
+                }
+                if (!oldNames.equals(newNames)) {
+                    for (String newName : newNames) {
+                        nodeWrapper.orderBefore(newName, null);
                     }
                 }
             } catch (RepositoryException e) {
                 throw new GWTJahiaServiceException(e);
             }
         }
-        // save children orders
-        contentManager.updateChildren(node, orderedChildrenNode, jcrSessionWrapper);
 
 
         // save acl

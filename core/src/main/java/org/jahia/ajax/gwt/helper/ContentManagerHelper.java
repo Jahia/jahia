@@ -267,51 +267,6 @@ public class ContentManagerHelper {
         session.save();
     }
 
-    /**
-     * Remove deleted children and reorder
-     *
-     * @param newChildrenList
-     */
-    public void updateChildren(final GWTJahiaNode parentNode, final List<GWTJahiaNode> newChildrenList,
-                               final JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
-        try {
-            if (newChildrenList == null) {
-                return;
-            }
-
-            final JCRNodeWrapper targetNode = currentUserSession.getNode(parentNode.getPath());
-
-            if (!targetNode.isCheckedOut()) {
-                currentUserSession.checkout(targetNode);
-            }
-
-
-            // remove deleted children
-            NodeIterator oldChildrenNodes = targetNode.getNodes();
-            while (oldChildrenNodes.hasNext()) {
-                JCRNodeWrapper currentChildNode = (JCRNodeWrapper) oldChildrenNodes.nextNode();
-
-                GWTJahiaNode comparingGWTJahiaNode = new GWTJahiaNode();
-                comparingGWTJahiaNode.setPath(currentChildNode.getPath());
-
-                // node has been deleted
-                if (!newChildrenList.contains(comparingGWTJahiaNode) && currentChildNode.isNodeType("jnt:content")) {
-                    currentChildNode.markForDeletion("");
-                }
-
-            }
-
-            // reorder existing ones
-                for (GWTJahiaNode childNode : newChildrenList) {
-                    targetNode.orderBefore(childNode.getName(), null);
-                }
-            currentUserSession.save();
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-
-    }
-
     public void moveAtEnd(String sourcePath, String targetPath, JCRSessionWrapper currentUserSession)
             throws RepositoryException, InvalidItemStateException, ItemExistsException, GWTJahiaServiceException {
         JCRSessionWrapper session = currentUserSession;

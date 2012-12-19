@@ -75,7 +75,7 @@ public class ChannelsTabItem extends SidePanelTabItem {
         }
         deviceCombo.setTypeAhead(true);
         deviceCombo.setWidth(100);
-        deviceCombo.setFieldLabel(Messages.get("label.deviceName", "Device"));
+        deviceCombo.setFieldLabel(Messages.get("label.device", "Device"));
         deviceCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
         deviceCombo.setTemplate(getChannelTemplate());
         deviceCombo.setItemSelector("div.thumb-wrap");
@@ -91,7 +91,7 @@ public class ChannelsTabItem extends SidePanelTabItem {
         // we will setup the right elements now because we will need to reference them in the event listener
         final ListStore<GWTJahiaBasicDataBean> orientations = new ListStore<GWTJahiaBasicDataBean>();
         orientationComponent = new ComboBox<GWTJahiaBasicDataBean>();
-        orientationComponent.setEmptyText(Messages.get("label.variant", "Select variant..."));
+        orientationComponent.setEmptyText(Messages.get("label.selectVariant", "Select variant..."));
         orientationComponent.setDisplayField("displayName");
         orientationComponent.setName("previewChannelOrientation");
         orientationComponent.setStore(orientations);
@@ -128,14 +128,14 @@ public class ChannelsTabItem extends SidePanelTabItem {
 
         ColumnConfig column = new ColumnConfig();
         column.setId("displayName");
-        column.setHeader("Name");
+        column.setHeader(Messages.get("label.name", "Name"));
         column.setRowHeader(true);
         column.setWidth(100);
         configs.add(column);
 
         column = new ColumnConfig();
         column.setId("value");
-        column.setHeader("Value");
+        column.setHeader(Messages.get("label.value", "Name"));
         column.setWidth(100);
         configs.add(column);
         ColumnModel cm = new ColumnModel(configs);

@@ -46,18 +46,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.regex.Matcher;
 
-import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.RepositoryException;
 
 import net.sf.ehcache.Element;
@@ -81,7 +76,6 @@ import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.content.PublicationInfo;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
@@ -91,7 +85,6 @@ import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.BaseAttributesFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.filter.RenderFilter;
-import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.render.filter.cache.CacheKeyGenerator;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.sites.JahiaSite;
@@ -129,13 +122,6 @@ public class CacheFilterTest extends JahiaTestCase {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
             JCRNodeWrapper siteNode = (JCRSiteNode) session.getNode("/sites/"+site.getSiteKey());
             
-            String templatesFolder = "/sites/"+site.getSiteKey() + "/templates";
-            InputStream importStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("imports/importTemplatesForCacheTest.xml");
-            session.importXML(templatesFolder + "/base", importStream,
-                    ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING);
-            importStream.close();
-            session.save();   
-            
             JCRNodeWrapper shared = siteNode.getNode("home");
             if (shared.hasNode("testContent")) {
                 shared.getNode("testContent").remove();
@@ -143,23 +129,14 @@ public class CacheFilterTest extends JahiaTestCase {
             if(shared.isVersioned()) session.checkout(shared);
             JCRNodeWrapper node = shared.addNode("testContent", "jnt:page");
             node.setProperty("jcr:title", "English test page");
-            node.setProperty("j:templateNode", session.getNode(
-                    templatesFolder + "/base/pagetemplate/subpagetemplate"));            
+            node.setProperty("j:templateName", "simple");            
             node.addNode("testType2", "jnt:mainContent");
             session.save();
-            final JCRPublicationService service = JCRPublicationService.getInstance();
             
-            List<PublicationInfo> infoList = service.getPublicationInfo(
-                    session.getNode(
-                            templatesFolder + "/base/pagetemplate").getIdentifier(), new LinkedHashSet<String>(Arrays.asList(Locale.ENGLISH.toString())),
-                    true, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
-            service.publishByInfoList(infoList, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,Collections.<String>emptyList());
-            
-            infoList = service.getPublicationInfo(
-                    shared.getIdentifier(), new LinkedHashSet<String>(Arrays.asList(Locale.ENGLISH.toString())),
-                    true, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
-            service.publishByInfoList(infoList, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,Collections.<String>emptyList());
-            
+            JCRPublicationService.getInstance().publishByMainId(shared.getIdentifier(), Constants.EDIT_WORKSPACE,
+                    Constants.LIVE_WORKSPACE, new LinkedHashSet<String>(Arrays.asList(Locale.ENGLISH.toString())),
+                    true, Collections.<String> emptyList());
+
             session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
             node = session.getNode("/sites/"+site.getSiteKey()+"/home/testContent");
         } catch (Exception e) {
@@ -187,6 +164,7 @@ public class CacheFilterTest extends JahiaTestCase {
 
     }    
 
+    //@Test
     @Test
     public void testCacheFilter() throws Exception {
 
@@ -230,21 +208,13 @@ public class CacheFilterTest extends JahiaTestCase {
         RenderChain chain = new RenderChain(attributesFilter, cacheFilter, outFilter);
 
         String result = chain.doFilter(context, resource);
-        // AggregateCacheFilter will replace the value of the query string param by their real value as we have no params in the request we have to empty it
-        // Trouble here was that it is an empty treemap to string and not empty string or null
         
-        /*
-        Matcher m = AggregateCacheFilter.QUERYSTRING_REGEXP.matcher(key);
-        if (m.matches()) {
-            String qsString = m.group(2);
-            key = key.replace(qsString,new TreeMap<String, String>().toString());
-        }
-        */
-        final Element element = moduleCacheProvider.getCache().get(key);
+        final Element element = moduleCacheProvider.getCache().get(generator.replacePlaceholdersInCacheKey(context, key));
         assertNotNull("Html Cache does not contains our html rendering", element);
         assertTrue("Content Cache and rendering are not equals",((String)((CacheEntry<?>)element.getValue()).getObject()).contains(result));
     }
     
+    //@Test
     @Test
     public void testFixForEmptyCacheBug() throws Exception {
         String firstResponse = null;
@@ -333,6 +303,7 @@ public class CacheFilterTest extends JahiaTestCase {
         }
     }    
     
+    //@Test
     @Test
     public void testDependencies() throws Exception {
         JahiaUser admin = JahiaAdminUser.getAdminUser(0);
@@ -402,7 +373,6 @@ public class CacheFilterTest extends JahiaTestCase {
      */
     @Test
     public void testAclsCasesWithinLiveMode() throws Exception {
-        String templatesFolder = "/sites/"+TESTSITE_NAME + "/templates";
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
         JCRSiteNode site = (JCRSiteNode) session.getNode("/sites/"+TESTSITE_NAME);
         // Create three users
@@ -430,9 +400,8 @@ public class CacheFilterTest extends JahiaTestCase {
         if(shared.isVersioned()) session.checkout(shared);
         JCRNodeWrapper node = shared.addNode("testAclContent", "jnt:page");
         node.setProperty("jcr:title", "English test page");
-        node.setProperty("j:templateNode", session.getNode(
-                templatesFolder + "/base/pagetemplate/subpagetemplate"));
-        final JCRNodeWrapper list = node.addNode("maincontent", "jnt:contentList");
+        node.setProperty("j:templateName", "simple");
+        final JCRNodeWrapper list = node.addNode("listA", "jnt:contentList");
         final JCRNodeWrapper contentA = list.addNode("contentA", "jnt:mainContent");
         contentA.setProperty("body","Content__A__");
         final JCRNodeWrapper contentB = list.addNode("contentB", "jnt:mainContent");
@@ -447,19 +416,12 @@ public class CacheFilterTest extends JahiaTestCase {
         contentC.setAclInheritanceBreak(true);
         contentC.grantRoles("g:" + groupC.getGroupname(), new LinkedHashSet<String>(Arrays.asList("reader")));
         session.save();
+
         // Publish all
-        final JCRPublicationService service = JCRPublicationService.getInstance();
+        JCRPublicationService.getInstance().publishByMainId(shared.getIdentifier(), Constants.EDIT_WORKSPACE,
+                Constants.LIVE_WORKSPACE, new LinkedHashSet<String>(Arrays.asList(Locale.ENGLISH.toString())), true,
+                Collections.<String> emptyList());
 
-        List<PublicationInfo> infoList = service.getPublicationInfo(
-                session.getNode(
-                        templatesFolder + "/base/pagetemplate").getIdentifier(), new LinkedHashSet<String>(Arrays.asList(Locale.ENGLISH.toString())),
-                true, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
-        service.publishByInfoList(infoList, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,Collections.<String>emptyList());
-
-        infoList = service.getPublicationInfo(
-                shared.getIdentifier(), new LinkedHashSet<String>(Arrays.asList(Locale.ENGLISH.toString())),
-                true, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
-        service.publishByInfoList(infoList, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,Collections.<String>emptyList());
         // Login as userAB using httpclient
         checkContentForUser(node, "userAB", "Content__A__", "Content__B__", "Content__C__");
         // Login as userAC using httpclient

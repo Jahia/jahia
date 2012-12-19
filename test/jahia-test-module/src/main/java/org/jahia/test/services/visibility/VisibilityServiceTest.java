@@ -56,6 +56,7 @@ import java.util.Set;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -172,18 +173,7 @@ public class VisibilityServiceTest extends JahiaTestCase {
         // Create an instance of HttpClient.
         client = new HttpClient();
 
-        PostMethod loginMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath()
-                + "/cms/login");
-        loginMethod.addParameter("username", USERNAME);
-        loginMethod.addParameter("password", PASSWORD);
-        loginMethod.addParameter("restMode", "true");
-
-        try {
-            int statusCode = client.executeMethod(loginMethod);
-            assertEquals("Login failed for user", HttpStatus.SC_OK, statusCode);
-        } finally {
-            loginMethod.releaseConnection();
-        }
+        login(USERNAME, PASSWORD);
     }
 
     @After

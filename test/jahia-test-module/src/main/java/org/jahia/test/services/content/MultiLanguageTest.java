@@ -43,11 +43,7 @@ package org.jahia.test.services.content;
 import static org.junit.Assert.*;
 
 import org.slf4j.Logger;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
@@ -63,7 +59,6 @@ import com.google.common.collect.Sets;
 
 import javax.jcr.PathNotFoundException;
 
-import java.io.IOException;
 import java.util.Locale;
 
 /**
@@ -79,23 +74,9 @@ public class MultiLanguageTest extends JahiaTestCase {
     private JahiaSite site;
     private final static String TESTSITE_NAME = "jcrMultiLanguageTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
-    private HttpClient client;
 
     private boolean isTextPresentInResponse(String relativeUrl, String text) {
-        String body = StringUtils.EMPTY;
-        GetMethod getMethod = new GetMethod(getBaseServerURL() + Jahia.getContextPath()
-                + relativeUrl);
-        try {
-            int responseCode = client.executeMethod(getMethod);
-            assertEquals("Response code is not OK: " + responseCode, 200, responseCode);
-            body = getMethod.getResponseBodyAsString();
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        } finally {
-            getMethod.releaseConnection();
-        }
-        
-        return body.contains(text);
+        return getAsText(relativeUrl).contains(text);
     }
     
     @Before
@@ -206,8 +187,6 @@ public class MultiLanguageTest extends JahiaTestCase {
 
         assertEquals(frenchText, sf.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.FRENCH, defLocale).getNode(SITECONTENT_ROOT_NODE + "/home/listA/textInvalidLanguage").getProperty("text").getValue().getString());
         
-        client = new HttpClient();
-
         // Validate that EN and FR content is visible in live
         String url = "/cms/render/live/en/sites/" + TESTSITE_NAME + "/home.html";
         assertTrue("Not found expected value (" + englishText + ") in response body for url: " + url, isTextPresentInResponse(url, englishText));

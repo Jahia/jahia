@@ -40,26 +40,60 @@
 
 package org.jahia.test;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+
+import javax.jcr.RepositoryException;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
+import org.jahia.services.content.JCRPublicationService;
 
 /**
  * Super class for Jahia tests
  * 
  * @author Guillaume Lucazeau
- * 
  */
 public class JahiaTestCase {
 
     private static Logger logger = Logger.getLogger(JahiaTestCase.class);
 
     private final static String PORT = "9090";
-    private final static String baseUrl = "http://localhost:" + PORT;
+    private final static String BASE_URL = "http://localhost:" + PORT;
+
+    private HttpClient client;
+    
+    protected static void publishAll(String nodeIdentifier) throws RepositoryException {
+        JCRPublicationService.getInstance().publishByMainId(nodeIdentifier);
+    }
+    
+    protected String getAsText(String relativeUrl) {
+        String body = StringUtils.EMPTY;
+        GetMethod getMethod = new GetMethod(getBaseServerURL() + Jahia.getContextPath()
+                + relativeUrl);
+        try {
+            int responseCode = getHttpClient().executeMethod(getMethod);
+            assertEquals("Response code is not OK: " + responseCode, 200, responseCode);
+            body = getMethod.getResponseBodyAsString();
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            getMethod.releaseConnection();
+        }
+        
+        return body;
+    }
 
     protected String getBaseServerURL() {
         ProcessingContext ctx = Jahia.getThreadParamBean();
-        String url = ctx != null ? ctx.getScheme() + "://" + ctx.getServerName() + ":" + ctx.getServerPort() : baseUrl;
+        String url = ctx != null ? ctx.getScheme() + "://" + ctx.getServerName() + ":" + ctx.getServerPort() : BASE_URL;
         logger.info("Base URL for tests is: " + url);
         return url;
     }
@@ -68,4 +102,44 @@ public class JahiaTestCase {
         ProcessingContext ctx = Jahia.getThreadParamBean();
         return ctx !=  null ? String.valueOf(ctx.getServerPort()) : PORT;
     }
+    
+    protected HttpClient getHttpClient() {
+        if (client == null) {
+            client = new HttpClient();
+        }
+        return client;
+    }
+
+    protected void login(String username, String password) {
+        PostMethod loginMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/login");
+        loginMethod.addParameter("username", username);
+        loginMethod.addParameter("password", password);
+        loginMethod.addParameter("restMode", "true");
+
+        try {
+            int statusCode = getHttpClient().executeMethod(loginMethod);
+            assertEquals("Login failed for user", HttpStatus.SC_OK, statusCode);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            loginMethod.releaseConnection();
+        }
+    }
+
+    protected void logout() {
+        PostMethod logoutMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/logout");
+        logoutMethod.addParameter("redirectActive", "false");
+
+        try {
+            int statusCode = getHttpClient().executeMethod(logoutMethod);
+            if (statusCode != HttpStatus.SC_OK) {
+                System.err.println("Method failed: " + logoutMethod.getStatusLine());
+            }
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            logoutMethod.releaseConnection();
+        }
+    }
+
 }

@@ -88,6 +88,8 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private Set<String> visibleTypes;
     private Set<String> nonVisibleTypes;
 
+    private boolean buttonsInLayer = false;
+
     public void addTab(SidePanelTab tab) {
         tabs.add(tab);
     }
@@ -255,6 +257,14 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     public void setNonVisibleTypes(Set<String> nonVisibleTypes) {
         this.nonVisibleTypes = nonVisibleTypes;
+    }
+
+    public boolean isButtonsInLayer() {
+        return buttonsInLayer;
+    }
+
+    public void setButtonsInLayer(boolean buttonsInLayer) {
+        this.buttonsInLayer = buttonsInLayer;
     }
 
     public boolean isVisible(JCRNodeWrapper node) throws RepositoryException {

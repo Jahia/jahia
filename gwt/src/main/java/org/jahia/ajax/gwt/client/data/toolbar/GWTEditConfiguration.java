@@ -57,6 +57,7 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
     private GWTJahiaToolbar sidePanelToolbar;
     private GWTJahiaToolbar mainModuleToolbar;
     private boolean enableDragAndDrop;
+    private boolean buttonsInLayer;
     private String defaultUrlMapping;
 
     private List<GWTSidePanelTab> tabs;
@@ -118,5 +119,13 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
 
     public void setDefaultUrlMapping(String defaultUrlMapping) {
         this.defaultUrlMapping = defaultUrlMapping;
+    }
+
+    public boolean isButtonsInLayer() {
+        return buttonsInLayer;
+    }
+
+    public void setButtonsInLayer(boolean buttonsInLayer) {
+        this.buttonsInLayer = buttonsInLayer;
     }
 }

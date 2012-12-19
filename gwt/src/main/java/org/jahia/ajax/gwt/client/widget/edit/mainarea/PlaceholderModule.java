@@ -51,6 +51,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -81,7 +82,7 @@ public class PlaceholderModule extends Module {
     private LayoutContainer panel;
     private LayoutContainer pasteButton;
 
-    public PlaceholderModule(String id, String path, Element divElement, MainModule mainModule) {
+    public PlaceholderModule(String id, String path, Element divElement, final MainModule mainModule) {
         super(id, path, divElement, mainModule, new FlowLayout());
 
         if (path.endsWith("*")) {
@@ -89,16 +90,53 @@ public class PlaceholderModule extends Module {
         } else {
             setBorders(true);
         }
-        panel = new LayoutContainer();
-//        panel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
-        panel.addStyleName("x-small-editor");
-        panel.addStyleName("x-panel-header");
-        panel.addStyleName("x-panel-placeholder");
+        if (mainModule.getConfig().isButtonsInLayer()) {
+            final LayoutContainer visiblePanel = new LayoutContainer();
+    //        panel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
+            visiblePanel.addStyleName("x-small-editor");
+            visiblePanel.addStyleName("x-panel-header");
+            visiblePanel.addStyleName("x-panel-placeholder");
 
-        html = new HTML(Messages.get("label.add") + " : &nbsp;");
-        html.setStyleName("label-placeholder");
-        panel.add(html);
-        add(panel);
+            visiblePanel.setHeight(10);
+            visiblePanel.setStyleAttribute("position", "relative");
+
+            panel = new LayoutContainer();
+            panel.addStyleName("x-panel-buttons-layer");
+
+            html = new HTML(Messages.get("label.add") + " : &nbsp;");
+            html.setStyleName("label-placeholder");
+            panel.add(html);
+            panel.hide();
+            panel.addListener(Events.OnMouseOut, new Listener<BaseEvent>() {
+                @Override
+                public void handleEvent(BaseEvent be) {
+                    panel.hide();
+                }
+            });
+            visiblePanel.addListener(Events.OnMouseOver, new Listener<BaseEvent>() {
+                @Override
+                public void handleEvent(BaseEvent be) {
+                    panel.show();
+                    //                    panel.setPosition(emptyPanel.getAbsoluteLeft(), emptyPanel.getAbsoluteTop());
+                }
+            });
+
+
+            visiblePanel.add(panel);
+            add(visiblePanel);
+        } else {
+            panel = new LayoutContainer();
+//        panel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
+            panel.addStyleName("x-small-editor");
+            panel.addStyleName("x-panel-header");
+            panel.addStyleName("x-panel-placeholder");
+
+            html = new HTML(Messages.get("label.add") + " : &nbsp;");
+            html.setStyleName("label-placeholder");
+            panel.add(html);
+            add(panel);
+        }
+
     }
 
     @Override
@@ -130,7 +168,7 @@ public class PlaceholderModule extends Module {
 
         if (getParentModule() instanceof AreaModule && getParentModule().getChildCount() == 0 && ((AreaModule) getParentModule()).editable) {
             AbstractImagePrototype icon =  ToolbarIconProvider.getInstance().getIcon("disableArea");
-            LayoutContainer p = new HorizontalPanel();
+            final LayoutContainer p = new HorizontalPanel();
             p.add(icon.createImage());
             if (getWidth() > 150) {
                 p.add(new Text(Messages.get("label.areaDisable", "Disable area")));

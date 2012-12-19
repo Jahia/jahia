@@ -1,3 +1,7 @@
+.x-hide-display {
+  display: none !important;
+}
+
 .x-insert-bar {
   position: absolute;
 
@@ -140,6 +144,27 @@
     color: #333 !important;
 	font-weight: bold;
     font-size: 9px;
+    border:1px solid #bfcfd9;
+	padding: 0px 5px ;
+	vertical-align: middle;
+    horizontal-align:middle;
+	margin-bottom:2px;
+    text-align:left;
+    font-family: tahoma, arial, verdana, sans-serif;
+    font-size: 9px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+
+}
+
+.x-panel-buttons-layer {
+    background : #e1ebf1 url(../images/xtheme-jahia-andromeda/panel/placeholder.png) top left;
+    color: #333 !important;
+	font-weight: bold;
+    font-size: 9px;
+    position: absolute;
+    z-index: 1500;
     border:1px solid #bfcfd9;
 	padding: 0px 5px ;
 	vertical-align: middle;

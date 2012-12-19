@@ -564,6 +564,7 @@ public class UIConfigHelper {
                 gwtConfig.setNonEditableTypes(config.getNonEditableTypes());
                 gwtConfig.setVisibleTypes(config.getVisibleTypes());
                 gwtConfig.setNonVisibleTypes(config.getNonVisibleTypes());
+                gwtConfig.setButtonsInLayer(config.isButtonsInLayer());
                 return gwtConfig;
             } else {
                 throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.bean.editconfig.not.found.in.spring.config.file",uiLocale));

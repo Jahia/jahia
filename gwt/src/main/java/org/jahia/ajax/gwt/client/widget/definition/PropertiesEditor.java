@@ -409,7 +409,7 @@ public class PropertiesEditor extends FormPanel {
                 FieldSet fs = (FieldSet) c.getParent();
                 Set<Component> compToRemove = new HashSet<Component>();
                 for (Component co : fs.getItems()) {
-                    if (co instanceof AdapterField && ((AdapterField) co).getName().equals(removeMixin + "-" + locale)) {
+                    if (co instanceof AdapterField && ((AdapterField) co).getName().equals(removeMixin)) {
                         compToRemove.add(co);
                     }
                 }

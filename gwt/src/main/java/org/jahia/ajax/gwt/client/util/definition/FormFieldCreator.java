@@ -291,7 +291,7 @@ public class FormFieldCreator {
         if (field == null) {
             return null;
         }
-        setModifiers(field, definition, locale);
+        setModifiers(field, definition);
         if (field.getLabelSeparator() != null) {
             field.setLabelSeparator(field.getLabelSeparator() + " :");
         }
@@ -347,11 +347,11 @@ public class FormFieldCreator {
      * @param field
      * @param definition
      */
-    public static void setModifiers(final Field field, GWTJahiaItemDefinition definition, String locale) {
+    public static void setModifiers(final Field field, GWTJahiaItemDefinition definition) {
         if (field == null || definition == null) {
             return;
         }
-        field.setName(definition.getName() + "-" + locale);
+        field.setName(definition.getName());
         field.setFieldLabel(definition.getLabel());
         if(!"".equals(definition.getTooltip())) {
             String separator = field.getLabelSeparator()!=null? field.getLabelSeparator():"";

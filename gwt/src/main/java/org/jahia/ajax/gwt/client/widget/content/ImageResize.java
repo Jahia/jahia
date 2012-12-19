@@ -50,6 +50,8 @@ import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -58,7 +60,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
- *
+ * Widget defining a new image dimensions and saving a copy of it.
  *
  * User: toto
  * Date: Nov 13, 2008 - 7:07:20 PM
@@ -66,6 +68,8 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 public class ImageResize extends Window {
 
     private Linker linker;
+    
+    private boolean autoName = true;
 
     public ImageResize(final Linker linker, final GWTJahiaNode n) {
         super() ;
@@ -83,35 +87,60 @@ public class ImageResize extends Window {
         form.setFrame(false);
         form.setHeaderVisible(false);
         form.setBorders(false);
+        form.setFieldWidth(350);
         setModal(true);
 
+        FormData layoutData = new FormData(100, 0);
 
         final NumberField wf = new NumberField();
         wf.setName("width");
         wf.setValue(new Integer(w));
         wf.setFieldLabel(Messages.get("width.label"));
-        form.add(wf);
+        form.add(wf, layoutData);
 
         final NumberField hf = new NumberField();
         hf.setName("height");
         hf.setValue(new Integer(h));
         hf.setFieldLabel(Messages.get("height.label"));
-        form.add(hf);
+        form.add(hf, layoutData);
 
         final CheckBox keepRatio = new CheckBox();
         keepRatio.setName("ratio");
         keepRatio.setValue(true);
         keepRatio.setFieldLabel(Messages.get("ratio.label"));
-        form.add(keepRatio);
+        form.add(keepRatio, new FormData(20, 0));
+
+        final TextField<String> newname = new TextField<String>();
+        newname.setName("newname");
+        newname.setWidth(350);
+        int extIndex = n.getName().lastIndexOf(".") ;
+        if (extIndex > 0) {
+            String dotExt = n.getName().substring(extIndex) ;
+            newname.setValue(n.getName().replaceAll(dotExt, "-resize" + w + "x" + h + dotExt));
+        } else {
+            newname.setValue(n.getName() + "-resize" + w + "x" + h);
+        }
+        newname.setFieldLabel(Messages.get("label.rename"));
+        
+        newname.addListener(Events.Change, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent be) {
+                autoName = false;
+            }
+        });
+        
+        form.add(newname);
 
         hf.addListener(Events.KeyUp, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
                 if (keepRatio.getValue()) wf.setValue(w * hf.getValue().intValue() / h);
+                if (autoName) setAutoName(newname, wf.getValue().intValue(), hf.getValue().intValue());
             }
         });
         wf.addListener(Events.KeyUp, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
                 if (keepRatio.getValue()) hf.setValue(h * wf.getValue().intValue() / w);
+                if (autoName) setAutoName(newname, wf.getValue().intValue(), hf.getValue().intValue());
             }
         });
 
@@ -120,18 +149,6 @@ public class ImageResize extends Window {
                 if (keepRatio.getValue()) hf.setValue(h * wf.getValue().intValue() / w);
             }
         });
-
-        final TextField<String> newname = new TextField<String>();
-        newname.setName("newname");
-        int extIndex = n.getName().lastIndexOf(".") ;
-        if (extIndex > 0) {
-            String dotExt = n.getName().substring(extIndex) ;
-            newname.setValue(n.getName().replaceAll(dotExt, "_resize" + dotExt));
-        } else {
-            newname.setValue(n.getName() + "_resize");
-        }
-        newname.setFieldLabel(Messages.get("label.rename"));
-        form.add(newname);
 
         Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
@@ -151,8 +168,17 @@ public class ImageResize extends Window {
         add(form);
     }
 
+    protected void setAutoName(TextField<String> newname, int w, int h) {
+        String v = newname.getValue();
+        int dp = v.lastIndexOf(".");
+        newname.setFireChangeEventOnSetValue(false);
+        newname.setValue(v.substring(0, v.lastIndexOf("-resize")) + "-resize" + w + "x" + h
+                + (dp != -1 ? v.substring(dp, v.length()) : ""));
+        newname.setFireChangeEventOnSetValue(true);
+    }
+
     private void resizeImage(final String path, final String targetName, final int width, final int height, final boolean force) {
-         JahiaContentManagementService.App.getInstance().resizeImage(path, targetName, width, height, force, new BaseAsyncCallback() {
+         JahiaContentManagementService.App.getInstance().resizeImage(path, targetName, width, height, force, new BaseAsyncCallback<Object>() {
              public void onApplicationFailure(Throwable throwable) {
                  if (throwable instanceof ExistingFileException) {
                      if (com.google.gwt.user.client.Window.confirm(Messages.get("alreadyExists.label") + "\n" + Messages.get("confirm.overwrite.label"))) {

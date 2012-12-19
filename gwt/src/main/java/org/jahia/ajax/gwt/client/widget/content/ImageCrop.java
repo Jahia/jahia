@@ -77,7 +77,9 @@ import org.jahia.ajax.gwt.client.widget.Linker;
  */
 public class ImageCrop extends Window {
 
-    private Linker linker;    
+    private Linker linker;
+    
+    private boolean autoName = true;
 
     public ImageCrop(final Linker linker, final GWTJahiaNode n) {
         super();
@@ -104,14 +106,22 @@ public class ImageCrop extends Window {
       
         final TextField<String> newname = new TextField<String>();
         newname.setName("newname");
+        newname.setId("newname");
         newname.setFieldLabel(Messages.get("label.rename", "Rename"));
         int extIndex = n.getName().lastIndexOf(".");
         if (extIndex > 0) {
             String dotExt = n.getName().substring(extIndex);
-            newname.setValue(n.getName().replaceAll(dotExt, "_crop" + dotExt));
+            newname.setValue(n.getName().replaceAll(dotExt, "-crop" + dotExt));
         } else {
-            newname.setValue(n.getName() + "_crop");
+            newname.setValue(n.getName() + "-crop");
         }
+        
+        newname.addListener(Events.Change, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent be) {
+                autoName = false;
+            }
+        });
 
         lcName.add(newname, formData);
 
@@ -214,11 +224,18 @@ public class ImageCrop extends Window {
     }-*/;
     
     private native void initJcrop() /*-{
+        thisic=this;
         $wnd.jQuery('#cropbox').Jcrop({
             boxWidth: 700,
             boxHeight: 400,
             onChange: function(c) {
                 $wnd.jQuery('#left-input').val(c.x); $wnd.jQuery('#top-input').val(c.y); $wnd.jQuery('#width-input').val(c.w); $wnd.jQuery('#height-input').val(c.h);
+                if (thisic.@org.jahia.ajax.gwt.client.widget.content.ImageCrop::autoName) {
+                    var n=$wnd.jQuery('#newname-input').val();
+                    var dp=n.lastIndexOf('.');
+                    var nv=n.substring(0, n.lastIndexOf('-crop')) + '-crop' + c.w + 'x' + c.h + (dp != -1 ? n.substring(dp, n.length) : '');
+                    $wnd.jQuery('#newname-input').val(nv);
+                }
             }
         });        
     }-*/;

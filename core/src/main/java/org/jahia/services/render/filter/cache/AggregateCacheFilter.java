@@ -501,7 +501,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 String cacheKey = segment.getAttributeValue("src");
 
                 String replacedCacheKey = replacePlaceholdersInCacheKey(renderContext, cacheKey);
-                cacheKey = AclCacheKeyPartGenerator.PER_USER_PATTERN.matcher(cacheKey).replaceAll(renderContext.getUser().getUsername());
+                cacheKey = StringUtils.replace(cacheKey, AclCacheKeyPartGenerator.PER_USER, renderContext.getUser().getUsername());
 
                 if (logger.isDebugEnabled()) {
                     logger.debug("Check if {} is in cache", replacedCacheKey);
@@ -580,7 +580,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     renderContext.getFallbackLocale());
             JCRNodeWrapper node = null;
             try {
-                node = currentUserSession.getNode(keyAttrbs.get("path").replaceAll("_mr_",""));
+                node = currentUserSession.getNode(StringUtils.replace(keyAttrbs.get("path"), "_mr_",""));
             } catch (PathNotFoundException e) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Node {} is no longer available." + " Replacing output with empty content.",

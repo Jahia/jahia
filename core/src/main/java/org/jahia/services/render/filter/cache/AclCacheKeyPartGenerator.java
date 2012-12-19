@@ -72,7 +72,6 @@ import java.util.regex.Pattern;
  */
 public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, InitializingBean {
     public static final String PER_USER = "_perUser_";
-    public static final Pattern PER_USER_PATTERN = Pattern.compile(PER_USER);
     public static final Pattern P_PATTERN = Pattern.compile("_p_");
     public static final Pattern DEP_ACLS_PATTERN = Pattern.compile("_depacl_");
     public static final Pattern ACLS_PATH_PATTERN = Pattern.compile("_p_");
@@ -160,7 +159,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                 e.printStackTrace();
             }
         } else {
-            keyPart = PER_USER_PATTERN.matcher(keyPart).replaceAll(renderContext.getUser().getUsername());
+            keyPart = StringUtils.replace(keyPart, PER_USER, renderContext.getUser().getUsername());
         }
 
         return keyPart;
@@ -464,7 +463,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                         Map<String, Set<JahiaGroup>> tempAclGroups = new LinkedHashMap<String, Set<JahiaGroup>>();
                         tempAclGroups.put("/", new HashSet<JahiaGroup>());
                         tempAclGroups.get("/").add(groupManagerService.lookupGroup(
-                                groupManagerService.ADMINISTRATORS_GROUPNAME));
+                                JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME));
                         Query groupQuery = session.getWorkspace().getQueryManager().createQuery(
                                 "select * from [jnt:ace] as u where u.[j:principal] like 'g%'", Query.JCR_SQL2);
                         QueryResult groupQueryResult = groupQuery.execute();

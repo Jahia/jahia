@@ -437,7 +437,7 @@ public class ExtendedNodeType implements NodeType {
         final List<ExtendedItemDefinition> i = getItems();
         Collections.reverse(i);
         for (ExtendedItemDefinition item : i) {
-            if (!item.isNode() && ("*".equals(item.getName()) || !keys.contains(item.getName()))) {
+            if (!item.isNode() && (item.isUnstructured() || !keys.contains(item.getName()))) {
                 list.add((ExtendedPropertyDefinition) item);
                 keys.add(item.getName());
             }
@@ -517,7 +517,7 @@ public class ExtendedNodeType implements NodeType {
         final List<ExtendedItemDefinition> i = getItems();
         Collections.reverse(i);
         for (ExtendedItemDefinition item : i) {
-            if (item.isNode() && ("*".equals(item.getName()) || !keys.contains(item.getName()))) {
+            if (item.isNode() && (item.isUnstructured() || !keys.contains(item.getName()))) {
                 list.add((ExtendedNodeDefinition) item);
                 keys.add(item.getName());
             }
@@ -777,7 +777,7 @@ public class ExtendedNodeType implements NodeType {
 
     void removePropertyDefinition(ExtendedPropertyDefinition p) {
         String pdName = p.getName();
-        if (pdName.equals("*")) {
+        if (p.isUnstructured()) {
             if (p.isMultiple()) {
                 unstructuredProperties.remove(256 + p.getRequiredType());
             } else {
@@ -796,7 +796,7 @@ public class ExtendedNodeType implements NodeType {
     }
 
     void setNodeDefinition(String name, ExtendedNodeDefinition p) {
-        if (name.equals("*")) {
+        if (p.isUnstructured()) {
             StringBuffer s = new StringBuffer("");
             if (p.getRequiredPrimaryTypeNames() == null) {
                 logger.error("Required primary type names is null for extended node definition " + p);
@@ -815,7 +815,7 @@ public class ExtendedNodeType implements NodeType {
 
     void removeNodeDefinition(ExtendedNodeDefinition p) {
         String ndName = p.getName();
-        if (ndName.equals("*")) {
+        if (p.isUnstructured()) {
             unstructuredNodes.remove(StringUtils.join(p.getRequiredPrimaryTypeNames(), " "));
             allUnstructuredNodes = null;
         } else {
@@ -835,6 +835,10 @@ public class ExtendedNodeType implements NodeType {
 
     public void setItemsType(String itemsType) {
         this.itemsType = itemsType;
+    }
+
+    public void sortItems(Comparator<ExtendedItemDefinition> c) {
+        Collections.sort(items, c);
     }
 
     public void addMixinExtend(String mixinExtension) {

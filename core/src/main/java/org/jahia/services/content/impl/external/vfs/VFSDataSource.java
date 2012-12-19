@@ -86,6 +86,11 @@ public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Wr
         return false;
     }
 
+    @Override
+    public void order(String path, List<String> children) throws PathNotFoundException {
+        // ordering is not supported in VFS
+    }
+
     public List<String> getSupportedNodeTypes() {
         return SUPPORTED_NODE_TYPES;
     }

@@ -248,6 +248,10 @@ public class ExtendedItemDefinition implements ItemDefinition {
         return itemType;
     }
 
+    public boolean isUnstructured() {
+        return "*".equals(getName());
+    }
+
     public void setItemType(String itemType) {
         this.itemType = itemType;
     }
@@ -257,7 +261,7 @@ public class ExtendedItemDefinition implements ItemDefinition {
 //        declaringNodeType.isNodeType("jmix:droppableContent") || declaringNodeType.isNodeType("jnt:container")
 //                 || declaringNodeType.isNodeType("jnt:content") || declaringNodeType.isNodeType("jmix:contentItem") || name.toString().equals("jcr:title") || name.toString().equals("jcr:language") || name.toString().equals("jcr:statement");
     }
-    
+
     public ExtendedItemDefinition getOverridenDefinition() {
         ExtendedItemDefinition overridenItemDefintion = this;
         if (isOverride()) {

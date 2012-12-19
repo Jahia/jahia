@@ -204,7 +204,29 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
     }
 
     public void orderBefore(String srcChildRelPath, String destChildRelPath) throws UnsupportedRepositoryOperationException, VersionException, ConstraintViolationException, ItemNotFoundException, LockException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        if (srcChildRelPath.equals(destChildRelPath)) {
+            return;
+        }
+        List<String> children = session.getOrderedData().containsKey(getPath())?session.getOrderedData().get(getPath()):session.getRepository().getDataSource().getChildren(getPath());
+
+        if (destChildRelPath == null || !children.contains(destChildRelPath)) {
+            // put scrChildNode at the end of the list
+            children.remove(srcChildRelPath);
+            children.add(srcChildRelPath);
+            session.getOrderedData().put(getPath(), children);
+            return;
+        }
+        children.remove(srcChildRelPath);
+        List<String> newChildrenList = children;
+        for (int i=0; i < children.size(); i++) {
+            if (children.get(i).equals(destChildRelPath)) {
+                newChildrenList.add(srcChildRelPath);
+            }
+            newChildrenList.add(children.get(i));
+        }
+        children.clear();
+        children.addAll(newChildrenList);
+        session.getOrderedData().put(getPath(), children);
     }
 
     public Property setProperty(String name, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {

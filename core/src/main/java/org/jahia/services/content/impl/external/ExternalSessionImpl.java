@@ -80,6 +80,7 @@ public class ExternalSessionImpl implements Session {
     private Credentials credentials;
     private Map<String, ExternalData> changedData = new HashMap<String, ExternalData>();
     private Map<String, ExternalData> deletedData = new HashMap<String, ExternalData>();
+    private Map<String, List<String>> orderedData = new HashMap<String, List<String>>();
 
     public ExternalSessionImpl(ExternalRepositoryImpl repository, Credentials credentials) {
         this.repository = repository;
@@ -251,6 +252,10 @@ public class ExternalSessionImpl implements Session {
                 }
             }
             ExternalDataSource.Writable writableDataSource = (ExternalDataSource.Writable) repository.getDataSource();
+            for (String path : orderedData.keySet()) {
+                writableDataSource.order(path, orderedData.get(path));
+            }
+            orderedData.clear();
             for (ExternalData data : changedDataWithI18n.values()) {
                 writableDataSource.saveItem(data);
             }
@@ -266,6 +271,7 @@ public class ExternalSessionImpl implements Session {
         if (!b) {
             deletedData.clear();
             changedData.clear();
+            orderedData.clear();
         }
     }
 
@@ -354,6 +360,10 @@ public class ExternalSessionImpl implements Session {
 
     public Map<String, ExternalData> getDeletedData() {
         return deletedData;
+    }
+
+    public Map<String, List<String>> getOrderedData() {
+        return orderedData;
     }
 
     public Node getNodeByIdentifier(String id) throws ItemNotFoundException, RepositoryException {

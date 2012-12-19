@@ -110,13 +110,26 @@ public class ModulesDataSource extends VFSDataSource {
                 String nodeTypeName = splitPath[splitPath.length - 1];
                 try {
                     ExtendedNodeType nodeType = loadRegistry(StringUtils.substringBeforeLast(path,"/"), splitPath[1]).getNodeType(nodeTypeName);
-                    children.addAll(nodeType.getDeclaredPropertyDefinitionsAsMap().keySet());
-                    for (Integer type : nodeType.getDeclaredUnstructuredPropertyDefinitions().keySet()) {
-                        children.add(UNSTRUCTURED_PROPERTY + type.toString());
-                    }
-                    children.addAll(nodeType.getDeclaredChildNodeDefinitionsAsMap().keySet());
-                    for (String type : nodeType.getDeclaredUnstructuredChildNodeDefinitions().keySet()) {
-                        children.add(UNSTRUCTURED_CHILD_NODE + type);
+                    for  (ExtendedItemDefinition itemDefinition : nodeType.getDeclaredItems()) {
+                        if (itemDefinition.isUnstructured()) {
+                            if (itemDefinition.isNode()) {
+                                String s = "";
+                                for (ExtendedNodeType e : ((ExtendedNodeDefinition) itemDefinition).getRequiredPrimaryTypes()) {
+                                    s += e.getName() + " ";
+                                }
+                                children.add(UNSTRUCTURED_CHILD_NODE + s);
+                            } else {
+                                if (((ExtendedPropertyDefinition) itemDefinition).isMultiple()) {
+                                    int i = 256 + ((ExtendedPropertyDefinition) itemDefinition).getRequiredType();
+                                    children.add(UNSTRUCTURED_PROPERTY + i);
+                                }   else {
+                                    children.add(UNSTRUCTURED_PROPERTY + ((ExtendedPropertyDefinition) itemDefinition).getRequiredType());
+                                }
+
+                            }
+                        } else {
+                            children.add(itemDefinition.getName());
+                        }
                     }
                 } catch (NoSuchNodeTypeException e) {
                     logger.error("Failed to get node type " + nodeTypeName, e);
@@ -218,7 +231,7 @@ public class ModulesDataSource extends VFSDataSource {
                     return getChildNodeDefinitionData(path, childNodeDefinitionsAsMap.get(itemDefinitionName), false);
                 }
                 if (itemDefinitionName.startsWith(UNSTRUCTURED_CHILD_NODE)) {
-                    String type = itemDefinitionName.substring(UNSTRUCTURED_CHILD_NODE.length());
+                    String type = itemDefinitionName.substring(UNSTRUCTURED_CHILD_NODE.length()).trim();
                     return getChildNodeDefinitionData(path, nodeType.getDeclaredUnstructuredChildNodeDefinitions().get(type), true);
                 }
             } catch (NoSuchNodeTypeException e) {
@@ -561,6 +574,44 @@ public class ModulesDataSource extends VFSDataSource {
         } else {
             super.move(oldPath, newPath);
         }
+    }
+
+    @Override
+    public void order(String path,final List<String> children) throws PathNotFoundException {
+        // Order only for nodeType
+        ExternalData data = getItemByPath(path);
+        try {
+            String[] splitPath = path.split("/");
+            NodeTypeRegistry ntr = loadRegistry(StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 1), "/"),splitPath[1]);
+            if (data.getType().equals("jnt:primaryNodeType") || data.getType().equals("nt:mixinNodeType")) {
+                ExtendedNodeType type = ntr.getNodeType(splitPath[splitPath.length -1]);
+                Comparator<ExtendedItemDefinition> c =  new Comparator<ExtendedItemDefinition>() {
+                    @Override
+                    public int compare(ExtendedItemDefinition o1, ExtendedItemDefinition o2) {
+                        String s1 = o1.getName();
+                        String s2 = o2.getName();
+                        if (s1 != null && s2 != null) {
+                            int i1 = children.indexOf(s1);
+                            int i2 = children.indexOf(s2);
+                            if (i1 == i2) {
+                                return 0;
+                            }
+                            if (i1 > i2) {
+                                return 1;
+                            }
+                        }
+                        return -1;
+                    }
+                };
+                type.sortItems(c);
+                writeDefinitionFile(ntr,StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 1), "/"), splitPath[1]);
+
+            };
+
+        } catch (NoSuchNodeTypeException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
     }
 
     @Override

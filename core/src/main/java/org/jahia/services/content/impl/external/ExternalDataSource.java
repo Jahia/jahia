@@ -26,6 +26,8 @@ public interface ExternalDataSource {
         void move(String oldPath, String newPath) throws PathNotFoundException;
 
         void removeItemByPath(String path) throws PathNotFoundException;
+
+        void order(String path, List<String> children) throws PathNotFoundException;
     }
 
     public interface Searchable {

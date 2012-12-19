@@ -46,6 +46,7 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
@@ -116,7 +117,10 @@ public class PlaceholderModule extends Module {
             visiblePanel.addListener(Events.OnMouseOver, new Listener<BaseEvent>() {
                 @Override
                 public void handleEvent(BaseEvent be) {
+                    panel.removeFromParent();
+                    visiblePanel.add(panel);
                     panel.show();
+                    visiblePanel.layout();
                     //                    panel.setPosition(emptyPanel.getAbsoluteLeft(), emptyPanel.getAbsoluteTop());
                 }
             });
@@ -155,6 +159,27 @@ public class PlaceholderModule extends Module {
         if (getParentModule().getChildCount() >= getParentModule().getListLimit() && getParentModule().getListLimit() != -1) {
             return;
         }
+
+
+        if (mainModule.getConfig().isButtonsInLayer()) {
+            final LayoutContainer tool = new LayoutContainer();
+            tool.setHeight(16);
+            tool.setWidth(16);
+            tool.setStyleAttribute("position", "relative");
+            tool.addStyleName("x-panel-placeholder");
+            tool.addListener(Events.OnMouseOver, new Listener<BaseEvent>() {
+                @Override
+                public void handleEvent(BaseEvent be) {
+                    panel.removeFromParent();
+                    tool.add(panel);
+                    panel.show();
+                    tool.layout();
+                    //                    panel.setPosition(emptyPanel.getAbsoluteLeft(), emptyPanel.getAbsoluteTop());
+                }
+            });
+            getParentModule().getHeader().addTool(tool);
+        }
+
 
         String headerText;
         if (parentModule.path.contains("/")) {

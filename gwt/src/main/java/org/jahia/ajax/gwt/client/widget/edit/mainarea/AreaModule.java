@@ -88,7 +88,7 @@ public class AreaModule extends SimpleModule {
         hasDragDrop = false;
         head = new Header();
 
-        if (editable) {
+        if (editable || mainModule.getConfig().getName().equals("studiolayout")) {
             add(head);
         }
 
@@ -120,7 +120,7 @@ public class AreaModule extends SimpleModule {
     @Override public void onParsed() {
         super.onParsed();
         String headerText = head.getText();
-        
+
         String areaTitle;
         if (path.contains("/")) {
             areaTitle = path.substring(path.lastIndexOf('/') + 1);
@@ -137,14 +137,36 @@ public class AreaModule extends SimpleModule {
             removeAll();
 
             ctn = new LayoutContainer();
-            ctn.setId("JahiaGxtArea__" + areaTitle);
             ctn.addText(headerText);
 
             removeAll();
 
             LayoutContainer dash = new LayoutContainer();
-            dash.setId("JahiaGxtArea__" + areaTitle);
             dash.addStyleName(mainModule.getConfig().getName()+"areaTemplate");
+
+            ctn = new LayoutContainer();
+            ctn.addStyleName(moduleType+"Template");
+            ctn.addText(headerText);
+
+            dash.add(ctn);
+            dash.add(html);
+
+            add(dash);
+        } else if (visibleChildCount == 0 && childCount > 0) {
+            addStyleName(mainModule.getConfig().getName()+"BlockedArea");
+            headerText += " ( content )";
+            if (mockupStyle != null) {
+                addStyleName(mockupStyle);
+            }
+            removeAll();
+
+            ctn = new LayoutContainer();
+            ctn.addText(headerText);
+
+            removeAll();
+
+            LayoutContainer dash = new LayoutContainer();
+            dash.addStyleName(mainModule.getConfig().getName()+"BlockedAreaTemplate");
 
             ctn = new LayoutContainer();
             ctn.addStyleName(moduleType+"Template");

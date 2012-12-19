@@ -74,6 +74,7 @@ public abstract class Module extends LayoutContainer {
     protected boolean selectable;
     protected Header head;
     protected int childCount = 0;
+    protected int visibleChildCount = 0;
 
     public Module() {
     }
@@ -158,6 +159,9 @@ public abstract class Module extends LayoutContainer {
 
     public void addChild(Module childModule) {
         this.childCount++;
+        if (!(childModule instanceof InvisibleModule)) {
+            this.visibleChildCount ++;
+        }
     }
 
     public void setParentModule(Module parentModule) {
@@ -169,6 +173,10 @@ public abstract class Module extends LayoutContainer {
 
     public int getChildCount() {
         return childCount;
+    }
+
+    public int getVisibleChildCount() {
+        return visibleChildCount;
     }
 
     public String getModuleId() {

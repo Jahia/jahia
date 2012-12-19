@@ -278,6 +278,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     pageContext.getRequest().setAttribute("editableModule", canEdit && checkStudioLock(renderContext, node));
                     if (canEdit) {
                         String type = getModuleType(renderContext);
+                        if (!isVisible) {
+                            type = "invisibleModule";
+                        }
                         List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
                         String oldNodeTypes = nodeTypes;
                         String add = null;
@@ -641,8 +644,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             type = "list";
         } else if (node.isNodeType("jmix:bindedComponent")) {
             type = "bindedComponent";
-        } else if (renderContext.getEditModeConfigName().equals("studiomode") && !node.isNodeType("jmix:layoutComponentContent")) {
-            type = "existingNodeWithHeader";
+//        } else if (renderContext.getEditModeConfigName().equals("studiomode") && !node.isNodeType("jmix:layoutComponentContent")) {
+//            type = "existingNodeWithHeader";
         }
         return type;
     }

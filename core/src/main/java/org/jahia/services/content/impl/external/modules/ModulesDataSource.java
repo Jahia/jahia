@@ -500,7 +500,7 @@ public class ModulesDataSource extends VFSDataSource {
     public void removeItemByPath(String path) throws PathNotFoundException {
         String[] splitPath = path.split("/");
         if (path.endsWith(".cnd")) {
-            nodeTypeRegistryMap.remove(splitPath[1]);
+            nodeTypeRegistryMap.remove(path);
             super.removeItemByPath(path);
         } else if (splitPath.length >= 2 && splitPath[splitPath.length - 2].endsWith(".cnd")) {
             String nodeTypeName = splitPath[splitPath.length - 1];
@@ -548,7 +548,7 @@ public class ModulesDataSource extends VFSDataSource {
         String[] splitOldPath = oldPath.split("/");
         String[] splitNewPath = newPath.split("/");
         if (oldPath.endsWith(".cnd")) {
-            nodeTypeRegistryMap.remove(splitOldPath[1]);
+            nodeTypeRegistryMap.remove(oldPath);
             super.move(oldPath, newPath);
         } else if (splitOldPath.length >= 2 && splitOldPath[splitOldPath.length - 2].endsWith(".cnd")
                 && splitNewPath.length >= 2 && splitNewPath[splitNewPath.length - 2].endsWith(".cnd")) { // nodeType rename
@@ -567,7 +567,7 @@ public class ModulesDataSource extends VFSDataSource {
             } catch (ConstraintViolationException e) {
                 throw new PathNotFoundException("Failed to move node type " + oldNodeTypeName, e);
             } catch (NoSuchNodeTypeException e) {
-                nodeTypeRegistryMap.remove(module);
+                nodeTypeRegistryMap.remove(StringUtils.substringBeforeLast(oldPath,"/"));
                 throw new PathNotFoundException("Failed to move node type " + oldNodeTypeName, e);
             }
         } else if (splitOldPath.length >= 3 && splitOldPath[splitOldPath.length - 3].endsWith(".cnd")) {
@@ -769,7 +769,7 @@ public class ModulesDataSource extends VFSDataSource {
             nodeType.validate();
         } catch (NoSuchNodeTypeException e) {
             logger.error("Failed to save child node definition", e);
-            nodeTypeRegistryMap.remove(module);
+            nodeTypeRegistryMap.remove(StringUtils.substringBeforeLast(path,"/"));
             return;
         }
         writeDefinitionFile(nodeTypeRegistry, StringUtils.substringBeforeLast(path, "/"), splitPath[1]);
@@ -805,9 +805,13 @@ public class ModulesDataSource extends VFSDataSource {
                     continue;
                 }
                 String key = JCRContentUtils.replaceColon(nodeTypeName);
-                p.setProperty(key, title);
+                if (title != null) {
+                    p.setProperty(key, title);
+                }
                 key += "_description";
-                p.setProperty(key, description);
+                if (description != null) {
+                    p.setProperty(key, description);
+                }
                 os = content.getOutputStream();
                 p.store(os, rbPath);
             } catch (FileSystemException e) {
@@ -1019,7 +1023,7 @@ public class ModulesDataSource extends VFSDataSource {
                     StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/"), splitPath[1]);
         } catch (NoSuchNodeTypeException e) {
             logger.error("Failed to save child node definition", e);
-            nodeTypeRegistryMap.remove(module);
+            nodeTypeRegistryMap.remove(StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/"));
         }
     }
 
@@ -1110,7 +1114,7 @@ public class ModulesDataSource extends VFSDataSource {
                     StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/"), splitPath[1]);
         } catch (NoSuchNodeTypeException e) {
             logger.error("Failed to save child node definition", e);
-            nodeTypeRegistryMap.remove(module);
+            nodeTypeRegistryMap.remove(StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/"));
         }
     }
 
@@ -1131,8 +1135,8 @@ public class ModulesDataSource extends VFSDataSource {
     }
 
     private synchronized NodeTypeRegistry loadRegistry(String path, String module) {
-        if (nodeTypeRegistryMap.containsKey(module)) {
-            return nodeTypeRegistryMap.get(module);
+        if (nodeTypeRegistryMap.containsKey(path)) {
+            return nodeTypeRegistryMap.get(path);
         } else {
             NodeTypeRegistry ntr = new NodeTypeRegistry();
             try {
@@ -1151,7 +1155,7 @@ public class ModulesDataSource extends VFSDataSource {
             } catch (ParseException e) {
                 logger.error("Failed to load node type registry", e);
             }
-            nodeTypeRegistryMap.put(module, ntr);
+            nodeTypeRegistryMap.put(path, ntr);
             return ntr;
         }
     }

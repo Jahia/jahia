@@ -891,7 +891,7 @@ extends = jnt:content
  - j:autoCreated (BOOLEAN)
  - j:onParentVersion (STRING,choicelist) = 'VERSION' nofulltext
    < 'COPY', 'VERSION', 'INITIALIZE', 'COMPUTE', 'IGNORE', 'ABORT'
- - j:availableQueryOperators (NAME) multiple
+ - j:availableQueryOperators (STRING,choicelist) multiple nofulltext < '=', '<>', '<', '<=', '>', '>=', 'LIKE'
  - j:isFullTextSearchable (BOOLEAN) = true
  - j:isQueryOrderable (BOOLEAN) = true
  - j:isFacetable (BOOLEAN)

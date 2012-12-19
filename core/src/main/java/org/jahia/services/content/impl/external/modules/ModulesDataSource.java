@@ -66,6 +66,7 @@ import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeTypeIterator;
+import javax.jcr.query.qom.QueryObjectModelConstants;
 import javax.jcr.version.OnParentVersionAction;
 import java.io.*;
 import java.util.*;
@@ -316,8 +317,28 @@ public class ModulesDataSource extends VFSDataSource {
         }
         properties.put("j:multiple", new String[]{String.valueOf(propertyDefinition.isMultiple())});
         String[] availableQueryOperators = propertyDefinition.getAvailableQueryOperators();
-        if (availableQueryOperators != null && availableQueryOperators.length > 0) {
-            properties.put("j:availableQueryOperators", availableQueryOperators);
+        List<String> ops = new ArrayList<String>();
+        if (availableQueryOperators != null) {
+            for (String op : availableQueryOperators) {
+                if (QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO.equals(op)) {
+                    ops.add(Lexer.QUEROPS_EQUAL);
+                } else if (QueryObjectModelConstants.JCR_OPERATOR_NOT_EQUAL_TO.equals(op)) {
+                    ops.add(Lexer.QUEROPS_NOTEQUAL);
+                } else if (QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN.equals(op)) {
+                    ops.add(Lexer.QUEROPS_LESSTHAN);
+                } else if (QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO.equals(op)) {
+                    ops.add(Lexer.QUEROPS_LESSTHANOREQUAL);
+                } else if (QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN.equals(op)) {
+                    ops.add(Lexer.QUEROPS_GREATERTHAN);
+                } else if (QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO.equals(op)) {
+                    ops.add(Lexer.QUEROPS_GREATERTHANOREQUAL);
+                } else if (QueryObjectModelConstants.JCR_OPERATOR_LIKE.equals(op)) {
+                    ops.add(Lexer.QUEROPS_LIKE);
+                }
+            }
+            if (!ops.isEmpty()) {
+                properties.put("j:availableQueryOperators", ops.toArray(new String[ops.size()]));
+            }
         }
         properties.put("j:isFullTextSearchable", new String[]{String.valueOf(propertyDefinition.isFullTextSearchable())});
         properties.put("j:isQueryOrderable", new String[]{String.valueOf(propertyDefinition.isQueryOrderable())});
@@ -851,10 +872,30 @@ public class ModulesDataSource extends VFSDataSource {
                 propertyDefinition.setMultiple(false);
             }
             values = properties.get("j:availableQueryOperators");
+            List<String> ops = new ArrayList<String>();
             if (values != null) {
-                propertyDefinition.setAvailableQueryOperators(values);
-            } else {
+                for (String op : values) {
+                    if (op.equals(Lexer.QUEROPS_EQUAL)) {
+                        ops.add(QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO);
+                    } else if (op.equals(Lexer.QUEROPS_NOTEQUAL)) {
+                        ops.add(QueryObjectModelConstants.JCR_OPERATOR_NOT_EQUAL_TO);
+                    } else if (op.equals(Lexer.QUEROPS_LESSTHAN)) {
+                        ops.add(QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN);
+                    } else if (op.equals(Lexer.QUEROPS_LESSTHANOREQUAL)) {
+                        ops.add(QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO);
+                    } else if (op.equals(Lexer.QUEROPS_GREATERTHAN)) {
+                        ops.add(QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN);
+                    } else if (op.equals(Lexer.QUEROPS_GREATERTHANOREQUAL)) {
+                        ops.add(QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO);
+                    } else if (op.equals(Lexer.QUEROPS_LIKE)) {
+                        ops.add(QueryObjectModelConstants.JCR_OPERATOR_LIKE);
+                    }
+                }
+            }
+            if (ops.isEmpty()) {
                 propertyDefinition.setAvailableQueryOperators(Lexer.ALL_OPERATORS);
+            } else {
+                propertyDefinition.setAvailableQueryOperators(ops.toArray(new String[ops.size()]));
             }
             values = properties.get("j:isFullTextSearchable");
             if (values != null && values.length > 0) {

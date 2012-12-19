@@ -40,6 +40,7 @@
 
 package org.jahia.services.content.nodetypes;
 
+import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
 
 import javax.jcr.PropertyType;
@@ -303,7 +304,7 @@ public class JahiaCndWriter {
     }
 
     private void writeQueryOperators(String[] availableQueryOperators) throws IOException {
-        if (Arrays.equals(availableQueryOperators, Lexer.ALL_OPERATORS)) {
+        if (Sets.newHashSet(Lexer.ALL_OPERATORS).equals(Sets.newHashSet(availableQueryOperators))) {
             return;
         }
         out.write(" queryops '");

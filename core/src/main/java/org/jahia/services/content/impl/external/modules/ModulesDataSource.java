@@ -867,6 +867,7 @@ public class ModulesDataSource extends VFSDataSource {
                 }
                 Name name = new Name(qualifiedName, nodeTypeRegistry.getNamespaces());
                 propertyDefinition.setName(name);
+                propertyDefinition.setRequiredType(JahiaCndReader.getPropertyType(data.getProperties().get("j:requiredType")[0]));
                 propertyDefinition.setDeclaringNodeType(nodeType);
             }
             Map<String, String[]> properties = data.getProperties();

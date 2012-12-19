@@ -19,7 +19,7 @@
 <!-- Adiministration page position -->
 <div id="topTitle">
 <h1>Jahia</h1>
-<h2 class="edit"><fmt:message key="org.jahia.admin.users.ManageUsers.removeUser.label"/></h2>
+<h2 class="edit"><fmt:message key="org.jahia.admin.users.ManageUsers.batchCreateUsers.label"/></h2>
 </div>
 <div id="main">
 <table style="width: 100%;" class="dex-TabPanel" cellpadding="0"

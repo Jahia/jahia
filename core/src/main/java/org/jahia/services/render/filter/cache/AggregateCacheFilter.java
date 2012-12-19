@@ -575,8 +575,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         final CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
         try {
             Map<String, String> keyAttrbs = cacheKeyGenerator.parse(cacheKey);
-            JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession(keyAttrbs.get(
-                    "workspace"), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get("language")),
+            JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession(renderContext.getWorkspace(), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get("language")),
                     renderContext.getFallbackLocale());
             JCRNodeWrapper node = null;
             try {

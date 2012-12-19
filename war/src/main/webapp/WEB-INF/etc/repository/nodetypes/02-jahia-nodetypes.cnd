@@ -872,7 +872,7 @@ extends = jnt:content
 
 [jnt:itemDefinition] abstract
 
-[jnt:propertyDefinition] > jnt:itemDefinition abstract
+[jnt:propertyDefinition] > jnt:itemDefinition
  - j:requiredType (STRING,choicelist) = 'String' mandatory nofulltext
    < 'String', 'URI', 'Binary', 'Long', 'Double',
      'Decimal', 'Boolean', 'Date', 'Name', 'Path',
@@ -904,8 +904,6 @@ extends = jnt:content
    < 'LATEST', 'OLDEST', 'MIN', 'MAX', 'SUM'
  - j:itemType (STRING,choicelist) < 'content','metadata','layout','options'
 
-[jnt:structuredPropertyDefinition] > jnt:propertyDefinition
-
 [jnt:unstructuredPropertyDefinition] > jnt:propertyDefinition
  - j:requiredType (STRING,choicelist) = 'String' mandatory nofulltext hidden
    < 'String', 'URI', 'Binary', 'Long', 'Double',
@@ -913,16 +911,14 @@ extends = jnt:content
      'Reference', 'WeakReference', 'undefined'
  - j:multiple (BOOLEAN) hidden
 
-[jnt:childNodeDefinition] > jnt:itemDefinition abstract
+[jnt:childNodeDefinition] > jnt:itemDefinition
+ - j:defaultPrimaryType (NAME, choicelist[nodetypes='ALL;fromDependencies',resourceBundle])
+ - j:requiredPrimaryTypes (NAME, choicelist[nodetypes='ALL;fromDependencies',resourceBundle]) = 'nt:base' mandatory multiple
  - j:autoCreated (BOOLEAN)
  - j:mandatory (BOOLEAN)
  - j:onParentVersion (STRING,choicelist) = 'VERSION' nofulltext
    < 'COPY', 'VERSION', 'INITIALIZE', 'COMPUTE', 'IGNORE', 'ABORT'
  - j:protected (BOOLEAN)
- - j:requiredPrimaryTypes (NAME, choicelist[nodetypes='ALL;fromDependencies',resourceBundle]) = 'nt:base' mandatory multiple
- - j:defaultPrimaryType (NAME, choicelist[nodetypes='ALL;fromDependencies',resourceBundle])
-
-[jnt:structuredChildNodeDefinition] > jnt:childNodeDefinition
 
 [jnt:unstructuredChildNodeDefinition] > jnt:childNodeDefinition
  - j:requiredPrimaryTypes (NAME,choicelist[nodetypes='ALL;fromDependencies',resourceBundle]) = 'nt:base' mandatory multiple hidden

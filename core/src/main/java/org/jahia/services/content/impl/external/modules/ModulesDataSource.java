@@ -371,7 +371,7 @@ public class ModulesDataSource extends VFSDataSource {
             properties.put("j:itemType", new String[]{itemType});
         }
         ExternalData externalData = new ExternalData(path, path,
-                unstructured ? "jnt:unstructuredPropertyDefinition" : "jnt:structuredPropertyDefinition", properties);
+                unstructured ? "jnt:unstructuredPropertyDefinition" : "jnt:propertyDefinition", properties);
         return externalData;
     }
 
@@ -390,7 +390,7 @@ public class ModulesDataSource extends VFSDataSource {
             properties.put("j:defaultPrimaryType", new String[]{defaultPrimaryTypeName});
         }
         ExternalData externalData = new ExternalData(path, path,
-                unstructured ? "jnt:unstructuredChildNodeDefinition" : "jnt:structuredChildNodeDefinition", properties);
+                unstructured ? "jnt:unstructuredChildNodeDefinition" : "jnt:childNodeDefinition", properties);
         return externalData;
     }
 

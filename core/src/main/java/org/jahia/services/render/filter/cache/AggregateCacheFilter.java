@@ -217,7 +217,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         if (servedFromCache.contains(key)) {
             return previousOut;
         }
-        if (key.contains("_mr_")) {
+        if (key.contains(PathCacheKeyPartGenerator.MAIN_RESOURCE_KEY)) {
             resource.getDependencies().add(renderContext.getMainResource().getNode().getCanonicalPath());
             if (Boolean.valueOf(properties.getProperty("cache.mainResource.flushParent", "false"))) {
                 try {
@@ -580,7 +580,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     renderContext.getFallbackLocale());
             JCRNodeWrapper node = null;
             try {
-                node = currentUserSession.getNode(StringUtils.replace(keyAttrbs.get("path"), "_mr_",""));
+                node = currentUserSession.getNode(StringUtils.replace(keyAttrbs.get("path"), PathCacheKeyPartGenerator.MAIN_RESOURCE_KEY,""));
             } catch (PathNotFoundException e) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Node {} is no longer available." + " Replacing output with empty content.",

@@ -45,12 +45,14 @@ import com.google.common.collect.Collections2;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.vfs2.FileContent;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileType;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.impl.external.ExternalData;
 import org.jahia.services.content.impl.external.vfs.VFSDataSource;
 import org.jahia.services.content.nodetypes.*;
@@ -699,6 +701,52 @@ public class ModulesDataSource extends VFSDataSource {
             return;
         }
         writeDefinitionFile(nodeTypeRegistry, StringUtils.substringBeforeLast(path, "/"), splitPath[1]);
+
+        JahiaTemplatesPackage templatePackage = templateManagerService.getTemplatePackageByFileName(module);
+        String rbBasePath = StringUtils.substringAfter(templatePackage.getResourceBundleName(), "modules").replaceAll("\\.", "/").replaceAll("___", ".");
+        Map<String, Map<String, String[]>> i18nProperties = data.getI18nProperties();
+        for (String lang : i18nProperties.keySet()) {
+            properties = i18nProperties.get(lang);
+            String title = null;
+            String description = null;
+            values = properties.get("jcr:title");
+            if (values != null && values.length > 0) {
+                title = values[0];
+            }
+            values = properties.get("jcr:description");
+            if (values != null && values.length > 0) {
+                description = values[0];
+            }
+
+            String rbPath = rbBasePath + "_" + lang + ".properties";
+            InputStream is = null;
+            OutputStream os = null;
+            try {
+                FileObject file = getFile(rbPath);
+                FileContent content = file.getContent();
+                Properties p = new Properties();
+                if (file.exists()) {
+                    is = content.getInputStream();
+                    p.load(is);
+                    is.close();
+                } else if (StringUtils.isBlank(title) && StringUtils.isBlank(description)) {
+                    continue;
+                }
+                String key = JCRContentUtils.replaceColon(nodeTypeName);
+                p.setProperty(key, title);
+                key += "_description";
+                p.setProperty(key, description);
+                os = content.getOutputStream();
+                p.store(os, rbPath);
+            } catch (FileSystemException e) {
+                logger.error("Failed to save resourceBundle", e);
+            } catch (IOException e) {
+                logger.error("Failed to save resourceBundle", e);
+            } finally {
+                IOUtils.closeQuietly(is);
+                IOUtils.closeQuietly(os);
+            }
+        }
     }
 
     private void savePropertyDefinition(ExternalData data) {

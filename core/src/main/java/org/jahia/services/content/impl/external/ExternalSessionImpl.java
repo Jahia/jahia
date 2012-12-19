@@ -208,7 +208,7 @@ public class ExternalSessionImpl implements Session {
                 StatelessSession statelessSession = hibernateSession.openStatelessSession();
                 try {
                     Criteria criteria = statelessSession.createCriteria(UuidMapping.class);
-                    criteria.add(Restrictions.eq("internalUuid", oldData.getId()));
+                    criteria.add(Restrictions.eq("externalId", oldData.getId()));
                     criteria.add(Restrictions.eq("providerKey", repository.getProviderKey()));
                     List list = criteria.list();
                     if (list.size() > 0) {
@@ -228,8 +228,30 @@ public class ExternalSessionImpl implements Session {
     public void save()
             throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
         if (repository.getDataSource() instanceof ExternalDataSource.Writable) {
+            Map<String, ExternalData> changedDataWithI18n = new HashMap<String, ExternalData>();
+            for (String path : changedData.keySet()) {
+                if (StringUtils.substringAfterLast(path, "/").startsWith("j:translation_")) {
+                    String lang = StringUtils.substringAfterLast(StringUtils.substringAfterLast(path, "/"), "_");
+                    String parentPath = StringUtils.substringBeforeLast(path, "/");
+                    ExternalData parentData;
+                    if (changedDataWithI18n.containsKey(parentPath)) {
+                        parentData = changedDataWithI18n.get(parentPath);
+                    } else {
+                        parentData = repository.getDataSource().getItemByPath(parentPath);
+                    }
+                    Map<String, Map<String, String[]>> i18nProperties = parentData.getI18nProperties();
+                    if (i18nProperties == null) {
+                        i18nProperties = new HashMap<String, Map<String, String[]>>();
+                    }
+                    i18nProperties.put(lang, changedData.get(path).getProperties());
+                    parentData.setI18nProperties(i18nProperties);
+                    changedDataWithI18n.put(parentPath, parentData);
+                } else {
+                    changedDataWithI18n.put(path, changedData.get(path));
+                }
+            }
             ExternalDataSource.Writable writableDataSource = (ExternalDataSource.Writable) repository.getDataSource();
-            for (ExternalData data : changedData.values()) {
+            for (ExternalData data : changedDataWithI18n.values()) {
                 writableDataSource.saveItem(data);
             }
             changedData.clear();

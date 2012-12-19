@@ -12,5 +12,5 @@
 </jcr:jqom>
 ${currentNode.path}
 <c:forEach items="${files.nodes}" varStatus="status" var="file">
-${file.path}.html${fn:escapeXml(newLineChar)}
+${file.path}${fn:escapeXml(newLineChar)}
 </c:forEach>

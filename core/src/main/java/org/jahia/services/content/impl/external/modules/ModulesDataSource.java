@@ -117,7 +117,7 @@ public class ModulesDataSource extends VFSDataSource {
                                 for (ExtendedNodeType e : ((ExtendedNodeDefinition) itemDefinition).getRequiredPrimaryTypes()) {
                                     s += e.getName() + " ";
                                 }
-                                children.add(UNSTRUCTURED_CHILD_NODE + s);
+                                children.add(UNSTRUCTURED_CHILD_NODE + s.trim());
                             } else {
                                 if (((ExtendedPropertyDefinition) itemDefinition).isMultiple()) {
                                     int i = 256 + ((ExtendedPropertyDefinition) itemDefinition).getRequiredType();

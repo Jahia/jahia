@@ -293,6 +293,7 @@ public class UIConfigHelper {
                 gwtConfig.setShowOnlyNodesWithTemplates(config.isShowOnlyNodesWithTemplates());
                 gwtConfig.setDisplaySearchInDateMeta(config.isDisplaySearchInDateMeta());
                 gwtConfig.setEditableGrid(config.isEditableGrid());
+                gwtConfig.setComponentsPaths(config.getComponentsPaths());
                 // set toolbar
                 gwtConfig.setToolbars(createGWTToolbarSet(contextNode, site, jahiaUser, locale, uiLocale, request, config.getToolbars()));
                 gwtConfig.setContextMenu(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getContextMenu()));

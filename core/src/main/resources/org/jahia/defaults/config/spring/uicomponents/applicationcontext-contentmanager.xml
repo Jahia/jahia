@@ -397,6 +397,11 @@
         <property name="requiredPermission" value="categoryManager"/>
         <property name="nodeTypes" value="jnt:category"/>
         <property name="folderTypes" value="jnt:category"/>
+        <property name="componentsPaths">
+            <list>
+                <value>/modules/*</value>
+            </list>
+        </property>
         <property name="toolbars">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
@@ -715,6 +720,11 @@
                 <value>jnt:roles</value>
                 <value>jnt:passwordPolicy</value>
                 <value>jnt:passwordHistory</value>
+            </list>
+        </property>
+        <property name="componentsPaths">
+            <list>
+                <value>/modules/*</value>
             </list>
         </property>
         <property name="toolbars">

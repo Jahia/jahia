@@ -45,10 +45,7 @@ import org.jahia.services.uicomponents.bean.editmode.EngineTab;
 import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Content manager configuratino settings.
@@ -108,6 +105,8 @@ public class ManagerConfiguration implements Serializable {
     private boolean showOnlyNodesWithTemplates = false;
 
     private boolean editableGrid;
+
+    private List<String> componentsPaths = Arrays.asList("$site/components/*");
 
     public ManagerConfiguration() {
         tableColumns = new ArrayList<Column>();
@@ -395,5 +394,13 @@ public class ManagerConfiguration implements Serializable {
 
     public void setEditableGrid(boolean editableGrid) {
         this.editableGrid = editableGrid;
+    }
+
+    public List<String> getComponentsPaths() {
+        return componentsPaths;
+    }
+
+    public void setComponentsPaths(List<String> componentsPaths) {
+        this.componentsPaths = componentsPaths;
     }
 }

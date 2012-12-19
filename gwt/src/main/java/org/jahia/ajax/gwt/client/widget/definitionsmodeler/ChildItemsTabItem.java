@@ -3,6 +3,8 @@ package org.jahia.ajax.gwt.client.widget.definitionsmodeler;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.extjs.gxt.ui.client.dnd.DND;
+import com.extjs.gxt.ui.client.dnd.GridDropTarget;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
@@ -25,6 +27,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
 import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
@@ -43,6 +46,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
     protected transient Map<GWTJahiaNode,PropertiesEditor> propertiesEditors;
 
     private String type;
+    private transient Grid<GWTJahiaNode> grid;
     private transient List<String> columnsKeys;
     private transient GWTJahiaNodeType nodeType;
     private transient Map<String, GWTJahiaFieldInitializer> initializerMap = new HashMap<String, GWTJahiaFieldInitializer>();
@@ -133,12 +137,18 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             }
         });
 
-        final Grid<GWTJahiaNode> grid = new Grid<GWTJahiaNode>(store,new ColumnModel(columns));
+        grid = new Grid<GWTJahiaNode>(store,new ColumnModel(columns));
+
+        GridDropTarget target = new GridDropTarget(grid);
+        target.setAllowSelfAsSource(true);
+        target.setFeedback(DND.Feedback.INSERT);
+
         grid.setHeight(200);
         tab.add(grid, new RowData(1,200, new Margins(2)));
 
         ToolBar toolBar = new ToolBar();
         Button add = new Button(Messages.get("label.add", "Add"));
+        add.setIcon(StandardIconsProvider.STANDARD_ICONS.plusRound());
         add.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -160,6 +170,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         });
         toolBar.add(add);
         Button remove = new Button(Messages.get("label.remove", "Remove"));
+        remove.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
         remove.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -178,6 +189,102 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             }
         });
         toolBar.add(remove);
+        Button moveUp = new Button(Messages.get("label.move.up", "move up"), new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                for (GWTJahiaNode node : getOrderedSelectedList()) {
+                    execute(node);
+                }
+                grid.getView().refresh(false);
+            }
+
+            public void execute(GWTJahiaNode selectedNode) {
+                // find a better way to get index
+                removeSorter();
+                int index = grid.getStore().indexOf(selectedNode);
+                if (index > 0) {
+                    grid.getStore().remove(selectedNode);
+                    grid.getStore().insert(selectedNode, index - 1);
+                    grid.getSelectionModel().select(index - 1, true);
+                }
+            }
+
+
+        });
+        moveUp.setIcon(StandardIconsProvider.STANDARD_ICONS.moveUp());
+        toolBar.add(moveUp);
+
+        Button moveFirst = new Button(Messages.get("label.move.first", "move first"), new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                int iteration = 0;
+                for (GWTJahiaNode node : getOrderedSelectedList()) {
+                    execute(node, iteration);
+                    iteration++;
+                }
+            }
+
+            public void execute(GWTJahiaNode node, int index) {
+                removeSorter();
+                grid.getStore().remove(node);
+                grid.getStore().insert(node, index);
+                grid.getSelectionModel().select(index, true);
+                grid.getView().refresh(false);
+            }
+        });
+        moveFirst.setIcon(StandardIconsProvider.STANDARD_ICONS.moveFirst());
+        toolBar.add(moveFirst);
+
+        Button moveDown = new Button(Messages.get("label.move.down", "move down"), new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                List<GWTJahiaNode> ordered = getOrderedSelectedList();
+                Collections.reverse(ordered);
+                for (GWTJahiaNode node : ordered) {
+                    execute(node);
+                }
+            }
+
+            public void execute(GWTJahiaNode selectedNode) {
+                // find a better way to get index
+                int index = grid.getStore().indexOf(selectedNode);
+                if (index < grid.getStore().getCount() - 1) {
+                    removeSorter();
+                    grid.getStore().remove(selectedNode);
+                    grid.getStore().insert(selectedNode, index + 1);
+                    grid.getSelectionModel().select(index + 1, true);
+                    grid.getView().refresh(false);
+                }
+            }
+        });
+        moveDown.setIcon(StandardIconsProvider.STANDARD_ICONS.moveDown());
+        toolBar.add(moveDown);
+
+        Button moveLast = new Button(Messages.get("label.move.last", "move last"), new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                List<GWTJahiaNode> ordered = getOrderedSelectedList();
+                Collections.reverse(ordered);
+                int index = grid.getStore().getCount() - 1;
+                for (GWTJahiaNode node : ordered) {
+                    execute(node, index);
+                    index--;
+                }
+                grid.getSelectionModel().setSelection(grid.getSelectionModel().getSelection());
+                grid.getView().refresh(false);
+            }
+
+
+            public void execute(GWTJahiaNode node, int index) {
+                removeSorter();
+                grid.getStore().remove(node);
+                grid.getStore().insert(node, index);
+                grid.getSelectionModel().select(index, true);
+
+            }
+        });
+        moveLast.setIcon(StandardIconsProvider.STANDARD_ICONS.moveLast());
+        toolBar.add(moveLast);
         tab.add(toolBar, new RowData(1,-1, new Margins(2)));
 
         grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
@@ -205,6 +312,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                             }
                         });
                     } else {
+                        item.set("newItem","true");
                         item.setPath(engine.getNode().getPath()+"/"+item.getName());
                         displayProperties(item, Arrays.asList(nodeType), (Map<String, GWTJahiaNodeProperty>) item.get("default-properties"));
                         item.remove("default-properties");
@@ -279,6 +387,31 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         }
     }
 
+    private List<GWTJahiaNode> getOrderedSelectedList() {
+        List<GWTJahiaNode> selectedNodes = grid.getSelectionModel().getSelection();
+        Comparator<GWTJahiaNode> c = new Comparator<GWTJahiaNode>() {
+            public int compare(GWTJahiaNode gwtJahiaNode, GWTJahiaNode gwtJahiaNode1) {
+                int index = grid.getStore().indexOf(gwtJahiaNode);
+                int index2 = grid.getStore().indexOf(gwtJahiaNode1);
+                if (index == index2) {
+                    return 0;
+                }
+
+                if (index > index2) {
+                    return 1;
+                }
+
+                return -1;
+            }
+        };
+        Collections.sort(selectedNodes, c);
+        return selectedNodes;
+    }
+
+    public List<GWTJahiaNode> getOrderedNodes() {
+        return grid.getStore().getModels();
+    }
+
     public void setProcessed(boolean processed) {
         if (!processed) {
             store = null;
@@ -293,7 +426,10 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             for (GWTJahiaNode itemDefinition : store.getModels()) {
                 if (propertiesEditors.containsKey(itemDefinition)) {
                     PropertiesEditor pe = propertiesEditors.get(itemDefinition);
-                    boolean isNew = itemDefinition.getPath() == null;
+                    boolean isNew = "true".equals(itemDefinition.get("newItem"));
+                    if (isNew) {
+                        itemDefinition.remove("newItem");
+                    }
                     itemDefinition.set("nodeProperties", pe.getProperties(false,true,!isNew));
                     itemDefinition.set("nodeLangCodeProperties", new HashMap<String, List<GWTJahiaNodeProperty>>());
                 } else {
@@ -301,7 +437,46 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                     itemDefinition.set("nodeLangCodeProperties", new HashMap<String, List<GWTJahiaNodeProperty>>());
                 }
             }
+            Collections.sort(node.getChildren(), new Comparator<ModelData>() {
+                @Override
+                public int compare(ModelData o1, ModelData o2) {
+                    GWTJahiaNode c1 = null;
+                    GWTJahiaNode c2 = null;
+
+                    for (GWTJahiaNode n :grid.getStore().getModels()) {
+                        if (n.getPath().equals(((GWTJahiaNode) o1).getPath())) {
+                            c1 = n;
+                        }
+                        if (n.getPath().equals(((GWTJahiaNode) o2).getPath())) {
+                            c2 = n;
+                        }
+                    }
+                    if (c1 != null && c2 != null) {
+                        int index = grid.getStore().indexOf(c1);
+                        int index2 = grid.getStore().indexOf(c2);
+                        if (index == index2) {
+                            return 0;
+                        }
+
+                        if (index > index2) {
+                            return 1;
+                        }
+                    }
+
+                    return -1;
+                }
+            });
             node.set(GWTJahiaNode.INCLUDE_CHILDREN, Boolean.TRUE);
+        }
+    }
+    private void removeSorter() {
+        if (grid.getStore().getStoreSorter() != null ) {
+            grid.getStore().setSortField(null);
+            grid.getStore().setStoreSorter(null);
+            grid.getView().refresh(true);
+        }
+        else {
+            grid.getView().refresh(false);
         }
     }
 

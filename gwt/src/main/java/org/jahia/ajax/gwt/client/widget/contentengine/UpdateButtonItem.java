@@ -52,7 +52,9 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.definitionsmodeler.ChildItemsTabItem;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
@@ -66,7 +68,7 @@ public class UpdateButtonItem extends SaveButtonItem {
     @Override
     protected void prepareAndSave(final AbstractContentEngine engine, final boolean closeAfterSave) {
         // node
-        List<GWTJahiaNode> orderedChildrenNodes = null;
+        List<GWTJahiaNode> orderedChildrenNodes = new ArrayList<GWTJahiaNode>();
 
         final Set<String> addedTypes = new HashSet<String>();
         final Set<String> removedTypes = new HashSet<String>();
@@ -124,6 +126,10 @@ public class UpdateButtonItem extends SaveButtonItem {
             if (item instanceof ListOrderingContentTabItem) {
                 // if the manual ranking was activated update new ranking
                 orderedChildrenNodes = ((ListOrderingContentTabItem) item).getNewManualOrderedChildrenList();
+            }
+
+            if (item instanceof ChildItemsTabItem && ((AsyncTabItem) tab).isProcessed()) {
+                orderedChildrenNodes.addAll(((ChildItemsTabItem) item).getOrderedNodes());
             }
 
             // case of right tab

@@ -79,7 +79,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private String requiredPermission;
     private String defaultUrlMapping;
 
-    private boolean modulesOnly = true;
+    private boolean modulesOnly = false;
 
     private List<String> componentsPaths = Arrays.asList("$site/components/*");
 

@@ -185,6 +185,7 @@ public class SearchCriteriaFactory {
             type = NodeProperty.Type.DATE;
             break;
         case PropertyType.STRING:
+        case PropertyType.WEAKREFERENCE:	
             if (SelectorType.CATEGORY == (propDefExt.getSelector())) {
                 type = NodeProperty.Type.CATEGORY;
             }

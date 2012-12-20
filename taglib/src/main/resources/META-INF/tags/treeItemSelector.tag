@@ -5,6 +5,8 @@
               description="The input field name and ID to synchronize the seletcted item display title with." %>
 <%@ attribute name="fieldIdIncludeChildren" required="false" type="java.lang.String"
               description="The ID and name of the include children input field." %>
+<%@ attribute name="fieldNameIncludeChildren" required="false" type="java.lang.String"
+              description="The ID and name of the include children input field." %>              
 <%@ attribute name="displayIncludeChildren" required="false" type="java.lang.Boolean"
               description="Do we need to show the include children checkbox? [true]" %>
 <%@ attribute name="includeChildren" type="java.lang.Boolean"
@@ -45,6 +47,7 @@
 <c:set var="displayIncludeChildren" value="${functions:default(displayIncludeChildren, 'true')}"/>
 <c:if test="${empty displayFieldId}"><c:set var="displayFieldId" value="${fieldId}-treeItemSelectorTrigger"/></c:if>
 <c:if test="${empty fieldIdIncludeChildren}"><c:set var="fieldIdIncludeChildren" value="${fieldId}_includeChildren"/></c:if>
+<c:if test="${empty fieldNameIncludeChildren}"><c:set var="fieldNameIncludeChildren" value="${fieldIdIncludeChildren}"/></c:if>
 <%-- by default set includeChildren to 'true' to search in subnodes --%>
 <c:set var="includeChildren" value="${functions:default(includeChildren, 'true')}"/>
 <%-- resolve includeChildren either from request parameter or from the default value (note that the 'false' value is not submitted for checkbox) --%>
@@ -53,7 +56,7 @@
 <c:if test="${empty includeChildrenLabel}"><c:set var="includeChildrenLabel"><fmt:message key="selectors.includeChildren"/></c:set></c:if>
 <a href="\#${fieldId}-treeItemSelector" id="${fieldId}-treeItemSelectorTrigger" class="${styleClass}">${fn:escapeXml(label)}</a>
 <c:if test="${displayIncludeChildren}">
-    &nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldIdIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;<label for="${fieldIdIncludeChildren}">${fn:escapeXml(includeChildrenLabel)}</label>
+    &nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldNameIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;<label for="${fieldIdIncludeChildren}">${fn:escapeXml(includeChildrenLabel)}</label>
 </c:if>
 <c:choose>
     <c:when test="${renderContext.liveMode}">

@@ -195,7 +195,7 @@ public class MainModule extends Module {
             }));
         }
 
-        if ("".equals(Window.Location.getHash()) || !isValidUrl(Window.Location.getHash())) {
+        if ("".equals(Window.Location.getHash()) || !isValidUrl(Window.Location.getHash().substring(1))) {
             goToUrl(getUrl(path, template), true);
         } else {
             String hash = URL.decode(Window.Location.getHash());

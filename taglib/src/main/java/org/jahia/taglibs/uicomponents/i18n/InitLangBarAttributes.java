@@ -139,7 +139,7 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
             if (node != null) {
                 try {
                     final Node localizedNode = node.getI18N(LanguageCodeConverters.languageCodeToLocale(languageCode));
-                    return localizedNode.getProperty("jcr:language").getString().equals(languageCode);
+                    return localizedNode.getProperty("jcr:language").getString().equals(languageCode) && localizedNode.hasProperty("j:published") && localizedNode.getProperty("j:published").getBoolean();
                 } catch (javax.jcr.RepositoryException e) {
                     logger.debug("lang[" + languageCode + "] not published");
                     return false;

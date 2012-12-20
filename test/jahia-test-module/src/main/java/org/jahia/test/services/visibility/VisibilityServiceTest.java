@@ -40,12 +40,10 @@
 
 package org.jahia.test.services.visibility;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Locale;
@@ -55,14 +53,7 @@ import java.util.Set;
 
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.drools.util.StringUtils;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
@@ -130,7 +121,6 @@ public class VisibilityServiceTest extends JahiaTestCase {
         JCRSessionFactory.getInstance().closeAllSessions();
     }
 
-    private HttpClient client;
     private JCRNodeWrapper home;
 
     private JCRNodeWrapper invisible;
@@ -138,19 +128,7 @@ public class VisibilityServiceTest extends JahiaTestCase {
     private JCRSessionWrapper session;
 
     private boolean isPresent(String relativeUrl) {
-        String body = StringUtils.EMPTY;
-        GetMethod getMethod = new GetMethod(getBaseServerURL() + Jahia.getContextPath()
-                + relativeUrl);
-        try {
-            int responseCode = client.executeMethod(getMethod);
-            assertEquals("Response code is not OK: " + responseCode, 200, responseCode);
-            body = getMethod.getResponseBodyAsString();
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        } finally {
-            getMethod.releaseConnection();
-        }
-        return body.contains(INVISIBLE_TEXT);
+        return getAsText(relativeUrl).contains(INVISIBLE_TEXT);
     }
 
     @Before
@@ -170,9 +148,6 @@ public class VisibilityServiceTest extends JahiaTestCase {
 
         session.save();
 
-        // Create an instance of HttpClient.
-        client = new HttpClient();
-
         login(USERNAME, PASSWORD);
     }
 
@@ -184,18 +159,7 @@ public class VisibilityServiceTest extends JahiaTestCase {
 
         JCRSessionFactory.getInstance().closeAllSessions();
 
-        PostMethod logoutMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath()
-                + "/cms/logout");
-        logoutMethod.addParameter("redirectActive", "false");
-
-        try {
-            int statusCode = client.executeMethod(logoutMethod);
-            if (statusCode != HttpStatus.SC_OK) {
-                System.err.println("Method failed: " + logoutMethod.getStatusLine());
-            }
-        } finally {
-            logoutMethod.releaseConnection();
-        }
+        logout();
     }
 
     @Test

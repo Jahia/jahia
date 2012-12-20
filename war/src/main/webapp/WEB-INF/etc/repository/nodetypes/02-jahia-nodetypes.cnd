@@ -881,6 +881,7 @@ extends = jnt:content
    < 'Text','RichText','DateTimePicker','DatePicker',
      'TextArea','Picker','FileUpload','Checkbox',
      'Color','Category','Choicelist'
+ - j:selectorOptions (STRING) multiple nofulltext
  - j:multiple (BOOLEAN)
  - j:defaultValues (STRING) multiple
  - j:valueConstraints (STRING) multiple nofulltext
@@ -912,8 +913,8 @@ extends = jnt:content
  - j:multiple (BOOLEAN) hidden
 
 [jnt:childNodeDefinition] > jnt:itemDefinition
- - j:defaultPrimaryType (NAME, choicelist[nodetypes='ALL;fromDependencies',resourceBundle])
  - j:requiredPrimaryTypes (NAME, choicelist[nodetypes='ALL;fromDependencies',resourceBundle]) = 'nt:base' mandatory multiple
+ - j:defaultPrimaryType (NAME, choicelist[nodetypes='ALL;fromDependencies',resourceBundle])
  - j:autoCreated (BOOLEAN)
  - j:mandatory (BOOLEAN)
  - j:onParentVersion (STRING,choicelist) = 'VERSION' nofulltext

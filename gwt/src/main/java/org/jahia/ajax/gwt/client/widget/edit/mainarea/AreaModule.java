@@ -70,11 +70,11 @@ import com.google.gwt.user.client.Element;
 import java.util.Arrays;
 
 /**
- * 
+ *
  * User: toto
  * Date: Aug 18, 2009
  * Time: 7:25:48 PM
- * 
+ *
  */
 public class AreaModule extends SimpleModule {
 
@@ -88,7 +88,7 @@ public class AreaModule extends SimpleModule {
         hasDragDrop = false;
         head = new Header();
 
-        if (editable || mainModule.getConfig().getName().equals("studiolayout")) {
+        if (editable || mainModule.getConfig().getName().equals("studiolayoutmode")) {
             add(head);
         }
 
@@ -105,12 +105,12 @@ public class AreaModule extends SimpleModule {
         }
         headerText = Messages.get("label."+moduleType)+" : " + areaTitle;
         head.setId("JahiaGxtArea__" + areaTitle);
-        
+
         head.setText(headerText);
 //        setBodyBorder(false);
         head.addStyleName("x-panel-header");
         head.addStyleName("x-panel-header-"+moduleType+"module");
-        
+
         html = new HTML(divElement.getInnerHTML());
         add(html);
     }
@@ -127,22 +127,22 @@ public class AreaModule extends SimpleModule {
         } else {
             areaTitle = path;
         }
-        
+
         if (missingList && editable) {
-            addStyleName(mainModule.getConfig().getName()+"area");
+            addStyleName(mainModule.getConfig().getName()+"DisabledArea");
             headerText += " (" + Messages.get("label.notCreated", "not created")+ ")";
             if (mockupStyle != null) {
                 addStyleName(mockupStyle);
             }
-            removeAll();
+//            removeAll();
 
             ctn = new LayoutContainer();
             ctn.addText(headerText);
 
-            removeAll();
+//            removeAll();
 
             LayoutContainer dash = new LayoutContainer();
-            dash.addStyleName(mainModule.getConfig().getName()+"areaTemplate");
+            dash.addStyleName(mainModule.getConfig().getName()+"AreaTemplate");
 
             ctn = new LayoutContainer();
             ctn.addStyleName(moduleType+"Template");
@@ -158,15 +158,15 @@ public class AreaModule extends SimpleModule {
             if (mockupStyle != null) {
                 addStyleName(mockupStyle);
             }
-            removeAll();
+//            removeAll();
 
             ctn = new LayoutContainer();
             ctn.addText(headerText);
 
-            removeAll();
+//            removeAll();
 
             LayoutContainer dash = new LayoutContainer();
-            dash.addStyleName(mainModule.getConfig().getName()+"BlockedAreaTemplate");
+            dash.addStyleName(mainModule.getConfig().getName()+"AreaTemplate");
 
             ctn = new LayoutContainer();
             ctn.addStyleName(moduleType+"Template");
@@ -177,6 +177,7 @@ public class AreaModule extends SimpleModule {
 
             add(dash);
         } else {
+            addStyleName(mainModule.getConfig().getName()+"Area");
             setBorders(false);
         }
     }
@@ -261,15 +262,15 @@ public class AreaModule extends SimpleModule {
             }
             JahiaContentManagementService.App.getInstance().createNode(path.substring(0, path.lastIndexOf('/')), path.substring(path.lastIndexOf('/') + 1),
                     areaType, null,null,null,null, null, true, new AsyncCallback<GWTJahiaNode>() {
-                        public void onSuccess(GWTJahiaNode result) {
-                            node = result;
-                            callback.onSuccess(result);
-                        }
+                public void onSuccess(GWTJahiaNode result) {
+                    node = result;
+                    callback.onSuccess(result);
+                }
 
-                        public void onFailure(Throwable caught) {
-                            callback.onFailure(caught);
-                        }
-                    });
+                public void onFailure(Throwable caught) {
+                    callback.onFailure(caught);
+                }
+            });
         } else {
             callback.onSuccess(node);
         }

@@ -73,7 +73,7 @@ import java.util.Set;
 
 
 /**
- * 
+ *
  * User: toto
  * Date: Aug 19, 2009
  * Time: 12:03:48 PM
@@ -82,6 +82,8 @@ import java.util.Set;
 public class PlaceholderModule extends Module {
     private LayoutContainer panel;
     private LayoutContainer pasteButton;
+
+//    private static LayoutContainer currentlyVisiblePanel = null;
 
     public PlaceholderModule(String id, String path, Element divElement, final MainModule mainModule) {
         super(id, path, divElement, mainModule, new FlowLayout());
@@ -93,7 +95,7 @@ public class PlaceholderModule extends Module {
         }
         if (mainModule.getConfig().isButtonsInLayer()) {
             final LayoutContainer visiblePanel = new LayoutContainer();
-    //        panel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
+            //        panel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
             visiblePanel.addStyleName("x-small-editor");
             visiblePanel.addStyleName("x-panel-header");
             visiblePanel.addStyleName("x-panel-placeholder");
@@ -101,36 +103,32 @@ public class PlaceholderModule extends Module {
             visiblePanel.setHeight(10);
             visiblePanel.setStyleAttribute("position", "relative");
 
-            panel = new LayoutContainer();
-            panel.addStyleName("x-panel-buttons-layer");
-
-            html = new HTML(Messages.get("label.add") + " : &nbsp;");
-            html.setStyleName("label-placeholder");
-            panel.add(html);
-            panel.hide();
-            panel.addListener(Events.OnMouseOut, new Listener<BaseEvent>() {
-                @Override
-                public void handleEvent(BaseEvent be) {
-                    panel.hide();
-                }
-            });
-            visiblePanel.addListener(Events.OnMouseOver, new Listener<BaseEvent>() {
-                @Override
-                public void handleEvent(BaseEvent be) {
-                    panel.removeFromParent();
-                    visiblePanel.add(panel);
-                    panel.show();
-                    visiblePanel.layout();
-                    //                    panel.setPosition(emptyPanel.getAbsoluteLeft(), emptyPanel.getAbsoluteTop());
-                }
-            });
-
-
-            visiblePanel.add(panel);
+//            panel = new LayoutContainer() {
+//                @Override
+//                protected void onShow() {
+//                    super.onShow();
+//                    if (currentlyVisiblePanel != null) {
+//                        currentlyVisiblePanel.hide();
+//                    }
+//                    currentlyVisiblePanel = this;
+//
+//                }
+//
+//                @Override
+//                protected void onHide() {
+//                    super.onHide();
+//                    currentlyVisiblePanel = null;
+//                }
+//            };
+//            panel.addStyleName("x-panel-buttons-layer");
+//
+            html = new HTML("");
+//            html.setStyleName("label-placeholder");
+//            panel.add(html);
+//            panel.hide();
             add(visiblePanel);
         } else {
             panel = new LayoutContainer();
-//        panel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
             panel.addStyleName("x-small-editor");
             panel.addStyleName("x-panel-header");
             panel.addStyleName("x-panel-placeholder");
@@ -160,24 +158,33 @@ public class PlaceholderModule extends Module {
             return;
         }
 
-
         if (mainModule.getConfig().isButtonsInLayer()) {
-            final LayoutContainer tool = new LayoutContainer();
-            tool.setHeight(16);
-            tool.setWidth(16);
-            tool.setStyleAttribute("position", "relative");
-            tool.addStyleName("x-panel-placeholder");
-            tool.addListener(Events.OnMouseOver, new Listener<BaseEvent>() {
-                @Override
-                public void handleEvent(BaseEvent be) {
-                    panel.removeFromParent();
-                    tool.add(panel);
-                    panel.show();
-                    tool.layout();
-                    //                    panel.setPosition(emptyPanel.getAbsoluteLeft(), emptyPanel.getAbsoluteTop());
-                }
-            });
-            getParentModule().getHeader().addTool(tool);
+//            panel.setWidth(getParentModule().getContainer().getWidth());
+//            panel.setHeight(getParentModule().getContainer().getHeight());
+//            getParentModule().getContainer().setStyleAttribute("position","relative");
+//            getParentModule().getContainer().add(panel);
+//            getParentModule().getContainer().layout();
+//
+//            final LayoutContainer tool = new LayoutContainer();
+//            tool.setHeight(16);
+//            tool.setWidth(16);
+//            tool.setStyleAttribute("position", "relative");
+//            tool.addStyleName("x-panel-placeholder");
+//            tool.addListener(Events.OnClick, new Listener<BaseEvent>() {
+//                @Override
+//                public void handleEvent(BaseEvent be) {
+//                    panel.show();
+//                }
+//            });
+//
+//            panel.addListener(Events.OnClick, new Listener<BaseEvent>() {
+//                @Override
+//                public void handleEvent(BaseEvent be) {
+//                    panel.hide();
+//                }
+//            });
+//
+//            getParentModule().getHeader().addTool(tool);
         }
 
 
@@ -195,8 +202,10 @@ public class PlaceholderModule extends Module {
             AbstractImagePrototype icon =  ToolbarIconProvider.getInstance().getIcon("disableArea");
             final LayoutContainer p = new HorizontalPanel();
             p.add(icon.createImage());
-            if (getWidth() > 150) {
-                p.add(new Text(Messages.get("label.areaDisable", "Disable area")));
+            if (!mainModule.getConfig().isButtonsInLayer()) {
+                if (getWidth() > 150) {
+                    p.add(new Text(Messages.get("label.areaDisable", "Disable area")));
+                }
             }
             p.sinkEvents(Event.ONCLICK);
             p.addStyleName("button-placeholder");
@@ -209,7 +218,11 @@ public class PlaceholderModule extends Module {
                     });
                 }
             });
-            panel.add(p);
+            if (mainModule.getConfig().isButtonsInLayer()) {
+                getParentModule().getHeader().addTool(p);
+            } else {
+                panel.add(p);
+            }
         }
 
         String[] nodeTypesArray = null;
@@ -239,8 +252,10 @@ public class PlaceholderModule extends Module {
                 AbstractImagePrototype icon = ContentModelIconProvider.getInstance().getIcon(nodeType);
                 LayoutContainer p = new HorizontalPanel();
                 p.add(icon.createImage());
-                if (getWidth() > 150) {
-                    p.add(new Text(nodeType != null ? nodeType.getLabel() : s));
+                if (!mainModule.getConfig().isButtonsInLayer()) {
+                    if (getWidth() > 150) {
+                        p.add(new Text(nodeType != null ? nodeType.getLabel() : s));
+                    }
                 }
                 p.sinkEvents(Event.ONCLICK);
                 p.addStyleName("button-placeholder");
@@ -256,14 +271,20 @@ public class PlaceholderModule extends Module {
                         }
                     }
                 });
-                panel.add(p);
+                if (mainModule.getConfig().isButtonsInLayer()) {
+                    getParentModule().getHeader().addTool(p);
+                } else {
+                    panel.add(p);
+                }
             }
 
             AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon("paste");
             pasteButton = new HorizontalPanel();
             pasteButton.add(icon.createImage());
-            if (getWidth() > 150) {
-                pasteButton.add(new Text(Messages.get("label.paste", "Paste")));
+            if (!mainModule.getConfig().isButtonsInLayer()) {
+                if (getWidth() > 150) {
+                    pasteButton.add(new Text(Messages.get("label.paste", "Paste")));
+                }
             }
             pasteButton.sinkEvents(Event.ONCLICK);
             pasteButton.addStyleName("button-placeholder");
@@ -279,9 +300,12 @@ public class PlaceholderModule extends Module {
             CopyPasteEngine.getInstance().addPlaceholder(this);
             updatePasteButton();
 
-            panel.add(pasteButton);
-
-            panel.layout();
+            if (mainModule.getConfig().isButtonsInLayer()) {
+                getParentModule().getHeader().addTool(pasteButton);
+            } else {
+                panel.add(pasteButton);
+                panel.layout();
+            }
         }
     }
 

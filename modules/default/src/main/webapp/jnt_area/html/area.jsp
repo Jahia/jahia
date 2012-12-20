@@ -16,8 +16,8 @@
     <c:when test="${(not empty inWrapper and inWrapper eq false) and editableModule}">
         <c:set value="${currentNode.nodes}" var="currentList" scope="request"/>
 
-        <div class="${renderContext.editModeConfigName}area<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
-            <div class="${renderContext.editModeConfigName}areaTemplate"> <img src="<c:url value='${url.currentModule}/images/icons/edit.png'/>" alt="edit" style="display: inline;"/>
+        <div class="${renderContext.editModeConfigName}Area<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
+            <div class="${renderContext.editModeConfigName}AreaTemplate"> <img src="<c:url value='${url.currentModule}/images/icons/edit.png'/>" alt="edit" style="display: inline;"/>
                 <span>Area : ${currentNode.name}</span>
             </div>
         </div>

@@ -1,66 +1,66 @@
 .x-hide-display {
-  display: none !important;
+    display: none !important;
 }
 .x-panel-buttons-layer {
-  top:17px;
-  left:0;
-  position:absolute;
-  z-index: 99999;
+    top:0px;
+    left:0px;
+    position:absolute;
+    z-index: 99999;
     background-color:#fff;
     border:1px solid #ccc;
     padding:10px;
 }
 .x-insert-bar {
-  position: absolute;
-  z-index: 99999;
+    position: absolute;
+    z-index: 99999;
 }
 
 .x-insert-bar td {
-  line-height: 1px;
-  font-size: 1px;
+    line-height: 1px;
+    font-size: 1px;
 }
 
 .x-insert-left {
-  background: url(../images/gxt/dd/insert-bg.gif) no-repeat;
+    background: url(../images/gxt/dd/insert-bg.gif) no-repeat;
 }
 
 .x-insert-mid {
-  background: url(../images/gxt/dd/insert-bg.gif) repeat-x 0 -12px;
+    background: url(../images/gxt/dd/insert-bg.gif) repeat-x 0 -12px;
 }
 
 .x-insert-right {
-  background: url(../images/gxt/dd/insert-bg.gif) no-repeat 0px -6px;
+    background: url(../images/gxt/dd/insert-bg.gif) no-repeat 0px -6px;
 }
 
 .x-panel-linker {
     background : #ffffcc url(../images/xtheme-jahia-andromeda/panel/panellinker.png) top left;
     color: #000 !important;
-	font-weight: bold;
+    font-weight: bold;
     font-size: 10px;
     border:1px solid #ffcc33;
-	padding: 10px 5px ;
-	vertical-align: middle;
+    padding: 10px 5px ;
+    vertical-align: middle;
     horizontal-align:middle;
-	margin-bottom:5px;
-	margin-top:5px;
+    margin-bottom:5px;
+    margin-top:5px;
     text-align:center;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size: 10px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	overflow: hidden;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    overflow: hidden;
 }
 .x-panel-linker p {
-	margin:0 !important;
-	padding:0 !important;
+    margin:0 !important;
+    padding:0 !important;
 }
 .x-panel-linker p.linkPath {
-	margin:0 !important;
-	padding:0 !important;
+    margin:0 !important;
+    padding:0 !important;
 }
 .x-panel-linker p.linkAction {
-	color:#FF0000
+    color:#FF0000
 }
 
 
@@ -69,96 +69,96 @@
 .x-panel-header-simplemodule {
     background : #eaeaea;
     border: 1px solid #E5E5E5;
-	padding: 4px;
+    padding: 4px;
     color: #333 !important;
-	font-weight: bold;
+    font-weight: bold;
     font-size: 10px;
-	margin-bottom:2px;
-	display:block;
+    margin-bottom:2px;
+    display:block;
 }
 
 .x-panel-header-listmodule {
     background : #333333;
     border: 1px solid #000;
-	padding: 4px;
+    padding: 4px;
     color: #fff !important;
-	font-weight: bold;
+    font-weight: bold;
     font-size: 10px;
-	margin-bottom:2px;
-	display:block;
+    margin-bottom:2px;
+    display:block;
 }
 
 .x-panel-header-areamodule {
     background : #333;
     border: 1px solid #000;
-	padding: 4px;
+    padding: 4px;
     color: #fff !important;
-	font-weight: bold;
+    font-weight: bold;
     font-size: 10px;
-	margin-bottom:2px;
-	display:block;
+    margin-bottom:2px;
+    display:block;
 }
 .x-panel-header-absoluteAreamodule {
     background : #ff5555;
     border: 1px solid #c00;
-	padding: 4px;
+    padding: 4px;
     color: #000 !important;
-	font-weight: bold;
+    font-weight: bold;
     font-size: 10px;
-	margin-bottom:2px;
-	display:block;
+    margin-bottom:2px;
+    display:block;
 }
 
 .x-panel-header-lockedmodule {
     background : #660000;
     border: 1px solid #c00;
-	padding: 4px;
+    padding: 4px;
     color: #ffcccc !important;
-	font-weight: bold;
+    font-weight: bold;
     font-size: 10px;
-	margin-bottom:2px;
-	display:block;
+    margin-bottom:2px;
+    display:block;
 }
 
 .x-panel-placeholder {
     background : #dfe8f6 url(../images/placeholder-area.png) top left;
     border: 1px solid #a3bae9;
-	padding: 4px;
+    padding: 4px;
     color: #111 !important;
-	font-weight: bold;
+    font-weight: bold;
     font-size: 10px;
-	margin-bottom:2px;
-	display:block;
+    margin-bottom:2px;
+    display:block;
 }
 
- .label-placeholder, div.button-placeholder  {
+.label-placeholder, div.button-placeholder  {
     display:inline-block;
 }
 
- button.button-placeholder, div.button-placeholder {
-	font-family:tahoma,arial,verdana,sans-serif;
-	font-size:10px;
-	font-weight:bold;
-	text-align:center;
-	text-transform:none;
-	background:#0b9c0b url(../images/xtheme-jahia-andromeda/panel/bg-button-placeholder.png) repeat-x scroll left top;
-	border:none;
-	color:#fff;
-	border:1px solid #009800 !important;
-	padding:1px 2px;
-	margin:1px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	border-radius: 10px;
-	-webkit-box-shadow: 0px 1px 2px #cccccc;
-	-moz-box-shadow: 0px 1px 2px #cccccc;
-	box-shadow: 0px 1px 2px #cccccc;
+button.button-placeholder, div.button-placeholder {
+    font-family:tahoma,arial,verdana,sans-serif;
+    font-size:10px;
+    font-weight:bold;
+    text-align:center;
+    text-transform:none;
+    background:#0b9c0b url(../images/xtheme-jahia-andromeda/panel/bg-button-placeholder.png) repeat-x scroll left top;
+    border:none;
+    color:#fff;
+    border:1px solid #009800 !important;
+    padding:1px 2px;
+    margin:1px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: 0px 1px 2px #cccccc;
+    -moz-box-shadow: 0px 1px 2px #cccccc;
+    box-shadow: 0px 1px 2px #cccccc;
     cursor:pointer;
     line-height:15px !important;
 }
- button.button-placeholder:hover,  div.button-placeholder:hover {
-	background: #009800 url(../images/xtheme-jahia-andromeda/panel/bg-button-placeholder-on.png) repeat-x scroll left top;
-	color: #fff;
+button.button-placeholder:hover,  div.button-placeholder:hover {
+    background: #009800 url(../images/xtheme-jahia-andromeda/panel/bg-button-placeholder-on.png) repeat-x scroll left top;
+    color: #fff;
 }
 
 .selection-top-list {
@@ -287,15 +287,15 @@
 }
 
 /****************************************************************************/
- .deleted-overlay {
-	overflow: hidden;
+.deleted-overlay {
+    overflow: hidden;
     background :#eaeaea url(../images/deleted-overlay.png) top left;
-	color:#f00;
-	border: 1px dashed #ccc;
-	font-weight:bold;
+    color:#f00;
+    border: 1px dashed #ccc;
+    font-weight:bold;
 }
 
-.studiomodearea {
+.studiomodeDisabledArea {
     min-height:100px;
     overflow: hidden;
     background-color:#d8effb;
@@ -306,7 +306,7 @@
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
 }
-.studiomodeareaTemplate{
+.studiomodeAreaTemplate{
     /* background-color: #336699;
     border:1px solid #003366;
     color:#111;
@@ -325,7 +325,7 @@
     -webkit-box-shadow: 0 1px 3px #999;
     box-shadow: 0 1px 3px #999;*/
 }
-.studiolayoutmodearea {
+.studiolayoutmodeArea {
     min-height:100px;
     overflow: hidden;
     background-color:#d8effb;
@@ -336,7 +336,18 @@
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
 }
-.studiolayoutmodeareaTemplate{
+.studiolayoutmodeDisabledArea {
+    min-height:100px;
+    overflow: hidden;
+    background-color:#d8effb;
+    padding:2px;
+    color:#111;
+    position:relative;
+    border: 1px dashed #99ccff;
+    font-family: tahoma, arial, verdana, sans-serif;
+    font-size:11px;
+}
+.studiolayoutmodeAreaTemplate{
     /*background-color: #336699;*/
     /*border:1px solid #003366;
     color:#111;
@@ -356,10 +367,21 @@
     -webkit-box-shadow: 0 1px 3px #999;
     box-shadow: 0 1px 3px #999;*/
 }
+.studiolayoutmodeBlockedArea {
+    min-height:100px;
+    overflow: hidden;
+    background-color: #d4ffd3;
+    padding:2px;
+    color:#111;
+    position:relative;
+    border: 1px dashed #aeff9b;
+    font-family: tahoma, arial, verdana, sans-serif;
+    font-size:11px;
+}
 .AreaInformation{
     color:#666;
 }
-.studiomodeabsoluteArea {
+.studiomodeAbsoluteArea {
     min-height:100px;
     overflow: hidden;
     background-color:#ffcccc;
@@ -370,7 +392,7 @@
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
 }
-.studiomodeabsoluteAreaTemplate{
+.studiomodeAbsoluteAreaTemplate{
     /*background-color: #c30;
     border:1px solid #990000;
     color:#111;
@@ -389,7 +411,7 @@
     -webkit-box-shadow: 0 1px 3px #999;
     box-shadow: 0 1px 3px #999;*/
 }
-.studiolayoutmodeabsoluteArea {
+.studiolayoutmodeAbsoluteArea {
     min-height:100px;
     overflow: hidden;
     background-color:#ffcccc;
@@ -400,7 +422,7 @@
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
 }
-.studiolayoutmodeabsoluteAreaTemplate{
+.studiolayoutmodeAbsoluteAreaTemplate{
     /*background-color: #c30;
     border:1px solid #990000;
     color:#111;
@@ -422,87 +444,87 @@
 }
 .mainResourceDisplay {
     min-height:100px;
-	overflow:hidden;
-	background-color:#eaeaea;
-	padding:2px;
-	color:#111;
-	position:relative;
-	border: 1px dashed #333;
+    overflow:hidden;
+    background-color:#eaeaea;
+    padding:2px;
+    color:#111;
+    position:relative;
+    border: 1px dashed #333;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
 }
- .mainResourceDisplayTemplate{
-	/*background-color: #333;
-	border:1px solid #000;
-	color:#fff;
-	padding:5px;
-	position:absolute;
-	left: 35%;
-	top: 35%;
-	width: 30%;
-	margin-left: auto;
-	margin-right: auto;
-	text-align:center;
+.mainResourceDisplayTemplate{
+    /*background-color: #333;
+    border:1px solid #000;
+    color:#fff;
+    padding:5px;
+    position:absolute;
+    left: 35%;
+    top: 35%;
+    width: 30%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align:center;
     font-family: tahoma, arial, verdana, sans-serif;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	-moz-box-shadow: 0 1px 3px #999;
-	-webkit-box-shadow: 0 1px 3px #999;
-	box-shadow: 0 1px 3px #999;*/
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -moz-box-shadow: 0 1px 3px #999;
+    -webkit-box-shadow: 0 1px 3px #999;
+    box-shadow: 0 1px 3px #999;*/
 }
- .authorDisplayArea {
-	min-height:100px;
-	overflow: hidden;
-	padding:2px;
-	color:#111;
-	position:relative;
-	border: 1px dashed #99ccff;
-	background:#d8effb url(../images/authorDisplayArea-bg.png) no-repeat scroll 50% 100% ;
-    font-family: tahoma, arial, verdana, sans-serif;
-    font-size:11px;
-}
- .authorDisplayTemplate{
-	/*background-color: #336699;
-	border:1px solid #003366;
-	color:#fff;
-	padding:5px;
-	position:absolute;
-	left: 35%;
-	top: 35%;
-	width: 30%;
-	margin-left: auto;
-	margin-right: auto;
-	text-align:center;
-    font-family: tahoma, arial, verdana, sans-serif;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	-moz-box-shadow: 0 1px 3px #999;
-	-webkit-box-shadow: 0 1px 3px #999;
-	box-shadow: 0 1px 3px #999; */
-}
- .area-liveOnly {
-	min-height:100px;
-	overflow: hidden;
-	background:#ccffcc url(../images/area-liveonly-bg.png) no-repeat scroll 50% 50% ;
-	padding:2px;
-	color:#111;
-	position:relative;
-	border: 1px dashed #99cc99;
+.authorDisplayArea {
+    min-height:100px;
+    overflow: hidden;
+    padding:2px;
+    color:#111;
+    position:relative;
+    border: 1px dashed #99ccff;
+    background:#d8effb url(../images/authorDisplayArea-bg.png) no-repeat scroll 50% 100% ;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
 }
- .dashedArea {
+.authorDisplayTemplate{
+    /*background-color: #336699;
+    border:1px solid #003366;
+    color:#fff;
+    padding:5px;
+    position:absolute;
+    left: 35%;
+    top: 35%;
+    width: 30%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align:center;
+    font-family: tahoma, arial, verdana, sans-serif;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -moz-box-shadow: 0 1px 3px #999;
+    -webkit-box-shadow: 0 1px 3px #999;
+    box-shadow: 0 1px 3px #999; */
+}
+.area-liveOnly {
+    min-height:100px;
+    overflow: hidden;
+    background:#ccffcc url(../images/area-liveonly-bg.png) no-repeat scroll 50% 50% ;
+    padding:2px;
+    color:#111;
+    position:relative;
+    border: 1px dashed #99cc99;
+    font-family: tahoma, arial, verdana, sans-serif;
+    font-size:11px;
+}
+.dashedArea {
     background : url(../images/placeholder-area.png) top left;
     height:100%;
 }
- .area-notcreated .dashedArea {
+.area-notcreated .dashedArea {
     background : url(../images/area-notcreated.png) top left;
     height:100%;
 }
 
- .area-liveOnly .dashedArea {
+.area-liveOnly .dashedArea {
     background : url(../images/area-liveOnly.png) top left;
     height:100%;
 }

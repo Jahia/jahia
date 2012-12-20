@@ -195,11 +195,18 @@ public class MainModule extends Module {
             }));
         }
 
-        if ("".equals(Window.Location.getHash()) || !isValidUrl(Window.Location.getHash().substring(1))) {
+        String hash = Window.Location.getHash().substring(1);
+        if (hash.contains("frame/") && !isValidUrl(hash)) {
+            String start = hash.substring(0,hash.indexOf("frame/"));
+            start = start.substring(JahiaGWTParameters.getContextPath().length());
+            hash = hash.replaceFirst(start+"frame/", config.getDefaultUrlMapping()+"frame/");
+        }
+
+        if ("".equals(Window.Location.getHash()) || !isValidUrl(hash)) {
             goToUrl(getUrl(path, template), true);
         } else {
-            String hash = URL.decode(Window.Location.getHash());
-            goToUrl(hash.substring(1), true);
+            hash = URL.decode(hash);
+            goToUrl(hash, true);
         }
 
 //        scrollContainer.sinkEvents();

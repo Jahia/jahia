@@ -20,7 +20,7 @@
         </property>
     </bean>
 
-    <bean name="wfImage" class="org.jahia.modules.defaultmodule.actions.WorkflowImageController"/>
+    <bean name="wfImage" class="org.jahia.bin.WorkflowImageController"/>
 
     <bean name="org.jahia.bin.Edit" parent="abstractRender" class="org.jahia.bin.Edit">
         <property name="sessionExpiryTime" value="${sessionExpiryTime}" />

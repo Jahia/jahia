@@ -320,7 +320,12 @@ public class MailSettings implements Serializable {
         if (uri.contains(":")) {
             uri = StringUtils.substringBeforeLast(uri, ":");
         }
-
+        if(uri.contains("?")) {
+            uri = StringUtils.substringBefore(uri, "?");
+        }
+        if(uri.contains("&")) {
+        	uri = StringUtils.substringBefore(uri, "&");
+        }    
         return uri;
     }
 

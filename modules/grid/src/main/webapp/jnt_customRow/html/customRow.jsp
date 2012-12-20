@@ -27,7 +27,8 @@
 
 <c:if test="${!empty currentNode.properties.divID}"> <div id="${currentNode.properties.divID.string}"></c:if>
    <div <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
-                    style="background-color: #FFFFFF;background-image: url('${url.currentModule}/img/960_16_10_10.png');background-repeat: repeat-y;"
+       <c:url var="background" value="${url.currentModule}/img/960_16_10_10.png"/>
+                    style="background-color: #FFFFFF;background-image: url('${background}');background-repeat: repeat-y;"
                 </c:if>
     class="container_16" id="container_16_${fn:replace(currentNode.identifier,'-','_')}">
     <c:if test="${!empty currentNode.properties.divClass}">
@@ -142,11 +143,11 @@
                     </c:choose>
                 <c:if test="${not count2.last}"><c:set var="right" value="${right},"/></c:if>
                 </c:forEach>
-
-
-        $('#grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}').append($('<div class="grid_${fn:replace(currentNode.identifier,'-','_')}_resizer" style="cursor:pointer; width: 16px; height:32px; position: absolute; left: ' + (cont.width()+12) + 'px; top: ' + ((cont.height() / 2)-11) + 'px;">' +
-                '<img onclick="postRow${fn:replace(currentNode.identifier,'-','_')}(\'${left}\')" src="${url.currentModule}/img/navigate_left.png"/>' +
-                '<img onclick="postRow${fn:replace(currentNode.identifier,'-','_')}(\'${right}\')" src="${url.currentModule}/img/navigate_right.png""/>' +
+       <c:url var="nav_left" value="${url.currentModule}/img/navigate_left.png"/>
+       <c:url var="nav_right" value="${url.currentModule}/img/navigate_right.png"/>
+       $('#grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}').append($('<div class="grid_${fn:replace(currentNode.identifier,'-','_')}_resizer" style="cursor:pointer; width: 16px; height:32px; position: absolute; left: ' + (cont.width()+12) + 'px; top: ' + ((cont.height() / 2)-11) + 'px;">' +
+                '<img onclick="postRow${fn:replace(currentNode.identifier,'-','_')}(\'${left}\')" src="${nav_left}"/>' +
+                '<img onclick="postRow${fn:replace(currentNode.identifier,'-','_')}(\'${right}\')" src="${nav_right}""/>' +
                 '</div>'))
         </c:if>
         </c:forEach>

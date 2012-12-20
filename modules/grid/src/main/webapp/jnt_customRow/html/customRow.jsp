@@ -61,16 +61,28 @@
                 <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
                 <div style="border: 1px dashed #999; padding: 5px; position:relative;" class="grid_${fn:replace(currentNode.identifier,'-','_')}" id="grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}" >
                     <span>Size : ${column}</span>
+                    <c:if test="${!empty currentNode.properties.divID}">
+                        id : ${currentNode.properties.divID.string}
+                    </c:if>
+                    <c:if test="${!empty currentNode.properties.divClass}">
+                        class : ${currentNode.properties.divClass.string}
+                    </c:if>
                     </c:if>
                     <c:if test="${nbNames == nbAreas}">
                         <c:forTokens items="${currentNode.properties.colNames.string}" var="colName" delims=","
                                      varStatus="vs1">
                             <c:if test="${count.count == vs1.count}">
+                                <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
+                                    <span>Name : ${colName}</span>
+                                </c:if>
                                 <template:area path="${colName}" areaAsSubNode="true"/>
                             </c:if>
                         </c:forTokens>
                     </c:if>
                     <c:if test="${nbNames != nbAreas}">
+                        <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
+                            <span>Name : ${currentNode.name}-${col.key}</span>
+                        </c:if>
                         <template:area path="${currentNode.name}-${col.key}" areaAsSubNode="true"/>
                     </c:if>
                     <c:if test="${pageScope['org.jahia.emptyArea']}">

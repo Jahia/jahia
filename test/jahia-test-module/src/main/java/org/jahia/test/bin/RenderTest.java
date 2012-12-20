@@ -56,13 +56,9 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
-import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
@@ -101,40 +97,19 @@ public class RenderTest extends JahiaTestCase {
     private static final String MAIN_CONTENT_BODY = "Main content body update ";
     private static int NUMBER_OF_VERSIONS = 5;
 
-    HttpClient client;
     private SimpleDateFormat yyyy_mm_dd_hh_mm_ss = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
 
     @Before
     public void setUp() throws Exception {
-        try {
-            site = TestHelper.createSite(TESTSITE_NAME, "localhost" + System.currentTimeMillis(),
-                    TestHelper.INTRANET_TEMPLATES);
-            assertNotNull(site);
-        } catch (Exception ex) {
-            logger.warn("Exception during test setUp", ex);
-        }
+        site = TestHelper.createSite(TESTSITE_NAME, "localhost" + System.currentTimeMillis(),
+                TestHelper.INTRANET_TEMPLATES);
+        assertNotNull(site);
 
-        // Create an instance of HttpClient.
-        client = new HttpClient();
-
-        // todo we should really insert content to test the find.
-
-        PostMethod loginMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/login");
-        loginMethod.addParameter("username", "root");
-        loginMethod.addParameter("password", "root1234");
-        loginMethod.addParameter("redirectActive", "false");
-        // the next parameter is required to properly activate the valve check.
-        loginMethod.addParameter(LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER, "1");
-
-        int statusCode = client.executeMethod(loginMethod);
-        if (statusCode != HttpStatus.SC_OK) {
-            System.err.println("Method failed: " + loginMethod.getStatusLine());
-        }
+        loginRoot();
     }
 
     @After
     public void tearDown() throws Exception {
-
         try {
             TestHelper.deleteSite(TESTSITE_NAME);
         } catch (Exception ex) {
@@ -142,15 +117,7 @@ public class RenderTest extends JahiaTestCase {
         }
         JCRSessionFactory.getInstance().closeAllSessions();
 
-        PostMethod logoutMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/logout");
-        logoutMethod.addParameter("redirectActive", "false");
-
-        int statusCode = client.executeMethod(logoutMethod);
-        if (statusCode != HttpStatus.SC_OK) {
-            System.err.println("Method failed: " + logoutMethod.getStatusLine());
-        }
-
-        logoutMethod.releaseConnection();
+        logout();
     }
 
     private List<String> getUuids(List<PublicationInfo> publicationInfo) {
@@ -245,24 +212,17 @@ public class RenderTest extends JahiaTestCase {
         for (VersionInfo curVersionInfo : liveVersionInfos) {
             Version version = curVersionInfo.getVersion();
             if (version.getCreated() != null && curVersionInfo.getLabel()!=null) {
-                GetMethod versionGet = new GetMethod(
-                		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/live/en" +
-                        subPagePublishedNode.getPath() + ".html?v=" +
-                        ((yyyy_mm_dd_hh_mm_ss.parse(curVersionInfo.getLabel().split("_at_")[1]).getTime()+5000l)));
-                try {
-                    int responseCode = client.executeMethod(versionGet);
-                    assertEquals("Response code " + responseCode, 200, responseCode);
-                    String responseBody = versionGet.getResponseBodyAsString();
+                    String responseBody = getAsText("/cms/render/live/en" +
+                            subPagePublishedNode.getPath() + ".html?v=" +
+                            ((yyyy_mm_dd_hh_mm_ss.parse(curVersionInfo.getLabel().split("_at_")[1]).getTime()+5000l)));
                     logger.debug("Response body=[" + responseBody + "]");
                     assertFalse("Couldn't find expected value (title" + Integer.toString(index) + ") in response body",
                             responseBody.indexOf("title" + Integer.toString(index)) < 0);
-                } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
-                }
                 index++;
             }
         }
-        logger.debug("number of version: " + index);
+        logger.debug("number of version: {}", index);
+        
         assertEquals(NUMBER_OF_VERSIONS, index);
     }
 
@@ -297,9 +257,14 @@ public class RenderTest extends JahiaTestCase {
         createPost.addParameter("jcr:title", MAIN_CONTENT_TITLE + "1");
         createPost.addParameter("body", MAIN_CONTENT_BODY + "1");
 
-        int responseCode = client.executeMethod(createPost);
-        assertEquals("Error in response, code=" + responseCode, 201, responseCode);
-        String responseBody = createPost.getResponseBodyAsString();
+        String responseBody = "";
+        try {
+            int responseCode = getHttpClient().executeMethod(createPost);
+            assertEquals("Error in response, code=" + responseCode, 201, responseCode);
+            responseBody = createPost.getResponseBodyAsString();
+        } finally {
+            createPost.releaseConnection();
+        }
 
         JSONObject jsonResults = new JSONObject(responseBody);
 

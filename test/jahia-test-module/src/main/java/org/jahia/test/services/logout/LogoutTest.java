@@ -8,16 +8,13 @@ import java.util.Set;
 
 import javax.jcr.PathNotFoundException;
 
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
-import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -36,18 +33,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Created by IntelliJ IDEA.
  * User: david
  * Date: 4/11/12
  * Time: 2:13 PM
- * To change this template use File | Settings | File Templates.
  */
 public class LogoutTest extends JahiaTestCase {
 
     private static final String SITE_KEY = "logoutSite";
 
-    private HttpClient client;
-    
     private static UrlRewriteService engine;
     
     private static JahiaSite defaultSite = null;
@@ -183,24 +176,10 @@ public class LogoutTest extends JahiaTestCase {
 
 
     protected String perform(String url) throws Exception {
-        login();
+        loginRoot();
         return logout(url);
     }
     
-    protected void login() throws Exception {
-        String baseurl = getBaseServerURL() + Jahia.getContextPath() + "/cms";
-        client = new HttpClient();
-        PostMethod loginMethod = new PostMethod(baseurl + "/login");
-        loginMethod.addParameter("username", "root");
-        loginMethod.addParameter("password", "root1234");
-        loginMethod.addParameter("redirectActive", "false");
-        // the next parameter is required to properly activate the valve check.
-        loginMethod.addParameter(LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER, "1");
-
-        client.executeMethod(loginMethod);
-
-    }
-
     protected String logout(String url) throws Exception {
         String baseurl = getBaseServerURL() + Jahia.getContextPath();
         HttpMethod method = new GetMethod(baseurl + "/cms/logout");
@@ -210,7 +189,7 @@ public class LogoutTest extends JahiaTestCase {
             });
         }
         method.setRequestHeader("Referer",baseurl + url);
-        client.executeMethod(method);
+        getHttpClient().executeMethod(method);
         return StringUtils.isEmpty(Jahia.getContextPath())
                 || !(method.getPath().startsWith(Jahia.getContextPath())) ? method
                 .getPath() : StringUtils.substringAfter(method.getPath(),

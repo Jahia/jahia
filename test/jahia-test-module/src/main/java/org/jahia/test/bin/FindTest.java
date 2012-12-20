@@ -50,7 +50,6 @@ import java.util.Locale;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
@@ -58,7 +57,6 @@ import org.jahia.api.Constants;
 import org.jahia.bin.Find;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -91,7 +89,6 @@ public class FindTest extends JahiaTestCase {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(FindTest.class);
     
-    private HttpClient client;
     private final static String TESTSITE_NAME = "findTestSite";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
@@ -160,30 +157,12 @@ public class FindTest extends JahiaTestCase {
 
     @Before
     public void setUp() throws Exception {
-        // Create an instance of HttpClient.
-        client = new HttpClient();
-
-        PostMethod loginMethod = new PostMethod(getLoginServletURL());
-        loginMethod.addParameter("username", "root");
-        loginMethod.addParameter("password", "root1234");
-        loginMethod.addParameter("redirectActive", "false");
-        // the next parameter is required to properly activate the valve check.
-        loginMethod.addParameter(LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER, "1");
-
-        int statusCode = client.executeMethod(loginMethod);
-        assertEquals("Unexpected response code", HttpStatus.SC_OK, statusCode);
+        loginRoot();
     }
 
     @After
     public void tearDown() throws Exception {
-
-        PostMethod logoutMethod = new PostMethod(getLogoutServletURL());
-        logoutMethod.addParameter("redirectActive", "false");
-
-        int statusCode = client.executeMethod(logoutMethod);
-        assertEquals("Unexpected response code", HttpStatus.SC_OK, statusCode);
-
-        logoutMethod.releaseConnection();
+        logout();
     }
 
     @Test
@@ -202,7 +181,7 @@ public class FindTest extends JahiaTestCase {
                 new DefaultHttpMethodRetryHandler(3, false));
 
         // Execute the method.
-        int statusCode = client.executeMethod(method);
+        int statusCode = getHttpClient().executeMethod(method);
         assertEquals("Method failed: " + method.getStatusLine(), HttpStatus.SC_OK, statusCode);
 
         // Read the response body.
@@ -243,7 +222,7 @@ public class FindTest extends JahiaTestCase {
                 new DefaultHttpMethodRetryHandler(3, false));
 
         // Execute the method.
-        int statusCode = client.executeMethod(method);
+        int statusCode = getHttpClient().executeMethod(method);
 
         assertEquals("Method failed: " + method.getStatusLine(), HttpStatus.SC_OK, statusCode);
 
@@ -285,7 +264,7 @@ public class FindTest extends JahiaTestCase {
                 new DefaultHttpMethodRetryHandler(3, false));
 
         // Execute the method.
-        int statusCode = client.executeMethod(method);
+        int statusCode = getHttpClient().executeMethod(method);
 
         assertEquals("Method failed: " + method.getStatusLine(), HttpStatus.SC_OK, statusCode);
 

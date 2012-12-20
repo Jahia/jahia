@@ -126,6 +126,10 @@ public class JahiaTestCase {
         }
     }
 
+    protected void loginRoot() {
+        login("root", "root1234");
+    }
+    
     protected void logout() {
         PostMethod logoutMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/logout");
         logoutMethod.addParameter("redirectActive", "false");

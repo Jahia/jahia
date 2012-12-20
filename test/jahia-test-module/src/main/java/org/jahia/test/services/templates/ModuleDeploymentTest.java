@@ -1,3 +1,43 @@
+/**
+ * This file is part of Jahia, next-generation open source CMS:
+ * Jahia's next-generation, open source CMS stems from a widely acknowledged vision
+ * of enterprise application convergence - web, search, document, social and portal -
+ * unified by the simplicity of web content management.
+ *
+ * For more information, please visit http://www.jahia.com.
+ *
+ * Copyright (C) 2002-2012 Jahia Solutions Group SA. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ *
+ * Commercial and Supported Versions of the program (dual licensing):
+ * alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms and conditions contained in a separate
+ * written agreement between you and Jahia Solutions Group SA.
+ *
+ * If you are unsure which license is appropriate for your use,
+ * please contact the sales department at sales@jahia.com.
+ */
+
 package org.jahia.test.services.templates;
 
 import org.apache.commons.io.FileUtils;
@@ -6,6 +46,7 @@ import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
+import org.jahia.api.Constants;
 import org.jahia.bin.Action;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
@@ -31,6 +72,8 @@ import static org.junit.Assert.*;
 public class ModuleDeploymentTest {
 
     private static JahiaTemplateManagerService managerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+    
+    private static final String VERSION = Constants.JAHIA_PROJECT_VERSION;
 
     @Before
     @After
@@ -44,7 +87,7 @@ public class ModuleDeploymentTest {
                 }
                 SettingsBean settingsBean = SettingsBean.getInstance();
                 FileUtils.deleteQuietly(new File(settingsBean.getJahiaTemplatesDiskPath(), "dummy1"));
-                FileUtils.deleteQuietly(new File(settingsBean.getJahiaSharedTemplatesDiskPath(), "dummy1-1.0-SNAPSHOT.war"));
+                FileUtils.deleteQuietly(new File(settingsBean.getJahiaSharedTemplatesDiskPath(), "dummy1-" + VERSION + ".war"));
 
                 return null;
             }
@@ -58,7 +101,7 @@ public class ModuleDeploymentTest {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 SettingsBean settingsBean = SettingsBean.getInstance();
                 File deployedTemplatesFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module-war").getRootFolderWithVersion());
-                managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-1.0-SNAPSHOT.war"), session);
+                managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-" + VERSION + ".war"), session);
 
                 JahiaTemplatesPackage pack = managerService.getTemplatePackageByFileName("dummy1");
                 assertNotNull(pack);
@@ -84,7 +127,7 @@ public class ModuleDeploymentTest {
         File deployedTemplatesFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module-war").getRootFolderWithVersion());
 
         try {
-            FileUtils.copyFileToDirectory(new File(deployedTemplatesFolder, "resources/dummy1-1.0-SNAPSHOT.war"), new File(settingsBean.getJahiaSharedTemplatesDiskPath()));
+            FileUtils.copyFileToDirectory(new File(deployedTemplatesFolder, "resources/dummy1-" + VERSION + ".war"), new File(settingsBean.getJahiaSharedTemplatesDiskPath()));
         } catch (IOException e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -113,7 +156,7 @@ public class ModuleDeploymentTest {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 SettingsBean settingsBean = SettingsBean.getInstance();
                 File deployedTemplatesFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module-war").getRootFolderWithVersion());
-                JahiaTemplatesPackage pack = managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-1.0-SNAPSHOT.war"), session);
+                JahiaTemplatesPackage pack = managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-" + VERSION + ".war"), session);
                 managerService.undeployModule(pack, session);
 
                 pack = managerService.getTemplatePackageByFileName("dummy1");
@@ -138,7 +181,7 @@ public class ModuleDeploymentTest {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 SettingsBean settingsBean = SettingsBean.getInstance();
                 File deployedTemplatesFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module-war").getRootFolderWithVersion());
-                JahiaTemplatesPackage pack = managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-1.0-SNAPSHOT.war"), session);
+                JahiaTemplatesPackage pack = managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-" + VERSION + ".war"), session);
 
                 File def = new File(settingsBean.getJahiaTemplatesDiskPath(), pack.getRootFolderWithVersion() + "/META-INF/definitions.cnd");
                 try {
@@ -177,7 +220,7 @@ public class ModuleDeploymentTest {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 SettingsBean settingsBean = SettingsBean.getInstance();
                 File deployedTemplatesFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module-war").getRootFolderWithVersion());
-                JahiaTemplatesPackage pack = managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-1.0-SNAPSHOT.war"), session);
+                JahiaTemplatesPackage pack = managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-" + VERSION + ".war"), session);
 
                 File spring = new File(settingsBean.getJahiaTemplatesDiskPath(), pack.getRootFolderWithVersion() + "/META-INF/spring/dummy1.xml");
                 File newspring = new File(settingsBean.getJahiaTemplatesDiskPath(), pack.getRootFolderWithVersion() + "/META-INF/spring/dummy1-modified.xml");
@@ -225,7 +268,7 @@ public class ModuleDeploymentTest {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 SettingsBean settingsBean = SettingsBean.getInstance();
                 File deployedTemplatesFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module-war").getRootFolderWithVersion());
-                JahiaTemplatesPackage pack = managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-1.0-SNAPSHOT.war"), session);
+                JahiaTemplatesPackage pack = managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-" + VERSION + ".war"), session);
 
                 TestInitializingBean.resetInstance();
 

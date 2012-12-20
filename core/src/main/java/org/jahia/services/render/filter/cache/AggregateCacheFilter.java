@@ -854,5 +854,27 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         this.dependenciesLimit = dependenciesLimit;
     }
 
+    public void removeNotCacheableFragment(String key) {
+        try {
+            CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
+            if (keyGenerator instanceof DefaultCacheKeyGenerator) {
+                DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
+                Map<String, String> keyAttrbs = defaultCacheKeyGenerator.parse(key);
+                String path = keyAttrbs.get("path");
+                for (String notCacheableKey : notCacheableFragment) {
+                    if(notCacheableKey.contains(path)) {
+                        notCacheableFragment.remove(notCacheableKey);
+                    }
+                }
+            }
+        } catch (ParseException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
 
+    public void flushNotCacheableFragment() {
+        synchronized (notCacheableFragment) {
+            notCacheableFragment.clear();
+        }
+    }
 }

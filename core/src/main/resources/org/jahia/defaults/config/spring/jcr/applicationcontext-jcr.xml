@@ -263,6 +263,7 @@
                         </bean>
                         <bean class="org.jahia.services.render.filter.cache.HtmlCacheEventListener">
                             <property name="cacheProvider" ref="ModuleCacheProvider"/>
+                            <property name="aggregateCacheFilter" ref="cacheFilter"/>
                             <property name="availableDuringPublish" value="true"/>
                             <property name="operationTypes">
                                 <set value-type="java.lang.Integer">

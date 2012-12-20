@@ -69,6 +69,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
     private static Logger logger = LoggerFactory.getLogger(HtmlCacheEventListener.class);
 
     private ModuleCacheProvider cacheProvider;
+    private AggregateCacheFilter aggregateCacheFilter;
     @Override
     public int getEventTypes() {
         return Event.NODE_ADDED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED + Event.NODE_MOVED + Event.NODE_REMOVED;
@@ -189,6 +190,14 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
             if (logger.isDebugEnabled()) {
                 logger.debug("Flushing path: {}", path);
             }
+            Set<String> deps = (Set<String>) element.getValue();
+            if(deps.contains("ALL")){
+                aggregateCacheFilter.flushNotCacheableFragment();
+            } else {
+                for (String dep : deps) {
+                    aggregateCacheFilter.removeNotCacheableFragment(dep);
+                }
+            }
             cacheProvider.invalidate(path, propageToOtherClusterNodes);
             depCache.remove(element.getKey());
         }
@@ -223,5 +232,9 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
 
     public void setCacheProvider(ModuleCacheProvider cacheProvider) {
         this.cacheProvider = cacheProvider;
+    }
+
+    public void setAggregateCacheFilter(AggregateCacheFilter aggregateCacheFilter) {
+        this.aggregateCacheFilter = aggregateCacheFilter;
     }
 }

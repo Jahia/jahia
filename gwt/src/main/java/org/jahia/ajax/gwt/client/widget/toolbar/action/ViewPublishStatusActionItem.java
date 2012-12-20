@@ -108,7 +108,7 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
         }
 
         if (allPublished) {
-            infoLayers.addInfoLayer(moduleList.iterator().next(), "Everything published", "black", "white",
+            infoLayers.addInfoLayer(moduleList.iterator().next(), Messages.get("everything.published", "Everything published"), "black", "white",
                     removeListener, false,
                     "0.7");
         }

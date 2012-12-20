@@ -182,6 +182,9 @@ public class JCRVersionService extends JahiaService {
             }
         }
 
+        if (vi.getSize() <= 1) {
+            return null;
+        }
 
         Version lastVersion = null;
         Version closestVersion = null;

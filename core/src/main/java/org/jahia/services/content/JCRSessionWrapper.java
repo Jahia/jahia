@@ -241,7 +241,10 @@ public class JCRSessionWrapper implements Session {
                                     });
                 }
                 if (checkVersion  && (versionDate != null || versionLabel != null)) {
-                    wrapper = getFrozenVersionAsRegular(n, provider);
+                    JCRNodeWrapper frozen = getFrozenVersionAsRegular(n, provider, false);
+                    if (frozen != null) {
+                        wrapper = frozen;
+                    }
                 }
                 sessionCacheByIdentifier.put(uuid, wrapper);
                 sessionCacheByPath.put(wrapper.getPath(), wrapper);
@@ -351,7 +354,10 @@ public class JCRSessionWrapper implements Session {
                                         });
                     }
                     if (checkVersion && (versionDate != null || versionLabel != null) && node.isNodeType("mix:versionable")) {
-                        wrapper = getFrozenVersionAsRegular(node, provider);
+                        JCRNodeWrapper frozen = getFrozenVersionAsRegular(node, provider, false);
+                        if (frozen != null) {
+                            wrapper = frozen;
+                        }
                     }
                     sessionCacheByPath.put(path, wrapper);
                     sessionCacheByIdentifier.put(wrapper.getIdentifier(), wrapper);
@@ -366,7 +372,6 @@ public class JCRSessionWrapper implements Session {
     }
 
     private JCRNodeWrapper dereference(JCRNodeWrapper parent, String refPath) throws RepositoryException {
-        JCRStoreProvider provider = parent.getProvider();
         JCRNodeWrapper wrapper;
         JCRNodeWrapper referencedNode = ((JCRNodeWrapper) parent.getProperty("j:node").getNode());
         Node realReferencedNode = ((JCRNodeWrapper) parent.getProperty("j:node").getNode()).getRealNode();
@@ -509,8 +514,6 @@ public class JCRSessionWrapper implements Session {
                             if (propertyDefinition.isInternationalized()) {
                                 errorLocale = getLocale();
                             }
-
-                            String propertyLabel = propertyDefinition.getLabel(LocaleContextHolder.getLocale());
 
                             if (ccve == null) {
                                 ccve = new CompositeConstraintViolationException();
@@ -1122,13 +1125,30 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public JCRNodeWrapper getFrozenVersionAsRegular(Node objectNode, JCRStoreProvider provider) throws RepositoryException {
+        return getFrozenVersionAsRegular(objectNode, provider, true);
+    }
+
+    /**
+     * Returns the wrapper node which corresponds to the version specified in the current session. If the corresponding version cannot be
+     * found for the node a <b>null</b> is returned in case <code>throwExeptionIfNotFound</code> is set to false. If version is not found
+     * and <code>throwExeptionIfNotFound</code> is set to true - thorws a {@link PathNotFoundException}.
+     * 
+     * @param objectNode
+     *            the source object to check version node for
+     * @param provider
+     *            the node provider
+     * @param throwExeptionIfNotFound
+     *            if <code>true</code> a {@link PathNotFoundException} is throws in case the corresponding version cannot be found
+     * @return the wrapper node which corresponds to the version specified in the current session
+     * @throws RepositoryException
+     *             in case of a repository operation error
+     */
+    protected JCRNodeWrapper getFrozenVersionAsRegular(Node objectNode, JCRStoreProvider provider,
+            boolean throwExeptionIfNotFound) throws RepositoryException {
         try {
-            VersionHistory vh =
-                    objectNode.getSession().getWorkspace().getVersionManager().getVersionHistory(objectNode.getPath());
+            VersionHistory vh = objectNode.getSession().getWorkspace().getVersionManager()
+                    .getVersionHistory(objectNode.getPath());
 
             Version v = null;
             if (versionLabel != null) {
@@ -1139,7 +1159,11 @@ public class JCRSessionWrapper implements Session {
             }
 
             if (v == null) {
-                throw new PathNotFoundException();
+                if (throwExeptionIfNotFound) {
+                    throw new PathNotFoundException();
+                } else {
+                    return null;
+                }
             }
 
             Node frozen = v.getNode(Constants.JCR_FROZENNODE);

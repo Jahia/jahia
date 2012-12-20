@@ -75,6 +75,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.render.RenderContext;
@@ -559,20 +560,34 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             StringBuilder categoryConstraints, String name, String value,
             boolean includeChildren) {
         try {
-            String categoryPath = Category.getCategoryPath(value);
+        	Category cat = Category.getCategoryByPath(value, JCRSessionFactory.getInstance().getCurrentUser());
+        	if(cat == null) {
+        		logger.warn("User " + JCRSessionFactory.getInstance().getCurrentUser().getUsername() + " has no right to read the category");
+        		return;
+        	}
             addConstraint(categoryConstraints, "or", "@" + name + "="
-                    + stringToJCRSearchExp(categoryPath));
+                    + stringToJCRSearchExp(cat.getID()));
             if (includeChildren) {
-                addConstraint(categoryConstraints, "or", "jcr:like(@"
-                        + name
-                        + ","
-                        + stringToJCRSearchExp(categoryPath
-                        + Category.PATH_DELIMITER + "%") + ")");
+            	addSubCategoriesConstraints(categoryConstraints, cat, name)	;
             }
         } catch (JahiaException e) {
             logger.warn("Category: " + value + " could not be retrieved", e);
         }
     }
+    
+    private void addSubCategoriesConstraints(
+            StringBuilder categoryConstraints, Category category, String name) throws JahiaException {
+    	
+    	List<Category> childs = category.getChildCategories();
+    	if(childs != null && childs.size() > 0) { 
+    	   for(Category cat : childs) {
+    		   addConstraint(categoryConstraints, "or", "@" + name + "="
+    	                + stringToJCRSearchExp(cat.getID()));
+    		   addSubCategoriesConstraints(categoryConstraints, cat, name);
+    	   }
+    	}
+    }
+
 
     private void addPropertyConstraints(StringBuilder constraints,
                                         List<NodeProperty> properties) {
@@ -585,8 +600,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                                 property.getName(), value, property
                                 .getCategoryValue().isIncludeChildren());
                     }
-                    addConstraint(constraints, "and", categoryConstraints
+                    if(categoryConstraints.length() > 0) {
+                       addConstraint(constraints, "and", categoryConstraints
                             .insert(0, "(").append(")").toString());
+                    }
                 } else if (NodeProperty.Type.DATE == property.getType()) {
                     addDateConstraint(constraints, property.getDateValue(), "@"
                             + property.getName());

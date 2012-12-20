@@ -39,6 +39,12 @@
                 <c:if test="${nbNames != nbAreas}">
                     <p><fmt:message key="label.generatedNames"/></p>
                 </c:if>
+                <c:if test="${!empty currentNode.properties.divID}">
+                    id : ${currentNode.properties.divID.string}
+                </c:if>
+                <c:if test="${!empty currentNode.properties.divClass}">
+                    class : ${currentNode.properties.divClass.string}
+                </c:if>
             </div>
         </c:if>
         <c:set var="colNames" value="${fn:split(currentNode.properties.colNames.string, ',')}"/>
@@ -61,12 +67,6 @@
                 <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
                 <div style="border: 1px dashed #999; padding: 5px; position:relative;" class="grid_${fn:replace(currentNode.identifier,'-','_')}" id="grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}" >
                     <span>Size : ${column}</span>
-                    <c:if test="${!empty currentNode.properties.divID}">
-                        id : ${currentNode.properties.divID.string}
-                    </c:if>
-                    <c:if test="${!empty currentNode.properties.divClass}">
-                        class : ${currentNode.properties.divClass.string}
-                    </c:if>
                     </c:if>
                     <c:if test="${nbNames == nbAreas}">
                         <c:forTokens items="${currentNode.properties.colNames.string}" var="colName" delims=","

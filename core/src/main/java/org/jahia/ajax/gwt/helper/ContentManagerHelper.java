@@ -672,7 +672,7 @@ public class ContentManagerHelper {
 
             if (results.isSuccessful()) {
                 // let's schedule an import job.
-                JobDetail jobDetail = BackgroundJob.createJahiaJob("Import file " + FilenameUtils.getName(item.getOriginalFileName()), ImportJob.class);
+            	JobDetail jobDetail = BackgroundJob.createJahiaJob(JahiaResourceBundle.getJahiaInternalResource("import.file",uiLocale, "Import file") + " " + FilenameUtils.getName(item.getOriginalFileName()), ImportJob.class);
                 JobDataMap jobDataMap;
                 jobDataMap = jobDetail.getJobDataMap();
 

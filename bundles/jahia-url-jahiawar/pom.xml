@@ -38,7 +38,9 @@
                             org.apache.jasper.runtime,
                             org.apache.taglibs.standard.functions,
                             org.apache.taglibs.standard.tei,
-                            org.apache.taglibs.standard.tlv
+                            org.apache.taglibs.standard.tlv,
+                            org.jdom;resolution:=optional,
+                            org.jdom.input;resolution:=optional
                         </Import-Package>
                         <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
@@ -85,6 +87,16 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>1.5.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jdom2</artifactId>
+            <version>2.0.4</version>
+        </dependency>
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>1.1.4</version>
         </dependency>
 
         <!-- Provided dependencies -->

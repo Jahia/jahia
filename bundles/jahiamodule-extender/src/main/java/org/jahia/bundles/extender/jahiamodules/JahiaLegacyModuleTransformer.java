@@ -56,7 +56,7 @@ public class JahiaLegacyModuleTransformer /* implements ArtifactUrlTransformer *
                return outFile;
 
            } catch (Exception e) {
-   			logger.error("Failed to transform the WAR artifact into an OSGi bundle");
+   			logger.error("Failed to transform the WAR artifact into an OSGi bundle", e);
    			return null;
    		}
    	}

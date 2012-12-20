@@ -1,5 +1,13 @@
 package org.jahia.bundles.url.jahiawar.internal;
 
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.Namespace;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
+import org.jdom2.xpath.XPath;
 import org.ops4j.io.StreamUtils;
 import org.ops4j.lang.NullArgumentException;
 import org.ops4j.net.URLUtils;
@@ -159,6 +167,34 @@ public class Connection extends URLConnection {
                     entryInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());
                 } else if (newName.startsWith("WEB-INF/")) {
                     newName = jarEntry.getName().substring("WEB-INF/".length());
+                }
+                if (newName.endsWith(".xml")) {
+                    ByteArrayOutputStream entryOutputStream = new ByteArrayOutputStream();
+                    StreamUtils.copyStream(entryInputStream, entryOutputStream, false);
+                    ByteArrayInputStream tempEntryInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());
+                    // let's load the XML and start transforming it.
+                    SAXBuilder saxBuilder = new SAXBuilder();
+                    String prefix = "";
+                    try {
+                        Document jdomDocument = saxBuilder.build(tempEntryInputStream);
+                        List<Namespace> rootElementNamespaces = jdomDocument.getRootElement().getNamespacesInScope();
+                        if (hasNamespaceURI(rootElementNamespaces, "http://www.springframework.org/schema/beans")) {
+                            Document transformedDocument = SpringFileTransformer.transform(jdomDocument);
+                            if (transformedDocument != jdomDocument) {
+                                XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
+                                entryOutputStream = new ByteArrayOutputStream();
+                                xmlOutputter.output(transformedDocument, entryOutputStream);
+                            }
+                        } else if (hasNamespaceURI(rootElementNamespaces, "http://jbpm.org/4.3/jpdl")) {
+                            // jBPM workflow definition file detected.
+                        }
+                    } catch (JDOMException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+
+                    tempEntryInputStream.close();
+                    tempEntryInputStream = null;
+                    entryInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());
                 }
                 JarEntry newJarEntry = new JarEntry(newName);
                 if (jarEntry.getTime() > mostRecentTime) {
@@ -320,6 +356,15 @@ public class Connection extends URLConnection {
 
         ByteArrayInputStream resultInputStream = new ByteArrayInputStream(bndByteArrayOutputStream.toByteArray());
         return resultInputStream;
+    }
+
+    private boolean hasNamespaceURI(List<Namespace> rootElementNamespaces, String springNSURI) {
+        for (Namespace namespace : rootElementNamespaces) {
+            if (namespace.getURI().contains(springNSURI)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void updateExportTracking(String newName, Set<String> exportPackageIncludes, Set<String> allNonEmptyDirectories) {

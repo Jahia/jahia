@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="remotePublicationService" class="org.jahia.modules.remotepublish.RemotePublicationService" factory-method="getInstance">
+        <property name="enabled" value="${jahia.remotePublicationService.enabled:true}"/>
+        <property name="sessionFactory" ref="jcrSessionFactory"/>
+        <property name="httpClientService" ref="HttpClientService"/>
+        <property name="journalService" ref="RemotePublicationJournalService"/>
+        <property name="replayService" ref="RemotePublicationReplayService"/>
+        <property name="logService" ref="RemotePublicationLogService"/>
+        <property name="replayLogRecommendedSizeLimit" value="${jahia.remotePublicationService.replayLogRecommendedSizeLimit:0}"/>
+        <property name="keepReplayLogFile" value="${jahia.remotePublicationService.keepReplayLogFile:false}"/>
+    </bean>
+
+    <bean id="RemotePublicationJournalService" class="org.jahia.modules.remotepublish.JournalService">
+        <property name="sessionFactoryBean" ref="sessionFactory"/>
+        <property name="propertiesToNotExport">
+            <set value-type="java.lang.String">
+                <value>j:fullpath</value>
+                <value>j:locktoken</value>
+                <value>j:lockTypes</value>
+                <value>j:nodename</value>
+                <value>j:originWS</value>
+                <value>j:processId</value>
+                <value>jcr:activity</value>
+                <value>jcr:baseVersion</value>
+                <value>jcr:configuration</value>
+                <value>jcr:isCheckedOut</value>
+                <value>jcr:lockIsDeep</value>
+                <value>jcr:lockOwner</value>
+                <value>jcr:mergeFailed</value>
+                <value>jcr:predecessors</value>
+                <value>jcr:primaryType</value>
+                <value>jcr:uuid</value>
+                <value>jcr:versionHistory</value>
+            </set>
+        </property>
+    </bean>
+
+    <bean id="RemotePublicationReplayService" class="org.jahia.modules.remotepublish.ReplayService">
+        <property name="sessionFactory" ref="jcrSessionFactory"/>
+    </bean>
+
+    <bean id="RemotePublicationLogService" class="org.jahia.modules.remotepublish.LogService">
+        <property name="sessionFactoryBean" ref="sessionFactory"/>
+        <property name="journalEntriesReadChunkSize" value="${jahia.remotePublicationService.journalEntriesReadChunkSize:100}"/>
+        <property name="resetObjectOutputStreamAfterEachBytes" value="${jahia.remotePublicationService.resetObjectOutputStreamAfterEachBytes:20971520}"/>
+    </bean>
+
+    <bean class="org.jahia.modules.remotepublish.RemotePublishAction">
+        <property name="service" ref="remotePublicationService"/>
+    </bean>
+
+    <bean class="org.jahia.modules.remotepublish.PrepareReplayAction"/>
+
+    <bean class="org.jahia.modules.remotepublish.ReplayAction">
+        <property name="service" ref="RemotePublicationReplayService"/>
+    </bean>
+
+    <bean class="org.jahia.modules.remotepublish.JournalListener">
+        <property name="workspace" value="live"/>
+        <property name="path" value="/sites"/>
+        <property name="journalService" ref="RemotePublicationJournalService"/>
+        <property name="availableDuringPublish" value="true"/>
+    </bean>
+
+    <bean id="remotePublicationInitializer" class="org.jahia.modules.remotepublish.initializers.RemotePublicationInitializers">
+        <property name="key" value="remotePublication"/>
+        <property name="sessionFactory" ref="jcrSessionFactory"/>
+    </bean>
+</beans>

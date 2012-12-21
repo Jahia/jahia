@@ -114,7 +114,7 @@ public class PublicationManagerEngine extends Window {
         factory.setSaveOpenPath(true);
         loader = factory.getLoader();
         List<ColumnConfig> columns = new LinkedList<ColumnConfig>();
-        ColumnConfig config = new ColumnConfig("displayName", "Name", 150);
+        ColumnConfig config = new ColumnConfig("displayName", Messages.get("label.name", "Name"), 150);
         config.setRenderer(NodeColumnConfigList.NAME_TREEGRID_RENDERER);
         config.setSortable(false);
         columns.add(config);
@@ -154,6 +154,7 @@ public class PublicationManagerEngine extends Window {
         m_tree.setIconProvider(ContentModelIconProvider.getInstance());
         m_tree.setAutoExpand(false);
         m_tree.setAutoExpandMax(1000);
+        m_tree.setAutoExpandMin(150);
         m_tree.setAutoExpandColumn("displayName");
         m_tree.setBorders(true);
 

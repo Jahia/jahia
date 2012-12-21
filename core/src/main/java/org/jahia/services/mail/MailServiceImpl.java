@@ -176,7 +176,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
         }
 
         if (charset != null && exchange.getProperty(Exchange.CHARSET_NAME) == null) {
-            exchange.setProperty(Exchange.CHARSET_NAME, settingsBean.getCharacterEncoding());
+            exchange.setProperty(Exchange.CHARSET_NAME, charset);
         }
         
         long timer = System.currentTimeMillis();
@@ -286,7 +286,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
         template.send(endpointUri, new Processor() {
             public void process(Exchange exchange) throws Exception {
                 if (charset != null) {
-                    exchange.setProperty(Exchange.CHARSET_NAME, settingsBean.getCharacterEncoding());
+                    exchange.setProperty(Exchange.CHARSET_NAME, charset);
                 }
                 Message in = exchange.getIn();
                 for (Map.Entry<String, Object> header : headers.entrySet()) {

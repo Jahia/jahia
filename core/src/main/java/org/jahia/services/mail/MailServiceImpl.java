@@ -62,6 +62,7 @@ import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.jahia.api.Constants;
@@ -81,7 +82,7 @@ import org.jahia.utils.i18n.ResourceBundles;
  * @author MAP
  * @author Serge Huber
  */
-public class MailServiceImpl extends MailService implements CamelContextAware, DisposableBean, ApplicationListener<ApplicationEvent> {
+public class MailServiceImpl extends MailService implements CamelContextAware, InitializingBean, DisposableBean, ApplicationListener<ApplicationEvent> {
     
     /**
      * This event is fired when the changes in mail server connection settings are detected (notification from other cluster nodes).
@@ -97,6 +98,8 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
     }
 
     private static Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
+    
+    private String charset;
     
     private ProducerTemplate template;
     private ScriptEngineUtils scriptEngineUtils;
@@ -170,6 +173,10 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
         if (!isEnabled()) {
             logger.warn("Mail service is not enabled. Skip sending message.");
             return;
+        }
+
+        if (charset != null && exchange.getProperty(Exchange.CHARSET_NAME) == null) {
+            exchange.setProperty(Exchange.CHARSET_NAME, settingsBean.getCharacterEncoding());
         }
         
         long timer = System.currentTimeMillis();
@@ -252,7 +259,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
 
     public void sendMessage(String endpointUri, String from, String toList, String ccList, String bcclist, String subject, String textBody,
             String htmlBody) {
-        Map<String, Object> headers = new HashMap<String, Object>();
+        final Map<String, Object> headers = new HashMap<String, Object>();
         headers.put("To", toList);
         if (StringUtils.isEmpty(from)) {
             headers.put("From", settings.getFrom());
@@ -266,17 +273,28 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
             headers.put("Bcc", bcclist);
         }
         headers.put("Subject", subject);
-        String body;
+        final String body;
         if (StringUtils.isNotEmpty(htmlBody)) {
-            headers.put("contentType", "text/html");
+            headers.put("contentType", charset != null ? "text/html; charset=" + charset : "text/html");
             headers.put("alternativeBodyHeader", textBody);
             body = htmlBody;
         } else {
-            headers.put("contentType", "text/plain");
+            headers.put("contentType", charset != null ? "text/plain; charset=" + charset : "text/plain");
             body = textBody;
         }
         
-        template.sendBodyAndHeaders(endpointUri, body, headers);
+        template.send(endpointUri, new Processor() {
+            public void process(Exchange exchange) throws Exception {
+                if (charset != null) {
+                    exchange.setProperty(Exchange.CHARSET_NAME, settingsBean.getCharacterEncoding());
+                }
+                Message in = exchange.getIn();
+                for (Map.Entry<String, Object> header : headers.entrySet()) {
+                    in.setHeader(header.getKey(), header.getValue());
+                }
+                in.setBody(body);
+            }
+        });
     }
     
     public void setCamelContext(CamelContext camelContext) {
@@ -486,6 +504,18 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
             sendMailEndpointUri = null;
             load();
         }
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        if (charset == null) {
+            charset = settingsBean.getCharacterEncoding();
+        } else if (charset.length() == 0) {
+            charset = null;
+        }
+    }
+
+    public void setCharset(String charset) {
+        this.charset = charset;
     }
 
 }

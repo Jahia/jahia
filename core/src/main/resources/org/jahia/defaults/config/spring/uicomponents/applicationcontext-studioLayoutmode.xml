@@ -18,6 +18,10 @@
                 <value>jnt:template</value>
             </set>
         </property>
+        <property name="nonEditableTypes">
+            <set>
+            </set>
+        </property>
         <property name="defaultUrlMapping" value="/cms/studiolayout"/>
         <property name="mainModuleToolbar">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">

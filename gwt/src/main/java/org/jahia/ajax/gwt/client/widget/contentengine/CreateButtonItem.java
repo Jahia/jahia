@@ -85,6 +85,7 @@ public class CreateButtonItem extends SaveButtonItem {
 
     protected void continuePrepareAndSave(final AbstractContentEngine engine, final boolean closeAfterSave, String nodeName) {
         GWTJahiaNodeACL newNodeACL = new GWTJahiaNodeACL();
+        List<GWTJahiaNode> children = new ArrayList<GWTJahiaNode>();
         newNodeACL.setAce(new ArrayList<GWTJahiaNodeACE>());
 
         final Set<String> addedTypes = new HashSet<String>();
@@ -124,15 +125,14 @@ public class CreateButtonItem extends SaveButtonItem {
                     }
                 }
             }
-
-            item.doSave(engine.getNode(), engine.getChangedProperties(), engine.getChangedI18NProperties(), addedTypes, new HashSet<String>(), newNodeACL);
+            item.doSave(engine.getNode(), engine.getChangedProperties(), engine.getChangedI18NProperties(), addedTypes, new HashSet<String>(), children, newNodeACL);
         }
 
-        doSave((CreateContentEngine)engine, nodeName, engine.getChangedProperties(), engine.getChangedI18NProperties(), new ArrayList<String>(addedTypes), newNodeACL,
+        doSave((CreateContentEngine)engine, nodeName, engine.getChangedProperties(), engine.getChangedI18NProperties(), new ArrayList<String>(addedTypes), children, newNodeACL,
                 closeAfterSave);
     }
 
-    protected void doSave(final CreateContentEngine engine, String nodeName, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<String> mixin, GWTJahiaNodeACL newNodeACL, final boolean closeAfterSave) {
+    protected void doSave(final CreateContentEngine engine, String nodeName, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<String> mixin, List<GWTJahiaNode> children, GWTJahiaNodeACL newNodeACL, final boolean closeAfterSave) {
         final AsyncCallback<GWTJahiaNode> callback = new BaseAsyncCallback<GWTJahiaNode>() {
             public void onApplicationFailure(Throwable throwable) {
                 failSave(engine, throwable);
@@ -172,7 +172,7 @@ public class CreateButtonItem extends SaveButtonItem {
         if (engine.isCreateInParentAndMoveBefore()) {
             JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(engine.getTargetNode().getPath(), nodeName, engine.getType().getName(), mixin, newNodeACL, props, langCodeProperties, callback);
         } else {
-            JahiaContentManagementService.App.getInstance().createNode(engine.getParentPath(), nodeName, engine.getType().getName(), mixin, newNodeACL, props, langCodeProperties, null, true, callback);
+            JahiaContentManagementService.App.getInstance().createNode(engine.getParentPath(), nodeName, engine.getType().getName(), mixin, newNodeACL, props, langCodeProperties, children, null, true, callback);
         }
     }
 

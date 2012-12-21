@@ -370,7 +370,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                     }
                 }
 
-                item.doSave(getNode(), changedProperties, changedI18NProperties, addedTypes, removedTypes, acl);
+                item.doSave(getNode(), changedProperties, changedI18NProperties, addedTypes, removedTypes, null, acl);
             }
 
             getNode().getNodeTypes().removeAll(removedTypes);

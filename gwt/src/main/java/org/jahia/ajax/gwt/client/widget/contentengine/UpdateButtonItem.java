@@ -52,9 +52,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.definitionsmodeler.ChildItemsTabItem;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
@@ -122,7 +120,7 @@ public class UpdateButtonItem extends SaveButtonItem {
             }
 
             // case of right tab
-            item.doSave(engine.getNode(), engine.getChangedProperties(), engine.getChangedI18NProperties(), addedTypes, removedTypes, engine.getAcl());
+            item.doSave(engine.getNode(), engine.getChangedProperties(), engine.getChangedI18NProperties(), addedTypes, removedTypes, null, engine.getAcl());
         }
 
         engine.getNode().getNodeTypes().removeAll(removedTypes);

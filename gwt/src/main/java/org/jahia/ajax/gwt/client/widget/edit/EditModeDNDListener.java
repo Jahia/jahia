@@ -195,7 +195,7 @@ public class EditModeDNDListener extends DNDListener {
                         (sourceNodeType.getInheritedItems() == null ||
                                 sourceNodeType.getInheritedItems().size() == 0)) {
                     service.createNode(parentPath, null, sourceNodeType.getName(), null, null,
-                            new ArrayList<GWTJahiaNodeProperty>(), null, null, true, new BaseAsyncCallback<GWTJahiaNode>() {
+                            new ArrayList<GWTJahiaNodeProperty>(), null, null, null, true, new BaseAsyncCallback<GWTJahiaNode>() {
                                 public void onApplicationFailure(Throwable throwable) {
                                     Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
                                     Log.error("failed", throwable);

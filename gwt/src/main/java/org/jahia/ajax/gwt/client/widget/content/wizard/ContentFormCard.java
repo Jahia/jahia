@@ -109,7 +109,7 @@ public class ContentFormCard extends ContentWizardCard {
         JahiaContentManagementService.App.getInstance()
                 .createNode(getWizardWindow().getParentNode().getPath(), getWizardData().getNodeName(),
                         getWizardData().getNodeType().getName(), null, null, formEditor.getProperties(),null,
-                        null, true, new BaseAsyncCallback<GWTJahiaNode>() {
+                        null, null, true, new BaseAsyncCallback<GWTJahiaNode>() {
                             public void onApplicationFailure(Throwable caught) {
                                 Log.error("Error", caught);
                                 MessageBox.alert(Messages.get("label.error", "Error"),

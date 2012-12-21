@@ -41,7 +41,6 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.data.RpcMap;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
@@ -52,8 +51,6 @@ import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -188,7 +185,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
     @Override
     public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties,
                        Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes,
-                       Set<String> removedTypes, GWTJahiaNodeACL acl) {
+                       Set<String> removedTypes, List<GWTJahiaNode> chidren, GWTJahiaNodeACL acl) {
         codeProperty.setValue(new GWTJahiaNodePropertyValue(codeField.getValue()));
         changedProperties.add(codeProperty);
     }

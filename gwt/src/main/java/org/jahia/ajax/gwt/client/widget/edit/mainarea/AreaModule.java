@@ -40,8 +40,6 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
-import com.extjs.gxt.ui.client.dnd.DND;
-import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -55,19 +53,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
-import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import com.google.gwt.user.client.Element;
-
-import java.util.Arrays;
 
 /**
  *
@@ -261,7 +252,7 @@ public class AreaModule extends SimpleModule {
                 areaType = "jnt:layoutContentList";
             }
             JahiaContentManagementService.App.getInstance().createNode(path.substring(0, path.lastIndexOf('/')), path.substring(path.lastIndexOf('/') + 1),
-                    areaType, null,null,null,null, null, true, new AsyncCallback<GWTJahiaNode>() {
+                    areaType, null,null,null,null, null, null, true, new AsyncCallback<GWTJahiaNode>() {
                 public void onSuccess(GWTJahiaNode result) {
                     node = result;
                     callback.onSuccess(result);

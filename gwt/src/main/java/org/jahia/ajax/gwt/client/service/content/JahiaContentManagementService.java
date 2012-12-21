@@ -106,7 +106,9 @@ public interface JahiaContentManagementService extends RemoteService {
 
     GWTJahiaNode createGoogleGadgetPortletInstance(String path, String name, String script) throws GWTJahiaServiceException;
 
-    GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, Map<String, String> parentNodes, boolean forceCreation) throws GWTJahiaServiceException;
+    GWTJahiaNode createNode(String parentPath, GWTJahiaNode newNode) throws GWTJahiaServiceException;
+
+    GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNode> subNodes, Map<String, String> parentNodes, boolean forceCreation) throws GWTJahiaServiceException;
 
     GWTJahiaNode createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties) throws GWTJahiaServiceException;
 

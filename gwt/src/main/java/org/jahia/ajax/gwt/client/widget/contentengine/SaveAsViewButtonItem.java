@@ -218,7 +218,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
         properties.addAll(engine.getProperties().values());
         for (TabItem tab : engine.getTabs().getItems()) {
             EditEngineTabItem item = tab.getData("item");
-            item.doSave(null, engine.getChangedProperties(), engine.getChangedI18NProperties(), addedTypes, removedTypes, engine.getAcl());
+            item.doSave(null, engine.getChangedProperties(), engine.getChangedI18NProperties(), addedTypes, removedTypes, null, engine.getAcl());
         }
         if (properties.size() > 0) {
             // Edit
@@ -233,7 +233,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
             // Create
             properties = engine.getChangedProperties();
         }
-        JahiaContentManagementService.App.getInstance().createNode(modulePath, viewName, "jnt:viewFile", null, engine.getAcl(), properties, engine.changedI18NProperties, parentNodesType, false, new AsyncCallback<GWTJahiaNode>() {
+        JahiaContentManagementService.App.getInstance().createNode(modulePath, viewName, "jnt:viewFile", null, engine.getAcl(), properties, engine.changedI18NProperties, null, parentNodesType, false, new AsyncCallback<GWTJahiaNode>() {
             public void onFailure(Throwable throwable) {
                 MessageBox.alert("save not work as excpected", throwable.getMessage(), null);
             }

@@ -15,9 +15,6 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
-import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
@@ -50,6 +47,11 @@ public class ChildItemsTabItem extends EditEngineTabItem {
     private transient List<String> columnsKeys;
     private transient GWTJahiaNodeType nodeType;
     private transient Map<String, GWTJahiaFieldInitializer> initializerMap = new HashMap<String, GWTJahiaFieldInitializer>();
+
+    private transient GWTJahiaNode engineNode;
+    private transient List<GWTJahiaNode> children;
+    private transient List<GWTJahiaNode> removedChildren;
+
     public ChildItemsTabItem() {
     }
 
@@ -66,7 +68,14 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             }
         });
 
-        JahiaContentManagementService.App.getInstance().getFieldInitializerValues("jnt:childNodeDefinition", "j:defaultPrimaryType", engine.getNode().getPath(), new HashMap<String, List<GWTJahiaNodePropertyValue>>(), new BaseAsyncCallback<GWTJahiaFieldInitializer>() {
+        engineNode = engine.getNode();
+        if (engineNode == null) {
+            engineNode = new GWTJahiaNode();
+            engineNode.setPath("newNode");
+        }
+        children = new ArrayList<GWTJahiaNode>();
+        removedChildren = new ArrayList<GWTJahiaNode>();
+        JahiaContentManagementService.App.getInstance().getFieldInitializerValues("jnt:childNodeDefinition", "j:defaultPrimaryType", engine.getNode() != null ? engine.getNode().getPath() : engine.getTargetNode().getPath(), new HashMap<String, List<GWTJahiaNodePropertyValue>>(), new BaseAsyncCallback<GWTJahiaFieldInitializer>() {
             @Override
             public void onSuccess(GWTJahiaFieldInitializer result) {
                 initializerMap.put("jnt:childNodeDefinition.j:defaultPrimaryType", result);
@@ -127,15 +136,17 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             });
         }
 
-        JahiaContentManagementService.App.getInstance().lsLoad(engine.getNode(), Arrays.asList(type),null,
-                null, columnsKeys, false, -1,0, false, null, null, false, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
-            public void onSuccess(PagingLoadResult<GWTJahiaNode> result) {
-                for (GWTJahiaNode itemDefinition : result.getData()) {
-                    engine.getNode().add(itemDefinition);
-                    store.add(itemDefinition);
+        if (engine.getNode() != null) {
+            JahiaContentManagementService.App.getInstance().lsLoad(engine.getNode(), Arrays.asList(type),null,
+                    null, columnsKeys, false, -1,0, false, null, null, false, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
+                public void onSuccess(PagingLoadResult<GWTJahiaNode> result) {
+                    for (GWTJahiaNode itemDefinition : result.getData()) {
+                        children.add(itemDefinition);
+                        store.add(itemDefinition);
+                    }
                 }
-            }
-        });
+            });
+        }
 
         grid = new Grid<GWTJahiaNode>(store,new ColumnModel(columns));
 
@@ -160,7 +171,8 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                             itemDefinition.setName(be.getValue());
                             itemDefinition.setNodeTypes(Arrays.asList(type));
                             initValues(itemDefinition);
-                            engine.getNode().add(itemDefinition);
+                            removedChildren.remove(itemDefinition);
+                            children.add(itemDefinition);
                             store.add(itemDefinition);
                             grid.getSelectionModel().select(itemDefinition, false);
                         }
@@ -182,7 +194,8 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                 grid.getSelectionModel().setFiresEvents(false);
                 List<GWTJahiaNode> selection = grid.getSelectionModel().getSelection();
                 for (GWTJahiaNode node : selection) {
-                    engine.getNode().remove(node);
+                    removedChildren.add(node);
+                    children.remove(node);
                     store.remove(node);
                 }
                 grid.getSelectionModel().setFiresEvents(true);
@@ -313,7 +326,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                         });
                     } else {
                         item.set("newItem","true");
-                        item.setPath(engine.getNode().getPath()+"/"+item.getName());
+                        item.setPath(engineNode.getPath()+"/"+item.getName());
                         displayProperties(item, Arrays.asList(nodeType), (Map<String, GWTJahiaNodeProperty>) item.get("default-properties"));
                         item.remove("default-properties");
                         tab.add(propertiesEditor, new RowData(1,1,new Margins(2)));
@@ -415,13 +428,14 @@ public class ChildItemsTabItem extends EditEngineTabItem {
     public void setProcessed(boolean processed) {
         if (!processed) {
             store = null;
+            engineNode = null;
         }
 
         super.setProcessed(processed);
     }
 
     @Override
-    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, GWTJahiaNodeACL acl) {
+    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, List<GWTJahiaNode> children, GWTJahiaNodeACL acl) {
         if (store != null) {
             for (GWTJahiaNode itemDefinition : store.getModels()) {
                 if (propertiesEditors.containsKey(itemDefinition)) {
@@ -437,7 +451,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                     itemDefinition.set("nodeLangCodeProperties", new HashMap<String, List<GWTJahiaNodeProperty>>());
                 }
             }
-            Collections.sort(node.getChildren(), new Comparator<ModelData>() {
+            Collections.sort(this.children, new Comparator<ModelData>() {
                 @Override
                 public int compare(ModelData o1, ModelData o2) {
                     GWTJahiaNode c1 = null;
@@ -466,7 +480,18 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                     return -1;
                 }
             });
-            node.set(GWTJahiaNode.INCLUDE_CHILDREN, Boolean.TRUE);
+            if (node != null) {
+                for (GWTJahiaNode child : this.removedChildren) {
+                    node.add(child);
+                    node.remove(child);
+                }
+                for (GWTJahiaNode child : this.children) {
+                    node.add(child);
+                }
+                node.set(GWTJahiaNode.INCLUDE_CHILDREN, Boolean.TRUE);
+            } else {
+                children.addAll(this.children);
+            }
         }
     }
     private void removeSorter() {

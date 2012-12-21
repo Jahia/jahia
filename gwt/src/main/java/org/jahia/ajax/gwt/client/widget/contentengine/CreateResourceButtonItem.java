@@ -43,22 +43,18 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem;
 
 import java.util.*;
 
@@ -147,7 +143,7 @@ public class CreateResourceButtonItem extends SaveButtonItem {
         properties.addAll(engine.getProperties().values());
         for (TabItem tab : engine.getTabs().getItems()) {
             EditEngineTabItem item = tab.getData("item");
-            item.doSave(null, engine.getChangedProperties(), engine.getChangedI18NProperties(), addedTypes, removedTypes, engine.getAcl());
+            item.doSave(null, engine.getChangedProperties(), engine.getChangedI18NProperties(), addedTypes, removedTypes, null, engine.getAcl());
         }
         if (properties.size() > 0) {
             // Edit
@@ -162,7 +158,7 @@ public class CreateResourceButtonItem extends SaveButtonItem {
             // Create
             properties = engine.getChangedProperties();
         }
-        JahiaContentManagementService.App.getInstance().createNode(parentPath, nodeName, engine.getType().getName(), null, engine.getAcl(), properties, engine.changedI18NProperties, parentNodesType, false, new AsyncCallback<GWTJahiaNode>() {
+        JahiaContentManagementService.App.getInstance().createNode(parentPath, nodeName, engine.getType().getName(), null, engine.getAcl(), properties, engine.changedI18NProperties, null, parentNodesType, false, new AsyncCallback<GWTJahiaNode>() {
             public void onFailure(Throwable throwable) {
                 MessageBox.alert("save not work as expected", throwable.getMessage(), null);
             }

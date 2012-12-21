@@ -44,7 +44,6 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcMap;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -62,9 +61,11 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Remote GWT service for content management tasks.
@@ -102,7 +103,9 @@ public interface JahiaContentManagementServiceAsync {
 
     void createGoogleGadgetPortletInstance(String path, String name, String script, AsyncCallback<GWTJahiaNode> async);
 
-    void createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, Map<String, String> parentNodesType, boolean forceCreation, AsyncCallback<GWTJahiaNode> async);
+    void createNode(String parentPath, GWTJahiaNode node, AsyncCallback<GWTJahiaNode> async);
+
+    void createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNode> subNodes, Map<String, String> parentNodesType, boolean forceCreation, AsyncCallback<GWTJahiaNode> async);
 
     void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, AsyncCallback<GWTJahiaNode> asyncCallback);
 

@@ -419,7 +419,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         GWTJahiaNode tagNode = navigation.getTagNode(s, getSite());
         if (tagNode == null && create) {
             return createNode(navigation.getTagsNode(getSite()).getPath(), s, "jnt:tag", null, null,
-                    new ArrayList<GWTJahiaNodeProperty>(), null,null,true);
+                    new ArrayList<GWTJahiaNodeProperty>(), null, null, null,true);
         } else {
             return tagNode;
         }
@@ -747,13 +747,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 List<String> newNames = new ArrayList<String>();
                 for (ModelData modelData : node.getChildren()) {
                     GWTJahiaNode subNode = ((GWTJahiaNode)modelData);
+                    subNode.setPath(node.getPath() + "/" + subNode.getName());
                     if (subNode.get("nodeLangCodeProperties") != null && subNode.get("nodeProperties") != null) {
                         if (nodeWrapper.hasNode(subNode.getName())) {
                             saveNode(subNode, null,(Map<String, List<GWTJahiaNodeProperty>>) subNode.get("nodeLangCodeProperties"),(List<GWTJahiaNodeProperty>) subNode.get("nodeProperties"),new HashSet<String>());
                         } else {
-                            createNode(node.getPath(), subNode.getName(), subNode.getNodeTypes().get(0), subNode.getNodeTypes().subList(1, subNode.getNodeTypes().size()), null,
-                                    (List<GWTJahiaNodeProperty>) subNode.get("nodeProperties"), (Map<String, List<GWTJahiaNodeProperty>>) subNode.get("nodeLangCodeProperties"),null,true);
-
+                            createNode(node.getPath(), subNode);
                         }
                     }
                     newNames.add(subNode.getName());
@@ -823,11 +822,18 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
+
+    public GWTJahiaNode createNode(String parentPath, GWTJahiaNode newNode) throws GWTJahiaServiceException {
+        List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
+        for (ModelData modelData : newNode.getChildren()) {
+            nodes.add((GWTJahiaNode) modelData);
+        }
+        return createNode(parentPath, newNode.getName(), newNode.getNodeTypes().get(0), newNode.getNodeTypes().subList(1, newNode.getNodeTypes().size()), (GWTJahiaNodeACL) newNode.get("newAcl"),
+                (List<GWTJahiaNodeProperty>) newNode.get("nodeProperties"), (Map<String, List<GWTJahiaNodeProperty>>) newNode.get("nodeLangCodeProperties"), nodes, null, true);
+    }
+
     /**
      * Create node with multilangue
-     *
-     *
-     *
      *
      * @param parentPath
      * @param name
@@ -836,14 +842,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param acl
      * @param props
      * @param langCodeProperties
-     * @param parentNodesType
-     * @param forceCreation
-     * @return
+     * @param subNodes
+     *@param parentNodesType
+     * @param forceCreation   @return
      * @throws GWTJahiaServiceException
      */
     public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin,
                                    GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props,
-                                   Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, Map<String, String> parentNodesType, boolean forceCreation)
+                                   Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNode> subNodes, Map<String, String> parentNodesType, boolean forceCreation)
             throws GWTJahiaServiceException {
         if (name == null) {
             if (langCodeProperties != null) {
@@ -907,6 +913,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.node.creation.failed.cause",getUILocale()) + e.getMessage());
         }
 
+        if (subNodes != null) {
+            for (GWTJahiaNode subNode : subNodes) {
+                createNode(node.getPath(), subNode);
+            }
+        }
+
         return node;
     }
 
@@ -929,7 +941,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         final GWTJahiaNode parentNode = navigation.getParentNode(path, retrieveCurrentSession());
 
         GWTJahiaNode jahiaNode =
-                createNode(parentNode.getPath(), name, nodeType, mixin, acl, properties, langCodeProperties,null,true);
+                createNode(parentNode.getPath(), name, nodeType, mixin, acl, properties, langCodeProperties, null, null,true);
 
         try {
             contentManager.moveOnTopOf(jahiaNode.getPath(), path, retrieveCurrentSession());
@@ -2090,7 +2102,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         createNode("/remotePublications", JCRContentUtils.generateNodeName(nodeName),
                 "jnt:remotePublication", null, null, gwtProps,
-                new HashMap<String, List<GWTJahiaNodeProperty>>(),null,true);
+                new HashMap<String, List<GWTJahiaNodeProperty>>(), null, null,true);
 
         return true;
     }

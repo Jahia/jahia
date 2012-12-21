@@ -56,7 +56,6 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowType;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -242,7 +241,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
         return panel;
     }
 
-    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, GWTJahiaNodeACL acl) {
+    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, List<GWTJahiaNode> chidren, GWTJahiaNodeACL acl) {
         Set<GWTJahiaWorkflowDefinition>  activeWorkflows = new HashSet<GWTJahiaWorkflowDefinition>();
         if (workflowRules == null) {
             return;

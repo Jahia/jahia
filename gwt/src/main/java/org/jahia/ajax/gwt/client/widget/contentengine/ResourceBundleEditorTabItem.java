@@ -70,8 +70,8 @@ public class ResourceBundleEditorTabItem extends EditEngineTabItem {
 
     @Override
     public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties,
-            Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes,
-            Set<String> removedTypes, GWTJahiaNodeACL acl) {
+                       Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes,
+                       Set<String> removedTypes, List<GWTJahiaNode> chidren, GWTJahiaNodeACL acl) {
         if (resourceBundleEditor != null) {
             node.set(GWTJahiaNode.RESOURCE_BUNDLE, resourceBundleEditor.getResourceBundle());
         }

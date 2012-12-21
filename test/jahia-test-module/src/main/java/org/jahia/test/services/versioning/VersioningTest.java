@@ -46,7 +46,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -66,13 +65,7 @@ import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionIterator;
 import javax.jcr.version.VersionManager;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
-import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -103,7 +96,6 @@ public class VersioningTest extends JahiaTestCase {
     private static final String MAIN_CONTENT_TITLE = "Main content title update ";
     private static final String MAIN_CONTENT_BODY = "Main content body update ";
     private static int NUMBER_OF_VERSIONS = 5;
-    private HttpClient client;
     JCRSessionWrapper editSession;
     JCRSessionWrapper liveSession;
     private SimpleDateFormat yyyy_mm_dd_hh_mm_ss;
@@ -121,22 +113,8 @@ public class VersioningTest extends JahiaTestCase {
             logger.warn("Exception during test setUp", ex);
         }
 
-        // Create an instance of HttpClient.
-        client = new HttpClient();
-
-        // todo we should really insert content to test the find.
-
-        PostMethod loginMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/login");
-        loginMethod.addParameter("username", "root");
-        loginMethod.addParameter("password", "root1234");
-        loginMethod.addParameter("redirectActive", "false");
-        // the next parameter is required to properly activate the valve check.
-        loginMethod.addParameter(LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER, "1");
-
-        int statusCode = client.executeMethod(loginMethod);
-        if (statusCode != HttpStatus.SC_OK) {
-            System.err.println("Method failed: " + loginMethod.getStatusLine());
-        }
+        loginRoot();
+        
         yyyy_mm_dd_hh_mm_ss = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
         languagesStringSet = new LinkedHashSet<String>();
         languagesStringSet.add(Locale.ENGLISH.toString());
@@ -226,6 +204,7 @@ public class VersioningTest extends JahiaTestCase {
         editSession.checkout(stageNode);
         JCRNodeWrapper stagedSubPage = stageNode.addNode("home_subpage1", "jnt:page");
         stagedSubPage.setProperty("jcr:title", "title0");
+        stagedSubPage.setProperty("j:templateName", "simple");
 
         JCRNodeWrapper stagedPageContent = stagedSubPage.addNode("pagecontent", "jnt:contentList");
         JCRNodeWrapper stagedRow1 = stagedPageContent.addNode("row1", "jnt:row");
@@ -237,6 +216,7 @@ public class VersioningTest extends JahiaTestCase {
 
         JCRNodeWrapper stagedSubSubPage = stagedSubPage.addNode("home_subsubpage1", "jnt:page");
         stagedSubSubPage.setProperty("jcr:title", "subtitle0");
+        stagedSubSubPage.setProperty("j:templateName", "simple");
         editSession.save();
 
         // publish it
@@ -352,15 +332,8 @@ public class VersioningTest extends JahiaTestCase {
 
     @After
     public void tearDown() throws Exception {
-        PostMethod logoutMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/logout");
-        logoutMethod.addParameter("redirectActive", "false");
-
-        int statusCode = client.executeMethod(logoutMethod);
-        if (statusCode != HttpStatus.SC_OK) {
-            System.err.println("Method failed: " + logoutMethod.getStatusLine());
-        }
-
-        logoutMethod.releaseConnection();
+        logout();
+        
         try {
             TestHelper.deleteSite(TESTSITE_NAME);
         } catch (Exception ex) {
@@ -384,24 +357,14 @@ public class VersioningTest extends JahiaTestCase {
             JCRNodeWrapper subPageEditNode = stageNode.addNode("simple", "jnt:page");
             String subPageEditNodeIdentifier = subPageEditNode.getIdentifier();
             subPageEditNode.setProperty("jcr:title", "title0");
-            subPageEditNode.setProperty("j:templateNode", editSession.getNode(
-                    SITECONTENT_ROOT_NODE + "/templates/base/simple"));
+            subPageEditNode.setProperty("j:templateName", "simple");
             editSession.save();
 
             // Do this to create nodes associated to templates
-            GetMethod versionGet = new GetMethod(
-            		getBaseServerURL() + Jahia.getContextPath() + "/cms/edit/default/en" +
-                    subPageEditNode.getPath() + ".html");
-            try {
-                int responseCode = client.executeMethod(versionGet);
-                assertEquals("Response code " + responseCode, 200, responseCode);
-                String responseBody = versionGet.getResponseBodyAsString();
-                logger.debug("Response body=[" + responseBody + "]");
-                assertFalse("Couldn't find expected value (title0) in response body", responseBody.indexOf("title0") <
-                                                                                      0);
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
+            String responseBody = getAsText("/cms/render/default/en" + subPageEditNode.getPath() + ".html");
+            logger.debug("Response body=[" + responseBody + "]");
+            assertFalse("Couldn't find expected value (title0) in response body", responseBody.indexOf("title0") < 0);
+            
             // First publication
             String labelForFirstPublication = publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier);
             JCRNodeWrapper subPageLiveNode = liveSession.getNodeByUUID(subPageEditNode.getIdentifier());
@@ -514,22 +477,14 @@ public class VersioningTest extends JahiaTestCase {
             JCRNodeWrapper newSubPageEditNode = stageNode.addNode("double", "jnt:page");
             String newSubPageEditNodeIdentifier = newSubPageEditNode.getIdentifier();
             newSubPageEditNode.setProperty("jcr:title", "my double page");
-            newSubPageEditNode.setProperty("j:templateNode", editSession.getNode(
-                    SITECONTENT_ROOT_NODE + "/templates/base/double"));
+            newSubPageEditNode.setProperty("j:templateName", "double");
             editSession.save();
             // Do this to create nodes associated to templates
-            versionGet = new GetMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/edit/default/en" +
-                                       newSubPageEditNode.getPath() + ".html");
-            try {
-                int responseCode = client.executeMethod(versionGet);
-                assertEquals("Response code " + responseCode, 200, responseCode);
-                String responseBody = versionGet.getResponseBodyAsString();
-                logger.debug("Response body=[" + responseBody + "]");
-                assertFalse("Couldn't find expected value (my double page) in response body", responseBody.indexOf(
-                        "my double page") < 0);
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
+            responseBody = getAsText("/cms/render/default/en" + newSubPageEditNode.getPath() + ".html");
+            logger.debug("Response body=[" + responseBody + "]");
+            assertFalse("Couldn't find expected value (my double page) in response body",
+                    responseBody.indexOf("my double page") < 0);
+
             // Add a new double sub page in the home
             publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier);
             JCRNodeWrapper newSubPageLiveNode = liveSession.getNodeByUUID(newSubPageEditNodeIdentifier);

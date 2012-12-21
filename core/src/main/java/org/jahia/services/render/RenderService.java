@@ -386,7 +386,7 @@ public class RenderService {
                     templates.addAll(addTemplates(resource, renderContext, templateName, templateNode, type));
             }
         }
-        return templates.last().getTemplate();
+        return templates.isEmpty() ? null : templates.last().getTemplate();
     }
 
     private SortedSet<OrderedContentTemplate> addTemplates(Resource resource, RenderContext renderContext, String templateName,

@@ -40,7 +40,6 @@
 
 package org.jahia.services.render.filter.cache;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -50,6 +49,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -57,12 +57,6 @@ import javax.jcr.RepositoryException;
 
 import net.sf.ehcache.Element;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
@@ -98,18 +92,15 @@ import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.Patterns;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
+
 /**
- * 
- *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
- *        Created : 12 janv. 2010
+ * Created : 12 janv. 2010
  */
 public class CacheFilterTest extends JahiaTestCase {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CacheFilterTest.class);
@@ -154,17 +145,6 @@ public class CacheFilterTest extends JahiaTestCase {
         JCRSessionFactory.getInstance().closeAllSessions();
     }
     
-    @Before
-    public void setUp() {
-
-    }
-
-    @After
-    public void tearDown() {
-
-    }    
-
-    //@Test
     @Test
     public void testCacheFilter() throws Exception {
 
@@ -214,39 +194,28 @@ public class CacheFilterTest extends JahiaTestCase {
         assertTrue("Content Cache and rendering are not equals",((String)((CacheEntry<?>)element.getValue()).getObject()).contains(result));
     }
     
-    //@Test
     @Test
     public void testFixForEmptyCacheBug() throws Exception {
-        String firstResponse = null;
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
-        final JCRNodeWrapper node = liveSession.getNode("/sites/"+TESTSITE_NAME+"/home/testContent");        
-        HttpClient client = new HttpClient();
-        GetMethod nodeGet = new GetMethod(
-        		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/live/en" +
-            node.getPath() + ".html");
-        try {
-            int responseCode = client.executeMethod(nodeGet);
-            assertEquals("Response code " + responseCode, 200, responseCode);
-            firstResponse = nodeGet.getResponseBodyAsString();
-            logger.info("Response body=[" + firstResponse + "]");
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
+        final JCRNodeWrapper node = liveSession.getNode("/sites/"+TESTSITE_NAME+"/home/testContent");
         
+        String relativeUrl = "/cms/render/live/en" + node.getPath() + ".html";
+        String firstResponse = getAsText(relativeUrl);
+
         JCRTemplate.getInstance().doExecuteWithSystemSession(
                 JahiaUserManagerService.GUEST_USERNAME,
-                Constants.LIVE_WORKSPACE, Locale.ENGLISH, new JCRCallback<String>() {
-                    public String doInJCR(JCRSessionWrapper session)
+                Constants.LIVE_WORKSPACE, Locale.ENGLISH, new JCRCallback<Boolean>() {
+                    public Boolean doInJCR(JCRSessionWrapper session)
                             throws RepositoryException {
                         ParamBean paramBean = (ParamBean)Jahia.getThreadParamBean();
                         RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), session.getUser());
                         context.setSite(node.getResolveSite());
                         ChannelService channelService = (ChannelService) SpringContextSingleton.getInstance().getContext().getBean("ChannelService");
-                        context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));                        
+                        context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));
                         JCRNodeWrapper pageContentNode = session
-                                .getNode("/sites/"
-                                        + TESTSITE_NAME
-                                        + "/templates/base/pagetemplate/subpagetemplate/pagecontent");
+                                .getNode("/modules/"
+                                        + node.getResolveSite().getTemplatePackage().getRootFolderWithVersion()
+                                        + "/templates/base/simple/pagecontent");
                         Resource resource = new Resource(pageContentNode,
                                 "html", null,
                                 Resource.CONFIGURATION_WRAPPEDCONTENT);
@@ -259,51 +228,41 @@ public class CacheFilterTest extends JahiaTestCase {
                         } catch (TemplateNotFoundException e) {
                             logger.debug("Template not found during unit test execution");
                         }
+                        String referencePath = resource.getNode().getPath();
+                        String referenceId = resource.getNode().getIdentifier();
 
                         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton
-                                .getInstance().getContext()
-                                .getBean("ModuleCacheProvider");
-                        CacheKeyGenerator generator = moduleCacheProvider
-                                .getKeyGenerator();
-                        String key = generator.generate(resource,
-                                context);
-                        String resourceId = StringUtils.substringAfterLast(key,
-                                "#");
-                        String firstpart = StringUtils.substringBeforeLast(key,
-                                "#");
-                        firstpart = StringUtils.substringBeforeLast(firstpart,
-                                "#");
-                        for (Object existingKey : moduleCacheProvider
-                                .getCache().getKeys()) {
+                                .getInstance().getContext().getBean("ModuleCacheProvider");
+                        CacheKeyGenerator generator = moduleCacheProvider.getKeyGenerator();
+                        Map<String, String> parsed = null;
+
+                        for (Object existingKey : moduleCacheProvider.getCache().getKeys()) {
                             String existingKeyAsString = (String) existingKey;
-                            if (existingKeyAsString.startsWith(firstpart)
-                                    && existingKeyAsString.endsWith(resourceId)) {
-                                moduleCacheProvider.getCache().remove(
-                                        existingKey);
+                            parsed = generator.parse(existingKeyAsString);
+                            if (parsed.get("path").equals(referencePath)
+                                    && parsed.get("resourceID").equals(referenceId)) {
+                                moduleCacheProvider.getCache().remove(existingKey);
                             }
                         }
 
-                        return key;
+                        return true;
                     }
                 });
 
-        try {
-            int responseCode = client.executeMethod(nodeGet);
-            assertEquals("Response code " + responseCode, 200, responseCode);
-            String responseBody = nodeGet.getResponseBodyAsString();
-            logger.info("Response body=[" + responseBody + "]");
-            if (firstResponse != null) {
-                assertTrue(
-                        "First and second response are not equal",
-                        responseBody.replaceAll("(?m)^[ \t]*\r?\n", "").replaceAll("(?m)^[ \t]+", "").replaceAll("\r\n", "\n").equals(
-                                firstResponse.replaceAll("(?m)^[ \t]*\r?\n", "").replaceAll("(?m)^[ \t]+", "").replaceAll("\r\n", "\n")));
-            }
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+        String responseBody = getAsText(relativeUrl);
+        logger.debug("Response body=[{}]", responseBody);
+        if (firstResponse != null) {
+            assertTrue(
+                    "First and second response are not equal",
+                    responseBody
+                            .replaceAll("(?m)^[ \t]*\r?\n", "")
+                            .replaceAll("(?m)^[ \t]+", "")
+                            .replaceAll("\r\n", "\n")
+                            .equals(firstResponse.replaceAll("(?m)^[ \t]*\r?\n", "").replaceAll("(?m)^[ \t]+", "")
+                                    .replaceAll("\r\n", "\n")));
         }
     }    
     
-    //@Test
     @Test
     public void testDependencies() throws Exception {
         JahiaUser admin = JahiaAdminUser.getAdminUser(0);
@@ -432,38 +391,15 @@ public class CacheFilterTest extends JahiaTestCase {
 
     private void checkContentForUser(JCRNodeWrapper node, String username, CharSequence firstContent, CharSequence secondContent,
                                      String missingContent) throws IOException, RepositoryException {
-        HttpClient client = new HttpClient();
-        PostMethod loginMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/login");
-        loginMethod.addParameter("username", username);
-        loginMethod.addParameter("password", "password");
-        loginMethod.addParameter("redirectActive", "false");
+        login(username, "password");
 
-        int statusCode = client.executeMethod(loginMethod);
-        assertTrue(statusCode== HttpStatus.SC_OK);
-        
-        // Use httpclient to render page
-        GetMethod nodeGet = new GetMethod(
-        		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/live/en" +
-                node.getPath() + ".html");
-        try {
-            int responseCode = client.executeMethod(nodeGet);
-            assertEquals("Response code " + responseCode, 200, responseCode);
-            String firstResponse = nodeGet.getResponseBodyAsString();
-            // Assert existence of content
-            assertTrue("Page for "+username+" should contains "+firstContent,firstResponse.contains(firstContent));
-            assertTrue("Page for "+username+" should contains "+secondContent,firstResponse.contains(secondContent));
-            assertFalse("Page for "+username+" should not contains "+missingContent,firstResponse.contains(missingContent));
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        } finally {
-            nodeGet.releaseConnection();
-        }
-        String baseurl = getBaseServerURL() + Jahia.getContextPath();
-        HttpMethod method = new GetMethod(baseurl + "/cms/logout");
-        try {
-            client.executeMethod(method);
-        } finally {
-            method.releaseConnection();
-        }
+        String firstResponse = getAsText("/cms/render/live/en" + node.getPath() + ".html");
+        // Assert existence of content
+        assertTrue("Page for " + username + " should contains " + firstContent, firstResponse.contains(firstContent));
+        assertTrue("Page for " + username + " should contains " + secondContent, firstResponse.contains(secondContent));
+        assertFalse("Page for " + username + " should not contains " + missingContent,
+                firstResponse.contains(missingContent));
+
+        logout();
     }
 }

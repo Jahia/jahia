@@ -3,3 +3,22 @@
 
 [jnt:testComponent1] > jnt:content, jmix:layoutComponentContent
  - property (string)
+
+[jnt:testComponent2] > jnt:content, jmix:editorialContent, mix:title, jmix:tagged, jmix:structuredContent orderable
+ - property1 (string, richtext) i18n mandatory nofulltext itemtype = layout
+ - property2 (weakreference, picker[type='image']) protected
+ - property3 (string, choicelist[resourceBundle]) = one,three multiple indexed=no < one,two,three
+ - property4 (long) = 2 autocreated hidden queryops '='
+ - property5 (string) facetable hierarchical boost=2.0 analyzer='keyword' noqueryorder onconflict=oldest COPY
+ + child1 (jnt:testComponent1) = jnt:testComponent1 autocreated
+ + child2 (jnt:testComponent1) mandatory protected COPY
+ + * (jnt:testComponent2)
+
+[jnt:testComponent3] > jnt:content, mix:title noquery abstract
+ itemtype = metadata
+ - property1 (string)
+
+[jmix:testMixin1] > jmix:templateMixin mixin
+ extends = jmix:list, jnt:area
+ itemtype = layout
+ - property1 (string)

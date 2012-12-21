@@ -62,10 +62,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.AccessControlException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * JCR session implementation for VFS provider.
@@ -78,9 +75,9 @@ public class ExternalSessionImpl implements Session {
     private ExternalRepositoryImpl repository;
     private ExternalWorkspaceImpl workspace;
     private Credentials credentials;
-    private Map<String, ExternalData> changedData = new HashMap<String, ExternalData>();
-    private Map<String, ExternalData> deletedData = new HashMap<String, ExternalData>();
-    private Map<String, List<String>> orderedData = new HashMap<String, List<String>>();
+    private Map<String, ExternalData> changedData = new LinkedHashMap<String, ExternalData>();
+    private Map<String, ExternalData> deletedData = new LinkedHashMap<String, ExternalData>();
+    private Map<String, List<String>> orderedData = new LinkedHashMap<String, List<String>>();
 
     public ExternalSessionImpl(ExternalRepositoryImpl repository, Credentials credentials) {
         this.repository = repository;
@@ -229,7 +226,7 @@ public class ExternalSessionImpl implements Session {
     public void save()
             throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
         if (repository.getDataSource() instanceof ExternalDataSource.Writable) {
-            Map<String, ExternalData> changedDataWithI18n = new HashMap<String, ExternalData>();
+            Map<String, ExternalData> changedDataWithI18n = new LinkedHashMap<String, ExternalData>();
             for (String path : changedData.keySet()) {
                 if (StringUtils.substringAfterLast(path, "/").startsWith("j:translation_")) {
                     String lang = StringUtils.substringAfterLast(StringUtils.substringAfterLast(path, "/"), "_");

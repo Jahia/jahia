@@ -792,50 +792,52 @@ public class ModulesDataSource extends VFSDataSource {
         JahiaTemplatesPackage templatePackage = templateManagerService.getTemplatePackageByFileName(module);
         String rbBasePath = StringUtils.substringAfter(templatePackage.getResourceBundleName(), "modules").replaceAll("\\.", "/").replaceAll("___", ".");
         Map<String, Map<String, String[]>> i18nProperties = data.getI18nProperties();
-        for (String lang : i18nProperties.keySet()) {
-            properties = i18nProperties.get(lang);
-            String title = null;
-            String description = null;
-            values = properties.get("jcr:title");
-            if (values != null && values.length > 0) {
-                title = values[0];
-            }
-            values = properties.get("jcr:description");
-            if (values != null && values.length > 0) {
-                description = values[0];
-            }
+        if (i18nProperties != null) {
+            for (String lang : i18nProperties.keySet()) {
+                properties = i18nProperties.get(lang);
+                String title = null;
+                String description = null;
+                values = properties.get("jcr:title");
+                if (values != null && values.length > 0) {
+                    title = values[0];
+                }
+                values = properties.get("jcr:description");
+                if (values != null && values.length > 0) {
+                    description = values[0];
+                }
 
-            String rbPath = rbBasePath + "_" + lang + ".properties";
-            InputStream is = null;
-            OutputStream os = null;
-            try {
-                FileObject file = getFile(rbPath);
-                FileContent content = file.getContent();
-                Properties p = new Properties();
-                if (file.exists()) {
-                    is = content.getInputStream();
-                    p.load(is);
-                    is.close();
-                } else if (StringUtils.isBlank(title) && StringUtils.isBlank(description)) {
-                    continue;
+                String rbPath = rbBasePath + "_" + lang + ".properties";
+                InputStream is = null;
+                OutputStream os = null;
+                try {
+                    FileObject file = getFile(rbPath);
+                    FileContent content = file.getContent();
+                    Properties p = new Properties();
+                    if (file.exists()) {
+                        is = content.getInputStream();
+                        p.load(is);
+                        is.close();
+                    } else if (StringUtils.isBlank(title) && StringUtils.isBlank(description)) {
+                        continue;
+                    }
+                    String key = JCRContentUtils.replaceColon(nodeTypeName);
+                    if (title != null) {
+                        p.setProperty(key, title);
+                    }
+                    key += "_description";
+                    if (description != null) {
+                        p.setProperty(key, description);
+                    }
+                    os = content.getOutputStream();
+                    p.store(os, rbPath);
+                } catch (FileSystemException e) {
+                    logger.error("Failed to save resourceBundle", e);
+                } catch (IOException e) {
+                    logger.error("Failed to save resourceBundle", e);
+                } finally {
+                    IOUtils.closeQuietly(is);
+                    IOUtils.closeQuietly(os);
                 }
-                String key = JCRContentUtils.replaceColon(nodeTypeName);
-                if (title != null) {
-                    p.setProperty(key, title);
-                }
-                key += "_description";
-                if (description != null) {
-                    p.setProperty(key, description);
-                }
-                os = content.getOutputStream();
-                p.store(os, rbPath);
-            } catch (FileSystemException e) {
-                logger.error("Failed to save resourceBundle", e);
-            } catch (IOException e) {
-                logger.error("Failed to save resourceBundle", e);
-            } finally {
-                IOUtils.closeQuietly(is);
-                IOUtils.closeQuietly(os);
             }
         }
     }
@@ -867,7 +869,7 @@ public class ModulesDataSource extends VFSDataSource {
                 }
                 Name name = new Name(qualifiedName, nodeTypeRegistry.getNamespaces());
                 propertyDefinition.setName(name);
-                propertyDefinition.setRequiredType(JahiaCndReader.getPropertyType(data.getProperties().get("j:requiredType")[0]));
+                propertyDefinition.setRequiredType(PropertyType.valueFromName(data.getProperties().get("j:requiredType")[0]));
                 propertyDefinition.setDeclaringNodeType(nodeType);
             }
             Map<String, String[]> properties = data.getProperties();

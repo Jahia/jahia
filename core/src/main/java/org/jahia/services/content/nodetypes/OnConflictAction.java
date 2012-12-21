@@ -62,11 +62,11 @@ public class OnConflictAction {
     /**
      * The names of the defined on-conflict actions, as used in serialization.
      */
-    public static final String ACTIONNAME_USE_OLDEST = "OLDEST";
-    public static final String ACTIONNAME_USE_LATEST = "LATEST";
-    public static final String ACTIONNAME_NUMERIC_USE_MIN = "MIN";
-    public static final String ACTIONNAME_NUMERIC_USE_MAX = "MAX";
-    public static final String ACTIONNAME_NUMERIC_SUM = "SUM";
+    public static final String ACTIONNAME_USE_OLDEST = "oldest";
+    public static final String ACTIONNAME_USE_LATEST = "latest";
+    public static final String ACTIONNAME_NUMERIC_USE_MIN = "min";
+    public static final String ACTIONNAME_NUMERIC_USE_MAX = "max";
+    public static final String ACTIONNAME_NUMERIC_SUM = "sum";
 
     /**
      * Returns the name of the specified <code>action</code>, as used in

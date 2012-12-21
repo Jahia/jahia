@@ -213,7 +213,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         } else if (event instanceof TemplatePackageRedeployedEvent) {
             // flush resource bundle cache
             ResourceBundles.flushCache();
-            NodeTypeRegistry.flushLabels();
+            NodeTypeRegistry.getInstance().flushLabels();
         }
     }
 

@@ -1141,6 +1141,10 @@ public class ModulesDataSource extends VFSDataSource {
                 writer = new OutputStreamWriter(new FileOutputStream(new File(rootPath + path)));
                 Map<String, String> namespaces = nodeTypeRegistry.getNamespaces();
                 namespaces.remove("rep");
+                if (nodeTypeRegistryMap.containsKey(path)) {
+                    nodeTypeRegistryMap.get(path).flushLabels();
+                }
+
                 new JahiaCndWriter(nodeTypeRegistry.getNodeTypes(module), namespaces, writer);
             } finally {
                 IOUtils.closeQuietly(writer);

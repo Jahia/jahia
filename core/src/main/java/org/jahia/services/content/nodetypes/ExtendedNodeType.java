@@ -1209,5 +1209,6 @@ public class ExtendedNodeType implements NodeType {
     
     public void clearLabels() {
         labels.clear();
+        descriptions.clear();
     }
 }

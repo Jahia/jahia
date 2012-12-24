@@ -261,9 +261,9 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.apache.hadoop</groupId>
+            <groupId>org.apache.mahout.hadoop</groupId>
             <artifactId>hadoop-core</artifactId>
-            <version>0.20.2</version>
+            <version>0.19.1</version>
             <exclusions>
                 <exclusion>
                     <artifactId>ant</artifactId>

@@ -2233,7 +2233,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             Map<String, List<String>> requiredFields = new HashMap<String, List<String>>();
             for (Map.Entry<String, VisibilityConditionRule> entry : conditionsClasses.entrySet()) {
                 GWTJahiaNodeType type = getNodeType(entry.getKey());
-                type.set("xtemplate", entry.getValue().getGWTDisplayTemplate(getLocale()));
+                type.set("xtemplate", entry.getValue().getGWTDisplayTemplate(getUILocale()));
                 requiredFields.put(entry.getKey(), entry.getValue().getRequiredFieldNamesForTemplate());
                 types.add(type);
             }

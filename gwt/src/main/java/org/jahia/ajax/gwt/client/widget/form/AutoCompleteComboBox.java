@@ -72,7 +72,7 @@ public class AutoCompleteComboBox extends ComboBox<GWTJahiaNode> {
                     protected void load(Object loadConfig, AsyncCallback<List<GWTJahiaNode>> asyncCallback) {
                         if (field.equals("name")) {
                             JahiaContentManagementService.App.getInstance().searchSQL("select * from [" + nodeType.get(
-                                    0) + "] as content where name(content) like '" + getRawValue().replaceAll("'", "''") + "%'", maxResult,
+                                    0) + "] as content where localname(content) like '" + getRawValue().replaceAll("'", "''") + "%'", maxResult,
                                     nodeType, null, null, null,true, asyncCallback);
                         } else {
                             JahiaContentManagementService.App.getInstance().searchSQL("select * from [" + nodeType.get(

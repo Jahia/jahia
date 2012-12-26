@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,7 +98,7 @@ public final class ResourceBundles {
         }
 
         return bundleLookupChain.size() > 1 ? new HierarchicalResourceBundle(bundleLookupChain, locale)
-                : ResourceBundle.getBundle(bundleLookupChain.get(0), locale, JahiaResourceBundleControl.getInstance());
+                : get(bundleLookupChain.get(0), locale);
     }
 
     public static ResourceBundle get(String primaryBundleName, JahiaTemplatesPackage pkg, Locale locale) {
@@ -127,7 +128,12 @@ public final class ResourceBundles {
      * @return a resource bundle for the specified locale
      */
     public static ResourceBundle get(String bundleName, Locale locale) {
-        return ResourceBundle.getBundle(bundleName, locale, JahiaResourceBundleControl.getInstance());
+        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getPackageForBundle(bundleName);
+        if (aPackage != null && aPackage.getClassLoader() != null) {
+            return ResourceBundle.getBundle(bundleName, locale, aPackage.getClassLoader(), JahiaResourceBundleControl.getInstance());
+        } else {
+            return ResourceBundle.getBundle(bundleName, locale, JahiaResourceBundleControl.getInstance());
+        }
     }
 
     /**

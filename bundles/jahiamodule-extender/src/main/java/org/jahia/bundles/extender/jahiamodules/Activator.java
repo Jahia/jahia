@@ -306,6 +306,27 @@ public class Activator implements BundleActivator {
         jahiaBundleTemplatesPackage.setVersion(new ModuleVersion(bundle.getVersion().toString()));
         jahiaBundleTemplatesPackage.setRootFolder((String) bundle.getHeaders().get("root-folder"));
         jahiaBundleTemplatesPackage.setRootFolderPath("/osgi/" + jahiaBundleTemplatesPackage.getRootFolder());
+        String resourceBundle = (String) bundle.getHeaders().get("resource-bundle");
+        if (StringUtils.isNotBlank(resourceBundle)) {
+            jahiaBundleTemplatesPackage.setResourceBundleName(resourceBundle.trim());
+        } else {
+            String rbName = jahiaBundleTemplatesPackage.getRootFolder();
+            // check if there is a resource bundle file in the resources folder
+            Resource resource = jahiaBundleTemplatesPackage.getResource("/resources/" + rbName + ".properties");
+            if (resource == null || !resource.exists()) {
+                rbName = Patterns.SPACE.matcher(jahiaBundleTemplatesPackage.getName()).replaceAll("");
+                resource = jahiaBundleTemplatesPackage.getResource("/resources/" + rbName + ".properties");
+            }
+            if (resource == null || !resource.exists()) {
+                rbName = Patterns.SPACE.matcher(jahiaBundleTemplatesPackage.getName()).replaceAll("_");
+                resource = jahiaBundleTemplatesPackage.getResource("/resources/" + rbName + ".properties");
+            }
+            if (resource != null && resource.exists()) {
+                jahiaBundleTemplatesPackage.setResourceBundleName("resources." + rbName);
+            }
+        }
+        jahiaBundleTemplatesPackage.setClassLoader(BundleDelegatingClassLoader.createBundleClassLoaderFor(bundle, SpringContextSingleton.getInstance().getContext().getClassLoader()));
+
         if (bundle.getHeaders().get("Source-Folders") != null) {
             templatesService.setSourcesFolderInPackage(jahiaBundleTemplatesPackage, new File((String) bundle.getHeaders().get("Source-Folders")));
         }
@@ -631,7 +652,7 @@ public class Activator implements BundleActivator {
             logger.info("Loading bean definitions from configLocation=" + configLocation);
             XmlWebApplicationContext bundleApplicationContext = new XmlWebApplicationContext();
             bundleApplicationContext.setParent(SpringContextSingleton.getInstance().getContext());
-            bundleApplicationContext.setClassLoader(BundleDelegatingClassLoader.createBundleClassLoaderFor(bundle, SpringContextSingleton.getInstance().getContext().getClassLoader()));
+            bundleApplicationContext.setClassLoader(aPackage.getClassLoader());
             bundleApplicationContext.setServletContext(servletContext);
             servletContext.setAttribute(XmlWebApplicationContext.class.getName() + ".jahiaModule." + aPackage.getRootFolder(), bundleApplicationContext);
             bundleApplicationContext.setConfigLocation(configLocation);

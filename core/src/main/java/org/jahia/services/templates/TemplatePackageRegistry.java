@@ -114,6 +114,7 @@ public class TemplatePackageRegistry {
     private Map<String, BackgroundAction> backgroundActions;
     private JCRStoreService jcrStoreService;
     private TemplatePackageApplicationContextLoader templatePackageApplicationContextLoader;
+    private Map<String, JahiaTemplatesPackage> packagesForBundles = new HashMap<String, JahiaTemplatesPackage>();
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -480,6 +481,10 @@ public class TemplatePackageRegistry {
                 templatePackage.getRootFolder(), templatePackage.getVersion() });
     }
 
+    public JahiaTemplatesPackage getPackageForBundle(String bundle) {
+        return packagesForBundles.get(bundle);
+    }
+
     private void computeResourceBundleHierarchy(JahiaTemplatesPackage templatePackage) {
         templatePackage.getResourceBundleHierarchy().clear();
         if (templatePackage.getResourceBundleName() != null) {
@@ -497,6 +502,9 @@ public class TemplatePackageRegistry {
         } else {
             templatePackage.getResourceBundleHierarchy().add(ResourceBundles.JAHIA_TYPES_RESOURCES);
             templatePackage.getResourceBundleHierarchy().add(ResourceBundles.JAHIA_INTERNAL_RESOURCES);
+        }
+        if (templatePackage.getResourceBundleName() != null) {
+            packagesForBundles.put(templatePackage.getResourceBundleName(), templatePackage);
         }
     }
 

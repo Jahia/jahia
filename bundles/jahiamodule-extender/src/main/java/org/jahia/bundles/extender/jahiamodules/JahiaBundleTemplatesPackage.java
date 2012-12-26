@@ -17,6 +17,8 @@ public class JahiaBundleTemplatesPackage extends JahiaTemplatesPackage {
     private Bundle bundle = null;
     private String rootFolderPath = null;
 
+    private ClassLoader classLoader;
+
     public JahiaBundleTemplatesPackage(Bundle bundle) {
         this.bundle = bundle;
     }
@@ -58,5 +60,13 @@ public class JahiaBundleTemplatesPackage extends JahiaTemplatesPackage {
             }
         }
         return resources.toArray(new Resource[resources.size()]);
+    }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 }

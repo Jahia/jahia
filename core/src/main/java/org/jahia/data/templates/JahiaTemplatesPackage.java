@@ -180,7 +180,7 @@ public class JahiaTemplatesPackage {
     public void setRootFolder(String folder) {
         if (StringUtils.isNotEmpty(folder)) {
             m_RootFolder = folder;
-            SettingsBean conf = SettingsBean.getInstance(); 
+            SettingsBean conf = SettingsBean.getInstance();
             rootFolderPath = conf.getTemplatesContext() + (conf.getTemplatesContext().endsWith("/") ? "" : "/") + folder;
         } else {
             m_RootFolder = "";
@@ -249,7 +249,7 @@ public class JahiaTemplatesPackage {
 
 	/**
 	 * Returns <code>true</code> if this package is the default template set.
-	 * 
+	 *
 	 * @return <code>true</code> if this package is the default template set
 	 */
 	public boolean isDefault() {
@@ -463,6 +463,10 @@ public class JahiaTemplatesPackage {
             resources.add(new FileSystemResource(file));
         }
         return resources.toArray(new Resource[resources.size()]);
+    }
+
+    public ClassLoader getClassLoader() {
+        return null;
     }
 
 }

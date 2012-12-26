@@ -83,8 +83,7 @@ class HierarchicalResourceBundle extends ResourceBundle {
         if (bundle == null) {
             try {
                 if (lookupChain.get(0) != null) {
-                    bundle = ResourceBundle.getBundle(lookupChain.get(0), sourceLocale,
-                            JahiaResourceBundleControl.getInstance());
+                    bundle = ResourceBundles.get(lookupChain.get(0), sourceLocale);
                 } else {
                     bundle = NONEXISTENT_BUNDLE;
                 }
@@ -126,8 +125,7 @@ class HierarchicalResourceBundle extends ResourceBundle {
             for (String nextBundleName : lookupChain.subList(1, lookupChain.size())) {
                 ResourceBundle nextBundle = null;
                 try {
-                    nextBundle = ResourceBundle.getBundle(nextBundleName, sourceLocale,
-                            JahiaResourceBundleControl.getInstance());
+                    nextBundle = ResourceBundles.get(nextBundleName, sourceLocale);
                 } catch (MissingResourceException e) {
                     continue;
                 }

@@ -38,7 +38,7 @@
  * please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.translation;
+package org.jahia.services.translation.microsoft;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
@@ -46,6 +46,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.notification.HttpClientService;
+import org.jahia.services.translation.AbstractTranslationProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;

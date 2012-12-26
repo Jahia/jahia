@@ -1225,7 +1225,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             NodeIterator ni = source.getNodes();
             while (ni.hasNext()) {
                 JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
-                if (child.isNodeType("jnt:versionInfo")) {
+                if (child.isNodeType("jnt:versionInfo") || child.isNodeType("jnt:moduleVersionFolder")) {
                     continue;
                 }
                 JCRNodeWrapper node;

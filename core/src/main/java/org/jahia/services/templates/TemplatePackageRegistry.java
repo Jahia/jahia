@@ -462,20 +462,25 @@ public class TemplatePackageRegistry {
             }
         }
 
-//        if (templatePackage.getSourcesFolder() != null) {
-//            ModulesDataSource dataSource = (ModulesDataSource) SpringContextSingleton.getBean("ModulesDataSourcePrototype");
-//            dataSource.setRoot(templatePackage.getSourcesFolder().toURI().toString()+"src/main/resources");
-//            dataSource.setModule(templatePackage);
-//            ExternalContentStoreProvider ex = (ExternalContentStoreProvider) SpringContextSingleton.getBean("ModulesStoreProviderPrototype");
-//            ex.setKey("module-"+templatePackage.getRootFolder()+"-"+templatePackage.getVersion().toString());
-//            ex.setMountPoint("/modules/" + templatePackage.getRootFolderWithVersion() + "/sources");
-//            ex.setDataSource(dataSource);
-//            try {
-//                ex.start();
-//            } catch (JahiaInitializationException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        if (templatePackage.getSourcesFolder() != null) {
+            ModulesDataSource dataSource = (ModulesDataSource) SpringContextSingleton.getBean("ModulesDataSourcePrototype");
+            File oldStructure = new File(templatePackage.getSourcesFolder(), "src/main/webapp");
+            if (oldStructure.exists()) {
+                dataSource.setRoot(templatePackage.getSourcesFolder().toURI().toString()+"src/main/webapp");
+            } else {
+                dataSource.setRoot(templatePackage.getSourcesFolder().toURI().toString()+"src/main/resources");
+            }
+            dataSource.setModule(templatePackage);
+            ExternalContentStoreProvider ex = (ExternalContentStoreProvider) SpringContextSingleton.getBean("ModulesStoreProviderPrototype");
+            ex.setKey("module-"+templatePackage.getRootFolder()+"-"+templatePackage.getVersion().toString());
+            ex.setMountPoint("/modules/" + templatePackage.getRootFolderWithVersion() + "/sources");
+            ex.setDataSource(dataSource);
+            try {
+                ex.start();
+            } catch (JahiaInitializationException e) {
+                e.printStackTrace();
+            }
+        }
 
         logger.info("Registered '{}' [{}] version {}", new Object[] { templatePackage.getName(),
                 templatePackage.getRootFolder(), templatePackage.getVersion() });
@@ -572,12 +577,12 @@ public class TemplatePackageRegistry {
             registry.remove(templatePackage.getName());
             fileNameRegistry.remove(templatePackage.getRootFolder());
             templatePackages = null;
-//            if (templatePackage.getSourcesFolder() != null) {
-//                JCRStoreProvider provider = jcrStoreService.getSessionFactory().getProviders().get("module-"+templatePackage.getRootFolder()+"-"+templatePackage.getVersion().toString());
-//                if (provider != null) {
-//                    provider.stop();
-//                }
-//            }
+            if (templatePackage.getSourcesFolder() != null) {
+                JCRStoreProvider provider = jcrStoreService.getSessionFactory().getProviders().get("module-"+templatePackage.getRootFolder()+"-"+templatePackage.getVersion().toString());
+                if (provider != null) {
+                    provider.stop();
+                }
+            }
         }
         if (templatePackage.isLastVersion()) {
             NodeTypeRegistry.getInstance().unregisterNodeTypes(templatePackage.getRootFolder());

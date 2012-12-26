@@ -308,7 +308,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     protected PrivilegeManager getPrivilegeManager() throws RepositoryException {
         return new PrivilegeManager() {
             public Privilege[] getRegisteredPrivileges() throws RepositoryException {
-                return privilegeRegistry.getRegisteredPrivileges();
+                return JahiaPrivilegeRegistry.getRegisteredPrivileges();
             }
 
             public Privilege getPrivilege(String privilegeName) throws AccessControlException, RepositoryException {

@@ -42,6 +42,7 @@ package org.jahia.services.content.impl.external;
 
 import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
 import org.hibernate.SessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Workspace;
+import javax.jcr.query.QueryManager;
 import java.rmi.Naming;
 
 /**
@@ -90,6 +92,18 @@ public class ExternalContentStoreProvider extends JCRStoreProvider {
             }
         }
         return repo;
+    }
+
+    @Override
+    protected void initObservers() throws RepositoryException {
+    }
+
+    @Override
+    public QueryManager getQueryManager(JCRSessionWrapper session) throws RepositoryException {
+        if (dataSource instanceof ExternalDataSource.Searchable) {
+            return super.getQueryManager(session);
+        }
+        return null;
     }
 
     public boolean isExportable() {

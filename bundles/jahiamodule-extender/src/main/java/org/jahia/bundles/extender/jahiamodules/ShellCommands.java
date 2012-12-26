@@ -30,7 +30,7 @@ public class ShellCommands {
                 if (modulePackage != null) {
                     dependsOn = " depends on " + modulePackage.getDepends();
                 }
-                System.out.println(bundleInState.getBundleId() + " : " + bundleInState.getSymbolicName() + " v" + bundleInState.getVersion() + dependsOn);
+                System.out.println(bundleInState.getBundleId() + " : " + bundleInState.getSymbolicName() + " v" + bundleInState.getHeaders().get("Implementation-Version") + dependsOn);
             }
         }
     }

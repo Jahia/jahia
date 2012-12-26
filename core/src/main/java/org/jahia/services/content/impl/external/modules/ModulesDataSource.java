@@ -42,6 +42,8 @@ package org.jahia.services.content.impl.external.modules;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -51,7 +53,6 @@ import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileType;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.impl.external.ExternalData;
 import org.jahia.services.content.impl.external.vfs.VFSDataSource;
@@ -84,6 +85,8 @@ public class ModulesDataSource extends VFSDataSource {
     protected static final String UNSTRUCTURED_PROPERTY = "__prop__";
     protected static final String UNSTRUCTURED_CHILD_NODE = "__node__";
 
+    private JahiaTemplatesPackage module;
+
     private Map<String, String> fileTypeMapping;
 
     private Map<String, String> folderTypeMapping;
@@ -96,55 +99,18 @@ public class ModulesDataSource extends VFSDataSource {
 
     @Override
     public List<String> getChildren(String path) {
-        String[] splitPath = path.split("/");
-        try {
-            if (path.endsWith(".cnd")) {
-                List<String> children = new ArrayList<String>();
-                NodeTypeIterator nodeTypes = loadRegistry(path, splitPath[1]).getNodeTypes(splitPath[1]);
-                while (nodeTypes.hasNext()) {
-                    children.add(nodeTypes.nextNodeType().getName());
+        if (path.endsWith(".cnd") || path.contains(".cnd/")) {
+            return getCndChildren(path);
+        } else {
+            List<String> children = super.getChildren(path);
+            CollectionUtils.filter(children, new Predicate() {
+                @Override
+                public boolean evaluate(Object object) {
+                    return !object.toString().startsWith(".");
                 }
-                return children;
-            } else if (splitPath.length >= 2 && splitPath[splitPath.length - 2].endsWith(".cnd")) {
-                List<String> children = new ArrayList<String>();
-                String nodeTypeName = splitPath[splitPath.length - 1];
-                try {
-                    ExtendedNodeType nodeType = loadRegistry(StringUtils.substringBeforeLast(path,"/"), splitPath[1]).getNodeType(nodeTypeName);
-                    for  (ExtendedItemDefinition itemDefinition : nodeType.getDeclaredItems()) {
-                        if (itemDefinition.isUnstructured()) {
-                            children.add(computeUntructuredItemName(itemDefinition));
-                        } else {
-                            children.add(itemDefinition.getName());
-                        }
-                    }
-                } catch (NoSuchNodeTypeException e) {
-                    logger.error("Failed to get node type " + nodeTypeName, e);
-                }
-                return children;
-            } else if (splitPath.length >= 3 && splitPath[splitPath.length - 3].endsWith(".cnd")) {
-
-            } else if (!path.endsWith("/"+Constants.JCR_CONTENT)) {
-                FileObject fileObject = getFile(path);
-                if (fileObject.getType() == FileType.FILE) {
-                    return JCR_CONTENT_LIST;
-                } else if (fileObject.getType() == FileType.FOLDER) {
-                    List<String> children = new ArrayList<String>();
-                    for (FileObject object : fileObject.getChildren()) {
-                        if (path.equals("/") && templateManagerService.getTemplatePackageByFileName(object.getName().getBaseName()) != null)  {
-                            children.add(object.getName().getBaseName());
-                        } else if (!path.equals("/")) {
-                            children.add(object.getName().getBaseName());
-                        }
-                    }
-                    return children;
-                } else {
-                    logger.warn("Found non file or folder entry, maybe an alias. VFS file type=" + fileObject.getType());
-                }
-            }
-        } catch (FileSystemException e) {
-            logger.error("Cannot get node children",e);
+            });
+            return children;
         }
-        return new ArrayList<String>();
     }
 
     @Override
@@ -152,17 +118,17 @@ public class ModulesDataSource extends VFSDataSource {
         int relativeDepth = getFile("/").getName().getRelativeName(fileObject.getName()).split("/").length;
         String type;
         if (fileObject.getType().equals(FileType.FOLDER)) {
-            if (relativeDepth == 2) {
+            if (fileObject.getName().equals(getFile("/").getName())) {
                 type = Constants.JAHIANT_MODULEVERSIONFOLDER;
             } else {
                 type = folderTypeMapping.get(fileObject.getName().getBaseName());
             }
             if (type == null) {
-                if (relativeDepth == 3 && fileObject.getName().getBaseName().contains("_")) {
+                if (relativeDepth == 1 && fileObject.getName().getBaseName().contains("_")) {
                     type = Constants.JAHIANT_NODETYPEFOLDER;
                 } else {
                     FileObject parent = fileObject.getParent();
-                    if (relativeDepth == 4 && parent != null && Constants.JAHIANT_NODETYPEFOLDER.equals(getDataType(parent))) {
+                    if (relativeDepth == 2 && parent != null && Constants.JAHIANT_NODETYPEFOLDER.equals(getDataType(parent))) {
                         type = Constants.JAHIANT_TEMPLATETYPEFOLDER;
                     }
                 }
@@ -189,206 +155,19 @@ public class ModulesDataSource extends VFSDataSource {
 
     @Override
     public ExternalData getItemByPath(String path) throws PathNotFoundException {
-        String[] splitPath = path.split("/");
-        if (splitPath.length >= 2 && splitPath[splitPath.length - 2].endsWith(".cnd")) {
-            String nodeTypeName = splitPath[splitPath.length - 1];
-            try {
-                ExtendedNodeType nodeType = loadRegistry(StringUtils.substringBeforeLast(path,"/"), splitPath[1]).getNodeType(nodeTypeName);
-                return getNodeTypeData(path, nodeType);
-            } catch (NoSuchNodeTypeException e) {
-                throw new PathNotFoundException("Failed to get node type " + nodeTypeName, e);
-            }
-        } else if (splitPath.length >= 3 && splitPath[splitPath.length - 3].endsWith(".cnd")) {
-            String nodeTypeName = splitPath[splitPath.length - 2];
-            String itemDefinitionName = splitPath[splitPath.length - 1];
-            try {
-                String definitionsPath = StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/");
-                ExtendedNodeType nodeType = loadRegistry(definitionsPath, splitPath[1]).getNodeType(nodeTypeName);
-                Map<String,ExtendedPropertyDefinition> propertyDefinitionsAsMap = nodeType.getDeclaredPropertyDefinitionsAsMap();
-                if (propertyDefinitionsAsMap.containsKey(itemDefinitionName)) {
-                    return getPropertyDefinitionData(path, propertyDefinitionsAsMap.get(itemDefinitionName), false);
-                }
-                if (itemDefinitionName.startsWith(UNSTRUCTURED_PROPERTY)) {
-                    Integer type = Integer.valueOf(itemDefinitionName.substring(UNSTRUCTURED_PROPERTY.length()));
-                    return getPropertyDefinitionData(path, nodeType.getDeclaredUnstructuredPropertyDefinitions().get(type), true);
-                }
-                Map<String, ExtendedNodeDefinition> childNodeDefinitionsAsMap = nodeType.getDeclaredChildNodeDefinitionsAsMap();
-                if (childNodeDefinitionsAsMap.containsKey(itemDefinitionName)) {
-                    return getChildNodeDefinitionData(path, childNodeDefinitionsAsMap.get(itemDefinitionName), false);
-                }
-                if (itemDefinitionName.startsWith(UNSTRUCTURED_CHILD_NODE)) {
-                    String type = itemDefinitionName.substring(UNSTRUCTURED_CHILD_NODE.length()).trim();
-                    return getChildNodeDefinitionData(path, nodeType.getDeclaredUnstructuredChildNodeDefinitions().get(type), true);
-                }
-            } catch (NoSuchNodeTypeException e) {
-                throw new PathNotFoundException("Failed to get node type " + nodeTypeName, e);
-            }
+        if (path.toLowerCase().contains(".cnd/")) {
+            return getCndItemByPath(path);
         }
         ExternalData data = super.getItemByPath(path);
         return enhanceData(path, data);
-    }
-
-    private ExternalData getNodeTypeData(String path, ExtendedNodeType nodeType) {
-        Map<String, String[]> properties = new HashMap<String, String[]>();
-        ExtendedNodeType[] declaredSupertypes = nodeType.getDeclaredSupertypes();
-        String supertype = null;
-        List<String> mixins = new ArrayList<String>();
-        for (ExtendedNodeType declaredSupertype : declaredSupertypes) {
-            if (declaredSupertype.isMixin()) {
-                mixins.add(declaredSupertype.getName());
-            } else if (supertype == null) {
-                supertype = declaredSupertype.getName();
-            }
-        }
-        if (supertype != null) {
-            properties.put("j:supertype", new String[]{supertype});
-        }
-        if (!mixins.isEmpty()) {
-            properties.put("j:mixins", mixins.toArray(new String[mixins.size()]));
-        }
-
-        properties.put("j:isAbstract", new String[]{String.valueOf(nodeType.isAbstract())});
-        properties.put("j:isQueryable", new String[]{String.valueOf(nodeType.isQueryable())});
-        properties.put("j:hasOrderableChildNodes", new String[]{String.valueOf(nodeType.hasOrderableChildNodes())});
-        String itemsType = nodeType.getItemsType();
-        if (itemsType != null) {
-            properties.put("j:itemsType", new String[]{itemsType});
-        }
-        List<ExtendedNodeType> mixinExtends = nodeType.getMixinExtends();
-        if (mixinExtends != null && !mixinExtends.isEmpty()) {
-            Function<ExtendedNodeType,String> transformName = new Function<ExtendedNodeType,String>() {
-                public String apply(@Nullable ExtendedNodeType from) { return from != null ? from.getName() : null; }
-            };
-            properties.put("j:mixinExtends", Collections2.<ExtendedNodeType,String>transform(mixinExtends, transformName).toArray(new String[mixinExtends.size()]));
-        }
-        String primaryItemName = nodeType.getPrimaryItemName();
-        if (primaryItemName != null) {
-            properties.put("j:primaryItemName", new String[]{primaryItemName});
-        }
-        ExternalData externalData = new ExternalData(path, path, nodeType.isMixin() ? "jnt:mixinNodeType" : "jnt:primaryNodeType", properties);
-        Map<String, Map<String,String[]>> i18nProperties = new HashMap<String, Map<String,String[]>>();
-
-        for (Locale locale : LanguageCodeConverters.getAvailableBundleLocales()) {
-            HashMap<String, String[]> value = new HashMap<String, String[]>();
-            i18nProperties.put(locale.toString(), value);
-            value.put("jcr:title", new String[] { nodeType.getLabel(locale) });
-            value.put("jcr:description", new String[] { nodeType.getDescription(locale) });
-        }
-
-        externalData.setI18nProperties(i18nProperties);
-        return externalData;
-    }
-
-    private ExternalData getPropertyDefinitionData(String path, ExtendedPropertyDefinition propertyDefinition, boolean unstructured) {
-        Map<String, String[]> properties = new HashMap<String, String[]>();
-        properties.put("j:autoCreated", new String[]{String.valueOf(propertyDefinition.isAutoCreated())});
-        properties.put("j:mandatory", new String[]{String.valueOf(propertyDefinition.isMandatory())});
-        properties.put("j:onParentVersion", new String[]{OnParentVersionAction.nameFromValue(propertyDefinition.getOnParentVersion())});
-        properties.put("j:protected", new String[]{String.valueOf(propertyDefinition.isProtected())});
-        properties.put("j:requiredType", new String[]{PropertyType.nameFromValue(propertyDefinition.getRequiredType())});
-        properties.put("j:selectorType", new String[]{SelectorType.nameFromValue(propertyDefinition.getSelector())});
-        Map<String, String> selectorOptions = propertyDefinition.getSelectorOptions();
-        List<String> selectorOptionsList = new ArrayList<String>();
-        for (String key : selectorOptions.keySet()) {
-            String option = key;
-            String value = selectorOptions.get(key);
-            if (StringUtils.isNotBlank(value)) {
-                option += "='" + value + "'";
-            }
-            selectorOptionsList.add(option);
-        }
-        properties.put("j:selectorOptions", selectorOptionsList.toArray(new String[selectorOptionsList.size()]));
-        String[] valueConstraints = propertyDefinition.getValueConstraints();
-        if (valueConstraints != null && valueConstraints.length > 0) {
-            properties.put("j:valueConstraints", valueConstraints);
-        }
-        Value[] defaultValues = propertyDefinition.getDefaultValues();
-        if (defaultValues != null && defaultValues.length > 0) {
-            List<String> defaultValuesAsString = new ArrayList<String>();
-            for (Value value: defaultValues) {
-                try {
-                    defaultValuesAsString.add(value.getString());
-                } catch (RepositoryException e) {
-                    logger.error("Failed to get default value", e);
-                }
-            }
-            properties.put("j:defaultValues", defaultValuesAsString.toArray(new String[defaultValuesAsString.size()]));
-        }
-        properties.put("j:multiple", new String[]{String.valueOf(propertyDefinition.isMultiple())});
-        String[] availableQueryOperators = propertyDefinition.getAvailableQueryOperators();
-        List<String> ops = new ArrayList<String>();
-        if (availableQueryOperators != null) {
-            for (String op : availableQueryOperators) {
-                if (QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO.equals(op)) {
-                    ops.add(Lexer.QUEROPS_EQUAL);
-                } else if (QueryObjectModelConstants.JCR_OPERATOR_NOT_EQUAL_TO.equals(op)) {
-                    ops.add(Lexer.QUEROPS_NOTEQUAL);
-                } else if (QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN.equals(op)) {
-                    ops.add(Lexer.QUEROPS_LESSTHAN);
-                } else if (QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO.equals(op)) {
-                    ops.add(Lexer.QUEROPS_LESSTHANOREQUAL);
-                } else if (QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN.equals(op)) {
-                    ops.add(Lexer.QUEROPS_GREATERTHAN);
-                } else if (QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO.equals(op)) {
-                    ops.add(Lexer.QUEROPS_GREATERTHANOREQUAL);
-                } else if (QueryObjectModelConstants.JCR_OPERATOR_LIKE.equals(op)) {
-                    ops.add(Lexer.QUEROPS_LIKE);
-                }
-            }
-            if (!ops.isEmpty()) {
-                properties.put("j:availableQueryOperators", ops.toArray(new String[ops.size()]));
-            }
-        }
-        properties.put("j:isFullTextSearchable", new String[]{String.valueOf(propertyDefinition.isFullTextSearchable())});
-        properties.put("j:isQueryOrderable", new String[]{String.valueOf(propertyDefinition.isQueryOrderable())});
-        properties.put("j:isFacetable", new String[]{String.valueOf(propertyDefinition.isFacetable())});
-        properties.put("j:isHierarchical", new String[]{String.valueOf(propertyDefinition.isHierarchical())});
-        properties.put("j:isInternationalized", new String[]{String.valueOf(propertyDefinition.isInternationalized())});
-        properties.put("j:isHidden", new String[]{String.valueOf(propertyDefinition.isHidden())});
-        properties.put("j:index", new String[]{IndexType.nameFromValue(propertyDefinition.getIndex())});
-        properties.put("j:scoreboost", new String[]{String.valueOf(propertyDefinition.getScoreboost())});
-        String analyzer = propertyDefinition.getAnalyzer();
-        if (analyzer != null) {
-            properties.put("j:analyzer", new String[]{analyzer});
-        }
-        properties.put("j:onConflictAction", new String[]{OnConflictAction.nameFromValue(propertyDefinition.getOnConflict())});
-        String itemType = propertyDefinition.getLocalItemType();
-        if (itemType != null) {
-            properties.put("j:itemType", new String[]{itemType});
-        }
-        ExternalData externalData = new ExternalData(path, path,
-                unstructured ? "jnt:unstructuredPropertyDefinition" : "jnt:propertyDefinition", properties);
-        return externalData;
-    }
-
-    private ExternalData getChildNodeDefinitionData(String path, ExtendedNodeDefinition nodeDefinition, boolean unstructured) {
-        Map<String, String[]> properties = new HashMap<String, String[]>();
-        properties.put("j:autoCreated", new String[]{String.valueOf(nodeDefinition.isAutoCreated())});
-        properties.put("j:mandatory", new String[]{String.valueOf(nodeDefinition.isMandatory())});
-        properties.put("j:onParentVersion", new String[]{OnParentVersionAction.nameFromValue(nodeDefinition.getOnParentVersion())});
-        properties.put("j:protected", new String[]{String.valueOf(nodeDefinition.isProtected())});
-        String[] requiredPrimaryTypeNames = nodeDefinition.getRequiredPrimaryTypeNames();
-        if (requiredPrimaryTypeNames != null) {
-            properties.put("j:requiredPrimaryTypes", requiredPrimaryTypeNames);
-        }
-        String defaultPrimaryTypeName = nodeDefinition.getDefaultPrimaryTypeName();
-        if (defaultPrimaryTypeName != null) {
-            properties.put("j:defaultPrimaryType", new String[]{defaultPrimaryTypeName});
-        }
-        ExternalData externalData = new ExternalData(path, path,
-                unstructured ? "jnt:unstructuredChildNodeDefinition" : "jnt:childNodeDefinition", properties);
-        return externalData;
     }
 
     private ExternalData enhanceData(String path, ExternalData data) {
         try {
             ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(data.getType());
             if (type.isNodeType("jnt:moduleVersionFolder")) {
-                String v = StringUtils.substringAfterLast(data.getPath(), "/");
-                String name = StringUtils.substringBeforeLast(data.getPath(), "/");
-                name = StringUtils.substringAfterLast(name, "/");
-                name = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(name).getName();
-
+                String name = module.getName();
+                String v = module.getVersion().toString();
                 data.getProperties().put("j:title", new String[]{name + " (" + v + ")"});
             } else if (type.isNodeType("jnt:editableFile")) {
                 // set source code
@@ -397,7 +176,7 @@ public class ModulesDataSource extends VFSDataSource {
                     is = getFile(path).getContent().getInputStream();
                     String[] propertyValue = {IOUtils.toString(is, Charsets.UTF_8)};
                     data.getProperties().put("sourceCode", propertyValue);
-                    data.getProperties().put("nodeTypeName",new String[] { path.split("/")[3].replace("_",":") } );
+                    data.getProperties().put("nodeTypeName", new String[]{path.split("/")[1].replace("_", ":")});
                 } catch (Exception e) {
                     logger.error("Failed to read source code", e);
                 } finally {
@@ -411,17 +190,17 @@ public class ModulesDataSource extends VFSDataSource {
                     try {
                         is = getFile(path.substring(0, path.lastIndexOf(".")) + ".properties").getContent().getInputStream();
                         properties.load(is);
-                        Map<String,String[]> dataProperties = new HashMap<String, String[]>();
-                        for (Iterator<?> iterator = properties.keySet().iterator(); iterator.hasNext();) {
+                        Map<String, String[]> dataProperties = new HashMap<String, String[]>();
+                        for (Iterator<?> iterator = properties.keySet().iterator(); iterator.hasNext(); ) {
                             String k = (String) iterator.next();
                             String v = properties.getProperty(k);
-                            dataProperties.put(k,v.split(","));
+                            dataProperties.put(k, v.split(","));
                         }
                         data.getProperties().putAll(dataProperties);
                     } catch (FileSystemException e) {
                         //no properties files, do nothing
                     } catch (IOException e) {
-                        logger.error("Cannot read property file",e);
+                        logger.error("Cannot read property file", e);
                     } finally {
                         IOUtils.closeQuietly(is);
                     }
@@ -472,7 +251,7 @@ public class ModulesDataSource extends VFSDataSource {
                 */
             }
         } catch (NoSuchNodeTypeException e) {
-            logger.error("Unknown type",e);
+            logger.error("Unknown type", e);
         }
         return data;
     }
@@ -485,26 +264,35 @@ public class ModulesDataSource extends VFSDataSource {
     @Override
     public void removeItemByPath(String path) throws PathNotFoundException {
         String[] splitPath = path.split("/");
-        if (path.endsWith(".cnd")) {
+        if (path.toLowerCase().endsWith(".cnd")) {
             nodeTypeRegistryMap.remove(path);
             super.removeItemByPath(path);
-        } else if (splitPath.length >= 2 && splitPath[splitPath.length - 2].endsWith(".cnd")) {
-            String nodeTypeName = splitPath[splitPath.length - 1];
+        } else if (path.toLowerCase().contains(".cnd/")) {
+            removeCndItemByPath(path);
+        } else {
+            super.removeItemByPath(path);
+        }
+    }
+
+    private void removeCndItemByPath(String path) throws PathNotFoundException {
+        String cndPath = path.substring(0, path.toLowerCase().indexOf(".cnd/") + 4);
+        String subPath = path.substring(path.toLowerCase().indexOf(".cnd/") + 5);
+        String[] splitPath = subPath.split("/");
+        String nodeTypeName = splitPath[0];
+        if (splitPath.length == 1) {
             try {
-                NodeTypeRegistry nodeTypeRegistry = loadRegistry(StringUtils.substringBeforeLast(path, "/"), splitPath[1]);
+                NodeTypeRegistry nodeTypeRegistry = loadRegistry(cndPath);
                 nodeTypeRegistry.unregisterNodeType(nodeTypeName);
-                writeDefinitionFile(nodeTypeRegistry, StringUtils.substringBeforeLast(path, "/"), splitPath[1]);
+                writeDefinitionFile(nodeTypeRegistry, cndPath);
             } catch (ConstraintViolationException e) {
                 throw new PathNotFoundException("Failed to remove node type " + nodeTypeName, e);
             }
-        } else if (splitPath.length >= 3 && splitPath[splitPath.length - 3].endsWith(".cnd")) {
-            String nodeTypeName = splitPath[splitPath.length - 2];
-            String itemDefinitionName = splitPath[splitPath.length - 1];
+        } else {
+            String itemDefinitionName = splitPath[1];
             try {
-                String definitionsPath = StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/");
-                NodeTypeRegistry nodeTypeRegistry = loadRegistry(definitionsPath, splitPath[1]);
+                NodeTypeRegistry nodeTypeRegistry = loadRegistry(cndPath);
                 ExtendedNodeType nodeType = nodeTypeRegistry.getNodeType(nodeTypeName);
-                Map<String,ExtendedPropertyDefinition> propertyDefinitionsAsMap = nodeType.getDeclaredPropertyDefinitionsAsMap();
+                Map<String, ExtendedPropertyDefinition> propertyDefinitionsAsMap = nodeType.getDeclaredPropertyDefinitionsAsMap();
                 if (propertyDefinitionsAsMap.containsKey(itemDefinitionName)) {
                     propertyDefinitionsAsMap.get(itemDefinitionName).remove();
                 }
@@ -520,94 +308,132 @@ public class ModulesDataSource extends VFSDataSource {
                     String type = itemDefinitionName.substring(UNSTRUCTURED_CHILD_NODE.length());
                     nodeType.getDeclaredUnstructuredChildNodeDefinitions().get(type).remove();
                 }
-                writeDefinitionFile(nodeTypeRegistry, definitionsPath, splitPath[1]);
+                writeDefinitionFile(nodeTypeRegistry, cndPath);
             } catch (NoSuchNodeTypeException e) {
                 throw new PathNotFoundException("Failed to get node type " + nodeTypeName, e);
             }
-        } else {
-            super.removeItemByPath(path);
         }
     }
 
     @Override
     public void move(String oldPath, String newPath) throws PathNotFoundException {
-        String[] splitOldPath = oldPath.split("/");
-        String[] splitNewPath = newPath.split("/");
         if (oldPath.endsWith(".cnd")) {
             nodeTypeRegistryMap.remove(oldPath);
             super.move(oldPath, newPath);
-        } else if (splitOldPath.length >= 2 && splitOldPath[splitOldPath.length - 2].endsWith(".cnd")
-                && splitNewPath.length >= 2 && splitNewPath[splitNewPath.length - 2].endsWith(".cnd")) { // nodeType rename
-            String oldNodeTypeName = splitOldPath[splitOldPath.length - 1];
-            String newNodeTypeName = splitNewPath[splitNewPath.length - 1];
-            String module = splitOldPath[1];
-            try {
-                NodeTypeRegistry nodeTypeRegistry = loadRegistry(StringUtils.substringBeforeLast(oldPath, "/"), module);
-                ExtendedNodeType nodeType = nodeTypeRegistry.getNodeType(oldNodeTypeName);
-                nodeTypeRegistry.unregisterNodeType(oldNodeTypeName);
-                Name name = new Name(newNodeTypeName, nodeTypeRegistry.getNamespaces());
-                nodeType.setName(name);
-                nodeTypeRegistry.addNodeType(name, nodeType);
-                nodeType.validate();
-                writeDefinitionFile(nodeTypeRegistry, StringUtils.substringBeforeLast(oldPath, "/"), module);
-            } catch (ConstraintViolationException e) {
-                throw new PathNotFoundException("Failed to move node type " + oldNodeTypeName, e);
-            } catch (NoSuchNodeTypeException e) {
-                nodeTypeRegistryMap.remove(StringUtils.substringBeforeLast(oldPath,"/"));
-                throw new PathNotFoundException("Failed to move node type " + oldNodeTypeName, e);
-            }
-        } else if (splitOldPath.length >= 3 && splitOldPath[splitOldPath.length - 3].endsWith(".cnd")) {
+        } else if (oldPath.toLowerCase().contains(".cnd/") && newPath.toLowerCase().contains(".cnd/")) {
+            moveCndItems(oldPath, newPath);
         } else {
             super.move(oldPath, newPath);
         }
     }
 
-    @Override
-    public void order(String path,final List<String> children) throws PathNotFoundException {
-        // Order only for nodeType
-        ExternalData data = getItemByPath(path);
-        try {
-            String[] splitPath = path.split("/");
-            NodeTypeRegistry ntr = loadRegistry(StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 1), "/"),splitPath[1]);
-            if (data.getType().equals("jnt:primaryNodeType") || data.getType().equals("nt:mixinNodeType")) {
-                ExtendedNodeType type = ntr.getNodeType(splitPath[splitPath.length -1]);
-                Comparator<ExtendedItemDefinition> c =  new Comparator<ExtendedItemDefinition>() {
-                    @Override
-                    public int compare(ExtendedItemDefinition o1, ExtendedItemDefinition o2) {
-                        String s1;
-                        String s2;
-                        if (o1.isUnstructured()) {
-                            s1 = computeUntructuredItemName(o1);
-                        } else {
-                            s1 = o1.getName();
-                        }
-                        if (o2.isUnstructured()) {
-                            s2 = computeUntructuredItemName(o2);
-                        }else {
-                            s2 = o2.getName();
-                        }
-                        if (s1 != null && s2 != null) {
-                            int i1 = children.indexOf(s1);
-                            int i2 = children.indexOf(s2);
-                            if (i1 == i2) {
-                                return 0;
-                            }
-                            if (i1 > i2) {
-                                return 1;
-                            }
-                        }
-                        return -1;
-                    }
-                };
-                type.sortItems(c);
-                writeDefinitionFile(ntr,StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 1), "/"), splitPath[1]);
+    private void moveCndItems(String oldPath, String newPath) throws PathNotFoundException {
+        String oldCndPath = oldPath.substring(0, oldPath.toLowerCase().indexOf(".cnd/") + 4);
+        String oldSubPath = oldPath.substring(oldPath.toLowerCase().indexOf(".cnd/") + 5);
+        String[] splitOldPath = oldSubPath.split("/");
 
-            };
+        String newCndPath = newPath.substring(0, newPath.toLowerCase().indexOf(".cnd/") + 4);
+        String newSubPath = newPath.substring(newPath.toLowerCase().indexOf(".cnd/") + 5);
+        String[] splitNewPath = newSubPath.split("/");
 
-        } catch (NoSuchNodeTypeException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        if ((splitOldPath.length == 1) && (splitNewPath.length == 1)) {
+            String oldNodeTypeName = splitOldPath[0];
+            String newNodeTypeName = splitNewPath[0];
+
+            try {
+                NodeTypeRegistry oldNodeTypeRegistry = loadRegistry(oldCndPath);
+                ExtendedNodeType nodeType = oldNodeTypeRegistry.getNodeType(oldNodeTypeName);
+
+                NodeTypeIterator declaredSubtypes = nodeType.getDeclaredSubtypes();
+                List<ExtendedNodeType> n = new ArrayList<ExtendedNodeType>();
+
+                while (declaredSubtypes.hasNext()) {
+                    n.add((ExtendedNodeType) declaredSubtypes.nextNodeType());
+                }
+
+                for (ExtendedNodeType sub : n) {
+                    List<String> s = new ArrayList<String>(Arrays.asList(sub.getDeclaredSupertypeNames()));
+                    s.remove(oldNodeTypeName);
+                    sub.setDeclaredSupertypes(s.toArray(new String[s.size()]));
+                    sub.validate();
+                }
+
+                oldNodeTypeRegistry.unregisterNodeType(oldNodeTypeName);
+
+                Name name = new Name(newNodeTypeName, oldNodeTypeRegistry.getNamespaces());
+                nodeType.setName(name);
+                NodeTypeRegistry newNodeTypeRegistry = loadRegistry(newCndPath);
+                newNodeTypeRegistry.addNodeType(name, nodeType);
+                nodeType.validate();
+
+                for (ExtendedNodeType sub : n) {
+                    List<String> s = new ArrayList<String>(Arrays.asList(sub.getDeclaredSupertypeNames()));
+                    s.add(newNodeTypeName);
+                    sub.setDeclaredSupertypes(s.toArray(new String[s.size()]));
+                    sub.validate();
+                }
+
+                writeDefinitionFile(oldNodeTypeRegistry, StringUtils.substringBeforeLast(oldPath, "/"));
+                if (!oldCndPath.equals(newCndPath)) {
+                    writeDefinitionFile(newNodeTypeRegistry, StringUtils.substringBeforeLast(oldPath, "/"));
+                }
+            } catch (RepositoryException e) {
+                nodeTypeRegistryMap.remove(newCndPath);
+                nodeTypeRegistryMap.remove(oldCndPath);
+                throw new PathNotFoundException("Failed to move node type " + oldNodeTypeName, e);
+            }
         }
+    }
 
+    @Override
+    public void order(String path, final List<String> children) throws PathNotFoundException {
+        // Order only for nodeType
+        if (path.toLowerCase().contains(".cnd/")) {
+            String cndPath = path.substring(0, path.toLowerCase().indexOf(".cnd/") + 4);
+            String subPath = path.substring(path.toLowerCase().indexOf(".cnd/") + 5);
+            String[] splitPath = subPath.split("/");
+
+            ExternalData data = getItemByPath(path);
+            try {
+                NodeTypeRegistry ntr = loadRegistry(cndPath);
+                if (data.getType().equals("jnt:primaryNodeType") || data.getType().equals("nt:mixinNodeType")) {
+                    ExtendedNodeType type = ntr.getNodeType(splitPath[0]);
+                    Comparator<ExtendedItemDefinition> c = new Comparator<ExtendedItemDefinition>() {
+                        @Override
+                        public int compare(ExtendedItemDefinition o1, ExtendedItemDefinition o2) {
+                            String s1;
+                            String s2;
+                            if (o1.isUnstructured()) {
+                                s1 = computeUntructuredItemName(o1);
+                            } else {
+                                s1 = o1.getName();
+                            }
+                            if (o2.isUnstructured()) {
+                                s2 = computeUntructuredItemName(o2);
+                            } else {
+                                s2 = o2.getName();
+                            }
+                            if (s1 != null && s2 != null) {
+                                int i1 = children.indexOf(s1);
+                                int i2 = children.indexOf(s2);
+                                if (i1 == i2) {
+                                    return 0;
+                                }
+                                if (i1 > i2) {
+                                    return 1;
+                                }
+                            }
+                            return -1;
+                        }
+                    };
+                    type.sortItems(c);
+                    writeDefinitionFile(ntr, cndPath);
+                }
+            } catch (NoSuchNodeTypeException e) {
+                logger.error("Cannot order items",e);
+
+            }
+        }
     }
 
     private String computeUntructuredItemName(ExtendedItemDefinition o1) {
@@ -622,7 +448,7 @@ public class ModulesDataSource extends VFSDataSource {
             if (((ExtendedPropertyDefinition) o1).isMultiple()) {
                 int i = 256 + ((ExtendedPropertyDefinition) o1).getRequiredType();
                 s1 = UNSTRUCTURED_PROPERTY + i;
-            }   else {
+            } else {
                 s1 = UNSTRUCTURED_PROPERTY + ((ExtendedPropertyDefinition) o1).getRequiredType();
             }
         }
@@ -636,71 +462,8 @@ public class ModulesDataSource extends VFSDataSource {
         try {
             ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(data.getType());
 
-            OutputStream outputStream = null;
             if (type.isNodeType("jnt:editableFile")) {
-                // Handle source code
-                try {
-                    outputStream = getFile(data.getPath()).getContent().getOutputStream();
-                    byte[] sourceCode = data.getProperties().get("sourceCode")[0].getBytes();
-                    outputStream.write(sourceCode);
-                } catch (Exception e) {
-                    logger.error("Failed to write source code", e);
-                } finally {
-                    if (outputStream != null) {
-                        try {
-                            outputStream.close();
-                        } catch (IOException e) {
-                            logger.error("Failed to close output stream", e);
-                        }
-                    }
-                }
-
-                // Handle properties
-                if (type.isNodeType(Constants.JAHIAMIX_VIEWPROPERTIES)) {
-                    try {
-                        ExtendedNodeType propertiesType = NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIAMIX_VIEWPROPERTIES);
-                        Properties properties = new Properties();
-                        for (String property  : data.getProperties().keySet()) {
-                            if (propertiesType.getDeclaredPropertyDefinitionsAsMap().containsKey(property)) {
-                                String[] v = data.getProperties().get(property);
-                                StringBuilder propertyValue = new StringBuilder();
-                                if (v!= null) {
-                                    for (String s : v) {
-                                        if (propertyValue.length() > 0) {
-                                            propertyValue.append(",");
-                                        }
-                                        propertyValue.append(s);
-                                    }
-                                    if (propertiesType.getDeclaredPropertyDefinitionsAsMap().get(property).getRequiredType() != PropertyType.BOOLEAN || !propertyValue.toString().equals("false")) {
-                                        properties.put(property,propertyValue.toString());
-                                    }
-                                }
-                            }
-                        }
-                        FileObject file = getFile(data.getPath().substring(0, data.getPath().lastIndexOf(".")) + ".properties");
-                        if (!properties.isEmpty()) {
-                            outputStream = file.getContent().getOutputStream();
-                            properties.store(outputStream, data.getPath());
-                        } else {
-                            if (file.exists()) {
-                                file.delete();
-                            }
-                        }
-                    } catch (FileSystemException e) {
-                        logger.error(e.getMessage(), e);
-                    } catch (IOException e) {
-                        logger.error(e.getMessage(), e);
-                    }  catch (NoSuchNodeTypeException e) {
-                        logger.error("Unable to find type : " + data.getType() + " for node " + data.getPath(),e);
-                    } finally {
-                        try {
-                            outputStream.close();
-                        } catch (IOException e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                    }
-                }
-
+                saveEditableFile(data, type);
             } else if (type.isNodeType("jnt:nodeType")) {
                 saveNodeType(data);
             } else if (type.isNodeType("jnt:propertyDefinition")) {
@@ -709,22 +472,95 @@ public class ModulesDataSource extends VFSDataSource {
                 saveChildNodeDefinition(data);
             }
         } catch (NoSuchNodeTypeException e) {
-            logger.error("Unknown type",e);
+            logger.error("Unknown type", e);
+        }
+    }
+
+    private void saveEditableFile(ExternalData data, ExtendedNodeType type) {
+        OutputStream outputStream = null;
+        // Handle source code
+        try {
+            outputStream = getFile(data.getPath()).getContent().getOutputStream();
+            byte[] sourceCode = data.getProperties().get("sourceCode")[0].getBytes();
+            outputStream.write(sourceCode);
+        } catch (Exception e) {
+            logger.error("Failed to write source code", e);
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    logger.error("Failed to close output stream", e);
+                }
+            }
+        }
+
+        // Handle properties
+        if (type.isNodeType(Constants.JAHIAMIX_VIEWPROPERTIES)) {
+            saveProperties(data, outputStream);
+        }
+    }
+
+    private void saveProperties(ExternalData data, OutputStream outputStream) {
+        try {
+            ExtendedNodeType propertiesType = NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIAMIX_VIEWPROPERTIES);
+            Properties properties = new Properties();
+            for (String property : data.getProperties().keySet()) {
+                if (propertiesType.getDeclaredPropertyDefinitionsAsMap().containsKey(property)) {
+                    String[] v = data.getProperties().get(property);
+                    StringBuilder propertyValue = new StringBuilder();
+                    if (v != null) {
+                        for (String s : v) {
+                            if (propertyValue.length() > 0) {
+                                propertyValue.append(",");
+                            }
+                            propertyValue.append(s);
+                        }
+                        if (propertiesType.getDeclaredPropertyDefinitionsAsMap().get(property).getRequiredType() != PropertyType.BOOLEAN || !propertyValue.toString().equals("false")) {
+                            properties.put(property, propertyValue.toString());
+                        }
+                    }
+                }
+            }
+            FileObject file = getFile(data.getPath().substring(0, data.getPath().lastIndexOf(".")) + ".properties");
+            if (!properties.isEmpty()) {
+                outputStream = file.getContent().getOutputStream();
+                properties.store(outputStream, data.getPath());
+            } else {
+                if (file.exists()) {
+                    file.delete();
+                }
+            }
+        } catch (FileSystemException e) {
+            logger.error(e.getMessage(), e);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        } catch (NoSuchNodeTypeException e) {
+            logger.error("Unable to find type : " + data.getType() + " for node " + data.getPath(), e);
+        } finally {
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            }
         }
     }
 
     private void saveNodeType(ExternalData data) {
         String path = data.getPath();
-        String[] splitPath = path.split("/");
-        String module = splitPath[1];
-        String nodeTypeName = splitPath[splitPath.length - 1];
-        NodeTypeRegistry nodeTypeRegistry = loadRegistry(StringUtils.substringBeforeLast(path, "/"), module);
+        String cndPath = path.substring(0, path.toLowerCase().indexOf(".cnd/") + 4);
+        String subPath = path.substring(path.toLowerCase().indexOf(".cnd/") + 5);
+        String[] splitPath = subPath.split("/");
+
+        String nodeTypeName = splitPath[0];
+        NodeTypeRegistry nodeTypeRegistry = loadRegistry(cndPath);
         ExtendedNodeType nodeType = null;
         try {
             nodeType = nodeTypeRegistry.getNodeType(nodeTypeName);
-        } catch (NoSuchNodeTypeException e) {}
+        } catch (NoSuchNodeTypeException e) {
+        }
         if (nodeType == null) {
-            nodeType = new ExtendedNodeType(nodeTypeRegistry, module);
+            nodeType = new ExtendedNodeType(nodeTypeRegistry, module.getRootFolder());
             nodeType.setName(new Name(nodeTypeName, nodeTypeRegistry.getNamespaces()));
         }
         Map<String, String[]> properties = data.getProperties();
@@ -784,13 +620,18 @@ public class ModulesDataSource extends VFSDataSource {
             nodeType.validate();
         } catch (NoSuchNodeTypeException e) {
             logger.error("Failed to save child node definition", e);
-            nodeTypeRegistryMap.remove(StringUtils.substringBeforeLast(path,"/"));
+            nodeTypeRegistryMap.remove(StringUtils.substringBeforeLast(path, "/"));
             return;
         }
-        writeDefinitionFile(nodeTypeRegistry, StringUtils.substringBeforeLast(path, "/"), splitPath[1]);
+        writeDefinitionFile(nodeTypeRegistry, StringUtils.substringBeforeLast(path, "/"));
 
-        JahiaTemplatesPackage templatePackage = templateManagerService.getTemplatePackageByFileName(module);
-        String rbBasePath = StringUtils.substringAfter(templatePackage.getResourceBundleName(), "modules").replaceAll("\\.", "/").replaceAll("___", ".");
+        saveCndResourceBundle(data, JCRContentUtils.replaceColon(nodeTypeName));
+    }
+
+    private void saveCndResourceBundle(ExternalData data, String key) {
+        Map<String, String[]> properties;
+        String[] values;
+        String rbBasePath = StringUtils.substringAfter(module.getResourceBundleName(), "modules").replaceAll("\\.", "/").replaceAll("___", ".");
         Map<String, Map<String, String[]>> i18nProperties = data.getI18nProperties();
         if (i18nProperties != null) {
             for (String lang : i18nProperties.keySet()) {
@@ -820,7 +661,6 @@ public class ModulesDataSource extends VFSDataSource {
                     } else if (StringUtils.isBlank(title) && StringUtils.isBlank(description)) {
                         continue;
                     }
-                    String key = JCRContentUtils.replaceColon(nodeTypeName);
                     if (title != null) {
                         p.setProperty(key, title);
                     }
@@ -844,11 +684,13 @@ public class ModulesDataSource extends VFSDataSource {
 
     private void savePropertyDefinition(ExternalData data) {
         String path = data.getPath();
-        String[] splitPath = path.split("/");
-        String module = splitPath[1];
-        NodeTypeRegistry nodeTypeRegistry = loadRegistry(StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/"), module);
-        String nodeTypeName = splitPath[splitPath.length - 2];
-        String lastPathSegment = splitPath[splitPath.length - 1];
+        String cndPath = path.substring(0, path.toLowerCase().indexOf(".cnd/") + 4);
+        String subPath = path.substring(path.toLowerCase().indexOf(".cnd/") + 5);
+        String[] splitPath = subPath.split("/");
+
+        NodeTypeRegistry nodeTypeRegistry = loadRegistry(cndPath);
+        String nodeTypeName = splitPath[0];
+        String lastPathSegment = splitPath[1];
         try {
             ExtendedNodeType nodeType = nodeTypeRegistry.getNodeType(nodeTypeName);
             boolean unstructured = "%2A".equals(lastPathSegment) || "jnt:unstructuredPropertyDefinition".equals(data.getType());
@@ -1037,11 +879,10 @@ public class ModulesDataSource extends VFSDataSource {
                 propertyDefinition.setItemType(null);
             }
             nodeType.validate();
-            writeDefinitionFile(nodeTypeRegistry,
-                    StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/"), splitPath[1]);
+            writeDefinitionFile(nodeTypeRegistry, cndPath);
         } catch (NoSuchNodeTypeException e) {
             logger.error("Failed to save child node definition", e);
-            nodeTypeRegistryMap.remove(StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/"));
+            nodeTypeRegistryMap.remove(cndPath);
         }
     }
 
@@ -1063,11 +904,14 @@ public class ModulesDataSource extends VFSDataSource {
 
     private void saveChildNodeDefinition(ExternalData data) {
         String path = data.getPath();
-        String[] splitPath = path.split("/");
-        String module = splitPath[1];
-        NodeTypeRegistry nodeTypeRegistry = loadRegistry(StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/"), module);
-        String nodeTypeName = splitPath[splitPath.length - 2];
-        String lastPathSegment = splitPath[splitPath.length - 1];
+        String cndPath = path.substring(0, path.toLowerCase().indexOf(".cnd/") + 4);
+        String subPath = path.substring(path.toLowerCase().indexOf(".cnd/") + 5);
+        String[] splitPath = subPath.split("/");
+
+        NodeTypeRegistry nodeTypeRegistry = loadRegistry(cndPath);
+
+        String nodeTypeName = splitPath[0];
+        String lastPathSegment = splitPath[1];
         try {
             boolean newUnstructured = "%2A".equals(lastPathSegment);
             ExtendedNodeType nodeType = nodeTypeRegistry.getNodeType(nodeTypeName);
@@ -1128,15 +972,269 @@ public class ModulesDataSource extends VFSDataSource {
                 childNodeDefinition.setDefaultPrimaryType(null);
             }
             nodeType.validate();
-            writeDefinitionFile(nodeTypeRegistry,
-                    StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/"), splitPath[1]);
+            writeDefinitionFile(nodeTypeRegistry, cndPath);
         } catch (NoSuchNodeTypeException e) {
             logger.error("Failed to save child node definition", e);
-            nodeTypeRegistryMap.remove(StringUtils.join(Arrays.asList(splitPath).subList(0, splitPath.length - 2), "/"));
+            nodeTypeRegistryMap.remove(cndPath);
         }
     }
 
-    private void writeDefinitionFile(NodeTypeRegistry nodeTypeRegistry, String path, String module) {
+    private List<String> getCndChildren(String path) {
+        if (path.endsWith(".cnd")) {
+            List<String> children = new ArrayList<String>();
+            NodeTypeIterator nodeTypes = loadRegistry(path).getNodeTypes(module.getRootFolder());
+            while (nodeTypes.hasNext()) {
+                children.add(nodeTypes.nextNodeType().getName());
+            }
+            return children;
+        } else {
+            String cndPath = path.substring(0, path.toLowerCase().indexOf(".cnd/") + 4);
+            String subPath = path.substring(path.toLowerCase().indexOf(".cnd/") + 5);
+            String[] splitPath = subPath.split("/");
+
+            List<String> children = new ArrayList<String>();
+
+            if (splitPath.length == 1) {
+                String nodeTypeName = splitPath[0];
+                try {
+                    ExtendedNodeType nodeType = loadRegistry(cndPath).getNodeType(nodeTypeName);
+                    for (ExtendedItemDefinition itemDefinition : nodeType.getDeclaredItems()) {
+                        if (itemDefinition.isUnstructured()) {
+                            children.add(computeUntructuredItemName(itemDefinition));
+                        } else {
+                            children.add(itemDefinition.getName());
+                        }
+                    }
+                } catch (NoSuchNodeTypeException e) {
+                    logger.error("Failed to get node type " + nodeTypeName, e);
+                }
+            }
+            return children;
+        }
+    }
+
+    private ExternalData getCndItemByPath(String path) throws PathNotFoundException {
+        String cndPath = path.substring(0, path.toLowerCase().indexOf(".cnd/") + 4);
+        String subPath = path.substring(path.toLowerCase().indexOf(".cnd/") + 5);
+        String[] splitPath = subPath.split("/");
+        if (splitPath.length == 1) {
+            String nodeTypeName = splitPath[0];
+            try {
+                ExtendedNodeType nodeType = loadRegistry(cndPath).getNodeType(nodeTypeName);
+                return getNodeTypeData(path, nodeType);
+            } catch (NoSuchNodeTypeException e) {
+                throw new PathNotFoundException("Failed to get node type " + nodeTypeName, e);
+            }
+        } else if (splitPath.length == 2) {
+            String nodeTypeName = splitPath[0];
+            String itemDefinitionName = splitPath[1];
+            try {
+                ExtendedNodeType nodeType = loadRegistry(cndPath).getNodeType(nodeTypeName);
+                Map<String, ExtendedPropertyDefinition> propertyDefinitionsAsMap = nodeType.getDeclaredPropertyDefinitionsAsMap();
+                if (propertyDefinitionsAsMap.containsKey(itemDefinitionName)) {
+                    return getPropertyDefinitionData(path, propertyDefinitionsAsMap.get(itemDefinitionName), false);
+                }
+                if (itemDefinitionName.startsWith(UNSTRUCTURED_PROPERTY)) {
+                    Integer type = Integer.valueOf(itemDefinitionName.substring(UNSTRUCTURED_PROPERTY.length()));
+                    return getPropertyDefinitionData(path, nodeType.getDeclaredUnstructuredPropertyDefinitions().get(type), true);
+                }
+                Map<String, ExtendedNodeDefinition> childNodeDefinitionsAsMap = nodeType.getDeclaredChildNodeDefinitionsAsMap();
+                if (childNodeDefinitionsAsMap.containsKey(itemDefinitionName)) {
+                    return getChildNodeDefinitionData(path, childNodeDefinitionsAsMap.get(itemDefinitionName), false);
+                }
+                if (itemDefinitionName.startsWith(UNSTRUCTURED_CHILD_NODE)) {
+                    String type = itemDefinitionName.substring(UNSTRUCTURED_CHILD_NODE.length()).trim();
+                    return getChildNodeDefinitionData(path, nodeType.getDeclaredUnstructuredChildNodeDefinitions().get(type), true);
+                }
+            } catch (NoSuchNodeTypeException e) {
+                throw new PathNotFoundException("Failed to get node type " + nodeTypeName, e);
+            }
+        }
+        throw new PathNotFoundException("Failed to get node " + path);
+    }
+
+    private ExternalData getNodeTypeData(String path, ExtendedNodeType nodeType) {
+        Map<String, String[]> properties = new HashMap<String, String[]>();
+        ExtendedNodeType[] declaredSupertypes = nodeType.getDeclaredSupertypes();
+        String supertype = null;
+        List<String> mixins = new ArrayList<String>();
+        for (ExtendedNodeType declaredSupertype : declaredSupertypes) {
+            if (declaredSupertype.isMixin()) {
+                mixins.add(declaredSupertype.getName());
+            } else if (supertype == null) {
+                supertype = declaredSupertype.getName();
+            }
+        }
+        if (supertype != null) {
+            properties.put("j:supertype", new String[]{supertype});
+        }
+        if (!mixins.isEmpty()) {
+            properties.put("j:mixins", mixins.toArray(new String[mixins.size()]));
+        }
+
+        properties.put("j:isAbstract", new String[]{String.valueOf(nodeType.isAbstract())});
+        properties.put("j:isQueryable", new String[]{String.valueOf(nodeType.isQueryable())});
+        properties.put("j:hasOrderableChildNodes", new String[]{String.valueOf(nodeType.hasOrderableChildNodes())});
+        String itemsType = nodeType.getItemsType();
+        if (itemsType != null) {
+            properties.put("j:itemsType", new String[]{itemsType});
+        }
+        List<ExtendedNodeType> mixinExtends = nodeType.getMixinExtends();
+        if (mixinExtends != null && !mixinExtends.isEmpty()) {
+            Function<ExtendedNodeType, String> transformName = new Function<ExtendedNodeType, String>() {
+                public String apply(@Nullable ExtendedNodeType from) {
+                    return from != null ? from.getName() : null;
+                }
+            };
+            properties.put("j:mixinExtends", Collections2.<ExtendedNodeType, String>transform(mixinExtends, transformName).toArray(new String[mixinExtends.size()]));
+        }
+        String primaryItemName = nodeType.getPrimaryItemName();
+        if (primaryItemName != null) {
+            properties.put("j:primaryItemName", new String[]{primaryItemName});
+        }
+        ExternalData externalData = new ExternalData(path, path, nodeType.isMixin() ? "jnt:mixinNodeType" : "jnt:primaryNodeType", properties);
+        Map<String, Map<String, String[]>> i18nProperties = new HashMap<String, Map<String, String[]>>();
+
+        for (Locale locale : LanguageCodeConverters.getAvailableBundleLocales()) {
+            HashMap<String, String[]> value = new HashMap<String, String[]>();
+            i18nProperties.put(locale.toString(), value);
+            value.put("jcr:title", new String[]{nodeType.getLabel(locale)});
+            value.put("jcr:description", new String[]{nodeType.getDescription(locale)});
+        }
+
+        externalData.setI18nProperties(i18nProperties);
+        return externalData;
+    }
+
+    private ExternalData getPropertyDefinitionData(String path, ExtendedPropertyDefinition propertyDefinition, boolean unstructured) {
+        Map<String, String[]> properties = new HashMap<String, String[]>();
+        properties.put("j:autoCreated", new String[]{String.valueOf(propertyDefinition.isAutoCreated())});
+        properties.put("j:mandatory", new String[]{String.valueOf(propertyDefinition.isMandatory())});
+        properties.put("j:onParentVersion", new String[]{OnParentVersionAction.nameFromValue(propertyDefinition.getOnParentVersion())});
+        properties.put("j:protected", new String[]{String.valueOf(propertyDefinition.isProtected())});
+        properties.put("j:requiredType", new String[]{PropertyType.nameFromValue(propertyDefinition.getRequiredType())});
+        properties.put("j:selectorType", new String[]{SelectorType.nameFromValue(propertyDefinition.getSelector())});
+        Map<String, String> selectorOptions = propertyDefinition.getSelectorOptions();
+        List<String> selectorOptionsList = new ArrayList<String>();
+        for (String key : selectorOptions.keySet()) {
+            String option = key;
+            String value = selectorOptions.get(key);
+            if (StringUtils.isNotBlank(value)) {
+                option += "='" + value + "'";
+            }
+            selectorOptionsList.add(option);
+        }
+        properties.put("j:selectorOptions", selectorOptionsList.toArray(new String[selectorOptionsList.size()]));
+        String[] valueConstraints = propertyDefinition.getValueConstraints();
+        if (valueConstraints != null && valueConstraints.length > 0) {
+            properties.put("j:valueConstraints", valueConstraints);
+        }
+        Value[] defaultValues = propertyDefinition.getDefaultValues();
+        if (defaultValues != null && defaultValues.length > 0) {
+            List<String> defaultValuesAsString = new ArrayList<String>();
+            for (Value value : defaultValues) {
+                try {
+                    defaultValuesAsString.add(value.getString());
+                } catch (RepositoryException e) {
+                    logger.error("Failed to get default value", e);
+                }
+            }
+            properties.put("j:defaultValues", defaultValuesAsString.toArray(new String[defaultValuesAsString.size()]));
+        }
+        properties.put("j:multiple", new String[]{String.valueOf(propertyDefinition.isMultiple())});
+        String[] availableQueryOperators = propertyDefinition.getAvailableQueryOperators();
+        List<String> ops = new ArrayList<String>();
+        if (availableQueryOperators != null) {
+            for (String op : availableQueryOperators) {
+                if (QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO.equals(op)) {
+                    ops.add(Lexer.QUEROPS_EQUAL);
+                } else if (QueryObjectModelConstants.JCR_OPERATOR_NOT_EQUAL_TO.equals(op)) {
+                    ops.add(Lexer.QUEROPS_NOTEQUAL);
+                } else if (QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN.equals(op)) {
+                    ops.add(Lexer.QUEROPS_LESSTHAN);
+                } else if (QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO.equals(op)) {
+                    ops.add(Lexer.QUEROPS_LESSTHANOREQUAL);
+                } else if (QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN.equals(op)) {
+                    ops.add(Lexer.QUEROPS_GREATERTHAN);
+                } else if (QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO.equals(op)) {
+                    ops.add(Lexer.QUEROPS_GREATERTHANOREQUAL);
+                } else if (QueryObjectModelConstants.JCR_OPERATOR_LIKE.equals(op)) {
+                    ops.add(Lexer.QUEROPS_LIKE);
+                }
+            }
+            if (!ops.isEmpty()) {
+                properties.put("j:availableQueryOperators", ops.toArray(new String[ops.size()]));
+            }
+        }
+        properties.put("j:isFullTextSearchable", new String[]{String.valueOf(propertyDefinition.isFullTextSearchable())});
+        properties.put("j:isQueryOrderable", new String[]{String.valueOf(propertyDefinition.isQueryOrderable())});
+        properties.put("j:isFacetable", new String[]{String.valueOf(propertyDefinition.isFacetable())});
+        properties.put("j:isHierarchical", new String[]{String.valueOf(propertyDefinition.isHierarchical())});
+        properties.put("j:isInternationalized", new String[]{String.valueOf(propertyDefinition.isInternationalized())});
+        properties.put("j:isHidden", new String[]{String.valueOf(propertyDefinition.isHidden())});
+        properties.put("j:index", new String[]{IndexType.nameFromValue(propertyDefinition.getIndex())});
+        properties.put("j:scoreboost", new String[]{String.valueOf(propertyDefinition.getScoreboost())});
+        String analyzer = propertyDefinition.getAnalyzer();
+        if (analyzer != null) {
+            properties.put("j:analyzer", new String[]{analyzer});
+        }
+        properties.put("j:onConflictAction", new String[]{OnConflictAction.nameFromValue(propertyDefinition.getOnConflict())});
+        String itemType = propertyDefinition.getLocalItemType();
+        if (itemType != null) {
+            properties.put("j:itemType", new String[]{itemType});
+        }
+        ExternalData externalData = new ExternalData(path, path,
+                unstructured ? "jnt:unstructuredPropertyDefinition" : "jnt:propertyDefinition", properties);
+        return externalData;
+    }
+
+    private ExternalData getChildNodeDefinitionData(String path, ExtendedNodeDefinition nodeDefinition, boolean unstructured) {
+        Map<String, String[]> properties = new HashMap<String, String[]>();
+        properties.put("j:autoCreated", new String[]{String.valueOf(nodeDefinition.isAutoCreated())});
+        properties.put("j:mandatory", new String[]{String.valueOf(nodeDefinition.isMandatory())});
+        properties.put("j:onParentVersion", new String[]{OnParentVersionAction.nameFromValue(nodeDefinition.getOnParentVersion())});
+        properties.put("j:protected", new String[]{String.valueOf(nodeDefinition.isProtected())});
+        String[] requiredPrimaryTypeNames = nodeDefinition.getRequiredPrimaryTypeNames();
+        if (requiredPrimaryTypeNames != null) {
+            properties.put("j:requiredPrimaryTypes", requiredPrimaryTypeNames);
+        }
+        String defaultPrimaryTypeName = nodeDefinition.getDefaultPrimaryTypeName();
+        if (defaultPrimaryTypeName != null) {
+            properties.put("j:defaultPrimaryType", new String[]{defaultPrimaryTypeName});
+        }
+        ExternalData externalData = new ExternalData(path, path,
+                unstructured ? "jnt:unstructuredChildNodeDefinition" : "jnt:childNodeDefinition", properties);
+        return externalData;
+    }
+
+
+    private synchronized NodeTypeRegistry loadRegistry(String path) {
+        if (nodeTypeRegistryMap.containsKey(path)) {
+            return nodeTypeRegistryMap.get(path);
+        } else {
+            NodeTypeRegistry ntr = new NodeTypeRegistry();
+            try {
+                ntr.initSystemDefinitions();
+
+                List<JahiaTemplatesPackage> dependencies = new ArrayList<JahiaTemplatesPackage>(module.getDependencies());
+                Collections.reverse(dependencies);
+                for (JahiaTemplatesPackage depend : dependencies) {
+                    for (String s : depend.getDefinitionsFiles()) {
+                        ntr.addDefinitionsFile(depend.getResource(s), depend.getRootFolder(), null);
+                    }
+                }
+                ntr.addDefinitionsFile(new UrlResource(getFile(path).getURL()), module.getRootFolder(), null);
+            } catch (IOException e) {
+                logger.error("Failed to load node type registry", e);
+            } catch (ParseException e) {
+                logger.error("Failed to load node type registry", e);
+            }
+            nodeTypeRegistryMap.put(path, ntr);
+            return ntr;
+        }
+    }
+
+    private void writeDefinitionFile(NodeTypeRegistry nodeTypeRegistry, String path) {
         try {
             Writer writer = null;
             try {
@@ -1147,7 +1245,7 @@ public class ModulesDataSource extends VFSDataSource {
                     nodeTypeRegistryMap.get(path).flushLabels();
                 }
 
-                new JahiaCndWriter(nodeTypeRegistry.getNodeTypes(module), namespaces, writer);
+                new JahiaCndWriter(nodeTypeRegistry.getNodeTypes(module.getRootFolder()), namespaces, writer);
             } finally {
                 IOUtils.closeQuietly(writer);
             }
@@ -1156,31 +1254,6 @@ public class ModulesDataSource extends VFSDataSource {
         }
     }
 
-    private synchronized NodeTypeRegistry loadRegistry(String path, String module) {
-        if (nodeTypeRegistryMap.containsKey(path)) {
-            return nodeTypeRegistryMap.get(path);
-        } else {
-            NodeTypeRegistry ntr = new NodeTypeRegistry();
-            try {
-                ntr.initSystemDefinitions();
-                JahiaTemplatesPackage templatesPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(module);
-                List<JahiaTemplatesPackage> dependencies = new ArrayList<JahiaTemplatesPackage>(templatesPackage.getDependencies());
-                Collections.reverse(dependencies);
-                for (JahiaTemplatesPackage depend : dependencies) {
-                    for (String s : depend.getDefinitionsFiles()) {
-                        ntr.addDefinitionsFile(depend.getResource(s), depend.getRootFolder(), null);
-                    }
-                }
-                ntr.addDefinitionsFile(new UrlResource(getFile(path).getURL()),module,null);
-            } catch (IOException e) {
-                logger.error("Failed to load node type registry", e);
-            } catch (ParseException e) {
-                logger.error("Failed to load node type registry", e);
-            }
-            nodeTypeRegistryMap.put(path, ntr);
-            return ntr;
-        }
-    }
 
     public void setFileTypeMapping(Map<String, String> fileTypeMapping) {
         this.fileTypeMapping = fileTypeMapping;
@@ -1192,7 +1265,7 @@ public class ModulesDataSource extends VFSDataSource {
 
     public void setRootResource(Resource root) {
         try {
-            super.setRoot("file://"+root.getFile().getPath());
+            super.setRoot("file://" + root.getFile().getPath());
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
@@ -1206,4 +1279,11 @@ public class ModulesDataSource extends VFSDataSource {
         this.templateManagerService = templateManagerService;
     }
 
+    public JahiaTemplatesPackage getModule() {
+        return module;
+    }
+
+    public void setModule(JahiaTemplatesPackage module) {
+        this.module = module;
+    }
 }

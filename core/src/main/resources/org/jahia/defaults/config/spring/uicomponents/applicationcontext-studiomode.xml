@@ -867,7 +867,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.ModulesTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>/modulesFileSystem/$siteKey/$moduleversion/*</value>
+                                    <value>/modules/$siteKey/$moduleversion/sources</value>
                                 </list>
                             </property>
                             <property name="folderTypes">

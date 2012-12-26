@@ -68,6 +68,7 @@
 		                    <Specification-Version>${project.version}</Specification-Version>
 		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <depends>Default Jahia Templates</depends>
+                            <Source-Folders>${project.basedir}</Source-Folders>
                             <package-name>${project.name}</package-name>
                             <root-folder>${project.artifactId}</root-folder>
                             <module-type>module</module-type>

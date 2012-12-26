@@ -52,12 +52,15 @@ import javax.jcr.RepositoryException;
 import javax.jcr.lock.LockException;
 import javax.jcr.security.*;
 import javax.jcr.version.VersionException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static javax.jcr.security.Privilege.*;
 import static org.jahia.api.Constants.EDIT_WORKSPACE;
 import static org.jahia.api.Constants.LIVE_WORKSPACE;
+import static org.jahia.api.Constants.NT_PROPERTYDEFINITION;
 
 /**
  * Implementation of the {@link javax.jcr.security.AccessControlManager} for the VFS provider.
@@ -68,15 +71,14 @@ public class ExternalAccessControlManager implements AccessControlManager {
 
     private static final AccessControlPolicy[] POLICIES = new AccessControlPolicy[0];
 
-    private Privilege[] registeredPrivileges;
+    private String[] rootNodePrivileges;
 
-    private Privilege[] rootNodePrivileges;
-
-    private Privilege[] privileges;
+    private String[] privileges;
 
     private Map<String, Privilege> registeredPrivilegeMap;
 
     private boolean readOnly;
+    private JahiaPrivilegeRegistry registry;
 
     public ExternalAccessControlManager(boolean readOnly) {
         super();
@@ -89,30 +91,25 @@ public class ExternalAccessControlManager implements AccessControlManager {
     }
 
     private void init() throws RepositoryException {
-        JahiaPrivilegeRegistry registry = new JahiaPrivilegeRegistry(JCRSessionFactory.getInstance().getNamespaceRegistry());
-        registeredPrivileges = registry.getRegisteredPrivileges();
-        registeredPrivilegeMap = new HashMap<String, Privilege>();
-        for (Privilege priv : registeredPrivileges) {
-            registeredPrivilegeMap.put(priv.getName(), priv);
-        }
+        registry = new JahiaPrivilegeRegistry(JCRSessionFactory.getInstance().getNamespaceRegistry());
         if (readOnly) {
-            rootNodePrivileges = new Privilege[] {
-                    privilegeFromName(JCR_READ + "_" + EDIT_WORKSPACE), privilegeFromName(JCR_READ + "_" + LIVE_WORKSPACE),
+            rootNodePrivileges = new String[] {
+                    (JCR_READ + "_" + EDIT_WORKSPACE), (JCR_READ + "_" + LIVE_WORKSPACE),
                     };
             privileges = rootNodePrivileges;
         } else {
-            rootNodePrivileges = new Privilege[] {
-                    privilegeFromName(JCR_READ + "_" + EDIT_WORKSPACE), privilegeFromName(JCR_READ + "_" + LIVE_WORKSPACE),
-                    privilegeFromName(JCR_WRITE + "_" + EDIT_WORKSPACE), privilegeFromName(JCR_WRITE + "_" + LIVE_WORKSPACE),
-                    privilegeFromName(JCR_ADD_CHILD_NODES + "_" + EDIT_WORKSPACE), privilegeFromName(JCR_ADD_CHILD_NODES + "_" + LIVE_WORKSPACE),
-                    privilegeFromName(JCR_REMOVE_CHILD_NODES + "_" + EDIT_WORKSPACE), privilegeFromName(JCR_REMOVE_CHILD_NODES + "_" + LIVE_WORKSPACE),
+            rootNodePrivileges = new String[] {
+                    (JCR_READ + "_" + EDIT_WORKSPACE), (JCR_READ + "_" + LIVE_WORKSPACE),
+                    (JCR_WRITE + "_" + EDIT_WORKSPACE), (JCR_WRITE + "_" + LIVE_WORKSPACE),
+                    (JCR_ADD_CHILD_NODES + "_" + EDIT_WORKSPACE), (JCR_ADD_CHILD_NODES + "_" + LIVE_WORKSPACE),
+                    (JCR_REMOVE_CHILD_NODES + "_" + EDIT_WORKSPACE), (JCR_REMOVE_CHILD_NODES + "_" + LIVE_WORKSPACE),
                     };
-            privileges = new Privilege[] {
-                    privilegeFromName(JCR_READ + "_" + EDIT_WORKSPACE), privilegeFromName(JCR_READ + "_" + LIVE_WORKSPACE),
-                    privilegeFromName(JCR_WRITE + "_" + EDIT_WORKSPACE), privilegeFromName(JCR_WRITE + "_" + LIVE_WORKSPACE),
-                    privilegeFromName(JCR_REMOVE_NODE + "_" + EDIT_WORKSPACE), privilegeFromName(JCR_REMOVE_NODE + "_" + LIVE_WORKSPACE),
-                    privilegeFromName(JCR_ADD_CHILD_NODES + "_" + EDIT_WORKSPACE), privilegeFromName(JCR_ADD_CHILD_NODES + "_" + LIVE_WORKSPACE),
-                    privilegeFromName(JCR_REMOVE_CHILD_NODES + "_" + EDIT_WORKSPACE), privilegeFromName(JCR_REMOVE_CHILD_NODES + "_" + LIVE_WORKSPACE),
+            privileges = new String[] {
+                    (JCR_READ + "_" + EDIT_WORKSPACE), (JCR_READ + "_" + LIVE_WORKSPACE),
+                    (JCR_WRITE + "_" + EDIT_WORKSPACE), (JCR_WRITE + "_" + LIVE_WORKSPACE),
+                    (JCR_REMOVE_NODE + "_" + EDIT_WORKSPACE), (JCR_REMOVE_NODE + "_" + LIVE_WORKSPACE),
+                    (JCR_ADD_CHILD_NODES + "_" + EDIT_WORKSPACE), (JCR_ADD_CHILD_NODES + "_" + LIVE_WORKSPACE),
+                    (JCR_REMOVE_CHILD_NODES + "_" + EDIT_WORKSPACE), (JCR_REMOVE_CHILD_NODES + "_" + LIVE_WORKSPACE),
                     };
         }
     }
@@ -134,12 +131,24 @@ public class ExternalAccessControlManager implements AccessControlManager {
 
     public Privilege[] getPrivileges(String absPath) throws PathNotFoundException,
             RepositoryException {
+        List<Privilege> l = new ArrayList<Privilege>();
+        for (String s : getPrivilegesNames(absPath)) {
+            Privilege privilege = registry.getPrivilege(s, null);
+            if (privilege != null) {
+                l.add(privilege);
+            }
+        }
+
+        return l.toArray(new Privilege[l.size()]);
+    }
+
+    private String[] getPrivilegesNames(String absPath) {
         return absPath.length() == 1 && "/".equals(absPath) ? rootNodePrivileges : privileges;
     }
 
     public Privilege[] getSupportedPrivileges(String absPath) throws PathNotFoundException,
             RepositoryException {
-        return registeredPrivileges;
+        return JahiaPrivilegeRegistry.getRegisteredPrivileges();
     }
 
     public boolean hasPrivileges(String absPath, Privilege[] privileges)
@@ -161,7 +170,7 @@ public class ExternalAccessControlManager implements AccessControlManager {
 
     public Privilege privilegeFromName(String privilegeName) throws AccessControlException,
             RepositoryException {
-        return registeredPrivilegeMap.get(privilegeName);
+        return registry.getPrivilege(privilegeName, null);
     }
 
     public void removePolicy(String absPath, AccessControlPolicy policy)

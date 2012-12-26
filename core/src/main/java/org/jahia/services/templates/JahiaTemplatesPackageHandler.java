@@ -260,6 +260,21 @@ final class JahiaTemplatesPackageHandler {
 
                 String provider = (String) manifest.getMainAttributes().get(new Attributes.Name("Implementation-Vendor"));
                 templatePackage.setProvider(StringUtils.defaultIfBlank(provider, "Jahia Solutions Group SA"));
+
+                String sourcesFolder = (String) manifest.getMainAttributes().get(new Attributes.Name("Source-Folders"));
+                if (sourcesFolder != null) {
+                    File sources = new File(sourcesFolder);
+                    if (sources.exists()) {
+                        templatePackage.setSourcesFolder(sources);
+                        try {
+                            templatePackage.setSourceControl(SourceControlManagement.getSourceControlManagement(sources));
+                        } catch (Exception e) {
+                            logger.error("Cannot get source control",e);
+                        }
+
+                    }
+                }
+
             }
         } catch (IOException ioe) {
             logger

@@ -319,7 +319,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
 
     private void setAvailablePermissions(GWTConfiguration config) throws RepositoryException, GWTJahiaServiceException {
-        Privilege[] p = new JahiaPrivilegeRegistry(retrieveCurrentSession().getWorkspace().getNamespaceRegistry()).getRegisteredPrivileges();
+        Privilege[] p = JahiaPrivilegeRegistry.getRegisteredPrivileges();
         List<String> l = new ArrayList<String>();
         for (Privilege privilege : p) {
             l.add(((PrivilegeImpl)privilege).getPrefixedName());

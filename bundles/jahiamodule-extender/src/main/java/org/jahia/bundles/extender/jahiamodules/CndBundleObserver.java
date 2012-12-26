@@ -38,12 +38,11 @@ public class CndBundleObserver implements BundleObserver<URL> {
         for (URL url : urls) {
             BundleResource bundleResource = new BundleResource(url, bundle);
             try {
-                JahiaTemplatesPackage module = templatePackageRegistry.lookupByFileNameAndVersion(bundle.getSymbolicName(), new ModuleVersion(bundle.getVersion().toString()));
-//                if (module.isLastVersion()) {
-                    NodeTypeRegistry.getInstance().addDefinitionsFile(bundleResource, bundle.getSymbolicName(), module.getVersion());
-                    jcrStoreService.deployDefinitions(bundle.getSymbolicName());
-                    logger.info("Registered definitions from file " + url + " for bundle " + bundle);
-//                }
+                JahiaTemplatesPackage module = templatePackageRegistry.lookupByFileNameAndVersion(bundle.getSymbolicName(), new ModuleVersion((String) bundle.getHeaders().get("Implementation-Version")));
+                module.setDefinitionsFile(bundleResource.getURL().getPath().substring(1));
+                NodeTypeRegistry.getInstance().addDefinitionsFile(bundleResource, bundle.getSymbolicName(), module.getVersion());
+                jcrStoreService.deployDefinitions(bundle.getSymbolicName());
+                logger.info("Registered definitions from file " + url + " for bundle " + bundle);
             } catch (IOException e) {
                 logger.error("Error registering node type definition file " + url + " for bundle " + bundle, e);
             } catch (ParseException e) {

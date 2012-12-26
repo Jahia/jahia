@@ -143,7 +143,7 @@ public final class JahiaPrivilegeRegistry {
      *
      * @return all registered privileges.
      */
-    public Privilege[] getRegisteredPrivileges() {
+    public static Privilege[] getRegisteredPrivileges() {
         Privilege[] privileges = new Privilege[allPrivileges.size()];
         int i = 0;
         for (String s : allPrivileges) {

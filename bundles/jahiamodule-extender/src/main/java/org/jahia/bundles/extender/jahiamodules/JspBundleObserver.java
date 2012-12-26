@@ -109,7 +109,7 @@ public class JspBundleObserver extends ScriptBundleObserver {
                     bundleHttpService.unregister(urlAlias);
                     registeredBundleAliases.remove(urlAlias);
                 }
-                logger.info("Registering JSP " + urlAlias + " for bundle " + bundle.getSymbolicName() + " v" + bundle.getVersion());
+                logger.info("Registering JSP " + urlAlias + " for bundle " + bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version"));
                 bundleHttpService.registerServlet(urlAlias, jspServlet, props, httpContext);
                 registeredBundleAliases.add(urlAlias);
 
@@ -141,7 +141,7 @@ public class JspBundleObserver extends ScriptBundleObserver {
     private void unregisterJSPs(Bundle bundle, List<URL> urls, HttpService bundleHttpService) {
         for (URL url : urls) {
             String urlAlias = url.getPath();
-            logger.info("Unregistering JSP " + urlAlias + " for bundle " + bundle.getSymbolicName() + " v" + bundle.getVersion());
+            logger.info("Unregistering JSP " + urlAlias + " for bundle " + bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version"));
             Set<String> registeredBundleAliases = registeredAliases.get(bundle);
             if (registeredBundleAliases != null && registeredBundleAliases.contains(urlAlias)) {
                 bundleHttpService.unregister(urlAlias);

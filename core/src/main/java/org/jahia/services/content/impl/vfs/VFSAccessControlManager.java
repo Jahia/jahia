@@ -94,8 +94,7 @@ public class VFSAccessControlManager implements AccessControlManager {
     }
 
     private void init() throws RepositoryException {
-        JahiaPrivilegeRegistry registry = new JahiaPrivilegeRegistry(JCRSessionFactory.getInstance().getNamespaceRegistry());
-        registeredPrivileges = registry.getRegisteredPrivileges();
+        registeredPrivileges = JahiaPrivilegeRegistry.getRegisteredPrivileges();
         registeredPrivilegeMap = new HashMap<String, Privilege>();
         for (Privilege priv : registeredPrivileges) {
             registeredPrivilegeMap.put(priv.getName(), priv);

@@ -71,16 +71,16 @@ public class SvnSourceControlManagement extends SourceControlManagement {
     @Override
     public String getURI() throws Exception {
         ExecutionResult result = executeCommand("svn", "info");
-        String uri = (String) CollectionUtils.find(Arrays.asList(result.out.split("\n")), new Predicate() {
+        String url = (String) CollectionUtils.find(Arrays.asList(result.out.split("\n")), new Predicate() {
             @Override
             public boolean evaluate(Object object) {
                 return object.toString().startsWith("URL:");
             }
         });
-        if (uri != null) {
-            uri = StringUtils.substringAfter(uri,"URL:").trim();
+        if (url != null) {
+            url = StringUtils.substringAfter(url,"URL:").trim();
         }
-        return uri;
+        return "scm:svn:"+url;
     }
 
     @Override

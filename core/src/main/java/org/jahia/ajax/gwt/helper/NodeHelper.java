@@ -861,8 +861,8 @@ class NodeHelper {
                     if (sources != null) {
                         n.set("j:sourcesFolder", sources.getPath());
                     }
-                    if (versionInfo.hasProperty("j:scmUrl")) {
-                        n.set("j:scmUrl", versionInfo.getProperty("j:scmUrl").getString());
+                    if (versionInfo.hasProperty("j:scmURI")) {
+                        n.set("j:scmURI", versionInfo.getProperty("j:scmURI").getString());
                     }
                 }
             }

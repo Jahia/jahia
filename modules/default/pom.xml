@@ -51,6 +51,13 @@
   <packaging>war</packaging>
 
   <description>These are the custom templates for running on a Jahia server.</description>
+
+    <scm>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/default</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/default</developerConnection>
+        <url>https://devtools.jahia.com/svn/jahia/trunk/modules/default</url>
+    </scm>
+
   <dependencies>
 	<dependency>
         <groupId>commons-logging</groupId>
@@ -85,6 +92,7 @@
 	                    <Specification-Version>${project.version}</Specification-Version>
 	                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                         <Source-Folders>${project.basedir}</Source-Folders>
+                        <Source-Control-URI>${project.scm.connection}</Source-Control-URI>
                         <package-name>${project.name}</package-name>
                         <depends>Jahia Static Assets</depends>
                         <definitions>META-INF/definitions.cnd, META-INF/definitions-nav-menu.cnd</definitions>

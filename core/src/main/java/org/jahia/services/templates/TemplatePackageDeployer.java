@@ -463,9 +463,9 @@ public class TemplatePackageDeployer implements ApplicationEventPublisherAware {
         if (pack.getSourcesFolder() != null) {
             v.setProperty("j:sourcesFolder",pack.getSourcesFolder().getPath());
         }
-        if (pack.getSourceControl() != null) {
+        if (pack.getScmURI() != null) {
             try {
-                v.setProperty("j:scmUrl",pack.getSourceControl().getURI());
+                v.setProperty("j:scmURI",pack.getScmURI());
             } catch (Exception e) {
                 logger.error("Cannot get SCM url");
             }

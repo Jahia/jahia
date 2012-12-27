@@ -1432,9 +1432,18 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public void updateModule(String moduleName) throws GWTJahiaServiceException {
+    public GWTJahiaNode updateModule(String moduleName) throws GWTJahiaServiceException {
         try {
-            contentManager.updateModule(moduleName, retrieveCurrentSession());
+            return contentManager.updateModule(moduleName, retrieveCurrentSession());
+        } catch (RepositoryException e) {
+            logger.error("Cannot update module", e);
+            throw new GWTJahiaServiceException(e.toString());
+        }
+    }
+
+    public void compileAndDeploy(String moduleName) throws GWTJahiaServiceException {
+        try {
+            contentManager.compileAndDeploy(moduleName, retrieveCurrentSession());
         } catch (RepositoryException e) {
             logger.error("Cannot update module", e);
             throw new GWTJahiaServiceException(e.toString());

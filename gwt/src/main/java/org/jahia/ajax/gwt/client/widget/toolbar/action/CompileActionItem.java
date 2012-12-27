@@ -46,33 +46,23 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 /**
  * Action item to create a new templates set
  */
-public class UpdateModuleActionItem extends BaseActionItem {
+public class CompileActionItem extends BaseActionItem {
 
     @Override public void onComponentSelection() {
-        linker.loading("Updating module...");
-        JahiaContentManagementService.App.getInstance().updateModule(JahiaGWTParameters.getSiteKey(), new BaseAsyncCallback<GWTJahiaNode>() {
-            public void onSuccess(GWTJahiaNode result) {
+        linker.loading("Compile module...");
+        JahiaContentManagementService.App.getInstance().compileAndDeploy(JahiaGWTParameters.getSiteKey(), new BaseAsyncCallback() {
+            public void onSuccess(Object result) {
                 linker.loaded();
-                if (result != null) {
-                    JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
-                    JahiaGWTParameters.setSite(result, linker);
-                    if (((EditLinker) linker).getSidePanel() != null) {
-                        ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL, null);
-                    }
-                    SiteSwitcherActionItem.refreshAllSitesList(linker);
-                }
-                Info.display(Messages.get("label.information", "Information"), Messages.get("message.templateSetCreated", "Module saved"));
+                Info.display(Messages.get("label.information", "Information"), Messages.get("message.moduleCompiled", "Module compiled"));
             }
 
             public void onApplicationFailure(Throwable caught) {
                 linker.loaded();
-                Info.display(Messages.get("label.error", "Error"), Messages.get("message.templateSetCreationFailed", "Module save failed"));
+                Info.display(Messages.get("label.error", "Error"), Messages.get("message.moduleCompilationFailed", "Module compilation failed"));
             }
         });
     }
@@ -81,13 +71,8 @@ public class UpdateModuleActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
         String s = siteNode.get("j:versionInfo");
-        if (s.endsWith("-SNAPSHOT") && siteNode.get("j:scmURI") != null) {
+        if (s.endsWith("-SNAPSHOT") && siteNode.get("j:sourcesFolder") != null) {
             setEnabled(true);
-            if (siteNode.get("j:sourcesFolder") != null) {
-                updateTitle(Messages.get("label.updateModule", "Update module"));
-            } else {
-                updateTitle(Messages.get("label.getSource", "Get sources for module"));
-            }
         } else {
             setEnabled(false);
         }

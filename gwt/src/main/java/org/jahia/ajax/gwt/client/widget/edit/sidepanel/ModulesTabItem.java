@@ -49,6 +49,7 @@ import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.util.Collator;
@@ -123,9 +124,16 @@ public class ModulesTabItem extends BrowseTabItem {
     @Override
     public void refresh(Map data) {
         tree.getTreeStore().removeAll();
-        tree.getTreeStore().getLoader().load();
-        listLoader.load();
-        setRefreshed();
+        GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
+        if (siteNode.get("j:sourcesFolder") == null) {
+            tab.mask("Sources required - Get them from source control");
+            setRefreshed();
+        } else {
+            tab.unmask();
+            tree.getTreeStore().getLoader().load();
+            listLoader.load();
+            setRefreshed();
+        }
     }
 
     @Override

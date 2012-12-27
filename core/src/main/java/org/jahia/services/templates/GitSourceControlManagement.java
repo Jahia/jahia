@@ -79,9 +79,9 @@ public class GitSourceControlManagement extends SourceControlManagement {
     @Override
     public String getURI() throws Exception {
         ExecutionResult result = executeCommand("git", "remote -v");
-        String uri = StringUtils.substringBefore(StringUtils.substringAfter(result.out,"origin"),"(").trim();
-        if (!StringUtils.isEmpty(uri)) {
-            return uri;
+        String url = StringUtils.substringBefore(StringUtils.substringAfter(result.out,"origin"),"(").trim();
+        if (!StringUtils.isEmpty(url)) {
+            return "scm:git:"+url;
         }
         return null;
     }

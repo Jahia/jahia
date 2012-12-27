@@ -390,7 +390,9 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void unzip(List<String> paths) throws GWTJahiaServiceException;
 
-    void updateModule(String moduleName) throws GWTJahiaServiceException;
+    GWTJahiaNode updateModule(String moduleName) throws GWTJahiaServiceException;
+
+    void compileAndDeploy(String moduleName) throws GWTJahiaServiceException;
 
     void uploadedFile(List<String[]> uploadeds) throws GWTJahiaServiceException;
     

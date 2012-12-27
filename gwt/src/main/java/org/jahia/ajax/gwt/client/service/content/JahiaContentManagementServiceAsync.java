@@ -61,6 +61,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 
 import java.util.Date;
 import java.util.List;
@@ -341,7 +342,9 @@ public interface JahiaContentManagementServiceAsync {
 
     void unzip(List<String> paths, AsyncCallback async);
 
-    void updateModule(String moduleName, AsyncCallback asyncCallback);
+    void updateModule(String moduleName, AsyncCallback<GWTJahiaNode> asyncCallback);
+
+    void compileAndDeploy(String moduleName, AsyncCallback async);
 
     void uploadedFile(List<String[]> uploadeds, AsyncCallback async);
 

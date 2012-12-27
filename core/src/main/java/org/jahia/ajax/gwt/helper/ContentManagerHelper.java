@@ -171,7 +171,7 @@ public class ContentManagerHelper {
         final JCRSessionWrapper jcrSessionWrapper;
         try {
             jcrSessionWrapper = currentUserSession;
-            if (parentNodesType != null ) {
+            if (parentNodesType != null) {
                 String currentPath = "";
                 for (String path : parentNodesType.keySet()) {
                     try {
@@ -198,7 +198,7 @@ public class ContentManagerHelper {
 
             JCRNodeWrapper childNode = addNode(parentNode, nodeName, nodeType, mixin, props, uiLocale);
             List<String> fields = Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.PERMISSIONS, GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
-            return navigation.getGWTJahiaNode(jcrSessionWrapper.getNode(childNode.getPath()),fields);
+            return navigation.getGWTJahiaNode(jcrSessionWrapper.getNode(childNode.getPath()), fields);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(
@@ -347,7 +347,7 @@ public class ContentManagerHelper {
                 }
             }
             if (missedPaths.size() > 0) {
-                StringBuilder errors = new StringBuilder(Messages.getInternal("label.gwt.error.following.files.could.not.be.cut",uiLocale));
+                StringBuilder errors = new StringBuilder(Messages.getInternal("label.gwt.error.following.files.could.not.be.cut", uiLocale));
                 for (String err : missedPaths) {
                     errors.append("\n").append(err);
                 }
@@ -596,13 +596,13 @@ public class ContentManagerHelper {
                         new StringBuilder(node.getName()).append(" - ACCESS DENIED").toString());
             } else if (!node.rename(JCRContentUtils.escapeLocalNodeName(newName))) {
                 throw new GWTJahiaServiceException(
-                        Messages.getInternalWithArguments("label.gwt.error.could.not.rename.file",uiLocale,node.getName(),newName));
+                        Messages.getInternalWithArguments("label.gwt.error.could.not.rename.file", uiLocale, node.getName(), newName));
             }
         } catch (ItemExistsException e) {
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.already.exists",uiLocale,newName));
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.already.exists", uiLocale, newName));
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.rename.file",uiLocale,node.getName(),newName));
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.rename.file", uiLocale, node.getName(), newName));
         }
         try {
             node.saveSession();
@@ -629,14 +629,14 @@ public class ContentManagerHelper {
 
             if (results.isSuccessful()) {
                 // let's schedule an import job.
-            	JobDetail jobDetail = BackgroundJob.createJahiaJob(Messages.getInternal("import.file",uiLocale,"Import file") + " " + FilenameUtils.getName(item.getOriginalFileName()), ImportJob.class);
+                JobDetail jobDetail = BackgroundJob.createJahiaJob(Messages.getInternal("import.file", uiLocale, "Import file") + " " + FilenameUtils.getName(item.getOriginalFileName()), ImportJob.class);
                 JobDataMap jobDataMap;
                 jobDataMap = jobDetail.getJobDataMap();
 
                 jobDataMap.put(ImportJob.DESTINATION_PARENT_PATH, parentPath);
                 jobDataMap.put(ImportJob.FILE_KEY, fileKey);
                 jobDataMap.put(ImportJob.FILENAME, FilenameUtils.getName(item.getOriginalFileName()));
-                jobDataMap.put(ImportJob.REPLACE_CONTENT,replaceContent);
+                jobDataMap.put(ImportJob.REPLACE_CONTENT, replaceContent);
 
                 ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
             } else {
@@ -644,18 +644,18 @@ public class ContentManagerHelper {
                 for (ValidationResult result : results.getResults()) {
                     if (!result.isSuccessful()) {
                         if (result instanceof MissingModulesValidationResult) {
-                            MissingModulesValidationResult missingModule = ((MissingModulesValidationResult)result);
+                            MissingModulesValidationResult missingModule = ((MissingModulesValidationResult) result);
                             if (missingModule.isTargetTemplateSetPresent()) {
-                                buffer.append(Messages.getInternalWithArguments("failure.import.missingTemplateSet",uiLocale, missingModule.getTargetTemplateSet()));
+                                buffer.append(Messages.getInternalWithArguments("failure.import.missingTemplateSet", uiLocale, missingModule.getTargetTemplateSet()));
                             }
                             if (!missingModule.getMissingModules().isEmpty()) {
-                                buffer.append(Messages.getInternalWithArguments("failure.import.missingModules",uiLocale, missingModule.getMissingModules().size()) + missingModule.getMissingModules());
+                                buffer.append(Messages.getInternalWithArguments("failure.import.missingModules", uiLocale, missingModule.getMissingModules().size()) + missingModule.getMissingModules());
                             }
                         } else if (result instanceof MissingNodetypesValidationResult) {
-                            buffer.append(Messages.getInternalWithArguments("failure.import.missingNodetypes",uiLocale, ((MissingNodetypesValidationResult)result).getMissingNodetypes(),((MissingNodetypesValidationResult)result).getMissingMixins()));
+                            buffer.append(Messages.getInternalWithArguments("failure.import.missingNodetypes", uiLocale, ((MissingNodetypesValidationResult) result).getMissingNodetypes(), ((MissingNodetypesValidationResult) result).getMissingMixins()));
                         } else if (result instanceof MissingTemplatesValidationResult) {
-                            MissingTemplatesValidationResult missingTemplates = ((MissingTemplatesValidationResult)result);
-                            buffer.append(Messages.getInternalWithArguments("failure.import.missingTemplates",uiLocale, missingTemplates.getMissingTemplates().size()) + missingTemplates.getMissingTemplates().keySet());
+                            MissingTemplatesValidationResult missingTemplates = ((MissingTemplatesValidationResult) result);
+                            buffer.append(Messages.getInternalWithArguments("failure.import.missingTemplates", uiLocale, missingTemplates.getMissingTemplates().size()) + missingTemplates.getMissingTemplates().keySet());
                         }
                     }
                 }
@@ -873,11 +873,11 @@ public class ContentManagerHelper {
             for (GWTJahiaNodeACE ace : acl.getAce()) {
                 String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
                 if (!ace.getPermissions().isEmpty()) {
-                    Map<String,String> perms = new HashMap<String, String>();
+                    Map<String, String> perms = new HashMap<String, String>();
                     GWTJahiaNodeACE oldAce = oldPrincipals.remove(user);
                     if (!ace.equals(oldAce)) {
                         for (Map.Entry<String, Boolean> entry : ace.getPermissions().entrySet()) {
-                            if (entry.getValue().equals(Boolean.TRUE) && ( !Boolean.TRUE.equals(ace.getInheritedPermissions().get(entry.getKey())) || acl.isBreakAllInheritance())) {
+                            if (entry.getValue().equals(Boolean.TRUE) && (!Boolean.TRUE.equals(ace.getInheritedPermissions().get(entry.getKey())) || acl.isBreakAllInheritance())) {
                                 perms.put(entry.getKey(), "GRANT");
                             } else if (entry.getValue().equals(Boolean.FALSE) && (Boolean.TRUE.equals(ace.getInheritedPermissions().get(entry.getKey())) || acl.isBreakAllInheritance())) {
                                 perms.put(entry.getKey(), "DENY");
@@ -924,7 +924,7 @@ public class ContentManagerHelper {
         return !lockedNodes.isEmpty();
     }
 
-    public void clearAllLocks(String path, boolean processChildNodes, JCRSessionWrapper currentUserSession,Locale uiLocale) throws GWTJahiaServiceException {
+    public void clearAllLocks(String path, boolean processChildNodes, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         try {
             if (currentUserSession.getUser().isRoot()) {
                 JCRContentUtils.clearAllLocks(path, processChildNodes, currentUserSession);
@@ -934,7 +934,7 @@ public class ContentManagerHelper {
             }
         } catch (RepositoryException e) {
             logger.error("Repository error when clearing all locks on node " + path, e);
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.when.clearing.all.locks.on.node",uiLocale, path, currentUserSession.getUser().getUserKey()));
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.when.clearing.all.locks.on.node", uiLocale, path, currentUserSession.getUser().getUserKey()));
         }
     }
 
@@ -1041,7 +1041,7 @@ public class ContentManagerHelper {
                     JCRNodeWrapper node = (JCRNodeWrapper) parent.getNode(newName);
                     if (node == null) {
                         throw new GWTJahiaServiceException(
-                                Messages.getInternalWithArguments("label.gwt.error.new.version.file.not.found",uiLocale, location, newName));
+                                Messages.getInternalWithArguments("label.gwt.error.new.version.file.not.found", uiLocale, location, newName));
                     }
                     versioning.addNewVersionFile(node, tmpName);
                     break;
@@ -1049,7 +1049,7 @@ public class ContentManagerHelper {
                     newName = findAvailableName(parent, newName);
                 case 0:
                     if (parent.hasNode(newName)) {
-                        throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.file.exists",uiLocale));
+                        throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.file.exists", uiLocale));
                     }
                 default:
                     GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(tmpName);
@@ -1083,9 +1083,14 @@ public class ContentManagerHelper {
 
     public GWTJahiaNode createTemplateSet(String key, String baseSet, final String siteType, String sources, String scmURI, String scmType, JCRSessionWrapper session) throws GWTJahiaServiceException {
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+        String fullUri = null;
+        if (scmURI != null) {
+            fullUri = "scm:" + scmType + ":" + scmURI;
+        }
+
         if (key == null && scmURI != null) {
             try {
-                JCRNodeWrapper node = templateManagerService.checkoutModule(sources != null ? new File(sources) : null, scmURI, scmType, session);
+                JCRNodeWrapper node = templateManagerService.checkoutModule(sources != null ? new File(sources) : null, fullUri, session);
                 return navigation.getGWTJahiaNode(node, GWTJahiaNode.DEFAULT_SITE_FIELDS);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
@@ -1100,7 +1105,7 @@ public class ContentManagerHelper {
         } else if (baseSet == null) {
             String shortName = JCRContentUtils.generateNodeName(key);
             try {
-                JCRNodeWrapper node = templateManagerService.createModule(shortName, siteType, sources != null ? new File(sources) : null, scmURI, scmType, session);
+                JCRNodeWrapper node = templateManagerService.createModule(shortName, siteType, sources != null ? new File(sources) : null, fullUri, session);
                 return node != null ? navigation.getGWTJahiaNode(node.getParent(), GWTJahiaNode.DEFAULT_SITE_FIELDS) : null;
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
@@ -1127,10 +1132,10 @@ public class ContentManagerHelper {
                 }
                 session.save();
                 templateManagerService.duplicateModule(shortName, s, baseSet);
-                if (!session.getNode("/modules/"+shortName).hasNode("j:versionInfo")) {
-                    session.getNode("/modules/"+shortName).addNode("j:versionInfo","jnt:versionInfo");
+                if (!session.getNode("/modules/" + shortName).hasNode("j:versionInfo")) {
+                    session.getNode("/modules/" + shortName).addNode("j:versionInfo", "jnt:versionInfo");
                 }
-                session.getNode("/modules/"+shortName).getNode("j:versionInfo").setProperty("j:version","1.0");
+                session.getNode("/modules/" + shortName).getNode("j:versionInfo").setProperty("j:version", "1.0");
                 session.save();
 
                 JCRNodeWrapper templateSet = session.getNodeByUUID(result.get(0).getUUID());
@@ -1142,9 +1147,9 @@ public class ContentManagerHelper {
         return null;
     }
 
-    private File getSource(String moduleName, JCRSessionWrapper session) throws RepositoryException  {
+    private File getSource(String moduleName, JCRSessionWrapper session) throws RepositoryException {
         String sources;
-        JCRNodeWrapper n = session.getNode("/modules/"+moduleName);
+        JCRNodeWrapper n = session.getNode("/modules/" + moduleName);
 
         JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName);
         n = n.getNode(pack.getVersion().toString());
@@ -1158,20 +1163,36 @@ public class ContentManagerHelper {
         return new File(vi.getProperty("j:sourcesFolder").getString());
     }
 
-    public void updateModule(String moduleName, JCRSessionWrapper session) throws RepositoryException {
+    public GWTJahiaNode updateModule(String moduleName, JCRSessionWrapper session) throws RepositoryException {
+        GWTJahiaNode node = null;
         File sources = getSource(moduleName, session);
-        if (sources == null || !sources.exists()) {
-            return;
-        }
+        JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
 
         try {
-            SourceControlManagement scm = SourceControlManagement.getSourceControlManagement(sources);
+            if (sources == null || !sources.exists()) {
+                JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(moduleName);
+                String scmUri = aPackage.getScmURI();
 
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().saveModule(moduleName, sources, session);
+                JCRNodeWrapper nodeWrapper = templateManagerService.checkoutModule(null, scmUri, session);
+                node = navigation.getGWTJahiaNode(nodeWrapper.getParent(), GWTJahiaNode.DEFAULT_SITE_FIELDS);
+            } else {
+                SourceControlManagement scm = SourceControlManagement.getSourceControlManagement(sources);
+                templateManagerService.saveModule(moduleName, sources, session);
+                scm.update();
+                templateManagerService.compileAndDeploy(moduleName, sources, session);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return node;
+    }
 
-            scm.update();
+    public void compileAndDeploy(String moduleName, JCRSessionWrapper session) throws RepositoryException {
+        File sources = getSource(moduleName, session);
+        JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
 
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().compileAndDeploy(moduleName, sources, session);
+        try {
+            templateManagerService.compileAndDeploy(moduleName, sources, session);
         } catch (Exception e) {
             e.printStackTrace();
         }

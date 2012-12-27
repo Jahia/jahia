@@ -128,6 +128,8 @@ public class JahiaTemplatesPackage {
 
     private XmlWebApplicationContext context;
 
+    private String scmURI;
+
     private File sourcesFolder;
 
     private SourceControlManagement sourceControl;
@@ -428,6 +430,14 @@ public class JahiaTemplatesPackage {
         isLastVersion = lastVersion;
     }
 
+    public String getScmURI() {
+        return scmURI;
+    }
+
+    public void setScmURI(String scmURI) {
+        this.scmURI = scmURI;
+    }
+
     public File getSourcesFolder() {
         return sourcesFolder;
     }
@@ -440,8 +450,11 @@ public class JahiaTemplatesPackage {
         return sourceControl;
     }
 
-    public void setSourceControl(SourceControlManagement sourceControl) {
+    public void setSourceControl(SourceControlManagement sourceControl) throws Exception {
         this.sourceControl = sourceControl;
+        if (sourceControl != null) {
+            this.scmURI = sourceControl.getURI();
+        }
     }
 
     public Resource getResource(String relativePath) {

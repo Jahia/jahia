@@ -223,7 +223,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * ***************************************************************************************************************
      */
 
-    public JCRNodeWrapper checkoutModule(File sources, String scmURI, String scmType, JCRSessionWrapper session) throws IOException, RepositoryException {
+    public JCRNodeWrapper checkoutModule(File sources, String scmURI, JCRSessionWrapper session) throws IOException, RepositoryException {
         String tempName = null;
 
         if (sources == null) {
@@ -238,7 +238,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         sources.getParentFile().mkdirs();
 
         try {
-            SourceControlManagement scm = SourceControlManagement.checkoutRepository(sources, scmType, scmURI);
+            SourceControlManagement scm = SourceControlManagement.checkoutRepository(sources, scmURI);
             File path = scm.getRootFolder();
 
             SAXReader reader = new SAXReader();
@@ -254,15 +254,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 }
             }
 
-            setSCMConfigInPom(path, scmType, scmURI);
+            setSCMConfigInPom(path, scmURI);
 
             JahiaTemplatesPackage pack = compileAndDeploy(moduleName, path, session);
+            if (pack != null) {
+                JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
+                setSourcesFolderInPackageAndNode(pack, path, node);
+                session.save();
 
-            JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
-            setSourcesFolderInPackageAndNode(pack, path, node);
-            session.save();
-
-            return node;
+                return node;
+            }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -270,7 +271,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return null;
     }
 
-    public JCRNodeWrapper createModule(String moduleName, String moduleType, File sources, String scmURI, String scmType, JCRSessionWrapper session) throws IOException, RepositoryException {
+    public JCRNodeWrapper createModule(String moduleName, String moduleType, File sources, String scmURI, JCRSessionWrapper session) throws IOException, RepositoryException {
         if (sources == null) {
             sources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources");
             sources.mkdirs();
@@ -318,9 +319,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
 
         if (scmURI != null) {
-            setSCMConfigInPom(path, scmURI, scmType);
+            setSCMConfigInPom(path, scmURI);
             try {
-                SourceControlManagement.createNewRepository(path, scmType, scmURI);
+                SourceControlManagement.createNewRepository(path, scmURI);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
@@ -521,14 +522,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 JCRNodeWrapper vi = session.getNode("/modules/" + pack.getRootFolderWithVersion() + "/j:versionInfo");
                 saveModule(moduleName, sources, session);
 
-                if (vi.hasProperty("j:scmUrl")) {
+                if (vi.hasProperty("j:scmURI")) {
                     SourceControlManagement scm = null;
                     try {
                         scm = SourceControlManagement.getSourceControlManagement(sources);
                         if (scm != null) {
                             scm.commit("Release");
                         }
-                        return releaseModule(pack, nextVersion, sources, vi.getProperty("j:scmUrl").getString(), session);
+                        return releaseModule(pack, nextVersion, sources, vi.getProperty("j:scmURI").getString(), session);
                     } catch (Exception e) {
                         logger.error("Cannot get SCM", e);
                     }
@@ -671,7 +672,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
                     node.getNode("j:versionInfo").setProperty("j:sourcesFolder", sources.getPath());
                     if (scmUrl != null) {
-                        node.getNode("j:versionInfo").setProperty("j:scmUrl", scmUrl);
+                        node.getNode("j:versionInfo").setProperty("j:scmURI", scmUrl);
                     }
                     session.save();
                 }
@@ -858,7 +859,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private void setSCMConfigInPom(File sources, String scmURI, String scmType) {
+    private void setSCMConfigInPom(File sources, String uri) {
         try {
             SAXReader reader = new SAXReader();
             File pom = new File(sources, "pom.xml");
@@ -867,9 +868,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             Iterator it = root.elementIterator("scm");
             if (!it.hasNext()) {
                 Element scm = root.addElement("scm");
-                scm.addElement("connection").addText("scm:" + scmType + ":" + scmURI);
-                scm.addElement("developerConnection").addText("scm:" + scmType + ":" + scmURI);
-                scm.addElement("url").addText(scmURI);
+                scm.addElement("connection").addText(uri);
+                scm.addElement("developerConnection").addText(uri);
                 List list = root.elements();
                 list.remove(scm);
                 list.add(list.indexOf(root.elementIterator("description").next()) + 1, scm);
@@ -989,10 +989,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public void setSourcesFolderInPackageAndNode(JahiaTemplatesPackage pack, File sources, JCRNodeWrapper node) throws RepositoryException {
         setSourcesFolderInPackage(pack, sources);
         if (pack.getSourcesFolder() != null) {
+            templatePackageRegistry.unmountSourcesProvider(pack);
+            templatePackageRegistry.mountSourcesProvider(pack);
             node.getNode("j:versionInfo").setProperty("j:sourcesFolder", pack.getSourcesFolder().getPath());
             if (pack.getSourceControl() != null) {
                 try {
-                    node.getNode("j:versionInfo").setProperty("j:scmUrl", pack.getSourceControl().getURI());
+                    node.getNode("j:versionInfo").setProperty("j:scmURI", pack.getSourceControl().getURI());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

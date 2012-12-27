@@ -123,31 +123,42 @@ public abstract class SourceControlManagement {
         return scm;
     }
 
-    public static SourceControlManagement createNewRepository(File workingDir, String type, String url) throws Exception {
+    public static SourceControlManagement createNewRepository(File workingDir, String scmURI) throws Exception {
         SourceControlManagement scm = null;
 
-        if (type.equals("git")) {
-            scm = new GitSourceControlManagement();
-        } else {
-            throw new Exception("Unknown repository type");
+        if (scmURI.startsWith("scm:")) {
+            String scmProvider = scmURI.substring(4, scmURI.indexOf(":",4));
+            String scmUrl = scmURI.substring(scmURI.indexOf(":",4)+1);
+
+            if (scmProvider.equals("git")) {
+                scm = new GitSourceControlManagement();
+            } else {
+                throw new Exception("Unknown repository type");
+            }
+
+            scm.initWithEmptyFolder(workingDir, scmUrl);
         }
 
-        scm.initWithEmptyFolder(workingDir, url);
         return scm;
     }
 
-    public static SourceControlManagement checkoutRepository(File workingDir, String type, String url) throws Exception {
+    public static SourceControlManagement checkoutRepository(File workingDir, String scmURI) throws Exception {
         SourceControlManagement scm = null;
 
-        if (type.equals("git")) {
-            scm = new GitSourceControlManagement();
-        } else if (type.equals("svn")) {
-            scm = new SvnSourceControlManagement();
-        } else {
-            throw new Exception("Unknown repository type");
-        }
+        if (scmURI.startsWith("scm:")) {
+            String scmProvider = scmURI.substring(4, scmURI.indexOf(":",4));
+            String scmUrl = scmURI.substring(scmURI.indexOf(":",4)+1);
 
-        scm.initFromURI(workingDir, url);
+            if (scmProvider.equals("git")) {
+                scm = new GitSourceControlManagement();
+            } else if (scmProvider.equals("svn")) {
+                scm = new SvnSourceControlManagement();
+            } else {
+                throw new Exception("Unknown repository type");
+            }
+
+        scm.initFromURI(workingDir, scmUrl);
+        }
         return scm;
     }
 

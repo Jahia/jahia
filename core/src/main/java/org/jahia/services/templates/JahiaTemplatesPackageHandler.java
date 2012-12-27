@@ -261,6 +261,7 @@ final class JahiaTemplatesPackageHandler {
                 String provider = (String) manifest.getMainAttributes().get(new Attributes.Name("Implementation-Vendor"));
                 templatePackage.setProvider(StringUtils.defaultIfBlank(provider, "Jahia Solutions Group SA"));
 
+                templatePackage.setScmURI((String) manifest.getMainAttributes().get(new Attributes.Name("Source-Control-URI")));
                 String sourcesFolder = (String) manifest.getMainAttributes().get(new Attributes.Name("Source-Folders"));
                 if (sourcesFolder != null) {
                     File sources = new File(sourcesFolder);
@@ -274,7 +275,6 @@ final class JahiaTemplatesPackageHandler {
 
                     }
                 }
-
             }
         } catch (IOException ioe) {
             logger

@@ -42,7 +42,6 @@ package org.jahia.services.templates;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -66,8 +65,8 @@ import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.Patterns;
 import org.jahia.utils.zip.ExclusionWildcardFilter;
 import org.jahia.utils.zip.JahiaArchiveFileHandler;
 import org.jahia.utils.zip.PathFilter;
@@ -110,12 +109,50 @@ class DeploymentHelper implements ServletContextAware {
                     if (!destFile.exists()) {
                         return true;
                     }
-                    return FileUtils.checksum(file, new CRC32()).getValue() != FileUtils.checksum(destFile, new CRC32()).getValue();
+                    return FileUtils.checksum(file, new CRC32()).getValue() != FileUtils.checksum(destFile, new CRC32()).getValue() && jarDiff(file, destFile);
                 } catch (IOException e) {
                     logger.error("Cannot compare CRC32 for file " + file.getName(), e);
                 }
             }
             return false;
+        }
+
+        public boolean jarDiff(File f1, File f2) {
+            File s1 = null;
+            File s2 = null;
+            try {
+                if (!f1.getName().endsWith(".jar") || !f2.getName().endsWith(".jar")) {
+                    return true;
+                }
+                s1 = unzip(f1);
+                s2 = unzip(f2);
+                FileUtils.deleteDirectory(new File(s1, "META-INF"));
+                FileUtils.deleteDirectory(new File(s2, "META-INF"));
+
+                ChecksumFileFilter checksumFileFilter = new ChecksumFileFilter(s1,s2);
+                Collection<File> changed = FileUtils.listFiles(s1, checksumFileFilter,
+                        null);
+                if (changed.size() == 0) {
+                    return false;
+                }
+            } catch (Exception e) {
+                logger.error("Cannot compare jars",e);
+            } finally {
+                FileUtils.deleteQuietly(s1);
+                FileUtils.deleteQuietly(s2);
+            }
+            return true;
+        }
+
+        private File unzip(File f1) throws IOException, JahiaException {
+            File tmpDir = File.createTempFile("module", null);
+            tmpDir.delete();
+            tmpDir.mkdirs();
+
+            JahiaArchiveFileHandler archiveFileHandler = null;
+            archiveFileHandler = new JahiaArchiveFileHandler(f1.getPath());
+            archiveFileHandler.unzip(tmpDir.getPath());
+            return tmpDir;
         }
 
         public boolean accept(File dir, String name) {
@@ -222,8 +259,16 @@ class DeploymentHelper implements ServletContextAware {
             }
         }
 
-        if (versionFolder.exists()) {
-            if (FileUtils.isFileNewer(templateWar, versionFolder)) {
+        if (!versionFolder.exists() || FileUtils.isFileNewer(templateWar, versionFolder)) {
+            logger.info("Start unzipping module war package '{}' version {}", packageName, version);
+            File tmp = File.createTempFile("module",null);
+            tmp.delete();
+            if (!deployPackageVersion(packageName, templateWar, tmp, deployedFiles)) {
+                FileUtils.deleteDirectory(tmp);
+                return null;
+            }
+
+            if (versionFolder.exists()) {
                 logger.info("Older module package '{}' ({}) already deployed. Deleting it.", packageName, version);
                 try {
                     FileUtils.deleteDirectory(versionFolder);
@@ -232,18 +277,13 @@ class DeploymentHelper implements ServletContextAware {
                             + ". Skipping deployment.", e);
                 }
             }
-        }
-        if (!versionFolder.exists()) {
-            logger.info("Start unzipping module war package '{}' version {}", packageName, version);
 
-            if (!deployPackageVersion(packageName, templateWar, versionFolder, deployedFiles)) {
-                return null;
-            }
+            FileUtils.moveDirectory(tmp,versionFolder);
 
             File metaInfFolder = new File(versionFolder, "META-INF");
 
             for (Map.Entry<String, String> deployedFile : deployedFiles.entrySet()) {
-                deployedFiles.put(deployedFile.getKey(), deployedFile.getValue());
+                deployedFiles.put(deployedFile.getKey(), deployedFile.getValue().replace(tmp.getPath(), versionFolder.getPath()));
             }
 
             createDeploymentXMLFile(new File(metaInfFolder, "deployed.xml"), deployedFiles,
@@ -273,6 +313,28 @@ class DeploymentHelper implements ServletContextAware {
             }
         }
 
+        boolean newerClassesDetected = checkClasses(packageName, versionFolder);
+
+        if (newerClassesDetected && !SettingsBean.getInstance().isDevelopmentMode()) {
+            // module needs to be deployed using deployModule.sh or a server restart is needed
+            FileUtils.deleteDirectory(versionFolder);
+            return false;
+        }
+
+        FileUtils.deleteDirectory(new File(versionFolder, "WEB-INF/classes"));
+        FileUtils.deleteDirectory(new File(versionFolder, "WEB-INF/lib"));
+
+        // delete WEB-INF if it is empty
+        File webInfFolder = new File(versionFolder, "WEB-INF");
+        if (webInfFolder.exists() && webInfFolder.list().length == 0) {
+            webInfFolder.delete();
+        }
+
+        // version successfully deployed and there are no changes in classes -> we can continue without restart
+        return true;
+    }
+
+    private boolean checkClasses(String packageName, File versionFolder) {
         boolean newerClassesDetected = false;
 
         // check classes
@@ -310,24 +372,7 @@ class DeploymentHelper implements ServletContextAware {
                 }
             }
         }
-
-        if (newerClassesDetected) {
-            // module needs to be deployed using deployModule.sh or a server restart is needed
-            FileUtils.deleteDirectory(versionFolder);
-            return false;
-        }
-
-        FileUtils.deleteDirectory(new File(versionFolder, "WEB-INF/classes"));
-        FileUtils.deleteDirectory(new File(versionFolder, "WEB-INF/lib"));
-
-        // delete WEB-INF if it is empty
-        File webInfFolder = new File(versionFolder, "WEB-INF");
-        if (webInfFolder.exists() && webInfFolder.list().length == 0) {
-            webInfFolder.delete();
-        }
-
-        // version successfully deployed and there are no changes in classes -> we can continue without restart
-        return true;
+        return newerClassesDetected;
     }
 
     private Document getDOM(Map<String, String> deployedFiles, File packageWar, String packageName, String depends, String rootFolder, String implementationVersionStr, Calendar packageTimestamp) {

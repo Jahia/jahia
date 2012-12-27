@@ -1,7 +1,7 @@
 /**
  * This file is part of Jahia, next-generation open source CMS:
  * Jahia's next-generation, open source CMS stems from a widely acknowledged vision
- * of enterprise application convergence - web, search, document, social and portal -
+ * of enterprise application convergence - web, search, doument, social and portal -
  * unified by the simplicity of web content management.
  *
  * For more information, please visit http://www.jahia.com.
@@ -463,28 +463,40 @@ public class TemplatePackageRegistry {
         }
 
         if (templatePackage.getSourcesFolder() != null) {
-            ModulesDataSource dataSource = (ModulesDataSource) SpringContextSingleton.getBean("ModulesDataSourcePrototype");
-            File oldStructure = new File(templatePackage.getSourcesFolder(), "src/main/webapp");
-            if (oldStructure.exists()) {
-                dataSource.setRoot(templatePackage.getSourcesFolder().toURI().toString()+"src/main/webapp");
-            } else {
-                dataSource.setRoot(templatePackage.getSourcesFolder().toURI().toString()+"src/main/resources");
-            }
-            dataSource.setModule(templatePackage);
-            ExternalContentStoreProvider ex = (ExternalContentStoreProvider) SpringContextSingleton.getBean("ModulesStoreProviderPrototype");
-            ex.setKey("module-"+templatePackage.getRootFolder()+"-"+templatePackage.getVersion().toString());
-            ex.setMountPoint("/modules/" + templatePackage.getRootFolderWithVersion() + "/sources");
-            ex.setDataSource(dataSource);
-            try {
-                ex.start();
-            } catch (JahiaInitializationException e) {
-                e.printStackTrace();
-            }
+            mountSourcesProvider(templatePackage);
         }
 
         logger.info("Registered '{}' [{}] version {}", new Object[] { templatePackage.getName(),
                 templatePackage.getRootFolder(), templatePackage.getVersion() });
     }
+
+    public void mountSourcesProvider(JahiaTemplatesPackage templatePackage) {
+        ModulesDataSource dataSource = (ModulesDataSource) SpringContextSingleton.getBean("ModulesDataSourcePrototype");
+        File oldStructure = new File(templatePackage.getSourcesFolder(), "src/main/webapp");
+        if (oldStructure.exists()) {
+            dataSource.setRoot(templatePackage.getSourcesFolder().toURI().toString()+"src/main/webapp");
+        } else {
+            dataSource.setRoot(templatePackage.getSourcesFolder().toURI().toString()+"src/main/resources");
+        }
+        dataSource.setModule(templatePackage);
+        ExternalContentStoreProvider ex = (ExternalContentStoreProvider) SpringContextSingleton.getBean("ModulesStoreProviderPrototype");
+        ex.setKey("module-"+templatePackage.getRootFolder()+"-"+templatePackage.getVersion().toString());
+        ex.setMountPoint("/modules/" + templatePackage.getRootFolderWithVersion() + "/sources");
+        ex.setDataSource(dataSource);
+        try {
+            ex.start();
+        } catch (JahiaInitializationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void unmountSourcesProvider(JahiaTemplatesPackage templatePackage) {
+        JCRStoreProvider provider = jcrStoreService.getSessionFactory().getProviders().get("module-"+templatePackage.getRootFolder()+"-"+templatePackage.getVersion().toString());
+        if (provider != null) {
+            provider.stop();
+        }
+    }
+
 
     public JahiaTemplatesPackage getPackageForBundle(String bundle) {
         return packagesForBundles.get(bundle);
@@ -578,10 +590,7 @@ public class TemplatePackageRegistry {
             fileNameRegistry.remove(templatePackage.getRootFolder());
             templatePackages = null;
             if (templatePackage.getSourcesFolder() != null) {
-                JCRStoreProvider provider = jcrStoreService.getSessionFactory().getProviders().get("module-"+templatePackage.getRootFolder()+"-"+templatePackage.getVersion().toString());
-                if (provider != null) {
-                    provider.stop();
-                }
+                unmountSourcesProvider(templatePackage);
             }
         }
         if (templatePackage.isLastVersion()) {

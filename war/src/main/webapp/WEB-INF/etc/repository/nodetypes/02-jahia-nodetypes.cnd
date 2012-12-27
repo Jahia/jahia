@@ -492,7 +492,7 @@
  - j:version
  - j:deployementDate (date)
  - j:sourcesFolder (string)
- - j:scmUrl (string)
+ - j:scmURI (string)
 
 //---------------------------------------------------------
 // Imports

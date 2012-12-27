@@ -43,7 +43,7 @@ public class BundleDispatcherServlet extends HttpServlet {
         throws ServletException, IOException
     {
         for (String mapping : jspMappings.keySet()) {
-            if (req.getRequestURI().startsWith(mapping)) {
+            if (req.getServletPath().startsWith(mapping)) {
                 jspMappings.get(mapping).service(req, res);
                 return;
             }

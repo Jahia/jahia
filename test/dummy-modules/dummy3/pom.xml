@@ -49,8 +49,8 @@
         <version>6.7.0.0-SNAPSHOT</version>
     </parent>
     <groupId>org.jahia.test</groupId>
-    <artifactId>dummy2</artifactId>
-    <name>dummy2</name>
+    <artifactId>dummy3</artifactId>
+    <name>dummy3</name>
     <packaging>war</packaging>
     <description>Dummy module for the resource bundle lookup test</description>
     
@@ -88,6 +88,22 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>classes</classifier>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>${war.plugin.version}</version>
                 <configuration>
@@ -104,9 +120,9 @@
 		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <Source-Folders>${project.basedir}</Source-Folders>
                             <package-name>${project.name}</package-name>
-                            <depends>default</depends>
+                            <depends>default,dummy2</depends>
                             <root-folder>${project.artifactId}</root-folder>
-                            <module-type>module</module-type>
+                            <module-type>templatesSet</module-type>
                         </manifestEntries>
                     </archive>
                     <archiveClasses>true</archiveClasses>

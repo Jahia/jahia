@@ -90,11 +90,11 @@ public class ResourceBundleTest {
         // dependent modules
         testResource(primary, pkg, "jmix_skinnable.j_skin.skins.box2", Locale.FRENCH,
                 "Avec cadre, fond de titre clair, fond du corps clair");
-        // test resource overriding from a templatesSet (dummy2 is the templatesSet)
+        // test resource overriding from a templatesSet (dummy3 is the templatesSet)
         testResource(
-                ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("dummy2")
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("dummy3")
                         .getResourceBundleName(), ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                        .getTemplatePackageByFileName("dummy1"), "test", Locale.ENGLISH, "test from dummy2");
+                        .getTemplatePackageByFileName("dummy2"), "test", Locale.ENGLISH, "test from dummy3");
 
     }
 
@@ -119,8 +119,8 @@ public class ResourceBundleTest {
         testResourceLegacy("dummy.column.modifiedBy.label","notFound",lookupModuleName,Locale.ENGLISH,siteTemplatesPackageName);
         // another locale, Lookup a key which is not present in the JahiaWebTemplatesSpace.properties but is present in one of the RBs of dependent modules
         testResourceLegacy("jmix_skinnable.j_skin.skins.box2","Avec cadre, fond de titre clair, fond du corps clair",lookupModuleName,Locale.FRENCH,siteTemplatesPackageName);
-        // test resource overriding from a templatesSet (dummy2 is the templatesSet)
-        testResourceLegacy("test","test from dummy2","dummy1",Locale.ENGLISH,"dummy2");
+        // test resource overriding from a templatesSet (dummy3 is the templatesSet)
+        testResourceLegacy("test","test from dummy3","dummy2",Locale.ENGLISH,"dummy3");
 
     }
 

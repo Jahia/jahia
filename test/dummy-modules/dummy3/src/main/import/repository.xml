@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+         xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+    <modules jcr:primaryType="jnt:modules">
+        <dummy3 j:dependencies="default" j:moduleType="module" j:title="dummy3" jcr:primaryType="jnt:module">
+            <portlets jcr:primaryType="jnt:portletFolder"/>
+            <files jcr:primaryType="jnt:folder"/>
+            <contents jcr:primaryType="jnt:contentFolder"/>
+            <templates j:rootTemplatePath="/base" jcr:primaryType="jnt:templatesFolder">
+                <files jcr:primaryType="jnt:folder"/>
+                <template1 j:hiddenTemplate="false" j:view="default" jcr:primaryType="jnt:pageTemplate">
+                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="template1"/>
+                </template1>
+            </templates>
+        </dummy3>
+        <contents jcr:primaryType="jnt:contentFolder">
+            <test-contents jcr:primaryType="jnt:contentFolder">
+                <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="test-contents"/>
+                <simple-text jcr:primaryType="jnt:text">
+                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="text"/>
+                </simple-text>
+            </test-contents>
+        </contents>
+    </modules>
+</content>
+

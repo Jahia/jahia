@@ -279,7 +279,7 @@ public class ModuleDeploymentTest {
                     Document document = reader.read(spring);
 
                     Element newBean = document.getRootElement().addElement("bean");
-                    newBean.addAttribute("class", "org.jahia.services.templates.TestInitializingBean");
+                    newBean.addAttribute("class", TestInitializingBean.class.getName());
                     spring.delete();
                     XMLWriter writer = new XMLWriter(new FileWriter(newspring), OutputFormat.createPrettyPrint());
                     writer.write(document);

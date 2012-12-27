@@ -43,6 +43,7 @@ package org.jahia.services.content;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;
@@ -61,7 +62,9 @@ import static org.jahia.api.Constants.*;
  * Time: 2:36:05 PM
  */
 public class LastModifiedListener extends DefaultEventListener {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(LastModifiedListener.class);
+    private static Logger logger = LoggerFactory.getLogger(LastModifiedListener.class);
+    
+    private JCRPublicationService publicationService;
 
     public int getEventTypes() {
         return Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED + Event.PROPERTY_REMOVED + Event.NODE_MOVED;
@@ -166,7 +169,7 @@ public class LastModifiedListener extends DefaultEventListener {
 
             if (autoPublishedIds != null && !autoPublishedIds.isEmpty()) {
                 synchronized (this) {
-                    JCRPublicationService.getInstance().publish(autoPublishedIds, "default", "live", false, null);
+                    publicationService.publish(autoPublishedIds, "default", "live", false, null);
                 }
             }
 
@@ -217,5 +220,9 @@ public class LastModifiedListener extends DefaultEventListener {
             }
         }
         return false;
+    }
+
+    public void setPublicationService(JCRPublicationService publicationService) {
+        this.publicationService = publicationService;
     }
 }

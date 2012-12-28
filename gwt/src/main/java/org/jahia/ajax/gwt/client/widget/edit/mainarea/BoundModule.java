@@ -142,12 +142,12 @@ public class BoundModule extends SimpleModule {
                         if (s.equals("/")) {
                             s = "";
                         }
-                        mainModule.setStyleAttribute("cursor",
+                        mainModule.getInnerElement().getStyle().setProperty("cursor", 
                                 "url('" + s + "/gwt/resources/images/xtheme-jahia-andromeda/panel/link.cur'), pointer");
 
                         mainModule.getEditLinker().setSelectionListener(new ModuleSelectionListener() {
                             public void onModuleSelection(Module selection) {
-                                mainModule.setStyleAttribute("cursor", "");
+                                mainModule.getInnerElement().getStyle().setProperty("cursor", "");
                                 mainModule.getEditLinker().setSelectionListener(null);
                                 if (selection.getNode() != node) {
                                     List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();

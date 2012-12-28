@@ -131,6 +131,10 @@
     display:block;
 }
 
+.x-panel-toolbar {
+  float: right;
+}
+
 .label-placeholder, div.button-placeholder  {
     display:inline-block;
 }
@@ -551,3 +555,27 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     background: #FF9999;
 }
 
+.x-tool {
+    overflow:hidden;
+    width:15px;
+    height:15px;
+    float:right;
+    cursor:pointer;
+    background:transparent no-repeat;
+    margin-left:2px;
+}
+.x-tool {
+    background-image:url(../images/default/panel/tool-sprites.gif);
+}
+.x-tool-pin {
+    background-position:0 -135px;
+}
+.x-tool-pin-over {
+    background-position:-15px -135px;
+}
+.x-tool-unpin {
+    background-position:0 -150px;
+}
+.x-tool-unpin-over {
+    background-position:-15px -150px;
+}

@@ -14,7 +14,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <c:set var="boundComponent"
-       value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
+       value="${uiComponents:getBoundComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty boundComponent and jcr:isNodeType(boundComponent, 'jmix:list')}">
     <template:addCacheDependency node="${boundComponent}"/>
     <c:set var="pagesizeid" value="pagesize${boundComponent.identifier}"/>

@@ -172,7 +172,8 @@ public class PagesTabItem extends SidePanelTabItem {
         tab.add(pageTree);
     }
 
-    @Override public void handleNewMainSelection(String path) {
+    @Override
+    public void handleNewMainSelection(String path) {
         if (pageTree != null && (pageTree.getSelectionModel().getSelectedItem() == null || !path.equals(
                 pageTree.getSelectionModel().getSelectedItem().getPath()))) {
             pageFactory.setSelectedPath(Arrays.asList(path));

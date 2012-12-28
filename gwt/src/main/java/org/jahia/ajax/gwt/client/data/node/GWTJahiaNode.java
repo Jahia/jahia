@@ -119,7 +119,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
                     SIZE, NODE_TYPES, INHERITED_NODE_TYPES, ACL_CONTEXT, PROVIDER_KEY, PREVIEW, THUMBNAILS, SITE_UUID,
                     CURRENT_VERSION, VERSIONS, CHILDREN_INFO, COUNT, AVAILABLE_WORKKFLOWS,DEFAULT_LANGUAGE,HOMEPAGE_PATH,
                     LOCKS_INFO, VISIBILITY_INFO, PUBLICATION_INFO, PUBLICATION_INFOS, WORKFLOW_INFO, PRIMARY_TYPE_LABEL,
-                    SITE_LANGUAGES, SUBNODES_CONSTRAINTS_INFO, "j:versionInfo", RESOURCE_BUNDLE);
+                    SITE_LANGUAGES, SUBNODES_CONSTRAINTS_INFO, "j:versionInfo", RESOURCE_BUNDLE,"j:dependencies");
 
     private boolean displayable = false;
     private boolean isShared = false;

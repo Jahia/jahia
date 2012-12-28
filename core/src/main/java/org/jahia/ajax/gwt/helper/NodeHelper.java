@@ -40,29 +40,8 @@
 
 package org.jahia.ajax.gwt.helper;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PropertyIterator;
-import javax.jcr.PropertyType;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.UnsupportedRepositoryOperationException;
-import javax.jcr.Value;
-import javax.jcr.version.Version;
-
+import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.data.ModelData;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.jahia.ajax.gwt.client.data.GWTResourceBundle;
@@ -74,16 +53,7 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeLockType;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRValueWrapper;
-import org.jahia.services.content.JCRVersionService;
-import org.jahia.services.content.VersionInfo;
-import org.jahia.services.content.decorator.JCRMountPointNode;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -101,12 +71,14 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.data.ModelData;
+import javax.jcr.*;
+import javax.jcr.version.Version;
+import java.io.File;
+import java.util.*;
 
 /**
  * Helper class for populating {@link GWTJahiaNode} instances with the information from the corresponding {@link Node}.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 class NodeHelper {
@@ -114,12 +86,12 @@ class NodeHelper {
 
     /**
      * Get node url depending
-     * 
+     *
      * @param workspace
      * @param locale
      */
     static String getNodeURL(String servlet, JCRNodeWrapper node, Date versionDate,
-            String versionLabel, final String workspace, final Locale locale)
+                             String versionLabel, final String workspace, final Locale locale)
             throws RepositoryException {
         if (servlet == null) {
             servlet = "render";
@@ -164,7 +136,7 @@ class NodeHelper {
     }
 
     private static void setPropertyValue(GWTJahiaNode n, JCRPropertyWrapper property,
-            JCRSessionWrapper session) throws RepositoryException {
+                                         JCRSessionWrapper session) throws RepositoryException {
         if (property.isMultiple()) {
             Value[] values = property.getValues();
             List<Object> l = new ArrayList<Object>();
@@ -315,6 +287,9 @@ class NodeHelper {
             populateSiteLanguages(n, node);
         }
 
+        if ((node instanceof JCRSiteNode) && fields.contains("j:dependencies")) {
+            populateDependencies(n, node);
+        }
         if (fields.contains(GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO)) {
             populateSubnodesConstraintsInfo(n, node);
         }
@@ -334,7 +309,7 @@ class NodeHelper {
         try {
             if (fields.contains("j:versionInfo")
                     && (isModuleNode != null ? isModuleNode : (isModuleNode = node
-                            .isNodeType("jnt:module")))) {
+                    .isNodeType("jnt:module")))) {
                 populateVersionInfoForModule(n, node);
             }
         } catch (RepositoryException e) {
@@ -419,7 +394,7 @@ class NodeHelper {
 
     /**
      * Get list of version that have been published as GWT bean list
-     * 
+     *
      * @param node
      * @return
      */
@@ -484,7 +459,7 @@ class NodeHelper {
         try {
             n.setHasChildren(n.isNodeType("jnt:mountPoint") || node.hasNodes());
         } catch (RepositoryException e) {
-           logger.error(e.getMessage(),e);
+            logger.error(e.getMessage(),e);
         }
     }
 
@@ -509,6 +484,20 @@ class NodeHelper {
         }
     }
 
+    private void populateDependencies(GWTJahiaNode n, JCRNodeWrapper node) {
+        List<String> dependencies = new ArrayList<String>();
+        Set<JahiaTemplatesPackage> s = null;
+        try {
+            s = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getResolveSite().getTemplateFolder()).getDependencies();
+            for (JahiaTemplatesPackage aPackage : s) {
+                dependencies.add(aPackage.getRootFolder());
+            }
+            n.set("j:dependencies",dependencies);
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void populateDescription(GWTJahiaNode n, JCRNodeWrapper node) {
         // get description
         String description = "";
@@ -522,7 +511,6 @@ class NodeHelper {
         } catch (RepositoryException e) {
             logger.debug("Unable to get description property for node " + node.getName(), e);
         }
-        n.setDescription(description);
     }
 
     private void populateHomePage(GWTJahiaNode n, JCRNodeWrapper node) {
@@ -590,7 +578,7 @@ class NodeHelper {
                 n.setCanUnlock(infos.containsKey(null)
                         && infos.get(null).contains(username + ":user")
                         && (infos.size() == 1 || infos.containsKey(l)
-                                && infos.get(l).contains(username + ":user")));
+                        && infos.get(l).contains(username + ":user")));
             } else {
                 n.setCanLock(infos.isEmpty());
                 n.setCanUnlock(infos.containsKey(null)
@@ -915,8 +903,8 @@ class NodeHelper {
             n.setWCAGComplianceCheckEnabled(node.getResolveSite().hasProperty(
                     SitesSettings.WCAG_COMPLIANCE_CHECKING_ENABLED)
                     && node.getResolveSite()
-                            .getProperty(SitesSettings.WCAG_COMPLIANCE_CHECKING_ENABLED)
-                            .getBoolean());
+                    .getProperty(SitesSettings.WCAG_COMPLIANCE_CHECKING_ENABLED)
+                    .getBoolean());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

@@ -59,11 +59,8 @@ public class Functions {
 
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(Functions.class);
 
-    /**
-     *
-     */
-    public static JCRNodeWrapper getBindedComponent(JCRNodeWrapper currentNode, RenderContext renderContext,
-                                                    String property) {
+    public static JCRNodeWrapper getBoundComponent(JCRNodeWrapper currentNode, RenderContext renderContext,
+            String property) {
         JCRNodeWrapper boundComponentNode = null;
         try {
             JCRNodeWrapper mainResource = renderContext.getMainResource().getNode();
@@ -101,9 +98,8 @@ public class Functions {
         }
         return boundComponentNode;
     }
-
-    public static String getBindedComponentPath(JCRNodeWrapper currentNode, RenderContext renderContext,
-                                                String property) {
+    
+    public static String getBoundComponentPath(JCRNodeWrapper currentNode, RenderContext renderContext, String property) {
         Node boundComponentNode = null;
         try {
             if (currentNode.hasProperty(property)) {
@@ -112,8 +108,8 @@ public class Functions {
                     boundComponentNode = boundComponentProp.getNode();
                 }
                 if (boundComponentNode != null) {
-                    if (boundComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_DISPLAY) ||
-                        boundComponentNode.isNodeType("jnt:template")) {
+                    if (boundComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_DISPLAY)
+                            || boundComponentNode.isNodeType("jnt:template")) {
                         boundComponentNode = renderContext.getMainResource().getNode();
                     } else if (boundComponentNode.isNodeType(Constants.JAHIANT_AREA)) {
                         String areaName = boundComponentNode.getName();
@@ -129,5 +125,23 @@ public class Functions {
             logger.error(e.getMessage(), e);
         }
         return null;
+    }    
+    
+    /**
+     * @deprecated use {@link #getBoundComponent(JCRNodeWrapper, RenderContext, String)} instead
+     */
+    @Deprecated
+    public static JCRNodeWrapper getBindedComponent(JCRNodeWrapper currentNode, RenderContext renderContext,
+                                                    String property) {
+        return getBoundComponent(currentNode, renderContext, property);
+    }
+
+    /**
+     * @deprecated use {@link #getBoundComponentPath(JCRNodeWrapper, RenderContext, String)} instead
+     */
+    @Deprecated
+    public static String getBindedComponentPath(JCRNodeWrapper currentNode, RenderContext renderContext,
+                                                String property) {
+        return getBoundComponentPath(currentNode, renderContext, property);
     }
 }

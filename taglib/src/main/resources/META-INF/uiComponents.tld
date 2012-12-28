@@ -456,10 +456,10 @@
     </tag-file>
 
     <function>
-        <description>Get the bound component node</description>
+        <description>Get the bound component node. Deprecated: use getBoundComponent() instead.</description>
         <name>getBindedComponent</name>
         <function-class>org.jahia.taglibs.uicomponents.Functions</function-class>
-        <function-signature>org.jahia.services.content.JCRNodeWrapper getBindedComponent(org.jahia.services.content.JCRNodeWrapper, org.jahia.services.render.RenderContext, java.lang.String)
+        <function-signature>org.jahia.services.content.JCRNodeWrapper getBoundComponent(org.jahia.services.content.JCRNodeWrapper, org.jahia.services.render.RenderContext, java.lang.String)
         </function-signature>
         <example>
             ${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}
@@ -467,14 +467,35 @@
     </function>
 
     <function>
-        <description>Get the path of the bound component node</description>
+        <description>Get the path of the bound component node. Deprecated: use getBoundComponentPath() instead.</description>
         <name>getBindedComponentPath</name>
         <function-class>org.jahia.taglibs.uicomponents.Functions</function-class>
-        <function-signature>java.lang.String getBindedComponentPath(org.jahia.services.content.JCRNodeWrapper, org.jahia.services.render.RenderContext, java.lang.String)
+        <function-signature>java.lang.String getBoundComponentPath(org.jahia.services.content.JCRNodeWrapper, org.jahia.services.render.RenderContext, java.lang.String)
         </function-signature>
         <example>
             ${uiComponents:getBindedComponentPath(currentNode, renderContext, 'j:bindedComponent')}
         </example>
     </function>
 
+    <function>
+        <description>Get the bound component node</description>
+        <name>getBoundComponent</name>
+        <function-class>org.jahia.taglibs.uicomponents.Functions</function-class>
+        <function-signature>org.jahia.services.content.JCRNodeWrapper getBoundComponent(org.jahia.services.content.JCRNodeWrapper, org.jahia.services.render.RenderContext, java.lang.String)
+        </function-signature>
+        <example>
+            ${uiComponents:getBoundComponent(currentNode, renderContext, 'j:bindedComponent')}
+        </example>
+    </function>
+
+    <function>
+        <description>Get the path of the bound component node</description>
+        <name>getBoundComponentPath</name>
+        <function-class>org.jahia.taglibs.uicomponents.Functions</function-class>
+        <function-signature>java.lang.String getBoundComponentPath(org.jahia.services.content.JCRNodeWrapper, org.jahia.services.render.RenderContext, java.lang.String)
+        </function-signature>
+        <example>
+            ${uiComponents:getBoundComponentPath(currentNode, renderContext, 'j:bindedComponent')}
+        </example>
+    </function>
 </taglib>

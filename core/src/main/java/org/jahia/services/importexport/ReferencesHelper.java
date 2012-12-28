@@ -46,7 +46,6 @@ import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.xml.sax.SAXException;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;

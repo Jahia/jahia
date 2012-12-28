@@ -185,7 +185,7 @@ public class ModulesDataSource extends VFSDataSource {
 
                 // set Properties
                 if (type.isNodeType(Constants.JAHIAMIX_VIEWPROPERTIES)) {
-                    Properties properties = new Properties();
+                    Properties properties = new SortedProperties();
                     is = null;
                     try {
                         is = getFile(path.substring(0, path.lastIndexOf(".")) + ".properties").getContent().getInputStream();
@@ -504,7 +504,7 @@ public class ModulesDataSource extends VFSDataSource {
     private void saveProperties(ExternalData data, OutputStream outputStream) {
         try {
             ExtendedNodeType propertiesType = NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIAMIX_VIEWPROPERTIES);
-            Properties properties = new Properties();
+            Properties properties = new SortedProperties();
             for (String property : data.getProperties().keySet()) {
                 if (propertiesType.getDeclaredPropertyDefinitionsAsMap().containsKey(property)) {
                     String[] v = data.getProperties().get(property);
@@ -631,7 +631,8 @@ public class ModulesDataSource extends VFSDataSource {
     private void saveCndResourceBundle(ExternalData data, String key) {
         Map<String, String[]> properties;
         String[] values;
-        String rbBasePath = StringUtils.substringAfter(module.getResourceBundleName(), "modules").replaceAll("\\.", "/").replaceAll("___", ".");
+//        String rbBasePath = StringUtils.substringAfter(module.getResourceBundleName(), "modules").replaceAll("\\.", "/").replaceAll("___", ".");
+        String rbBasePath = "/resources/" + StringUtils.substringAfterLast(module.getResourceBundleName(), ".");
         Map<String, Map<String, String[]>> i18nProperties = data.getI18nProperties();
         if (i18nProperties != null) {
             for (String lang : i18nProperties.keySet()) {
@@ -653,7 +654,7 @@ public class ModulesDataSource extends VFSDataSource {
                 try {
                     FileObject file = getFile(rbPath);
                     FileContent content = file.getContent();
-                    Properties p = new Properties();
+                    Properties p = new SortedProperties();
                     if (file.exists()) {
                         is = content.getInputStream();
                         p.load(is);
@@ -661,12 +662,11 @@ public class ModulesDataSource extends VFSDataSource {
                     } else if (StringUtils.isBlank(title) && StringUtils.isBlank(description)) {
                         continue;
                     }
-                    if (title != null) {
+                    if (!StringUtils.isEmpty(title)) {
                         p.setProperty(key, title);
                     }
-                    key += "_description";
-                    if (description != null) {
-                        p.setProperty(key, description);
+                    if (!StringUtils.isEmpty(description)) {
+                        p.setProperty(key+"_description", description);
                     }
                     os = content.getOutputStream();
                     p.store(os, rbPath);
@@ -880,6 +880,8 @@ public class ModulesDataSource extends VFSDataSource {
             }
             nodeType.validate();
             writeDefinitionFile(nodeTypeRegistry, cndPath);
+
+            saveCndResourceBundle(data, JCRContentUtils.replaceColon(nodeTypeName) + "." + JCRContentUtils.replaceColon(lastPathSegment));
         } catch (NoSuchNodeTypeException e) {
             logger.error("Failed to save child node definition", e);
             nodeTypeRegistryMap.remove(cndPath);
@@ -973,6 +975,8 @@ public class ModulesDataSource extends VFSDataSource {
             }
             nodeType.validate();
             writeDefinitionFile(nodeTypeRegistry, cndPath);
+
+            saveCndResourceBundle(data, JCRContentUtils.replaceColon(nodeTypeName) + "." + JCRContentUtils.replaceColon(lastPathSegment));
         } catch (NoSuchNodeTypeException e) {
             logger.error("Failed to save child node definition", e);
             nodeTypeRegistryMap.remove(cndPath);
@@ -1185,6 +1189,16 @@ public class ModulesDataSource extends VFSDataSource {
         }
         ExternalData externalData = new ExternalData(path, path,
                 unstructured ? "jnt:unstructuredPropertyDefinition" : "jnt:propertyDefinition", properties);
+        Map<String, Map<String, String[]>> i18nProperties = new HashMap<String, Map<String, String[]>>();
+
+        for (Locale locale : LanguageCodeConverters.getAvailableBundleLocales()) {
+            HashMap<String, String[]> value = new HashMap<String, String[]>();
+            i18nProperties.put(locale.toString(), value);
+            value.put("jcr:title", new String[]{propertyDefinition.getLabel(locale)});
+//            value.put("jcr:description", new String[]{propertyDefinition.getDescription(locale)});
+        }
+
+        externalData.setI18nProperties(i18nProperties);
         return externalData;
     }
 
@@ -1204,6 +1218,17 @@ public class ModulesDataSource extends VFSDataSource {
         }
         ExternalData externalData = new ExternalData(path, path,
                 unstructured ? "jnt:unstructuredChildNodeDefinition" : "jnt:childNodeDefinition", properties);
+
+        Map<String, Map<String, String[]>> i18nProperties = new HashMap<String, Map<String, String[]>>();
+
+        for (Locale locale : LanguageCodeConverters.getAvailableBundleLocales()) {
+            HashMap<String, String[]> value = new HashMap<String, String[]>();
+            i18nProperties.put(locale.toString(), value);
+            value.put("jcr:title", new String[]{nodeDefinition.getLabel(locale)});
+//            value.put("jcr:description", new String[]{nodeDefinition.getDescription(locale)});
+        }
+
+        externalData.setI18nProperties(i18nProperties);
         return externalData;
     }
 
@@ -1285,5 +1310,12 @@ public class ModulesDataSource extends VFSDataSource {
 
     public void setModule(JahiaTemplatesPackage module) {
         this.module = module;
+    }
+
+    class SortedProperties extends Properties {
+        @Override
+        public synchronized Enumeration<Object> keys() {
+            return new Vector(new TreeSet(super.keySet())).elements();
+        }
     }
 }

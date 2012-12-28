@@ -42,12 +42,9 @@ package org.jahia.services.importexport;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.nodetype.xml.NodeTypeReader;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
-import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
@@ -56,10 +53,7 @@ import org.jahia.services.content.JCRObservationManager;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.render.RenderService;
-import org.jahia.services.render.View;
 import org.jahia.settings.SettingsBean;
-import org.mvel.TemplateRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
@@ -627,12 +621,6 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                                     String rootPath = nodes.firstElement().getPath();
                                     if (!rootPath.equals("/")) {
                                         value = rootPath + value;
-                                    }
-                                }
-                                for (Map.Entry<String, String> entry : pathMapping.entrySet()) {
-                                    if (value.startsWith(entry.getKey())) {
-                                        value = entry.getValue() + StringUtils.substringAfter(value, entry.getKey());
-                                        break;
                                     }
                                 }
                                 if (attrName.equals("j:defaultCategory") && value.startsWith("/root")) {

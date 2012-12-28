@@ -636,7 +636,7 @@ public final class JCRContentUtils implements ServletContextAware {
     }
 
     public static String getIconWithContext(ExtendedNodeType type) throws RepositoryException {
-        return Jahia.getContextPath() + "/osgi/" + getIcon(type, null);
+        return Jahia.getContextPath() + "/modules/" + getIcon(type, null);
     }
 
     public static String getIcon(ExtendedNodeType type) throws RepositoryException {
@@ -668,7 +668,7 @@ public final class JCRContentUtils implements ServletContextAware {
     public static String getIconWithContext(JCRNodeWrapper f, boolean useContext) throws RepositoryException {
         ExtendedNodeType primaryNodeType = f.getPrimaryNodeType();
         String folder = getIconsFolder(primaryNodeType);
-        String prefix = useContext?Jahia.getContextPath() + "/osgi/":"";
+        String prefix = useContext?Jahia.getContextPath() + "/modules/":"";
         if (f.isNodeType("jmix:hasIcon") && f.hasProperty("j:icon")) {
             return ((JCRFileNode) f.getProperty("j:icon").getNode()).getUrl();
         }

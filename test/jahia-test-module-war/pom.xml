@@ -361,7 +361,7 @@
                                 <artifactItem>
                                     <groupId>org.jahia.test</groupId>
                                     <artifactId>dummy1</artifactId>
-                                    <version>6.7.0.0-SNAPSHOT</version>
+                                    <version>${project.version}</version>
                                     <type>war</type>
                                     <outputDirectory>${project.build.directory}/${project.build.finalName}/resources</outputDirectory>
                                 </artifactItem>

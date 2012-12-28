@@ -1081,68 +1081,52 @@ public class ContentManagerHelper {
         }
     }
 
-    public GWTJahiaNode createTemplateSet(String key, String baseSet, final String siteType, String sources, String scmURI, String scmType, JCRSessionWrapper session) throws GWTJahiaServiceException {
+    public GWTJahiaNode createModule(String key, String baseSet, final String siteType, String sources, JCRSessionWrapper session) throws GWTJahiaServiceException {
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-        String fullUri = null;
-        if (scmURI != null) {
-            fullUri = "scm:" + scmType + ":" + scmURI;
-        }
 
-        if (key == null && scmURI != null) {
-            try {
-                JCRNodeWrapper node = templateManagerService.checkoutModule(sources != null ? new File(sources) : null, fullUri, session);
-                return navigation.getGWTJahiaNode(node, GWTJahiaNode.DEFAULT_SITE_FIELDS);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-        } else if (key == null && sources != null) {
-            try {
-                JCRNodeWrapper node = templateManagerService.installFromSources(new File(sources), session);
-                return navigation.getGWTJahiaNode(node, GWTJahiaNode.DEFAULT_SITE_FIELDS);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-        } else if (baseSet == null) {
+        if (baseSet == null) {
             String shortName = JCRContentUtils.generateNodeName(key);
             try {
-                JCRNodeWrapper node = templateManagerService.createModule(shortName, siteType, sources != null ? new File(sources) : null, fullUri, session);
+                JCRNodeWrapper node = templateManagerService.createModule(shortName, siteType, sources != null ? new File(sources) : null, session);
                 return node != null ? navigation.getGWTJahiaNode(node.getParent(), GWTJahiaNode.DEFAULT_SITE_FIELDS) : null;
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
         } else {
             String shortName = JCRContentUtils.generateNodeName(key);
-            try {
-                JCRNodeWrapper node = session.getNode("/modules");
-                shortName = JCRContentUtils.findAvailableNodeName(node, shortName);
+            // todo must duplicate sources
 
-                List<GWTJahiaNode> result = copy(Arrays.asList("/modules/" + baseSet), "/modules", shortName, false, false, false, true, session);
-                String s = session.getNode("/modules/" + baseSet).getProperty("j:moduleType").getValue().getString();
-                session.getNode("/modules/" + shortName).setProperty("j:title", key);
-
-                boolean isTemplatesSet = JahiaTemplateManagerService.MODULE_TYPE_TEMPLATES_SET.equals(s);
-
-                if (isTemplatesSet) {
-                    Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:template] as t where t.[j:view]='" + baseSet + "' and isdescendantnode(t,'/modules/" + shortName + "')", Query.JCR_SQL2);
-                    NodeIterator ni = q.execute().getNodes();
-                    while (ni.hasNext()) {
-                        JCRNodeWrapper template = (JCRNodeWrapper) ni.next();
-                        template.setProperty("j:view", shortName);
-                    }
-                }
-                session.save();
-                templateManagerService.duplicateModule(shortName, s, baseSet);
-                if (!session.getNode("/modules/" + shortName).hasNode("j:versionInfo")) {
-                    session.getNode("/modules/" + shortName).addNode("j:versionInfo", "jnt:versionInfo");
-                }
-                session.getNode("/modules/" + shortName).getNode("j:versionInfo").setProperty("j:version", "1.0");
-                session.save();
-
-                JCRNodeWrapper templateSet = session.getNodeByUUID(result.get(0).getUUID());
-                return navigation.getGWTJahiaNode(templateSet, GWTJahiaNode.DEFAULT_SITE_FIELDS);
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
+//            try {
+//                JCRNodeWrapper node = session.getNode("/modules");
+//                shortName = JCRContentUtils.findAvailableNodeName(node, shortName);
+//
+//                List<GWTJahiaNode> result = copy(Arrays.asList("/modules/" + baseSet), "/modules", shortName, false, false, false, true, session);
+//                String s = session.getNode("/modules/" + baseSet).getProperty("j:moduleType").getValue().getString();
+//                session.getNode("/modules/" + shortName).setProperty("j:title", key);
+//
+//                boolean isTemplatesSet = JahiaTemplateManagerService.MODULE_TYPE_TEMPLATES_SET.equals(s);
+//
+//                if (isTemplatesSet) {
+//                    Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:template] as t where t.[j:view]='" + baseSet + "' and isdescendantnode(t,'/modules/" + shortName + "')", Query.JCR_SQL2);
+//                    NodeIterator ni = q.execute().getNodes();
+//                    while (ni.hasNext()) {
+//                        JCRNodeWrapper template = (JCRNodeWrapper) ni.next();
+//                        template.setProperty("j:view", shortName);
+//                    }
+//                }
+//                session.save();
+//                templateManagerService.duplicateModule(shortName, s, baseSet);
+//                if (!session.getNode("/modules/" + shortName).hasNode("j:versionInfo")) {
+//                    session.getNode("/modules/" + shortName).addNode("j:versionInfo", "jnt:versionInfo");
+//                }
+//                session.getNode("/modules/" + shortName).getNode("j:versionInfo").setProperty("j:version", "1.0");
+//                session.save();
+//
+//                JCRNodeWrapper templateSet = session.getNodeByUUID(result.get(0).getUUID());
+//                return navigation.getGWTJahiaNode(templateSet, GWTJahiaNode.DEFAULT_SITE_FIELDS);
+//            } catch (RepositoryException e) {
+//                logger.error(e.getMessage(), e);
+//            }
         }
         return null;
     }
@@ -1163,28 +1147,42 @@ public class ContentManagerHelper {
         return new File(vi.getProperty("j:sourcesFolder").getString());
     }
 
-    public GWTJahiaNode updateModule(String moduleName, JCRSessionWrapper session) throws RepositoryException {
-        GWTJahiaNode node = null;
+    public void updateModule(String moduleName, JCRSessionWrapper session) throws RepositoryException {
         File sources = getSource(moduleName, session);
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
 
         try {
-            if (sources == null || !sources.exists()) {
-                JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(moduleName);
-                String scmUri = aPackage.getScmURI();
+            SourceControlManagement scm = SourceControlManagement.getSourceControlManagement(sources);
+            templateManagerService.saveModule(moduleName, sources, session);
+            scm.update();
+            templateManagerService.compileAndDeploy(moduleName, sources, session);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-                JCRNodeWrapper nodeWrapper = templateManagerService.checkoutModule(null, scmUri, session);
-                node = navigation.getGWTJahiaNode(nodeWrapper.getParent(), GWTJahiaNode.DEFAULT_SITE_FIELDS);
-            } else {
-                SourceControlManagement scm = SourceControlManagement.getSourceControlManagement(sources);
-                templateManagerService.saveModule(moduleName, sources, session);
-                scm.update();
-                templateManagerService.compileAndDeploy(moduleName, sources, session);
-            }
+    public GWTJahiaNode checkoutModule(String moduleName, String scmURI, String scmType, String branchOrTag, JCRSessionWrapper session) throws RepositoryException {
+        GWTJahiaNode node = null;
+
+        JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+
+        try {
+            String fullUri = "scm:" + scmType + ":" + scmURI;
+            JCRNodeWrapper nodeWrapper = templateManagerService.checkoutModule(null, fullUri, branchOrTag, moduleName, session);
+            node = navigation.getGWTJahiaNode(nodeWrapper.getParent(), GWTJahiaNode.DEFAULT_SITE_FIELDS);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return node;
+    }
+
+    public void sendToSourceControl(String moduleName, String scmURI, String scmType, JCRSessionWrapper session) throws RepositoryException {
+        try {
+            JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+            templateManagerService.sendToSourceControl(moduleName, scmURI, scmType, session);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void compileAndDeploy(String moduleName, JCRSessionWrapper session) throws RepositoryException {

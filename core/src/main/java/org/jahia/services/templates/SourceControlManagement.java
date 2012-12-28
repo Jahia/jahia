@@ -127,8 +127,8 @@ public abstract class SourceControlManagement {
         SourceControlManagement scm = null;
 
         if (scmURI.startsWith("scm:")) {
-            String scmProvider = scmURI.substring(4, scmURI.indexOf(":",4));
-            String scmUrl = scmURI.substring(scmURI.indexOf(":",4)+1);
+            String scmProvider = scmURI.substring(4, scmURI.indexOf(":", 4));
+            String scmUrl = scmURI.substring(scmURI.indexOf(":", 4) + 1);
 
             if (scmProvider.equals("git")) {
                 scm = new GitSourceControlManagement();
@@ -142,12 +142,12 @@ public abstract class SourceControlManagement {
         return scm;
     }
 
-    public static SourceControlManagement checkoutRepository(File workingDir, String scmURI) throws Exception {
+    public static SourceControlManagement checkoutRepository(File workingDir, String scmURI, String branchOrTag) throws Exception {
         SourceControlManagement scm = null;
 
         if (scmURI.startsWith("scm:")) {
-            String scmProvider = scmURI.substring(4, scmURI.indexOf(":",4));
-            String scmUrl = scmURI.substring(scmURI.indexOf(":",4)+1);
+            String scmProvider = scmURI.substring(4, scmURI.indexOf(":", 4));
+            String scmUrl = scmURI.substring(scmURI.indexOf(":", 4) + 1);
 
             if (scmProvider.equals("git")) {
                 scm = new GitSourceControlManagement();
@@ -157,7 +157,7 @@ public abstract class SourceControlManagement {
                 throw new Exception("Unknown repository type");
             }
 
-        scm.initFromURI(workingDir, scmUrl);
+            scm.initFromURI(workingDir, scmUrl, branchOrTag);
         }
         return scm;
     }
@@ -166,11 +166,11 @@ public abstract class SourceControlManagement {
         return rootFolder;
     }
 
-    protected abstract void initWithEmptyFolder(File workingDirectory, String url) throws Exception ;
+    protected abstract void initWithEmptyFolder(File workingDirectory, String url) throws Exception;
 
     protected abstract void initWithWorkingDirectory(File workingDirectory) throws Exception;
 
-    protected abstract void initFromURI(File workingDirectory, String uri) throws Exception;
+    protected abstract void initFromURI(File workingDirectory, String uri, String branchOrTag) throws Exception;
 
     public abstract String getURI() throws Exception;
 

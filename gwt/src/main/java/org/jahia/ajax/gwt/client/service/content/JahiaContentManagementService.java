@@ -118,7 +118,9 @@ public interface JahiaContentManagementService extends RemoteService {
     
     boolean createRemotePublication(String nodeName, Map<String, String> props, boolean validateConnectionSettings) throws GWTJahiaServiceException;
 
-    GWTJahiaNode createTemplateSet(String key, String baseSet, String siteType, String source,String scmUri, String scmType) throws GWTJahiaServiceException;
+    GWTJahiaNode createModule(String key, String baseSet, String siteType, String source) throws GWTJahiaServiceException;
+
+    GWTJahiaNode checkoutModule(String moduleName, String scmURI, String scmType, String branchOrTag) throws GWTJahiaServiceException;
 
     void cropImage(String path, String target, int top, int left, int width, int height, boolean forceReplace) throws GWTJahiaServiceException;
 
@@ -350,6 +352,8 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void rotateImage(String path, String target, boolean clockwise, boolean forceReplace) throws GWTJahiaServiceException;
 
+    void sendToSourceControl(String moduleName, String scmURI, String scmType) throws GWTJahiaServiceException;
+
     void saveModule(String moduleName, String message) throws GWTJahiaServiceException;
 
     void saveNode(GWTJahiaNode node, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes) throws GWTJahiaServiceException;
@@ -390,7 +394,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void unzip(List<String> paths) throws GWTJahiaServiceException;
 
-    GWTJahiaNode updateModule(String moduleName) throws GWTJahiaServiceException;
+    void updateModule(String moduleName) throws GWTJahiaServiceException;
 
     void compileAndDeploy(String moduleName) throws GWTJahiaServiceException;
 

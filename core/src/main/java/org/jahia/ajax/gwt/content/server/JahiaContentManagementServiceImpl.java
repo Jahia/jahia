@@ -1414,9 +1414,27 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         logger.info("...template deployment done.");
     }
 
-    public GWTJahiaNode createTemplateSet(String key, String baseSet, String siteType, String sources, String scmUri, String scmType) throws GWTJahiaServiceException {
+    public GWTJahiaNode createModule(String key, String baseSet, String siteType, String sources) throws GWTJahiaServiceException {
         try {
-            return contentManager.createTemplateSet(key, baseSet, siteType, sources, scmUri, scmType, retrieveCurrentSession());
+            return contentManager.createModule(key, baseSet, siteType, sources, retrieveCurrentSession());
+        } catch (Exception e) {
+            logger.error("", e);
+            throw new GWTJahiaServiceException(e.toString());
+        }
+    }
+
+    public GWTJahiaNode checkoutModule(String moduleName, String scmURI, String scmType, String branchOrTag) throws GWTJahiaServiceException {
+        try {
+            return contentManager.checkoutModule(moduleName, scmURI, scmType, branchOrTag, retrieveCurrentSession());
+        } catch (Exception e) {
+            logger.error("", e);
+            throw new GWTJahiaServiceException(e.toString());
+        }
+    }
+
+    public void sendToSourceControl(String moduleName, String scmURI, String scmType) throws GWTJahiaServiceException {
+        try {
+            contentManager.sendToSourceControl(moduleName, scmURI, scmType, retrieveCurrentSession());
         } catch (Exception e) {
             logger.error("", e);
             throw new GWTJahiaServiceException(e.toString());
@@ -1432,9 +1450,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public GWTJahiaNode updateModule(String moduleName) throws GWTJahiaServiceException {
+    public void updateModule(String moduleName) throws GWTJahiaServiceException {
         try {
-            return contentManager.updateModule(moduleName, retrieveCurrentSession());
+            contentManager.updateModule(moduleName, retrieveCurrentSession());
         } catch (RepositoryException e) {
             logger.error("Cannot update module", e);
             throw new GWTJahiaServiceException(e.toString());

@@ -116,7 +116,9 @@ public interface JahiaContentManagementServiceAsync {
 
     void createRemotePublication(String nodeName, Map<String, String> props, boolean validateConnectionSettings, AsyncCallback<Boolean> async);
 
-    void createTemplateSet(String key, String baseSet, String siteType, String sources, String scmUri, String scmType, AsyncCallback<GWTJahiaNode> asyncCallback);
+    void createModule(String key, String baseSet, String siteType, String sources, AsyncCallback<GWTJahiaNode> asyncCallback);
+
+    void checkoutModule(String moduleName, String scmURI, String scmType, String branchOrTag, AsyncCallback<GWTJahiaNode> asyncCallback);
 
     void cropImage(String path, String target, int top, int left, int width, int height, boolean forceReplace, AsyncCallback async);
 
@@ -301,6 +303,8 @@ public interface JahiaContentManagementServiceAsync {
 
     void rotateImage(String path, String target, boolean clockwise, boolean forceReplace, AsyncCallback async);
 
+    void sendToSourceControl(String moduleName, String scmURI, String scmType, AsyncCallback asyncCallback);
+
     void saveModule(String moduleName, String message, AsyncCallback asyncCallback);
 
     void saveNode(GWTJahiaNode node, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes, AsyncCallback async);
@@ -342,7 +346,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void unzip(List<String> paths, AsyncCallback async);
 
-    void updateModule(String moduleName, AsyncCallback<GWTJahiaNode> asyncCallback);
+    void updateModule(String moduleName, AsyncCallback asyncCallback);
 
     void compileAndDeploy(String moduleName, AsyncCallback async);
 

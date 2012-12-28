@@ -40,7 +40,11 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -53,29 +57,48 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 /**
  * Action item to create a new templates set
  */
-public class DuplicateTemplatesSetActionItem extends BaseActionItem {
+public class DuplicateModuleActionItem extends BaseActionItem {
     @Override public void onComponentSelection() {
-        String name = Window.prompt(Messages.get("newPackageName.label"), "New package name");
-        if (name != null) {
-            linker.loading(Messages.get("statusbar.duplicatingTemplateSet.label"));
-            JahiaContentManagementService.App.getInstance().createTemplateSet(name, JahiaGWTParameters.getSiteKey(), null, null, null, null, new BaseAsyncCallback<GWTJahiaNode>() {
-                public void onSuccess(GWTJahiaNode result) {
-                    linker.loaded();
-                    Info.display(Messages.get("label.information", "Information"), Messages.get("message.templateSetCreated", "Templates set successfully created"));
-                    JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
-                    JahiaGWTParameters.setSite(result, linker);
-                    if (((EditLinker) linker).getSidePanel() != null) {
-                        ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL, null);
-                    }
-                    MainModule.staticGoTo(result.getPath(), null);
-                    SiteSwitcherActionItem.refreshAllSitesList(linker);
-                }
 
-                public void onApplicationFailure(Throwable caught) {
-                    linker.loaded();
-                    Info.display(Messages.get("label.error", "Error"), Messages.get("message.templateSetCreationFailed", "Templates set creation failed"));
+        MessageBox mb = MessageBox.prompt(Messages.get("newPackageName.label"), "New module name");
+        mb.addCallback(new Listener<MessageBoxEvent>() {
+            @Override
+            public void handleEvent(MessageBoxEvent be) {
+                String name = be.getValue();
+                if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.OK)) {
+                    linker.loading(Messages.get("statusbar.duplicatingTemplateSet.label"));
+                    JahiaContentManagementService.App.getInstance().createModule(name, JahiaGWTParameters.getSiteKey(), (String) JahiaGWTParameters.getSiteNode().get("j:moduleType"), null, new BaseAsyncCallback<GWTJahiaNode>() {
+                        public void onSuccess(GWTJahiaNode result) {
+                            linker.loaded();
+                            Info.display(Messages.get("label.information", "Information"), Messages.get("message.templateSetCreated", "Templates set successfully created"));
+                            JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
+                            JahiaGWTParameters.setSite(result, linker);
+                            if (((EditLinker) linker).getSidePanel() != null) {
+                                ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL, null);
+                            }
+                            MainModule.staticGoTo(result.getPath(), null);
+                            SiteSwitcherActionItem.refreshAllSitesList(linker);
+                        }
+
+                        public void onApplicationFailure(Throwable caught) {
+                            linker.loaded();
+                            Info.display(Messages.get("label.error", "Error"), Messages.get("message.templateSetCreationFailed", "Templates set creation failed"));
+                        }
+                    });
                 }
-            });
+            }
+        });
+        mb.show();
+    }
+
+    @Override
+    public void handleNewLinkerSelection() {
+        GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
+        if (siteNode.get("j:sourcesFolder") != null) {
+            setEnabled(true);
+        } else {
+            setEnabled(false);
         }
     }
+
 }

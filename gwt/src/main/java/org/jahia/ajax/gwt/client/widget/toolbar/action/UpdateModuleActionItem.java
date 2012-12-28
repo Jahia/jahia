@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Info;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -47,7 +48,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 /**
  * Action item to create a new templates set
@@ -55,42 +55,101 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 public class UpdateModuleActionItem extends BaseActionItem {
 
     @Override public void onComponentSelection() {
-        linker.loading("Updating module...");
-        JahiaContentManagementService.App.getInstance().updateModule(JahiaGWTParameters.getSiteKey(), new BaseAsyncCallback<GWTJahiaNode>() {
-            public void onSuccess(GWTJahiaNode result) {
-                linker.loaded();
-                if (result != null) {
-                    JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
-                    JahiaGWTParameters.setSite(result, linker);
-                    if (((EditLinker) linker).getSidePanel() != null) {
-                        ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL, null);
-                    }
-                    SiteSwitcherActionItem.refreshAllSitesList(linker);
-                }
-                Info.display(Messages.get("label.information", "Information"), Messages.get("message.templateSetCreated", "Module saved"));
-            }
 
-            public void onApplicationFailure(Throwable caught) {
-                linker.loaded();
-                Info.display(Messages.get("label.error", "Error"), Messages.get("message.templateSetCreationFailed", "Module save failed"));
+        GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
+        String s = siteNode.get("j:versionInfo");
+
+        if (siteNode.get("j:sourcesFolder") != null) {
+            if (s.endsWith("-SNAPSHOT") && siteNode.get("j:scmURI") != null) {
+                linker.loading("Updating module...");
+                JahiaContentManagementService.App.getInstance().updateModule(JahiaGWTParameters.getSiteKey(), new BaseAsyncCallback() {
+                    public void onSuccess(Object result) {
+                        linker.loaded();
+                        Info.display(Messages.get("label.information", "Information"), "Module updated");
+                    }
+
+                    public void onApplicationFailure(Throwable caught) {
+                        linker.loaded();
+                        Info.display(Messages.get("label.error", "Error"), "Module update failed");
+                    }
+                });
+            } else {
+                final SourceControlDialog dialog = new SourceControlDialog(false);
+                dialog.addCallback(new Listener<WindowEvent>() {
+                    @Override
+                    public void handleEvent(WindowEvent be) {
+                        linker.loading("Sending sources...");
+                        JahiaContentManagementService.App.getInstance().sendToSourceControl(JahiaGWTParameters.getSiteKey(), dialog.getUri(), dialog.getScmType(), new BaseAsyncCallback() {
+                            @Override
+                            public void onSuccess(Object result) {
+                                linker.loaded();
+                            }
+
+                            public void onApplicationFailure(Throwable caught) {
+                                linker.loaded();
+                                Info.display(Messages.get("label.error", "Error"), Messages.get("message.templateSetCreationFailed", "Module save failed"));
+                            }
+                        });
+                    }
+                });
+                dialog.show();
             }
-        });
+        } else {
+            final SourceControlDialog dialog = new SourceControlDialog(true);
+
+            if (siteNode.get("j:scmURI") != null) {
+                String value = (String) siteNode.get("j:scmURI");
+                if (value.startsWith("scm:")) {
+                    value = value.substring(4);
+                    String type = value.substring(0, value.indexOf(":"));
+                    dialog.setScmType(type);
+                    value = value.substring(value.indexOf(":")+1);
+                }
+                dialog.setUri(value);
+            }
+            dialog.addCallback(new Listener<WindowEvent>() {
+                @Override
+                public void handleEvent(WindowEvent be) {
+                    linker.loading("Getting sources...");
+
+                    JahiaContentManagementService.App.getInstance().checkoutModule(JahiaGWTParameters.getSiteKey(), dialog.getUri(), dialog.getScmType(), dialog.getBranchOrTag(), new BaseAsyncCallback<GWTJahiaNode>() {
+                        public void onSuccess(GWTJahiaNode result) {
+                            linker.loaded();
+                            JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
+                            JahiaGWTParameters.setSite(result, linker);
+                            if (((EditLinker) linker).getSidePanel() != null) {
+                                ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL, null);
+                            }
+                            SiteSwitcherActionItem.refreshAllSitesList(linker);
+                            Info.display(Messages.get("label.information", "Information"), "Sources downloaded");
+                        }
+
+                        public void onApplicationFailure(Throwable caught) {
+                            linker.loaded();
+                            Info.display(Messages.get("label.error", "Error"), Messages.get("message.templateSetCreationFailed", "Module save failed"));
+                        }
+                    });
+                }
+            });
+            dialog.show();
+        }
+
+
     }
 
     @Override
     public void handleNewLinkerSelection() {
         GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
         String s = siteNode.get("j:versionInfo");
-        if (s.endsWith("-SNAPSHOT") && siteNode.get("j:scmURI") != null) {
-            setEnabled(true);
-            if (siteNode.get("j:sourcesFolder") != null) {
+
+        if (siteNode.get("j:sourcesFolder") != null) {
+            if (s.endsWith("-SNAPSHOT") && siteNode.get("j:scmURI") != null) {
                 updateTitle(Messages.get("label.updateModule", "Update module"));
             } else {
-                updateTitle(Messages.get("label.getSource", "Get sources for module"));
+                updateTitle(Messages.get("label.sendToSourceControl", "Send to source control"));
             }
         } else {
-            setEnabled(false);
+            updateTitle(Messages.get("label.getSource", "Get sources for module"));
         }
     }
-
-}
+ }

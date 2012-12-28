@@ -7,13 +7,16 @@ import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.GridDropTarget;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.StoreEvent;
+import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.DualListField;
 import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
-import com.extjs.gxt.ui.client.widget.layout.*;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
@@ -40,7 +43,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
     protected transient ListStore<GWTJahiaNode> store;
     protected transient PropertiesEditor propertiesEditor;
 
-    protected transient Map<GWTJahiaNode,PropertiesEditor> propertiesEditors;
+    protected transient Map<GWTJahiaNode, PropertiesEditor> propertiesEditors;
 
     private String type;
     private transient Grid<GWTJahiaNode> grid;
@@ -57,7 +60,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
 
 
     @Override
-    public void init(final NodeHolder engine,final AsyncTabItem tab, String language) {
+    public void init(final NodeHolder engine, final AsyncTabItem tab, String language) {
         if (tab.isProcessed()) {
             return;
         }
@@ -94,7 +97,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
         columnsKeys = new ArrayList<String>();
-        for(String columnConfig : columnsConfig) {
+        for (String columnConfig : columnsConfig) {
             String[] config = columnConfig.split(",");
             columnsKeys.add(config[0]);
             ColumnConfig colConfig = new ColumnConfig();
@@ -104,7 +107,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             } else {
                 colConfig.setWidth(100);
             }
-            colConfig.setHeader(Messages.get(config[2],config[2]));
+            colConfig.setHeader(Messages.get(config[2], config[2]));
             columns.add(colConfig);
             colConfig.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                 @Override
@@ -137,8 +140,8 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         }
 
         if (engine.getNode() != null) {
-            JahiaContentManagementService.App.getInstance().lsLoad(engine.getNode(), Arrays.asList(type),null,
-                    null, columnsKeys, false, -1,0, false, null, null, false, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
+            JahiaContentManagementService.App.getInstance().lsLoad(engine.getNode(), Arrays.asList(type), null,
+                    null, columnsKeys, false, -1, 0, false, null, null, false, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
                 public void onSuccess(PagingLoadResult<GWTJahiaNode> result) {
                     for (GWTJahiaNode itemDefinition : result.getData()) {
                         children.add(itemDefinition);
@@ -148,14 +151,14 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             });
         }
 
-        grid = new Grid<GWTJahiaNode>(store,new ColumnModel(columns));
+        grid = new Grid<GWTJahiaNode>(store, new ColumnModel(columns));
 
         GridDropTarget target = new GridDropTarget(grid);
         target.setAllowSelfAsSource(true);
         target.setFeedback(DND.Feedback.INSERT);
 
         grid.setHeight(200);
-        tab.add(grid, new RowData(1,200, new Margins(2)));
+        tab.add(grid, new RowData(1, 200, new Margins(2)));
 
         ToolBar toolBar = new ToolBar();
         Button add = new Button(Messages.get("label.add", "Add"));
@@ -298,7 +301,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         });
         moveLast.setIcon(StandardIconsProvider.STANDARD_ICONS.moveLast());
         toolBar.add(moveLast);
-        tab.add(toolBar, new RowData(1,-1, new Margins(2)));
+        tab.add(toolBar, new RowData(1, -1, new Margins(2)));
 
         grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override
@@ -313,23 +316,23 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                     tab.layout();
                 } else if (propertiesEditors.containsKey(item)) {
                     propertiesEditor = propertiesEditors.get(item);
-                    tab.add(propertiesEditor, new RowData(1,1,new Margins(2)));
+                    tab.add(propertiesEditor, new RowData(1, 1, new Margins(2)));
                     tab.layout();
                 } else {
                     if (item.getPath() != null) {
-                        JahiaContentManagementService.App.getInstance().getProperties(item.getPath(),engine.getDefaultLanguageCode(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
+                        JahiaContentManagementService.App.getInstance().getProperties(item.getPath(), engine.getDefaultLanguageCode(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
                             public void onSuccess(GWTJahiaGetPropertiesResult result) {
                                 displayProperties(item, result.getNodeTypes(), result.getProperties());
-                                tab.add(propertiesEditor, new RowData(1,1,new Margins(2)));
+                                tab.add(propertiesEditor, new RowData(1, 1, new Margins(2)));
                                 tab.layout();
                             }
                         });
                     } else {
-                        item.set("newItem","true");
-                        item.setPath(engineNode.getPath()+"/"+item.getName());
+                        item.set("newItem", "true");
+                        item.setPath(engineNode.getPath() + "/" + item.getName());
                         displayProperties(item, Arrays.asList(nodeType), (Map<String, GWTJahiaNodeProperty>) item.get("default-properties"));
                         item.remove("default-properties");
-                        tab.add(propertiesEditor, new RowData(1,1,new Margins(2)));
+                        tab.add(propertiesEditor, new RowData(1, 1, new Margins(2)));
                         tab.layout();
                     }
                 }
@@ -353,7 +356,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                     properties.put(definition.getName(), value);
                     if (propertyDefinition.isMultiple()) {
                         item.set(definition.getName(), value.getValues());
-                    } else if (!value.getValues().isEmpty()){
+                    } else if (!value.getValues().isEmpty()) {
                         item.set(definition.getName(), value.getValues().get(0));
                     }
                 }
@@ -364,7 +367,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
 
     private void displayProperties(final GWTJahiaNode item, List<GWTJahiaNodeType> nodeTypes, Map<String, GWTJahiaNodeProperty> properties) {
         // change property
-        for (GWTJahiaNodeType nt: nodeTypes) {
+        for (GWTJahiaNodeType nt : nodeTypes) {
             if (nt.getName().equals("jnt:unstructuredChildNodeDefinition") ||
                     nt.getSuperTypes().contains("jnt:unstructuredChildNodeDefinition") ||
                     nt.getName().equals("jnt:unstructuredPropertyDefinition") ||
@@ -386,16 +389,35 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         for (final String key : columnsKeys) {
             if (propertiesEditor.getFieldsMap().containsKey(key)) {
                 final PropertiesEditor.PropertyAdapterField field = propertiesEditor.getFieldsMap().get(key);
-                field.addListener(Events.Change, new Listener<BaseEvent>() {
-                    public void handleEvent(BaseEvent be) {
-                        Object value = field.getValue();
-                        if (value instanceof GWTJahiaValueDisplayBean) {
-                            value = ((GWTJahiaValueDisplayBean)value).getValue();
+                if (field.getField() instanceof DualListField) {
+                    ((DualListField<GWTJahiaValueDisplayBean>) field.getField()).getToList().getStore().addStoreListener(new StoreListener<GWTJahiaValueDisplayBean>() {
+
+                        @Override
+                        public void handleEvent(StoreEvent<GWTJahiaValueDisplayBean> e) {
+                            List<String> strings = new ArrayList<String>();
+                            List<GWTJahiaValueDisplayBean> beans = ((ListStore<GWTJahiaValueDisplayBean>) e.getSource()).getModels();
+
+                            for (GWTJahiaValueDisplayBean bean : beans) {
+                                strings.add(bean.getValue());
+                            }
+
+                            item.set(key, strings);
+                            store.update(item);
+                            super.handleEvent(e);
                         }
-                        item.set(key, value);
-                        store.update(item);
-                    }
-                });
+                    });
+                } else {
+                    field.addListener(Events.Change, new Listener<BaseEvent>() {
+                        public void handleEvent(BaseEvent be) {
+                            Object value = field.getValue();
+                            if (value instanceof GWTJahiaValueDisplayBean) {
+                                value = ((GWTJahiaValueDisplayBean) value).getValue();
+                            }
+                            item.set(key, value);
+                            store.update(item);
+                        }
+                    });
+                }
             }
         }
     }
@@ -444,7 +466,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                     if (isNew) {
                         itemDefinition.remove("newItem");
                     }
-                    itemDefinition.set("nodeProperties", pe.getProperties(false,true,!isNew));
+                    itemDefinition.set("nodeProperties", pe.getProperties(false, true, !isNew));
                     itemDefinition.set("nodeLangCodeProperties", new HashMap<String, List<GWTJahiaNodeProperty>>());
                 } else {
                     itemDefinition.set("nodeProperties", new ArrayList<GWTJahiaNodeProperty>());
@@ -457,7 +479,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                     GWTJahiaNode c1 = null;
                     GWTJahiaNode c2 = null;
 
-                    for (GWTJahiaNode n :grid.getStore().getModels()) {
+                    for (GWTJahiaNode n : grid.getStore().getModels()) {
                         if (n.getPath().equals(((GWTJahiaNode) o1).getPath())) {
                             c1 = n;
                         }
@@ -495,12 +517,11 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         }
     }
     private void removeSorter() {
-        if (grid.getStore().getStoreSorter() != null ) {
+        if (grid.getStore().getStoreSorter() != null) {
             grid.getStore().setSortField(null);
             grid.getStore().setStoreSorter(null);
             grid.getView().refresh(true);
-        }
-        else {
+        } else {
             grid.getView().refresh(false);
         }
     }
@@ -509,7 +530,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         this.type = type;
     }
 
-    public void setColumnsConfig(List<String>columnsConfig) {
+    public void setColumnsConfig(List<String> columnsConfig) {
         this.columnsConfig = columnsConfig;
     }
 }

@@ -350,7 +350,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
             return true;
         } catch (AccessControlException e) {
-            return false;
+            if (!getProvider().getMountPoint().equals("/")) {
+                try {
+                    return session.getNode(getProvider().getMountPoint()).getParent().hasPermission(perm);
+                } catch (RepositoryException e1) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
         } catch (RepositoryException re) {
             logger.error("Cannot check permission " + perm, re);
             return false;

@@ -426,7 +426,7 @@ public class TemplatePackageRegistry {
      *
      * @param templatePackage the template package to add
      */
-    public void register(JahiaTemplatesPackage templatePackage) {
+    public void register(final JahiaTemplatesPackage templatePackage) {
         templatePackages = null;
         if (registry.get(templatePackage.getName()) != null) {
             JahiaTemplatesPackage previousPack = registry.get(templatePackage.getName());
@@ -471,22 +471,25 @@ public class TemplatePackageRegistry {
     }
 
     public void mountSourcesProvider(JahiaTemplatesPackage templatePackage) {
-        ModulesDataSource dataSource = (ModulesDataSource) SpringContextSingleton.getBean("ModulesDataSourcePrototype");
-        File oldStructure = new File(templatePackage.getSourcesFolder(), "src/main/webapp");
-        if (oldStructure.exists()) {
-            dataSource.setRoot(templatePackage.getSourcesFolder().toURI().toString()+"src/main/webapp");
-        } else {
-            dataSource.setRoot(templatePackage.getSourcesFolder().toURI().toString()+"src/main/resources");
-        }
-        dataSource.setModule(templatePackage);
-        ExternalContentStoreProvider ex = (ExternalContentStoreProvider) SpringContextSingleton.getBean("ModulesStoreProviderPrototype");
-        ex.setKey("module-"+templatePackage.getRootFolder()+"-"+templatePackage.getVersion().toString());
-        ex.setMountPoint("/modules/" + templatePackage.getRootFolderWithVersion() + "/sources");
-        ex.setDataSource(dataSource);
-        try {
-            ex.start();
-        } catch (JahiaInitializationException e) {
-            e.printStackTrace();
+        JCRStoreProvider provider = jcrStoreService.getSessionFactory().getProviders().get("module-"+templatePackage.getRootFolder()+"-"+templatePackage.getVersion().toString());
+        if (provider == null) {
+            ModulesDataSource dataSource = (ModulesDataSource) SpringContextSingleton.getBean("ModulesDataSourcePrototype");
+            File oldStructure = new File(templatePackage.getSourcesFolder(), "src/main/webapp");
+            if (oldStructure.exists()) {
+                dataSource.setRoot(templatePackage.getSourcesFolder().toURI().toString()+"src/main/webapp");
+            } else {
+                dataSource.setRoot(templatePackage.getSourcesFolder().toURI().toString()+"src/main/resources");
+            }
+            dataSource.setModule(templatePackage);
+            ExternalContentStoreProvider ex = (ExternalContentStoreProvider) SpringContextSingleton.getBean("ModulesStoreProviderPrototype");
+            ex.setKey("module-"+templatePackage.getRootFolder()+"-"+templatePackage.getVersion().toString());
+            ex.setMountPoint("/modules/" + templatePackage.getRootFolderWithVersion() + "/sources");
+            ex.setDataSource(dataSource);
+            try {
+                ex.start();
+            } catch (JahiaInitializationException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -40,11 +40,9 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -56,9 +54,9 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 /**
- * Action item to create a new templates set
+ * Action item to create a new module
  */
-public class NewTemplatesSetActionItem extends BaseActionItem {
+public class NewModuleActionItem extends BaseActionItem {
     private String siteType;
 
     public void setSiteType(String siteType) {
@@ -66,13 +64,15 @@ public class NewTemplatesSetActionItem extends BaseActionItem {
     }
 
     @Override public void onComponentSelection() {
-        final Window wnd = new Window();
-        wnd.setWidth(550);
-        wnd.setHeight(300);
-        wnd.setModal(true);
-        wnd.setBlinkModal(true);
-        wnd.setHeading("New templates set");
-        wnd.setLayout(new FitLayout());
+        final Dialog dialog = new Dialog();
+        dialog.setHeading("Create module");
+        dialog.setButtons(Dialog.OKCANCEL);
+        dialog.setModal(true);
+        dialog.setHideOnButtonClick(true);
+        dialog.setWidth(500);
+        dialog.setHeight(200);
+
+        dialog.setLayout(new FitLayout());
 
         final FormPanel form = new FormPanel();
         form.setHeaderVisible(false);
@@ -87,65 +87,37 @@ public class NewTemplatesSetActionItem extends BaseActionItem {
 
         final TextField<String> sources = new TextField<String>();
         sources.setName("sources");
-        sources.setFieldLabel(Messages.get("label.sources", "Sources folder"));
+        sources.setFieldLabel(Messages.get("label.sources", "Sources folder (optional - will be created with new sources)"));
         form.add(sources);
+        dialog.add(form);
 
-        final RadioGroup scmType = new RadioGroup("scmType");
-        scmType.setFieldLabel(Messages.get("label.scmType", "SCM type"));
-        Radio git = new Radio();
-        git.setBoxLabel(Messages.get("label.git", "GIT"));
-        git.setValue(true);
-        git.setValueAttribute("git");
-        scmType.add(git);
-
-        Radio svn = new Radio();
-        svn.setBoxLabel(Messages.get("label.svn", "SVN"));
-        svn.setValueAttribute("svn");
-        scmType.add(svn);
-        form.add(scmType);
-
-        final TextField<String> uri = new TextField<String>();
-        uri.setName("uri");
-        uri.setFieldLabel(Messages.get("label.uri", "URI"));
-        form.add(uri);
-
-        Button btnSubmit = new Button(Messages.get("label.save", "Save"), new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                wnd.hide();
-                linker.loading(Messages.get("statusbar.creatingTemplateSet.label"));
-                JahiaContentManagementService.App.getInstance().createTemplateSet(name.getValue(), null, siteType, sources.getValue(), uri.getValue(),"git", new BaseAsyncCallback<GWTJahiaNode>() {
-                    public void onSuccess(GWTJahiaNode result) {
-                        linker.loaded();
-                        Info.display(Messages.get("label.information", "Information"), Messages.get("message.templateSetCreated", "Templates set successfully created"));
-                        JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
-                        JahiaGWTParameters.setSite(result, linker);
-                        if (((EditLinker) linker).getSidePanel() != null) {
-                            ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL, null);
+        dialog.addListener(Events.Hide, new Listener<WindowEvent>() {
+            @Override
+            public void handleEvent(WindowEvent be) {
+                if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.OK)) {
+                    linker.loading(Messages.get("statusbar.creatingTemplateSet.label"));
+                    JahiaContentManagementService.App.getInstance().createModule(name.getValue(), null, siteType, sources.getValue(), new BaseAsyncCallback<GWTJahiaNode>() {
+                        public void onSuccess(GWTJahiaNode result) {
+                            linker.loaded();
+                            Info.display(Messages.get("label.information", "Information"), Messages.get("message.templateSetCreated", "Templates set successfully created"));
+                            JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
+                            JahiaGWTParameters.setSite(result, linker);
+                            if (((EditLinker) linker).getSidePanel() != null) {
+                                ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL, null);
+                            }
+                            MainModule.staticGoTo(result.getPath(), null);
+                            SiteSwitcherActionItem.refreshAllSitesList(linker);
                         }
-                        MainModule.staticGoTo(result.getPath(), null);
-                        SiteSwitcherActionItem.refreshAllSitesList(linker);
-                    }
 
-                    public void onApplicationFailure(Throwable caught) {
-                        linker.loaded();
-                        Info.display(Messages.get("label.error", "Error"), Messages.get("message.templateSetCreationFailed", "Templates set creation failed"));
-                    }
-                });
+                        public void onApplicationFailure(Throwable caught) {
+                            linker.loaded();
+                            Info.display(Messages.get("label.error", "Error"), Messages.get("message.templateSetCreationFailed", "Templates set creation failed"));
+                        }
+                    });
+                }
             }
         });
-        form.addButton(btnSubmit);
 
-        Button btnCancel = new Button(Messages.get("label.cancel", "Cancel"), new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                wnd.hide();
-            }
-        });
-        form.addButton(btnCancel);
-        form.setButtonAlign(Style.HorizontalAlignment.CENTER);
-
-        wnd.add(form);
-        wnd.layout();
-
-        wnd.show();
+        dialog.show();
     }
 }

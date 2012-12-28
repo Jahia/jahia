@@ -43,11 +43,8 @@ package org.jahia.services.templates;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -70,9 +67,13 @@ public class GitSourceControlManagement extends SourceControlManagement {
         this.rootFolder = workingDirectory;
     }
 
-    protected void initFromURI(File workingDirectory, String uri) throws Exception {
+    protected void initFromURI(File workingDirectory, String uri, String branchOrTag) throws Exception {
         this.rootFolder = workingDirectory.getParentFile();
         executeCommand("git", "clone " + uri + " " + workingDirectory.getName());
+        this.rootFolder = workingDirectory;
+        if (!StringUtils.isEmpty(branchOrTag)) {
+            executeCommand("git", "checkout " + branchOrTag);
+        }
         this.rootFolder = workingDirectory;
     }
 
@@ -117,6 +118,6 @@ public class GitSourceControlManagement extends SourceControlManagement {
 
     public void commit(String message) {
         executeCommand("git", "commit -a -m \"" + message + "\"");
-        executeCommand("git", "push");
+        executeCommand("git", "push -u origin master");
     }
 }

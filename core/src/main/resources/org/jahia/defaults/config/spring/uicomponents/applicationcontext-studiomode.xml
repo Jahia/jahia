@@ -50,7 +50,7 @@
                                 <list>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewTemplatesSetActionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewModuleActionItem">
                                                 <property name="siteType" value="templatesSet"/>
                                             </bean>
                                         </property>
@@ -59,7 +59,7 @@
                                     </bean>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewTemplatesSetActionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewModuleActionItem">
                                                 <property name="siteType" value="jahiapp"/>
                                             </bean>
                                         </property>
@@ -68,7 +68,7 @@
                                     </bean>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewTemplatesSetActionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewModuleActionItem">
                                                 <property name="siteType" value="profileModule"/>
                                             </bean>
                                         </property>
@@ -77,7 +77,7 @@
                                     </bean>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewTemplatesSetActionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewModuleActionItem">
                                                 <property name="siteType" value="osgimodule"/>
                                             </bean>
                                         </property>
@@ -86,7 +86,15 @@
                                     </bean>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DuplicateTemplatesSetActionItem"/>
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.FetchModuleActionItem">
+                                            </bean>
+                                        </property>
+                                        <property name="titleKey" value="label.fetchModule"/>
+                                        <property name="icon" value="fetchModule"/>
+                                    </bean>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DuplicateModuleActionItem"/>
                                         </property>
                                         <property name="titleKey" value="label.duplicateTemplatesSet"/>
                                         <property name="icon" value="duplicateTemplatesSet"/>
@@ -161,14 +169,6 @@
                                         </property>
                                         <property name="titleKey" value="label.releaseWar"/>
                                         <property name="icon" value="templateExport"/>
-                                    </bean>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.FetchModuleActionItem">
-                                            </bean>
-                                        </property>
-                                        <property name="titleKey" value="label.fetchModule"/>
-                                        <property name="icon" value="fetchModule"/>
                                     </bean>
                                 </list>
                             </property>
@@ -923,6 +923,7 @@
                                         <property name="actionItem">
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
                                                 <property name="parentTypes" value="jnt:definitionFile"/>
+                                                <property name="includeSubTypes" value="false"/>
                                                 <property name="nodeTypes" value="jnt:primaryNodeType jnt:mixinNodeType"/>
                                             </bean>
                                         </property>

@@ -62,7 +62,7 @@ public class SvnSourceControlManagement extends SourceControlManagement {
     }
 
     @Override
-    protected void initFromURI(File workingDirectory, String uri) throws Exception {
+    protected void initFromURI(File workingDirectory, String uri, String branchOrTag) throws Exception {
         this.rootFolder = workingDirectory.getParentFile();
         executeCommand("svn", "checkout " + uri + " " + workingDirectory.getName());
         this.rootFolder = workingDirectory;

@@ -340,7 +340,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (accessControlManager != null) {
 //                        List<Privilege> privileges = convertPermToPrivileges(perm, accessControlManager);
 
-                return accessControlManager.hasPrivileges(localPathInProvider, new Privilege[]{accessControlManager.privilegeFromName(perm)});
+                if (accessControlManager.hasPrivileges(localPathInProvider, new Privilege[]{accessControlManager.privilegeFromName(perm)})) {
+                    return true;
+                } else if (!getProvider().getMountPoint().equals("/")) {
+                    return session.getNode(getProvider().getMountPoint()).getParent().hasPermission(perm);
+                } else {
+                    return false;
+                }
             }
             return true;
         } catch (AccessControlException e) {

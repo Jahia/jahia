@@ -317,8 +317,9 @@ public class PublicationManagerEngine extends Window {
         @Override
         protected void onMouseDown(GridEvent<ModelData> ge) {
             String cls = ge.getTarget().getClassName();
-            if (cls != null && cls.indexOf("x-grid3-cc-" + getId() + "-" + getDataIndex()) != -1 && cls.indexOf(
-                    "disabled") == -1) {
+            if (cls != null && 
+            		cls.indexOf("x-grid3-cc-" + getId() + "-" + getDataIndex() + " ") != -1 &&
+            		cls.indexOf("disabled") == -1) {
                 ge.stopEvent();
                 int index = grid.getView().findRowIndex(ge.getTarget());
                 ModelData m = grid.getStore().getAt(index);

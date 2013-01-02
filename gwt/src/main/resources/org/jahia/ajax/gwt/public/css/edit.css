@@ -91,26 +91,32 @@
 }
 
 .x-panel-header-areamodule {
-    background : #333;
-    border: 1px solid #000;
-    padding: 4px;
-    color: #fff !important;
+    background: url("../images/xtheme-jahia-andromeda/panel/white-top-bottom.gif") repeat scroll left top #D0DFE8;
+    border: 1px solid #B7CBD8;
+    font-family: tahoma,arial,verdana,sans-serif;
+    font-size: 11px;
     font-weight: bold;
-    font-size: 10px;
+    padding: 4px;
+    color: #333 !important;
     margin-bottom:2px;
     display:block;
     overflow:hidden;
+    text-shadow: none;
+    line-height: normal;
 }
 .x-panel-header-absoluteAreamodule {
-    background : #ff5555;
-    border: 1px solid #c00;
+    background: url("../images/xtheme-jahia-andromeda/panel/white-top-bottom-abs.gif") repeat scroll left top #ff5555;
+    border: 1px solid #e85b5b;
+    font-family: tahoma,arial,verdana,sans-serif;
+    font-size: 11px;
     padding: 4px;
     color: #000 !important;
     font-weight: bold;
-    font-size: 10px;
     margin-bottom:2px;
     display:block;
     overflow:hidden;
+    text-shadow: none;
+    line-height: normal;
 }
 
 .x-panel-header-lockedmodule {

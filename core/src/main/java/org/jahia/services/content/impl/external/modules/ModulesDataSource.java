@@ -396,7 +396,7 @@ public class ModulesDataSource extends VFSDataSource {
             ExternalData data = getItemByPath(path);
             try {
                 NodeTypeRegistry ntr = loadRegistry(cndPath);
-                if (data.getType().equals("jnt:primaryNodeType") || data.getType().equals("nt:mixinNodeType")) {
+                if (data.getType().equals("jnt:primaryNodeType") || data.getType().equals("jnt:mixinNodeType")) {
                     ExtendedNodeType type = ntr.getNodeType(splitPath[0]);
                     Comparator<ExtendedItemDefinition> c = new Comparator<ExtendedItemDefinition>() {
                         @Override

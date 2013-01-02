@@ -951,6 +951,27 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return provider.getNodeWrapper(objectNode.getNode(s), session);
             }
         }
+        if (provider.getService() != null) {
+            Map<String, JCRStoreProvider> mountPoints = provider.getSessionFactory().getMountPoints();
+            String p = "";
+            String[] splitPath = s.split("/");
+            for (int i = 0; i < splitPath.length; i++) {
+                if (!p.isEmpty()) {
+                    p += "/";
+                }
+                p += splitPath[i];
+                if (mountPoints.containsKey(getPath() + "/" + p)) {
+                    JCRStoreProvider storeProvider = mountPoints.get(getPath() + "/" + p);
+                    Node node = session.getProviderSession(storeProvider).getNode(storeProvider.getRelativeRoot());
+                    JCRNodeWrapper nodeWrapper = storeProvider.getNodeWrapper(node, "/", this, session);
+                    if (i == splitPath.length - 1) {
+                        return nodeWrapper;
+                    } else {
+                        return nodeWrapper.getNode(StringUtils.substringAfter(s, p + "/"));
+                    }
+                }
+            }
+        }
         NodeIterator c = getNodes(s);
         if (c.hasNext()) {
             return (JCRNodeWrapper) c.nextNode();

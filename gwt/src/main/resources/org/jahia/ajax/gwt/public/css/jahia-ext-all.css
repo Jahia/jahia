@@ -482,6 +482,10 @@ q:before,q:after{content:'';}
   height: 20px;
 }
 
+.x-panel-toolbar {
+  float: right;
+}
+
 .x-cursor-row-resize {
   cursor: n-resize;
   cursor: row-resize;
@@ -602,6 +606,10 @@ q:before,q:after{content:'';}
   left: 0;
   width: 20px;
   height: 20px;
+}
+
+.x-panel-toolbar {
+  float: right;
 }
 
 .x-cursor-col-resize {
@@ -4332,6 +4340,15 @@ a.x-menu-item {
 .x-plain {
     overflow:hidden;
 }
+.x-tool {
+    overflow:hidden;
+    width:15px;
+    height:15px;
+    float:right;
+    cursor:pointer;
+    background:transparent no-repeat;
+    margin-left:2px;
+}
 .x-tool-toggle {
     background-position:0 -60px;
 }
@@ -4373,6 +4390,18 @@ a.x-menu-item {
 }
 .x-tool-gear-over {
     background-position:-15px -90px;
+}
+.x-tool-pin {
+    background-position:0 -135px;
+}
+.x-tool-pin-over {
+    background-position:-15px -135px;
+}
+.x-tool-unpin {
+    background-position:0 -150px;
+}
+.x-tool-unpin-over {
+    background-position:-15px -150px;
 }
 .x-tool-right {
     background-position:0 -165px;
@@ -7160,6 +7189,9 @@ a.x-menu-item {
 }
 .x-panel-mr {
 	background-image: url(../images/default/panel/left-right.gif);
+}
+.x-tool {
+    background-image:url(../images/default/panel/tool-sprites.gif);
 }
 .x-panel-ghost {
     background-color:#cbddf3;

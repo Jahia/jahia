@@ -560,7 +560,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     background: #FF9999;
 }
 
-.x-tool {
+.x-tool-pin {
     overflow:hidden;
     width:15px;
     height:15px;
@@ -568,19 +568,39 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     cursor:pointer;
     background:transparent no-repeat;
     margin-left:2px;
-}
-.x-tool {
     background-image:url(../images/default/panel/tool-sprites.gif);
-}
-.x-tool-pin {
-    background-position:0 -135px;
+	background-position:0 -135px;
 }
 .x-tool-pin-over {
-    background-position:-15px -135px;
+    overflow:hidden;
+    width:15px;
+    height:15px;
+    float:right;
+    cursor:pointer;
+    background:transparent no-repeat;
+    margin-left:2px;
+    background-image:url(../images/default/panel/tool-sprites.gif);
+	background-position:-15px -135px;
 }
 .x-tool-unpin {
-    background-position:0 -150px;
+    overflow:hidden;
+    width:15px;
+    height:15px;
+    float:right;
+    cursor:pointer;
+    background:transparent no-repeat;
+    margin-left:2px;
+    background-image:url(../images/default/panel/tool-sprites.gif);
+	background-position:0 -150px;
 }
 .x-tool-unpin-over {
-    background-position:-15px -150px;
+    overflow:hidden;
+    width:15px;
+    height:15px;
+    float:right;
+    cursor:pointer;
+    background:transparent no-repeat;
+    margin-left:2px;
+    background-image:url(../images/default/panel/tool-sprites.gif);
+	background-position:-15px -150px;
 }

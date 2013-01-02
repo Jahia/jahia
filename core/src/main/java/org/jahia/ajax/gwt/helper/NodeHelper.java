@@ -488,11 +488,14 @@ class NodeHelper {
         List<String> dependencies = new ArrayList<String>();
         Set<JahiaTemplatesPackage> s = null;
         try {
-            s = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getResolveSite().getTemplateFolder()).getDependencies();
-            for (JahiaTemplatesPackage aPackage : s) {
-                dependencies.add(aPackage.getRootFolder());
+            JahiaTemplatesPackage templatePackageByFileName = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getResolveSite().getTemplateFolder());
+            if (templatePackageByFileName != null) {
+                s = templatePackageByFileName.getDependencies();
+                for (JahiaTemplatesPackage aPackage : s) {
+                    dependencies.add(aPackage.getRootFolder());
+                }
+                n.set("j:dependencies",dependencies);
             }
-            n.set("j:dependencies",dependencies);
         } catch (RepositoryException e) {
             e.printStackTrace();
         }

@@ -67,27 +67,33 @@
 /** styles added for list module in order to make them as nice as jahia6 **/
 
 .x-panel-header-simplemodule {
-    background : #eaeaea;
-    border: 1px solid #E5E5E5;
+    background: url("../images/xtheme-jahia-andromeda/panel/white-top-bottom-simplemodule.gif") repeat scroll left top #eaeaea;
+    border: 1px solid #ccc;
+    font-family: tahoma,arial,verdana,sans-serif;
+    font-size: 11px;
+    font-weight: bold;
     padding: 4px;
     color: #333 !important;
-    font-weight: bold;
-    font-size: 10px;
     margin-bottom:2px;
     display:block;
     overflow:hidden;
+    text-shadow: none;
+    line-height: normal;
 }
 
 .x-panel-header-listmodule {
-    background : #333333;
-    border: 1px solid #000;
-    padding: 4px;
-    color: #fff !important;
+    background: url("../images/xtheme-jahia-andromeda/panel/white-top-bottom.gif") repeat scroll left top #D0DFE8;
+    border: 1px solid #B7CBD8;
+    font-family: tahoma,arial,verdana,sans-serif;
+    font-size: 11px;
     font-weight: bold;
-    font-size: 10px;
+    padding: 4px;
+    color: #333 !important;
     margin-bottom:2px;
     display:block;
     overflow:hidden;
+    text-shadow: none;
+    line-height: normal;
 }
 
 .x-panel-header-areamodule {
@@ -122,24 +128,31 @@
 .x-panel-header-lockedmodule {
     background : #660000;
     border: 1px solid #c00;
+    font-family: tahoma,arial,verdana,sans-serif;
+    font-size: 11px;
     padding: 4px;
-    color: #ffcccc !important;
+    color: #000 !important;
     font-weight: bold;
-    font-size: 10px;
     margin-bottom:2px;
     display:block;
     overflow:hidden;
+    text-shadow: none;
+    line-height: normal;
 }
 
 .x-panel-placeholder {
     background : #dfe8f6 url(../images/placeholder-area.png) top left;
     border: 1px solid #a3bae9;
+    font-family: tahoma,arial,verdana,sans-serif;
+    font-size: 11px;
     padding: 4px;
-    color: #111 !important;
+    color: #000 !important;
     font-weight: bold;
-    font-size: 10px;
     margin-bottom:2px;
     display:block;
+    overflow:hidden;
+    text-shadow: none;
+    line-height: normal;
 }
 
 .x-panel-toolbar {

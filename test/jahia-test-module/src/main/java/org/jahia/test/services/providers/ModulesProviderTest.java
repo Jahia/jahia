@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.junit.Test;
 
@@ -12,6 +13,10 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,7 +31,6 @@ import static org.junit.Assert.*;
 public class ModulesProviderTest {
     private static transient Logger logger = Logger.getLogger(ModulesProviderTest.class);
     
-    private final static String mountPoint = "/modulesFileSystem";
     private Node root;
     private JahiaTemplatesPackage dummyPackage;
     // Read by type
@@ -34,31 +38,31 @@ public class ModulesProviderTest {
     public void readTypes() {
         try {
             Session s = JCRSessionFactory.getInstance().getCurrentUserSession();
-            root = s.getNode(mountPoint);
 
             // get default module
             JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
             dummyPackage = templateManagerService.getTemplatePackageByFileName("dummy1");
+            root = templateManagerService.checkoutModule(null, dummyPackage.getScmURI(), null, dummyPackage.getName(), (JCRSessionWrapper) s).getNode("sources");
 
             // Read
-            readType("jnt:cssFolder","/css");
-            readType("jnt:cssFile","/css/dummy.css");
-            readType("jnt:nodeTypeFolder","/jnt_testComponent1");
-            readType("jnt:templateTypeFolder","/jnt_testComponent1/html");
-            readType("jnt:viewFile", "/jnt_testComponent1/html/testComponent1.jsp");
-            readType("jnt:resourceBundleFolder", "/resources");
-            readType("jnt:definitionFile", "/META-INF/definitions.cnd");
+            readType("jnt:cssFolder","css");
+            readType("jnt:cssFile","css/dummy.css");
+            readType("jnt:nodeTypeFolder","jnt_testComponent1");
+            readType("jnt:templateTypeFolder","jnt_testComponent1/html");
+            readType("jnt:viewFile", "jnt_testComponent1/html/testComponent1.jsp");
+            readType("jnt:resourceBundleFolder", "resources");
+            readType("jnt:definitionFile", "META-INF/definitions.cnd");
 
-        } catch (RepositoryException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
     }
 
-    private void readType(String nodeType,String path) throws RepositoryException {
-        String resolvedNodeType = root.getNode(dummyPackage.getRootFolderWithVersion() + path).getPrimaryNodeType().getName();
-        assertEquals(nodeType + " is expected on path " + path + " but " + resolvedNodeType + " has been found", resolvedNodeType ,nodeType);
+    private void readType(String nodeType, String path) throws RepositoryException {
+        String resolvedNodeType = root.getNode(path).getPrimaryNodeType().getName();
+        assertEquals(nodeType + " is expected on path " + path + " but " + resolvedNodeType + " has been found", resolvedNodeType, nodeType);
 
     }
 
@@ -68,14 +72,14 @@ public class ModulesProviderTest {
         Session s = null;
         try {
             s = JCRSessionFactory.getInstance().getCurrentUserSession();
-            root = s.getNode(mountPoint);
 
             // get default module
             JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
             dummyPackage = templateManagerService.getTemplatePackageByFileName("dummy1");
+            root = templateManagerService.checkoutModule(null, dummyPackage.getScmURI(), null, dummyPackage.getName(), (JCRSessionWrapper) s).getNode("sources");
 
             //read properties
-            Node viewNode = root.getNode( dummyPackage.getRootFolderWithVersion() + "/jnt_testComponent1/html/testComponent1.jsp");
+            Node viewNode = root.getNode("jnt_testComponent1/html/testComponent1.jsp");
             String sourceCode = viewNode.getProperty("sourceCode").getString();
             assertTrue("testComponent1 source not match", sourceCode.equals("--------------\ntest component\n--------------\n"));
 
@@ -90,15 +94,15 @@ public class ModulesProviderTest {
             s.logout();
             s = JCRSessionFactory.getInstance().getCurrentUserSession();
             dummyPackage = templateManagerService.getTemplatePackageByFileName("dummy1");
-            root = s.getNode(mountPoint);
-            viewNode = root.getNode( dummyPackage.getRootFolderWithVersion() + "/jnt_testComponent1/html/testComponent1.jsp");
+            root = s.getNode("/modules/" + dummyPackage.getRootFolderWithVersion() + "/sources");
+            viewNode = root.getNode("jnt_testComponent1/html/testComponent1.jsp");
             assertTrue("testComponent1 source not match", viewNode.getProperty("sourceCode").getString().endsWith(testString));
             assertTrue("cache.perUser not set to true",viewNode.getProperty("cache.perUser").getBoolean());
             assertTrue("cache.requestParameters not set to dummyParam",viewNode.getProperty("cache.requestParameters").getString().equals("dummyParam"));
 
             viewNode.setProperty("sourceCode", sourceCode);
             s.save();
-        } catch (RepositoryException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             fail(e.getMessage());
         }
@@ -110,12 +114,12 @@ public class ModulesProviderTest {
         Session s = null;
         try {
             s = JCRSessionFactory.getInstance().getCurrentUserSession();
-            root = s.getNode(mountPoint);
 
             JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
             dummyPackage = templateManagerService.getTemplatePackageByFileName("dummy1");
+            root = templateManagerService.checkoutModule(null, dummyPackage.getScmURI(), null, dummyPackage.getName(), (JCRSessionWrapper) s).getNode("sources");
 
-            Node nodeType = root.getNode(dummyPackage.getRootFolderWithVersion() + "/META-INF/definitions.cnd/jnt:testComponent2");
+            Node nodeType = root.getNode("META-INF/definitions.cnd/jnt:testComponent2");
             assertEquals("jnt:primaryNodeType", nodeType.getPrimaryNodeType().getName());
             assertEquals("jnt:content", nodeType.getProperty("j:supertype").getString());
             Set<String> testValues = new HashSet<String>();
@@ -200,7 +204,7 @@ public class ModulesProviderTest {
             assertEquals("jnt:unstructuredChildNodeDefinition", childNodeDefinition.getPrimaryNodeType().getName());
             assertEquals("jnt:testComponent2", childNodeDefinition.getProperty("j:requiredPrimaryTypes").getValues()[0].getString());
 
-            nodeType = root.getNode(dummyPackage.getRootFolderWithVersion() + "/META-INF/definitions.cnd/jnt:testComponent3");
+            nodeType = root.getNode("META-INF/definitions.cnd/jnt:testComponent3");
             assertEquals("jnt:primaryNodeType", nodeType.getPrimaryNodeType().getName());
             assertEquals("jnt:content", nodeType.getProperty("j:supertype").getString());
             assertEquals("mix:title", nodeType.getProperty("j:mixins").getValues()[0].getString());
@@ -209,7 +213,7 @@ public class ModulesProviderTest {
             assertTrue(nodeType.getProperty("j:isAbstract").getBoolean());
             assertEquals("metadata", nodeType.getProperty("j:itemsType").getString());
 
-            nodeType = root.getNode(dummyPackage.getRootFolderWithVersion() + "/META-INF/definitions.cnd/jmix:testMixin1");
+            nodeType = root.getNode("META-INF/definitions.cnd/jmix:testMixin1");
             assertEquals("jnt:mixinNodeType", nodeType.getPrimaryNodeType().getName());
             assertEquals("jmix:templateMixin", nodeType.getProperty("j:mixins").getValues()[0].getString());
             testValues = new HashSet<String>();
@@ -218,7 +222,7 @@ public class ModulesProviderTest {
             }
             assertTrue(Sets.newHashSet("jmix:list", "jnt:area").equals(testValues));
             assertEquals("layout", nodeType.getProperty("j:itemsType").getString());
-        } catch (RepositoryException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             fail(e.getMessage());
         }
@@ -229,12 +233,11 @@ public class ModulesProviderTest {
         Session s = null;
         try {
             s = JCRSessionFactory.getInstance().getCurrentUserSession();
-            root = s.getNode(mountPoint);
 
             JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
             dummyPackage = templateManagerService.getTemplatePackageByFileName("dummy1");
-
-            String definitionsPath = dummyPackage.getRootFolderWithVersion() + "/META-INF/definitions.cnd";
+            root = templateManagerService.checkoutModule(null, dummyPackage.getScmURI(), null, dummyPackage.getName(), (JCRSessionWrapper) s).getNode("sources");
+            String definitionsPath = "META-INF/definitions.cnd";
             Node definitions = root.getNode(definitionsPath);
             Node nodeType = definitions.addNode("jnt:testComponent4", "jnt:primaryNodeType");
             nodeType.setProperty("j:supertype", "jnt:content");
@@ -250,12 +253,29 @@ public class ModulesProviderTest {
             propertyDefinition.setProperty("j:requiredType", "Long");
             propertyDefinition.setProperty("j:protected", true);
             s.save();
-
             s.logout();
             s = JCRSessionFactory.getInstance().getCurrentUserSession();
             dummyPackage = templateManagerService.getTemplatePackageByFileName("dummy1");
-            root = s.getNode(mountPoint);
-            nodeType = root.getNode(dummyPackage.getRootFolderWithVersion() + "/META-INF/definitions.cnd/jnt:testComponent4");
+            String cndPath = dummyPackage.getSourcesFolder().getAbsolutePath() + "/src/main/webapp/META-INF/definitions.cnd";
+            BufferedReader input =  new BufferedReader(new FileReader(cndPath));
+            try {
+                String line = null;
+                int n = 1;
+                while ((line = input.readLine()) != null){
+                    if (n == 30) {
+                        assertEquals("[jnt:testComponent4] > jnt:content, jmix:tagged, jmix:structuredContent orderable noquery", line);
+                    } else if (n == 31) {
+                        assertEquals(" - property1 (string) mandatory", line);
+                    } else if (n == 32) {
+                        assertEquals(" - property2 (long) protected", line);
+                    }
+                    n++;
+                }
+            } finally {
+                input.close();
+            }
+            root = s.getNode("/modules/" + dummyPackage.getRootFolderWithVersion() + "/sources");
+            nodeType = root.getNode("META-INF/definitions.cnd/jnt:testComponent4");
             assertEquals("jnt:primaryNodeType", nodeType.getPrimaryNodeType().getName());
             assertEquals("jnt:content", nodeType.getProperty("j:supertype").getString());
             Set<String> testValues = new HashSet<String>();
@@ -275,13 +295,55 @@ public class ModulesProviderTest {
             assertEquals("Long", propertyDefinition.getProperty("j:requiredType").getString());
             assertTrue(propertyDefinition.getProperty("j:protected").getBoolean());
 
+            nodeType.orderBefore("property2", "property1");
+            s.save();
+            s.logout();
+            input =  new BufferedReader(new FileReader(cndPath));
+            try {
+                String line = null;
+                int n = 1;
+                while ((line = input.readLine()) != null){
+                    if (n == 31) {
+                        assertEquals(" - property2 (long) protected", line);
+                    } else if (n == 32) {
+                        assertEquals(" - property1 (string) mandatory", line);
+                    }
+                    n++;
+                }
+            } finally {
+                input.close();
+            }
+
+            s.move("/modules/" + dummyPackage.getRootFolderWithVersion() + "/sources/META-INF/definitions.cnd/jnt:testComponent4",
+                   "/modules/" + dummyPackage.getRootFolderWithVersion() + "/sources/META-INF/definitions.cnd/jnt:testRenamedComponent");
+            s.save();
+            s.logout();
+            input =  new BufferedReader(new FileReader(cndPath));
+            try {
+                String line = null;
+                int n = 1;
+                while ((line = input.readLine()) != null){
+                    if (n == 30) {
+                        assertEquals("[jnt:testRenamedComponent] > jnt:content, jmix:tagged, jmix:structuredContent orderable noquery", line);
+                    }
+                    n++;
+                }
+            } finally {
+                input.close();
+            }
+            root = s.getNode("/modules/" + dummyPackage.getRootFolderWithVersion() + "/sources");
+            assertTrue(root.hasNode("META-INF/definitions.cnd/jnt:testRenamedComponent"));
+
+            s = JCRSessionFactory.getInstance().getCurrentUserSession();
+            root = s.getNode("/modules/" + dummyPackage.getRootFolderWithVersion() + "/sources");
+            nodeType = root.getNode("META-INF/definitions.cnd/jnt:testRenamedComponent");
             nodeType.remove();
             s.save();
             s.logout();
             s = JCRSessionFactory.getInstance().getCurrentUserSession();
             dummyPackage = templateManagerService.getTemplatePackageByFileName("dummy1");
-            root = s.getNode(mountPoint);
-            assertFalse(root.hasNode(dummyPackage.getRootFolderWithVersion() + "/META-INF/definitions.cnd/jnt:testComponent4"));
+            root = s.getNode("/modules/" + dummyPackage.getRootFolderWithVersion() + "/sources");
+            assertFalse(root.hasNode("META-INF/definitions.cnd/jnt:testRenamedComponent"));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             fail(e.getMessage());

@@ -207,25 +207,15 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
         if (srcChildRelPath.equals(destChildRelPath)) {
             return;
         }
-        List<String> children = session.getOrderedData().containsKey(getPath())?session.getOrderedData().get(getPath()):session.getRepository().getDataSource().getChildren(getPath());
+        List<String> children = session.getOrderedData().containsKey(getPath()) ? session.getOrderedData().get(getPath()) : session.getRepository().getDataSource().getChildren(getPath());
 
+        children.remove(srcChildRelPath);
         if (destChildRelPath == null || !children.contains(destChildRelPath)) {
             // put scrChildNode at the end of the list
-            children.remove(srcChildRelPath);
             children.add(srcChildRelPath);
-            session.getOrderedData().put(getPath(), children);
-            return;
+        } else {
+            children.add(children.indexOf(destChildRelPath), srcChildRelPath);
         }
-        children.remove(srcChildRelPath);
-        List<String> newChildrenList = children;
-        for (int i=0; i < children.size(); i++) {
-            if (children.get(i).equals(destChildRelPath)) {
-                newChildrenList.add(srcChildRelPath);
-            }
-            newChildrenList.add(children.get(i));
-        }
-        children.clear();
-        children.addAll(newChildrenList);
         session.getOrderedData().put(getPath(), children);
     }
 

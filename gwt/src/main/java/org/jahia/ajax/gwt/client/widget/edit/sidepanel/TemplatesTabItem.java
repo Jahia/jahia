@@ -46,10 +46,12 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.grid.GridViewConfig;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
@@ -75,6 +77,10 @@ public class TemplatesTabItem extends BrowseTabItem {
             @Override
             protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
                 super.handleMouseClick(e);
+                if (editLinker.getConfig().getName().equals("studiolayoutmode") && getSelectedItem().get("supportsLayoutMode") == Boolean.FALSE) {
+                    Info.display(Messages.get("label.error"),Messages.get("label.error.element.not.visible.studio.layout.mode","This element can't be viewed in layout mode"));
+                    return;
+                }
                 if (!getSelectedItem().getPath().equals(editLinker.getMainModule().getPath())) {
                     if (!getSelectedItem().getNodeTypes().contains("jnt:virtualsite") && !getSelectedItem().getNodeTypes().contains("jnt:templatesFolder")) {
                         MainModule.staticGoTo(getSelectedItem().getPath(), null);
@@ -113,9 +119,6 @@ public class TemplatesTabItem extends BrowseTabItem {
             }
         }));
         contentStore.setSortField("display");
-
-        tree.setContextMenu(createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel()));
-
         return tab;
     }
 

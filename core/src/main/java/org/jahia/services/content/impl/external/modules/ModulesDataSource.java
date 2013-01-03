@@ -693,9 +693,9 @@ public class ModulesDataSource extends VFSDataSource {
         String lastPathSegment = splitPath[1];
         try {
             ExtendedNodeType nodeType = nodeTypeRegistry.getNodeType(nodeTypeName);
-            boolean unstructured = "%2A".equals(lastPathSegment) || "jnt:unstructuredPropertyDefinition".equals(data.getType());
+            boolean unstructured = "jnt:unstructuredPropertyDefinition".equals(data.getType());
             ExtendedPropertyDefinition propertyDefinition;
-            if (!"%2A".equals(lastPathSegment) && unstructured) {
+            if (unstructured) {
                 Integer key = Integer.valueOf(StringUtils.substringAfter(lastPathSegment, UNSTRUCTURED_PROPERTY));
                 propertyDefinition = nodeType.getDeclaredUnstructuredPropertyDefinitions().get(key);
             } else {
@@ -915,22 +915,19 @@ public class ModulesDataSource extends VFSDataSource {
         String nodeTypeName = splitPath[0];
         String lastPathSegment = splitPath[1];
         try {
-            boolean newUnstructured = "%2A".equals(lastPathSegment);
             ExtendedNodeType nodeType = nodeTypeRegistry.getNodeType(nodeTypeName);
             boolean unstructured = "jnt:unstructuredChildNodeDefinition".equals(data.getType());
             ExtendedNodeDefinition childNodeDefinition = null;
-            if (!newUnstructured) {
-                if (unstructured) {
-                    String key = StringUtils.substringAfter(lastPathSegment, UNSTRUCTURED_CHILD_NODE);
-                    childNodeDefinition = nodeType.getDeclaredUnstructuredChildNodeDefinitions().get(key);
-                } else {
-                    childNodeDefinition = nodeType.getDeclaredChildNodeDefinitionsAsMap().get(lastPathSegment);
-                }
+            if (unstructured) {
+                String key = StringUtils.substringAfter(lastPathSegment, UNSTRUCTURED_CHILD_NODE);
+                childNodeDefinition = nodeType.getDeclaredUnstructuredChildNodeDefinitions().get(key);
+            } else {
+                childNodeDefinition = nodeType.getDeclaredChildNodeDefinitionsAsMap().get(lastPathSegment);
             }
             if (childNodeDefinition == null) {
                 childNodeDefinition = new ExtendedNodeDefinition(nodeTypeRegistry);
                 String qualifiedName;
-                if (newUnstructured || unstructured) {
+                if (unstructured) {
                     qualifiedName = "*";
                 } else {
                     qualifiedName = lastPathSegment;
@@ -1040,7 +1037,9 @@ public class ModulesDataSource extends VFSDataSource {
                 }
                 if (itemDefinitionName.startsWith(UNSTRUCTURED_PROPERTY)) {
                     Integer type = Integer.valueOf(itemDefinitionName.substring(UNSTRUCTURED_PROPERTY.length()));
-                    return getPropertyDefinitionData(path, nodeType.getDeclaredUnstructuredPropertyDefinitions().get(type), true);
+                    if (nodeType.getDeclaredUnstructuredPropertyDefinitions().get(type) != null)  {
+                        return getPropertyDefinitionData(path, nodeType.getDeclaredUnstructuredPropertyDefinitions().get(type), true);
+                    }
                 }
                 Map<String, ExtendedNodeDefinition> childNodeDefinitionsAsMap = nodeType.getDeclaredChildNodeDefinitionsAsMap();
                 if (childNodeDefinitionsAsMap.containsKey(itemDefinitionName)) {
@@ -1048,7 +1047,9 @@ public class ModulesDataSource extends VFSDataSource {
                 }
                 if (itemDefinitionName.startsWith(UNSTRUCTURED_CHILD_NODE)) {
                     String type = itemDefinitionName.substring(UNSTRUCTURED_CHILD_NODE.length()).trim();
-                    return getChildNodeDefinitionData(path, nodeType.getDeclaredUnstructuredChildNodeDefinitions().get(type), true);
+                    if (nodeType.getDeclaredUnstructuredChildNodeDefinitions().get(type) != null) {
+                        return getChildNodeDefinitionData(path, nodeType.getDeclaredUnstructuredChildNodeDefinitions().get(type), true);
+                    }
                 }
             } catch (NoSuchNodeTypeException e) {
                 throw new PathNotFoundException("Failed to get node type " + nodeTypeName, e);

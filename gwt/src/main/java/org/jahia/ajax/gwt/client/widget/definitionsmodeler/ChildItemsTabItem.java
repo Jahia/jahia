@@ -55,6 +55,20 @@ public class ChildItemsTabItem extends EditEngineTabItem {
     private transient List<GWTJahiaNode> children;
     private transient List<GWTJahiaNode> removedChildren;
 
+    private transient String[] STRING = {"1", "string", "String", "STRING"};
+    private transient String[] BINARY = {"2", "binary", "Binary", "BINARY"};
+    private transient String[] LONG = {"3", "long", "Long", "LONG"};
+    private transient String[] DOUBLE = {"4", "double", "Double", "DOUBLE"};
+    private transient String[] BOOLEAN = {"5", "boolean", "Boolean", "BOOLEAN"};
+    private transient String[] DATE = {"6", "date", "Date", "DATE"};
+    private transient String[] NAME = {"7", "name", "Name", "NAME"};
+    private transient String[] PATH = {"8", "path", "Path", "PATH"};
+    private transient String[] REFERENCE = {"9", "reference", "Reference", "REFERENCE"};
+    private transient String[] WEAKREFERENCE = {"10", "WEAKREFERENCE", "WeakReference", "weakreference"};
+    private transient String[] URI = {"11", "URI", "Uri", "uri"};
+    private transient String[] DECIMAL = {"12", "DECIMAL", "Decimal", "decimal"};
+    private transient String[] UNDEFINED = new String[]{"0", "undefined", "Undefined", "UNDEFINED", "*"};
+
     public ChildItemsTabItem() {
     }
 
@@ -171,14 +185,34 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                     public void handleEvent(MessageBoxEvent be) {
                         if (Dialog.OK.equalsIgnoreCase(be.getButtonClicked().getItemId())) {
                             GWTJahiaNode itemDefinition = new GWTJahiaNode();
-                            itemDefinition.setName(be.getValue());
-                            itemDefinition.setNodeTypes(Arrays.asList(type));
+                            StringBuilder name = new StringBuilder("*".equals(be.getValue()) ? "__undef":be.getValue());
+                            name = findAvailableName(name);
+                            itemDefinition.setName(name.toString());
+                            String t = type;
+                            if ("*".equals(be.getValue())) {
+                                if (type.equals("jnt:propertyDefinition")) {
+                                    t = "jnt:unstructuredPropertyDefinition";
+                                } else {
+                                    t = "jnt:unstructuredChildNodeDefinition";
+                                }
+                            }
+                            itemDefinition.setNodeTypes(Arrays.asList(t));
                             initValues(itemDefinition);
                             removedChildren.remove(itemDefinition);
                             children.add(itemDefinition);
                             store.add(itemDefinition);
                             grid.getSelectionModel().select(itemDefinition, false);
                         }
+                    }
+
+                    private StringBuilder findAvailableName(StringBuilder name) {
+                        for (GWTJahiaNode n : store.getModels()) {
+                            if (n.getName().equals(name.toString())) {
+                                name.append("_");
+                                return findAvailableName(name);
+                            }
+                        }
+                        return name;
                     }
                 });
             }
@@ -197,7 +231,9 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                 grid.getSelectionModel().setFiresEvents(false);
                 List<GWTJahiaNode> selection = grid.getSelectionModel().getSelection();
                 for (GWTJahiaNode node : selection) {
-                    removedChildren.add(node);
+                    if (!node.getName().startsWith("__undef")) {
+                        removedChildren.add(node);
+                    }
                     children.remove(node);
                     store.remove(node);
                 }
@@ -459,12 +495,28 @@ public class ChildItemsTabItem extends EditEngineTabItem {
     @Override
     public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, List<GWTJahiaNode> children, GWTJahiaNodeACL acl) {
         if (store != null) {
-            for (GWTJahiaNode itemDefinition : store.getModels()) {
+            List<GWTJahiaNode> definitions = new ArrayList<GWTJahiaNode>(store.getModels());
+            for (GWTJahiaNode itemDefinition : definitions) {
+                boolean duplicate = false;
                 if (propertiesEditors.containsKey(itemDefinition)) {
                     PropertiesEditor pe = propertiesEditors.get(itemDefinition);
                     boolean isNew = "true".equals(itemDefinition.get("newItem"));
                     if (isNew) {
-                        itemDefinition.remove("newItem");
+                        if (itemDefinition.getName().startsWith("__undef")) {
+                            itemDefinition.setName(computeUnstructuredItemName(itemDefinition));
+                            String path = itemDefinition.getPath().substring(0,itemDefinition.getPath().indexOf("__undef")) + itemDefinition.getName();
+                            for (GWTJahiaNode n : store.getModels()) {
+                                if (n.getPath().equals(path)) {
+                                 duplicate = true;
+                                }
+                            }
+                            if (!duplicate) {
+                                itemDefinition.setPath(itemDefinition.getPath().substring(0,itemDefinition.getPath().indexOf("__undef")) + itemDefinition.getName());
+                            }
+                        }
+                        if (!duplicate) {
+                            itemDefinition.remove("newItem");
+                        }
                     }
                     itemDefinition.set("nodeProperties", pe.getProperties(false, true, !isNew));
                     itemDefinition.set("nodeLangCodeProperties", new HashMap<String, List<GWTJahiaNodeProperty>>());
@@ -526,11 +578,84 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         }
     }
 
+    private String computeUnstructuredItemName(GWTJahiaNode node) {
+        String s1 = "";
+        if (node.getNodeTypes().contains("jnt:unstructuredPropertyDefinition")) {
+            if (node.get("j:mutliple") != null) {
+                if (node.get("j:requiredType") instanceof String) {
+                    int i = 256 + getPropertyType((String) node.get("j:requiredType"));
+                    s1 = "__prop__" + i;
+                } else if (node.get("j:requiredType") instanceof GWTJahiaNodePropertyValue) {
+                    int i = 256 + getPropertyType(((GWTJahiaNodePropertyValue) node.get("j:requiredType")).getString());
+                    s1 = "__prop__" + i;
+                }
+            } else {
+                if (node.get("j:requiredType") instanceof String) {
+                    s1 = "__prop__" + getPropertyType((String) node.get("j:requiredType"));
+                } else if (node.get("j:requiredType") instanceof GWTJahiaNodePropertyValue) {
+                    s1 = "__prop__" + getPropertyType(((GWTJahiaNodePropertyValue) node.get("j:requiredType")).getString());
+                }
+            }
+        }  else {
+            StringBuilder s = new StringBuilder("__node__");
+            for (Object e : (List<Object>) node.get("j:requiredPrimaryTypes")) {
+                if (e instanceof String) {
+                    s.append(e).append(" ");
+                } else if (e instanceof GWTJahiaNodePropertyValue) {
+                    s.append(((GWTJahiaNodePropertyValue) e).getString()).append(" ");
+                }
+            }
+            s1 = s.toString().trim();
+        }
+        return s1;
+    }
+
     public void setType(String type) {
         this.type = type;
     }
 
     public void setColumnsConfig(List<String> columnsConfig) {
         this.columnsConfig = columnsConfig;
+    }
+
+    private int getPropertyType(String token) {
+        if (tokenEquals(token,STRING)) {
+            return Integer.parseInt(STRING[0]);
+        } else if (tokenEquals(token,BINARY)) {
+            return Integer.parseInt(BINARY[0]);
+        } else if (tokenEquals(token,LONG)) {
+            return Integer.parseInt(LONG[0]);
+        } else if (tokenEquals(token,DOUBLE)) {
+            return Integer.parseInt(DOUBLE[0]);
+        } else if (tokenEquals(token,BOOLEAN)) {
+            return Integer.parseInt(BOOLEAN[0]);
+        } else if (tokenEquals(token,DATE)) {
+            return Integer.parseInt(DATE[0]);
+        } else if (tokenEquals(token,NAME)) {
+            return Integer.parseInt(NAME[0]);
+        } else if (tokenEquals(token,PATH)) {
+            return Integer.parseInt(PATH[0]);
+        } else if (tokenEquals(token,REFERENCE)) {
+            return Integer.parseInt(REFERENCE[0]);
+        } else if (tokenEquals(token,WEAKREFERENCE)) {
+            return Integer.parseInt(WEAKREFERENCE[0]);
+        } else if (tokenEquals(token,URI)) {
+            return Integer.parseInt(URI[0]);
+        } else if (tokenEquals(token,DECIMAL)) {
+            return Integer.parseInt(DECIMAL[0]);
+        } else if (tokenEquals(token,UNDEFINED)) {
+            return Integer.parseInt(UNDEFINED[0]);
+        } else {
+            return -1;
+        }
+    }
+
+    private boolean tokenEquals(String token, String[] s) {
+        for (String e : s) {
+            if (token.equals(e)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

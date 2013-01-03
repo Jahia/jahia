@@ -31,6 +31,7 @@
                             <entry key="decorator-screen-positions" value="35x216,124x115"/>
                             <entry key="resolution_width" value="90"/>
                             <entry key="resolution_height" value="40"/>
+                            <entry key="full_flash_support" value="false"/>
                         </map>
                     </property>
                 </bean>
@@ -52,6 +53,7 @@
                             <entry key="resolution_width" value="320"/>
                             <entry key="resolution_height" value="480"/>
                             <entry key="userAgentPattern" value=".*iPhone.*"/>
+                            <entry key="full_flash_support" value="false"/>
                         </map>
                     </property>
                 </bean>
@@ -73,6 +75,7 @@
                             <entry key="resolution_width" value="768"/>
                             <entry key="resolution_height" value="1024"/>
                             <entry key="userAgentPattern" value=".*iPad.*"/>
+                            <entry key="full_flash_support" value="false"/>
                         </map>
                     </property>
                 </bean>
@@ -94,6 +97,7 @@
                             <entry key="resolution_width" value="320"/>
                             <entry key="resolution_height" value="480"/>
                             <entry key="userAgentPattern" value=".*Android.*"/>
+                            <entry key="full_flash_support" value="false"/>
                         </map>
                     </property>
                 </bean>
@@ -115,6 +119,7 @@
                             <entry key="resolution_width" value="320"/>
                             <entry key="resolution_height" value="480"/>
                             <entry key="userAgentPattern" value=".*BBStorm.*"/>
+                            <entry key="full_flash_support" value="false"/>
                         </map>
                     </property>
                 </bean>
@@ -136,6 +141,7 @@
                             <entry key="resolution_width" value="600"/>
                             <entry key="resolution_height" value="1024"/>
                             <entry key="userAgentPattern" value=".*Silk.*"/>
+                            <entry key="full_flash_support" value="true"/>
                         </map>
                     </property>
                 </bean>

@@ -1014,7 +1014,7 @@
             <!-- Support for JBoss 5 and higher -->
             <groupId>org.jboss.snowdrop</groupId>
             <artifactId>snowdrop-vfs</artifactId>
-            <version>2.0.4.Final</version>
+            <version>2.0.0.Final</version>
             <exclusions>
                 <exclusion>
                     <artifactId>spring-core</artifactId>

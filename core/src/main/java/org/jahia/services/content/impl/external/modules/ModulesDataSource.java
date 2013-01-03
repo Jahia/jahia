@@ -1006,9 +1006,7 @@ public class ModulesDataSource extends VFSDataSource {
                             children.add(itemDefinition.getName());
                         }
                     }
-                } catch (NoSuchNodeTypeException e) {
-                    logger.error("Failed to get node type " + nodeTypeName, e);
-                }
+                } catch (NoSuchNodeTypeException e) {}
             }
             return children;
         }

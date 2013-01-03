@@ -41,6 +41,7 @@
 package org.jahia.services.templates;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,24 +53,24 @@ import org.apache.commons.lang.StringUtils;
 public class SvnSourceControlManagement extends SourceControlManagement {
 
     @Override
-    protected void initWithEmptyFolder(File workingDirectory, String url) throws Exception {
+    protected void initWithEmptyFolder(File workingDirectory, String url) throws IOException {
         this.rootFolder = workingDirectory;
     }
 
     @Override
-    protected void initWithWorkingDirectory(File workingDirectory) throws Exception {
+    protected void initWithWorkingDirectory(File workingDirectory) throws IOException {
         this.rootFolder = workingDirectory;
     }
 
     @Override
-    protected void initFromURI(File workingDirectory, String uri, String branchOrTag) throws Exception {
+    protected void initFromURI(File workingDirectory, String uri, String branchOrTag) throws IOException {
         this.rootFolder = workingDirectory.getParentFile();
         executeCommand("svn", "checkout " + uri + " " + workingDirectory.getName());
         this.rootFolder = workingDirectory;
     }
 
     @Override
-    public String getURI() throws Exception {
+    public String getURI() throws IOException {
         ExecutionResult result = executeCommand("svn", "info");
         String url = (String) CollectionUtils.find(Arrays.asList(result.out.split("\n")), new Predicate() {
             @Override
@@ -84,7 +85,7 @@ public class SvnSourceControlManagement extends SourceControlManagement {
     }
 
     @Override
-    public void setModifiedFile(List<File> files) {
+    public void setModifiedFile(List<File> files) throws IOException {
         if (files.isEmpty()) {
             return;
         }
@@ -103,12 +104,12 @@ public class SvnSourceControlManagement extends SourceControlManagement {
     }
 
     @Override
-    public void update() {
+    public void update() throws IOException {
         executeCommand("svn", "update");
     }
 
     @Override
-    public void commit(String message) {
+    public void commit(String message) throws IOException {
         executeCommand("svn", "commit -m \"" + message + "\"");
     }
 }

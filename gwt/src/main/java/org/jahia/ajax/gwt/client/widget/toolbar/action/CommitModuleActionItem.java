@@ -58,7 +58,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 /**
  * Action item to create a new templates set
  */
-public class SaveModuleActionItem extends BaseActionItem {
+public class CommitModuleActionItem extends BaseActionItem {
 
     @Override public void onComponentSelection() {
         final Window wnd = new Window();
@@ -117,7 +117,7 @@ public class SaveModuleActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
         String s = siteNode.get("j:versionInfo");
-        if (s.endsWith("-SNAPSHOT") && siteNode.get("j:sourcesFolder") != null) {
+        if (s.endsWith("-SNAPSHOT") && siteNode.get("j:sourcesFolder") != null && siteNode.get("j:scmURI") != null) {
             setEnabled(true);
         } else {
             setEnabled(false);

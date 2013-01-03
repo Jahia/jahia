@@ -588,17 +588,21 @@ public class TemplatePackageDeployer implements ApplicationEventPublisherAware {
         templatesWatcher.run();
     }
 
-    public JahiaTemplatesPackage deployModule(File warFile, JCRSessionWrapper session) {
+    public JahiaTemplatesPackage deployModule(File warFile, JCRSessionWrapper session) throws RepositoryException {
         synchronized (templatesWatcher) {
             try {
                 File destFile = new File(settingsBean.getJahiaSharedTemplatesDiskPath(), warFile.getName());
                 FileUtils.copyFile(warFile, destFile);
                 File folder = deploymentHelper.deployPackage(destFile);
                 if (folder != null) {
-                    Map<String, JahiaTemplatesPackage> res = deployPackageFolders(Collections.singleton(folder), session);
+                    Map<String, DeployResult> res = deployPackageFolders(Collections.singleton(folder), session);
                     setTimestamp(destFile.getPath(), destFile.lastModified());
 
-                    return res.get(folder.getPath());
+                    DeployResult result = res.get(folder.getPath());
+                    if (result.deploymentException != null) {
+                        throw result.deploymentException;
+                    }
+                    return result.deployedPackage;
                 }
             } catch (IOException e) {
                 logger.error("Cannot deploy war file", e);
@@ -607,7 +611,7 @@ public class TemplatePackageDeployer implements ApplicationEventPublisherAware {
         return null;
     }
 
-    private Map<String, JahiaTemplatesPackage> deployPackageFolders(Collection<File> foldersToCheck, JCRSessionWrapper session) {
+    private Map<String,DeployResult> deployPackageFolders(Collection<File> foldersToCheck, JCRSessionWrapper session) {
         // list first level folders under /modules
         Collection<File> files;
         if (foldersToCheck == null) {
@@ -665,25 +669,25 @@ public class TemplatePackageDeployer implements ApplicationEventPublisherAware {
         }
 
         if (!modifiedPackageFolders.isEmpty()) {
-            if (session != null) {
-                return deployPackageFoldersModified(modifiedPackageFolders, deployDetails, session);
-            } else {
-                try {
-                    return JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Map<String, JahiaTemplatesPackage>>() {
-                        public Map<String, JahiaTemplatesPackage> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+            try {
+                if (session != null) {
+                    return deployPackageFoldersModified(modifiedPackageFolders, deployDetails, session);
+                } else {
+                    return JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Map<String, DeployResult>>() {
+                        public Map<String, DeployResult> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             return deployPackageFoldersModified(modifiedPackageFolders, deployDetails, session);
                         }
                     });
-                } catch (RepositoryException e) {
-                    logger.error("Error when initializing modules", e);
                 }
+            } catch (RepositoryException e) {
+                logger.error("Error when initializing modules", e);
             }
         }
         return Collections.emptyMap();
     }
 
-    private Map<String, JahiaTemplatesPackage> deployPackageFoldersModified(Set<File> modifiedPackageFolders,
-            Map<String, Set<String>> deployDetails, JCRSessionWrapper session) {
+    private Map<String,DeployResult> deployPackageFoldersModified(Set<File> modifiedPackageFolders,
+            Map<String, Set<String>> deployDetails, JCRSessionWrapper session) throws RepositoryException {
         LinkedHashSet<JahiaTemplatesPackage> modifiedPackages = new LinkedHashSet<JahiaTemplatesPackage>();
         for (File pkgFolder : modifiedPackageFolders) {
             JahiaTemplatesPackage packageHandler = getPackage(pkgFolder);
@@ -692,8 +696,13 @@ public class TemplatePackageDeployer implements ApplicationEventPublisherAware {
             }
         }
         modifiedPackages.addAll(unresolvedDependencies);
+
+        Map<String,DeployResult> result = new LinkedHashMap<String,DeployResult>();
+
         final Map<String, JahiaTemplatesPackage> orderedPackages = getOrderedPackages(modifiedPackages);
-        for (final JahiaTemplatesPackage pack : orderedPackages.values()) {
+
+        for (Map.Entry<String, JahiaTemplatesPackage> entry : orderedPackages.entrySet()) {
+            JahiaTemplatesPackage pack = entry.getValue();
             try {
                 logger.info("Start deploying module package '{}' version {}", pack.getName(), pack.getVersion()
                         .toString());
@@ -719,19 +728,34 @@ public class TemplatePackageDeployer implements ApplicationEventPublisherAware {
                         initializeModuleContent(pack, session);
                     }
                 }
+                result.put(entry.getKey(),new DeployResult(pack));
                 logger.info("Module package '{}' version {} deployed.", pack.getName(), pack.getVersion().toString());
             } catch (RepositoryException e) {
                 logger.error("Cannot initialize module " + pack.getName(), e);
                 try {
+                    result.put(entry.getKey(),new DeployResult(e));
                     undeployModule(pack, session, true);
                 } catch (RepositoryException e1) {
                     logger.error("Cannot undeploy module");
                 }
             }
         }
-        return orderedPackages;
+        return result;
     }
-    
+
+    class DeployResult {
+        JahiaTemplatesPackage deployedPackage;
+        RepositoryException deploymentException;
+
+        DeployResult(JahiaTemplatesPackage deployedPackage) {
+            this.deployedPackage = deployedPackage;
+        }
+
+        DeployResult(RepositoryException deploymentException) {
+            this.deploymentException = deploymentException;
+        }
+    }
+
     public void undeployModule(JahiaTemplatesPackage pack, JCRSessionWrapper session, boolean keepWarFile) throws RepositoryException {
         synchronized (templatesWatcher) {
             if (pack.getContext() != null) {

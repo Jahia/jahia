@@ -71,7 +71,7 @@ public class CompileActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
         String s = siteNode.get("j:versionInfo");
-        if (s.endsWith("-SNAPSHOT") && siteNode.get("j:sourcesFolder") != null) {
+        if (siteNode.get("j:sourcesFolder") != null) {
             setEnabled(true);
         } else {
             setEnabled(false);

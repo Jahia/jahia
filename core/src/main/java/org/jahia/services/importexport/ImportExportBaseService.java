@@ -1573,6 +1573,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     zis.closeEntry();
 
                 }
+            } catch (RepositoryException e) {
+                throw e;
             } catch (Exception e) {
                 logger.error("Cannot import", e);
             } finally {
@@ -1627,6 +1629,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
                 zis.closeEntry();
             }
+        } catch (RepositoryException e) {
+            throw e;
         } catch (Exception e) {
             logger.error("Cannot import", e);
         } finally {

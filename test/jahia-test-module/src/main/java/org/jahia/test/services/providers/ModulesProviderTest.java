@@ -14,9 +14,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -42,7 +40,7 @@ public class ModulesProviderTest {
             // get default module
             JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
             dummyPackage = templateManagerService.getTemplatePackageByFileName("dummy1");
-            root = templateManagerService.checkoutModule(null, dummyPackage.getScmURI(), null, dummyPackage.getName(), (JCRSessionWrapper) s).getNode("sources");
+            root = templateManagerService.checkoutModule(null, dummyPackage.getScmURI(), null, dummyPackage.getName(), null, (JCRSessionWrapper) s).getNode("sources");
 
             // Read
             readType("jnt:cssFolder","css");
@@ -76,7 +74,7 @@ public class ModulesProviderTest {
             // get default module
             JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
             dummyPackage = templateManagerService.getTemplatePackageByFileName("dummy1");
-            root = templateManagerService.checkoutModule(null, dummyPackage.getScmURI(), null, dummyPackage.getName(), (JCRSessionWrapper) s).getNode("sources");
+            root = templateManagerService.checkoutModule(null, dummyPackage.getScmURI(), null, dummyPackage.getName(), null, (JCRSessionWrapper) s).getNode("sources");
 
             //read properties
             Node viewNode = root.getNode("jnt_testComponent1/html/testComponent1.jsp");
@@ -117,7 +115,7 @@ public class ModulesProviderTest {
 
             JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
             dummyPackage = templateManagerService.getTemplatePackageByFileName("dummy1");
-            root = templateManagerService.checkoutModule(null, dummyPackage.getScmURI(), null, dummyPackage.getName(), (JCRSessionWrapper) s).getNode("sources");
+            root = templateManagerService.checkoutModule(null, dummyPackage.getScmURI(), null, dummyPackage.getName(), null, (JCRSessionWrapper) s).getNode("sources");
 
             Node nodeType = root.getNode("META-INF/definitions.cnd/jnt:testComponent2");
             assertEquals("jnt:primaryNodeType", nodeType.getPrimaryNodeType().getName());
@@ -236,7 +234,7 @@ public class ModulesProviderTest {
 
             JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
             dummyPackage = templateManagerService.getTemplatePackageByFileName("dummy1");
-            root = templateManagerService.checkoutModule(null, dummyPackage.getScmURI(), null, dummyPackage.getName(), (JCRSessionWrapper) s).getNode("sources");
+            root = templateManagerService.checkoutModule(null, dummyPackage.getScmURI(), null, dummyPackage.getName(), null, (JCRSessionWrapper) s).getNode("sources");
             String definitionsPath = "META-INF/definitions.cnd";
             Node definitions = root.getNode(definitionsPath);
             Node nodeType = definitions.addNode("jnt:testComponent4", "jnt:primaryNodeType");

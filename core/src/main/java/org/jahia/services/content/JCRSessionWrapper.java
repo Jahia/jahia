@@ -467,9 +467,7 @@ public class JCRSessionWrapper implements Session {
     public void save(final int operationType)
             throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException,
             VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
-        if (!isSystem()) {
-            validate();
-        }
+        validate();
         newNodes.clear();
         changedNodes.clear();
 
@@ -487,7 +485,14 @@ public class JCRSessionWrapper implements Session {
         CompositeConstraintViolationException exception = validateNodes(newNodes.values(), null);
         exception = validateNodes(changedNodes.values(), exception);
         if (exception != null) {
-            throw exception;
+            if (!isSystem()) {
+                refresh(false);
+                throw exception;
+            } else {
+                for (ConstraintViolationException violationException : exception.getErrors()) {
+                    logger.error("Constraint violation " + violationException.getMessage());
+                }
+            }
         }
     }
 

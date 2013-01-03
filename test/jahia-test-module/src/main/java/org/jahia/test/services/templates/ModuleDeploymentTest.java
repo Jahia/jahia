@@ -214,7 +214,7 @@ public class ModuleDeploymentTest {
     }
 
     @Test
-    public void testContextUpdate() throws RepositoryException {
+    public void testContextUpdate() throws IOException, RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             @Override
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {

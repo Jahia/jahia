@@ -45,10 +45,7 @@ import org.jahia.utils.ProcessHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.List;
 
 public abstract class SourceControlManagement {
@@ -108,7 +105,7 @@ public abstract class SourceControlManagement {
         }
     }
 
-    public static SourceControlManagement getSourceControlManagement(File workingDir) throws Exception {
+    public static SourceControlManagement getSourceControlManagement(File workingDir) throws IOException {
         SourceControlManagement scm = null;
 
         if (new File(workingDir, ".git").exists()) {
@@ -123,7 +120,7 @@ public abstract class SourceControlManagement {
         return scm;
     }
 
-    public static SourceControlManagement createNewRepository(File workingDir, String scmURI) throws Exception {
+    public static SourceControlManagement createNewRepository(File workingDir, String scmURI) throws IOException {
         SourceControlManagement scm = null;
 
         if (scmURI.startsWith("scm:")) {
@@ -133,7 +130,7 @@ public abstract class SourceControlManagement {
             if (scmProvider.equals("git")) {
                 scm = new GitSourceControlManagement();
             } else {
-                throw new Exception("Unknown repository type");
+                throw new IOException("Unknown repository type");
             }
 
             scm.initWithEmptyFolder(workingDir, scmUrl);
@@ -142,7 +139,7 @@ public abstract class SourceControlManagement {
         return scm;
     }
 
-    public static SourceControlManagement checkoutRepository(File workingDir, String scmURI, String branchOrTag) throws Exception {
+    public static SourceControlManagement checkoutRepository(File workingDir, String scmURI, String branchOrTag) throws IOException {
         SourceControlManagement scm = null;
 
         if (scmURI.startsWith("scm:")) {
@@ -154,7 +151,7 @@ public abstract class SourceControlManagement {
             } else if (scmProvider.equals("svn")) {
                 scm = new SvnSourceControlManagement();
             } else {
-                throw new Exception("Unknown repository type");
+                throw new IOException("Unknown repository type");
             }
 
             scm.initFromURI(workingDir, scmUrl, branchOrTag);
@@ -166,17 +163,17 @@ public abstract class SourceControlManagement {
         return rootFolder;
     }
 
-    protected abstract void initWithEmptyFolder(File workingDirectory, String url) throws Exception;
+    protected abstract void initWithEmptyFolder(File workingDirectory, String url) throws IOException;
 
-    protected abstract void initWithWorkingDirectory(File workingDirectory) throws Exception;
+    protected abstract void initWithWorkingDirectory(File workingDirectory) throws IOException;
 
-    protected abstract void initFromURI(File workingDirectory, String uri, String branchOrTag) throws Exception;
+    protected abstract void initFromURI(File workingDirectory, String uri, String branchOrTag) throws IOException;
 
-    public abstract String getURI() throws Exception;
+    public abstract String getURI() throws IOException;
 
-    public abstract void setModifiedFile(List<File> files) throws Exception;
+    public abstract void setModifiedFile(List<File> files) throws IOException;
 
-    public abstract void update() throws Exception;
+    public abstract void update() throws IOException;
 
-    public abstract void commit(String message) throws Exception;
+    public abstract void commit(String message) throws IOException;
 }

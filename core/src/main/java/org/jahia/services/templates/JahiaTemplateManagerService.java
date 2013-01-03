@@ -225,7 +225,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * ***************************************************************************************************************
      */
 
-    public JCRNodeWrapper checkoutModule(File sources, String scmURI, String branchOrTag, String moduleName, JCRSessionWrapper session) throws IOException, RepositoryException {
+    public JCRNodeWrapper checkoutModule(File sources, String scmURI, String branchOrTag, String moduleName, String version, JCRSessionWrapper session) throws IOException, RepositoryException {
         String tempName = null;
 
         if (sources == null) {
@@ -234,58 +234,108 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
 
         if (sources.exists()) {
-            return null;
+            throw new IOException("Sources folder already exist");
         }
 
         sources.getParentFile().mkdirs();
 
         try {
             SourceControlManagement scm = SourceControlManagement.checkoutRepository(sources, scmURI, branchOrTag);
-            File path = scm.getRootFolder();
             File modulePath = null;
+            File pom = null;
             if (moduleName != null) {
                 // Find the root folder of the module inside the repository, if in a subfolder
-                Collection<File> files = FileUtils.listFiles(path, new NameFileFilter("pom.xml"), TrueFileFilter.INSTANCE);
+                Collection<File> files = FileUtils.listFiles(sources, new NameFileFilter("pom.xml"), TrueFileFilter.INSTANCE);
                 for (File file : files) {
                     SAXReader reader = new SAXReader();
-                    Document document = reader.read(file);
+                    pom = file;
+                    Document document = reader.read(pom);
                     Element n = (Element) document.getRootElement().elementIterator("artifactId").next();
-                    if (moduleName.equals(n.getText())) {
-                        modulePath = file.getParentFile();
-                        break;
+                    String artifactId = n.getText();
+
+                    if (moduleName.equals(artifactId)) {
+                        if (document.getRootElement().elementIterator("version").hasNext()) {
+                            n = (Element) document.getRootElement().elementIterator("version").next();
+                        } else if (document.getRootElement().elementIterator("parent").hasNext()) {
+                            n = (Element) document.getRootElement().elementIterator("parent").next();
+                            n = (Element) n.elementIterator("version").next();
+                        }
+                        if (version != null) {
+                            if (n != null && version.equals(n.getText())) {
+                                modulePath = pom.getParentFile();
+                                break;
+                            }
+                        } else {
+                            if (n != null) {
+                                version = n.getText();
+                            }
+                            modulePath = pom.getParentFile();
+                            break;
+                        }
                     }
                 }
             } else {
                 SAXReader reader = new SAXReader();
-                Document document = reader.read(new File(path, "pom.xml"));
+                pom = new File(sources, "pom.xml");
+                Document document = reader.read(pom);
                 Element n = (Element) document.getRootElement().elementIterator("artifactId").next();
                 moduleName = n.getText();
-                modulePath = path;
+                if (document.getRootElement().elementIterator("version").hasNext()) {
+                    n = (Element) document.getRootElement().elementIterator("version").next();
+                } else if (document.getRootElement().elementIterator("parent").hasNext()) {
+                    n = (Element) document.getRootElement().elementIterator("parent").next();
+                    n = (Element) n.elementIterator("version").next();
+                }
+                if (n != null) {
+                    version = n.getText();
+                }
+
+                modulePath = sources;
+            }
+
+            if (modulePath == null) {
+                FileUtils.deleteDirectory(sources);
+                logger.error("Sources were not found for " + moduleName + "  " + version + " in " + scmURI + " " + branchOrTag);
+                throw new IOException("Sources were not found for " + moduleName + "  " + version + " in " + scmURI + " " + branchOrTag);
             }
 
             if (tempName != null) {
-                File newPath = new File(sources.getParentFile(), moduleName);
-                if (!newPath.exists()) {
-                    FileUtils.moveDirectory(path, newPath);
-                    modulePath = new File(modulePath.getPath().replace(path.getPath(), newPath.getPath()));
-                    path = newPath;
+                File newPath = new File(sources.getParentFile(), moduleName + "_" + version);
+                int i = 0;
+                while (newPath.exists()) {
+                    newPath = new File(sources.getParentFile(), moduleName + "_" + version + "_" + (++i));
                 }
+
+                FileUtils.moveDirectory(sources, newPath);
+                modulePath = new File(modulePath.getPath().replace(sources.getPath(), newPath.getPath()));
+                sources = newPath;
+                scm = SourceControlManagement.getSourceControlManagement(sources);
             }
 
-            if (path.equals(modulePath)) {
-                setSCMConfigInPom(path, scmURI);
+            if (sources.equals(modulePath)) {
+                setSCMConfigInPom(sources, scmURI);
             }
 
             JahiaTemplatesPackage pack = compileAndDeploy(moduleName, modulePath, session);
             if (pack != null) {
                 JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
+                pack.setSourceControl(scm);
                 setSourcesFolderInPackageAndNode(pack, modulePath, node);
                 session.save();
 
                 return node;
+            } else {
+                FileUtils.deleteDirectory(sources);
             }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+        } catch (RepositoryException e) {
+            FileUtils.deleteDirectory(sources);
+            throw e;
+        } catch (IOException e) {
+            FileUtils.deleteDirectory(sources);
+            throw e;
+        } catch (DocumentException e) {
+            FileUtils.deleteDirectory(sources);
+            throw new IOException(e);
         }
 
         return null;
@@ -394,19 +444,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
-    public JahiaTemplatesPackage deployModule(File warFile, JCRSessionWrapper session) {
+    public JahiaTemplatesPackage deployModule(File warFile, JCRSessionWrapper session) throws RepositoryException {
         return templatePackageDeployer.deployModule(warFile, session);
     }
 
-    public JahiaTemplatesPackage compileAndDeploy(final String moduleName, File sources, JCRSessionWrapper session) {
+    public JahiaTemplatesPackage compileAndDeploy(final String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException, IOException{
         File warFile = compileModule(moduleName, sources);
-        if (warFile != null) {
-            return templatePackageDeployer.deployModule(warFile, session);
-        }
-        return null;
+        return templatePackageDeployer.deployModule(warFile, session);
     }
 
-    public File compileModule(final String moduleName, File sources) {
+    public File compileModule(final String moduleName, File sources) throws IOException {
         try {
             SAXReader reader = new SAXReader();
             Document document = reader.read(new File(sources, "pom.xml"));
@@ -417,7 +464,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 n = (Element) document.getRootElement().elementIterator("parent").next();
                 n = (Element) n.elementIterator("version").next();
             } else {
-                return null;
+                throw new IOException("No version found in pom.xml file");
             }
             String version = n.getText();
 
@@ -425,13 +472,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             int r = cli.doMain(installParams, sources.getPath(), System.out, System.err);
             if (r > 0) {
                 logger.error("Compilation error, returned status " + r);
-                return null;
+                throw new IOException("Compilation error, status "+r);
             }
             return new File(sources.getPath() + "/target/" + moduleName + "-" + version + ".war");
         } catch (DocumentException e) {
             logger.error(e.getMessage(), e);
+            throw new IOException("Cannot parse pom file",e);
         }
-        return null;
     }
 
     public void createManifest(String rootFolder, String packageName, File tmplRootFolder, String moduleType, String version, List<String> depends) {
@@ -493,11 +540,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             session.save();
 
             return node;
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+        } catch (DocumentException e) {
+            throw new IOException("Cannot parse pom file",e);
         }
-
-        return null;
     }
 
     public File getSources(JahiaTemplatesPackage pack, JCRSessionWrapper session) throws RepositoryException {
@@ -533,7 +578,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         FileUtils.copyDirectory(tempSources, sources, new FileFilter() {
             @Override
             public boolean accept(File pathname) {
-                if (pathname.getPath().startsWith(tempSources.getPath()+"/target") || pathname.getPath().startsWith(tempSources.getPath()+"/.git")) {
+                if (pathname.getPath().startsWith(tempSources.getPath() + "/target") || pathname.getPath().startsWith(tempSources.getPath() + "/.git")) {
                     return false;
                 }
                 modifiedFiles.add(new File(pathname.getPath().replace(tempSources.getPath(), sources.getPath())));
@@ -584,7 +629,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             File sources = getSources(pack, session);
             if (sources != null) {
                 JCRNodeWrapper vi = session.getNode("/modules/" + pack.getRootFolderWithVersion() + "/j:versionInfo");
-                saveModule(moduleName, sources, session);
+                regenerateImportFile(moduleName, sources, session);
 
                 if (vi.hasProperty("j:scmURI")) {
                     SourceControlManagement scm = null;
@@ -749,7 +794,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return null;
     }
 
-    public List<File> saveModule(String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException {
+    public List<File> regenerateImportFile(String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException {
         List<File> modifiedFiles = new ArrayList<File>();
 //
         SourceControlManagement scm = null;
@@ -764,130 +809,57 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         JahiaTemplatesPackage aPackage = getTemplatePackageByFileName(moduleName);
 
-//        regenerateManifest(aPackage, session);
-//
-        JCRNodeWrapper node = session.getNode("/modules/" + moduleName + "/" + aPackage.getVersion());
-        List<String> dependencies = getDependencies(node);
-        setDependenciesInPom(sources, dependencies);
-
-        regenerateImportFile(aPackage, session);
-
-        File f = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath() + "/" + moduleName + "/" + aPackage.getVersion() + "/META-INF/import.zip");
-        ZipInputStream zis = null;
         try {
-            zis = new ZipInputStream(new FileInputStream(f));
-            ZipEntry zipentry;
-            while ((zipentry = zis.getNextEntry()) != null) {
-                if (!zipentry.isDirectory()) {
-                    try {
-                        File sourceFile = new File(sourcesImportFolder, zipentry.getName());
-                        if (saveFile(zis, sourceFile)) {
-                            modifiedFiles.add(sourceFile);
-                        }
-                    } catch (IOException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            logger.error("Cannot patch import file", e);
-        } finally {
-            if (zis != null) {
-                IOUtils.closeQuietly(zis);
-            }
-        }
+            File f = File.createTempFile("import", null);
 
-//        // Handle webapp files
-//        File sourcesWebappFolder = new File(sources, "src/main/webapp");
-//
-//        File root = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), aPackage.getRootFolderWithVersion());
-//
-//        try {
-//            saveFolder(root, sourcesWebappFolder, root, modifiedFiles);
-//        } catch (Exception e) {
-//            logger.error("Cannot patch sources", e);
-//        }
-
-        if (scm != null) {
-            try {
-                scm.setModifiedFile(modifiedFiles);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-        return modifiedFiles;
-    }
-
-    public void regenerateImportFile(JahiaTemplatesPackage aPackage, JCRSessionWrapper session) throws RepositoryException {
-        try {
-            File xmlImportFile = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), aPackage.getRootFolder() + "/" + aPackage.getVersion() + "/META-INF/import.xml");
-            if (xmlImportFile.exists()) {
-                xmlImportFile.delete();
-            }
-            File importFile = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), aPackage.getRootFolder() + "/" + aPackage.getVersion() + "/META-INF/import.zip");
-            if (importFile.exists()) {
-                importFile.delete();
-            }
             Map<String, Object> params = new HashMap<String, Object>();
             params.put(ImportExportService.XSL_PATH, SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/export/templatesCleanup.xsl");
-            synchronized (templatePackageDeployer.getTemplatesWatcher()) {
-                templatePackageDeployer.setTimestamp(importFile.getPath(), Long.MAX_VALUE);
-
-                ImportExportBaseService
-                        .getInstance().exportZip(session.getNode("/modules/" + aPackage.getRootFolderWithVersion()), session.getRootNode(),
-                        new FileOutputStream(importFile), params);
-
-                templatePackageDeployer.setTimestamp(importFile.getPath(), importFile.lastModified());
+            ImportExportBaseService
+                    .getInstance().exportZip(session.getNode("/modules/" + aPackage.getRootFolderWithVersion()), session.getRootNode(),
+                    new FileOutputStream(f), params);
+            ZipInputStream zis = null;
+            try {
+                zis = new ZipInputStream(new FileInputStream(f));
+                ZipEntry zipentry;
+                while ((zipentry = zis.getNextEntry()) != null) {
+                    if (!zipentry.isDirectory()) {
+                        try {
+                            File sourceFile = new File(sourcesImportFolder, zipentry.getName());
+                            if (saveFile(zis, sourceFile)) {
+                                modifiedFiles.add(sourceFile);
+                            }
+                        } catch (IOException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                logger.error("Cannot patch import file", e);
+            } finally {
+                if (zis != null) {
+                    IOUtils.closeQuietly(zis);
+                }
             }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        } catch (SAXException e) {
-            logger.error(e.getMessage(), e);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        } catch (JDOMException e) {
-            logger.error(e.getMessage(), e);
+
+            if (scm != null) {
+                try {
+                    scm.setModifiedFile(modifiedFiles);
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+        } catch (RepositoryException e1) {
+            logger.error(e1.getMessage(), e1);
+        } catch (SAXException e11) {
+            logger.error(e11.getMessage(), e11);
+        } catch (IOException e12) {
+            logger.error(e12.getMessage(), e12);
+        } catch (JDOMException e13) {
+            logger.error(e13.getMessage(), e13);
         }
+
+        return modifiedFiles;
     }
-
-//    public void regenerateManifest(final JahiaTemplatesPackage aPackage, JCRSessionWrapper session) throws RepositoryException {
-//        File tmplRootFolder = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), aPackage.getRootFolderWithVersion());
-//
-//        String version = aPackage.getVersion().toString();
-//        JCRNodeWrapper node = session.getNode("/modules/" + aPackage.getRootFolderWithVersion());
-//        List<String> dependencies = getDependencies(node);
-//
-//        createManifest(aPackage.getRootFolder(), aPackage.getName(), tmplRootFolder, node.getProperty("j:moduleType").getString(), version, dependencies);
-//    }
-
-//    private void saveFolder(File sourceRoot, File targetRoot, File currentSource, List<File> modifiedFiles) throws IOException, PatchFailedException {
-//        FileFilter filter = new NotFileFilter(new NameFileFilter(new String[] { "versions",
-//                "import.zip", "MANIFEST.MF", "deployed.xml" }));
-//        for (File sourceFile : currentSource.listFiles(filter)) {
-//            if (sourceFile.isDirectory()) {
-//                // if (sourceFile.getName().equals(VERSIONS_FOLDER_NAME)) {
-//                // continue;
-//                // }
-//                saveFolder(sourceRoot, targetRoot, sourceFile, modifiedFiles);
-//            } else {
-//                if (sourceFile.getName().equals("import.zip")
-//                        || sourceFile.getName().equals("MANIFEST.MF")
-//                        || sourceFile.getName().equals("deployed.xml")) {
-    // continue;
-    // }
-//                FileInputStream fileInputStream = new FileInputStream(sourceFile);
-//                try {
-//                    File targetFile = new File(targetRoot, sourceFile.getPath().substring(
-//                            sourceRoot.getPath().length() + 1));
-//                    if (saveFile(fileInputStream, targetFile)) {
-//                        modifiedFiles.add(targetFile);
-//                    }
-//                } finally {
-//                    IOUtils.closeQuietly(fileInputStream);
-//                }
-//            }
-//        }
-//    }
 
     private void setDependenciesInPom(File sources, List<String> dependencies) {
         try {
@@ -1047,6 +1019,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         pack.getDepends().clear();
         pack.getDepends().addAll(depends);
         templatePackageRegistry.computeDependencies(pack);
+
+        if (pack.getSourcesFolder() != null) {
+            setDependenciesInPom(pack.getSourcesFolder(), depends);
+        }
+
         applicationEventPublisher.publishEvent(new ModuleDependenciesEvent(pack.getRootFolder(), this));
     }
 
@@ -1071,7 +1048,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         if (checkValidSources(pack, sources)) {
             pack.setSourcesFolder(sources);
             try {
-                pack.setSourceControl(SourceControlManagement.getSourceControlManagement(sources));
+                SourceControlManagement sourceControlManagement = SourceControlManagement.getSourceControlManagement(sources);
+                if (sourceControlManagement != null) {
+                    pack.setSourceControl(sourceControlManagement);
+                }
             } catch (Exception e) {
                 logger.error("Cannot get source control", e);
             }

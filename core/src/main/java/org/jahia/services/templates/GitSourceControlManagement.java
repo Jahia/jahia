@@ -52,7 +52,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class GitSourceControlManagement extends SourceControlManagement {
 
-    protected void initWithEmptyFolder(File workingDirectory, String url) throws Exception {
+    protected void initWithEmptyFolder(File workingDirectory, String url) throws IOException {
         this.rootFolder = workingDirectory;
         executeCommand("git", "init");
         executeCommand("git", "add .");
@@ -67,7 +67,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
         this.rootFolder = workingDirectory;
     }
 
-    protected void initFromURI(File workingDirectory, String uri, String branchOrTag) throws Exception {
+    protected void initFromURI(File workingDirectory, String uri, String branchOrTag) throws IOException {
         this.rootFolder = workingDirectory.getParentFile();
         executeCommand("git", "clone " + uri + " " + workingDirectory.getName());
         this.rootFolder = workingDirectory;
@@ -78,7 +78,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
     }
 
     @Override
-    public String getURI() throws Exception {
+    public String getURI() throws IOException {
         ExecutionResult result = executeCommand("git", "remote -v");
         String url = StringUtils.substringBefore(StringUtils.substringAfter(result.out,"origin"),"(").trim();
         if (!StringUtils.isEmpty(url)) {
@@ -92,7 +92,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
         return rootFolder;
     }
 
-    public void setModifiedFile(List<File> files) throws Exception {
+    public void setModifiedFile(List<File> files) throws IOException {
         if (files.isEmpty()) {
             return;
         }
@@ -110,13 +110,13 @@ public class GitSourceControlManagement extends SourceControlManagement {
         executeCommand("git", StringUtils.join(args, ' '));
     }
 
-    public void update() {
+    public void update() throws IOException {
         executeCommand("git", "stash");
         executeCommand("git", "pull --rebase");
         executeCommand("git", "stash pop");
     }
 
-    public void commit(String message) {
+    public void commit(String message) throws IOException {
         executeCommand("git", "commit -a -m \"" + message + "\"");
         executeCommand("git", "push -u origin master");
     }

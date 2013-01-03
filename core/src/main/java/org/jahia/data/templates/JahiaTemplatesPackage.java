@@ -50,7 +50,6 @@ package org.jahia.data.templates;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.SourceControlManagement;
 import org.jahia.settings.SettingsBean;
@@ -59,6 +58,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -450,7 +450,7 @@ public class JahiaTemplatesPackage {
         return sourceControl;
     }
 
-    public void setSourceControl(SourceControlManagement sourceControl) throws Exception {
+    public void setSourceControl(SourceControlManagement sourceControl) throws IOException {
         this.sourceControl = sourceControl;
         if (sourceControl != null) {
             this.scmURI = sourceControl.getURI();

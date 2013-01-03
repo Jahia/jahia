@@ -42,6 +42,8 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -121,12 +123,13 @@ public class UpdateModuleActionItem extends BaseActionItem {
                                 ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL, null);
                             }
                             SiteSwitcherActionItem.refreshAllSitesList(linker);
+                            ((EditLinker) linker).handleNewMainSelection();
                             Info.display(Messages.get("label.information", "Information"), "Sources downloaded");
                         }
 
                         public void onApplicationFailure(Throwable caught) {
                             linker.loaded();
-                            Info.display(Messages.get("label.error", "Error"), Messages.get("message.templateSetCreationFailed", "Module save failed"));
+                            MessageBox.alert(Messages.get("label.error", "Error"), caught.getMessage(), null);
                         }
                     });
                 }
@@ -141,10 +144,13 @@ public class UpdateModuleActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
         String s = siteNode.get("j:versionInfo");
-
+        setEnabled(true);
         if (siteNode.get("j:sourcesFolder") != null) {
-            if (s.endsWith("-SNAPSHOT") && siteNode.get("j:scmURI") != null) {
+            if (siteNode.get("j:scmURI") != null) {
                 updateTitle(Messages.get("label.updateModule", "Update module"));
+                if (!s.endsWith("-SNAPSHOT")) {
+                    setEnabled(false);
+                }
             } else {
                 updateTitle(Messages.get("label.sendToSourceControl", "Send to source control"));
             }

@@ -1427,8 +1427,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         try {
             return contentManager.checkoutModule(moduleName, scmURI, scmType, branchOrTag, retrieveCurrentSession());
         } catch (Exception e) {
-            logger.error("", e);
-            throw new GWTJahiaServiceException(e.toString());
+            logger.error("Cannot checkout module", e);
+            throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
@@ -1453,7 +1453,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void updateModule(String moduleName) throws GWTJahiaServiceException {
         try {
             contentManager.updateModule(moduleName, retrieveCurrentSession());
-        } catch (RepositoryException e) {
+        } catch (Exception e) {
             logger.error("Cannot update module", e);
             throw new GWTJahiaServiceException(e.toString());
         }
@@ -1462,7 +1462,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void compileAndDeploy(String moduleName) throws GWTJahiaServiceException {
         try {
             contentManager.compileAndDeploy(moduleName, retrieveCurrentSession());
-        } catch (RepositoryException e) {
+        } catch (Exception e) {
             logger.error("Cannot update module", e);
             throw new GWTJahiaServiceException(e.toString());
         }

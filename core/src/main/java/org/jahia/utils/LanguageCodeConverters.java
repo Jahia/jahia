@@ -47,11 +47,15 @@ import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
 <<<<<<< .working
 <<<<<<< .working
+<<<<<<< .working
 import org.jahia.utils.i18n.ResourceBundles;
 =======
 import org.jahia.taglibs.functions.Functions;
 =======
 >>>>>>> .merge-right.r44296
+=======
+import org.apache.commons.lang.WordUtils;
+>>>>>>> .merge-right.r44298
 import org.jahia.utils.i18n.JahiaResourceBundle;
 >>>>>>> .merge-right.r44292
 
@@ -378,7 +382,7 @@ public class LanguageCodeConverters {
         Map<String, Locale> sortedLocales = new TreeMap<String, Locale>();
         for (Locale locale : getAvailableBundleLocales(
                 ResourceBundles.JAHIA_INTERNAL_RESOURCES, null)) {
-            sortedLocales.put(locale.getDisplayName(currentLocale), locale);
+            sortedLocales.put(WordUtils.capitalizeFully(locale.getDisplayName(locale)), locale);
         }
         return new LinkedList<Locale>(sortedLocales.values());
     }

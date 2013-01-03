@@ -119,6 +119,7 @@ public class TemplatesTabItem extends BrowseTabItem {
             }
         }));
         contentStore.setSortField("display");
+        tree.setContextMenu(createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel()));
         return tab;
     }
 

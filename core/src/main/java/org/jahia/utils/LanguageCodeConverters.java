@@ -45,6 +45,7 @@ import java.util.*;
 
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.jahia.utils.i18n.ResourceBundles;
 
 import javax.servlet.http.HttpServletRequest;

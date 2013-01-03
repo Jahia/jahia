@@ -508,7 +508,11 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                                             }
                                             time = System.currentTimeMillis() - time;
                                             time = time / 1000;
+<<<<<<< .working
                                             logger.info("Spell checker index refreshed in {} seconds", time);
+=======
+                                            logger.info("Spell checker index refreshed in: {} s.", time);
+>>>>>>> .merge-right.r44313
                                         } finally {
                                             reader.close();
                                         }

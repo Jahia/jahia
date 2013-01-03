@@ -55,6 +55,7 @@ import org.jahia.services.templates.TemplatePackageApplicationContextLoader;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.patches.GroovyPatcher;
 import org.jahia.utils.Patterns;
+import org.jboss.spring.vfs.context.ContextClassUtil;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationEvent;
@@ -189,6 +190,12 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         } finally {
             JCRSessionFactory.getInstance().closeAllSessions();
         }
+    }
+    
+    @Override
+    protected Class<?> determineContextClass(ServletContext servletContext) {
+        // if we are on JBoss 5 or higher use a dedicated context class
+        return ContextClassUtil.isJBossAS5orHigher() ? ContextClassUtil.getVFSWebContextClass() : super.determineContextClass(servletContext);
     }
 
     private void writePID(ServletContext servletContext) {

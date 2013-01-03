@@ -45,6 +45,8 @@ import javax.servlet.ServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.services.SpringContextSingleton;
+import org.jboss.spring.vfs.context.ContextClassUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.web.context.ServletContextAware;
@@ -84,8 +86,8 @@ public class TemplatePackageApplicationContextLoader implements ServletContextAw
     private ServletContext servletContext;
 
     private XmlWebApplicationContext createWebApplicationContext() throws BeansException {
-
-        XmlWebApplicationContext ctx = new XmlWebApplicationContext();
+        @SuppressWarnings("unchecked")
+        XmlWebApplicationContext ctx = (XmlWebApplicationContext) (ContextClassUtil.isJBossAS5orHigher() ? BeanUtils.instantiateClass(ContextClassUtil.getVFSWebContextClass()) : new XmlWebApplicationContext());
         ctx.setParent(SpringContextSingleton.getInstance().getContext());
         ctx.setServletContext(servletContext);
         servletContext.setAttribute(WebApplicationContext.class.getName() + ".jahiaModules", ctx);

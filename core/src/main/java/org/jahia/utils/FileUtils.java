@@ -201,9 +201,8 @@ public final class FileUtils {
      */
     public static long getLastModified(Resource resource) throws IOException {
         URL resourceUrl = resource.getURL();
-        return ResourceUtils.isJarURL(resourceUrl) ? ResourceUtils.getFile(
-                ResourceUtils.extractJarFileURL(resourceUrl)).lastModified() : resource.getFile()
-                .lastModified();
+        return ResourceUtils.isJarURL(resourceUrl) ? ResourceUtils
+                .getFile(ResourceUtils.extractJarFileURL(resourceUrl)).lastModified() : resource.lastModified();
     }
     
     public static List<DocumentFormat> getPossibleFormats() {

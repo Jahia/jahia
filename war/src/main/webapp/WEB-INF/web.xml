@@ -432,7 +432,7 @@
 
     <servlet>
         <servlet-name>GWTDispatcherServlet</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <servlet-class>org.jboss.spring.vfs.context.DelegatingDispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>classpath*:org/jahia/defaults/config/**/servlet-applicationcontext-gwt*.xml,WEB-INF/etc/spring/servlet-applicationcontext-gwt*.xml</param-value>
@@ -445,7 +445,7 @@
 
     <servlet>
         <servlet-name>RendererDispatcherServlet</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <servlet-class>org.jboss.spring.vfs.context.DelegatingDispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>classpath*:org/jahia/defaults/config/**/servlet-applicationcontext-renderer*.xml,WEB-INF/etc/spring/servlet-applicationcontext-renderer*.xml</param-value>
@@ -458,7 +458,7 @@
     
     <servlet>
         <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <servlet-class>org.jboss.spring.vfs.context.DelegatingDispatcherServlet</servlet-class>
         <init-param>
         	<param-name>contextAttribute</param-name>
         	<param-value>org.springframework.web.context.WebApplicationContext.jahiaModules</param-value>
@@ -468,7 +468,7 @@
 <!-- Quercus PHP servlet -->
     <servlet>
         <servlet-name>Quercus Servlet</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <servlet-class>org.jboss.spring.vfs.context.DelegatingDispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextAttribute</param-name>
             <param-value>org.springframework.web.context.WebApplicationContext.jahiaModules</param-value>

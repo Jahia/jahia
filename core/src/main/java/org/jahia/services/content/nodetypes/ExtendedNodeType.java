@@ -368,12 +368,21 @@ public class ExtendedNodeType implements NodeType {
     }
 
     public List<ExtendedItemDefinition>  getDeclaredItems() {
+        return getDeclaredItems(false);
+    }
+
+    public List<ExtendedItemDefinition>  getDeclaredItems(boolean includeOverride) {
         getPropertyDefinitionsAsMap();
         getChildNodeDefinitionsAsMap();
-        List<ExtendedItemDefinition> res = new ArrayList<ExtendedItemDefinition>();
-        for (ExtendedItemDefinition item : items) {
-            if (!item.isOverride()) {
-                res.add(item);
+        List<ExtendedItemDefinition> res;
+        if (includeOverride) {
+            res = items;
+        } else {
+            res = new ArrayList<ExtendedItemDefinition>();
+            for (ExtendedItemDefinition item : items) {
+                if (!item.isOverride()) {
+                    res.add(item);
+                }
             }
         }
         return Collections.unmodifiableList(res);

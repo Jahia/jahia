@@ -404,12 +404,12 @@ public class ModulesDataSource extends VFSDataSource {
                             String s1;
                             String s2;
                             if (o1.isUnstructured()) {
-                                s1 = computeUntructuredItemName(o1);
+                                s1 = computeUnstructuredItemName(o1);
                             } else {
                                 s1 = o1.getName();
                             }
                             if (o2.isUnstructured()) {
-                                s2 = computeUntructuredItemName(o2);
+                                s2 = computeUnstructuredItemName(o2);
                             } else {
                                 s2 = o2.getName();
                             }
@@ -436,7 +436,7 @@ public class ModulesDataSource extends VFSDataSource {
         }
     }
 
-    private String computeUntructuredItemName(ExtendedItemDefinition o1) {
+    private String computeUnstructuredItemName(ExtendedItemDefinition o1) {
         String s1;
         if (o1.isNode()) {
             String s = "";
@@ -999,9 +999,9 @@ public class ModulesDataSource extends VFSDataSource {
                 String nodeTypeName = splitPath[0];
                 try {
                     ExtendedNodeType nodeType = loadRegistry(cndPath).getNodeType(nodeTypeName);
-                    for (ExtendedItemDefinition itemDefinition : nodeType.getDeclaredItems()) {
+                    for (ExtendedItemDefinition itemDefinition : nodeType.getDeclaredItems(true)) {
                         if (itemDefinition.isUnstructured()) {
-                            children.add(computeUntructuredItemName(itemDefinition));
+                            children.add(computeUnstructuredItemName(itemDefinition));
                         } else {
                             children.add(itemDefinition.getName());
                         }

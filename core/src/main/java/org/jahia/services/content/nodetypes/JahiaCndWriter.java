@@ -197,7 +197,7 @@ public class JahiaCndWriter {
      * write prop defs
      */
     private void writeItemDefExtensions(ExtendedNodeType ntd) throws IOException {
-        List items = ntd.getDeclaredItems();
+        List items = ntd.getDeclaredItems(true);
         for (Iterator iterator = items.iterator(); iterator.hasNext();) {
             ExtendedItemDefinition itemDefExtension = (ExtendedItemDefinition) iterator.next();
             if (itemDefExtension.isNode()) {

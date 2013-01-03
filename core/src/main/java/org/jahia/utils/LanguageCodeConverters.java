@@ -45,7 +45,12 @@ import java.util.*;
 
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
+<<<<<<< .working
 import org.jahia.utils.i18n.ResourceBundles;
+=======
+import org.jahia.taglibs.functions.Functions;
+import org.jahia.utils.i18n.JahiaResourceBundle;
+>>>>>>> .merge-right.r44292
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -370,7 +375,7 @@ public class LanguageCodeConverters {
         Map<String, Locale> sortedLocales = new TreeMap<String, Locale>();
         for (Locale locale : getAvailableBundleLocales(
                 ResourceBundles.JAHIA_INTERNAL_RESOURCES, null)) {
-            sortedLocales.put(locale.toString(), locale);
+            sortedLocales.put(Functions.displayLocaleNameWith(locale, locale), locale);
         }
         return new LinkedList<Locale>(sortedLocales.values());
     }
@@ -378,7 +383,7 @@ public class LanguageCodeConverters {
         Map<String, Locale> sortedLocales = new TreeMap<String, Locale>();
         for (Locale locale : getAvailableBundleLocales(
                 ResourceBundles.JAHIA_INTERNAL_RESOURCES, null)) {
-            sortedLocales.put(locale.toString(), locale);
+            sortedLocales.put(Functions.displayLocaleNameWith(locale, locale), locale);
         }
         return new LinkedList<Locale>(sortedLocales.values());
     }

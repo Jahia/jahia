@@ -44,6 +44,7 @@ import java.text.Collator;
 import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
@@ -373,7 +374,7 @@ public class LanguageCodeConverters {
         Map<String, Locale> sortedLocales = new TreeMap<String, Locale>();
         for (Locale locale : getAvailableBundleLocales(
                 JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES, null)) {
-            sortedLocales.put(locale.getDisplayName(currentLocale), locale);
+            sortedLocales.put(WordUtils.capitalizeFully(locale.getDisplayName(locale)), locale);
         }
         return new LinkedList<Locale>(sortedLocales.values());
     }

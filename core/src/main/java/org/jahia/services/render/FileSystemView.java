@@ -50,6 +50,7 @@ import org.jahia.services.templates.TemplateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.Properties;
 import java.util.Map;
 import java.util.HashMap;
@@ -96,12 +97,14 @@ public class FileSystemView implements Comparable<View>, View {
 
         String pathWithoutExtension = path.substring(0, lastDotPos);
         String propName = pathWithoutExtension + ".properties";
-        String pathBeforeDot = StringUtils.substringBefore(path, ".");
+        String absolutePath = StringUtils.substringBeforeLast(path,File.separator);
+        String fileName = StringUtils.substringAfterLast(path,File.separator);
+        String pathBeforeDot = StringUtils.substringBefore(fileName, ".");
         String defaultPropName = pathBeforeDot + ".properties";
         String thumbnail = pathWithoutExtension + ".png";
         String defaultThumbnail = pathBeforeDot + ".png";
         getProperties(propName, thumbnail, false);
-        getProperties(defaultPropName, defaultThumbnail, true);
+        getProperties(absolutePath+File.separator+defaultPropName, defaultThumbnail, true);
     }
 
     private void getProperties(String propName, String thumbnail, boolean defaultProps) {

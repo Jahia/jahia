@@ -378,7 +378,7 @@ public class LanguageCodeConverters {
         Map<String, Locale> sortedLocales = new TreeMap<String, Locale>();
         for (Locale locale : getAvailableBundleLocales(
                 ResourceBundles.JAHIA_INTERNAL_RESOURCES, null)) {
-            sortedLocales.put(locale.getDisplayName(locale), locale);
+            sortedLocales.put(WordUtils.capitalizeFully(locale.getDisplayName(locale)), locale);
         }
         return new LinkedList<Locale>(sortedLocales.values());
     }

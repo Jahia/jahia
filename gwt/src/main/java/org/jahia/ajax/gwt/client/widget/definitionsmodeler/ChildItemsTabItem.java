@@ -12,8 +12,10 @@ import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DualListField;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
@@ -27,6 +29,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
@@ -44,6 +47,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
     protected transient PropertiesEditor propertiesEditor;
 
     protected transient Map<GWTJahiaNode, PropertiesEditor> propertiesEditors;
+    protected transient Map<GWTJahiaNode, Map<String, PropertiesEditor>> propertiesEditorsByLang;
 
     private String type;
     private transient Grid<GWTJahiaNode> grid;
@@ -51,6 +55,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
     private transient GWTJahiaNodeType nodeType;
     private transient Map<String, GWTJahiaFieldInitializer> initializerMap = new HashMap<String, GWTJahiaFieldInitializer>();
 
+    private transient String currentLanguage;
     private transient GWTJahiaNode engineNode;
     private transient List<GWTJahiaNode> children;
     private transient List<GWTJahiaNode> removedChildren;
@@ -90,6 +95,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             engineNode = new GWTJahiaNode();
             engineNode.setPath("newNode");
         }
+        currentLanguage = language;
         children = new ArrayList<GWTJahiaNode>();
         removedChildren = new ArrayList<GWTJahiaNode>();
         JahiaContentManagementService.App.getInstance().getFieldInitializerValues("jnt:childNodeDefinition", "j:defaultPrimaryType", engine.getNode() != null ? engine.getNode().getPath() : engine.getTargetNode().getPath(), new HashMap<String, List<GWTJahiaNodePropertyValue>>(), new BaseAsyncCallback<GWTJahiaFieldInitializer>() {
@@ -108,6 +114,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         store = new ListStore<GWTJahiaNode>();
         propertiesEditor = null;
         propertiesEditors = new HashMap<GWTJahiaNode, PropertiesEditor>();
+        propertiesEditorsByLang = new HashMap<GWTJahiaNode, Map<String, PropertiesEditor>>();
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
         columnsKeys = new ArrayList<String>();
@@ -342,41 +349,56 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
-                final GWTJahiaNode item = se.getSelectedItem();
-
-                if (propertiesEditor != null) {
-                    tab.remove(propertiesEditor);
-                }
-                if (item == null) {
-                    propertiesEditor = null;
-                    tab.layout();
-                } else if (propertiesEditors.containsKey(item)) {
-                    propertiesEditor = propertiesEditors.get(item);
-                    tab.add(propertiesEditor, new RowData(1, 1, new Margins(2)));
-                    tab.layout();
-                } else {
-                    if (item.getPath() != null) {
-                        JahiaContentManagementService.App.getInstance().getProperties(item.getPath(), engine.getDefaultLanguageCode(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
-                            public void onSuccess(GWTJahiaGetPropertiesResult result) {
-                                displayProperties(item, result.getNodeTypes(), result.getProperties());
-                                tab.add(propertiesEditor, new RowData(1, 1, new Margins(2)));
-                                tab.layout();
-                            }
-                        });
-                    } else {
-                        item.set("newItem", "true");
-                        item.setPath(engineNode.getPath() + "/" + item.getName());
-                        displayProperties(item, Arrays.asList(nodeType), (Map<String, GWTJahiaNodeProperty>) item.get("default-properties"));
-                        item.remove("default-properties");
-                        tab.add(propertiesEditor, new RowData(1, 1, new Margins(2)));
-                        tab.layout();
-                    }
-                }
+                switchPropertiesEditor(tab);
             }
         });
         tab.layout();
         tab.setProcessed(true);
 
+    }
+
+    @Override
+    public void onLanguageChange(String language, TabItem tabItem) {
+        currentLanguage = language;
+        switchPropertiesEditor(tabItem);
+        super.onLanguageChange(language, tabItem);
+    }
+
+
+    private void switchPropertiesEditor(final TabItem tab) {
+        final GWTJahiaNode item = grid.getSelectionModel().getSelectedItem();
+
+        if (propertiesEditor != null) {
+            tab.remove(propertiesEditor);
+        }
+        if (item == null) {
+            propertiesEditor = null;
+            tab.layout();
+        } else if (propertiesEditorsByLang.containsKey(item) && propertiesEditorsByLang.get(item).containsKey(currentLanguage)) {
+            propertiesEditor = propertiesEditorsByLang.get(item).get(currentLanguage);
+            PropertiesEditor previous = propertiesEditors.get(item);
+            propertiesEditors.put(item,propertiesEditor);
+            syncWithPrevious(previous, propertiesEditor);
+            tab.add(propertiesEditor, new RowData(1, 1, new Margins(2)));
+            tab.layout();
+        } else {
+            if (item.getPath() != null) {
+                JahiaContentManagementService.App.getInstance().getProperties(item.getPath(), currentLanguage, new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
+                    public void onSuccess(GWTJahiaGetPropertiesResult result) {
+                        displayProperties(item, result.getNodeTypes(), result.getProperties());
+                        tab.add(propertiesEditor, new RowData(1, 1, new Margins(2)));
+                        tab.layout();
+                    }
+                });
+            } else {
+                item.set("newItem", "true");
+                item.setPath(engineNode.getPath() + "/" + item.getName());
+                displayProperties(item, Arrays.asList(nodeType), (Map<String, GWTJahiaNodeProperty>) item.get("default-properties"));
+                item.remove("default-properties");
+                tab.add(propertiesEditor, new RowData(1, 1, new Margins(2)));
+                tab.layout();
+            }
+        }
     }
 
     private void initValues(GWTJahiaNode item) {
@@ -420,8 +442,15 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         }
         propertiesEditor = new PropertiesEditor(nodeTypes, properties, null);
         propertiesEditor.setInitializersValues(initializerMap);
+        if (!propertiesEditorsByLang.containsKey(item)) {
+            propertiesEditorsByLang.put(item, new HashMap<String, PropertiesEditor>());
+        }
+        propertiesEditorsByLang.get(item).put(currentLanguage, propertiesEditor);
+        PropertiesEditor previous = propertiesEditors.get(item);
         propertiesEditors.put(item, propertiesEditor);
         propertiesEditor.renderNewFormPanel();
+        syncWithPrevious(previous, propertiesEditor);
+
         for (final String key : columnsKeys) {
             if (propertiesEditor.getFieldsMap().containsKey(key)) {
                 final PropertiesEditor.PropertyAdapterField field = propertiesEditor.getFieldsMap().get(key);
@@ -498,8 +527,9 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             List<GWTJahiaNode> definitions = new ArrayList<GWTJahiaNode>(store.getModels());
             for (GWTJahiaNode itemDefinition : definitions) {
                 boolean duplicate = false;
-                if (propertiesEditors.containsKey(itemDefinition)) {
+                if (propertiesEditorsByLang.containsKey(itemDefinition)) {
                     PropertiesEditor pe = propertiesEditors.get(itemDefinition);
+                    Map<String,PropertiesEditor> peByLang = propertiesEditorsByLang.get(itemDefinition);
                     boolean isNew = "true".equals(itemDefinition.get("newItem"));
                     if (isNew) {
                         if (itemDefinition.getName().startsWith("__undef")) {
@@ -519,7 +549,11 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                         }
                     }
                     itemDefinition.set("nodeProperties", pe.getProperties(false, true, !isNew));
-                    itemDefinition.set("nodeLangCodeProperties", new HashMap<String, List<GWTJahiaNodeProperty>>());
+                    HashMap<String, List<GWTJahiaNodeProperty>> langCodeProperties = new HashMap<String, List<GWTJahiaNodeProperty>>();
+                    for (String s : peByLang.keySet()) {
+                        langCodeProperties.put(s, peByLang.get(s).getProperties(true,false,!isNew));
+                    }
+                    itemDefinition.set("nodeLangCodeProperties", langCodeProperties);
                 } else {
                     itemDefinition.set("nodeProperties", new ArrayList<GWTJahiaNodeProperty>());
                     itemDefinition.set("nodeLangCodeProperties", new HashMap<String, List<GWTJahiaNodeProperty>>());
@@ -616,6 +650,34 @@ public class ChildItemsTabItem extends EditEngineTabItem {
 
     public void setColumnsConfig(List<String> columnsConfig) {
         this.columnsConfig = columnsConfig;
+    }
+
+    public void syncWithPrevious(PropertiesEditor previous, PropertiesEditor propertiesEditor) {
+        if (previous != null && previous != propertiesEditor) {
+            // synch non18n properties
+            List<GWTJahiaNodeProperty> previousNon18nProperties = previous.getProperties(false, true, true);
+            if (previousNon18nProperties != null && !previousNon18nProperties.isEmpty()) {
+                Map<String, PropertiesEditor.PropertyAdapterField> fieldsMap = propertiesEditor.getFieldsMap();
+                for (GWTJahiaNodeProperty property : previousNon18nProperties) {
+                    if (fieldsMap.containsKey(property.getName()))  {
+                        FormFieldCreator.fillValue(fieldsMap.get(property.getName()).getField(), propertiesEditor.getGWTJahiaItemDefinition(property), property, null);
+                    }
+                }
+            }
+            Set<String> previousAddedTypes = previous.getAddedTypes();
+            Set<String> previousRemovedTypes = previous.getRemovedTypes();
+            if (previousAddedTypes != null) {
+                Map<String, FieldSet> f = propertiesEditor.getFieldSetsMap();
+                propertiesEditor.getAddedTypes().addAll(previousAddedTypes);
+                propertiesEditor.getRemovedTypes().addAll(previousRemovedTypes);
+                for (String addedType : previousAddedTypes) {
+                    f.get(addedType).expand();
+                }
+                for (String addedType : previousRemovedTypes) {
+                    f.get(addedType).collapse();
+                }
+            }
+        }
     }
 
     private int getPropertyType(String token) {

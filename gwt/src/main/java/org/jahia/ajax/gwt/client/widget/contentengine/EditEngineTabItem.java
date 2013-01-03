@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -90,7 +91,7 @@ public abstract class EditEngineTabItem implements Serializable {
      */
     public abstract void init(NodeHolder engine, AsyncTabItem tab, String language);
 
-    public void onLanguageChange(String language) {
+    public void onLanguageChange(String language, TabItem tabItem) {
     }
 
     public void setProcessed(boolean processed) {

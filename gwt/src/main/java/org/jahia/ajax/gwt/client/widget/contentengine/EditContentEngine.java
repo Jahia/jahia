@@ -282,7 +282,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 }
                 Object itemData = item.getData("item");
                 if (itemData instanceof EditEngineTabItem) {
-                    ((EditEngineTabItem)itemData).onLanguageChange(getSelectedLanguage());
+                    ((EditEngineTabItem)itemData).onLanguageChange(getSelectedLanguage(), item);
                 }
             }
         }

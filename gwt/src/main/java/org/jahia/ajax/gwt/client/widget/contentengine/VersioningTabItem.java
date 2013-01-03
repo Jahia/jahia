@@ -40,29 +40,21 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
-import org.jahia.ajax.gwt.client.widget.content.ImagePopup;
 import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -163,8 +155,8 @@ public class VersioningTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void onLanguageChange(String language) {
+    public void onLanguageChange(String language, TabItem tabItem) {
         this.locale = language;
-        super.onLanguageChange(language);
+        super.onLanguageChange(language, tabItem);
     }
 }

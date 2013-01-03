@@ -45,6 +45,7 @@ import net.htmlparser.jericho.TextExtractor;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRContentUtils;
@@ -144,7 +145,7 @@ public class Functions {
 
 
     public static java.lang.String displayLocaleNameWith(Locale localeToDisplay, Locale localeUsedForRendering) {
-        return localeToDisplay.getDisplayName(localeUsedForRendering);
+        return WordUtils.capitalizeFully(localeToDisplay.getDisplayName(localeUsedForRendering));
     }
 
     /**

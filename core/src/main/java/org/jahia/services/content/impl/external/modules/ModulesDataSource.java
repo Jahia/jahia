@@ -70,6 +70,7 @@ import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.query.qom.QueryObjectModelConstants;
 import javax.jcr.version.OnParentVersionAction;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -650,14 +651,18 @@ public class ModulesDataSource extends VFSDataSource {
 
                 String rbPath = rbBasePath + "_" + lang + ".properties";
                 InputStream is = null;
+                InputStreamReader isr = null;
                 OutputStream os = null;
+                OutputStreamWriter osw = null;
                 try {
                     FileObject file = getFile(rbPath);
                     FileContent content = file.getContent();
                     Properties p = new SortedProperties();
                     if (file.exists()) {
                         is = content.getInputStream();
-                        p.load(is);
+                        isr = new InputStreamReader(is, Charset.forName("ISO-8859-1"));
+                        p.load(isr);
+                        isr.close();
                         is.close();
                     } else if (StringUtils.isBlank(title) && StringUtils.isBlank(description)) {
                         continue;
@@ -669,14 +674,17 @@ public class ModulesDataSource extends VFSDataSource {
                         p.setProperty(key+"_description", description);
                     }
                     os = content.getOutputStream();
-                    p.store(os, rbPath);
+                    osw = new OutputStreamWriter(os, Charset.forName("ISO-8859-1"));
+                    p.store(osw, rbPath);
                 } catch (FileSystemException e) {
                     logger.error("Failed to save resourceBundle", e);
                 } catch (IOException e) {
                     logger.error("Failed to save resourceBundle", e);
                 } finally {
                     IOUtils.closeQuietly(is);
+                    IOUtils.closeQuietly(isr);
                     IOUtils.closeQuietly(os);
+                    IOUtils.closeQuietly(osw);
                 }
             }
         }

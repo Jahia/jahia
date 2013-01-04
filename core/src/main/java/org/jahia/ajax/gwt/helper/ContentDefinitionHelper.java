@@ -47,6 +47,8 @@ import org.apache.jackrabbit.value.*;
 import org.apache.jackrabbit.value.StringValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.slf4j.Logger;
@@ -522,6 +524,18 @@ public class ContentDefinitionHelper {
         List<String> installedModules = null;
         if (site != null && site.getPath().startsWith("/sites/")) {
             installedModules = site.getInstalledModules();
+        }
+        for (int i = 0; i < installedModules.size(); i++) {
+            JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(installedModules.get(i));
+            if (aPackage != null) {
+                for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
+                    if (!installedModules.contains(depend.getRootFolder())) {
+                        installedModules.add(depend.getRootFolder());
+                    }
+                }
+            } else {
+                logger.error("Couldn't find module directory for module '" + installedModules.get(i) + "' installed in site '"+site.getPath()+"'");
+            }
         }
 
         Map<ExtendedNodeType, Set<ExtendedNodeType>> m = NodeTypeRegistry.getInstance().getMixinExtensions();

@@ -654,21 +654,36 @@ public class ConflictResolver {
         }
 
         public boolean apply() throws RepositoryException {
-            if (!targetNode.hasNode(name) || !targetNode.getPrimaryNodeType().hasOrderableChildNodes()) {
-                return true;
-            }
-            while (orderBeforeName != null && !targetNode.hasNode(orderBeforeName)) {
-                orderBeforeUuid = ordering.get(orderBeforeUuid);
-                try {
-                    if (orderBeforeUuid.equals("")) {
-                        orderBeforeName = null;
-                    } else {
-                        orderBeforeName = targetNode.getSession().getNodeByUUID(orderBeforeUuid).getName();
+            if (targetNode.hasNode(name)) {
+                JCRNodeWrapper realTargetNode = targetNode;
+                String realName = name;
+                if (name.contains("/")) {
+                    realTargetNode = targetNode.getNode(StringUtils
+                            .substringBeforeLast(name, "/"));
+                    realName = StringUtils
+                            .substringAfterLast(name, "/");
+                }
+                if (realTargetNode.getPrimaryNodeType()
+                        .hasOrderableChildNodes()) {
+
+                    while (orderBeforeName != null
+                            && !realTargetNode.hasNode(orderBeforeName)) {
+                        orderBeforeUuid = ordering.get(orderBeforeUuid);
+                        try {
+                            if (orderBeforeUuid.equals("")) {
+                                orderBeforeName = null;
+                            } else {
+                                orderBeforeName = realTargetNode.getSession()
+                                        .getNodeByUUID(orderBeforeUuid)
+                                        .getName();
+                            }
+                        } catch (ItemNotFoundException e) {
+                            // ignored exception
+                        }
                     }
-                } catch (ItemNotFoundException e) {
+                    realTargetNode.orderBefore(realName, orderBeforeName);
                 }
             }
-            targetNode.orderBefore(name, orderBeforeName);
             return true;
         }
 

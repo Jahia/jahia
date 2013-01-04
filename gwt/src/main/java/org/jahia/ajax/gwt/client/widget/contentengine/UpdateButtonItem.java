@@ -152,6 +152,8 @@ public class UpdateButtonItem extends SaveButtonItem {
                         || node.getNodeTypes().contains("jnt:template") || node.getInheritedNodeTypes().contains("jnt:template")
                         || node.getInheritedNodeTypes().contains("jmix:visibleInPagesTree")) {
                     refresh += Linker.REFRESH_PAGES;
+                } else {
+                    refresh += Linker.REFRESH_SOURCES;
                 }
                 ((EditContentEngine) engine).closeEngine();
                 engine.getLinker().markForManualRefresh(Linker.REFRESH_PAGES);

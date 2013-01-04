@@ -3,7 +3,7 @@
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
 [jnt:simpleSearchForm] > jnt:content, mix:title, jmix:queryContent
-- result (weakreference) < jnt:page
+- result (weakreference) mandatory < jnt:page
 
 [jnt:advancedSearchForm] > jnt:content, mix:title, jmix:queryContent
 

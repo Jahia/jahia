@@ -748,7 +748,7 @@ public class ModulesDataSource extends VFSDataSource {
                 propertyDefinition.setProtected(false);
             }
             values = properties.get("j:selectorType");
-            int selectorType = 0;
+            int selectorType = SelectorType.SMALLTEXT;  // Default selector type is smallText
             if (values != null && values.length > 0) {
                 selectorType = SelectorType.valueFromName(values[0]);
             }

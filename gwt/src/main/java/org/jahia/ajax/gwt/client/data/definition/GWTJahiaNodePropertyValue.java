@@ -100,7 +100,7 @@ public class GWTJahiaNodePropertyValue extends BaseTreeModel implements Serializ
     public boolean equals(Object obj) {
         if (obj instanceof GWTJahiaNodePropertyValue) {
             GWTJahiaNodePropertyValue val = (GWTJahiaNodePropertyValue) obj;
-            return val.getType() == val.getType() && val.getString().equals(getString());
+            return val.getType() == val.getType() && val.getString() != null && val.getString().equals(getString());
         } else {
             return false;
         }

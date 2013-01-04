@@ -20,6 +20,7 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
@@ -192,23 +193,33 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                     public void handleEvent(MessageBoxEvent be) {
                         if (Dialog.OK.equalsIgnoreCase(be.getButtonClicked().getItemId())) {
                             GWTJahiaNode itemDefinition = new GWTJahiaNode();
-                            StringBuilder name = new StringBuilder("*".equals(be.getValue()) ? "__undef":be.getValue());
-                            name = findAvailableName(name);
-                            itemDefinition.setName(name.toString());
-                            String t = type;
-                            if ("*".equals(be.getValue())) {
-                                if (type.equals("jnt:propertyDefinition")) {
-                                    t = "jnt:unstructuredPropertyDefinition";
-                                } else {
-                                    t = "jnt:unstructuredChildNodeDefinition";
+                            String name = "*".equals(be.getValue()) ? findAvailableName(new StringBuilder("__undef")).toString():be.getValue();
+                            boolean process=true;
+                            for (GWTJahiaNode n : store.getModels()) {
+                                if (n.getName().equals(name)) {
+                                    process = false;
+                                    break;
                                 }
                             }
-                            itemDefinition.setNodeTypes(Arrays.asList(t));
-                            initValues(itemDefinition);
-                            removedChildren.remove(itemDefinition);
-                            children.add(itemDefinition);
-                            store.add(itemDefinition);
-                            grid.getSelectionModel().select(itemDefinition, false);
+                            if (process) {
+                                itemDefinition.setName(name);
+                                String t = type;
+                                if ("*".equals(be.getValue())) {
+                                    if (type.equals("jnt:propertyDefinition")) {
+                                        t = "jnt:unstructuredPropertyDefinition";
+                                    } else {
+                                        t = "jnt:unstructuredChildNodeDefinition";
+                                    }
+                                }
+                                itemDefinition.setNodeTypes(Arrays.asList(t));
+                                initValues(itemDefinition);
+                                removedChildren.remove(itemDefinition);
+                                children.add(itemDefinition);
+                                store.add(itemDefinition);
+                                grid.getSelectionModel().select(itemDefinition, false);
+                            } else {
+                                Window.alert(Messages.get("label.duplicate.name","this name already used, please select a new one"));
+                            }
                         }
                     }
 
@@ -238,9 +249,10 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                 grid.getSelectionModel().setFiresEvents(false);
                 List<GWTJahiaNode> selection = grid.getSelectionModel().getSelection();
                 for (GWTJahiaNode node : selection) {
-                    if (!node.getName().startsWith("__undef")) {
+                    if (!"true".equals(node.get("newItem"))) {
                         removedChildren.add(node);
                     }
+                    propertiesEditors.remove(node);
                     children.remove(node);
                     store.remove(node);
                 }
@@ -537,11 +549,13 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                             String path = itemDefinition.getPath().substring(0,itemDefinition.getPath().indexOf("__undef")) + itemDefinition.getName();
                             for (GWTJahiaNode n : store.getModels()) {
                                 if (n.getPath().equals(path)) {
-                                 duplicate = true;
+                                    duplicate = true;
                                 }
                             }
                             if (!duplicate) {
                                 itemDefinition.setPath(itemDefinition.getPath().substring(0,itemDefinition.getPath().indexOf("__undef")) + itemDefinition.getName());
+                            }  else {
+                                this.children.remove(itemDefinition);
                             }
                         }
                         if (!duplicate) {
@@ -596,6 +610,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                 for (GWTJahiaNode child : this.children) {
                     node.add(child);
                 }
+                this.children.clear();
                 node.set(GWTJahiaNode.INCLUDE_CHILDREN, Boolean.TRUE);
             } else {
                 children.addAll(this.children);

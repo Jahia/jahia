@@ -400,8 +400,12 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             if (contributeNode != null && contributeNode.hasProperty("j:contributeTypes")) {
                 LinkedHashSet<String> l = new LinkedHashSet<String>();
                 Value[] v = contributeNode.getProperty("j:contributeTypes").getValues();
-                for (Value value : v) {
-                    l.add(value.getString());
+                if (v.length == 0) {
+                    l.add("jmix:editorialContent");
+                } else {
+                    for (Value value : v) {
+                        l.add(value.getString());
+                    }
                 }
                 LinkedHashSet<String> subtypes = new LinkedHashSet<String>();
                 for (String s : l) {

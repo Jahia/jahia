@@ -524,17 +524,17 @@ public class ContentDefinitionHelper {
         List<String> installedModules = null;
         if (site != null && site.getPath().startsWith("/sites/")) {
             installedModules = site.getInstalledModules();
-        }
-        for (int i = 0; i < installedModules.size(); i++) {
-            JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(installedModules.get(i));
-            if (aPackage != null) {
-                for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
-                    if (!installedModules.contains(depend.getRootFolder())) {
-                        installedModules.add(depend.getRootFolder());
+            for (int i = 0; i < installedModules.size(); i++) {
+                JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(installedModules.get(i));
+                if (aPackage != null) {
+                    for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
+                        if (!installedModules.contains(depend.getRootFolder())) {
+                            installedModules.add(depend.getRootFolder());
+                        }
                     }
+                } else {
+                    logger.error("Couldn't find module directory for module '" + installedModules.get(i) + "' installed in site '"+site.getPath()+"'");
                 }
-            } else {
-                logger.error("Couldn't find module directory for module '" + installedModules.get(i) + "' installed in site '"+site.getPath()+"'");
             }
         }
 

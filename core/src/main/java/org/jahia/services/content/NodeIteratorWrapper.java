@@ -42,10 +42,7 @@ package org.jahia.services.content;
 
 import org.jahia.api.Constants;
 
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import java.util.NoSuchElementException;
 
 /**
@@ -73,6 +70,13 @@ public class NodeIteratorWrapper implements NodeIterator {
                 Node n = null;
                 while (ni.hasNext() && (n == null)) {
                     n = ni.nextNode();
+                    if (session.getVersionDate() != null || session.getVersionLabel() != null) {
+                        try {
+                            n = session.getNode(n.getPath());
+                        } catch (PathNotFoundException e) {
+                            n = null;
+                        }
+                    }
                 }
                 if (n != null) {
                     if (session.getLocale() != null && n.isNodeType(Constants.JAHIANT_TRANSLATION)) {

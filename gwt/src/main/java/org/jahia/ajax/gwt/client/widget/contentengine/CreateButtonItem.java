@@ -155,7 +155,7 @@ public class CreateButtonItem extends SaveButtonItem {
                         engine.getLinker().setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
                         engine.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES, null);
                     } else {
-                        engine.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_FOLDERS, null);
+                        engine.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_FOLDERS + Linker.REFRESH_SOURCES, null);
                     }
                 } else {
                     engine.getTabs().removeAll();

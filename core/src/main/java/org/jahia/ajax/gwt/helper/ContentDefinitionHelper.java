@@ -784,127 +784,223 @@ public class ContentDefinitionHelper {
     }
 
 
-    public List<GWTJahiaNode> getContentTypesAsTree(List<String> paths, List<String> nodeTypes, List<String> excludedNodeTypes, List<String> fields, boolean includeSubTypes, boolean includeNonDependentModules, final JCRSiteNode site,
-                                                    Locale uiLocale, JCRSessionWrapper session)
+    public List<GWTJahiaNode> getContentTypesAsTree(List<String> paths, final List<String> nodeTypes, final List<String> excludedNodeTypes, final List<String> fields, final boolean includeSubTypes, final boolean includeNonDependentModules, final JCRSiteNode site,
+                                                    final Locale uiLocale, final JCRSessionWrapper session)
             throws GWTJahiaServiceException {
         try {
-            List<String> dependencies = null;
+            final List<String> dependencies = new ArrayList<String>();
 
             if (!includeNonDependentModules) {
-                dependencies = new ArrayList<String>();
                 Set<JahiaTemplatesPackage> s = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(site.getTemplateFolder()).getDependencies();
                 for (JahiaTemplatesPackage aPackage : s) {
                     dependencies.add(aPackage.getRootFolder());
                 }
                 if (dependencies.isEmpty()) {
-                    dependencies = Arrays.asList("default");
+                    dependencies.add("default");
                 }
             }
 
-            GWTJahiaNode root = new GWTJahiaNode();
-            List<GWTJahiaNode> allNodes = new ArrayList<GWTJahiaNode>();
-            allNodes.add(root);
-            int found = 0;
-            GWTJahiaNode lastAdded = null;
-            for (int i = 0; i < allNodes.size(); i++) {
-                GWTJahiaNode node = allNodes.get(i);
+            List<GWTJahiaNode> list = navigation.retrieveRoot(paths, null, null, null, fields, site, uiLocale, session, false, true, null, null);
 
-                if (node.getNodeTypes() != null && node.getNodeTypes().contains("jnt:virtualsite") && dependencies != null && !dependencies.contains(node.getName())) {
-                    continue;
-                }
+            final Map<JCRNodeWrapper, List<JCRNodeWrapper>> tree = new HashMap<JCRNodeWrapper, List<JCRNodeWrapper>>();
 
-                List<GWTJahiaNode> list;
-                try {
-                    if (node == root) {
-                        list = navigation.retrieveRoot(paths, null, null, null, fields, site, uiLocale, session, false, true, null, null);
-                    } else if (node.getNodeTypes().contains("jnt:virtualsite")) {
-                        String compPath = node.getPath()+"/components";
-                        if (session.nodeExists(compPath)) {
-                            GWTJahiaNode comp = new GWTJahiaNode();
-                            comp.setPath(compPath);
-                            list = navigation.ls(comp, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
-                                    false, null, null, session, false,uiLocale);
-                        } else {
-                            list = Collections.emptyList();
-                        }
-                    } else if (node.isNodeType("jnt:module")) {
-                        list = Collections.emptyList();
-                        List<GWTJahiaNode> vlist = navigation.ls(node, Arrays.asList("jnt:moduleVersion"), null, null, fields, false,
-                                false, null, null, session, false, uiLocale);
-                        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getName());
-                        if (aPackage != null) {
-                            String version = aPackage.getVersion().toString();
-                            for (GWTJahiaNode versionNode : vlist) {
-                                if (versionNode.getName().equals(version)) {
-                                    List<GWTJahiaNode>  clist = navigation.ls(versionNode, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
-                                            false, null, null, session, false, uiLocale);
-                                    for (GWTJahiaNode compNode : clist) {
-                                        if (compNode.getName().equals("components")) {
-                                            list = navigation.ls(compNode, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
-                                                    false, null, null, session, false, uiLocale);
+            List<JCRNodeWrapper> roots = new ArrayList<JCRNodeWrapper>();
+
+            for (GWTJahiaNode node : list) {
+                final JCRNodeWrapper ch = session.getNode(node.getPath());
+
+                if (new Object() {
+                    public boolean buildTree(JCRNodeWrapper node) throws RepositoryException {
+
+                        if (node.isNodeType("jnt:component")) {
+                            if (nodeTypes != null) {
+                                if (includeSubTypes) {
+                                    if (isNodeType(nodeTypes, node.getName())) {
+                                        return !isNodeType(excludedNodeTypes, node.getName());
+                                    }
+                                } else {
+                                    for (String nodeType : nodeTypes) {
+                                        if (node.getName().equals(nodeType)) {
+                                            return !isNodeType(excludedNodeTypes, node.getName());
                                         }
                                     }
                                 }
                             }
-                        }
-                    } else {
-                        list = navigation.ls(node, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
-                                false, null, null, session, false, uiLocale);
-                    }
-                } catch (GWTJahiaServiceException e) {
-                    e.printStackTrace();
-                    continue;
-                }
-
-                for (int j = 0; j < list.size(); j++) {
-                    GWTJahiaNode child = list.get(j);
-                    if (session.getNodeByIdentifier(child.getUUID()).hasPermission("useComponentForCreate") && !isNodeType(excludedNodeTypes, child.getName())) {
-                        GWTJahiaNodeType type = getNodeType(child.getName(), uiLocale);
-                        child.set("componentNodeType", type);
-                        if (child.getInheritedNodeTypes().contains("jnt:component") && nodeTypes != null && type != null) {
-                            if (includeSubTypes) {
-                                HashSet<String> set = new HashSet<String>(type.getSuperTypes());
-                                set.add(type.getName());
-                                set.retainAll(nodeTypes);
-                                if (!set.isEmpty()) {
-                                    node.add(child);
-                                    allNodes.add(child);
-                                    lastAdded = child;
-                                    found ++;
-                                }
-                            } else {
-                                if (nodeTypes.contains(type.getName())) {
-                                    node.add(child);
-                                    allNodes.add(child);
-                                    lastAdded = child;
-                                    found ++;
-                                }
+                        } else if (node.isNodeType("jnt:virtualsite")) {
+                            if (dependencies.isEmpty() || dependencies.contains(node.getName())) {
+                                return addChildren(node);
                             }
+                        } else if (node.isNodeType("jnt:moduleVersion")) {
+                            JahiaTemplatesPackage templatesPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getParent().getName());
+                            if (templatesPackage != null && templatesPackage.getVersion().toString().equals(node.getName())) {
+                                return addChildren(node);
+                            }
+                        } else if (node.isNodeType("jnt:componentFolder")) {
+                            return addChildren(node);
+                        }
+                        return false;
+                    }
+
+                    private boolean addChildren(JCRNodeWrapper node) throws RepositoryException {
+                        NodeIterator ni = node.getNodes();
+                        List<JCRNodeWrapper> children = new ArrayList<JCRNodeWrapper>();
+                        while (ni.hasNext()) {
+                            JCRNodeWrapper child2 = (JCRNodeWrapper) ni.nextNode();
+                            if (buildTree(child2)) {
+                                children.add(child2);
+                            }
+                        }
+                        if (children.size() == 1 && tree.get(children.get(0)) != null) {
+                            tree.put(node,tree.get(children.get(0)));
+                            return true;
+                        } else if (!children.isEmpty()) {
+                            tree.put(node,children);
+                            return true;
                         } else {
-                            node.add(child);
-                            allNodes.add(child);
+                            return false;
                         }
                     }
+                }.buildTree(ch)) {
+                    roots.add(ch);
                 }
-                node.setExpandOnLoad(false);
             }
-            if (found == 1) {
-                return Arrays.asList(lastAdded);
-            } else {
-                for (int i = allNodes.size()-1; i > 0 ; i--) {
-                    GWTJahiaNode node = allNodes.get(i);
-                    if (!includeNonDependentModules && !node.getInheritedNodeTypes().contains("jnt:component") && node.get("hasDescendants") == null) {
-                        root.getChildren().remove(node);
-                        allNodes.remove(node);
+//            if (roots.size() == 1) {
+//                roots = tree.get(roots.get(0));
+//            }
+
+
+            ArrayList<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
+            final List<String> fieldsCopy = new ArrayList<String>(fields);
+            fieldsCopy.add(GWTJahiaNode.ICON);
+
+            for (JCRNodeWrapper root : roots) {
+                nodes.add(new Object() {
+                    GWTJahiaNode convert(JCRNodeWrapper n) {
+                        GWTJahiaNode res = navigation.getGWTJahiaNode(n, fieldsCopy, uiLocale);
+                        if (tree.get(n) != null) {
+                            List<JCRNodeWrapper> ch = tree.get(n);
+                            for (JCRNodeWrapper child : ch) {
+                                res.add(convert(child));
+                            }
+                        }
+                        try {
+                            if (n.isNodeType("jnt:component") || n.isNodeType("jnt:componentFolder")) {
+                                GWTJahiaNodeType type = getNodeType(n.getName(), uiLocale);
+                                res.set("componentNodeType", type);
+                            }
+                        } catch (RepositoryException e) {
+                            // Ignore
+                        }
+                        return res;
                     }
-                    if (node.getInheritedNodeTypes().contains("jnt:component") || node.get("hasDescendants") != null) {
-                        node.getParent().set("hasDescendants", Boolean.TRUE);
-//                    } else  if (!node.getInheritedNodeTypes().contains("jnt:component") && node.get("hasDescendants") == null) {
-//                        node.getParent().remove(node);
-                    }
-                }
-                return new ArrayList(root.getChildren());
+                }.convert(root));
             }
+            return nodes;
+
+//            GWTJahiaNode root = new GWTJahiaNode();
+//            List<GWTJahiaNode> allNodes = new ArrayList<GWTJahiaNode>();
+//            allNodes.add(root);
+//            int found = 0;
+//            GWTJahiaNode lastAdded = null;
+//            for (int i = 0; i < allNodes.size(); i++) {
+//                GWTJahiaNode node = allNodes.get(i);
+//
+//                if (node.getNodeTypes() != null && node.getNodeTypes().contains("jnt:virtualsite") && dependencies != null && !dependencies.contains(node.getName())) {
+//                    continue;
+//                }
+//
+//                List<GWTJahiaNode> list;
+//                try {
+//                    if (node == root) {
+//                        list = navigation.retrieveRoot(paths, null, null, null, fields, site, uiLocale, session, false, true, null, null);
+//                    } else if (node.getNodeTypes().contains("jnt:virtualsite")) {
+//                        String compPath = node.getPath()+"/components";
+//                        if (session.nodeExists(compPath)) {
+//                            GWTJahiaNode comp = new GWTJahiaNode();
+//                            comp.setPath(compPath);
+//                            list = navigation.ls(comp, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
+//                                    false, null, null, session, false,uiLocale);
+//                        } else {
+//                            list = Collections.emptyList();
+//                        }
+//                    } else if (node.isNodeType("jnt:module")) {
+//                        list = Collections.emptyList();
+//                        List<GWTJahiaNode> vlist = navigation.ls(node, Arrays.asList("jnt:moduleVersion"), null, null, fields, false,
+//                                false, null, null, session, false, uiLocale);
+//                        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getName());
+//                        if (aPackage != null) {
+//                            String version = aPackage.getVersion().toString();
+//                            for (GWTJahiaNode versionNode : vlist) {
+//                                if (versionNode.getName().equals(version)) {
+//                                    List<GWTJahiaNode>  clist = navigation.ls(versionNode, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
+//                                            false, null, null, session, false, uiLocale);
+//                                    for (GWTJahiaNode compNode : clist) {
+//                                        if (compNode.getName().equals("components")) {
+//                                            list = navigation.ls(compNode, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
+//                                                    false, null, null, session, false, uiLocale);
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    } else {
+//                        list = navigation.ls(node, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
+//                                false, null, null, session, false, uiLocale);
+//                    }
+//                } catch (GWTJahiaServiceException e) {
+//                    e.printStackTrace();
+//                    continue;
+//                }
+//
+//                for (int j = 0; j < list.size(); j++) {
+//                    GWTJahiaNode child = list.get(j);
+//                    if (session.getNodeByIdentifier(child.getUUID()).hasPermission("useComponentForCreate") && !isNodeType(excludedNodeTypes, child.getName())) {
+//                        GWTJahiaNodeType type = getNodeType(child.getName(), uiLocale);
+//                        child.set("componentNodeType", type);
+//                        if (child.getInheritedNodeTypes().contains("jnt:component") && nodeTypes != null && type != null) {
+//                            if (includeSubTypes) {
+//                                HashSet<String> set = new HashSet<String>(type.getSuperTypes());
+//                                set.add(type.getName());
+//                                set.retainAll(nodeTypes);
+//                                if (!set.isEmpty()) {
+//                                    node.add(child);
+//                                    allNodes.add(child);
+//                                    lastAdded = child;
+//                                    found ++;
+//                                }
+//                            } else {
+//                                if (nodeTypes.contains(type.getName())) {
+//                                    node.add(child);
+//                                    allNodes.add(child);
+//                                    lastAdded = child;
+//                                    found ++;
+//                                }
+//                            }
+//                        } else {
+//                            node.add(child);
+//                            allNodes.add(child);
+//                        }
+//                    }
+//                }
+//                node.setExpandOnLoad(false);
+//            }
+//            if (found == 1) {
+//                return Arrays.asList(lastAdded);
+//            } else {
+//                for (int i = allNodes.size()-1; i > 0 ; i--) {
+//                    GWTJahiaNode node = allNodes.get(i);
+//                    if (!includeNonDependentModules && !node.getInheritedNodeTypes().contains("jnt:component") && node.get("hasDescendants") == null) {
+//                        root.getChildren().remove(node);
+//                        allNodes.remove(node);
+//                    }
+//                    if (node.getInheritedNodeTypes().contains("jnt:component") || node.get("hasDescendants") != null) {
+//                        node.getParent().set("hasDescendants", Boolean.TRUE);
+////                    } else  if (!node.getInheritedNodeTypes().contains("jnt:component") && node.get("hasDescendants") == null) {
+////                        node.getParent().remove(node);
+//                    }
+//                }
+//                return new ArrayList(root.getChildren());
+//            }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());

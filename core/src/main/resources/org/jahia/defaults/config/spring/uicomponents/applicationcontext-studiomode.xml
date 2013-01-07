@@ -490,12 +490,12 @@
                                             <property name="columnsConfig">
                                                 <list>
                                                     <value>name,*,label.name</value>
-                                                    <value>j:requiredType,*,label.type</value>
-                                                    <value>j:defaultValues,*,label.defaultValue</value>
-                                                    <value>j:isInternationalized,*,label.isInternationalized</value>
-                                                    <value>j:mandatory,*,label.isMandatory</value>
-                                                    <value>j:protected,*,label.isProtected</value>
-                                                    <value>j:isHidden,*,label.isHidden</value>
+                                                    <value>j:requiredType,100</value>
+                                                    <value>j:defaultValues,100</value>
+                                                    <value>j:isInternationalized,100</value>
+                                                    <value>j:mandatory,100</value>
+                                                    <value>j:protected,100</value>
+                                                    <value>j:isHidden,100</value>
                                                 </list>
                                             </property>
                                         </bean>
@@ -509,9 +509,9 @@
                                             <property name="type" value="jnt:childNodeDefinition"/>
                                             <property name="columnsConfig">
                                                 <list>
-                                                    <value>name,200,label.name</value>
-                                                    <value>j:requiredPrimaryTypes,*,label.type</value>
-                                                    <value>j:mandatory,*,label.isMandatory</value>
+                                                    <value>name,*,label.name</value>
+                                                    <value>j:requiredPrimaryTypes,200</value>
+                                                    <value>j:mandatory,100</value>
                                                 </list>
                                             </property>
                                         </bean>

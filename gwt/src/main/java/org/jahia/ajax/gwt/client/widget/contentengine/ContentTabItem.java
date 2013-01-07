@@ -158,7 +158,7 @@ public class ContentTabItem extends PropertiesTabItem {
                 boolean nameEditingAllowed = isNameEditableForType(engine);
 
                 if (nameEditingAllowed && autoUpdateName != null) {
-                    if (engine.isExistingNode()) {
+                    if (engine.isExistingNode() || !JahiaGWTParameters.getLanguage().equals(language)) {
                         if (titleField != null && titleField.getValue() != null) {
                             String generated = generateNodeName((String) titleField.getValue());
                             autoUpdate = nameText.getValue().equals(generated);

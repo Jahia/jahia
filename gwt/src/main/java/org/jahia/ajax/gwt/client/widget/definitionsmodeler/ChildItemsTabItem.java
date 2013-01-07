@@ -85,12 +85,6 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             return;
         }
 
-        JahiaContentManagementService.App.getInstance().getNodeType(type, new BaseAsyncCallback<GWTJahiaNodeType>() {
-            public void onSuccess(GWTJahiaNodeType result) {
-                nodeType = result;
-            }
-        });
-
         engineNode = engine.getNode();
         if (engineNode == null) {
             engineNode = new GWTJahiaNode();
@@ -117,48 +111,10 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         propertiesEditors = new HashMap<GWTJahiaNode, PropertiesEditor>();
         propertiesEditorsByLang = new HashMap<GWTJahiaNode, Map<String, PropertiesEditor>>();
 
-        List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
         columnsKeys = new ArrayList<String>();
         for (String columnConfig : columnsConfig) {
             String[] config = columnConfig.split(",");
             columnsKeys.add(config[0]);
-            ColumnConfig colConfig = new ColumnConfig();
-            colConfig.setId(config[0]);
-            if (!"*".equals(config[1])) {
-                colConfig.setWidth(new Integer(config[1]));
-            } else {
-                colConfig.setWidth(100);
-            }
-            colConfig.setHeader(Messages.get(config[2], config[2]));
-            columns.add(colConfig);
-            colConfig.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-                @Override
-                public Object render(GWTJahiaNode node, String property, ColumnData config, int rowIndex, int colIndex, ListStore store, Grid grid) {
-                    String cellValue = "";
-                    if (node.get(property) != null) {
-                        if (node.get(property) instanceof ArrayList) {
-                            for (Object s : (ArrayList<Object>) node.get(property)) {
-                                if (s instanceof GWTJahiaNodePropertyValue) {
-                                    cellValue = cellValue.equals("") ? ((GWTJahiaNodePropertyValue) s).getString() : cellValue + "," + ((GWTJahiaNodePropertyValue) s).getString();
-                                } else if (s instanceof String) {
-                                    cellValue = cellValue.equals("") ? (String) s : cellValue + "," + s;
-                                }
-                            }
-                        } else {
-                            Object p = node.get(property);
-                            if (p instanceof GWTJahiaNodePropertyValue) {
-                                cellValue = ((GWTJahiaNodePropertyValue) p).getString();
-                            } else if (p instanceof String) {
-                                cellValue = (String) p;
-                            }
-                        }
-                        if (cellValue.startsWith("__")) {
-                            cellValue = "*";
-                        }
-                    }
-                    return cellValue;
-                }
-            });
         }
 
         if (engine.getNode() != null) {
@@ -173,7 +129,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             });
         }
 
-        grid = new Grid<GWTJahiaNode>(store, new ColumnModel(columns));
+        grid = new Grid<GWTJahiaNode>(store, new ColumnModel(new ArrayList<ColumnConfig>()));
 
         GridDropTarget target = new GridDropTarget(grid);
         target.setAllowSelfAsSource(true);
@@ -364,6 +320,71 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                 switchPropertiesEditor(tab);
             }
         });
+
+        JahiaContentManagementService.App.getInstance().getNodeType(type, new BaseAsyncCallback<GWTJahiaNodeType>() {
+            public void onSuccess(GWTJahiaNodeType result) {
+                nodeType = result;
+
+                List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
+                Map<String,String> labels = new HashMap<String, String>();
+                for (GWTJahiaItemDefinition gwtJahiaItemDefinition : nodeType.getItems()) {
+                    labels.put(gwtJahiaItemDefinition.getName(), gwtJahiaItemDefinition.getLabel());
+                }
+                columnsKeys = new ArrayList<String>();
+                String autoExpandColumn = null;
+                for (String columnConfig : columnsConfig) {
+                    String[] config = columnConfig.split(",");
+                    columnsKeys.add(config[0]);
+                    ColumnConfig colConfig = new ColumnConfig();
+                    colConfig.setId(config[0]);
+                    if (!"*".equals(config[1])) {
+                        colConfig.setWidth(new Integer(config[1]));
+                    } else {
+                        autoExpandColumn = config[0];
+                    }
+                    if (config.length > 2) {
+                        colConfig.setHeader(Messages.get(config[2], config[2]));
+                    } else {
+                        colConfig.setHeader(labels.get(config[0]));
+                    }
+                    columns.add(colConfig);
+                    colConfig.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
+                        @Override
+                        public Object render(GWTJahiaNode node, String property, ColumnData config, int rowIndex, int colIndex, ListStore store, Grid grid) {
+                            String cellValue = "";
+                            if (node.get(property) != null) {
+                                if (node.get(property) instanceof ArrayList) {
+                                    for (Object s : (ArrayList<Object>) node.get(property)) {
+                                        if (s instanceof GWTJahiaNodePropertyValue) {
+                                            cellValue = cellValue.equals("") ? ((GWTJahiaNodePropertyValue) s).getString() : cellValue + "," + ((GWTJahiaNodePropertyValue) s).getString();
+                                        } else if (s instanceof String) {
+                                            cellValue = cellValue.equals("") ? (String) s : cellValue + "," + s;
+                                        }
+                                    }
+                                } else {
+                                    Object p = node.get(property);
+                                    if (p instanceof GWTJahiaNodePropertyValue) {
+                                        cellValue = ((GWTJahiaNodePropertyValue) p).getString();
+                                    } else {
+                                        cellValue = p.toString();
+                                    }
+                                }
+                                if (cellValue.startsWith("__")) {
+                                    cellValue = "*";
+                                }
+                            }
+                            return cellValue;
+                        }
+                    });
+                }
+                grid.setAutoExpandMax(2000);
+                grid.setAutoExpandColumn(autoExpandColumn);
+                grid.reconfigure(store, new ColumnModel(columns));
+
+            }
+        });
+
+
         tab.layout();
         tab.setProcessed(true);
 
@@ -378,6 +399,9 @@ public class ChildItemsTabItem extends EditEngineTabItem {
 
 
     private void switchPropertiesEditor(final TabItem tab) {
+        if (grid == null || grid.getSelectionModel() == null) {
+            return;
+        }
         final GWTJahiaNode item = grid.getSelectionModel().getSelectedItem();
 
         if (propertiesEditor != null) {

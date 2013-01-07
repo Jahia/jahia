@@ -84,14 +84,20 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                 final String[] filePath = node.getPath().split("/");
 
                 String mv;
-                String ft;
-                String ftt;
+                String ft= "";
+                String ftt= "html";
                 String fn = "";
                 if ("modules".equals(filePath[1])) {
                     mv = (String) JahiaGWTParameters.getSiteNode().getProperties().get("j:versionInfo");
-                    ft = ((CreateContentEngine) engine).getTargetName();
-                    ftt = "html";
-                    fn = ft.substring(ft.indexOf("_") + 1) + ".jsp";
+                    if (engine instanceof CreateContentEngine) {
+                        ft = ((CreateContentEngine) engine).getTargetName();
+                        fn = ft.indexOf("_")>1?ft.substring(ft.indexOf("_") + 1) + ".jsp":ft+".jsp";
+                    } else {
+                        ft = filePath[5];
+                        fn = filePath[7];
+                        ftt=filePath[6];
+                    }
+
                 } else {
                     MessageBox.alert("save not work as expected", "An issue occurs when trying to resolve " + node.getPath(), null);
                     return;
@@ -167,8 +173,8 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                                 newModuleVersion + "/sources/" +
                                 fileType + "/" +
                                 newfileTemplateType;
-
-                        String newViewName = fileType.substring(fileType.indexOf("_") + 1) + newfileView + fileName.substring(fileName.lastIndexOf("."));
+                        String ft = fileType.indexOf("_") > 1?fileType.substring(fileType.indexOf("_") + 1):fileName;
+                        String newViewName = ft + newfileView + fileName.substring(fileName.lastIndexOf("."));
                         Map<String, String> parentNodesType = new LinkedHashMap<java.lang.String, java.lang.String>();
 
                         parentNodesType.put("/modules/"+newModuleName+"/"+newModuleVersion+"/sources/"+fileType, "jnt:folder");

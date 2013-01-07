@@ -168,13 +168,11 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                                 fileType + "/" +
                                 newfileTemplateType;
 
-                        String newViewName = fileType.split("_")[1] + newfileView + fileName.substring(fileName.lastIndexOf("."));
+                        String newViewName = fileType.substring(fileType.indexOf("_") + 1) + newfileView + fileName.substring(fileName.lastIndexOf("."));
                         Map<String, String> parentNodesType = new LinkedHashMap<java.lang.String, java.lang.String>();
 
-                        parentNodesType.put("modules", "jnt:folder");
-                        parentNodesType.put(newModuleName, "jnt:folder");
-                        parentNodesType.put(newModuleVersion, "jnt:folder");
-                        parentNodesType.put(fileType, "jnt:folder");
+                        parentNodesType.put("/modules/"+newModuleName+"/"+newModuleVersion+"/sources/"+fileType, "jnt:folder");
+                        parentNodesType.put("/modules/"+newModuleName+"/"+newModuleVersion+"/sources/"+fileType+"/"+newfileTemplateType, "jnt:folder");
                         parentNodesType.put(newfileTemplateType, "jnt:folder");
                         prepareAndSave(newModulePath, newViewName, parentNodesType, engine, newModuleNode);
                         popup.hide();

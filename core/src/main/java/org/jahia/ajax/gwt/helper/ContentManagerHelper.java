@@ -172,14 +172,22 @@ public class ContentManagerHelper {
         try {
             jcrSessionWrapper = currentUserSession;
             if (parentNodesType != null) {
+                List<String> pathElements = Arrays.asList(parentPath.split("/")).subList(1, parentPath.split("/").length);
+                String previousPath = "/";
                 String currentPath = "";
-                for (String path : parentNodesType.keySet()) {
+                for (String pathElement : pathElements) {
+                    currentPath += "/" + pathElement;
                     try {
-                        jcrSessionWrapper.getNode(currentPath + "/" + path);
+                        jcrSessionWrapper.getNode(currentPath);
                     } catch (PathNotFoundException e) {
-                        jcrSessionWrapper.getNode(currentPath).addNode(path, parentNodesType.get(path));
+                        if (parentNodesType.containsKey(currentPath)) {
+                            jcrSessionWrapper.getNode(previousPath).addNode(pathElement, parentNodesType.get(currentPath));
+                        } else {
+                            throw new GWTJahiaServiceException(
+                                    new StringBuilder(currentPath).append(Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
+                        }
                     }
-                    currentPath = currentPath + "/" + path;
+                    previousPath = currentPath;
                 }
             }
             parentNode = jcrSessionWrapper.getNode(parentPath);

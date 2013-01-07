@@ -102,10 +102,7 @@ public class CreateResourceButtonItem extends SaveButtonItem {
                             path = nodePath;
                         } else {
                             path = "/modules/" + filePath[2] + "/" + filePath[3] + "/sources/" + defaultContainerFolder;
-                            parentNodesType.put("modules", "jnt:folder");
-                            parentNodesType.put(filePath[2], "jnt:folder");
-                            parentNodesType.put(filePath[3], "jnt:folder");
-                            parentNodesType.put(defaultContainerFolder, "jnt:folder");
+                            parentNodesType.put("/modules/" + filePath[2] + "/" + filePath[3] + "/sources/" + defaultContainerFolder, "jnt:folder");
                         }
                         String finalName = name.getValue();
                         if (!finalName.endsWith("." + fileExtension)) {

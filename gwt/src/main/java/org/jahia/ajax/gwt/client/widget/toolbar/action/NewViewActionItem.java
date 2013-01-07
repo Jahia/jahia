@@ -89,7 +89,7 @@ public class NewViewActionItem extends BaseActionItem  {
         final GWTJahiaNode selectedNode = linker.getSelectionContext().getSingleSelection();
         final String[] filePath = selectedNode.getPath().split("/");
 
-        if (!"modules".equals(filePath[1]) || !filePath[4].contains("_")) {
+        if (!"modules".equals(filePath[1]) || filePath.length < 4 || !filePath[4].contains("_")) {
             // Open popup to select nodeType
 
             ArrayList<String> paths = new ArrayList<String>();

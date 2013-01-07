@@ -78,7 +78,7 @@
     display:block;
     overflow:hidden;
     text-shadow: none;
-    line-height: normal;
+    line-height: 22px;
 }
 
 .x-panel-header-listmodule {
@@ -93,12 +93,12 @@
     display:block;
     overflow:hidden;
     text-shadow: none;
-    line-height: normal;
+    line-height: 22px;
 }
 
 .x-panel-header-areamodule {
-    background: url("../images/xtheme-jahia-andromeda/panel/white-top-bottom.gif") repeat scroll left top #D0DFE8;
-    border: 1px solid #B7CBD8;
+    background: url("../images/xtheme-jahia-andromeda/panel/white-top-bottom-areamodule.png") repeat scroll left top #aac8f1;
+    border: 1px solid #aac8f1;
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 11px;
     font-weight: bold;
@@ -108,21 +108,21 @@
     display:block;
     overflow:hidden;
     text-shadow: none;
-    line-height: normal;
+    line-height: 22px;
 }
 .x-panel-header-absoluteAreamodule {
-    background: url("../images/xtheme-jahia-andromeda/panel/white-top-bottom-abs.gif") repeat scroll left top #ff5555;
-    border: 1px solid #e85b5b;
+    background: url("../images/xtheme-jahia-andromeda/panel/white-top-bottom-absoluteAreamodule.png") repeat scroll left top #586370;
+    border: 1px solid #586370;
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 11px;
     padding: 4px;
-    color: #000 !important;
+    color: #fff !important;
     font-weight: bold;
     margin-bottom:2px;
     display:block;
     overflow:hidden;
     text-shadow: none;
-    line-height: normal;
+    line-height: 22px;
 }
 
 .x-panel-header-lockedmodule {
@@ -137,7 +137,7 @@
     display:block;
     overflow:hidden;
     text-shadow: none;
-    line-height: normal;
+    line-height: 22px;
 }
 
 .x-panel-placeholder {
@@ -146,13 +146,13 @@
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 11px;
     padding: 4px;
-    color: #000 !important;
+    color: #333 !important;
     font-weight: bold;
     margin-bottom:2px;
     display:block;
     overflow:hidden;
     text-shadow: none;
-    line-height: normal;
+    line-height: 22px;
 }
 
 .x-panel-toolbar {
@@ -169,24 +169,21 @@ button.button-placeholder, div.button-placeholder {
     font-weight:bold;
     text-align:center;
     text-transform:none;
-    background:#0b9c0b url(../images/xtheme-jahia-andromeda/panel/bg-button-placeholder.png) repeat-x scroll left top;
+    background-color:#3399ff ;
     border:none;
     color:#fff;
-    border:1px solid #009800 !important;
+    border:1px solid #006699 !important;
     padding:1px 2px;
     margin:1px;
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-    -webkit-box-shadow: 0px 1px 2px #cccccc;
-    -moz-box-shadow: 0px 1px 2px #cccccc;
-    box-shadow: 0px 1px 2px #cccccc;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+
     cursor:pointer;
     line-height:15px !important;
 }
 button.button-placeholder:hover,  div.button-placeholder:hover {
-    background: #009800 url(../images/xtheme-jahia-andromeda/panel/bg-button-placeholder-on.png) repeat-x scroll left top;
-    color: #fff;
+    background-color: #006699;
 }
 
 .selection-top-list {
@@ -233,43 +230,43 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
 
 
 .hover-top-list {
-    border-top: 1px solid #333;
+    border-top: 1px solid #39f;
 }
 .hover-bottom-list {
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #39f;
 }
 .hover-left-list {
-    border-left: 1px solid #333;
+    border-left: 1px solid #39f;
 }
 .hover-right-list {
-    border-right: 1px solid #333;
+    border-right: 1px solid #39f;
 }
 
 .hover-top-simple {
-    border-top: 1px solid #333;
+    border-top: 1px solid #39f;
 }
 .hover-bottom-simple {
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #39f;
 }
 .hover-left-simple {
-    border-left: 1px solid #333;
+    border-left: 1px solid #39f;
 }
 .hover-right-simple {
-    border-right: 1px solid #333;
+    border-right: 1px solid #39f;
 }
 
 
 .hover-top-area {
-    border-top: 1px solid #333;
+    border-top: 1px solid #39f;
 }
 .hover-bottom-area {
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #39f;
 }
 .hover-left-area {
-    border-left: 1px solid #333;
+    border-left: 1px solid #39f;
 }
 .hover-right-area {
-    border-right: 1px solid #333;
+    border-right: 1px solid #39f;
 }
 
 

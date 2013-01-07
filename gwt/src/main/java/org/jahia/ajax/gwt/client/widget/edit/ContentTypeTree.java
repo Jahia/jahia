@@ -335,9 +335,7 @@ public class ContentTypeTree extends LayoutContainer {
 
     public void fillStore(List<GWTJahiaNode> nodes) {
         for (GWTJahiaNode node : nodes) {
-            if (node.getChildren().size()>0) {
-                store.add(node, true);
-            }
+            store.add(node, true);
         }
     }
 

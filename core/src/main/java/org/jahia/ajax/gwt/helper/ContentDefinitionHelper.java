@@ -865,9 +865,9 @@ public class ContentDefinitionHelper {
                     roots.add(ch);
                 }
             }
-//            if (roots.size() == 1) {
-//                roots = tree.get(roots.get(0));
-//            }
+            if (roots.size() == 1) {
+                roots = tree.get(roots.get(0));
+            }
 
 
             ArrayList<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();

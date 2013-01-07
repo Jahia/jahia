@@ -798,6 +798,7 @@ public class ContentDefinitionHelper {
                 if (dependencies.isEmpty()) {
                     dependencies.add("default");
                 }
+                dependencies.add(site.getTemplateFolder());
             }
 
             List<GWTJahiaNode> list = navigation.retrieveRoot(paths, null, null, null, fields, site, uiLocale, session, false, true, null, null);
@@ -816,12 +817,12 @@ public class ContentDefinitionHelper {
                             if (nodeTypes != null) {
                                 if (includeSubTypes) {
                                     if (isNodeType(nodeTypes, node.getName())) {
-                                        return !isNodeType(excludedNodeTypes, node.getName());
+                                        return excludedNodeTypes == null || !isNodeType(excludedNodeTypes, node.getName());
                                     }
                                 } else {
                                     for (String nodeType : nodeTypes) {
                                         if (node.getName().equals(nodeType)) {
-                                            return !isNodeType(excludedNodeTypes, node.getName());
+                                            return excludedNodeTypes == null || !isNodeType(excludedNodeTypes, node.getName());
                                         }
                                     }
                                 }

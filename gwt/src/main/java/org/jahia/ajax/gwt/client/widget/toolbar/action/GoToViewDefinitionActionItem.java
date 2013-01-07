@@ -58,7 +58,7 @@ public class GoToViewDefinitionActionItem extends BaseActionItem {
             if (scriptInfo.startsWith(SCRIPT_INFO_PREFIX)) {
                 String url = JahiaGWTParameters.getParam("studioUrl");
                 url = url.substring(0, url.indexOf(MODULES_BASE_PATH));
-                url += "/modulesFileSystem" + scriptInfo.substring(SCRIPT_INFO_PREFIX.length()) + ".html";
+                url += "/modules" + scriptInfo.substring(SCRIPT_INFO_PREFIX.length()) + ".html";
                 Window.Location.assign(url);
             }
         }

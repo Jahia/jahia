@@ -89,7 +89,7 @@ public class NewViewActionItem extends BaseActionItem  {
         final GWTJahiaNode selectedNode = linker.getSelectionContext().getSingleSelection();
         final String[] filePath = selectedNode.getPath().split("/");
 
-        if (!"modulesFileSystem".equals(filePath[1]) || !filePath[4].contains("_")) {
+        if (!"modules".equals(filePath[1]) || !filePath[4].contains("_")) {
             // Open popup to select nodeType
 
             ArrayList<String> paths = new ArrayList<String>();
@@ -167,7 +167,7 @@ public class NewViewActionItem extends BaseActionItem  {
                 && hasPermission(lh.getSelectionPermissions())
                 && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions());
         setEnabled(enabled) ;
-        if (!enabled || !"modulesFileSystem".equals(filePath[1]) || !filePath[4].contains("_")) {
+        if (!enabled || !"modules".equals(filePath[1]) || !filePath[4].contains("_")) {
             updateTitle(getGwtToolbarItem().getTitle());
         } else {
             updateTitle(getGwtToolbarItem().getTitle() + " : " + filePath[4]);

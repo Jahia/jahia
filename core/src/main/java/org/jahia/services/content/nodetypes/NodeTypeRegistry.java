@@ -197,8 +197,9 @@ public class NodeTypeRegistry implements NodeTypeManager {
         if (!files.containsKey(systemId)) {
             files.put(systemId, new ArrayList<Resource>());
         }
-        files.get(systemId).add(resource);
-
+        if (!files.get(systemId).contains(resource)) {
+            files.get(systemId).add(resource);
+        }
     }
 
     public void addDefinitionsFile(File file, String systemId, ModuleVersion version) throws ParseException, IOException {

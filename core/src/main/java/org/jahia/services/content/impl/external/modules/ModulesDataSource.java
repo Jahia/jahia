@@ -633,7 +633,11 @@ public class ModulesDataSource extends VFSDataSource {
         Map<String, String[]> properties;
         String[] values;
 //        String rbBasePath = StringUtils.substringAfter(module.getResourceBundleName(), "modules").replaceAll("\\.", "/").replaceAll("___", ".");
-        String rbBasePath = "/resources/" + StringUtils.substringAfterLast(module.getResourceBundleName(), ".");
+        String resourceBundleName = module.getResourceBundleName();
+        if (resourceBundleName == null) {
+            resourceBundleName = "resources." + module.getRootFolder();
+        }
+        String rbBasePath = "/resources/" + StringUtils.substringAfterLast(resourceBundleName, ".");
         Map<String, Map<String, String[]>> i18nProperties = data.getI18nProperties();
         if (i18nProperties != null) {
             for (String lang : i18nProperties.keySet()) {

@@ -450,7 +450,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public JahiaTemplatesPackage compileAndDeploy(final String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException, IOException{
         File warFile = compileModule(moduleName, sources);
-        return templatePackageDeployer.deployModule(warFile, session);
+        JahiaTemplatesPackage pack = templatePackageDeployer.deployModule(warFile, session);
+        if (pack != null) {
+            JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
+            setSourcesFolderInPackageAndNode(pack, sources, node);
+            session.save();
+        } else {
+            FileUtils.deleteDirectory(sources);
+        }
+
+        return pack;
     }
 
     public File compileModule(final String moduleName, File sources) throws IOException {

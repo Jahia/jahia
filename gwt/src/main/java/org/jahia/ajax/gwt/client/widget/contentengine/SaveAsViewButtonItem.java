@@ -87,16 +87,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                 String ft;
                 String ftt;
                 String fn = "";
-                if ("modulesFileSystem".equals(filePath[1])) {
-                    mv = filePath[3];
-                    if (engine instanceof CreateContentEngine) {
-                        ft = ((CreateContentEngine) engine).getTargetName();
-                    } else {
-                        ft = filePath[4];
-                    }
-                    fn = filePath.length > 6?filePath[6]:ft.substring(ft.indexOf("_") + 1) + ".jsp";
-                    ftt = filePath.length >5?filePath[5]:"html";
-                } else if ("modules".equals(filePath[1])) {
+                if ("modules".equals(filePath[1])) {
                     mv = (String) JahiaGWTParameters.getSiteNode().getProperties().get("j:versionInfo");
                     ft = ((CreateContentEngine) engine).getTargetName();
                     ftt = "html";
@@ -105,7 +96,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                     MessageBox.alert("save not work as expected", "An issue occurs when trying to resolve " + node.getPath(), null);
                     return;
                 }
-                final String modulePath = "/modulesFileSystem/" + filePath[2];
+                final String modulePath = "/modules/" + filePath[2];
                 final String moduleName = filePath[2];
                 final String moduleVersion = mv;
                 final String fileName = fn;
@@ -159,7 +150,6 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                                 if (n.getName().equals(dependenciesCombo.getSimpleValue())) {
                                     newModuleNode = n;
                                     newModuleName = dependenciesCombo.getSimpleValue();
-                                    newModulePath = n.getPath().replace("/modules/", "/modulesFileSystem/");
                                     newModuleVersion = (String) n.getProperties().get("j:versionInfo");
                                     break;
                                 }
@@ -174,14 +164,14 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                             newfileView = "." + viewNameValue;
                         }
                         newModulePath = newModulePath + "/" +
-                                newModuleVersion + "/" +
+                                newModuleVersion + "/sources/" +
                                 fileType + "/" +
-                                newfileTemplateType + "/";
+                                newfileTemplateType;
 
                         String newViewName = fileType.split("_")[1] + newfileView + fileName.substring(fileName.lastIndexOf("."));
                         Map<String, String> parentNodesType = new LinkedHashMap<java.lang.String, java.lang.String>();
 
-                        parentNodesType.put("modulesFileSystem", "jnt:folder");
+                        parentNodesType.put("modules", "jnt:folder");
                         parentNodesType.put(newModuleName, "jnt:folder");
                         parentNodesType.put(newModuleVersion, "jnt:folder");
                         parentNodesType.put(fileType, "jnt:folder");

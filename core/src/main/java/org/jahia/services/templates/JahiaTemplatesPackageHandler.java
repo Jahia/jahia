@@ -56,6 +56,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 
 import java.io.*;
 import java.util.Arrays;
@@ -152,14 +153,19 @@ final class JahiaTemplatesPackageHandler {
 
         if (templatePackage.getResourceBundleName() == null) {
             // check if there is a resource bundle file in the resources folder
-            String rbName = Patterns.SPACE.matcher(templatePackage.getName()).replaceAll("");
-            if (new File(file, "/resources/" + rbName + ".properties").exists()) {
-                templatePackage.setResourceBundleName("resources." + rbName);
-            } else {
+            String rbName = templatePackage.getRootFolder();
+            // check if there is a resource bundle file in the resources folder
+            Resource resource = templatePackage.getResource("/resources/" + rbName + ".properties");
+            if (resource == null || !resource.exists()) {
+                rbName = Patterns.SPACE.matcher(templatePackage.getName()).replaceAll("");
+                resource = templatePackage.getResource("/resources/" + rbName + ".properties");
+            }
+            if (resource == null || !resource.exists()) {
                 rbName = Patterns.SPACE.matcher(templatePackage.getName()).replaceAll("_");
-                if (new File(file, "/resources/" + rbName + ".properties").exists()) {
-                    templatePackage.setResourceBundleName("resources." + rbName);
-                }
+                resource = templatePackage.getResource("/resources/" + rbName + ".properties");
+            }
+            if (resource != null && resource.exists()) {
+                templatePackage.setResourceBundleName("resources." + rbName);
             }
         }
         if (templatePackage.getResourceBundleName() != null

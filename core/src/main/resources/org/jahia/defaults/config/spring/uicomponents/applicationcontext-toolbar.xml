@@ -1406,7 +1406,7 @@
         <property name="icon" value="copy"/>
     </bean>
 
-    <bean id="Toolbar.Item.AddView" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.AddView" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewViewActionItem" />
         </property>

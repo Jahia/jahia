@@ -125,7 +125,7 @@ public class ModulesDataSource extends VFSDataSource {
                 type = folderTypeMapping.get(fileObject.getName().getBaseName());
             }
             if (type == null) {
-                if (relativeDepth == 1 && fileObject.getName().getBaseName().contains("_")) {
+                if (relativeDepth == 1 && isNodeType(fileObject.getName().getBaseName())) {
                     type = Constants.JAHIANT_NODETYPEFOLDER;
                 } else {
                     FileObject parent = fileObject.getParent();
@@ -147,6 +147,20 @@ public class ModulesDataSource extends VFSDataSource {
         }
         return type != null ? type : super.getDataType(fileObject);
     }
+
+    public boolean isNodeType(String name) {
+        name = name.replaceFirst("_",":");
+        for (Map.Entry<String, NodeTypeRegistry> entry : nodeTypeRegistryMap.entrySet()) {
+            try {
+                entry.getValue().getNodeType(name);
+                return true;
+            } catch (NoSuchNodeTypeException e) {
+
+            }
+        }
+        return false;
+    }
+
 
     @Override
     public ExternalData getItemByIdentifier(String identifier) throws ItemNotFoundException {
@@ -1321,6 +1335,13 @@ public class ModulesDataSource extends VFSDataSource {
 
     public void setModule(JahiaTemplatesPackage module) {
         this.module = module;
+
+        for (String s : getChildren("/META-INF")) {
+            if (s.endsWith(".cnd")) {
+                loadRegistry("/META-INF/"+s);
+            }
+        }
+
     }
 
     class SortedProperties extends Properties {

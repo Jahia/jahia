@@ -89,7 +89,7 @@ public class NewViewActionItem extends BaseActionItem  {
         final GWTJahiaNode selectedNode = linker.getSelectionContext().getSingleSelection();
         final String[] filePath = selectedNode.getPath().split("/");
 
-        if (!"modules".equals(filePath[1]) || filePath.length < 4 || !filePath[4].contains("_")) {
+        if (selectedNode.getNodeTypes().contains("jnt:moduleVersionFolder")) {
             // Open popup to select nodeType
 
             ArrayList<String> paths = new ArrayList<String>();
@@ -147,7 +147,7 @@ public class NewViewActionItem extends BaseActionItem  {
             if (isLoading) {
                 linker.loaded();
             }
-            createEngine(fileNodeType,selectedNode,filePath[4]);
+            createEngine(fileNodeType,selectedNode,filePath[5]);
         }
     }
 
@@ -166,12 +166,17 @@ public class NewViewActionItem extends BaseActionItem  {
                 && !lh.isLocked()
                 && hasPermission(lh.getSelectionPermissions())
                 && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions());
-        setEnabled(enabled) ;
-        if (!enabled || !"modules".equals(filePath[1]) || !filePath[4].contains("_")) {
-            updateTitle(getGwtToolbarItem().getTitle());
-        } else {
-            updateTitle(getGwtToolbarItem().getTitle() + " : " + filePath[4]);
+
+        if (enabled) {
+            if (n.getNodeTypes().contains("jnt:nodeTypeFolder") || n.getNodeTypes().contains("jnt:templateTypeFolder")) {
+                updateTitle(getGwtToolbarItem().getTitle() + " : " + filePath[5]);
+            } else if (n.getNodeTypes().contains("jnt:moduleVersionFolder")) {
+                updateTitle(getGwtToolbarItem().getTitle());
+            } else {
+                enabled = false;
+            }
         }
+        setEnabled(enabled) ;
     }
 
 }

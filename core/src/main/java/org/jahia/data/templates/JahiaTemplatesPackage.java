@@ -53,6 +53,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.SourceControlManagement;
 import org.jahia.settings.SettingsBean;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.context.support.XmlWebApplicationContext;
@@ -126,7 +127,7 @@ public class JahiaTemplatesPackage {
 
     private String autoDeployOnSite;
 
-    private XmlWebApplicationContext context;
+    private AbstractApplicationContext context;
 
     private String scmURI;
 
@@ -406,11 +407,11 @@ public class JahiaTemplatesPackage {
         return autoDeployOnSite;
     }
 
-    public XmlWebApplicationContext getContext() {
+    public AbstractApplicationContext getContext() {
         return context;
     }
 
-    public void setContext(XmlWebApplicationContext context) {
+    public void setContext(AbstractApplicationContext context) {
         this.context = context;
     }
 

@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
 import org.jahia.services.SpringContextSingleton;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationEvent;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
@@ -167,7 +168,7 @@ public class TemplatePackageApplicationContextLoader implements ServletContextAw
             return aPackage;
         }
 
-        public XmlWebApplicationContext getContext() {
+        public AbstractApplicationContext getContext() {
             return aPackage.getContext();
         }
     }

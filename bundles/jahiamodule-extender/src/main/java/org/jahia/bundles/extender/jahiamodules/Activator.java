@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.core.io.Resource;
+import org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
@@ -652,10 +653,11 @@ public class Activator implements BundleActivator {
                 configLocation += ",classpath:" + springFilesURLs.nextElement().getPath();
             }
             logger.info("Loading bean definitions from configLocation=" + configLocation);
-            XmlWebApplicationContext bundleApplicationContext = new XmlWebApplicationContext();
+            OsgiBundleXmlWebApplicationContext bundleApplicationContext = new OsgiBundleXmlWebApplicationContext();
             bundleApplicationContext.setParent(SpringContextSingleton.getInstance().getContext());
             bundleApplicationContext.setClassLoader(aPackage.getClassLoader());
             bundleApplicationContext.setServletContext(servletContext);
+            bundleApplicationContext.setBundleContext(bundle.getBundleContext());
             servletContext.setAttribute(XmlWebApplicationContext.class.getName() + ".jahiaModule." + aPackage.getRootFolder(), bundleApplicationContext);
             bundleApplicationContext.setConfigLocation(configLocation);
             aPackage.setContext(bundleApplicationContext);

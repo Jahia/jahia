@@ -122,6 +122,24 @@
           <version>3.0.0-20121108.224409-79</version>
           <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.osgi</groupId>
+            <artifactId>spring-osgi-core</artifactId>
+            <version>${spring.osgi.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.osgi</groupId>
+            <artifactId>spring-osgi-io</artifactId>
+            <version>${spring.osgi.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.osgi</groupId>
+            <artifactId>spring-osgi-web</artifactId>
+            <version>${spring.osgi.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Embedded dependencies -->
         <dependency>

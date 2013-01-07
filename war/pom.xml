@@ -956,6 +956,22 @@
                                 </artifactItem>
 
                                 <artifactItem>
+                                    <groupId>org.springframework.osgi</groupId>
+                                    <artifactId>spring-osgi-core</artifactId>
+                                    <version>${spring.osgi.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.springframework.osgi</groupId>
+                                    <artifactId>spring-osgi-io</artifactId>
+                                    <version>${spring.osgi.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.springframework.osgi</groupId>
+                                    <artifactId>spring-osgi-web</artifactId>
+                                    <version>${spring.osgi.version}</version>
+                                </artifactItem>
+
+                                <artifactItem>
                                     <groupId>org.jahia.bundles</groupId>
                                     <artifactId>org.jahia.bundles.extender.jahiamodules</artifactId>
                                     <version>6.7.0.0-SNAPSHOT</version>

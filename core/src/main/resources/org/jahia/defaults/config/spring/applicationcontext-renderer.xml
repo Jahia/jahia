@@ -265,10 +265,10 @@
             <list>
                 <value>/modules/assets/javascript/ckeditor/ckeditor.js</value>
                 <value>/modules/assets/javascript/codemirror/lib/codemirror.js</value>
-                <value>/modules/assets/javascript/codemirror/mode/xml/xml.js"/>"></value>
-                <value>/modules/assets/javascript/codemirror/mode/javascript/javascript.js"/>"></value>
-                <value>/modules/assets/javascript/codemirror/mode/css/css.js"/>"></value>
-                <value>/modules/assets/javascript/codemirror/mode/htmlmixed/htmlmixed.js"/>"></value>
+                <value>/modules/assets/javascript/codemirror/mode/xml/xml.js</value>
+                <value>/modules/assets/javascript/codemirror/mode/javascript/javascript.js</value>
+                <value>/modules/assets/javascript/codemirror/mode/css/css.js</value>
+                <value>/modules/assets/javascript/codemirror/mode/htmlmixed/htmlmixed.js</value>
             </list>
         </property>
         <property name="detectCustomCKEditorConfig" value="${detectCustomCKEditorConfig:true}"/>

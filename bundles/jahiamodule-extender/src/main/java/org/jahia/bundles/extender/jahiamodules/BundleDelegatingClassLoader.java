@@ -160,10 +160,16 @@ public class BundleDelegatingClassLoader extends ClassLoader {
 			clazz = findClass(name);
 		}
 		catch (ClassNotFoundException cnfe) {
-			if (bridge != null)
-				clazz = bridge.loadClass(name);
-			else
+			if (bridge != null) {
+                try {
+				    clazz = bridge.loadClass(name);
+                } catch (ClassNotFoundException bridgeCnfe) {
+                    // @todo would be good to output some logging information here to help debug class loading issues.
+                    throw bridgeCnfe;
+                }
+            } else {
 				throw cnfe;
+            }
 		}
 		if (resolve) {
 			resolveClass(clazz);

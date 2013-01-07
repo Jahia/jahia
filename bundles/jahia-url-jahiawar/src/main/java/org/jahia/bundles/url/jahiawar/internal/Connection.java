@@ -58,7 +58,6 @@ public class Connection extends URLConnection {
             "org.jahia.data.viewhelper.principal",
             "org.jahia.defaults.config.spring",
             "org.jahia.exceptions",
-            "org.jahia.modules.visibility.rules",
             "org.jahia.params.valves",
             "org.jahia.taglibs",
             "org.jahia.taglibs.facet",

@@ -189,7 +189,7 @@ public class PlaceholderModule extends Module {
 
 
         String headerText;
-        if (parentModule.path.contains("/")) {
+        if (parentModule.path != null && parentModule.path.contains("/")) {
             headerText =  parentModule.path.substring(parentModule.path.lastIndexOf('/') + 1);
         } else {
             headerText =   parentModule.path;

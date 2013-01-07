@@ -213,6 +213,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 propertiesEditor.setViewCopyToAllLangs(viewCopyToAllLangs);
                 propertiesEditor.setMultipleEdit(engine.isMultipleSelection());
                 propertiesEditor.setDisplayHiddenProperties(engine.getLinker().isDisplayHiddenProperties());
+                propertiesEditor.addStyleName("JahiaGxtEditEnginePanel-" + gwtEngineTab.getId() + "-"+language);
                 if (engine.getNode() != null) {
                     propertiesEditor.setPermissions(engine.getNode().getPermissions());
                 } else if (engine.getTargetNode() != null ) {

@@ -67,8 +67,14 @@ public class MailSettingsListener extends DefaultEventListener implements Extern
         return Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED;
     }
 
+    @Override    
     public String[] getNodeTypes() {
         return new String[] { "jnt:mailServerSettings" };
+    }
+    
+    @Override
+    public String getPath() {
+        return "/settings/mail-server";
     }
 
     public void onEvent(EventIterator events) {

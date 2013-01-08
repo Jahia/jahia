@@ -74,6 +74,16 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
     public int getEventTypes() {
         return Event.NODE_ADDED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED + Event.NODE_MOVED + Event.NODE_REMOVED;
     }
+    
+    @Override
+    public boolean isDeep() {
+        return false;
+    }
+
+    @Override
+    public String getPath() {
+        return "(?!/jcr:system).*";
+    }    
 
     /**
      * This method is called when a bundle of events is dispatched.
@@ -89,77 +99,75 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
             boolean propageToOtherClusterNodes = !isExternal(event);
             try {
                 String path = event.getPath();
-                if (!path.startsWith("/jcr:system")) {
-                    boolean flushParent = false;
-                    boolean flushChilds = false;
-                    boolean flushRoles = false;
-                    boolean flushForVanityUrl = false;
-                    if (path.contains("j:view")) {
+                boolean flushParent = false;
+                boolean flushChilds = false;
+                boolean flushRoles = false;
+                boolean flushForVanityUrl = false;
+                if (path.contains("j:view")) {
+                    flushParent = true;
+                }
+                final int type = event.getType();
+                if (type == Event.PROPERTY_ADDED || type == Event.PROPERTY_CHANGED || type == Event.PROPERTY_REMOVED) {
+                    if (path.endsWith("/j:published")) {
                         flushParent = true;
                     }
-                    final int type = event.getType();
-                    if (type == Event.PROPERTY_ADDED || type == Event.PROPERTY_CHANGED || type == Event.PROPERTY_REMOVED) {
-                        if (path.endsWith("/j:published")) {
-                            flushParent = true;
-                        }
-                        if(path.endsWith("j:roles")) {
-                            flushRoles = true;
-                        }
-                        path = path.substring(0, path.lastIndexOf("/"));
-                    } else if (type == Event.NODE_ADDED || type == Event.NODE_MOVED || type == Event.NODE_REMOVED) {
-                        flushParent = true;
+                    if(path.endsWith("j:roles")) {
+                        flushRoles = true;
                     }
-                    if(path.contains("vanityUrlMapping")) {
-                        flushForVanityUrl=true;
+                    path = path.substring(0, path.lastIndexOf("/"));
+                } else if (type == Event.NODE_ADDED || type == Event.NODE_MOVED || type == Event.NODE_REMOVED) {
+                    flushParent = true;
+                }
+                if (path.contains("vanityUrlMapping")) {
+                    flushForVanityUrl=true;
+                }
+                if (path.contains("j:acl") || path.contains("jnt:group") || flushRoles || type == Event.NODE_MOVED) {
+                    // Flushing cache of acl key for users as a group or an acl has been updated
+                    CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
+                    if (cacheKeyGenerator instanceof DefaultCacheKeyGenerator) {
+                        DefaultCacheKeyGenerator generator = (DefaultCacheKeyGenerator) cacheKeyGenerator;
+                        generator.flushUsersGroupsKey(propageToOtherClusterNodes);
                     }
-                    if (path.contains("j:acl") || path.contains("jnt:group") || flushRoles || type == Event.NODE_MOVED) {
-                        // Flushing cache of acl key for users as a group or an acl has been updated
-                        CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
-                        if (cacheKeyGenerator instanceof DefaultCacheKeyGenerator) {
-                            DefaultCacheKeyGenerator generator = (DefaultCacheKeyGenerator) cacheKeyGenerator;
-                            generator.flushUsersGroupsKey(propageToOtherClusterNodes);
-                        }
-                        flushParent = true;
-                        flushChilds = true;
+                    flushParent = true;
+                    flushChilds = true;
+                }
+                path = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(path, "/j:translation"), "/j:acl");
+                flushDependenciesOfPath(depCache, flushed, path, propageToOtherClusterNodes);
+                try {
+                    flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propageToOtherClusterNodes);
+                } catch (PathNotFoundException e) {
+                    if (event instanceof EventImpl && (((EventImpl) event).getChildId() != null)) {
+                        flushDependenciesOfPath(depCache, flushed,((EventImpl)event).getChildId().toString(), propageToOtherClusterNodes);
                     }
-                    path = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(path, "/j:translation"), "/j:acl");
+                }
+                flushRegexpDependenciesOfPath(regexpDepCache, path, propageToOtherClusterNodes);
+                
+                if(flushChilds) {
+                    flushChildsDependenciesOfPath(depCache, path, propageToOtherClusterNodes);
+                }
+
+                if (flushParent) {
+                    path = StringUtils.substringBeforeLast(path, "/");
                     flushDependenciesOfPath(depCache, flushed, path, propageToOtherClusterNodes);
                     try {
                         flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propageToOtherClusterNodes);
                     } catch (PathNotFoundException e) {
-                        if(event instanceof EventImpl && (((EventImpl) event).getChildId() != null)) {
+                        if (event instanceof EventImpl  && (((EventImpl) event).getParentId() != null)) {
+                            flushDependenciesOfPath(depCache, flushed, ((EventImpl) event).getParentId().toString(),
+                                    propageToOtherClusterNodes);
+                        }
+                    }
+                    flushRegexpDependenciesOfPath(regexpDepCache,path, propageToOtherClusterNodes);
+                }
+
+                if (flushForVanityUrl) {
+                    path = StringUtils.substringBeforeLast(path, "/vanityUrlMapping");
+                    flushDependenciesOfPath(depCache, flushed, path, propageToOtherClusterNodes);
+                    try {
+                        flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propageToOtherClusterNodes);
+                    } catch (PathNotFoundException e) {
+                        if (event instanceof EventImpl && (((EventImpl) event).getChildId() != null)) {
                             flushDependenciesOfPath(depCache, flushed,((EventImpl)event).getChildId().toString(), propageToOtherClusterNodes);
-                        }
-                    }
-                    flushRegexpDependenciesOfPath(regexpDepCache, path, propageToOtherClusterNodes);
-
-                    if(flushChilds) {
-                        flushChildsDependenciesOfPath(depCache, path, propageToOtherClusterNodes);
-                    }
-
-                    if (flushParent) {
-                        path = StringUtils.substringBeforeLast(path, "/");
-                        flushDependenciesOfPath(depCache, flushed, path, propageToOtherClusterNodes);
-                        try {
-                            flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propageToOtherClusterNodes);
-                        } catch (PathNotFoundException e) {
-                            if (event instanceof EventImpl  && (((EventImpl) event).getParentId() != null)) {
-                                flushDependenciesOfPath(depCache, flushed, ((EventImpl) event).getParentId().toString(),
-                                        propageToOtherClusterNodes);
-                            }
-                        }
-                        flushRegexpDependenciesOfPath(regexpDepCache,path, propageToOtherClusterNodes);
-                    }
-
-                    if(flushForVanityUrl) {
-                        path = StringUtils.substringBeforeLast(path, "/vanityUrlMapping");
-                        flushDependenciesOfPath(depCache, flushed, path, propageToOtherClusterNodes);
-                        try {
-                            flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propageToOtherClusterNodes);
-                        } catch (PathNotFoundException e) {
-                            if(event instanceof EventImpl && (((EventImpl) event).getChildId() != null)) {
-                                flushDependenciesOfPath(depCache, flushed,((EventImpl)event).getChildId().toString(), propageToOtherClusterNodes);
-                            }
                         }
                     }
                 }
@@ -182,7 +190,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 logger.debug("Flushing path : " + path);
             }
             Set<String> deps = (Set<String>) element.getValue();
-            if(deps.contains("ALL")){
+            if (deps.contains("ALL")){
                 aggregateCacheFilter.flushNotCacheableFragment();
             } else {
                 for (String dep : deps) {

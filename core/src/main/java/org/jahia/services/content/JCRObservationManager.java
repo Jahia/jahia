@@ -247,16 +247,10 @@ public class JCRObservationManager implements ObservationManager {
                     List<EventWrapper> filteredEvents = new ArrayList<EventWrapper>();
                     for (EventWrapper event : list) {
                         if ((consumer.eventTypes & event.getType()) != 0 &&
-<<<<<<< .working
-                                (consumer.absPath == null || (consumer.isDeep && event.getPath().startsWith(consumer.absPath)) || consumer.isDeep && event.getPath().equals(consumer.absPath)) &&
-                                (consumer.nodeTypeName == null || checkNodeTypeNames(event.getNodeTypes(), consumer.nodeTypeName)) &&
-                                (consumer.uuid == null || checkUuids(event.getIdentifier(), consumer.nodeTypeName)) &&
-                                (castListener == null || castListener.isSupportedOperationType(operationType))) {
-=======
                                 (consumer.pathPattern == null || consumer.pathPattern.matcher(event.getPath()).matches()) &&
                                 (consumer.uuid == null || checkUuids(event.getIdentifier(), consumer.uuid)) &&
+                                (castListener == null || castListener.isSupportedOperationType(operationType)) &&
                                 (consumer.nodeTypeName == null || checkNodeTypeNames(session, event, consumer.nodeTypeName))) {
->>>>>>> .merge-right.r44349
                             filteredEvents.add(event);
                         }
                     }

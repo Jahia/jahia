@@ -363,7 +363,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
 
         String[] archetypeParams = {"archetype:generate",
-                "-DarchetypeCatalog=http://maven.jahia.org/maven2/archetype-catalog.xml,local",
+                "-DarchetypeCatalog=https://devtools.jahia.com/nexus/service/local/repositories/jahia-snapshots/content/archetype-catalog.xml,local",
                 "-DarchetypeGroupId=org.jahia.archetypes",
                 "-DarchetypeArtifactId=jahia-" + moduleType + "-archetype",
                 "-DmoduleName=" + moduleName,

@@ -282,7 +282,7 @@ public class PlaceholderModule extends Module {
             }
 
             Image icon = ToolbarIconProvider.getInstance().getIcon("paste").createImage();
-            icon.setAltText(Messages.get("label.paste", "Paste"));
+            icon.setTitle(Messages.get("label.paste", "Paste"));
             pasteButton = new HorizontalPanel();
             pasteButton.add(icon);
             if (!mainModule.getConfig().isButtonsInLayer()) {

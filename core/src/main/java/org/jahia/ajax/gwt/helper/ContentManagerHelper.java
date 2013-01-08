@@ -1229,7 +1229,12 @@ public class ContentManagerHelper {
 
             JahiaTemplatesPackage previous = templateManagerService.getTemplatePackageByFileName(moduleName);
 
-            File f = templateManagerService.releaseModule(moduleName, nextVersion, session);
+            File f;
+            if (nextVersion != null) {
+                f = templateManagerService.releaseModule(moduleName, nextVersion, session);
+            } else {
+                f = templateManagerService.compileModule(moduleName, previous.getSourcesFolder());
+            }
             if (f == null) {
                 return null;
             }

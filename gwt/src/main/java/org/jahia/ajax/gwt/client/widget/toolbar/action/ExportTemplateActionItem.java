@@ -57,16 +57,16 @@ import java.util.List;
 */
 public class ExportTemplateActionItem extends BaseActionItem    {
     public void onComponentSelection() {
-        LinkerSelectionContext lh = linker.getSelectionContext();
         if (linker instanceof EditLinker) {
             new ContentExportTemplate(linker, "/modules/"+JahiaGWTParameters.getSiteKey()+"/"+JahiaGWTParameters.getSiteNode().get("j:versionInfo"), JahiaGWTParameters.getSiteKey()).show();
-        } else {
-            new ContentExportTemplate(linker, lh.getSingleSelection()).show();
         }
     }
 
     public void handleNewLinkerSelection() {
-        LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && hasPermission(lh.getSelectionPermissions()));
+        if (JahiaGWTParameters.getSiteNode().get("j:sourcesFolder") != null) {
+            setEnabled(true);
+        } else {
+            setEnabled(false);
+        }
     }
 }

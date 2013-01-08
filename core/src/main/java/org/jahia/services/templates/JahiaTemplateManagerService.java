@@ -656,16 +656,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 }
             }
         }
-        // Old way
-//        return generateWar(moduleName, session);
         return null;
     }
 
-    public File generateWar(String moduleName, JCRSessionWrapper session) throws RepositoryException, IOException {
+//    public File generateWar(String moduleName, JCRSessionWrapper session) throws RepositoryException, IOException {
 //        JahiaTemplatesPackage aPackage = getTemplatePackageByFileName(moduleName);
 //
-//        ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateManifest(aPackage, session);
-//        ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateImportFile(aPackage, session);
+//        regenerateManifest(aPackage, session);
+//        regenerateImportFile(aPackage, session);
 //
 //        File f = File.createTempFile(moduleName + "-" + aPackage.getVersion(), ".war");
 //        File templateDir = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName);
@@ -674,8 +672,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 //        zip(templateDir, templateDir, zos);
 //        zos.close();
 //        return f;
-        return null;
-    }
+//        return null;
+//    }
 
     private void zip(File dir, File rootDir, ZipOutputStream zos) throws IOException {
         File[] files = dir.listFiles();

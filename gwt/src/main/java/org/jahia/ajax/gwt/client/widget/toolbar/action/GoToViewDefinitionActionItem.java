@@ -54,11 +54,11 @@ public class GoToViewDefinitionActionItem extends BaseActionItem {
     @Override
     public void onComponentSelection() {
         if (linker instanceof EditLinker) {
-            String scriptInfo = ((EditLinker) linker).getSelectedModule().getScriptInfo();
-            if (scriptInfo.startsWith(SCRIPT_INFO_PREFIX)) {
+            String sourceInfo = ((EditLinker) linker).getSelectedModule().getSourceInfo();
+            if (sourceInfo != null) {
                 String url = JahiaGWTParameters.getParam("studioUrl");
                 url = url.substring(0, url.indexOf(MODULES_BASE_PATH));
-                url += "/modules" + scriptInfo.substring(SCRIPT_INFO_PREFIX.length()) + ".html";
+                url += sourceInfo + ".html";
                 Window.Location.assign(url);
             }
         }

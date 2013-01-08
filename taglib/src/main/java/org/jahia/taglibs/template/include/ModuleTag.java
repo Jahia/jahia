@@ -295,10 +295,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         try {
                             script = RenderService.getInstance().resolveScript(resource, renderContext);
                             printModuleStart(type, node.getPath(), resource.getResolvedTemplate(),
-                                    script.getView().getInfo(), add);
+                                    script, add);
                         } catch (TemplateNotFoundException e) {
                             printModuleStart(type, node.getPath(), resource.getResolvedTemplate(),
-                                    "Script not found", add);
+                                    null, add);
                         }
                         nodeTypes = oldNodeTypes;
                         currentResource.getDependencies().add(node.getCanonicalPath());
@@ -507,15 +507,21 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 renderContext.getRequest().getAttribute("inArea") == null;
     }
 
-    protected void printModuleStart(String type, String path, String resolvedTemplate, String scriptInfo,
+    protected void printModuleStart(String type, String path, String resolvedTemplate, Script script,
                                     String additionalParameters)
             throws RepositoryException, IOException {
 
         buffer.append("<div class=\"jahia-template-gxt\" jahiatype=\"module\" ").append("id=\"module")
                 .append(UUID.randomUUID().toString()).append("\" type=\"").append(type).append("\"");
 
-        buffer.append((scriptInfo != null) ? " scriptInfo=\"" + scriptInfo + "\"" : "").append(" path=\"").append(path)
-                .append("\"");
+        buffer.append((script != null && script.getView().getInfo() != null) ? " scriptInfo=\"" + script.getView().getInfo() + "\"" : "");
+
+        if (script != null && script.getView().getModule().getSourcesFolder() != null) {
+            String version = script.getView().getModule().getRootFolderWithVersion();
+            buffer.append(" sourceInfo=\"/modules/" + version + "/sources" + StringUtils.substringAfter(script.getView().getPath(), version) + "\"");
+        }
+
+        buffer.append(" path=\"").append(path).append("\"");
 
         if (!StringUtils.isEmpty(nodeTypes)) {
             buffer.append(" nodetypes=\"" + nodeTypes + "\"");

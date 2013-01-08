@@ -63,6 +63,7 @@ public abstract class Module extends LayoutContainer {
     protected String path;
     protected String template;
     protected String scriptInfo;
+    protected String sourceInfo;
     protected Map<String,List<String>> moduleParams;
     protected Module parentModule;
     protected MainModule mainModule;
@@ -103,6 +104,9 @@ public abstract class Module extends LayoutContainer {
         }
         if (divElement.hasAttribute("scriptInfo")) {
             scriptInfo = divElement.getAttribute("scriptInfo");
+        }
+        if (divElement.hasAttribute("sourceInfo")) {
+            sourceInfo = divElement.getAttribute("sourceInfo");
         }
 
         this.mainModule = mainModule;
@@ -257,6 +261,10 @@ public abstract class Module extends LayoutContainer {
 
     public String getScriptInfo() {
         return scriptInfo;
+    }
+
+    public String getSourceInfo() {
+        return sourceInfo;
     }
 
     public Element getInnerElement() {

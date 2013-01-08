@@ -745,12 +745,13 @@ public class Activator implements BundleActivator {
 
     private boolean classNameImportable(String classOrInterfaceName, Bundle bundle) {
         if (isSystemClassName(classOrInterfaceName)) return false;
+        String thisPackageName = classOrInterfaceName.substring(0, classOrInterfaceName.lastIndexOf('.'));
         String importPackageHeader = (String) bundle.getHeaders().get("Import-Package");
         if (importPackageHeader != null) {
             Clause[] headerClauses = Parser.parseHeader(importPackageHeader);
             for (Clause clause : headerClauses) {
-                String packageName = clause.getName();
-                if (classOrInterfaceName.startsWith(packageName)) {
+                String importedPackageName = clause.getName();
+                if (thisPackageName.equals(importedPackageName)) {
                     return true;
                 }
             }

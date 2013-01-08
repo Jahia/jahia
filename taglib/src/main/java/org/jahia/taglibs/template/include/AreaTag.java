@@ -134,7 +134,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                 additionalParameters += " mockupStyle=\"" + mockupStyle + "\"";
             }
 
-            printModuleStart(getModuleType(renderContext), areaPath, null, "No script", additionalParameters);
+            printModuleStart(getModuleType(renderContext), areaPath, null, null, additionalParameters);
             if (getBodyContent() != null) {
                 getPreviousOut().write(getBodyContent().getString());
             }

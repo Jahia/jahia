@@ -40,7 +40,6 @@
 
 package org.jahia.services.content;
 
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.*;
 import javax.jcr.observation.EventListener;
@@ -51,6 +50,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Observation manager implementation
@@ -101,7 +101,10 @@ public class JCRObservationManager implements ObservationManager {
      * <li>
      * <code>absPath</code>, <code>isDeep</code>: Only events whose associated node is at
      * <code>absPath</code> (or within its subtree, if <code>isDeep</code> is <code>true</code>) will be received.
-     * It is permissible to register a listener for a path where no node currently exists.
+     * It is permissible to register a listener for a path where no node currently exists. The path can also be
+     * a regular expression (as the parameter is an absolute path, Jahia will automatically add the begin/end line
+     * character and if isDeep is true, Jahia appends to the regular expression, to include the path and subtree). 
+     * If this parameter is <code>null</code> then no path-related restriction is placed on events received. 
      * </li>
      * <li>
      * <code>uuid</code>: Only events whose associated node has one of the UUIDs in this list will be
@@ -110,8 +113,11 @@ public class JCRObservationManager implements ObservationManager {
      * </li>
      * <li>
      * <code>nodeTypeName</code>: Only events whose associated node has one of the node types
-     * (or a subtype of one of the node types) in this list will be received. If his parameter is
-     * <code>null</code> then no node type-related restriction is placed on events received.
+     * (or a subtype of one of the node types) in this list will be received. If this parameter is
+     * <code>null</code> then no node type-related restriction is placed on events received. 
+     * WARNING: if a listener only filters on nodeTypeName, then this can slow down the system, as for all
+     * events we need to determine the nodeType of the node. If possible you should use another filter like
+     * the path to reduce the number of events, where nodetype needs to be determined. 
      * </li>
      * </ul>
      * The restrictions are "ANDed" together. In other words, for a particular node to be "listened to" it must meet all the restrictions.
@@ -214,22 +220,7 @@ public class JCRObservationManager implements ObservationManager {
     }
 
     public static EventWrapper getEventWrapper(Event event, JCRSessionWrapper session) {
-        if (event.getType() != Event.NODE_REMOVED) {
-            JCRNodeWrapper node = null;
-            try {
-                String nodePath = (event.getType() == Event.PROPERTY_REMOVED || event.getType() == Event.PROPERTY_CHANGED || event.getType() == Event.PROPERTY_ADDED ?
-                        StringUtils.substringBeforeLast(event.getPath(), "/")
-                        : event.getPath());
-                node = session.getNode(nodePath);
-
-                return new EventWrapper(event,node.getNodeTypes());
-            } catch (RepositoryException e) {
-                e.printStackTrace();
-                return new EventWrapper(event,null);
-            }
-        } else {
-            return new EventWrapper(event,null);
-        }
+        return new EventWrapper(event, event.getType() != Event.NODE_REMOVED ? null : Collections.<String>emptyList());
     }
 
     private static void consume(JCRSessionWrapper session, int operationType) throws RepositoryException {
@@ -256,10 +247,16 @@ public class JCRObservationManager implements ObservationManager {
                     List<EventWrapper> filteredEvents = new ArrayList<EventWrapper>();
                     for (EventWrapper event : list) {
                         if ((consumer.eventTypes & event.getType()) != 0 &&
+<<<<<<< .working
                                 (consumer.absPath == null || (consumer.isDeep && event.getPath().startsWith(consumer.absPath)) || consumer.isDeep && event.getPath().equals(consumer.absPath)) &&
                                 (consumer.nodeTypeName == null || checkNodeTypeNames(event.getNodeTypes(), consumer.nodeTypeName)) &&
                                 (consumer.uuid == null || checkUuids(event.getIdentifier(), consumer.nodeTypeName)) &&
                                 (castListener == null || castListener.isSupportedOperationType(operationType))) {
+=======
+                                (consumer.pathPattern == null || consumer.pathPattern.matcher(event.getPath()).matches()) &&
+                                (consumer.uuid == null || checkUuids(event.getIdentifier(), consumer.uuid)) &&
+                                (consumer.nodeTypeName == null || checkNodeTypeNames(session, event, consumer.nodeTypeName))) {
+>>>>>>> .merge-right.r44349
                             filteredEvents.add(event);
                         }
                     }
@@ -276,11 +273,23 @@ public class JCRObservationManager implements ObservationManager {
         }
     }
 
-    private static boolean checkNodeTypeNames(List<String> nodeTypes, String[] requiredNodeTypes) throws RepositoryException {
-        if (nodeTypes != null) {
-            for (int i = 0; i < requiredNodeTypes.length; i++) {
-                for (String nodeType : nodeTypes) {
-                    if (NodeTypeRegistry.getInstance().getNodeType(nodeType).isNodeType(requiredNodeTypes[i])) {
+    private static boolean checkNodeTypeNames(JCRSessionWrapper session, EventWrapper event, String[] requiredNodeTypes) throws RepositoryException {
+        if (event.getNodeTypes() == null) {
+            String nodePath = (event.getType() == Event.PROPERTY_REMOVED || event.getType() == Event.PROPERTY_CHANGED || event.getType() == Event.PROPERTY_ADDED ?
+                    StringUtils.substringBeforeLast(event.getPath(), "/")
+                    : event.getPath());
+            try {
+                JCRNodeWrapper node = session.getNode(nodePath);
+                event.setNodeTypes(node.getNodeTypes());
+            } catch (RepositoryException e) {
+                logger.debug("Could not retrieve node (type)", e);
+                event.setNodeTypes(Collections.<String>emptyList());
+            }            
+        }
+        if (event.getNodeTypes() != null) {
+            for (String requiredNodeType : requiredNodeTypes) {
+                for (String nodeType : event.getNodeTypes()) {
+                    if (NodeTypeRegistry.getInstance().getNodeType(nodeType).isNodeType(requiredNodeType)) {
                         return true;
                     }
                 }
@@ -291,8 +300,8 @@ public class JCRObservationManager implements ObservationManager {
 
     private static boolean checkUuids(String identifier, String[] uuids) throws RepositoryException {
         if (identifier != null) {
-            for (int i = 0; i < uuids.length; i++) {
-                if (identifier.equals(uuids[i])) {
+            for (String uuid : uuids) {
+                if (identifier.equals(uuid)) {
                     return true;
                 }
             }
@@ -352,6 +361,7 @@ public class JCRObservationManager implements ObservationManager {
         private String[] nodeTypeName;
         private String[] uuid;
         private boolean useExternalEvents;
+        private Pattern pathPattern;
 
         EventConsumer(JCRSessionWrapper session, EventListener listener, int eventTypes, String absPath, boolean isDeep, String[] nodeTypeName, String[] uuid, boolean useExternalEvents) {
             this.session = session;
@@ -362,6 +372,10 @@ public class JCRObservationManager implements ObservationManager {
             this.nodeTypeName = nodeTypeName;
             this.uuid = uuid;
             this.useExternalEvents = useExternalEvents;
+            
+            if (this.absPath != null) {
+                pathPattern = Pattern.compile("^" + this.absPath + (this.isDeep ? (this.absPath.endsWith("/") ? "(.*)*" : "(/.*)*") : "") + "$");
+            }
         }
     }
 
@@ -379,44 +393,6 @@ public class JCRObservationManager implements ObservationManager {
          */
         public EventListener nextEventListener() {
             return ((EventConsumer) next()).listener;
-        }
-    }
-
-    private static class WeakReferenceUpdateEvent implements Event {
-        private final Property property;
-        private final Event event;
-
-        public WeakReferenceUpdateEvent(Property property, Event event) {
-            this.property = property;
-            this.event = event;
-        }
-
-        public int getType() {
-            return Event.PROPERTY_CHANGED;
-        }
-
-        public String getPath() throws RepositoryException {
-            return property.getPath();
-        }
-
-        public String getUserID() {
-            return event.getUserID();
-        }
-
-        public String getIdentifier() throws RepositoryException {
-            return property.getParent().getIdentifier();
-        }
-
-        public Map getInfo() throws RepositoryException {
-            return new HashMap<String, String>();
-        }
-
-        public String getUserData() throws RepositoryException {
-            return event.getUserData();
-        }
-
-        public long getDate() throws RepositoryException {
-            return event.getDate();
         }
     }
 
@@ -458,6 +434,10 @@ public class JCRObservationManager implements ObservationManager {
             return event.getDate();
         }
 
+        public void setNodeTypes(List<String> nodeTypes) {
+            this.nodeTypes = nodeTypes;
+        }        
+        
         public List<String> getNodeTypes() {
             return nodeTypes;
         }

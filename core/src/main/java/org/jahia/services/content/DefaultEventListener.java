@@ -116,7 +116,7 @@ public abstract class DefaultEventListener implements EventListener {
     public abstract int getEventTypes();
 
     public String getPath() {
-        return "/";
+        return null;
     }
 
     public boolean isDeep() {

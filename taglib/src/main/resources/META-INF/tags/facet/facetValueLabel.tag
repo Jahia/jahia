@@ -35,7 +35,8 @@
         <c:set var="facetValueName" value="${currentActiveFacetValue.key}"/>
     </c:otherwise>
 </c:choose>
-<c:if test="${functions:matches('[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}', facetValueName)}">
+<c:set var="uuidPattern" value="[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}" />
+<c:if test="${functions:matches(uuidPattern, facetValueName)}">
     <jcr:node var="refNode" uuid="${facetValueName}"/>
 </c:if>
 <c:if test="${functions:matches('[0-9]+(/[a-zA-Z0-9_\\\\-]+)+', facetValueName)}">

@@ -4,6 +4,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.ArtifactTransformer;
 import org.apache.felix.service.command.CommandProcessor;
+import org.apache.felix.utils.manifest.Clause;
+import org.apache.felix.utils.manifest.Parser;
 import org.jahia.bundles.extender.jahiamodules.render.BundleDispatcherServlet;
 import org.jahia.bundles.extender.jahiamodules.render.BundleJSR223ScriptFactory;
 import org.jahia.bundles.extender.jahiamodules.render.BundleRequestDispatcherScriptFactory;
@@ -23,6 +25,7 @@ import org.jahia.utils.Patterns;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.*;
+import org.osgi.framework.wiring.BundleRevision;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
@@ -30,6 +33,9 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.core.io.Resource;
 import org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
@@ -638,7 +644,7 @@ public class Activator implements BundleActivator {
     }
 
     public void createBundleApplicationContext(JahiaBundleTemplatesPackage aPackage, ServletContext servletContext) throws BeansException {
-        Bundle bundle = aPackage.getBundle();
+        final Bundle bundle = aPackage.getBundle();
         if (aPackage.getResource("/META-INF/spring/") != null && aPackage.getResource("/META-INF/spring/").exists()) {
             logger.debug("Start initializing context for module {}", aPackage.getName());
             long startTime = System.currentTimeMillis();
@@ -661,13 +667,107 @@ public class Activator implements BundleActivator {
             servletContext.setAttribute(XmlWebApplicationContext.class.getName() + ".jahiaModule." + aPackage.getRootFolder(), bundleApplicationContext);
             bundleApplicationContext.setConfigLocation(configLocation);
             aPackage.setContext(bundleApplicationContext);
+            // @todo we need to add beans from other modules here, using a service filter to retrieve them.
+
+            bundleApplicationContext.addBeanFactoryPostProcessor(new BeanDefinitionRegistryPostProcessor() {
+                @Override
+                public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
+                }
+
+                @Override
+                public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+                    String serviceFilter = "(jahiaModuleSpringBeanName=*)";
+                    try {
+                        ServiceReference[] otherModuleServiceReferences = bundle.getBundleContext().getAllServiceReferences(null, serviceFilter);
+                        if (otherModuleServiceReferences != null) {
+                            for (ServiceReference otherModuleServiceReference : otherModuleServiceReferences) {
+                                Object service = bundle.getBundleContext().getService(otherModuleServiceReference);
+                                if (classNameImportable(service.getClass().getName(), bundle)) {
+                                    beanFactory.registerSingleton(otherModuleServiceReference.getProperty("jahiaModuleSpringBeanName").toString(), service);
+                                }
+                            }
+                        }
+                    } catch (InvalidSyntaxException e) {
+                        logger.error("Invalid filter syntax :" + serviceFilter + ", will not register other module spring beans", e);
+                    }
+                }
+            });
+
             bundleApplicationContext.refresh();
+
+            // now we will add the beans to the OSGi service registry by using the bean name as a service property so
+            // so that we may filter queries when adding them.
+
+            String[] beanNames = bundleApplicationContext.getBeanNamesForType(null, false, false);
+            for (String beanName : beanNames) {
+                try {
+                    Object bean = bundleApplicationContext.getBean(beanName);
+                    List<String> classNames = new ArrayList<String>();
+                    if (classNameExportable(bean.getClass().getName(), bundle)) {
+                        classNames.add(bean.getClass().getName());
+                        for (Class classInterface : bean.getClass().getInterfaces()) {
+                            if (classNameExportable(classInterface.getName(), bundle)) {
+                                classNames.add(classInterface.getName());
+                            }
+                        }
+                        Hashtable serviceProperties = new Hashtable();
+                        serviceProperties.put("jahiaModuleSpringBeanName", beanName);
+                        serviceRegistrations.add(bundle.getBundleContext().registerService(classNames.toArray(new String[classNames.size()]), bean, serviceProperties));
+                        logger.debug("Registered bean " + beanName + " as OSGi service under names: " + classNames);
+                    }
+                } catch (Throwable t) {
+                    logger.warn("Couldn't register bean " + beanName + " since it couldn't be retrieved: " + t.getMessage());
+                }
+            }
+
 
             logger.info(
                     "'{}' [{}] context initialized in {} ms, registered {} beans",
                     new Object[]{aPackage.getName(), aPackage.getRootFolder(),
                             System.currentTimeMillis() - startTime, bundleApplicationContext.getBeanNamesForType(null).length});
         }
+    }
+
+    private boolean classNameExportable(String classOrInterfaceName, Bundle bundle) {
+        if (isSystemClassName(classOrInterfaceName)) return false;
+        String exportPackageHeader = (String) bundle.getHeaders().get("Export-Package");
+        if (exportPackageHeader != null) {
+            Clause[] headerClauses = Parser.parseHeader(exportPackageHeader);
+            for (Clause clause : headerClauses) {
+                String packageName = clause.getName();
+                if (classOrInterfaceName.startsWith(packageName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean classNameImportable(String classOrInterfaceName, Bundle bundle) {
+        if (isSystemClassName(classOrInterfaceName)) return false;
+        String importPackageHeader = (String) bundle.getHeaders().get("Import-Package");
+        if (importPackageHeader != null) {
+            Clause[] headerClauses = Parser.parseHeader(importPackageHeader);
+            for (Clause clause : headerClauses) {
+                String packageName = clause.getName();
+                if (classOrInterfaceName.startsWith(packageName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isSystemClassName(String classOrInterfaceName) {
+        if (classOrInterfaceName.startsWith("java.")) {
+            // we ignore all Java classes for the moment.
+            return true;
+        }
+        if (classOrInterfaceName.startsWith("org.apache.felix.framework.")) {
+            // we ignore all Felix framework classes for the moment.
+            return true;
+        }
+        return false;
     }
 
     public Map<Bundle, JahiaBundleTemplatesPackage> getRegisteredBundles() {

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletContext;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -58,23 +59,40 @@ public final class ProvisionActivator
             }
         }
 
-        // @todo can we also expose module application context beans ?
         String[] beanNames = SpringContextSingleton.getInstance().getContext().getBeanNamesForType(null, false, false);
         for (String beanName : beanNames) {
-            // @todo can we somehow use the name of the service and not just the class name ? Maybe we need a property for this ?
             try {
                 Object bean = SpringContextSingleton.getInstance().getContext().getBean(beanName);
                 List<String> classNames = new ArrayList<String>();
-                classNames.add(bean.getClass().getName());
-                for (Class classInterface : bean.getClass().getInterfaces()) {
-                    classNames.add(classInterface.getName());
+                if (classNameAccessible(bean.getClass().getName())) {
+                    classNames.add(bean.getClass().getName());
+                    for (Class classInterface : bean.getClass().getInterfaces()) {
+                        if (classNameAccessible(classInterface.getName())) {
+                            classNames.add(classInterface.getName());
+                        }
+                    }
+                    Hashtable serviceProperties = new Hashtable();
+                    serviceProperties.put("jahiaSpringBeanName", beanName);
+                    serviceRegistrations.add(context.registerService(classNames.toArray(new String[classNames.size()]), bean, serviceProperties));
+                    logger.debug("Registered bean " + beanName + " as OSGi service under names: " + classNames);
                 }
-                serviceRegistrations.add(context.registerService(classNames.toArray(new String[classNames.size()]), bean, null));
-                logger.debug("Registered bean " + beanName + " as OSGi service under names: " + classNames);
             } catch (Throwable t) {
                 logger.warn("Couldn't register bean " + beanName + " since it couldn't be retrieved: " + t.getMessage());
             }
         }
+    }
+
+    private boolean classNameAccessible(String classOrInterfaceName) {
+        if (classOrInterfaceName.startsWith("java.")) {
+            // we ignore all Java classes for the moment.
+            return false;
+        }
+        if (classOrInterfaceName.startsWith("org.apache.felix.framework.")) {
+            // we ignore all Felix framework classes for the moment.
+            return false;
+        }
+        // @todo implement import/export checks for accessibility here.
+        return true;
     }
 
     public void stop(BundleContext context)

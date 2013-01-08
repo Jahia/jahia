@@ -49,5 +49,18 @@
         </property>
     </bean>
 
+    <bean id="jBPMModuleProcessLoader" class="org.jahia.services.workflow.jbpm.JBPMModuleProcessLoader">
+        <property name="processEngine" ref="processEngine"/>
+        <property name="processes">
+            <list>
+                <value>classpath*:org/jahia/services/workflow/*.jpdl.xml</value>
+            </list>
+        </property>
+        <property name="mailTemplates">
+            <list>
+                <value>classpath*:org/jahia/services/workflow/*.mail</value>
+            </list>
+        </property>
+    </bean>
 
 </beans>

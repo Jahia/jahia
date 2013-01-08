@@ -163,6 +163,11 @@
             <artifactId>ops4j-base-io</artifactId>
             <version>1.4.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.utils</artifactId>
+            <version>${felix.utils.version}</version>
+        </dependency>
 
     </dependencies>
 

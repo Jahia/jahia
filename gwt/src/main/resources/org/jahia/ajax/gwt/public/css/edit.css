@@ -36,7 +36,6 @@
     background : #ffffcc url(../images/xtheme-jahia-andromeda/panel/panellinker.png) top left;
     color: #000 !important;
     font-weight: bold;
-    font-size: 10px;
     border:1px solid #ffcc33;
     padding: 10px 5px ;
     vertical-align: middle;
@@ -45,10 +44,10 @@
     margin-top:5px;
     text-align:center;
     font-family: tahoma, arial, verdana, sans-serif;
-    font-size: 10px;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
+    font-size: 11px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
     overflow: hidden;
 }
 .x-panel-linker p {
@@ -67,77 +66,107 @@
 /** styles added for list module in order to make them as nice as jahia6 **/
 
 .x-panel-header-simplemodule {
-    background: url("../images/xtheme-jahia-andromeda/panel/white-top-bottom-simplemodule.gif") repeat scroll left top #eaeaea;
-    border: 1px solid #ccc;
+    box-shadow:1px 1px 0 #fff inset,-1px -1px 0 #fff inset;
+    background:-moz-linear-gradient(#fff,#eaeaea) repeat scroll 0 0 transparent;
+    background:-webkit-linear-gradient(#fff,#eaeaea) repeat scroll 0 0 transparent;
+    background:-webkit-gradient(linear,left top,left bottom,from(#fff),to(#eaeaea));
+    background:-o-linear-gradient(#fff,#eaeaea) repeat scroll 0 0 transparent;
+    background:linear-gradient(#fff,#eaeaea) repeat scroll 0 0 transparent;
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff',endColorstr='#eaeaea');
+    border:1px solid #ccc;
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 11px;
     font-weight: bold;
-    padding: 4px;
-    color: #333 !important;
+    padding: 2px 4px;
+    color: #666665 !important;
     margin-bottom:2px;
     display:block;
     overflow:hidden;
-    text-shadow: none;
-    line-height: 22px;
+    text-shadow: 0;
+    line-height: 20px;
 }
 
 .x-panel-header-listmodule {
-    background: url("../images/xtheme-jahia-andromeda/panel/white-top-bottom.gif") repeat scroll left top #D0DFE8;
-    border: 1px solid #B7CBD8;
+    box-shadow:1px 1px 0 #c3e8ff inset,-1px -1px 0 #c3e8ff inset;
+    background:-moz-linear-gradient(#99ccff,#3399ff) repeat scroll 0 0 transparent;
+    background:-webkit-linear-gradient(#99ccff,#3399ff) repeat scroll 0 0 transparent;
+    background:-webkit-gradient(linear,left top,left bottom,from(#99ccff),to(#3399ff));
+    background:-o-linear-gradient(#99ccff,#3399ff) repeat scroll 0 0 transparent;
+    background:linear-gradient(#99ccff,#3399ff) repeat scroll 0 0 transparent;
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#99ccff',endColorstr='#3399ff');
+    border:1px solid #3366ff;
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 11px;
     font-weight: bold;
-    padding: 4px;
+    padding: 2px 4px;
     color: #333 !important;
     margin-bottom:2px;
     display:block;
     overflow:hidden;
-    text-shadow: none;
-    line-height: 22px;
+    text-shadow: 0;
+    line-height: 20px;
 }
 
 .x-panel-header-areamodule {
-    background: url("../images/xtheme-jahia-andromeda/panel/white-top-bottom-areamodule.png") repeat scroll left top #aac8f1;
-    border: 1px solid #aac8f1;
+    box-shadow:1px 1px 0 #fff inset,-1px -1px 0 #fff inset;
+    background:-moz-linear-gradient(#e8e9e9,#d4d4d4) repeat scroll 0 0 transparent;
+    background:-webkit-linear-gradient(#e8e9e9,#d4d4d4) repeat scroll 0 0 transparent;
+    background:-webkit-gradient(linear,left top,left bottom,from(#e8e9e9),to(#d4d4d4));
+    background:-o-linear-gradient(#e8e9e9,#d4d4d4) repeat scroll 0 0 transparent;
+    background:linear-gradient(#e8e9e9,#d4d4d4) repeat scroll 0 0 transparent;
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#e8e9e9',endColorstr='#d4d4d4');
+    border:1px solid #898989;
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 11px;
     font-weight: bold;
-    padding: 4px;
-    color: #333 !important;
+    padding: 2px 4px;
+    color: #666665 !important;
     margin-bottom:2px;
     display:block;
     overflow:hidden;
-    text-shadow: none;
-    line-height: 22px;
+    text-shadow: 0;
+    line-height: 20px;
 }
 .x-panel-header-absoluteAreamodule {
-    background: url("../images/xtheme-jahia-andromeda/panel/white-top-bottom-absoluteAreamodule.png") repeat scroll left top #586370;
-    border: 1px solid #586370;
+    box-shadow:1px 1px 0 #95a8bd inset,-1px -1px 0 #95a8bd inset;
+    background:-moz-linear-gradient(#8191a3,#586370) repeat scroll 0 0 transparent;
+    background:-webkit-linear-gradient(#8191a3,#586370) repeat scroll 0 0 transparent;
+    background:-webkit-gradient(linear,left top,left bottom,from(#8191a3),to(#586370));
+    background:-o-linear-gradient(#8191a3,#586370) repeat scroll 0 0 transparent;
+    background: linear-gradient(#8191a3,#586370) repeat scroll 0 0 transparent;
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#8191a3',endColorstr='#586370');
+    border: 1px solid #30363d;
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 11px;
-    padding: 4px;
+    padding: 2px 4px;
     color: #fff !important;
     font-weight: bold;
     margin-bottom:2px;
     display:block;
     overflow:hidden;
-    text-shadow: none;
-    line-height: 22px;
+    text-shadow: 0;
+    line-height: 20px;
 }
 
 .x-panel-header-lockedmodule {
-    background : #660000;
-    border: 1px solid #c00;
+    box-shadow:1px 1px 0 #999 inset,-1px -1px 0 #999 inset;
+    background:-moz-linear-gradient(#333,#000) repeat scroll 0 0 transparent;
+    background:-webkit-linear-gradient(#333,#000) repeat scroll 0 0 transparent;
+    background:-webkit-gradient(linear,left top,left bottom,from(#333),to(#000));
+    background:-o-linear-gradient(#333,#000) repeat scroll 0 0 transparent;
+    background:linear-gradient(#333,#000) repeat scroll 0 0 transparent;
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#333',endColorstr='#000');
+    border:1px solid #000;
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 11px;
-    padding: 4px;
-    color: #000 !important;
     font-weight: bold;
+    padding: 2px 4px;
+    color: #ccc !important;
     margin-bottom:2px;
     display:block;
     overflow:hidden;
-    text-shadow: none;
-    line-height: 22px;
+    text-shadow: 0;
+    line-height: 20px;
 }
 
 .x-panel-placeholder {
@@ -145,14 +174,14 @@
     border: 1px solid #a3bae9;
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 11px;
-    padding: 4px;
+    padding: 2px 4px;
     color: #333 !important;
     font-weight: bold;
     margin-bottom:2px;
     display:block;
     overflow:hidden;
-    text-shadow: none;
-    line-height: 22px;
+    text-shadow: 0;
+    line-height: 20px;
 }
 
 .x-panel-toolbar {
@@ -173,8 +202,8 @@ button.button-placeholder, div.button-placeholder {
     border:none;
     color:#fff;
     border:1px solid #006699 !important;
-    padding:1px 2px;
-    margin:1px;
+    padding:1px;
+    margin:0 1px;
     -moz-border-radius: 2px;
     -webkit-border-radius: 2px;
     border-radius: 2px;

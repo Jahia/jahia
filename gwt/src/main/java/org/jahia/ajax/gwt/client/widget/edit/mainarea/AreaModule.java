@@ -52,6 +52,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -175,9 +176,10 @@ public class AreaModule extends SimpleModule {
 
     @Override public void onNodeTypesLoaded() {
         if (missingList && editable) {
-            AbstractImagePrototype icon =  ToolbarIconProvider.getInstance().getIcon("enableArea");
+            Image icon =  ToolbarIconProvider.getInstance().getIcon("enableArea").createImage();
+            icon.setTitle(Messages.get("label.areaEnable", "Enable area"));
             LayoutContainer p = new HorizontalPanel();
-            p.add(icon.createImage());
+            p.add(icon);
             if (getWidth() > 150) {
                 p.add(new Text(Messages.get("label.areaEnable", "Enable area")));
             }

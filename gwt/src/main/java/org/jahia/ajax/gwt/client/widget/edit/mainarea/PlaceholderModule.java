@@ -52,6 +52,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -199,9 +200,10 @@ public class PlaceholderModule extends Module {
         }
 
         if (getParentModule() instanceof AreaModule && getParentModule().getChildCount() == 0 && ((AreaModule) getParentModule()).editable) {
-            AbstractImagePrototype icon =  ToolbarIconProvider.getInstance().getIcon("disableArea");
+            Image icon =  ToolbarIconProvider.getInstance().getIcon("disableArea").createImage();
+            icon.setTitle(Messages.get("label.areaDisable", "Disable area"));
             final LayoutContainer p = new HorizontalPanel();
-            p.add(icon.createImage());
+            p.add(icon);
             if (!mainModule.getConfig().isButtonsInLayer()) {
                 if (getWidth() > 150) {
                     p.add(new Text(Messages.get("label.areaDisable", "Disable area")));
@@ -249,9 +251,10 @@ public class PlaceholderModule extends Module {
                         continue;
                     }
                 }
-                AbstractImagePrototype icon = ContentModelIconProvider.getInstance().getIcon(nodeType);
+                Image icon = ContentModelIconProvider.getInstance().getIcon(nodeType).createImage();
+                icon.setTitle(nodeType != null ? nodeType.getLabel() : s );
                 LayoutContainer p = new HorizontalPanel();
-                p.add(icon.createImage());
+                p.add(icon);
                 if (!mainModule.getConfig().isButtonsInLayer()) {
                     if (getWidth() > 150) {
                         p.add(new Text(nodeType != null ? nodeType.getLabel() : s));
@@ -278,9 +281,10 @@ public class PlaceholderModule extends Module {
                 }
             }
 
-            AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon("paste");
+            Image icon = ToolbarIconProvider.getInstance().getIcon("paste").createImage();
+            icon.setAltText(Messages.get("label.paste", "Paste"));
             pasteButton = new HorizontalPanel();
-            pasteButton.add(icon.createImage());
+            pasteButton.add(icon);
             if (!mainModule.getConfig().isButtonsInLayer()) {
                 if (getWidth() > 150) {
                     pasteButton.add(new Text(Messages.get("label.paste", "Paste")));

@@ -48,6 +48,7 @@ import javax.jcr.nodetype.NodeTypeIterator;
 
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -135,7 +136,9 @@ public class ComponentRegistry {
         }
         if (resolvedSite != null && resolvedSite.isNodeType(Constants.JAHIANT_VIRTUALSITE) && resolvedSite.hasProperty("j:dependencies")) {
             for (Value dep : resolvedSite.getProperty("j:dependencies").getValues()) {
-                String path = "/modules/" + dep.getString() + "/components";
+                String version = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(dep.getString()).getRootFolderWithVersion();
+                String path = "/modules/" + version + "/components";
+
                 if (resolvedSite.getSession().nodeExists(path)) {
                     components.add(resolvedSite.getSession().getNode(path));
                 }

@@ -16,7 +16,7 @@
         <div class="${renderContext.editModeConfigName}AbsoluteArea <c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
             <div class="${renderContext.editModeConfigName}AbsoluteAreaTemplate">
                 <c:if test="${empty level}" >
-                    <span>Absolute Area : ${currentNode.resolveSite.home.name}</span>
+                    <span>Absolute Area : ${currentNode.name} </span>
                 </c:if>
                 <c:if test="${not empty level}" >
                     <span>Absolute Area : ${currentNode.name} - Level ${level}</span>

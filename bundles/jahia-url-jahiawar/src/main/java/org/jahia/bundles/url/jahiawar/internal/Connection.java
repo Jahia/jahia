@@ -46,6 +46,8 @@ public class Connection extends URLConnection {
 
     // @todo this list should be configurable
     private String[] hardcodedImports = new String[]{
+            "javax.jcr",
+            "javax.jcr.nodetype",
             "javax.servlet.jsp.tagext",
             "org.apache.camel.spring",
             "org.hibernate.cfg",
@@ -55,6 +57,7 @@ public class Connection extends URLConnection {
             "org.jahia.ajax.gwt.client.widget.toolbar.action",
             "org.jahia.api",
             "org.jahia.bundles.extender.jahiamodules",
+            "org.jahia.data.templates",
             "org.jahia.data.viewhelper.principal",
             "org.jahia.defaults.config.spring",
             "org.jahia.exceptions",
@@ -62,6 +65,7 @@ public class Connection extends URLConnection {
             "org.jahia.taglibs",
             "org.jahia.taglibs.facet",
             "org.jahia.taglibs.functions",
+            "org.jahia.taglibs.internal.date",
             "org.jahia.taglibs.jcr",
             "org.jahia.taglibs.jcr.node",
             "org.jahia.taglibs.jcr.query",
@@ -88,6 +92,8 @@ public class Connection extends URLConnection {
             "org.jahia.services.channels",
             "org.jahia.services.channels.providers",
             "org.jahia.services.content",
+            "org.jahia.services.content.decorator",
+            "org.jahia.services.content.nodetypes",
             "org.jahia.services.content.rules",
             "org.jahia.services.uicomponents.bean",
             "org.jahia.services.uicomponents.bean.contentmanager",

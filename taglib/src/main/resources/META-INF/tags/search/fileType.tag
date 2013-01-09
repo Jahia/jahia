@@ -12,14 +12,14 @@
               description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."
         %>
 <c:set var="display" value="${functions:default(display, true)}"/>
-<c:set var="fileTypes" value="<%= JCRContentUtils.getInstance().getMimeTypes() %>"/>
 <c:if test="${not empty value}">
     <% if (!JCRContentUtils.getInstance().getMimeTypes().containsKey(jspContext.getAttribute("value"))) {
         throw new IllegalArgumentException("Unsupported file type '" + jspContext.getAttribute("value") + "'. See applicationcontext-basejahiaconfig.xml file for configured file types.");
     } %>
 </c:if>
-<c:set var="value" value="${functions:default(param.src_fileType, value)}"/>
 <c:if test="${display}">
+    <c:set var="value" value="${functions:default(param.src_fileType, value)}"/>
+    <c:set var="fileTypes" value="<%= JCRContentUtils.getInstance().getMimeTypes() %>"/>
     <c:set target="${attributes}" property="name" value="src_fileType"/>
     <select ${functions:attributes(attributes)}>
         <option value=""><fmt:message key="searchForm.any"/></option>

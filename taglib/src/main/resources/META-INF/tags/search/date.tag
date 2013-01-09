@@ -19,11 +19,15 @@
 
 <c:set var="display" value="${functions:default(display, true)}"/>
 <c:set var="valueParamName" value="${attributes.name}.type"/>
-<c:set var="value" value="${functions:default(param[valueParamName], value)}"/>
-<c:if test="${empty requestScope['org.apache.jsp.tag.web.search.dateTag.included']}">
-    <c:set var="org.apache.jsp.tag.web.search.dateTag.included" value="true" scope="request"/>
-    <template:addResources>
-        <script type="text/javascript">
+<c:if test="${display}">
+    <c:set var="value"
+        value="${functions:default(param[valueParamName], value)}" />
+    <c:if
+        test="${empty requestScope['org.apache.jsp.tag.web.search.dateTag.included']}">
+        <c:set var="org.apache.jsp.tag.web.search.dateTag.included"
+            value="true" scope="request" />
+        <template:addResources>
+            <script type="text/javascript">
             function searchDateTypeToggle(dateType, range) {
                 if (dateType.value == 'range' && range.style.display != 'none' || dateType.value != 'range' && range.style.display == 'none') {
                     return;
@@ -35,10 +39,9 @@
                     }
                 }
             }
-        </script>
-    </template:addResources>
-</c:if>
-<c:if test="${display}">
+            </script>
+        </template:addResources>
+    </c:if>
     <c:set var="rangeId" value="${functions:nextLongIdentifier()}"/>
     <select name="${valueParamName}" onchange="searchDateTypeToggle(this, document.getElementById('range-${rangeId}'));">
         <option value="anytime" ${value == 'anytime' ? 'selected="selected"' : ''}><fmt:message key="searchForm.date.anytime"/></option>

@@ -10,5 +10,7 @@
 <c:set var="display" value="${functions:default(display, true)}"/>
 <c:set target="${attributes}" property="type" value="${display ? 'text' : 'hidden'}"/>
 <c:set target="${attributes}" property="name" value="src_lastModifiedBy"/>
-<c:set var="value" value="${functions:default(param['src_lastModifiedBy'], value)}"/>
+<c:if test="${display}">
+    <c:set var="value" value="${functions:default(param['src_lastModifiedBy'], value)}"/>
+</c:if>    
 <input ${functions:attributes(attributes)} value="${fn:escapeXml(value)}"/>

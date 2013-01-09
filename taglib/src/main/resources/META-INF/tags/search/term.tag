@@ -20,16 +20,19 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 <%@ taglib prefix="search" uri="http://www.jahia.org/tags/search"%>
 <c:set var="display" value="${functions:default(display, true)}"/>
+<c:set var="searchInAllowSelection" value="${functions:default(searchInAllowSelection, false)}"/>
 <c:set var="formId" value='<%= request.getAttribute("org.jahia.tags.search.form.formId") %>'/>
 <c:set var="termIndex" value="${searchTermIndexes[formId]}"/>
 <c:set target="${attributes}" property="type" value="${display ? 'text' : 'hidden'}"/>
 <c:set var="key" value="src_terms[${termIndex}].term"/>
 <c:set target="${attributes}" property="name" value="${key}"/>
-<c:set var="value" value="${functions:default(param[key], value)}"/>
-<c:set var="key" value="src_terms[${termIndex}].fields"/>
-<c:set var="searchIn" value="${functions:default(param[key], searchIn)}"/>
-<c:set var="searchInAllowSelection" value="${functions:default(searchInAllowSelection, false)}"/>
-<c:set var="searchInSelectionOptions" value="${functions:default(searchInSelectionOptions, 'siteContent,files')}"/>
+<c:if test="${display}">
+    <c:set var="value" value="${functions:default(param[key], value)}"/>
+</c:if>   
+<c:if test="${searchInAllowSelection}">
+    <c:set var="key" value="src_terms[${termIndex}].fields"/>
+    <c:set var="searchIn" value="${functions:default(param[key], searchIn)}"/>
+</c:if>
 <input ${functions:attributes(attributes)} value="${fn:escapeXml(value)}"/>
 <input type="hidden" name="src_terms[${termIndex}].applyFilter" value="${functions:default(applyFilterOnWildcardTerm, true)}"/>
 <c:if test="${not empty match && match != 'as_is'}">
@@ -37,6 +40,7 @@
     <input type="hidden" name="${key}" value="${fn:escapeXml(functions:default(param[key], match))}"/>
 </c:if>
 <c:if test="${searchInAllowSelection || not empty searchIn}">
+    <c:set var="searchInSelectionOptions" value="${functions:default(searchInSelectionOptions, 'siteContent,files')}"/>
     <search:termFields value="${searchIn}" selectionOptions="${searchInSelectionOptions}" display="${searchInAllowSelection}"/>
 </c:if>
 <c:set target="${searchTermIndexes}" property="${formId}" value="${searchTermIndexes[formId] + 1}"/>

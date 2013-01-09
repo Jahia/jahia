@@ -11,10 +11,11 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 <c:set var="display" value="${functions:default(display, true)}"/>
-<c:set var="value" value="${functions:default(param['src_itemsPerPage'], functions:default(value, '10'))}"/>
-<c:set var="options" value="${functions:default(options, '5,10,25,50,100')}"/>
+<c:set var="value" value="${functions:default(value, '10')}"/>
 <c:set target="${attributes}" property="name" value="src_itemsPerPage"/>
 <c:if test="${display}">
+    <c:set var="value" value="${functions:default(param['src_itemsPerPage'], value)}"/>
+    <c:set var="options" value="${functions:default(options, '5,10,25,50,100')}"/>
     <select ${functions:attributes(attributes)} name="src_itemsPerPage">
         <c:forTokens items="${options}" delims="," var="opt">
             <option value="${opt}" ${opt == value ? 'selected="selected"' : ''}>${opt}</option>

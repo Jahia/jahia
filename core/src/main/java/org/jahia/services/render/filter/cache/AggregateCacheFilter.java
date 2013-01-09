@@ -938,9 +938,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
                 Map<String, String> keyAttrbs = defaultCacheKeyGenerator.parse(key);
                 String path = keyAttrbs.get("path");
-                for (String notCacheableKey : notCacheableFragment) {
-                    if(notCacheableKey.contains(path)) {
-                        notCacheableFragment.remove(notCacheableKey);
+                synchronized (notCacheableFragment) {
+                    for (String notCacheableKey : notCacheableFragment) {
+                        if (notCacheableKey.contains(path)) {
+                            notCacheableFragment.remove(notCacheableKey);
+                        }
                     }
                 }
             }

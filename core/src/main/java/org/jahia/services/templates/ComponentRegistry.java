@@ -131,12 +131,14 @@ public class ComponentRegistry {
         List<JCRNodeWrapper> components = new LinkedList<JCRNodeWrapper>();
 
         JCRSiteNode resolvedSite = node.getResolveSite();
+
         if (resolvedSite != null && resolvedSite.hasNode("components")) {
             components.add(resolvedSite.getNode("components"));
         }
-        if (resolvedSite != null && resolvedSite.isNodeType(Constants.JAHIANT_VIRTUALSITE) && resolvedSite.hasProperty("j:dependencies")) {
-            for (Value dep : resolvedSite.getProperty("j:dependencies").getValues()) {
-                String version = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(dep.getString()).getRootFolderWithVersion();
+        if (resolvedSite != null) {
+
+            for (JahiaTemplatesPackage dep : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(resolvedSite.getName()).getDependencies()) {
+                String version = dep.getRootFolderWithVersion();
                 String path = "/modules/" + version + "/components";
 
                 if (resolvedSite.getSession().nodeExists(path)) {

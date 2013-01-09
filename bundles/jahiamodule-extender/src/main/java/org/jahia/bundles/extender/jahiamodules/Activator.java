@@ -17,9 +17,11 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.scripting.ScriptFactory;
 import org.jahia.services.render.scripting.ScriptResolver;
+import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.TemplatePackageDeployer;
@@ -483,23 +485,8 @@ public class Activator implements BundleActivator {
 
         templatePackageRegistry.register(jahiaBundleTemplatesPackage);
 
-        List<ClassLoader> classLoaders = new ArrayList<ClassLoader>();
+        jahiaBundleTemplatesPackage.setClassLoader(BundleDelegatingClassLoader.createBundleClassLoaderFor(bundle, SpringContextSingleton.getInstance().getContext().getClassLoader()));
 
-        classLoaders.add(SettingsBean.getInstance().getClass().getClassLoader());
-        classLoaders.add(BundleDelegatingClassLoader.createBundleClassLoaderFor(bundle, SpringContextSingleton.getInstance().getContext().getClassLoader()));
-        for (String depend : jahiaBundleTemplatesPackage.getDepends()) {
-            JahiaTemplatesPackage dependentPack = templatePackageRegistry.lookupByFileName(depend);
-            if (dependentPack == null) {
-                dependentPack = templatePackageRegistry.lookup(depend);
-            }
-            if (dependentPack != null && dependentPack.getClassLoader() != null) {
-                classLoaders.add(dependentPack.getClassLoader());
-            } else {
-                logger.error("Cannot find class loader for "+depend);
-            }
-        }
-
-        jahiaBundleTemplatesPackage.setClassLoader(new ChainedClassLoader(classLoaders.toArray(new ClassLoader[classLoaders.size()])));
         jahiaBundleTemplatesPackage.setActiveVersion(true);
 
         // initialize spring context
@@ -821,46 +808,4 @@ public class Activator implements BundleActivator {
         }
         return modulesByState;
     }
-
-    public class ChainedClassLoader extends ClassLoader {
-
-        private final ClassLoader[] loaders;
-
-
-        public ChainedClassLoader(ClassLoader[] loaders) {
-            Assert.notEmpty(loaders);
-            for (int i = 0; i < loaders.length; i++) {
-                ClassLoader classLoader = loaders[i];
-                Assert.notNull(classLoader, "null classloaders not allowed");
-            }
-            this.loaders = (ClassLoader[]) loaders.clone();
-        }
-
-        public URL getResource(String name) {
-            URL url = null;
-            for (int i = 0; i < loaders.length; i++) {
-                ClassLoader loader = loaders[i];
-                url = loader.getResource(name);
-                if (url != null)
-                    return url;
-            }
-            return url;
-        }
-
-        public Class loadClass(String name) throws ClassNotFoundException {
-            Class clazz = null;
-            for (int i = 0; i < loaders.length; i++) {
-                ClassLoader loader = loaders[i];
-                try {
-                    clazz = loader.loadClass(name);
-                    return clazz;
-                }
-                catch (ClassNotFoundException e) {
-                    // keep moving through the classloaders
-                }
-            }
-            throw new ClassNotFoundException(name);
-        }
-    }
-
 }

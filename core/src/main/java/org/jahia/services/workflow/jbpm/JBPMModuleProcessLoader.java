@@ -49,7 +49,7 @@ public class JBPMModuleProcessLoader implements InitializingBean {
             logger.info("Found " + processes.length + " workflow processes to be deployed.");
             List<Deployment> deploymentList = repositoryService.createDeploymentQuery().list();
             for (Resource process : processes) {
-                long lastModified = FileUtils.getLastModified(process);
+                long lastModified = process.lastModified();
 
                 boolean needUpdate = true;
                 boolean found = false;

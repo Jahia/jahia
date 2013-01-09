@@ -730,12 +730,13 @@ public class Activator implements BundleActivator {
 
     private boolean classNameExportable(String classOrInterfaceName, Bundle bundle) {
         if (isSystemClassName(classOrInterfaceName)) return false;
+        String classPackageName = classOrInterfaceName.substring(0, classOrInterfaceName.lastIndexOf('.'));
         String exportPackageHeader = (String) bundle.getHeaders().get("Export-Package");
         if (exportPackageHeader != null) {
             Clause[] headerClauses = Parser.parseHeader(exportPackageHeader);
             for (Clause clause : headerClauses) {
-                String packageName = clause.getName();
-                if (classOrInterfaceName.startsWith(packageName)) {
+                String exportedPackageName = clause.getName();
+                if (classPackageName.equals(exportedPackageName)) {
                     return true;
                 }
             }
@@ -745,13 +746,13 @@ public class Activator implements BundleActivator {
 
     private boolean classNameImportable(String classOrInterfaceName, Bundle bundle) {
         if (isSystemClassName(classOrInterfaceName)) return false;
-        String thisPackageName = classOrInterfaceName.substring(0, classOrInterfaceName.lastIndexOf('.'));
+        String classPackageName = classOrInterfaceName.substring(0, classOrInterfaceName.lastIndexOf('.'));
         String importPackageHeader = (String) bundle.getHeaders().get("Import-Package");
         if (importPackageHeader != null) {
             Clause[] headerClauses = Parser.parseHeader(importPackageHeader);
             for (Clause clause : headerClauses) {
                 String importedPackageName = clause.getName();
-                if (thisPackageName.equals(importedPackageName)) {
+                if (classPackageName.equals(importedPackageName)) {
                     return true;
                 }
             }

@@ -178,15 +178,37 @@ public class Connection extends URLConnection {
                     ByteArrayOutputStream entryOutputStream = new ByteArrayOutputStream();
                     StreamUtils.copyStream(entryInputStream, entryOutputStream, false);
                     ByteArrayInputStream tempEntryInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());
-                    JarInputStream embeddedJar = new JarInputStream(tempEntryInputStream);
+                    JarInputStream embeddedJarInputStream = new JarInputStream(tempEntryInputStream);
+                    Manifest embeddedJarManifest = new Manifest(embeddedJarInputStream.getManifest());
+                    ByteArrayOutputStream embeddedJarByteOutputStream = new ByteArrayOutputStream();
+                    JarOutputStream embeddedJarOutputStream = new JarOutputStream(embeddedJarByteOutputStream, embeddedJarManifest);
                     JarEntry embeddedJarEntry = null;
-                    while ((embeddedJarEntry = embeddedJar.getNextJarEntry()) != null) {
+                    while ((embeddedJarEntry = embeddedJarInputStream.getNextJarEntry()) != null) {
                         updateExportTracking(embeddedJarEntry.getName(), exportPackageIncludes, allNonEmptyDirectories);
+                        String embeddedJarNewName = embeddedJarEntry.getName();
+                        String directoryName = "";
+                        if (embeddedJarNewName.lastIndexOf('/') > -1) {
+                            directoryName = embeddedJarNewName.substring(0, embeddedJarNewName.lastIndexOf('/'));
+                        }
+                        if (directoryName.equals("org/jahia/services/workflow")) {
+                            String remainingPath = embeddedJarNewName.substring("org/jahia/services/workflow/".length());
+                            embeddedJarNewName = "org/jahia/modules/custom/workflow/" + remainingPath;
+                        }
+                        // create the new entry
+                        JarEntry newEmbeddedJarEntry = new JarEntry(embeddedJarNewName);
+                        if (embeddedJarEntry.getTime() > mostRecentTime) {
+                            mostRecentTime = embeddedJarEntry.getTime();
+                        }
+                        newEmbeddedJarEntry.setTime(embeddedJarEntry.getTime());
+                        embeddedJarOutputStream.putNextEntry(newEmbeddedJarEntry);
+                        StreamUtils.copyStream(embeddedJarInputStream, embeddedJarOutputStream, false);
+                        embeddedJarOutputStream.closeEntry();
                     }
-                    embeddedJar.close();
+                    embeddedJarInputStream.close();
                     tempEntryInputStream.close();
                     tempEntryInputStream = null;
-                    entryInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());
+                    embeddedJarOutputStream.close();
+                    entryInputStream = new ByteArrayInputStream(embeddedJarByteOutputStream.toByteArray());
                 } else if (newName.startsWith("WEB-INF/")) {
                     newName = jarEntry.getName().substring("WEB-INF/".length());
                 }

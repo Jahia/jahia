@@ -73,7 +73,7 @@
             </div>
         </c:if>
         <c:if test="${not moduleMap.totalSizeUnknown}">
-            <div class="paginationPosition"><span><fmt:message key="pagination.pageOf.withTotal"><fmt:param value="${moduleMap.currentPage}"/><fmt:param value="${moduleMap.nbPages}"/><fmt:param value="${moduleMap.totalSize}"/></fmt:message></span>
+            <div class="paginationPosition"><span><fmt:message key="${moduleMap.sizeNotExact ? 'pagination.pageOf.withApproxTotal' : 'pagination.pageOf.withTotal'}"><fmt:param value="${moduleMap.currentPage}"/><fmt:param value="${moduleMap.nbPages}"/><fmt:param value="${moduleMap.totalSize}"/></fmt:message></span>
             </div>
         </c:if>
         <div class="paginationNavigation">

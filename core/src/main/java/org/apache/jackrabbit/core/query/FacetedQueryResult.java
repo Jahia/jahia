@@ -61,7 +61,12 @@ public class FacetedQueryResult extends JahiaSimpleQueryResult implements QueryR
         super(columnNames, selectorNames, rowIterator);
         this.facetRow = facetRow;
     }
-
+    
+    public FacetedQueryResult(String[] columnNames, String[] selectorNames,
+            RowIterator rowIterator, FacetRow facetRow, long approxCount) {
+        super(columnNames, selectorNames, rowIterator, approxCount);
+        this.facetRow = facetRow;
+    }
 
     public Map<String, Long> getFacetQuery() {
         return facetRow.getFacetQuery();

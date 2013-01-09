@@ -303,6 +303,12 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Indicates that the number of elements is just approximate</description>
+            <name>sizeNotExact</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>        
+        <attribute>
             <description>id of current pagination</description>
             <name>id</name>
             <required>true</required>

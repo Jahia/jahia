@@ -33,7 +33,8 @@
     <c:set target="${moduleMap}" property="pageSize" value="${pageSize}"/>
     <c:set target="${moduleMap}" property="pageStart" value="${param[beginid]}"/>
     <template:option node="${boundComponent}" nodetype="${boundComponent.primaryNodeTypeName},jmix:list" view="hidden.header"/>
-    <template:initPager totalSize="${moduleMap.listTotalSize}" pageSize="${pageSize}" id="${boundComponent.identifier}"/>
+    <c:set var="sizeNotExact" value="${moduleMap.listApproxSize > 0 && moduleMap.listApproxSize != moduleMap.listTotalSize}"/>    
+    <template:initPager totalSize="${sizeNotExact ? moduleMap.listApproxSize : moduleMap.listTotalSize}" sizeNotExact="${sizeNotExact}" pageSize="${pageSize}" id="${boundComponent.identifier}"/>
     <jsp:useBean id="pagerLimits" class="java.util.HashMap" scope="request"/>
     <c:set target="${pagerLimits}" property="${boundComponent.identifier}" value="${moduleMap.end}"/>
     <c:if test="${currentNode.properties.displayPager.boolean}">

@@ -179,6 +179,13 @@
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.Long</type>
         </attribute>
+        <attribute>
+            <description>The name of the page scope variable the approximate hit count will be exposed under. [approxCount]</description>
+            <name>approxCountVar</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>        
     </tag>
 
     <tag>

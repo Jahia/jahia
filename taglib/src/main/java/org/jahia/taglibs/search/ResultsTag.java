@@ -64,6 +64,8 @@ public class ResultsTag extends AbstractJahiaTag {
     private static final long serialVersionUID = 2848686280888802590L;
 
     private String countVar;
+    
+    private String approxCountVar;    
 
     private SearchResponse searchResponse;
     private List<Hit<?>> hits;
@@ -85,6 +87,7 @@ public class ResultsTag extends AbstractJahiaTag {
     public int doEndTag() throws JspException {
         pageContext.removeAttribute(getVar(), PageContext.PAGE_SCOPE);
         pageContext.removeAttribute(getCountVar(), PageContext.PAGE_SCOPE);
+        pageContext.removeAttribute(getApproxCountVar(), PageContext.PAGE_SCOPE);        
         pageContext.removeAttribute(getSearchCriteriaVar(), PageContext.PAGE_SCOPE);
         pageContext.removeAttribute(getTermVar(), PageContext.PAGE_SCOPE);
         resetState();
@@ -120,6 +123,7 @@ public class ResultsTag extends AbstractJahiaTag {
         } else {
             pageContext.setAttribute(getCountVar(), Integer.valueOf(count));
         }
+        pageContext.setAttribute(getApproxCountVar(), searchResponse.getApproxCount());
         pageContext.setAttribute(getSearchCriteriaVar(), criteria);
         if (!criteria.getTerms().isEmpty() && !criteria.getTerms().get(0).isEmpty()) {
         	pageContext.setAttribute(getTermVar(), criteria.getTerms().get(0).getTerm());
@@ -139,10 +143,25 @@ public class ResultsTag extends AbstractJahiaTag {
         return countVar != null ? countVar : getDefaultCountVarName();
     }
 
+    /**
+     * Returns the default name of the <code>approxCountVar</code> variable if not
+     * provided.
+     * 
+     * @return the default name of the <code>approxCountVar</code> variable if not
+     *         provided
+     */
+    private String getApproxCountVar() {
+        return approxCountVar != null ? approxCountVar : getDefaultApproxCountVarName();
+    }    
+    
     protected String getDefaultCountVarName() {
         return "count";
     }
 
+    protected String getDefaultApproxCountVarName() {
+        return "approxCount";
+    }    
+    
     protected String getDefaultSearchCriteriaVarName() {
         return "searchCriteria";
     }
@@ -211,16 +230,20 @@ public class ResultsTag extends AbstractJahiaTag {
     public void setCountVar(String countVar) {
         this.countVar = countVar;
     }
+    
+    public void setApproxCountVar(String approxCountVar) {
+        this.approxCountVar = approxCountVar;
+    }    
 
-	public void setSearchCriteriaBeanName(String searchCriteriaBeanName) {
+    public void setSearchCriteriaBeanName(String searchCriteriaBeanName) {
         this.searchCriteriaBeanName = searchCriteriaBeanName;
     }
 
-	public void setSearchCriteriaVar(String searchCriteriaVar) {
+    public void setSearchCriteriaVar(String searchCriteriaVar) {
     	this.searchCriteriaVar = searchCriteriaVar;
     }
 
-	public void setTermVar(String termVar) {
+    public void setTermVar(String termVar) {
     	this.termVar = termVar;
     }
 

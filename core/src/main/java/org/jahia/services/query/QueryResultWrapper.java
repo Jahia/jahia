@@ -60,6 +60,7 @@ import org.apache.jackrabbit.commons.iterator.NodeIteratorAdapter;
 import org.apache.jackrabbit.commons.iterator.RangeIteratorAdapter;
 import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
 import org.apache.jackrabbit.core.query.FacetedQueryResult;
+import org.apache.jackrabbit.core.query.JahiaSimpleQueryResult;
 import org.apache.jackrabbit.value.StringValue;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.RangeFacet;
@@ -310,5 +311,10 @@ public class QueryResultWrapper implements QueryResult {
 
     private String getSessionLanguage() {
         return sessionLanguage;
+    }
+    
+    public long getApproxCount() {
+        return result instanceof JahiaSimpleQueryResult ? ((JahiaSimpleQueryResult) result).getApproxCount()
+                : 0;        
     }
 }

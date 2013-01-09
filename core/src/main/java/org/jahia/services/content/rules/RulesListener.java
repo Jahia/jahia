@@ -207,8 +207,8 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             if (pkgFile.exists() && pkgFile.lastModified() > dsrlFile.lastModified()) {
                 ObjectInputStream ois = null;
                 try {
-                    if (aPackage != null && aPackage.getClassLoader() != null) {
-                        ois = new DroolsObjectInputStream(new FileInputStream(pkgFile), aPackage.getClassLoader());
+                    if (aPackage != null) {
+                        ois = new DroolsObjectInputStream(new FileInputStream(pkgFile), aPackage.getChainedClassLoader());
                     } else {
                         ois = new DroolsObjectInputStream(new FileInputStream(pkgFile), null);
                     }
@@ -230,8 +230,8 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                 JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration("java");
                 javaConf.setCompiler(JavaDialectConfiguration.JANINO);
 
-                if (aPackage != null && aPackage.getClassLoader() != null) {
-                    cfg.setClassLoader(aPackage.getClassLoader());
+                if (aPackage != null) {
+                    cfg.setClassLoader(aPackage.getChainedClassLoader());
                 }
 
                 PackageBuilder builder = new PackageBuilder(cfg);

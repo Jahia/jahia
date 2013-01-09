@@ -50,16 +50,17 @@ package org.jahia.data.templates;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.jahia.bin.Jahia;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.SourceControlManagement;
 import org.jahia.settings.SettingsBean;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.web.context.support.XmlWebApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -481,6 +482,42 @@ public class JahiaTemplatesPackage {
 
     public ClassLoader getClassLoader() {
         return null;
+    }
+
+    public ClassLoader getChainedClassLoader() {
+        final List<ClassLoader> classLoaders = new ArrayList<ClassLoader>();
+        classLoaders.add(Jahia.class.getClassLoader());
+        if (getClassLoader() != null) {
+            classLoaders.add(getClassLoader());
+        }
+        for (JahiaTemplatesPackage dependentPack : getDependencies()) {
+            if (dependentPack != null && dependentPack.getClassLoader() != null) {
+                classLoaders.add(dependentPack.getClassLoader());
+            }
+        }
+        return new ClassLoader() {
+            public URL getResource(String name) {
+                URL url = null;
+                for (ClassLoader loader : classLoaders) {
+                    url = loader.getResource(name);
+                    if (url != null)
+                        return url;
+                }
+                return url;
+            }
+
+            public Class loadClass(String name) throws ClassNotFoundException {
+                for (ClassLoader loader : classLoaders) {
+                    try {
+                        return loader.loadClass(name);
+                    }
+                    catch (ClassNotFoundException e) {
+                        // keep moving through the classloaders
+                    }
+                }
+                throw new ClassNotFoundException(name);
+            }
+        };
     }
 
 }

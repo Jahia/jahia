@@ -124,7 +124,6 @@ public class JahiaQueryEngine extends QueryEngine {
 
         List<Row> rowsList = null;
         try {
-<<<<<<< .working
             rowsList = lqf.execute(columnMap, selector, constraint, sort, externalSort, offset, limit);
         } catch (IOException e) {
             throw new RepositoryException("Failed to access the query index", e);
@@ -140,26 +139,6 @@ public class JahiaQueryEngine extends QueryEngine {
             result = new JahiaSimpleQueryResult(columnNames, selectorNames, rows);
             if (NATIVE_SORT) {
                 return result;
-=======
-            final List<Row> rowsList = lqf.execute(columnMap, selector, constraint);
-            // Added by jahia
-            QueryResult result;
-            if (rowsList.size() > 0 && rowsList.get(0) instanceof FacetRow) {
-                FacetRow facets = (FacetRow) rowsList.remove(0);
-                RowIterator rows = new RowIteratorAdapter(rowsList);
-                result = new FacetedQueryResult(columnNames, selectorNames, rows, facets);
-                QueryResult r = sort(result, orderings, offset, limit);
-                if (r != result) {
-                    result = new FacetedQueryResult(columnNames, selectorNames, r.getRows(), facets, limit > 0 ? result.getRows().getSize() : 0);
-                }
-            } else {
-                RowIterator rows = new RowIteratorAdapter(rowsList);
-                result = new JahiaSimpleQueryResult(columnNames, selectorNames, rows);
-                QueryResult r = sort(result, orderings, offset, limit);
-                if (r != result) {
-                    result = new JahiaSimpleQueryResult(columnNames, selectorNames, r.getRows(), limit > 0 ? result.getRows().getSize() : 0);
-                }
->>>>>>> .merge-right.r44370
             }
             long timeSort = System.currentTimeMillis();
             QueryResult r = sort(result, orderings, evaluator, offset, limit);
@@ -168,7 +147,7 @@ public class JahiaQueryEngine extends QueryEngine {
                     System.currentTimeMillis() - timeSort);
             }
             if (r != result) {
-                return new JahiaSimpleQueryResult(columnNames, selectorNames, r.getRows());
+                return new JahiaSimpleQueryResult(columnNames, selectorNames, r.getRows(), limit > 0 ? result.getRows().getSize() : 0);
             }
             return result;
         }

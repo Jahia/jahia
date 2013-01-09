@@ -20,12 +20,15 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.scripting.ScriptFactory;
 import org.jahia.services.render.scripting.ScriptResolver;
-import org.jahia.services.templates.*;
+import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.services.templates.ModuleVersion;
+import org.jahia.services.templates.TemplatePackageDeployer;
+import org.jahia.services.templates.TemplatePackageRegistry;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.*;
-import org.osgi.framework.wiring.BundleRevision;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
@@ -38,6 +41,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.core.io.Resource;
 import org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext;
+import org.springframework.util.Assert;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
@@ -60,6 +64,7 @@ public class Activator implements BundleActivator {
 
     CndBundleObserver cndBundleObserver = null;
     JspBundleObserver jspBundleObserver = null;
+    RulesBundleObserver rulesBundleObserver = null;
     ScriptBundleObserver scriptBundleObserver = null;
     boolean scriptResolverAlreadyInstalled = false;
     BundleScriptResolver bundleScriptResolver = null;
@@ -76,8 +81,9 @@ public class Activator implements BundleActivator {
     WebApplicationContext parentWebApplicationContext = null;
 
     Map<Bundle, List<URL>> bundleResources = new HashMap<Bundle, List<URL>>();
-    Map<BundleURLScanner, BundleObserver> extensionObservers = new HashMap<BundleURLScanner, BundleObserver>();
+    Map<BundleURLScanner, BundleObserver> extensionObservers = new LinkedHashMap<BundleURLScanner, BundleObserver>();
     private BundleURLScanner cndScanner;
+    private BundleURLScanner rulesScanner;
     private Map<String,List<Bundle>> toBeParsed = new HashMap<String, List<Bundle>>();
     private Map<String,List<Bundle>> toBeStarted = new HashMap<String, List<Bundle>>();
 
@@ -102,6 +108,11 @@ public class Activator implements BundleActivator {
         cndBundleObserver.setJcrStoreService(jcrStoreService);
         cndBundleObserver.setTemplatePackageRegistry(templatePackageRegistry);
         cndScanner = new BundleURLScanner("META-INF", "*.cnd", false);
+
+        rulesBundleObserver = new RulesBundleObserver();
+        rulesBundleObserver.setTemplatePackageRegistry(templatePackageRegistry);
+        extensionObservers.put(new BundleURLScanner("META-INF", "*.dsl", false), rulesBundleObserver);
+        extensionObservers.put(new BundleURLScanner("META-INF", "*.drl", false), rulesBundleObserver);
 //        extensionObservers.put(cndScanner, cndBundleObserver);
 
         Collection<ScriptResolver> scriptResolvers = renderService.getScriptResolvers();
@@ -331,7 +342,6 @@ public class Activator implements BundleActivator {
                 jahiaBundleTemplatesPackage.setResourceBundleName("resources." + rbName);
             }
         }
-        jahiaBundleTemplatesPackage.setClassLoader(BundleDelegatingClassLoader.createBundleClassLoaderFor(bundle, SpringContextSingleton.getInstance().getContext().getClassLoader()));
 
         if (bundle.getHeaders().get("Source-Folders") != null) {
             File sources = new File((String) bundle.getHeaders().get("Source-Folders"));
@@ -472,6 +482,24 @@ public class Activator implements BundleActivator {
         long startTime = System.currentTimeMillis();
 
         templatePackageRegistry.register(jahiaBundleTemplatesPackage);
+
+        List<ClassLoader> classLoaders = new ArrayList<ClassLoader>();
+
+        classLoaders.add(SettingsBean.getInstance().getClass().getClassLoader());
+        classLoaders.add(BundleDelegatingClassLoader.createBundleClassLoaderFor(bundle, SpringContextSingleton.getInstance().getContext().getClassLoader()));
+        for (String depend : jahiaBundleTemplatesPackage.getDepends()) {
+            JahiaTemplatesPackage dependentPack = templatePackageRegistry.lookupByFileName(depend);
+            if (dependentPack == null) {
+                dependentPack = templatePackageRegistry.lookup(depend);
+            }
+            if (dependentPack != null && dependentPack.getClassLoader() != null) {
+                classLoaders.add(dependentPack.getClassLoader());
+            } else {
+                logger.error("Cannot find class loader for "+depend);
+            }
+        }
+
+        jahiaBundleTemplatesPackage.setClassLoader(new ChainedClassLoader(classLoaders.toArray(new ClassLoader[classLoaders.size()])));
         jahiaBundleTemplatesPackage.setActiveVersion(true);
 
         // initialize spring context
@@ -793,4 +821,46 @@ public class Activator implements BundleActivator {
         }
         return modulesByState;
     }
+
+    public class ChainedClassLoader extends ClassLoader {
+
+        private final ClassLoader[] loaders;
+
+
+        public ChainedClassLoader(ClassLoader[] loaders) {
+            Assert.notEmpty(loaders);
+            for (int i = 0; i < loaders.length; i++) {
+                ClassLoader classLoader = loaders[i];
+                Assert.notNull(classLoader, "null classloaders not allowed");
+            }
+            this.loaders = (ClassLoader[]) loaders.clone();
+        }
+
+        public URL getResource(String name) {
+            URL url = null;
+            for (int i = 0; i < loaders.length; i++) {
+                ClassLoader loader = loaders[i];
+                url = loader.getResource(name);
+                if (url != null)
+                    return url;
+            }
+            return url;
+        }
+
+        public Class loadClass(String name) throws ClassNotFoundException {
+            Class clazz = null;
+            for (int i = 0; i < loaders.length; i++) {
+                ClassLoader loader = loaders[i];
+                try {
+                    clazz = loader.loadClass(name);
+                    return clazz;
+                }
+                catch (ClassNotFoundException e) {
+                    // keep moving through the classloaders
+                }
+            }
+            throw new ClassNotFoundException(name);
+        }
+    }
+
 }

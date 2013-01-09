@@ -41,9 +41,11 @@
 package org.jahia.services.content.rules;
 
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.ClassLoaderObjectInputStream;
 import org.apache.commons.lang.StringUtils;
+import org.drools.common.DroolsObjectInputStream;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,31 +186,33 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     }
 
     public void addRules(File dsrlFile) {
-        addRules(dsrlFile == null ? null : new FileSystemResource(dsrlFile));
+        addRules(dsrlFile == null ? null : new FileSystemResource(dsrlFile), null);
     }
 
-    public void addRules(Resource dsrlFile) {
+    public void addRules(Resource dsrlFile, JahiaTemplatesPackage aPackage) {
         InputStreamReader drl = null;
         long start = System.currentTimeMillis();
         try {
             File compiledRulesDir = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/compiledRules");
+            if (aPackage != null) {
+                compiledRulesDir = new File(compiledRulesDir, aPackage.getRootFolderWithVersion());
+            } else {
+                compiledRulesDir = new File(compiledRulesDir, "system");
+            }
             if (!compiledRulesDir.exists()) {
                 compiledRulesDir.mkdirs();
             }
             // first let's test if the file exists in the same location, if it was pre-packaged as a compiled rule
-            File pkgFile = new File(dsrlFile.getURL().getPath() + ".pkg");
-            if (!pkgFile.exists()) {
-                // we didn't find it, let's see if it's available in the compiled location.
-                String modulesDiskPath = SettingsBean.getInstance().getJahiaTemplatesDiskPath();
-                String dsrlFilePath = dsrlFile.getURL().getPath();
-                if (dsrlFilePath.startsWith(dsrlFilePath)) {
-                    pkgFile = new File(compiledRulesDir, dsrlFilePath.substring(modulesDiskPath.length()) + ".pkg");
-                }
-            }
+            File pkgFile = new File(compiledRulesDir, dsrlFile.getURL().getPath() + ".pkg");
             if (pkgFile.exists() && pkgFile.lastModified() > dsrlFile.lastModified()) {
                 ObjectInputStream ois = null;
                 try {
-                    ois = new ObjectInputStream(new FileInputStream(pkgFile));
+                    if (aPackage != null && aPackage.getClassLoader() != null) {
+                        ois = new DroolsObjectInputStream(new FileInputStream(pkgFile), aPackage.getClassLoader());
+                    } else {
+                        ois = new DroolsObjectInputStream(new FileInputStream(pkgFile), null);
+                    }
+
                     Package pkg = (Package) ois.readObject();
                     if (ruleBase.getPackage(pkg.getName()) != null) {
                         ruleBase.removePackage(pkg.getName());
@@ -225,6 +229,10 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                 PackageBuilderConfiguration cfg = new PackageBuilderConfiguration(properties);
                 JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration("java");
                 javaConf.setCompiler(JavaDialectConfiguration.JANINO);
+
+                if (aPackage != null && aPackage.getClassLoader() != null) {
+                    cfg.setClassLoader(aPackage.getClassLoader());
+                }
 
                 PackageBuilder builder = new PackageBuilder(cfg);
 
@@ -566,6 +574,10 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     public void addRulesDescriptor(File file) {
         dslFiles.add(file == null ? null : new FileSystemResource(file));
+    }
+
+    public void addRulesDescriptor(Resource resource) {
+        dslFiles.add(resource);
     }
 
     public void setGlobalObjects(Map<String, Object> globalObjects) {

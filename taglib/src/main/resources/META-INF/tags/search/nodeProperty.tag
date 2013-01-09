@@ -29,9 +29,9 @@
 <c:set var="displayIncludeChildren" value="${functions:default(displayIncludeChildren, false)}"/>
 <c:set var="display" value="${functions:default(display, true)}"/>
 <c:set var="propName" value="src_properties(${nodeType}).${name}.value"/>
-<c:set var="value" value="${functions:default(param[propName], value)}"/>
 <search:nodePropertyDescriptor nodeType="${nodeType}" name="${name}">
     <c:if test="${display}">
+        <c:set var="value" value="${functions:default(param[propName], value)}"/>
         <c:set target="${attributes}" property="name" value="${propName}"/>
         <c:choose>
             <c:when test="${descriptor.type == 'BOOLEAN'}">

@@ -18,8 +18,8 @@
 <c:set var="termIndex" value="${searchTermMatchIndexes[formId]}"/>
 <c:set var="key" value="src_terms[${termIndex}].match"/>
 <c:set target="${attributes}" property="name" value="${key}"/>
-<c:set var="value" value="${functions:default(param[key], value)}"/>
 <c:if test="${display}">
+    <c:set var="value" value="${functions:default(param[key], value)}"/>
     <c:set var="selectionOptions" value="${functions:default(selectionOptions, 'all_words,exact_phrase,any_word,without_words,as_is')}"/>
     <c:if test="${appearance == 'radio'}">
         <div class="matchTypes">

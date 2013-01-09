@@ -19,12 +19,14 @@
 <c:set target="${attributes}" property="type" value="hidden"/>
 <c:set target="${attributes}" property="name" value="src_pagePath.value"/>
 <c:set target="${attributes}" property="id" value="src_pagePath_value"/>
-<c:set var="value" value="${functions:default(param['src_pagePath.value'], value)}"/>
 <%-- by default set includeChildren to 'true' to search in subpages --%>
 <c:set var="includeChildren" value="${not empty includeChildren ? includeChildren : 'true'}"/>
-<%-- resolve includeChildren either from request parameter or from the default value (note that the 'false' value is not submitted for checkbox) --%>
-<c:set var="includeChildren"
-       value="${functions:default(param['src_pagePath.includeChildren'], empty paramValues['src_pagePath.value'] ? includeChildren : 'false')}"/>
+<c:if test="${display}">
+    <c:set var="value" value="${functions:default(param['src_pagePath.value'], value)}"/>
+    <%-- resolve includeChildren either from request parameter or from the default value (note that the 'false' value is not submitted for checkbox) --%>
+    <c:set var="includeChildren"
+           value="${functions:default(param['src_pagePath.includeChildren'], empty paramValues['src_pagePath.value'] ? includeChildren : 'false')}"/>
+</c:if>
 <input ${functions:attributes(attributes)} value="${fn:escapeXml(value)}"/>
 <c:if test="${display}">
     <c:set target="${attributes}" property="type" value="text"/>

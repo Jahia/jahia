@@ -14,12 +14,14 @@
 <c:set target="${attributes}" property="type" value="${display ? 'text' : 'hidden'}"/>
 <c:set target="${attributes}" property="name" value="src_filePath.value"/>
 <c:set target="${attributes}" property="id" value="${functions:default(attributes.id, 'src_filePath_value')}"/>
-<c:set var="value" value="${functions:default(param['src_filePath.value'], value)}"/>
 <%-- by default set includeChildren to 'true' to search in subfolders --%>
 <c:set var="includeChildren" value="${not empty includeChildren ? includeChildren : 'true'}"/>
-<%-- resolve includeChildren either from request parameter or from the default value (note that the 'false' value is not submitted for checkbox) --%>
-<c:set var="includeChildren"
-       value="${functions:default(param['src_filePath.includeChildren'], empty paramValues['src_filePath.value'] ? includeChildren : 'false')}"/>
+
+<c:if test="${display}">
+    <c:set var="value" value="${functions:default(param['src_filePath.value'], value)}" />
+    <%-- resolve includeChildren either from request parameter or from the default value (note that the 'false' value is not submitted for checkbox) --%>
+    <c:set var="includeChildren" value="${functions:default(param['src_filePath.includeChildren'], empty paramValues['src_filePath.value'] ? includeChildren : 'false')}" />
+</c:if>       
 <input ${functions:attributes(attributes)} value="${fn:escapeXml(value)}"/>
 <c:if test="${display}">
     <uiComponents:folderSelector fieldId="${attributes.id}" fieldIdIncludeChildren="src_filePath.includeChildren" includeChildren="${includeChildren}"/>

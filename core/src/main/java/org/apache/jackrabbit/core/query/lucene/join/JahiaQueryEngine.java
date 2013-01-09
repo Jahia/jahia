@@ -117,14 +117,14 @@ public class JahiaQueryEngine extends QueryEngine {
                 result = new FacetedQueryResult(columnNames, selectorNames, rows, facets);
                 QueryResult r = sort(result, orderings, offset, limit);
                 if (r != result) {
-                    result = new FacetedQueryResult(columnNames, selectorNames, r.getRows(), facets);
+                    result = new FacetedQueryResult(columnNames, selectorNames, r.getRows(), facets, limit > 0 ? result.getRows().getSize() : 0);
                 }
             } else {
                 RowIterator rows = new RowIteratorAdapter(rowsList);
                 result = new JahiaSimpleQueryResult(columnNames, selectorNames, rows);
                 QueryResult r = sort(result, orderings, offset, limit);
                 if (r != result) {
-                    result = new JahiaSimpleQueryResult(columnNames, selectorNames, r.getRows());
+                    result = new JahiaSimpleQueryResult(columnNames, selectorNames, r.getRows(), limit > 0 ? result.getRows().getSize() : 0);
                 }
             }
             return result;

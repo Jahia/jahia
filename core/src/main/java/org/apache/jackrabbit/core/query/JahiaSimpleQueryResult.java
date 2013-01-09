@@ -56,11 +56,17 @@ public class JahiaSimpleQueryResult extends SimpleQueryResult {
 
     private RowIterator rowIterator;
     private List<Row> rows = new ArrayList<Row>();
+    private long approxCount = 0; 
 
     public JahiaSimpleQueryResult(String[] columnNames, String[] selectorNames, RowIterator rowIterator) {
         super(columnNames, selectorNames, rowIterator);
         this.rowIterator = rowIterator;
     }
+    
+    public JahiaSimpleQueryResult(String[] columnNames, String[] selectorNames, RowIterator rowIterator, long approxCount) {
+        this(columnNames, selectorNames, rowIterator);
+        this.approxCount = approxCount;
+    }    
 
     public RowIterator getRows() throws RepositoryException {
         return new Iterator();
@@ -105,5 +111,9 @@ public class JahiaSimpleQueryResult extends SimpleQueryResult {
         public void remove() {
             throw new UnsupportedOperationException();
         }
+    }
+
+    public long getApproxCount() {
+        return approxCount;
     }
 }

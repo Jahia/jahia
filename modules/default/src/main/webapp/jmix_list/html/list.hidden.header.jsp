@@ -84,8 +84,9 @@
     </c:choose>    
 
     <%-- pager specific --%>
-    <c:set target="${moduleMap}" property="end" value="${functions:length(result.nodes)}"/>
-    <c:set target="${moduleMap}" property="listTotalSize" value="${moduleMap.end}"/>
+    <c:set target="${moduleMap}" property="listTotalSize" value="${functions:length(result.nodes)}"/>
+    <c:set target="${moduleMap}" property="listApproxSize" value="${result.approxCount}"/>
+    <c:set target="${moduleMap}" property="end" value="${moduleMap.listApproxSize > 0 ? moduleMap.listApproxSize : moduleMap.listTotalSize}"/>        
 
     <%-- set result --%>
     <c:set target="${moduleMap}" property="currentList" value="${result.nodes}"/>

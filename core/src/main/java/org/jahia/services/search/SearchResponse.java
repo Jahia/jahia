@@ -55,6 +55,7 @@ public class SearchResponse {
     private long offset = 0;
     private long limit = -1;
     private boolean hasMore = false;
+    private long approxCount = 0;    
 
     /**
      * Initializes an instance of this class.
@@ -103,4 +104,12 @@ public class SearchResponse {
     public void setHasMore(boolean hasMore) {
         this.hasMore = hasMore;
     }
+    
+    public long getApproxCount() {
+        return approxCount;
+    }
+
+    public void setApproxCount(long approxCount) {
+        this.approxCount = approxCount;
+    }    
 }

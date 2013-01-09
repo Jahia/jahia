@@ -152,6 +152,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             response.setOffset(offset);
             response.setLimit(limit);
             int index = 0;
+            int count = 0;            
             if (query != null) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Executing search query [{}]", query.getStatement());
@@ -177,6 +178,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                         && !criteria.getSitesForReferences().isEmpty() ? Sets.newHashSet(criteria.getSites().getValues()) : null;
 
                 while (it.hasNext()) {
+                    count++;
                     Row row = it.nextRow();
                     try {
                         JCRNodeWrapper node = (JCRNodeWrapper) row.getNode();
@@ -202,6 +204,9 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                                     if (index >= offset) {
                                         if (index>=limit+offset) {
                                             response.setHasMore(true);
+                                            if (it.getSize() > 0) {
+                                                response.setApproxCount(it.getSize() * addedHits.size() / count);
+                                            }
                                             return response;
                                         }
                                         results.add(hit);

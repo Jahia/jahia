@@ -58,6 +58,7 @@ public class InitPagerTag extends TagSupport {
 
     private int pageSize;
     private long totalSize;
+    private boolean sizeNotExact = false;
 
     private String id;
 
@@ -130,6 +131,10 @@ public class InitPagerTag extends TagSupport {
                 begin = (int) ((nbPages-1) * pageSize);
                 end = begin + pageSize - 1;
             }
+            
+            if (currentPage > nbPages) {
+                currentPage = (int)nbPages;
+            }
 
             moduleMap.put("begin", begin);
             moduleMap.put("end", end);
@@ -138,6 +143,7 @@ public class InitPagerTag extends TagSupport {
             moduleMap.put("currentPage", currentPage);
             moduleMap.put("paginationActive", true);
             moduleMap.put("totalSize", totalSize);
+            moduleMap.put("sizeNotExact", sizeNotExact);            
             moduleMap.put("totalSizeUnknown", totalSize == Integer.MAX_VALUE);
             pageContext.setAttribute("moduleMap",moduleMap);
             pageContext.setAttribute("begin_"+id,begin,PageContext.REQUEST_SCOPE);
@@ -155,5 +161,23 @@ public class InitPagerTag extends TagSupport {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public boolean isSizeNotExact() {
+        return sizeNotExact;
+    }
+
+    public void setSizeNotExact(boolean sizeNotExact) {
+        this.sizeNotExact = sizeNotExact;
+    }
+
+    @Override
+    public void release() {
+        super.release();
+        id = null;
+        pageSize = 0;
+        prefix = null;
+        sizeNotExact = false;
+        totalSize = 0;
     }
 }

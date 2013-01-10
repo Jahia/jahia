@@ -296,7 +296,7 @@ public class NavigationHelper {
                     try {
                         for (int i = 0; i < allNodes.size(); i++) {
                             GWTJahiaNode node = allNodes.get(i);
-                            if (!node.isExpandOnLoad() && !node.isFile()) {
+                            if (!node.isExpandOnLoad()) {
                                 boolean matchPath;
                                 if (openPath.endsWith("*")) {
                                     String p = StringUtils.substringBeforeLast(openPath, "*");

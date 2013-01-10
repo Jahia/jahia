@@ -867,7 +867,7 @@ extends = jnt:content
  - j:isAbstract (BOOLEAN) mandatory
  - j:isQueryable (BOOLEAN) = true mandatory
  - j:hasOrderableChildNodes (BOOLEAN) mandatory
- - j:primaryItemName (NAME,choicelist[nodes='.;nt:base;name'])
+ - j:primaryItemName (NAME,choicelist[nodes='.;jnt:itemDefinition;name'])
  - j:itemsType (STRING,choicelist) < 'content','metadata','layout','options'
 
 [jnt:itemDefinition] > mix:title abstract

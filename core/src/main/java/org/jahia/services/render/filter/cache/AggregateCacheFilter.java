@@ -855,29 +855,16 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     public void removeNotCacheableFragment(String key) {
-<<<<<<< .working
         CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
         if (keyGenerator instanceof DefaultCacheKeyGenerator) {
             DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
             Map<String, String> keyAttrbs = defaultCacheKeyGenerator.parse(key);
             String path = keyAttrbs.get("path");
-            for (String notCacheableKey : notCacheableFragment) {
-                if(notCacheableKey.contains(path)) {
-                    notCacheableFragment.remove(notCacheableKey);
-=======
-        try {
-            CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
-            if (keyGenerator instanceof DefaultCacheKeyGenerator) {
-                DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
-                Map<String, String> keyAttrbs = defaultCacheKeyGenerator.parse(key);
-                String path = keyAttrbs.get("path");
-                synchronized (notCacheableFragment) {
-                    for (String notCacheableKey : notCacheableFragment) {
-                        if (notCacheableKey.contains(path)) {
-                            notCacheableFragment.remove(notCacheableKey);
-                        }
+            synchronized (notCacheableFragment) {
+                for (String notCacheableKey : notCacheableFragment) {
+                    if(notCacheableKey.contains(path)) {
+                        notCacheableFragment.remove(notCacheableKey);
                     }
->>>>>>> .merge-right.r44377
                 }
             }
         }

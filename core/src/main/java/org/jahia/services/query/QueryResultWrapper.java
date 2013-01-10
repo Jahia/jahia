@@ -305,6 +305,16 @@ public class QueryResultWrapper implements QueryResult {
         return result.getSelectorNames();
     }
 
+    /**
+     * Check if the queryResultWrapper contains any facet results
+     * @return true is queryResultWrapper doesn't contains any facet results
+     */
+    public boolean isFacetResultsEmpty(){
+        return this.getFacetFields().isEmpty() &&
+        this.getFacetDates().isEmpty() &&
+        this.getFacetQuery().isEmpty();
+    }
+
     JCRSessionWrapper getSession() {
         return session;
     }

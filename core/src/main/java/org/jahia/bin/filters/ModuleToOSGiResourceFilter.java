@@ -7,6 +7,7 @@ import java.net.URL;
 
 /**
  * A simple servlet filter to redirect call to /modules resource to OSGi /osgi resources.
+ * @todo check if we need to keep this after the migration to OSGi is complete
  */
 public class ModuleToOSGiResourceFilter implements Filter {
 

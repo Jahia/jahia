@@ -268,5 +268,8 @@
     </property>
   </bean>
 
+  <bean id="ModuleToOSGiResourceFilter" class="org.jahia.bin.filters.ModuleToOSGiResourceFilter">
+
+  </bean>
 
 </beans>

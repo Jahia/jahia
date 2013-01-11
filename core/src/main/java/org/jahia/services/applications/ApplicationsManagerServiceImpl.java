@@ -57,6 +57,7 @@ import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.data.applications.WebAppContext;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
@@ -86,7 +87,7 @@ import java.util.*;
  * @author Khue ng
  * @version 1.0
  */
-public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
+public class ApplicationsManagerServiceImpl extends ApplicationsManagerService implements JahiaAfterInitializationService {
 
     /**
      * logging
@@ -226,13 +227,17 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
 
         this.isLoaded = true;
 
+
+    }
+
+    @Override
+    public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
         try {
             loadAllApplications();
         } catch (Exception e) {
             throw new JahiaInitializationException(
                     "JahiaApplicationsManagerBaseService.init, exception occured : " + e.getMessage(), e);
         }
-
     }
 
     public void stop() {

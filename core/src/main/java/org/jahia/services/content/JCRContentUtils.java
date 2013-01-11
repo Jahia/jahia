@@ -1471,7 +1471,7 @@ public final class JCRContentUtils implements ServletContextAware {
             entries = reverse(entries);
         }
         int siteId = -1;
-
+        List<String> rolesList = Arrays.asList(StringUtils.splitByWholeSeparator(roles,null));
         JahiaUserManagerService userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
 
@@ -1506,8 +1506,8 @@ public final class JCRContentUtils implements ServletContextAware {
 
             for (String[] details : entry.getValue()) {
                 if (details[1].equals("GRANT")) {
-                    if (!StringUtils.isEmpty(roles)) {
-                        if (!roles.contains(details[2])) {
+                    if (!rolesList.isEmpty()) {
+                        if (!rolesList.contains(details[2])) {
                             continue;
                         }
                     }

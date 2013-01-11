@@ -49,7 +49,12 @@
 <c:if test="${empty fieldIdIncludeChildren}"><c:set var="fieldIdIncludeChildren" value="${fieldId}_includeChildren"/></c:if>
 <c:if test="${empty fieldNameIncludeChildren}"><c:set var="fieldNameIncludeChildren" value="${fieldIdIncludeChildren}"/></c:if>
 <%-- by default set includeChildren to 'true' to search in subnodes --%>
-<c:set var="includeChildren" value="${functions:default(includeChildren, 'true')}"/>
+<c:if test="${displayIncludeChildren}">
+  <c:set var="includeChildren" value="${functions:default(includeChildren, 'true')}"/>
+</c:if>
+<c:if test="${!displayIncludeChildren}">
+  <c:set var="includeChildren" value="${functions:default(includeChildren, 'false')}"/>
+</c:if>
 <%-- resolve includeChildren either from request parameter or from the default value (note that the 'false' value is not submitted for checkbox) --%>
 <c:set var="includeChildren" value="${functions:default(param[fieldIdIncludeChildren], empty paramValues[fieldId] ? includeChildren : 'false')}"/>
 <c:if test="${empty label}"><c:set var="label"><fmt:message key="selectors.select"/></c:set></c:if>
@@ -57,6 +62,9 @@
 <a href="\#${fieldId}-treeItemSelector" id="${fieldId}-treeItemSelectorTrigger" class="${styleClass}">${fn:escapeXml(label)}</a>
 <c:if test="${displayIncludeChildren}">
     &nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldNameIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;<label for="${fieldIdIncludeChildren}">${fn:escapeXml(includeChildrenLabel)}</label>
+</c:if>
+<c:if test="${!displayIncludeChildren && includeChildren}">
+    <input type="hidden" id="${fieldIdIncludeChildren}" name="${fieldNameIncludeChildren}" value="true"/>
 </c:if>
 <c:choose>
     <c:when test="${renderContext.liveMode}">

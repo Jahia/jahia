@@ -243,7 +243,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                 mailTemplate.setTo(new AddressTemplate());
                 mailTemplate.setCc(new AddressTemplate());
                 mailTemplate.setBcc(new AddressTemplate());
-        
+
 
                 int currentField = -1;
                 String currentLine;
@@ -719,7 +719,25 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
             }
 
             observationManager.notifyTaskEnded(getKey(), taskId);
-            taskService.completeTask(taskId, outcome, args);
+
+            ClassLoader l = null;
+
+            String processDefinitionId = executionService.findProcessInstanceById(taskService.getTask(taskId).getExecutionId()).getProcessDefinitionId();
+            String processKey = repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionId).uniqueResult().getKey();
+
+            try {
+                String module = workflowService.getModuleForWorkflow(processKey);
+                if (module != null) {
+                    l = Thread.currentThread().getContextClassLoader();
+                    Thread.currentThread().setContextClassLoader(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(module).getChainedClassLoader());
+                    taskService.completeTask(taskId, outcome, args);
+                }
+            } finally {
+                if (l != null) {
+                    Thread.currentThread().setContextClassLoader(l);
+                }
+            }
+
         } finally {
             loop.set(null);
         }
@@ -1035,7 +1053,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
             return ResourceBundles
                     .get(WorkflowService.class.getPackage().getName() + "." + Patterns.SPACE.matcher(definitionKey).replaceAll(""), locale);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            logger.error(e.getMessage());
             return null;
         }
     }
@@ -1093,7 +1111,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                 ((command instanceof DeleteDeploymentCmd))) {
             return true;
         }
-        return false;  
+        return false;
     }
 
     public <T> void beforeCommand(Command<T> command) {

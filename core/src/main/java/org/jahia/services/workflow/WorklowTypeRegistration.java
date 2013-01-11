@@ -40,6 +40,9 @@
 
 package org.jahia.services.workflow;
 
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.services.templates.JahiaModuleAware;
+
 import java.util.Map;
 
 /**
@@ -48,10 +51,11 @@ import java.util.Map;
  * @since JAHIA 6.5
  * Created : 22/12/10
  */
-public class WorklowTypeRegistration {
+public class WorklowTypeRegistration implements JahiaModuleAware{
     private String type;
     private String definition;
     private Map<String, String> permissions;
+    private JahiaTemplatesPackage module;
 
     public String getDefinition() {
         return definition;
@@ -75,5 +79,14 @@ public class WorklowTypeRegistration {
 
     public void setPermissions(Map<String, String> permissions) {
         this.permissions = permissions;
+    }
+
+    public JahiaTemplatesPackage getModule() {
+        return module;
+    }
+
+    @Override
+    public void setJahiaModule(JahiaTemplatesPackage module) {
+        this.module = module;
     }
 }

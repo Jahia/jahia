@@ -1,6 +1,10 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.services.templates.JahiaModuleAware;
+import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.workflow.WorklowTypeRegistration;
 import org.jahia.utils.FileUtils;
 import org.jbpm.api.Deployment;
 import org.jbpm.api.NewDeployment;
@@ -9,8 +13,14 @@ import org.jbpm.api.RepositoryService;
 import org.jbpm.pvm.internal.email.impl.AddressTemplate;
 import org.jbpm.pvm.internal.email.impl.MailTemplate;
 import org.jbpm.pvm.internal.email.impl.MailTemplateRegistry;
+import org.jbpm.pvm.internal.repository.DeploymentImpl;
+import org.jbpm.pvm.internal.repository.DeploymentProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
@@ -18,12 +28,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Loader that initializes workflow processes defined in modules
  */
-public class JBPMModuleProcessLoader implements InitializingBean {
+public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean, JahiaModuleAware {
 
     private transient static Logger logger = LoggerFactory.getLogger(JBPMModuleProcessLoader.class);
 
@@ -32,16 +44,28 @@ public class JBPMModuleProcessLoader implements InitializingBean {
     private Resource[] mailTemplates;
     private RepositoryService repositoryService;
     private MailTemplateRegistry mailTemplateRegistry;
-
+    private JahiaTemplatesPackage module;
     public void setProcessEngine(ProcessEngine processEngine) {
         this.processEngine = processEngine;
         repositoryService = processEngine.getRepositoryService();
         mailTemplateRegistry = processEngine.get(MailTemplateRegistry.class);
     }
 
+
+    @Override
+    public void setJahiaModule(JahiaTemplatesPackage module) {
+        this.module = module;
+    }
+
     @Override
     public void afterPropertiesSet() throws Exception {
         deployDeclaredProcesses();
+
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        undeployDeclaredProcesses();
     }
 
     private void deployDeclaredProcesses() throws IOException {
@@ -74,6 +98,13 @@ public class JBPMModuleProcessLoader implements InitializingBean {
                     newDeployment.setTimestamp(lastModified);
                     newDeployment.setName(fileName);
                     newDeployment.deploy();
+//
+//                    for (DeploymentProperty property : ((DeploymentImpl) newDeployment).getObjectProperties()) {
+//                        if (property.getKey().equals("pdkey")) {
+//                            WorkflowService.getInstance().registerWorkflowType(null, property.getStringValue(), module.getRootFolder(), null);
+//                        }
+//                    }
+//
                     logger.info("... done");
                 } else {
                     logger.info("Found workflow process " + fileName + ". It is up-to-date.");
@@ -171,6 +202,10 @@ public class JBPMModuleProcessLoader implements InitializingBean {
                 t.setLanguage(buf.toString());
                 break;
         }
+    }
+
+    private void undeployDeclaredProcesses() throws IOException {
+
     }
 
     public void setProcesses(Resource[] processes) {

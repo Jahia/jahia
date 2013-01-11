@@ -41,6 +41,7 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
@@ -1050,8 +1051,13 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
 
     private ResourceBundle getResourceBundle(Locale locale, final String definitionKey) {
         try {
+            if (workflowService.getModuleForWorkflow(definitionKey) != null) {
+                JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(workflowService.getModuleForWorkflow(definitionKey));
+                return ResourceBundles
+                        .get("org.jahia.modules.custom.workflow." + Patterns.SPACE.matcher(definitionKey).replaceAll(""), module, locale);
+            }
             return ResourceBundles
-                    .get(WorkflowService.class.getPackage().getName() + "." + Patterns.SPACE.matcher(definitionKey).replaceAll(""), locale);
+                    .get("org.jahia.modules.workflow." + Patterns.SPACE.matcher(definitionKey).replaceAll(""), locale);
         } catch (Exception e) {
             logger.error(e.getMessage());
             return null;

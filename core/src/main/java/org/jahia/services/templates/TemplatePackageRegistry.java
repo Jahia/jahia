@@ -505,6 +505,10 @@ public class TemplatePackageRegistry {
         return packagesForBundles.get(bundle);
     }
 
+    public void addPackageForBundle(String bundle, JahiaTemplatesPackage module) {
+        packagesForBundles.put(bundle, module);
+    }
+
     private void computeResourceBundleHierarchy(JahiaTemplatesPackage templatePackage) {
         templatePackage.getResourceBundleHierarchy().clear();
         if (templatePackage.getResourceBundleName() != null) {
@@ -524,7 +528,7 @@ public class TemplatePackageRegistry {
             templatePackage.getResourceBundleHierarchy().add(ResourceBundles.JAHIA_INTERNAL_RESOURCES);
         }
         if (templatePackage.getResourceBundleName() != null) {
-            packagesForBundles.put(templatePackage.getResourceBundleName(), templatePackage);
+            addPackageForBundle(templatePackage.getResourceBundleName(), templatePackage);
         }
     }
 
@@ -862,7 +866,7 @@ public class TemplatePackageRegistry {
 
             if (bean instanceof WorklowTypeRegistration) {
                 WorklowTypeRegistration registration = (WorklowTypeRegistration) bean;
-                workflowService.registerWorkflowType(registration.getType(), registration.getDefinition(), registration.getModule().getRootFolder(), registration.getPermissions());
+                workflowService.registerWorkflowType(registration.getType(), registration.getDefinition(), registration.getModule(), registration.getPermissions());
             }
 
             if (bean instanceof VisibilityConditionRule) {

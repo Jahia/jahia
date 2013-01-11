@@ -42,6 +42,7 @@ package org.jahia.services.workflow;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
@@ -111,7 +112,7 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         this.workflowPermissions = workflowPermissions;
     }
 
-    public void registerWorkflowType(String type, String definition, String module, Map<String, String> perms) {
+    public void registerWorkflowType(String type, String definition, JahiaTemplatesPackage module, Map<String, String> perms) {
         if (type != null) {
             List<String> list = workflowTypes.get(type);
             if (list == null) {
@@ -126,7 +127,8 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         }
 
         if (module != null) {
-            modulesForWorkflowDefinition.put(definition, module);
+            modulesForWorkflowDefinition.put(definition, module.getRootFolder());
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().addPackageForBundle("org.jahia.modules.custom.workflow."+definition, module);
         }
 
         if (perms != null) {

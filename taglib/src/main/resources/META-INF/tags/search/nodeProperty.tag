@@ -72,7 +72,7 @@
                        value="${not empty descriptor.selectorOptions && not empty descriptor.selectorOptions.root ? descriptor.selectorOptions.root : '/sites/systemsite/categories'}"/>
                 <c:set var="valuesrc_category_display" value="${functions:default(param['src_category_display'], '')}"/>       
                 <input type="hidden" id="src_category_fieldid" name="${attributes.name}" value="${fn:escapeXml(value)}"/>
-                <input value="${valuesrc_category_display}" id="src_category_display" name="src_category_display"/>
+                <input value="${valuesrc_category_display}" id="src_category_display" name="src_category_display" readonly />
                 <uiComponents:treeItemSelector fieldId="src_category_fieldid" displayFieldId="src_category_display" nodeTypes="jnt:category" selectableNodeTypes="jnt:category" root="${categoryRoot}"
 	                      includeChildren="${includeChildren}" displayIncludeChildren="${displayIncludeChildren}" fieldIdIncludeChildren="category_src_includeChildren" fieldNameIncludeChildren="src_properties(${nodeType}).${name}.categoryValue.includeChildren" />
             </c:when>

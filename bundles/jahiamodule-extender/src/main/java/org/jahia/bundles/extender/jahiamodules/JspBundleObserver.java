@@ -103,6 +103,7 @@ public class JspBundleObserver extends ScriptBundleObserver {
                 Set<String> registeredBundleAliases = registeredAliases.get(bundle);
                 if (registeredBundleAliases == null) {
                     registeredBundleAliases = new HashSet<String>();
+                    registeredAliases.put(bundle,registeredBundleAliases);
                 }
                 if (registeredBundleAliases.contains(urlAlias)) {
                     logger.warn("URL Alias " + urlAlias + " already registered, unregistering old servlet...");

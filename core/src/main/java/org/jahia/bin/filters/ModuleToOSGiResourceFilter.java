@@ -24,10 +24,15 @@ public class ModuleToOSGiResourceFilter implements Filter {
         String requestURI = request.getRequestURI();
 
         if (requestURI.startsWith("/modules/")) {
-            URL resourceURL = filterConfig.getServletContext().getResource(requestURI);
+            String modulePart = requestURI.substring("/modules/".length());
+            int nextSlashPos = modulePart.indexOf("/");
+            String moduleName = modulePart;
+            if (nextSlashPos > -1) {
+                moduleName = modulePart.substring(0, nextSlashPos);
+            }
+            URL resourceURL = filterConfig.getServletContext().getResource("/modules/" + moduleName);
             if (resourceURL == null) {
                 // resource was not found, we will try under the /osgi location.
-                String modulePart = requestURI.substring("/modules/".length());
                 String newURI = "/osgi/" + modulePart;
                 req.getRequestDispatcher(newURI).forward(req, res);
             } else {

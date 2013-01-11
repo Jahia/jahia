@@ -22,10 +22,8 @@ import org.jahia.services.render.RenderService;
 import org.jahia.services.render.scripting.ScriptFactory;
 import org.jahia.services.render.scripting.ScriptResolver;
 import org.jahia.services.scheduler.BackgroundJob;
-import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.services.templates.ModuleVersion;
-import org.jahia.services.templates.TemplatePackageDeployer;
-import org.jahia.services.templates.TemplatePackageRegistry;
+import org.jahia.services.templates.*;
+import org.jahia.services.workflow.jbpm.JBPMModuleProcessLoader;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
@@ -658,7 +656,7 @@ public class Activator implements BundleActivator {
         urlObserver.removingEntries(bundle, foundURLs);
     }
 
-    public void createBundleApplicationContext(JahiaBundleTemplatesPackage aPackage, ServletContext servletContext) throws BeansException {
+    public void createBundleApplicationContext(final JahiaBundleTemplatesPackage aPackage, ServletContext servletContext) throws BeansException {
         final Bundle bundle = aPackage.getBundle();
         if (aPackage.getResource("/META-INF/spring/") != null && aPackage.getResource("/META-INF/spring/").exists()) {
             logger.debug("Start initializing context for module {}", aPackage.getName());
@@ -691,6 +689,8 @@ public class Activator implements BundleActivator {
 
                 @Override
                 public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+                    beanFactory.addBeanPostProcessor(new JahiaModuleAwareProcessor(aPackage));
+
                     String serviceFilter = "(jahiaModuleSpringBeanName=*)";
                     try {
                         ServiceReference[] otherModuleServiceReferences = bundle.getBundleContext().getAllServiceReferences(null, serviceFilter);

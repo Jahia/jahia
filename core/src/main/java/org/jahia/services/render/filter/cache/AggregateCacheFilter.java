@@ -939,10 +939,14 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 Map<String, String> keyAttrbs = defaultCacheKeyGenerator.parse(key);
                 String path = keyAttrbs.get("path");
                 synchronized (notCacheableFragment) {
+                    List<String> removableKeys = new ArrayList<String>();
                     for (String notCacheableKey : notCacheableFragment) {
                         if (notCacheableKey.contains(path)) {
-                            notCacheableFragment.remove(notCacheableKey);
+                            removableKeys.add(notCacheableKey);
                         }
+                    }
+                    for (String removableKey : removableKeys) {
+                        notCacheableFragment.remove(removableKey);
                     }
                 }
             }

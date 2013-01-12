@@ -855,34 +855,20 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     public void removeNotCacheableFragment(String key) {
-<<<<<<< .working
         CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
         if (keyGenerator instanceof DefaultCacheKeyGenerator) {
             DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
             Map<String, String> keyAttrbs = defaultCacheKeyGenerator.parse(key);
             String path = keyAttrbs.get("path");
             synchronized (notCacheableFragment) {
+                List<String> removableKeys = new ArrayList<String>();
                 for (String notCacheableKey : notCacheableFragment) {
                     if(notCacheableKey.contains(path)) {
-                        notCacheableFragment.remove(notCacheableKey);
-=======
-        try {
-            CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
-            if (keyGenerator instanceof DefaultCacheKeyGenerator) {
-                DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
-                Map<String, String> keyAttrbs = defaultCacheKeyGenerator.parse(key);
-                String path = keyAttrbs.get("path");
-                synchronized (notCacheableFragment) {
-                    List<String> removableKeys = new ArrayList<String>();
-                    for (String notCacheableKey : notCacheableFragment) {
-                        if (notCacheableKey.contains(path)) {
-                            removableKeys.add(notCacheableKey);
-                        }
->>>>>>> .merge-right.r44404
+                        removableKeys.add(notCacheableKey);
                     }
-                    for (String removableKey : removableKeys) {
-                        notCacheableFragment.remove(removableKey);
-                    }
+                }
+                for (String removableKey : removableKeys) {
+                    notCacheableFragment.remove(removableKey);
                 }
             }
         }

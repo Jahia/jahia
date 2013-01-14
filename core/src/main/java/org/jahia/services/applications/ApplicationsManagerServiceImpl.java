@@ -227,11 +227,18 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
 
         this.isLoaded = true;
 
+<<<<<<< .working
 
     }
 
     @Override
     public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
+=======
+
+    }
+
+    public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
+>>>>>>> .merge-right.r44407
         try {
             loadAllApplications();
         } catch (Exception e) {

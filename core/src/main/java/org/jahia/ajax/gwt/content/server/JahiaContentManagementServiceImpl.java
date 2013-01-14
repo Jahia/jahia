@@ -717,7 +717,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         Iterator<String> langCode = langCodeProperties.keySet().iterator();
 
         // save shared properties
-        saveProperties(Arrays.asList(node), sharedProperties, removedTypes);
+        saveProperties(Arrays.asList(node), sharedProperties, removedTypes, null);
         if (!removedTypes.isEmpty()) {
             try {
                 for (ExtendedNodeType mixin : retrieveCurrentSession().getNodeByUUID(node.getUUID()).getMixinNodeTypes()) {

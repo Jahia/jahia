@@ -40,7 +40,7 @@
         <c:if test="${empty listLimit}">
             <c:set var="listLimit" value="${-1}"/>
         </c:if>
-        <template:area view="${currentNode.properties['j:areaView'].string}" listLimit="${listLimit}"
+        <template:area view="${currentNode.properties['j:areaView'].string}" listLimit="${listLimit}" areaAsSubNode="true"
                                  path="${currentNode.name}" nodeTypes="${nodeTypes}" mockupStyle="${currentNode.properties['j:mockupStyle'].string}">
             <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">
                 <template:param name="subNodesView" value="${currentNode.properties['j:subNodesView'].string}"/>

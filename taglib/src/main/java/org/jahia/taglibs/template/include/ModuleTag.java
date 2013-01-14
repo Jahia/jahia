@@ -42,6 +42,7 @@ package org.jahia.taglibs.template.include;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.filter.AbstractFilter;
@@ -489,6 +490,15 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     protected boolean checkStudioLock(RenderContext renderContext, JCRNodeWrapper node) {
         try {
             if (node != null && !renderContext.getEditModeConfig().isEditable(node)) {
+                if (renderContext.getEditModeConfig().getName().equals("studiomode")) {
+                    if (renderContext.getRequest().getAttribute("supportsLayoutMode") == null) {
+                        JCRNodeWrapper tpl = JCRContentUtils.getParentOfType(node,"jnt:template");
+                        Boolean value = tpl != null && JCRContentUtils.getChildrenOfType(tpl, "jnt:layoutContentList").isEmpty() && !JCRContentUtils.getChildrenOfType(tpl, "jnt:contentList").isEmpty();
+                        renderContext.getRequest().setAttribute("supportsLayoutMode", value);
+                    }
+                    return (Boolean) renderContext.getRequest().getAttribute("supportsLayoutMode");
+                }
+
                 return false;
             }
 ////                if (renderContext.getMainResource().getNode().getLockInfos().get(null) == null ||

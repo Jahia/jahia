@@ -37,4 +37,6 @@
 
 <!--ressources-->
 <template:addResources type="css" resources="960-fluid.css,01web.css,navigation.css,navigationN2-1.css" />
+<template:addResources><!--[if IE 6]><link rel="stylesheet" type="text/css" href="${url.currentModule}/css/ie6.css" media="screen" /><![endif]--></template:addResources>
+<template:addResources><!--[if IE 7]><link rel="stylesheet" type="text/css" href="${url.currentModule}/css/ie.css" media="screen" /><![endif]--></template:addResources>
 <template:theme/>

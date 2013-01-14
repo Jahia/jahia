@@ -1,0 +1,57 @@
+/******************************************************************************
+*  box6
+******************************************************************************/
+.bodywrapper div.box6 {
+	background:#fff none repeat scroll 0 0;
+	border:1px solid #e5e5e5;
+	margin:0 0 1em;
+	padding:1em;
+	position:relative;
+}
+.box6shadow {
+	-webkit-box-shadow:none;
+	-moz-box-shadow:none;
+	box-shadow:none;
+}
+
+.box6shadow:hover{
+	-webkit-box-shadow:none;
+	-moz-box-shadow:none;
+	box-shadow:none;
+}
+/*black*/
+.bodywrapper div.box6-black {
+	border:1px solid #333;
+}
+/*grey*/
+.bodywrapper div.box6-grey {
+	border:1px solid #e5e5e5;
+}
+/*mushroom*/
+.bodywrapper div.box6-mushroom {
+	border:1px solid #e5e5e5;
+}
+/*orange*/
+.bodywrapper div.box6-orange {
+	border:1px solid #e5e5e5;
+}
+/*red*/
+.bodywrapper div.box6-red {
+	border:1px solid #e5e5e5;
+}
+/*green*/
+.bodywrapper div.box6-green {
+	border:1px solid #e5e5e5;
+}
+/*purple*/
+.bodywrapper div.box6-purple {
+	border:1px solid #e5e5e5;
+}
+/*yellow*/
+.bodywrapper div.box6-yellow {
+	border:1px solid #e5e5e5;
+}
+/*blue*/
+.bodywrapper div.box6-blue {
+	border:1px solid #e5e5e5;
+}

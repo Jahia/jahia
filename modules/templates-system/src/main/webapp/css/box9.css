@@ -1,0 +1,53 @@
+/******************************************************************************
+*  box9
+******************************************************************************/
+.bodywrapper div.box9 {
+	background:none;
+    background-color:#f5f5f5;
+	border:1px solid #e5e5e5;
+	-webkit-border-radius:0;
+	-moz-border-radius:0;
+	border-radius:0;
+	-webkit-box-shadow:none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+    padding: 5px 10px;
+    margin-bottom:1em;
+}
+.bodywrapper div.box9-bgblack {
+	background:none;
+    background-color:#f5f5f5;
+}
+.bodywrapper div.box9-bggrey {
+	background:none;
+    background-color:#f5f5f5;
+}
+.bodywrapper div.box9-bgmushroom {
+	background:none;
+    background-color:#f5f5f5;
+}
+.bodywrapper div.box9-bgorange {
+	background:none;
+    background-color:#f5f5f5;
+}
+.bodywrapper div.box9-bgred {
+	background:none;
+    background-color:#f5f5f5;
+}
+.bodywrapper div.box9-bggreen {
+	background:none;
+    background-color:#f5f5f5;
+}
+.bodywrapper div.box9-bgpurple {
+	background:none;
+    background-color:#f5f5f5;
+}
+.bodywrapper div.box9-bgyellow {
+	background:none;
+    background-color:#f5f5f5;
+}
+.bodywrapper div.box9-bgblue {
+	background:none;
+    background-color:#f5f5f5;
+}
+

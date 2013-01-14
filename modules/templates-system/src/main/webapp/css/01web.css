@@ -149,7 +149,7 @@ body {
 *  header
 ******************************************************************************/
 .bodywrapper #header{
-	background:#03389c url(img/bg-header.png) repeat-x top left;
+	background-color:#333;
 	padding-top:4px;
 	padding-bottom:4px;
 	position:relative;
@@ -172,7 +172,7 @@ body {
 	position:relative;
 	z-index:700;
 	width:100%;
-	background: url(img/bg-content.png) repeat-x top left;
+	background-color: #fff;
 	min-height:250px;
 }
 /******************************************************************************
@@ -211,7 +211,7 @@ body {
 /******************************************************************************
 *  general
 ******************************************************************************/
-.bodywrapper img 			{ border: 0px;}
+.bodywrapper img 			{ border: 0;}
 
 .bodywrapper a,
 .bodywrapper a:link,
@@ -233,36 +233,39 @@ body {
 .bodywrapper ol  {
 	padding:1em 0 1em 2em;
 }
-.bodywrapper ol li {
 
-}
-.bodywrapper ul li {
-
-}
 .bodywrapper div.intro{
-	font-size:1.3em;
+	font-size:1.1em;
 	font-style:italic;
+    padding-bottom:1em;
 }
 .bodywrapper div.intro p{
 	padding:10px 0;
 }
 .bodywrapper p.intro {
-	font-size:1.3em;
-	line-height:1.4em;
+	font-size:1.1em;
+	line-height:1.2em;
 }
 
 .bodywrapper h1 {
 	font-size:1.545em;
 	padding-bottom:1em;
 }
-.bodywrapper h2.pagetitle {
-	font-size:1.364em;
-	padding-bottom:1em;
-}
+
 .bodywrapper h2 {
 	font-size:1.364em;
 	padding-bottom:1em;
-	
+
+}
+.bodywrapper h2.docspace-header-title {
+    font-size:2em;
+    color:#0099FF;
+    padding-bottom: 0.5em;
+
+}
+.bodywrapper h2.pagetitle {
+     font-size:1.364em;
+     padding-bottom:1em;
 }
 
 .bodywrapper h3 {
@@ -282,7 +285,7 @@ body {
 
 .bodywrapper fieldset {
 	padding:0.5em;
-	border:1px solid #ccc;
+	border:1px solid #e5e5e5;
 	margin:0.5em 0;
 }
 .bodywrapper legend {
@@ -290,7 +293,7 @@ body {
 	color:#333;
 	padding:0 0.5em;
 	background:#fff url(img/contactformlegend.png) repeat-x bottom left;
-	border:1px solid #ccc;
+	border:1px solid #e5e5e5;
 	display:inline;
 	font-weight:bold;
 	text-transform:uppercase
@@ -298,7 +301,7 @@ body {
 
 .bodywrapper hr {
 	height:1px;
-	background-color:#ccc;
+	background-color:#e5e5e5;
 	border: none;
 	margin : 1em 0;
 }
@@ -316,13 +319,22 @@ body {
 	font-size:100%
 }
 .bodywrapper p.field{
-	margin-bottom:0.2em
+	margin-bottom:0.4em
+}
+.bodywrapper label {
+   font-weight:bold;
+}
+.bodywrapper label.normal-font {
+   font-weight:normal;
+}
+.bodywrapper .hint {
+   font-size:75%;
 }
 .bodywrapper input,
 .bodywrapper select,
 .bodywrapper textarea {
 	color:#666;
-	padding:2px ;
+	padding:6px;
 	font-size:100%
 }
 
@@ -334,8 +346,8 @@ body {
 	vertical-align: bottom;
 }
 .bodywrapper pre {
-	background-color:#E0E0E0;
-	border-left:4px solid #A5A5A5;
+	background-color:#f5f5f5;
+	border-left:4px solid #333;
 	font-family:Courier,"Courier New",monospace;
 	font-size:100%;
 	overflow:auto;
@@ -345,22 +357,22 @@ body {
 	line-height:100%
 }
 .bodywrapper .highlight{
-	background-color:#ffff99;
+	background-color:#f5f5f5;
 	padding-right:0.5em;
 	padding-left:0.5em;
 }
 .bodywrapper code, .bodywrapper .code {
-	background-color:#E0E0E0;
+	background-color:#f5f5f5;
 	font-family:Courier,"Courier New",monospace;
 	font-weight:normal;
 	padding-right:0.5em;
 	padding-left:0.5em;
 }
 .bodywrapper .small {
-	font-weight:0.8em;
+	font-size: 0.8em;
 }
 .bodywrapper .colorlight {
-	color:#666
+	color:#333
 }
 /******************************************************************************
 *  Float Right Links List ordered or unordered
@@ -397,8 +409,6 @@ body {
 }
 
 .bodywrapper .itemImage {
-	background-color:#F4F4F4;
-	border:1px solid #CCC;
 	position:relative;
 	padding:1px;
 	margin-bottom:10px;
@@ -416,7 +426,6 @@ body {
 	float:left;
 }
 .bodywrapper .itemImage img {
-	background-color:#e1e1e1;
 	display: block;
 	padding:9px;
 }
@@ -430,19 +439,24 @@ body {
 .bodywrapper div.pagination {
 	height:1%;
 	overflow:hidden;
-	text-transform:uppercase;
-	border: 1px solid #eaeaea;
-	padding:0.5em 0.5em;
-	margin:0.5em 0;
-	background-color:#f3f3f3;
+	padding:0.2em 0.5em;
+	margin:1em 0;
+    background-color:#F5F5F5;
+    border: 1px solid #e5e5e5;
+}
+.bodywrapper div.pagination:first-child {
+    margin-top: 0;
+}
+.bodywrapper div.pagination select{
+    padding:2px;
 }
 .bodywrapper .paginationPosition {
 	float:left;
 	color:#36393d;
+    padding:0.5em 0;
 }
 .bodywrapper .paginationNavigation {
 	float:right;
-
 }
 .bodywrapper .paginationNavigation a:link,
 .bodywrapper .paginationNavigation a:visited,
@@ -462,7 +476,6 @@ body {
 	padding:0.2em 0.5em;
 }
 
-
 .bodywrapper .paginationNavigation span {
 	text-decoration:none;
 	color:#666;
@@ -475,10 +488,10 @@ body {
 	height:1%;
 	overflow:hidden;
 	text-transform:uppercase;
-	border: 1px solid #ccc;
-	padding:0.5em 0.5em;
+	border: 1px solid #e5e5e5;
+	padding:0.2em 0.5em;
 	margin:0.5em 0;
-	background:#e1e1e1  url(img/1px-white.png) repeat-x top left;
+	background-color:#F5F5F5;
 }
 .bodywrapper .alphabeticalLabel {
 	float:left;
@@ -486,32 +499,34 @@ body {
 	color:#333;
 }
 .bodywrapper .alphabeticalNavigation {
-	float:right;
+	float:left;
 
 }
-.bodywrapper .alphabeticalNavigation .alphabeticalLetter {
+.bodywrapper .alphabeticalNavigation a:link,
+.bodywrapper .alphabeticalNavigation a:visited,
+.bodywrapper .alphabeticalNavigation a:hover,
+.bodywrapper .alphabeticalNavigation a:active {
 		height:28px;
 		line-height:28px;
-		border:1px solid #ccc;
+		border:1px solid #e5e5e5;
 		background:#eaeaea;
     	padding: 2px 4px;
 		text-decoration:none;
 }
 
 .bodywrapper .alphabeticalNavigation a:hover {
-		background:#333;
+		background:#0099ff;
 		color:#fff;
 }
 .bodywrapper .alphabeticalNavigation a.current{
 		height:28px;
 		line-height:28px;
-		border:1px solid #ccc;
-		background:#333;
+		border:1px solid #e5e5e5;
+		background:#0099ff;
 		color:#fff;
     	padding: 2px 4px;
 		text-decoration:none;
 }
-
 
 .bodywrapper .alphabeticalNavigation span {
 		text-decoration:none;
@@ -535,25 +550,37 @@ body {
 }
 
 .bodywrapper input.button, .bodywrapper button {
-	background-color:#0099ff ;
+	background-color:#0099ff;
 	color:#fff;
 	border:none;
 	text-align:center;
-	padding:3px 15px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	border-radius: 10px;
-	
-	-moz-box-shadow: 0px 1px 3px #999;
-	-webkit-box-shadow: 0px 1px 3px #999;
-	box-shadow: 0px 1px 3px #999;
-
+	padding:6px 6px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
 }
 .bodywrapper .button:hover, .bodywrapper button:hover {
 	cursor: pointer;
-	color:#0099ff;
-	background-color:#fff;
+	color:#fff;
+	background-color:#008ae5;
 }
+
+.bodywrapper input.button:disabled, .bodywrapper button:disabled {
+    background-color:#c7c7c7;
+    color:#fff;
+    border:none;
+    text-align:center;
+    padding:6px 6px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+}
+.bodywrapper .button:hover:disabled, .bodywrapper button:hover:disabled {
+    cursor: pointer;
+    color:#fff;
+    background-color:#cccccc;
+}
+
 
 /******************************************************************************
 *  <A> Button
@@ -562,32 +589,31 @@ body {
 .bodywrapper  a.aButton,
 .bodywrapper  a.aButton:link,
 .bodywrapper  a.aButton:visited {
-	background: transparent url(img/button-right.png) no-repeat scroll top right;
-	display: block;
-	float: left;
-	height: 24px; /* CHANGE THIS VALUE ACCORDING TO IMAGE HEIGHT */
-	margin-right: 6px;
-	padding-right: 20px; /* CHENGE THIS VALUE ACCORDING TO RIGHT IMAGE WIDTH */
-	/* FONT PROPERTIES */
-	text-decoration: none;
-	color:#0099ff;
-	margin-top: 5px;
+	background-color:#0099ff ;
+	color:#fff;
+	border:none;
+	text-align:center;
+	padding:6px 6px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+    display:inline-block;
 }
-.bodywrapper  a.aButton span {
-	/* Background left image */
-	background: transparent url(img/button-left.png) no-repeat;
-	display: block;
-	line-height: 12px; /* CHANGE THIS VALUE ACCORDING TO BUTTONG HEIGHT */
-	padding: 6px 0 6px 18px;
+.bodywrapper a.aButton:hover, .bodywrapper a.aButton:hover {
+	cursor: pointer;
+	color:#fff;
+	background-color:#008ae5;
+    text-decoration:none;
 }
-.bodywrapper  a.aButton:hover span{
-	text-decoration:underline;
+.bodywrapper a.aButtonMarginBottom {
+    margin-bottom:1.5em;
 }
 .bodywrapper  a.aButtonRight,
 .bodywrapper  a.aButtonRight:link,
 .bodywrapper  a.aButtonRight:visited{
 	float: right;
 }
+
 /******************************************************************************
 *  Anchor
 ******************************************************************************/
@@ -636,20 +662,16 @@ body {
 .bodywrapper .table caption
 {
     margin: auto;
-	line-height:1.9em;
 
 }
 
 .bodywrapper .table
 {
     border-collapse:collapse;
-	margin:1em 0;
+	margin:1em 0 2em 0;
 	border:none;
 }
-.bodywrapper .table, .bodywrapper .table th, .bodywrapper .table td
-{
-border: 1px solid #eaeaea;
-}
+
 .bodywrapper .table caption
 {
 	font-weight:normal;
@@ -657,35 +679,43 @@ border: 1px solid #eaeaea;
 	margin:0 ;
 	padding:0;
 }
-
 .bodywrapper .table th {
     color: #333;
 	white-space:nowrap;
-	background:#e0effc url(img/bg-table-th.png) repeat-x top left;
 	padding:2px;
-	
+    text-transform: uppercase;
+    color:#999;
+    text-align:left;
+    font-size:0.8em;
+    line-height: 1.9em;
+
 }
-.bodywrapper .table td
-{
-	background-color:#fff;
-	padding:2px;
+.bodywrapper .table tr {
+    border-bottom: 1px solid #e5e5e5;
 }
 .bodywrapper .table tr:hover{
-	background-color:#ccc
+	background-color:#e3f1fe;
 }
-.bodywrapper .table .odd td{background-color:#fff}
-.bodywrapper .table .even td{ background-color:#f2f2f2}
-.bodywrapper .col1{}
-.bodywrapper .col2{}
-.bodywrapper .col3{}
-.bodywrapper .col4{}
 
+ .bodywrapper .table td {
+	padding:15px 2px;
+     vertical-align: top;
+}
 .bodywrapper .table td.center,
 .bodywrapper .table th.center
 {
 	text-align:center;
 }
 
+.bodywrapper .table a:link,
+.bodywrapper .table a:visited
+{
+
+}
+.bodywrapper .table a:hover,
+.bodywrapper .table a:active {
+
+}
 
 /******************************************************************************
 *  Summary
@@ -694,8 +724,8 @@ border: 1px solid #eaeaea;
 	margin:10px 0;
 	line-height:130%;
 	padding: 10px;
-	background-color:#eaeaea;
-	border:1px solid #ccc;
+	background-color:#f5f5f5;
+	border:1px solid #e5e5e5;
 	margin:0;
 	list-style:none;
 }
@@ -725,7 +755,7 @@ border: 1px solid #eaeaea;
 ******************************************************************************/
 .bodywrapper .Form  p{
 	clear:both;
-	margin:0.2em 0;
+	margin:0.4em 0;
 	padding:0px
 }
 .bodywrapper .Form {
@@ -737,7 +767,7 @@ border: 1px solid #eaeaea;
 	padding:0 1em 0 2.3em;
 }
 .bodywrapper .Form label.left {
-	float:left; 
+	float:left;
 	width:25%;
 	margin:0 1em 0 1em;
 	padding:2px;
@@ -751,6 +781,15 @@ border: 1px solid #eaeaea;
 /******************************************************************************
 *  error
 ******************************************************************************/
+.bodywrapper span.error{
+	background-color:#ffebe8;
+	border:1px solid #cc3300;
+    padding:0.2em;
+    margin-bottom:0.2em;
+    display:inline-block;
+    color:#cc3300;
+    font-weight:bold;
+}
 .bodywrapper input.error{
 	background-color:#ffebe8;
 	border:1px solid #cc3300;
@@ -786,28 +825,24 @@ border: 1px solid #eaeaea;
 	text-decoration: none;
 	font-weight: bold;
 	line-height: 1;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	border-radius: 10px;
-	
-	-moz-box-shadow: 0px 1px 3px #999;
-	-webkit-box-shadow: 0px 1px 3px #999;
-	box-shadow: 0px 1px 3px #999;
-	
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+
 	background-color:#0099ff;
 	position: relative;
 	cursor: pointer;
-	-webkit-transition: all 0.3s ease-in-out; 
-	-moz-transition: all 0.3s ease-in-out; 
+	-webkit-transition: all 0.3s ease-in-out;
+	-moz-transition: all 0.3s ease-in-out;
 	-o-transition: all 0.3s ease-in-out;
 	transition: all 0.3s ease-in-out;
 }
 .bodywrapper a.returnLink:hover,
 .bodywrapper a.returnLink:active {
 	text-decoration:none;
-	color: #0099ff;
+	color: #fff;
 	background: url(img/returnLink.png) no-repeat 10px -28px;
-	background-color:#fff;
+	background-color:#008ae5;
 }
 .bodywrapper .divReturnLink{
 	margin:0.5em 0;
@@ -820,34 +855,33 @@ border: 1px solid #eaeaea;
 	overflow:hidden;
 	padding:0.2em;
 	border-top:none;
-	-webkit-border-radius:5px;
-	-moz-border-radius:5px;
-	border-radius:5px;
+	-webkit-border-radius:3px;
+	-moz-border-radius:3px;
+	border-radius:3px;
 	margin-bottom:1em;
-	border:1px solid #eaeaea;
-    clear:right;
+	border:1px solid #f5f5f5;
 }
 
 .bodywrapper ul.idTabs {
 	background-image:none;
-	-webkit-border-radius:5px;
-	-moz-border-radius:5px;
-	border-radius:5px;
+	-webkit-border-radius:3px;
+	-moz-border-radius:3px;
+	border-radius:3px;
 	margin-bottom:1em;
 	border:none;
 	margin-bottom:0;
 	padding:0.2em;
 	padding-bottom:0;
-	background-color:#eaeaea
+	background-color:#DFEFFC;
 }
 .bodywrapper .tabContainer {
 	background-color:#FFF;
 	overflow:hidden;
 	padding:20px;
 	border-top:none;
-	-webkit-border-radius:5px;
-	-moz-border-radius:5px;
-	border-radius:5px;
+	-webkit-border-radius:3px;
+	-moz-border-radius:3px;
+	border-radius:3px;
 	margin-bottom:1em;
 }
 .bodywrapper .idTabs li a {
@@ -886,9 +920,9 @@ border: 1px solid #eaeaea;
 .bodywrapper .idTabs li a.idTabs span {
 	text-decoration:none;
 	background-color:#FFF;
-	-moz-border-radius:  10px 10px 0 0 ;
-	-webkit-border-radius: 10px 10px 0 0 ;
-	border-radius: 10px 10px 0 0 ;
+	-moz-border-radius:  3px 3px 0 0 ;
+	-webkit-border-radius: 3px 3px 0 0 ;
+	border-radius: 3px 3px 0 0 ;
 	color: #0099FF;
 
 }

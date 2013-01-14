@@ -1,0 +1,232 @@
+/******************************************************************************
+* responsive
+******************************************************************************/
+
+@media (max-width: 1025px) {
+
+    .bodywrapper #content {
+        padding-bottom: 0.2em;
+        padding-top: 0.2em;
+    }
+    .container_16 .grid_1,
+    .container_16 .grid_2,
+    .container_16 .grid_3,
+    .container_16 .grid_4,
+    .container_16 .grid_5,
+    .container_16 .grid_6,
+    .container_16 .grid_7,
+    .container_16 .grid_8,
+    .container_16 .grid_9,
+    .container_16 .grid_10,
+    .container_16 .grid_11,
+    .container_16 .grid_12,
+    .container_16 .grid_13,
+    .container_16 .grid_14,
+    .container_16 .grid_15,
+    .container_16 .grid_16 {
+        display: block;
+        float: none;
+        width:auto;
+        margin:0;
+    }
+	.container_12,
+	.container_16 {
+        margin-left: 1%;
+        margin-right: 1%;
+        width:98% !important;
+        min-width:240px;
+	}
+	.bodywrapper .formsettings select,
+	.bodywrapper .formsettings input.inputsize1,
+	.bodywrapper .textarea#docspaceDesc {
+		width:50%;
+	}
+	.bodywrapper .userManagementSearchForm input.field ,
+	.bodywrapper .userManagementSearchForm select.field,
+	.bodywrapper .userManagementSearchForm select.fieldselect,
+	.bodywrapper .userManagementSkillsForm input.field,
+	.bodywrapper .userManagementSkillsForm select.field {
+		width:90%;
+	}
+	.popupSize ,
+	.popupSize2 ,
+	.popupSize3 {
+        width:100%;
+        margin:1em;
+        height:100%;
+        overflow:auto;
+        display:block;
+	}
+    .bodywrapper .columns2 .column-item,
+    .bodywrapper .columns3 .column-item,
+    .bodywrapper .columns4 .column-item,
+    .bodywrapper .columns5 .column-item {
+        float: none;
+        width: auto;
+        overflow: hidden;
+        display: block;
+    }
+    .bodywrapper .columns2 .column-item .spacer,
+    .bodywrapper .columns3 .column-item .spacer,
+    .bodywrapper .columns4 .column-item .spacer,
+    .bodywrapper .columns5 .column-item .spacer {
+        padding: 0 0 0.5em 0;
+    }
+    .bodywrapper form.docspacesearch #searchTerm {
+        width: 90%;
+        margin-right:0;
+    }
+    #login .container_16 .suffix_5 {
+        padding-right: 0;
+    }
+
+    #login .container_16 .prefix_5 {
+        padding-left: 0;
+    }
+
+    #login .container_16 .grid_6 {
+        width: 100%;
+        display:block;
+    }
+    .bodywrapper .facetsList li,.bodywrapper .filterListByDate li,.bodywrapper .mycollectionslist li {
+        display:inline-block;
+    }
+    .bodywrapper .mycollectionslist li {
+       margin-right:1em;
+    }
+    .bodywrapper .mycollectionslist .delete-collection, .bodywrapper .mycollectionslist .unsubscribe-collection, .bodywrapper .mycollectionslist .subscribe-collection {
+        float: none;
+    }
+    .bodywrapper ul.docspace-nav {
+        float: none;
+        text-align:center
+    }
+    .bodywrapper ul.docspace-nav li {
+        float: none;
+        display: inline-block;
+    }
+    .dropdown ul {
+        float: none;
+        text-align:center;
+    }
+    .dropdown li {
+        float: none;
+        display: inline-block;
+    }
+    .dropdown ul ul {
+        float: none;
+        display: block;
+    }
+    .dropdown li li {
+        text-align:left;
+        display: block;
+    }
+    .bodywrapper #navigation h1{
+        text-align:center;
+        padding:0.2em 0 0.2em 0;
+    }
+    #header,#navigation {
+        text-align:center;
+    }
+    input[type="submit"],input[type="reset"],input {
+        -webkit-appearance: none;
+    }
+    .bodywrapper .ui-accordion-content {
+	    height:150px;
+  	    overflow:auto;
+    }
+}
+/******************************************************************************
+* Responsive utility classes
+******************************************************************************/
+    .hidden {
+      display: none;
+      visibility: hidden;
+    }
+    .visible-phone {
+      display: none !important;
+    }
+    .visible-tablet {
+      display: none !important;
+    }
+    .hidden-desktop {
+      display: none !important;
+    }
+
+@media (max-width: 767px) {
+      .visible-phone {
+        display: inherit !important;
+      }
+      .hidden-phone {
+        display: none !important;
+      }
+      .hidden-desktop {
+        display: inherit !important;
+      }
+      .visible-desktop {
+        display: none !important;
+      }
+    }
+@media (min-width: 768px) and (max-width: 1024px) {
+      .visible-tablet {
+        display: inherit !important;
+      }
+      .hidden-tablet {
+        display: none !important;
+      }
+      .hidden-desktop {
+        display: inherit !important;
+      }
+      .visible-desktop {
+        display: none !important ;
+      }
+}
+/******************************************************************************
+* Responsive specific phone portrait
+******************************************************************************/
+@media (max-width: 480px)and (orientation:portrait) {
+      .hidden-phone-portrait {
+        display: none !important;
+      }
+      .bodywrapper .fc-header-title h2 {
+        font-size: 0.8em;
+      }
+      .fc .fc-header-space {
+        padding-left: 1px;
+      }
+      .bodywrapper .paginationNavigation {
+        float: none;
+        clear:both;
+      }
+      .bodywrapper .docspace-users > li{
+        float: none;
+        display:block;
+        margin-right: 0;
+      }
+
+}
+@media (max-width: 767px) {
+      .bodywrapper {
+        -webkit-text-size-adjust:80%;
+      }
+      .bodywrapper .docspace-thumbnail {
+          display:block;
+      }
+
+      .bodywrapper .docspace-thumbnails > li {
+        margin-bottom: 2px;
+        margin-right: 2px;
+      }
+      .bodywrapper .docspace-thumbnail {
+        padding: 1px;
+      }
+      .bodywrapper .docspace-members > li{
+        float: none;
+        display:block;
+        margin-right: 0;
+      }
+      .bodywrapper .tabContainer {
+        margin-bottom: 0.2em;
+        padding: 10px 5px;
+      }
+}

@@ -51,6 +51,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -349,18 +350,11 @@ public class ManagerLinker implements Linker {
 
     }
 
-    public void refresh(int flag, Map data) {
+    public void refresh(Map<String, Object> data) {
         if (m_leftComponent != null) {
-            if ((Linker.REFRESH_ALL & flag) != 0) {
-                m_leftComponent.refresh(Linker.REFRESH_OPEN_FOLDER);
-            } else {
-                m_leftComponent.refresh(flag);
-            }
+            m_leftComponent.refresh(data);
         }
         refreshTable();
-    }
-
-    public void markForManualRefresh(int flag) {
     }
 
     public void select(Object o) {
@@ -412,7 +406,9 @@ public class ManagerLinker implements Linker {
 
     public void switchLanguage(GWTJahiaLanguage locale) {
         setLocale(locale);
-        refresh(Linker.REFRESH_ALL, null);
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put(Linker.REFRESH_ALL, true);
+        refresh(data);
     }
 
     public boolean isDisplayHiddenTypes() {

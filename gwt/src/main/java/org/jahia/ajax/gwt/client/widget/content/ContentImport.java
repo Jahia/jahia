@@ -57,7 +57,9 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.form.FileUploadField;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: toto
@@ -149,7 +151,9 @@ public class ContentImport extends Window {
                 buttons.add(close);
 
                 layout();
-                m_linker.refresh(Linker.REFRESH_ALL, null);
+                Map<String, Object> data = new HashMap<String, Object>();
+                data.put(Linker.REFRESH_ALL, true);
+                m_linker.refresh(data);
             }
         });
     }

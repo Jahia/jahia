@@ -67,7 +67,9 @@ public class ReversePublishActionItem extends BaseActionItem implements IsSerial
 //
 //                public void onSuccess(Object result) {
 //                    Info.display(Messages.getResource("message.content.published"), Messages.getResource("message.content.published"));
-//                    linker.refresh(EditLinker.REFRESH_ALL);
+//                    Map<String, Object> data = new HashMap<String, Object>();
+//                    data.put(Linker.REFRESH_ALL, true);
+//                    linker.refresh(data);
 //                }
 //            });
         }

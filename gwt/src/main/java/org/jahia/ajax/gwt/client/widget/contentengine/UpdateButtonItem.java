@@ -56,10 +56,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class UpdateButtonItem extends SaveButtonItem {
 
@@ -135,7 +132,9 @@ public class UpdateButtonItem extends SaveButtonItem {
 
             public void onSuccess(Object o) {
                 Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
-                int refresh = Linker.REFRESH_MAIN + Linker.REFRESH_MAIN_IMAGES;
+                Map<String, Object> data = new HashMap<String, Object>();
+                data.put(Linker.REFRESH_MAIN, true);
+                data.put("forceImageRefresh", true);
                 EditLinker l = null;
                 if (engine.getLinker() instanceof SidePanelTabItem.SidePanelLinker) {
                     l = ((SidePanelTabItem.SidePanelLinker) engine.getLinker()).getEditLinker();
@@ -145,19 +144,10 @@ public class UpdateButtonItem extends SaveButtonItem {
                 GWTJahiaNode node = engine.getNode();
                 if (l != null && node.equals(l.getMainModule().getNode()) && !node.getName().equals(l.getMainModule().getNode().getName())) {
                     l.getMainModule().handleNewMainSelection(node.getPath().substring(0, node.getPath().lastIndexOf("/") + 1) + node.getName(), l.getMainModule().getTemplate(), null);
-                    refresh += Linker.REFRESH_PAGES;
                 }
-                if (node.isPage() || node.getNodeTypes().contains("jnt:externalLink")
-                        || node.getNodeTypes().contains("jnt:nodeLink")
-                        || node.getNodeTypes().contains("jnt:template") || node.getInheritedNodeTypes().contains("jnt:template")
-                        || node.getInheritedNodeTypes().contains("jmix:visibleInPagesTree")) {
-                    refresh += Linker.REFRESH_PAGES;
-                } else {
-                    refresh += Linker.REFRESH_SOURCES;
-                }
+                data.put("node", node);
                 ((EditContentEngine) engine).closeEngine();
-                engine.getLinker().markForManualRefresh(Linker.REFRESH_PAGES);
-                engine.getLinker().refresh(refresh, null);
+                engine.getLinker().refresh(data);
             }
         });
     }

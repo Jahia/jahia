@@ -58,8 +58,12 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import com.google.gwt.user.client.Element;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -189,7 +193,9 @@ public class AreaModule extends SimpleModule {
                 public void handleEvent(ComponentEvent be) {
                     createNode(new BaseAsyncCallback<GWTJahiaNode>() {
                         public void onSuccess(GWTJahiaNode result) {
-                            mainModule.getEditLinker().refresh(EditLinker.REFRESH_MAIN, null);
+                            Map<String, Object> data = new HashMap<String, Object>();
+                            data.put(Linker.REFRESH_MAIN, true);
+                            mainModule.getEditLinker().refresh(data);
                         }
                     });
                 }

@@ -71,6 +71,9 @@ import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * User: rfelden
  * Date: 21 oct. 2008 - 14:38:21
@@ -255,7 +258,9 @@ public class ImageCrop extends Window {
 
             public void onSuccess(Object result) {
                 hide();
-                linker.refresh(Linker.REFRESH_MAIN, null);
+                Map<String, Object> data = new HashMap<String, Object>();
+                data.put(Linker.REFRESH_MAIN, true);
+                linker.refresh(data);
             }
         });
     }

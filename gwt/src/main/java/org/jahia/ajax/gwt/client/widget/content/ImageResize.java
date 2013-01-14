@@ -59,6 +59,9 @@ import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Widget defining a new image dimensions and saving a copy of it.
  *
@@ -191,8 +194,10 @@ public class ImageResize extends Window {
              }
 
              public void onSuccess(Object result) {
-                hide();
-                 linker.refresh(Linker.REFRESH_MAIN, null);
+                 hide();
+                 Map<String, Object> data = new HashMap<String, Object>();
+                 data.put(Linker.REFRESH_MAIN, true);
+                 linker.refresh(data);
              }
          });
     }

@@ -205,7 +205,10 @@ public class PublicationWorkflow implements CustomWorkflow {
                                 Info.display(Messages.get("label.workflow.start", "Start Workflow"), Messages.get(
                                         "message.workflow.started", "Workflow started"));
                                 WorkInProgressActionItem.removeStatus(status);
-                                dialog.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES, null);
+                                Map<String, Object> data = new HashMap<String, Object>();
+                                data.put(Linker.REFRESH_MAIN, true);
+                                data.put("event", "workflowStarted");
+                                dialog.getLinker().refresh(data);
                             }
                         });
             }

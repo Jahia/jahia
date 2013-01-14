@@ -64,13 +64,11 @@ import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -215,7 +213,9 @@ public class PlaceholderModule extends Module {
                 public void handleEvent(ComponentEvent be) {
                     JahiaContentManagementService.App.getInstance().deletePaths(Arrays.asList(parentModule.path), new BaseAsyncCallback<GWTJahiaNode>() {
                         public void onSuccess(GWTJahiaNode result) {
-                            mainModule.getEditLinker().refresh(EditLinker.REFRESH_MAIN, null);
+                            Map<String, Object> data = new HashMap<String, Object>();
+                            data.put(Linker.REFRESH_MAIN, true);
+                            mainModule.getEditLinker().refresh(data);
                         }
                     });
                 }

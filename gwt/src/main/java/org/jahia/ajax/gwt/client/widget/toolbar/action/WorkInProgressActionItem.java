@@ -105,28 +105,21 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
 
     private void refreshStatus(List<GWTJahiaJobDetail> oldJobs) {
         refreshStatus();
-        int refresh = 0;
-        Map refreshData = new HashMap();
-        int markRefresh = 0;
+        Map<String, Object> refreshData = new HashMap<String, Object>();
 
         if (oldJobs != null) {
             for (GWTJahiaJobDetail oldJob : oldJobs) {
                 if (oldJob.getSite() == null || oldJob.getSite().equals(JahiaGWTParameters.getSiteKey()))
                     if (oldJob.getGroup().equals("PublicationJob")) {
                         if (oldJob.getUser().equals(JahiaGWTParameters.getCurrentUser())) {
-                            refresh |= Linker.REFRESH_PAGES;
                             refreshData.put("publishedNodes", oldJob.getTargetPaths());
-                        } else {
-                            markRefresh |= Linker.REFRESH_PAGES;
                         }
+                        refreshData.put("event", "publicationSuccess");
                     }
             }
         }
-        if (markRefresh > 0) {
-            linker.markForManualRefresh(markRefresh);
-        }
-        if (refresh > 0) {
-            linker.refresh(refresh, refreshData);
+        if (!refreshData.isEmpty()) {
+            linker.refresh(refreshData);
         }
     }
 

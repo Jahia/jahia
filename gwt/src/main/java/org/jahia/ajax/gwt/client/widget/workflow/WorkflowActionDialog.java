@@ -433,7 +433,10 @@ public class WorkflowActionDialog extends LayoutContainer {
                         public void onSuccess(Object result) {
                             WorkInProgressActionItem.removeStatus(status);
                             Info.display(Messages.get("label.information", "Information"), Messages.get("label.workflow.finished", "Workflow executed"));
-                            linker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES, null);
+                            Map<String, Object> data = new HashMap<String, Object>();
+                            data.put(Linker.REFRESH_MAIN, true);
+                            data.put("event", "workflowExecuted");
+                            linker.refresh(data);
                             container.closeEngine();
                         }
 

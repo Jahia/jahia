@@ -72,7 +72,6 @@ public class TemplatesTabItem extends BrowseTabItem {
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
-        refreshFlag = EditLinker.REFRESH_PAGES;
         this.tree.setSelectionModel(new TreeGridSelectionModel<GWTJahiaNode>() {
             @Override
             protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
@@ -129,11 +128,27 @@ public class TemplatesTabItem extends BrowseTabItem {
     }
 
     @Override
-    public void refresh(Map data) {
+    public boolean needRefresh(Map<String, Object> data) {
+        if (data.containsKey("node")) {
+            GWTJahiaNode node = (GWTJahiaNode) data.get("node");
+            if (node.isPage() || node.getNodeTypes().contains("jnt:externalLink")
+                    || node.getNodeTypes().contains("jnt:nodeLink")
+                    || node.getNodeTypes().contains("jnt:template") || node.getInheritedNodeTypes().contains("jnt:template")
+                    || node.getInheritedNodeTypes().contains("jmix:visibleInPagesTree")) {
+                return true;
+            }
+        }
+        if (data.containsKey("event") && "languageChanged".equals(data.get("event"))) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void doRefresh() {
         tree.getTreeStore().removeAll();
         tree.getTreeStore().getLoader().load();
         listLoader.load();
-        setRefreshed();
     }
 
     @Override

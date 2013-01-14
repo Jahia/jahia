@@ -70,6 +70,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
@@ -330,7 +331,9 @@ public class TableView extends AbstractView {
                 final BaseAsyncCallback callback = new BaseAsyncCallback() {
                     public void onSuccess(Object o) {
                         getLinker().loaded();
-                        getLinker().refresh(EditLinker.REFRESH_ALL, null);
+                        Map<String, Object> data = new HashMap<String, Object>();
+                        data.put(Linker.REFRESH_ALL, true);
+                        getLinker().refresh(data);
                     }
                 };
 

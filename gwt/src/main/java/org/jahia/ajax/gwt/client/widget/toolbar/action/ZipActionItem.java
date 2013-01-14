@@ -50,7 +50,9 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: toto
@@ -109,7 +111,9 @@ public class ZipActionItem extends NodeTypeAwareBaseActionItem  {
 
             public void onSuccess(Object o) {
                 linker.loaded();
-                linker.refresh(Linker.REFRESH_MAIN, null);
+                Map<String, Object> data = new HashMap<String, Object>();
+                data.put(Linker.REFRESH_MAIN, true);
+                linker.refresh(data);
             }
         });
     }

@@ -57,6 +57,8 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.NodeUsagesGrid;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -88,7 +90,9 @@ public class UsagesTabItem extends EditEngineTabItem {
                          * @param result the return value of the remote produced call
                          */
                         public void onSuccess(Object result) {
-                            engine.getLinker().refresh(Linker.REFRESH_ALL, null);
+                            Map<String, Object> data = new HashMap<String, Object>();
+                            data.put(Linker.REFRESH_ALL, true);
+                            engine.getLinker().refresh(data);
                         }
                     });
                 }

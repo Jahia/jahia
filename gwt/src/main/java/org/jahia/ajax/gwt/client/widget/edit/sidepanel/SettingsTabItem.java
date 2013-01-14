@@ -75,10 +75,10 @@ public class SettingsTabItem extends BrowseTabItem {
     }
 
     @Override
-    public void refresh(Map data) {
+    public void doRefresh() {
         for (SettingsPanel panel : settingsPanelList) {
            panel.refresh();
         }
-        setRefreshed();
     }
+
 }

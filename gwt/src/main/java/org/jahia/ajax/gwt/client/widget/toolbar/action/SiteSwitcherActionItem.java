@@ -220,7 +220,9 @@ public class SiteSwitcherActionItem extends BaseActionItem {
                 }
                 JahiaGWTParameters.setSite(jahiaNode, linker);
                 if (editLinker.getSidePanel() != null) {
-                    editLinker.getSidePanel().refresh(EditLinker.REFRESH_ALL, null);
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put(Linker.REFRESH_ALL, true);
+                    editLinker.getSidePanel().refresh(data);
                 }
                 if (root.get(0).startsWith("/modules")) {
                     MainModule.staticGoTo(jahiaNode.getPath(), null);

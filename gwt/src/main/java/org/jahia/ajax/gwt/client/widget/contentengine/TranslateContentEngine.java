@@ -64,10 +64,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.LangPropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 
@@ -212,7 +209,9 @@ public class TranslateContentEngine extends Window {
                 public void onSuccess(Object o) {
                     Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
                     TranslateContentEngine.this.hide();
-                    linker.refresh(Linker.REFRESH_MAIN, null);
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put(Linker.REFRESH_MAIN, true);
+                    linker.refresh(data);
                 }
             });
         }

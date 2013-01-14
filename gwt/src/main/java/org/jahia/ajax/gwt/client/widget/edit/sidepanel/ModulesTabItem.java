@@ -67,7 +67,6 @@ public class ModulesTabItem extends BrowseTabItem {
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
-        refreshFlag = EditLinker.REFRESH_SOURCES;
         this.tree.setSelectionModel(new TreeGridSelectionModel<GWTJahiaNode>() {
             @Override
             protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
@@ -122,17 +121,29 @@ public class ModulesTabItem extends BrowseTabItem {
     }
 
     @Override
-    public void refresh(Map data) {
+    public boolean needRefresh(Map<String, Object> data) {
+        if (data.containsKey("node")) {
+            GWTJahiaNode node = (GWTJahiaNode) data.get("node");
+            if (node.getInheritedNodeTypes().contains("jnt:editableFile")
+                    || node.getNodeTypes().contains("jnt:definitionFile")
+                    || node.getInheritedNodeTypes().contains("jnt:nodeType")
+                    || node.getNodeTypes().contains("jnt:resourceBundleFile")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void doRefresh() {
         tree.getTreeStore().removeAll();
         GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
         if (siteNode.get("j:sourcesFolder") == null) {
             tab.mask("Sources required - Get them from source control");
-            setRefreshed();
         } else {
             tab.unmask();
             tree.getTreeStore().getLoader().load();
             listLoader.load();
-            setRefreshed();
         }
     }
 

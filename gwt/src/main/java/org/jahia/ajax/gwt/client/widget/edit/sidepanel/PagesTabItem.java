@@ -92,7 +92,6 @@ public class PagesTabItem extends SidePanelTabItem {
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
-        refreshFlag = EditLinker.REFRESH_PAGES;
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         tab.setLayout(new FitLayout());
@@ -211,10 +210,31 @@ public class PagesTabItem extends SidePanelTabItem {
     }
 
     @Override
-    public void refresh(Map data) {
+    public boolean needRefresh(Map<String, Object> data) {
+        if (data.containsKey("node")) {
+            GWTJahiaNode node = (GWTJahiaNode) data.get("node");
+            if (node.isPage() || node.getNodeTypes().contains("jnt:externalLink")
+                    || node.getNodeTypes().contains("jnt:nodeLink")
+                    || node.getNodeTypes().contains("jnt:template") || node.getInheritedNodeTypes().contains("jnt:template")
+                    || node.getInheritedNodeTypes().contains("jmix:visibleInPagesTree")) {
+                return true;
+            }
+        }
+        if (data.containsKey("event")
+                && ("languageChanged".equals(data.get("event"))
+                || "workflowStarted".equals(data.get("event"))
+                || "workflowExecuted".equals(data.get("event"))
+                || "publicationSuccess".equals(data.get("event"))
+                || "unpublicationSuccess".equals(data.get("event")))) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void doRefresh() {
         pageTree.getTreeStore().removeAll();
         pageTree.getTreeStore().getLoader().load();
-        setRefreshed();
     }
 
     public void addOpenPath(String path) {
@@ -281,10 +301,10 @@ public class PagesTabItem extends SidePanelTabItem {
         protected void onDragDrop(DNDEvent event) {
         }
 
-        public AsyncCallback<Object> getCallback() {
-            AsyncCallback<Object> callback = new BaseAsyncCallback<Object>() {
-                public void onSuccess(Object o) {
-                    editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES, null);
+        public AsyncCallback<Map<String, Object>> getCallback() {
+            AsyncCallback<Map<String, Object>> callback = new BaseAsyncCallback<Map<String, Object>>() {
+                public void onSuccess(Map<String, Object> data) {
+                    editLinker.refresh(data);
                 }
 
                 public void onApplicationFailure(Throwable throwable) {

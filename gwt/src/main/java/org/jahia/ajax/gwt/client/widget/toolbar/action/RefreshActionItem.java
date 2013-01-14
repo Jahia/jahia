@@ -42,6 +42,9 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import org.jahia.ajax.gwt.client.widget.Linker;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 
 * User: toto
@@ -51,6 +54,8 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 */
 public class RefreshActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        linker.refresh(Linker.REFRESH_ALL, null);
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put(Linker.REFRESH_ALL, true);
+        linker.refresh(data);
     }
 }

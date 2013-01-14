@@ -49,6 +49,9 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Action item for cleaning all the locks on the node and if specified on its children.
  * @author david
@@ -71,12 +74,16 @@ public class ClearAllLocksActionItem extends BaseActionItem {
             public void onApplicationFailure(Throwable throwable) {
                 MessageBox.alert(Messages.get("label.error", "Error"), throwable.getLocalizedMessage(), null);
                 linker.loaded();
-                linker.refresh(Linker.REFRESH_MAIN, null);
+                Map<String, Object> data = new HashMap<String, Object>();
+                data.put(Linker.REFRESH_MAIN, true);
+                linker.refresh(data);
             }
 
             public void onSuccess(Object o) {
                 linker.loaded();
-                linker.refresh(Linker.REFRESH_MAIN, null);
+                Map<String, Object> data = new HashMap<String, Object>();
+                data.put(Linker.REFRESH_MAIN, true);
+                linker.refresh(data);
             }
         });
 

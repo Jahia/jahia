@@ -52,12 +52,14 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -105,11 +107,13 @@ public class UndeleteActionItem extends NodeTypeAwareBaseActionItem {
                                                          } else if (linker instanceof EditLinker) {
                                                              el = (EditLinker) linker;
                                                          }
+                                                         Map<String, Object> data = new HashMap<String, Object>();
                                                          if (el != null && l.contains(el.getSelectionContext().getMainNode().getPath())) {
-                                                             linker.refresh(EditLinker.REFRESH_PAGES, null);
+                                                             data.put("node", el.getSelectionContext().getMainNode());
                                                          } else {
-                                                             linker.refresh(EditLinker.REFRESH_ALL, null);
+                                                             data.put(Linker.REFRESH_ALL, true);
                                                          }
+                                                         linker.refresh(data);
                                                      }
                                                  });
                                              }

@@ -229,16 +229,20 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
         }
         JahiaContentManagementService.App.getInstance().createNode(modulePath, viewName, "jnt:viewFile", null, engine.getAcl(), properties, engine.changedI18NProperties, null, parentNodesType, false, new AsyncCallback<GWTJahiaNode>() {
             public void onFailure(Throwable throwable) {
-                MessageBox.alert("save not work as excpected", throwable.getMessage(), null);
+                MessageBox.alert("save not work as expected", throwable.getMessage(), null);
             }
             public void onSuccess(GWTJahiaNode gwtJahiaNode) {
                 Linker linker = engine.getLinker();
                 engine.close();
                 if (newModuleNode == null) {
-                    linker.refresh(Linker.REFRESH_SOURCES, null);
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put("node", gwtJahiaNode);
+                    linker.refresh(data);
                 } else {
                     JahiaGWTParameters.setSite(gwtJahiaNode, linker);
-                    linker.refresh(Linker.REFRESH_ALL, null);
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put(Linker.REFRESH_ALL, true);
+                    linker.refresh(data);
                     MainModule.staticGoTo(gwtJahiaNode.getPath(), null);
                     SiteSwitcherActionItem.refreshAllSitesList(linker);
                 }

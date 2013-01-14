@@ -51,6 +51,8 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -160,12 +162,14 @@ public class CompareEngine extends Window {
     protected void onHide() {
         super.onHide();
         if (refreshOpener) {
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put(Linker.REFRESH_ALL, true);
             if (engine != null) {
                 engine.close();
-                engine.getLinker().refresh(Linker.REFRESH_ALL, null);
+                engine.getLinker().refresh(data);
             }
             if (linker != null) {
-                linker.refresh(Linker.REFRESH_ALL, null);
+                linker.refresh(data);
             }
         }
     }

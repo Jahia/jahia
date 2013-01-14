@@ -87,9 +87,7 @@ public class SidePanel extends ContentPanel {
         tabPanel.addListener(Events.Select, new Listener<TabPanelEvent>() {
             public void handleEvent(TabPanelEvent be) {
                 SidePanelTabItem selectedTab = ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem"));
-                if (selectedTab.isNeedAutoRefresh()) {
-                    selectedTab.refresh(selectedTab.getAutoRefreshData());
-                }
+                selectedTab.refresh(selectedTab.getAutoRefreshData());
                 updateRefreshButton();
             }
         });
@@ -167,20 +165,20 @@ public class SidePanel extends ContentPanel {
         }
     }
 
-    public void markForManualRefresh(int flag) {
+    public void markForManualRefresh(Map<String, Object> data) {
         for (SidePanelTabItem tab : tabs) {
-            tab.markForManualRefresh(flag);
+            tab.markForManualRefresh(data);
         }
         updateRefreshButton();
     }
 
-    public void refresh(int flag, Map data) {
+    public void refresh(Map<String, Object> data) {
         SidePanelTabItem selected = ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem"));
         for (SidePanelTabItem tab : tabs) {
             if (tab == selected) {
-                tab.refresh(flag, data);
+                tab.refresh(data);
             } else {
-                tab.markForAutoRefresh(flag, data);
+                tab.markForAutoRefresh(data);
             }
         }
         updateRefreshButton();

@@ -57,6 +57,9 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 
  *
@@ -130,7 +133,9 @@ public class Mounter extends Window {
                         bar.reset() ;
                         linker.loaded() ;
                         hide();
-                        linker.refresh(Linker.REFRESH_ALL, null);
+                        Map<String, Object> data = new HashMap<String, Object>();
+                        data.put(Linker.REFRESH_ALL, true);
+                        linker.refresh(data);
                     }
 
                 });

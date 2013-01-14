@@ -58,12 +58,11 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.ModuleSelectionListener;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class BoundModule extends SimpleModule {
     private String property = "j:bindedComponent";
@@ -129,7 +128,9 @@ public class BoundModule extends SimpleModule {
                         JahiaContentManagementService.App.getInstance()
                                 .saveProperties(Arrays.asList(node), properties, null, new BaseAsyncCallback() {
                                     public void onSuccess(Object o) {
-                                        getMainModule().getEditLinker().refresh(EditLinker.REFRESH_MAIN, null);
+                                        Map<String, Object> data = new HashMap<String, Object>();
+                                        data.put(Linker.REFRESH_MAIN, true);
+                                        getMainModule().getEditLinker().refresh(data);
                                     }
 
                                     public void onApplicationFailure(Throwable throwable) {
@@ -158,7 +159,9 @@ public class BoundModule extends SimpleModule {
                                     JahiaContentManagementService.App.getInstance()
                                             .saveProperties(Arrays.asList(node), properties, null, new BaseAsyncCallback() {
                                                 public void onSuccess(Object o) {
-                                                    getMainModule().getEditLinker().refresh(EditLinker.REFRESH_MAIN, null);
+                                                    Map<String, Object> data = new HashMap<String, Object>();
+                                                    data.put(Linker.REFRESH_MAIN, true);
+                                                    getMainModule().getEditLinker().refresh(data);
                                                 }
 
                                                 public void onApplicationFailure(Throwable throwable) {

@@ -162,7 +162,9 @@ public class CreateResourceButtonItem extends SaveButtonItem {
             public void onSuccess(GWTJahiaNode gwtJahiaNode) {
                 Linker linker = engine.getLinker();
                 engine.close();
-                linker.refresh(Linker.REFRESH_SOURCES, null);
+                Map<String, Object> data = new HashMap<String, Object>();
+                data.put("node", gwtJahiaNode);
+                linker.refresh(data);
             }
         });
 

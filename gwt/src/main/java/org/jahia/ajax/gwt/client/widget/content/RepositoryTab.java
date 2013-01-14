@@ -152,7 +152,9 @@ public class RepositoryTab extends ContentPanel {
         setHeading(repo.getTitle());
         getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
-                refresh(Linker.REFRESH_ALL);
+                Map<String, Object> data = new HashMap<String, Object>();
+                data.put(Linker.REFRESH_ALL, true);
+                refresh(data);
             }
         }));
         add(m_tree);
@@ -269,11 +271,11 @@ public class RepositoryTab extends ContentPanel {
     /**
      * Refresh
      *
-     * @param flag
+     * @param data
      */
-    public void refresh(int flag) {
+    public void refresh(Map<String, Object> data) {
         boolean refresh = true;
-        if ((Linker.REFRESH_OPEN_FOLDER & flag) != 0) {
+        if (data != null && data.containsKey(Linker.REFRESH_ALL)) {
             refresh = isExpanded();
         }
         if (refresh) {

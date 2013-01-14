@@ -64,9 +64,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.BaseActionItem;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class SendNewsletterActionItem extends BaseActionItem {
 
@@ -163,7 +161,9 @@ public class SendNewsletterActionItem extends BaseActionItem {
                         linker.loaded();
                         unmask();
                         hide();
-                        linker.refresh(EditLinker.REFRESH_MAIN, null);
+                        Map<String, Object> data = new HashMap<String, Object>();
+                        data.put(Linker.REFRESH_MAIN, true);
+                        linker.refresh(data);
                     }
                 });
 
@@ -186,7 +186,9 @@ public class SendNewsletterActionItem extends BaseActionItem {
                     linker.loaded();
                     unmask();
                     hide();
-                    linker.refresh(EditLinker.REFRESH_MAIN, null);
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put(Linker.REFRESH_MAIN, true);
+                    linker.refresh(data);
                 }
 
                 @Override public void onApplicationFailure(Throwable caught) {

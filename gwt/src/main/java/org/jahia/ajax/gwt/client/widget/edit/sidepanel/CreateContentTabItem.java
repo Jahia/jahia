@@ -67,7 +67,6 @@ class CreateContentTabItem extends SidePanelTabItem {
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
-        refreshFlag = EditLinker.REFRESH_COMPONENTS;
         tab.setLayout(new FitLayout());
 
         contentTypeTree = new ContentTypeTree(config.getTreeColumns());
@@ -114,9 +113,14 @@ class CreateContentTabItem extends SidePanelTabItem {
     }
 
     @Override
-    public void refresh(Map data) {
+    public boolean needRefresh(Map<String, Object> data) {
+        return data.containsKey("event") && "nonEditableTypesChanged".equals(data.get("event"));
+    }
+
+    @Override
+    public void doRefresh() {
         initExcludedNodeTypes(editLinker);
         contentTypeTree.fillStore(paths, baseTypes, excludedNodeTypes, true, true);
-        setRefreshed();
     }
+
 }

@@ -45,9 +45,13 @@ import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickRemotePublication;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: david
@@ -67,7 +71,9 @@ public class NewRemotePublicationActionItem extends BaseActionItem  {
             w.setWidth(700);
             w.add(new FormQuickRemotePublication() {
                 public void onRemotePublicationCreated() {
-                    linker.refresh(EditLinker.REFRESH_ALL, null);
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put(Linker.REFRESH_ALL, true);
+                    linker.refresh(data);
                 }
             });
             w.setScrollMode(Style.Scroll.AUTO);

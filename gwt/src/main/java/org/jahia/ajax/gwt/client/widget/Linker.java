@@ -53,24 +53,14 @@ import java.util.Map;
  *        Created : 23 sept. 2009
  */
 public interface Linker {
-    public final static int REFRESH_ALL = 63;
-    public final static int REFRESH_MAIN = 1;
-    public final static int REFRESH_MAIN_IMAGES = 512;
-    public final static int REFRESH_PAGES = 2;
-    public final static int REFRESH_LAST_CONTENT = 4;
-    public final static int REFRESH_FOLDERS = 8;
-    public final static int REFRESH_COMPONENTS = 16;
-    public final static int REFRESH_OPEN_FOLDER = 64;
-    public final static int REFRESH_CHANNELS = 128;
-    public final static int REFRESH_SOURCES = 32;
+    public final static String REFRESH_ALL = "refreshAll";
+    public final static String REFRESH_MAIN = "refreshMain";
 
     public void loaded();
 
     public void loading(String resource);
 
-    public void refresh(int flag, Map data);
-
-    public void markForManualRefresh(int flag);
+    public void refresh(Map<String, Object> data);
 
     public void select(Object o);
 

@@ -55,6 +55,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
@@ -127,7 +128,9 @@ public class ReleaseModuleActionItem extends BaseActionItem {
                         JahiaGWTParameters.getSitesMap().put(newModule.getUUID(), newModule);
                         JahiaGWTParameters.setSite(newModule, linker);
                         if (((EditLinker) linker).getSidePanel() != null) {
-                            ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL, null);
+                            Map<String, Object> data = new HashMap<String, Object>();
+                            data.put(Linker.REFRESH_ALL, true);
+                            ((EditLinker) linker).getSidePanel().refresh(data);
                         }
                         MainModule.staticGoTo(newModule.getPath(), null);
                         SiteSwitcherActionItem.refreshAllSitesList(linker);

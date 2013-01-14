@@ -64,10 +64,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * File upload window.
@@ -307,10 +304,12 @@ public class FileUploader extends Window {
     }
 
     private void endUpload(CheckBox unzip, Linker linker) {
+        Map<String, Object> data = new HashMap<String, Object>();
         if (unzip.getValue().booleanValue()) {
-            linker.refresh(Linker.REFRESH_ALL, null);
+            data.put(Linker.REFRESH_ALL, true);
         } else {
-            linker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_FOLDERS, null);
+            data.put(Linker.REFRESH_MAIN, true);
+            data.put("event", "fileUploaded");
         }
         unmask();
         hide();

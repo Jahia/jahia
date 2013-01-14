@@ -56,6 +56,9 @@ import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Widget for specifying rotation for an image and saving its rotated copy.
  *
@@ -132,8 +135,10 @@ public class ImageRotate extends Window {
              }
 
              public void onSuccess(Object result) {
-                hide();
-                m_linker.refresh(Linker.REFRESH_MAIN, null);
+                 hide();
+                 Map<String, Object> data = new HashMap<String, Object>();
+                 data.put(Linker.REFRESH_MAIN, true);
+                 m_linker.refresh(data);
              }
          });
     }

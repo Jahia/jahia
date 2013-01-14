@@ -45,6 +45,9 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * User: David
  * Date: 25/04/11
@@ -59,7 +62,9 @@ public class ViewHiddenPropertiesActionItem extends BaseActionItem {
     public void onComponentSelection() {
         if (linker instanceof ManagerLinker) {
             ((ManagerLinker) linker).setDisplayHiddenProperties(((CheckMenuItem) getMenuItem()).isChecked());
-            linker.refresh(Linker.REFRESH_ALL, null);
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put(Linker.REFRESH_ALL, true);
+            linker.refresh(data);
         }
     }
 }

@@ -59,7 +59,9 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineContainer;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Window, displaying the current publication status.
@@ -138,7 +140,9 @@ public class PublicationStatusWindow extends LayoutContainer {
                                 WorkInProgressActionItem.removeStatus(status);
                                 Info.display(Messages.get("label.publication.unpublished"),
                                         Messages.get("label.publication.unpublished"));
-                                linker.refresh(Linker.REFRESH_ALL, null);
+                                Map<String, Object> data = new HashMap<String, Object>();
+                                data.put(Linker.REFRESH_ALL, true);
+                                linker.refresh(data);
                             }
                         });
             } else {
@@ -157,7 +161,9 @@ public class PublicationStatusWindow extends LayoutContainer {
                                 WorkInProgressActionItem.removeStatus(status);
                                 Info.display(Messages.get("message.content.published"),
                                         Messages.get("message.content.published"));
-                                linker.refresh(Linker.REFRESH_ALL, null);
+                                Map<String, Object> data = new HashMap<String, Object>();
+                                data.put(Linker.REFRESH_ALL, true);
+                                linker.refresh(data);
                             }
                         });
             }

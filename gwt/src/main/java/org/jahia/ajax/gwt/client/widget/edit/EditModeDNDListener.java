@@ -203,7 +203,9 @@ public class EditModeDNDListener extends DNDListener {
 
                                 public void onSuccess(GWTJahiaNode o) {
                                     Info.display(Messages.get("label.information", "Information"), Messages.get("message.success", "Node created"));
-                                    editLinker.refresh(Linker.REFRESH_MAIN, null);
+                                    Map<String, Object> data = new HashMap<String, Object>();
+                                    data.put(Linker.REFRESH_MAIN, true);
+                                    editLinker.refresh(data);
                                 }
                             });
                 } else {
@@ -260,7 +262,9 @@ public class EditModeDNDListener extends DNDListener {
 
                                 public void onSuccess(GWTJahiaNode o) {
                                     Info.display("", "Node created");
-                                    editLinker.refresh(Linker.REFRESH_MAIN, null);
+                                    Map<String, Object> data = new HashMap<String, Object>();
+                                    data.put(Linker.REFRESH_MAIN, true);
+                                    editLinker.refresh(data);
                                 }
                             });
                 } else {
@@ -285,18 +289,21 @@ public class EditModeDNDListener extends DNDListener {
                 final int type = (Integer) status.getData(TYPE);
                 callback = new BaseAsyncCallback() {
                     public void onSuccess(Object result) {
-                        String selectedPath = editLinker.getSelectionContext().getMainNode().getPath();
+                        GWTJahiaNode mainNode = editLinker.getSelectionContext().getMainNode();
+                        String selectedPath = mainNode.getPath();
                         String replacedPath;
                         if (type < 0) {
                             replacedPath = targetPath + "/" + source.getName();
                         } else {
                             replacedPath = selectedPath.replace(source.getPath(), parent.getPath() + "/" + source.getName());
                         }
+                        Map<String, Object> data = new HashMap<String, Object>();
+                        data.put("node", mainNode);
                         if (!replacedPath.equals(selectedPath)) {
                             MainModule.staticGoTo(replacedPath, null);
-                            editLinker.refresh(Linker.REFRESH_PAGES, null);
+                            editLinker.refresh(data);
                         } else if (e.getDropTarget() instanceof PagesTabItem.PageTreeGridDropTarget) {
-                            ((PagesTabItem.PageTreeGridDropTarget) e.getDropTarget()).getCallback().onSuccess(result);
+                            ((PagesTabItem.PageTreeGridDropTarget) e.getDropTarget()).getCallback().onSuccess(data);
                         }
                     }
                 };
@@ -327,7 +334,9 @@ public class EditModeDNDListener extends DNDListener {
 
     private class DropAsyncCallback implements AsyncCallback {
         public void onSuccess(Object o) {
-            editLinker.refresh(Linker.REFRESH_MAIN, null);
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put(Linker.REFRESH_MAIN, true);
+            editLinker.refresh(data);
         }
 
         public void onFailure(Throwable throwable) {

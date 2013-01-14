@@ -179,17 +179,10 @@ public class EditLinker implements Linker {
         this.param = param;
     }
 
-    public void refresh(int flag, Map data) {
-        mainModule.refresh(flag, data);
+    public void refresh(Map<String, Object> data) {
+        mainModule.refresh(data);
         if (sidePanel != null) {
-            sidePanel.refresh(flag, data);
-        }
-    }
-
-    public void markForManualRefresh(int flag) {
-//        mainModule.refresh(flag);
-        if (sidePanel != null) {
-            sidePanel.markForManualRefresh(flag);
+            sidePanel.refresh(data);
         }
     }
 

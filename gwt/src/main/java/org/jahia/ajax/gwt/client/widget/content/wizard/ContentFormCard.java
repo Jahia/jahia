@@ -120,7 +120,9 @@ public class ContentFormCard extends ContentWizardCard {
                             public void onSuccess(GWTJahiaNode result) {
                                 if (getWizardWindow().getLinker() != null) {
                                     getWizardWindow().getLinker().setSelectPathAfterDataUpdate(Arrays.asList(result.getPath()));
-                                    getWizardWindow().getLinker().refresh(Linker.REFRESH_MAIN, null);
+                                    Map<String, Object> data = new HashMap<String, Object>();
+                                    data.put(Linker.REFRESH_MAIN, true);
+                                    getWizardWindow().getLinker().refresh(data);
                                 }
                                 MessageBox.info(Messages.get("org.jahia.engines.contentmanager.addContentWizard.formCard.success", "Info"),
                                         Messages.get("org.jahia.engines.contentmanager.addContentWizard.formCard.success.save",
@@ -128,7 +130,9 @@ public class ContentFormCard extends ContentWizardCard {
                                         null);
                                 getWizardWindow().hide();
                                 getWizardWindow().getLinker().loaded();
-                                getWizardWindow().getLinker().refresh(Linker.REFRESH_ALL, null);
+                                Map<String, Object> data = new HashMap<String, Object>();
+                                data.put(Linker.REFRESH_ALL, true);
+                                getWizardWindow().getLinker().refresh(data);
                             }
                         });
     }

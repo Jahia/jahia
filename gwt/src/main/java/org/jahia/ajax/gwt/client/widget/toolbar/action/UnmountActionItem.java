@@ -49,7 +49,9 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -76,7 +78,9 @@ public class UnmountActionItem extends BaseActionItem  {
 
                     public void onSuccess(Object o) {
                         linker.loaded();
-                        linker.refresh(Linker.REFRESH_FOLDERS, null);
+                        Map<String, Object> data = new HashMap<String, Object>();
+                        data.put("event", "unmount");
+                        linker.refresh(data);
                     }
                 });
             }

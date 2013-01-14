@@ -50,6 +50,9 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.form.FormDeployPortletDefinition;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 
 * User: toto
@@ -81,7 +84,9 @@ public class DeployPortletDefinitionActionItem extends BaseActionItem {
                         }
                         @Override
                         public void refreshParent() {
-                            linker.refresh(Linker.REFRESH_ALL, null);
+                            Map<String, Object> data = new HashMap<String, Object>();
+                            data.put(Linker.REFRESH_ALL, true);
+                            linker.refresh(data);
                         }
                     });
                     w.setScrollMode(Style.Scroll.AUTO);

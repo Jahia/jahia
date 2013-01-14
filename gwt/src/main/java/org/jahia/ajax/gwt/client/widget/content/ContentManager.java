@@ -55,7 +55,9 @@ import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 import com.extjs.gxt.ui.client.widget.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ContentManager extends TriPanelBrowserLayout {
 
@@ -95,7 +97,9 @@ public class ContentManager extends TriPanelBrowserLayout {
                             selectedPaths,null,false, linker.isDisplayHiddenTypes(), config.getHiddenTypes(), config.getHiddenRegex(), new BaseAsyncCallback<List<GWTJahiaNode>>() {
                         public void onSuccess(List<GWTJahiaNode> gwtJahiaNode) {
                             linker.setLeftPanelSelectionWhenHidden(gwtJahiaNode.get(0));
-                            linker.refresh(Linker.REFRESH_ALL, null);
+                            Map<String, Object> data = new HashMap<String, Object>();
+                            data.put(Linker.REFRESH_ALL, true);
+                            linker.refresh(data);
                         }
 
                         public void onApplicationFailure(Throwable throwable) {

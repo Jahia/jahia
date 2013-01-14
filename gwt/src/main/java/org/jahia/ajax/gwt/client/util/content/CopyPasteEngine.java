@@ -51,7 +51,9 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.PlaceholderModule;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ClipboardActionItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -100,11 +102,13 @@ public class CopyPasteEngine {
                 onPastedPath();
                 linker.setSelectPathAfterDataUpdate(copiedPaths);
                 linker.loaded();
+                Map<String, Object> data = new HashMap<String, Object>();
                 if (refresh) {
-                    linker.refresh(EditLinker.REFRESH_ALL, null);
+                    data.put(Linker.REFRESH_ALL, true);
                 } else {
-                    linker.refresh(Linker.REFRESH_MAIN, null);
+                    data.put(Linker.REFRESH_MAIN, true);
                 }
+                linker.refresh(data);
             }
         });
     }

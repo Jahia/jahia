@@ -92,7 +92,6 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
 
     public TabItem create(final GWTSidePanelTab config) {
         super.create(config);
-        refreshFlag = EditLinker.REFRESH_LAST_CONTENT;
         tab.addListener(Events.Select, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
                 fillStore();
@@ -232,9 +231,8 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
     }
 
     @Override
-    public void refresh(Map data) {
+    public void doRefresh() {
         fillStore();
-        setRefreshed();
     }
 
     public String getSearch() {

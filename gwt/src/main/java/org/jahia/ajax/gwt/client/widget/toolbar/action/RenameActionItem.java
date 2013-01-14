@@ -51,6 +51,8 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: toto
@@ -82,11 +84,13 @@ public class RenameActionItem extends NodeTypeAwareBaseActionItem {
                             public void onSuccess(String newPath) {
                                 linker.setSelectPathAfterDataUpdate(Arrays.asList(newPath));
                                 linker.loaded();
+                                Map<String, Object> data = new HashMap<String, Object>();
                                 if (folder) {
-                                    linker.refresh(EditLinker.REFRESH_ALL, null);
+                                    data.put(Linker.REFRESH_ALL, true);
                                 } else {
-                                    linker.refresh(Linker.REFRESH_MAIN, null);
+                                    data.put(Linker.REFRESH_MAIN, true);
                                 }
+                                linker.refresh(data);
                             }
                         });
             } else {

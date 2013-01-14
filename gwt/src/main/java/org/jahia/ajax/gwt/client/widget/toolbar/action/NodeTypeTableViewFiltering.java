@@ -58,6 +58,8 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -125,7 +127,9 @@ public class NodeTypeTableViewFiltering extends BaseActionItem {
         mainComponent.addSelectionChangedListener(new SelectionChangedListener<ModelData>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<ModelData> event) {
-                linker.refresh(Linker.REFRESH_MAIN, null);
+                Map<String, Object> data = new HashMap<String, Object>();
+                data.put(Linker.REFRESH_MAIN, true);
+                linker.refresh(data);
             }
         });
         setEnabled(true);

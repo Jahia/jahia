@@ -58,7 +58,9 @@ import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.EventListener;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -190,7 +192,9 @@ public class MainModule extends Module {
 
             head.addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
                 public void componentSelected(IconButtonEvent event) {
-                    refresh(EditLinker.REFRESH_MAIN, null);
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put(Linker.REFRESH_MAIN, true);
+                    refresh(data);
                 }
             }));
         }
@@ -335,10 +339,14 @@ public class MainModule extends Module {
         return editLinker;
     }
 
-    public void refresh(int flag, Map data) {
-        if ((flag & Linker.REFRESH_MAIN) != 0) {
-            goToUrl(getUrl(path, template), (flag & Linker.REFRESH_MAIN_IMAGES) != 0);
+    public void refresh(Map<String, Object> data) {
+        if (data != null && (data.containsKey(Linker.REFRESH_ALL) || data.containsKey(Linker.REFRESH_MAIN) || needRefresh(data))) {
+            goToUrl(getUrl(path, template), data.containsKey("forceImageRefresh"));
         }
+    }
+
+    public boolean needRefresh(Map<String, Object> data) {
+        return false;
     }
 
     private void goToUrl(final String url, final boolean forceImageRefresh) {
@@ -471,13 +479,19 @@ public class MainModule extends Module {
 
     public void switchLanguage(GWTJahiaLanguage language) {
         editLinker.setLocale(language);
-        editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES, null);
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put(Linker.REFRESH_MAIN, true);
+        data.put("event", "languageChanged");
+        editLinker.refresh(data);
     }
 
     public void switchChannel(GWTJahiaChannel channel, String variant) {
         editLinker.setActiveChannelVariant(variant);
         editLinker.setActiveChannel(channel);
-        editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_CHANNELS, null);
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put(Linker.REFRESH_MAIN, true);
+        data.put("event", "channelChanged");
+        editLinker.refresh(data);
     }
 
     public void setNode(GWTJahiaNode node) {
@@ -490,7 +504,9 @@ public class MainModule extends Module {
             JahiaGWTParameters.setSite(node, editLinker);
             SiteSwitcherActionItem.refreshAllSitesList(editLinker);
             if (editLinker.getSidePanel() != null) {
-                editLinker.getSidePanel().refresh(EditLinker.REFRESH_ALL, null);
+                Map<String, Object> data = new HashMap<String, Object>();
+                data.put(Linker.REFRESH_ALL, true);
+                editLinker.getSidePanel().refresh(data);
             }
         }
 
@@ -511,7 +527,9 @@ public class MainModule extends Module {
         JahiaGWTParameters.changeServletMapping(this.config.getDefaultUrlMapping(), config.getDefaultUrlMapping());
         this.config = config;
         setHashMarker(getUrl(path, template));
-        refresh(EditLinker.REFRESH_MAIN, null);
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put(Linker.REFRESH_MAIN, true);
+        refresh(data);
     }
 
     public void handleNewModuleSelection(Module selectedModule) {

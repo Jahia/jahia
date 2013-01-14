@@ -45,11 +45,14 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -77,7 +80,9 @@ public class UnzipActionItem extends BaseActionItem {
 
                 public void onSuccess(Object o) {
                     linker.loaded();
-                    linker.refresh(EditLinker.REFRESH_ALL, null);
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put(Linker.REFRESH_ALL, true);
+                    linker.refresh(data);
                 }
             });
         }

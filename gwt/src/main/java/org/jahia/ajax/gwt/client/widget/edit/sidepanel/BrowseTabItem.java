@@ -83,7 +83,6 @@ abstract class BrowseTabItem extends SidePanelTabItem {
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
-        refreshFlag = EditLinker.REFRESH_FOLDERS;
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         tab.setLayout(l);
@@ -180,10 +179,15 @@ abstract class BrowseTabItem extends SidePanelTabItem {
 
     }
 
-    @Override public void refresh(Map data) {
+    @Override
+    public boolean needRefresh(Map<String, Object> data) {
+        return data.containsKey("event") && ("unmount".equals(data.get("event")) || "fileUploaded".equals(data.get("event")));
+    }
+
+    @Override
+    public void doRefresh() {
         factory.getStore().removeAll();
         factory.getLoader().load();
-        setRefreshed();
     }
 
     protected abstract boolean acceptNode(GWTJahiaNode node);

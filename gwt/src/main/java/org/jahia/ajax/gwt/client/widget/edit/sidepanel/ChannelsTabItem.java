@@ -37,7 +37,6 @@ public class ChannelsTabItem extends SidePanelTabItem {
     @Override
     public TabItem create(GWTSidePanelTab sidePanelTab) {
         super.create(sidePanelTab);
-        refreshFlag = EditLinker.REFRESH_CHANNELS;
         tab.setScrollMode(Style.Scroll.AUTO);
 
         VBoxLayout verticalEastLayout = new VBoxLayout();
@@ -157,7 +156,12 @@ public class ChannelsTabItem extends SidePanelTabItem {
     }
 
     @Override
-    public void refresh(Map data) {
+    public boolean needRefresh(Map<String, Object> data) {
+        return data.containsKey("event") && "channelChanged".equals(data.get("event"));
+    }
+
+    @Override
+    public void doRefresh() {
         GWTJahiaChannel activeChannel = editLinker.getActiveChannel();
         int activeChannelIndex = 0;
 
@@ -213,7 +217,6 @@ public class ChannelsTabItem extends SidePanelTabItem {
         }
 
         tab.layout();
-        setRefreshed();
     }
 
     private native String getChannelTemplate() /*-{

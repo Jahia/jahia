@@ -40,17 +40,12 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.RootPanel;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class SwitchToLayoutConfigActionItem extends SwitchConfigActionItem {
@@ -65,15 +60,21 @@ public class SwitchToLayoutConfigActionItem extends SwitchConfigActionItem {
 
     @Override
     public void handleNewMainNodeLoaded(GWTJahiaNode node) {
+        Set<String> previousNonEditableTypes = linker.getConfig().getNonEditableTypes();
+        boolean nonEditableTypesChanged = false;
         if (node.get("supportsLayoutMode") == Boolean.TRUE) {
             setEnabled(true);
             linker.getConfig().setNonEditableTypes(nonEditableTypes);
-            linker.refresh(Linker.REFRESH_COMPONENTS,null);
+            nonEditableTypesChanged = previousNonEditableTypes != nonEditableTypes;
         } else {
             setEnabled(false);
             linker.getConfig().setNonEditableTypes(null);
-            linker.refresh(Linker.REFRESH_COMPONENTS,null);
+            nonEditableTypesChanged = previousNonEditableTypes != null;
         }
-
+        if (nonEditableTypesChanged) {
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put("event", "nonEditableTypesChanged");
+            linker.refresh(data);
+        }
     }
 }

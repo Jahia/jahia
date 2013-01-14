@@ -53,7 +53,9 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: toto
@@ -95,7 +97,10 @@ public class UnpublicationWorkflow extends PublicationWorkflow {
             public void onSuccess(Object result) {
                 WorkInProgressActionItem.removeStatus(status);
                 if (allUuids.size() < 20) {
-                    dialog.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES, null);
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put(Linker.REFRESH_MAIN, true);
+                    data.put("event", "unpublicationSuccess");
+                    dialog.getLinker().refresh(data);
                 }
             }
         };

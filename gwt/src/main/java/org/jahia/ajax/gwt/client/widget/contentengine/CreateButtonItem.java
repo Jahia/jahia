@@ -148,15 +148,10 @@ public class CreateButtonItem extends SaveButtonItem {
                                     + " " + node.getName());
                     engine.close();
 
-                    if (node.isPage() || node.getNodeTypes().contains("jnt:externalLink")
-                            || node.getNodeTypes().contains("jnt:nodeLink")
-                            || node.getNodeTypes().contains("jnt:template") || node.getInheritedNodeTypes().contains("jnt:template")
-                            || node.getInheritedNodeTypes().contains("jmix:visibleInPagesTree")) {
-                        engine.getLinker().setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
-                        engine.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES, null);
-                    } else {
-                        engine.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_FOLDERS + Linker.REFRESH_SOURCES, null);
-                    }
+                    engine.getLinker().setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put("node", node);
+                    engine.getLinker().refresh(data);
                 } else {
                     engine.getTabs().removeAll();
                     engine.initTabs();

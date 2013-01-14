@@ -51,6 +51,8 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: ktlili
@@ -99,7 +101,9 @@ public class PortletSaveAsCard extends PortletWizardCard {
             public void onSuccess(GWTJahiaNode result) {
                 if (getLinker() != null) {
                     getLinker().setSelectPathAfterDataUpdate(Arrays.asList(result.getPath()));
-                    getLinker().refresh(Linker.REFRESH_MAIN, null);
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put(Linker.REFRESH_MAIN, true);
+                    getLinker().refresh(data);
                 }
                 getPortletWizardWindow().onPortletCreated();
                 getPortletWizardWindow().hide();

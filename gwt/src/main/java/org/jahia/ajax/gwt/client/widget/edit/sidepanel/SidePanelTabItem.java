@@ -73,10 +73,8 @@ public class SidePanelTabItem implements Serializable {
 
     protected transient TabItem tab;
     protected transient EditLinker editLinker;
-    protected transient boolean needAutoRefresh;
     protected transient Map autoRefreshData;
     protected transient boolean needManualRefresh;
-    protected transient int refreshFlag = 0;
 
     public SidePanelTabItem() {
     }
@@ -97,47 +95,37 @@ public class SidePanelTabItem implements Serializable {
         this.editLinker = linker;
     }
 
-    public int getRefreshFlag() {
-        return refreshFlag;
-    }
-
-    public void markForManualRefresh(int refreshFlag) {
-        if ((this.refreshFlag & refreshFlag) != 0) {
+    public void markForManualRefresh(Map<String, Object> data) {
+        if (data.containsKey(Linker.REFRESH_ALL) || needRefresh(data)) {
             needManualRefresh = true;
         }
     }
 
-    public void markForAutoRefresh(int refreshFlag, Map data) {
-        if ((this.refreshFlag & refreshFlag) != 0) {
-            needAutoRefresh = true;
-            autoRefreshData = data;
+    public void markForAutoRefresh(Map<String, Object> data) {
+        autoRefreshData = data;
+    }
+
+    public void refresh(Map<String, Object> data) {
+        if (data != null && (data.containsKey(Linker.REFRESH_ALL) || needRefresh(data))) {
+            doRefresh();
+            autoRefreshData = null;
+            needManualRefresh = false;
         }
     }
 
-    public void refresh(int refreshFlag, Map data) {
-        if ((this.refreshFlag & refreshFlag) != 0) {
-            refresh(data);
-        }
+    /**
+     * Determines if a refresh is needed.
+     * Should be overridden in subclasses.
+     */
+    public boolean needRefresh(Map<String, Object> data) {
+        return false;
     }
 
     /**
      * Refreshes the content of this tab if applicable. Does nothing by default.
      * Should be overridden in subclasses to implement the refresh.
-     * @param data
      */
-    public void refresh(Map data) {
-        setRefreshed();
-    }
-
-    public void setRefreshed() {
-        needAutoRefresh = false;
-        autoRefreshData = null;
-        needManualRefresh = false;
-    }
-
-    public boolean isNeedAutoRefresh() {
-        return needAutoRefresh;
-    }
+    public void doRefresh() {}
 
     public Map getAutoRefreshData() {
         return autoRefreshData;
@@ -212,12 +200,8 @@ public class SidePanelTabItem implements Serializable {
             editLinker.loading(resource);
         }
 
-        public void refresh(int flag, Map data) {
-            editLinker.refresh(flag, null);
-        }
-
-        public void markForManualRefresh(int flag) {
-            editLinker.markForManualRefresh(flag);
+        public void refresh(Map<String, Object> data) {
+            editLinker.refresh(data);
         }
 
         public void select(Object o) {

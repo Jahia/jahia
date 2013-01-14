@@ -64,6 +64,7 @@ import com.google.gwt.user.client.Window;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * 
@@ -268,9 +269,9 @@ public class ContentRepositoryTabs extends LeftComponent {
         }
     }
 
-    public void refresh(int flag) {
+    public void refresh(Map<String, Object> data) {
         for (RepositoryTab tab : repositories) {
-            tab.refresh(flag);
+            tab.refresh(data);
         }
     }
 

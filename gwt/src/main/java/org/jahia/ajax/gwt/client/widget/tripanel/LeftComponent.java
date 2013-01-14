@@ -40,6 +40,8 @@
 
 package org.jahia.ajax.gwt.client.widget.tripanel;
 
+import java.util.Map;
+
 /**
  * 
  *
@@ -50,7 +52,7 @@ public abstract class LeftComponent extends LinkableComponent {
 
     public abstract void openAndSelectItem(Object item) ;
 
-    public abstract void refresh(int flag) ;
+    public abstract void refresh(Map<String, Object> data) ;
 
     public abstract Object getSelectedItem() ;
 

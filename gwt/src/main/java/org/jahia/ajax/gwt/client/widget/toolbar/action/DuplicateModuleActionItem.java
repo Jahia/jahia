@@ -51,8 +51,12 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Action item to create a new templates set
@@ -74,7 +78,9 @@ public class DuplicateModuleActionItem extends BaseActionItem {
                             JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
                             JahiaGWTParameters.setSite(result, linker);
                             if (((EditLinker) linker).getSidePanel() != null) {
-                                ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL, null);
+                                Map<String, Object> data = new HashMap<String, Object>();
+                                data.put(Linker.REFRESH_ALL, true);
+                                ((EditLinker) linker).getSidePanel().refresh(data);
                             }
                             MainModule.staticGoTo(result.getPath(), null);
                             SiteSwitcherActionItem.refreshAllSitesList(linker);

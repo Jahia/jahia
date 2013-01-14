@@ -737,9 +737,11 @@ public class MainModule extends Module {
                     refreshImages(body);
                 }
                 Hover.getInstance().removeAll();
-                ModuleHelper.initAllModules(MainModule.this, body);
-                ModuleHelper.buildTree(MainModule.this);
-                parse();
+                if ("true".equals(body.getAttribute("jahia-parse-html"))) {
+                    ModuleHelper.initAllModules(MainModule.this, body);
+                    ModuleHelper.buildTree(MainModule.this);
+                    parse();
+                }
                 editLinker.getMainModule().unmask();
                 needParseAfterLayout = true;
                 layout();

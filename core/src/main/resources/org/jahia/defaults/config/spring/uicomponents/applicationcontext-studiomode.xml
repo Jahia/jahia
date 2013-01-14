@@ -35,6 +35,11 @@
                 <value>jmix:layoutComponentContent</value>
             </set>
         </property>
+        <property name="skipMainModuleTypesDomParsing">
+            <list>
+                <value>jnt:editableFile</value>
+            </list>
+        </property>
         <property name="defaultUrlMapping" value="/cms/studio"/>
         <property name="sitesLocation" value="/modules/*"/>
         <property name="topToolbar">
@@ -64,7 +69,7 @@
                                             </bean>
                                         </property>
                                         <property name="titleKey" value="label.newApp"/>
-                                        <property name="icon" value="newTemplatesSet"/>
+                                        <property name="icon" value="newJahiapp"/>
                                     </bean>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
@@ -73,7 +78,7 @@
                                             </bean>
                                         </property>
                                         <property name="titleKey" value="label.newProfileModule"/>
-                                        <property name="icon" value="newTemplatesSet"/>
+                                        <property name="icon" value="newProfileModule"/>
                                     </bean>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
@@ -82,7 +87,7 @@
                                             </bean>
                                         </property>
                                         <property name="titleKey" value="label.newOSGiModule"/>
-                                        <property name="icon" value="newTemplatesSet"/>
+                                        <property name="icon" value="newOSGIModule"/>
                                     </bean>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
@@ -111,7 +116,7 @@
                                             </bean>
                                         </property>
                                         <property name="titleKey" value="label.newCssFile"/>
-                                        <property name="icon" value="newContent"/>
+                                        <property name="icon" value="newCssFile"/>
                                     </bean>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
@@ -121,7 +126,7 @@
                                             </bean>
                                         </property>
                                         <property name="titleKey" value="label.newJavascriptFile"/>
-                                        <property name="icon" value="newContent"/>
+                                        <property name="icon" value="newJavascriptFile"/>
                                     </bean>
                                 </list>
                             </property>
@@ -168,7 +173,7 @@
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ReleaseModuleActionItem"/>
                                         </property>
                                         <property name="titleKey" value="label.releaseWar"/>
-                                        <property name="icon" value="templateExport"/>
+                                        <property name="icon" value="releaseModule"/>
                                     </bean>
                                 </list>
                             </property>

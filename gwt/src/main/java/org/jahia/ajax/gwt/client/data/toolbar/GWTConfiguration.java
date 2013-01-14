@@ -69,6 +69,7 @@ public class GWTConfiguration implements IsSerializable, Serializable {
     private Set<String> nonEditableTypes;
     private Set<String> visibleTypes;
     private Set<String> nonVisibleTypes;
+    private Set<String> skipMainModuleTypesDomParsing;
 
     public GWTConfiguration() {
     	super();
@@ -188,6 +189,14 @@ public class GWTConfiguration implements IsSerializable, Serializable {
 
     public void setNonEditableTypes(Set<String> nonEditableTypes) {
         this.nonEditableTypes = nonEditableTypes;
+    }
+
+    public Set<String> getSkipMainModuleTypesDomParsing() {
+        return skipMainModuleTypesDomParsing;
+    }
+
+    public void setSkipMainModuleTypesDomParsing(Set<String> skipMainModuleTypesDomParsing) {
+        this.skipMainModuleTypesDomParsing = skipMainModuleTypesDomParsing;
     }
 
     public Set<String> getVisibleTypes() {

@@ -563,6 +563,7 @@ public class UIConfigHelper {
                 gwtConfig.setComponentsPaths(config.getComponentsPaths());
                 gwtConfig.setEditableTypes(config.getEditableTypes());
                 gwtConfig.setNonEditableTypes(config.getNonEditableTypes());
+                gwtConfig.setSkipMainModuleTypesDomParsing(config.getSkipMainModuleTypesDomParsing());
                 gwtConfig.setVisibleTypes(config.getVisibleTypes());
                 gwtConfig.setNonVisibleTypes(config.getNonVisibleTypes());
                 gwtConfig.setButtonsInLayer(config.isButtonsInLayer());

@@ -87,6 +87,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private Set<String> nonEditableTypes;
     private Set<String> visibleTypes;
     private Set<String> nonVisibleTypes;
+    private Set<String> skipMainModuleTypesDomParsing;
 
     private boolean buttonsInLayer = false;
 
@@ -241,6 +242,14 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     public void setNonEditableTypes(Set<String> nonEditableTypes) {
         this.nonEditableTypes = nonEditableTypes;
+    }
+
+    public Set<String> getSkipMainModuleTypesDomParsing() {
+        return skipMainModuleTypesDomParsing;
+    }
+
+    public void setSkipMainModuleTypesDomParsing(Set<String> skipMainModuleTypesDomParsing) {
+        this.skipMainModuleTypesDomParsing = skipMainModuleTypesDomParsing;
     }
 
     public Set<String> getVisibleTypes() {

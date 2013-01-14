@@ -96,7 +96,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     };
 
     private static final FastHashMap RANK;
-    
+
     private static final Pattern URL_PATTERN_1 = Pattern.compile("url( ", Pattern.LITERAL);
 
     private static final Pattern URL_PATTERN_2 = Pattern.compile("url(\"", Pattern.LITERAL);
@@ -261,10 +261,18 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         } else if (resource.getContextConfiguration().equals("page")) {
             if (renderContext.isEditMode()) {
                 if (renderContext.getServletPath().endsWith("frame")) {
+                    boolean doParse = true;
+                    if (renderContext.getEditModeConfig().getSkipMainModuleTypesDomParsing() != null) {
+                        for (String nt : renderContext.getEditModeConfig().getSkipMainModuleTypesDomParsing()) {
+                            doParse = !resource.getNode().isNodeType(nt);
+                            if (!doParse) {
+                                break;
+                            }
+                        }
+                    }
                     List<Element> bodyElementList = source.getAllElements(HTMLElementName.BODY);
                     if (bodyElementList.size() > 0) {
                         Element bodyElement = bodyElementList.get(bodyElementList.size() - 1);
-
                         EndTag bodyEndTag = bodyElement.getEndTag();
                         outputDocument.replace(bodyEndTag.getBegin(), bodyEndTag.getBegin() + 1, "</div><");
 
@@ -273,7 +281,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                         StartTag bodyStartTag = bodyElement.getStartTag();
                         outputDocument.replace(bodyStartTag.getEnd(), bodyStartTag.getEnd(), "\n" +
                                 "<div jahiatype=\"mainmodule\""
-                                 + " path=\"" +
+                                + " path=\"" +
                                 resource.getNode().getPath() +
                                 "\" locale=\"" +
                                 resource.getLocale() + "\"" +
@@ -283,6 +291,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                 ConstraintsHelper.getConstraints(
                                         renderContext.getMainResource().getNode()) +
                                 "\"" + ">");
+                        if (doParse) {
+                            outputDocument.replace(bodyStartTag.getEnd() - 1, bodyStartTag.getEnd()," jahia-parse-html=\"true\">");
+                        }
                     }
                 }
             }
@@ -337,7 +348,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     outputDocument.replace(idx, idx + 1, str);
                 }
                 if ((renderContext.isPreviewMode()) && !Boolean.valueOf((String) renderContext.getRequest().getAttribute(
-                                "org.jahia.StaticAssetFilter.doNotModifyDocumentTitle"))) {
+                        "org.jahia.StaticAssetFilter.doNotModifyDocumentTitle"))) {
                     for (Element title : element.getAllElements(HTMLElementName.TITLE)) {
                         int idx = title.getBegin() + title.toString().indexOf(">");
                         String str = Messages.getInternal("label.preview", renderContext.getUILocale());
@@ -465,7 +476,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
                     try {
                         OutputStream outMerged = new BufferedOutputStream(new FileOutputStream(minifiedAggregatedRealPath));
-                        try { 
+                        try {
                             for (String minifiedFile : minifiedPaths) {
                                 if (type.equals("js")) {
                                     outMerged.write("//".getBytes());
@@ -478,7 +489,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                     IOUtils.copy(is, stream);
                                     IOUtils.closeQuietly(is);
                                     String s = stream.toString("UTF-8");
-    
+
                                     String url = StringUtils.substringBeforeLast(pathsToAggregate.get(minifiedPaths.indexOf(minifiedFile)), "/");
                                     s = URL_PATTERN_1.matcher(s).replaceAll("url(");
                                     s = URL_PATTERN_2.matcher(s).replaceAll("url(\".." + url + "/");

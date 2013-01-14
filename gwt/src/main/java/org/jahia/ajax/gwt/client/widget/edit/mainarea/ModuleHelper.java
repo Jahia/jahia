@@ -200,7 +200,7 @@ public class ModuleHelper {
                                 Log.error("Unable to get node with publication info due to:", caught);
                             }
                         });
-        GWT.log("Parsing : " + (System.currentTimeMillis() - start));
+        GWT.log("Parsing : " + (System.currentTimeMillis() - start) + " ms");
     }
 
     public static void setNodeForModule(GWTJahiaNode gwtJahiaNode) {
@@ -239,7 +239,7 @@ public class ModuleHelper {
                 }
             }
         }
-        GWT.log("Build tree : " + (System.currentTimeMillis() - start));
+        GWT.log("Build tree : " + (System.currentTimeMillis() - start) + " ms");
     }
 
     public static Map<Element, Module> parse(Module module, Module parent) {
@@ -279,7 +279,7 @@ public class ModuleHelper {
             DOM.appendChild(divElement, moduleElement);
 
         }
-        GWT.log("Move : " + (System.currentTimeMillis() - start));
+        GWT.log("Move : " + (System.currentTimeMillis() - start) + " ms");
     }
 
     public static List<Module> getModules() {
@@ -323,7 +323,7 @@ public class ModuleHelper {
 //                }
             }
         }
-        GWT.log("Transform links : " + (System.currentTimeMillis() - start));
+        GWT.log("Transform links : " + (System.currentTimeMillis() - start) + " ms");
     }
 
     public static List<Element> getAllLinks(Element parent) {

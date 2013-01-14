@@ -1191,6 +1191,7 @@ public class ContentManagerHelper {
         File sources = getSource(moduleName, session);
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
 
+        templateManagerService.regenerateImportFile(moduleName, sources, session);
         templateManagerService.compileAndDeploy(moduleName, sources, session);
     }
 

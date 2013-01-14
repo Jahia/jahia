@@ -85,7 +85,7 @@ public class TemplatePackageDeployer implements ApplicationEventPublisherAware {
     private Map<String, Long> timestamps = new HashMap<String, Long>();
     private TemplatesWatcher templatesWatcher;
 
-    private JahiaTemplateManagerService service;
+    protected JahiaTemplateManagerService service;
 
     private TemplatePackageRegistry templatePackageRegistry;
     private ComponentRegistry componentRegistry;

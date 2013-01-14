@@ -602,7 +602,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         setSCMConfigInPom(sources, fullUri);
         JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
         templateManagerService.setSourcesFolderInPackageAndNode(pack, sources, node);
-
+        session.save();
         scm.commit("Initial commit");
     }
 

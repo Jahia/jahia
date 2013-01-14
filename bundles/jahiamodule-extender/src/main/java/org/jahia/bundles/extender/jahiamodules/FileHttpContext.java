@@ -47,6 +47,15 @@ public class FileHttpContext implements HttpContext {
                         logger.warn("Invalid source folder " + sourceFolder + ", cannot convert to URL", e);
                     }
                 }
+                // Legacy sources
+                File webappFolderFile = new File(sourceFolder + "/src/main/webapp");
+                if (webappFolderFile.exists()) {
+                    try {
+                        sourceURLs.add(webappFolderFile.toURI().toURL());
+                    } catch (MalformedURLException e) {
+                        logger.warn("Invalid source folder " + sourceFolder + ", cannot convert to URL", e);
+                    }
+                }
             }
         }
         return sourceURLs.toArray(new URL[sourceURLs.size()]);

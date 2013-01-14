@@ -59,6 +59,7 @@ public class Connection extends URLConnection {
             "org.jahia.bundles.extender.jahiamodules",
             "org.jahia.data.templates",
             "org.jahia.data.viewhelper.principal",
+            "org.jahia.data.templates",
             "org.jahia.defaults.config.spring",
             "org.jahia.exceptions",
             "org.jahia.modules.social.taglib",
@@ -115,6 +116,7 @@ public class Connection extends URLConnection {
             "org.osgi.util.tracker",
             "org.springframework.beans.factory.xml",
             "org.springframework.beans.factory.config",
+            "org.springframework.context.support",
             "org.springframework.orm.hibernate3.annotation",
             "org.springframework.orm.hibernate3.support",
             "org.springframework.scheduling.quartz",
@@ -389,6 +391,12 @@ public class Connection extends URLConnection {
                 bndProperties.put("Jahia-Static-Resources", staticResources.substring(1));
             }
         }
+
+        String sources = inputManifest.getMainAttributes().getValue("Source-Folders");
+        if (sources != null) {
+            bndProperties.put("Source-Folders",sources);
+        }
+
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
 
         InputStream bndResultInputStream = BndUtils.createBundle(byteArrayInputStream,

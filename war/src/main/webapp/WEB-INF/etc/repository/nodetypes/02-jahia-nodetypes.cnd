@@ -847,7 +847,7 @@ extends = jnt:content
 [jnt:viewFile] > jnt:editableFile, jmix:viewProperties
  - nodeTypeName (string)
 
-[jnt:definitionFile] > jnt:file
+[jnt:definitionFile] > jnt:editableFile
  + * (jnt:nodeType)
 
 [jnt:nodeType] > nt:base, mix:title orderable abstract
@@ -871,6 +871,7 @@ extends = jnt:content
  - j:itemsType (STRING,choicelist) < 'content','metadata','layout','options'
 
 [jnt:itemDefinition] > mix:title abstract
+ - jcr:title (STRING) i18n boost=2.0
 
 [jnt:propertyDefinition] > jnt:itemDefinition
  - j:requiredType (STRING,choicelist) = 'String' mandatory nofulltext
@@ -926,5 +927,5 @@ extends = jnt:content
 
 [jnt:resourceBundleFolder] > jnt:folder
 
-[jnt:resourceBundleFile] > jnt:file
+[jnt:resourceBundleFile] > jnt:editableFile
  - * (string) i18n

@@ -9,7 +9,7 @@
 <textarea id="sourceCode" editable="false"><c:out value="${currentNode.properties.sourceCode.string}" escapeXml="true"/></textarea>
 
 <script type="text/javascript">
-    var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("sourceCode"),{mode:"${fn:endsWith(currentNode.name,".css")?".css":fn:endsWith(currentNode.name,".js")?"javascript":"htmlmixed"}",lineNumbers:true, matchBrackets:true, readOnly:true});
+    var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("sourceCode"),{mode:"${fn:endsWith(currentNode.name,".css")?".css":(fn:endsWith(currentNode.name,".js")?"javascript":"htmlmixed")}",lineNumbers:true, matchBrackets:true, readOnly:true});
     myCodeMirror.setSize("100%","100%");
 
 </script>

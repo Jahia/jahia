@@ -150,11 +150,30 @@ public class BoundModule extends SimpleModule {
                             public void onModuleSelection(Module selection) {
                                 mainModule.getInnerElement().getStyle().setProperty("cursor", "");
                                 mainModule.getEditLinker().setSelectionListener(null);
-                                if (selection.getNode() != node) {
+                                if (selection.getNode() != null && selection.getNode()!= node) {
                                     List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
                                     final GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty(property,
                                             new GWTJahiaNodePropertyValue(selection.getNode(),
                                                     GWTJahiaNodePropertyType.WEAKREFERENCE));
+                                    properties.add(gwtJahiaNodeProperty);
+                                    JahiaContentManagementService.App.getInstance()
+                                            .saveProperties(Arrays.asList(node), properties, null, new BaseAsyncCallback() {
+                                                public void onSuccess(Object o) {
+                                                    Map<String, Object> data = new HashMap<String, Object>();
+                                                    data.put(Linker.REFRESH_MAIN, true);
+                                                    getMainModule().getEditLinker().refresh(data);
+                                                }
+
+                                                public void onApplicationFailure(Throwable throwable) {
+                                                    Window.alert("Failed : " + throwable);
+                                                }
+                                            });
+                                } else if (selection instanceof AreaModule) {
+                                    String path = ((AreaModule) selection).getAreaHolder();
+                                    List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
+                                    final GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty(property,
+                                            new GWTJahiaNodePropertyValue(path,
+                                                    GWTJahiaNodePropertyType.STRING));
                                     properties.add(gwtJahiaNodeProperty);
                                     JahiaContentManagementService.App.getInstance()
                                             .saveProperties(Arrays.asList(node), properties, null, new BaseAsyncCallback() {

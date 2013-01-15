@@ -40,6 +40,7 @@
 
 package org.jahia.taglibs.template.include;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -130,10 +131,10 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     additionalParameters += " editable=\"false\"";
                 }
             }
-            if (mockupStyle != null) {
+            if (!StringUtils.isEmpty(mockupStyle)) {
                 additionalParameters += " mockupStyle=\"" + mockupStyle + "\"";
             }
-
+            additionalParameters += " areaHolder=\""+resource.getNode().getIdentifier()+"\"";
             printModuleStart(getModuleType(renderContext), areaPath, null, null, additionalParameters);
             if (getBodyContent() != null) {
                 getPreviousOut().write(getBodyContent().getString());

@@ -77,6 +77,7 @@ public class AreaModule extends SimpleModule {
     private String moduleType;
     private String mockupStyle;
     private String areaType = "jnt:contentList";  // todo set the areatype
+    private String areaHolder;
     private boolean missingList;
 
     public AreaModule(String id, String path, Element divElement, String moduleType, MainModule mainModule) {
@@ -90,6 +91,7 @@ public class AreaModule extends SimpleModule {
 
         this.mockupStyle = DOM.getElementAttribute(divElement, "mockupStyle");
         this.missingList = "true".equals(DOM.getElementAttribute(divElement, "missingList"));
+        this.areaHolder =  DOM.getElementAttribute(divElement, "areaHolder");
 
         this.moduleType = moduleType;
         String headerText;
@@ -246,6 +248,10 @@ public class AreaModule extends SimpleModule {
 //            }
 //            ctn.layout();
         }
+    }
+
+    public String getAreaHolder() {
+        return areaHolder;
     }
 
     @Override public String getPath() {

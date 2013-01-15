@@ -1182,7 +1182,7 @@
             <version>${atmosphere.version}</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.atmosphere</groupId>
             <artifactId>atmosphere-annotations</artifactId>
             <version>${atmosphere.version}</version>
@@ -1193,12 +1193,12 @@
             <artifactId>atmosphere-jersey</artifactId>
             <version>${atmosphere.version}</version>
             <scope>compile</scope>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>org.atmosphere</groupId>
             <artifactId>atmosphere-gwt-server</artifactId>
-            <version>1.0.4</version>
+            <version>${atmosphere.version}</version>
         </dependency>
 
     </dependencies>

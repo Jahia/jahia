@@ -361,24 +361,17 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     font-size:11px;
 }
 .studiomodeAreaTemplate{
-    /* background-color: #336699;
-    border:1px solid #003366;
+    min-height:100px;
+    overflow: hidden;
+    background-color:#d8effb;
+    padding:2px;
     color:#111;
-    padding:5px;
-    left: 25%;
-    top: 25%;
-    width: 50%;
-    margin-left: auto;
-    margin-right: auto;
-    text-align:center;
+    position:relative;
+    border: 1px dashed #99ccff;
     font-family: tahoma, arial, verdana, sans-serif;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-    -moz-box-shadow: 0 1px 3px #999;
-    -webkit-box-shadow: 0 1px 3px #999;
-    box-shadow: 0 1px 3px #999;*/
+    font-size:11px;
 }
+
 .studiolayoutmodeArea {
     min-height:100px;
     overflow: hidden;

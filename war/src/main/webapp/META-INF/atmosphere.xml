@@ -1,7 +1,7 @@
 <atmosphere-handlers>
-    <atmosphere-handler context-root="/atmosphere/*" class-name="org.atmosphere.handler.ReflectorServletProcessor">
+    <!--<atmosphere-handler context-root="/atmosphere/*" class-name="org.atmosphere.handler.ReflectorServletProcessor">
         <property name="servletClass" value="com.sun.jersey.spi.container.servlet.ServletContainer"/>
-    </atmosphere-handler>
+    </atmosphere-handler>-->
 
     <atmosphere-handler context-root="/gwtAtmosphere/gwtComet" class-name="org.jahia.ajax.gwt.commons.server.GWTAtmosphereHandler">
         <property name="heartbeat" value="20000"/>

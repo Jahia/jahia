@@ -175,7 +175,7 @@
             </activation>
             <modules>
                 <module>assets</module>
-                <module>atmosphere</module>
+                <!--<module>atmosphere</module>-->
                 <module>channels</module>
                 <module>default</module>
                 <module>defaultSiteSettings</module>
@@ -199,7 +199,7 @@
             </activation>
             <modules>
                 <module>assets</module>
-                <module>atmosphere</module>
+                <!--<module>atmosphere</module>-->
                 <module>channels</module>
                 <module>contentRetrieval</module>
                 <module>default</module>

@@ -90,7 +90,7 @@ public class ModuleHelper {
         return list;
     }
 
-    public static void initAllModules(final MainModule m, Element htmlElement) {
+    public static void initAllModules(final MainModule m, Element htmlElement, List<Element> el) {
         long start = System.currentTimeMillis();
         modules = new ArrayList<Module>();
         modulesById = new HashMap<String, Module>();
@@ -104,8 +104,6 @@ public class ModuleHelper {
 
         String mainPath = null;
         String mainTemplate = null;
-
-        List<Element> el = getAllJahiaTypedElementsRec(htmlElement);
 
         Set<String> allNodetypes = new HashSet<String>();
         allNodetypes.addAll(Arrays.asList(m.getNodeTypes().split(" ")));
@@ -212,13 +210,12 @@ public class ModuleHelper {
         }
     }
 
-    public static void buildTree(Module module) {
+    public static void buildTree(Module module, List<Element> el) {
         long start = System.currentTimeMillis();
         String rootId = module.getModuleId();
         Element element = module.getInnerElement();
         children = new HashMap<String, List<String>>();
 
-        List<Element> el = getAllJahiaTypedElementsRec(element);
         for (Element divElement : el) {
             Element currentEl = divElement;
             while (currentEl != null) {
@@ -242,9 +239,8 @@ public class ModuleHelper {
         GWT.log("Build tree : " + (System.currentTimeMillis() - start) + " ms");
     }
 
-    public static Map<Element, Module> parse(Module module, Module parent) {
+    public static Map<Element, Module> parse(Module module, Module parent, List<Element> el) {
         Map<Element, Module> m = new HashMap<Element, Module>();
-        List<Element> el = getAllJahiaTypedElementsRec(module.getInnerElement());
         GWT.log("size : "+el.size());
         for (Element divElement : el) {
             String jahiatype = DOM.getElementAttribute(divElement, JAHIA_TYPE);
@@ -255,7 +251,7 @@ public class ModuleHelper {
 
                     if (subModule != null) {
                         subModule.setDepth(module.getDepth() + 1);
-                        m.putAll(parse(subModule, module));
+                        m.putAll(parse(subModule, module, getAllJahiaTypedElementsRec(subModule.getInnerElement())));
                         m.put(divElement, subModule);
                         divElement.setInnerHTML("");
                         module.getContainer().add(subModule.getContainer());

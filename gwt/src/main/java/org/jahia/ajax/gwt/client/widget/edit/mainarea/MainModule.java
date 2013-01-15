@@ -52,11 +52,10 @@ import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.IFrameElement;
-import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.dom.client.*;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.*;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Frame;
@@ -449,8 +448,8 @@ public class MainModule extends Module {
         this.ctrlActive = ctrlActive;
     }
 
-    public void parse() {
-        moduleMap = ModuleHelper.parse(this, null);
+    public void parse(List<Element> el) {
+        moduleMap = ModuleHelper.parse(this, null, el);
     }
 
     public String getModuleId() {
@@ -755,11 +754,37 @@ public class MainModule extends Module {
                     refreshImages(body);
                 }
                 Hover.getInstance().removeAll();
+                List<Element> el = null;
+                List<Element> elBody = null;
                 if ("true".equals(body.getAttribute("jahia-parse-html"))) {
-                    ModuleHelper.initAllModules(MainModule.this, body);
-                    ModuleHelper.buildTree(MainModule.this);
-                    parse();
+                    Element innerElement = getInnerElement();
+                    elBody = ModuleHelper.getAllJahiaTypedElementsRec(body);
+                    if (body.equals(innerElement)) {
+                        el = elBody;
+                    } else {
+                        el = ModuleHelper.getAllJahiaTypedElementsRec(getInnerElement());
+                    }
+
+                } else {
+                    NodeList<com.google.gwt.dom.client.Element> el1 = body.getElementsByTagName("div");
+                    int i = 0;
+                    Element e = null;
+                    while (i < el1.getLength()) {
+                        e = (Element) el1.getItem(i);
+                        if ("mainmodule".equals(e.getAttribute(ModuleHelper.JAHIA_TYPE))) {
+                            el = Arrays.asList(e);
+                            elBody = Arrays.asList(e);
+                            break;
+                        }
+                        i ++;
+                    }
+
+
                 }
+                ModuleHelper.initAllModules(MainModule.this, body,elBody);
+                ModuleHelper.buildTree(MainModule.this,el);
+                parse(el);
+
                 editLinker.getMainModule().unmask();
                 needParseAfterLayout = true;
                 layout();

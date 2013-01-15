@@ -49,6 +49,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
@@ -56,6 +57,7 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -117,7 +119,9 @@ public class SidePanel extends ContentPanel {
         layout();
         refreshButton = new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
-                ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem")).refresh(null);
+                Map<String, Object> data = new HashMap<String, Object>();
+                data.put(Linker.REFRESH_ALL, true);
+                ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem")).refresh(data);
                 DeployTemplatesActionItem.refreshAllMenus(editLinker);
                 updateRefreshButton();
             }

@@ -145,7 +145,13 @@ public class ModulesDataSource extends VFSDataSource {
                     && StringUtils.equals(Constants.JAHIANT_RESOURCEBUNDLE_FOLDER,
                     getDataType(parent)) ? type : null;
         }
-        if (type == null && fileObject.getType() == FileType.FILE) {
+        if (type == null && fileObject.getType() == FileType.FILE
+                && fileObject.getParent() !=null
+                && StringUtils.equals(Constants.JAHIANT_TEMPLATETYPEFOLDER,getDataType(fileObject.getParent()))
+                && ( fileObject.getContent().getContentInfo().getContentType() == null ||
+                // at least remove image binary files from rendering
+                fileObject.getContent().getContentInfo().getContentType() !=null
+                && !StringUtils.contains(fileObject.getContent().getContentInfo().getContentType(),"image"))) {
             type = "jnt:editableFile";
         }
         return type != null ? type : super.getDataType(fileObject);

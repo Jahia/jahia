@@ -420,6 +420,39 @@
                         </property>
                     </bean>
                 </entry>
+                <entry key="jnt:editableFile">
+                    <bean parent="studioBaseEngineConfiguration">
+                        <property name="engineTabs">
+                            <list>
+                                <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                                    <property name="id" value="codeEditor"/>
+                                    <property name="titleKey" value="label.engineTab.codeEditor"/>
+                                    <property name="tabItem">
+                                        <bean class="org.jahia.ajax.gwt.client.widget.contentengine.CodeEditorTabItem">
+                                            <property name="codePropertyName" value="sourceCode" />
+                                        </bean>
+                                    </property>
+                                </bean>
+                            </list>
+                        </property>
+                        <property name="creationButtons">
+                            <list>
+                                <ref bean="Engine.Button.SaveAsNewView" />
+                            </list>
+                        </property>
+                        <property name="editionButtons">
+                            <list>
+                                <ref bean="Engine.Button.Update" />
+                                <ref bean="Engine.Button.SaveAsNewView" />
+                            </list>
+                        </property>
+                        <property name="commonButtons">
+                            <list>
+                                <ref bean="Engine.Button.Cancel" />
+                            </list>
+                        </property>
+                    </bean>
+                </entry>
                 <entry key="jnt:javascriptFile">
                     <bean parent="studioBaseEngineConfiguration">
                         <property name="engineTabs">
@@ -456,6 +489,7 @@
                             </list>
                         </property>
                     </bean>
+
                 </entry>
                 <entry key="jnt:resourceBundleFolder">
                     <bean parent="studioBaseEngineConfiguration">

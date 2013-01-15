@@ -192,7 +192,8 @@ public class ModulesDataSource extends VFSDataSource {
                 InputStream is = null;
                 try {
                     is = getFile(path).getContent().getInputStream();
-                    String[] propertyValue = {IOUtils.toString(is, Charsets.UTF_8)};
+                    java.nio.charset.Charset c = "jnt:resourceBundleFile".equals(data.getType()) ? Charsets.ISO_8859_1:Charsets.UTF_8;
+                    String[] propertyValue = {IOUtils.toString(is, c)};
                     data.getProperties().put("sourceCode", propertyValue);
                     data.getProperties().put("nodeTypeName", new String[]{path.split("/")[1].replace("_", ":")});
                 } catch (Exception e) {

@@ -59,14 +59,13 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.ModuleSelectionListener;
 
 import java.util.*;
 
 public class BoundModule extends SimpleModule {
     private String property = "j:bindedComponent";
-    private String headerText ;
+    private String headerText;
     private Boolean linked = null;
 
     public BoundModule(String id, String path, Element divElement, final MainModule mainModule) {
@@ -143,51 +142,37 @@ public class BoundModule extends SimpleModule {
                         if (s.equals("/")) {
                             s = "";
                         }
-                        mainModule.getInnerElement().getStyle().setProperty("cursor", 
+                        mainModule.getInnerElement().getStyle().setProperty("cursor",
                                 "url('" + s + "/gwt/resources/images/xtheme-jahia-andromeda/panel/link.cur'), pointer");
 
                         mainModule.getEditLinker().setSelectionListener(new ModuleSelectionListener() {
                             public void onModuleSelection(Module selection) {
                                 mainModule.getInnerElement().getStyle().setProperty("cursor", "");
                                 mainModule.getEditLinker().setSelectionListener(null);
-                                if (selection.getNode() != null && selection.getNode()!= node) {
-                                    List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
-                                    final GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty(property,
-                                            new GWTJahiaNodePropertyValue(selection.getNode(),
-                                                    GWTJahiaNodePropertyType.WEAKREFERENCE));
-                                    properties.add(gwtJahiaNodeProperty);
-                                    JahiaContentManagementService.App.getInstance()
-                                            .saveProperties(Arrays.asList(node), properties, null, new BaseAsyncCallback() {
-                                                public void onSuccess(Object o) {
-                                                    Map<String, Object> data = new HashMap<String, Object>();
-                                                    data.put(Linker.REFRESH_MAIN, true);
-                                                    getMainModule().getEditLinker().refresh(data);
-                                                }
-
-                                                public void onApplicationFailure(Throwable throwable) {
-                                                    Window.alert("Failed : " + throwable);
-                                                }
-                                            });
+                                List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
+                                final GWTJahiaNodeProperty gwtJahiaNodeProperty;
+                                if (selection.getNode() != null && selection.getNode() != node) {
+                                    gwtJahiaNodeProperty = new GWTJahiaNodeProperty(property, new GWTJahiaNodePropertyValue(selection.getNode(), GWTJahiaNodePropertyType.WEAKREFERENCE));
                                 } else if (selection instanceof AreaModule) {
-                                    String path = ((AreaModule) selection).getAreaHolder();
-                                    List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
-                                    final GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty(property,
-                                            new GWTJahiaNodePropertyValue(path,
-                                                    GWTJahiaNodePropertyType.STRING));
-                                    properties.add(gwtJahiaNodeProperty);
-                                    JahiaContentManagementService.App.getInstance()
-                                            .saveProperties(Arrays.asList(node), properties, null, new BaseAsyncCallback() {
-                                                public void onSuccess(Object o) {
-                                                    Map<String, Object> data = new HashMap<String, Object>();
-                                                    data.put(Linker.REFRESH_MAIN, true);
-                                                    getMainModule().getEditLinker().refresh(data);
-                                                }
-
-                                                public void onApplicationFailure(Throwable throwable) {
-                                                    Window.alert("Failed : " + throwable);
-                                                }
-                                            });
+                                    String areaHolder = ((AreaModule) selection).getAreaHolder();
+                                    gwtJahiaNodeProperty = new GWTJahiaNodeProperty(property, new GWTJahiaNodePropertyValue(areaHolder, GWTJahiaNodePropertyType.STRING));
+                                } else {
+                                    return;
                                 }
+                                properties.add(gwtJahiaNodeProperty);
+                                JahiaContentManagementService.App.getInstance()
+                                        .saveProperties(Arrays.asList(node), properties, null, new BaseAsyncCallback() {
+                                            public void onSuccess(Object o) {
+                                                Map<String, Object> data = new HashMap<String, Object>();
+                                                data.put(Linker.REFRESH_MAIN, true);
+                                                getMainModule().getEditLinker().refresh(data);
+                                            }
+
+                                            public void onApplicationFailure(Throwable throwable) {
+                                                Window.alert("Failed : " + throwable);
+                                            }
+                                        });
+
                             }
                         });
                     }

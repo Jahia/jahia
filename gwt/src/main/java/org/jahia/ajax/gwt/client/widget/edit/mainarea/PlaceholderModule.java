@@ -92,7 +92,13 @@ public class PlaceholderModule extends Module {
         } else {
             setBorders(true);
         }
-        if (mainModule.getConfig().isButtonsInLayer()) {
+
+        html = new HTML("");
+    }
+
+    @Override
+    public void onParsed() {
+        if (mainModule.getConfig().isButtonsInLayer() && getParentModule()!=null && getParentModule().getHeader()!=null) {
             final LayoutContainer visiblePanel = new LayoutContainer();
             //        panel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
             visiblePanel.addStyleName("x-small-editor");
@@ -137,11 +143,6 @@ public class PlaceholderModule extends Module {
             panel.add(html);
             add(panel);
         }
-
-    }
-
-    @Override
-    public void onParsed() {
     }
 
     public void onNodeTypesLoaded() {
@@ -255,7 +256,7 @@ public class PlaceholderModule extends Module {
                 icon.setTitle(nodeType != null ? nodeType.getLabel() : s );
                 LayoutContainer p = new HorizontalPanel();
                 p.add(icon);
-                if (!mainModule.getConfig().isButtonsInLayer()) {
+                if (!mainModule.getConfig().isButtonsInLayer() || getParentModule().getHeader()!=null) {
                     if (getWidth() > 150) {
                         p.add(new Text(nodeType != null ? nodeType.getLabel() : s));
                     }
@@ -274,7 +275,7 @@ public class PlaceholderModule extends Module {
                         }
                     }
                 });
-                if (mainModule.getConfig().isButtonsInLayer()) {
+                if (mainModule.getConfig().isButtonsInLayer() && getParentModule().getHeader()!=null) {
                     getParentModule().getHeader().addTool(p);
                 } else {
                     panel.add(p);
@@ -304,7 +305,7 @@ public class PlaceholderModule extends Module {
             CopyPasteEngine.getInstance().addPlaceholder(this);
             updatePasteButton();
 
-            if (mainModule.getConfig().isButtonsInLayer()) {
+            if (mainModule.getConfig().isButtonsInLayer() && getParentModule().getHeader()!=null) {
                 getParentModule().getHeader().addTool(pasteButton);
             } else {
                 panel.add(pasteButton);

@@ -55,6 +55,8 @@ import javax.servlet.ServletContext;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,10 +173,24 @@ class JahiaResourceBundleControl extends Control {
         }
 
         ResourceBundle bundle = null;
-        final String resourceName = StringUtils.replace(toResourceName(toBundleName(baseName, locale), "properties"),
-                "___", ".");
+        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getPackageForBundle(baseName);
+        String resourceName = null;
+        InputStream stream = null;
+        if (aPackage != null && aPackage.getSourcesFolder() != null) {
+            String sourcesFolderPath = aPackage.getSourcesFolder().getPath();
+            String rbFileName = toBundleName(StringUtils.substringAfterLast(baseName, "."), locale) + ".properties";
+            resourceName = "file://" + sourcesFolderPath + "/src/main/webapp/resources/" + rbFileName;
+            stream = getResourceBundleStream(loader, reload, resourceName, baseName);
+            if (stream == null) {
+                resourceName = "file://" + sourcesFolderPath + "/src/main/resources/resources/" + rbFileName;
+                stream = getResourceBundleStream(loader, reload, resourceName, baseName);
+            }
+        }
+        if (stream == null) {
+            resourceName = StringUtils.replace(toResourceName(toBundleName(baseName, locale), "properties"), "___", ".");
+            stream = getResourceBundleStream(loader, reload, resourceName, baseName);
+        }
 
-        InputStream stream = getResourceBundleStream(loader, reload, resourceName, baseName);
         if (stream != null) {
             try {
                 bundle = new JahiaPropertyResourceBundle(stream);
@@ -189,5 +205,14 @@ class JahiaResourceBundleControl extends Control {
         }
 
         return bundle;
+    }
+
+    @Override
+    public long getTimeToLive(String baseName, Locale locale) {
+        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getPackageForBundle(baseName);
+        if (aPackage != null && aPackage.getSourcesFolder() != null) {
+            return TTL_DONT_CACHE;
+        }
+        return super.getTimeToLive(baseName, locale);
     }
 }

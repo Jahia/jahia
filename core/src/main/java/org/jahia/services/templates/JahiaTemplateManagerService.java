@@ -323,6 +323,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 setSourcesFolderInPackageAndNode(pack, modulePath, node);
                 session.save();
 
+                // flush resource bundle cache
+                ResourceBundles.flushCache();
+                NodeTypeRegistry.getInstance().flushLabels();
+
                 return node;
             } else {
                 FileUtils.deleteDirectory(sources);

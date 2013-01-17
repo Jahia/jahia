@@ -53,7 +53,11 @@
     <name>dummy2</name>
     <packaging>war</packaging>
     <description>Dummy module for the resource bundle lookup test</description>
-    
+    <scm>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/test/dummy-modules/dummy2</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/test/dummy-modules/dummy2</developerConnection>
+        <url>https://devtools.jahia.com/svn/jahia/trunk/test/dummy-modules/dummy2</url>
+    </scm>
     <repositories>
         <repository>
             <id>jahia-public</id>
@@ -102,6 +106,7 @@
 		                    <Specification-Title>${project.name}</Specification-Title>
 		                    <Specification-Version>${project.version}</Specification-Version>
 		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
+                            <Source-Control-URI>${project.scm.connection}</Source-Control-URI>
                             <Source-Folders>${project.basedir}</Source-Folders>
                             <package-name>${project.name}</package-name>
                             <depends>default</depends>

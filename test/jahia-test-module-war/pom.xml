@@ -49,7 +49,11 @@
     <artifactId>jahia-test-module-war</artifactId>
     <name>Jahia Test Module War Package</name>
     <packaging>war</packaging>
-
+    <scm>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/test/jahia-test-module-war</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/test/jahia-test-module-war</developerConnection>
+        <url>https://devtools.jahia.com/svn/jahia/trunk/test/jahia-test-module-war</url>
+    </scm>
     <profiles>
         <profile>
             <id>eclipse-integration</id>
@@ -335,6 +339,7 @@
 		                    <Specification-Version>${project.version}</Specification-Version>
 		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <Source-Folders>${project.basedir}</Source-Folders>
+                            <Source-Control-URI>${project.scm.connection}</Source-Control-URI>
                             <package-name>${project.name}</package-name>
                             <depends>Default Jahia Templates</depends>
                             <deploy-on-site>all</deploy-on-site>                            

@@ -203,7 +203,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                 compiledRulesDir.mkdirs();
             }
             // first let's test if the file exists in the same location, if it was pre-packaged as a compiled rule
-            File pkgFile = new File(compiledRulesDir, dsrlFile.getURL().getPath() + ".pkg");
+            File pkgFile = new File(compiledRulesDir, StringUtils.substringAfterLast(dsrlFile.getURL().getPath(),"/") + ".pkg");
             if (pkgFile.exists() && pkgFile.lastModified() > dsrlFile.lastModified()) {
                 ObjectInputStream ois = null;
                 try {

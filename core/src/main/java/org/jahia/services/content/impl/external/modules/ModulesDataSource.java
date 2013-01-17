@@ -562,6 +562,7 @@ public class ModulesDataSource extends VFSDataSource {
                     file.delete();
                 }
             }
+            ResourceBundle.clearCache();
         } catch (FileSystemException e) {
             logger.error(e.getMessage(), e);
         } catch (IOException e) {
@@ -710,6 +711,7 @@ public class ModulesDataSource extends VFSDataSource {
                     os = content.getOutputStream();
                     osw = new OutputStreamWriter(os, Charset.forName("ISO-8859-1"));
                     p.store(osw, rbPath);
+                    ResourceBundle.clearCache();
                 } catch (FileSystemException e) {
                     logger.error("Failed to save resourceBundle", e);
                 } catch (IOException e) {

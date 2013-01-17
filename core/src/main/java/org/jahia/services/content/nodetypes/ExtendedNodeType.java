@@ -1215,9 +1215,24 @@ public class ExtendedNodeType implements NodeType {
                 .append(getName())
                 .toHashCode();
     }
-    
+
     public void clearLabels() {
         labels.clear();
         descriptions.clear();
+        if (allProperties != null) {
+            for (ExtendedPropertyDefinition propertyDefinition : allProperties.values()) {
+                propertyDefinition.clearLabels();
+            }
+        }
+        if (properties != null) {
+            for (ExtendedPropertyDefinition propertyDefinition : properties.values()) {
+                propertyDefinition.clearLabels();
+            }
+        }
+        if(items!=null) {
+            for (ExtendedItemDefinition item : items) {
+                item.clearLabels();
+            }
+        }
     }
 }

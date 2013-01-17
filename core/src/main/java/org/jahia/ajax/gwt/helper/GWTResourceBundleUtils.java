@@ -43,15 +43,7 @@ package org.jahia.ajax.gwt.helper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 import javax.jcr.RepositoryException;
 
@@ -66,6 +58,7 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
@@ -268,7 +261,8 @@ final public class GWTResourceBundleUtils {
                 logger.debug("Removing resource bundle node {}", toDelete.getPath());
                 toDelete.remove();
             }
-
+            ResourceBundle.clearCache();
+            NodeTypeRegistry.getInstance().flushLabels();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());

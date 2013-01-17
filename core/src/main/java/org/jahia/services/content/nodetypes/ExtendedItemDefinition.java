@@ -299,5 +299,6 @@ public class ExtendedItemDefinition implements ItemDefinition {
     public void clearLabels() {
         labels.clear();
         tooltipsByNodeType.clear();
+        labelsByNodeType.clear();
     }
 }

@@ -198,7 +198,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                     if (!dependency.equals(nodePath)) {
                         if (!JCRContentUtils.isNotJcrUuid(dependency)) {
                             final boolean finalCheckRootPath = checkRootPath;
-                            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                            JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Object>() {
                                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                 	try{
                                 		final JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(dependency);
@@ -267,6 +267,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         }
     }
 
+    @SuppressWarnings("unchecked")
     private String getAclKeyPartForNode(RenderContext renderContext, boolean checkRootPath, String nodePath,
                                         boolean appendNodePath, JahiaUser principal, String userName)
             throws RepositoryException {
@@ -397,6 +398,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
     private void initCache(final String userName) throws RepositoryException {
         template.doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Object>() {
+            @SuppressWarnings("unchecked")
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 Query query = session.getWorkspace().getQueryManager().createQuery(
                         "select * from [jnt:ace] as ace where ace.[j:principal] = 'u:" + userName + "'",

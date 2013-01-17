@@ -4,7 +4,7 @@
 [jnt:customRow] > jnt:content, jmix:layoutComponentContent
  - divID (string) indexed=no
  - divClass (string) indexed=no
- - customColumn (string) indexed=no
+ - customColumn (string) indexed=no mandatory
  - colNames (string) indexed=no
  + * (nt:base) = nt:base version
 

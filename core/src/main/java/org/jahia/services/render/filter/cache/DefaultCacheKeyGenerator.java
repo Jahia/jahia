@@ -84,11 +84,76 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         return args.toArray(new String[args.size()]);
     }
 
+<<<<<<< .working
     public String getPath(String key) {
         PathCacheKeyPartGenerator pathCacheKeyPartGenerator = (PathCacheKeyPartGenerator) getPartGenerator("path");
         if (pathCacheKeyPartGenerator != null) {
             String[] args = key.split("@@");
             return pathCacheKeyPartGenerator.getPath(args[fields.indexOf("path")]);
+=======
+    public String appendAcls(final Resource resource, final RenderContext renderContext, boolean appendNodePath) {
+        try {
+            if (renderContext.getRequest() != null && Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.perUser"))) {
+                return PER_USER;
+            }
+
+            JCRNodeWrapper node = resource.getNode();
+            boolean checkRootPath = true;
+            Element element = permissionCache.get(node.getPath());
+            if(element!=null && Boolean.TRUE==((Boolean)element.getValue())) {
+                node = renderContext.getMainResource().getNode();
+                checkRootPath = false;
+            } else if(element==null) {
+                if (node.hasProperty("j:requiredPermissions")) {
+                    permissionCache.put(new Element(node.getPath(),Boolean.TRUE));
+                    node = renderContext.getMainResource().getNode();
+                    checkRootPath = false;
+                } else {
+                    permissionCache.put(new Element(node.getPath(),Boolean.FALSE));
+                }
+            }
+            String nodePath = node.getPath();
+            final Set<String> aclsKeys = new LinkedHashSet<String>();
+            aclsKeys.add(getAclsKeyPart(renderContext, checkRootPath, nodePath, appendNodePath, null));
+            final Set<String> dependencies = resource.getDependencies();
+
+            if (renderContext.getRequest() != null && Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.mainResource"))) {
+                aclsKeys.add("mraclmr");
+            } else {
+                for (final String dependency : dependencies) {
+                    if (!dependency.equals(nodePath)) {
+                        if (!JCRContentUtils.isNotJcrUuid(dependency)) {
+                            final boolean finalCheckRootPath = checkRootPath;
+                            JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Object>() {
+                                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                	try{
+                                		final JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(dependency);
+                                		aclsKeys.add(getAclsKeyPart(renderContext, finalCheckRootPath,
+                                            nodeByIdentifier.getPath(), true, null));
+                                	}catch(ItemNotFoundException ex) {
+                                		logger.warn("ItemNotFound: " + dependency + "  it could be an invalid reference, check jcr integrity");
+                                	}
+                                    return null;
+                                }
+                            });
+                        } else if (dependency.contains("/")) {
+                            aclsKeys.add(getAclsKeyPart(renderContext, checkRootPath, dependency, true, null));
+                        }
+                    }
+                }
+            }
+            StringBuilder stringBuilder = new StringBuilder();
+            for (String aclsKey : aclsKeys) {
+                if(stringBuilder.length()>0) {
+                    stringBuilder.append("_depacl_");
+                }
+                stringBuilder.append(aclsKey);
+            }
+            return stringBuilder.toString();
+
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+>>>>>>> .merge-right.r44447
         }
         return "";
     }

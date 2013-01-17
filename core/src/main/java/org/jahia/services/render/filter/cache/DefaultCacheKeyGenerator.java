@@ -223,7 +223,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                     if (!dependency.equals(nodePath)) {
                         if (!JCRContentUtils.isNotJcrUuid(dependency)) {
                             final boolean finalCheckRootPath = checkRootPath;
-                            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                            JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Object>() {
                                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                 	try{
                                 		final JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(dependency);

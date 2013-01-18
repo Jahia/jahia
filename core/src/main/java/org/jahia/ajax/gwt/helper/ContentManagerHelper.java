@@ -1234,7 +1234,7 @@ public class ContentManagerHelper {
             if (nextVersion != null) {
                 f = templateManagerService.releaseModule(moduleName, nextVersion, session);
             } else {
-                f = templateManagerService.compileModule(moduleName, previous.getSourcesFolder());
+                f = templateManagerService.compileModule(moduleName, previous.getSourcesFolder()).getFile();
             }
             if (f == null) {
                 return null;

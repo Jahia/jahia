@@ -418,7 +418,10 @@ public class TemplatePackageRegistry {
         if (!packagesWithVersion.containsKey(pack.getName())) {
             packagesWithVersion.put(pack.getName(), map);
         }
-        map.put(pack.getVersion(), pack);
+        JahiaTemplatesPackage jahiaTemplatesPackage = map.get(pack.getVersion());
+        if (jahiaTemplatesPackage == null || jahiaTemplatesPackage.getClass().equals(pack.getClass()) || !(pack.getClass().equals(JahiaTemplatesPackage.class))) {
+            map.put(pack.getVersion(), pack);
+        }
     }
 
     /**

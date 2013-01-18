@@ -453,20 +453,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public JahiaTemplatesPackage compileAndDeploy(final String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException, IOException{
-        File warFile = compileModule(moduleName, sources);
-        JahiaTemplatesPackage pack = templatePackageDeployer.deployModule(warFile, session);
-        if (pack != null) {
-            JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
-            setSourcesFolderInPackageAndNode(pack, sources, node);
-            session.save();
-        } else {
-            FileUtils.deleteDirectory(sources);
-        }
+        CompiledModuleInfo moduleInfo = compileModule(moduleName, sources);
+        File destFile = new File(settingsBean.getJahiaSharedTemplatesDiskPath(), moduleInfo.getFile().getName());
+        FileUtils.copyFile(moduleInfo.getFile(), destFile);
 
-        return pack;
+        return templatePackageRegistry.lookupByFileNameAndVersion(moduleInfo.getModuleName(), new ModuleVersion(moduleInfo.getVersion()));
     }
 
-    public File compileModule(final String moduleName, File sources) throws IOException {
+    public CompiledModuleInfo compileModule(final String moduleName, File sources) throws IOException {
         try {
             SAXReader reader = new SAXReader();
             Document document = reader.read(new File(sources, "pom.xml"));
@@ -481,13 +475,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
             String version = n.getText();
 
-            String[] installParams = {"clean", "install"};
+            String[] installParams = {"-Posgi", "clean", "install"};
             int r = cli.doMain(installParams, sources.getPath(), System.out, System.err);
             if (r > 0) {
                 logger.error("Compilation error, returned status " + r);
                 throw new IOException("Compilation error, status "+r);
             }
-            return new File(sources.getPath() + "/target/" + moduleName + "-" + version + ".war");
+            return new CompiledModuleInfo(new File(sources.getPath() + "/target/" + moduleName + "-" + version + ".war"),moduleName,version);
         } catch (DocumentException e) {
             logger.error(e.getMessage(), e);
             throw new IOException("Cannot parse pom file",e);
@@ -760,7 +754,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                         IOUtils.closeQuietly(source);
                     }
 
-                    generatedWar = compileModule(module.getRootFolder(), sources);
+                    generatedWar = compileModule(module.getRootFolder(), sources).getFile();
 
                     versionElement.setText(nextVersion);
                     writer = new XMLWriter(new FileWriter(modifiedPom), OutputFormat.createPrettyPrint());
@@ -1856,4 +1850,27 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
+    public class CompiledModuleInfo {
+        private final File file;
+        private final String moduleName;
+        private final String version;
+
+        public CompiledModuleInfo(File file, String moduleName, String version) {
+            this.file = file;
+            this.moduleName = moduleName;
+            this.version = version;
+        }
+
+        public File getFile() {
+            return file;
+        }
+
+        public String getModuleName() {
+            return moduleName;
+        }
+
+        public String getVersion() {
+            return version;
+        }
+    }
 }

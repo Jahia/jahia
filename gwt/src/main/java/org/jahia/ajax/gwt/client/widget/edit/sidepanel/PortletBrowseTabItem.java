@@ -64,10 +64,7 @@ import org.jahia.ajax.gwt.client.widget.content.ThumbsListView;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Side panel tab item for browsing portlet repository.
@@ -217,6 +214,18 @@ class PortletBrowseTabItem extends BrowseTabItem {
     @Override
     protected boolean acceptNode(GWTJahiaNode node) {
         return node.getInheritedNodeTypes().contains("jnt:portlet");
+    }
+
+    @Override
+    public boolean needRefresh(Map<String, Object> data) {
+        if (data.containsKey("node")) {
+            GWTJahiaNode node = (GWTJahiaNode) data.get("node");
+            if (node.getNodeTypes().contains("jnt:portlet")
+                    || node.getNodeTypes().contains("jnt:portletFolder")) {
+                return true;
+            }
+        }
+        return super.needRefresh(data);
     }
 
 }

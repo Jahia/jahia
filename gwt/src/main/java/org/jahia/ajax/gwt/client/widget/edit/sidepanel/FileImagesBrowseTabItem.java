@@ -67,10 +67,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Side panel tab item for browsing image resources in the repository.
@@ -244,6 +241,18 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
     @Override
     protected boolean acceptNode(GWTJahiaNode node) {
         return node.getInheritedNodeTypes().contains("nt:file");
+    }
+
+    @Override
+    public boolean needRefresh(Map<String, Object> data) {
+        if (data.containsKey("node")) {
+            GWTJahiaNode node = (GWTJahiaNode) data.get("node");
+            if (node.getNodeTypes().contains("jnt:folder")
+                    || node.getNodeTypes().contains("jnt:file")) {
+                return true;
+            }
+        }
+        return super.needRefresh(data);
     }
 
 

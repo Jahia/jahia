@@ -199,11 +199,12 @@ public class ContentActions {
                         linker.loaded();
                     }
 
-                    public void onSuccess(GWTJahiaNode o) {
-                        linker.setSelectPathAfterDataUpdate(Arrays.asList(o.getPath()));
+                    public void onSuccess(GWTJahiaNode node) {
+                        linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
                         linker.loaded();
                         Map<String, Object> data = new HashMap<String, Object>();
-                        data.put(Linker.REFRESH_ALL, true);
+//                        data.put(Linker.REFRESH_ALL, true);
+                        data.put("node", node);
                         linker.refresh(data);
                     }
                 });
@@ -230,11 +231,12 @@ public class ContentActions {
             if (nodeName != null && nodeName.length() > 0) {
                 linker.loading(Messages.get("statusbar.newfoldering.label"));
                 JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), nodeName, nodeType, null, null, null, null, null, null, true, new BaseAsyncCallback<GWTJahiaNode>() {
-                    public void onSuccess(GWTJahiaNode o) {
-                        linker.setSelectPathAfterDataUpdate(Arrays.asList(o.getPath()));
+                    public void onSuccess(GWTJahiaNode node) {
+                        linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
                         linker.loaded();
                         Map<String, Object> data = new HashMap<String, Object>();
-                        data.put(Linker.REFRESH_ALL, true);
+//                        data.put(Linker.REFRESH_ALL, true);
+                        data.put("node", node);
                         linker.refresh(data);
                     }
 

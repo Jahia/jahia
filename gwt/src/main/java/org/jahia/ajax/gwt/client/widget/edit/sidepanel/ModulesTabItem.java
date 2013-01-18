@@ -131,7 +131,7 @@ public class ModulesTabItem extends BrowseTabItem {
                 return true;
             }
         }
-        return false;
+        return super.needRefresh(data);
     }
 
     @Override

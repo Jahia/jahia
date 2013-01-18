@@ -63,10 +63,7 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Side panel tab item for browsing the content repository.
@@ -164,4 +161,17 @@ class ContentBrowseTabItem extends BrowseTabItem {
     protected boolean acceptNode(GWTJahiaNode node) {
         return node.getInheritedNodeTypes().contains("jnt:content");
     }
+
+    @Override
+    public boolean needRefresh(Map<String, Object> data) {
+        if (data.containsKey("node")) {
+            GWTJahiaNode node = (GWTJahiaNode) data.get("node");
+            if (node.getNodeTypes().contains("jnt:contentFolder")
+                    || node.getInheritedNodeTypes().contains("jmix:droppableContent")) {
+                return true;
+            }
+        }
+        return super.needRefresh(data);
+    }
+
 }

@@ -311,6 +311,7 @@ public class FileUploader extends Window {
             data.put(Linker.REFRESH_MAIN, true);
             data.put("event", "fileUploaded");
         }
+        linker.refresh(data);
         unmask();
         hide();
     }

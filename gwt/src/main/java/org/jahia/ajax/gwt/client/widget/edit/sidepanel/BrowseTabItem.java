@@ -62,6 +62,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -145,8 +146,7 @@ abstract class BrowseTabItem extends SidePanelTabItem {
                 if (acceptNode(nodes.get(0))) {
                     e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.BROWSETREE_TYPE);
                     e.getStatus().setStatus(true);
-                }
-                else {
+                } else {
                     e.getStatus().setStatus(false);
                 }
             } else {
@@ -170,7 +170,9 @@ abstract class BrowseTabItem extends SidePanelTabItem {
         public AsyncCallback<Object> getCallback() {
             AsyncCallback<Object> callback = new BaseAsyncCallback<Object>() {
                 public void onSuccess(Object o) {
-                    refresh(null);
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put("event", "browseTreeGridDrop");
+                    refresh(data);
                 }
 
             };
@@ -181,7 +183,10 @@ abstract class BrowseTabItem extends SidePanelTabItem {
 
     @Override
     public boolean needRefresh(Map<String, Object> data) {
-        return data.containsKey("event") && ("unmount".equals(data.get("event")) || "fileUploaded".equals(data.get("event")));
+        return data.containsKey("event")
+                && ("unmount".equals(data.get("event"))
+                || "fileUploaded".equals(data.get("event"))
+                || "browseTreeGridDrop".equals(data.get("event")));
     }
 
     @Override

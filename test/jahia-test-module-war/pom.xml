@@ -314,12 +314,22 @@
             <version>1.3.4-jahia6</version>
             <scope>provided</scope>
         </dependency>
+<<<<<<< .working
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
             <scope>provided</scope>
         </dependency>
+=======
+        
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.5.11</version>
+            <scope>provided</scope>
+        </dependency>
+>>>>>>> .merge-right.r44459
     </dependencies>
     <build>
         <plugins>

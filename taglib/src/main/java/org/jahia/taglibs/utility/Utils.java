@@ -42,7 +42,6 @@ package org.jahia.taglibs.utility;
 
 import java.util.Iterator;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 
 import org.jahia.services.render.RenderContext;
@@ -219,13 +218,5 @@ public class Utils {
     private Utils() {
         super();
     }
-
-    public static String appendRequestParameters(HttpServletRequest request, String link) {
-        StringBuilder params = new StringBuilder(link);
-        params.append("?");
-        params.append(request.getQueryString());
-        return params.toString();
-    }
-
 
 }

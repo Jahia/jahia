@@ -87,6 +87,10 @@ class ContentBrowseTabItem extends BrowseTabItem {
         contentContainer.setLayout(new FitLayout());
 
         // data proxy
+        final List<String> loadedNodeTypes = new ArrayList<String>();
+        loadedNodeTypes.addAll(JCRClientUtils.FILE_NODETYPES);
+        loadedNodeTypes.addAll(JCRClientUtils.CONTENT_NODETYPES);
+
         RpcProxy<PagingLoadResult<GWTJahiaNode>> listProxy = new RpcProxy<PagingLoadResult<GWTJahiaNode>>() {
             @Override
             protected void load(Object gwtJahiaFolder, AsyncCallback<PagingLoadResult<GWTJahiaNode>> listAsyncCallback) {
@@ -95,7 +99,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
                     List<String> tableColumnKeys = new ArrayList<String> (config.getTableColumnKeys());
                     tableColumnKeys.addAll(Arrays.asList(GWTJahiaNode.PERMISSIONS,GWTJahiaNode.LOCKABLE, GWTJahiaNode.LOCKED, GWTJahiaNode.LOCKS_INFO));
                     JahiaContentManagementService.App.getInstance()
-                            .lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.CONTENT_NODETYPES, null, null, tableColumnKeys, false, -1, -1, false, null, null,false, listAsyncCallback);
+                            .lsLoad((GWTJahiaNode) gwtJahiaFolder, loadedNodeTypes, null, null, tableColumnKeys, false, -1, -1, false, null, null,false, listAsyncCallback);
                 } else {
                     contentContainer.unmask();
                 }

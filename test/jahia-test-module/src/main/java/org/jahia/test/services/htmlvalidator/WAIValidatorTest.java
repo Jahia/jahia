@@ -40,9 +40,15 @@
 
 package org.jahia.test.services.htmlvalidator;
 
-import org.apache.commons.io.FileUtils;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.io.InputStream;
+import java.util.Locale;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.htmlvalidator.ValidatorResults;
 import org.jahia.services.htmlvalidator.WAIValidator;
 import org.junit.After;
@@ -50,20 +56,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import javax.xml.stream.util.StreamReaderDelegate;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
-import static org.junit.Assert.*;
+import org.springframework.core.io.Resource;
 
 /**
  * Unit test to test the accessibility check methods implemented by Jahia's WAIValidator.
@@ -71,6 +64,7 @@ import static org.junit.Assert.*;
  * just appending the path "pass" and "fail", which should list failing and passing HTML scripts.
  */
 public class WAIValidatorTest {
+    
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
     }
@@ -100,10 +94,15 @@ public class WAIValidatorTest {
     }
 
     private void findAndTestScripts(boolean shouldFail) throws Exception {
-        String[] res = getResourceListing(WAIValidatorTest.class,"org/jahia/test/services/htmlvalidator/"+(shouldFail ? "fail" : "pass"));
         WAIValidator validator = new WAIValidator(Locale.ENGLISH);
-        for (String re : res) {
-            String content = IOUtils.toString(WAIValidatorTest.class.getResourceAsStream("/" + re));
+        for (Resource re : SpringContextSingleton.getInstance().getResources("classpath*:org/jahia/test/services/htmlvalidator/"+(shouldFail ? "fail" : "pass") + "/*.html")) {
+            InputStream is = re.getInputStream();
+            String content = null;
+            try {
+                content = IOUtils.toString(is);
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
             if (!StringUtils.isEmpty(content)) {
                 ValidatorResults results = validator.validate(content);
                 if (shouldFail) {
@@ -115,39 +114,5 @@ public class WAIValidatorTest {
                 }
             }
         }
-    }
-
-    private String[] getResourceListing(Class clazz, String path) throws URISyntaxException, IOException {
-        URL dirURL = clazz.getResource(path);
-        if (dirURL != null && dirURL.getProtocol().equals("file")) {
-            /* A file path: easy enough */
-            return new File(dirURL.toURI()).list();
-        }
-
-        if (dirURL == null) {
-            /*
-            * In case of a jar file, we can't actually find a directory.
-            * Have to assume the same jar as clazz.
-            */
-            String me = clazz.getName().replace(".", "/") + ".class";
-            dirURL = clazz.getClassLoader().getResource(me);
-        }
-
-        if (dirURL.getProtocol().equals("jar")) {
-            /* A JAR path */
-            String jarPath = dirURL.getPath().substring(5, dirURL.getPath().indexOf("!")); //strip out only the JAR file
-            JarFile jar = new JarFile(URLDecoder.decode(jarPath, "UTF-8"));
-            Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
-            Set<String> result = new HashSet<String>(); //avoid duplicates in case it is a subdirectory
-            while (entries.hasMoreElements()) {
-                String name = entries.nextElement().getName();
-                if (name.startsWith(path)) { //filter according to the path
-                    result.add(name);
-                }
-            }
-            return result.toArray(new String[result.size()]);
-        }
-
-        throw new UnsupportedOperationException("Cannot list files for URL " + dirURL);
     }
 }

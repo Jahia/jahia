@@ -52,14 +52,9 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-<<<<<<< .working
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRPublicationService;
-=======
-import org.jahia.bin.Jahia;
-import org.jahia.params.ProcessingContext;
->>>>>>> .merge-right.r44465
 
 /**
  * Super class for Jahia tests
@@ -70,13 +65,8 @@ public class JahiaTestCase {
 
     private static Logger logger = Logger.getLogger(JahiaTestCase.class);
 
-<<<<<<< .working
     private final static String PORT = "9090";
     private final static String BASE_URL = "http://localhost:" + PORT;
-=======
-    private final static String PORT = "8080";
-    private final static String BASE_URL = "http://localhost:" + PORT;
->>>>>>> .merge-right.r44465
 
     private HttpClient client;
     

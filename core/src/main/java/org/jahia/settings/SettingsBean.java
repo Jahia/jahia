@@ -115,6 +115,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private String jahiaImportsDiskPath;
     private String jahiaSharedTemplatesDiskPath;
     private String jahiaDatabaseScriptsPath;
+    private String jahiaOSGIModulesDiskPath;
 
     public String getJahiaDatabaseScriptsPath() {
         return jahiaDatabaseScriptsPath;
@@ -282,6 +283,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             }
             jahiaImportsDiskPath = convertContexted (getString("jahiaImportsDiskPath"), pathResolver);
             jahiaSharedTemplatesDiskPath = convertContexted (getString("jahiaSharedTemplatesDiskPath"), pathResolver);
+            jahiaOSGIModulesDiskPath = convertContexted (getString("jahiaOSGIModulesDiskPath"), pathResolver);
             jahiaDatabaseScriptsPath = jahiaVarDiskPath + File.separator + "db";
             
             // jahia real path...
@@ -1094,5 +1096,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public int getQueryApproxCountLimit() {
         return queryApproxCountLimit;
+    }
+
+    public String getJahiaOSGIModulesDiskPath() {
+        return jahiaOSGIModulesDiskPath;
     }
 }

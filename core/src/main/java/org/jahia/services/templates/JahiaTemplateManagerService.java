@@ -454,7 +454,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public JahiaTemplatesPackage compileAndDeploy(final String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException, IOException{
         CompiledModuleInfo moduleInfo = compileModule(moduleName, sources);
-        File destFile = new File(settingsBean.getJahiaSharedTemplatesDiskPath(), moduleInfo.getFile().getName());
+        File destFile = new File(settingsBean.getJahiaOSGIModulesDiskPath(), moduleInfo.getFile().getName());
         FileUtils.copyFile(moduleInfo.getFile(), destFile);
 
         return templatePackageRegistry.lookupByFileNameAndVersion(moduleInfo.getModuleName(), new ModuleVersion(moduleInfo.getVersion()));

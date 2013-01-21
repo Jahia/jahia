@@ -795,22 +795,22 @@
         <dependency>
             <groupId>org.atmosphere</groupId>
             <artifactId>atmosphere-compat-tomcat</artifactId>
-            <version>1.0.6</version>
+            <version>${atmosphere.version}</version>
         </dependency>
         <dependency>
             <groupId>org.atmosphere</groupId>
             <artifactId>atmosphere-runtime</artifactId>
-            <version>1.0.6</version>
+            <version>${atmosphere.version}</version>
         </dependency>
         <!--<dependency>
             <groupId>org.atmosphere</groupId>
             <artifactId>atmosphere-annotations</artifactId>
-            <version>1.0.6</version>
+            <version>${atmosphere.version}</version>
         </dependency>-->
         <!--<dependency>
             <groupId>org.atmosphere</groupId>
             <artifactId>atmosphere-jersey</artifactId>
-            <version>1.0.6</version>
+            <version>${atmosphere.version}</version>
         </dependency>-->
         <!--<dependency>
             <groupId>com.sun.jersey.contribs</groupId>

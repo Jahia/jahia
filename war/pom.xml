@@ -930,17 +930,17 @@
                                 <artifactItem>
                                     <groupId>org.apache.felix</groupId>
                                     <artifactId>org.apache.felix.gogo.runtime</artifactId>
-                                    <version>0.10.0</version>
+                                    <version>${gogo.runtime.version}</version>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.felix</groupId>
                                     <artifactId>org.apache.felix.gogo.shell</artifactId>
-                                    <version>0.10.0</version>
+                                    <version>${gogo.shell.version}</version>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.felix</groupId>
                                     <artifactId>org.apache.felix.gogo.command</artifactId>
-                                    <version>0.12.0</version>
+                                    <version>${gogo.command.version}</version>
                                 </artifactItem>
                                 -->
 

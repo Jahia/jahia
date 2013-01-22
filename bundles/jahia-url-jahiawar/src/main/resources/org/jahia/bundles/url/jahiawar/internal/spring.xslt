@@ -37,9 +37,9 @@
                                 <entry key="hibernate.show_sql" value="false"/>
                                 <entry key="hibernate.cache.provider_class"
                                        value="net.sf.ehcache.hibernate.SharingEhcacheProvider"/>
-                                <entry key="hibernate.cache.use_second_level_cache" value="true"/>
+                                <entry key="hibernate.cache.use_second_level_cache" value="false"/>
                                 <!-- If you use an invalidation-based cache, make sure you turn the query cache off ! -->
-                                <entry key="hibernate.cache.use_query_cache" value="true"/>
+                                <entry key="hibernate.cache.use_query_cache" value="false"/>
                                 <!-- put the batch size property to 0 if you need to debug -->
                                 <entry key="hibernate.jdbc.batch_size" value="16"/>
                                 <entry key="hibernate.default_batch_fetch_size" value="16"/>

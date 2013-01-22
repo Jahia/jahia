@@ -44,7 +44,11 @@
     <parent>
         <artifactId>jahia-modules</artifactId>
         <groupId>org.jahia.modules</groupId>
+<<<<<<< .working
         <version>6.7.0.0-SNAPSHOT</version>
+=======
+        <version>6.6.1.3</version>
+>>>>>>> .merge-right.r44479
     </parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>tabularList</artifactId>

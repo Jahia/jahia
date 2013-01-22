@@ -45,9 +45,13 @@
         <artifactId>jahia-test-parent</artifactId>
         <groupId>org.jahia.test</groupId>
 <<<<<<< .working
+<<<<<<< .working
         <version>6.7.0.0-SNAPSHOT</version>
 =======
         <version>6.6.1.3</version>
+=======
+        <version>6.6.1.4-SNAPSHOT</version>
+>>>>>>> .merge-right.r44482
 >>>>>>> .merge-right.r44479
     </parent>
     <artifactId>jahia-test-module</artifactId>
@@ -96,9 +100,13 @@
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.7.0.0-SNAPSHOT</version>
 =======
             <version>6.6.1.3</version>
+=======
+            <version>6.6.1.4-SNAPSHOT</version>
+>>>>>>> .merge-right.r44482
 >>>>>>> .merge-right.r44479
             <scope>provided</scope>
             <exclusions>
@@ -112,9 +120,13 @@
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-gwt</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.7.0.0-SNAPSHOT</version>
 =======
             <version>6.6.1.3</version>
+=======
+            <version>6.6.1.4-SNAPSHOT</version>
+>>>>>>> .merge-right.r44482
 >>>>>>> .merge-right.r44479
             <scope>provided</scope>
         </dependency>
@@ -349,9 +361,9 @@
 =======
 
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_3/jahia-test-parent/jahia-test-module</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_3/jahia-test-parent/jahia-test-module</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_3/jahia-test-parent/jahia-test-module</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH/jahia-test-parent/jahia-test-module</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH/jahia-test-parent/jahia-test-module</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH/jahia-test-parent/jahia-test-module</url>
   </scm>
 >>>>>>> .merge-right.r44479
 </project>

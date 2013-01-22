@@ -926,21 +926,23 @@
                                     <artifactId>org.apache.felix.fileinstall</artifactId>
                                     <version>${felix.fileinstall.version}</version>
                                 </artifactItem>
+                                <!--
                                 <artifactItem>
                                     <groupId>org.apache.felix</groupId>
                                     <artifactId>org.apache.felix.gogo.runtime</artifactId>
-                                    <version>${gogo.runtime.version}</version>
+                                    <version>0.10.0</version>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.felix</groupId>
                                     <artifactId>org.apache.felix.gogo.shell</artifactId>
-                                    <version>${gogo.shell.version}</version>
+                                    <version>0.10.0</version>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.felix</groupId>
                                     <artifactId>org.apache.felix.gogo.command</artifactId>
-                                    <version>${gogo.command.version}</version>
+                                    <version>0.12.0</version>
                                 </artifactItem>
+                                -->
 
                                 <artifactItem>
                                     <groupId>org.ops4j.pax.web</groupId>

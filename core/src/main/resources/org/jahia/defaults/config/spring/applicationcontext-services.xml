@@ -143,7 +143,7 @@
     <bean id="JahiaTemplateManagerService" class="org.jahia.services.templates.JahiaTemplateManagerService"
           parent="jahiaServiceTemplate">
         <property name="templatePackageDeployer">
-            <bean class="org.jahia.services.templates.TemplatePackageDeployer">
+            <bean class="org.jahia.services.templates.OsgiBundleDeployer">
                 <property name="settingsBean" ref="settingsBean"/>
                 <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
                 <property name="componentRegistry" ref="ComponentRegistry"/>

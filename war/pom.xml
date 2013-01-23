@@ -114,7 +114,7 @@
                             <noServer>true</noServer>
                             <soyc>false</soyc>
                             <extraJvmArgs>-Xmx1280m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
-                            <webappDirectory>${project.build.directory}/jahia/gwt</webappDirectory>
+                            <webappDirectory>${project.build.directory}/${project.build.finalName}/gwt</webappDirectory>
                             <skip>${jahia.gwt.skip}</skip>
                             <modules>
                                 <module>${ContentManagerModuleName}</module>
@@ -155,7 +155,7 @@
                             <noServer>true</noServer>
                             <force>true</force>
                             <extraJvmArgs>-Xmx1024m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
-                            <webappDirectory>${project.build.directory}/jahia/gwt</webappDirectory>
+                            <webappDirectory>${project.build.directory}/${project.build.finalName}/gwt</webappDirectory>
                             <skip>${jahia.gwt.skip}</skip>
                             <module>${singleModuleName}</module>
 							<style>DETAILED</style>
@@ -976,17 +976,17 @@
                                 <artifactItem>
                                     <groupId>org.jahia.bundles</groupId>
                                     <artifactId>org.jahia.bundles.extender.jahiamodules</artifactId>
-                                    <version>6.7.0.0-SNAPSHOT</version>
+                                    <version>${project.version}</version>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.jahia.bundles</groupId>
                                     <artifactId>org.jahia.bundles.url.jahiawar</artifactId>
-                                    <version>6.7.0.0-SNAPSHOT</version>
+                                    <version>${project.version}</version>
                                 </artifactItem>
                             </artifactItems>
                             <stripVersion>false</stripVersion>
                             <outputDirectory>
-                                ${project.build.directory}/provisioned-bundles
+                                ${project.build.directory}/${project.build.finalName}/WEB-INF/bundles
                             </outputDirectory>
                         </configuration>
                     </execution>
@@ -1000,12 +1000,12 @@
                                 <artifactItem>
                                     <groupId>org.jahia.server</groupId>
                                     <artifactId>jahia-taglib</artifactId>
-                                    <version>6.7.0.0-SNAPSHOT</version>
+                                    <version>${project.version}</version>
                                 </artifactItem>
                             </artifactItems>
                             <stripVersion>false</stripVersion>
                             <outputDirectory>
-                                ${project.build.directory}/watched-bundles
+                                ${project.build.directory}/${project.build.finalName}/WEB-INF/var/bundles
                             </outputDirectory>
                         </configuration>
                     </execution>
@@ -1022,25 +1022,6 @@
                           <targetPath>WEB-INF/classes</targetPath>
                         </resource>
                         <resource>
-                            <directory>${pom.basedir}/src/main/webapp</directory>
-                            <filtering>true</filtering>
-                            <includes>
-                                <include>WEB-INF/ibm-web-bnd.xmi</include>
-                            </includes>
-                        </resource>
-                        <resource>
-                            <directory>
-                                ${project.build.directory}/provisioned-bundles
-                            </directory>
-                            <targetPath>WEB-INF/bundles</targetPath>
-                        </resource>
-                        <resource>
-                            <directory>
-                                ${project.build.directory}/watched-bundles
-                            </directory>
-                            <targetPath>WEB-INF/var/bundles</targetPath>
-                        </resource>
-                        <resource>
                             <directory>.</directory>
                             <targetPath>META-INF</targetPath>
                             <includes>
@@ -1052,8 +1033,6 @@
                     <archive>
                         <manifest>
                             <addClasspath>false</addClasspath>
-                            <!--classpathPrefix>lib/</classpathPrefix-->
-                            <!--addExtensions>true</addExtensions-->
                         </manifest>
                     </archive>
                 </configuration>                   

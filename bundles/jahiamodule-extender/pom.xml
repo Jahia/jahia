@@ -9,7 +9,7 @@
     </parent>
 
     <name>Jahia Module OSGi Extender bundle</name>
-    <description>This OSGi module provides an extender that recogizes Jahia modules and installs them in the Jahia xCM
+    <description>This OSGi module provides an extender that recognizes Jahia modules and installs them in the Jahia xCM
         server.
     </description>
     <artifactId>org.jahia.bundles.extender.jahiamodules</artifactId>

@@ -15,11 +15,15 @@
     <packaging>pom</packaging>
 
     <modules>
+        <!--
         <module>basic-servlet</module>
         <module>jahia-bridge</module>
+        -->
         <module>jahia-url-jahiawar</module>
         <module>jahiamodule-extender</module>
+        <!--
         <module>jahiamodules</module>
+        -->
     </modules>
 
     <build>

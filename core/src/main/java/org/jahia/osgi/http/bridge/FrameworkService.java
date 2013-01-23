@@ -1,10 +1,20 @@
 package org.jahia.osgi.http.bridge;
 
-import org.apache.felix.framework.Felix;
-import org.apache.felix.framework.util.FelixConstants;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
-import java.util.*;
+
+import org.apache.felix.framework.Felix;
+import org.apache.felix.framework.util.FelixConstants;
+import org.apache.tika.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * OSGi framework service
@@ -14,6 +24,9 @@ import java.util.*;
  *         Time: 5:17:53 PM
  */
 public class FrameworkService {
+    
+    private static final Logger logger = LoggerFactory.getLogger(FrameworkService.class);
+    
     private final ServletContext context;
     private Felix felix;
     private ProvisionActivator provisionActivator = null;
@@ -22,20 +35,12 @@ public class FrameworkService {
         this.context = context;
     }
 
-    public void start() {
-        try {
-            doStart();
-        } catch (Exception e) {
-            log("Failed to start framework", e);
-        }
+    public void start() throws Exception {
+        doStart();
     }
 
-    public void stop() {
-        try {
-            doStop();
-        } catch (Exception e) {
-            log("Error stopping framework", e);
-        }
+    public void stop() throws Exception {
+        doStop();
     }
 
     public ProvisionActivator getProvisionActivator() {
@@ -47,7 +52,8 @@ public class FrameworkService {
         Felix tmp = new Felix(createConfig());
         tmp.start();
         this.felix = tmp;
-        log("OSGi framework started", null);
+        
+        logger.info("OSGi framework started");
     }
 
     private void doStop()
@@ -55,17 +61,22 @@ public class FrameworkService {
         provisionActivator = null;
         if (this.felix != null) {
             this.felix.stop();
-            log("Waiting for OSGi framework shutdown...", null);
+            logger.info("Waiting for OSGi framework shutdown...");
             this.felix.waitForStop(10000);
         }
 
-        log("OSGi framework stopped", null);
+        logger.info("OSGi framework stopped");
     }
 
     private Map<String, Object> createConfig()
             throws Exception {
         Properties props = new Properties();
-        props.load(this.context.getResourceAsStream("/WEB-INF/felix-framework.properties"));
+        InputStream is = this.context.getResourceAsStream("/WEB-INF/felix-framework.properties");
+        try {
+            props.load(is);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
 
         HashMap<String, Object> map = new HashMap<String, Object>();
         for (Object key : props.keySet()) {
@@ -154,9 +165,5 @@ public class FrameworkService {
         }
         variableStack.remove(key);
         return result;
-    }
-
-    private void log(String message, Throwable cause) {
-        this.context.log(message, cause);
     }
 }

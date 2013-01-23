@@ -3,23 +3,36 @@ package org.jahia.osgi.http.bridge;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.jahia.exceptions.JahiaRuntimeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * OSGi web app startup listener
- *
+ * 
  * @author loom
- *         Date: Oct 11, 2010
- *         Time: 5:16:56 PM
  */
-public class StartupListener
-        implements ServletContextListener {
+public class StartupListener implements ServletContextListener {
+
+    private static final Logger logger = LoggerFactory.getLogger(StartupListener.class);
+
     private FrameworkService service;
+
+    public void contextDestroyed(ServletContextEvent event) {
+        try {
+            this.service.stop();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
 
     public void contextInitialized(ServletContextEvent event) {
         this.service = new FrameworkService(event.getServletContext());
-        this.service.start();
-    }
-
-    public void contextDestroyed(ServletContextEvent event) {
-        this.service.stop();
+        try {
+            this.service.start();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new JahiaRuntimeException(e);
+        }
     }
 }

@@ -206,7 +206,12 @@ public class Activator implements BundleActivator {
                 if (bundle == null || bundle.getHeaders().get("module-type") == null) {
                     return;
                 }
-                logger.debug("Received event " + bundleEvent.getType() + " for bundle " + bundleEvent.getBundle().getSymbolicName() + " v" + bundleEvent.getBundle().getHeaders().get("Implementation-Version"));
+                
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Received event {} for bundle {}", bundleEvent.getType(),
+                            bundleEvent.getBundle().getSymbolicName() + " v"
+                                    + bundleEvent.getBundle().getHeaders().get("Implementation-Version"));
+                }
                 try {
                     switch (bundleEvent.getType()) {
                         case BundleEvent.INSTALLED:

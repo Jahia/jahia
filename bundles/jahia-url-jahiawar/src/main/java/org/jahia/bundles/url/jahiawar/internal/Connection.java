@@ -120,9 +120,10 @@ public class Connection extends URLConnection {
             "org.springframework.orm.hibernate3.annotation",
             "org.springframework.orm.hibernate3.support",
             "org.springframework.scheduling.quartz",
+            "org.apache.commons.collections",
+            "org.apache.commons.id",
             "org.apache.commons.lang",
             "org.apache.commons.lang.math",
-            "org.apache.commons.id",
             "org.apache.taglibs.unstandard"
     };
 

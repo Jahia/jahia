@@ -92,6 +92,8 @@ public class JspBundleObserver extends ScriptBundleObserver {
     }
 
     private void registerJSPs(Bundle bundle, List<URL> urls, HttpService bundleHttpService) {
+        String bundleName = bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version");
+        int registered = 0;
         for (URL url : urls) {
             URL[] sourceURLs = FileHttpContext.getSourceURLs(bundle);
             final JspServletWrapper jspServlet = new JspServletWrapper(bundle, null);
@@ -106,11 +108,13 @@ public class JspBundleObserver extends ScriptBundleObserver {
                     registeredAliases.put(bundle,registeredBundleAliases);
                 }
                 if (registeredBundleAliases.contains(urlAlias)) {
-                    logger.warn("URL Alias " + urlAlias + " already registered, unregistering old servlet...");
+                    logger.warn("URL Alias {} already registered, unregistering old servlet...", urlAlias);
                     bundleHttpService.unregister(urlAlias);
                     registeredBundleAliases.remove(urlAlias);
                 }
-                logger.info("Registering JSP " + urlAlias + " for bundle " + bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version"));
+                registered++;
+                logger.debug("Registering JSP {} for bundle {}", urlAlias, bundleName);
+                
                 bundleHttpService.registerServlet(urlAlias, jspServlet, props, httpContext);
                 registeredBundleAliases.add(urlAlias);
 
@@ -121,6 +125,7 @@ public class JspBundleObserver extends ScriptBundleObserver {
                 logger.error("Error registering JSP " + urlAlias, e);
             }
         }
+        logger.info("Registered {} JSPs for bundle {}", registered, bundleName);
     }
 
     @Override

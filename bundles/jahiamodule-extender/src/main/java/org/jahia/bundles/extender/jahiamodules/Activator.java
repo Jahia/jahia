@@ -17,14 +17,10 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.scripting.ScriptFactory;
 import org.jahia.services.render.scripting.ScriptResolver;
-import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.templates.*;
-import org.jahia.services.workflow.jbpm.JBPMModuleProcessLoader;
-import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
@@ -41,7 +37,6 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.core.io.Resource;
 import org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext;
-import org.springframework.util.Assert;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
@@ -316,48 +311,50 @@ public class Activator implements BundleActivator {
             return;
         }
 
-        final JahiaBundleTemplatesPackage jahiaBundleTemplatesPackage = new JahiaBundleTemplatesPackage(bundle);
+        final JahiaBundleTemplatesPackage pkg = new JahiaBundleTemplatesPackage(bundle);
         if (bundle.getHeaders().get("Implementation-Title") != null) {
-            jahiaBundleTemplatesPackage.setName((String) bundle.getHeaders().get("Implementation-Title"));
+            pkg.setName((String) bundle.getHeaders().get("Implementation-Title"));
         } else {
-            logger.warn("No Implementation-Title header found, using bundle symbolic name '"+bundle.getSymbolicName()+"' as module name");
-            jahiaBundleTemplatesPackage.setName(bundle.getSymbolicName());
+            logger.warn("No Implementation-Title header found, using bundle symbolic name '{}' as module name",
+                    bundle.getSymbolicName());
+            pkg.setName(bundle.getSymbolicName());
         }
 
-        jahiaBundleTemplatesPackage.setModuleType((String) bundle.getHeaders().get("module-type"));
-        jahiaBundleTemplatesPackage.setVersion(new ModuleVersion((String) bundle.getHeaders().get("Implementation-Version")));
-        jahiaBundleTemplatesPackage.setRootFolder((String) bundle.getHeaders().get("root-folder"));
-        jahiaBundleTemplatesPackage.setRootFolderPath("/osgi/" + jahiaBundleTemplatesPackage.getRootFolder());
+        pkg.setModuleType((String) bundle.getHeaders().get("module-type"));
+        pkg.setVersion(new ModuleVersion(StringUtils.defaultIfBlank((String) bundle
+                .getHeaders().get("Implementation-Version"), bundle.getVersion().toString())));
+        pkg.setRootFolder((String) bundle.getHeaders().get("root-folder"));
+        pkg.setRootFolderPath("/osgi/" + pkg.getRootFolder());
         String resourceBundle = (String) bundle.getHeaders().get("resource-bundle");
         if (StringUtils.isNotBlank(resourceBundle)) {
-            jahiaBundleTemplatesPackage.setResourceBundleName(resourceBundle.trim());
+            pkg.setResourceBundleName(resourceBundle.trim());
         } else {
-            String rbName = jahiaBundleTemplatesPackage.getRootFolder();
+            String rbName = pkg.getRootFolder();
             // check if there is a resource bundle file in the resources folder
-            Resource resource = jahiaBundleTemplatesPackage.getResource("/resources/" + rbName + ".properties");
+            Resource resource = pkg.getResource("/resources/" + rbName + ".properties");
             if (resource == null || !resource.exists()) {
-                rbName = Patterns.SPACE.matcher(jahiaBundleTemplatesPackage.getName()).replaceAll("");
-                resource = jahiaBundleTemplatesPackage.getResource("/resources/" + rbName + ".properties");
+                rbName = Patterns.SPACE.matcher(pkg.getName()).replaceAll("");
+                resource = pkg.getResource("/resources/" + rbName + ".properties");
             }
             if (resource == null || !resource.exists()) {
-                rbName = Patterns.SPACE.matcher(jahiaBundleTemplatesPackage.getName()).replaceAll("_");
-                resource = jahiaBundleTemplatesPackage.getResource("/resources/" + rbName + ".properties");
+                rbName = Patterns.SPACE.matcher(pkg.getName()).replaceAll("_");
+                resource = pkg.getResource("/resources/" + rbName + ".properties");
             }
             if (resource != null && resource.exists()) {
-                jahiaBundleTemplatesPackage.setResourceBundleName("resources." + rbName);
+                pkg.setResourceBundleName("resources." + rbName);
             }
         }
 
         if (bundle.getHeaders().get("Source-Folders") != null) {
             File sources = new File((String) bundle.getHeaders().get("Source-Folders"));
             if (sources.exists()) {
-                templatesService.setSourcesFolderInPackage(jahiaBundleTemplatesPackage, sources);
+                templatesService.setSourcesFolderInPackage(pkg, sources);
             }
         }
 
 //        String rootFolderPrefix = jahiaBundleTemplatesPackage.getRootFolder().replaceAll("[ -]", "") + "/";
          if (bundle.getEntry("/") != null) {
-            jahiaBundleTemplatesPackage.setFilePath(bundle.getEntry("/").getPath());
+            pkg.setFilePath(bundle.getEntry("/").getPath());
          }
 //        if (bundle.getEntry(rootFolderPrefix) != null) {
 //            jahiaBundleTemplatesPackage.setFilePath(bundle.getEntry(rootFolderPrefix).getPath());
@@ -366,11 +363,11 @@ public class Activator implements BundleActivator {
         if (depends != null && !StringUtils.isEmpty(depends.trim())) {
             String[] dependencies = Patterns.COMMA.split(depends);
             for (String dependency : dependencies) {
-                jahiaBundleTemplatesPackage.setDepends(dependency.trim());
+                pkg.setDepends(dependency.trim());
             }
         }
 
-        List<String> dependsList = jahiaBundleTemplatesPackage.getDepends();
+        List<String> dependsList = pkg.getDepends();
         if (!dependsList.contains("default") && !dependsList.contains("Default Jahia Templates") && !bundle.getSymbolicName().equals("assets")&& !bundle.getSymbolicName().equals("default")) {
             dependsList.add("default");
         }
@@ -389,10 +386,10 @@ public class Activator implements BundleActivator {
         }
 
         logger.info("--- Parsing Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version") + " --");
-        registeredBundles.put(bundle, jahiaBundleTemplatesPackage);
-        templatePackageRegistry.registerPackageVersion(jahiaBundleTemplatesPackage);
+        registeredBundles.put(bundle, pkg);
+        templatePackageRegistry.registerPackageVersion(pkg);
 
-        boolean latestDefinitions = NodeTypeRegistry.getInstance().isLatestDefinitions(bundle.getSymbolicName(), jahiaBundleTemplatesPackage.getVersion());
+        boolean latestDefinitions = NodeTypeRegistry.getInstance().isLatestDefinitions(bundle.getSymbolicName(), pkg.getVersion());
         if (latestDefinitions) {
             List<URL> foundURLs = cndScanner.scan(bundle);
             addResources(bundle, foundURLs, cndBundleObserver);
@@ -404,17 +401,17 @@ public class Activator implements BundleActivator {
         if (installedBundles.contains(bundle)) {
             logger.info("--- Installing Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version") + " --");
             installedBundles.remove(bundle);
-            scanForImportFiles(bundle, jahiaBundleTemplatesPackage);
+            scanForImportFiles(bundle, pkg);
 
             try {
                 JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
                     public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        templatePackageDeployer.initializeModuleContent(jahiaBundleTemplatesPackage, session);
+                        templatePackageDeployer.initializeModuleContent(pkg, session);
                         return null;
                     }
                 });
             } catch (RepositoryException e) {
-                logger.error("Error while initializing module content for module " + jahiaBundleTemplatesPackage, e);
+                logger.error("Error while initializing module content for module " + pkg, e);
             }
             logger.info("--- Done installing Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version") + " --");
             moduleStates.put(bundle, ModuleState.INSTALLED);
@@ -422,8 +419,8 @@ public class Activator implements BundleActivator {
         }
 
         if (latestDefinitions) {
-            parseDependantBundles(jahiaBundleTemplatesPackage.getRootFolder());
-            parseDependantBundles(jahiaBundleTemplatesPackage.getName());
+            parseDependantBundles(pkg.getRootFolder());
+            parseDependantBundles(pkg.getName());
         }
     }
 

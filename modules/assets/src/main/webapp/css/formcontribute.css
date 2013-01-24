@@ -1,32 +1,32 @@
-.bodywrapper .FormContribute input[type="hidden"]{
+ .FormContribute input[type="hidden"]{
 	display:none !important;
 }
 /******************************************************************************
 *  Tables
 ******************************************************************************/
-.bodywrapper .FormContribute .table th img{
+ .FormContribute .table th img{
 	vertical-align: middle
 }
-.bodywrapper .FormContribute .table,
-.bodywrapper .FormContribute .table caption
+ .FormContribute .table,
+ .FormContribute .table caption
 {
     margin: auto;
 	line-height:1.9em;
 
 }
 
-.bodywrapper .FormContribute .table
+ .FormContribute .table
 {
     border-collapse:collapse;
 	margin-bottom:1em;
 	font-size:0.85em;
 	border:none;
 }
-.bodywrapper .FormContribute .table, .bodywrapper .FormContribute .table th, .bodywrapper .FormContribute .table td
+ .FormContribute .table,  .FormContribute .table th,  .FormContribute .table td
 {
 border: 1px solid #B7CBD8;
 }
-.bodywrapper .FormContribute .table caption
+ .FormContribute .table caption
 {
 	font-weight:normal;
 	font-size:2em;
@@ -34,44 +34,44 @@ border: 1px solid #B7CBD8;
 	padding:0;
 }
 
-.bodywrapper .FormContribute .table th {
+ .FormContribute .table th {
     color: #fff;
 	white-space:nowrap;
 	background-color:#77848c;
 	padding:2px;
 }
-.bodywrapper .FormContribute .table td
+ .FormContribute .table td
 {
 	background-color:#fff;
 	padding:2px;
 }
-.bodywrapper .FormContribute .table tr:hover{
+ .FormContribute .table tr:hover{
 	background-color:#ccc
 }
-.bodywrapper .FormContribute .table .odd td{background-color:#fff}
-.bodywrapper .FormContribute .table .even td{ background-color:#eaeaea}
-.bodywrapper .FormContribute .col1{}
-.bodywrapper .FormContribute .col2{}
-.bodywrapper .FormContribute .col3{}
-.bodywrapper .FormContribute .col4{}
+ .FormContribute .table .odd td{background-color:#fff}
+ .FormContribute .table .even td{ background-color:#eaeaea}
+ .FormContribute .col1{}
+ .FormContribute .col2{}
+ .FormContribute .col3{}
+ .FormContribute .col4{}
 
-.bodywrapper .FormContribute .table td.center,
-.bodywrapper .FormContribute .table th.center
+ .FormContribute .table td.center,
+ .FormContribute .table th.center
 {
 	text-align:center;
 }
 
-.bodywrapper .FormContribute .wcag-warnings-ignore label,
-.bodywrapper .FormContribute input[type=checkbox]{
+ .FormContribute .wcag-warnings-ignore label,
+ .FormContribute input[type=checkbox]{
 	display:inline
 }
 /******************************************************************************
 * FormContribute
 ******************************************************************************/
-.bodywrapper .FormContribute {
+ .FormContribute {
 
 }
- .bodywrapper .FormContribute fieldset {
+  .FormContribute fieldset {
 	border:1px solid #b7cbd8;
 	margin:5px;
 	padding:5px;
@@ -79,7 +79,7 @@ border: 1px solid #B7CBD8;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 }
- .bodywrapper .FormContribute legend {
+  .FormContribute legend {
 	background:#fff url(img/toolbar-input.png) repeat-x left bottom;
 	border:1px solid #b7cbd8;
 	color:#000;
@@ -91,28 +91,28 @@ border: 1px solid #B7CBD8;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 }
- .bodywrapper .FormContribute input,
- .bodywrapper .FormContribute textarea {
+  .FormContribute input,
+  .FormContribute textarea {
 	width:97%
 }
-.bodywrapper .FormContribute input[type=checkbox] {
+ .FormContribute input[type=checkbox] {
 	width:auto;
 }
- .bodywrapper .FormContribute p{
+  .FormContribute p{
 	clear:both;
 	margin:0.5em 0;
 	padding:0px
 }
- .bodywrapper .FormContribute .formMarginLeft{
+  .FormContribute .formMarginLeft{
 	margin:0.5em 0 0.5em 0;
 	padding:0;
 }
- .bodywrapper .FormContribute label.left,
- .bodywrapper .FormContribute label {
+  .FormContribute label.left,
+  .FormContribute label {
 	display:block;
 	font-weight:bold
 }
- .bodywrapper .FormContribute input,  .bodywrapper .FormContribute select,  .bodywrapper .FormContribute textarea {
+  .FormContribute input,   .FormContribute select,   .FormContribute textarea {
 	background:none;
 	border:1px inset #b7cbd8;
 	color:#000;
@@ -122,10 +122,10 @@ border: 1px solid #B7CBD8;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 }
- .bodywrapper .FormContribute input.radio,  .bodywrapper .FormContribute input.checkbox {
+  .FormContribute input.radio,   .FormContribute input.checkbox {
 	width:auto;
 }
- .bodywrapper .FormContribute input.button,  .bodywrapper .FormContribute button{
+  .FormContribute input.button,   .FormContribute button{
 	width:auto;
 	background:#fff url(img/toolbar-input.png) repeat-x left bottom;
     color: #000;
@@ -145,7 +145,7 @@ border: 1px solid #B7CBD8;
 	margin-bottom:5px;
 	margin-top:2px
 }
- .bodywrapper .FormContribute input.button:hover,  .bodywrapper .FormContribute button:hover{
+  .FormContribute input.button:hover,   .FormContribute button:hover{
     background:#fff url(img/toolbar-input-on.png) repeat-x left bottom;
     color: #333;
 	cursor: pointer;
@@ -153,13 +153,13 @@ border: 1px solid #B7CBD8;
 }
 
 
- .bodywrapper .FormContribute input.disabled,  .bodywrapper .FormContribute button.disabled {
+  .FormContribute input.disabled,   .FormContribute button.disabled {
     background:none;
     background-color:#ccc;
      color:#666;
 
 }
- .bodywrapper .FormContribute button img{
+  .FormContribute button img{
 	vertical-align: text-bottom;
 	margin-right:2px
 }
@@ -207,15 +207,15 @@ button span.icon-publish{
 /******************************************************************************
 *  subnodes List
 ******************************************************************************/
-.bodywrapper ul.subnodesList,
-.bodywrapper ol.subnodesList {
+ ul.subnodesList,
+ ol.subnodesList {
 	list-style:none;
 	margin:1em 0 1em 3em;
 	padding:0;
 	border-bottom:none;
 }
-.bodywrapper ul.subnodesList li,
-.bodywrapper ol.subnodesList li {
+ ul.subnodesList li,
+ ol.subnodesList li {
 	list-style-type:none;
 	margin:0.2em 0;
 	padding:0;

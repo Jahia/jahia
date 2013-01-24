@@ -1,4 +1,4 @@
-.bodywrapper .admin-placeholder {
+ .admin-placeholder {
     background : #e1ebf1 url(images/placeholder.png) top left;
     color: #333 !important;
 	font-weight: bold;
@@ -18,10 +18,10 @@
 	margin:5px;
 }
 /* Utils */
-.bodywrapper .clear {
+ .clear {
   clear: both;
 }
-.bodywrapper br.clearFloat{
+ br.clearFloat{
   float: left;
   width: 100%;
 }
@@ -31,46 +31,46 @@ body {
   padding: 0;
   margin: 0;
 }
-.bodywrapper {
+body {
   font-family:Arial, Verdana, Helvetica, sans-serif;
   background-color:#f1f5fa;
   font-size:11px!important;
   padding: 0px;
   margin: 0;
 }
-.bodywrapper input[type="text"] {
+ input[type="text"] {
 	font-size: 11px;
 	}
-.bodywrapper input[type="password"] {
+ input[type="password"] {
 	font-size: 11px;
 }
-.bodywrapper input[type="file"] {
+ input[type="file"] {
 	font-size: 11px;
 }
-.bodywrapper select {
+ select {
 	 font-size: 11px;
 }
 #adminLogin label, #adminLogin th, #adminLogin td {
 	 font-size: 11px;
 }
 /* Copyright */
-.bodywrapper #copyright {
+ #copyright {
   text-align: center;
   color: #ADB7BD;
   padding-top: 7px;
   width: 100%;
   float: left;
 }
-.bodywrapper #copyright {
+ #copyright {
   text-align: center;
   color: #ADB7BD;
 }
 /* General */
-.bodywrapper #topTitle {
+ #topTitle {
   margin: 12px 20px 20px 20px;
   height: 20px;
 }
-.bodywrapper h1 {
+ h1 {
   font-size: 100%;
   margin: 0;
   float: left;
@@ -82,91 +82,91 @@ body {
   background: url(images/logo-jahia.gif) no-repeat 10px 0px ;
   text-indent: -2000em;
 }
-.bodywrapper a {
+ a {
   color: #006699;
   text-decoration: none;
 }
-.bodywrapper a:hover {
+ a:hover {
   color: #3399CC;
   text-decoration: none;
 }
 /**
  * Section title
  */
-.bodywrapper h2 {
+ h2 {
   font-size: 120%;
   margin: 2px;
   display: block;
   float: left;
 }
-.bodywrapper h2.edit {
+ h2.edit {
   background: url(images/data_edit.png) no-repeat;
   padding: 0 10px 0 20px;
 }
-.bodywrapper h3 {
+ h3 {
   margin-left: 5px;
 }
 /**
  * Main content
  */
-.bodywrapper #content {
+ #content {
   background-color: #ffffff;
   display: block;
   width: 100%;
   border: 1px solid #b7cbd8;
 }
-.bodywrapper #content div.floatright {
+ #content div.floatright {
   float: right;
   padding:5px 5px 5px 5px
 }
-.bodywrapper #content div.floatleft {
+ #content div.floatleft {
   float: right;
   padding:5px 5px 5px 5px
 }
-.bodywrapper #content p {
+ #content p {
   padding: 5px;
 }
-.bodywrapper #content .head, .bodywrapper #content .headtop {
+ #content .head,  #content .headtop {
   background: #d8e5ec url(images/bkg-section.png) 0 0;
   font-weight: bold;
   height: 23px;
   border-bottom: 1px solid #b7cbd8;
 }
-.bodywrapper #content .head, .bodywrapper #content .head {
+ #content .head,  #content .head {
   border-top: 1px solid #b7cbd8;
 }
-.bodywrapper #content div.object-title {
+ #content div.object-title {
   float: left;
   padding:5px 5px 0 5px
 }
-.bodywrapper #content table.object-title td,.bodywrapper #content table.object-title th {
+ #content table.object-title td, #content table.object-title th {
   font-weight: normal;
   padding:5px 5px 0 5px
 }
 /**
  * Table
  */
-.bodywrapper table {
+ table {
     font-size: 11px;
 	border-bottom: 1px solid #d4d4d4;
 	margin-bottom:5px
 }
-.bodywrapper .evenOddTable {
+ .evenOddTable {
 
 }
-.bodywrapper table.tBorder {
+ table.tBorder {
   border-top: 1px solid #d4d4d4;
 }
-.bodywrapper table.bBorder {
+ table.bBorder {
   border-bottom: 1px solid #d4d4d4;
 }
-.bodywrapper table.evenOddTable th, .bodywrapper table.evenOddTable td {
+ table.evenOddTable th,  table.evenOddTable td {
   border-color: #d4d4d4;
   border-style: solid;
   margin: 0;
   padding: 4px;
 }
-.bodywrapper .evenOddTable th {
+ .evenOddTable th {
   border-width: 0 1px 0 0;
   background: #ffffff;
   color: #666666;
@@ -175,31 +175,31 @@ body {
   font-size: 11px;
   text-align: left;
 }
-.bodywrapper .evenOddTable td {
+ .evenOddTable td {
   border-width: 1px 1px 0 0;
 }
-.bodywrapper .evenOddTable.full td {
+ .evenOddTable.full td {
   border-width: 1px 0 0 0;
 }
-.bodywrapper .evenOddTable td td {
+ .evenOddTable td td {
   border: 0;
 }
-.bodywrapper table.evenOddTable td.lastCol {
+ table.evenOddTable td.lastCol {
   border-right: 0;
 }
-.bodywrapper table.evenOddTable th.lastCol {
+ table.evenOddTable th.lastCol {
   border-right: 0;
 }
-.bodywrapper tr.evenLine {
+ tr.evenLine {
   background-color: #FFFFFF;
 }
-.bodywrapper tr.oddLine {
+ tr.oddLine {
   background-color: #f8f8f8;
 }
-.bodywrapper .evenOddTable .x-panel th, .bodywrapper .evenOddTable .x-panel td, .bodywrapper .permissions .x-panel th, .bodywrapper .permissions .x-panel td {
+ .evenOddTable .x-panel th,  .evenOddTable .x-panel td,  .permissions .x-panel th,  .permissions .x-panel td {
   padding: 0 !important;
 }
 /**
  * contribute div
  */
-.bodywrapper div.addcontent{padding:5px 10px}
+ div.addcontent{padding:5px 10px}

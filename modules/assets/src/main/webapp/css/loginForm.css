@@ -1,40 +1,40 @@
 /******************************************************************************
 *  loginForm
 ******************************************************************************/
-.bodywrapper .loginForm {
+ .loginForm {
     overflow:hidden;
 }
-.bodywrapper .loginForm fieldset{
+ .loginForm fieldset{
 	border:1px solid #eaeaea;
 	padding:0.5em;
 	margin:0.5em 0;
 }
-.bodywrapper .loginForm p{
+ .loginForm p{
 	padding:0.2em 0;
 	margin:0;
 }
-.bodywrapper .loginForm legend{
+ .loginForm legend{
 	display:none
 }
-.bodywrapper .loginForm label.left{
+ .loginForm label.left{
 	display:block
 }
-.bodywrapper .loginForm input.full{
+ .loginForm input.full{
 	width:95%;
 }
-.bodywrapper h3.loginicon {
+ h3.loginicon {
 	background: url(img/login.png) no-repeat 0 50%;
 	padding-left:24px;
 	line-height:1.6em;
 	margin:0;
 }
-.bodywrapper h3.logouticon {
+ h3.logouticon {
 	background: url(img/logout.png) no-repeat 0 50%;
 	padding-left:30px;
 	line-height:1.6em;
 	margin:0;
 }
-.bodywrapper .loginForm .rememberLabel {
+ .loginForm .rememberLabel {
 	font-weight:normal;
 	font-size:80%;
 }

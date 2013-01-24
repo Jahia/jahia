@@ -1,6 +1,6 @@
 /*shortcuts*/
 
-.bodywrapper div.shortcuts-inline {
+ div.shortcuts-inline {
     display: inline;
     float: right;
     text-align: right;
@@ -10,77 +10,77 @@
     padding: 10px;
 }
 
-.bodywrapper div.shortcuts-inline a,
-.bodywrapper div.shortcuts-inline a:link,
-.bodywrapper div.shortcuts-inline a:visited {
+ div.shortcuts-inline a,
+ div.shortcuts-inline a:link,
+ div.shortcuts-inline a:visited {
     color: #333333;
     text-decoration: none;
     background: none;
 }
 
-.bodywrapper div.shortcuts-inline a:hover,
-.bodywrapper div.shortcuts-inline a:active {
+ div.shortcuts-inline a:hover,
+ div.shortcuts-inline a:active {
     color: #333333;
     text-decoration: underline;
     background: none;
 }
 
-.bodywrapper .shortcuts-inline ul {
+ .shortcuts-inline ul {
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
-.bodywrapper .shortcuts-inline li {
+ .shortcuts-inline li {
     display: inline;
     padding: 0 5px;
     background: none;
 }
 
-.bodywrapper .shortcuts-inline li.shortcuts-print {
+ .shortcuts-inline li.shortcuts-print {
     background: transparent url( img/shortcuts-print.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
 
-.bodywrapper .shortcuts-inline li.shortcuts-typoincrease {
+ .shortcuts-inline li.shortcuts-typoincrease {
     background: transparent url( img/shortcuts-typoincrease.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
 
-.bodywrapper .shortcuts-inline li.shortcuts-typoreduce {
+ .shortcuts-inline li.shortcuts-typoreduce {
     background: transparent url( img/shortcuts-typoreduce.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
 
-.bodywrapper .shortcuts-inline li.shortcuts-home {
+ .shortcuts-inline li.shortcuts-home {
     background: transparent url( img/shortcuts-home.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
 
-.bodywrapper .shortcuts-inline li.shortcuts-contact {
+ .shortcuts-inline li.shortcuts-contact {
     background: transparent url( img/shortcuts-contact.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
 
-.bodywrapper .shortcuts-inline li.shortcuts-sitemap {
+ .shortcuts-inline li.shortcuts-sitemap {
     background: transparent url( img/shortcuts-sitemap.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
 
-.bodywrapper .shortcuts-inline li.shortcuts-mysettings {
+ .shortcuts-inline li.shortcuts-mysettings {
     background: transparent url( img/shortcuts-mysettings.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
-.bodywrapper .shortcuts-inline li.shortcuts-contribute {
+ .shortcuts-inline li.shortcuts-contribute {
     background: transparent url( img/shortcuts-contribute.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
-.bodywrapper .shortcuts-inline li.shortcuts-edit {
+ .shortcuts-inline li.shortcuts-edit {
     background: transparent url( img/shortcuts-edit.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
 
-.bodywrapper .shortcuts-inline li.shortcuts-login {
+ .shortcuts-inline li.shortcuts-login {
     background-color: #eaeaea ;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;

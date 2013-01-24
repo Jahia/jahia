@@ -39,20 +39,20 @@
 	text-decoration:none;
 }
 
-.bodywrapper ul.pagecontributeToolbar  {
+ ul.pagecontributeToolbar  {
 	margin:0;
 	padding:0;
 	list-style:none;
 	overflow:hidden;
 	margin:0.5em 0;
 }
-.bodywrapper ul.pagecontributeToolbar li {
+ ul.pagecontributeToolbar li {
 	float:left;
 	margin:0;
 	margin-bottom: 5px;
 	margin-right: 10px;
 }
-.bodywrapper ul.pagecontributeToolbar li a,.bodywrapper ul.pagecontributeToolbar li a:link, .bodywrapper ul.pagecontributeToolbar li a:visited{
+ ul.pagecontributeToolbar li a, ul.pagecontributeToolbar li a:link,  ul.pagecontributeToolbar li a:visited{
     -moz-border-radius: 3px 3px 3px 3px;
     -moz-box-shadow: 0 1px 3px #ccc;
     background: url(img/page-contribute-toolbar-bg-a.png) repeat-x scroll left bottom #FFFFFF;
@@ -67,7 +67,7 @@
 	display:block;
 	border:1px solid #ccc
 }
-.bodywrapper ul.pagecontributeToolbar li a:hover, .bodywrapper ul.pagecontributeToolbar li a:active{
+ ul.pagecontributeToolbar li a:hover,  ul.pagecontributeToolbar li a:active{
     background:#c6dcf6 url(img/page-contribute-toolbar-bg-a-on.png) repeat-x top left;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
@@ -77,13 +77,13 @@
 	text-decoration:none;
 }
 
-.bodywrapper h3.pastelink {
+ h3.pastelink {
 	color:#333333;
 	font-size:1.8em;
 	padding:5px 0 5px 0;
 	margin:0px;
 }
-.bodywrapper h3.pastelink img {
+ h3.pastelink img {
 	vertical-align: text-bottom;
 	margin-right:5px
 }

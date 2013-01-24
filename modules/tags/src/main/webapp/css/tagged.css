@@ -1,16 +1,16 @@
 /******************************************************************************
 *  Tagged
 ******************************************************************************/
-.bodywrapper span.taggeditem {
+ span.taggeditem {
     background:transparent url(img/page-tag.gif) no-repeat scroll 0 70%;
     display:inline;
     margin-left:8px;
     padding:5px 0 5px 18px;
 }
-.bodywrapper .tagged  {
+ .tagged  {
     margin:0.5em 0;
 }
-.bodywrapper .tagged form {
+ .tagged form {
     margin:0.5em 0;
 }
 

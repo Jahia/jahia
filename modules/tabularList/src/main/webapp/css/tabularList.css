@@ -1,10 +1,10 @@
 /******************************************************************************
 *  Tabs
 ******************************************************************************/
-.bodywrapper div.idTabsContainer{
+ div.idTabsContainer{
 	margin:0 ;
 }
-.bodywrapper  ul.idTabs {
+  ul.idTabs {
 	clear:both;
 	list-style-type:none;
 	overflow:hidden;
@@ -13,17 +13,17 @@
 	padding:0;
 
 }
-.bodywrapper .idTabs li {
+ .idTabs li {
 	display:inline;
 	float:left;
 	margin:0;
 	padding:0;
 }
-.bodywrapper .idTabs li.spacing{
+ .idTabs li.spacing{
 	padding-left:20px;
 }
 
-.bodywrapper .idTabs li a {
+ .idTabs li a {
 	background:transparent url(img/tab-left.png) no-repeat scroll 0 0;
 	display:inline;
 	float:left;
@@ -33,16 +33,16 @@
 	text-decoration:none;
 	margin-right:2px
 }
-.bodywrapper .idTabs li a.selected,
-.bodywrapper .idTabs li a:hover,
-.bodywrapper .idTabs li a.selected {
+ .idTabs li a.selected,
+ .idTabs li a:hover,
+ .idTabs li a.selected {
 	background-position:0 -29px;
 	color:#003399;
 	text-decoration:none;
 }
 
 
-.bodywrapper .idTabs li a span {
+ .idTabs li a span {
 	background:transparent url(img/tab-right.png) no-repeat scroll 100% 0;
 	color:#666;
 	cursor:pointer;
@@ -54,9 +54,9 @@
 	text-decoration:none;
 
 }
-.bodywrapper .idTabs li a.selected span,
-.bodywrapper .idTabs li a:hover span,
-.bodywrapper .idTabs li a.idTabs span {
+ .idTabs li a.selected span,
+ .idTabs li a:hover span,
+ .idTabs li a.idTabs span {
 	background-position:100% -29px;
 	color:#003399;
 	text-decoration:none;

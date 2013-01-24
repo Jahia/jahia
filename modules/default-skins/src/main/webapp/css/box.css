@@ -2,7 +2,7 @@
 * Box
 ******************************************************************************/
 
-.bodywrapper .box {
+ .box {
 	clear:both;
 	position: relative;
 	height:1%;
@@ -14,7 +14,7 @@
 	margin-bottom:10px;
 }
 
-.bodywrapper .box h3.box-header  {
+ .box h3.box-header  {
 	font-size:100%;
 	line-height:110%;
 	font-weight:bold;
@@ -27,6 +27,6 @@
 /******************************************************************************
 * Box style1
 ******************************************************************************/
-.bodywrapper .box-style1 {
+ .box-style1 {
 	background: url(img/box-style1-bg.png) no-repeat top left;
 }

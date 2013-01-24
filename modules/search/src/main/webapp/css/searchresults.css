@@ -1,31 +1,31 @@
 /******************************************************************************
 *  Template search results
 ******************************************************************************/
-.bodywrapper  .searchHighlightedText {
+  .searchHighlightedText {
 	background:#FFFF00 none repeat scroll 0 0;
 	font-size:larger;
 	font-weight:bold;
 }
 
-.bodywrapper .resultsList ol {
+ .resultsList ol {
 	margin:1em 1em 1em 3em;
 }
-.bodywrapper .resultsList li {
+ .resultsList li {
 	margin-bottom:1em;
 	padding:0.5em 0;
 	border-bottom:1px solid #ccc;
 	list-style:decimal
 }
 
-.bodywrapper .resultsList h4 {
+ .resultsList h4 {
 	margin:0;
 	padding: 0;
 	border-bottom:none;
 }
-.bodywrapper .resultsList .resultslistDesc {
+ .resultsList .resultslistDesc {
 
 }
-.bodywrapper .resultsList .resultsListFileType {
+ .resultsList .resultsListFileType {
 	display:inline;
 	background-color:#FFE45C ;
 	border:1px solid #FED22F;
@@ -35,7 +35,7 @@
 	vertical-align:middle;
 	width:auto;
 }
-.bodywrapper .resultsList .resultsListDate {
+ .resultsList .resultsListDate {
 	font-size:80%;
 	color:#333;
 	display:inline;

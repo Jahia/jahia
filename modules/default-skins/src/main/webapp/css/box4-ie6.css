@@ -1,7 +1,7 @@
 
-.bodywrapper .box4-topleft,
-.bodywrapper .box4-topright,
-.bodywrapper .box4-bottomleft,
-.bodywrapper .box4-bottomright {
+ .box4-topleft,
+ .box4-topright,
+ .box4-bottomleft,
+ .box4-bottomright {
 	display:none;
 }

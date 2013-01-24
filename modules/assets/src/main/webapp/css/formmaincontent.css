@@ -1,7 +1,7 @@
 /******************************************************************************
 * FormMainContent
 ******************************************************************************/
-.bodywrapper .FormMainContent {
+ .FormMainContent {
 	background:#fff url(img/formmaincontent-bg.jpg) repeat left top;
     color: #000;
 	-moz-box-shadow: 0 1px 3px #999;
@@ -14,7 +14,7 @@
 	margin:1em 0 0 0;
 	overflow:hidden;
 }
-.bodywrapper .FormMainContent fieldset {
+ .FormMainContent fieldset {
 	border:1px solid #b7cbd8;
 	margin:5px;
 	padding:5px;
@@ -22,7 +22,7 @@
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 }
-.bodywrapper .FormMainContent legend {
+ .FormMainContent legend {
 	background:#fff url(img/toolbar-input.png) repeat-x left bottom;
 	border:1px solid #b7cbd8;
 	color:#000;
@@ -34,21 +34,21 @@
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 }
-.bodywrapper .FormMainContent input,
-.bodywrapper .FormMainContent textarea {
+ .FormMainContent input,
+ .FormMainContent textarea {
 	width:97%
 }
-.bodywrapper .FormMainContent p{
+ .FormMainContent p{
 	clear:both;
 	margin:0.5em 0;
 	padding:0px
 }
-.bodywrapper .FormMainContent .formMarginLeft{
+ .FormMainContent .formMarginLeft{
 	margin:0.5em 0 0.5em 0;
 	padding:0;
 }
-.bodywrapper .FormMainContent label.left,
-.bodywrapper .FormMainContent label {
+ .FormMainContent label.left,
+ .FormMainContent label {
 	display:block;
 	color:#330000;
 	font-family:Arial,Helvetica,sans-serif;
@@ -57,7 +57,7 @@
 	line-height:20px;
 	margin-bottom:10px;
 }
-.bodywrapper .FormMainContent input, .bodywrapper .FormMainContent select, .bodywrapper .FormMainContent textarea {
+ .FormMainContent input,  .FormMainContent select,  .FormMainContent textarea {
 	background:#fff url(img/formmaincontent-input.gif) repeat-x top left;
 	border:1px solid #C8C8C8;
 	color:#333333;
@@ -66,10 +66,10 @@
 	margin-bottom:20px;
 	padding:8px;
 }
-.bodywrapper .FormMainContent input.radio, .bodywrapper .FormMainContent input.checkbox {
+ .FormMainContent input.radio,  .FormMainContent input.checkbox {
 	width:auto;
 }
-.bodywrapper .FormMainContent input.button, .bodywrapper .FormMainContent button{
+ .FormMainContent input.button,  .FormMainContent button{
 	background-image:none;
 	width:auto;
 	background:#663300;
@@ -92,18 +92,18 @@
 	border-radius: 10px;
 
 }
-.bodywrapper .FormMainContent input.button:hover, .bodywrapper .FormMainContent button:hover{
+ .FormMainContent input.button:hover,  .FormMainContent button:hover{
 	background-image:none;
     background:#330000;
     color: #ffcc99;
 	cursor: pointer;
 	text-decoration:none;
 }
-.bodywrapper .FormMainContent button img{
+ .FormMainContent button img{
 	vertical-align: text-bottom;
 	margin-right:2px
 }
-.bodywrapper .FormMainContent button span.icon-contribute{
+ .FormMainContent button span.icon-contribute{
 	width:16px;
 	height:16px;
 	display:block;
@@ -111,9 +111,9 @@
 	margin-right:3px;
 }
 
-.bodywrapper .FormMainContent button span.icon-accept{
+ .FormMainContent button span.icon-accept{
  	background:url(img/formmaincontent-valide.png) no-repeat top left;
 }
-.bodywrapper .FormMainContent button span.icon-cancel{
+ .FormMainContent button span.icon-cancel{
  	background:url(img/formmaincontent-reset.png) no-repeat top left;
 }

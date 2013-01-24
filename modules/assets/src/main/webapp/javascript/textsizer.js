@@ -1,7 +1,7 @@
 
 
 //Specify affected tags. Add or remove from list:
-var tgs = new Array( '.bodywrapper div','.bodywrapper td','.bodywrapper tr');
+var tgs = new Array( ' div',' td',' tr');
 
 //Specify spectrum of different font sizes:
 var szs = new Array( 'xx-small','x-small','small','medium','large','x-large','xx-large' );

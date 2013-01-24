@@ -2,7 +2,7 @@
 *  List Sites
 ******************************************************************************/
 
-.bodywrapper ul.list-sites  {
+ ul.list-sites  {
 	position:relative;
 	margin:0;
 	margin:0.5em 0;
@@ -10,12 +10,12 @@
 	padding:0
 }
 
-.bodywrapper ul.list-sites li {
+ ul.list-sites li {
 	padding:2px 5px;
 	margin:0;
 	list-style:none
 }
-.bodywrapper ul.list-sites li.listsiteicon {
+ ul.list-sites li.listsiteicon {
 	border-bottom:1px dotted #ccc ;
 	padding:5px;
 	margin:0;
@@ -25,9 +25,9 @@
 	line-height:1.375em;
 	display:block
 }
-.bodywrapper ul.list-sites li:last-child {
+ ul.list-sites li:last-child {
 	border-bottom-color:none;
 }
-.bodywrapper ul.list-sites li:hover{
+ ul.list-sites li:hover{
 	background-color:#eaeaea
 }

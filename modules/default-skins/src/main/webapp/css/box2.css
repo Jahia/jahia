@@ -1,67 +1,67 @@
 /******************************************************************************
 * Box 2 defaut
 ******************************************************************************/
-.bodywrapper .box2 {
+ .box2 {
 	position: relative;
 	border:1px solid #ccc;
 	margin-bottom:10px;
 	clear:both;
 }
-.bodywrapper .box2-text {
+ .box2-text {
 	margin: 10px 10px 1em 10px;
 	overflow: hidden;
 	height:1%
 }
 
-.bodywrapper h3.box2-header{
+ h3.box2-header{
 	background: #ccc url(img/box2-header.png) repeat-x left top;
     padding-left:6px;
     text-align:left;
 	margin:0;
 }
-.bodywrapper h3.box2-header span {
+ h3.box2-header span {
     padding:6px;
 	display:block
 }
-.bodywrapper .box2-topleft,
-.bodywrapper .box2-topright,
-.bodywrapper .box2-bottomleft,
-.bodywrapper .box2-bottomright {
+ .box2-topleft,
+ .box2-topright,
+ .box2-bottomleft,
+ .box2-bottomright {
 	height: 5px;
 	width: 5px;
 	background-repeat: no-repeat;
 	font-size:2px;
 }
-.bodywrapper .box2-bottomleft {
+ .box2-bottomleft {
 	position:absolute;
 	bottom:-1px;
 	left:-1px;
 	background: url(img/box2-bottomleft.png);
 }
-.bodywrapper .box2-bottomright {
+ .box2-bottomright {
 	position:absolute;
 	bottom:-1px;
 	right:-1px;
 	background: url(img/box2-bottomright.png);
 }
-.bodywrapper .box2-topleft {
+ .box2-topleft {
 	position:absolute;
 	top:-1px;
 	left:-1px;
 	background: url(img/box2-topleft.png);
 }
-.bodywrapper .box2-topright {
+ .box2-topright {
 	position:absolute;
 	top:-1px;
 	right:-1px;
 	background: url(img/box2-topright.png);
 
 }
-.bodywrapper .box2-illustration{
+ .box2-illustration{
 	background: transparent url(img/img5.png) repeat top left;
 	height:75px;
 }
-.bodywrapper .box2-more{
+ .box2-more{
 	font-size:80%;
 	font-size:11px;
 	font-weight:bold;
@@ -77,7 +77,7 @@
 * Box 2 style1
 ******************************************************************************/
 
-.bodywrapper .box2-style1 h3.box2-header{
+ .box2-style1 h3.box2-header{
 	background: #404d6c	 url(img/box2-style1-header.png) repeat-x left top;
 	color:#fff;
 }
@@ -85,6 +85,6 @@
 /******************************************************************************
 * Hide title
 ******************************************************************************/
-.bodywrapper .box2 .box2-text .title{
+ .box2 .box2-text .title{
     display:none;        
 }

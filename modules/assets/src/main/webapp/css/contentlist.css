@@ -1,10 +1,10 @@
-.bodywrapper div.listEditToolbar {
+ div.listEditToolbar {
 	margin-bottom:5px;
 }
-.bodywrapper .listEditToolbar button img{ margin-right:2px; vertical-align: text-bottom}
+ .listEditToolbar button img{ margin-right:2px; vertical-align: text-bottom}
 
-.bodywrapper .listEditToolbar button,
-.bodywrapper .listEditToolbar input {
+ .listEditToolbar button,
+ .listEditToolbar input {
 	background:#fff url(img/toolbar-input.png) repeat-x left bottom;
     color: #000;
     font-size: 9px;
@@ -24,29 +24,29 @@
 	line-height:16px;
 	margin-bottom:5px
 }
-.bodywrapper .listEditToolbar button:hover,
-.bodywrapper .listEditToolbar input:hover {
+ .listEditToolbar button:hover,
+ .listEditToolbar input:hover {
     background:#fff url(img/toolbar-input-on.png) repeat-x left bottom;
     color: #333;
 	cursor: pointer;
 	text-decoration:none;
 }
 
-.bodywrapper h3.titleaddnewcontent {
+ h3.titleaddnewcontent {
 	color:#333333;
 	font-size:1.8em;
 	padding:5px 0 5px 0;
 	margin:0px;
 }
-.bodywrapper h3.titleaddnewcontent img {
+ h3.titleaddnewcontent img {
 	vertical-align: text-bottom;
 	margin-right:5px
 }
-.bodywrapper span.markedForDeletion {
+ span.markedForDeletion {
 	text-decoration: line-through;
 }
 
-.bodywrapper div.markedForDeletion {
+ div.markedForDeletion {
     background-color: #EAEAEA;
     border: 1px dashed #333333;
     color: #666666;
@@ -54,7 +54,7 @@
     position: relative;
 }
 
-.bodywrapper span.markedForDeletionLabel {
+ span.markedForDeletionLabel {
     background-color: #333333;
     border: 1px solid #000000;
     border-radius: 3px 3px 3px 3px;

@@ -1,10 +1,10 @@
-.bodywrapper .treeview, .bodywrapper .treeview ul {
+ .treeview,  .treeview ul {
 	padding: 0;
 	margin: 0;
 	list-style: none;
 }
 
-.bodywrapper .treeview ul {
+ .treeview ul {
 	background-color: white;
 	margin-top: 4px;
 }
@@ -23,7 +23,7 @@
 	float:none;
 }
 
-.bodywrapper .treeview li {
+ .treeview li {
 	margin: 0;
 	padding: 3px 0pt 3px 16px;
 }

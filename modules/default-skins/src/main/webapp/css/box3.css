@@ -1,60 +1,60 @@
 /******************************************************************************
 * Box 3 layout
 ******************************************************************************/
-.bodywrapper .box3-container {
+ .box3-container {
 	position: relative;
 	border:1px solid #ccc;
 	margin-bottom:10px;
 	clear:both;
 	background-color:#ddd3ca;
 }
-.bodywrapper .box3-topleft,
-.bodywrapper .box3-topright,
-.bodywrapper .box3-bottomleft,
-.bodywrapper .box3-bottomright {
+ .box3-topleft,
+ .box3-topright,
+ .box3-bottomleft,
+ .box3-bottomright {
 	height: 5px; width: 5px;
 	background-repeat: no-repeat;
 	font-size:2px;
 }
-.bodywrapper .box3-topleft {
+ .box3-topleft {
 	position:absolute;
 	top:-1px;
 	left:-1px;
 	background: url(img/box3-topleft.png) no-repeat top left;
 }
-.bodywrapper .box3-topright {
+ .box3-topright {
 	position:absolute;
 	top:-1px;
 	right:-1px;
 	background: url(img/box3-topright.png) no-repeat top right;
 }
-.bodywrapper .box3-bottomleft {
+ .box3-bottomleft {
 	position:absolute;
 	bottom:-1px;
 	left:-1px;
 	background: url(img/box3-bottomleft.png) no-repeat bottom left;
 }
-.bodywrapper .box3-bottomright {
+ .box3-bottomright {
 	position:absolute;
 	bottom:-1px;
 	right:-1px;
 	background: url(img/box3-bottomright.png) no-repeat bottom right;
 }
-.bodywrapper .box3-text {
+ .box3-text {
 	margin: 10px;
 	overflow: hidden;
 	height:1%
 }
-.bodywrapper .box3-text h3.box3-header {
+ .box3-text h3.box3-header {
 	color:#900;
 	margin-bottom:0
 }
 /******************************************************************************
 * Box 3 style1
 ******************************************************************************/
-.bodywrapper .box3-style1 .box3-container {
+ .box3-style1 .box3-container {
 	border:1px solid #ccc;
 }
-.bodywrapper .box3-style1 {
+ .box3-style1 {
 	background-color:#fff;
 }

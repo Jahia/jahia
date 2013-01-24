@@ -1,67 +1,67 @@
 /******************************************************************************
 * Box 4 defaut
 ******************************************************************************/
-.bodywrapper .box4 {
+ .box4 {
 	position: relative;
 	border:1px solid #ccc;
 	margin-bottom:10px;
 	clear:both;
 	background: #ccc url(img/box4-header.png) repeat-x left top;
 }
-.bodywrapper .box4-text {
+ .box4-text {
 	margin: 10px 10px 15px 10px;
 	overflow: hidden;
 	height:1%
 }
 
-.bodywrapper h3.box4-header{
+ h3.box4-header{
     padding-left:6px;
     text-align:left;
 	margin:0;
 }
-.bodywrapper h3.box4-header span {
+ h3.box4-header span {
     padding:4px;
 	display:block
 }
-.bodywrapper .box4-topleft,
-.bodywrapper .box4-topright,
-.bodywrapper .box4-bottomleft,
-.bodywrapper .box4-bottomright {
+ .box4-topleft,
+ .box4-topright,
+ .box4-bottomleft,
+ .box4-bottomright {
 	height: 5px;
 	width: 5px;
 	background-repeat: no-repeat;
 	font-size:2px;
 }
-.bodywrapper .box4-bottomleft {
+ .box4-bottomleft {
 	position:absolute;
 	bottom:-1px;
 	left:-1px;
 	background: url(img/box4-bottomleft.png) no-repeat bottom left;
 }
-.bodywrapper .box4-bottomright {
+ .box4-bottomright {
 	position:absolute;
 	bottom:-1px;
 	right:-1px;
 	background: url(img/box4-bottomright.png) no-repeat bottom right;
 }
-.bodywrapper .box4-topleft {
+ .box4-topleft {
 	position:absolute;
 	top:-1px;
 	left:-1px;
 	background: url(img/box4-topleft.png) no-repeat top left;
 }
-.bodywrapper .box4-topright {
+ .box4-topright {
 	position:absolute;
 	top:-1px;
 	right:-1px;
 	background: url(img/box4-topright.png) no-repeat top right;
 
 }
-.bodywrapper .box4-illustration{
+ .box4-illustration{
 	background: transparent url(img/img5.png) repeat top left;
 	height:75px;
 }
-.bodywrapper .box4-more{
+ .box4-more{
 	font-size:11px;
 	font-weight:bold;
 	position:absolute;
@@ -75,10 +75,10 @@
 /******************************************************************************
 * Box 4 style1
 ******************************************************************************/
-.bodywrapper .box4-style1 {
+ .box4-style1 {
 	background: #404d6c url(img/box4-style1-header.png) repeat-x left top;
 	color:#fff;
 }
-.bodywrapper .box4-style1 h3.box4-header{
+ .box4-style1 h3.box4-header{
 	color:#fff;
 }

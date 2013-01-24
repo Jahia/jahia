@@ -1,4 +1,4 @@
-.bodywrapper #banner {
+ #banner {
     clear: both;
     height: 294px;
     width: 100%;
@@ -7,31 +7,31 @@
 	margin:0.5em 0;
 }
 
-.bodywrapper .banner-text {
+ .banner-text {
     padding-right: 20px;
     line-height: normal;
 	color: #ffffff;
 }
 
-.bodywrapper .banner-text,
-    .bodywrapper .banner-text h2,
-    .bodywrapper .banner-text h3,
-    .bodywrapper .banner-text h4,
-    .bodywrapper .banner-text h5 {
+ .banner-text,
+     .banner-text h2,
+     .banner-text h3,
+     .banner-text h4,
+     .banner-text h5 {
     color: #ffffff;
     margin: 0;
 }
 
-.bodywrapper .banner-text a,
-    .bodywrapper .banner-text a:link,
-    .bodywrapper .banner-text a:visited {
+ .banner-text a,
+     .banner-text a:link,
+     .banner-text a:visited {
     color: #ffffff;
     text-decoration: underline;
     background: none;
 }
 
-.bodywrapper .banner-text a:hover,
-    .bodywrapper .banner-text a:active {
+ .banner-text a:hover,
+     .banner-text a:active {
     color: #ffffff;
     text-decoration: none;
     background: none;

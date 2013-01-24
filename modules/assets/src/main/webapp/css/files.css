@@ -1,5 +1,5 @@
 /* ------- Icon 16px 16px balises------- */
-.bodywrapper span.icon {
+ span.icon {
 	display:inline-block;
 	width:16px;
 	height:16px;
@@ -7,83 +7,83 @@
 	margin-right:5px;
 	vertical-align:text-bottom;
 }
-.bodywrapper li.icon {
+ li.icon {
 	background: url(../icons/jnt_file_file.png ) no-repeat 0.5em 0.7em;
 	padding:0 0 0 27px !important;
 }
-.bodywrapper a.icon {
+ a.icon {
 	background: url(../icons/jnt_file_file.png ) no-repeat 0 0.2em;
 	padding:0 0 0 27px !important;
 	display:block;
 }
 /* ------- Icon 16px 16px Files types------- */
-.bodywrapper .file {
+ .file {
     background-image: url(../icons/jnt_file_file.png )!important ;
 }
-.bodywrapper .video {
+ .video {
     background-image: url(../icons/jnt_file_video.png ) !important ;
 }
-.bodywrapper .ppt, .bodywrapper .pptx {
+ .ppt,  .pptx {
     background-image: url(../icons/jnt_file_ppt.png ) !important ;
 }
-.bodywrapper .exe {
+ .exe {
     background-image: url(../icons/jnt_file_exe.png ) !important ;
 }
-.bodywrapper .msword, .bodywrapper .doc, .bodywrapper .docx {
+ .msword,  .doc,  .docx {
     background-image: url(../icons/jnt_file_doc.png ) !important ;
 }
-.bodywrapper .html, .bodywrapper .htm {
+ .html,  .htm {
     background-image: url(../icons/jnt_file_html.png ) !important ;
 }
-.bodywrapper .img,  .bodywrapper .gif, .bodywrapper .jpeg, .bodywrapper .jpg, .bodywrapper .png {
+ .img,   .gif,  .jpeg,  .jpg,  .png {
     background-image: url(../icons/jnt_file_img.png ) !important ;
 }
-.bodywrapper .pdf {
+ .pdf {
     background-image: url(../icons/jnt_file_pdf.png ) !important ;
 }
-.bodywrapper .sound, .bodywrapper a.wav, .bodywrapper .mp3, .bodywrapper .mpeg, .bodywrapper .mpg {
+ .sound,  a.wav,  .mp3,  .mpeg,  .mpg {
     background-image: url(../icons/jnt_file_sound.png ) !important ;
 }
-.bodywrapper .txt {
+ .txt {
     background-image: url(../icons/jnt_file_txt.png ) !important ;
 }
-.bodywrapper .xls, .bodywrapper .xlsx, .bodywrapper .csv {
+ .xls,  .xlsx,  .csv {
     background-image: url(../icons/jnt_file_xls.png ) !important ;
 }
-.bodywrapper .zip, .bodywrapper a.sit, .bodywrapper .rar,  .bodywrapper .tar, .bodywrapper .gz, .bodywrapper .jar {
+ .zip,  a.sit,  .rar,   .tar,  .gz,  .jar {
     background-image: url(../icons/jnt_file_zip.png ) !important ;
 }
-.bodywrapper .swf {
+ .swf {
     background-image: url(../icons/jnt_flash.png ) !important ;
 }
-.bodywrapper .odg {
+ .odg {
     background-image: url(../icons/jnt_file_odg.png ) !important ;
 }
-.bodywrapper .odp {
+ .odp {
     background-image: url(../icons/jnt_file_odp.png ) !important ;
 }
-.bodywrapper .ods {
+ .ods {
     background-image: url(../icons/jnt_file_ods.png ) !important ;
 }
-.bodywrapper .odt {
+ .odt {
     background-image: url(../icons/jnt_file_odt.png ) !important ;
 }
-.bodywrapper .rtf {
+ .rtf {
     background-image: url(../icons/jnt_file_rtf.png ) !important ;
 }
-.bodywrapper .svg {
+ .svg {
     background-image: url(../icons/jnt_file_svg.png ) !important ;
 }
-.bodywrapper .sxc {
+ .sxc {
     background-image: url(../icons/jnt_file_sxc.png ) !important ;
 }
-.bodywrapper .sxi {
+ .sxi {
     background-image: url(../icons/jnt_file_sxi.png ) !important ;
 }
-.bodywrapper .sxw {
+ .sxw {
     background-image: url(../icons/jnt_file_sxc.png ) !important ;
 }
-.bodywrapper .tsv {
+ .tsv {
     background-image: url(../icons/jnt_file_tsv.png ) !important ;
 }
 /* ------- File types (end) ------- */
@@ -91,19 +91,19 @@
 
 
 /* ------- Icon 48px 48px balises ------- */
-.bodywrapper span.icon_large {
+ span.icon_large {
 	display:block;
 	width:48px;
 	height:48px;
 	margin:10px;
 	background: url(../icons/jnt_file_file_large.png ) no-repeat top left;
 }
-.bodywrapper li.icon_large {
+ li.icon_large {
 	background: url(../icons/jnt_file_file_large ) no-repeat 0.5em 0.7em;
 	padding:0.5em 0.5em 0.5em 59px !important;
 	min-height:55px
 }
-.bodywrapper a.icon_large {
+ a.icon_large {
 	background: url(../icons/jnt_file_file_large ) no-repeat 0 0.2em;
 	padding:0 0 0 59px !important;
 	min-height:55px;
@@ -111,74 +111,74 @@
 }
 /* ------- Icon 48px 48px Files types------- */
 
-.bodywrapper .file_large {
+ .file_large {
     background-image: url(../icons/jnt_file_file_large.png ) !important ;
 }
-.bodywrapper .video_large {
+ .video_large {
     background-image: url(../icons/jnt_file_video_large.png ) !important ;
 }
-.bodywrapper .ppt_large, .bodywrapper .pptx_large {
+ .ppt_large,  .pptx_large {
     background-image: url(../icons/jnt_file_ppt_large.png ) !important ;
 }
-.bodywrapper .exe_large {
+ .exe_large {
     background-image: url(../icons/jnt_file_exe_large.png ) !important ;
 }
-.bodywrapper .msword_large, .bodywrapper .doc_large, .bodywrapper .docx_large {
+ .msword_large,  .doc_large,  .docx_large {
     background-image: url(../icons/jnt_file_doc_large.png ) !important ;
 }
-.bodywrapper .html_large, .bodywrapper .htm_large {
+ .html_large,  .htm_large {
     background-image: url(../icons/jnt_file_html_large.png ) !important ;
 }
-.bodywrapper .img_large,  .bodywrapper .gif_large, .bodywrapper .jpeg_large, .bodywrapper .jpg_large, .bodywrapper .png_large {
+ .img_large,   .gif_large,  .jpeg_large,  .jpg_large,  .png_large {
     background-image: url(../icons/jnt_file_img_large.png ) !important ;
 }
-.bodywrapper .pdf_large {
+ .pdf_large {
     background-image: url(../icons/jnt_file_pdf_large.png ) !important ;
 }
-.bodywrapper .sound_large, .bodywrapper a.wav_large, .bodywrapper .mp3_large, .bodywrapper .mpeg_large, .bodywrapper .mpg_large {
+ .sound_large,  a.wav_large,  .mp3_large,  .mpeg_large,  .mpg_large {
     background-image: url(../icons/jnt_file_sound_large.png ) !important ;
 }
-.bodywrapper .txt_large {
+ .txt_large {
     background-image: url(../icons/jnt_file_txt_large.png ) !important ;
 }
-.bodywrapper .xls_large, .bodywrapper .xlsx_large, .bodywrapper .csv_large {
+ .xls_large,  .xlsx_large,  .csv_large {
     background-image: url(../icons/jnt_file_xls_large.png ) !important ;
 }
 
-.bodywrapper .zip_large, .bodywrapper a.sit_large, .bodywrapper .rar_large,  .bodywrapper .tar_large, .bodywrapper .gz_large, .bodywrapper .jar_large {
+ .zip_large,  a.sit_large,  .rar_large,   .tar_large,  .gz_large,  .jar_large {
     background-image: url(../icons/jnt_file_zip_large.png ) !important ;
 }
-.bodywrapper .swf_large {
+ .swf_large {
     background-image: url(../icons/jnt_flash_large.png ) !important ;
 }
-.bodywrapper .odg_large {
+ .odg_large {
     background-image: url(../icons/jnt_file_odg_large.png ) !important ;
 }
-.bodywrapper .odp_large {
+ .odp_large {
     background-image: url(../icons/jnt_file_odp_large.png ) !important ;
 }
-.bodywrapper .ods_large {
+ .ods_large {
     background-image: url(../icons/jnt_file_ods_large.png ) !important ;
 }
-.bodywrapper .odt_large {
+ .odt_large {
     background-image: url(../icons/jnt_file_odt_large.png ) !important ;
 }
-.bodywrapper .rtf_large {
+ .rtf_large {
     background-image: url(../icons/jnt_file_rtf_large.png ) !important ;
 }
-.bodywrapper .svg_large {
+ .svg_large {
     background-image: url(../icons/jnt_file_svg_large.png ) !important ;
 }
-.bodywrapper .sxc_large {
+ .sxc_large {
     background-image: url(../icons/jnt_file_sxc_large.png ) !important ;
 }
-.bodywrapper .sxi_large {
+ .sxi_large {
     background-image: url(../icons/jnt_file_sxi_large.png ) !important ;
 }
-.bodywrapper .sxw_large {
+ .sxw_large {
     background-image: url(../icons/jnt_file_sxc_large.png ) !important ;
 }
-.bodywrapper .tsv_large {
+ .tsv_large {
     background-image: url(../icons/jnt_file_tsv_large.png ) !important ;
 }
 /* ------- File types (end) ------- */

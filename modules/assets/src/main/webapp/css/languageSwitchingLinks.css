@@ -4,13 +4,13 @@
     background: url( "images/languageswitch/redirectLink.png" ) no-repeat top right;
     padding-right: 10px;
 }
-.bodywrapper .languageSwitching_horizontal_display {
+ .languageSwitching_horizontal_display {
 	float:right;
 	display:inline;
 	padding:10px;
 }
 
-.bodywrapper .languageSwitching_horizontal_display ul {
+ .languageSwitching_horizontal_display ul {
 	list-style: none;
 	float:left;
 	display:inline;
@@ -19,12 +19,12 @@
 	font-size:85%;
 	line-height:normal;
 }
-.bodywrapper .languageSwitching_horizontal_display ul li {
+ .languageSwitching_horizontal_display ul li {
 	display:inline;
 	padding:0 2px;
 	background: none;
 }
-.bodywrapper .languageSwitching_horizontal_display ul li a{
+ .languageSwitching_horizontal_display ul li a{
 	text-decoration:none;
 }
 

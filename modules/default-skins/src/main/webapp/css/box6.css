@@ -1,7 +1,7 @@
 /******************************************************************************
 *  box6
 ******************************************************************************/
-.bodywrapper div.box6 {
+ div.box6 {
 	background:#fff none repeat scroll 0 0;
 	border:7px solid #eaeaea;
 	margin:0 0 1em;
@@ -20,38 +20,38 @@
 	box-shadow:0 0 4px #555555;
 }
 /*black*/
-.bodywrapper div.box6-black {
+ div.box6-black {
 	border:7px solid #010101;
 }
 /*grey*/
-.bodywrapper div.box6-grey {
+ div.box6-grey {
 	border:7px solid #eaeaea;
 }
 /*mushroom*/
-.bodywrapper div.box6-mushroom {
+ div.box6-mushroom {
 	border:7px solid #eee7e1;
 }
 /*orange*/
-.bodywrapper div.box6-orange {
+ div.box6-orange {
 	border:7px solid #fde8c9;
 }
 /*red*/
-.bodywrapper div.box6-red {
+ div.box6-red {
 	border:7px solid #f3d8d8;
 }
 /*green*/
-.bodywrapper div.box6-green {
+ div.box6-green {
 	border:7px solid #e0ead3;
 }
 /*purple*/
-.bodywrapper div.box6-purple {
+ div.box6-purple {
 	border:7px solid #e4cae9;
 }
 /*yellow*/
-.bodywrapper div.box6-yellow {
+ div.box6-yellow {
 	border:7px solid #f1de9e;
 }
 /*blue*/
-.bodywrapper div.box6-blue {
+ div.box6-blue {
 	border:7px solid #c5dbec;
 }

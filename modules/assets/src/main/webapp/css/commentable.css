@@ -1,29 +1,29 @@
 /******************************************************************************
 *  Form Generic Comment
 ******************************************************************************/
-.bodywrapper #formGenericComment {
+ #formGenericComment {
 	margin: 0;
 	padding:0;
     clear:both;
 }
-.bodywrapper #formGenericComment p{
+ #formGenericComment p{
 	margin:0;
 	padding:0;
 }
-.bodywrapper #formGenericComment p.field{
+ #formGenericComment p.field{
 	margin-bottom:0.5em;
 }
-.bodywrapper #formGenericComment label{
+ #formGenericComment label{
 display:block
 }
-.bodywrapper #formGenericComment textarea,
-.bodywrapper #formGenericComment input{
+ #formGenericComment textarea,
+ #formGenericComment input{
 	width:98%
 }
-.bodywrapper #formGenericComment input.button{
+ #formGenericComment input.button{
 	width:auto
 }
-.bodywrapper #formGenericComment fieldset{
+ #formGenericComment fieldset{
 	border:none;
 	margin:0;
 	padding:0;
@@ -33,52 +33,52 @@ display:block
 *  Generic List Comment
 ******************************************************************************/
 
-.bodywrapper ul.genericListComment  {
+ ul.genericListComment  {
 	position:relative;
 	margin:0;
 	margin-bottom:20px;
 	list-style:none;
 	padding:0
 }
-.bodywrapper .genericListComment li {
+ .genericListComment li {
 	padding:10px;
 	margin:0;
 	margin-bottom:10px;
 	list-style:none;
 	background: url(img/hr.png) repeat-x bottom left;
 }
-.bodywrapper .genericListComment li:last-child {
+ .genericListComment li:last-child {
 	background:none;
 }
-.bodywrapper .genericListComment .itemImageLeft {
+ .genericListComment .itemImageLeft {
 	margin-right:20px
 }
-.bodywrapper .genericListComment .itemImageRight {
+ .genericListComment .itemImageRight {
 	margin-left:20px
 }
 
-.bodywrapper .genericListComment li p {
+ .genericListComment li p {
 	padding:0;
 }
-.bodywrapper .genericListComment li.last {
+ .genericListComment li.last {
 	background:none;
 }
 
-.bodywrapper .genericListComment .author {
+ .genericListComment .author {
 font-weight:bold
 }
 
-.bodywrapper .genericListComment h4.title {
+ .genericListComment h4.title {
 	display:inline;
 	margin:0;
 	padding:0;
 }
-.bodywrapper .genericListComment li.itemversion {
+ .genericListComment li.itemversion {
 	background-color:#FCF0BA
 }
-.bodywrapper .genericListComment li.itemsystem {
+ .genericListComment li.itemsystem {
 	background-color:#e3fbd0
 }
-.bodywrapper .genericListComment li.last {
+ .genericListComment li.last {
 	border-bottom-color:#fff;
 }

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  box7
 ******************************************************************************/
-.bodywrapper div.box7 {
+ div.box7 {
 	background-color:#eaeaea;
 	border:1px solid #ccc;
 	margin:0 0 1em;
@@ -10,50 +10,50 @@
 }
 
 /*black*/
-.bodywrapper div.box7-black {
+ div.box7-black {
 	background-color:#333333;
 	border:1px solid #010101;
 }
-.bodywrapper div.box7-black * {
+ div.box7-black * {
 	color:#fff;
 }
 /*grey*/
-.bodywrapper div.box7-grey {
+ div.box7-grey {
 	background-color:#f8f8f8;
 	border:1px solid #eaeaea;
 }
 /*mushroom*/
-.bodywrapper div.box7-mushroom {
+ div.box7-mushroom {
 	background-color:#f4eee9;
 	border:1px solid #eee7e1;
 }
 /*orange*/
-.bodywrapper div.box7-orange {
+ div.box7-orange {
 	border:1px solid #fde8c9;
 	background-color:#fef0dc;
 }
 /*red*/
-.bodywrapper div.box7-red {
+ div.box7-red {
 	border:1px solid #f3d8d8;
 	background-color:#f7e6e6;
 }
 /*green*/
-.bodywrapper div.box7-green {
+ div.box7-green {
 	border:1px solid #e0ead3;
 	background-color:#f4fbea;
 }
 /*purple*/
-.bodywrapper div.box7-purple {
+ div.box7-purple {
 	border:1px solid #e4cae9;
 	background-color:#f9ddff;
 }
 /*yellow*/
-.bodywrapper div.box7-yellow {
+ div.box7-yellow {
 	border:1px solid #f1de9e;
 	background-color:#fdf2ce;
 }
 /*blue*/
-.bodywrapper div.box7-blue {
+ div.box7-blue {
 	border:1px solid #c5dbec;
 	background-color:#dfeffc;
 }

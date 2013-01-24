@@ -1,6 +1,6 @@
 /*shortcuts*/
 
-.bodywrapper div.shortcuts-simple {
+ div.shortcuts-simple {
 	list-style: none;
 	display:block;
 	text-align: center;
@@ -11,9 +11,9 @@
 	clear:both
 }
 
-.bodywrapper div.shortcuts-simple a,
-.bodywrapper div.shortcuts-simple a:link,
-.bodywrapper div.shortcuts-simple a:visited {
+ div.shortcuts-simple a,
+ div.shortcuts-simple a:link,
+ div.shortcuts-simple a:visited {
 	display: block;
 	text-align:center;
 	color: #999;
@@ -21,19 +21,19 @@
 	padding:2px 10px;
 }
 
-.bodywrapper div.shortcuts-simple a:hover,
-.bodywrapper div.shortcuts-simple a:active {
+ div.shortcuts-simple a:hover,
+ div.shortcuts-simple a:active {
 	color:#333;
 	background:#fff;
 }
 
-.bodywrapper .shortcuts-simple ul {
+ .shortcuts-simple ul {
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
-.bodywrapper .shortcuts-simple li {
+ .shortcuts-simple li {
 	margin: 0 0 0 5px;
 	height: 10px;
 	float: left;

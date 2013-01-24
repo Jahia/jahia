@@ -1,13 +1,13 @@
-.bodywrapper div.tags {
+ div.tags {
 margin-bottom:1em;
 }
-.bodywrapper .tags ul {
+ .tags ul {
 border-top:medium none;
 font-size:1.1em;
 margin:1em 0.5em;
 text-align:justify;
 }
-.bodywrapper .tags ul li {
+ .tags ul li {
 background:transparent none repeat scroll 0 0;
 border:medium none;
 display:inline;
@@ -15,40 +15,40 @@ line-height:1.8em;
 margin:0;
 padding:0;
 }
-.bodywrapper .tag00 {
+ .tag00 {
 font-size:75%;
 }
-.bodywrapper .tag10 {
+ .tag10 {
 font-size:80%;
 }
-.bodywrapper .tag20 {
+ .tag20 {
 font-size:90%;
 }
-.bodywrapper .tag30 {
+ .tag30 {
 font-size:100%;
 }
-.bodywrapper .tag40 {
+ .tag40 {
 font-size:110%;
 }
-.bodywrapper .tag50 {
+ .tag50 {
 font-size:120%;
 }
-.bodywrapper .tag60 {
+ .tag60 {
 font-size:140%;
 }
-.bodywrapper .tag70 {
+ .tag70 {
 font-size:150%;
 }
-.bodywrapper .tag80 {
+ .tag80 {
 font-size:160%;
 }
-.bodywrapper .tag90 {
+ .tag90 {
 font-size:170%;
 }
-.bodywrapper .tag100 {
+ .tag100 {
 font-size:180%;
 }
-.bodywrapper ul.tags {
+ ul.tags {
 font-size:1.3em;
 list-style-image:none;
 list-style-position:outside;
@@ -57,7 +57,7 @@ margin:1em 0;
 padding:0;
 text-align:justify;
 }
-.bodywrapper ul.tags li {
+ ul.tags li {
 display:inline;
 line-height:1.8em;
 margin:0;

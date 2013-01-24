@@ -4,7 +4,7 @@
 
 @media (max-width: 1025px) {
 
-    .bodywrapper #content {
+     #content {
         padding-bottom: 0.2em;
         padding-top: 0.2em;
     }
@@ -36,16 +36,16 @@
         width:98% !important;
         min-width:240px;
 	}
-	.bodywrapper .formsettings select,
-	.bodywrapper .formsettings input.inputsize1,
-	.bodywrapper .textarea#docspaceDesc {
+	 .formsettings select,
+	 .formsettings input.inputsize1,
+	 .textarea#docspaceDesc {
 		width:50%;
 	}
-	.bodywrapper .userManagementSearchForm input.field ,
-	.bodywrapper .userManagementSearchForm select.field,
-	.bodywrapper .userManagementSearchForm select.fieldselect,
-	.bodywrapper .userManagementSkillsForm input.field,
-	.bodywrapper .userManagementSkillsForm select.field {
+	 .userManagementSearchForm input.field ,
+	 .userManagementSearchForm select.field,
+	 .userManagementSearchForm select.fieldselect,
+	 .userManagementSkillsForm input.field,
+	 .userManagementSkillsForm select.field {
 		width:90%;
 	}
 	.popupSize ,
@@ -57,22 +57,22 @@
         overflow:auto;
         display:block;
 	}
-    .bodywrapper .columns2 .column-item,
-    .bodywrapper .columns3 .column-item,
-    .bodywrapper .columns4 .column-item,
-    .bodywrapper .columns5 .column-item {
+     .columns2 .column-item,
+     .columns3 .column-item,
+     .columns4 .column-item,
+     .columns5 .column-item {
         float: none;
         width: auto;
         overflow: hidden;
         display: block;
     }
-    .bodywrapper .columns2 .column-item .spacer,
-    .bodywrapper .columns3 .column-item .spacer,
-    .bodywrapper .columns4 .column-item .spacer,
-    .bodywrapper .columns5 .column-item .spacer {
+     .columns2 .column-item .spacer,
+     .columns3 .column-item .spacer,
+     .columns4 .column-item .spacer,
+     .columns5 .column-item .spacer {
         padding: 0 0 0.5em 0;
     }
-    .bodywrapper form.docspacesearch #searchTerm {
+     form.docspacesearch #searchTerm {
         width: 90%;
         margin-right:0;
     }
@@ -88,20 +88,20 @@
         width: 100%;
         display:block;
     }
-    .bodywrapper .facetsList li,.bodywrapper .filterListByDate li,.bodywrapper .mycollectionslist li {
+     .facetsList li, .filterListByDate li, .mycollectionslist li {
         display:inline-block;
     }
-    .bodywrapper .mycollectionslist li {
+     .mycollectionslist li {
        margin-right:1em;
     }
-    .bodywrapper .mycollectionslist .delete-collection, .bodywrapper .mycollectionslist .unsubscribe-collection, .bodywrapper .mycollectionslist .subscribe-collection {
+     .mycollectionslist .delete-collection,  .mycollectionslist .unsubscribe-collection,  .mycollectionslist .subscribe-collection {
         float: none;
     }
-    .bodywrapper ul.docspace-nav {
+     ul.docspace-nav {
         float: none;
         text-align:center
     }
-    .bodywrapper ul.docspace-nav li {
+     ul.docspace-nav li {
         float: none;
         display: inline-block;
     }
@@ -121,7 +121,7 @@
         text-align:left;
         display: block;
     }
-    .bodywrapper #navigation h1{
+     #navigation h1{
         text-align:center;
         padding:0.2em 0 0.2em 0;
     }
@@ -131,7 +131,7 @@
     input[type="submit"],input[type="reset"],input {
         -webkit-appearance: none;
     }
-    .bodywrapper .ui-accordion-content {
+     .ui-accordion-content {
 	    height:150px;
   	    overflow:auto;
     }
@@ -188,17 +188,17 @@
       .hidden-phone-portrait {
         display: none !important;
       }
-      .bodywrapper .fc-header-title h2 {
+       .fc-header-title h2 {
         font-size: 0.8em;
       }
       .fc .fc-header-space {
         padding-left: 1px;
       }
-      .bodywrapper .paginationNavigation {
+       .paginationNavigation {
         float: none;
         clear:both;
       }
-      .bodywrapper .docspace-users > li{
+       .docspace-users > li{
         float: none;
         display:block;
         margin-right: 0;
@@ -206,26 +206,26 @@
 
 }
 @media (max-width: 767px) {
-      .bodywrapper {
+      body {
         -webkit-text-size-adjust:80%;
       }
-      .bodywrapper .docspace-thumbnail {
+       .docspace-thumbnail {
           display:block;
       }
 
-      .bodywrapper .docspace-thumbnails > li {
+       .docspace-thumbnails > li {
         margin-bottom: 2px;
         margin-right: 2px;
       }
-      .bodywrapper .docspace-thumbnail {
+       .docspace-thumbnail {
         padding: 1px;
       }
-      .bodywrapper .docspace-members > li{
+       .docspace-members > li{
         float: none;
         display:block;
         margin-right: 0;
       }
-      .bodywrapper .tabContainer {
+       .tabContainer {
         margin-bottom: 0.2em;
         padding: 10px 5px;
       }

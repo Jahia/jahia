@@ -1,16 +1,16 @@
-.bodywrapper .navigationN2-1 ul {
+ .navigationN2-1 ul {
 margin:0.5em 0;
 padding:0;
 }
-.bodywrapper .navigationN2-1 li {
+ .navigationN2-1 li {
 list-style:none;
 }
-.bodywrapper .navigationN2-1 li.lastInLevel {
+ .navigationN2-1 li.lastInLevel {
 border-right:none
 }
-.bodywrapper .navigationN2-1 li a,
-.bodywrapper .navigationN2-1 li a:link,
-.bodywrapper .navigationN2-1 li a:visited
+ .navigationN2-1 li a,
+ .navigationN2-1 li a:link,
+ .navigationN2-1 li a:visited
 {
 	color:#fff;
 	text-decoration:none;
@@ -27,34 +27,34 @@ border-right:none
 	box-shadow: 0px 1px 2px #999;
 	display:block
 }
-.bodywrapper .navigationN2-1 li a:hover,
-.bodywrapper .navigationN2-1 li a:active {
+ .navigationN2-1 li a:hover,
+ .navigationN2-1 li a:active {
 	text-decoration:none;
 	color:#fff;
 	background-color:#005094;
 	border:1px solid #006699;
 }
-.bodywrapper .navigationN2-1 li.selected a{
+ .navigationN2-1 li.selected a{
 	background:#8ebde5 url(navigationN2-1/topnav_selected.png) repeat-x; color:#000;
 	border:1px solid #8ebde5;
 }
-.bodywrapper .navigationN2-1 li a:hover{
+ .navigationN2-1 li a:hover{
 	background:#8ebde5 url(navigationN2-1/topnav_active.png) repeat-x; color:#fff;
 	border:1px solid #003366;
 }
-.bodywrapper .navigationN2-1 ul.level_2  li a
+ .navigationN2-1 ul.level_2  li a
 {
 	margin-left:1em;
 }
-.bodywrapper .navigationN2-1 ul.level_3  li a
+ .navigationN2-1 ul.level_3  li a
 {
 	margin-left:2em;
 }
-.bodywrapper .navigationN2-1 ul.level_4  li a
+ .navigationN2-1 ul.level_4  li a
 {
 	margin-left:3em;
 }
-.bodywrapper .navigationN2-1 ul.level_5  li a
+ .navigationN2-1 ul.level_5  li a
 {
 	margin-left:4em;
 }

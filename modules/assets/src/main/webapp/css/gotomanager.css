@@ -2,7 +2,7 @@
 *  Go to Manager
 ******************************************************************************/
 
-.bodywrapper ul.gotomanager  {
+ ul.gotomanager  {
 	position:relative;
 	margin:0;
 	margin:0.5em 0;
@@ -10,12 +10,12 @@
 	padding:0
 }
 
-.bodywrapper ul.gotomanager li {
+ ul.gotomanager li {
 	padding:2px 5px;
 	margin:0;
 	list-style:none
 }
-.bodywrapper ul.gotomanager li {
+ ul.gotomanager li {
 	border-bottom:1px dotted #ccc ;
 	padding:5px;
 	margin:0;
@@ -23,9 +23,9 @@
 	line-height:1.375em;
 	display:block
 }
-.bodywrapper ul.gotomanager li:last-child {
+ ul.gotomanager li:last-child {
 	border-bottom-color:none;
 }
-.bodywrapper ul.gotomanager li:hover{
+ ul.gotomanager li:hover{
 	background-color:#eaeaea
 }

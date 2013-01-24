@@ -16,8 +16,8 @@
 
 /* Easy Slider */
 
-.bodywrapper #slider ul,.bodywrapper #slider li,
-.bodywrapper #slider2 ul,.bodywrapper #slider2 li{
+ #slider ul, #slider li,
+ #slider2 ul, #slider2 li{
 		margin:0;
 		padding:0;
 		list-style:none;
@@ -68,12 +68,12 @@
 		background:#e1e1e1  url(images/jquery.easySlider1.7/1px-white.png) repeat-x top left;
 		list-style:none;
 		}
-.bodywrapper ol#controls{
+ ol#controls{
 	list-style:none;
 		padding:0.5em 0.5em;
 		margin:0.5em 0;
 }
-.bodywrapper ol#controls li{
+ ol#controls li{
 	list-style:none;
 }
 	ol#controls li{
@@ -101,8 +101,8 @@
 	ol#controls li a:focus, #prevBtn a:focus, #nextBtn a:focus{outline:none;}
 	
 /* // Easy Slider */
-.bodywrapper #slider ul li,
-.bodywrapper #slider2 ul li {
+ #slider ul li,
+ #slider2 ul li {
 	margin:0;
 	padding:0;
 	list-style:none;

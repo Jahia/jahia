@@ -53,20 +53,20 @@ padding:0;
 /******************************************************************************
 *  create Tasks Form
 ******************************************************************************/
-.bodywrapper #createTasksForm legend {
+ #createTasksForm legend {
     display:none;
 }
-.bodywrapper #createTasksForm label {
+ #createTasksForm label {
     display:block;
 }
-.bodywrapper #createTasksForm input.field, .bodywrapper #createTasksForm textarea {
+ #createTasksForm input.field,  #createTasksForm textarea {
 	width:90%;
 	clear:both
 }
 /******************************************************************************
 *  Tasks comment
 ******************************************************************************/
-.bodywrapper .taskComment  {
+ .taskComment  {
     clear: both;
 	padding:10px;
 	list-style:none;
@@ -74,23 +74,23 @@ padding:0;
     overflow:hidden;
     margin-bottom:1em;
 }
-.bodywrapper .taskComment:last-child {
+ .taskComment:last-child {
 	background:none;
 }
-.bodywrapper .taskComment p {
+ .taskComment p {
     margin:0;
     padding:0;
 }
-.bodywrapper .taskComment p.taskTitle {
+ .taskComment p.taskTitle {
     font-weight:bold
 }
-.bodywrapper .taskComment p.taskdate {
+ .taskComment p.taskdate {
    font-size:0.8em;
 }
-.bodywrapper .taskComment p.taskaction {
+ .taskComment p.taskaction {
    float:right;
 }
-.bodywrapper .taskComment .user-profile-view p {
+ .taskComment .user-profile-view p {
     margin-left: 70px;
     padding-bottom: 0.2em;
     padding-left: 0.2em;
@@ -100,24 +100,24 @@ padding:0;
 /******************************************************************************
 *  Planning tasks
 ******************************************************************************/
-.bodywrapper ul.scheduletasks  {
+ ul.scheduletasks  {
 	position:relative;
 	margin:0;
 	list-style:none;
 	padding:0;
     margin-bottom:1em;
 }
-.bodywrapper .scheduletasks li {
+ .scheduletasks li {
 	padding:10px;
 	margin:0;
 	margin-bottom:0;
 	list-style:none;
     border-bottom:1px solid #e5e5e5;
 }
-.bodywrapper .scheduletasks li:last-child {
+ .scheduletasks li:last-child {
 
 }
-.bodywrapper .scheduletasks li.now {
+ .scheduletasks li.now {
     background-color:#ffffd7;
     text-align:right;
     color: #333;
@@ -126,13 +126,13 @@ padding:0;
     text-transform: uppercase;
     font-size:0.8em;
 }
-.bodywrapper .scheduletasks .date {
+ .scheduletasks .date {
     font-weight:bold;
 }
-.bodywrapper .scheduletasks li.finishedTask {
+ .scheduletasks li.finishedTask {
     border-left:4px solid #339933
 }
-.bodywrapper .scheduletasks li.unfinishedTask {
+ .scheduletasks li.unfinishedTask {
     border-left:4px solid #cc3333
 }
 
@@ -140,35 +140,35 @@ padding:0;
 * tasks List show description
 ******************************************************************************/
 
-.bodywrapper span.opentask{
+ span.opentask{
 	background:none;
     color: #666;
     font-weight:bold;
     text-transform:uppercase;
     font-size:0.8em;
 }
-.bodywrapper span.opentask:hover {
+ span.opentask:hover {
 	text-decoration:none;
 	color: #000;
 	background:none;
 	cursor: pointer;
 }
-.bodywrapper .taskdetail  {
+ .taskdetail  {
     margin-left:25px;
     margin-right:1em;
     line-height:1.2em;
 }
-.bodywrapper .task-info-p{
+ .task-info-p{
 	font-size:0.8em;
 	padding:0;
 	margin:0;
 }
-.bodywrapper .task-priority-p{
+ .task-priority-p{
 	font-size:0.8em;
 	padding:0;
 	margin:0;
 }
-.bodywrapper .task-status-p{
+ .task-status-p{
 	font-size:0.8em;
 	padding:0;
 	margin:0;
@@ -176,7 +176,7 @@ padding:0;
 /******************************************************************************
 *  task icon
 ******************************************************************************/
-.bodywrapper span.icon-task {
+ span.icon-task {
 	display:inline-block;
 	width:18px;
 	height:18px;
@@ -184,7 +184,7 @@ padding:0;
 	vertical-align:text-bottom;
 }
 
-.bodywrapper span.icon-task-low {
+ span.icon-task-low {
 	display:inline-block;
 	width:18px;
 	height:18px;
@@ -192,14 +192,14 @@ padding:0;
 	margin-right:5px;
 	vertical-align:text-bottom;
 }
-.bodywrapper span.icon-task-normal {
+ span.icon-task-normal {
 	display:inline-block;
 	width:18px;
 	height:18px;
 	margin-right:5px;
 	vertical-align:text-bottom;
 }
-.bodywrapper span.icon-task-high {
+ span.icon-task-high {
 	display:inline-block;
 	width:18px;
 	height:18px;
@@ -241,7 +241,7 @@ padding:0;
 *  task actions list
 ******************************************************************************/
 
-.bodywrapper ul.taskactionslist  {
+ ul.taskactionslist  {
 	list-style-image:none;
 	list-style-position:outside;
 	list-style-type:none;
@@ -251,7 +251,7 @@ padding:0;
 	overflow:hidden;
 }
 
-.bodywrapper .taskactionslist li {
+ .taskactionslist li {
 	list-style-type:none;
 	margin:0;
 	border:none;
@@ -260,14 +260,14 @@ padding:0;
     margin-bottom:2px;
 	float:left;
 }
-.bodywrapper .taskactionslist li.taskactions-right {
+ .taskactionslist li.taskactions-right {
 	float:right;
 	margin-right:0;
 	margin-left:10px;
 }
-.bodywrapper a.taskaction,
-.bodywrapper a.taskaction:link,
-.bodywrapper a.taskaction:visited
+ a.taskaction,
+ a.taskaction:link,
+ a.taskaction:visited
 {
 	color:#fff;
 	padding:4px 2px 4px 22px;
@@ -280,58 +280,58 @@ padding:0;
     background-repeat:no-repeat;
     display:block;
 }
-.bodywrapper a.taskaction:hover,
-.bodywrapper a.taskaction:active {
+ a.taskaction:hover,
+ a.taskaction:active {
 	text-decoration:none;
 	color:#fff;
 	background-color:#008ae5;
 }
 
-.bodywrapper a.taskaction-refuse,
-.bodywrapper a.taskaction-refuse:link,
-.bodywrapper a.taskaction-refuse:visited
+ a.taskaction-refuse,
+ a.taskaction-refuse:link,
+ a.taskaction-refuse:visited
 {
 	background-image:url(img/refuse.png);
 }
-.bodywrapper a.taskaction-suspend,
-.bodywrapper a.taskaction-suspend:link,
-.bodywrapper a.taskaction-suspend:visited
+ a.taskaction-suspend,
+ a.taskaction-suspend:link,
+ a.taskaction-suspend:visited
 {
 	background-image:url(img/suspend.png);
 }
-.bodywrapper a.taskaction-start,
-.bodywrapper a.taskaction-start:link,
-.bodywrapper a.taskaction-start:visited
+ a.taskaction-start,
+ a.taskaction-start:link,
+ a.taskaction-start:visited
 {
 	background-image:url(img/start.png);
 }
-.bodywrapper a.taskaction-continue,
-.bodywrapper a.taskaction-continue:link,
-.bodywrapper a.taskaction-continue:visited
+ a.taskaction-continue,
+ a.taskaction-continue:link,
+ a.taskaction-continue:visited
 {
 	background-image:url(img/continue.png);
 }
-.bodywrapper a.taskaction-assign,
-.bodywrapper a.taskaction-assign:link,
-.bodywrapper a.taskaction-assign:visited
+ a.taskaction-assign,
+ a.taskaction-assign:link,
+ a.taskaction-assign:visited
 {
 	background-image:url(img/assign.png);
 }
 
-.bodywrapper a.taskaction-iCalendar,
-.bodywrapper a.taskaction-iCalendar:link,
-.bodywrapper a.taskaction-iCalendar:visited
+ a.taskaction-iCalendar,
+ a.taskaction-iCalendar:link,
+ a.taskaction-iCalendar:visited
 {
 	background-image:url(img/icalendar.png);
 }
-.bodywrapper a.taskaction-preview,
-.bodywrapper a.taskaction-preview:link,
-.bodywrapper a.taskaction-preview:visited
+ a.taskaction-preview,
+ a.taskaction-preview:link,
+ a.taskaction-preview:visited
 {
 	background-image:url(img/preview.png);
 }
 
-.bodywrapper div.taskaction-complete {
+ div.taskaction-complete {
 	color:#fff;
 	padding:4px 2px 4px 22px;
     -moz-border-radius: 3px;
@@ -343,24 +343,24 @@ padding:0;
     background-repeat:no-repeat;
     display:block;
 }
-.bodywrapper div.taskaction-complete label {
+ div.taskaction-complete label {
     font-weight:normal !important;
 }
-.bodywrapper div.taskaction-complete input {
+ div.taskaction-complete input {
     vertical-align: bottom;
 }
-.bodywrapper div.taskaction-button:hover{
+ div.taskaction-button:hover{
 	text-decoration:none;
 	color:#fff;
 	background-color:#008ae5;
 }
-.bodywrapper a.taskaction-disabled, .bodywrapper div.taskaction-disabled {
+ a.taskaction-disabled,  div.taskaction-disabled {
     background-color:#aaaaaa !important;
 }
 /******************************************************************************
 *  task status
 ******************************************************************************/
-.bodywrapper .task-status {
+ .task-status {
     background-color: #000;
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
@@ -377,27 +377,27 @@ padding:0;
     margin-right:0.5em;
 }
 
-.bodywrapper .task-status-active {
+ .task-status-active {
     background-color: #cc3333;
 }
-.bodywrapper .task-status-started {
+ .task-status-started {
     background-color: #ff6600;
 }
-.bodywrapper .task-status-suspended {
+ .task-status-suspended {
     background-color: #000;
 }
-.bodywrapper .task-status-finished {
+ .task-status-finished {
     background-color: #339933;
 }
 /******************************************************************************
 *  task style
 ******************************************************************************/
-.bodywrapper .docspace {
+ .docspace {
     background-color: #fff;
 }
-.bodywrapper .docspace-task-on-file {
+ .docspace-task-on-file {
     background-color: #c8e9fe;
 }
-.bodywrapper .workflowtask {
+ .workflowtask {
     background-color: #eaeaea;
 }

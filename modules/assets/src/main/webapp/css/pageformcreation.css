@@ -1,33 +1,33 @@
 /******************************************************************************
 *  page Form Creation
 ******************************************************************************/
-.bodywrapper .pageFormCreation {
+ .pageFormCreation {
 	margin: 0 0 1.5em 0 ;
 	padding:0;
     clear:both;
 }
-.bodywrapper .pageFormCreation p{
+ .pageFormCreation p{
 	margin:0;
 	padding:0;
 	padding-bottom:0.2em;
 }
-.bodywrapper .pageFormCreation legend{
+ .pageFormCreation legend{
 	display:none;
 }
-.bodywrapper .pageFormCreation p.field{
+ .pageFormCreation p.field{
 	margin-bottom:0.5em;
 }
-.bodywrapper .pageFormCreation label{
+ .pageFormCreation label{
 	display:block
 }
-.bodywrapper .pageFormCreation textarea,
-.bodywrapper .pageFormCreation input{
+ .pageFormCreation textarea,
+ .pageFormCreation input{
 	width:98%
 }
-.bodywrapper .pageFormCreation input.button{
+ .pageFormCreation input.button{
 	width:auto
 }
-.bodywrapper .pageFormCreation fieldset{
+ .pageFormCreation fieldset{
 	border:none;
 	margin:0;
 	padding:0;

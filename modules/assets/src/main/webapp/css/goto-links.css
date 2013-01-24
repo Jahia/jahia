@@ -3,34 +3,34 @@
 *  admin-links
 ******************************************************************************/
 
-.bodywrapper .admin-links ul {
+ .admin-links ul {
 	position:relative;
 	margin:0;
 	margin:0.5em 0;
 	list-style:none;
 	padding:0
 }
-.bodywrapper .admin-links li {
+ .admin-links li {
     border-bottom: 1px solid #EAEAEA;
     display: block;
     font-weight: bold;
     padding: 5px;
 }
-.bodywrapper .admin-links li p {
+ .admin-links li p {
 	padding:0;
 }
-.bodywrapper .admin-links li:last-child {
+ .admin-links li:last-child {
 	border-bottom-color:none;
 }
-.bodywrapper .admin-links li:hover{
+ .admin-links li:hover{
 	background-color:#eaeaea
 }
-.bodywrapper .admin-links ul a,
-.bodywrapper .admin-links ul a:link,
-.bodywrapper .admin-links ul a:visited {
+ .admin-links ul a,
+ .admin-links ul a:link,
+ .admin-links ul a:visited {
 	text-decoration: none;
 }
-.bodywrapper .admin-links ul a:hover,
-.bodywrapper .admin-links ul a:active {
+ .admin-links ul a:hover,
+ .admin-links ul a:active {
 	text-decoration:underline;
 }

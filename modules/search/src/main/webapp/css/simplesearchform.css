@@ -1,12 +1,12 @@
-.bodywrapper form.simplesearchform {
+ form.simplesearchform {
 	position:relative;
 	width:180px;
 	margin-bottom:0.5em
 }
-.bodywrapper form.simplesearchform label {
+ form.simplesearchform label {
 	display:none;
 }
-.bodywrapper form.simplesearchform .text-input {
+ form.simplesearchform .text-input {
 	border:1px solid #BCBBBB;
 	background: #fff;
 	color:#666;
@@ -22,7 +22,7 @@
 	-moz-box-shadow: inset 0 1px 2px rgba(0,0,0,.2);
 	box-shadow: inset 0 1px 2px rgba(0,0,0,.2);
 }
-.bodywrapper form.simplesearchform .searchsubmit {
+ form.simplesearchform .searchsubmit {
 	background:transparent url(img/search-submit.png) no-repeat;
 	border:none;
 	cursor:pointer;

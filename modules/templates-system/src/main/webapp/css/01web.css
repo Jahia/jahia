@@ -35,63 +35,62 @@ body {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size:81.3%;
 }
-.bodywrapper {}
 /******************************************************************************
 * Utils
 ******************************************************************************/
 .collapsible {
 	display:none;
 }
-.bodywrapper .clear {
+ .clear {
 	clear:both;
 }
-.bodywrapper .clearitem 	{
+ .clearitem 	{
 	clear:both;
 }
-.bodywrapper br.clear {
+ br.clear {
 	clear:both;
 	font-family: Arial, Helvetica, sans-serif;
 	line-height:0px;	/* no height ! */
 	font-size:0px;
 }
-.bodywrapper .hide, .bodywrapper .hidden {
+ .hide,  .hidden {
 	display:none;
 }
 
-.bodywrapper .floatright {
+ .floatright {
 	float:right;
 	position:relative;
 	margin: 5px;
 }
-.bodywrapper .floatleft {
+ .floatleft {
 	float:left;
 	position:relative;
 	margin: 5px;
 }
 
-.bodywrapper .leftside{
+ .leftside{
 	float:left;
 	position:relative;
 }
-.bodywrapper .rightside{
+ .rightside{
 	float: right;
 	position:relative;
 }
-.bodywrapper .clearMaringPadding{
+ .clearMaringPadding{
 	padding:0;
 	margin:0;
 }
 /******************************************************************************
 *  Float Right List for ordered or unordered links list
 ******************************************************************************/
-.bodywrapper .FloatRightList ul {
+ .FloatRightList ul {
 	text-align:right;
 	list-style:none;
 	margin:0;
 	padding:0;
 }
 
-.bodywrapper .FloatRightList li {
+ .FloatRightList li {
 	list-style:none;
 	padding-left:1em;
 	display:inline;
@@ -100,12 +99,12 @@ body {
 /******************************************************************************
 * list Arrow
 ******************************************************************************/
-.bodywrapper ul.arrowList, .arrowList ul {
+ ul.arrowList, .arrowList ul {
 	margin:5px 0;
 	position:relative;
 	list-style:none;
 }
-.bodywrapper .arrowList li {
+ .arrowList li {
 	background: url(img/arrow.png) no-repeat 0 2px;
 	padding:0 0 0 12px;
 	clear:left;
@@ -115,7 +114,7 @@ body {
 *  Hilight List
 ******************************************************************************/
 
-.bodywrapper .hilightList ul {
+ .hilightList ul {
 	list-style-image:none;
 	list-style-position:outside;
 	list-style-type:none;
@@ -123,14 +122,14 @@ body {
 	padding:0;
 	border-bottom:none;
 }
-.bodywrapper .hilightList li {
+ .hilightList li {
 	list-style-type:none;
 	margin:0;
 	padding:0;
 }
-.bodywrapper .hilightList li a,
-.bodywrapper .hilightList li a:link,
-.bodywrapper .hilightList li a:visited
+ .hilightList li a,
+ .hilightList li a:link,
+ .hilightList li a:visited
 {
 	border-bottom:1px solid #ccc;
 	padding:0.2em 0.5em;
@@ -138,8 +137,8 @@ body {
 	text-decoration:none;
 	color:#333;
 }
-.bodywrapper .hilightList li a:hover,
-.bodywrapper .hilightList li a:active {
+ .hilightList li a:hover,
+ .hilightList li a:active {
 	text-decoration:none;
 	color:#0099ff;
 	background-color:#eaeaea
@@ -148,7 +147,7 @@ body {
 /******************************************************************************
 *  header
 ******************************************************************************/
-.bodywrapper #header{
+ #header{
 	background-color:#333;
 	padding-top:4px;
 	padding-bottom:4px;
@@ -156,7 +155,7 @@ body {
 	z-index:900;
 	width:100%;
 }
-.bodywrapper #header h3 {
+ #header h3 {
 	font-size:1.364em;
 	padding-bottom:0.5em;
 	padding-top:0.5em;
@@ -166,7 +165,7 @@ body {
 /******************************************************************************
 *  content
 ******************************************************************************/
-.bodywrapper #content{
+ #content{
 	padding-top:15px;
 	padding-bottom:15px;
 	position:relative;
@@ -178,32 +177,32 @@ body {
 /******************************************************************************
 *  footer
 ******************************************************************************/
-.bodywrapper #footer{
+ #footer{
 	position:relative;
 	z-index:500;
 	width:100%;
 	padding-top:5px;
 	color:#ccc;
 }
-.bodywrapper #footer p {
+ #footer p {
 	font-size:0.85em;
 	text-transform:capitalize;
 	padding:0.2em 0 0.2em 0;
 }
-.bodywrapper #footer p.footerText {
+ #footer p.footerText {
 	font-style:italic;
 	padding:0.2em 0 2em 0;
 	color:#ccc
 }
-.bodywrapper #footer a,
-.bodywrapper #footer a:link,
-.bodywrapper #footer a:visited {
+ #footer a,
+ #footer a:link,
+ #footer a:visited {
 	color:#ccc;
 	text-decoration:none;
 	line-height:160%;
 }
-.bodywrapper #footer a:hover,
-.bodywrapper #footer a:active {
+ #footer a:hover,
+ #footer a:active {
 	color:#ccc;
 	text-decoration:underline;
 }
@@ -211,84 +210,84 @@ body {
 /******************************************************************************
 *  general
 ******************************************************************************/
-.bodywrapper img 			{ border: 0;}
+ img 			{ border: 0;}
 
-.bodywrapper a,
-.bodywrapper a:link,
-.bodywrapper a:visited {
+ a,
+ a:link,
+ a:visited {
 	color:#0099ff ;
 	text-decoration:none;
 }
-.bodywrapper a:hover,
-.bodywrapper a:active {
+ a:hover,
+ a:active {
 	color:#0099ff ;
 	text-decoration:underline;
 }
-.bodywrapper p {
+ p {
 	padding:1em 0 1em 0;
 }
-.bodywrapper ul {
+ ul {
 	padding:1em 0 1em 2em;
 }
-.bodywrapper ol  {
+ ol  {
 	padding:1em 0 1em 2em;
 }
 
-.bodywrapper div.intro{
+ div.intro{
 	font-size:1.1em;
 	font-style:italic;
     padding-bottom:1em;
 }
-.bodywrapper div.intro p{
+ div.intro p{
 	padding:10px 0;
 }
-.bodywrapper p.intro {
+ p.intro {
 	font-size:1.1em;
 	line-height:1.2em;
 }
 
-.bodywrapper h1 {
+ h1 {
 	font-size:1.545em;
 	padding-bottom:1em;
 }
 
-.bodywrapper h2 {
+ h2 {
 	font-size:1.364em;
 	padding-bottom:1em;
 
 }
-.bodywrapper h2.docspace-header-title {
+ h2.docspace-header-title {
     font-size:2em;
     color:#0099FF;
     padding-bottom: 0.5em;
 
 }
-.bodywrapper h2.pagetitle {
+ h2.pagetitle {
      font-size:1.364em;
      padding-bottom:1em;
 }
 
-.bodywrapper h3 {
+ h3 {
 	font-size:1.273em;
 	padding-bottom:0.5em;
 	color:#000
 }
 
-.bodywrapper h4 {
+ h4 {
 	font-size:1.182em;
 	padding-bottom:0.5em;
 	color:#333;
 }
-.bodywrapper h5 {
+ h5 {
 	font-size:1.091em;
 }
 
-.bodywrapper fieldset {
+ fieldset {
 	padding:0.5em;
 	border:1px solid #e5e5e5;
 	margin:0.5em 0;
 }
-.bodywrapper legend {
+ legend {
 	font-size:1em;
 	color:#333;
 	padding:0 0.5em;
@@ -299,13 +298,13 @@ body {
 	text-transform:uppercase
 }
 
-.bodywrapper hr {
+ hr {
 	height:1px;
 	background-color:#e5e5e5;
 	border: none;
 	margin : 1em 0;
 }
-.bodywrapper blockquote {
+ blockquote {
 	background:#E0E0E0 url(img/blockquote.png) no-repeat top left;
 	border:1px solid #A5A5A5;
 	font-style:italic;
@@ -314,38 +313,38 @@ body {
 	padding:20px;
 }
 
-.bodywrapper textarea {
+ textarea {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size:100%
 }
-.bodywrapper p.field{
+ p.field{
 	margin-bottom:0.4em
 }
-.bodywrapper label {
+ label {
    font-weight:bold;
 }
-.bodywrapper label.normal-font {
+ label.normal-font {
    font-weight:normal;
 }
-.bodywrapper .hint {
+ .hint {
    font-size:75%;
 }
-.bodywrapper input,
-.bodywrapper select,
-.bodywrapper textarea {
+ input,
+ select,
+ textarea {
 	color:#666;
 	padding:6px;
 	font-size:100%
 }
 
-.bodywrapper input.gobutton{
+ input.gobutton{
 	background:none;
 	border:none;
 	margin:0;
 	padding:0;
 	vertical-align: bottom;
 }
-.bodywrapper pre {
+ pre {
 	background-color:#f5f5f5;
 	border-left:4px solid #333;
 	font-family:Courier,"Courier New",monospace;
@@ -356,34 +355,34 @@ body {
 	padding:20px;
 	line-height:100%
 }
-.bodywrapper .highlight{
+ .highlight{
 	background-color:#f5f5f5;
 	padding-right:0.5em;
 	padding-left:0.5em;
 }
-.bodywrapper code, .bodywrapper .code {
+ code,  .code {
 	background-color:#f5f5f5;
 	font-family:Courier,"Courier New",monospace;
 	font-weight:normal;
 	padding-right:0.5em;
 	padding-left:0.5em;
 }
-.bodywrapper .small {
+ .small {
 	font-size: 0.8em;
 }
-.bodywrapper .colorlight {
+ .colorlight {
 	color:#333
 }
 /******************************************************************************
 *  Float Right Links List ordered or unordered
 ******************************************************************************/
-.bodywrapper ul.FloatRightList {
+ ul.FloatRightList {
 	text-align:right;
 	list-style:none;
 	margin:0;
 	padding:0;
 }
-.bodywrapper .FloatRightList li {
+ .FloatRightList li {
 	list-style:none;
 	padding-left:1em;
 	display:inline;
@@ -392,51 +391,51 @@ body {
 /******************************************************************************
 *  Images
 ******************************************************************************/
-.bodywrapper .imagefloatright {
+ .imagefloatright {
 	float:right;
 	margin-bottom:20px;
 	padding-left:20px;
 }
-.bodywrapper .imagefloatleft {
+ .imagefloatleft {
 	float:left;
 	margin-bottom:20px;
 	padding-right:20px;
 }
-.bodywrapper .imagefloatright {
+ .imagefloatright {
 	float:right;
 	margin-bottom:20px;
 	padding-left:20px;
 }
 
-.bodywrapper .itemImage {
+ .itemImage {
 	position:relative;
 	padding:1px;
 	margin-bottom:10px;
 }
-.bodywrapper .imagefloatleft .itemImage  {
+ .imagefloatleft .itemImage  {
 	margin-bottom:0px;
 }
-.bodywrapper .imagefloatright .itemImage  {
+ .imagefloatright .itemImage  {
 	margin-bottom:0px;
 }
-.bodywrapper div.itemImageRight {
+ div.itemImageRight {
 	float:right;
 }
-.bodywrapper div.itemImageLeft {
+ div.itemImageLeft {
 	float:left;
 }
-.bodywrapper .itemImage img {
+ .itemImage img {
 	display: block;
 	padding:9px;
 }
-.bodywrapper .itemImagewhite img{
+ .itemImagewhite img{
 	background-color:#fff;
 	display: block;
 }
 /******************************************************************************
 *  Pagination
 ******************************************************************************/
-.bodywrapper div.pagination {
+ div.pagination {
 	height:1%;
 	overflow:hidden;
 	padding:0.2em 0.5em;
@@ -444,39 +443,39 @@ body {
     background-color:#F5F5F5;
     border: 1px solid #e5e5e5;
 }
-.bodywrapper div.pagination:first-child {
+ div.pagination:first-child {
     margin-top: 0;
 }
-.bodywrapper div.pagination select{
+ div.pagination select{
     padding:2px;
 }
-.bodywrapper .paginationPosition {
+ .paginationPosition {
 	float:left;
 	color:#36393d;
     padding:0.5em 0;
 }
-.bodywrapper .paginationNavigation {
+ .paginationNavigation {
 	float:right;
 }
-.bodywrapper .paginationNavigation a:link,
-.bodywrapper .paginationNavigation a:visited,
-.bodywrapper .paginationNavigation a:hover,
-.bodywrapper .paginationNavigation a:active {
+ .paginationNavigation a:link,
+ .paginationNavigation a:visited,
+ .paginationNavigation a:hover,
+ .paginationNavigation a:active {
 	text-decoration:none;
 	padding:0.2em 0.5em;
 }
 
-.bodywrapper .paginationNavigation a:hover {
+ .paginationNavigation a:hover {
 	background:#0099ff ;
 	color:#fff;
 }
-.bodywrapper .paginationNavigation .currentPage{
+ .paginationNavigation .currentPage{
 	background:#0099ff ;
 	color:#fff;
 	padding:0.2em 0.5em;
 }
 
-.bodywrapper .paginationNavigation span {
+ .paginationNavigation span {
 	text-decoration:none;
 	color:#666;
 	padding:0;
@@ -484,7 +483,7 @@ body {
 /******************************************************************************
 *  AlphabeticalMenu
 ******************************************************************************/
-.bodywrapper div.alphabeticalMenu {
+ div.alphabeticalMenu {
 	height:1%;
 	overflow:hidden;
 	text-transform:uppercase;
@@ -493,19 +492,19 @@ body {
 	margin:0.5em 0;
 	background-color:#F5F5F5;
 }
-.bodywrapper .alphabeticalLabel {
+ .alphabeticalLabel {
 	float:left;
 	font-weight:bold;
 	color:#333;
 }
-.bodywrapper .alphabeticalNavigation {
+ .alphabeticalNavigation {
 	float:left;
 
 }
-.bodywrapper .alphabeticalNavigation a:link,
-.bodywrapper .alphabeticalNavigation a:visited,
-.bodywrapper .alphabeticalNavigation a:hover,
-.bodywrapper .alphabeticalNavigation a:active {
+ .alphabeticalNavigation a:link,
+ .alphabeticalNavigation a:visited,
+ .alphabeticalNavigation a:hover,
+ .alphabeticalNavigation a:active {
 		height:28px;
 		line-height:28px;
 		border:1px solid #e5e5e5;
@@ -514,11 +513,11 @@ body {
 		text-decoration:none;
 }
 
-.bodywrapper .alphabeticalNavigation a:hover {
+ .alphabeticalNavigation a:hover {
 		background:#0099ff;
 		color:#fff;
 }
-.bodywrapper .alphabeticalNavigation a.current{
+ .alphabeticalNavigation a.current{
 		height:28px;
 		line-height:28px;
 		border:1px solid #e5e5e5;
@@ -528,7 +527,7 @@ body {
 		text-decoration:none;
 }
 
-.bodywrapper .alphabeticalNavigation span {
+ .alphabeticalNavigation span {
 		text-decoration:none;
 		color:#666;
 		padding:0;
@@ -536,20 +535,20 @@ body {
 /******************************************************************************
 *  Button
 ******************************************************************************/
-.bodywrapper .divButton{
+ .divButton{
 	text-align:center;
 	margin:0 0 10px 0;
 	overflow:hidden;
 }
-.bodywrapper .divButtonRight{
+ .divButtonRight{
 	text-align:right;
 	overflow:hidden;
 }
-.bodywrapper input.button, .bodywrapper button {
+ input.button,  button {
 	margin-right:0.5em;
 }
 
-.bodywrapper input.button, .bodywrapper button {
+ input.button,  button {
 	background-color:#0099ff;
 	color:#fff;
 	border:none;
@@ -559,13 +558,13 @@ body {
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 }
-.bodywrapper .button:hover, .bodywrapper button:hover {
+ .button:hover,  button:hover {
 	cursor: pointer;
 	color:#fff;
 	background-color:#008ae5;
 }
 
-.bodywrapper input.button:disabled, .bodywrapper button:disabled {
+ input.button:disabled,  button:disabled {
     background-color:#c7c7c7;
     color:#fff;
     border:none;
@@ -575,7 +574,7 @@ body {
     -webkit-border-radius: 3px;
     border-radius: 3px;
 }
-.bodywrapper .button:hover:disabled, .bodywrapper button:hover:disabled {
+ .button:hover:disabled,  button:hover:disabled {
     cursor: pointer;
     color:#fff;
     background-color:#cccccc;
@@ -586,9 +585,9 @@ body {
 *  <A> Button
 ******************************************************************************/
 
-.bodywrapper  a.aButton,
-.bodywrapper  a.aButton:link,
-.bodywrapper  a.aButton:visited {
+  a.aButton,
+  a.aButton:link,
+  a.aButton:visited {
 	background-color:#0099ff ;
 	color:#fff;
 	border:none;
@@ -599,38 +598,38 @@ body {
 	border-radius: 3px;
     display:inline-block;
 }
-.bodywrapper a.aButton:hover, .bodywrapper a.aButton:hover {
+ a.aButton:hover,  a.aButton:hover {
 	cursor: pointer;
 	color:#fff;
 	background-color:#008ae5;
     text-decoration:none;
 }
-.bodywrapper a.aButtonMarginBottom {
+ a.aButtonMarginBottom {
     margin-bottom:1.5em;
 }
-.bodywrapper  a.aButtonRight,
-.bodywrapper  a.aButtonRight:link,
-.bodywrapper  a.aButtonRight:visited{
+  a.aButtonRight,
+  a.aButtonRight:link,
+  a.aButtonRight:visited{
 	float: right;
 }
 
 /******************************************************************************
 *  Anchor
 ******************************************************************************/
-.bodywrapper div.bottomanchor {
+ div.bottomanchor {
 	padding:0.2em;
 	margin: 1em 0;
 	clear:both
 }
-.bodywrapper .bottomanchor a,
-.bodywrapper .bottomanchor a:link,
-.bodywrapper .bottomanchor a:visited  {
+ .bottomanchor a,
+ .bottomanchor a:link,
+ .bottomanchor a:visited  {
 	float:right;
 	margin:0 ;
 	text-transform:uppercase
 }
-.bodywrapper .bottomanchor a:hover ,
-.bodywrapper .bottomanchor a:active  {
+ .bottomanchor a:hover ,
+ .bottomanchor a:active  {
 	cursor: pointer;
 	text-decoration: underline;
 }
@@ -638,48 +637,48 @@ body {
 /******************************************************************************
 *  Thumbnails
 ******************************************************************************/
-.bodywrapper div.thumbnail {
+ div.thumbnail {
 	float:left;
 	position:relative;
 	margin-right:20px;
 }
-.bodywrapper div.thumbnailRight {
+ div.thumbnailRight {
 	float:right;
 	position:relative;
 	margin-left:20px;
 }
-.bodywrapper div.thumbnail img {
+ div.thumbnail img {
 	position:relative
 }
 
 /******************************************************************************
 *  Tables
 ******************************************************************************/
-.bodywrapper .table th img{
+ .table th img{
 	vertical-align: middle
 }
-.bodywrapper .table,
-.bodywrapper .table caption
+ .table,
+ .table caption
 {
     margin: auto;
 
 }
 
-.bodywrapper .table
+ .table
 {
     border-collapse:collapse;
 	margin:1em 0 2em 0;
 	border:none;
 }
 
-.bodywrapper .table caption
+ .table caption
 {
 	font-weight:normal;
 	font-size:2em;
 	margin:0 ;
 	padding:0;
 }
-.bodywrapper .table th {
+ .table th {
     color: #333;
 	white-space:nowrap;
 	padding:2px;
@@ -690,37 +689,37 @@ body {
     line-height: 1.9em;
 
 }
-.bodywrapper .table tr {
+ .table tr {
     border-bottom: 1px solid #e5e5e5;
 }
-.bodywrapper .table tr:hover{
+ .table tr:hover{
 	background-color:#e3f1fe;
 }
 
- .bodywrapper .table td {
+  .table td {
 	padding:15px 2px;
      vertical-align: top;
 }
-.bodywrapper .table td.center,
-.bodywrapper .table th.center
+ .table td.center,
+ .table th.center
 {
 	text-align:center;
 }
 
-.bodywrapper .table a:link,
-.bodywrapper .table a:visited
+ .table a:link,
+ .table a:visited
 {
 
 }
-.bodywrapper .table a:hover,
-.bodywrapper .table a:active {
+ .table a:hover,
+ .table a:active {
 
 }
 
 /******************************************************************************
 *  Summary
 ******************************************************************************/
-.bodywrapper ul.summary, .bodywrapper .summary {
+ ul.summary,  .summary {
 	margin:10px 0;
 	line-height:130%;
 	padding: 10px;
@@ -730,22 +729,22 @@ body {
 	list-style:none;
 }
 
-.bodywrapper .summary a,
-.bodywrapper .summary a:link,
-.bodywrapper .summary a:visited {
+ .summary a,
+ .summary a:link,
+ .summary a:visited {
 	text-decoration:none;
 }
-.bodywrapper .summary a:hover,
-.bodywrapper .summary a:active {
+ .summary a:hover,
+ .summary a:active {
 	text-decoration:underline;
 }
 
-.bodywrapper .summary ul {
+ .summary ul {
 	margin:0;
 	padding:0 0 0 2em;
 	list-style:none;
 }
-.bodywrapper .summary li {
+ .summary li {
 	padding:0;
 	margin-bottom:10px
 }
@@ -753,27 +752,27 @@ body {
 /******************************************************************************
 * Form
 ******************************************************************************/
-.bodywrapper .Form  p{
+ .Form  p{
 	clear:both;
 	margin:0.4em 0;
 	padding:0px
 }
-.bodywrapper .Form {
+ .Form {
 	margin:1em 0 0 0;
 	overflow:hidden;
 }
-.bodywrapper .formMarginLeft{
+ .formMarginLeft{
 	margin:0 0 0 25%;
 	padding:0 1em 0 2.3em;
 }
-.bodywrapper .Form label.left {
+ .Form label.left {
 	float:left;
 	width:25%;
 	margin:0 1em 0 1em;
 	padding:2px;
 	text-align:right;
 }
-.bodywrapper .divButton{
+ .divButton{
 	text-align:center;
 	margin:0.5em 0;
 }
@@ -781,7 +780,7 @@ body {
 /******************************************************************************
 *  error
 ******************************************************************************/
-.bodywrapper span.error{
+ span.error{
 	background-color:#ffebe8;
 	border:1px solid #cc3300;
     padding:0.2em;
@@ -790,12 +789,12 @@ body {
     color:#cc3300;
     font-weight:bold;
 }
-.bodywrapper input.error{
+ input.error{
 	background-color:#ffebe8;
 	border:1px solid #cc3300;
 }
 
-.bodywrapper label.error {
+ label.error {
  clear: both;
  display: block;
  margin: 10px 0;
@@ -810,14 +809,14 @@ body {
 /******************************************************************************
 * Links
 ******************************************************************************/
-.bodywrapper div.more {
+ div.more {
     float: right;
     display: block;
 }
 
-.bodywrapper a.returnLink,
-.bodywrapper a.returnLink a:link,
-.bodywrapper a.returnLink:visited{
+ a.returnLink,
+ a.returnLink a:link,
+ a.returnLink:visited{
 	background:url(img/returnLink.png) no-repeat 10px 4px;
 	display: inline-block;
 	padding: 5px 10px 6px 30px;
@@ -837,20 +836,20 @@ body {
 	-o-transition: all 0.3s ease-in-out;
 	transition: all 0.3s ease-in-out;
 }
-.bodywrapper a.returnLink:hover,
-.bodywrapper a.returnLink:active {
+ a.returnLink:hover,
+ a.returnLink:active {
 	text-decoration:none;
 	color: #fff;
 	background: url(img/returnLink.png) no-repeat 10px -28px;
 	background-color:#008ae5;
 }
-.bodywrapper .divReturnLink{
+ .divReturnLink{
 	margin:0.5em 0;
 }
 /******************************************************************************
 * Mod tabular List
 ******************************************************************************/
-.bodywrapper #tabstabularList{
+ #tabstabularList{
 	background-color:#FFF;
 	overflow:hidden;
 	padding:0.2em;
@@ -862,7 +861,7 @@ body {
 	border:1px solid #f5f5f5;
 }
 
-.bodywrapper ul.idTabs {
+ ul.idTabs {
 	background-image:none;
 	-webkit-border-radius:3px;
 	-moz-border-radius:3px;
@@ -874,7 +873,7 @@ body {
 	padding-bottom:0;
 	background-color:#DFEFFC;
 }
-.bodywrapper .tabContainer {
+ .tabContainer {
 	background-color:#FFF;
 	overflow:hidden;
 	padding:20px;
@@ -884,7 +883,7 @@ body {
 	border-radius:3px;
 	margin-bottom:1em;
 }
-.bodywrapper .idTabs li a {
+ .idTabs li a {
 	background:none;
 	display:inline;
 	float:left;
@@ -896,15 +895,15 @@ body {
 	font-weight:bold;
 
 }
-.bodywrapper .idTabs li a.selected,
-.bodywrapper .idTabs li a:hover,
-.bodywrapper .idTabs li a.selected {
+ .idTabs li a.selected,
+ .idTabs li a:hover,
+ .idTabs li a.selected {
 	text-decoration:none;
 	color: #0099FF;
 }
 
 
-.bodywrapper .idTabs li a span {
+ .idTabs li a span {
 	background:none;
 	color:#666;
 	cursor:pointer;
@@ -915,9 +914,9 @@ body {
 	padding:0 10px;
 	text-decoration:none;
 }
-.bodywrapper .idTabs li a.selected span,
-.bodywrapper .idTabs li a:hover span,
-.bodywrapper .idTabs li a.idTabs span {
+ .idTabs li a.selected span,
+ .idTabs li a:hover span,
+ .idTabs li a.idTabs span {
 	text-decoration:none;
 	background-color:#FFF;
 	-moz-border-radius:  3px 3px 0 0 ;

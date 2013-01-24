@@ -1,13 +1,13 @@
-.bodywrapper div.intro{
+ div.intro{
 	font-size:1.4em;
 	font-style:italic;
 	line-height:1.2em;
 	font-family: STREET, Arial, Helvetica, sans-serif;
 }
-.bodywrapper div.intro p{
+ div.intro p{
 	padding:10px 0;
 }
-.bodywrapper p.intro {
+ p.intro {
 	font-size:1.3em;
 	line-height:1.4em;
 }

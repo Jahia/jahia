@@ -1,25 +1,25 @@
 /******************************************************************************
 *  box5
 ******************************************************************************/
-.bodywrapper div.box5 {
+ div.box5 {
 	position:relative;
 	clear:both;
 	margin-bottom:1em;
 }
 
-.bodywrapper div.box5-content {
+ div.box5-content {
 	background-color:#fff;
 	border:1px solid #cecece;
 	height:1%;
 	padding:1em;
 
 }
-.bodywrapper div.box5-content p {
+ div.box5-content p {
 	padding:0px 0px 1em 0px;
 }
 
 /*box5 title*/
-.bodywrapper h4.box5-title {
+ h4.box5-title {
 	background:#010101 url(img/box5-h4titleblack.png) repeat-x top right;
 	border:1px solid #010101;
 	color:#FFFFFF;
@@ -31,44 +31,44 @@
 	clear:both;
 	margin:0;
 }
-.bodywrapper h4.box5-titleblack {
+ h4.box5-titleblack {
 	background:#df6c04 url(img/box5-h4titleblack.png) repeat-x top right;
 	border:1px solid #000;
 	color:#fff;
 }
-.bodywrapper h4.box5-titlegrey {
+ h4.box5-titlegrey {
 	background:#666666 url(img/box5-h4titlegrey.png) repeat-x top right;
 	border:1px solid #666666;
 	color:#fff;
 }
-.bodywrapper h4.box5-titlemushroom {
+ h4.box5-titlemushroom {
 	background:#dad0c7 url(img/box5-h4titlemushroom.png) repeat-x top right;
 	border:1px solid #dad0c7;
 	color:#333;
 }
-.bodywrapper h4.box5-titleorange {
+ h4.box5-titleorange {
 	background:#df6c04 url(img/box5-h4titleorange.png) repeat-x top right;
 	border:1px solid #df6c04;
 	color:#333;
 }
-.bodywrapper h4.box5-titlered {
+ h4.box5-titlered {
 	background:#ac0101 url(img/box5-h4titlered.png) repeat-x top right;
 	border:1px solid #990000;
 }
-.bodywrapper h4.box5-titlegreen {
+ h4.box5-titlegreen {
 	background:#61a415 url(img/box5-h4titlegreen.png) repeat-x top right;
 	border:1px solid #669900;
 }
-.bodywrapper h4.box5-titlepurple {
+ h4.box5-titlepurple {
 	background:#340067 url(img/box5-h4titlepurple.png) repeat-x top right;
 	border:1px solid #330033;
 }
-.bodywrapper h4.box5-titleyellow {
+ h4.box5-titleyellow {
 	background:#ffcd35 url(img/box5-h4titleyellow.png) repeat-x top right;
 	border:1px solid #ffcc00;
 	color:#333;
 }
-.bodywrapper h4.box5-titleblue {
+ h4.box5-titleblue {
 	background:#03389c url(img/box5-h4titleblue.png) repeat-x top right;
 	border:1px solid #003366;
 }

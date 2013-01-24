@@ -1,18 +1,18 @@
-.bodywrapper .navigation {
+ .navigation {
 	position:relative;
 }
-.bodywrapper .navigation .navbar {
+ .navigation .navbar {
 	background-image: url('img/navbar-bg.png');
 	background-repeat: no-repeat;
 	width: 820px;
 	float: left;
 }
-.bodywrapper .navigation .navbar ul.navmenu {
+ .navigation .navbar ul.navmenu {
 	margin-top: 2px;
 	margin-left: 30px;
 	list-style: none
 }
-.bodywrapper .navigation .navbar ul.navmenu li {
+ .navigation .navbar ul.navmenu li {
 	float: left;
 	line-height: 36px;
 	padding-right: 10px;
@@ -21,18 +21,18 @@
 	position:relative;
 	z-index:898;
 }
-.bodywrapper .bodywrapper .navigation .navbar ul.navmenu li ul li {
+  .navigation .navbar ul.navmenu li ul li {
 	display: block;
 	float: none;
 }
-.bodywrapper .navigation .navbar ul.navmenu li a {
+ .navigation .navbar ul.navmenu li a {
 	color: #333;
 	font-size: 1.1em;
 	line-height: 36px;
 	white-space:pre
 }
-.bodywrapper .navigation .navbar ul.navmenu li.hasChildren:hover,
-.bodywrapper .navigation .navbar ul.navmenu li.noChildren:hover {
+ .navigation .navbar ul.navmenu li.hasChildren:hover,
+ .navigation .navbar ul.navmenu li.noChildren:hover {
 	background-image: url(img/nav-bg.png);
 	background-color: #2050a8;
 	background-repeat: repeat-x;
@@ -42,31 +42,31 @@
 	position: relative;
 	z-index:899;
 }
-.bodywrapper .navigation .navbar ul.navmenu li.hasChildren:hover a,
-.bodywrapper .navigation .navbar ul.navmenu li.noChildren:hover a {
+ .navigation .navbar ul.navmenu li.hasChildren:hover a,
+ .navigation .navbar ul.navmenu li.noChildren:hover a {
 	color: #ffffff;
 	text-decoration: none;
 }
-.bodywrapper .navigation .navbar ul.navmenu li.hasChildren:hover div,
-.bodywrapper .navigation .navbar ul.navmenu li.noChildren:hover div {
+ .navigation .navbar ul.navmenu li.hasChildren:hover div,
+ .navigation .navbar ul.navmenu li.noChildren:hover div {
 	display: block;
 	margin-top: -1px;
 }
-.bodywrapper .navigation .navbar ul.navmenu li.hasChildren:hover div ul li a,
-.bodywrapper .navigation .navbar ul.navmenu li.noChildren:hover div ul li a {
+ .navigation .navbar ul.navmenu li.hasChildren:hover div ul li a,
+ .navigation .navbar ul.navmenu li.noChildren:hover div ul li a {
 	color: #3b3b3a;
 	white-space: normal
 }
-.bodywrapper .navigation .navbar ul.navmenu li.hasChildren {
+ .navigation .navbar ul.navmenu li.hasChildren {
 	background-image: url(img/arrow-down.png);
 	background-repeat: no-repeat; background-position: right 17px;
 	position: relative;
 }
-.bodywrapper .navigation .navbar ul.navmenu li.hasChildren a {
+ .navigation .navbar ul.navmenu li.hasChildren a {
 	color: #333;
 }
 
-.bodywrapper .navigation .navbar ul.navmenu li.hasChildren div {
+ .navigation .navbar ul.navmenu li.hasChildren div {
 	display: none;
 	left: -1px;
 	top: 36px;
@@ -75,7 +75,7 @@
 	z-index:999;
 }
 
-.bodywrapper .navigation .navbar ul.navmenu li.hasChildren div ul {
+ .navigation .navbar ul.navmenu li.hasChildren div ul {
 	list-style: none;
 	padding: 10px 4px;
 	width: 190px;
@@ -85,24 +85,24 @@
 	margin:0px;
 
 }
-.bodywrapper .navigation .navbar ul.navmenu li.hasChildren div ul li {
+ .navigation .navbar ul.navmenu li.hasChildren div ul li {
 	padding: 5px;
 	padding-left: 10px;
 	line-height: 20px;
 	width:162px;
 }
-.bodywrapper .navigation .navbar ul.navmenu li.hasChildren div ul li a {
+ .navigation .navbar ul.navmenu li.hasChildren div ul li a {
 	color: #333;
 	line-height: 20px;
 }
-.bodywrapper .navigation .navbar ul.navmenu li.hasChildren div ul li a:hover {
+ .navigation .navbar ul.navmenu li.hasChildren div ul li a:hover {
 	color: #3366cc;
 	text-decoration: none;
 }
-.bodywrapper .navigation .navbar ul.navmenu li.home{
+ .navigation .navbar ul.navmenu li.home{
 	line-height:17px;
 }
-.bodywrapper .navigation .navbar ul.navmenu li.home a {
+ .navigation .navbar ul.navmenu li.home a {
 	display: block;
 	height: 17px;
 	line-height:17px;
@@ -114,12 +114,12 @@
 	background-image: url(img/icon-home.png);
 	background-repeat: no-repeat;
 }
-.bodywrapper .navigation .navbar ul.navmenu li.home a:hover {
+ .navigation .navbar ul.navmenu li.home a:hover {
 	background-image: url(img/icon-home-over.png);
 }
 
-.bodywrapper .navigation .navbar ul.level_2 li.hasChildren:hover,
-.bodywrapper .navigation .navbar ul.level_2 li.noChildren:hover {
+ .navigation .navbar ul.level_2 li.hasChildren:hover,
+ .navigation .navbar ul.level_2 li.noChildren:hover {
 	background-image: none;
 	background-color: transparent;
 	border-color: #none;

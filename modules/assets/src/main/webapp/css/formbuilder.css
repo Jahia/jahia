@@ -1,50 +1,50 @@
 /******************************************************************************
 *  error
 ******************************************************************************/
-.bodywrapper .FormBuilder .error{
+ .FormBuilder .error{
 	padding:4px 5px;
 	margin:0 5px;
 	background-color:#ffebe8;
 	border:1px solid #cc3300;
 }
-.bodywrapper .FormBuilder input.error, .bodywrapper .FormBuilder select.error{
+ .FormBuilder input.error,  .FormBuilder select.error{
 	padding:4px 2px;
 	margin:0;
 	border:1px dashed #cc3300;
 	background-color:#f6f6f6;
 }
-.bodywrapper .FormBuilder select.error{
+ .FormBuilder select.error{
 	padding:4px 5px;
 }
 /******************************************************************************
 *  Area
 ******************************************************************************/
-.bodywrapper div.addelements {
+ div.addelements {
 	background-color:#FBF5D0;
 	border:1px solid #F9DD34;
 	padding:5px;
 	margin-bottom:5px
 }
-.bodywrapper div.addvalidation {
+ div.addvalidation {
 	background-color:#e2fbd0 ;
 	border:1px solid #45930B;
 	padding:5px;
 	margin-bottom:5px
 }
-.bodywrapper div.addaction {
+ div.addaction {
 	background-color:#ffd695 ;
 	border:1px solid #ff9933;
 	padding:5px;
 	margin-bottom:5px;
 	margin-top:5px
 }
-.bodywrapper div.addfieldsets {
+ div.addfieldsets {
 	background-color:#eaeaea ;
 	border:1px dashed #333;
 	padding:5px;
 	margin-bottom:5px
 }
-.bodywrapper div.addbuttons {
+ div.addbuttons {
 	background-color:#d6eafd ;
 	border:1px solid #99ccff;
 	padding:5px;

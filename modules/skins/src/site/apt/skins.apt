@@ -31,7 +31,7 @@ Skins
  and in your css' skin :
 
 +--- 
-.bodywrapper .box2 .box2-text .title{
+ .box2 .box2-text .title{
     display:none;
 }
 +--- 

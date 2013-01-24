@@ -1,15 +1,15 @@
 /******************************************************************************
 *  Simple List
 ******************************************************************************/
-.bodywrapper ul.simple,
-.bodywrapper ol.simple {
+ ul.simple,
+ ol.simple {
 	list-style:none;
 	margin:0;
 	padding:0;
 	border-bottom:none;
 }
-.bodywrapper ul.simple li,
-.bodywrapper ol.simple li {
+ ul.simple li,
+ ol.simple li {
 	list-style-type:none;
 	margin:0;
 	padding:0;

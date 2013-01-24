@@ -2,20 +2,20 @@
 /******************************************************************************
 *  user Simple View
 ******************************************************************************/
-.bodywrapper .user-profile-view{
+ .user-profile-view{
 	padding: 0.2em;
 	margin-bottom:1em;
 }
-.bodywrapper .user-profile-img {
+ .user-profile-img {
 	padding: 0.2em;
 	float:left;
 }
 
-.bodywrapper .user-profile-view h5 {
+ .user-profile-view h5 {
 	padding: 0.2em;
 	margin-left:70px;
 }
-.bodywrapper .user-profile-view p {
+ .user-profile-view p {
 	padding: 0.2em;
 	margin-left:70px;
 }

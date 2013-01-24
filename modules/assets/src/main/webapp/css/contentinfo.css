@@ -1,19 +1,19 @@
-.bodywrapper .contentinfos {
+ .contentinfos {
     background: none;
     border: 1px solid #ccc;
     margin: 1em 0;
     padding: 0.5em;
 	color:#666;
 }
-.bodywrapper .contentinfos h3 {
+ .contentinfos h3 {
 
     margin-top: 0;
     padding-top: 0;
 }
-.bodywrapper .contentinfos dt {
+ .contentinfos dt {
 	font-weight:bold;
 
 }
-.bodywrapper .contentinfos dd {
+ .contentinfos dd {
 	margin-bottom:0.5em;
 }

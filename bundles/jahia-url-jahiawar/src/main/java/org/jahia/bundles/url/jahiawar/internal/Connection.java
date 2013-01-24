@@ -124,7 +124,8 @@ public class Connection extends URLConnection {
             "org.apache.commons.id",
             "org.apache.commons.lang",
             "org.apache.commons.lang.math",
-            "org.apache.taglibs.unstandard"
+            "org.apache.taglibs.unstandard",
+            "org.drools"
     };
 
     public Set<String> extensionsToExport = new HashSet<String>();

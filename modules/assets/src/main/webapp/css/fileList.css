@@ -2,31 +2,31 @@
 *  files List
 ******************************************************************************/
 
-.bodywrapper ul.filesList{
+ ul.filesList{
 	margin:1em 0;
 	padding:0;
 	list-style: none;
 	font-weight:bold
 }
-.bodywrapper ul.filesList li {
+ ul.filesList li {
 	margin:0;
 	padding:0.5em;
 	list-style: none;
 	display:block;
 	border-bottom:1px solid #ccc;
 }
-.bodywrapper ul.filesList li:hover{
+ ul.filesList li:hover{
 	background-color:#eaeaea
 }
-.bodywrapper ul.filesList li.lastdocument  {
+ ul.filesList li.lastdocument  {
 	border-bottom:none
 }
-.bodywrapper ul.filesList span.docSize{
+ ul.filesList span.docSize{
 	font-size:80%;
 	margin-left:0.2em;
 	font-weight:normal
 }
-.bodywrapper ul.filesList .resume {
+ ul.filesList .resume {
 	margin:0;
 	padding:0;
 	list-style: none;
@@ -34,12 +34,12 @@
 	font-size:0.9em;
 	font-weight:normal
 }
-.bodywrapper ul.filesList li.document a,
-.bodywrapper ul.filesList li.document a:link,
-.bodywrapper ul.filesList li.document a:visited {
+ ul.filesList li.document a,
+ ul.filesList li.document a:link,
+ ul.filesList li.document a:visited {
 	text-decoration: none;
 }
-.bodywrapper ul.filesList li.document a:hover,
-.bodywrapper ul.filesList li.document a:active {
+ ul.filesList li.document a:hover,
+ ul.filesList li.document a:active {
 	text-decoration:underline;
 }

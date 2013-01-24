@@ -1,12 +1,12 @@
 /******************************************************************************
 *  jeditable
 ******************************************************************************/
-.bodywrapper .inline-editable {
+ .inline-editable {
    padding-bottom: 1px;
    border-bottom: 1px dotted #0099FF;
    color: #0099ff;
 }
-.bodywrapper .inline-editable-block {
+ .inline-editable-block {
    padding: 5px;
    border: 1px dotted #0099FF;
    background-color:#C8E9FE;
@@ -15,26 +15,26 @@
 /******************************************************************************
 *  userDetails full
 ******************************************************************************/
-.bodywrapper .user-body {
+ .user-body {
 	margin-left:180px;
 }
-.bodywrapper .user-body p  {
+ .user-body p  {
 	margin:0;
 	padding:0 0 0.2em 0;
 }
-.bodywrapper .aboutMe{
+ .aboutMe{
 	clear:both
 }
-.bodywrapper .user-label{
+ .user-label{
 	font-weight:bold
 }
-.bodywrapper .user-profile .divButtonRight{
+ .user-profile .divButtonRight{
 	margin-bottom:1em;
 }
 /******************************************************************************
 * Form
 ******************************************************************************/
-.bodywrapper #changePassword p{
+ #changePassword p{
 	margin:0;
 	padding:0 0 0.2em 0;
 	}
@@ -42,41 +42,41 @@
 *  userMyContentList
 ******************************************************************************/
 
-.bodywrapper ul.user-profile-list  {
+ ul.user-profile-list  {
 	margin:0;
 	margin-bottom:20px;
 	list-style:none;
 	padding:0;
 }
-.bodywrapper ul.user-profile-list input  {
+ ul.user-profile-list input  {
 	width:100% !important;
 	padding:0 0 0.2em 0;
 	
 }
-.bodywrapper .user-profile-list li {
+ .user-profile-list li {
 	padding:2px 5px;
 	margin:0;
 	list-style:none
 }
-.bodywrapper .user-profile-list li {
+ .user-profile-list li {
 	padding:2px 5px;
 	margin:0;
 	list-style:none;
     overflow:hidden;
 }
-.bodywrapper .user-profile-list .label {
+ .user-profile-list .label {
 	font-weight:bold;
 }
 /******************************************************************************
 *  editUserDetails.visibility
 ******************************************************************************/
 
-.bodywrapper ul.listvisibility  {
+ ul.listvisibility  {
 	margin:0;
 	list-style:none;
 	padding:0;
 }
-.bodywrapper .listvisibility li {
+ .listvisibility li {
 	padding:1px 5px;
 	margin:0;
 	list-style:none
@@ -85,38 +85,38 @@
 *  userMyContentList
 ******************************************************************************/
 
-.bodywrapper .userMyContentList ul {
+ .userMyContentList ul {
 	position:relative;
 	margin:0;
 	margin:1em;
 	list-style:none;
 	padding:0
 }
-.bodywrapper .userMyContentList li {
+ .userMyContentList li {
 	border-bottom:1px dotted #ccc ;
 	padding:2px 5px;
 	margin:0;
 	list-style:none;
 }
-.bodywrapper .userMyContentList li p {
+ .userMyContentList li p {
 	padding:0;
 }
-.bodywrapper .userMyContentList li:last-child {
+ .userMyContentList li:last-child {
 	border-bottom-color:#fff;
 }
-.bodywrapper .userMyContentList li:hover{
+ .userMyContentList li:hover{
 	background-color:#eaeaea
 }
-.bodywrapper .userMyContentList ul a,
-.bodywrapper .userMyContentList ul a:link,
-.bodywrapper .userMyContentList ul a:visited {
+ .userMyContentList ul a,
+ .userMyContentList ul a:link,
+ .userMyContentList ul a:visited {
 	text-decoration: none;
 }
-.bodywrapper .userMyContentList ul a:hover,
-.bodywrapper .userMyContentList ul a:active {
+ .userMyContentList ul a:hover,
+ .userMyContentList ul a:active {
 	text-decoration:underline;
 }
-.bodywrapper .userMyContentList ul li a {
+ .userMyContentList ul li a {
 	background:transparent url(img/content.png) no-repeat scroll 0 50%;
 	padding-left:24px;
 	line-height:1.375em;

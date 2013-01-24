@@ -1,14 +1,14 @@
 /******************************************************************************
 *  Tag this Page
 ******************************************************************************/
-.bodywrapper .tagthispage span span.taggeditem {
+ .tagthispage span span.taggeditem {
     background:transparent url(img/page-tag.gif) no-repeat scroll 0 70%;
     display:inline !important;
     padding:5px 0 5px 18px;
 }
-.bodywrapper .tagthispage  {
+ .tagthispage  {
     margin:0.5em 0;
 }
-.bodywrapper .tagthispage form {
+ .tagthispage form {
     margin:0.5em 0;
 }

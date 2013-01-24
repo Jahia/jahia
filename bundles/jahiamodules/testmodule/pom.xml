@@ -20,7 +20,27 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
+                        <Bundle-Name>${project.name}</Bundle-Name>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        
+                        <Implementation-Title>${project.name}</Implementation-Title>
+                        <Implementation-Version>${project.version}</Implementation-Version>
+                        <Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
+                        <Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
+                        <Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
+                        <Specification-Title>${project.name}</Specification-Title>
+                        <Specification-Version>${project.version}</Specification-Version>
+                        <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
+                        
+                        <!-- Jahia manifest attributes -->
+                        <Package-name>${project.name}</Package-name>
+                        <Module-type>module</Module-type>
+                        <Root-folder>${project.artifactId}</Root-folder>
+                        <Source-Folders>${project.basedir}</Source-Folders>
+                        <Jahia-Static-Resources>/css</Jahia-Static-Resources>
+
                         <Import-Package>*,
+                            org.jahia.defaults.config.spring,
                             org.jahia.bundles.extender.jahiamodules,
                             org.jahia.taglibs,
                             org.jahia.taglibs.template.include,
@@ -33,11 +53,6 @@
                         </Import-Package>
                         <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
-                        <Package-name>${project.name}</Package-name>
-                        <Module-type>module</Module-type>
-                        <Root-folder>${project.artifactId}</Root-folder>
-                        <Source-Folders>${project.basedir}</Source-Folders>
-                        <Jahia-Static-Resources>/css</Jahia-Static-Resources>
                         <_removeheaders>
                             Include-Resource,
                             Private-Package,

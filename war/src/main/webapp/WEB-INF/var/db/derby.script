@@ -2,7 +2,7 @@
 
 jahia.database.name     =  Sun JavaDB / Apache Derby (standalone)
 jahia.database.driver   =  org.apache.derby.jdbc.ClientDriver
-jahia.database.url      =  jdbc:derby://localhost:1527/jahia;create=true
+jahia.database.url      =  jdbc:derby://localhost:1527/jahia
 jahia.database.user     =  jahia
 jahia.database.pass     =  jahia
 jahia.database.validationQuery = values(1)

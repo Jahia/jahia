@@ -493,7 +493,7 @@ public class TemplatePackageDeployer implements ApplicationEventPublisherAware {
             } else if (templatePackageRegistry.lookupByFileName(d) != null) {
                 l.add(session.getValueFactory().createValue(templatePackageRegistry.lookupByFileName(d).getRootFolder()));
             } else {
-                logger.warn("cannot found dependency " + d + " for package '" + pack.getName() + "'");
+                logger.warn("Cannot find dependency {} for package '{}'", d, pack.getName());
             }
         }
         Value[] values = new Value[pack.getDepends().size()];

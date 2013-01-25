@@ -12,30 +12,24 @@ import java.net.URLStreamHandler;
 /**
  * {@link URLStreamHandler} implementation for "jahiawar:" protocol.
  */
-public class Handler
-    extends URLStreamHandler
-{
+public class Handler extends URLStreamHandler {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected URLConnection openConnection( final URL url )
-        throws IOException
-    {
-        final ConfigurationImpl config = new ConfigurationImpl(
-            new PropertiesPropertyResolver( System.getProperties() )
-        );
-        return new Connection( url, config );
+    protected URLConnection openConnection(final URL url) throws IOException {
+        final ConfigurationImpl config = new ConfigurationImpl(new PropertiesPropertyResolver(System.getProperties()));
+        return new Connection(url, config);
     }
 
     @Override
     protected void parseURL(URL url, String s, int i, int i1) {
-        super.parseURL(url, s, i, i1);    //To change body of overridden methods use File | Settings | File Templates.
+        super.parseURL(url, s, i, i1);
     }
 
     @Override
     protected String toExternalForm(URL url) {
-        return super.toExternalForm(url);    //To change body of overridden methods use File | Settings | File Templates.
+        return super.toExternalForm(url);
     }
 }

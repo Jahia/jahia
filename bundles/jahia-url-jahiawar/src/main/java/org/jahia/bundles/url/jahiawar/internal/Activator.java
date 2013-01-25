@@ -15,28 +15,18 @@ import java.net.URLConnection;
  */
 public class Activator extends HandlerActivator<Configuration> {
 
-    public Activator()
-    {
-        super(
-            new String[]{ ServiceConstants.PROTOCOL },
-            ServiceConstants.PID,
-            new ConnectionFactory<Configuration>()
-            {
+    public Activator() {
+        super(new String[] { ServiceConstants.PROTOCOL }, ServiceConstants.PID, new ConnectionFactory<Configuration>() {
 
-                public URLConnection createConection( final BundleContext bundleContext,
-                                                      final URL url,
-                                                      final Configuration config )
-                    throws MalformedURLException
-                {
-                    return new Connection( url, config );
-                }
-
-                public Configuration createConfiguration( final PropertyResolver propertyResolver )
-                {
-                    return new ConfigurationImpl( propertyResolver );
-                }
-
+            public URLConnection createConection(final BundleContext bundleContext, final URL url,
+                    final Configuration config) throws MalformedURLException {
+                return new Connection(url, config);
             }
-        );
+
+            public Configuration createConfiguration(final PropertyResolver propertyResolver) {
+                return new ConfigurationImpl(propertyResolver);
+            }
+
+        });
     }
 }

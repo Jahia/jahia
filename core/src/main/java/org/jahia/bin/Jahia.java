@@ -69,7 +69,7 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.Version;
+import org.jahia.commons.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

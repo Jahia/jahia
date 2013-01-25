@@ -100,6 +100,7 @@
 
         <jahia.plugin.version>4.0-SNAPSHOT</jahia.plugin.version>
         <jahia.deployers.version>4.0-SNAPSHOT</jahia.deployers.version>
+        <jahia.commons.version>1.0</jahia.commons.version>
     </properties>
 
     <scm>

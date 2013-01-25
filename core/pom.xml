@@ -66,6 +66,11 @@
             <artifactId>deployers</artifactId>
             <version>${jahia.deployers.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.jahia.commons</groupId>
+            <artifactId>jahia-commons</artifactId>
+            <version>${jahia.commons.version}</version>
+        </dependency>
                 
         <dependency>
             <groupId>junit</groupId>

@@ -1,13 +1,11 @@
 package org.jahia.bundles.url.jahiawar.internal;
 
 import org.jdom2.Document;
-import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import org.jdom2.xpath.XPath;
 import org.ops4j.io.StreamUtils;
 import org.ops4j.lang.NullArgumentException;
 import org.ops4j.net.URLUtils;
@@ -245,7 +243,7 @@ public class Connection extends URLConnection {
                             // jBPM workflow definition file detected.
                         }
                     } catch (JDOMException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        e.printStackTrace();
                     }
 
                     tempEntryInputStream.close();
@@ -268,6 +266,7 @@ public class Connection extends URLConnection {
                 updateExportTracking(newName, exportPackageIncludes, allNonEmptyDirectories);
 
             }
+            /*
             if (inputManifest.getMainAttributes().getValue("Implementation-Title") != null) {
                 String newEntryName = inputManifest.getMainAttributes().getValue("Implementation-Title").replaceAll("[ -]", "");
                 addFakeEntries(jos, entryNames, mostRecentTime, newEntryName);
@@ -276,6 +275,7 @@ public class Connection extends URLConnection {
                 String newEntryName = inputManifest.getMainAttributes().getValue("root-folder").replaceAll("[ -]", "");
                 addFakeEntries(jos, entryNames, mostRecentTime, newEntryName);
             }
+            */
             jos.finish();
         } catch (IOException e) {
             throw new RuntimeException("Could not process resources", e);
@@ -359,6 +359,7 @@ public class Connection extends URLConnection {
             String[] dependsArray = depends.split(",");
             StringBuilder importPackage = new StringBuilder("*");
 
+            /*
             for (String dep : dependsArray) {
                 if (!"".equals(dep)) {
                     importPackage.append(",");
@@ -366,6 +367,7 @@ public class Connection extends URLConnection {
                     importPackage.append(dep);
                 }
             }
+            */
 
             List<String> alreadyImportedPackages = new ArrayList<String>(Arrays.asList(importPackage.toString().split(",")));
             for (String curImportPackage : importPackages) {
@@ -487,5 +489,6 @@ public class Connection extends URLConnection {
 
     @Override
     public void connect() throws IOException {
+        // do nothing
     }
 }

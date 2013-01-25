@@ -1,12 +1,13 @@
 package org.jahia.services.templates;
 
-import org.apache.commons.collections.CollectionUtils;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class ModuleVersion implements Comparable<ModuleVersion> {
+    
+    private static final Pattern VERSION_PATTERN = Pattern.compile("[^0-9]+");
+
     private String versionString;
 
     private boolean isSnapshot;
@@ -17,7 +18,7 @@ public class ModuleVersion implements Comparable<ModuleVersion> {
         if (versionString.endsWith("SNAPSHOT")) {
             isSnapshot = true;
         }
-        String[] numbers = versionString.split("[^0-9]+");
+        String[] numbers = VERSION_PATTERN.split(versionString);
         for (String number : numbers) {
             orderedVersionNumbers.add(Integer.parseInt(number));
         }

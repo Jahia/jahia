@@ -8,8 +8,8 @@
         <version>6.7.0.0-SNAPSHOT</version>
     </parent>
 
-    <name>Jahia Jahia OSGi Test template set</name>
-    <artifactId>org.jahia.bundles.modules.testtemplate</artifactId>
+    <name>Jahia OSGi Test Template Set</name>
+    <artifactId>testtemplate</artifactId>
     <packaging>bundle</packaging>
 
     <build>

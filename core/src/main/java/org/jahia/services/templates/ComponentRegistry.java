@@ -135,7 +135,7 @@ public class ComponentRegistry {
         if (resolvedSite != null && resolvedSite.hasNode("components")) {
             components.add(resolvedSite.getNode("components"));
         }
-        if (resolvedSite != null) {
+        if (resolvedSite != null && ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(resolvedSite.getName()) != null) {
 
             for (JahiaTemplatesPackage dep : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(resolvedSite.getName()).getDependencies()) {
                 String version = dep.getRootFolderWithVersion();

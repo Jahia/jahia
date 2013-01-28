@@ -42,6 +42,7 @@ package org.jahia.taglibs.utility;
 
 import java.util.Iterator;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 
 import org.jahia.services.render.RenderContext;
@@ -218,5 +219,22 @@ public class Utils {
     private Utils() {
         super();
     }
-
+    
+    /**
+     * Check if current request has a query string and append it to the new link.
+     * 
+     * @param request      the current request
+     * @param link         the link, to which the current query string should be appended 
+     */
+    public static String appendRequestParameters(HttpServletRequest request,
+            String link) {
+        String newLink = link;
+        if (request.getQueryString() != null) {
+            StringBuilder params = new StringBuilder(link);
+            params.append("?");
+            params.append(request.getQueryString());
+            newLink = params.toString();
+        }
+        return newLink;
+    }
 }

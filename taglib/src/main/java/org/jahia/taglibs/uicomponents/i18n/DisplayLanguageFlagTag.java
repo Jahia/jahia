@@ -40,6 +40,7 @@
 
 package org.jahia.taglibs.uicomponents.i18n;
 
+import org.jahia.taglibs.utility.Utils;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.taglibs.AbstractJahiaTag;
@@ -110,10 +111,10 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
             final String link;
             if (onLanguageSwitch == null || onLanguageSwitch.length() == 0 || InitLangBarAttributes.STAY_ON_CURRENT_PAGE.equals(
                     onLanguageSwitch)) {
-                link = generateCurrentNodeLangSwitchLink(languageCode);
+                link = Utils.appendRequestParameters(getRenderContext().getRequest(), generateCurrentNodeLangSwitchLink(languageCode));
 
             } else if (isRedirectToHomePageActivated) {
-                link = generateNodeLangSwitchLink(rootPage, languageCode);
+                link = Utils.appendRequestParameters(getRenderContext().getRequest(), generateNodeLangSwitchLink(rootPage, languageCode));
 
             } else {
                 throw new JspTagException("Unknown onLanguageSwitch attribute value " + onLanguageSwitch);

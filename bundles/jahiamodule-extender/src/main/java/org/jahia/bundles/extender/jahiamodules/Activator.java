@@ -324,7 +324,7 @@ public class Activator implements BundleActivator {
         pkg.setVersion(new ModuleVersion(StringUtils.defaultIfBlank((String) bundle
                 .getHeaders().get("Implementation-Version"), bundle.getVersion().toString())));
         pkg.setRootFolder((String) bundle.getHeaders().get("root-folder"));
-        pkg.setRootFolderPath("/osgi/" + pkg.getRootFolder());
+        pkg.setRootFolderPath("/modules/" + pkg.getRootFolder());
         String resourceBundle = (String) bundle.getHeaders().get("resource-bundle");
         if (StringUtils.isNotBlank(resourceBundle)) {
             pkg.setResourceBundleName(resourceBundle.trim());

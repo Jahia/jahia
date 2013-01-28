@@ -146,19 +146,6 @@
         <filter-name>CSSChannelFilter</filter-name>
         <filter-class>org.jahia.bin.filters.CSSChannelFilter</filter-class>
     </filter>
-    <filter>
-        <description>If using OSGi modules, rewrites accesses to /modules resource to /osgi resources</description>
-        <filter-name>ModuleToOSGiResourceFilter</filter-name>
-        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-        <init-param>
-            <param-name>targetFilterLifecycle</param-name>
-            <param-value>true</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>ModuleToOSGiResourceFilter</filter-name>
-        <url-pattern>/modules/*</url-pattern>
-    </filter-mapping>
     <filter-mapping>
         <filter-name>CharacterEncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -788,7 +775,7 @@
 
     <servlet-mapping>
         <servlet-name>osgiProxy</servlet-name>
-        <url-pattern>/osgi/*</url-pattern>
+        <url-pattern>/modules/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

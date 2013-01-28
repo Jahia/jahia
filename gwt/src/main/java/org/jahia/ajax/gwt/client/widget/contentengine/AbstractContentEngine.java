@@ -126,6 +126,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         setLayout(new FillLayout());
 
         buttonBar = new ButtonBar();
+        buttonBar.addStyleName("JahiaEditEngineButtonBar");
 
         container.setEngine(this, heading, buttonBar, this.getLinker());
 

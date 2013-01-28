@@ -505,7 +505,7 @@
 //---------------------------------------------------------
 
 [jnt:mountPoint] > nt:hierarchyNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication
- - j:root (string) nofulltext
+ - j:root (string) nofulltext mandatory
  - j:provider (string) nofulltext
 
 [jnt:mounts] > nt:base, jmix:nodenameInfo, jmix:systemNode

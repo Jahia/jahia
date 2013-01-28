@@ -26,11 +26,11 @@
 </c:forTokens>
 
 <c:if test="${!empty currentNode.properties.divID}"> <div id="${currentNode.properties.divID.string}"></c:if>
-   <div <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
-       <c:url var="background" value="${url.currentModule}/img/960_16_10_10.png"/>
-                    style="background-color: #FFFFFF;background-image: url('${background}');background-repeat: repeat-y;"
-                </c:if>
-    class="container_16" id="container_16_${fn:replace(currentNode.identifier,'-','_')}">
+<div <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
+    <c:url var="background" value="${url.currentModule}/img/960_16_10_10.png"/>
+    style="background-color: #FFFFFF;background-image: url('${background}');background-repeat: repeat-y;"
+</c:if>
+        class="container_16" id="container_16_${fn:replace(currentNode.identifier,'-','_')}">
     <c:if test="${!empty currentNode.properties.divClass}">
     <div class="${currentNode.properties.divClass.string}"></c:if>
 
@@ -101,68 +101,69 @@
     </c:if>
 </div>
 <c:if test="${!empty currentNode.properties.divID}"></div></c:if>
+<div <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
+    <script type="text/javascript">
 
-<script type="text/javascript">
+        function postRow${fn:replace(currentNode.identifier,'-','_')}(val) {
+            $.post("<c:url value='${url.base}${functions:escapePath(currentNode.path)}'/>", {"jcrMethodToCall":"put","customColumn":val},
+                    function (result) {
+                        location.reload();
+                    },
+                    'json'
+            );
+        }
 
-    function postRow${fn:replace(currentNode.identifier,'-','_')}(val) {
-        $.post("<c:url value='${url.base}${functions:escapePath(currentNode.path)}'/>", {"jcrMethodToCall":"put","customColumn":val},
-                function (result) {
-                    location.reload();
-                },
-                'json'
-        );
-    }
+        onGWTFrameLoad(function () {
+            <%--<c:forEach items="${colMap}" var="col" varStatus="count">--%>
+            <%--if ($("#grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count} > div").size() == 1) {--%>
+            <%--$("#grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}").append($('<div class="${renderContext.editModeConfigName}area">' +--%>
+            <%--'<div class="${renderContext.editModeConfigName}areaTemplate">'+--%>
+            <%--'<span>Empty content : ${currentNode.name}</span></div></div>'));--%>
+            <%--}--%>
+            <%--</c:forEach>--%>
 
-   onGWTFrameLoad(function () {
-       <%--<c:forEach items="${colMap}" var="col" varStatus="count">--%>
-       <%--if ($("#grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count} > div").size() == 1) {--%>
-           <%--$("#grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}").append($('<div class="${renderContext.editModeConfigName}area">' +--%>
-                       <%--'<div class="${renderContext.editModeConfigName}areaTemplate">'+--%>
-                           <%--'<span>Empty content : ${currentNode.name}</span></div></div>'));--%>
-       <%--}--%>
-       <%--</c:forEach>--%>
+            maxHeight = 0;
+            $('.grid_${fn:replace(currentNode.identifier,'-','_')}').each(function () {
+                maxHeight = $(this).height() > maxHeight ? $(this).height() : maxHeight
+            })
+            $('.grid_${fn:replace(currentNode.identifier,'-','_')}').each(function () {
+                $(this).height(maxHeight)
+            })
 
-        maxHeight = 0;
-        $('.grid_${fn:replace(currentNode.identifier,'-','_')}').each(function () {
-            maxHeight = $(this).height() > maxHeight ? $(this).height() : maxHeight
-        })
-        $('.grid_${fn:replace(currentNode.identifier,'-','_')}').each(function () {
-            $(this).height(maxHeight)
-        })
-
-        <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
+            <c:if test="${renderContext.editModeConfigName eq 'studiolayoutmode'}">
 
 
-        <c:forEach items="${colMap}" var="col" varStatus="count">
-        <c:if test="${not count.last}">
-        cont = $('#grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}')
+            <c:forEach items="${colMap}" var="col" varStatus="count">
+            <c:if test="${not count.last}">
+            cont = $('#grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}')
 
-                <c:set var="left" value=""/>
-                <c:forEach items="${colMap}" var="col2" varStatus="count2">
-                    <c:choose>
-                    <c:when test="${count2.count == count.count}"><c:set var="left" value="${left}${fn:trim(col2.value)-1}"/></c:when>
-                    <c:when test="${count2.count == count.count+1}"><c:set var="left" value="${left}${fn:trim(col2.value)+1}"/></c:when>
-                    <c:otherwise><c:set var="left" value="${left}${fn:trim(col2.value)}"/></c:otherwise>
-                    </c:choose>
-                <c:if test="${not count2.last}"><c:set var="left" value="${left},"/></c:if>
-                </c:forEach>
-                <c:set var="right" value=""/>
-                <c:forEach items="${colMap}" var="col2" varStatus="count2">
-                    <c:choose>
-                    <c:when test="${count2.count == count.count}"><c:set var="right" value="${right}${fn:trim(col2.value)+1}"/></c:when>
-                    <c:when test="${count2.count == count.count+1}"><c:set var="right" value="${right}${fn:trim(col2.value)-1}"/></c:when>
-                    <c:otherwise><c:set var="right" value="${right}${fn:trim(col2.value)}"/></c:otherwise>
-                    </c:choose>
-                <c:if test="${not count2.last}"><c:set var="right" value="${right},"/></c:if>
-                </c:forEach>
-       <c:url var="nav_left" value="${url.currentModule}/img/navigate_left.png"/>
-       <c:url var="nav_right" value="${url.currentModule}/img/navigate_right.png"/>
-       $('#grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}').append($('<div class="grid_${fn:replace(currentNode.identifier,'-','_')}_resizer" style="cursor:pointer; width: 16px; height:32px; position: absolute; left: ' + (cont.width()+12) + 'px; top: ' + ((cont.height() / 2)-11) + 'px;">' +
-                '<img onclick="postRow${fn:replace(currentNode.identifier,'-','_')}(\'${left}\')" src="${nav_left}"/>' +
-                '<img onclick="postRow${fn:replace(currentNode.identifier,'-','_')}(\'${right}\')" src="${nav_right}""/>' +
-                '</div>'))
-        </c:if>
-        </c:forEach>
-        </c:if>
-    });
-</script>
+            <c:set var="left" value=""/>
+            <c:forEach items="${colMap}" var="col2" varStatus="count2">
+            <c:choose>
+            <c:when test="${count2.count == count.count}"><c:set var="left" value="${left}${fn:trim(col2.value)-1}"/></c:when>
+            <c:when test="${count2.count == count.count+1}"><c:set var="left" value="${left}${fn:trim(col2.value)+1}"/></c:when>
+            <c:otherwise><c:set var="left" value="${left}${fn:trim(col2.value)}"/></c:otherwise>
+            </c:choose>
+            <c:if test="${not count2.last}"><c:set var="left" value="${left},"/></c:if>
+            </c:forEach>
+            <c:set var="right" value=""/>
+            <c:forEach items="${colMap}" var="col2" varStatus="count2">
+            <c:choose>
+            <c:when test="${count2.count == count.count}"><c:set var="right" value="${right}${fn:trim(col2.value)+1}"/></c:when>
+            <c:when test="${count2.count == count.count+1}"><c:set var="right" value="${right}${fn:trim(col2.value)-1}"/></c:when>
+            <c:otherwise><c:set var="right" value="${right}${fn:trim(col2.value)}"/></c:otherwise>
+            </c:choose>
+            <c:if test="${not count2.last}"><c:set var="right" value="${right},"/></c:if>
+            </c:forEach>
+            <c:url var="nav_left" value="${url.currentModule}/img/navigate_left.png"/>
+            <c:url var="nav_right" value="${url.currentModule}/img/navigate_right.png"/>
+            $('#grid_${fn:replace(currentNode.identifier,'-','_')}_${count.count}').append($('<div class="grid_${fn:replace(currentNode.identifier,'-','_')}_resizer" style="cursor:pointer; width: 16px; height:32px; position: absolute; left: ' + (cont.width()+12) + 'px; top: ' + ((cont.height() / 2)-11) + 'px;">' +
+                    '<img onclick="postRow${fn:replace(currentNode.identifier,'-','_')}(\'${left}\')" src="${nav_left}"/>' +
+                    '<img onclick="postRow${fn:replace(currentNode.identifier,'-','_')}(\'${right}\')" src="${nav_right}""/>' +
+                    '</div>'))
+            </c:if>
+            </c:forEach>
+            </c:if>
+        });
+    </script>
+</c:if>

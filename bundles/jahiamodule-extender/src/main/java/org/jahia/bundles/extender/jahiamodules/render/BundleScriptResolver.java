@@ -343,7 +343,7 @@ public class BundleScriptResolver implements ScriptResolver {
      */
     private void getViewsSet(ExtendedNodeType nt, Map<String, View> views, String templateType, String currentTemplatePath, JahiaTemplatesPackage tplPackage, ModuleVersion version) {
         String path = JCRContentUtils.replaceColon(nt.getAlias()) + "/" + templateType;
-        Map<Bundle, Set<URL>> bundleScripts = findBundleScripts("/" + path);
+        Map<Bundle, Set<URL>> bundleScripts = findBundleScripts("/" + path + "/");
         for (Bundle bundle : bundleScripts.keySet()) {
             if (bundle.getSymbolicName().equals(currentTemplatePath)) {
                 Set<URL> scriptsInBundle = bundleScripts.get(bundle);

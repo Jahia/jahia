@@ -98,11 +98,14 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     private Map<String, Object> globalObjects;
 
     private List<String> filesAccepted;
+    private Map<String,String> modulePackageNameMap;
+
     public RulesListener() {
         instances.add(this);
         dslFiles = new LinkedList<Resource>();
         globalObjects = new LinkedHashMap<String, Object>();
         inRules = new ThreadLocal<Boolean>();
+        modulePackageNameMap = new LinkedHashMap<String, String>();
     }
 
     public static RulesListener getInstance(String workspace) {
@@ -218,6 +221,9 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                         ruleBase.removePackage(pkg.getName());
                     }
                     ruleBase.addPackage(pkg);
+                    if(aPackage!=null) {
+                        modulePackageNameMap.put(aPackage.getName(),pkg.getName());
+                    }
                 } finally {
                     IOUtils.closeQuietly(ois);
                 }
@@ -258,6 +264,9 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                         ruleBase.removePackage(pkg.getName());
                     }
                     ruleBase.addPackage(pkg);
+                    if(aPackage!=null) {
+                        modulePackageNameMap.put(aPackage.getName(),pkg.getName());
+                    }
                     logger.info("Rules for " + pkg.getName() + " updated in " + (System.currentTimeMillis() - start) + "ms.");
                 } else {
                     logger.error("---------------------------------------------------------------------------------");
@@ -673,5 +682,11 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             }
         }
 
+    }
+
+    public void removeRules(String moduleName) {
+        if(modulePackageNameMap.containsKey(moduleName) && ruleBase.getPackage(modulePackageNameMap.get(moduleName))!=null) {
+            ruleBase.removePackage(modulePackageNameMap.get(moduleName));
+        }
     }
 }

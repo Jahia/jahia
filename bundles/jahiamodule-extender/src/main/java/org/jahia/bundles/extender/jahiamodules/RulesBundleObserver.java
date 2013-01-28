@@ -64,7 +64,11 @@ public class RulesBundleObserver implements BundleObserver<URL> {
     @Override
     public void removingEntries(Bundle bundle, List<URL> urls) {
         for (URL url : urls) {
-
+            BundleResource bundleResource = new BundleResource(url, bundle);
+            JahiaTemplatesPackage module = templatePackageRegistry.lookupByFileNameAndVersion(bundle.getSymbolicName(), new ModuleVersion((String) bundle.getHeaders().get("Implementation-Version")));
+            for (RulesListener listener : RulesListener.getInstances()) {
+                listener.removeRules(module.getName());
+            }
         }
     }
 }

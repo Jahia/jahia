@@ -424,6 +424,7 @@
                     <instructions>
                         <Bundle-Name>${project.name}</Bundle-Name>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Category>jahia-module</Bundle-Category>
         
                         <Implementation-Title>${project.name}</Implementation-Title>
                         <Implementation-Version>${project.version}</Implementation-Version>
@@ -439,7 +440,7 @@
                         <Jahia-Module-Type>module</Jahia-Module-Type>
                         <Jahia-Root-Folder>${project.artifactId}</Jahia-Root-Folder>
                         <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
-                        <Jahia-Static-Resources>/css,/icons,/images,/javascript</Jahia-Static-Resources>
+                        <Jahia-Static-Resources>/css,/icons,/images,/img,/javascript</Jahia-Static-Resources>
 
                         <Package-Name>${project.name}</Package-Name>
                         <Depends>default</Depends>

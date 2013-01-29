@@ -76,7 +76,7 @@ public class FrameworkService {
         if (this.getClass().getResource("org/jahia/defaults/config/properties/felix-framework.properties") != null) {
             is = this.getClass().getResourceAsStream("org/jahia/defaults/config/properties/felix-framework.properties");
         } else {
-            is = this.context.getResourceAsStream("/WEB-INF/felix-framework.properties");
+            is = this.context.getResourceAsStream("/WEB-INF/etc/config/felix-framework.properties");
         }
         try {
             props.load(is);

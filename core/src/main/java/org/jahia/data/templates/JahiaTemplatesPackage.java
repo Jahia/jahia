@@ -124,6 +124,10 @@ public class JahiaTemplatesPackage {
     private List<String> resourceBundleHierarchy = new LinkedList<String>();
     private List<String> rulesDescriptorFiles = new LinkedList<String>();
 
+    /**
+     * @deprecated with no replacement
+     */
+    @Deprecated
     private long buildNumber;
 
     private String autoDeployOnSite;
@@ -170,7 +174,7 @@ public class JahiaTemplatesPackage {
     public String getRootFolder() {
         return m_RootFolder;
     }
-
+    
     public String getRootFolderWithVersion() {
         return m_RootFolder + "/" + version.toString();
     }
@@ -250,15 +254,14 @@ public class JahiaTemplatesPackage {
         this.m_FilePath = path;
     }
 
-
-	/**
-	 * Returns <code>true</code> if this package is the default template set.
-	 *
-	 * @return <code>true</code> if this package is the default template set
-	 */
-	public boolean isDefault() {
-		return getRootFolder() != null && "default".equals(getRootFolder());
-	}
+    /**
+     * Returns <code>true</code> if this package is the default template set.
+     * 
+     * @return <code>true</code> if this package is the default template set
+     */
+    public boolean isDefault() {
+        return getRootFolder() != null && "default".equals(getRootFolder());
+    }
 
     public List<String> getInitialImports() {
         return initialImports;
@@ -376,10 +379,18 @@ public class JahiaTemplatesPackage {
         return dependencies;
     }
 
+    /**
+     * @deprecated with no replacement
+     */
+    @Deprecated
     public long getBuildNumber() {
         return buildNumber;
     }
 
+    /**
+     * @deprecated with no replacement
+     */
+    @Deprecated
     public void setBuildNumber(long buildNumber) {
         this.buildNumber = buildNumber;
     }

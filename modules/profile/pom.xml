@@ -49,33 +49,22 @@
     <artifactId>profile</artifactId>
     <name>Jahia User Profile</name>
     <version>6.7.0.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>bundle</packaging>
     <description>This is the custom module (profile) for running on a Jahia server.</description>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
                 <configuration>
-                    <archive>
-                        <manifestEntries>
-		                	<Implementation-Title>${project.name}</Implementation-Title>
-		                    <Implementation-Version>${project.version}</Implementation-Version>
-		                    <Implementation-Vendor />
-		                    <Implementation-Vendor-Id />
-		                    <Implementation-URL />
-		                    <Specification-Title>${project.name}</Specification-Title>
-		                    <Specification-Version>${project.version}</Specification-Version>
-		                    <Specification-Vendor />
-                            <Source-Folders>${project.basedir}</Source-Folders>
-                            <package-name>${project.name}</package-name>
-                            <depends>Default Jahia Templates,Jahia Content retrieval</depends>
-                            <root-folder>${project.artifactId}</root-folder>
-                            <module-type>system</module-type>
-                        </manifestEntries>
-                    </archive>
-                    <archiveClasses>true</archiveClasses>
+                    <instructions>
+                        <Jahia-Module-Type>system</Jahia-Module-Type>
+                        <Module-Type>system</Module-Type>
+                        <Jahia-Depends>default,contentRetrieval</Jahia-Depends>
+                        <Depends>default,contentRetrieval</Depends>
+                    </instructions>
                 </configuration>
             </plugin>
         </plugins>

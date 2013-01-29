@@ -49,35 +49,7 @@
     <groupId>org.jahia.modules</groupId>
     <artifactId>contentRetrieval</artifactId>
     <name>Jahia Content retrieval</name>
-    <packaging>war</packaging>
+    <packaging>bundle</packaging>
     <description>These is a custom module (contentRetrieval) for running on a Jahia server.</description>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-		                	<Implementation-Title>${project.name}</Implementation-Title>
-		                    <Implementation-Version>${project.version}</Implementation-Version>
-		                    <Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
-		                    <Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
-		                    <Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
-		                    <Specification-Title>${project.name}</Specification-Title>
-		                    <Specification-Version>${project.version}</Specification-Version>
-		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
-                            <Source-Folders>${project.basedir}</Source-Folders>
-                            <package-name>${project.name}</package-name>
-                            <depends>Default Jahia Templates</depends>
-                            <module-type>module</module-type>
-                            <root-folder>${project.artifactId}</root-folder>
-                        </manifestEntries>
-                    </archive>
-                    <archiveClasses>true</archiveClasses>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

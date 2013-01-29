@@ -46,100 +46,24 @@
         <groupId>org.jahia.modules</groupId>
         <version>6.7.0.0-SNAPSHOT</version>
     </parent>
-    <groupId>org.jahia.modules</groupId>
     <artifactId>default-skins</artifactId>
     <name>Jahia Default Skins</name>
-    <packaging>war</packaging>
+    <packaging>bundle</packaging>
     <description>This module provides default skins.</description>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
                 <configuration>
-                    <webResources>
-                        <resource>
-                            <directory>${project.build.directory}</directory>
-                            <includes>
-                                <include>site/**</include>
-                            </includes>
-                        </resource>
-                    </webResources>
-	                <archive>
-	                    <manifestEntries>
-	                    	<Implementation-Title>${project.name}</Implementation-Title>
-	                    	<Implementation-Version>${project.version}</Implementation-Version>
-	                    	<Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
-	                    	<Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
-	                    	<Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
-	                    	<Specification-Title>${project.name}</Specification-Title>
-	                    	<Specification-Version>${project.version}</Specification-Version>
-	                    	<Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
-	                        <Source-Folders>${project.basedir}</Source-Folders>
-                            <package-name>${project.name}</package-name>
-                            <depends>skins</depends>
-                            <root-folder>${project.artifactId}</root-folder>
-                            <module-type>module</module-type>
-	                    </manifestEntries>
-	                </archive>
-	                <archiveClasses>true</archiveClasses>
+                    <instructions>
+                        <Jahia-Depends>skins</Jahia-Depends>
+                        <Depends>skins</Depends>
+                    </instructions>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>${project.info.reports.plugin.version}</version>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>project-team</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-        </plugins>
-    </reporting>
-    <profiles>
-        <profile>
-            <id>maven-3</id>
-            <activation>
-                <file>
-                    <!--  This employs that the basedir expression is only recognized by Maven 3.x (see MNG-2363) -->
-                    <exists>${basedir}</exists>
-                </file>
-            </activation>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-site-plugin</artifactId>
-                            <version>${maven3.site.plugin.version}</version>
-                            <configuration>
-                                <relativizeDecorationLinks>true</relativizeDecorationLinks>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-site-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-descriptor</id>
-                                <goals>
-                                    <goal>attach-descriptor</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

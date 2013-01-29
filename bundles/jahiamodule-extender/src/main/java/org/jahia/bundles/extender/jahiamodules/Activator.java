@@ -21,7 +21,6 @@ import org.jahia.services.render.RenderService;
 import org.jahia.services.render.scripting.ScriptFactory;
 import org.jahia.services.render.scripting.ScriptResolver;
 import org.jahia.services.templates.*;
-import org.jahia.utils.Patterns;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.*;
@@ -43,7 +42,6 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 import javax.jcr.RepositoryException;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -76,9 +74,8 @@ public class Activator implements BundleActivator {
     WebApplicationContext parentWebApplicationContext = null;
 
     Map<Bundle, List<URL>> bundleResources = new HashMap<Bundle, List<URL>>();
-    Map<BundleURLScanner, BundleObserver> extensionObservers = new LinkedHashMap<BundleURLScanner, BundleObserver>();
+    Map<BundleURLScanner, BundleObserver<URL>> extensionObservers = new LinkedHashMap<BundleURLScanner, BundleObserver<URL>>();
     private BundleURLScanner cndScanner;
-    private BundleURLScanner rulesScanner;
     private Map<String,List<Bundle>> toBeParsed = new HashMap<String, List<Bundle>>();
     private Map<String,List<Bundle>> toBeStarted = new HashMap<String, List<Bundle>>();
 
@@ -189,7 +186,7 @@ public class Activator implements BundleActivator {
         serviceRegistrations.add(context.registerService(ShellCommands.class.getName(), shellCommands, dict));
 
         long totalTime = System.currentTimeMillis() - startTime;
-        logger.info("== Jahia Extender started in "+totalTime+"ms ============================================================== ");
+        logger.info("== Jahia Extender started in {}ms ============================================================== ", totalTime);
 
     }
 
@@ -204,8 +201,7 @@ public class Activator implements BundleActivator {
                 
                 if (logger.isDebugEnabled()) {
                     logger.debug("Received event {} for bundle {}", bundleEvent.getType(),
-                            bundleEvent.getBundle().getSymbolicName() + " v"
-                                    + bundleEvent.getBundle().getHeaders().get("Implementation-Version"));
+                            getDisplayName(bundleEvent.getBundle()));
                 }
                 try {
                     switch (bundleEvent.getType()) {
@@ -272,11 +268,15 @@ public class Activator implements BundleActivator {
             }
         }
         for (ServiceRegistration serviceRegistration : serviceRegistrations) {
-            serviceRegistration.unregister();
+            try {
+                serviceRegistration.unregister();
+            } catch (IllegalStateException e) {
+                logger.warn(e.getMessage());
+            }
         }
 
         long totalTime = System.currentTimeMillis() - startTime;
-        logger.info("== Jahia Extender stopped in "+totalTime+"ms ============================================================== ");
+        logger.info("== Jahia Extender stopped in {}ms ============================================================== ", totalTime);
 
     }
 
@@ -286,7 +286,7 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void uninstall(Bundle bundle) {
-        logger.info("--- Uninstalling Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version") + " --");
+        logger.info("--- Uninstalling Jahia OSGi bundle {} --", getDisplayName(bundle));
         long startTime = System.currentTimeMillis();
 
         final JahiaBundleTemplatesPackage jahiaBundleTemplatesPackage = (JahiaBundleTemplatesPackage) templatePackageRegistry.lookupByFileNameAndVersion(bundle.getSymbolicName(), new ModuleVersion((String) bundle.getHeaders().get("Implementation-Version")));
@@ -303,72 +303,20 @@ public class Activator implements BundleActivator {
         }
         installedBundles.remove(bundle);
         long totalTime = System.currentTimeMillis() - startTime;
-        logger.info("--- Finished uninstalling Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version") + " in " + totalTime + "ms --");
+        logger.info("--- Finished uninstalling Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
     }
 
     private void parseBundle(Bundle bundle) {
-        if (bundle == null || bundle.getHeaders().get("module-type") == null) {
+        final JahiaBundleTemplatesPackage pkg = JahiaBundleTemplatesPackageHandler.build(bundle);
+        
+        if (null == pkg) {
+            // is not a Jahia module -> skip
             return;
         }
 
-        final JahiaBundleTemplatesPackage pkg = new JahiaBundleTemplatesPackage(bundle);
-        if (bundle.getHeaders().get("Implementation-Title") != null) {
-            pkg.setName((String) bundle.getHeaders().get("Implementation-Title"));
-        } else {
-            logger.warn("No Implementation-Title header found, using bundle symbolic name '{}' as module name",
-                    bundle.getSymbolicName());
-            pkg.setName(bundle.getSymbolicName());
-        }
-
-        pkg.setModuleType((String) bundle.getHeaders().get("module-type"));
-        pkg.setVersion(new ModuleVersion(StringUtils.defaultIfBlank((String) bundle
-                .getHeaders().get("Implementation-Version"), bundle.getVersion().toString())));
-        pkg.setRootFolder((String) bundle.getHeaders().get("root-folder"));
-        pkg.setRootFolderPath("/modules/" + pkg.getRootFolder());
-        String resourceBundle = (String) bundle.getHeaders().get("resource-bundle");
-        if (StringUtils.isNotBlank(resourceBundle)) {
-            pkg.setResourceBundleName(resourceBundle.trim());
-        } else {
-            String rbName = pkg.getRootFolder();
-            // check if there is a resource bundle file in the resources folder
-            Resource resource = pkg.getResource("/resources/" + rbName + ".properties");
-            if (resource == null || !resource.exists()) {
-                rbName = Patterns.SPACE.matcher(pkg.getName()).replaceAll("");
-                resource = pkg.getResource("/resources/" + rbName + ".properties");
-            }
-            if (resource == null || !resource.exists()) {
-                rbName = Patterns.SPACE.matcher(pkg.getName()).replaceAll("_");
-                resource = pkg.getResource("/resources/" + rbName + ".properties");
-            }
-            if (resource != null && resource.exists()) {
-                pkg.setResourceBundleName("resources." + rbName);
-            }
-        }
-
-        if (bundle.getHeaders().get("Source-Folders") != null) {
-            File sources = new File((String) bundle.getHeaders().get("Source-Folders"));
-            if (sources.exists()) {
-                templatesService.setSourcesFolderInPackage(pkg, sources);
-            }
-        }
-
-//        String rootFolderPrefix = jahiaBundleTemplatesPackage.getRootFolder().replaceAll("[ -]", "") + "/";
-         if (bundle.getEntry("/") != null) {
-            pkg.setFilePath(bundle.getEntry("/").getPath());
-         }
-//        if (bundle.getEntry(rootFolderPrefix) != null) {
-//            jahiaBundleTemplatesPackage.setFilePath(bundle.getEntry(rootFolderPrefix).getPath());
-//        }
-        String depends = (String) bundle.getHeaders().get("depends");
-        if (depends != null && !StringUtils.isEmpty(depends.trim())) {
-            String[] dependencies = Patterns.COMMA.split(depends);
-            for (String dependency : dependencies) {
-                pkg.setDepends(dependency.trim());
-            }
-        }
-
         List<String> dependsList = pkg.getDepends();
-        if (!dependsList.contains("default") && !dependsList.contains("Default Jahia Templates") && !bundle.getSymbolicName().equals("assets")&& !bundle.getSymbolicName().equals("default")) {
+        if (!dependsList.contains("default") && !dependsList.contains("Default Jahia Templates")
+                && !"assets".equals(pkg.getRootFolder()) && !"default".equals(pkg.getRootFolder())) {
             dependsList.add("default");
         }
 
@@ -378,14 +326,16 @@ public class Activator implements BundleActivator {
                 if (!toBeParsed.containsKey(depend)) {
                     toBeParsed.put(depend, new ArrayList<Bundle>());
                 }
-                logger.debug("Delaying module " + bundle.getSymbolicName() + " parsing because it depends on module " + depend + " that is not yet parsed.");
+                logger.debug("Delaying module {} parsing because it depends on module {} that is not yet parsed.",
+                        bundle.getSymbolicName(), depend);
                 moduleStates.put(bundle, ModuleState.WAITING_TO_BE_PARSED);
                 toBeParsed.get(depend).add(bundle);
                 return;
             }
         }
 
-        logger.info("--- Parsing Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version") + " --");
+        logger.info("--- Parsing Jahia OSGi bundle {} v{} --", pkg.getRootFolder(), pkg.getVersion());
+        
         registeredBundles.put(bundle, pkg);
         templatePackageRegistry.registerPackageVersion(pkg);
 
@@ -395,11 +345,12 @@ public class Activator implements BundleActivator {
             addResources(bundle, foundURLs, cndBundleObserver);
         }
 
-        logger.info("--- Done parsing Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version") + " --");
+        logger.info("--- Done parsing Jahia OSGi bundle {} v{} --", pkg.getRootFolder(), pkg.getVersion());
+
         moduleStates.put(bundle, ModuleState.PARSED);
 
         if (installedBundles.contains(bundle)) {
-            logger.info("--- Installing Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version") + " --");
+            logger.info("--- Installing Jahia OSGi bundle {} v{} --", pkg.getRootFolder(), pkg.getVersion());
             installedBundles.remove(bundle);
             scanForImportFiles(bundle, pkg);
 
@@ -413,7 +364,7 @@ public class Activator implements BundleActivator {
             } catch (RepositoryException e) {
                 logger.error("Error while initializing module content for module " + pkg, e);
             }
-            logger.info("--- Done installing Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version") + " --");
+            logger.info("--- Done installing Jahia OSGi bundle {} v{} --", pkg.getRootFolder(), pkg.getVersion());
             moduleStates.put(bundle, ModuleState.INSTALLED);
 
         }
@@ -435,9 +386,11 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void resolve(Bundle bundle) {
+        // do nothing
     }
 
     private synchronized void unresolve(Bundle bundle) {
+        // do nothing
     }
 
     private synchronized void starting(Bundle bundle) {
@@ -447,7 +400,7 @@ public class Activator implements BundleActivator {
                 if (!(jahiaTemplatesPackage instanceof JahiaBundleTemplatesPackage)) {
                     logger.warn("Error, a non OSGi module conflicts with an OSGi module, please fix this for module name :" + bundle.getSymbolicName());
                 } else {
-                    logger.info("Stopping module "+bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version") +" before activating new version...");
+                    logger.info("Stopping module {} before activating new version...", getDisplayName(bundle));
                     ((JahiaBundleTemplatesPackage) jahiaTemplatesPackage).getBundle().stop();
                 }
             } catch (BundleException e) {
@@ -473,14 +426,14 @@ public class Activator implements BundleActivator {
                 if (!toBeStarted.containsKey(depend)) {
                     toBeStarted.put(depend, new ArrayList<Bundle>());
                 }
-                logger.debug("Delaying module " + bundle.getSymbolicName() + " startup because it depends on module " + depend + " that is not yet started.");
+                logger.debug("Delaying module {} startup because it depends on module {} that is not yet started.", bundle.getSymbolicName(), depend);
                 toBeStarted.get(depend).add(bundle);
                 moduleStates.put(bundle, ModuleState.WAITING_TO_BE_STARTED);
                 return;
             }
         }
 
-        logger.info("--- Start Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version") + " --");
+        logger.info("--- Start Jahia OSGi bundle " + getDisplayName(bundle) + " --");
         long startTime = System.currentTimeMillis();
 
         templatePackageRegistry.register(jahiaBundleTemplatesPackage);
@@ -502,11 +455,15 @@ public class Activator implements BundleActivator {
         registerStaticResources(bundle);
 
         long totalTime = System.currentTimeMillis() - startTime;
-        logger.info("--- Finished starting Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version") + " in "+totalTime+"ms --");
+        logger.info("--- Finished starting Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
         moduleStates.put(bundle, ModuleState.STARTED);
 
         startDependantBundles(jahiaBundleTemplatesPackage.getRootFolder());
         startDependantBundles(jahiaBundleTemplatesPackage.getName());
+    }
+
+    private String getDisplayName(Bundle bundle) {
+        return bundle.getSymbolicName() + " v" + bundle.getHeaders().get("Implementation-Version");
     }
 
     private void startDependantBundles(String key) {
@@ -531,7 +488,7 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void stopping(Bundle bundle) {
-        logger.info("--- Stopping Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version") + " --");
+        logger.info("--- Stopping Jahia OSGi bundle {} --", getDisplayName(bundle));
         long startTime = System.currentTimeMillis();
 
         JahiaBundleTemplatesPackage jahiaBundleTemplatesPackage = (JahiaBundleTemplatesPackage) templatePackageRegistry.lookupByFileNameAndVersion(bundle.getSymbolicName(), new ModuleVersion((String) bundle.getHeaders().get("Implementation-Version").toString()));
@@ -562,7 +519,7 @@ public class Activator implements BundleActivator {
         }
 
         long totalTime = System.currentTimeMillis() - startTime;
-        logger.info("--- Finished stopping Jahia OSGi bundle " + bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version") + " in "+totalTime+"ms --");
+        logger.info("--- Finished stopping Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
     }
 
     private void addResources(Bundle bundle, List<URL> foundURLs, BundleObserver<URL> urlObserver) {
@@ -596,14 +553,17 @@ public class Activator implements BundleActivator {
             public Object addingService(ServiceReference reference) {
                 HttpService httpService = (HttpService) super.addingService(reference);
                 httpContext = new FileHttpContext(FileHttpContext.getSourceURLs(bundle), httpService.createDefaultHttpContext());
+                int count = 0;
                 for (Map.Entry<String, String> curEntry : staticResources.entrySet()) {
                     try {
-                        logger.info("Registering static resource " + curEntry.getKey());
+                        logger.debug("Registering static resource {}", curEntry.getKey());
+                        count++;
                         httpService.registerResources(curEntry.getKey(), curEntry.getValue(), httpContext);
                     } catch (NamespaceException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage(), e);
                     }
                 }
+                logger.info("Registered {} static resources for bundle {}", count, getDisplayName(bundle));
                 jspBundleObserver.setBundleHttpService(bundle, httpService);
                 return httpService;
             }
@@ -611,10 +571,13 @@ public class Activator implements BundleActivator {
             @Override
             public void removedService(ServiceReference reference, Object service) {
                 HttpService httpService = (HttpService) service;
+                int count = 0;
                 for (Map.Entry<String, String> curEntry : staticResources.entrySet()) {
-                    logger.info("Unregistering static resource " + curEntry.getKey());
+                    logger.debug("Unregistering static resource {}", curEntry.getKey());
+                    count++;
                     httpService.unregister(curEntry.getKey());
                 }
+                logger.info("Unregistered {} static resources for bundle {}", count, getDisplayName(bundle));
                 jspBundleObserver.setBundleHttpService(bundle, null);
                 super.removedService(reference, service);
             }
@@ -660,20 +623,21 @@ public class Activator implements BundleActivator {
 
     public void createBundleApplicationContext(final JahiaBundleTemplatesPackage aPackage, ServletContext servletContext) throws BeansException {
         final Bundle bundle = aPackage.getBundle();
-        if (aPackage.getResource("/META-INF/spring/") != null && aPackage.getResource("/META-INF/spring/").exists()) {
+        Resource springFolder = aPackage.getResource("/META-INF/spring/");
+        if (springFolder != null && springFolder.exists()) {
             logger.debug("Start initializing context for module {}", aPackage.getName());
             long startTime = System.currentTimeMillis();
 
             String configLocation = "classpath:org/jahia/defaults/config/spring/modules-applicationcontext-registry.xml";
             Enumeration<URL> springFilesURLs = bundle.findEntries("META-INF/spring", "*.xml", true);
             if (springFilesURLs == null) {
-                logger.info("Empty Spring directory, will not initialize any beans");
+                logger.info("Empty /META-INF/spring/ directory, will not initialize any beans");
                 return;
             }
             while (springFilesURLs.hasMoreElements()) {
                 configLocation += ",classpath:" + springFilesURLs.nextElement().getPath();
             }
-            logger.info("Loading bean definitions from configLocation=" + configLocation);
+            logger.info("Loading bean definitions from configLocation={}", configLocation);
             OsgiBundleXmlWebApplicationContext bundleApplicationContext = new OsgiBundleXmlWebApplicationContext();
             bundleApplicationContext.setParent(SpringContextSingleton.getInstance().getContext());
             bundleApplicationContext.setClassLoader(aPackage.getClassLoader());
@@ -722,7 +686,7 @@ public class Activator implements BundleActivator {
                     List<String> classNames = new ArrayList<String>();
                     if (classNameExportable(bean.getClass().getName(), bundle)) {
                         classNames.add(bean.getClass().getName());
-                        for (Class classInterface : bean.getClass().getInterfaces()) {
+                        for (Class<?> classInterface : bean.getClass().getInterfaces()) {
                             if (classNameExportable(classInterface.getName(), bundle)) {
                                 classNames.add(classInterface.getName());
                             }
@@ -730,7 +694,7 @@ public class Activator implements BundleActivator {
                         Hashtable serviceProperties = new Hashtable();
                         serviceProperties.put("jahiaModuleSpringBeanName", beanName);
                         serviceRegistrations.add(bundle.getBundleContext().registerService(classNames.toArray(new String[classNames.size()]), bean, serviceProperties));
-                        logger.debug("Registered bean " + beanName + " as OSGi service under names: " + classNames);
+                        logger.debug("Registered bean {} as OSGi service under names: {}", beanName, classNames);
                     }
                 } catch (Throwable t) {
                     logger.warn("Couldn't register bean " + beanName + " since it couldn't be retrieved: " + t.getMessage());

@@ -531,7 +531,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                     if (site != null) {
                         JCRSiteNode currentSite = parent.getResolveSite();
                         String serverName = site.getServerName();
-                        if (currentSite != null && !currentSite.getServerName().equals(serverName)) {
+                        if (currentSite != null && !currentSite.getServerName().equals(serverName) && !site.getSiteKey().equals("systemsite")) {
                             serverUrl = "{server:" + serverName + "}";
                         }
                     }

@@ -10,10 +10,12 @@ import java.util.Enumeration;
 import java.util.List;
 
 /**
- * A specialized JahiaTemplatesPackage that uses OSGi bundles
+ * A specialized {@link JahiaTemplatesPackage} implementation that uses OSGi bundles.
  */
 public class JahiaBundleTemplatesPackage extends JahiaTemplatesPackage {
 
+    private static final Resource[] NO_RESOURCES = new Resource[0];
+    
     private Bundle bundle = null;
     private String rootFolderPath = null;
 
@@ -50,10 +52,11 @@ public class JahiaBundleTemplatesPackage extends JahiaTemplatesPackage {
 
     @Override
     public Resource[] getResources(String relativePath) {
+        @SuppressWarnings("unchecked")
         Enumeration<URL> resourceEnum = bundle.findEntries(relativePath, null, false);
         List<Resource> resources = new ArrayList<Resource>();
         if (resourceEnum == null) {
-            return new Resource[0];
+            return NO_RESOURCES;
         } else {
             while (resourceEnum.hasMoreElements()) {
                 resources.add(new BundleResource(resourceEnum.nextElement(), bundle));

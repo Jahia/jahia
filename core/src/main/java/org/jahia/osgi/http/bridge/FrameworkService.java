@@ -73,8 +73,8 @@ public class FrameworkService {
         Properties props = new Properties();
         InputStream is = null;
         // first we look in the class loader for this file, to be compatible with config externalization mechanisms.
-        if (this.getClass().getResource("org/jahia/defaults/config/properties/felix-framework.properties") != null) {
-            is = this.getClass().getResourceAsStream("org/jahia/defaults/config/properties/felix-framework.properties");
+        if (this.getClass().getClassLoader().getResource("org/jahia/defaults/config/properties/felix-framework.properties") != null) {
+            is = this.getClass().getClassLoader().getResourceAsStream("org/jahia/defaults/config/properties/felix-framework.properties");
         } else {
             is = this.context.getResourceAsStream("/WEB-INF/etc/config/felix-framework.properties");
         }

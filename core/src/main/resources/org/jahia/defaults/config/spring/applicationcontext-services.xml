@@ -143,17 +143,10 @@
     <bean id="JahiaTemplateManagerService" class="org.jahia.services.templates.JahiaTemplateManagerService"
           parent="jahiaServiceTemplate">
         <property name="templatePackageDeployer">
-            <bean class="org.jahia.services.templates.OsgiBundleDeployer">
-                <property name="settingsBean" ref="settingsBean"/>
+            <bean class="org.jahia.services.templates.TemplatePackageDeployer">
                 <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
                 <property name="componentRegistry" ref="ComponentRegistry"/>
                 <property name="importExportService" ref="ImportExportService"/>
-                <property name="contextLoader" ref="TemplatePackageApplicationContextLoader"/>
-                <property name="deploymentHelper">
-                    <bean class="org.jahia.services.templates.DeploymentHelper">
-                        <property name="settingsBean" ref="settingsBean"/>
-                    </bean>
-                </property>
             </bean>
         </property>
         <property name="siteService" ref="JahiaSitesService"/>

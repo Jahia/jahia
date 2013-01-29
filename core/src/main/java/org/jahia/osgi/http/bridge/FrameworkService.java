@@ -71,7 +71,13 @@ public class FrameworkService {
     private Map<String, Object> createConfig()
             throws Exception {
         Properties props = new Properties();
-        InputStream is = this.context.getResourceAsStream("/WEB-INF/felix-framework.properties");
+        InputStream is = null;
+        // first we look in the class loader for this file, to be compatible with config externalization mechanisms.
+        if (this.getClass().getResource("org/jahia/defaults/config/properties/felix-framework.properties") != null) {
+            is = this.getClass().getResourceAsStream("org/jahia/defaults/config/properties/felix-framework.properties");
+        } else {
+            is = this.context.getResourceAsStream("/WEB-INF/felix-framework.properties");
+        }
         try {
             props.load(is);
         } finally {

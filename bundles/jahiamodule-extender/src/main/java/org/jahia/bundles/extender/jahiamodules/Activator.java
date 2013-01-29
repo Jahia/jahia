@@ -170,7 +170,7 @@ public class Activator implements BundleActivator {
         serviceRegistrations.add(context.registerService(
                 new String[]{ArtifactTransformer.class.getName(), ArtifactListener.class.getName()},
                 new JahiaLegacyModuleTransformer(),
-                new Hashtable()
+                new Hashtable<Object, Object>()
         ));
 
         setupBundleListener(context);
@@ -594,12 +594,14 @@ public class Activator implements BundleActivator {
             }
         };
         List<Resource> importFiles = new ArrayList<Resource>();
+        @SuppressWarnings("unchecked")
         Enumeration<URL> importXMLEntryEnum = bundle.findEntries("META-INF", "import*.xml", false);
         if (importXMLEntryEnum != null) {
             while (importXMLEntryEnum.hasMoreElements()) {
                 importFiles.add(new BundleResource(importXMLEntryEnum.nextElement(), bundle));
             }
         }
+        @SuppressWarnings("unchecked")
         Enumeration<URL> importZIPEntryEnum = bundle.findEntries("META-INF", "import*.zip", false);
         if (importZIPEntryEnum != null) {
             while (importZIPEntryEnum.hasMoreElements()) {
@@ -629,6 +631,7 @@ public class Activator implements BundleActivator {
             long startTime = System.currentTimeMillis();
 
             String configLocation = "classpath:org/jahia/defaults/config/spring/modules-applicationcontext-registry.xml";
+            @SuppressWarnings("unchecked")
             Enumeration<URL> springFilesURLs = bundle.findEntries("META-INF/spring", "*.xml", true);
             if (springFilesURLs == null) {
                 logger.info("Empty /META-INF/spring/ directory, will not initialize any beans");
@@ -691,7 +694,7 @@ public class Activator implements BundleActivator {
                                 classNames.add(classInterface.getName());
                             }
                         }
-                        Hashtable serviceProperties = new Hashtable();
+                        Hashtable<String, String> serviceProperties = new Hashtable<String, String>(1);
                         serviceProperties.put("jahiaModuleSpringBeanName", beanName);
                         serviceRegistrations.add(bundle.getBundleContext().registerService(classNames.toArray(new String[classNames.size()]), bean, serviceProperties));
                         logger.debug("Registered bean {} as OSGi service under names: {}", beanName, classNames);

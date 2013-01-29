@@ -142,6 +142,10 @@
                     <artifactId>icu4j</artifactId>
                     <groupId>com.ibm.icu</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>servlet-api</artifactId>
+                    <groupId>org.mortbay.jetty</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
     	<dependency>
@@ -238,33 +242,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports</artifactId>
-            <version>4.0.1</version>
-            <exclusions>
-            	<exclusion>
-            		<artifactId>bcmail-jdk14</artifactId>
-            		<groupId>bouncycastle</groupId>
-            	</exclusion>
-            	<exclusion>
-            		<artifactId>bctsp-jdk14</artifactId>
-            		<groupId>org.bouncycastle</groupId>
-            	</exclusion>
-            	<exclusion>
-            		<artifactId>bcprov-jdk14</artifactId>
-            		<groupId>bouncycastle</groupId>
-            	</exclusion>
-            	<exclusion>
-            		<artifactId>xml-apis</artifactId>
-            		<groupId>xml-apis</groupId>
-            	</exclusion>
-            	<exclusion>
-            	    <artifactId>jcommon</artifactId>
-            	    <groupId>jfree</groupId>
-            	</exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>

@@ -6,8 +6,8 @@
 (function($) {
     var _load1 = jQuery.fn.load;
     jQuery.fn.load = function( url, params, callback ) {
-        if ( typeof url !== "string" && _load ) {
-            return _load.apply( this, arguments );
+        if ( typeof url !== "string" && _load1 ) {
+            return _load1.apply( this, arguments );
         }
 
         var selector, type, response,
@@ -46,7 +46,19 @@
 
                     // Save response for use in complete callback
                     response = arguments;
-
+                    // Get the list of all scripts that have returned by the ajax call
+                    ar=[];
+                    while ((match = extscript.exec(responseText)) != null) {
+                        src = /src=\"([^\"]*)\"/.exec(match[1])[1]
+                        ar[src]=match[0];
+                    }
+                    for (src in ar)
+                    {
+                        // If the script was already present in the head, do not add it twice
+                        if ($('head:first script[src="' + src + '"]').length > 0 || $('aggregatedscript').filter('[src="' + src + '"]').length > 0) {
+                            responseText = responseText.replace(ar[src],"")
+                        }
+                    }
                     self.html( selector ?
 
                         // If a selector was specified, locate the right elements in a dummy div
@@ -56,20 +68,8 @@
                         // Otherwise use the full result
                         responseText );
 
+
                 }).complete( callback && function( jqXHR, status ) {
-                    // Get the list of all scripts that have returned by the ajax call
-                    ar=[];
-                    while ((match = extscript.exec(jqXHR.responseText)) != null) {
-                        src = /src=\"([^\"]*)\"/.exec(match[1])[1]
-                        ar[src]=match[0];
-                    }
-                    for (src in ar)
-                    {
-                        // If the script was already present in the head, do not add it twice
-                        if ($('head:first script[src="' + src + '"]').length > 0 || $('aggregatedscript').filter('[src="' + src + '"]').length > 0) {
-                            jqXHR.responseText = jqXHR.responseText.replace(ar[src],"")
-                        }
-                    }
 
                     self.each( callback, response || [ jqXHR.responseText, status, jqXHR ] );
 

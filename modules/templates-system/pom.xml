@@ -105,6 +105,7 @@
                         <id>package-importsite</id>
                         <configuration>
                             <src>${basedir}/src/main/importsite-systemsite</src>
+                            <dest>${project.build.directory}/${project.build.finalName}/META-INF</dest>
                             <archiveName>importsite-systemsite.zip</archiveName>
                         </configuration>
                         <goals>

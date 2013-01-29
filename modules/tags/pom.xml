@@ -45,38 +45,9 @@
         <groupId>org.jahia.modules</groupId>
         <version>6.7.0.0-SNAPSHOT</version>
     </parent>
-    <groupId>org.jahia.modules</groupId>
     <artifactId>tags</artifactId>
     <name>Jahia Tags</name>
-    <packaging>war</packaging>
+    <packaging>bundle</packaging>
     <description>This is the custom module (Jahia Tags) for running on a Jahia server.</description>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-		                	<Implementation-Title>${project.name}</Implementation-Title>
-		                    <Implementation-Version>${project.version}</Implementation-Version>
-		                    <Implementation-Vendor />
-		                    <Implementation-Vendor-Id />
-		                    <Implementation-URL />
-		                    <Specification-Title>${project.name}</Specification-Title>
-		                    <Specification-Version>${project.version}</Specification-Version>
-		                    <Specification-Vendor />
-                            <Source-Folders>${project.basedir}</Source-Folders>
-                            <package-name>${project.name}</package-name>
-                            <depends>Default Jahia Templates</depends>
-                            <root-folder>${artifactId}</root-folder>
-                            <module-type>module</module-type>
-                        </manifestEntries>
-                    </archive>
-                    <archiveClasses>true</archiveClasses>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-</project>
+ </project>

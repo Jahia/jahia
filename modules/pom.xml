@@ -49,6 +49,90 @@
     <artifactId>jahia-modules</artifactId>
     <name>Jahia Modules</name>
     <packaging>pom</packaging>
+    
+    <properties>
+        <jahia.modules.importPackage>
+            javax.jcr,
+            javax.jcr.nodetype,
+            javax.servlet.jsp.tagext,
+            org.apache.camel.spring,
+            org.hibernate.cfg,
+            org.jahia.ajax.gwt.client.widget.contentengine,
+            org.jahia.ajax.gwt.client.widget.edit.sidepanel,
+            org.jahia.ajax.gwt.client.widget.subscription,
+            org.jahia.ajax.gwt.client.widget.toolbar.action,
+            org.jahia.api,
+            org.jahia.bundles.extender.jahiamodules,
+            org.jahia.data.templates,
+            org.jahia.data.viewhelper.principal,
+            org.jahia.defaults.config.spring,
+            org.jahia.exceptions,
+            org.jahia.modules.social.taglib,
+            org.jahia.params.valves,
+            org.jahia.taglibs,
+            org.jahia.taglibs.facet,
+            org.jahia.taglibs.functions,
+            org.jahia.taglibs.internal.date,
+            org.jahia.taglibs.jcr,
+            org.jahia.taglibs.jcr.node,
+            org.jahia.taglibs.jcr.query,
+            org.jahia.taglibs.query,
+            org.jahia.taglibs.search,
+            org.jahia.taglibs.template,
+            org.jahia.taglibs.template.gwt,
+            org.jahia.taglibs.template.include,
+            org.jahia.taglibs.template.layoutmanager,
+            org.jahia.taglibs.template.pager,
+            org.jahia.taglibs.uicomponents,
+            org.jahia.taglibs.uicomponents.i18n,
+            org.jahia.taglibs.uicomponents.image,
+            org.jahia.taglibs.uicomponents.loginform,
+            org.jahia.taglibs.uicomponents.portlets,
+            org.jahia.taglibs.uicomponents.user,
+            org.jahia.taglibs.user,
+            org.jahia.taglibs.utility,
+            org.jahia.taglibs.utility.constants,
+            org.jahia.taglibs.utility.i18n,
+            org.jahia.taglibs.utility.session,
+            org.jahia.taglibs.utility.siteproperties,
+            org.jahia.taglibs.workflow,
+            org.jahia.services,
+            org.jahia.services.channels,
+            org.jahia.services.channels.providers,
+            org.jahia.services.content,
+            org.jahia.services.content.decorator,
+            org.jahia.services.content.nodetypes,
+            org.jahia.services.content.rules,
+            org.jahia.services.uicomponents.bean,
+            org.jahia.services.uicomponents.bean.contentmanager,
+            org.jahia.services.uicomponents.bean.editmode,
+            org.jahia.services.uicomponents.bean.toolbar,
+            org.jahia.services.usermanager,
+            org.jahia.services.render,
+            org.jahia.services.scheduler,
+            org.jahia.services.search,
+            org.jahia.services.sites,
+            org.jahia.services.templates,
+            org.jahia.services.translation,
+            org.jahia.services.workflow,
+            org.jahia.utils,
+            org.osgi.framework,
+            org.osgi.service.http,
+            org.osgi.util.tracker,
+            org.springframework.beans.factory.xml,
+            org.springframework.beans.factory.config,
+            org.springframework.context.support,
+            org.springframework.orm.hibernate3.annotation,
+            org.springframework.orm.hibernate3.support,
+            org.springframework.scheduling.quartz,
+            org.apache.commons.collections,
+            org.apache.commons.id,
+            org.apache.commons.lang,
+            org.apache.commons.lang.math,
+            org.apache.taglibs.unstandard,
+            org.drools
+        </jahia.modules.importPackage>
+    </properties>
 
     <repositories>
         <repository>
@@ -283,6 +367,9 @@
                 <configuration>
                     <warSourceExcludes>resources/*.properties</warSourceExcludes>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <archive>
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                    </archive>
                 </configuration>
             </plugin>
             <plugin>
@@ -295,7 +382,16 @@
                             <goal>native2ascii</goal>
                         </goals>
                         <configuration>
-                            <encoding>ISO-8859-1</encoding>
+                            <includes>resources/*.properties</includes>
+                            <defaultPropertiesFileLocale>en</defaultPropertiesFileLocale>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>native2ascii-legacy</id>
+                        <goals>
+                            <goal>native2ascii</goal>
+                        </goals>
+                        <configuration>
                             <src>${basedir}/src/main/webapp/resources</src>
                             <dest>${project.build.directory}/${project.build.finalName}/resources</dest>
                             <addToProjectResources>false</addToProjectResources>
@@ -308,7 +404,64 @@
                             <goal>package-imports</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>package-imports-legacy</id>
+                        <goals>
+                            <goal>package-imports</goal>
+                        </goals>
+                        <configuration>
+                            <dest>${project.build.directory}/${project.build.finalName}/META-INF</dest>
+                            <addToProjectResources>false</addToProjectResources>
+                        </configuration>
+                    </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Name>${project.name}</Bundle-Name>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+        
+                        <Implementation-Title>${project.name}</Implementation-Title>
+                        <Implementation-Version>${project.version}</Implementation-Version>
+                        <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                        <Implementation-URL>${project.organization.url}</Implementation-URL>
+                        <Specification-Title>${project.name}</Specification-Title>
+                        <Specification-Version>${project.version}</Specification-Version>
+                        <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+        
+                        <!-- Jahia manifest attributes -->
+                        <Jahia-Package-Name>${project.name}</Jahia-Package-Name>
+                        <Jahia-Depends>default</Jahia-Depends>
+                        <Jahia-Module-Type>module</Jahia-Module-Type>
+                        <Jahia-Root-Folder>${project.artifactId}</Jahia-Root-Folder>
+                        <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
+                        <Jahia-Static-Resources>/css,/icons,/images,/javascript</Jahia-Static-Resources>
+
+                        <Package-Name>${project.name}</Package-Name>
+                        <Depends>default</Depends>
+                        <Module-Type>module</Module-Type>
+                        <Root-Folder>${project.artifactId}</Root-Folder>
+                        <Source-Folders>${project.basedir}</Source-Folders>
+        
+                        <Import-Package>*,${jahia.modules.importPackage}</Import-Package>
+                        <Embed-Dependency>*; scope=compile; type=!pom;
+                            inline=true</Embed-Dependency>
+                        <Embed-Transitive>true</Embed-Transitive>
+                        <_removeheaders>
+                            Include-Resource,
+                            Private-Package,
+                            Embed-Dependency,
+                            Embed-Transitive
+                        </_removeheaders>
+                    </instructions>
+                    <archive>
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                    </archive>
+                </configuration>
             </plugin>
         </plugins>
     </build>

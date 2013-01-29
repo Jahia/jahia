@@ -106,16 +106,14 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private String serverVersion;
     private String serverHome;
     private String jahiaHomeDiskPath;
-    private String jahiaTemplatesDiskPath;
     private String jahiaWebAppsDiskPath;
     private String jahiaFilesDiskPath;
     private String jahiaEtcDiskPath;
     private String jahiaVarDiskPath;
     private String jahiaWebAppsDeployerBaseURL;
     private String jahiaImportsDiskPath;
-    private String jahiaSharedTemplatesDiskPath;
+    private String jahiaModulesDiskPath;
     private String jahiaDatabaseScriptsPath;
-    private String jahiaOSGIModulesDiskPath;
 
     public String getJahiaDatabaseScriptsPath() {
         return jahiaDatabaseScriptsPath;
@@ -266,8 +264,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             maintenanceMode = getBoolean("maintenanceMode", false);
             
             sessionExpiryTime = getInt("sessionExpiryTime", 60);
-            
-            jahiaTemplatesDiskPath = pathResolver.resolvePath ("/modules/");
+
             classDiskPath = pathResolver.resolvePath ("/WEB-INF/classes/");
             jahiaFilesDiskPath = convertContexted (getString("jahiaFilesDiskPath"), pathResolver);
             jahiaEtcDiskPath = convertContexted (getString("jahiaEtcDiskPath"), pathResolver);
@@ -282,8 +279,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                 logger.error("Provided folder for tmpContentDiskPath is not valid. Cause: " + e.getMessage(), e);
             }
             jahiaImportsDiskPath = convertContexted (getString("jahiaImportsDiskPath"), pathResolver);
-            jahiaSharedTemplatesDiskPath = convertContexted (getString("jahiaSharedTemplatesDiskPath"), pathResolver);
-            jahiaOSGIModulesDiskPath = convertContexted (getString("jahiaOSGIModulesDiskPath"), pathResolver);
+            jahiaModulesDiskPath = convertContexted (getString("jahiaModulesDiskPath"), pathResolver);
             jahiaDatabaseScriptsPath = jahiaVarDiskPath + File.separator + "db";
             
             // jahia real path...
@@ -716,15 +712,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     } // end getJahiaWebAppsDiskPath
 
     /**
-     * Used to get the templates disk path.
-     *
-     * @return  The templates disk path.
-     */
-    public String getJahiaTemplatesDiskPath() {
-        return jahiaTemplatesDiskPath;
-    } // end getJahiaTemplatesDiskPath
-
-    /**
      * Used to get the jahiafiles /etc disk path.
      *
      * @return  The jahiafiles /etc disk path.
@@ -748,8 +735,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      *
      * @return  The shared templates disk path.
      */
-    public String getJahiaSharedTemplatesDiskPath() {
-        return jahiaSharedTemplatesDiskPath;
+    public String getJahiaModulesDiskPath() {
+        return jahiaModulesDiskPath;
     }
 
 
@@ -1096,9 +1083,5 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public int getQueryApproxCountLimit() {
         return queryApproxCountLimit;
-    }
-
-    public String getJahiaOSGIModulesDiskPath() {
-        return jahiaOSGIModulesDiskPath;
     }
 }

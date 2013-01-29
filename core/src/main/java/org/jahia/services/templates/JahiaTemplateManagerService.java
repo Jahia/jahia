@@ -412,7 +412,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public void duplicateModule(String moduleName, String moduleType, final String sourceModule) {
-        final File tmplRootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), moduleName + "/1.0-SNAPSHOT");
+        /*final File tmplRootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), moduleName + "/1.0-SNAPSHOT");
         if (tmplRootFolder.exists()) {
             return;
         }
@@ -445,7 +445,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             createManifest(moduleName, moduleName, tmplRootFolder, moduleType, "1.0", templatePackageRegistry.lookupByFileName(sourceModule).getDepends());
             templatePackageRegistry.register(templatePackageDeployer.getPackage(tmplRootFolder));
             logger.info("Package '" + moduleName + "' successfully created");
-        }
+        }*/
     }
 
     public JahiaTemplatesPackage deployModule(File warFile, JCRSessionWrapper session) throws RepositoryException {
@@ -454,7 +454,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public JahiaTemplatesPackage compileAndDeploy(final String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException, IOException{
         CompiledModuleInfo moduleInfo = compileModule(moduleName, sources);
-        File destFile = new File(settingsBean.getJahiaOSGIModulesDiskPath(), moduleInfo.getFile().getName());
+        File destFile = new File(settingsBean.getJahiaModulesDiskPath(), moduleInfo.getFile().getName());
         FileUtils.copyFile(moduleInfo.getFile(), destFile);
 
         return templatePackageRegistry.lookupByFileNameAndVersion(moduleInfo.getModuleName(), new ModuleVersion(moduleInfo.getVersion()));
@@ -729,7 +729,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                         return null;
                     }
 
-                    File oldWar = new File(settingsBean.getJahiaSharedTemplatesDiskPath(), module + "-" + lastVersion + ".war");
+                    File oldWar = new File(settingsBean.getJahiaModulesDiskPath(), module + "-" + lastVersion + ".war");
                     if (oldWar.exists()) {
                         oldWar.delete();
                     }

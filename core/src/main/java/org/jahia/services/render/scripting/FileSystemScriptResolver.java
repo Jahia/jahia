@@ -301,7 +301,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     }
 
     private void getViewsSet(ExtendedNodeType nt, Map<String, View> views, String templateType, String currentTemplatePath, JahiaTemplatesPackage tplPackage, ModuleVersion version) {
-        String path = currentTemplatePath + "/" + version.toString() + "/" + JCRContentUtils.replaceColon(nt.getAlias()) + "/" + templateType;
+        /*String path = currentTemplatePath + "/" + version.toString() + "/" + JCRContentUtils.replaceColon(nt.getAlias()) + "/" + templateType;
         File f = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath() + "/" + path);
         if (f.exists()) {
             SortedSet<File> files = new TreeSet<File>(scriptExtensionComparator);
@@ -330,7 +330,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                     }
                 }
             }
-        }
+        }*/
     }
 
     public void onApplicationEvent(ApplicationEvent event) {

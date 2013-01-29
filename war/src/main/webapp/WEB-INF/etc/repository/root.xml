@@ -26,7 +26,7 @@
     </groups>
 
     <sites jcr:primaryType="jnt:virtualsitesFolder"
-           j:virtualsitesFolderSkeleton="WEB-INF/etc/repository/site.xml,WEB-INF/etc/repository/site-*.xml,modules/**/META-INF/site-skeleton.xml,modules/**/META-INF/site-skeleton-*.xml"/>
+           j:virtualsitesFolderSkeleton="WEB-INF/etc/repository/site.xml,WEB-INF/etc/repository/site-*.xml"/>
 
     <imports jcr:primaryType="jnt:importDropBox"/>
     <referencesKeeper jcr:primaryType="jnt:referencesKeeper"/>

@@ -57,7 +57,6 @@ public class Connection extends URLConnection {
             "org.jahia.bundles.extender.jahiamodules",
             "org.jahia.data.templates",
             "org.jahia.data.viewhelper.principal",
-            "org.jahia.data.templates",
             "org.jahia.defaults.config.spring",
             "org.jahia.exceptions",
             "org.jahia.modules.social.taglib",
@@ -189,13 +188,18 @@ public class Connection extends URLConnection {
                     StreamUtils.copyStream(entryInputStream, entryOutputStream, false);
                     ByteArrayInputStream tempEntryInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());
                     JarInputStream embeddedJarInputStream = new JarInputStream(tempEntryInputStream);
-                    Manifest embeddedJarManifest = new Manifest(embeddedJarInputStream.getManifest());
+                    Manifest mf = embeddedJarInputStream.getManifest();
                     ByteArrayOutputStream embeddedJarByteOutputStream = new ByteArrayOutputStream();
-                    JarOutputStream embeddedJarOutputStream = new JarOutputStream(embeddedJarByteOutputStream, embeddedJarManifest);
+                    JarOutputStream embeddedJarOutputStream = mf != null ? new JarOutputStream(embeddedJarByteOutputStream, new Manifest(mf)) : new JarOutputStream(embeddedJarByteOutputStream);
+                    Set<String> processed = new HashSet<String>();
                     JarEntry embeddedJarEntry = null;
                     while ((embeddedJarEntry = embeddedJarInputStream.getNextJarEntry()) != null) {
                         updateExportTracking(embeddedJarEntry.getName(), exportPackageIncludes, allNonEmptyDirectories);
                         String embeddedJarNewName = embeddedJarEntry.getName();
+                        if (processed.contains(embeddedJarNewName)) {
+                            continue;
+                        }
+                        processed.add(embeddedJarNewName);
                         String directoryName = "";
                         if (embeddedJarNewName.lastIndexOf('/') > -1) {
                             directoryName = embeddedJarNewName.substring(0, embeddedJarNewName.lastIndexOf('/'));

@@ -3,6 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <%@page import="org.jahia.bin.Jahia"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c" %>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" href="tools.css" type="text/css" />
@@ -34,6 +35,7 @@
 <fieldset>
     <legend>Administration and Guidance</legend>
     <ul>
+        <li><a href="<c:url value='/modules/system/console'/>">OSGi console</a></li>
         <li><a href="jobadmin.jsp">Background job administration</a></li>
         <li><a href="search.jsp">Search engine management</a></li>
         <li><a href="dbQuery.jsp">DB query tool</a></li>

@@ -51,9 +51,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
@@ -150,7 +148,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         }
 
         if (configurationResources != null && configurationResources.length > 0
-                && SettingsBean.getInstance().isDevelopmentMode()
+                && settingsBean.isDevelopmentMode()
                 && (confReloadCheckIntervalSeconds < 0 || confReloadCheckIntervalSeconds > 5)) {
             confReloadCheckIntervalSeconds = 5;
             logger.info("Development mode is activated."
@@ -255,18 +253,6 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         if (input.contains(";")) {
             input = StringUtils.substringBefore(input, ";");
         }
-        if (input.startsWith("/modules/")) {
-            String module = StringUtils.substringAfter(input,"/modules/");
-            module = StringUtils.substringBefore(module,"/");
-            JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(module);
-            if (pack != null) {
-                String version = pack.getVersion().toString();
-                String prefixWithVersion = "/modules/" + module + "/" + version;
-                if (!input.startsWith(prefixWithVersion)) {
-                    request.setAttribute("moduleVersion", version);
-                }
-            }
-        }
         
         String prefix = StringUtils.EMPTY;
         if (isSeoRemoveCmsPrefix() && input.length() > 1 && input.indexOf('/') == 0) {
@@ -347,7 +333,6 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_SKIP_INBOUND_SEO_RULES);
         request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG);
         request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH);
-        request.removeAttribute("moduleVersion");
     }
 
     public RewrittenUrl rewriteInbound(HttpServletRequest request, HttpServletResponse response)

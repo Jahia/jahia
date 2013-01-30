@@ -110,7 +110,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>${maven.bundle.plugin.version}</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
@@ -204,7 +203,6 @@
                     <plugin>
                         <groupId>org.jahia.server</groupId>
                         <artifactId>jahia-maven-plugin</artifactId>
-                        <version>${jahia.plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>taglibrarydoc</id>

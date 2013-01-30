@@ -270,16 +270,6 @@ public class Connection extends URLConnection {
                 updateExportTracking(newName, exportPackageIncludes, allNonEmptyDirectories);
 
             }
-            /*
-            if (inputManifest.getMainAttributes().getValue("Implementation-Title") != null) {
-                String newEntryName = inputManifest.getMainAttributes().getValue("Implementation-Title").replaceAll("[ -]", "");
-                addFakeEntries(jos, entryNames, mostRecentTime, newEntryName);
-            }
-            if (inputManifest.getMainAttributes().getValue("root-folder") != null) {
-                String newEntryName = inputManifest.getMainAttributes().getValue("root-folder").replaceAll("[ -]", "");
-                addFakeEntries(jos, entryNames, mostRecentTime, newEntryName);
-            }
-            */
             jos.finish();
         } catch (IOException e) {
             throw new RuntimeException("Could not process resources", e);
@@ -325,7 +315,7 @@ public class Connection extends URLConnection {
             String packagePrefix = rootFolder.replaceAll("[ -]", "");
 
             bndProperties.put("Bundle-SymbolicName", rootFolder);
-            StringBuilder exportPackage = new StringBuilder("");
+            StringBuilder exportPackage = new StringBuilder(128);
             if (exportPackageIncludes.size() > 0) {
                 for (String exportPackageInclude : exportPackageIncludes) {
                     exportPackage.append(exportPackageInclude);
@@ -344,7 +334,9 @@ public class Connection extends URLConnection {
                 //exportPackage.append("*,");
             }
             */
-            exportPackage.append(inputManifest.getMainAttributes().getValue("Implementation-Title").replaceAll("[ -]", ""));
+            String titleAttribute = inputManifest.getMainAttributes().getValue("Implementation-Title");
+            bndProperties.put("Bundle-Name", titleAttribute);
+            exportPackage.append(titleAttribute.replaceAll("[ -]", ""));
             exportPackage.append(",");
             exportPackage.append(packagePrefix);
             bndProperties.put("Export-Package", exportPackage.toString());
@@ -404,6 +396,8 @@ public class Connection extends URLConnection {
         if (sources != null) {
             bndProperties.put("Source-Folders",sources);
         }
+        
+        bndProperties.put("Bundle-Category", "jahia-module");
 
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
 
@@ -471,23 +465,6 @@ public class Connection extends URLConnection {
                     }
                 }
             }
-        }
-    }
-
-    private void addFakeEntries(JarOutputStream jos, Set<String> entryNames, long mostRecentTime, String newEntryName) throws IOException {
-        if (!entryNames.contains(newEntryName + "/")) {
-            JarEntry newJarEntry = new JarEntry(newEntryName + "/");
-            newJarEntry.setTime(mostRecentTime);
-            jos.putNextEntry(newJarEntry);
-            jos.closeEntry();
-            entryNames.add(newJarEntry.getName());
-        }
-        if (!entryNames.contains(newEntryName + "/index.html")) {
-            JarEntry newJarEntry = new JarEntry(newEntryName + "/index.html");
-            newJarEntry.setTime(mostRecentTime);
-            jos.putNextEntry(newJarEntry);
-            jos.closeEntry();
-            entryNames.add(newJarEntry.getName());
         }
     }
 

@@ -73,9 +73,6 @@ public class SiteSwitcherActionItem extends BaseActionItem {
     private transient ComboBox<GWTJahiaNode> sitesCombo;
     private transient SimpleComboBox<String> modulesCombo;
     private boolean useModuleType = false;
-    private String defaultModuleType = "";
-
-    private Map<String, String> modulesTypes;
 
     private List<String> root = Arrays.asList("/sites/*");
 
@@ -95,10 +92,6 @@ public class SiteSwitcherActionItem extends BaseActionItem {
         this.useModuleType = useModuleType;
     }
 
-    public String getDefaultModuleType() {
-        return defaultModuleType;
-    }
-
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         super.init(gwtToolbarItem, linker);
@@ -109,69 +102,22 @@ public class SiteSwitcherActionItem extends BaseActionItem {
         }
         instances.add(this);
 
-//        if (useModuleType) {
-//            createModuleTypeCombo();
-//            mainComponent.add(modulesCombo);
-//        }
-
         createSitesCombo();
         mainComponent.add(sitesCombo);
-//        if (useModuleType) {
-//            modulesCombo.setSimpleValue(Messages.get("moduleType." + defaultModuleType + ".label", defaultModuleType));
-//        }
-        refreshSitesList(linker, defaultModuleType);
+        refreshSitesList(linker);
     }
-
-//    private void createModuleTypeCombo() {
-//        modulesTypes = new HashMap<String, String>();
-//        modulesCombo = new SimpleComboBox<String>();
-//        modulesCombo.setTypeAhead(true);
-//        modulesCombo.getListView().setStyleAttribute("font-size","11px");
-//        modulesCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
-//        modulesCombo.setForceSelection(true);
-//        modulesCombo.setWidth(200);
-//        List<GWTJahiaNode> sites = new ArrayList<GWTJahiaNode>(JahiaGWTParameters.getSitesMap().values());
-//        modulesCombo.removeAllListeners();
-//        modulesCombo.getStore().removeAll();
-//        // fill modules type
-//        Set<String> moduleSet = new LinkedHashSet<String>();
-//        for (GWTJahiaNode s : sites) {
-//            String moduleType;
-//            if (s.getProperties().get("j:moduleType") != null && !(moduleType = (String) s.getProperties().get("j:moduleType")).equals(Constants.MODULE_TYPE_SYSTEM)) {
-//                String r = Messages.get("moduleType." + moduleType + ".label", moduleType);
-//                modulesTypes.put(r, moduleType);
-//                moduleSet.add(r);
-//            }
-//        }
-//        modulesCombo.add(new ArrayList<String>(moduleSet));
-//        defaultModuleType = (String) JahiaGWTParameters.getSiteNode().getProperties().get("j:siteType");
-//        modulesCombo.getStore().sort("value", Style.SortDir.ASC);
-//        modulesCombo.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<String>>() {
-//            @Override
-//            public void selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> e) {
-//                refreshAllSitesList(linker, modulesTypes.get(e.getSelectedItem().getValue()));
-//            }
-//        });
-//        setEnabled(true);
-//    }
 
     public static void refreshAllSitesList(final Linker linker) {
         for (SiteSwitcherActionItem instance : instances) {
-            instance.refreshSitesList(linker, instance.getDefaultModuleType());
+            instance.refreshSitesList(linker);
         }
     }
 
-    public static void refreshAllSitesList(final Linker linker, String moduleType) {
-        for (SiteSwitcherActionItem instance : instances) {
-            instance.refreshSitesList(linker, moduleType);
-        }
-    }
-
-    private void refreshSitesList(final Linker linker, String moduleType) {
+    private void refreshSitesList(final Linker linker) {
         List<GWTJahiaNode> sites = new ArrayList<GWTJahiaNode>();
         for (GWTJahiaNode n : JahiaGWTParameters.getSitesMap().values()) {
             if (!n.getName().equals("systemsite")) {
-                if (moduleType.equals("") || moduleType.equals(n.getProperties().get("j:moduleType"))) {
+                if (!useModuleType || n.get("j:sourcesFolder") != null) {
                     sites.add(n);
                 }
             }

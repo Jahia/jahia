@@ -46,27 +46,43 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
+import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbar;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 
 public class ModulesTabItem extends BrowseTabItem {
-
     protected transient ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
     protected transient ListStore<GWTJahiaNode> contentStore;
+    protected transient ButtonBar buttonBar;
+    protected transient LayoutContainer layoutContainer;
+    protected transient ActionToolbar toolbar;
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
+
+        VBoxLayoutData treeVBoxData = new VBoxLayoutData();
+        treeVBoxData.setFlex(0);
+        layoutContainer = new LayoutContainer();
+        layoutContainer.setHeight(24);
+        tab.insert(layoutContainer, 0, treeVBoxData);
+
         this.tree.setSelectionModel(new TreeGridSelectionModel<GWTJahiaNode>() {
             @Override
             protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
@@ -118,6 +134,24 @@ public class ModulesTabItem extends BrowseTabItem {
     @Override
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
+        toolbar = new ActionToolbar(config.getTableContextMenu(), linker);
+        toolbar.createToolBar();
+        layoutContainer.add(toolbar);
+    }
+
+    @Override
+    public void handleNewMainSelection(String path) {
+        super.handleNewMainSelection(path);
+        toolbar.handleNewLinkerSelection();
+    }
+
+    @Override
+    public void handleNewMainNodeLoaded(GWTJahiaNode node) {
+        GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
+        if (siteNode.get("j:sourcesFolder") != null) {
+            super.handleNewMainNodeLoaded(node);
+        }
+        toolbar.handleNewMainNodeLoaded(node);
     }
 
     @Override
@@ -139,9 +173,9 @@ public class ModulesTabItem extends BrowseTabItem {
         tree.getTreeStore().removeAll();
         GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
         if (siteNode.get("j:sourcesFolder") == null) {
-            tab.mask("Sources required - Get them from source control");
+            tree.mask("Sources required - Get them from source control");
         } else {
-            tab.unmask();
+            tree.unmask();
             tree.getTreeStore().getLoader().load();
             listLoader.load();
         }

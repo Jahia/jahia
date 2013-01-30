@@ -8,12 +8,14 @@
     <bean id="studiolayoutmode" parent="studiomode">
         <property name="visibleTypes">
             <set>
+                <value>jmix:areaComponent</value>
                 <value>jmix:layoutComponentContent</value>
                 <value>jmix:list</value>
             </set>
         </property>
         <property name="editableTypes">
             <set>
+                <value>jmix:areaComponent</value>
                 <value>jmix:layoutComponentContent</value>
                 <value>jnt:template</value>
             </set>

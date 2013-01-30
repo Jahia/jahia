@@ -125,7 +125,6 @@ public class SidePanel extends ContentPanel {
                 DeployTemplatesActionItem.refreshAllMenus(editLinker);
                 updateRefreshButton();
             }
-
         });
         refreshButton.setId("JahiaGxtRefreshSidePanelButton");
         head.addTool(refreshButton);

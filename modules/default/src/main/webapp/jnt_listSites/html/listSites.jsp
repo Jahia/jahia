@@ -94,7 +94,6 @@
                     <c:set var="basePreview" value="${url.basePreview}"/>
                     <c:set var="baseContribute" value="${url.baseContribute}"/>
                     <c:set var="baseEdit" value="${url.baseEdit}"/>
-                    <c:set var="siteInLang" value="false"/>
                     <c:set var="currentLocale">${currentResource.locale}</c:set>	
                     <c:if test="${not functions:contains(node.languages, currentLocale)}">
                         <c:set var="localeLength" value="${fn:length(fn:toUpperCase(currentResource.locale))}"/>

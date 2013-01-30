@@ -39,7 +39,7 @@ import static org.jahia.bin.JahiaAdministration.JSP_PATH;
  * @author Serge Huber
  */
 public class ManageRoles extends AbstractAdministrationModule {
-    public static final String JSP_PATH = "/modules/rolesmanager/admin/";
+    public static final String JSP_PATH = "/modules/admin/";
 
     private static final String FEATURE = "org.jahia.admin.roles";
 

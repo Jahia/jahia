@@ -96,7 +96,7 @@
                     <c:set var="baseEdit" value="${url.baseEdit}"/>
                     <c:set var="currentLocale">${currentResource.locale}</c:set>	
                     <c:if test="${not functions:contains(node.languages, currentLocale)}">
-                        <c:set var="localeLength" value="${fn:length(fn:toUpperCase(currentResource.locale))}"/>
+                        <c:set var="localeLength" value="${fn:length(currentResource.locale)}"/>
                         <c:set var="baseLive"
                                value="${fn:substring(url.baseLive,-1,fn:length(url.baseLive)-localeLength)}${node.defaultLanguage}"/>
                         <c:set var="basePreview"
@@ -194,7 +194,7 @@
                         <c:set var="baseEdit" value="${url.baseEdit}"/>
                         <c:set var="currentLocale">${currentResource.locale}</c:set>	
                         <c:if test="${not functions:contains(node.languages, currentLocale)}">
-                            <c:set var="localeLength" value="${fn:length(fn:toUpperCase(currentResource.locale))}"/>
+                            <c:set var="localeLength" value="${fn:length(currentResource.locale)}"/>
                             <c:set var="baseLive"
                                    value="${fn:substring(url.baseLive,-1,fn:length(url.baseLive)-localeLength)}${node.defaultLanguage}"/>
                             <c:set var="basePreview"

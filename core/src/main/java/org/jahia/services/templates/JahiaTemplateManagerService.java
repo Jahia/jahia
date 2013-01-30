@@ -475,7 +475,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
             String version = n.getText();
 
-            String[] installParams = {"-Posgi", "clean", "install"};
+            String[] installParams = {"clean", "install"};
             int r = cli.doMain(installParams, sources.getPath(), System.out, System.err);
             if (r > 0) {
                 logger.error("Compilation error, returned status " + r);

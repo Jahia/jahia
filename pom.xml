@@ -42,7 +42,6 @@
         <gwt.version>2.4.0</gwt.version>
         <atmosphere.version>1.0.6</atmosphere.version>
         <ant.version>1.8.2</ant.version>
-        <slf4j.version>1.6.4</slf4j.version>
 
         <driver.derby.version>10.9.1.0</driver.derby.version>
         <driver.mysql.version>5.1.22</driver.mysql.version>

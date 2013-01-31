@@ -46,8 +46,6 @@
     </style>
 </head>
 <body>
-<div class="bodywrapper">
     <ul id="imagepicker-treeItemSelectorTree"></ul>
-</div>
 </body>
 </html>

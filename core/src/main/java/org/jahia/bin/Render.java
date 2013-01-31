@@ -738,7 +738,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     }
                     renderContext.setSite(site);
 //                    resource.pushWrapper("wrapper.fullpage");
-//                    resource.pushBodyWrapper();
 
                     if (urlResolver.getPath().endsWith(".do")) {
                         Action action = templateService.getActions().get(resource.getResolvedTemplate());

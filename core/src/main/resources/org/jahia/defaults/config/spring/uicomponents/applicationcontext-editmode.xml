@@ -594,7 +594,6 @@
                             <property name="search"
                                       value="select * from [jmix:editorialContent] as content where isdescendantnode(content,['$site']) order by content.['jcr:lastModified'] desc"/>
                             <property name="limit" value="25"/>
-                            <property name="cssWrapper" value="bodywrapper"/>
                         </bean>
                     </property>
 
@@ -793,7 +792,6 @@
                         <value>jnt:contentTemplate</value>
                     </list>
                 </property>
-                <property name="cssWrapper" value="bodywrapper"/>
             </bean>
         </property>
     </bean>

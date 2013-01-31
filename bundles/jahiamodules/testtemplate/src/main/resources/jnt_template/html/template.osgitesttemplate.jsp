@@ -22,10 +22,7 @@
 
 <body>
 
-<div class="bodywrapper"><!--start bodywrapper-->
-    <template:area path="pagecontent"/>
-</div>
-<!--stop bodywrapper-->
+<template:area path="pagecontent"/>
 
 <c:if test="${renderContext.editMode}">
     <template:addResources type="css" resources="edit.css" />

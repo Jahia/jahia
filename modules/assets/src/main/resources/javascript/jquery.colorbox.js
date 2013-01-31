@@ -125,11 +125,7 @@
         }
 		div.style.cssText = cssText || '';
 
-        var $createdDiv = $(div);
-        if(id == 'LoadedContent') {
-            $createdDiv.addClass('bodywrapper bodywrapper-popup')
-        }
-        return $createdDiv;
+        return $(div);
 	}
 
 	// Convert '%' and 'px' values to integers

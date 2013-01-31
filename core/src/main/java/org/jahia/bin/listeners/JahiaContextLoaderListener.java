@@ -43,6 +43,8 @@ package org.jahia.bin.listeners;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.VFS;
 import org.jahia.api.Constants;
 import org.jahia.services.SpringContextSingleton;
 import org.slf4j.Logger;
@@ -165,6 +167,13 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         writePID(servletContext);
         
         GroovyPatcher.executeScripts(servletContext, "contextInitializing");
+
+        // initialize VFS file system (solves classloader issue: https://issues.apache.org/jira/browse/VFS-228 )
+        try {
+            VFS.getManager();
+        } catch (FileSystemException e) {
+            throw new JahiaRuntimeException(e);
+        }
 
         try {
             super.contextInitialized(event);

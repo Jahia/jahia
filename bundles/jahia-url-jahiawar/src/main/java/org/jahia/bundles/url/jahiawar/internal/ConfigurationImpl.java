@@ -6,6 +6,7 @@ import org.ops4j.util.property.PropertyResolver;
 import org.ops4j.util.property.PropertyStore;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -59,7 +60,7 @@ public class ConfigurationImpl
                 }
                 return set(ServiceConstants.PROPERTY_IMPORTED_PACKAGED, importedPackages);
             } else {
-                return set(ServiceConstants.PROPERTY_IMPORTED_PACKAGED, new ArrayList());
+                return set(ServiceConstants.PROPERTY_IMPORTED_PACKAGED, Collections.<String>emptyList());
             }
 
         }

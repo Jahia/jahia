@@ -1,7 +1,6 @@
 package org.jahia.bundles.extender.jahiamodules;
 
 import org.apache.felix.fileinstall.ArtifactTransformer;
-import org.apache.felix.fileinstall.ArtifactUrlTransformer;
 import org.ops4j.io.StreamUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,7 @@ import java.util.jar.JarFile;
  * A Felix FileInstall ArtifactTransformer implementation that transforms Jahia's legacy WAR module
  * packaging into an OSGi compliant bundle.
  */
-public class JahiaLegacyModuleTransformer /* implements ArtifactUrlTransformer */ implements ArtifactTransformer {
+class JahiaLegacyModuleTransformer /* implements ArtifactUrlTransformer */ implements ArtifactTransformer {
 
     private static Logger logger = LoggerFactory.getLogger(Activator.class);
 
@@ -41,24 +40,18 @@ public class JahiaLegacyModuleTransformer /* implements ArtifactUrlTransformer *
         return false;
     }
 
-    /*
     @Override
-    public URL transform(URL artifact) throws Exception {
-        return new URL("jahiawar", null, artifact.toExternalForm());
-    }
-    */
-
     public File transform(File artifact, File tmpDir) {
-   		try {
-               URL war = new URL("jahiawar:" + artifact.toURL().toString());
-               File outFile = new File(tmpDir, artifact.getName());
-               StreamUtils.copyStream(war.openStream(), new FileOutputStream(outFile), true);
-               return outFile;
+        try {
+            URL war = new URL("jahiawar:" + artifact.toURL().toString());
+            File outFile = new File(tmpDir, artifact.getName());
+            StreamUtils.copyStream(war.openStream(), new FileOutputStream(outFile), true);
+            return outFile;
 
-           } catch (Exception e) {
-   			logger.error("Failed to transform the WAR artifact into an OSGi bundle", e);
-   			return null;
-   		}
-   	}
+        } catch (Exception e) {
+            logger.error("Failed to transform the WAR artifact into an OSGi bundle", e);
+            return null;
+        }
+    }
 
 }

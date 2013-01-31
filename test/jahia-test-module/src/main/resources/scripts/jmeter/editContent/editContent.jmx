@@ -1,0 +1,1351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="2.1">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Plan de test" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="Variables définies pour l&apos;utilisateur" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="maxWaitTime" elementType="Argument">
+            <stringProp name="Argument.name">maxWaitTime</stringProp>
+            <stringProp name="Argument.value">100</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="maxOffsetWaitTime" elementType="Argument">
+            <stringProp name="Argument.name">maxOffsetWaitTime</stringProp>
+            <stringProp name="Argument.value">1000</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="LOOPS" elementType="Argument">
+            <stringProp name="Argument.name">LOOPS</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.loops,5)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="LANG" elementType="Argument">
+            <stringProp name="Argument.name">LANG</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.lang,en)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="URL" elementType="Argument">
+            <stringProp name="Argument.name">URL</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.url,http://albator:8080/jahia/cms)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="WORKSPACE" elementType="Argument">
+            <stringProp name="Argument.name">WORKSPACE</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.workspace,live)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="TEMPLATETYPE" elementType="Argument">
+            <stringProp name="Argument.name">TEMPLATETYPE</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.templatetype,html)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="THREADS" elementType="Argument">
+            <stringProp name="Argument.name">THREADS</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.threads,1)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="MODE" elementType="Argument">
+            <stringProp name="Argument.name">MODE</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.mode,render)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="JahiaContentManagementServiceFile" elementType="Argument">
+            <stringProp name="Argument.name">JahiaContentManagementServiceFile</stringProp>
+            <stringProp name="Argument.value">${_StringFromFile(target/JahiaContentManagementService.txt)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ACME Edit Reader" enabled="true">
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Contrôleur boucle" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">${__jexl(vars.LOOPS)}</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">${THREADS}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">30</stringProp>
+        <longProp name="ThreadGroup.start_time">1238679268000</longProp>
+        <longProp name="ThreadGroup.end_time">1238679268000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <stringProp name="ThreadGroup.duration">1800</stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="Gestionnaire de Cookie HTTP" enabled="true">
+          <collectionProp name="CookieManager.cookies"/>
+          <boolProp name="CookieManager.clearEachIteration">true</boolProp>
+        </CookieManager>
+        <hashTree/>
+        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="JahiaContentManagementService" elementType="Argument">
+              <stringProp name="Argument.name">JahiaContentManagementService</stringProp>
+              <stringProp name="Argument.value">${__regexFunction(.*/org.jahia.ajax.gwt.module.edit.Edit/(.*).gwt.rpc.*,$1$,1,,notFound,,JahiaContentManagementServiceFile)}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </Arguments>
+        <hashTree/>
+        <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="Paramètres utilisateur" enabled="true">
+          <collectionProp name="UserParameters.names">
+            <stringProp name="3599307">user</stringProp>
+            <stringProp name="3314158">lang</stringProp>
+            <stringProp name="-1595703404">pagefilenumber</stringProp>
+            <stringProp name="675204994">siteUUID</stringProp>
+          </collectionProp>
+          <collectionProp name="UserParameters.thread_values">
+            <collectionProp name="-1443282093">
+              <stringProp name="302112969">${_StringFromFile(target/users.txt)}</stringProp>
+              <stringProp name="709731209">${__split(${LANG},LANG,\,)}</stringProp>
+              <stringProp name="1482419176">${__jexl(${__threadNum} % 5)}</stringProp>
+              <stringProp name="-1469614515">${_StringFromFile(target/siteUUID.txt)}</stringProp>
+            </collectionProp>
+          </collectionProp>
+          <boolProp name="UserParameters.per_iteration">true</boolProp>
+        </UserParameters>
+        <hashTree/>
+        <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="Paramêtres HTTP par défaut" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables définies pour l&apos;utilisateur" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${__regexFunction(http://(.*):,$1$,1,,127.0.0.1,,URL)}</stringProp>
+          <stringProp name="HTTPSampler.port">${__regexFunction(http://.*:([0-9]*)/,$1$,1,,,,URL)}</stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path"></stringProp>
+        </ConfigTestElement>
+        <hashTree/>
+        <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller" enabled="true">
+          <stringProp name="ForeachController.inputVal">LANG</stringProp>
+          <stringProp name="ForeachController.returnVal">LANGUAGE</stringProp>
+          <boolProp name="ForeachController.useSeparator">true</boolProp>
+        </ForeachController>
+        <hashTree>
+          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Page Hit Live Authenticated" enabled="true"/>
+          <hashTree>
+            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller" enabled="true">
+              <stringProp name="IfController.condition">&quot;${user}&quot; != &quot;**ERR**&quot;</stringProp>
+              <boolProp name="IfController.evaluateAll">false</boolProp>
+            </IfController>
+            <hashTree>
+              <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Login" enabled="true">
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
+                  <collectionProp name="Arguments.arguments">
+                    <elementProp name="username" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value">${user}</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                      <stringProp name="Argument.name">username</stringProp>
+                    </elementProp>
+                    <elementProp name="password" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value">${user}</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                      <stringProp name="Argument.name">password</stringProp>
+                    </elementProp>
+                    <elementProp name="redirect" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                      <stringProp name="Argument.value">/start</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                      <stringProp name="Argument.name">redirect</stringProp>
+                    </elementProp>
+                    <elementProp name="doLogin" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value">true</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                      <stringProp name="Argument.name">doLogin</stringProp>
+                    </elementProp>
+                  </collectionProp>
+                </elementProp>
+                <stringProp name="HTTPSampler.domain"></stringProp>
+                <stringProp name="HTTPSampler.port"></stringProp>
+                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
+                <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+                <stringProp name="HTTPSampler.path">/${__regexFunction(http://.*:[0-9]*/(.*),$1$,1,,,,URL)}/login</stringProp>
+                <stringProp name="HTTPSampler.method">POST</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                <boolProp name="HTTPSampler.monitor">false</boolProp>
+                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+              </HTTPSampler>
+              <hashTree>
+                <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Conteur de temps aléatoire uniforme" enabled="true">
+                  <stringProp name="ConstantTimer.delay">${maxOffsetWaitTime}</stringProp>
+                  <stringProp name="RandomTimer.range">${maxWaitTime}</stringProp>
+                </UniformRandomTimer>
+                <hashTree/>
+              </hashTree>
+              <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Display Edit panel" enabled="true"/>
+              <hashTree>
+                <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="isValidSession" enabled="true">
+                  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+                    <collectionProp name="Arguments.arguments">
+                      <elementProp name="" elementType="HTTPArgument">
+                        <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                        <stringProp name="Argument.value">7|0|4|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|isValidSession|1|2|3|4|0|</stringProp>
+                        <stringProp name="Argument.metadata">=</stringProp>
+                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                      </elementProp>
+                    </collectionProp>
+                  </elementProp>
+                  <stringProp name="HTTPSampler.domain"></stringProp>
+                  <stringProp name="HTTPSampler.port"></stringProp>
+                  <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                  <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                  <stringProp name="HTTPSampler.protocol">http</stringProp>
+                  <stringProp name="HTTPSampler.contentEncoding">utf-8</stringProp>
+                  <stringProp name="HTTPSampler.path">/${__regexFunction(http://.*:[0-9]*/(.*)/.*,$1$,1,,,,URL)}/gwt/contentManager.gwt?lang=en&amp;site=${siteUUID}&amp;workspace=default</stringProp>
+                  <stringProp name="HTTPSampler.method">POST</stringProp>
+                  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                  <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                  <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                  <boolProp name="HTTPSampler.monitor">false</boolProp>
+                  <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+                </HTTPSampler>
+                <hashTree>
+                  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+                    <collectionProp name="HeaderManager.headers">
+                      <elementProp name="Content-Type" elementType="Header">
+                        <stringProp name="Header.name">Content-Type</stringProp>
+                        <stringProp name="Header.value">text/x-gwt-rpc; charset=utf-8</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Language" elementType="Header">
+                        <stringProp name="Header.name">Accept-Language</stringProp>
+                        <stringProp name="Header.value">en-us,en;q=0.5</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept" elementType="Header">
+                        <stringProp name="Header.name">Accept</stringProp>
+                        <stringProp name="Header.value">text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</stringProp>
+                      </elementProp>
+                      <elementProp name="User-Agent" elementType="Header">
+                        <stringProp name="Header.name">User-Agent</stringProp>
+                        <stringProp name="Header.value">Mozilla/5.0 (X11; Linux x86_64; rv:5.0) Gecko/20100101 Firefox/5.0</stringProp>
+                      </elementProp>
+                      <elementProp name="Pragma" elementType="Header">
+                        <stringProp name="Header.name">Pragma</stringProp>
+                        <stringProp name="Header.value">no-cache</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Charset" elementType="Header">
+                        <stringProp name="Header.name">Accept-Charset</stringProp>
+                        <stringProp name="Header.value">ISO-8859-1,utf-8;q=0.7,*;q=0.7</stringProp>
+                      </elementProp>
+                      <elementProp name="Cache-Control" elementType="Header">
+                        <stringProp name="Header.name">Cache-Control</stringProp>
+                        <stringProp name="Header.value">no-cache</stringProp>
+                      </elementProp>
+                      <elementProp name="X-GWT-Permutation" elementType="Header">
+                        <stringProp name="Header.name">X-GWT-Permutation</stringProp>
+                        <stringProp name="Header.value">B4115FBEBCD3316932073AF49D6ACAAA</stringProp>
+                      </elementProp>
+                      <elementProp name="X-GWT-Module-Base" elementType="Header">
+                        <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
+                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Encoding" elementType="Header">
+                        <stringProp name="Header.name">Accept-Encoding</stringProp>
+                        <stringProp name="Header.value">gzip, deflate</stringProp>
+                      </elementProp>
+                      <elementProp name="Referer" elementType="Header">
+                        <stringProp name="Header.name">Referer</stringProp>
+                        <stringProp name="Header.value">/start</stringProp>
+                      </elementProp>
+                    </collectionProp>
+                  </HeaderManager>
+                  <hashTree/>
+                </hashTree>
+                <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="getEditConfiguration" enabled="true">
+                  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+                    <collectionProp name="Arguments.arguments">
+                      <elementProp name="" elementType="HTTPArgument">
+                        <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                        <stringProp name="Argument.value">7|0|7|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getEditConfiguration|java.lang.String/2004016611|/sites/${__P(jahia.test.jmeter.sitekey,testSite)}/home|editmode|1|2|3|4|2|5|5|6|7|</stringProp>
+                        <stringProp name="Argument.metadata">=</stringProp>
+                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                      </elementProp>
+                    </collectionProp>
+                  </elementProp>
+                  <stringProp name="HTTPSampler.domain"></stringProp>
+                  <stringProp name="HTTPSampler.port"></stringProp>
+                  <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                  <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                  <stringProp name="HTTPSampler.protocol">http</stringProp>
+                  <stringProp name="HTTPSampler.contentEncoding">utf-8</stringProp>
+                  <stringProp name="HTTPSampler.path">/${__regexFunction(http://.*:[0-9]*/(.*)/.*,$1$,1,,,,URL)}/gwt/contentManager.gwt?lang=en&amp;site=${siteUUID}&amp;workspace=default</stringProp>
+                  <stringProp name="HTTPSampler.method">POST</stringProp>
+                  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                  <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                  <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                  <boolProp name="HTTPSampler.monitor">false</boolProp>
+                  <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+                </HTTPSampler>
+                <hashTree>
+                  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+                    <collectionProp name="HeaderManager.headers">
+                      <elementProp name="Content-Type" elementType="Header">
+                        <stringProp name="Header.name">Content-Type</stringProp>
+                        <stringProp name="Header.value">text/x-gwt-rpc; charset=utf-8</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Language" elementType="Header">
+                        <stringProp name="Header.name">Accept-Language</stringProp>
+                        <stringProp name="Header.value">en-us,en;q=0.5</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept" elementType="Header">
+                        <stringProp name="Header.name">Accept</stringProp>
+                        <stringProp name="Header.value">text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</stringProp>
+                      </elementProp>
+                      <elementProp name="User-Agent" elementType="Header">
+                        <stringProp name="Header.name">User-Agent</stringProp>
+                        <stringProp name="Header.value">Mozilla/5.0 (X11; Linux x86_64; rv:5.0) Gecko/20100101 Firefox/5.0</stringProp>
+                      </elementProp>
+                      <elementProp name="Pragma" elementType="Header">
+                        <stringProp name="Header.name">Pragma</stringProp>
+                        <stringProp name="Header.value">no-cache</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Charset" elementType="Header">
+                        <stringProp name="Header.name">Accept-Charset</stringProp>
+                        <stringProp name="Header.value">ISO-8859-1,utf-8;q=0.7,*;q=0.7</stringProp>
+                      </elementProp>
+                      <elementProp name="Cache-Control" elementType="Header">
+                        <stringProp name="Header.name">Cache-Control</stringProp>
+                        <stringProp name="Header.value">no-cache</stringProp>
+                      </elementProp>
+                      <elementProp name="X-GWT-Permutation" elementType="Header">
+                        <stringProp name="Header.name">X-GWT-Permutation</stringProp>
+                        <stringProp name="Header.value">B4115FBEBCD3316932073AF49D6ACAAA</stringProp>
+                      </elementProp>
+                      <elementProp name="X-GWT-Module-Base" elementType="Header">
+                        <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
+                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Encoding" elementType="Header">
+                        <stringProp name="Header.name">Accept-Encoding</stringProp>
+                        <stringProp name="Header.value">gzip, deflate</stringProp>
+                      </elementProp>
+                      <elementProp name="Referer" elementType="Header">
+                        <stringProp name="Header.name">Referer</stringProp>
+                        <stringProp name="Header.value">/start</stringProp>
+                      </elementProp>
+                    </collectionProp>
+                  </HeaderManager>
+                  <hashTree/>
+                </hashTree>
+                <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="getSubNodetypes (jmix:editorialContent)" enabled="true">
+                  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+                    <collectionProp name="Arguments.arguments">
+                      <elementProp name="" elementType="HTTPArgument">
+                        <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                        <stringProp name="Argument.value">7|0|9|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getSubNodetypes|java.util.List|Z|java.util.Arrays$ArrayList/1243019747|[Ljava.lang.String;/2600011424|jmix:editorialContent|1|2|3|4|3|5|6|6|7|8|1|9|1|0|</stringProp>
+                        <stringProp name="Argument.metadata">=</stringProp>
+                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                      </elementProp>
+                    </collectionProp>
+                  </elementProp>
+                  <stringProp name="HTTPSampler.domain"></stringProp>
+                  <stringProp name="HTTPSampler.port"></stringProp>
+                  <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                  <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                  <stringProp name="HTTPSampler.protocol">http</stringProp>
+                  <stringProp name="HTTPSampler.contentEncoding">utf-8</stringProp>
+                  <stringProp name="HTTPSampler.path">/${__regexFunction(http://.*:[0-9]*/(.*)/.*,$1$,1,,,,URL)}/gwt/contentManager.gwt?lang=en&amp;site=${siteUUID}&amp;workspace=default</stringProp>
+                  <stringProp name="HTTPSampler.method">POST</stringProp>
+                  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                  <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                  <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                  <boolProp name="HTTPSampler.monitor">false</boolProp>
+                  <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+                </HTTPSampler>
+                <hashTree>
+                  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+                    <collectionProp name="HeaderManager.headers">
+                      <elementProp name="Content-Type" elementType="Header">
+                        <stringProp name="Header.name">Content-Type</stringProp>
+                        <stringProp name="Header.value">text/x-gwt-rpc; charset=utf-8</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Language" elementType="Header">
+                        <stringProp name="Header.name">Accept-Language</stringProp>
+                        <stringProp name="Header.value">en-us,en;q=0.5</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept" elementType="Header">
+                        <stringProp name="Header.name">Accept</stringProp>
+                        <stringProp name="Header.value">text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</stringProp>
+                      </elementProp>
+                      <elementProp name="User-Agent" elementType="Header">
+                        <stringProp name="Header.name">User-Agent</stringProp>
+                        <stringProp name="Header.value">Mozilla/5.0 (X11; Linux x86_64; rv:5.0) Gecko/20100101 Firefox/5.0</stringProp>
+                      </elementProp>
+                      <elementProp name="Pragma" elementType="Header">
+                        <stringProp name="Header.name">Pragma</stringProp>
+                        <stringProp name="Header.value">no-cache</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Charset" elementType="Header">
+                        <stringProp name="Header.name">Accept-Charset</stringProp>
+                        <stringProp name="Header.value">ISO-8859-1,utf-8;q=0.7,*;q=0.7</stringProp>
+                      </elementProp>
+                      <elementProp name="Cache-Control" elementType="Header">
+                        <stringProp name="Header.name">Cache-Control</stringProp>
+                        <stringProp name="Header.value">no-cache</stringProp>
+                      </elementProp>
+                      <elementProp name="X-GWT-Permutation" elementType="Header">
+                        <stringProp name="Header.name">X-GWT-Permutation</stringProp>
+                        <stringProp name="Header.value">B4115FBEBCD3316932073AF49D6ACAAA</stringProp>
+                      </elementProp>
+                      <elementProp name="X-GWT-Module-Base" elementType="Header">
+                        <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
+                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Encoding" elementType="Header">
+                        <stringProp name="Header.name">Accept-Encoding</stringProp>
+                        <stringProp name="Header.value">gzip, deflate</stringProp>
+                      </elementProp>
+                      <elementProp name="Referer" elementType="Header">
+                        <stringProp name="Header.name">Referer</stringProp>
+                        <stringProp name="Header.value">/start</stringProp>
+                      </elementProp>
+                    </collectionProp>
+                  </HeaderManager>
+                  <hashTree/>
+                </hashTree>
+                <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="getSubNodetypes (all)" enabled="true">
+                  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+                    <collectionProp name="Arguments.arguments">
+                      <elementProp name="" elementType="HTTPArgument">
+                        <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                        <stringProp name="Argument.value">7|0|6|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getSubNodetypes|java.util.List|Z|1|2|3|4|3|5|6|6|0|1|0|</stringProp>
+                        <stringProp name="Argument.metadata">=</stringProp>
+                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                      </elementProp>
+                    </collectionProp>
+                  </elementProp>
+                  <stringProp name="HTTPSampler.domain"></stringProp>
+                  <stringProp name="HTTPSampler.port"></stringProp>
+                  <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                  <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                  <stringProp name="HTTPSampler.protocol">http</stringProp>
+                  <stringProp name="HTTPSampler.contentEncoding">utf-8</stringProp>
+                  <stringProp name="HTTPSampler.path">/${__regexFunction(http://.*:[0-9]*/(.*)/.*,$1$,1,,,,URL)}/gwt/contentManager.gwt?lang=en&amp;site=${siteUUID}&amp;workspace=default</stringProp>
+                  <stringProp name="HTTPSampler.method">POST</stringProp>
+                  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                  <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                  <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                  <boolProp name="HTTPSampler.monitor">false</boolProp>
+                  <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+                </HTTPSampler>
+                <hashTree>
+                  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+                    <collectionProp name="HeaderManager.headers">
+                      <elementProp name="Content-Type" elementType="Header">
+                        <stringProp name="Header.name">Content-Type</stringProp>
+                        <stringProp name="Header.value">text/x-gwt-rpc; charset=utf-8</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Language" elementType="Header">
+                        <stringProp name="Header.name">Accept-Language</stringProp>
+                        <stringProp name="Header.value">en-us,en;q=0.5</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept" elementType="Header">
+                        <stringProp name="Header.name">Accept</stringProp>
+                        <stringProp name="Header.value">text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</stringProp>
+                      </elementProp>
+                      <elementProp name="User-Agent" elementType="Header">
+                        <stringProp name="Header.name">User-Agent</stringProp>
+                        <stringProp name="Header.value">Mozilla/5.0 (X11; Linux x86_64; rv:5.0) Gecko/20100101 Firefox/5.0</stringProp>
+                      </elementProp>
+                      <elementProp name="Pragma" elementType="Header">
+                        <stringProp name="Header.name">Pragma</stringProp>
+                        <stringProp name="Header.value">no-cache</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Charset" elementType="Header">
+                        <stringProp name="Header.name">Accept-Charset</stringProp>
+                        <stringProp name="Header.value">ISO-8859-1,utf-8;q=0.7,*;q=0.7</stringProp>
+                      </elementProp>
+                      <elementProp name="Cache-Control" elementType="Header">
+                        <stringProp name="Header.name">Cache-Control</stringProp>
+                        <stringProp name="Header.value">no-cache</stringProp>
+                      </elementProp>
+                      <elementProp name="X-GWT-Permutation" elementType="Header">
+                        <stringProp name="Header.name">X-GWT-Permutation</stringProp>
+                        <stringProp name="Header.value">B4115FBEBCD3316932073AF49D6ACAAA</stringProp>
+                      </elementProp>
+                      <elementProp name="X-GWT-Module-Base" elementType="Header">
+                        <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
+                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Encoding" elementType="Header">
+                        <stringProp name="Header.name">Accept-Encoding</stringProp>
+                        <stringProp name="Header.value">gzip, deflate</stringProp>
+                      </elementProp>
+                      <elementProp name="Referer" elementType="Header">
+                        <stringProp name="Header.name">Referer</stringProp>
+                        <stringProp name="Header.value">/start</stringProp>
+                      </elementProp>
+                    </collectionProp>
+                  </HeaderManager>
+                  <hashTree/>
+                </hashTree>
+                <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="getPortalNodes" enabled="true">
+                  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+                    <collectionProp name="Arguments.arguments">
+                      <elementProp name="" elementType="HTTPArgument">
+                        <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                        <stringProp name="Argument.value">7|0|6|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getPortalNodes|java.lang.String/2004016611|portal-components|1|2|3|4|1|5|6|</stringProp>
+                        <stringProp name="Argument.metadata">=</stringProp>
+                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                      </elementProp>
+                    </collectionProp>
+                  </elementProp>
+                  <stringProp name="HTTPSampler.domain"></stringProp>
+                  <stringProp name="HTTPSampler.port"></stringProp>
+                  <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                  <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                  <stringProp name="HTTPSampler.protocol">http</stringProp>
+                  <stringProp name="HTTPSampler.contentEncoding">utf-8</stringProp>
+                  <stringProp name="HTTPSampler.path">/${__regexFunction(http://.*:[0-9]*/(.*)/.*,$1$,1,,,,URL)}/gwt/contentManager.gwt?lang=en&amp;site=${siteUUID}&amp;workspace=default</stringProp>
+                  <stringProp name="HTTPSampler.method">POST</stringProp>
+                  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                  <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                  <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                  <boolProp name="HTTPSampler.monitor">false</boolProp>
+                  <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+                </HTTPSampler>
+                <hashTree>
+                  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+                    <collectionProp name="HeaderManager.headers">
+                      <elementProp name="Content-Type" elementType="Header">
+                        <stringProp name="Header.name">Content-Type</stringProp>
+                        <stringProp name="Header.value">text/x-gwt-rpc; charset=utf-8</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Language" elementType="Header">
+                        <stringProp name="Header.name">Accept-Language</stringProp>
+                        <stringProp name="Header.value">en-us,en;q=0.5</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept" elementType="Header">
+                        <stringProp name="Header.name">Accept</stringProp>
+                        <stringProp name="Header.value">text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</stringProp>
+                      </elementProp>
+                      <elementProp name="User-Agent" elementType="Header">
+                        <stringProp name="Header.name">User-Agent</stringProp>
+                        <stringProp name="Header.value">Mozilla/5.0 (X11; Linux x86_64; rv:5.0) Gecko/20100101 Firefox/5.0</stringProp>
+                      </elementProp>
+                      <elementProp name="Pragma" elementType="Header">
+                        <stringProp name="Header.name">Pragma</stringProp>
+                        <stringProp name="Header.value">no-cache</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Charset" elementType="Header">
+                        <stringProp name="Header.name">Accept-Charset</stringProp>
+                        <stringProp name="Header.value">ISO-8859-1,utf-8;q=0.7,*;q=0.7</stringProp>
+                      </elementProp>
+                      <elementProp name="Cache-Control" elementType="Header">
+                        <stringProp name="Header.name">Cache-Control</stringProp>
+                        <stringProp name="Header.value">no-cache</stringProp>
+                      </elementProp>
+                      <elementProp name="X-GWT-Permutation" elementType="Header">
+                        <stringProp name="Header.name">X-GWT-Permutation</stringProp>
+                        <stringProp name="Header.value">B4115FBEBCD3316932073AF49D6ACAAA</stringProp>
+                      </elementProp>
+                      <elementProp name="X-GWT-Module-Base" elementType="Header">
+                        <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
+                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Encoding" elementType="Header">
+                        <stringProp name="Header.name">Accept-Encoding</stringProp>
+                        <stringProp name="Header.value">gzip, deflate</stringProp>
+                      </elementProp>
+                      <elementProp name="Referer" elementType="Header">
+                        <stringProp name="Header.name">Referer</stringProp>
+                        <stringProp name="Header.value">/start</stringProp>
+                      </elementProp>
+                    </collectionProp>
+                  </HeaderManager>
+                  <hashTree/>
+                </hashTree>
+                <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="getNodesAndTypes" enabled="true">
+                  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+                    <collectionProp name="Arguments.arguments">
+                      <elementProp name="" elementType="HTTPArgument">
+                        <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                        <stringProp name="Argument.value">7|0|36|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getNodesAndTypes|java.util.List|java.util.ArrayList/3821976829|java.lang.String/2004016611|${pageUrl}|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/header-left|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/Header-right|${__regexFunction((.*)/.*,$1$,1,,,,pageUrl)}/illustration|${pageUrl}/listA|${pageUrl}/listA/bigText_1|${pageUrl}/listA/bigText_2|${pageUrl}/listA/bigText_3|${pageUrl}/listA/bigText_4|${pageUrl}/listA/bigText_5|${pageUrl}/listA/bigText_1|${pageUrl}/listA/publication|${pageUrl}/events|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter1|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter2|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter3|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter4|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/footer-left|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/footer-right|java.util.Arrays$ArrayList/1243019747|[Ljava.lang.String;/2600011424|publicationInfo|workflowInfo|nt:base|jmix:navMenuItem|jmix:droppableContent||jnt:imageReference|jnt:event|1|2|3|4|3|5|5|5|6|19|7|8|7|9|7|10|7|11|7|12|7|13|7|14|7|15|7|16|7|17|7|18|7|19|7|20|7|21|7|22|7|23|7|24|7|25|7|26|27|28|2|29|30|6|6|7|31|7|32|7|33|7|34|7|35|7|36|</stringProp>
+                        <stringProp name="Argument.metadata">=</stringProp>
+                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                      </elementProp>
+                    </collectionProp>
+                  </elementProp>
+                  <stringProp name="HTTPSampler.domain"></stringProp>
+                  <stringProp name="HTTPSampler.port"></stringProp>
+                  <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                  <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                  <stringProp name="HTTPSampler.protocol"></stringProp>
+                  <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+                  <stringProp name="HTTPSampler.path">/${__regexFunction(http://.*:[0-9]*/(.*)/.*,$1$,1,,,,URL)}/gwt/contentManager.gwt?lang=en&amp;site=${siteUUID}&amp;workspace=default</stringProp>
+                  <stringProp name="HTTPSampler.method">POST</stringProp>
+                  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                  <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                  <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                  <boolProp name="HTTPSampler.monitor">false</boolProp>
+                  <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+                </HTTPSampler>
+                <hashTree>
+                  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+                    <collectionProp name="HeaderManager.headers">
+                      <elementProp name="Content-Type" elementType="Header">
+                        <stringProp name="Header.name">Content-Type</stringProp>
+                        <stringProp name="Header.value">text/x-gwt-rpc; charset=utf-8</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Language" elementType="Header">
+                        <stringProp name="Header.name">Accept-Language</stringProp>
+                        <stringProp name="Header.value">en-us,en;q=0.5</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept" elementType="Header">
+                        <stringProp name="Header.name">Accept</stringProp>
+                        <stringProp name="Header.value">text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</stringProp>
+                      </elementProp>
+                      <elementProp name="User-Agent" elementType="Header">
+                        <stringProp name="Header.name">User-Agent</stringProp>
+                        <stringProp name="Header.value">Mozilla/5.0 (X11; Linux x86_64; rv:5.0) Gecko/20100101 Firefox/5.0</stringProp>
+                      </elementProp>
+                      <elementProp name="Pragma" elementType="Header">
+                        <stringProp name="Header.name">Pragma</stringProp>
+                        <stringProp name="Header.value">no-cache</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Charset" elementType="Header">
+                        <stringProp name="Header.name">Accept-Charset</stringProp>
+                        <stringProp name="Header.value">ISO-8859-1,utf-8;q=0.7,*;q=0.7</stringProp>
+                      </elementProp>
+                      <elementProp name="Cache-Control" elementType="Header">
+                        <stringProp name="Header.name">Cache-Control</stringProp>
+                        <stringProp name="Header.value">no-cache</stringProp>
+                      </elementProp>
+                      <elementProp name="X-GWT-Permutation" elementType="Header">
+                        <stringProp name="Header.name">X-GWT-Permutation</stringProp>
+                        <stringProp name="Header.value">B4115FBEBCD3316932073AF49D6ACAAA</stringProp>
+                      </elementProp>
+                      <elementProp name="X-GWT-Module-Base" elementType="Header">
+                        <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
+                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Encoding" elementType="Header">
+                        <stringProp name="Header.name">Accept-Encoding</stringProp>
+                        <stringProp name="Header.value">gzip, deflate</stringProp>
+                      </elementProp>
+                      <elementProp name="Referer" elementType="Header">
+                        <stringProp name="Header.name">Referer</stringProp>
+                        <stringProp name="Header.value">/start</stringProp>
+                      </elementProp>
+                    </collectionProp>
+                  </HeaderManager>
+                  <hashTree/>
+                </hashTree>
+                <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="getPollData" enabled="true">
+                  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+                    <collectionProp name="Arguments.arguments">
+                      <elementProp name="" elementType="HTTPArgument">
+                        <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                        <stringProp name="Argument.value">7|0|9|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getPollData|java.util.Set|java.util.HashSet/1594477813|java.lang.String/2004016611|numberOfTasks|activeJobs|1|2|3|4|1|5|6|2|7|8|7|9|</stringProp>
+                        <stringProp name="Argument.metadata">=</stringProp>
+                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                      </elementProp>
+                    </collectionProp>
+                  </elementProp>
+                  <stringProp name="HTTPSampler.domain"></stringProp>
+                  <stringProp name="HTTPSampler.port"></stringProp>
+                  <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                  <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                  <stringProp name="HTTPSampler.protocol">http</stringProp>
+                  <stringProp name="HTTPSampler.contentEncoding">utf-8</stringProp>
+                  <stringProp name="HTTPSampler.path">/${__regexFunction(http://.*:[0-9]*/(.*)/.*,$1$,1,,,,URL)}/gwt/contentManager.gwt?lang=en&amp;site=${siteUUID}&amp;workspace=default</stringProp>
+                  <stringProp name="HTTPSampler.method">POST</stringProp>
+                  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                  <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                  <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                  <boolProp name="HTTPSampler.monitor">false</boolProp>
+                  <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+                </HTTPSampler>
+                <hashTree>
+                  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+                    <collectionProp name="HeaderManager.headers">
+                      <elementProp name="Content-Type" elementType="Header">
+                        <stringProp name="Header.name">Content-Type</stringProp>
+                        <stringProp name="Header.value">text/x-gwt-rpc; charset=utf-8</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Language" elementType="Header">
+                        <stringProp name="Header.name">Accept-Language</stringProp>
+                        <stringProp name="Header.value">en-us,en;q=0.5</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept" elementType="Header">
+                        <stringProp name="Header.name">Accept</stringProp>
+                        <stringProp name="Header.value">text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</stringProp>
+                      </elementProp>
+                      <elementProp name="User-Agent" elementType="Header">
+                        <stringProp name="Header.name">User-Agent</stringProp>
+                        <stringProp name="Header.value">Mozilla/5.0 (X11; Linux x86_64; rv:5.0) Gecko/20100101 Firefox/5.0</stringProp>
+                      </elementProp>
+                      <elementProp name="Pragma" elementType="Header">
+                        <stringProp name="Header.name">Pragma</stringProp>
+                        <stringProp name="Header.value">no-cache</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Charset" elementType="Header">
+                        <stringProp name="Header.name">Accept-Charset</stringProp>
+                        <stringProp name="Header.value">ISO-8859-1,utf-8;q=0.7,*;q=0.7</stringProp>
+                      </elementProp>
+                      <elementProp name="Cache-Control" elementType="Header">
+                        <stringProp name="Header.name">Cache-Control</stringProp>
+                        <stringProp name="Header.value">no-cache</stringProp>
+                      </elementProp>
+                      <elementProp name="X-GWT-Permutation" elementType="Header">
+                        <stringProp name="Header.name">X-GWT-Permutation</stringProp>
+                        <stringProp name="Header.value">B4115FBEBCD3316932073AF49D6ACAAA</stringProp>
+                      </elementProp>
+                      <elementProp name="X-GWT-Module-Base" elementType="Header">
+                        <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
+                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Encoding" elementType="Header">
+                        <stringProp name="Header.name">Accept-Encoding</stringProp>
+                        <stringProp name="Header.value">gzip, deflate</stringProp>
+                      </elementProp>
+                      <elementProp name="Referer" elementType="Header">
+                        <stringProp name="Header.name">Referer</stringProp>
+                        <stringProp name="Header.value">/start</stringProp>
+                      </elementProp>
+                    </collectionProp>
+                  </HeaderManager>
+                  <hashTree/>
+                </hashTree>
+                <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="getRoot" enabled="true">
+                  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+                    <collectionProp name="Arguments.arguments">
+                      <elementProp name="" elementType="HTTPArgument">
+                        <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                        <stringProp name="Argument.value">7|0|17|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getRoot|java.util.List|Z|java.lang.String/2004016611|java.util.ArrayList/3821976829|$site|jmix:navMenuItem|jmix:visibleInPagesTree|displayName|locked|publicationInfo|childrenInfo|icon|${pageUrl}|1|2|3|4|11|5|5|5|5|5|5|5|6|6|5|7|8|1|7|9|8|2|7|10|7|11|0|0|8|5|7|12|7|13|7|14|7|15|7|16|8|1|7|17|8|0|0|0|8|0|0|</stringProp>
+                        <stringProp name="Argument.metadata">=</stringProp>
+                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                      </elementProp>
+                    </collectionProp>
+                  </elementProp>
+                  <stringProp name="HTTPSampler.domain"></stringProp>
+                  <stringProp name="HTTPSampler.port"></stringProp>
+                  <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                  <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                  <stringProp name="HTTPSampler.protocol">http</stringProp>
+                  <stringProp name="HTTPSampler.contentEncoding">utf-8</stringProp>
+                  <stringProp name="HTTPSampler.path">/${__regexFunction(http://.*:[0-9]*/(.*)/.*,$1$,1,,,,URL)}/gwt/contentManager.gwt?lang=en&amp;site=${siteUUID}&amp;workspace=default</stringProp>
+                  <stringProp name="HTTPSampler.method">POST</stringProp>
+                  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                  <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                  <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                  <boolProp name="HTTPSampler.monitor">false</boolProp>
+                  <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+                </HTTPSampler>
+                <hashTree>
+                  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+                    <collectionProp name="HeaderManager.headers">
+                      <elementProp name="Content-Type" elementType="Header">
+                        <stringProp name="Header.name">Content-Type</stringProp>
+                        <stringProp name="Header.value">text/x-gwt-rpc; charset=utf-8</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Language" elementType="Header">
+                        <stringProp name="Header.name">Accept-Language</stringProp>
+                        <stringProp name="Header.value">en-us,en;q=0.5</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept" elementType="Header">
+                        <stringProp name="Header.name">Accept</stringProp>
+                        <stringProp name="Header.value">text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</stringProp>
+                      </elementProp>
+                      <elementProp name="User-Agent" elementType="Header">
+                        <stringProp name="Header.name">User-Agent</stringProp>
+                        <stringProp name="Header.value">Mozilla/5.0 (X11; Linux x86_64; rv:5.0) Gecko/20100101 Firefox/5.0</stringProp>
+                      </elementProp>
+                      <elementProp name="Pragma" elementType="Header">
+                        <stringProp name="Header.name">Pragma</stringProp>
+                        <stringProp name="Header.value">no-cache</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Charset" elementType="Header">
+                        <stringProp name="Header.name">Accept-Charset</stringProp>
+                        <stringProp name="Header.value">ISO-8859-1,utf-8;q=0.7,*;q=0.7</stringProp>
+                      </elementProp>
+                      <elementProp name="Cache-Control" elementType="Header">
+                        <stringProp name="Header.name">Cache-Control</stringProp>
+                        <stringProp name="Header.value">no-cache</stringProp>
+                      </elementProp>
+                      <elementProp name="X-GWT-Permutation" elementType="Header">
+                        <stringProp name="Header.name">X-GWT-Permutation</stringProp>
+                        <stringProp name="Header.value">B4115FBEBCD3316932073AF49D6ACAAA</stringProp>
+                      </elementProp>
+                      <elementProp name="X-GWT-Module-Base" elementType="Header">
+                        <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
+                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                      </elementProp>
+                      <elementProp name="Accept-Encoding" elementType="Header">
+                        <stringProp name="Header.name">Accept-Encoding</stringProp>
+                        <stringProp name="Header.value">gzip, deflate</stringProp>
+                      </elementProp>
+                      <elementProp name="Referer" elementType="Header">
+                        <stringProp name="Header.name">Referer</stringProp>
+                        <stringProp name="Header.value">/start</stringProp>
+                      </elementProp>
+                    </collectionProp>
+                  </HeaderManager>
+                  <hashTree/>
+                </hashTree>
+              </hashTree>
+            </hashTree>
+            <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+              <boolProp name="LoopController.continue_forever">true</boolProp>
+              <stringProp name="LoopController.loops">10</stringProp>
+            </LoopController>
+            <hashTree>
+              <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="Paramètres utilisateur" enabled="true">
+                <collectionProp name="UserParameters.names">
+                  <stringProp name="-803558304">pageUrl</stringProp>
+                </collectionProp>
+                <collectionProp name="UserParameters.thread_values">
+                  <collectionProp name="-1833384659">
+                    <stringProp name="535261216">${_StringFromFile(target/pageurls${pagefilenumber}.txt)}</stringProp>
+                  </collectionProp>
+                </collectionProp>
+                <boolProp name="UserParameters.per_iteration">true</boolProp>
+              </UserParameters>
+              <hashTree/>
+              <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="getRenderedContent" enabled="true">
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+                  <collectionProp name="Arguments.arguments">
+                    <elementProp name="" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value">7|0|11|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getRenderedContent|java.lang.String/2004016611|java.util.Map|Z|${pageUrl}|en|gwt|editmode|1|2|3|4|8|5|5|5|5|5|6|7|5|8|0|9|0|10|0|1|11|</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                    </elementProp>
+                  </collectionProp>
+                </elementProp>
+                <stringProp name="HTTPSampler.domain"></stringProp>
+                <stringProp name="HTTPSampler.port"></stringProp>
+                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                <stringProp name="HTTPSampler.protocol">http</stringProp>
+                <stringProp name="HTTPSampler.contentEncoding">utf-8</stringProp>
+                <stringProp name="HTTPSampler.path">/${__regexFunction(http://.*:[0-9]*/(.*)/.*,$1$,1,,,,URL)}/gwt/contentManager.gwt?lang=en&amp;site=${siteUUID}&amp;workspace=default</stringProp>
+                <stringProp name="HTTPSampler.method">POST</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                <boolProp name="HTTPSampler.monitor">false</boolProp>
+                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+              </HTTPSampler>
+              <hashTree>
+                <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+                  <collectionProp name="HeaderManager.headers">
+                    <elementProp name="Content-Type" elementType="Header">
+                      <stringProp name="Header.name">Content-Type</stringProp>
+                      <stringProp name="Header.value">text/x-gwt-rpc; charset=utf-8</stringProp>
+                    </elementProp>
+                    <elementProp name="Accept-Language" elementType="Header">
+                      <stringProp name="Header.name">Accept-Language</stringProp>
+                      <stringProp name="Header.value">en-us,en;q=0.5</stringProp>
+                    </elementProp>
+                    <elementProp name="Accept" elementType="Header">
+                      <stringProp name="Header.name">Accept</stringProp>
+                      <stringProp name="Header.value">text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</stringProp>
+                    </elementProp>
+                    <elementProp name="User-Agent" elementType="Header">
+                      <stringProp name="Header.name">User-Agent</stringProp>
+                      <stringProp name="Header.value">Mozilla/5.0 (X11; Linux x86_64; rv:5.0) Gecko/20100101 Firefox/5.0</stringProp>
+                    </elementProp>
+                    <elementProp name="Pragma" elementType="Header">
+                      <stringProp name="Header.name">Pragma</stringProp>
+                      <stringProp name="Header.value">no-cache</stringProp>
+                    </elementProp>
+                    <elementProp name="Accept-Charset" elementType="Header">
+                      <stringProp name="Header.name">Accept-Charset</stringProp>
+                      <stringProp name="Header.value">ISO-8859-1,utf-8;q=0.7,*;q=0.7</stringProp>
+                    </elementProp>
+                    <elementProp name="Cache-Control" elementType="Header">
+                      <stringProp name="Header.name">Cache-Control</stringProp>
+                      <stringProp name="Header.value">no-cache</stringProp>
+                    </elementProp>
+                    <elementProp name="X-GWT-Permutation" elementType="Header">
+                      <stringProp name="Header.name">X-GWT-Permutation</stringProp>
+                      <stringProp name="Header.value">B4115FBEBCD3316932073AF49D6ACAAA</stringProp>
+                    </elementProp>
+                    <elementProp name="X-GWT-Module-Base" elementType="Header">
+                      <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
+                      <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                    </elementProp>
+                    <elementProp name="Accept-Encoding" elementType="Header">
+                      <stringProp name="Header.name">Accept-Encoding</stringProp>
+                      <stringProp name="Header.value">gzip, deflate</stringProp>
+                    </elementProp>
+                    <elementProp name="Referer" elementType="Header">
+                      <stringProp name="Header.name">Referer</stringProp>
+                      <stringProp name="Header.value">${URL}/edit/default/en/${pageUrl}.html</stringProp>
+                    </elementProp>
+                  </collectionProp>
+                </HeaderManager>
+                <hashTree/>
+              </hashTree>
+              <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="getNodesAndTypes" enabled="true">
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+                  <collectionProp name="Arguments.arguments">
+                    <elementProp name="" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value">7|0|36|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getNodesAndTypes|java.util.List|java.util.ArrayList/3821976829|java.lang.String/2004016611|${pageUrl}|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/header-left|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/Header-right|${__regexFunction((.*)/.*,$1$,1,,,,pageUrl)}/illustration|${pageUrl}/listA|${pageUrl}/listA/bigText_1|${pageUrl}/listA/bigText_2|${pageUrl}/listA/bigText_3|${pageUrl}/listA/bigText_4|${pageUrl}/listA/bigText_5|${pageUrl}/listA/bigText_1|${pageUrl}/listA/publication|${pageUrl}/events|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter1|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter2|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter3|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter4|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/footer-left|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/footer-right|java.util.Arrays$ArrayList/1243019747|[Ljava.lang.String;/2600011424|publicationInfo|workflowInfo|nt:base|jmix:navMenuItem|jmix:droppableContent||jnt:imageReference|jnt:event|1|2|3|4|3|5|5|5|6|19|7|8|7|9|7|10|7|11|7|12|7|13|7|14|7|15|7|16|7|17|7|18|7|19|7|20|7|21|7|22|7|23|7|24|7|25|7|26|27|28|2|29|30|6|6|7|31|7|32|7|33|7|34|7|35|7|36|</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                    </elementProp>
+                  </collectionProp>
+                </elementProp>
+                <stringProp name="HTTPSampler.domain"></stringProp>
+                <stringProp name="HTTPSampler.port"></stringProp>
+                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                <stringProp name="HTTPSampler.protocol"></stringProp>
+                <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+                <stringProp name="HTTPSampler.path">/${__regexFunction(http://.*:[0-9]*/(.*)/.*,$1$,1,,,,URL)}/gwt/contentManager.gwt?lang=en&amp;site=${siteUUID}&amp;workspace=default</stringProp>
+                <stringProp name="HTTPSampler.method">POST</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                <boolProp name="HTTPSampler.monitor">false</boolProp>
+                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+              </HTTPSampler>
+              <hashTree>
+                <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+                  <collectionProp name="HeaderManager.headers">
+                    <elementProp name="Content-Type" elementType="Header">
+                      <stringProp name="Header.name">Content-Type</stringProp>
+                      <stringProp name="Header.value">text/x-gwt-rpc; charset=utf-8</stringProp>
+                    </elementProp>
+                    <elementProp name="Accept-Language" elementType="Header">
+                      <stringProp name="Header.name">Accept-Language</stringProp>
+                      <stringProp name="Header.value">en-us,en;q=0.5</stringProp>
+                    </elementProp>
+                    <elementProp name="Accept" elementType="Header">
+                      <stringProp name="Header.name">Accept</stringProp>
+                      <stringProp name="Header.value">text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</stringProp>
+                    </elementProp>
+                    <elementProp name="User-Agent" elementType="Header">
+                      <stringProp name="Header.name">User-Agent</stringProp>
+                      <stringProp name="Header.value">Mozilla/5.0 (X11; Linux x86_64; rv:5.0) Gecko/20100101 Firefox/5.0</stringProp>
+                    </elementProp>
+                    <elementProp name="Pragma" elementType="Header">
+                      <stringProp name="Header.name">Pragma</stringProp>
+                      <stringProp name="Header.value">no-cache</stringProp>
+                    </elementProp>
+                    <elementProp name="Accept-Charset" elementType="Header">
+                      <stringProp name="Header.name">Accept-Charset</stringProp>
+                      <stringProp name="Header.value">ISO-8859-1,utf-8;q=0.7,*;q=0.7</stringProp>
+                    </elementProp>
+                    <elementProp name="Cache-Control" elementType="Header">
+                      <stringProp name="Header.name">Cache-Control</stringProp>
+                      <stringProp name="Header.value">no-cache</stringProp>
+                    </elementProp>
+                    <elementProp name="X-GWT-Permutation" elementType="Header">
+                      <stringProp name="Header.name">X-GWT-Permutation</stringProp>
+                      <stringProp name="Header.value">B4115FBEBCD3316932073AF49D6ACAAA</stringProp>
+                    </elementProp>
+                    <elementProp name="X-GWT-Module-Base" elementType="Header">
+                      <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
+                      <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                    </elementProp>
+                    <elementProp name="Accept-Encoding" elementType="Header">
+                      <stringProp name="Header.name">Accept-Encoding</stringProp>
+                      <stringProp name="Header.value">gzip, deflate</stringProp>
+                    </elementProp>
+                    <elementProp name="Referer" elementType="Header">
+                      <stringProp name="Header.name">Referer</stringProp>
+                      <stringProp name="Header.value">${URL}/edit/default/en/${pageUrl}.html</stringProp>
+                    </elementProp>
+                  </collectionProp>
+                </HeaderManager>
+                <hashTree/>
+              </hashTree>
+              <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="initializeEditEngine" enabled="true">
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+                  <collectionProp name="Arguments.arguments">
+                    <elementProp name="" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value">7|0|7|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|initializeEditEngine|java.lang.String/2004016611|Z|${pageUrl}/listA/bigText_1|1|2|3|4|2|5|6|7|1|</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                    </elementProp>
+                  </collectionProp>
+                </elementProp>
+                <stringProp name="HTTPSampler.domain"></stringProp>
+                <stringProp name="HTTPSampler.port"></stringProp>
+                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                <stringProp name="HTTPSampler.protocol"></stringProp>
+                <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+                <stringProp name="HTTPSampler.path">/${__regexFunction(http://.*:[0-9]*/(.*)/.*,$1$,1,,,,URL)}/gwt/contentManager.gwt?lang=en&amp;site=${siteUUID}&amp;workspace=default</stringProp>
+                <stringProp name="HTTPSampler.method">POST</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                <boolProp name="HTTPSampler.monitor">false</boolProp>
+                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+              </HTTPSampler>
+              <hashTree>
+                <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+                  <collectionProp name="HeaderManager.headers">
+                    <elementProp name="Content-Type" elementType="Header">
+                      <stringProp name="Header.name">Content-Type</stringProp>
+                      <stringProp name="Header.value">text/x-gwt-rpc; charset=utf-8</stringProp>
+                    </elementProp>
+                    <elementProp name="Accept-Language" elementType="Header">
+                      <stringProp name="Header.name">Accept-Language</stringProp>
+                      <stringProp name="Header.value">en-us,en;q=0.5</stringProp>
+                    </elementProp>
+                    <elementProp name="Accept" elementType="Header">
+                      <stringProp name="Header.name">Accept</stringProp>
+                      <stringProp name="Header.value">text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</stringProp>
+                    </elementProp>
+                    <elementProp name="User-Agent" elementType="Header">
+                      <stringProp name="Header.name">User-Agent</stringProp>
+                      <stringProp name="Header.value">Mozilla/5.0 (X11; Linux x86_64; rv:5.0) Gecko/20100101 Firefox/5.0</stringProp>
+                    </elementProp>
+                    <elementProp name="Pragma" elementType="Header">
+                      <stringProp name="Header.name">Pragma</stringProp>
+                      <stringProp name="Header.value">no-cache</stringProp>
+                    </elementProp>
+                    <elementProp name="Accept-Charset" elementType="Header">
+                      <stringProp name="Header.name">Accept-Charset</stringProp>
+                      <stringProp name="Header.value">ISO-8859-1,utf-8;q=0.7,*;q=0.7</stringProp>
+                    </elementProp>
+                    <elementProp name="Cache-Control" elementType="Header">
+                      <stringProp name="Header.name">Cache-Control</stringProp>
+                      <stringProp name="Header.value">no-cache</stringProp>
+                    </elementProp>
+                    <elementProp name="X-GWT-Permutation" elementType="Header">
+                      <stringProp name="Header.name">X-GWT-Permutation</stringProp>
+                      <stringProp name="Header.value">B4115FBEBCD3316932073AF49D6ACAAA</stringProp>
+                    </elementProp>
+                    <elementProp name="X-GWT-Module-Base" elementType="Header">
+                      <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
+                      <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                    </elementProp>
+                    <elementProp name="Accept-Encoding" elementType="Header">
+                      <stringProp name="Header.name">Accept-Encoding</stringProp>
+                      <stringProp name="Header.value">gzip, deflate</stringProp>
+                    </elementProp>
+                    <elementProp name="Referer" elementType="Header">
+                      <stringProp name="Header.name">Referer</stringProp>
+                      <stringProp name="Header.value">${URL}/edit/default/en/${pageUrl}.html</stringProp>
+                    </elementProp>
+                  </collectionProp>
+                </HeaderManager>
+                <hashTree/>
+              </hashTree>
+              <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="validateWCAG" enabled="true">
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+                  <collectionProp name="Arguments.arguments">
+                    <elementProp name="" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value">7|0|9|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|validateWCAG|java.util.Map|java.util.HashMap/962170901|java.lang.String/2004016611|jnt-bigText_texten-true|&lt;p&gt; 	zzzz&lt;/p&gt; |1|2|3|4|1|5|6|1|7|8|7|9|</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                    </elementProp>
+                  </collectionProp>
+                </elementProp>
+                <stringProp name="HTTPSampler.domain"></stringProp>
+                <stringProp name="HTTPSampler.port"></stringProp>
+                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                <stringProp name="HTTPSampler.protocol">http</stringProp>
+                <stringProp name="HTTPSampler.contentEncoding">utf-8</stringProp>
+                <stringProp name="HTTPSampler.path">/${__regexFunction(http://.*:[0-9]*/(.*)/.*,$1$,1,,,,URL)}/gwt/contentManager.gwt?lang=en&amp;site=${siteUUID}&amp;workspace=default</stringProp>
+                <stringProp name="HTTPSampler.method">POST</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                <boolProp name="HTTPSampler.monitor">false</boolProp>
+                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+              </HTTPSampler>
+              <hashTree>
+                <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+                  <collectionProp name="HeaderManager.headers">
+                    <elementProp name="Content-Type" elementType="Header">
+                      <stringProp name="Header.name">Content-Type</stringProp>
+                      <stringProp name="Header.value">text/x-gwt-rpc; charset=utf-8</stringProp>
+                    </elementProp>
+                    <elementProp name="Accept-Language" elementType="Header">
+                      <stringProp name="Header.name">Accept-Language</stringProp>
+                      <stringProp name="Header.value">en-us,en;q=0.5</stringProp>
+                    </elementProp>
+                    <elementProp name="Accept" elementType="Header">
+                      <stringProp name="Header.name">Accept</stringProp>
+                      <stringProp name="Header.value">text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</stringProp>
+                    </elementProp>
+                    <elementProp name="User-Agent" elementType="Header">
+                      <stringProp name="Header.name">User-Agent</stringProp>
+                      <stringProp name="Header.value">Mozilla/5.0 (X11; Linux x86_64; rv:5.0) Gecko/20100101 Firefox/5.0</stringProp>
+                    </elementProp>
+                    <elementProp name="Pragma" elementType="Header">
+                      <stringProp name="Header.name">Pragma</stringProp>
+                      <stringProp name="Header.value">no-cache</stringProp>
+                    </elementProp>
+                    <elementProp name="Accept-Charset" elementType="Header">
+                      <stringProp name="Header.name">Accept-Charset</stringProp>
+                      <stringProp name="Header.value">ISO-8859-1,utf-8;q=0.7,*;q=0.7</stringProp>
+                    </elementProp>
+                    <elementProp name="Cache-Control" elementType="Header">
+                      <stringProp name="Header.name">Cache-Control</stringProp>
+                      <stringProp name="Header.value">no-cache</stringProp>
+                    </elementProp>
+                    <elementProp name="X-GWT-Permutation" elementType="Header">
+                      <stringProp name="Header.name">X-GWT-Permutation</stringProp>
+                      <stringProp name="Header.value">B4115FBEBCD3316932073AF49D6ACAAA</stringProp>
+                    </elementProp>
+                    <elementProp name="X-GWT-Module-Base" elementType="Header">
+                      <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
+                      <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                    </elementProp>
+                    <elementProp name="Accept-Encoding" elementType="Header">
+                      <stringProp name="Header.name">Accept-Encoding</stringProp>
+                      <stringProp name="Header.value">gzip, deflate</stringProp>
+                    </elementProp>
+                    <elementProp name="Referer" elementType="Header">
+                      <stringProp name="Header.name">Referer</stringProp>
+                      <stringProp name="Header.value">${URL}/edit/default/en/${pageUrl}.html</stringProp>
+                    </elementProp>
+                  </collectionProp>
+                </HeaderManager>
+                <hashTree/>
+              </hashTree>
+              <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="saveNode" enabled="true">
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+                  <collectionProp name="Arguments.arguments">
+                    <elementProp name="" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value">7|0|102|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|saveNode|org.jahia.ajax.gwt.client.data.node.GWTJahiaNode/3656480997|java.util.List|org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL/3859937859|java.util.Map|java.util.Set|en|java.util.HashMap/962170901|bigText_1|org.jahia.ajax.gwt.client.data.node.GWTBitSet/1207593675|[J/53942082|java.lang.String/2004016611|org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo/1630255428|java.util.LinkedHashMap/1551059846|canPublish|java.lang.Boolean/476441737|locked|status|java.lang.Integer/3438268394|uuid|ab52eeb1-c791-4f65-8a68-3a501a9d31d1|com.extjs.gxt.ui.client.data.SortInfo/1143517771|com.extjs.gxt.ui.client.Style$SortDir/640452531|name|/${__regexFunction(http://.*:[0-9]*/(.*)/.*,$1$,1,,,,URL)}/cms/render/default/${LANGUAGE}${pageUrl}/listA/bigText_1.html|org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo/1250493874|org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowType/3680752569|com.extjs.gxt.ui.client.data.RpcMap/3441186752|unpublish|displayName|org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition/3723077732|id|1-step-unpublication|1 Step Unpublication Process|provider|jBPM|formResourceName|jnt:simpleWorkflow|Simple Unpublication (One Step Only)|publish|1-step-publication|1 Step Publication Process|Simple Publication (One Step Only)|java.util.ArrayList/3821976829|icon|assets/icons/jnt_bigText|lockInfos|siteKey|ACME|providerKey|default|constraints|java.util.HashSet/1594477813|jnt:translation|inheritedNodeTypes|jnt:content|nt:base|jmix:nodenameInfo|mix:referenceable|jmix:observable|jmix:basemetadata|mix:created|jmix:lockable|mix:lockable|mix:lastModified|jmix:lastPublished|jmix:i18n|jmix:originWS|mix:versionable|mix:simpleVersionable|jmix:versionInfo|jmix:description|jmix:workflow|jmix:basicContent|jmix:droppableContent|jmix:editorialContent|hasACL|thumbnails|canLock|referenceTypes||nodeTypes|jnt:bigText|jmix:renderable|file|description|aclContext|site:ACME|path|${pageUrl}/listA/bigText_1|lockable|{{Other uses}} {{Cleanup\!date=October 2008}} The word &apos;&apos;&apos;rector&apos;&apos;&apos; ( &quot;ruler...|canUnlock|siteUUID|${siteUUID}|org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty/3461251655|text|org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue/2699023724|&lt;p&gt; 	zzzz&lt;/p&gt; |1|2|3|4|6|5|6|7|8|6|9|5|0|0|0|0|0|10|11|0|0|12|13|14|3|P__________|P__________|D_____|0|11|1|15|10|16|17|0|2|15|18|19|1|15|20|19|0|17|0|1|15|21|22|4|17|0|1|15|23|15|24|0|0|0|0|25|26|1|27|28|1|0|1|29|11|0|11|2|30|1|31|2|27|15|32|33|-26|34|1|31|5|35|15|36|27|15|37|38|15|39|40|15|41|33|15|42|30|1|31|2|27|15|43|33|-36|34|1|31|5|35|15|44|27|15|45|38|-31|40|-32|33|15|46|0|47|0|0|1|31|22|48|15|49|50|11|0|51|15|52|53|15|54|55|56|1|15|57|58|47|21|15|59|15|60|15|61|15|62|15|63|15|64|15|65|15|66|15|67|15|68|15|69|15|70|15|71|15|72|15|73|15|74|15|75|15|76|15|77|15|78|15|79|80|-12|81|11|0|82|-10|83|15|84|85|47|2|15|86|15|87|88|-12|89|-73|27|15|12|90|15|91|92|15|93|94|-10|23|-18|20|-12|33|15|95|96|-12|97|15|98|0|0|11|1|-6|47|1|99|0|100|47|1|101|0|0|1|102|47|0|0|1|0|47|0|56|0|</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                    </elementProp>
+                  </collectionProp>
+                </elementProp>
+                <stringProp name="HTTPSampler.domain"></stringProp>
+                <stringProp name="HTTPSampler.port"></stringProp>
+                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                <stringProp name="HTTPSampler.protocol">http</stringProp>
+                <stringProp name="HTTPSampler.contentEncoding">utf-8</stringProp>
+                <stringProp name="HTTPSampler.path">/${__regexFunction(http://.*:[0-9]*/(.*)/.*,$1$,1,,,,URL)}/gwt/contentManager.gwt?lang=en&amp;site=${siteUUID}&amp;workspace=default</stringProp>
+                <stringProp name="HTTPSampler.method">POST</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                <boolProp name="HTTPSampler.monitor">false</boolProp>
+                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+              </HTTPSampler>
+              <hashTree>
+                <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+                  <collectionProp name="HeaderManager.headers">
+                    <elementProp name="Content-Type" elementType="Header">
+                      <stringProp name="Header.name">Content-Type</stringProp>
+                      <stringProp name="Header.value">text/x-gwt-rpc; charset=utf-8</stringProp>
+                    </elementProp>
+                    <elementProp name="Accept-Language" elementType="Header">
+                      <stringProp name="Header.name">Accept-Language</stringProp>
+                      <stringProp name="Header.value">en-us,en;q=0.5</stringProp>
+                    </elementProp>
+                    <elementProp name="Accept" elementType="Header">
+                      <stringProp name="Header.name">Accept</stringProp>
+                      <stringProp name="Header.value">text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</stringProp>
+                    </elementProp>
+                    <elementProp name="User-Agent" elementType="Header">
+                      <stringProp name="Header.name">User-Agent</stringProp>
+                      <stringProp name="Header.value">Mozilla/5.0 (X11; Linux x86_64; rv:5.0) Gecko/20100101 Firefox/5.0</stringProp>
+                    </elementProp>
+                    <elementProp name="Pragma" elementType="Header">
+                      <stringProp name="Header.name">Pragma</stringProp>
+                      <stringProp name="Header.value">no-cache</stringProp>
+                    </elementProp>
+                    <elementProp name="Accept-Charset" elementType="Header">
+                      <stringProp name="Header.name">Accept-Charset</stringProp>
+                      <stringProp name="Header.value">ISO-8859-1,utf-8;q=0.7,*;q=0.7</stringProp>
+                    </elementProp>
+                    <elementProp name="Cache-Control" elementType="Header">
+                      <stringProp name="Header.name">Cache-Control</stringProp>
+                      <stringProp name="Header.value">no-cache</stringProp>
+                    </elementProp>
+                    <elementProp name="X-GWT-Permutation" elementType="Header">
+                      <stringProp name="Header.name">X-GWT-Permutation</stringProp>
+                      <stringProp name="Header.value">B4115FBEBCD3316932073AF49D6ACAAA</stringProp>
+                    </elementProp>
+                    <elementProp name="X-GWT-Module-Base" elementType="Header">
+                      <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
+                      <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                    </elementProp>
+                    <elementProp name="Accept-Encoding" elementType="Header">
+                      <stringProp name="Header.name">Accept-Encoding</stringProp>
+                      <stringProp name="Header.value">gzip, deflate</stringProp>
+                    </elementProp>
+                    <elementProp name="Referer" elementType="Header">
+                      <stringProp name="Header.name">Referer</stringProp>
+                      <stringProp name="Header.value">${URL}/edit/default/en/${pageUrl}.html</stringProp>
+                    </elementProp>
+                  </collectionProp>
+                </HeaderManager>
+                <hashTree/>
+              </hashTree>
+            </hashTree>
+            <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="Arbre de résultats" enabled="true">
+              <boolProp name="ResultCollector.error_logging">false</boolProp>
+              <objProp>
+                <name>saveConfig</name>
+                <value class="SampleSaveConfiguration">
+                  <time>true</time>
+                  <latency>true</latency>
+                  <timestamp>true</timestamp>
+                  <success>true</success>
+                  <label>true</label>
+                  <code>true</code>
+                  <message>true</message>
+                  <threadName>true</threadName>
+                  <dataType>true</dataType>
+                  <encoding>false</encoding>
+                  <assertions>true</assertions>
+                  <subresults>true</subresults>
+                  <responseData>false</responseData>
+                  <samplerData>false</samplerData>
+                  <xml>true</xml>
+                  <fieldNames>false</fieldNames>
+                  <responseHeaders>false</responseHeaders>
+                  <requestHeaders>false</requestHeaders>
+                  <responseDataOnError>false</responseDataOnError>
+                  <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+                  <assertionsResultsToSave>0</assertionsResultsToSave>
+                  <bytes>true</bytes>
+                </value>
+              </objProp>
+              <stringProp name="filename"></stringProp>
+            </ResultCollector>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Rapport agrégé" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>true</xml>
+              <fieldNames>false</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <threadCounts>true</threadCounts>
+            </value>
+          </objProp>
+          <stringProp name="filename">results/allTestPlan_${__time(yyyyMMdd_HHmmss)}.jtl</stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="AssertionVisualizer" testclass="ResultCollector" testname="Vérification résultats" enabled="true">
+          <boolProp name="ResultCollector.error_logging">true</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>true</xml>
+              <fieldNames>false</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Rapport consolidé" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>true</xml>
+            <fieldNames>false</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

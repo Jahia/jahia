@@ -1,0 +1,134 @@
+<test = 'http://www.apache.org/jackrabbit/test'>
+<nt = 'http://www.jcp.org/jcr/nt/1.0'>
+
+[test:emptyNodeType] > nt:base 
+
+[test:mixinNodeType]
+  mixin
+
+[test:orderedNodeType] > nt:base
+  orderable
+
+[test:itemNodeType] > nt:base
+- * (string) queryops '=,<>,<,<=,>,>='
+- test:emptyItem (string) queryops '=,<>,<,<=,>,>='
+- test:autoCreatedItem (string) = 'defvalue' autocreated queryops '=,<>,LIKE'
+- test:mandatoryItem (string) mandatory
+- test:copyItem (string) copy
+- test:versionItem (string) version
+- test:initializeItem (string) initialize 
+- test:computeItem (string) compute
+- test:abortItem (string) abort
+- test:protectedItem (string) protected
+
+[test:propertyNodeType] > nt:base
+- test:emptyProperty (string)
+- test:binaryProperty (binary) < '[0,)'
+- test:booleanProperty (boolean) = true < true, false 
+- test:dateProperty (date) = '2005-01-01T00:00:00.000Z' < '[2005-01-01T00:00:00.000Z,2006-01-01T00:00:00.000Z)'
+- test:doubleProperty (double) = '1.5' nofulltext queryops '=,<>,>,>=,<,<=' < '[,0.0)', '(1.0,2.0)', '(3.0,]'
+- test:longProperty (long) = 25 nofulltext < '(-10,0]', '[1,2]', '[10,100)'
+- test:nameProperty (name) = 'test:testName' nofulltext < 'test:testName'
+- test:pathProperty (path) nofulltext < '/test:testPath'
+- test:pathProperty1 (path) nofulltext < '/test:testPath/*'
+- test:pathProperty2 (path) nofulltext < 'test:testPath/*'
+- test:referenceProperty (reference) nofulltext < 'nt:base'
+- test:stringProperty (string) = 'banana','bananas' multiple nofulltext < 'bananas?'
+- test:multipleProperty (string) multiple nofulltext
+
+[test:childNodeType] > nt:base
++ test:emptyNode (nt:base)
++ test:siblingNode (nt:base) multiple
++ test:defaultTypeNode (nt:base) = nt:base
++ test:requiredTypeNode (nt:base, nt:unstructured)
+
+[test:versionable] > nt:base, mix:versionable
+- * (undefined) copy
+- test:copyOnParentVersionProp (string) copy
+- test:versionOnParentVersionProp (string) version
+- test:initializeOnParentVersionProp (string) initialize
+- test:computeOnParentVersionProp (string) compute
+- test:ignoreOnParentVersionProp (string) ignore
+- test:abortOnParentVersionProp (string) abort
++ * (nt:base) = test:versionable copy
++ test:copyOnParentVersion (nt:base) = nt:unstructured copy
++ test:versionOnParentVersion (nt:base) = nt:unstructured version
++ test:initializeOnParentVersion (nt:base) = nt:unstructured initialize
++ test:computeOnParentVersion (nt:base) = nt:unstructured compute
++ test:ignoreOnParentVersion (nt:base) = nt:unstructured ignore
++ test:abortOnParentVersion (nt:base) = nt:unstructured abort
+
+[test:refTargetNode] > nt:base, mix:versionable
+- * (undefined) copy
+
+[test:canSetProperty] > nt:base
+- String (string) copy
+- StringMultiple (string) copy multiple
+- StringConstraints (string) copy < 'abc', 'def', 'ghi'
+- StringMultipleConstraints (string) copy multiple < 'abc', 'def', 'ghi'
+- Binary (binary) copy
+- BinaryMultiple (binary) copy multiple
+- BinaryConstraints (binary) copy < '(,100)'
+- BinaryMultipleConstraints (binary) copy < '(,100)'
+- Date (date) copy
+- DateMultiple (date) copy multiple
+- DateConstraints (date) copy < '(1974-02-15T00:00:00.000Z,)'
+- DateMultipleConstraints (date) copy < '(1974-02-15T00:00:00.000Z,)'
+- Double (double) copy
+- DoubleMultiple (double) copy multiple
+- DoubleConstraints (double) copy < '(100,)'
+- DoubleMultipleConstraints (double) copy < '(,100)'
+- Long (long) copy
+- LongMultiple (long) copy multiple
+- LongConstraints (long) copy < '(100,)'
+- LongMultipleConstraints (long) copy < '(,100)'
+- Boolean (boolean) copy
+- BooleanMultiple (boolean) copy multiple
+- BooleanConstraints (boolean) copy < true
+- BooleanMultipleConstraints (boolean) copy < true
+- Name (name) copy
+- NameMultiple (name) copy multiple
+- NameConstraints (name) copy < 'abc'
+- NameMultipleConstraints (name) copy < 'abc'
+- Path (path) copy
+- PathMultiple (path) copy multiple
+- PathConstraints (path) copy < '/abc'
+- PathMultipleConstraints (path) copy < '/abc'
+- ReferenceConstraints (reference) copy < test:canSetProperty
+- ReferenceMultipleConstraints (reference) copy < test:canSetProperty
+
+[test:canAddChildNode] > nt:base
++ testChildWithDefaultType (nt:base) = nt:base copy
++ testChildWithoutDefaultType (nt:base) copy
+
+[test:setProperty] > nt:base, mix:referenceable
+- * (undefined) copy
+- test:multiProperty (undefined) copy multiple
++ * (nt:base) = test:setProperty copy 
+
+[test:setPropertyAssumingType] > nt:base
+- test:singleProperty (undefined) copy
+- test:multipleProperty (undefined) copy multiple
++ * (nt:base) = test:setPropertyAssumingType copy
+
+[test:sameNameSibsFalseChildNodeDefinition] > nt:base
+- * (undefined) copy
++ * (nt:base) = test:sameNameSibsFalseChildNodeDefinition compute
+
+[test:externalReference] > nt:base, jmix:droppableContent
+- test:simpleNode (reference)     
+- test:multipleI18NNode (reference) multiple i18n
+
+[test:externalWeakReference] > nt:base, jmix:droppableContent
+- test:simpleNode (weakreference)
+- test:multipleNode (weakreference) multiple
+- test:multipleI18NNode (weakreference) multiple i18n
+
+[test:validatedNode] > nt:base, jmix:droppableContent
+- test:notNull (string)
+- test:sizeBetween6And20 (string)
+- test:email (string)
+- test:confirmEmail (string)
+- test:futureDate (date)
+- test:greaterThan2 (long)
+

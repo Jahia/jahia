@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jahia:page xmlns:jahia="http://www.jahia.org/" xmlns:jcr="http://www.jcp.org/jcr/1.0" jahia:template="TestUnitHome"
+            jcr:primaryType="test_templates:home" jahia:title="Welcome to localhost"
+            jcr:lastModified="2009-02-11T15:50:32"
+            jahia:createdBy="root" jcr:created="2009-02-11T15:50:05" jahia:lastModifiedBy="root" jahia:acl="g:guest:r--">
+    <navLinkList jcr:primaryType="jnt:navLinkList"
+                 jcr:created="2009-02-11T15:50:05" jahia:lastModifiedBy="root" jcr:lastModified="2009-02-11T15:50:32"
+                 jahia:createdBy="root">
+        <navLink jcr:primaryType="jnt:navLink"
+                 jcr:lastModified="2009-02-11T15:50:32" jahia:createdBy="root" jcr:created="2009-02-11T15:50:32"
+                 jahia:lastModifiedBy="root">
+            <navLink>
+                <jahia:page jahia:template="Simple" jcr:primaryType="test_templates:generic" jahia:title="page simple"
+                            jahia:createdBy="root"
+                            jcr:lastModified="2009-02-11T15:50:32" jahia:lastModifiedBy="root"
+                            jcr:created="2009-02-11T15:50:32">
+                    <navLinkList jcr:primaryType="jnt:navLinkList"
+                                 jcr:created="2009-02-11T15:50:32" jcr:lastModified="2009-02-11T15:50:32"
+                                 jahia:createdBy="root" jahia:lastModifiedBy="root"></navLinkList>
+                    <maincontentList jcr:primaryType="jnt:mainContentContainerList"
+                                     jcr:lastModified="2009-02-11T15:50:32" jahia:lastModifiedBy="root"
+                                     jcr:created="2009-02-11T15:50:32" jahia:createdBy="root"></maincontentList>
+                </jahia:page>
+            </navLink>
+        </navLink>
+    </navLinkList>
+    <maincontentList jcr:primaryType="jnt:mainContentContainerList"
+                     jahia:createdBy="root" jahia:lastModifiedBy="root" jcr:created="2009-02-11T15:50:05"
+                     jcr:lastModified="2009-02-11T15:50:18">
+        <maincontent jcr:primaryType="jnt:mainContentContainer"
+                     jcr:lastModified="2009-02-11T15:50:18" jahia:createdBy="root" jcr:created="2009-02-11T15:50:18"
+                     jahia:lastModifiedBy="root">
+            <mainContentAlign
+                    jahia:value="&lt;jahia-resource id=&quot;JahiaTypesResources&quot; key=&quot;jnt_mainContentContainer.mainContentAlign.left&quot; default-value=&quot;left&quot;/&gt;"></mainContentAlign>
+            <mainContentImage jahia:value=""></mainContentImage>
+            <mainContentBody jahia:value=""></mainContentBody>
+            <mainContentTitle jahia:value="description"></mainContentTitle>
+        </maincontent>
+    </maincontentList>
+</jahia:page>

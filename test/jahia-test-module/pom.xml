@@ -47,8 +47,8 @@
         <version>6.7.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>jahia-test-module</artifactId>
-    <name>Jahia Test Module Package</name>
-    <packaging>jar</packaging>
+    <name>Jahia Test Module</name>
+    <packaging>bundle</packaging>
     <scm>
         <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/test/jahia-test-module</connection>
         <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/test/jahia-test-module</developerConnection>
@@ -98,6 +98,34 @@
                     <groupId>javax.servlet</groupId>
                     <artifactId>servlet-api</artifactId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>icu4j</artifactId>
+                    <groupId>com.ibm.icu</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>concurrent</artifactId>
+                    <groupId>concurrent</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>activation</artifactId>
+                    <groupId>javax.activation</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>oro</artifactId>
+                    <groupId>oro</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>mail</artifactId>
+                    <groupId>javax.mail</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -105,12 +133,18 @@
             <artifactId>jahia-gwt</artifactId>
             <version>6.7.0.0-SNAPSHOT</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     	<dependency>
     		<groupId>org.apache.ant</groupId>
     		<artifactId>ant</artifactId>
     		<version>${ant.version}</version>
-    	</dependency>        
+    	</dependency>
         <dependency>
             <groupId>javax.portlet</groupId>
             <artifactId>portlet-api</artifactId>
@@ -121,19 +155,26 @@
             <groupId>org.apache.jackrabbit</groupId>
             <artifactId>jackrabbit-jcr-tests</artifactId>
             <version>${jackrabbit.version}</version>
-            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>concurrent</artifactId>
+                    <groupId>concurrent</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
             <version>1.2</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jbpm.jbpm4</groupId>
             <artifactId>jbpm-test-base</artifactId>
             <version>4.4</version>
-            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -167,6 +208,22 @@
                     <artifactId>jbpm-log</artifactId>
                     <groupId>org.jbpm.jbpm4</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>oro</artifactId>
+                    <groupId>oro</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>mail</artifactId>
+                    <groupId>javax.mail</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>mockrunner</artifactId>
+                    <groupId>com.mockrunner</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -174,13 +231,11 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.1</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit-addons</groupId>
             <artifactId>junit-addons</artifactId>
             <version>1.4</version>
-            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <artifactId>xmlParserAPIs</artifactId>
@@ -196,37 +251,11 @@
             <groupId>xmlunit</groupId>
             <artifactId>xmlunit</artifactId>
             <version>1.3</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports</artifactId>
-            <version>4.0.1</version>
-            <scope>provided</scope>
-            <exclusions>
-            	<exclusion>
-            		<artifactId>bcmail-jdk14</artifactId>
-            		<groupId>bouncycastle</groupId>
-            	</exclusion>
-            	<exclusion>
-            		<artifactId>bctsp-jdk14</artifactId>
-            		<groupId>org.bouncycastle</groupId>
-            	</exclusion>
-            	<exclusion>
-            		<artifactId>bcprov-jdk14</artifactId>
-            		<groupId>bouncycastle</groupId>
-            	</exclusion>
-            	<exclusion>
-            		<artifactId>xml-apis</artifactId>
-            		<groupId>xml-apis</groupId>
-            	</exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
@@ -238,6 +267,12 @@
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
             <scope>provided</scope>
         </dependency>
         <!-- Nutch and its dependencies -->
@@ -261,6 +296,14 @@
                 <exclusion>
                     <artifactId>xmlParserAPIs</artifactId>
                     <groupId>xerces</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>servlet-api</artifactId>
+                    <groupId>org.mortbay.jetty</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>icu4j</artifactId>
+                    <groupId>com.ibm.icu</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -307,27 +350,90 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- End of Nutch and its dependencies -->
         <dependency>
             <groupId>com.ning</groupId>
             <artifactId>async-http-client</artifactId>
             <version>1.7.6</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
-        <!-- End of Nutch and its dependencies -->
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>${jar.plugin.version}</version>
+                <groupId>org.jahia.server</groupId>
+                <artifactId>jahia-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>native2ascii</id>
+                        <goals>
+                            <goal>native2ascii</goal>
+                        </goals>
+                        <configuration>
+                            <includes>resources/*.properties</includes>
+                            <defaultPropertiesFileLocale>en</defaultPropertiesFileLocale>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>package-imports</id>
+                        <goals>
+                            <goal>package-imports</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
                 <configuration>
+                    <instructions>
+                        <Bundle-Name>${project.name}</Bundle-Name>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Category>jahia-module</Bundle-Category>
+        
+                        <Implementation-Title>${project.name}</Implementation-Title>
+                        <Implementation-Version>${project.version}</Implementation-Version>
+                        <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                        <Implementation-URL>${project.organization.url}</Implementation-URL>
+                        <Specification-Title>${project.name}</Specification-Title>
+                        <Specification-Version>${project.version}</Specification-Version>
+                        <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+        
+                        <!-- Jahia manifest attributes -->
+                        <Jahia-Package-Name>${project.name}</Jahia-Package-Name>
+                        <Jahia-Depends>default</Jahia-Depends>
+                        <Jahia-Deploy-On-Site>all</Jahia-Deploy-On-Site>
+                        <Jahia-Module-Type>system</Jahia-Module-Type>
+                        <Jahia-Root-Folder>${project.artifactId}</Jahia-Root-Folder>
+                        <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
+                        <Jahia-Static-Resources>/css,/icons,/images,/img,/javascript</Jahia-Static-Resources>
+
+                        <Package-Name>${project.name}</Package-Name>
+                        <Depends>default</Depends>
+                        <Deploy-On-Site>all</Deploy-On-Site>
+                        <Module-Type>system</Module-Type>
+                        <Root-Folder>${project.artifactId}</Root-Folder>
+                        <Source-Folders>${project.basedir}</Source-Folders>
+        
+                        <Import-Package>*,${jahia.modules.importPackage}</Import-Package>
+                        <Embed-Dependency>*; scope=compile; type=!pom; inline=false</Embed-Dependency>
+                        <Embed-Transitive>true</Embed-Transitive>
+                        <_removeheaders>
+                            Include-Resource,
+                            Private-Package,
+                            Embed-Dependency,
+                            Embed-Transitive
+                        </_removeheaders>
+                    </instructions>
                     <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                        </manifest>
-                        <manifestEntries>
-                            <Implementation-Build>${buildNumber}</Implementation-Build>
-                        </manifestEntries>
+                        <addMavenDescriptor>false</addMavenDescriptor>
                     </archive>
                 </configuration>
             </plugin>

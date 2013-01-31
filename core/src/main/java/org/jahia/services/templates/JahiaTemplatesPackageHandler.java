@@ -222,12 +222,12 @@ final class JahiaTemplatesPackageHandler {
                 InputStream manifestStream = new BufferedInputStream(new FileInputStream(manifestFile), 1024);
                 Manifest manifest = new Manifest(manifestStream);
                 IOUtils.closeQuietly(manifestStream);
-                String packageName = (String) manifest.getMainAttributes().get(new Attributes.Name("package-name"));
-                String rootFolder = (String) manifest.getMainAttributes().get(new Attributes.Name("root-folder"));
-                String moduleType = (String) manifest.getMainAttributes().get(new Attributes.Name("module-type"));
+                String packageName = (String) manifest.getMainAttributes().get(new Attributes.Name("Jahia-Package-Name"));
+                String rootFolder = (String) manifest.getMainAttributes().get(new Attributes.Name("Jahia-Root-Folder"));
+                String moduleType = (String) manifest.getMainAttributes().get(new Attributes.Name("Jahia-Module-Type"));
                 String implementationVersionStr = (String) manifest.getMainAttributes().get(new Attributes.Name("Implementation-Version"));
 
-                String depends = (String) manifest.getMainAttributes().get(new Attributes.Name("depends"));
+                String depends = (String) manifest.getMainAttributes().get(new Attributes.Name("Jahia-Depends"));
                 if (depends != null && !StringUtils.isEmpty(depends.trim())) {
                     String[] dependencies = Patterns.COMMA.split(depends);
                     for (String dependency : dependencies) {
@@ -235,7 +235,7 @@ final class JahiaTemplatesPackageHandler {
                     }
                 }
 
-                String definitions = (String) manifest.getMainAttributes().get(new Attributes.Name("definitions"));
+                String definitions = (String) manifest.getMainAttributes().get(new Attributes.Name("Jahia-Definitions"));
                 if (definitions != null) {
                     String[] defs = Patterns.COMMA.split(definitions);
                     for (String defFile : defs) {
@@ -243,7 +243,7 @@ final class JahiaTemplatesPackageHandler {
                     }
                 }
 
-                String imports = (String) manifest.getMainAttributes().get(new Attributes.Name("initial-imports"));
+                String imports = (String) manifest.getMainAttributes().get(new Attributes.Name("Jahia-Initial-Imports"));
                 if (imports != null) {
                     String[] importFiles = Patterns.COMMA.split(imports);
                     for (String imp : importFiles) {
@@ -251,12 +251,12 @@ final class JahiaTemplatesPackageHandler {
                     }
                 }
                 
-                String resourceBundle = (String) manifest.getMainAttributes().get(new Attributes.Name("resource-bundle"));
+                String resourceBundle = (String) manifest.getMainAttributes().get(new Attributes.Name("Jahia-Resource-Bundle"));
                 if (StringUtils.isNotBlank(resourceBundle)) {
                     templatePackage.setResourceBundleName(resourceBundle.trim());
                 }
-                String autoDeployOnSite = (String) manifest.getMainAttributes().get(new Attributes.Name("deploy-on-site"));
-                if(autoDeployOnSite != null && autoDeployOnSite.matches("systemsite|all")){
+                String autoDeployOnSite = (String) manifest.getMainAttributes().get(new Attributes.Name("Jahia-Deploy-On-Site"));
+                if(autoDeployOnSite != null && (autoDeployOnSite.equals("all") || autoDeployOnSite.equals("systemsite"))){
                     templatePackage.setAutoDeployOnSite(autoDeployOnSite);
                 }
                 templatePackage.setName(packageName);
@@ -267,8 +267,8 @@ final class JahiaTemplatesPackageHandler {
                 String provider = (String) manifest.getMainAttributes().get(new Attributes.Name("Implementation-Vendor"));
                 templatePackage.setProvider(StringUtils.defaultIfBlank(provider, "Jahia Solutions Group SA"));
 
-                templatePackage.setScmURI((String) manifest.getMainAttributes().get(new Attributes.Name("Source-Control-URI")));
-                String sourcesFolder = (String) manifest.getMainAttributes().get(new Attributes.Name("Source-Folders"));
+                templatePackage.setScmURI((String) manifest.getMainAttributes().get(new Attributes.Name("Jahia-Source-Control-URI")));
+                String sourcesFolder = (String) manifest.getMainAttributes().get(new Attributes.Name("Jahia-Source-Folders"));
                 if (sourcesFolder != null) {
                     File sources = new File(sourcesFolder);
                     if (sources.exists()) {

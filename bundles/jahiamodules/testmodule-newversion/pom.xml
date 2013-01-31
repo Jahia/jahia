@@ -34,9 +34,9 @@
                         <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <Package-name>${project.name}</Package-name>
-                        <Module-type>module</Module-type>
-                        <Root-folder>${project.artifactId}</Root-folder>
-                        <Source-Folders>${project.basedir}</Source-Folders>
+                        <Jahia-Module-Type>module</Jahia-Module-Type>
+                        <Jahia-Root-Folder>${project.artifactId}</Jahia-Root-Folder>
+                        <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
                         <Jahia-Static-Resources>/css</Jahia-Static-Resources>
                         <_removeheaders>
                             Include-Resource,

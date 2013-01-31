@@ -407,20 +407,12 @@
                         <Specification-Vendor>${project.organization.name}</Specification-Vendor>
         
                         <!-- Jahia manifest attributes -->
-                        <Jahia-Package-Name>${project.name}</Jahia-Package-Name>
                         <Jahia-Depends>default</Jahia-Depends>
                         <Jahia-Deploy-On-Site>all</Jahia-Deploy-On-Site>
                         <Jahia-Module-Type>system</Jahia-Module-Type>
                         <Jahia-Root-Folder>${project.artifactId}</Jahia-Root-Folder>
                         <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
                         <Jahia-Static-Resources>/css,/icons,/images,/img,/javascript</Jahia-Static-Resources>
-
-                        <Package-Name>${project.name}</Package-Name>
-                        <Depends>default</Depends>
-                        <Deploy-On-Site>all</Deploy-On-Site>
-                        <Module-Type>system</Module-Type>
-                        <Root-Folder>${project.artifactId}</Root-Folder>
-                        <Source-Folders>${project.basedir}</Source-Folders>
         
                         <Import-Package>*,${jahia.modules.importPackage}</Import-Package>
                         <Embed-Dependency>*; scope=compile; type=!pom; inline=false</Embed-Dependency>

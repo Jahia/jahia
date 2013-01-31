@@ -60,7 +60,6 @@
                 <configuration>
                     <instructions>
                         <Jahia-Module-Type>system</Jahia-Module-Type>
-                        <Module-Type>system</Module-Type>
                     </instructions>
                 </configuration>
             </plugin>

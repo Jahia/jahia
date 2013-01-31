@@ -33,11 +33,10 @@
                         </Import-Package>
                         <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
-                        <Package-name>${project.name}</Package-name>
-                        <Module-type>templatesSet</Module-type>
-                        <Root-folder>${project.artifactId}</Root-folder>
-                        <Source-Folders>${project.basedir}</Source-Folders>
-                        <Depends>default</Depends>
+                        <Jahia-Module-Type>templatesSet</Jahia-Module-Type>
+                        <Jahia-Root-Folder>${project.artifactId}</Jahia-Root-Folder>
+                        <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
+                        <Jahia-Depends>default</Jahia-Depends>
                         <Jahia-Static-Resources>/css</Jahia-Static-Resources>
                         <_removeheaders>
                             Include-Resource,

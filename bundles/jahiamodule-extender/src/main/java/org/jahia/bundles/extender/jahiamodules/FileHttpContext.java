@@ -1,5 +1,6 @@
 package org.jahia.bundles.extender.jahiamodules;
 
+import org.apache.commons.lang.StringUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.service.http.HttpContext;
 import org.slf4j.Logger;
@@ -33,10 +34,10 @@ public class FileHttpContext implements HttpContext {
     }
 
     public static URL[] getSourceURLs(Bundle bundle) {
-        String sourceFolderHeader = (String) bundle.getHeaders().get("Source-Folders");
+        String sourceFolderHeader = (String) bundle.getHeaders().get("Jahia-Source-Folders");
         List<URL> sourceURLs = new ArrayList<URL>();
         if (sourceFolderHeader != null) {
-            String[] sourceFolders = sourceFolderHeader.split(",");
+            String[] sourceFolders = StringUtils.split(sourceFolderHeader, ",");
 
             for (String sourceFolder : sourceFolders) {
                 File resourceFolderFile = new File(sourceFolder + "/src/main/resources");

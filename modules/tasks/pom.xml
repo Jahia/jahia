@@ -60,7 +60,6 @@
                 <configuration>
                     <instructions>
                         <Jahia-Depends>default,profile</Jahia-Depends>
-                        <Depends>default,profile</Depends>
                     </instructions>
                 </configuration>
             </plugin>

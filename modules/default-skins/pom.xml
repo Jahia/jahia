@@ -60,7 +60,6 @@
                 <configuration>
                     <instructions>
                         <Jahia-Depends>skins</Jahia-Depends>
-                        <Depends>skins</Depends>
                     </instructions>
                 </configuration>
             </plugin>

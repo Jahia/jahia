@@ -195,7 +195,7 @@ public class Activator implements BundleActivator {
 
             public void bundleChanged(final BundleEvent bundleEvent) {
                 Bundle bundle = bundleEvent.getBundle();
-                if (bundle == null || bundle.getHeaders().get("module-type") == null) {
+                if (bundle == null || bundle.getHeaders().get("Jahia-Module-Type") == null) {
                     return;
                 }
                 

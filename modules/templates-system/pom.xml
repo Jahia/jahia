@@ -60,9 +60,7 @@
                 <configuration>
                     <instructions>
                         <Jahia-Depends>default,grid,skins,default-skins,tabularList,tags,profile,tasks,facets</Jahia-Depends>
-                        <Depends>default,grid,skins,default-skins,tabularList,tags,profile,tasks,facets</Depends>
                         <Jahia-Module-Type>templatesSet</Jahia-Module-Type>
-                        <Module-Type>templatesSet</Module-Type>
                     </instructions>
                 </configuration>
             </plugin>

@@ -61,9 +61,7 @@
                 <configuration>
                     <instructions>
                         <Jahia-Module-Type>system</Jahia-Module-Type>
-                        <Module-Type>system</Module-Type>
                         <Jahia-Depends>assets</Jahia-Depends>
-                        <Depends>assets</Depends>
                     </instructions>
                 </configuration>
             </plugin>

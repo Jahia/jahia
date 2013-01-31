@@ -45,7 +45,6 @@ import java.util.Enumeration;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.ModuleVersion;
-import org.jahia.utils.Patterns;
 import org.osgi.framework.Bundle;
 
 /**
@@ -59,7 +58,7 @@ class JahiaBundleTemplatesPackageHandler {
             throw new IllegalArgumentException("Provided bundle is null");
         }
 
-        String moduleType = getHeader(bundle, "Jahia-Module-Type", "Module-Type");
+        String moduleType = getHeader(bundle, "Jahia-Module-Type");
 
         if (StringUtils.isEmpty(moduleType)) {
             // not a valid Jahia module package
@@ -76,14 +75,13 @@ class JahiaBundleTemplatesPackageHandler {
         pkg.setVersion(new ModuleVersion(StringUtils.defaultIfBlank(getHeader(bundle, "Implementation-Version"), bundle
                 .getVersion().toString())));
 
-        pkg.setRootFolder(StringUtils.defaultString(getHeader(bundle, "Jahia-Root-Folder", "Root-Folder"),
-                bundle.getSymbolicName()));
+        pkg.setRootFolder(StringUtils.defaultString(getHeader(bundle, "Jahia-Root-Folder"), bundle.getSymbolicName()));
 
         pkg.setRootFolderPath("/modules/" + pkg.getRootFolder());
 
         detectResourceBundle(bundle, pkg);
 
-        String srcFolder = getHeader(bundle, "Jahia-Source-Folders", "Source-Folders");
+        String srcFolder = getHeader(bundle, "Jahia-Source-Folders");
         if (srcFolder != null) {
             File sources = new File(srcFolder);
             if (sources.exists()) {
@@ -95,14 +93,14 @@ class JahiaBundleTemplatesPackageHandler {
             pkg.setFilePath(bundle.getEntry("/").getPath());
         }
 
-        String depends = getHeader(bundle, "Jahia-Depends", "Depends");
+        String depends = getHeader(bundle, "Jahia-Depends");
         if (StringUtils.isNotBlank(depends)) {
-            String[] dependencies = Patterns.COMMA.split(depends);
+            String[] dependencies = StringUtils.split(depends, ",");
             for (String dependency : dependencies) {
                 pkg.setDepends(dependency.trim());
             }
         }
-        
+
         pkg.setProvider(StringUtils.defaultString(getHeader(bundle, "Implementation-Vendor"),
                 "Jahia Solutions Group SA"));
 
@@ -110,7 +108,7 @@ class JahiaBundleTemplatesPackageHandler {
     }
 
     private static void detectResourceBundle(Bundle bundle, JahiaBundleTemplatesPackage pkg) {
-        String resourceBundle = getHeader(bundle, "Jahia-Resource-Bundle", "Resource-Bundle");
+        String resourceBundle = getHeader(bundle, "Jahia-Resource-Bundle");
         if (StringUtils.isNotBlank(resourceBundle)) {
             pkg.setResourceBundleName(resourceBundle.trim());
             return;
@@ -122,13 +120,13 @@ class JahiaBundleTemplatesPackageHandler {
             return;
         }
 
-        rbName = Patterns.SPACE.matcher(pkg.getName()).replaceAll("");
+        rbName = StringUtils.replace(pkg.getName(), " ", "");
         if (hasResourceBundle(bundle, rbName)) {
             pkg.setResourceBundleName("resources." + rbName);
             return;
         }
 
-        rbName = Patterns.SPACE.matcher(pkg.getName()).replaceAll("_");
+        rbName = StringUtils.replace(pkg.getName(), " ", "_");
         if (hasResourceBundle(bundle, rbName)) {
             pkg.setResourceBundleName("resources." + rbName);
         }

@@ -61,9 +61,7 @@
                 <configuration>
                     <instructions>
                         <Jahia-Module-Type>system</Jahia-Module-Type>
-                        <Module-Type>system</Module-Type>
                         <Jahia-Depends>default,contentRetrieval</Jahia-Depends>
-                        <Depends>default,contentRetrieval</Depends>
                     </instructions>
                 </configuration>
             </plugin>

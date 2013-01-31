@@ -16,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
+import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
@@ -149,7 +150,6 @@ public class Connection extends URLConnection {
                     ByteArrayInputStream tempEntryInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());
                     // let's load the XML and start transforming it.
                     SAXBuilder saxBuilder = new SAXBuilder();
-                    String prefix = "";
                     try {
                         Document jdomDocument = saxBuilder.build(tempEntryInputStream);
                         List<Namespace> rootElementNamespaces = jdomDocument.getRootElement().getNamespacesInScope();
@@ -251,7 +251,10 @@ public class Connection extends URLConnection {
                 //exportPackage.append("*,");
             }
             */
-            String titleAttribute = inputManifest.getMainAttributes().getValue("Implementation-Title");
+            String titleAttribute = inputManifest.getMainAttributes().getValue("package-name");
+            if (titleAttribute == null) {
+                titleAttribute = inputManifest.getMainAttributes().getValue("Implementation-Title");
+            }
             bndProperties.put("Bundle-Name", titleAttribute);
             exportPackage.append(titleAttribute.replaceAll("[ -]", ""));
             exportPackage.append(",");
@@ -269,7 +272,7 @@ public class Connection extends URLConnection {
             }
 
 
-            String[] dependsArray = depends.split(",");
+//            String[] dependsArray = depends.split(",");
             StringBuilder importPackage = new StringBuilder("*");
 
             /*
@@ -309,12 +312,9 @@ public class Connection extends URLConnection {
             }
         }
 
-        String sources = inputManifest.getMainAttributes().getValue("Source-Folders");
-        if (sources != null) {
-            bndProperties.put("Source-Folders",sources);
-        }
-        
         bndProperties.put("Bundle-Category", "jahia-module");
+
+        convertJahiaManifestAttributes(inputManifest.getMainAttributes(), bndProperties, depends);
 
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
 
@@ -335,6 +335,41 @@ public class Connection extends URLConnection {
 
         ByteArrayInputStream resultInputStream = new ByteArrayInputStream(bndByteArrayOutputStream.toByteArray());
         return resultInputStream;
+    }
+
+    private void convertJahiaManifestAttributes(Attributes attrs, Properties bndProperties, String depends) {
+        // prefix non-prefixed Jahia headers with "Jahia-"
+        if (depends.length() > 0) {
+            bndProperties.put("Jahia-Depends", depends);
+        }
+        String value = attrs.getValue("module-type");
+        if (value != null) {
+            bndProperties.put("Jahia-Module-Type", value);
+        }
+        value = attrs.getValue("root-folder");
+        if (value != null) {
+            bndProperties.put("Jahia-Root-Folder", value);
+        }
+        value = attrs.getValue("definitions");
+        if (value != null) {
+            bndProperties.put("Jahia-Definitions", value);
+        }
+        value = attrs.getValue("initial-imports");
+        if (value != null) {
+            bndProperties.put("Jahia-Initial-Imports", value);
+        }
+        value = attrs.getValue("resource-bundle");
+        if (value != null) {
+            bndProperties.put("Jahia-Resource-Bundle", value);
+        }
+        value = attrs.getValue("deploy-on-site");
+        if (value != null) {
+            bndProperties.put("Jahia-Deploy-On-Site", value);
+        }
+
+        // remove legacy headers
+        bndProperties.put("-removeheaders", "definitions,depends,deploy-on-site,initial-imports,module-type"
+                + ",package-name,resource-bundle,root-folder");
     }
 
     private boolean hasNamespaceURI(List<Namespace> rootElementNamespaces, String springNSURI) {

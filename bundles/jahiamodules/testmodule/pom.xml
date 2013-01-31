@@ -33,10 +33,9 @@
                         <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
 
                         <!-- Jahia manifest attributes -->
-                        <Package-name>${project.name}</Package-name>
-                        <Module-type>module</Module-type>
-                        <Root-folder>${project.artifactId}</Root-folder>
-                        <Source-Folders>${project.basedir}</Source-Folders>
+                        <Jahia-Module-Type>module</Jahia-Module-Type>
+                        <Jahia-Root-Folder>${project.artifactId}</Jahia-Root-Folder>
+                        <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
                         <Jahia-Static-Resources>/css</Jahia-Static-Resources>
 
                         <Import-Package>*,

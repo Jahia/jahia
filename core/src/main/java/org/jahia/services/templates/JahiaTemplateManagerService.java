@@ -509,11 +509,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
             attributes.put(new Attributes.Name("Implementation-Version"), version);
             if (!depends.isEmpty()) {
-                attributes.put(new Attributes.Name("depends"), StringUtils.substringBetween(depends.toString(), "[", "]"));
+                attributes.put(new Attributes.Name("Jahia-Depends"), StringUtils.substringBetween(depends.toString(), "[", "]"));
             }
-            attributes.put(new Attributes.Name("module-type"), moduleType);
-            attributes.put(new Attributes.Name("package-name"), packageName);
-            attributes.put(new Attributes.Name("root-folder"), rootFolder);
+            attributes.put(new Attributes.Name("Jahia-Module-Type"), moduleType);
+            attributes.put(new Attributes.Name("Jahia-Package-Name"), packageName);
+            attributes.put(new Attributes.Name("Jahia-Root-Folder"), rootFolder);
 
             FileOutputStream out = null;
             try {
@@ -879,7 +879,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             root = (Element) root.elements("configuration").get(0);
             root = (Element) root.elements("archive").get(0);
             root = (Element) root.elements("manifestEntries").get(0);
-            root = (Element) root.elements("depends").get(0);
+            root = (Element) root.elements("Jahia-Depends").get(0);
             root.setText(StringUtils.join(dependencies, ","));
             File modifiedPom = new File(sources, "pom-modified.xml");
             XMLWriter writer = new XMLWriter(new FileWriter(modifiedPom), OutputFormat.createPrettyPrint());

@@ -1,11 +1,9 @@
 package org.jahia.bundles.url.jahiawar;
 
 /**
- * Created with IntelliJ IDEA.
  * User: loom
  * Date: 27.11.12
  * Time: 12:24
- * To change this template use File | Settings | File Templates.
  */
 public interface ServiceConstants {
 

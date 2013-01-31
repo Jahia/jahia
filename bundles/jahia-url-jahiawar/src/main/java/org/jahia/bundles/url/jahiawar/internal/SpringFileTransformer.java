@@ -39,7 +39,7 @@ public class SpringFileTransformer {
             e.printStackTrace();
             return document;
         } catch (JDOMException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
             return document;
         }
     }

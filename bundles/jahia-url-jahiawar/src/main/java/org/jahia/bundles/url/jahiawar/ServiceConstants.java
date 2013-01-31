@@ -21,4 +21,6 @@ public interface ServiceConstants {
      * Certificate check configuration property name.
      */
     static final String PROPERTY_CERTIFICATE_CHECK = PID + ".certificateCheck";
+
+    static final String PROPERTY_IMPORTED_PACKAGED = PID + ".importedPackages";
 }

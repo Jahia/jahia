@@ -147,9 +147,9 @@ public class WelcomeServlet extends HttpServlet {
     protected void defaultRedirect(HttpServletRequest request, HttpServletResponse response,
             ServletContext context) throws Exception {
         request.getSession(true);
-        final JCRSiteNode site = resolveSite(request, Constants.LIVE_WORKSPACE,
-                JahiaSitesBaseService.getInstance().getDefaultSite()
-                        .getJCRLocalPath());
+        JahiaSite defaultSite = JahiaSitesBaseService.getInstance().getDefaultSite();
+        String defaultSitePath = defaultSite != null ? defaultSite.getJCRLocalPath() : null;
+        final JCRSiteNode site = resolveSite(request, Constants.LIVE_WORKSPACE, defaultSitePath);
         JahiaUser user = (JahiaUser) request.getSession().getAttribute(ProcessingContext.SESSION_USER);
         String redirect = null;
         String pathInfo = request.getPathInfo();
@@ -180,6 +180,7 @@ public class WelcomeServlet extends HttpServlet {
                     base = request.getContextPath() + mapping + "/"
                             + Constants.EDIT_WORKSPACE + "/" + language + "/modules/default";
                 } else {
+<<<<<<< .working
                     if(home!=null) {
                         base = request.getContextPath() + mapping + "/"
                                 + Constants.EDIT_WORKSPACE + "/" + language + home.getPath();
@@ -188,6 +189,19 @@ public class WelcomeServlet extends HttpServlet {
                                 + Constants.EDIT_WORKSPACE + "/" + language + resolveSite(request, Constants.EDIT_WORKSPACE, JahiaSitesBaseService.getInstance()
                                         .getDefaultSite().getJCRLocalPath()).getHome().getPath();
                     }
+=======
+                    base = request.getContextPath()
+                            + Edit.getEditServletPath()
+                            + "/"
+                            + Constants.EDIT_WORKSPACE
+                            + "/"
+                            + language
+                            + resolveSite(
+                                    request,
+                                    Constants.EDIT_WORKSPACE,
+                                    defaultSitePath)
+                                    .getHome().getPath();
+>>>>>>> .merge-right.r44592
                 }
             } else {
                 if (home != null) {
@@ -199,8 +213,6 @@ public class WelcomeServlet extends HttpServlet {
                         defSite = (JCRSiteNode) JCRStoreService.getInstance().getSessionFactory()
                                 .getCurrentUserSession().getNode(site.getPath());
                     } catch (PathNotFoundException e) {
-                        JahiaSite defaultSite = JahiaSitesBaseService
-                                .getInstance().getDefaultSite();
                         if (!Url.isLocalhost(request.getServerName())
                                 && defaultSite != null
                                 && !site.getSiteKey().equals(
@@ -216,7 +228,7 @@ public class WelcomeServlet extends HttpServlet {
                                     .getSessionFactory()
                                     .getCurrentUserSession(
                                             Constants.LIVE_WORKSPACE)
-                                    .getNode(defaultSite.getJCRLocalPath());
+                                    .getNode(defaultSitePath);
                             if (defaultSiteNode.getHome() != null) {
                                 base = request.getContextPath()
                                         + "/cms/render/"
@@ -254,7 +266,7 @@ public class WelcomeServlet extends HttpServlet {
         JahiaSite resolvedSite = !Url.isLocalhost(request.getServerName()) ? siteService.getSiteByServerName(request.getServerName()) : null;
         String sitePath = resolvedSite == null ? fallbackSitePath : resolvedSite.getJCRLocalPath(); 
 
-        return resolvedSite != null ? (JCRSiteNode) JCRStoreService.getInstance().getSessionFactory()
+        return sitePath != null ? (JCRSiteNode) JCRStoreService.getInstance().getSessionFactory()
                 .getCurrentUserSession(workspace).getNode(sitePath) : null;
     }
     

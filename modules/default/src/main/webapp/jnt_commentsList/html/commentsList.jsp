@@ -15,12 +15,13 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="commentable.css"/>
-<c:if test="${renderContext.editMode}">
+<div id="comments">
+  <c:if test="${renderContext.editMode}">
     <fmt:message key="label.comments.list"/>
-</c:if>
-<c:set var="boundComponent"
+  </c:if>
+  <c:set var="boundComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<c:if test="${not empty boundComponent}">
+  <c:if test="${not empty boundComponent}">
     <jcr:node var="comments" path="${boundComponent.path}/comments"/>
     <c:if test="${not empty comments}">
         <template:addCacheDependency node="${comments}"/>
@@ -29,4 +30,5 @@
     <c:if test="${empty comments}">
         <template:addCacheDependency node="${boundComponent}"/>
     </c:if>
-</c:if>
+  </c:if>
+ </div> 

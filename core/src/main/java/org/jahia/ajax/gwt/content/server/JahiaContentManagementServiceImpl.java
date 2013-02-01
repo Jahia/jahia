@@ -98,6 +98,7 @@ import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.security.Privilege;
@@ -119,7 +120,7 @@ import java.util.regex.Pattern;
 public class JahiaContentManagementServiceImpl extends JahiaRemoteService implements JahiaContentManagementService {
 
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaContentManagementServiceImpl.class);
-    
+
     private static final Pattern VERSION_AT_PATTERN = Pattern.compile("_at_");
 
     private NavigationHelper navigation;
@@ -362,7 +363,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             logger.debug("retrieving open paths for " + paths + " :\n" + openPaths);
         }
         List<GWTJahiaNode> result = navigation.retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths, getSite(),
-                        retrieveCurrentSession(), getLocale(), checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex);
+                retrieveCurrentSession(), getLocale(), checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex);
         return result;
     }
 
@@ -1217,7 +1218,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             String nodeURL = this.navigation.getNodeURL(servlet, node, versionDate, versionLabel, session.getWorkspace().getName(),
                     session.getLocale());
-            
+
             if ("live".equals(workspace) && !SettingsBean.getInstance().isUrlRewriteSeoRulesEnabled()) {
                 nodeURL = Url.appendServerNameIfNeeded(node, nodeURL, getRequest());
             }
@@ -2243,7 +2244,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 //            JCRNodeWrapper nodeWrapper = retrieveCurrentSession().getNode(node.getPath());
 //            Map<String,Object> context = new HashMap<String,Object>();
 //            context.put("contextNode", nodeWrapper);
-            return contentDefinition.getNodeType(formResourceName, getUILocale());
+        return contentDefinition.getNodeType(formResourceName, getUILocale());
 //        } catch (RepositoryException e) {
 //            logger.error("Cannot get node", e);
 //            throw new GWTJahiaServiceException(e.toString());
@@ -2274,9 +2275,24 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             for (Map.Entry<JCRNodeWrapper, Boolean> entry : conditionMatchesDetails.entrySet()) {
                 List<String> fields = new ArrayList<String>(Arrays.asList(GWTJahiaNode.PUBLICATION_INFO));
                 fields.addAll(requiredFields.get(entry.getKey().getPrimaryNodeTypeName()));
-
                 GWTJahiaNode jahiaNode = navigation.getGWTJahiaNode(entry.getKey(), fields);
                 jahiaNode.set("conditionMatch", entry.getValue());
+                ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType(entry.getKey().getPrimaryNodeTypeName());
+                JahiaResourceBundle rb = new JahiaResourceBundle(null, getUILocale(), ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(nt.getSystemId()).getName());
+                for (String prop : requiredFields.get(entry.getKey().getPrimaryNodeTypeName())) {
+                    Object val = jahiaNode.get(prop);
+                    if (val instanceof List) {
+                        List<String> nl = new ArrayList<String>();
+                        for (Object v :(List) val) {
+                            if (v instanceof String) {
+                                nl.add(rb.get(nt.getPropertyDefinition(prop).getResourceBundleKey() + "." + JCRContentUtils.replaceColon((String) v),(String) v));
+                            }
+                        }
+                        jahiaNode.set(prop,nl);
+                    } else if (val instanceof String) {
+                        jahiaNode.set(prop,rb.get(nt.getPropertyDefinition(prop).getResourceBundleKey() + "." + JCRContentUtils.replaceColon((String) val),(String) val));
+                    }
+                }
                 conditions.add(jahiaNode);
             }
 

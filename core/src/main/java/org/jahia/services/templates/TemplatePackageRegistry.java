@@ -274,7 +274,7 @@ public class TemplatePackageRegistry {
         if (packagesWithVersion.containsKey(rootFolder)) {
         return Collections.unmodifiableSet(packagesWithVersion.get(rootFolder).keySet());
     }
-        return Collections.EMPTY_SET;
+        return Collections.emptySet();
     }
 
     public Set<String> getPackageFileNames() {

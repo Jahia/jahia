@@ -40,37 +40,42 @@
 
 package org.jahia.services.templates;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.SuffixFileFilter;
-import org.apache.commons.lang.StringUtils;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.osgi.http.bridge.ProvisionActivator;
-import org.jahia.services.content.*;
-import org.jahia.services.importexport.DocumentViewImportHandler;
-import org.jahia.services.importexport.ImportExportBaseService;
-import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
-import org.jahia.services.usermanager.jcr.JCRUser;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
-import org.jahia.settings.SettingsBean;
-import org.jahia.utils.Patterns;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.core.io.Resource;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-import java.io.*;
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.zip.ZipException;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.osgi.http.bridge.ProvisionActivator;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRObservationManager;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.importexport.DocumentViewImportHandler;
+import org.jahia.services.importexport.ImportExportBaseService;
+import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 
 /**
  * Template package deployer service.
@@ -108,18 +113,6 @@ public class TemplatePackageDeployer {
 
     public void setTemplatePackageRegistry(TemplatePackageRegistry tmplPackageRegistry) {
         templatePackageRegistry = tmplPackageRegistry;
-    }
-
-// -------------------------- OTHER METHODS --------------------------
-
-    /**
-     * Goes through the template set archives in the in the shared templates
-     * folder to check if there are any new or updated files, which needs to be
-     * deployed to the templates folder. Does not register template set package
-     * itself.
-     */
-    public void deployAndRegisterTemplatePackages() {
-
     }
 
     public void initializeModulesContent() {
@@ -385,15 +378,6 @@ public class TemplatePackageDeployer {
 
     public void setTimestamp(String path, long time) {
         timestamps.put(path, time);
-    }
-
-    public void startWatchdog() {
-    }
-
-    public void stopWatchdog() {
-    }
-
-    public void scanNow() {
     }
 
     public JahiaTemplatesPackage deployModule(File warFile, JCRSessionWrapper session) throws RepositoryException {

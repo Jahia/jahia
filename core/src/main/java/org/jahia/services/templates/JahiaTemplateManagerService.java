@@ -85,7 +85,6 @@ import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.jdom.JDOMException;
 import org.slf4j.Logger;
@@ -110,7 +109,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 /**
  * Template and template set deployment and management service.
@@ -179,21 +177,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public void start() throws JahiaInitializationException {
-        logger.info("Starting JahiaTemplateManagerService ...");
-
-        // deploy shared templates if not deployed yet
-        templatePackageDeployer.deployAndRegisterTemplatePackages();
-
-        logger.info("JahiaTemplateManagerService started successfully."
-                + " Total number of found modules: "
-                + templatePackageRegistry.getAvailablePackagesCount());
+        // do nothing
     }
 
     public void stop() throws JahiaException {
         logger.info("Stopping JahiaTemplateManagerService ...");
-
-        // stop template package watcher
-        templatePackageDeployer.stopWatchdog();
 
         templatePackageRegistry.reset();
 
@@ -202,9 +190,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
         templatePackageRegistry.afterInitializationForModules();
-
-        // start template package watcher
-        templatePackageDeployer.startWatchdog();
     }
 
     public void onApplicationEvent(final ApplicationEvent event) {
@@ -367,7 +352,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
 
         String[] archetypeParams = {"archetype:generate",
-                "-DarchetypeCatalog=https://devtools.jahia.com/nexus/service/local/repositories/jahia-snapshots/content/archetype-catalog.xml,local",
+                "-DarchetypeCatalog=https://devtools.jahia.com/nexus/content/repositories/jahia-snapshots/archetype-catalog.xml,local",
                 "-DarchetypeGroupId=org.jahia.archetypes",
                 "-DarchetypeArtifactId=jahia-" + moduleType + "-archetype",
                 "-DmoduleName=" + moduleName,
@@ -657,44 +642,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return null;
     }
 
-//    public File generateWar(String moduleName, JCRSessionWrapper session) throws RepositoryException, IOException {
-//        JahiaTemplatesPackage aPackage = getTemplatePackageByFileName(moduleName);
-//
-//        regenerateManifest(aPackage, session);
-//        regenerateImportFile(aPackage, session);
-//
-//        File f = File.createTempFile(moduleName + "-" + aPackage.getVersion(), ".war");
-//        File templateDir = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName);
-//
-//        ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(f)));
-//        zip(templateDir, templateDir, zos);
-//        zos.close();
-//        return f;
-//        return null;
-//    }
-
-    private void zip(File dir, File rootDir, ZipOutputStream zos) throws IOException {
-        File[] files = dir.listFiles();
-        for (File file : files) {
-            if (file.isFile()) {
-                ZipEntry ze = new ZipEntry(Patterns.BACKSLASH.matcher(file.getPath().substring(rootDir.getPath().length() + 1)).replaceAll("/"));
-                zos.putNextEntry(ze);
-                final InputStream input = new BufferedInputStream(new FileInputStream(file));
-                try {
-                    IOUtils.copy(input, zos);
-                } finally {
-                    IOUtils.closeQuietly(input);
-                }
-            }
-
-            if (file.isDirectory()) {
-                ZipEntry ze = new ZipEntry(Patterns.BACKSLASH.matcher(file.getPath().substring(rootDir.getPath().length() + 1)).replaceAll("/") + "/");
-                zos.putNextEntry(ze);
-                zip(file, rootDir, zos);
-            }
-        }
-    }
-
     public File releaseModule(final JahiaTemplatesPackage module, String nextVersion, File sources, String scmUrl, JCRSessionWrapper session) {
         try {
             SAXReader reader = new SAXReader();
@@ -801,7 +748,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public List<File> regenerateImportFile(String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException {
         List<File> modifiedFiles = new ArrayList<File>();
-//
+
         SourceControlManagement scm = null;
         try {
             scm = SourceControlManagement.getSourceControlManagement(sources);
@@ -1007,17 +954,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
         }
         return false;
-    }
-
-    private List<String> getDependencies(JCRNodeWrapper node) throws RepositoryException {
-        List<String> dependencies = new ArrayList<String>();
-        if (node.hasProperty("j:dependencies")) {
-            Value[] deps = node.getProperty("j:dependencies").getValues();
-            for (Value dep : deps) {
-                dependencies.add(dep.getString());
-            }
-        }
-        return dependencies;
     }
 
     public void updateDependencies(JahiaTemplatesPackage pack, List<String> depends) {
@@ -1681,10 +1617,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public void undeployModule(JahiaTemplatesPackage pack, JCRSessionWrapper session) throws RepositoryException {
         templatePackageDeployer.undeployModule(pack, session, false);
-    }
-
-    public void scanSharedModulesFolderNow() {
-        templatePackageDeployer.scanNow();
     }
 
     /**

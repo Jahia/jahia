@@ -132,7 +132,7 @@ public class ModuleDeploymentTest {
             fail(e.getMessage());
         }
 
-        managerService.scanSharedModulesFolderNow();
+        //managerService.scanSharedModulesFolderNow();
 
         JahiaTemplatesPackage pack = managerService.getTemplatePackageByFileName("dummy1");
         assertNotNull(pack);

@@ -197,12 +197,14 @@ public class MainModule extends Module {
                 }
             }));
         }
-
-        String hash = Window.Location.getHash().substring(1);
-        if (hash.contains("frame/") && !isValidUrl(hash)) {
-            String start = hash.substring(0,hash.indexOf("frame/"));
-            start = start.substring(JahiaGWTParameters.getContextPath().length());
-            hash = hash.replaceFirst(start+"frame/", config.getDefaultUrlMapping()+"frame/");
+        String hash = Window.Location.getHash();
+        if (!hash.equals("")) {
+            hash = hash.substring(1);
+            if (hash.contains("frame/") && !isValidUrl(hash)) {
+                String start = hash.substring(0,hash.indexOf("frame/"));
+                start = start.substring(JahiaGWTParameters.getContextPath().length());
+                hash = hash.replaceFirst(start+"frame/", config.getDefaultUrlMapping()+"frame/");
+            }
         }
 
         if ("".equals(Window.Location.getHash()) || !isValidUrl(hash)) {

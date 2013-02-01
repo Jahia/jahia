@@ -145,9 +145,9 @@ public class WelcomeServlet extends HttpServlet {
     protected void defaultRedirect(HttpServletRequest request, HttpServletResponse response,
             ServletContext context) throws Exception {
         request.getSession(true);
-        final JCRSiteNode site = resolveSite(request, Constants.LIVE_WORKSPACE,
-                JahiaSitesBaseService.getInstance().getDefaultSite()
-                        .getJCRLocalPath());
+        JahiaSite defaultSite = JahiaSitesBaseService.getInstance().getDefaultSite();
+        String defaultSitePath = defaultSite != null ? defaultSite.getJCRLocalPath() : null;
+        final JCRSiteNode site = resolveSite(request, Constants.LIVE_WORKSPACE, defaultSitePath);
         String redirect = null;
         if (site == null) {
             userRedirect(request, response, context);
@@ -174,8 +174,7 @@ public class WelcomeServlet extends HttpServlet {
                             + resolveSite(
                                     request,
                                     Constants.EDIT_WORKSPACE,
-                                    JahiaSitesBaseService.getInstance()
-                                            .getDefaultSite().getJCRLocalPath())
+                                    defaultSitePath)
                                     .getHome().getPath();
                 }
             } else {
@@ -188,8 +187,6 @@ public class WelcomeServlet extends HttpServlet {
                         defSite = (JCRSiteNode) JCRStoreService.getInstance().getSessionFactory()
                                 .getCurrentUserSession().getNode(site.getPath());
                     } catch (PathNotFoundException e) {
-                        JahiaSite defaultSite = JahiaSitesBaseService
-                                .getInstance().getDefaultSite();
                         if (!Url.isLocalhost(request.getServerName())
                                 && defaultSite != null
                                 && !site.getSiteKey().equals(
@@ -205,7 +202,7 @@ public class WelcomeServlet extends HttpServlet {
                                     .getSessionFactory()
                                     .getCurrentUserSession(
                                             Constants.LIVE_WORKSPACE)
-                                    .getNode(defaultSite.getJCRLocalPath());
+                                    .getNode(defaultSitePath);
                             if (defaultSiteNode.getHome() != null) {
                                 base = request.getContextPath()
                                         + "/cms/render/"
@@ -243,7 +240,7 @@ public class WelcomeServlet extends HttpServlet {
         JahiaSite resolvedSite = !Url.isLocalhost(request.getServerName()) ? siteService.getSiteByServerName(request.getServerName()) : null;
         String sitePath = resolvedSite == null ? fallbackSitePath : resolvedSite.getJCRLocalPath(); 
 
-        return resolvedSite != null ? (JCRSiteNode) JCRStoreService.getInstance().getSessionFactory()
+        return sitePath != null ? (JCRSiteNode) JCRStoreService.getInstance().getSessionFactory()
                 .getCurrentUserSession(workspace).getNode(sitePath) : null;
     }
     

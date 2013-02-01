@@ -72,7 +72,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
     private transient LayoutContainer mainComponent;
     private transient ComboBox<GWTJahiaNode> sitesCombo;
     private transient SimpleComboBox<String> modulesCombo;
-    private boolean useModuleType = false;
+    private boolean filterOnAvailableSources = false;
 
     private List<String> root = Arrays.asList("/sites/*");
 
@@ -84,18 +84,18 @@ public class SiteSwitcherActionItem extends BaseActionItem {
 
     }
 
-    public boolean isUseModuleType() {
-        return useModuleType;
+    public boolean isFilterOnAvailableSources() {
+        return filterOnAvailableSources;
     }
 
-    public void setUseModuleType(boolean useModuleType) {
-        this.useModuleType = useModuleType;
+    public void setFilterOnAvailableSources(boolean filterOnAvailableSources) {
+        this.filterOnAvailableSources = filterOnAvailableSources;
     }
 
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         super.init(gwtToolbarItem, linker);
-        if (isUseModuleType()) {
+        if (isFilterOnAvailableSources()) {
             mainComponent = new VerticalPanel();
         } else {
             mainComponent = new HorizontalPanel();
@@ -117,7 +117,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
         List<GWTJahiaNode> sites = new ArrayList<GWTJahiaNode>();
         for (GWTJahiaNode n : JahiaGWTParameters.getSitesMap().values()) {
             if (!n.getName().equals("systemsite")) {
-                if (!useModuleType || n.get("j:sourcesFolder") != null) {
+                if (!filterOnAvailableSources || n.get("j:sourcesFolder") != null) {
                     sites.add(n);
                 }
             }
@@ -191,7 +191,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
         sitesCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
         sitesCombo.setForceSelection(true);
         sitesCombo.getListView().setStyleAttribute("font-size","11px");
-//        if (useModuleType) {
+//        if (filterOnAvailableSources) {
 //            sitesCombo.setWidth(250);
 //        } else {
             sitesCombo.setWidth(200);

@@ -213,7 +213,7 @@
                             <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem">
                                     <property name="root" value="/modules/*"/>
-                                    <property name="useModuleType" value="false"/>
+                                    <property name="filterOnAvailableSources" value="true"/>
                                 </bean>
                             </property>
                             <property name="titleKey" value="label.modules"/>

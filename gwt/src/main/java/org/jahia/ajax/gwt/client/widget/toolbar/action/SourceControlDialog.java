@@ -18,6 +18,7 @@ public class SourceControlDialog extends Dialog {
 
     private RadioGroup scmType;
     private TextField<String> uri;
+    private TextField<String> moduleName;
     private TextField<String> branchOrTag;
     private Map<String,Radio> radios;
 
@@ -59,6 +60,11 @@ public class SourceControlDialog extends Dialog {
         uri.setFieldLabel(Messages.get("label.uri", "URI"));
         form.add(uri);
 
+        moduleName = new TextField<String>();
+        moduleName.setName("moduleName");
+        moduleName.setFieldLabel(Messages.get("label.moduleName", "Module name"));
+        form.add(moduleName);
+
         if (viewBranchOrTag) {
             branchOrTag = new TextField<String>();
             branchOrTag.setName("branchOrTag");
@@ -84,6 +90,14 @@ public class SourceControlDialog extends Dialog {
 
     public void setUri(String value) {
         this.uri.setValue(value);
+    }
+
+    public String getModuleName() {
+        return moduleName.getValue();
+    }
+
+    public void setModuleName(String moduleName) {
+        this.moduleName.setValue(moduleName);
     }
 
     public String getBranchOrTag() {

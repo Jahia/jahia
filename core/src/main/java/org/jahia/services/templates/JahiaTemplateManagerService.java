@@ -228,7 +228,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             SourceControlManagement scm = SourceControlManagement.checkoutRepository(sources, scmURI, branchOrTag);
             File modulePath = null;
             File pom = null;
-            if (moduleName != null) {
+            if (!StringUtils.isEmpty(moduleName)) {
                 // Find the root folder of the module inside the repository, if in a subfolder
                 Collection<File> files = FileUtils.listFiles(sources, new NameFileFilter("pom.xml"), TrueFileFilter.INSTANCE);
                 for (File file : files) {

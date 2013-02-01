@@ -180,28 +180,13 @@ public class WelcomeServlet extends HttpServlet {
                     base = request.getContextPath() + mapping + "/"
                             + Constants.EDIT_WORKSPACE + "/" + language + "/modules/default";
                 } else {
-<<<<<<< .working
                     if(home!=null) {
                         base = request.getContextPath() + mapping + "/"
                                 + Constants.EDIT_WORKSPACE + "/" + language + home.getPath();
                     } else {
                         base = request.getContextPath() + mapping + "/"
-                                + Constants.EDIT_WORKSPACE + "/" + language + resolveSite(request, Constants.EDIT_WORKSPACE, JahiaSitesBaseService.getInstance()
-                                        .getDefaultSite().getJCRLocalPath()).getHome().getPath();
+                                + Constants.EDIT_WORKSPACE + "/" + language + resolveSite(request, Constants.EDIT_WORKSPACE, defaultSitePath).getHome().getPath();
                     }
-=======
-                    base = request.getContextPath()
-                            + Edit.getEditServletPath()
-                            + "/"
-                            + Constants.EDIT_WORKSPACE
-                            + "/"
-                            + language
-                            + resolveSite(
-                                    request,
-                                    Constants.EDIT_WORKSPACE,
-                                    defaultSitePath)
-                                    .getHome().getPath();
->>>>>>> .merge-right.r44592
                 }
             } else {
                 if (home != null) {

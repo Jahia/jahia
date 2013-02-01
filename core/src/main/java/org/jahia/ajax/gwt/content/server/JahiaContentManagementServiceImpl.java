@@ -2282,10 +2282,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 for (String prop : requiredFields.get(entry.getKey().getPrimaryNodeTypeName())) {
                     Object val = jahiaNode.get(prop);
                     if (val instanceof List) {
-                        List<String> nl = new ArrayList<String>();
+                        List<Object> nl = new ArrayList<Object>();
                         for (Object v :(List) val) {
                             if (v instanceof String) {
                                 nl.add(rb.get(nt.getPropertyDefinition(prop).getResourceBundleKey() + "." + JCRContentUtils.replaceColon((String) v),(String) v));
+                            } else {
+                                nl.add(v);
                             }
                         }
                         jahiaNode.set(prop,nl);

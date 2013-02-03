@@ -412,16 +412,16 @@ public class VisibilityTabItem extends EditEngineTabItem {
                     @Override
                     public void handleEvent(StoreEvent e) {
                         Object value;
-                        value = new ArrayList();
+                        Object displayValue = new ArrayList();
                         List v = ((DualListField) f).getToList().getStore().getModels();
                         for (Object o : v) {
                             if (o instanceof GWTJahiaValueDisplayBean) {
-                                ((List)value).add(((GWTJahiaValueDisplayBean) o).getValue());
+                                ((List)displayValue).add(((GWTJahiaValueDisplayBean) o).getDisplay());
                             } else {
-                                ((List)value).add(o);
+                                ((List)displayValue).add(o);
                             }
                         }
-                        conditionNode.set(field.getName(), value);
+                        conditionNode.set(field.getName(), displayValue);
                         conditionNode.set("node-modified", Boolean.TRUE);
                         changed = true;
                         grid.getView().refresh(false);
@@ -433,7 +433,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
                     public void handleEvent(BaseEvent be) {
                         Object value = field.getValue();
                         if (value instanceof GWTJahiaValueDisplayBean) {
-                            value = ((GWTJahiaValueDisplayBean)value).getValue();
+                            value = ((GWTJahiaValueDisplayBean)value).getDisplay();
                         }
                         conditionNode.set(field.getName(), value);
                         conditionNode.set("node-modified", Boolean.TRUE);

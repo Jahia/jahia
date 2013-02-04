@@ -5,6 +5,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.startlevel.StartLevel;
+import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +54,16 @@ public final class ProvisionActivator
             installed.add(bundle);
         }
 
+        ServiceTracker st = new ServiceTracker(context, StartLevel.class.getName(), null);
+        st.open();
+        StartLevel sl = ((StartLevel)st.getService());
+
         for (Bundle bundle : installed) {
+            if (bundle.getSymbolicName().equals("org.apache.felix.fileinstall")) {
+                // Start fileInstall only on level 2
+                sl.setBundleStartLevel(bundle,2);
+            }
+
             // we first check if it is a fragment bundle, in which case we will not start it.
             if (bundle.getHeaders().get("Fragment-Host") == null) {
                 bundle.start();

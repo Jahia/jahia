@@ -385,11 +385,11 @@ public class Activator implements BundleActivator {
         }
     }
 
-    private synchronized void resolve(Bundle bundle) {
+    private void resolve(Bundle bundle) {
         // do nothing
     }
 
-    private synchronized void unresolve(Bundle bundle) {
+    private void unresolve(Bundle bundle) {
         // do nothing
     }
 

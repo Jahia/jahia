@@ -440,14 +440,7 @@ public class JCRObservationManager implements ObservationManager {
             return event instanceof JackrabbitEvent ? ((JackrabbitEvent) event).isExternal()
                     : false;
         }
-<<<<<<< .working
         
-        @Override
-        public String toString() {
-            return event.toString();
-        }
-=======
-
         /**
          * Returns <code>true</code> if this <code>Event</code> is equal to another
          * object.
@@ -467,12 +460,11 @@ public class JCRObservationManager implements ObservationManager {
             
             return event.equals(((EventWrapper)o).event);
         }
-
+        
         @Override
         public String toString() {
             return event.toString();
-        } 
->>>>>>> .merge-right.r44604
+        }
     }
 }
 

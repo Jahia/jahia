@@ -65,7 +65,6 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.search.facets.JahiaQueryParser;
-import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,6 +135,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             Set<String> foundIds = new HashSet<String>();
             int hasFacets = FacetHandler.hasFacetFunctions(columns, session);
             CountHandler.CountType countType = CountHandler.hasCountFunction(columns, session);
+            boolean isCount = countType != null;
             BitSet bitset = (hasFacets & FacetHandler.FACET_COLUMNS) == 0 ? null : new BitSet();
             // End
 
@@ -146,15 +146,14 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             int addedNodes = 0;
             int resultCount = 0;
             int hitsSize = 0;
-            int queryApproxCountLimit = SettingsBean.getInstance().getQueryApproxCountLimit();
 
             ScoreNode node = hits.nextScoreNode();
             Map<String, Boolean> checkedAcls = new HashMap<String, Boolean>();
 
             while (node != null) {
-                if (countType == CountHandler.CountType.APPROX_COUNT) {
+                if (isCount && countType.isApproxCount()) {
                     hitsSize++;
-                    if (hitsSize > queryApproxCountLimit) {
+                    if (hitsSize > countType.getApproxCountLimit()) {
                         if (hits.getSize() > 0) {
                             hitsSize = hits.getSize();
                             break;
@@ -164,9 +163,9 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                         }
                     }
                 }
-                IndexedNodeInfo infos = getIndexedNodeInfo(node, reader, countType == CountHandler.CountType.SKIP_CHECKS);
+                IndexedNodeInfo infos = getIndexedNodeInfo(node, reader, isCount && countType.isSkipChecks());
                 if (foundIds.add(infos.getMainNodeUuid())) { // <-- Added by jahia
-                    if (countType == CountHandler.CountType.SKIP_CHECKS) {
+                    if (isCount && countType.isSkipChecks()) {
                         resultCount++;
                     } else {                        
                         try {
@@ -210,7 +209,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                                 objectNode = (NodeImpl) objectNode
                                                         .getParent();
                                             }
-                                            if (countType == CountHandler.CountType.EXACT_COUNT || countType == CountHandler.CountType.APPROX_COUNT) {
+                                            if (isCount) {
                                                 resultCount++;
                                             } else {
                                                 row = new LazySelectorRow(
@@ -222,7 +221,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                                     node.getScore());
                                             }
                                         } else {
-                                            if (countType == CountHandler.CountType.EXACT_COUNT || countType == CountHandler.CountType.APPROX_COUNT) {
+                                            if (isCount) {
                                                 resultCount++;
                                             } else {
                                                 row = new LazySelectorRow(columns,
@@ -261,7 +260,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                         objectNode = (NodeImpl) objectNode
                                                 .getParent();
                                     }
-                                    if (countType == CountHandler.CountType.EXACT_COUNT || countType == CountHandler.CountType.APPROX_COUNT) {
+                                    if (isCount) {
                                         resultCount++;
                                     } else {
                                         Row row = new SelectorRow(columns, evaluator,
@@ -327,11 +326,17 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                 FacetHandler h = new FacetHandler(columns, selector, docIdSet, index, session, nsMappings);
                 h.handleFacets(reader);
                 rowList.add(0, h.getFacetsRow());
-            } else if (countType != CountHandler.CountType.NO_COUNT) {
-                if (countType == CountHandler.CountType.APPROX_COUNT && hitsSize > queryApproxCountLimit) {
-                    resultCount = hitsSize * resultCount / queryApproxCountLimit;
+            } else if (isCount) {
+                boolean wasApproxLimitReached = false;
+                if (countType.isApproxCount() && hitsSize > countType.getApproxCountLimit()) {
+                    resultCount = hitsSize * resultCount / countType.getApproxCountLimit();
+                    wasApproxLimitReached = true;
                 }
+<<<<<<< .working
                 rowList.add(0,CountHandler.createCountRow(resultCount));
+=======
+                rows.add(0, CountHandler.createCountRow(resultCount, wasApproxLimitReached));
+>>>>>>> .merge-right.r44601
             }
             // End
 

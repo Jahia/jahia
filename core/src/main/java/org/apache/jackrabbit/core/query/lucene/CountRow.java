@@ -54,19 +54,23 @@ import javax.jcr.query.Row;
 public class CountRow implements Row {
 
     private long count;
+    private boolean approxLimitReached;
 
-    public CountRow(long count) {
+    public CountRow(long count, boolean approxLimitReached) {
         this.count = count;
+        this.approxLimitReached = approxLimitReached;
     }
 
     @Override
     public Value[] getValues() throws RepositoryException {
-        return new Value[]{new ValueImpl(count)};
+        return (approxLimitReached ? new Value[] { new ValueImpl(count),
+                new ValueImpl(approxLimitReached) }
+                : new Value[] { new ValueImpl(count) });
     }
 
     @Override
     public Value getValue(String columnName) throws ItemNotFoundException, RepositoryException {
-        return new ValueImpl(count);
+        return columnName.equals("approxLimitReached") ? new ValueImpl(approxLimitReached) : new ValueImpl(count);
     }
 
     @Override

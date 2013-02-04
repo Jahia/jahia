@@ -440,11 +440,39 @@ public class JCRObservationManager implements ObservationManager {
             return event instanceof JackrabbitEvent ? ((JackrabbitEvent) event).isExternal()
                     : false;
         }
+<<<<<<< .working
         
         @Override
         public String toString() {
             return event.toString();
         }
+=======
+
+        /**
+         * Returns <code>true</code> if this <code>Event</code> is equal to another
+         * object.
+         * <p/>
+         * Two <code>Event</code> instances are equal if their respective
+         * <code>EventState</code> instances are equal and both <code>Event</code>
+         * instances are intended for the same <code>Session</code> that registerd
+         * the <code>EventListener</code>.
+         *
+         * @param obj the reference object with which to compare.
+         * @return <code>true</code> if this <code>Event</code> is equal to another
+         *         object.
+         */
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || this.getClass() != o.getClass()) return false;
+            
+            return event.equals(((EventWrapper)o).event);
+        }
+
+        @Override
+        public String toString() {
+            return event.toString();
+        } 
+>>>>>>> .merge-right.r44604
     }
 }
 

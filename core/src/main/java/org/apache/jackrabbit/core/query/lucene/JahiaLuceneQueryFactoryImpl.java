@@ -300,7 +300,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                     }
                 } else {
                     if (((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0)
-                            && countType == CountHandler.CountType.NO_COUNT
+                            && !isCount
                             && !externalSort
                             && !infos.getMainNodeUuid().equals(
                                     node.getNodeId().toString())
@@ -332,11 +332,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                     resultCount = hitsSize * resultCount / countType.getApproxCountLimit();
                     wasApproxLimitReached = true;
                 }
-<<<<<<< .working
-                rowList.add(0,CountHandler.createCountRow(resultCount));
-=======
-                rows.add(0, CountHandler.createCountRow(resultCount, wasApproxLimitReached));
->>>>>>> .merge-right.r44601
+                rowList.add(0,CountHandler.createCountRow(resultCount, wasApproxLimitReached));
             }
             // End
 

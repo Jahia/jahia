@@ -6,6 +6,7 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.View;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.utils.StringResponseWrapper;
+import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +17,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -41,7 +41,7 @@ public class BundleRequestDispatcherScript implements Script {
 
         RequestDispatcher parentRequestDispatcher;
 
-        public BundleRequestDispatcher(String path, RequestDispatcher parentRequestDispatcher) {
+        public BundleRequestDispatcher(Bundle bundle, String path, RequestDispatcher parentRequestDispatcher) {
             int queryPos = path.indexOf("?");
             if (queryPos > -1) {
                 this.path = path.substring(0, queryPos);
@@ -50,6 +50,7 @@ public class BundleRequestDispatcherScript implements Script {
                 this.path = path;
                 this.queryString = null;
             }
+            this.path = "/" + bundle.getSymbolicName()+this.path;
             this.parentRequestDispatcher = parentRequestDispatcher;
         }
 
@@ -156,7 +157,7 @@ public class BundleRequestDispatcherScript implements Script {
 
             @Override
             public String getRequestURI() {
-                return getContextPath() + view.getPath();    //To change body of overridden methods use File | Settings | File Templates.
+                return getContextPath() + getServletPath();
             }
 
             @Override
@@ -166,12 +167,12 @@ public class BundleRequestDispatcherScript implements Script {
 
             @Override
             public String getServletPath() {
-                return view.getPath();    //To change body of overridden methods use File | Settings | File Templates.
+                return "/" + view.getBundle().getSymbolicName() + view.getPath();    //To change body of overridden methods use File | Settings | File Templates.
             }
 
             @Override
             public RequestDispatcher getRequestDispatcher(String path) {
-                return new BundleRequestDispatcher(path, super.getRequestDispatcher(path));
+                return new BundleRequestDispatcher(view.getBundle(), path, super.getRequestDispatcher(path));
             }
         };
         StringResponseWrapper responseWrapper = new StringResponseWrapper(response);

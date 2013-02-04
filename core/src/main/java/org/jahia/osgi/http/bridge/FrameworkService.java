@@ -13,6 +13,7 @@ import javax.servlet.ServletContext;
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.FelixConstants;
 import org.apache.tika.io.IOUtils;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,13 +27,14 @@ import org.slf4j.LoggerFactory;
 public class FrameworkService {
     
     private static final Logger logger = LoggerFactory.getLogger(FrameworkService.class);
-    
+    private static FrameworkService instance;
     private final ServletContext context;
     private Felix felix;
     private ProvisionActivator provisionActivator = null;
 
     public FrameworkService(ServletContext context) {
         this.context = context;
+        instance = this;
     }
 
     public void start() throws Exception {
@@ -52,7 +54,7 @@ public class FrameworkService {
         Felix tmp = new Felix(createConfig());
         tmp.start();
         this.felix = tmp;
-        
+
         logger.info("OSGi framework started");
     }
 
@@ -171,5 +173,13 @@ public class FrameworkService {
         }
         variableStack.remove(key);
         return result;
+    }
+
+    public static BundleContext getBundleContext() {
+        if (instance != null && instance.felix != null) {
+            return instance.felix.getBundleContext();
+        } else {
+            return null;
+        }
     }
 }

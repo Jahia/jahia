@@ -40,12 +40,14 @@
 
 package org.jahia.tools.precompile;
 
+import org.jahia.osgi.http.bridge.FrameworkService;
+import org.osgi.framework.Bundle;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.net.URL;
+import java.util.*;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
@@ -94,19 +96,14 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
             rd.forward(aRequest, aResponse);
         } else if ("all".equals(compileType)) {
             // precompile all JSPs and generate report
-            precompileJsps(searchForJsps(), aRequest, aResponse);
+            precompileJsps(searchForAllJsps(), aRequest, aResponse);
         } else if ("templates".equals(compileType)) {
             // precompile all JSPs and generate report
-            precompileJsps(searchForJsps(TEMPLATES_DIR), aRequest, aResponse);
-        } else if ("site".equals(compileType)) {
-            // precompile all JSPs and generate report
-            precompileJsps(searchForJsps(TEMPLATES_DIR + "/"
-                    + aRequest.getParameter(SITE_KEY_PARAM)), aRequest,
-                    aResponse);
+            precompileJsps(searchForBundleJsps(), aRequest, aResponse);
         } else {
             // generate output with links for compile all and all JSPs
             PrintWriter out = aResponse.getWriter();
-            List<String> foundJsps = searchForJsps();
+            List<String> foundJsps = searchForAllJsps();
 
             aResponse.setContentType("text/html;charset=ISO-8859-1");
 
@@ -155,8 +152,10 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
      *
      * @return List of context relative JSP names (Strings)
      */
-    private List<String> searchForJsps() {
-        return searchForJsps("");
+    private List<String> searchForAllJsps() {
+        List<String> list = searchForJsps("");
+        list.addAll(searchForBundleJsps());
+        return list;
     }
 
     /**
@@ -169,6 +168,27 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
         File jspsDir = new File(webModulePath + attachPath);
         List<String> foundJsps = new ArrayList<String>();
         searchForJsps(webModulePath, jspsDir, foundJsps);
+        return foundJsps;
+    }
+
+    private List<String> searchForBundleJsps() {
+        List<String> foundJsps = new ArrayList<String>();
+        for (Bundle bundle : FrameworkService.getBundleContext().getBundles()) {
+            foundJsps.addAll(searchForBundleJsps(bundle));
+        }
+        return foundJsps;
+    }
+
+    private List<String> searchForBundleJsps(Bundle bundle) {
+        List<String> foundJsps = new ArrayList<String>();
+        Enumeration en = bundle.findEntries("/","*.jsp",true);
+        if (en != null) {
+            while (en.hasMoreElements()) {
+                URL url  = (URL) en.nextElement();
+                System.out.println(url.getPath());
+                foundJsps.add("modules/"+bundle.getSymbolicName()+url.getPath());
+            }
+        }
         return foundJsps;
     }
 
@@ -205,6 +225,9 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
     private void precompileJsps(List<String> foundJsps, HttpServletRequest aRequest,
             HttpServletResponse aResponse) throws ServletException, IOException {
         System.out.println("Precompile started...");
+
+        // todo use the BundleDispatcherServlet for jsps in bundle
+
         List<String> buggyJsps = new ArrayList<String>();
         int i = 1;
         for (String jspPath : foundJsps) {

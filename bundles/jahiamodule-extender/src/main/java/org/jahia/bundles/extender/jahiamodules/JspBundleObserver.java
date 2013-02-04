@@ -96,8 +96,8 @@ public class JspBundleObserver extends ScriptBundleObserver {
         int registered = 0;
         for (URL url : urls) {
             URL[] sourceURLs = FileHttpContext.getSourceURLs(bundle);
-            final JspServletWrapper jspServlet = new JspServletWrapper(bundle, null);
             String urlAlias = url.getPath();
+            final JspServletWrapper jspServlet = new JspServletWrapper(bundle, urlAlias);
             Hashtable<String, String> props = new Hashtable<String, String>();
             props.put("alias", urlAlias);
             HttpContext httpContext = new FileHttpContext(sourceURLs,bundleHttpService.createDefaultHttpContext());
@@ -109,16 +109,16 @@ public class JspBundleObserver extends ScriptBundleObserver {
                 }
                 if (registeredBundleAliases.contains(urlAlias)) {
                     logger.warn("URL Alias {} already registered, unregistering old servlet...", urlAlias);
-                    bundleHttpService.unregister(urlAlias);
+                    bundleHttpService.unregister("/"+bundle.getSymbolicName() + urlAlias);
                     registeredBundleAliases.remove(urlAlias);
                 }
                 registered++;
                 logger.debug("Registering JSP {} for bundle {}", urlAlias, bundleName);
-                
-                bundleHttpService.registerServlet(urlAlias, jspServlet, props, httpContext);
+
+                bundleHttpService.registerServlet("/"+bundle.getSymbolicName() + urlAlias, jspServlet, props, httpContext);
                 registeredBundleAliases.add(urlAlias);
 
-                bundleDispatcherServlet.getJspMappings().put(urlAlias, jspServlet);
+                bundleDispatcherServlet.getJspMappings().put("/"+bundle.getSymbolicName() + urlAlias, jspServlet);
             } catch (ServletException e) {
                 logger.error("Error registering JSP " + urlAlias, e);
             } catch (NamespaceException e) {
@@ -150,10 +150,10 @@ public class JspBundleObserver extends ScriptBundleObserver {
             logger.info("Unregistering JSP " + urlAlias + " for bundle " + bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version"));
             Set<String> registeredBundleAliases = registeredAliases.get(bundle);
             if (registeredBundleAliases != null && registeredBundleAliases.contains(urlAlias)) {
-                bundleHttpService.unregister(urlAlias);
+                bundleHttpService.unregister("/"+bundle.getSymbolicName() +urlAlias);
                 registeredBundleAliases.remove(urlAlias);
             }
-            bundleDispatcherServlet.getJspMappings().remove(urlAlias);
+            bundleDispatcherServlet.getJspMappings().remove("/"+bundle.getSymbolicName() +urlAlias);
         }
     }
 }

@@ -131,7 +131,11 @@ public class DocumentViewExporter {
     }
 
     public void export(JCRNodeWrapper node) throws SAXException, RepositoryException {
-        TreeSet<JCRNodeWrapper> set = new TreeSet<JCRNodeWrapper>();
+        TreeSet<JCRNodeWrapper> set = new TreeSet<JCRNodeWrapper>(new Comparator<JCRNodeWrapper>() {
+            public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
+                return o1.getPath().compareTo(o2.getPath());
+            }
+        });
         set.add(node);
         export(node, set);
     }

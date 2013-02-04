@@ -218,8 +218,6 @@ public class ImportExportTest {
     
     private final static Set<String> optionalMixins = Sets.newHashSet("jmix:deletedChildren");
     
-    private static boolean readyForUGCTest = false; 
-
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         JahiaSite site = TestHelper.createSite(TESTSITE_NAME);
@@ -230,8 +228,6 @@ public class ImportExportTest {
         initContent(session, site);
 
         JCRSessionFactory.getInstance().closeAllSessions();
-        
-        readyForUGCTest = false; 
     }
 
     @AfterClass
@@ -450,13 +446,10 @@ public class ImportExportTest {
                 });
         sf.closeAllSessions();
         
-        readyForUGCTest = true;
+        testExportImportWithUGCComplexChanges();
     }
 
-    @Test
     public void testExportImportWithUGCComplexChanges() throws Exception {
-        assertTrue("UGC tests cannot be executed, because a dependend test case failed before", readyForUGCTest);
-        
         JCRSessionFactory sf = JCRSessionFactory.getInstance();
         sf.closeAllSessions();
         JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser().getName(), Constants.LIVE_WORKSPACE,

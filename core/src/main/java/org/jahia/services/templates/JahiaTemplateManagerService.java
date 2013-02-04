@@ -466,7 +466,15 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 logger.error("Compilation error, returned status " + r);
                 throw new IOException("Compilation error, status "+r);
             }
-            return new CompiledModuleInfo(new File(sources.getPath() + "/target/" + moduleName + "-" + version + ".war"),moduleName,version);
+            File file = new File(sources.getPath() + "/target/" + moduleName + "-" + version + ".war");
+            if (!file.exists()) {
+                file = new File(sources.getPath() + "/target/" + moduleName + "-" + version + ".jar");
+            }
+            if (file.exists()) {
+                return new CompiledModuleInfo(file, moduleName, version);
+            } else {
+                throw new IOException("Cannot find a module archive to deploy in folder "+file.getParentFile().getAbsolutePath());
+            }
         } catch (DocumentException e) {
             logger.error(e.getMessage(), e);
             throw new IOException("Cannot parse pom file",e);

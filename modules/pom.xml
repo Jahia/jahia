@@ -357,6 +357,7 @@
                         <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
                         <Jahia-Static-Resources>/css,/icons,/images,/img,/javascript</Jahia-Static-Resources>
         
+                        <Export-Package></Export-Package>
                         <Import-Package>*,${jahia.modules.importPackage}</Import-Package>
                         <Embed-Dependency>*; scope=compile; type=!pom;
                             inline=true</Embed-Dependency>

@@ -424,11 +424,14 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     }
 
     public String startProcess(String processKey, Map<String, Object> args) {
-        String res = executionService.startProcessInstanceByKey(processKey, args).getId();
-        executionService.createVariable(res, "user", args.get("user"), true);
-        executionService.createVariable(res, "nodeId", args.get("nodeId"), true);
-        if (args.containsKey("nodePath")) {
-            executionService.createVariable(res, "nodePath", args.get("nodePath"), true);
+        ProcessInstance processInstance = executionService.startProcessInstanceByKey(processKey, args);
+        String res = processInstance.getId();
+        if (!processInstance.isEnded()) {
+            executionService.createVariable(res, "user", args.get("user"), true);
+            executionService.createVariable(res, "nodeId", args.get("nodeId"), true);
+            if (args.containsKey("nodePath")) {
+                executionService.createVariable(res, "nodePath", args.get("nodePath"), true);
+            }
         }
         return res;
     }

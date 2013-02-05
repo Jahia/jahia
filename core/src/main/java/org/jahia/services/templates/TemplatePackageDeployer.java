@@ -389,7 +389,7 @@ public class TemplatePackageDeployer {
             Bundle bundle = ProvisionActivator.getInstance().getBundleContext().installBundle(location);
             bundle.update();
             bundle.start();
-            String moduleName = (String) bundle.getHeaders().get("root-folder");
+            String moduleName = (String) bundle.getHeaders().get("Jahia-Root-Folder");
             if (moduleName == null) {
                 moduleName = bundle.getSymbolicName();
             }
@@ -408,8 +408,8 @@ public class TemplatePackageDeployer {
     public void undeployModule(JahiaTemplatesPackage pack, JCRSessionWrapper session, boolean keepWarFile) throws RepositoryException {
         Bundle[] bundles = ProvisionActivator.getInstance().getBundleContext().getBundles();
         for (Bundle bundle : bundles) {
-            if (bundle.getHeaders().get("root-folder") != null) {
-                String moduleName = bundle.getHeaders().get("root-folder").toString();
+            if (bundle.getHeaders().get("Jahia-Root-Folder") != null) {
+                String moduleName = bundle.getHeaders().get("Jahia-Root-Folder").toString();
                 if (moduleName == null) {
                     moduleName = bundle.getSymbolicName();
                 }

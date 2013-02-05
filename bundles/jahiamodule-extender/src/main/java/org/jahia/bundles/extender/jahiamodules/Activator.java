@@ -147,6 +147,7 @@ public class Activator implements BundleActivator {
 
         jspBundleObserver = new JspBundleObserver(bundleScriptResolver, bundleDispatcherServlet);
         extensionObservers.put(new BundleURLScanner("/", "*.jsp", true), jspBundleObserver);
+        serviceRegistrations.add(context.registerService(BundleDispatcherServlet.class.getName(), bundleDispatcherServlet, new Hashtable<Object, Object>()));
 
         scriptBundleObserver = new ScriptBundleObserver(bundleScriptResolver);
         List<String> scriptExtensions = new ArrayList<String>();

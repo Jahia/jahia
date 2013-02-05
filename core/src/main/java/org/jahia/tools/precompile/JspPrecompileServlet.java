@@ -40,8 +40,10 @@
 
 package org.jahia.tools.precompile;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.osgi.http.bridge.FrameworkService;
 import org.osgi.framework.Bundle;
+import org.osgi.util.tracker.ServiceTracker;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,6 +56,7 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -70,6 +73,7 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
     private static final String TEMPLATES_DIR = "modules";
 
     private static final String MAGIC_TOMCAT_PARAM = "jsp_precompile=true";
+    private ServiceTracker serviceTracker;
 
     public void doGet(HttpServletRequest aRequest, HttpServletResponse aResponse)
             throws ServletException, IOException {
@@ -92,8 +96,7 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
         String compileType = aRequest.getParameter(COMPILE_TYPE_PARAM);
         if (jspName != null) {
             // precompile single JSP
-            RequestDispatcher rd = aRequest.getRequestDispatcher("/" + jspName);
-            rd.forward(aRequest, aResponse);
+            precompileJsps(Arrays.asList(jspName),aRequest, aResponse);
         } else if ("all".equals(compileType)) {
             // precompile all JSPs and generate report
             precompileJsps(searchForAllJsps(), aRequest, aResponse);
@@ -137,8 +140,6 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
 
             out.print(url);
             out.print("\">precompile modules</a><br/>\r\n");
-
-            listSites(out, aRequest, aResponse, now);
 
             listFiles(out, aRequest.getContextPath(),
                     aRequest.getServletPath(), foundJsps, aResponse, now);
@@ -185,7 +186,6 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
         if (en != null) {
             while (en.hasMoreElements()) {
                 URL url  = (URL) en.nextElement();
-                System.out.println(url.getPath());
                 foundJsps.add("modules/"+bundle.getSymbolicName()+url.getPath());
             }
         }
@@ -226,17 +226,14 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
             HttpServletResponse aResponse) throws ServletException, IOException {
         System.out.println("Precompile started...");
 
-        // todo use the BundleDispatcherServlet for jsps in bundle
-
-        List<String> buggyJsps = new ArrayList<String>();
+        List < String > buggyJsps = new ArrayList<String>();
         int i = 1;
-        for (String jspPath : foundJsps) {
-            RequestDispatcher rd = aRequest.getRequestDispatcher("/" + jspPath);
+        for (final String jspPath : foundJsps) {
             try {
-                System.out.print("Compiling (" + i + ") " + jspPath + "...");
-                rd.include(aRequest, aResponse);
+                compile(jspPath, aRequest, aResponse, i);
                 System.out.println(" OK.");
-            } catch (Exception ex) {
+            } catch (Exception e) {
+                e.printStackTrace();
                 System.out.println(" ERROR.");
                 buggyJsps.add(jspPath);
             }
@@ -264,6 +261,55 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
         out.println("</body>" + "</html>");
     }
 
+    private void compile(final String jspPath, final HttpServletRequest aRequest, HttpServletResponse aResponse, int i) throws Exception {
+        if (jspPath.startsWith("modules/")) {
+            Servlet sf = getBundleDispatcherServlet();
+
+            HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(aRequest) {
+                @Override
+                public String getPathInfo() {
+                    return null;
+                }
+
+                @Override
+                public String getQueryString() {
+                    return MAGIC_TOMCAT_PARAM;
+                }
+
+                @Override
+                public String getRequestURI() {
+                    return getContextPath() + getServletPath();
+                }
+
+                @Override
+                public StringBuffer getRequestURL() {
+                    return new StringBuffer(getRequestURI());
+                }
+
+                @Override
+                public String getServletPath() {
+                    return "/" + StringUtils.substringAfter(jspPath, "/");
+                }
+            };
+
+            System.out.print("Compiling (" + i + ") " + jspPath + "...");
+            sf.service(requestWrapper, aResponse);
+        } else {
+            RequestDispatcher rd = aRequest.getRequestDispatcher("/" + jspPath);
+            System.out.print("Compiling (" + i + ") " + jspPath + "...");
+            rd.include(aRequest, aResponse);
+        }
+    }
+
+    private Servlet getBundleDispatcherServlet() {
+        if (serviceTracker == null) {
+            serviceTracker = new ServiceTracker(FrameworkService.getBundleContext(), "org.jahia.bundles.extender.jahiamodules.render.BundleDispatcherServlet", null);
+            serviceTracker.open();
+        }
+        Servlet sf = (Servlet) serviceTracker.getService();
+        return sf;
+    }
+
     /**
      * Adds a hyperlinks for each JSP to the output. Each link contains the JSP name. If the JSP is located somewhere below WEB-INF dir, it
      * can not be reached from outside, therefore a link to the servlet is created with a jsp_name param. Tomcat specific jsp_precompile
@@ -277,14 +323,10 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
             anOut.print("<a target=\"_blank\" href=\"");
             String url = null;
 
-            if (jspPath.startsWith("WEB-INF", 1)) {
-                // create link to JspPrecompileServlet with jsp_name param
-                url = aContextPath + aServletPath + "?" + JSP_NAME_PARAM + "="
-                        + jspPath + "&" + MAGIC_TOMCAT_PARAM;
-            } else {
-                // create direct link to jsp file
-                url = aContextPath + "/" + jspPath + "?" + MAGIC_TOMCAT_PARAM;
-            }
+            // create link to JspPrecompileServlet with jsp_name param
+            url = aContextPath + aServletPath + "?" + JSP_NAME_PARAM + "="
+                    + jspPath + "&" + MAGIC_TOMCAT_PARAM;
+
             url = url + "&now=" + now;
             anOut.print(aResponse.encodeURL(url));
 

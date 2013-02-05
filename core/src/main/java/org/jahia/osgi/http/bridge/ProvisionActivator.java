@@ -49,7 +49,7 @@ public final class ProvisionActivator
 
         ArrayList<Bundle> installed = new ArrayList<Bundle>();
         for (URL url : findBundles()) {
-            this.servletContext.log("Installing bundle [" + url + "]");
+            logger.info("Installing bundle [{}]", url);
             Bundle bundle = context.installBundle(url.toExternalForm());
             installed.add(bundle);
         }
@@ -77,17 +77,17 @@ public final class ProvisionActivator
                 List<String> classNames = new ArrayList<String>();
                 if (classNameAccessible(bean.getClass().getName())) {
                     classNames.add(bean.getClass().getName());
-                    for (Class classInterface : bean.getClass().getInterfaces()) {
+                    for (Class<?> classInterface : bean.getClass().getInterfaces()) {
                         if (classNameAccessible(classInterface.getName())) {
                             classNames.add(classInterface.getName());
                         }
                     }
-                    Hashtable serviceProperties = new Hashtable();
+                    Hashtable<String, String> serviceProperties = new Hashtable<String, String>(1);
                     serviceProperties.put("jahiaSpringBeanName", beanName);
                     serviceRegistrations.add(context.registerService(classNames.toArray(new String[classNames.size()]), bean, serviceProperties));
-                    logger.debug("Registered bean " + beanName + " as OSGi service under names: " + classNames);
+                    logger.debug("Registered bean {} as OSGi service under names: {}", beanName, classNames);
                 }
-            } catch (Throwable t) {
+            } catch (Exception t) {
                 logger.warn("Couldn't register bean " + beanName + " since it couldn't be retrieved: " + t.getMessage());
             }
         }

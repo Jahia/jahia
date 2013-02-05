@@ -161,7 +161,7 @@ public class FrameworkService {
                             }
                         }
                     } else {
-                        // no substituation exist, we stop the looping here.
+                        // no substitution exist, we stop the looping here.
                         loopContinued = false;
                     }
                 }

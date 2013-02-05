@@ -600,6 +600,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public boolean checkValidSources(JahiaTemplatesPackage pack, File sources) {
         SAXReader reader = new SAXReader();
+        if (!new File(sources,"src/main/resources").exists() && !new File(sources,"src/main/webapp").exists()) {
+            return false;
+        }
         File pom = new File(sources, "pom.xml");
         if (pom.exists()) {
             try {
@@ -832,9 +835,17 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             root = (Element) root.elements("plugins").get(0);
             root = (Element) root.elements("plugin").get(0);
             root = (Element) root.elements("configuration").get(0);
-            root = (Element) root.elements("archive").get(0);
-            root = (Element) root.elements("manifestEntries").get(0);
-            root = (Element) root.elements("Jahia-Depends").get(0);
+            if (root.elements("archive").size() > 0) {
+                root = (Element) root.elements("archive").get(0);
+                root = (Element) root.elements("manifestEntries").get(0);
+            } else {
+                root = (Element) root.elements("instructions").get(0);
+            }
+            if (root.elements("Jahia-Depends").size() == 0) {
+                root = root.addElement("Jahia-Depends");
+            } else {
+                root = (Element) root.elements("Jahia-Depends").get(0);
+            }
             root.setText(StringUtils.join(dependencies, ","));
             File modifiedPom = new File(sources, "pom-modified.xml");
             XMLWriter writer = new XMLWriter(new FileWriter(modifiedPom), OutputFormat.createPrettyPrint());

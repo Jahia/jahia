@@ -207,20 +207,20 @@ public class URLFilterTest {
         JCRNodeWrapper pageNode = session.getNode(SITECONTENT_ROOT_NODE
                 + "/testPage");
 
-        VanityUrl englishVanityUrl = new VanityUrl("/testpage", TESTSITE_NAME,
+        VanityUrl englishVanityUrl = new VanityUrl("/test2page", TESTSITE_NAME,
                 "en");
         englishVanityUrl.setActive(true);
-        VanityUrl englishVanityUrl2 = new VanityUrl("/testpage2",
+        VanityUrl englishVanityUrl2 = new VanityUrl("/test2page2",
                 TESTSITE_NAME, "en");
         englishVanityUrl2.setActive(false);
-        VanityUrl englishVanityUrl3 = new VanityUrl("/testpage/page3",
+        VanityUrl englishVanityUrl3 = new VanityUrl("/test2page/page3",
                 TESTSITE_NAME, "en");
         englishVanityUrl3.setActive(true);
 
-        VanityUrl frenchVanityUrl = new VanityUrl("/testpage/french",
+        VanityUrl frenchVanityUrl = new VanityUrl("/test2page/french",
                 TESTSITE_NAME, "fr");
         frenchVanityUrl.setActive(true);
-        VanityUrl frenchVanityUrl2 = new VanityUrl("/testpage/french2",
+        VanityUrl frenchVanityUrl2 = new VanityUrl("/test2page/french2",
                 TESTSITE_NAME, "fr");
         frenchVanityUrl2.setDefaultMapping(true);
         frenchVanityUrl2.setActive(true);
@@ -270,7 +270,7 @@ public class URLFilterTest {
             // expected as two default mappings on same language - nothing should be saved
         }
 
-        VanityUrl frenchVanityUrl3 = new VanityUrl("/testpage", TESTSITE_NAME,
+        VanityUrl frenchVanityUrl3 = new VanityUrl("/test2page", TESTSITE_NAME,
                 "fr");
         frenchVanityUrl3.setDefaultMapping(true);
         frenchVanityUrl3.setActive(true);
@@ -286,8 +286,8 @@ public class URLFilterTest {
         List<VanityUrl> vanityUrls_en = getVanityUrlService()
                 .getVanityUrlsForCurrentLocale(pageNode, session);
 
-        String[] expectedUrls_en = new String[] { "/testpage", "/testpage2",
-                "/testpage/page3" };
+        String[] expectedUrls_en = new String[] { "/test2page", "/test2page2",
+                "/test2page/page3" };
         assertTrue("Number of Urls is not expected " + expectedUrls_en.length
                 + " vs. " + vanityUrls_en.size(),
                 expectedUrls_en.length == vanityUrls_en.size());
@@ -308,8 +308,8 @@ public class URLFilterTest {
         List<VanityUrl> vanityUrls_fr = getVanityUrlService()
                 .getVanityUrlsForCurrentLocale(pageNode, frenchSession);
 
-        String[] expectedUrls_fr = new String[] { "/testpage/french",
-                "/testpage/french2" };
+        String[] expectedUrls_fr = new String[] { "/test2page/french",
+                "/test2page/french2" };
         assertTrue("Number of Urls is not expected " + expectedUrls_fr.length
                 + " vs. " + vanityUrls_fr.size(),
                 expectedUrls_fr.length == vanityUrls_fr.size());
@@ -378,20 +378,20 @@ public class URLFilterTest {
         JCRNodeWrapper pageNode = session.getNode(SITECONTENT_ROOT_NODE
                 + "/testPage");
 
-        VanityUrl englishVanityUrl = new VanityUrl("/testpage", TESTSITE_NAME,
+        VanityUrl englishVanityUrl = new VanityUrl("/test4page", TESTSITE_NAME,
                 "en");
         englishVanityUrl.setActive(true);
-        VanityUrl englishVanityUrl2 = new VanityUrl("/testpage2",
+        VanityUrl englishVanityUrl2 = new VanityUrl("/test4page2",
                 TESTSITE_NAME, "en");
         englishVanityUrl2.setActive(false);
-        VanityUrl englishVanityUrl3 = new VanityUrl("/testpage/page3",
+        VanityUrl englishVanityUrl3 = new VanityUrl("/test4page/page3",
                 TESTSITE_NAME, "en");
         englishVanityUrl3.setActive(true);
 
-        VanityUrl frenchVanityUrl = new VanityUrl("/testpage/french",
+        VanityUrl frenchVanityUrl = new VanityUrl("/test4page/french",
                 TESTSITE_NAME, "fr");
         frenchVanityUrl.setActive(true);
-        VanityUrl frenchVanityUrl2 = new VanityUrl("/testpage/french2",
+        VanityUrl frenchVanityUrl2 = new VanityUrl("/test4page/french2",
                 TESTSITE_NAME, "fr");
         frenchVanityUrl2.setDefaultMapping(true);
         frenchVanityUrl2.setActive(true);
@@ -412,24 +412,24 @@ public class URLFilterTest {
         assertTrue("Wrong URL returned", getVanityUrlService()
                 .getVanityUrlForWorkspaceAndLocale(pageNode,
                         Constants.EDIT_WORKSPACE, Locale.ENGLISH, TESTSITE_NAME).getUrl()
-                .equals("/testpage"));
+                .equals("/test4page"));
         assertTrue("Wrong URL returned", getVanityUrlService()
                 .getVanityUrlForWorkspaceAndLocale(pageNode,
                         Constants.EDIT_WORKSPACE, Locale.FRENCH, TESTSITE_NAME).getUrl()
-                .equals("/testpage/french2"));
+                .equals("/test4page/french2"));
         URLResolver urlResolver = null;
 
         JCRNodeWrapper resolvedNode;
 
         try {
-            urlResolver = getUrlResolverFactory().createURLResolver("/edit/default/testpage", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/edit/default/testpage"));
+            urlResolver = getUrlResolverFactory().createURLResolver("/edit/default/test4page", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/edit/default/testpage"));
             urlResolver.getNode();
             fail("Node should not be returned as edit servlet does not resolve vanity URLs");
         } catch (PathNotFoundException e) {
         }
 
         try {
-            urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage"));
+            urlResolver = getUrlResolverFactory().createURLResolver("/render/live/test4page", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage"));
             urlResolver.getNode();
             fail("Node should not be returned as it is not published yet");
         } catch (PathNotFoundException e) {
@@ -441,27 +441,27 @@ public class URLFilterTest {
                 pageNode.getIdentifier(), Constants.EDIT_WORKSPACE,
                 Constants.LIVE_WORKSPACE, languages, true, null);
         
-        urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage"));
+        urlResolver = getUrlResolverFactory().createURLResolver("/render/live/test4page", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage"));
         resolvedNode = urlResolver.getNode();
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
                 && "en".equals(resolvedNode.getLanguage()));
 
         try {
-            urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage2"));
+            urlResolver = getUrlResolverFactory().createURLResolver("/render/live/test4page2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage2"));
             urlResolver.getNode();
             fail("Node should not be returned as mapping is not active");
         } catch (PathNotFoundException e) {
         }
 
-        urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage/page3", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/page3"));
+        urlResolver = getUrlResolverFactory().createURLResolver("/render/live/test4page/page3", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/page3"));
         resolvedNode = urlResolver.getNode();
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
                 && "en".equals(resolvedNode.getLanguage()));
         
         
-        urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage/french2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/french2"));
+        urlResolver = getUrlResolverFactory().createURLResolver("/render/live/test4page/french2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/french2"));
         try {
             resolvedNode = urlResolver.getNode();
             assertTrue("Wrong node or language returned - all vanity urls are published, not just the one of the published language", pageNode
@@ -476,13 +476,13 @@ public class URLFilterTest {
                 pageNode.getIdentifier(), Constants.EDIT_WORKSPACE,
                 Constants.LIVE_WORKSPACE, languages, true, null);
         
-        urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage/french2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/french2"));
+        urlResolver = getUrlResolverFactory().createURLResolver("/render/live/test4page/french2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/french2"));
         resolvedNode = urlResolver.getNode();
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
                 && "fr".equals(resolvedNode.getLanguage()));        
         
-        urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage/french", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/french"));
+        urlResolver = getUrlResolverFactory().createURLResolver("/render/live/test4page/french", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/french"));
         resolvedNode = urlResolver.getNode();
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)

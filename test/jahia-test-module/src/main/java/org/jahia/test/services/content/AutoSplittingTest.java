@@ -177,8 +177,6 @@ public class AutoSplittingTest {
                 TestHelper.deleteSite(TESTSITE_NAME);
             }
             session.save();
-
-            session.logout();
         } catch (Exception ex) {
             logger.warn("Exception during test tearDown", ex);
         }
@@ -275,18 +273,8 @@ public class AutoSplittingTest {
                         .languageCodeToLocale(DEFAULT_LANGUAGE));
         JCRNodeWrapper stringSplitNode = session.getNode(SITECONTENT_ROOT_NODE
                 + "/contents/stringSplit");
-        stringSplitNode.addMixin(Constants.JAHIAMIX_AUTOSPLITFOLDERS);
-        stringSplitNode
-                .setProperty(Constants.SPLIT_CONFIG, STRING_SPLIT_CONFIG);
-        stringSplitNode.setProperty(Constants.SPLIT_NODETYPE, AUTO_SPLIT_NODETYPE);
-
         JCRNodeWrapper dateSplitNode = session.getNode(SITECONTENT_ROOT_NODE
                 + "/contents/dateSplit");
-        dateSplitNode.addMixin(Constants.JAHIAMIX_AUTOSPLITFOLDERS);
-        dateSplitNode.setProperty(Constants.SPLIT_CONFIG, DATE_SPLIT_CONFIG);
-        dateSplitNode.setProperty(Constants.SPLIT_NODETYPE, AUTO_SPLIT_NODETYPE);
-
-        session.save();
 
         int i = 0;
         for (EventBean eventsBean : EVENTS) {
@@ -353,18 +341,25 @@ public class AutoSplittingTest {
         session.getWorkspace().getVersionManager()
                 .checkout(contentNode.getPath());
 
-        JCRNodeWrapper node = createList(contentNode, "stringSplit");
+        JCRNodeWrapper stringSplitNode = createList(contentNode, "stringSplit");
         for (EventBean eventBean : EVENTS) {
-            createEvent(node, eventBean.getEventsType(),
+            createEvent(stringSplitNode, eventBean.getEventsType(),
                     eventBean.getLocation(), eventBean.getDate(), i++);
         }
+        stringSplitNode.addMixin(Constants.JAHIAMIX_AUTOSPLITFOLDERS);
+        stringSplitNode
+                .setProperty(Constants.SPLIT_CONFIG, STRING_SPLIT_CONFIG);
+        stringSplitNode.setProperty(Constants.SPLIT_NODETYPE, AUTO_SPLIT_NODETYPE);
 
         i = 0;
-        node = createList(contentNode, "dateSplit");
+        JCRNodeWrapper dateSplitNode = createList(contentNode, "dateSplit");
         for (EventBean eventBean : EVENTS) {
-            createEvent(node, eventBean.getEventsType(),
+            createEvent(dateSplitNode, eventBean.getEventsType(),
                     eventBean.getLocation(), eventBean.getDate(), i++);
         }
+        dateSplitNode.addMixin(Constants.JAHIAMIX_AUTOSPLITFOLDERS);
+        dateSplitNode.setProperty(Constants.SPLIT_CONFIG, DATE_SPLIT_CONFIG);
+        dateSplitNode.setProperty(Constants.SPLIT_NODETYPE, AUTO_SPLIT_NODETYPE);
 
         session.save();
     }

@@ -447,6 +447,7 @@ public class ImportExportTest {
         sf.closeAllSessions();
         
         testExportImportWithUGCComplexChanges();
+        testNodeExportImportWithLive();
     }
 
     public void testExportImportWithUGCComplexChanges() throws Exception {
@@ -1030,7 +1031,6 @@ public class ImportExportTest {
         return propsList.toArray(new String[propsList.size()]);
     }
 
-    @Test
     public void testNodeExportImportWithLive() throws Exception {
         JCRSessionFactory sf = JCRSessionFactory.getInstance();
         sf.closeAllSessions();

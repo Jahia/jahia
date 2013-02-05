@@ -118,6 +118,8 @@ public class JahiaTemplateManagerServiceTest {
     public void testDeploySimpleModule() throws RepositoryException {
         String moduleToBeDeployed = "article";
         deployModule(moduleToBeDeployed);
+        
+        testRolesOnComponent();
     }
 
     @Test
@@ -148,7 +150,6 @@ public class JahiaTemplateManagerServiceTest {
         assertModuleIsInstalledInSite(node, modulePath, SITE_CONTENT_ROOT_NODE, session);
     }
 
-    @Test
     public void testRolesOnComponent() throws RepositoryException {
         JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         JCRSessionWrapper session = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);

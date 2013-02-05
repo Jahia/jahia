@@ -47,7 +47,6 @@ import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.JahiaTestCase;
@@ -68,13 +67,17 @@ import java.util.Locale;
  *         Date: Jan 27, 2010
  *         Time: 2:16:51 PM
  */
+<<<<<<< .working
 public class MultiLanguageTest extends JahiaTestCase {
+=======
+public class MultiLanguageTest {
+>>>>>>> .merge-right.r44612
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(MultiLanguageTest.class);
-    private JahiaSite site;
     private final static String TESTSITE_NAME = "jcrMultiLanguageTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
+<<<<<<< .working
     private boolean isTextPresentInResponse(String relativeUrl, String text) {
         return getAsText(relativeUrl).contains(text);
     }
@@ -82,9 +85,12 @@ public class MultiLanguageTest extends JahiaTestCase {
     @Before
     public void setUp() throws Exception {
         site = TestHelper.createSite(TESTSITE_NAME, Sets.newHashSet(Locale.ENGLISH.toString(), Locale.FRENCH.toString()), null, true);
+=======
+    @BeforeClass
+    public static void oneTimeSetup() throws Exception {
+        JahiaSite site = TestHelper.createSite(TESTSITE_NAME, Sets.newHashSet(Locale.ENGLISH.toString(), Locale.FRENCH.toString()), null, true);
+>>>>>>> .merge-right.r44612
         Assert.assertNotNull(site);
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-        session.save();
     }
 
     //@Test
@@ -92,7 +98,7 @@ public class MultiLanguageTest extends JahiaTestCase {
     public void testFallBackLanguage() throws Exception {
         JCRPublicationService jcrService = ServicesRegistry.getInstance()
                 .getJCRPublicationService();
-
+        JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(TESTSITE_NAME);
         String defaultLanguage = site.getDefaultLanguage();
 
         JCRSessionWrapper englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
@@ -151,6 +157,7 @@ public class MultiLanguageTest extends JahiaTestCase {
 
     }
 
+<<<<<<< .working
     @Test
     public void testLanguageInvalidity() throws Exception {
         JCRPublicationService jcrService = ServicesRegistry.getInstance()
@@ -245,10 +252,17 @@ public class MultiLanguageTest extends JahiaTestCase {
 
     @After
     public void tearDown() throws Exception {
+=======
+    @AfterClass
+    public static void oneTimeTearDown() throws Exception {
+>>>>>>> .merge-right.r44612
         TestHelper.deleteSite(TESTSITE_NAME);
+<<<<<<< .working
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
         session.save();
         JCRSessionFactory.getInstance().closeAllSessions();
+=======
+>>>>>>> .merge-right.r44612
     }
 
 

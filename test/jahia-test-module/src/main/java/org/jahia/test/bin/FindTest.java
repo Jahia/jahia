@@ -147,8 +147,6 @@ public class FindTest extends JahiaTestCase {
                 TestHelper.deleteSite(TESTSITE_NAME);
             }
             session.save();
-
-            session.logout();
         } catch (Exception ex) {
             logger.warn("Exception during test tearDown", ex);
         }

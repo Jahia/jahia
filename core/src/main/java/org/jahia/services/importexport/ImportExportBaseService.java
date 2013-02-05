@@ -648,7 +648,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     public void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath, String legacyDefinitionsFilePath) throws RepositoryException, IOException {
         long timerSite = System.currentTimeMillis();
         logger.info("Start import for site {}", site != null ? site.getSiteKey() : "");
-        
+
         final CategoriesImportHandler categoriesImportHandler = new CategoriesImportHandler();
         final UsersImportHandler usersImportHandler = new UsersImportHandler(site);
         JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null, null, null);
@@ -924,14 +924,20 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         usersImportHandler.setUuidProps(userProps);
 
         // session.save();
-        
+
         long timerXR = System.currentTimeMillis();
         logger.info("Resolving cross references");
         ReferencesHelper.resolveCrossReferences(session, references);
         logger.info("Done resolving cross references in {} ms", System.currentTimeMillis() - timerXR);
+        if (legacyImport && this.postImportPatcher != null) {
+            long timerPIP = System.currentTimeMillis();
+            logger.info("Executing post import patches");
+            this.postImportPatcher.executePatches(session, site);
+            logger.info("Executed post import patches in {} ms", System.currentTimeMillis() - timerPIP);
+        }
         session.save(JCRObservationManager.IMPORT);
         cleanFilesList(fileList);
-        
+
         logger.info("Done importing site {} in {} ms", site != null ? site.getSiteKey() : "", System.currentTimeMillis() - timerSite);
     }
 
@@ -1214,7 +1220,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         logger.info("Start importing users");
         handleImport(is, importHandler);
         logger.info("Done importing users in {} ms", (System.currentTimeMillis() - timer));
-        
+
         return importHandler.getUuidProps();
     }
 
@@ -1437,7 +1443,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             throws IOException, RepositoryException {
         long timer = System.currentTimeMillis();
         logger.info("Start importing file {} into path {} ", file, parentNodePath != null ? parentNodePath : "/");
-        
+
         Map<String, Long> sizes = new HashMap<String, Long>();
         List<String> fileList = new ArrayList<String>();
 
@@ -1460,7 +1466,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     if (name.equals(LIVE_REPOSITORY_XML)) {
                         long timerLive = System.currentTimeMillis();
                         logger.info("Start importing " + LIVE_REPOSITORY_XML);
-                        
+
                         final DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath, file, fileList);
 
                         documentViewImportHandler.setReferences(references);
@@ -1468,9 +1474,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         documentViewImportHandler.setBaseFilesPath("/live-content");
 
                         handleImport(zis, documentViewImportHandler);
-                        
+
                         logger.debug("Saving JCR session for " + LIVE_REPOSITORY_XML);
-                        
+
                         session.save(JCRObservationManager.IMPORT);
 
                         if (rootBehaviour == DocumentViewImportHandler.ROOT_BEHAVIOUR_RENAME) {
@@ -1479,11 +1485,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         }
 
                         logger.debug("Resolving cross-references for " + LIVE_REPOSITORY_XML);
-                        
+
                         ReferencesHelper.resolveCrossReferences(session, references);
-                        
+
                         logger.debug("Saving JCR session for " + LIVE_REPOSITORY_XML);
-                        
+
                         session.save(JCRObservationManager.IMPORT);
 
                         liveUuids = documentViewImportHandler.getUuids();
@@ -1501,7 +1507,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
                         String label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
                         JCRVersionService.getInstance().addVersionLabel(documentViewImportHandler.getUuids(), label, Constants.LIVE_WORKSPACE);
-                        
+
                         logger.info("Done importing " + LIVE_REPOSITORY_XML + " in {} ms", System.currentTimeMillis() - timerLive);
 
                         break;
@@ -1589,9 +1595,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         documentViewImportHandler.setBaseFilesPath("/live-content");
                         liveSession.getPathMapping().putAll(session.getPathMapping());
                         handleImport(zis, documentViewImportHandler);
-                        
+
                         logger.debug("Saving JCR session for UGC");
-                        
+
                         liveSession.save(JCRObservationManager.IMPORT);
 
 //                        ReferencesHelper.resolveCrossReferences(liveSession, references);
@@ -1698,5 +1704,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     public void setLegacyPidMappingTool(LegacyPidMappingTool legacyPidMappingTool) {
         this.legacyPidMappingTool = legacyPidMappingTool;
+    }
+
+    private PostImportPatcher postImportPatcher = null;
+
+    public void setPostImportPatcher(PostImportPatcher postImportPatcher) {
+        this.postImportPatcher = postImportPatcher;
     }
 }

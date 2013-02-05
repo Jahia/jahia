@@ -40,13 +40,13 @@
 
 package org.jahia.test.services.content;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
@@ -65,26 +65,23 @@ import java.util.Locale;
  *         Date: Jan 27, 2010
  *         Time: 2:16:51 PM
  */
-public class MultiLanguageTest extends TestCase {
+public class MultiLanguageTest {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(MultiLanguageTest.class);
-    private JahiaSite site;
     private final static String TESTSITE_NAME = "jcrMultiLanguageTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
-    @Before
-    public void setUp() throws Exception {
-        site = TestHelper.createSite(TESTSITE_NAME, Sets.newHashSet(Locale.ENGLISH.toString(), Locale.FRENCH.toString()), null, true);
+    @BeforeClass
+    public static void oneTimeSetup() throws Exception {
+        JahiaSite site = TestHelper.createSite(TESTSITE_NAME, Sets.newHashSet(Locale.ENGLISH.toString(), Locale.FRENCH.toString()), null, true);
         Assert.assertNotNull(site);
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-        session.save();
     }
 
     @org.junit.Test
     public void testFallBackLanguage() throws Exception {
         JCRPublicationService jcrService = ServicesRegistry.getInstance()
                 .getJCRPublicationService();
-
+        JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(TESTSITE_NAME);
         String defaultLanguage = site.getDefaultLanguage();
 
         JCRSessionWrapper englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
@@ -143,12 +140,9 @@ public class MultiLanguageTest extends TestCase {
 
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @AfterClass
+    public static void oneTimeTearDown() throws Exception {
         TestHelper.deleteSite(TESTSITE_NAME);
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-        session.save();
-        session.logout();
     }
 
 

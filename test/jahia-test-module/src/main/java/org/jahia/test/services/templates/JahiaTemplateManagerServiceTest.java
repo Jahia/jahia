@@ -56,7 +56,6 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.TestHelper;
-import org.jahia.test.services.content.*;
 import org.junit.*;
 import org.slf4j.Logger;
 
@@ -121,6 +120,8 @@ public class JahiaTemplateManagerServiceTest {
     public void testDeploySimpleModule() throws RepositoryException {
         String moduleToBeDeployed = "article";
         deployModule(moduleToBeDeployed);
+        
+        testRolesOnComponent();
     }
 
     @Test
@@ -151,7 +152,6 @@ public class JahiaTemplateManagerServiceTest {
         assertTrue(compareNodeNamesTreeStopOnError(node, modulePath, SITE_CONTENT_ROOT_NODE, session));
     }
 
-    @Test
     public void testRolesOnComponent() throws RepositoryException {
         JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         JCRSessionWrapper session = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);

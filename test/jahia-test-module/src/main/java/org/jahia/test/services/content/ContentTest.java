@@ -174,31 +174,19 @@ public class ContentTest {
     @After
     public void tearDown() throws Exception {
         JCRSessionFactory.getInstance().closeAllSessions();
-<<<<<<< .working
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                try {
-                    for (String node : nodes) {
-                        try {
-                            session.getNodeByIdentifier(node).remove();
-                        } catch (ItemNotFoundException e) {
-                            // ignore
-                        }
-=======
         JCRTemplate.getInstance().doExecuteWithSystemSession(
                 new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session)
                             throws RepositoryException {
-                        try {
-                            for (String node : nodes) {
+                        for (String node : nodes) {
+                            try {
                                 session.getNodeByIdentifier(node).remove();
+                            } catch (RepositoryException e) {
+                                logger.error("Error when deleting nodes", e);
                             }
-                            session.save();
-                        } catch (RepositoryException e) {
-                            logger.error("Error when deleting nodes", e);
                         }
+                        session.save();
                         return null;
->>>>>>> .merge-right.r44612
                     }
                 });
         nodes.clear();
@@ -464,13 +452,6 @@ public class ContentTest {
 
         session.save();
 
-<<<<<<< .working
-            try {
-                session.move(testFile.getPath(), providerRoot + "/" + collectionName + "/" + testFile.getName());
-            } catch (RepositoryException e) {
-                fail(providerRoot + " : move threw exception :" + e);
-            }
-=======
         try {
             session.move(testFile.getPath(), providerRoot + "/"
                     + collectionName + "/" + testFile.getName());
@@ -479,7 +460,6 @@ public class ContentTest {
         }
         
         session.save();        
->>>>>>> .merge-right.r44612
 
         try {
             session.getNode(providerRoot + "/" + collectionName + "/"
@@ -730,22 +710,14 @@ public class ContentTest {
         JCRNodeWrapper testFile2 = rootNode.uploadFile(name2, is, mimeType);
         nodes.add(testFile2.getIdentifier());
 
-<<<<<<< .working
-            logger.debug("Create a new page");
-            JCRNodeWrapper page = siteNode.addNode("page" + System.currentTimeMillis(), "jnt:page");
-            page.setProperty("jcr:title","test");
-            page.setProperty("j:templateName", "simple");
-            logger.debug("Create a new list");
-            JCRNodeWrapper listNode = page.addNode("list" + System.currentTimeMillis(), "jnt:contentList");
-=======
         logger.debug("Create a new page");
         JCRNodeWrapper page = siteNode.addNode(
                 "page" + System.currentTimeMillis(), "jnt:page");
         page.setProperty("jcr:title", "test");
+        page.setProperty("j:templateName", "simple");        
         logger.debug("Create a new list");
         JCRNodeWrapper listNode = page.addNode(
                 "list" + System.currentTimeMillis(), "jnt:contentList");
->>>>>>> .merge-right.r44612
 
         JCRNodeWrapper refNode = listNode.addNode(
                 "ref" + +System.currentTimeMillis(),

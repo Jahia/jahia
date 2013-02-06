@@ -82,15 +82,6 @@
                                     </bean>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewModuleActionItem">
-                                                <property name="siteType" value="osgimodule"/>
-                                            </bean>
-                                        </property>
-                                        <property name="titleKey" value="label.newOSGiModule"/>
-                                        <property name="icon" value="newOSGIModule"/>
-                                    </bean>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                                        <property name="actionItem">
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.FetchModuleActionItem">
                                             </bean>
                                         </property>

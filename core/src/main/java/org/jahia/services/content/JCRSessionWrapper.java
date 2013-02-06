@@ -219,7 +219,7 @@ public class JCRSessionWrapper implements Session {
                     ((JahiaSessionImpl) session).toggleThisSessionAsAliased();
                 }
                 Node n = session.getNodeByIdentifier(uuid);
-                JCRNodeWrapper wrapper = provider.getNodeWrapper(n, this);
+                JCRNodeWrapper wrapper = null;
                 if (getUser() != null && sessionFactory.getCurrentAliasedUser() != null &&
                         !sessionFactory.getCurrentAliasedUser().equals(getUser())) {
                     JCRTemplate.getInstance()
@@ -229,9 +229,10 @@ public class JCRSessionWrapper implements Session {
                                             return session.getNodeByUUID(uuid, checkVersion);
                                         }
                                     });
-                }
-                if (checkVersion  && (versionDate != null || versionLabel != null)) {
+                } else if (checkVersion  && (versionDate != null || versionLabel != null)) {
                     wrapper = getFrozenVersionAsRegular(n, provider);
+                } else {
+                    wrapper = provider.getNodeWrapper(n, this);    
                 }
                 sessionCacheByIdentifier.put(uuid, wrapper);
                 sessionCacheByPath.put(wrapper.getPath(), wrapper);
@@ -327,21 +328,21 @@ public class JCRSessionWrapper implements Session {
                 Item item = session.getItem(provider.getRelativeRoot() + localPath);
                 if (item.isNode()) {
                     final Node node = (Node) item;
-                    JCRNodeWrapper wrapper = provider.getNodeWrapper(node, localPath, null, this);
+                    JCRNodeWrapper wrapper = null;
                     if (getUser() != null && sessionFactory.getCurrentAliasedUser() != null &&
                             !sessionFactory.getCurrentAliasedUser().equals(getUser())) {
-                        final JCRNodeWrapper finalWrapper = wrapper;
                         JCRTemplate.getInstance()
                                 .doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser().getUsername(),
                                         getWorkspace().getName(), getLocale(), new JCRCallback<Object>() {
                                             public Object doInJCR(JCRSessionWrapper session)
                                                     throws RepositoryException {
-                                                return session.getNodeByUUID(finalWrapper.getIdentifier(), checkVersion);
+                                                return session.getNodeByUUID(node.getIdentifier(), checkVersion);
                                             }
                                         });
-                    }
-                    if (checkVersion && (versionDate != null || versionLabel != null) && node.isNodeType("mix:versionable")) {
+                    } else if (checkVersion && (versionDate != null || versionLabel != null) && node.isNodeType("mix:versionable")) {
                         wrapper = getFrozenVersionAsRegular(node, provider);
+                    } else {
+                        wrapper = provider.getNodeWrapper(node, localPath, null, this);
                     }
                     sessionCacheByPath.put(path, wrapper);
                     sessionCacheByIdentifier.put(wrapper.getIdentifier(), wrapper);

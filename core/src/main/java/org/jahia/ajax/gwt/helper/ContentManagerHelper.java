@@ -1268,6 +1268,8 @@ public class ContentManagerHelper {
                 IOUtils.closeQuietly(is);
                 FileUtils.deleteQuietly(f);
             }
+        } catch (BundleException e) {
+            logger.error(e.getMessage(), e);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         } catch (IOException e) {

@@ -71,6 +71,7 @@ import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorklowTypeRegistration;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.ResourceBundles;
+import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -161,22 +162,8 @@ public class TemplatePackageRegistry {
 
 // -------------------------- OTHER METHODS --------------------------
 
-    public void activateModuleVersion(JahiaTemplatesPackage module) {
-        File rootFile = new File(SettingsBean.getInstance().getJahiaVarDiskPath()+"/deployedModules", module.getRootFolder());
-        rootFile.mkdirs();
-        File activeVersionFile = new File(rootFile, "activeVersion");
-
-        try {
-            FileUtils.write(activeVersionFile, module.getVersion().toString(), "UTF-8");
-        } catch (IOException e) {
-            logger.error("Cannot store active version file "+activeVersionFile, e);
-        }
-        module.setActiveVersion(true);
-
-        register(module);
-
-        templatePackageApplicationContextLoader.createWebApplicationContext(module);
-        afterInitializationForModule(module);
+    public void activateModuleVersion(JahiaTemplatesPackage module) throws BundleException {
+        module.getBundle().start();
     }
 
     private boolean computeDependencies(Set<JahiaTemplatesPackage> dependencies,  JahiaTemplatesPackage pack) {
@@ -340,73 +327,6 @@ public class TemplatePackageRegistry {
             return packageVersions.get(moduleVersion);
         } else {
             return null;
-        }
-    }
-
-    /**
-     * Returns the requested template package or <code>null</code> if the package with the specified JCR node name is not registered in the
-     * repository.
-     * 
-     * @param nodeName
-     *            the corresponding JCR node name to search for
-     * @return the requested template package or <code>null</code> if the package with the specified JCR node name is not registered in the
-     *         repository
-     */
-    public JahiaTemplatesPackage lookupByNodeName(String nodeName) {
-        if (nodeName == null || registry == null)
-            return null;
-        for (JahiaTemplatesPackage pkg : registry.values()) {
-            if (nodeName.equals(pkg.getRootFolder())) {
-                return pkg;
-            }
-        }
-        return null;
-    }
-
-    public void registerPackage(JahiaTemplatesPackage pack, boolean startContext) {
-        try {
-            registerPackageVersion(pack);
-
-            File rootFile = new File(SettingsBean.getInstance().getJahiaVarDiskPath()+"/deployedModules", pack.getRootFolder());
-            rootFile.mkdirs();
-            File activeVersionFile = new File(rootFile, "activeVersion");
-            if (!activeVersionFile.exists()) {
-                FileUtils.write(activeVersionFile, pack.getVersion().toString(), "UTF-8");
-                pack.setActiveVersion(true);
-            } else {
-                String activeVersion = FileUtils.readFileToString(activeVersionFile);
-                if (pack.getVersion().toString().equals(activeVersion)) {
-                    pack.setActiveVersion(true);
-                }
-            }
-
-            File lastVersionFile = new File(rootFile, "lastVersion");
-            if (!lastVersionFile.exists()) {
-                FileUtils.write(lastVersionFile, pack.getVersion().toString(), "UTF-8");
-                pack.setLastVersion(true);
-            } else {
-                String lastVersion = FileUtils.readFileToString(lastVersionFile, "UTF-8");
-                if (new ModuleVersion(lastVersion).compareTo(pack.getVersion()) < 0) {
-                    packagesWithVersionByFilename.get(pack.getRootFolder()).get(new ModuleVersion(lastVersion)).setLastVersion(false);
-                    FileUtils.write(lastVersionFile, pack.getVersion().toString(), "UTF-8");
-                    pack.setLastVersion(true);
-                } else if (pack.getVersion().toString().equals(lastVersion)) {
-                    pack.setLastVersion(true);
-                }
-            }
-
-            if (pack.isLastVersion()) {
-                registerDefinitions(pack);
-            }
-
-            if (pack.isActiveVersion()) {
-                register(pack);
-                if (startContext) {
-                    templatePackageApplicationContextLoader.createWebApplicationContext(pack);
-            }
-            }
-        } catch (IOException e) {
-            logger.error("Cannot get active versions of module " + pack.getRootFolder(),e);
         }
     }
 

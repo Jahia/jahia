@@ -87,8 +87,6 @@ public class TemplatePackageDeployer {
 
     private static Logger logger = LoggerFactory.getLogger(TemplatePackageDeployer.class);
 
-    private Map<String, Long> timestamps = new HashMap<String, Long>();
-
     protected JahiaTemplateManagerService service;
 
     private TemplatePackageRegistry templatePackageRegistry;
@@ -346,38 +344,6 @@ public class TemplatePackageDeployer {
             }
         }
         return moduleType;
-    }
-
-    public JahiaTemplatesPackage getPackage(File templateDir) {
-        logger.debug("Reading the module in " + templateDir);
-        JahiaTemplatesPackage pkg = JahiaTemplatesPackageHandler.build(templateDir);
-        if (pkg != null) {
-            logger.debug("Module package found: " + pkg.getName());
-            if (isValidPackage(pkg)) {
-                return pkg;
-            }
-        } else {
-            logger.warn("Unable to read module package from the directory " + templateDir);
-        }
-        return null;
-    }
-
-    private boolean isValidPackage(JahiaTemplatesPackage pkg) {
-        if (StringUtils.isEmpty(pkg.getName())) {
-            logger.warn("Template package name '" + pkg.getName() + "' is not valid. Setting it to 'templates'.");
-            pkg.setName("templates");
-        }
-        if (StringUtils.isEmpty(pkg.getRootFolder())) {
-            String folderName = pkg.getName().replace(' ', '_').toLowerCase();
-            logger.warn("Template package root folder '" + pkg.getRootFolder() + "' is not valid. Setting it to '"
-                    + folderName + "'.");
-            pkg.setRootFolder(folderName);
-        }
-        return true;
-    }
-
-    public void setTimestamp(String path, long time) {
-        timestamps.put(path, time);
     }
 
     public JahiaTemplatesPackage deployModule(File warFile, JCRSessionWrapper session) throws RepositoryException {

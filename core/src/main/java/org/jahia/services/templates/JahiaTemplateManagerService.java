@@ -46,8 +46,6 @@ import difflib.Patch;
 import difflib.PatchFailedException;
 import difflib.myers.Equalizer;
 import difflib.myers.MyersDiff;
-import org.apache.commons.collections.Transformer;
-import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -106,8 +104,6 @@ import javax.jcr.query.QueryManager;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -1531,20 +1527,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return templatePackageRegistry.lookup(packageName);
     }
 
-    /**
-     * Returns the lookup map for template packages by the JCR node name.
-     *
-     * @return the lookup map for template packages by the JCR node name
-     */
-    @SuppressWarnings("unchecked")
-    public Map<String, JahiaTemplatesPackage> getTemplatePackageByNodeName() {
-        return LazyMap.decorate(new HashMap<String, JahiaTemplatesPackage>(), new Transformer() {
-            public Object transform(Object input) {
-                return templatePackageRegistry.lookupByNodeName(String.valueOf(input));
-            }
-        });
-    }
-
     public JahiaTemplatesPackage getAnyDeployedTemplatePackage(String templatePackage) {
         JahiaTemplatesPackage pack = getTemplatePackageByFileName(templatePackage);
         if (pack == null) {
@@ -1598,7 +1580,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
-    public JahiaTemplatesPackage activateModuleVersion(String rootFolder, ModuleVersion version, JCRSessionWrapper session) throws RepositoryException {
+    public JahiaTemplatesPackage activateModuleVersion(String rootFolder, ModuleVersion version, JCRSessionWrapper session) throws RepositoryException, BundleException {
         JahiaTemplatesPackage module = templatePackageRegistry.lookupByFileNameAndVersion(rootFolder, version);
 
         autoInstallModulesToSites(module, session);

@@ -54,6 +54,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.SourceControlManagement;
 import org.jahia.settings.SettingsBean;
+import org.osgi.framework.Bundle;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -531,4 +532,8 @@ public class JahiaTemplatesPackage {
         };
     }
 
+
+    public Bundle getBundle() {
+        return null;
+    }
 }

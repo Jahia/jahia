@@ -243,8 +243,9 @@ public class JCRSessionWrapper implements Session {
                     JCRNodeWrapper frozen = getFrozenVersionAsRegular(n, provider, false);
                     if (frozen != null) {
                         wrapper = frozen;
-                    }
-                } else {
+                    } 
+                } 
+                if (wrapper == null) {
                     wrapper = provider.getNodeWrapper(n, this);    
                 }
                 sessionCacheByIdentifier.put(uuid, wrapper);
@@ -357,7 +358,8 @@ public class JCRSessionWrapper implements Session {
                         if (frozen != null) {
                             wrapper = frozen;
                         }
-                    } else {
+                    } 
+                    if (wrapper == null) {
                         wrapper = provider.getNodeWrapper(node, localPath, null, this);
                     }
                     sessionCacheByPath.put(path, wrapper);

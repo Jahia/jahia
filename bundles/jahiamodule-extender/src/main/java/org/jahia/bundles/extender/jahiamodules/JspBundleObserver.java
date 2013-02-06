@@ -103,13 +103,7 @@ public class JspBundleObserver extends ScriptBundleObserver {
             final JspServletWrapper jspServlet = new JspServletWrapper(bundle, urlAlias);
             Hashtable<String, String> props = new Hashtable<String, String>();
             props.put("alias", urlAlias);
-            HttpContext httpContext = new FileHttpContext(sourceURLs,bundleHttpService.createDefaultHttpContext()) {
-                @Override
-                public boolean handleSecurity(HttpServletRequest request, HttpServletResponse response) throws IOException {
-                    // Forbid direct access
-                    return false;
-                }
-            };
+            HttpContext httpContext = new FileHttpContext(sourceURLs,bundleHttpService.createDefaultHttpContext());
             try {
                 Set<String> registeredBundleAliases = registeredAliases.get(bundle);
                 if (registeredBundleAliases == null) {

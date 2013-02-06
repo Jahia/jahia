@@ -1,7 +1,6 @@
 package org.jahia.bundles.extender.jahiamodules.render;
 
 import org.apache.commons.io.IOUtils;
-import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.Resource;
@@ -16,8 +15,6 @@ import java.io.*;
 import java.net.URL;
 import java.util.Enumeration;
 
-/**
- */
 public class BundleJSR223Script implements Script {
 
     private static Logger logger = LoggerFactory.getLogger(BundleJSR223Script.class);
@@ -39,7 +36,7 @@ public class BundleJSR223Script implements Script {
         if (scriptEngine != null) {
             ScriptContext scriptContext = new SimpleScriptContext();
             final Bindings bindings = new SimpleBindings();
-            Enumeration attrNamesEnum = context.getRequest().getAttributeNames();
+            Enumeration<?> attrNamesEnum = context.getRequest().getAttributeNames();
             while (attrNamesEnum.hasMoreElements()) {
                 String currentAttributeName = (String) attrNamesEnum.nextElement();
                 if (!"".equals(currentAttributeName)) {

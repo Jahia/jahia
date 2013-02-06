@@ -1,6 +1,6 @@
 package org.jahia.bundles.extender.jahiamodules.render;
 
-import org.osgi.framework.BundleContext;
+import org.ops4j.pax.web.jsp.JspServletWrapper;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -15,7 +15,8 @@ import java.util.Map;
  * Servlet used to internally dispatch to OSGi dispatcher.
  */
 public class BundleDispatcherServlet extends HttpServlet {
-    private Map<String, org.ops4j.pax.web.jsp.JspServletWrapper> jspMappings = new HashMap<String, org.ops4j.pax.web.jsp.JspServletWrapper>();
+    private static final long serialVersionUID = 2919659271526081659L;
+    private Map<String, JspServletWrapper> jspMappings = new HashMap<String, JspServletWrapper>();
 
     @Override
     public void init(ServletConfig config)
@@ -25,7 +26,7 @@ public class BundleDispatcherServlet extends HttpServlet {
 
     }
 
-    public Map<String, org.ops4j.pax.web.jsp.JspServletWrapper> getJspMappings() {
+    public Map<String, JspServletWrapper> getJspMappings() {
         return jspMappings;
     }
 
@@ -55,18 +56,6 @@ public class BundleDispatcherServlet extends HttpServlet {
     {
         jspMappings.clear();
         super.destroy();
-    }
-
-    private BundleContext getBundleContext()
-        throws ServletException
-    {
-        Object context = getServletContext().getAttribute(BundleContext.class.getName());
-        if (context instanceof BundleContext) {
-            return (BundleContext)context;
-        }
-
-        throw new ServletException("Bundle context attribute [" + BundleContext.class.getName() +
-                "] not set in servlet context");
     }
 
 }

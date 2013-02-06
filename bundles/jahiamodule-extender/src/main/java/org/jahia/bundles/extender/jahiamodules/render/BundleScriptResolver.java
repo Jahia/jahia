@@ -15,8 +15,6 @@ import org.jahia.services.render.scripting.ScriptFactory;
 import org.jahia.services.render.scripting.ScriptResolver;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
-import org.jahia.settings.SettingsBean;
-import org.jahia.utils.Patterns;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +24,6 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.net.URL;
 import java.util.*;
 
-/**
- */
 public class BundleScriptResolver implements ScriptResolver {
 
     private Map<Bundle, Set<URL>> availableScripts = new HashMap<Bundle, Set<URL>>();

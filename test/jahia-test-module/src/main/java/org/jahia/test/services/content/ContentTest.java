@@ -175,14 +175,14 @@ public class ContentTest {
                 new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session)
                             throws RepositoryException {
-                        try {
-                            for (String node : nodes) {
+                        for (String node : nodes) {
+                            try {
                                 session.getNodeByIdentifier(node).remove();
+                            } catch (RepositoryException e) {
+                                logger.error("Error when deleting nodes", e);
                             }
-                            session.save();
-                        } catch (RepositoryException e) {
-                            logger.error("Error when deleting nodes", e);
                         }
+                        session.save();
                         return null;
                     }
                 });

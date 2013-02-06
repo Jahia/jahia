@@ -519,12 +519,17 @@ public class WAIValidator {
         Element header = null;
 
         for (Element childElement : node.getChildElements()) {
-            if (HTMLElementName.TR.equals(childElement.getName())) {
+            if (HTMLElementName.THEAD.equals(childElement.getName())) {
+                header = childElement.getChildElements().get(0);
+                break;
+            /*
+            } else if (HTMLElementName.TR.equals(childElement.getName())) {
                 header = childElement;
                 break;
             } else if (HTMLElementName.TBODY.equals(childElement.getName())) {
                 header = childElement.getChildElements().get(0);
                 break;
+            */
             }
         }
 

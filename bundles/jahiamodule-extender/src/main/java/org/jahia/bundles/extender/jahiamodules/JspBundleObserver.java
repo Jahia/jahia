@@ -11,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -100,7 +103,13 @@ public class JspBundleObserver extends ScriptBundleObserver {
             final JspServletWrapper jspServlet = new JspServletWrapper(bundle, urlAlias);
             Hashtable<String, String> props = new Hashtable<String, String>();
             props.put("alias", urlAlias);
-            HttpContext httpContext = new FileHttpContext(sourceURLs,bundleHttpService.createDefaultHttpContext());
+            HttpContext httpContext = new FileHttpContext(sourceURLs,bundleHttpService.createDefaultHttpContext()) {
+                @Override
+                public boolean handleSecurity(HttpServletRequest request, HttpServletResponse response) throws IOException {
+                    // Forbid direct access
+                    return false;
+                }
+            };
             try {
                 Set<String> registeredBundleAliases = registeredAliases.get(bundle);
                 if (registeredBundleAliases == null) {

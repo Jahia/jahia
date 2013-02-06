@@ -69,6 +69,7 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.osgi.http.bridge.FrameworkService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
@@ -87,6 +88,8 @@ import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.jdom.JDOMException;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
@@ -210,7 +213,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * ***************************************************************************************************************
      */
 
-    public JCRNodeWrapper checkoutModule(File sources, String scmURI, String branchOrTag, String moduleName, String version, JCRSessionWrapper session) throws IOException, RepositoryException {
+    public JCRNodeWrapper checkoutModule(File sources, String scmURI, String branchOrTag, String moduleName, String version, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
         String tempName = null;
 
         if (sources == null) {
@@ -316,6 +319,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             } else {
                 FileUtils.deleteDirectory(sources);
             }
+        } catch (BundleException e) {
+            FileUtils.deleteDirectory(sources);
+            throw e;
         } catch (RepositoryException e) {
             FileUtils.deleteDirectory(sources);
             throw e;
@@ -330,7 +336,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return null;
     }
 
-    public JCRNodeWrapper createModule(String moduleName, String moduleType, File sources, JCRSessionWrapper session) throws IOException, RepositoryException {
+    public JCRNodeWrapper createModule(String moduleName, String moduleType, File sources, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
         if (sources == null) {
             sources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources");
             sources.mkdirs();
@@ -437,11 +443,18 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return templatePackageDeployer.deployModule(warFile, session);
     }
 
-    public JahiaTemplatesPackage compileAndDeploy(final String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException, IOException{
+    public JahiaTemplatesPackage compileAndDeploy(final String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException, IOException, BundleException {
         CompiledModuleInfo moduleInfo = compileModule(moduleName, sources);
-        File destFile = new File(settingsBean.getJahiaModulesDiskPath(), moduleInfo.getFile().getName());
-        FileUtils.copyFile(moduleInfo.getFile(), destFile);
-
+        for (Bundle bundle : FrameworkService.getBundleContext().getBundles()) {
+            if (bundle.getSymbolicName().equals(moduleName) && bundle.getVersion().toString().equals(moduleInfo.getVersion())) {
+                // Update existing module
+                bundle.update(new FileInputStream(moduleInfo.getFile()));
+                return templatePackageRegistry.lookupByFileNameAndVersion(moduleInfo.getModuleName(), new ModuleVersion(moduleInfo.getVersion()));
+            }
+        }
+        // No existing module found, deploy new one
+        Bundle bundle = FrameworkService.getBundleContext().installBundle(moduleInfo.getFile().toURI().toString(), new FileInputStream(moduleInfo.getFile()));
+        bundle.start();
         return templatePackageRegistry.lookupByFileNameAndVersion(moduleInfo.getModuleName(), new ModuleVersion(moduleInfo.getVersion()));
     }
 
@@ -481,48 +494,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
-    public void createManifest(String rootFolder, String packageName, File tmplRootFolder, String moduleType, String version, List<String> depends) {
-        try {
-            File manifestFile = new File(tmplRootFolder + "/META-INF/MANIFEST.MF");
-            Manifest manifest = new Manifest();
-            if (manifestFile.exists()) {
-                InputStream manifestStream = null;
-                try {
-                    manifestStream = new BufferedInputStream(new FileInputStream(manifestFile), 1024);
-                    manifest = new Manifest(manifestStream);
-                } finally {
-                    IOUtils.closeQuietly(manifestStream);
-                }
-            }
-            Attributes attributes = manifest.getMainAttributes();
-            attributes.put(new Attributes.Name("Manifest-Version"), "1.0");
-            attributes.put(new Attributes.Name("Created-By"), "Jahia");
-            if (JCRSessionFactory.getInstance().getCurrentUser() != null) {
-                attributes.put(new Attributes.Name("Built-By"), JCRSessionFactory.getInstance().getCurrentUser().getName());
-            }
-            attributes.put(new Attributes.Name("Implementation-Version"), version);
-            if (!depends.isEmpty()) {
-                attributes.put(new Attributes.Name("Jahia-Depends"), StringUtils.substringBetween(depends.toString(), "[", "]"));
-            }
-            attributes.put(new Attributes.Name("Jahia-Module-Type"), moduleType);
-            attributes.put(new Attributes.Name("Jahia-Package-Name"), packageName);
-            attributes.put(new Attributes.Name("Jahia-Root-Folder"), rootFolder);
-
-            FileOutputStream out = null;
-            try {
-                out = new FileOutputStream(manifestFile);
-                manifest.write(out);
-            } finally {
-                IOUtils.closeQuietly(out);
-            }
-
-            templatePackageDeployer.setTimestamp(manifestFile.getPath(), manifestFile.lastModified());
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
-
-    public JCRNodeWrapper installFromSources(File sources, JCRSessionWrapper session) throws IOException, RepositoryException {
+    public JCRNodeWrapper installFromSources(File sources, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
         if (!sources.exists()) {
             return null;
         }

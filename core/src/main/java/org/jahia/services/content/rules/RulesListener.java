@@ -232,7 +232,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
                 Properties properties = new Properties();
                 properties.setProperty("drools.dialect.java.compiler", "JANINO");
-                PackageBuilderConfiguration cfg = new PackageBuilderConfiguration(properties);
+                PackageBuilderConfiguration cfg = new PackageBuilderConfiguration(getClass().getClassLoader(), properties);
                 JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration("java");
                 javaConf.setCompiler(JavaDialectConfiguration.JANINO);
 

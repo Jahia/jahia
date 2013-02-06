@@ -77,6 +77,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.Messages;
+import org.osgi.framework.BundleException;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.slf4j.Logger;
@@ -1155,7 +1156,7 @@ public class ContentManagerHelper {
         return new File(vi.getProperty("j:sourcesFolder").getString());
     }
 
-    public void updateModule(String moduleName, JCRSessionWrapper session) throws IOException, RepositoryException {
+    public void updateModule(String moduleName, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
         File sources = getSource(moduleName, session);
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
 
@@ -1187,7 +1188,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public void compileAndDeploy(String moduleName, JCRSessionWrapper session) throws IOException, RepositoryException {
+    public void compileAndDeploy(String moduleName, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
         File sources = getSource(moduleName, session);
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
 

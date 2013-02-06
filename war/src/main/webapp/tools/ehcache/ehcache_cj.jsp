@@ -95,7 +95,7 @@
             depCache.clearStatistics();
             depCache.removeAll();
             ((AclCacheKeyPartGenerator) cacheProvider.getKeyGenerator().getPartGenerator("acls")).flushUsersGroupsKey();
-            AggregateCacheFilter.notCacheableFragment.clear();
+            AggregateCacheFilter.flushNotCacheableFragment();
         }
         List keys = cache.getKeys();
         pageContext.setAttribute("keys", keys);

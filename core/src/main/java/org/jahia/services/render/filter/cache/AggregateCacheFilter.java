@@ -71,6 +71,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -96,9 +97,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     protected static final Pattern CLEANUP_REGEXP = Pattern.compile(
             "<!-- cache:include src=\\\"(.*)\\\" -->\n|\n<!-- /cache:include -->");
 
-    public static final Set<String> notCacheableFragment = new HashSet<String>(512);
-    protected static final Set<String> guestMainResourceRequestParameters = new LinkedHashSet<String>();
-    public static final Set<String> guestnotCacheablePages = new HashSet<String>(512);
+    // We use ConcurrentHashMap instead of Set since we absolutely need the thread safety of this implementation but we don't want reads to lock.
+    // @todo when migrating to JDK 1.6 we can replacing this with Collections.newSetFromMap(Map m) calls.
+    protected static final Map<String,Boolean> notCacheableFragment = new ConcurrentHashMap<String,Boolean>(512);
+    protected static final Map<String,Boolean> guestMainResourceRequestParameters = new ConcurrentHashMap<String,Boolean>();
+    protected static final Map<String,Boolean> guestnotCacheablePages = new ConcurrentHashMap<String,Boolean>(512);
     static protected ThreadLocal<Set<CountDownLatch>> processingLatches = new ThreadLocal<Set<CountDownLatch>>();
     static protected ThreadLocal<String> acquiredSemaphore = new ThreadLocal<String>();
     static protected ThreadLocal<LinkedList<String>> userKeys = new ThreadLocal<LinkedList<String>>();
@@ -127,7 +130,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
         Element element = null;
         final Cache cache = cacheProvider.getCache();
-        boolean cacheable = !notCacheableFragment.contains(key);
+        boolean cacheable = !notCacheableFragment.containsKey(key);
         if (renderContext.isLoggedIn() && renderContext.getRequest().getParameter("v") != null) {
             cacheable = false;
         }
@@ -226,7 +229,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 }
             }
         }
-        boolean cacheable = !notCacheableFragment.contains(key);
+        boolean cacheable = !notCacheableFragment.containsKey(key);
         if (renderContext.isLoggedIn() && renderContext.getRequest().getParameter("v") != null) {
             cacheable = false;
         }
@@ -344,7 +347,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         } else {
             cachedElement = new Element(perUserKey, null);
             cache.put(cachedElement);
-            notCacheableFragment.add(key);
+            notCacheableFragment.put(key, Boolean.TRUE);
         }
         if (logger.isDebugEnabled()) {
             logger.debug("Store in cache content of node with key: {}", perUserKey);
@@ -855,6 +858,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     public void removeNotCacheableFragment(String key) {
+<<<<<<< .working
         CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
         if (keyGenerator instanceof DefaultCacheKeyGenerator) {
             DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
@@ -865,6 +869,18 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 for (String notCacheableKey : notCacheableFragment) {
                     if(notCacheableKey.contains(path)) {
                         removableKeys.add(notCacheableKey);
+=======
+        try {
+            CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
+            if (keyGenerator instanceof DefaultCacheKeyGenerator) {
+                DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
+                Map<String, String> keyAttrbs = defaultCacheKeyGenerator.parse(key);
+                String path = keyAttrbs.get("path");
+                List<String> removableKeys = new ArrayList<String>();
+                for (String notCacheableKey : notCacheableFragment.keySet()) {
+                    if (notCacheableKey.contains(path)) {
+                        removableKeys.add(notCacheableKey);
+>>>>>>> .merge-right.r44624
                     }
                 }
                 for (String removableKey : removableKeys) {
@@ -875,8 +891,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     public void flushNotCacheableFragment() {
-        synchronized (notCacheableFragment) {
-            notCacheableFragment.clear();
-        }
+        notCacheableFragment.clear();
     }
 }

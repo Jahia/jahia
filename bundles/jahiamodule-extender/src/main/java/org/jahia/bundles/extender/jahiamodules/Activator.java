@@ -679,7 +679,9 @@ public class Activator implements BundleActivator {
             });
 
             bundleApplicationContext.refresh();
-
+            if (templatePackageRegistry.isAfterInitializeDone()) {
+                templatePackageRegistry.afterInitializationForModule(aPackage);
+            }
             // now we will add the beans to the OSGi service registry by using the bean name as a service property so
             // so that we may filter queries when adding them.
 

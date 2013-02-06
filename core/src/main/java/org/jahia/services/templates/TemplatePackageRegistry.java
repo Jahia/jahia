@@ -41,7 +41,6 @@
 package org.jahia.services.templates;
 
 import org.apache.commons.collections.map.CaseInsensitiveMap;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
@@ -69,7 +68,6 @@ import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorklowTypeRegistration;
-import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
@@ -84,7 +82,6 @@ import javax.jcr.Workspace;
 import javax.jcr.observation.EventListenerIterator;
 import javax.jcr.observation.ObservationManager;
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -116,6 +113,7 @@ public class TemplatePackageRegistry {
     private JCRStoreService jcrStoreService;
     private TemplatePackageApplicationContextLoader templatePackageApplicationContextLoader;
     private Map<String, JahiaTemplatesPackage> packagesForBundles = new HashMap<String, JahiaTemplatesPackage>();
+    private boolean afterInitializeDone = false;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -189,6 +187,11 @@ public class TemplatePackageRegistry {
         for (JahiaTemplatesPackage pack : registry.values()) {
             afterInitializationForModule(pack);
         }
+        afterInitializeDone = true;
+    }
+
+    public boolean isAfterInitializeDone() {
+        return afterInitializeDone;
     }
 
     public void afterInitializationForModule(JahiaTemplatesPackage pack) {

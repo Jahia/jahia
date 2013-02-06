@@ -62,15 +62,14 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Helps to precompile JSPs of a WebApp. The Servlet performs 3 actions depending on the passed params: - if jsp_name param is passed, the
  * servlet tries to forward to the JSP with the passed name - if compile_type=all is passed, the servlet tries to forward to all found JSPs
- * and generates a report HTML output - if compile_type=templates is passed, the servlet tries to forward to all found templates JSPs and
- * generates a report HTML output - if compile_type=site is passed, the servlet tries to forward to all found templates JSPs of a site and
+ * and generates a report HTML output - if compile_type=modules is passed, the servlet tries to forward to all found module JSPs and
+ * generates a report HTML output - if compile_type=site is passed, the servlet tries to forward to all found module JSPs of a site and
  * generates a report HTML output - if no special param is passed, the servlet generates a page with links for the above described purposes
  */
-public class JspPrecompileServlet extends HttpServlet implements Servlet {
+public class JspPrecompileServlet extends HttpServlet {
+    private static final long serialVersionUID = 7291760429380775493L;
     private static final String JSP_NAME_PARAM = "jsp_name";
     private static final String COMPILE_TYPE_PARAM = "compile_type";
-    private static final String SITE_KEY_PARAM = "site_key";
-    private static final String TEMPLATES_DIR = "modules";
 
     private static final String MAGIC_TOMCAT_PARAM = "jsp_precompile=true";
     private ServiceTracker serviceTracker;
@@ -100,9 +99,12 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
         } else if ("all".equals(compileType)) {
             // precompile all JSPs and generate report
             precompileJsps(searchForAllJsps(), aRequest, aResponse);
-        } else if ("templates".equals(compileType)) {
+        } else if ("modules".equals(compileType)) {
             // precompile all JSPs and generate report
             precompileJsps(searchForBundleJsps(), aRequest, aResponse);
+        } else if ("non-modules".equals(compileType)) {
+            // precompile all JSPs not in modules and generate report
+            precompileJsps(searchForJsps(""), aRequest, aResponse);
         } else {
             // generate output with links for compile all and all JSPs
             PrintWriter out = aResponse.getWriter();
@@ -118,9 +120,9 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
             out.print(new Date().toString());
             out.print("</b><br/>\r\n"
 
-            + "#JSPs in WebApp: ");
+            + "#JSPs in WebApp: <strong>");
             out.print(foundJsps.size());
-            out.print("<br>\r\n"
+            out.print("</strong><br>\r\n"
 
             + "<a target=\"_blank\" href=\"");
 
@@ -136,11 +138,20 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
 
             url = aResponse.encodeURL(aRequest.getContextPath()
                     + aRequest.getServletPath() + "?" + COMPILE_TYPE_PARAM
-                    + "=templates&timestamp=" + now + "&" + MAGIC_TOMCAT_PARAM);
+                    + "=modules&timestamp=" + now + "&" + MAGIC_TOMCAT_PARAM);
 
             out.print(url);
             out.print("\">precompile modules</a><br/>\r\n");
 
+            out.print("<a target=\"_blank\" href=\"");
+
+            url = aResponse.encodeURL(aRequest.getContextPath()
+                    + aRequest.getServletPath() + "?" + COMPILE_TYPE_PARAM
+                    + "=non-modules&timestamp=" + now + "&" + MAGIC_TOMCAT_PARAM);
+
+            out.print(url);
+            out.print("\">precompile non-modules</a><br/>\r\n");
+            
             listFiles(out, aRequest.getContextPath(),
                     aRequest.getServletPath(), foundJsps, aResponse, now);
 
@@ -182,7 +193,7 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
 
     private List<String> searchForBundleJsps(Bundle bundle) {
         List<String> foundJsps = new ArrayList<String>();
-        Enumeration en = bundle.findEntries("/","*.jsp",true);
+        Enumeration<?> en = bundle.findEntries("/","*.jsp",true);
         if (en != null) {
             while (en.hasMoreElements()) {
                 URL url  = (URL) en.nextElement();
@@ -252,8 +263,8 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
         if (buggyJsps.size() == 0)
             out.print("No problems found!\r\n");
         else {
-            out.print("Precompile failed for following " + buggyJsps.size()
-                    + " JSPs:\r\n");
+            out.print("Precompile failed for following <strong>" + buggyJsps.size()
+                    + "</strong> JSPs:\r\n");
             listFiles(out, aRequest.getContextPath(),
                     aRequest.getServletPath(), buggyJsps, aResponse, System
                             .currentTimeMillis());
@@ -333,38 +344,6 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
             anOut.print("\">");
             anOut.print(jspPath);
             anOut.println("</a>");
-        }
-    }
-
-    /**
-     * Adds hyperlinks for each site to the output. Each link contains the directory name of the site. Tomcat specific jsp_precompile param
-     * is also added to each link. Also current timestamp is added to help the browser marking visited links.
-     */
-    private void listSites(PrintWriter anOut, HttpServletRequest aRequest,
-            HttpServletResponse aResponse, long now) {
-        String templatesPath = getServletContext().getRealPath("/");
-        templatesPath += templatesPath.endsWith("/") ? TEMPLATES_DIR : "/"+TEMPLATES_DIR;  // Fix for IBM SDK 1.5.0 SR6 (WAS 6.1.0.15)
-        File templatesDir = new File(templatesPath);
-        if (!templatesDir.exists()) {
-            org.slf4j.LoggerFactory.getLogger(getClass()).error("Cannot find templates directory: " + templatesPath);
-        }
-        else {
-            File[] files = templatesDir.listFiles();
-            if (files != null) {
-                for (int i = 0; i < files.length; i++) {
-                    if (files[i].isDirectory()) {
-                        anOut.print("<a target=\"_blank\" href=\"");
-                        String url = aResponse.encodeURL(aRequest.getContextPath()
-                                + aRequest.getServletPath() + "?" + COMPILE_TYPE_PARAM
-                                + "=site&site_key=" + files[i].getName()
-                                + "&timestamp=" + now + "&" + MAGIC_TOMCAT_PARAM);
-
-                        anOut.print(url);
-                        anOut.print("\">precompile module: " + files[i].getName()
-                                + "</a><br/>\r\n");
-                    }
-                }
-            }
         }
     }
 }

@@ -752,13 +752,6 @@
 			<version>3.2</version>
 		</dependency>
 
-        <!-- just added to override the default pdfbox dependency in tika, which does not work in java 7 -->        
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
-             <version>${apache.pdfbox.version}</version>
-        </dependency>        
-		
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
@@ -788,7 +781,7 @@
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
-            <version>1.7.1</version>
+            <version>1.7.1-jahia1</version>
         </dependency>
 
         <dependency>

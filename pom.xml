@@ -37,12 +37,7 @@
         <lucene.version>3.0.3</lucene.version>
         <jbpm.version>4.4</jbpm.version>
         <hibernate.version>3.3.2.GA</hibernate.version>
-<<<<<<< .working
         <apache.tika.version>1.2</apache.tika.version>
-=======
-        <apache.pdfbox.version>1.4.0-jahia1</apache.pdfbox.version>
-        <apache.tika.version>0.9</apache.tika.version>
->>>>>>> .merge-right.r44652
         <camel.version>2.4.0</camel.version>
         <gwt.version>2.4.0</gwt.version>
         <atmosphere.version>1.0.6</atmosphere.version>

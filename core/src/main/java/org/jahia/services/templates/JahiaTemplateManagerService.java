@@ -446,7 +446,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public JahiaTemplatesPackage compileAndDeploy(final String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException, IOException, BundleException {
         CompiledModuleInfo moduleInfo = compileModule(moduleName, sources);
         for (Bundle bundle : FrameworkService.getBundleContext().getBundles()) {
-            if (bundle.getSymbolicName().equals(moduleName) && bundle.getVersion().toString().equals(moduleInfo.getVersion())) {
+            if (bundle.getSymbolicName().equals(moduleName) && bundle.getHeaders().get("Implementation-Version") != null && bundle.getHeaders().get("Implementation-Version").toString().equals(moduleInfo.getVersion())) {
                 // Update existing module
                 bundle.update(new FileInputStream(moduleInfo.getFile()));
                 return templatePackageRegistry.lookupByFileNameAndVersion(moduleInfo.getModuleName(), new ModuleVersion(moduleInfo.getVersion()));

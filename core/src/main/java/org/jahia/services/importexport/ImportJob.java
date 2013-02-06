@@ -40,24 +40,33 @@
 
 package org.jahia.services.importexport;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRFileNode;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.sites.JahiaSite;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
+<<<<<<< .working
 import org.springframework.core.io.FileSystemResource;
+=======
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+>>>>>>> .merge-right.r44655
 
+import javax.jcr.RepositoryException;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -88,48 +97,71 @@ public class ImportJob extends BackgroundJob {
         JobDetail jobDetail = jobExecutionContext.getJobDetail();
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
 
-        JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey((String) jobDataMap.get(JOB_SITEKEY));
+        JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey((String) jobDataMap.get(
+                JOB_SITEKEY));
 
         String uri = (String) jobDataMap.get(URI);
         if (uri != null) {
-            // we are in the case of a site import
             JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession();
+<<<<<<< .working
             JCRNodeWrapper f = session.getNode(uri);
 
             if (f != null) {
                 File file = JCRContentUtils.downloadFileContent(f, File.createTempFile("import", ".zip"));
                 try {
                     ServicesRegistry.getInstance().getImportExportService().importSiteZip(file == null ? null : new FileSystemResource(file), site, jobDataMap);
+=======
+            JCRFileNode f = (JCRFileNode) session.getNode(uri);
+            String destinationParentPath = (String) jobDataMap.get(DESTINATION_PARENT_PATH);
+            if (destinationParentPath == null) {
+                // we are in the case of a site import
+                if (f != null) {
+                    File file = JCRContentUtils.downloadFileContent(f, File.createTempFile("import", ".zip"));
+                    try {
+                        ServicesRegistry.getInstance().getImportExportService().importSiteZip(file, site, jobDataMap);
+                        f.remove();
+                        session.save();
+                    } finally {
+                        file.delete();
+                    }
+                }
+            } else {
+                if (f != null) {
+                    String filename = (String) jobDataMap.get(FILENAME);
+                    File file = JCRContentUtils.downloadFileContent(f, File.createTempFile("import",
+                            "." + FilenameUtils.getExtension(filename)));
+                    if (jobDataMap.containsKey(REPLACE_CONTENT)) {
+                        importContent(destinationParentPath, jobDataMap.getBoolean(REPLACE_CONTENT), file,
+                                f.getFileContent().getContentType());
+                    } else {
+                        importContent(destinationParentPath, false, file, f.getFileContent().getContentType());
+                    }
+                    FileUtils.deleteQuietly(file);
+>>>>>>> .merge-right.r44655
                     f.remove();
                     session.save();
-                } finally {
-                    file.delete();
                 }
             }
         } else {
             // we are in the case of a regular content import.
             String destinationParentPath = (String) jobDataMap.get(DESTINATION_PARENT_PATH);
             String fileKey = (String) jobDataMap.get(FILE_KEY);
-            if(jobDataMap.containsKey(REPLACE_CONTENT)) {
+            if (jobDataMap.containsKey(REPLACE_CONTENT)) {
                 importContent(destinationParentPath, fileKey, jobDataMap.getBoolean(REPLACE_CONTENT));
             } else {
-                importContent(destinationParentPath, fileKey);
+                importContent(destinationParentPath, fileKey, false);
             }
         }
     }
 
-    public static void importContent(String parentPath, String fileKey) throws Exception {
-        importContent(parentPath, fileKey, false);
-    }
-
     public static void importContent(String parentPath, String fileKey, boolean replaceContent) throws Exception {
-        ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
         GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(fileKey);
         String contentType = ImportExportBaseService.detectImportContentType(item);
         try {
-            if(replaceContent) {
-                parentPath = StringUtils.substringBeforeLast(parentPath,"/");
+            if (replaceContent) {
+                parentPath = StringUtils.substringBeforeLast(parentPath, "/");
             }
+<<<<<<< .working
             if ("application/zip".equals(contentType)) {
                 try {
                     importExport.importZip(parentPath, item.getFile() == null ? null : new FileSystemResource(item.getFile()),
@@ -149,9 +181,32 @@ public class ImportJob extends BackgroundJob {
             } else {
                 item.dispose();
             }
+=======
+            importContent(parentPath, replaceContent, item.getFile(), contentType);
+>>>>>>> .merge-right.r44655
         } catch (Exception e) {
             logger.error("Error when importing", e);
             throw new GWTJahiaServiceException(e.getMessage());
+        } finally {
+            item.dispose();
+        }
+    }
+
+    private static void importContent(String parentPath, boolean replaceContent, File file, String contentType)
+            throws IOException, RepositoryException, JahiaException {
+        ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
+        if ("application/zip".equals(contentType)) {
+            importExport.importZip(parentPath, file,
+                    replaceContent ? DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE : DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE);
+
+        } else if ("application/xml".equals(contentType) || "text/xml".equals(contentType)) {
+            InputStream is = new FileInputStream(file);
+            try {
+                importExport.importXML(parentPath, is,
+                        replaceContent ? DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE : DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE);
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
         }
     }
 

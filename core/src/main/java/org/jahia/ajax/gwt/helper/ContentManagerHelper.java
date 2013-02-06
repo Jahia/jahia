@@ -637,13 +637,19 @@ public class ContentManagerHelper {
             ValidationResults results = importExport.validateImportFile(session, item.getStream(), ImportExportBaseService.detectImportContentType(item), resolveSite != null ? resolveSite.getInstalledModules() : null);
 
             if (results.isSuccessful()) {
+                // First let's copy the file in the JCR
+                JCRNodeWrapper privateFilesFolder = session.getNode(session.getUser().getLocalPath() + "/files/private");
+                String importFilename="import"+Math.random()*1000;
+                JCRNodeWrapper jcrNodeWrapper = privateFilesFolder.uploadFile(importFilename, item.getStream(),
+                        item.getContentType());
+                session.save();
                 // let's schedule an import job.
                 JobDetail jobDetail = BackgroundJob.createJahiaJob(Messages.getInternal("import.file", uiLocale, "Import file") + " " + FilenameUtils.getName(item.getOriginalFileName()), ImportJob.class);
                 JobDataMap jobDataMap;
                 jobDataMap = jobDetail.getJobDataMap();
 
                 jobDataMap.put(ImportJob.DESTINATION_PARENT_PATH, parentPath);
-                jobDataMap.put(ImportJob.FILE_KEY, fileKey);
+                jobDataMap.put(ImportJob.URI, jcrNodeWrapper.getPath());
                 jobDataMap.put(ImportJob.FILENAME, FilenameUtils.getName(item.getOriginalFileName()));
                 jobDataMap.put(ImportJob.REPLACE_CONTENT, replaceContent);
 

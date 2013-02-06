@@ -96,7 +96,15 @@ public class URLFilterTest {
 
         JahiaData jData = new JahiaData(paramBean, false);
         paramBean.setAttribute(JahiaData.JAHIA_DATA, jData);
+    }
 
+    @AfterClass
+    public static void oneTimeTearDown() throws Exception {
+        TestHelper.deleteSite(TESTSITE_NAME);
+    }
+
+    @Before
+    public void setUp() throws Exception {
         JCRSessionWrapper session = JCRSessionFactory.getInstance()
                 .getCurrentUserSession(null, Locale.ENGLISH);
         JCRNodeWrapper siteNode = session.getNode(SITECONTENT_ROOT_NODE);
@@ -107,7 +115,8 @@ public class URLFilterTest {
 
         if (siteNode.hasNode("testPage")) {
             siteNode.getNode("testPage").remove();
-        }
+        }        
+        
         JCRNodeWrapper pageNode = siteNode.addNode("testPage", Constants.JAHIANT_PAGE);
         pageNode.setProperty("jcr:title", "English test page");
         pageNode.setProperty("j:templateName", "simple");        
@@ -122,19 +131,23 @@ public class URLFilterTest {
         frenchSession.save();
     }
 
-    @AfterClass
-    public static void oneTimeTearDown() throws Exception {
-        TestHelper.deleteSite(TESTSITE_NAME);
-    }
-
-    @Before
-    public void setUp() {
-
-    }
-
     @After
-    public void tearDown() {
+    public void tearDown() throws Exception {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance()
+                .getCurrentUserSession(null, Locale.ENGLISH);
+        JCRNodeWrapper siteNode = session.getNode(SITECONTENT_ROOT_NODE);
 
+        if (!siteNode.isCheckedOut()) {
+            session.checkout(siteNode);
+        }
+
+        if (siteNode.hasNode("testPage")) {
+            siteNode.getNode("testPage").remove();
+        }
+        
+        session.save();
+        
+        JCRSessionFactory.getInstance().closeAllSessions();
     }
 
     @Test

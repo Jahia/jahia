@@ -497,42 +497,6 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>maven-3</id>
-            <activation>
-                <file>
-                <!--  This employs that the basedir expression is only recognized by Maven 3.x (see MNG-2363) -->
-                    <exists>${basedir}</exists>
-                </file>
-            </activation>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-site-plugin</artifactId>
-                            <version>${maven3.site.plugin.version}</version>
-                            <configuration>
-                                <relativizeDecorationLinks>true</relativizeDecorationLinks>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-site-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-descriptor</id>
-                                <goals>
-                                    <goal>attach-descriptor</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
 
     <distributionManagement>
@@ -579,10 +543,18 @@
                     <groupId>org.apache.felix</groupId>
                     <version>2.3.7</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${maven3.site.plugin.version}</version>
+                    <configuration>
+                        <relativizeDecorationLinks>true</relativizeDecorationLinks>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
-            <!--<plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>${enforcer.plugin.version}</version>
@@ -604,7 +576,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -665,6 +637,17 @@
                     <preparationGoals>clean install</preparationGoals>
                     <releaseProfiles>do-attach-javadocs,aggregate-javadocs,gwt-production</releaseProfiles>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-site-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-descriptor</id>
+                        <goals>
+                            <goal>attach-descriptor</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

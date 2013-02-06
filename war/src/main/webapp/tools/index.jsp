@@ -57,6 +57,7 @@
         <li><a href="jcrGc.jsp">JCR DataStore garbage collection</a></li>
         <li><a href="jcrVersionHistory.jsp">JCR version history management</a></li>
         <li><a href="jcrIntegrityTools.jsp">JCR integrity tools</a></li>
+        <li><a href="jcrExternalProviders.jsp">JCR External Providers</a></li>
     </ul>
 </fieldset>
 <fieldset>

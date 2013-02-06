@@ -154,46 +154,33 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>maven-3</id>
-            <activation>
-                <file>
-                    <!--  This employs that the basedir expression is only recognized by Maven 3.x (see MNG-2363) -->
-                    <exists>${basedir}</exists>
-                </file>
-            </activation>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-site-plugin</artifactId>
-                            <version>${maven3.site.plugin.version}</version>
-                            <configuration>
-                                <relativizeDecorationLinks>true</relativizeDecorationLinks>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-site-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-descriptor</id>
-                                <goals>
-                                    <goal>attach-descriptor</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${maven3.site.plugin.version}</version>
+                    <configuration>
+                        <relativizeDecorationLinks>true</relativizeDecorationLinks>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
+            <plugin>
+                <artifactId>maven-site-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-descriptor</id>
+                        <goals>
+                            <goal>attach-descriptor</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>

@@ -849,6 +849,14 @@ public class NavigationHelper {
         n.setProviderKey(node.getProvider().getKey());
 
         if (fields.contains(GWTJahiaNode.PERMISSIONS)) {
+        	try{
+        		if(node.getParent().isNodeType(Constants.JAHIAMIX_AUTOSPLITFOLDERS)) { 
+        			//reload the node when it is splittype that all pathes are correct, to load the permissios
+        	        node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(node.getIdentifier());
+        		}
+        	}catch(Exception ex) {
+        		logger.warn("reload of node " + node.getName() + " on path " + node.getPath() + " failed", ex);
+        	}
             BitSet bs = node.getPermissionsAsBitSet();
             GWTBitSet gwtBs = new GWTBitSet(bs.size());
 

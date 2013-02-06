@@ -94,7 +94,7 @@
             depCache.clearStatistics();
             depCache.removeAll();
             ((DefaultCacheKeyGenerator) cacheProvider.getKeyGenerator()).flushUsersGroupsKey();
-            AggregateCacheFilter.notCacheableFragment.clear();
+            AggregateCacheFilter.flushNotCacheableFragment();
         }
         List keys = cache.getKeys();
         Collections.sort(keys);

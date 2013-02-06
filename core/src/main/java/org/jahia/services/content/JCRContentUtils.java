@@ -636,7 +636,11 @@ public final class JCRContentUtils implements ServletContextAware {
     }
 
     public static String getIconWithContext(ExtendedNodeType type) throws RepositoryException {
-        return Jahia.getContextPath() + "/modules/" + getIcon(type, null);
+        String icon = getIcon(type, null);
+        if (icon == null) {
+            icon = getIcon(NodeTypeRegistry.getInstance().getNodeType("jmix:droppableContent"));
+        }
+        return Jahia.getContextPath() + "/modules/" + icon;
     }
 
     public static String getIcon(ExtendedNodeType type) throws RepositoryException {

@@ -874,14 +874,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         GWTJahiaNode node;
         try {
             node = navigation.getGWTJahiaNode(session.getNodeByUUID(res.getUUID()),fields);
-
-<<<<<<< .working
             if (acl != null && (!acl.getAce().isEmpty() || acl.isBreakAllInheritance())) {
-                contentManager.setACL(res.getPath(), acl, session);
-=======
-            if (acl != null) {
-                contentManager.setACL(res.getUUID(), acl, jcrSessionWrapper);
->>>>>>> .merge-right.r44642
+                contentManager.setACL(res.getUUID(), acl, session);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

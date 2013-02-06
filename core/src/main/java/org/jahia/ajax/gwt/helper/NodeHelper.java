@@ -50,6 +50,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
@@ -645,6 +646,14 @@ class NodeHelper {
     }
 
     private void populatePermissions(GWTJahiaNode n, JCRNodeWrapper node) {
+        try{
+            if(node.getParent().isNodeType(Constants.JAHIAMIX_AUTOSPLITFOLDERS)) {
+                //reload the node when it is splittype that all pathes are correct, to load the permissios
+                node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(node.getIdentifier());
+            }
+        }catch(Exception ex) {
+            logger.warn("reload of node " + node.getName() + " on path " + node.getPath() + " failed", ex);
+        }
         BitSet bs = node.getPermissionsAsBitSet();
         if (bs != null) {
             GWTBitSet gwtBs = new GWTBitSet(bs.size());

@@ -76,6 +76,7 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.i18n.Messages;
 import org.osgi.framework.BundleException;
 import org.quartz.JobDataMap;
@@ -645,43 +646,24 @@ public class ContentManagerHelper {
             }
 
             if (results.isSuccessful()) {
-<<<<<<< .working
-                // First let's copy the file in the JCR
-                JCRNodeWrapper privateFilesFolder = session.getNode(session.getUser().getLocalPath() + "/files/private");
-                String importFilename="import"+Math.random()*1000;
-                JCRNodeWrapper jcrNodeWrapper = privateFilesFolder.uploadFile(importFilename, item.getStream(),
-                        item.getContentType());
-                session.save();
-                // let's schedule an import job.
-                JobDetail jobDetail = BackgroundJob.createJahiaJob(Messages.getInternal("import.file", uiLocale, "Import file") + " " + FilenameUtils.getName(item.getOriginalFileName()), ImportJob.class);
-                JobDataMap jobDataMap;
-                jobDataMap = jobDetail.getJobDataMap();
-=======
                 try {
                     // First let's copy the file in the JCR
-                    JCRNodeWrapper privateFilesFolder = session.getNode(session.getUser().getLocalPath() + "/files/private");
-                    String importFilename="import"+Math.random()*1000;
+                    JCRNodeWrapper privateFilesFolder = session.getNode(
+                            session.getUser().getLocalPath() + "/files/private");
+                    String importFilename = "import" + Math.random() * 1000;
                     itemStream = item.getStream();
                     JCRNodeWrapper jcrNodeWrapper = privateFilesFolder.uploadFile(importFilename, itemStream,
                             item.getContentType());
                     session.save();
                     // let's schedule an import job.
-                    JobDetail jobDetail = BackgroundJob.createJahiaJob(JahiaResourceBundle.getJahiaInternalResource("import.file",uiLocale, "Import file") + " " + FilenameUtils.getName(item.getOriginalFileName()), ImportJob.class);
+                    JobDetail jobDetail = BackgroundJob.createJahiaJob(Messages.getInternal("import.file", uiLocale,
+                            "Import file") + " " + FilenameUtils.getName(item.getOriginalFileName()), ImportJob.class);
                     JobDataMap jobDataMap;
                     jobDataMap = jobDetail.getJobDataMap();
->>>>>>> .merge-right.r44666
-
-<<<<<<< .working
-                jobDataMap.put(ImportJob.DESTINATION_PARENT_PATH, parentPath);
-                jobDataMap.put(ImportJob.URI, jcrNodeWrapper.getPath());
-                jobDataMap.put(ImportJob.FILENAME, FilenameUtils.getName(item.getOriginalFileName()));
-                jobDataMap.put(ImportJob.REPLACE_CONTENT, replaceContent);
-=======
                     jobDataMap.put(ImportJob.DESTINATION_PARENT_PATH, parentPath);
                     jobDataMap.put(ImportJob.URI, jcrNodeWrapper.getPath());
                     jobDataMap.put(ImportJob.FILENAME, FilenameUtils.getName(item.getOriginalFileName()));
-                    jobDataMap.put(ImportJob.REPLACE_CONTENT,replaceContent);
->>>>>>> .merge-right.r44666
+                    jobDataMap.put(ImportJob.REPLACE_CONTENT, replaceContent);
 
                     ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
                 } finally {

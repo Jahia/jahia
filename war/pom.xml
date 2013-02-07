@@ -904,14 +904,12 @@
                                 <artifactItem>
                                     <groupId>org.ops4j.pax.web</groupId>
                                     <artifactId>pax-web-api</artifactId>
-                                    <!--version>${pax.web.version}</version-->
-                                    <version>3.0.0-20121108.224257-85</version>
+                                    <version>${pax.web.version}</version>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.ops4j.pax.web</groupId>
                                     <artifactId>pax-web-jsp</artifactId>
-                                    <!--version>${pax.web.version}</version-->
-                                    <version>3.0.0-20121108.224409-79</version>
+                                    <version>${pax.web.version}</version>
                                 </artifactItem>
 
                                 <artifactItem>
@@ -969,14 +967,72 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <supportedProjectTypes>
+                        <supportedProjectType>jar</supportedProjectType>
+                        <supportedProjectType>bundle</supportedProjectType>
+                        <supportedProjectType>war</supportedProjectType>
+                    </supportedProjectTypes>
+                    <instructions>
+                        <Export-Package>*</Export-Package>
+                        <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+                        <Embed-Transitive>*</Embed-Transitive>
+                        <_nodefaultversion>true</_nodefaultversion>
+                        <_removeheaders>
+                            Include-Resource,
+                            Private-Package,
+                            Embed-Dependency,
+                            Embed-Transitive
+                        </_removeheaders>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>generate-exports</id>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jahia.server</groupId>
+                <artifactId>jahia-maven-plugin</artifactId>
+                <version>${jahia.plugin.version}</version>
+                <configuration>
+                    <propertiesInputFile>
+                        ${project.basedir}/src/main/webapp/WEB-INF/etc/config/felix-framework.properties
+                    </propertiesInputFile>
+                    <propertiesOutputFile>${project.build.directory}/generated-resources/felix-framework.properties
+                    </propertiesOutputFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>generate-package-export</id>
+                        <goals>
+                            <goal>buildFrameworkPackageList</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <warSourceExcludes>*Resources*.properties</warSourceExcludes>
+                    <warSourceExcludes>*Resources*.properties,**/felix-framework.properties</warSourceExcludes>
                     <webResources>
                         <resource>
                           <directory>${project.build.directory}/native2ascii</directory>
                           <targetPath>WEB-INF/classes</targetPath>
+                        </resource>
+                        <resource>
+                          <directory>${project.build.directory}/generated-resources</directory>
+                          <targetPath>WEB-INF/etc/config</targetPath>
                         </resource>
                         <resource>
                             <directory>.</directory>

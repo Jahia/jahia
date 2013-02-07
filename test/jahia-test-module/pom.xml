@@ -220,10 +220,12 @@
                     <artifactId>mail</artifactId>
                     <groupId>javax.mail</groupId>
                 </exclusion>
+                <!--
                 <exclusion>
                     <artifactId>mockrunner</artifactId>
                     <groupId>com.mockrunner</groupId>
                 </exclusion>
+                -->
             </exclusions>
         </dependency>
 
@@ -415,7 +417,7 @@
                         <Jahia-Static-Resources>/css,/icons,/images,/img,/javascript</Jahia-Static-Resources>
         
                         <Import-Package>*,${jahia.modules.importPackage}</Import-Package>
-                        <Embed-Dependency>*; scope=compile; type=!pom; inline=false</Embed-Dependency>
+                        <Embed-Dependency>*;scope=compile;type=!pom;inline=false</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <_removeheaders>
                             Include-Resource,

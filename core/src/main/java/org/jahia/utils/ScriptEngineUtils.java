@@ -80,6 +80,11 @@ public class ScriptEngineUtils {
         scriptEngineManager = new ScriptEngineManager();
         scriptEngineByExtensionCache = new LinkedHashMap<String, ScriptEngine>(3);
         scriptEngineByNameCache = new LinkedHashMap<String, ScriptEngine>(3);
+        try {
+            scriptEngineManager.getEngineByExtension("groovy").eval("true");
+        } catch (ScriptException e) {
+            // Ignore
+        }
     }
 
     /**

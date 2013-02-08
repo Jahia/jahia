@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    <bean name="felixProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath*:org/jahia/defaults/config/properties/felix-framework*.properties</value>
+                <value>/WEB-INF/etc/config/felix-framework.properties</value>
+                <value>classpath*:org/jahia/config/felix-framework*.properties</value>
+            </list>
+        </property>
+        <property name="localOverride" value="true"/>
+        <property name="properties">
+            <bean class="org.jahia.settings.SystemPropertiesFactoryBean">
+                <property name="prefix" value="jahiaConfig.felix."/>
+            </bean>
+        </property>
+    </bean>
+</beans>

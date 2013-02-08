@@ -52,13 +52,9 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
-<<<<<<< .working
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-=======
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
->>>>>>> .merge-right.r44681
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -287,24 +283,14 @@ public class PlaceholderModule extends Module {
                 }
             }
 
-<<<<<<< .working
             Image icon = ToolbarIconProvider.getInstance().getIcon("paste").createImage();
             icon.setTitle(Messages.get("label.paste", "Paste"));
-=======
-            AbstractImagePrototype pasteIcon = ToolbarIconProvider.getInstance().getIcon("paste");
->>>>>>> .merge-right.r44681
             pasteButton = new HorizontalPanel();
-<<<<<<< .working
             pasteButton.add(icon);
             if (!mainModule.getConfig().isButtonsInLayer()) {
                 if (getWidth() > 150) {
                     pasteButton.add(new Text(Messages.get("label.paste", "Paste")));
                 }
-=======
-            pasteButton.add(pasteIcon.createImage());
-            if (getWidth() > 150) {
-                pasteButton.add(new Text(Messages.get("label.paste", "Paste")));
->>>>>>> .merge-right.r44681
             }
             pasteButton.sinkEvents(Event.ONCLICK);
             pasteButton.addStyleName("button-placeholder");
@@ -334,20 +320,18 @@ public class PlaceholderModule extends Module {
                     }
                 }
             });
+
             CopyPasteEngine.getInstance().addPlaceholder(this);
             updatePasteButton();
-<<<<<<< .working
+
             if (mainModule.getConfig().isButtonsInLayer() && getParentModule().getHeader()!=null) {
                 getParentModule().getHeader().addTool(pasteButton);
+                getParentModule().getHeader().addTool(pasteAsReferenceButton);
             } else {
                 panel.add(pasteButton);
+                panel.add(pasteAsReferenceButton);
                 panel.layout();
             }
-=======
-            panel.add(pasteButton);
-            panel.add(pasteAsReferenceButton);
-            panel.layout();
->>>>>>> .merge-right.r44681
         }
     }
 
@@ -372,5 +356,4 @@ public class PlaceholderModule extends Module {
             pasteAsReferenceButton.setVisible(false);
         }
     }
-
 }

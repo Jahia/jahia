@@ -52,9 +52,13 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
+<<<<<<< .working
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+=======
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+>>>>>>> .merge-right.r44681
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -81,6 +85,7 @@ import java.util.*;
 public class PlaceholderModule extends Module {
     private LayoutContainer panel;
     private LayoutContainer pasteButton;
+    private LayoutContainer pasteAsReferenceButton;
 
 //    private static LayoutContainer currentlyVisiblePanel = null;
 
@@ -282,14 +287,24 @@ public class PlaceholderModule extends Module {
                 }
             }
 
+<<<<<<< .working
             Image icon = ToolbarIconProvider.getInstance().getIcon("paste").createImage();
             icon.setTitle(Messages.get("label.paste", "Paste"));
+=======
+            AbstractImagePrototype pasteIcon = ToolbarIconProvider.getInstance().getIcon("paste");
+>>>>>>> .merge-right.r44681
             pasteButton = new HorizontalPanel();
+<<<<<<< .working
             pasteButton.add(icon);
             if (!mainModule.getConfig().isButtonsInLayer()) {
                 if (getWidth() > 150) {
                     pasteButton.add(new Text(Messages.get("label.paste", "Paste")));
                 }
+=======
+            pasteButton.add(pasteIcon.createImage());
+            if (getWidth() > 150) {
+                pasteButton.add(new Text(Messages.get("label.paste", "Paste")));
+>>>>>>> .merge-right.r44681
             }
             pasteButton.sinkEvents(Event.ONCLICK);
             pasteButton.addStyleName("button-placeholder");
@@ -302,15 +317,37 @@ public class PlaceholderModule extends Module {
                     }
                 }
             });
+            AbstractImagePrototype pasteAsReferenceIcon = ToolbarIconProvider.getInstance().getIcon("pasteReference");
+            pasteAsReferenceButton = new HorizontalPanel();
+            pasteAsReferenceButton.add(pasteAsReferenceIcon.createImage());
+            if (getWidth() > 150) {
+                pasteAsReferenceButton.add(new Text(Messages.get("label.pasteReference", "Paste Reference")));
+            }
+            pasteAsReferenceButton.sinkEvents(Event.ONCLICK);
+            pasteAsReferenceButton.addStyleName("button-placeholder");
+
+            pasteAsReferenceButton.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+                public void handleEvent(ComponentEvent be) {
+                    GWTJahiaNode parentNode = getParentModule().getNode();
+                    if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && !parentNode.isLocked()) {
+                        CopyPasteEngine.getInstance().pasteReference(parentNode, mainModule.getEditLinker());
+                    }
+                }
+            });
             CopyPasteEngine.getInstance().addPlaceholder(this);
             updatePasteButton();
-
+<<<<<<< .working
             if (mainModule.getConfig().isButtonsInLayer() && getParentModule().getHeader()!=null) {
                 getParentModule().getHeader().addTool(pasteButton);
             } else {
                 panel.add(pasteButton);
                 panel.layout();
             }
+=======
+            panel.add(pasteButton);
+            panel.add(pasteAsReferenceButton);
+            panel.layout();
+>>>>>>> .merge-right.r44681
         }
     }
 
@@ -325,8 +362,14 @@ public class PlaceholderModule extends Module {
     public void updatePasteButton() {
         if (CopyPasteEngine.getInstance().getCopiedPaths() != null && /*CopyPasteEngine.getInstance().canCopyTo(parentModule.getNode()) &&*/ CopyPasteEngine.getInstance().checkNodeType(parentModule.getNodeTypes())) {
             pasteButton.setVisible(true);
+            if (!CopyPasteEngine.getInstance().isCut()) {
+                pasteAsReferenceButton.setVisible(true);
+            } else {
+                pasteAsReferenceButton.setVisible(false);
+            }
         } else {
             pasteButton.setVisible(false);
+            pasteAsReferenceButton.setVisible(false);
         }
     }
 

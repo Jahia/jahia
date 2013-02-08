@@ -51,6 +51,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -77,6 +78,7 @@ import java.util.Set;
 public class PlaceholderModule extends Module {
     private LayoutContainer panel;
     private LayoutContainer pasteButton;
+    private LayoutContainer pasteAsReferenceButton;
 
     public PlaceholderModule(String id, String path, Element divElement, MainModule mainModule) {
         super(id, path, divElement, mainModule, new FlowLayout());
@@ -172,9 +174,9 @@ public class PlaceholderModule extends Module {
                 panel.add(p);
             }
 
-            AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon("paste");
+            AbstractImagePrototype pasteIcon = ToolbarIconProvider.getInstance().getIcon("paste");
             pasteButton = new HorizontalPanel();
-            pasteButton.add(icon.createImage());
+            pasteButton.add(pasteIcon.createImage());
             if (getWidth() > 150) {
                 pasteButton.add(new Text(Messages.get("label.paste", "Paste")));
             }
@@ -189,11 +191,27 @@ public class PlaceholderModule extends Module {
                     }
                 }
             });
+            AbstractImagePrototype pasteAsReferenceIcon = ToolbarIconProvider.getInstance().getIcon("pasteReference");
+            pasteAsReferenceButton = new HorizontalPanel();
+            pasteAsReferenceButton.add(pasteAsReferenceIcon.createImage());
+            if (getWidth() > 150) {
+                pasteAsReferenceButton.add(new Text(Messages.get("label.pasteReference", "Paste Reference")));
+            }
+            pasteAsReferenceButton.sinkEvents(Event.ONCLICK);
+            pasteAsReferenceButton.addStyleName("button-placeholder");
+
+            pasteAsReferenceButton.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+                public void handleEvent(ComponentEvent be) {
+                    GWTJahiaNode parentNode = getParentModule().getNode();
+                    if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && !parentNode.isLocked()) {
+                        CopyPasteEngine.getInstance().pasteReference(parentNode, mainModule.getEditLinker());
+                    }
+                }
+            });
             CopyPasteEngine.getInstance().addPlaceholder(this);
             updatePasteButton();
-
             panel.add(pasteButton);
-
+            panel.add(pasteAsReferenceButton);
             panel.layout();
         }
     }
@@ -209,8 +227,14 @@ public class PlaceholderModule extends Module {
     public void updatePasteButton() {
         if (CopyPasteEngine.getInstance().getCopiedPaths() != null && /*CopyPasteEngine.getInstance().canCopyTo(parentModule.getNode()) &&*/ CopyPasteEngine.getInstance().checkNodeType(parentModule.getNodeTypes())) {
             pasteButton.setVisible(true);
+            if (!CopyPasteEngine.getInstance().isCut()) {
+                pasteAsReferenceButton.setVisible(true);
+            } else {
+                pasteAsReferenceButton.setVisible(false);
+            }
         } else {
             pasteButton.setVisible(false);
+            pasteAsReferenceButton.setVisible(false);
         }
     }
 

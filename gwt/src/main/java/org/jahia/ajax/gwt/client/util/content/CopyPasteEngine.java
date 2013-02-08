@@ -91,23 +91,45 @@ public class CopyPasteEngine {
             }
 
             public void onSuccess(Object o) {
-                boolean refresh = false;
-                for (GWTJahiaNode n : getCopiedPaths()) {
-                    if (!n.isFile()) {
-                        refresh = true;
-                        break;
-                    }
-                }
-                onPastedPath();
-                linker.setSelectPathAfterDataUpdate(copiedPaths);
-                linker.loaded();
-                if (refresh) {
-                    linker.refresh(EditLinker.REFRESH_ALL);
-                } else {
-                    linker.refresh(Linker.REFRESH_MAIN);
-                }
+                afterPaste(linker, copiedPaths);
             }
         });
+    }
+    public void pasteReference(GWTJahiaNode m, final Linker linker) {
+        final List<String> copiedPaths = new ArrayList<String>();
+        for (GWTJahiaNode node : getCopiedPaths()) {
+            copiedPaths.add(m.getPath() + "/" + node.getName());
+        }
+        JahiaContentManagementService
+                .App.getInstance().pasteReferences(JCRClientUtils.getPathesList(getCopiedPaths()), m.getPath(), null, new BaseAsyncCallback() {
+            public void onApplicationFailure(Throwable throwable) {
+                Window.alert(Messages.get("failure.paste.label") + "\n" + throwable.getLocalizedMessage());
+                linker.loaded();
+            }
+
+            public void onSuccess(Object o) {
+                afterPaste(linker, copiedPaths);
+            }
+        });
+
+    }
+
+    private void afterPaste(Linker linker, List<String> copiedPaths) {
+        boolean refresh = false;
+        for (GWTJahiaNode n : getCopiedPaths()) {
+            if (!n.isFile()) {
+                refresh = true;
+                break;
+            }
+        }
+        onPastedPath();
+        linker.setSelectPathAfterDataUpdate(copiedPaths);
+        linker.loaded();
+        if (refresh) {
+            linker.refresh(EditLinker.REFRESH_ALL);
+        } else {
+            linker.refresh(Linker.REFRESH_MAIN);
+        }
     }
 
     public List<GWTJahiaNode> getCopiedPaths() {

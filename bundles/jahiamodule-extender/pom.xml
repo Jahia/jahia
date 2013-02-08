@@ -119,7 +119,7 @@
         <dependency>
           <groupId>org.ops4j.pax.web</groupId>
           <artifactId>pax-web-jsp</artifactId>
-          <version>3.0.0-20121108.224409-79</version>
+          <version>${pax.web.version}</version>
           <scope>provided</scope>
         </dependency>
         <dependency>

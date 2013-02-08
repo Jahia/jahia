@@ -46,6 +46,8 @@ import difflib.Patch;
 import difflib.PatchFailedException;
 import difflib.myers.Equalizer;
 import difflib.myers.MyersDiff;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -1525,6 +1527,20 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      */
     public JahiaTemplatesPackage getTemplatePackage(String packageName) {
         return templatePackageRegistry.lookup(packageName);
+    }
+
+    /**
+     * Returns the lookup map for template packages by the JCR node name.
+     *
+     * @return the lookup map for template packages by the JCR node name
+     */
+    @SuppressWarnings("unchecked")
+    public Map<String, JahiaTemplatesPackage> getTemplatePackageByNodeName() {
+        return LazyMap.decorate(new HashMap<String, JahiaTemplatesPackage>(), new Transformer() {
+            public Object transform(Object input) {
+                return templatePackageRegistry.lookupByFileName(String.valueOf(input));
+            }
+        });
     }
 
     public JahiaTemplatesPackage getAnyDeployedTemplatePackage(String templatePackage) {

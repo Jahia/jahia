@@ -106,7 +106,11 @@ public class JspBundleObserver extends ScriptBundleObserver {
             props.putAll(m);
 
             props.put("alias", urlAlias);
-            props.put("scratchdir", new File(new File(System.getProperty("java.io.tmpdir"),"jsp"), bundle.getSymbolicName()).getPath());
+            File scratchDirFile = new File(new File(System.getProperty("java.io.tmpdir"),"jsp"), bundle.getSymbolicName());
+            if (!scratchDirFile.exists()) {
+                scratchDirFile.mkdirs();
+            }
+            props.put("scratchdir", scratchDirFile.getPath());
 
             HttpContext httpContext = new FileHttpContext(sourceURLs,bundleHttpService.createDefaultHttpContext());
             try {

@@ -60,7 +60,6 @@
                 <configuration>
                     <instructions>
                         <Jahia-Deploy-On-Site>all</Jahia-Deploy-On-Site>
-                        <Deploy-On-Site>all</Deploy-On-Site>
                     </instructions>
                 </configuration>
             </plugin>

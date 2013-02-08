@@ -46,6 +46,11 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.*;
+<<<<<<< .working
+=======
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+>>>>>>> .merge-right.r44694
 
 import javax.jcr.Binary;
 import javax.jcr.ItemNotFoundException;
@@ -461,6 +466,10 @@ public class FileServlet extends HttpServlet {
         String path = null;
         String p = req.getPathInfo();
         if (p != null && p.length() > 2) {
+            Matcher serverMatcher = ContextPlaceholdersReplacer.SERVER_PATTERN.matcher(p);
+            if (serverMatcher.find()) {
+                p = serverMatcher.replaceFirst("");
+            }
             int pathStart = p.indexOf("/", 1);
             workspace = pathStart > 1 ? p.substring(1, pathStart) : null;
             if (workspace != null) {

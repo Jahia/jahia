@@ -527,20 +527,20 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                     if (!site.getLanguagesAsLocales().contains(locale)) {
                         value = ContextPlaceholdersReplacer.LANG_PATTERN.matcher(value).replaceAll(site.getDefaultLanguage());
                     }
-                    String serverUrl = "";
+                    String serverPlaceHolder = "";
                     if (site != null) {
                         JCRSiteNode currentSite = parent.getResolveSite();
                         String serverName = site.getServerName();
-                        if (currentSite != null && serverName != null && !serverName.equals(currentSite.getServerName())) {
-                            serverUrl = "{server:" + serverName + "}";
+                        if (!"localhost".equals(serverName) && serverName != null && currentSite != null && !serverName.equals(currentSite.getServerName())) {
+                            serverPlaceHolder = "{server:" + serverName + "}";
                         }
                     }
                     if (isCmsContext) {
-                        value = CMS_CONTEXT_PLACEHOLDER_PATTERN.matcher(value).replaceAll(serverUrl + cmsContext);
-                        value = value.replace("/"+session.getWorkspace().getName(),"/"+workspaceName);
+                        value = CMS_CONTEXT_PLACEHOLDER_PATTERN.matcher(value).replaceAll(cmsContext);
+                        value = value.replace("/" + session.getWorkspace().getName(), "/" + serverPlaceHolder + workspaceName);
                     } else {
-                        StringBuilder builder = new StringBuilder(serverUrl);
-                        builder.append(dmsContext);
+                        StringBuilder builder = new StringBuilder(dmsContext);
+                        builder.append(serverPlaceHolder);
                         builder.append(workspaceName).append(nodePath).append(ext);
                         value = builder.toString();
                     }

@@ -199,7 +199,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
             }
             Set<String> deps = (Set<String>) element.getValue();
             if(deps.contains("ALL")){
-                aggregateCacheFilter.flushNotCacheableFragment();
+                AggregateCacheFilter.flushNotCacheableFragment();
             } else {
                 for (String dep : deps) {
                     aggregateCacheFilter.removeNotCacheableFragment(dep);

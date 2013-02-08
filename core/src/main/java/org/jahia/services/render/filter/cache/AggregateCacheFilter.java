@@ -875,7 +875,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
-    public void flushNotCacheableFragment() {
+    public static void flushNotCacheableFragment() {
         notCacheableFragment.clear();
     }
 }

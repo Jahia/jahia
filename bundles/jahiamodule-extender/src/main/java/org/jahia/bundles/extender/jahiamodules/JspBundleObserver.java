@@ -2,6 +2,7 @@ package org.jahia.bundles.extender.jahiamodules;
 
 import org.jahia.bundles.extender.jahiamodules.render.BundleDispatcherServlet;
 import org.jahia.bundles.extender.jahiamodules.render.BundleScriptResolver;
+import org.jahia.services.SpringContextSingleton;
 import org.ops4j.pax.web.jsp.JspServletWrapper;
 import org.osgi.framework.Bundle;
 import org.osgi.service.http.HttpContext;
@@ -11,9 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.File;
 import java.net.URL;
 import java.util.*;
 
@@ -102,7 +101,13 @@ public class JspBundleObserver extends ScriptBundleObserver {
             String urlAlias = url.getPath();
             final JspServletWrapper jspServlet = new JspServletWrapper(bundle, urlAlias);
             Hashtable<String, String> props = new Hashtable<String, String>();
+
+            Map<String,String> m = (Map<String, String>) SpringContextSingleton.getBean("jspConfig");
+            props.putAll(m);
+
             props.put("alias", urlAlias);
+            props.put("scratchdir", new File(new File(System.getProperty("java.io.tmpdir"),"jsp"), bundle.getSymbolicName()).getPath());
+
             HttpContext httpContext = new FileHttpContext(sourceURLs,bundleHttpService.createDefaultHttpContext());
             try {
                 Set<String> registeredBundleAliases = registeredAliases.get(bundle);

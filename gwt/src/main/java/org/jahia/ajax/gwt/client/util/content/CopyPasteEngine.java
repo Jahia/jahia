@@ -106,16 +106,6 @@ public class CopyPasteEngine {
             public void onApplicationFailure(Throwable throwable) {
                 Window.alert(Messages.get("failure.paste.label") + "\n" + throwable.getLocalizedMessage());
                 linker.loaded();
-<<<<<<< .working
-                Map<String, Object> data = new HashMap<String, Object>();
-                if (refresh) {
-                    data.put(Linker.REFRESH_ALL, true);
-                } else {
-                    data.put(Linker.REFRESH_MAIN, true);
-                }
-=======
->>>>>>> .merge-right.r44681
-                linker.refresh(data);
             }
 
             public void onSuccess(Object o) {
@@ -136,11 +126,13 @@ public class CopyPasteEngine {
         onPastedPath();
         linker.setSelectPathAfterDataUpdate(copiedPaths);
         linker.loaded();
+        Map<String, Object> data = new HashMap<String, Object>();
         if (refresh) {
-            linker.refresh(EditLinker.REFRESH_ALL);
+            data.put(Linker.REFRESH_ALL, true);
         } else {
-            linker.refresh(Linker.REFRESH_MAIN);
+            data.put(Linker.REFRESH_MAIN, true);
         }
+        linker.refresh(data);
     }
 
     public List<GWTJahiaNode> getCopiedPaths() {

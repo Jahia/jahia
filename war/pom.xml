@@ -1009,6 +1009,7 @@
                     </propertiesInputFile>
                     <propertiesOutputFile>${project.build.directory}/generated-resources/felix-framework.properties
                     </propertiesOutputFile>
+                    <outputPackagesWithNoVersions>true</outputPackagesWithNoVersions>
                 </configuration>
                 <executions>
                     <execution>
@@ -1024,19 +1025,16 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <!--warSourceExcludes>*Resources*.properties,**/felix-framework.properties</warSourceExcludes-->
-                    <warSourceExcludes>*Resources*.properties</warSourceExcludes>
+                    <warSourceExcludes>*Resources*.properties,**/felix-framework.properties</warSourceExcludes>
                     <webResources>
                         <resource>
                           <directory>${project.build.directory}/native2ascii</directory>
                           <targetPath>WEB-INF/classes</targetPath>
                         </resource>
-                        <!--
                         <resource>
                           <directory>${project.build.directory}/generated-resources</directory>
                           <targetPath>WEB-INF/etc/config</targetPath>
                         </resource>
-                        -->
                         <resource>
                             <directory>.</directory>
                             <targetPath>META-INF</targetPath>

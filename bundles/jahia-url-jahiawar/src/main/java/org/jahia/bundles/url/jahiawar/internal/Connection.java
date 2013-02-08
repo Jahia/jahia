@@ -273,7 +273,7 @@ public class Connection extends URLConnection {
 
 
 //            String[] dependsArray = depends.split(",");
-            StringBuilder importPackage = new StringBuilder("*");
+            StringBuilder importPackage = new StringBuilder("*;resolution:=optional");
 
             /*
             for (String dep : dependsArray) {

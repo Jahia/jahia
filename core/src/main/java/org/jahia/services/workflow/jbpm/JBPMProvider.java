@@ -734,8 +734,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                 if (module != null) {
                     l = Thread.currentThread().getContextClassLoader();
                     Thread.currentThread().setContextClassLoader(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(module).getChainedClassLoader());
-                    taskService.completeTask(taskId, outcome, args);
                 }
+                taskService.completeTask(taskId, outcome, args);
             } finally {
                 if (l != null) {
                     Thread.currentThread().setContextClassLoader(l);

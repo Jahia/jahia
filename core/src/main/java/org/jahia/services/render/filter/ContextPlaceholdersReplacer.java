@@ -91,11 +91,9 @@ public class ContextPlaceholdersReplacer implements HtmlTagAttributeVisitor {
             Matcher serverMatcher = SERVER_PATTERN.matcher(value);
             if (serverMatcher.find()) {
                 String serverName = serverMatcher.group(1);
-                    if (urlRewriteService != null && urlRewriteService.isSeoRulesEnabled() && context.isLiveMode()
-                        && !"localhost".equals(serverName)) {
-                    value = serverMatcher.replaceFirst("");
-                } else {
-                    value = serverMatcher.replaceFirst(Url.getServer(context.getRequest(), serverName));
+                value = serverMatcher.replaceFirst("");
+                if (urlRewriteService != null && urlRewriteService.isSeoRulesEnabled() && context.isLiveMode()) {
+                    value = Url.getServer(context.getRequest(), serverName) + value;
                 }
             }
             value = LANG_PATTERN.matcher(

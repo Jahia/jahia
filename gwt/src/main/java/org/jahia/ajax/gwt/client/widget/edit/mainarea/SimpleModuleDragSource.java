@@ -54,11 +54,13 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * GWT Drag source for simple modules
+ *
+ * @see SimpleModule
  *
  * User: toto
  * Date: Aug 21, 2009
  * Time: 4:16:42 PM
- *
  */
 public class SimpleModuleDragSource extends EditModeDragSource {
 

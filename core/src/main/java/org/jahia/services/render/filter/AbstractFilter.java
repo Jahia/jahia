@@ -559,6 +559,15 @@ public abstract class AbstractFilter implements RenderFilter {
         return false;
     }
 
+    /**
+     *
+     * @param previousOut Result from the previous filter
+     * @param renderContext The render context
+     * @param resource The resource to render
+     * @param chain The render chain
+     * @return Filtered content
+     * @throws Exception
+     */
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
         return previousOut;
@@ -619,6 +628,14 @@ public abstract class AbstractFilter implements RenderFilter {
         }
     }
 
+    /**
+     *
+     * @param renderContext The render context
+     * @param resource The resource to render
+     * @param chain The render chain
+     * @return Content to stop the chain, or null to continue
+     * @throws Exception
+     */
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         return null;
     }

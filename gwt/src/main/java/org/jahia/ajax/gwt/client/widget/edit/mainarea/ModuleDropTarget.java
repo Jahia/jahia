@@ -57,11 +57,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 
+ * GWT Drop target for modules
+ *
  * User: toto
  * Date: Aug 21, 2009
  * Time: 4:12:53 PM
- * 
  */
 public class ModuleDropTarget extends DropTarget {
 

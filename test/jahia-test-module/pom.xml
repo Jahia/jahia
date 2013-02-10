@@ -472,6 +472,7 @@
                             weblogic;resolution:=optional,
                             ${jahia.modules.importPackage}</Import-Package>
                         <Embed-Dependency>*;scope=compile;type=!pom;inline=false</Embed-Dependency>
+                        <Export-Package>!org.jahia.services.*,org.jahia.test.*</Export-Package>
                         <Embed-Transitive>true</Embed-Transitive>
                         <_removeheaders>
                             Include-Resource,

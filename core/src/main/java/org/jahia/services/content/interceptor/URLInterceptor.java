@@ -51,6 +51,7 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
+import org.jahia.utils.Url;
 import org.jahia.utils.WebUtils;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;

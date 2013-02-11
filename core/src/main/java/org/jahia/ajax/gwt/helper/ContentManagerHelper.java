@@ -876,20 +876,20 @@ public class ContentManagerHelper {
         return acl;
     }
 
-    public void setACL(String uuid, GWTJahiaNodeACL acl, JCRSessionWrapper currentUserSession)
+    public void setACL(String path, GWTJahiaNodeACL acl, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
-            node = currentUserSession.getNodeByUUID(uuid);
+            node = currentUserSession.getNode(path);
             if (!node.isCheckedOut()) {
                 currentUserSession.checkout(node);
             }
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(
-                    new StringBuilder(uuid).append(" could not be accessed :\n").append(e.toString()).toString());
+                    new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
         }
-        GWTJahiaNodeACL oldAcl = getACL(node.getPath(), false, currentUserSession, null);
+        GWTJahiaNodeACL oldAcl = getACL(path, false, currentUserSession, null);
         if (oldAcl.equals(acl)) {
             return;
         }

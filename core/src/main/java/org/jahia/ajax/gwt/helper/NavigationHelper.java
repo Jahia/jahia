@@ -725,7 +725,523 @@ public class NavigationHelper {
     }
 
     public GWTJahiaNode getGWTJahiaNode(JCRNodeWrapper node, List<String> fields) {
+<<<<<<< .working
         return nodeHelper.getGWTJahiaNode(node, fields, null);
+=======
+        if (fields == null) {
+            fields = Collections.emptyList();
+        }
+        List<String> inheritedTypes = new ArrayList<String>();
+        List<String> nodeTypes = null;
+        try {
+            nodeTypes = node.getNodeTypes();
+            for (String s : nodeTypes) {
+                ExtendedNodeType[] inh = NodeTypeRegistry.getInstance().getNodeType(s).getSupertypes();
+                for (ExtendedNodeType extendedNodeType : inh) {
+                    if (!inheritedTypes.contains(extendedNodeType.getName())) {
+                        inheritedTypes.add(extendedNodeType.getName());
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.debug("Error when getting nodetypes", e);
+        }
+        GWTJahiaNode n;
+
+        // get uuid
+        String uuid = null;
+        try {
+            uuid = node.getIdentifier();
+        } catch (RepositoryException e) {
+            logger.debug("Unable to get uuid for node " + node.getName(), e);
+        }
+
+        // get description
+        String description = "";
+        try {
+            if (node.hasProperty("jcr:description")) {
+                Value dValue = node.getProperty("jcr:description").getValue();
+                if (dValue != null) {
+                    description = dValue.getString();
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.debug("Unable to get description property for node " + node.getName(), e);
+        }
+
+        n = new GWTJahiaNode();
+        n.setUUID(uuid);
+        n.setName(JCRContentUtils.unescapeLocalNodeName(node.getName()));
+        try {
+            n.setCanMarkForDeletion(node.canMarkForDeletion());
+        } catch (RepositoryException e) {
+            logger.error("Unable to check if the node " + node.getPath()
+                    + " supports marking for deletion. Cause: " + e.getMessage(), e);
+        }
+        try {
+            n.set("everPublished", Boolean.valueOf(node.hasProperty("j:published")));
+        } catch (RepositoryException e) {
+            logger.warn(
+                    "Unable to check existence of the j:published property on node "
+                            + node.getPath() + ". Cause: " + e.getMessage(), e);
+        }
+        try {
+            if (node.getPath().equals("/")) {
+                n.setDisplayName("root");
+                n.setName("root");
+            } else {
+                n.setDisplayName(WordUtils.abbreviate(JCRContentUtils.unescapeLocalNodeName(node.getDisplayableName()),70,90,"..."));
+            }
+        } catch (Exception e) {
+            logger.error("Error when getting name", e);
+        }
+        n.setNormalizedName(removeDiacritics(n.getName()));
+        
+        n.setDescription(description);
+        n.setPath(node.getPath());
+        n.setUrl(node.getUrl());
+        n.setNodeTypes(nodeTypes);
+        n.setInheritedNodeTypes(inheritedTypes);
+        n.setProviderKey(node.getProvider().getKey());
+
+        if (fields.contains(GWTJahiaNode.PERMISSIONS)) {
+            BitSet bs = node.getPermissionsAsBitSet();
+            GWTBitSet gwtBs = new GWTBitSet(bs.size());
+
+            for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i+1)) {
+                gwtBs.set(i);
+            }
+
+            n.setPermissions(gwtBs);
+
+            try {
+                boolean hasAcl = node.hasNode("j:acl") && node.getNode("j:acl").hasNodes();
+                n.setHasAcl(hasAcl);
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+
+        if (fields.contains(GWTJahiaNode.LOCKS_INFO)) {
+            n.setLockable(node.isLockable());
+            try {
+                String username = node.getSession().getUser().getUsername();
+                n.setLocked(JCRContentUtils.isLockedAndCannotBeEdited(node));
+                Map<String, List<String>> infos = node.getLockInfos();
+                Map<String, List<String>> results = new HashMap<String, List<String>>(infos.size());
+                if (!infos.isEmpty()) {
+                    for (Map.Entry<String, List<String>> entry : infos.entrySet()) {
+                        for (String s : entry.getValue()) {
+                            JCRNodeLockType type = JCRContentUtils.getLockType(s);
+                            if (!results.containsKey(entry.getKey())) {
+                                results.put(entry.getKey(), new LinkedList<String>());
+                            }
+                            results.get(entry.getKey())
+                                    .add(JCRNodeLockType.USER.equals(type)
+                                            && StringUtils.isNotBlank(s) ? StringUtils
+                                            .substringBefore(s, ":") : ("label.locked.by." + type
+                                            .toString().toLowerCase()));
+                        }
+                    }
+                }
+                n.setLockInfos(results);
+                if (node.getSession().getLocale() != null) {
+                    String l = node.getSession().getLocale().toString();
+                    n.setCanLock(infos.isEmpty() || !infos.containsKey(l));
+                    n.setCanUnlock(infos.containsKey(null) && infos.get(null).contains(username+":user") && (infos.size() == 1 || infos.containsKey(l) && infos.get(l).contains(username+":user")));
+                } else {
+                    n.setCanLock(infos.isEmpty());
+                    n.setCanUnlock(infos.containsKey(null) && infos.get(null).contains(username+":user"));
+                }
+            } catch (RepositoryException e) {
+                logger.error("Error when getting lock", e);
+            }
+        }
+
+        if (fields.contains(GWTJahiaNode.VISIBILITY_INFO)) {
+            Map<JCRNodeWrapper, Boolean> conditionMatchesDetails = visibilityService.getConditionMatchesDetails(node);
+            Map<GWTJahiaNode,ModelData> visibilityInfo = new HashMap<GWTJahiaNode, ModelData>();
+            for (Map.Entry<JCRNodeWrapper, Boolean> entry : conditionMatchesDetails.entrySet()) {
+                ModelData data = new BaseModelData();
+                data.set("matches",entry.getValue());
+                VisibilityConditionRule visibilityConditionRule = null;
+                try {
+                    visibilityConditionRule = visibilityService.getConditions().get(
+                            entry.getKey().getPrimaryNodeTypeName());
+                    data.set("xtemplate", visibilityConditionRule.getGWTDisplayTemplate(node.getSession().getLocale()));
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
+                if(visibilityConditionRule!=null) {
+                    visibilityInfo.put(getGWTJahiaNode(entry.getKey(),visibilityConditionRule.getRequiredFieldNamesForTemplate()), data);
+                }
+            }
+            n.setVisibilityInfo(visibilityInfo);
+            n.setVisible(visibilityService.matchesConditions(node));
+        }
+
+        n.setThumbnailsMap(new HashMap<String, String>());
+        n.setVersioned(node.isVersioned());
+        n.setLanguageCode(node.getLanguage());
+        try {
+            JCRSiteNode site = node.getResolveSite();
+            if (site != null) {
+                n.setSiteUUID(site.getUUID());
+                n.setAclContext("site:" + site.getName());
+                n.setSiteKey(site.getSiteKey());
+            } else {
+                n.setAclContext("sharedOnly");
+            }
+        } catch (RepositoryException e) {
+            logger.error("Error when getting sitekey", e);
+        }
+        if (node.isFile()) {
+            n.setSize(node.getFileContent().getContentLength());
+
+        }
+        n.setFile(node.isFile());
+
+        n.setIsShared(false);
+        try {
+            if (node.isNodeType("mix:shareable") && node.getSharedSet().getSize() > 1) {
+                n.setIsShared(true);
+            }
+        } catch (RepositoryException e) {
+            logger.error("Error when getting shares", e);
+        }
+
+        try {
+            n.setReference(node.isNodeType("jmix:nodeReference"));
+        } catch (RepositoryException e1) {
+            logger.error("Error checking node type", e1);
+        }
+
+        if (fields.contains(GWTJahiaNode.CHILDREN_INFO)) {
+            boolean hasChildren = false;
+            if (node instanceof JCRMountPointNode) {
+                hasChildren = true;
+            } else if (!node.isFile()) {
+                try {
+                    final NodeIterator nodesIterator = node.getNodes();
+                    if (nodesIterator.hasNext()) {
+                        hasChildren = true;
+                    }
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+            n.setHasChildren(hasChildren);
+        }
+
+        if (fields.contains(GWTJahiaNode.TAGS)) {
+            try {
+                if (node.hasProperty("j:tags")) {
+                    StringBuilder b = new StringBuilder();
+                    Value[] values = node.getProperty("j:tags").getValues();
+                    for (Value value : values) {
+                        Node tag = ((JCRValueWrapper) value).getNode();
+                        if (tag != null) {
+                            b.append(", ");
+                            b.append(tag.getName());
+                        }
+                    }
+                    if (b.length() > 0) {
+                        n.setTags(b.substring(2));
+                    }
+                }
+            } catch (RepositoryException e) {
+                logger.error("Error when getting tags", e);
+            }
+        }
+
+        if (node.isPortlet()) {
+            n.setPortlet(true);
+        }
+
+        // icons
+        if (fields.contains(GWTJahiaNode.ICON)) {
+            try {
+                n.setIcon(JCRContentUtils.getIcon(node));
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+
+        // thumbnails
+        List<String> names = node.getThumbnails();
+        if (names.contains("thumbnail")) {
+            n.setPreview(node.getThumbnailUrl("thumbnail"));
+            n.setDisplayable(true);
+        }
+        for (String name : names) {
+            n.getThumbnailsMap().put(name, node.getThumbnailUrl(name));
+        }
+
+        //count
+        if (fields.contains(GWTJahiaNode.COUNT)) {
+            try {
+                n.set("count", JCRContentUtils.size(node.getWeakReferences()));
+            } catch (RepositoryException e) {
+                logger.warn("Unable to count node references for node");
+            }
+        }
+
+        boolean supportsPublication = false;
+        try {
+            supportsPublication = node.getSession().getProviderSession(node.getProvider()).getRepository().getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED).getBoolean();
+            n.set("supportsPublication", Boolean.valueOf(supportsPublication));
+        } catch (Exception e) {
+            logger.error("Cannot get repository infos",e);
+        }
+        try {
+            if (fields.contains(GWTJahiaNode.PUBLICATION_INFO) && supportsPublication && node.getSession().getLocale() != null) {
+                n.setAggregatedPublicationInfos(publication.getAggregatedPublicationInfosByLanguage(node,
+                        Collections.singleton(node.getSession().getLocale().toString()), node.getSession()));
+            }
+        } catch (UnsupportedRepositoryOperationException e) {
+            // do nothing
+            logger.debug(e.getMessage());
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        } catch (GWTJahiaServiceException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        if (fields.contains(GWTJahiaNode.PUBLICATION_INFOS) && supportsPublication) {
+            try {
+                JCRSiteNode siteNode = node.getResolveSite();
+                if (siteNode != null) {
+                    JCRSessionWrapper session = node.getSession();
+
+                    n.setAggregatedPublicationInfos(publication.getAggregatedPublicationInfosByLanguage(node,
+                            siteNode.getLanguages(), session));
+                    n.setFullPublicationInfos(publication.getFullPublicationInfosByLanguage(Arrays.asList(node.getIdentifier()), siteNode.getLanguages(),
+                                        session, false));
+                }
+            } catch (UnsupportedRepositoryOperationException e) {
+                // do nothing
+                logger.debug(e.getMessage());
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            } catch (GWTJahiaServiceException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+
+        if (fields.contains(GWTJahiaNode.WORKFLOW_INFO) || fields.contains(GWTJahiaNode.PUBLICATION_INFO)) {
+            try {
+                n.setWorkflowInfo(
+                        workflow.getWorkflowInfo(n.getPath(), node.getSession(), node.getSession().getLocale()));
+            } catch (UnsupportedRepositoryOperationException e) {
+//                 do nothing
+                logger.debug(e.getMessage());
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            } catch (GWTJahiaServiceException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+
+        if (fields.contains(GWTJahiaNode.WORKFLOW_INFOS)) {
+            try {
+                JCRSiteNode node1 = node.getResolveSite();
+                if (node1 != null) {
+                    Map<String, GWTJahiaWorkflowInfo> infoMap = new HashMap<String, GWTJahiaWorkflowInfo>();
+                    JCRSessionWrapper session = node.getSession();
+                    for (String code : node1.getLanguages()) {
+                        Locale locale = LanguageCodeConverters.languageCodeToLocale(code);
+                        JCRSessionWrapper localeSession =
+                                sessionFactory.getCurrentUserSession(session.getWorkspace().getName(), locale);
+                        GWTJahiaWorkflowInfo info = workflow.getWorkflowInfo(n.getPath(), localeSession, locale);
+                        infoMap.put(code, info);
+                    }
+                    n.setWorkflowInfos(infoMap);
+                }
+            } catch (UnsupportedRepositoryOperationException e) {
+//                 do nothing
+                logger.debug(e.getMessage());
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            } catch (GWTJahiaServiceException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+
+        if (fields.contains(GWTJahiaNode.AVAILABLE_WORKKFLOWS)) {
+            try {
+                if (node.hasProperty(GWTJahiaNode.AVAILABLE_WORKKFLOWS)) {
+                    final JCRPropertyWrapper property = node.getProperty(GWTJahiaNode.AVAILABLE_WORKKFLOWS);
+                    Value[] values = null;
+                    if (property.isMultiple()) {
+                        values = property.getValues();
+                    } else {
+                        values = new Value[]{property.getValue()};
+                    }
+                    List<String> vals = new LinkedList<String>();
+                    if (values != null) {
+                        for (Value value : values) {
+                            if (value != null) {
+                                vals.add(value.getString());
+                            }
+                        }
+                    }
+                    n.set(GWTJahiaNode.AVAILABLE_WORKKFLOWS, StringUtils.join(vals, ", "));
+                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node " + node.getPath());
+            }
+        }
+
+        if (fields.contains(GWTJahiaNode.PRIMARY_TYPE_LABEL)) {
+            try {
+                n.set(GWTJahiaNode.PRIMARY_TYPE_LABEL, node.getPrimaryNodeType().getLabel(node.getSession().getLocale()));
+            } catch (RepositoryException e) {
+                logger.error("Cannot get property " + GWTJahiaNode.PRIMARY_TYPE_LABEL + " on node " + node.getPath());
+            }
+        }
+
+        if (n.isFile() && nodeTypes.contains("jmix:image")) {
+            fields = new LinkedList<String>(fields);
+            if (!fields.contains("j:height")) {
+                fields.add("j:height");
+            }
+            if (!fields.contains("j:width")) {
+                fields.add("j:width");
+            }
+        }
+
+        if (fields.contains(GWTJahiaNode.SITE_LANGUAGES)) {
+            try {
+                n.set(GWTJahiaNode.SITE_LANGUAGES, languages.getLanguages(node.getResolveSite(), node.getSession().getUser(), node.getSession().getLocale()));
+            } catch (RepositoryException e) {
+                logger.error("Cannot get sites languages");
+            }
+        }
+
+        if (fields.contains(GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO)) {
+            // reference types
+            try {
+                String cons = ConstraintsHelper.getConstraints(node);
+                if (cons != null) {
+                    n.set("referenceTypes", ConstraintsHelper.getReferenceTypes(cons, null));
+                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node " + node.getPath());
+            }
+        }
+
+        if (fields.contains(GWTJahiaNode.DEFAULT_LANGUAGE)) {
+            try {
+                if (node.hasProperty(GWTJahiaNode.DEFAULT_LANGUAGE)) {
+                    Locale locale = LanguageCodeConverters.languageCodeToLocale(node.getProperty(GWTJahiaNode.DEFAULT_LANGUAGE).getString());
+                    n.set(GWTJahiaNode.DEFAULT_LANGUAGE, languages.getCurrentLang(locale));
+                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node " + node.getPath());
+            }
+        }
+
+        if (fields.contains(GWTJahiaNode.HOMEPAGE_PATH) && (node instanceof JCRSiteNode)) {
+            try {
+                if (((JCRSiteNode) node).getHome() != null) {
+                 n.set(GWTJahiaNode.HOMEPAGE_PATH, ((JCRSiteNode) node).getHome().getPath());
+                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node " + node.getPath());
+            }
+        }
+
+        // properties
+        for (String field : fields) {
+            if (!GWTJahiaNode.RESERVED_FIELDS.contains(field)) {
+                try {
+                    if (node.hasProperty(field)) {
+//                        n.set(StringUtils.substringAfter(propName, ":"), node.getProperty(propName).getString());
+                        final JCRPropertyWrapper property = node.getProperty(field);
+                        if (property.isMultiple()) {
+                            Value[] values = property.getValues();
+                            List<Object> l = new ArrayList<Object>();
+                            for (Value value : values) {
+                                l.add(getPropertyValue(value, node.getSession()));
+                            }
+                            n.set(field, l);
+                        } else {
+                            Value value = property.getValue();
+                            n.set(field, getPropertyValue(value, node.getSession()));
+                        }
+                    }
+                } catch (RepositoryException e) {
+                    logger.error("Cannot get property " + field + " on node " + node.getPath());
+                }
+            }
+        }
+
+        // versions
+        if (fields.contains(GWTJahiaNode.VERSIONS) && node.isVersioned()) {
+            try {
+                n.setCurrentVersion(node.getBaseVersion().getName());
+                List<GWTJahiaNodeVersion> gwtJahiaNodeVersions = getVersions(node);
+                if (gwtJahiaNodeVersions != null && gwtJahiaNodeVersions.size() > 0) {
+                    n.setVersions(gwtJahiaNodeVersions);
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+
+        // references
+        try {
+            if (node.isNodeType("jmix:nodeReference") && node.hasProperty("j:node")) {
+                JCRNodeWrapper referencedNode = (JCRNodeWrapper) node.getProperty("j:node").getNode();
+                n.setReferencedNode(n.getUUID().equals(referencedNode.getIdentifier()) ? n : getGWTJahiaNode(referencedNode));
+            }
+        } catch (ItemNotFoundException e) {
+            logger.debug(e.getMessage(), e);
+        }
+        catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        // sort
+        try {
+            if (node.getPrimaryNodeType().hasOrderableChildNodes()) {
+                n.set("hasOrderableChildNodes", Boolean.TRUE);
+                n.setSortField("index");
+            } else {
+                n.setSortField(GWTJahiaNode.NAME);
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        // constraints
+        try {
+            n.setChildConstraints(ConstraintsHelper.getConstraints(node));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        
+        // WCAG checks
+        try {
+            n.setWCAGComplianceCheckEnabled(node.getResolveSite().hasProperty(
+                    SitesSettings.WCAG_COMPLIANCE_CHECKING_ENABLED)
+                    && node.getResolveSite()
+                            .getProperty(SitesSettings.WCAG_COMPLIANCE_CHECKING_ENABLED)
+                            .getBoolean());
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        try {
+            if (fields.contains("j:versionInfo") && node.hasNode("j:versionInfo")) {
+                n.set("j:versionInfo", node.getNode("j:versionInfo").getProperty("j:version").getString());
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        return n;
+>>>>>>> .merge-right.r44715
     }
 
     public GWTJahiaNode getGWTJahiaNode(JCRNodeWrapper node, List<String> fields, Locale uiLocale) {

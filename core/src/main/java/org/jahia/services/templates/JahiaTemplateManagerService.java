@@ -994,6 +994,15 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * ***************************************************************************************************************
      */
 
+    /**
+     * get List of installed modules for a site.
+     * @param siteKey key of the site
+     * @param includeTemplateSet if true (default is false) include dependencies of the template set
+     * @param includeDirectDependencies if true (default is false) include dependencies of dependencies
+     * @param includeTransitiveDependencies   if true (default is false) include all dependencies
+     * @return list of template packages
+     * @throws JahiaException
+     */
     public List<JahiaTemplatesPackage> getInstalledModulesForSite(String siteKey,
                                                                   boolean includeTemplateSet, boolean includeDirectDependencies,
                                                                   boolean includeTransitiveDependencies) throws JahiaException {

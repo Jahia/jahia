@@ -786,6 +786,10 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         siteCacheByKey.flush();
     }
 
+    /**
+     * Update JahiaSite for the specified site node
+     * @param node : JCRSSiteNode of the site to update
+     */
     public void updateSite(JCRSiteNode node) {
         try {
             final JahiaSite legacySite = getSiteByKey(node.getName());
@@ -829,7 +833,11 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                 }
             }
         } catch (JahiaException e) {
-
+            if (node != null) {
+                logger.error("Cannot update site " + node.getPath() + " because of " + e.getMessage(),e);
+            }  else {
+                logger.error("Cannot update site - site node is null");
+            }
         }
     }
 

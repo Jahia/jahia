@@ -12,7 +12,6 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <c:set var="site" value="${renderContext.mainResource.node.resolveSite}"/>
 <c:set var="siteKey" value="${site.name}"/>
-<c:set var="installedModules" value="${site.installedModules}"/>
 <c:set var="templatePackageName" value="${site.templatePackageName}"/>
 <%
     JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();

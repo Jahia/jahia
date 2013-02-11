@@ -179,7 +179,7 @@
             </c:forEach>
         </select>
 
-    <button class="btn" type="button" id="updateSite_button" onclick="updateSite()"><i class="icon-plus-sign icon-white"></i> Submit</button>
+    <button class="btn" type="button" id="updateSite_button" onclick="updateSite()"><i class="icon-plus-sign icon-white"></i> <fmt:message key="label.submit"/></button>
 
 </form>
 

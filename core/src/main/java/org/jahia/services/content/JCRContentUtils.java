@@ -135,6 +135,7 @@ public final class JCRContentUtils implements ServletContextAware {
     private static JCRContentUtils instance;
 
     private static final Logger logger = LoggerFactory.getLogger(JCRContentUtils.class);
+    private static String prefix = Jahia.getContextPath() + "/modules/";
 
     /**
      * Calls the datastore garbage collector and returns the number of data entries deleted.
@@ -640,9 +641,15 @@ public final class JCRContentUtils implements ServletContextAware {
         if (icon == null) {
             icon = getIcon(NodeTypeRegistry.getInstance().getNodeType("jmix:droppableContent"));
         }
-        return Jahia.getContextPath() + "/modules/" + icon;
+        return prefix + icon;
     }
 
+    /**
+     * Returns the icon path for the specified type
+     * @param type wanted type
+     * @return Path of the icon
+     * @throws RepositoryException
+     */
     public static String getIcon(ExtendedNodeType type) throws RepositoryException {
         return getIcon(type, null);
     }
@@ -672,14 +679,14 @@ public final class JCRContentUtils implements ServletContextAware {
     public static String getIconWithContext(JCRNodeWrapper f, boolean useContext) throws RepositoryException {
         ExtendedNodeType primaryNodeType = f.getPrimaryNodeType();
         String folder = getIconsFolder(primaryNodeType);
-        String prefix = useContext?Jahia.getContextPath() + "/modules/":"";
         if (f.isNodeType("jmix:hasIcon") && f.hasProperty("j:icon")) {
             return ((JCRFileNode) f.getProperty("j:icon").getNode()).getUrl();
         }
+
         if (f.isFile()) {
-            return prefix + folder + "jnt_file_" + FileUtils.getFileIcon(f.getName());
+            return (useContext?prefix:"") + folder + "jnt_file_" + FileUtils.getFileIcon(f.getName());
         } else if (f.isPortlet()) {
-            return prefix + folder + "jnt_portlet";
+            return (useContext?prefix:"") + folder + "jnt_portlet";
         } else if (f instanceof JCRComponentNode) {
             String type = f.getName();
             ExtendedNodeType nt = primaryNodeType;
@@ -690,9 +697,9 @@ public final class JCRContentUtils implements ServletContextAware {
 
                 }
             }
-            return prefix + getIcon(nt, getSubType(nt, f));
+            return (useContext?prefix:"") + getIcon(nt, getSubType(nt, f));
         } else {
-            return prefix + getIcon(primaryNodeType, getSubType(primaryNodeType, f));
+            return (useContext?prefix:"") + getIcon(primaryNodeType, getSubType(primaryNodeType, f));
         }
     }
 

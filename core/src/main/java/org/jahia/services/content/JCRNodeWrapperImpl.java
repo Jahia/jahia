@@ -3941,6 +3941,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                                     module));
                 } catch (Exception e) {
                     // ignore
+                    return title;
                 }
             }
         } catch (RepositoryException e) {

@@ -1121,7 +1121,9 @@ public class JCRPublicationService extends JahiaService {
                             deletedInfo.setStatus(PublicationInfo.DELETED);
                             info.addChild(deletedInfo);
                         } catch (ItemNotFoundException e) {
-                            logger.debug("Cannot find deleted subnode of "+node.getPath() + " : " + value.getString()+", we keep the reference until next publication to be sure to erase it from the live workspace.");
+                            if (logger.isDebugEnabled())  {
+                                logger.debug("Cannot find deleted subnode of "+node.getPath() + " : " + value.getString()+", we keep the reference until next publication to be sure to erase it from the live workspace.");
+                            }
                         }
                     }
                 }catch (PathNotFoundException e) {

@@ -793,6 +793,11 @@ public class Service extends JahiaService {
         groupService.flushCache();
     }
 
+    /**
+     * Used to update the JahiaSite associated to the JCRSiteNode
+     * @param node node of the site to update
+     */
+
     public void updateSite(AddedNodeFact node) {
         sitesService.updateSite((JCRSiteNode) node.getNode());
     }

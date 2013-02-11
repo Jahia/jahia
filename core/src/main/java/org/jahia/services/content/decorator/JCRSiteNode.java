@@ -42,6 +42,7 @@ package org.jahia.services.content.decorator;
 
 import static org.jahia.services.sites.SitesSettings.*;
 
+import org.apache.commons.collections.list.UnmodifiableList;
 import org.apache.commons.collections.set.UnmodifiableSet;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -100,37 +101,55 @@ public class JCRSiteNode extends JCRNodeDecorator {
     }
 
     /**
-     * @deprecated use either {@link #getActiveLiveLanguages} or {@link #getLanguage()} methods instead
+     * @return list of inactive live languages
      */
-    @Deprecated
-    public String[] getActiveLanguageCodes() {
-        Set<String> languages = getLanguages();
-        if (languages != null) {
-            return languages.toArray(new String[getLanguages().size()]);
-        } else {
-            return null;
-        }
-    }
-
     @SuppressWarnings("unchecked")
     public Set<String> getInactiveLiveLanguages() {
-        if (inactiveLiveLanguages == null) {
+        return getInactiveLanguages(inactiveLiveLanguages,SitesSettings.INACTIVE_LIVE_LANGUAGES);
+    }
+
+    /**
+     * @return list of inactive languages
+     */
+    @SuppressWarnings("unchecked")
+    public Set<String> getInactiveLanguages() {
+        return getInactiveLanguages(inactiveLanguages,SitesSettings.INACTIVE_LANGUAGES);
+    }
+
+    private Set<String> getInactiveLanguages(Set<String> languages,String propertyName) {
+        if (languages == null) {
             Set<String> langs = new HashSet<String>();
             try {
-                if (hasProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES)) {
-                    Value[] values = getProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES).getValues();
+                if (hasProperty(propertyName)) {
+                    Value[] values = getProperty(propertyName).getValues();
                     for (Value value : values) {
                         langs.add(value.getString());
                     }
                 }
-                inactiveLiveLanguages = UnmodifiableSet.decorate(langs);
+                languages = UnmodifiableSet.decorate(langs);
             } catch (RepositoryException e) {
                 logger.error("Cannot get site property",e);
                 return null;
             }
         }
 
-        return inactiveLiveLanguages;
+        return languages;
+    }
+
+    /**
+     * @deprecated use either {@link #getActiveLiveLanguagesAsLocales} or {@link #getActiveLiveLanguages()} methods instead
+     */
+    @Deprecated
+    public List<Locale> getActiveLanguagesAsLocales() {
+        return getActiveLiveLanguagesAsLocales();
+    }
+
+    /**
+     * @deprecated use either {@link #getActiveLiveLanguages} method instead
+     */
+    @Deprecated
+    public Set<String> getActiveLanguages() {
+        return getActiveLiveLanguages();
     }
 
     /**
@@ -150,43 +169,19 @@ public class JCRSiteNode extends JCRNodeDecorator {
      * @return a List of Locale elements
      */
     public List<Locale> getActiveLiveLanguagesAsLocales() {
-        Set<String> languages = getActiveLiveLanguages();
-
-        List<Locale> localeList = new ArrayList<Locale>();
-        if (languages != null) {
-            for (String language : languages) {
-                Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(language);
-                localeList.add(tempLocale);
-            }
-
-        }
-        return localeList;
+        return getLanguagesAsLocales(getActiveLiveLanguages());
     }
 
-    @SuppressWarnings("unchecked")
-    public Set<String> getInactiveLanguages() {
-        if (inactiveLanguages == null) {
-            Set<String> langs = new HashSet<String>();
-            try {
-                if (hasProperty(SitesSettings.INACTIVE_LANGUAGES)) {
-                    Value[] values = getProperty(SitesSettings.INACTIVE_LANGUAGES).getValues();
-                    for (Value value : values) {
-                        langs.add(value.getString());
-                    }
-                }
-                inactiveLanguages = UnmodifiableSet.decorate(langs);
-            } catch (RepositoryException e) {
-                logger.error("Cannot get site property",e);
-                return null;
-            }
-        }
-
-        return inactiveLanguages;
-    }
-
+    /**
+     * Returns an List of inactive site language  ( as Locale ).
+     *
+     * @return a List of Locale elements
+     */
     public List<Locale> getInactiveLanguagesAsLocales() {
-        Set<String> languages = getInactiveLanguages();
+        return getLanguagesAsLocales(getInactiveLiveLanguages());
+    }
 
+    private List<Locale> getLanguagesAsLocales(Set<String> languages) {
         List<Locale> localeList = new ArrayList<Locale>();
         if (languages != null) {
             for (String language : languages) {
@@ -195,9 +190,8 @@ public class JCRSiteNode extends JCRNodeDecorator {
             }
 
         }
-        return localeList;
+        return UnmodifiableList.decorate(localeList);
     }
-
 
     public String getDefaultLanguage() {
         if (defaultLanguage == null) {

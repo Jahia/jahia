@@ -59,6 +59,10 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 
 /**
+ * Broadcast service
+ *
+ * used to publish (broadcast) String to receiver (site, channel, etc ..)
+ *
  * User: rincevent
  * Date: 22/11/11
  * Time: 10:27 AM
@@ -66,6 +70,11 @@ import java.util.MissingResourceException;
 public class PublisherSubscriberService {
 
     private transient static Logger logger = LoggerFactory.getLogger(PublisherSubscriberService.class);
+
+    /**
+     * @param node Node of the site
+     * @param message Message to broadcast
+     */
 
     public void publishToSite(JCRNodeWrapper node, String message) {
         try {
@@ -98,6 +107,11 @@ public class PublisherSubscriberService {
         }
     }
 
+    /**
+     * @param node Node of the channel
+     * @param message Message to broadcast
+     */
+
     public void publishToNodeChannel(JCRNodeWrapper node, String message) {
         try {
             final JCRSiteNode resolveSite = node.getResolveSite();
@@ -129,6 +143,11 @@ public class PublisherSubscriberService {
         }
     }
 
+    /**
+     * broadcast to a specific channel
+     * @param absoluteChannelName Name of the channel
+     * @param message Message to broadcast
+     */
     public void publishToAbsoluteChannel(String absoluteChannelName, String message) {
         broadcast(absoluteChannelName, message, false);
     }

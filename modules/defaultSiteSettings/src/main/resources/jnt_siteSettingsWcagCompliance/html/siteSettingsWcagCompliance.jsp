@@ -31,9 +31,8 @@ function updateSiteWcagCompliance(btn) {
 </script>
 </template:addResources>
 <c:set var="site" value="${renderContext.mainResource.node.resolveSite}"/>
-<c:set var="siteKey" value="${site.name}"/>
+
 <c:set var="propActivated" value="${site.properties['j:wcagCompliance']}"/>
-<c:set var="complianceCheckActivated" value="${not empty propActivated ? propActivated.boolean : ''}"/>
 
 <h2>${fn:escapeXml(currentNode.displayableName)} - ${fn:escapeXml(site.displayableName)}</h2>
 <p><fmt:message key="label.htmlSettings.wcagCompliance.description"/>:</p>

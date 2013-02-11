@@ -19,7 +19,7 @@
 <form class="form-inline" action="<c:url value='${url.base}${renderContext.mainResource.node.path}.vanityURLSetting.html'/>">
     <label for="vanityUrlSearch"><fmt:message key='label.urlmapping.filter'/></label>
     <input type="text" id="vanityUrlSearch" name="vanityUrlSearch" value="${param['vanityUrlSearch']}" />
-    <button class="btn" type="submit"><i class="icon-filter icon-white"></i> Filter</button>
+    <button class="btn" type="submit"><i class="icon-filter icon-white"></i> <fmt:message key="filters.label"/></button>
 </form>
 
 <table class="table table-bordered table-hover" cellpadding="0" cellspacing="0">

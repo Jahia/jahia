@@ -205,9 +205,12 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                 renderMapping = mapping;
             }
         }
-        List<SimpleUrlHandlerMapping> l = new LinkedList<SimpleUrlHandlerMapping>(renderMapping);
-        l.addAll(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getUrlHandlerMappings());
-        return l;
+        if (renderMapping != null) {
+            List<SimpleUrlHandlerMapping> l = new LinkedList<SimpleUrlHandlerMapping>(renderMapping);
+            l.addAll(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getUrlHandlerMappings());
+            return l;
+        }
+        return null;
     }
 
     public boolean isSeoRulesEnabled() {

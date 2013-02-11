@@ -676,9 +676,9 @@ public class TemplatePackageRegistry {
 
             if (bean instanceof JCRNodeDecoratorDefinition) {
                 JCRNodeDecoratorDefinition jcrNodeDecoratorDefinition = (JCRNodeDecoratorDefinition) bean;
-                Map<String, String> decorators = jcrNodeDecoratorDefinition.getDecorators();
+                Map<String, Class> decorators = jcrNodeDecoratorDefinition.getDecorators();
                 if (decorators != null) {
-                    for (Map.Entry<String, String> decorator : decorators.entrySet()) {
+                    for (Map.Entry<String, Class> decorator : decorators.entrySet()) {
                         jcrStoreService.removeDecorator(decorator.getKey());
                     }
                 }
@@ -806,9 +806,9 @@ public class TemplatePackageRegistry {
 
             if (bean instanceof JCRNodeDecoratorDefinition) {
                 JCRNodeDecoratorDefinition jcrNodeDecoratorDefinition = (JCRNodeDecoratorDefinition) bean;
-                Map<String, String> decorators = jcrNodeDecoratorDefinition.getDecorators();
+                Map<String, Class> decorators = jcrNodeDecoratorDefinition.getDecorators();
                 if (decorators != null) {
-                    for (Map.Entry<String, String> decorator : decorators.entrySet()) {
+                    for (Map.Entry<String, Class> decorator : decorators.entrySet()) {
                         jcrStoreService.addDecorator(decorator.getKey(), decorator.getValue());
                     }
                 }

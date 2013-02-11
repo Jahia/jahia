@@ -412,7 +412,19 @@ public class Activator implements BundleActivator {
 
     private synchronized void start(Bundle bundle) {
         JahiaBundleTemplatesPackage jahiaBundleTemplatesPackage = (JahiaBundleTemplatesPackage) templatePackageRegistry.lookupByFileNameAndVersion(bundle.getSymbolicName(), new ModuleVersion((String) bundle.getHeaders().get("Implementation-Version")));
-
+        if (jahiaBundleTemplatesPackage == null) {
+            for (Map.Entry<String, List<Bundle>> entry : toBeParsed.entrySet()) {
+                if (entry.getValue().contains(bundle)) {
+                    if (!toBeStarted.containsKey(entry.getKey())) {
+                        toBeStarted.put(entry.getKey(), new ArrayList<Bundle>());
+                    }
+                    logger.debug("Delaying module {} startup because it depends on module {} that is not yet started.", bundle.getSymbolicName(), entry.getKey());
+                    toBeStarted.get(entry.getKey()).add(bundle);
+                    moduleStates.put(bundle, ModuleState.WAITING_TO_BE_STARTED);
+                    return;
+                }
+            }
+        }
         List<String> dependsList = jahiaBundleTemplatesPackage.getDepends();
         if (!dependsList.contains("default") && !dependsList.contains("Default Jahia Templates") && !bundle.getSymbolicName().equals("assets")&& !bundle.getSymbolicName().equals("default")) {
             dependsList.add("default");

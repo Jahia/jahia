@@ -79,15 +79,15 @@ public class JahiaPreferencesService extends JahiaService {
         providers = new HashMap<String, JahiaPreferencesProvider>();
         providersByClass = new HashMap<Class, JahiaPreferencesProvider>();
         for (String providerType : providerTypes.keySet()) {
-            String className = jcrStoreService.getDecorators().get(providerTypes.get(providerType));
+            Class clazz = jcrStoreService.getDecorators().get(providerTypes.get(providerType));
             JahiaPreferencesJCRProviders provider;
-            try {
-                Class<? extends JCRNodeWrapper> aClass = Class.forName(className).asSubclass(JCRNodeWrapper.class);
+//            try {
+                Class<? extends JCRNodeWrapper> aClass = clazz.asSubclass(JCRNodeWrapper.class);
                 provider = createProvider(aClass);
                 providersByClass.put(aClass, provider);
-            } catch (ClassNotFoundException e) {
-                provider = new JahiaPreferencesJCRProviders();
-            }
+//            } catch (ClassNotFoundException e) {
+//                provider = new JahiaPreferencesJCRProviders();
+//            }
             provider.setType(providerType);
             provider.setNodeType(providerTypes.get(providerType));
             provider.setJCRSessionFactory(jcrStoreService.getSessionFactory());

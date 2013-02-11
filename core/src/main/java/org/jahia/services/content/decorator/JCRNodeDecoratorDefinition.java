@@ -40,17 +40,42 @@
 
 package org.jahia.services.content.decorator;
 
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.services.templates.JahiaModuleAware;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
 import java.util.Map;
 
-public class JCRNodeDecoratorDefinition {
+public class JCRNodeDecoratorDefinition implements JahiaModuleAware {
 
-    private Map<String, String> decorators;
+    private static Logger logger = LoggerFactory.getLogger(JCRNodeDecoratorDefinition.class);
 
-    public Map<String, String> getDecorators() {
+    private Map<String, Class> decorators = null;
+    private Map<String, String> decoratorsAsString = new HashMap<String, String>();
+    private JahiaTemplatesPackage module;
+
+    public Map<String, Class> getDecorators() {
+        if (decorators == null && decoratorsAsString != null) {
+            decorators = new HashMap<String, Class>();
+            for (Map.Entry<String, String> decorator : decoratorsAsString.entrySet()) {
+                try {
+                    this.decorators.put(decorator.getKey(), module.getClassLoader().loadClass(decorator.getValue()));
+                } catch (Exception e) {
+                    logger.error("Unable to instanciate decorator: " + decorator.getValue(), e);
+                }
+            }
+        }
         return decorators;
     }
 
+    @Override
+    public void setJahiaModule(JahiaTemplatesPackage module) {
+        this.module = module;
+    }
+
     public void setDecorators(Map<String, String> decorators) {
-        this.decorators = decorators;
+        decoratorsAsString = decorators;
     }
 }

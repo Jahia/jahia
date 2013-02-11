@@ -1000,28 +1000,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.jahia.server</groupId>
-                <artifactId>jahia-maven-plugin</artifactId>
-                <version>${jahia.plugin.version}</version>
-                <configuration>
-                    <propertiesInputFile>
-                        ${project.basedir}/src/main/webapp/WEB-INF/etc/config/felix-framework.properties
-                    </propertiesInputFile>
-                    <propertiesOutputFile>${project.build.directory}/generated-resources/felix-framework.properties
-                    </propertiesOutputFile>
-                    <outputPackagesWithNoVersions>true</outputPackagesWithNoVersions>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>generate-package-export</id>
-                        <goals>
-                            <goal>buildFrameworkPackageList</goal>
-                        </goals>
-                        <phase>prepare-package</phase>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
@@ -1055,7 +1033,23 @@
             <plugin>
                 <groupId>org.jahia.server</groupId>
                 <artifactId>jahia-maven-plugin</artifactId>
+                <version>${jahia.plugin.version}</version>
+                <configuration>
+                    <propertiesInputFile>
+                        ${project.basedir}/src/main/webapp/WEB-INF/etc/config/felix-framework.properties
+                    </propertiesInputFile>
+                    <propertiesOutputFile>${project.build.directory}/generated-resources/felix-framework.properties
+                    </propertiesOutputFile>
+                    <outputPackagesWithNoVersions>true</outputPackagesWithNoVersions>
+                </configuration>
                 <executions>
+                    <execution>
+                        <id>generate-package-export</id>
+                        <goals>
+                            <goal>buildFrameworkPackageList</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                    </execution>
                     <execution>
                         <id>copy-templates</id>
                         <phase>process-classes</phase>

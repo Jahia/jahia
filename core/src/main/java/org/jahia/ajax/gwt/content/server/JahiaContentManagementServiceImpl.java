@@ -873,16 +873,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         List<String> fields = Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.PERMISSIONS, GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
         GWTJahiaNode node;
         try {
-<<<<<<< .working
             node = navigation.getGWTJahiaNode(session.getNodeByUUID(res.getUUID()),fields);
-            if (acl != null && (!acl.getAce().isEmpty() || acl.isBreakAllInheritance())) {
-                contentManager.setACL(res.getUUID(), acl, session);
-=======
-            node = navigation.getGWTJahiaNode(jcrSessionWrapper.getNodeByUUID(res.getUUID()));
 
-            if (acl != null) {
-                contentManager.setACL(res.getPath(), acl, jcrSessionWrapper);
->>>>>>> .merge-right.r44715
+            if (acl != null && (!acl.getAce().isEmpty() || acl.isBreakAllInheritance())) {
+                contentManager.setACL(res.getPath(), acl, session);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

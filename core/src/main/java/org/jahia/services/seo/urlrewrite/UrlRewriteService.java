@@ -52,6 +52,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
@@ -204,8 +205,9 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                 renderMapping = mapping;
             }
         }
-
-        return renderMapping;
+        List<SimpleUrlHandlerMapping> l = new LinkedList<SimpleUrlHandlerMapping>(renderMapping);
+        l.addAll(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getUrlHandlerMappings());
+        return l;
     }
 
     public boolean isSeoRulesEnabled() {

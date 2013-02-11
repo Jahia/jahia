@@ -238,7 +238,7 @@ public class TestServlet implements Controller, ServletContextAware {
     
     private Set<String> getIgnoreTests() {
     	Map<String,TestBean> testBeans = new HashMap<String, TestBean>();
-        JahiaTemplatesPackage jahiaTestModule = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("jahia-test-module-war");
+        JahiaTemplatesPackage jahiaTestModule = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("jahia-test-module");
         
         if (jahiaTestModule.getContext() != null) {
         	testBeans = jahiaTestModule.getContext().getBeansOfType(TestBean.class);

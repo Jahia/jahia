@@ -76,6 +76,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.Resource;
+import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Workspace;
@@ -110,6 +111,7 @@ public class TemplatePackageRegistry {
     private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
     private Map<String,Action> actions;
     private Map<String, BackgroundAction> backgroundActions;
+    private List<SimpleUrlHandlerMapping> urlHandlerMappings = new ArrayList<SimpleUrlHandlerMapping>();
     private JCRStoreService jcrStoreService;
     private TemplatePackageApplicationContextLoader templatePackageApplicationContextLoader;
     private Map<String, JahiaTemplatesPackage> packagesForBundles = new HashMap<String, JahiaTemplatesPackage>();
@@ -135,6 +137,10 @@ public class TemplatePackageRegistry {
 
     public Map<String, BackgroundAction> getBackgroundActions() {
         return backgroundActions;
+    }
+
+    public List<SimpleUrlHandlerMapping> getUrlHandlerMappings() {
+        return urlHandlerMappings;
     }
 
     /**
@@ -683,6 +689,10 @@ public class TemplatePackageRegistry {
                     }
                 }
             }
+
+            if (bean instanceof SimpleUrlHandlerMapping) {
+                templatePackageRegistry.urlHandlerMappings.remove((SimpleUrlHandlerMapping) bean);
+            }
         }
 
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
@@ -812,6 +822,10 @@ public class TemplatePackageRegistry {
                         jcrStoreService.addDecorator(decorator.getKey(), decorator.getValue());
                     }
                 }
+            }
+
+            if (bean instanceof SimpleUrlHandlerMapping) {
+                templatePackageRegistry.urlHandlerMappings.add((SimpleUrlHandlerMapping) bean);
             }
 
             return bean;

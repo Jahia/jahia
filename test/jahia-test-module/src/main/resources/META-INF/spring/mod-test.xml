@@ -385,4 +385,16 @@
         </property>
     </bean>
 
+    <bean name="testController" class="org.jahia.test.bin.TestServlet"/>
+    <bean name="testCreateSiteController" class="org.jahia.test.bin.TestCreateSiteServlet"/>
+    <bean name="jahiaTestMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="urlMap">
+            <map>
+                <entry key="/test" value-ref="testController"/>
+                <entry key="/test/**" value-ref="testController"/>
+                <entry key="/createsite" value-ref="testCreateSiteController"/>
+            </map>
+        </property>
+    </bean>
+
 </beans>

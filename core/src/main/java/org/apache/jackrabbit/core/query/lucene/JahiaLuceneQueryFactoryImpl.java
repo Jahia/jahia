@@ -42,6 +42,7 @@ package org.apache.jackrabbit.core.query.lucene;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.math.util.MathUtils;
 import org.apache.jackrabbit.commons.predicate.Predicate;
 import org.apache.jackrabbit.core.NodeImpl;
 import org.apache.jackrabbit.core.SessionImpl;
@@ -61,6 +62,7 @@ import org.apache.lucene.search.*;
 import org.apache.lucene.util.DocIdBitSet;
 import org.apache.lucene.util.OpenBitSet;
 import org.apache.lucene.util.OpenBitSetDISI;
+import org.apache.poi.hssf.record.PrecisionRecord;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
@@ -330,6 +332,9 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                 boolean wasApproxLimitReached = false;
                 if (countType.isApproxCount() && hitsSize > countType.getApproxCountLimit()) {
                     resultCount = hitsSize * resultCount / countType.getApproxCountLimit();
+                    resultCount = (int) Math.ceil(MathUtils.round(resultCount,
+                            resultCount < 1000 ? -1 : (resultCount < 10000 ? -2
+                                    : -3)));
                     wasApproxLimitReached = true;
                 }
                 rowList.add(0,CountHandler.createCountRow(resultCount, wasApproxLimitReached));

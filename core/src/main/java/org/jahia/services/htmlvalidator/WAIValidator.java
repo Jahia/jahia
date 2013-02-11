@@ -67,7 +67,7 @@ import org.w3c.dom.DOMException;
 /**
  * This class is used to validate an HTML fragment against the WAI (Accessiweb Section 508) rules. All the 55 "Bronze" criteria can be found
  * here: <br/>
- * <a href="http://www.accessiweb.org/fr/Label%5FAccessibilite/criteres%5Faccessiweb/55%5Faccessiweb%5Fbronze/"
+ * <a href="http://ebookbrowse.com/accessibilite-adae-pdf-d316315402"
  * target="_blank">Accessiweb</a>
  * 
  * @author Xavier Lawrence
@@ -514,41 +514,64 @@ public class WAIValidator {
         }
 
         // Criteria 5.3
-        Element header = null;
+
+        int headerCellCount = 0;
+        for (Element tableChildElement : node.getChildElements()) {
+            if (HTMLElementName.THEAD.equals(tableChildElement.getName())) {
+                headerCellCount += countHeadersInRows(tableChildElement.getChildElements());
+            } else if (HTMLElementName.TR.equals(tableChildElement.getName())) {
+                headerCellCount += countHeadersInRow(tableChildElement);
+            } else if (HTMLElementName.TBODY.equals(tableChildElement.getName())) {
+                headerCellCount += countHeadersInRows(tableChildElement.getChildElements());
+            }
+        }
+        if (headerCellCount == 0) {
+            final Result ve = new Result(bundle.get(
+                    "org.jahia.services.htmlvalidator.WAIValidator.5.3",
+                    "No header cell was found in the table"),
+                    node.toString(), node.toString(), bundle.get(
+                            "org.jahia.services.htmlvalidator.WAIValidator.5.3.example", ""), Type.WARNING);
+            setPosition(node, source, ve);
+            errors.add(ve);
+        }
+
+        Element firstLine = null;
 
         for (Element childElement : node.getChildElements()) {
             if (HTMLElementName.THEAD.equals(childElement.getName())) {
-                header = childElement.getChildElements().get(0);
+                firstLine = childElement.getChildElements().get(0);
                 break;
-            /*
             } else if (HTMLElementName.TR.equals(childElement.getName())) {
-                header = childElement;
+                firstLine = childElement;
                 break;
             } else if (HTMLElementName.TBODY.equals(childElement.getName())) {
-                header = childElement.getChildElements().get(0);
+                firstLine = childElement.getChildElements().get(0);
                 break;
-            */
             }
         }
 
-        if (header == null) {
+        if (firstLine == null) {
             logger.debug("No table data, returning...");
             return errors;
         }
 
         // get the first cell
         if (logger.isDebugEnabled()) {
-            logger.debug("Header: " + header.getName());
+            logger.debug("First line: " + firstLine.getName());
         }
 
         final Set<String> ids = new HashSet<String>();
         int scopes = 0;
-        for (Element element : header.getChildElements()) {
+        int elementCount = -1;
+        for (Element element : firstLine.getChildElements()) {
+            elementCount++;
             if (logger.isDebugEnabled()) {
-                logger.debug("Header in loop: " + element.getName());
+                logger.debug("First line in loop: " + element.getName());
             }
 
             if (!HTMLElementName.TH.equals(element.getName())) {
+                // deactivated this check because TD elements ARE allowed, even in THEAD sections.
+                /*
                 final Result ve = new Result(bundle.get(
                         "org.jahia.services.htmlvalidator.WAIValidator.5.3",
                         "The first row of a 'table' element should contain 'th' elements only"),
@@ -557,38 +580,39 @@ public class WAIValidator {
                 setPosition(node, source, ve);
                 errors.add(ve);
                 return errors;
-            }
+                */
+            } else {
 
-            final Attribute scope = element.getAttributes().get("scope");
-            final Attribute id = element.getAttributes().get("id");
+                final Attribute scope = element.getAttributes().get("scope");
+                final Attribute id = element.getAttributes().get("id");
 
-            if ((scope == null && id == null) || (scope != null && id != null)) {
-                final Result ve = new Result(
-                        bundle.get("org.jahia.services.htmlvalidator.WAIValidator.5.3.2",
-                                "'th' elements should have an attribute 'scope', set to 'col', OR an 'id' attribute"),
-                                node.toString(), node.toString(), bundle.get(
-                                "org.jahia.services.htmlvalidator.WAIValidator.5.3.2.example", ""));
-                setPosition(node, source, ve);
-                errors.add(ve);
-                return errors;
-            }
-
-            if (id == null) {
-                if (!"col".equals(scope.getValue().toLowerCase())) {
+                if ((scope == null && id == null) || (scope != null && id != null)) {
                     final Result ve = new Result(
-                            bundle.get("org.jahia.services.htmlvalidator.WAIValidator.5.3.3",
-                                    "The 'th' elements of the first row of the table should have a 'col' scope"),
+                            bundle.get("org.jahia.services.htmlvalidator.WAIValidator.5.3.2",
+                                    "'th' elements should have an attribute 'scope', set to 'col' or 'row' OR an 'id' attribute, but not both at the same time"),
                                     node.toString(), node.toString(), bundle.get(
-                                    "org.jahia.services.htmlvalidator.WAIValidator.5.3.3.example",
-                                    ""));
+                                    "org.jahia.services.htmlvalidator.WAIValidator.5.3.2.example", ""));
                     setPosition(node, source, ve);
                     errors.add(ve);
                     return errors;
                 }
-                scopes++;
 
-            } else {
-                ids.add(id.getValue());
+                if (id == null) {
+                    if (!"col".equals(scope.getValue().toLowerCase()) && elementCount > 0) {
+                        final Result ve = new Result(
+                                bundle.get("org.jahia.services.htmlvalidator.WAIValidator.5.3.3",
+                                        "The 'th' elements of the first row of the table should have a 'col' scope"),
+                                        node.toString(), node.toString(), bundle.get(
+                                        "org.jahia.services.htmlvalidator.WAIValidator.5.3.3.example",
+                                        ""));
+                        setPosition(node, source, ve);
+                        errors.add(ve);
+                        return errors;
+                    }
+                    scopes++;
+                } else {
+                    ids.add(id.getValue());
+                }
             }
         }
 
@@ -676,6 +700,26 @@ public class WAIValidator {
                 processTable(element, headers, ids, errors, level, source);
             }
         }
+    }
+
+    protected int countHeadersInRows(List<Element> rowElements) {
+        int headerCellCount = 0;
+        for (Element rowElement : rowElements) {
+            if (HTMLElementName.TR.equals(rowElement.getName())) {
+                headerCellCount += countHeadersInRow(rowElement);
+            }
+        }
+        return headerCellCount;
+    }
+
+    protected int countHeadersInRow(Element rowElement) {
+        int headerCellCount = 0;
+        for (Element cellElement : rowElement.getChildElements()) {
+            if (HTMLElementName.TH.equals(cellElement.getName())) {
+                headerCellCount++;
+            }
+        }
+        return headerCellCount;
     }
 
     /**

@@ -43,6 +43,7 @@
  */
 package org.jahia.services;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -178,8 +179,13 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
             allResources = new Resource[0];
             for (String location : org.springframework.util.StringUtils.tokenizeToStringArray(
                     locationPatterns, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS)) {
-                allResources = (Resource[]) ArrayUtils.addAll(allResources,
-                        context.getResources(location.trim()));
+                try {
+                    allResources = (Resource[]) ArrayUtils.addAll(allResources,
+                            context.getResources(location.trim()));
+                } catch (FileNotFoundException e) {
+                    // Ignore
+                    logger.debug("Cannot find resources",e);
+                }
             }
             if (useCache) {
                 resourcesCache.put(locationPatterns, allResources);

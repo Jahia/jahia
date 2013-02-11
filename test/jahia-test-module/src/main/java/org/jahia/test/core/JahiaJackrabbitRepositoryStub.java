@@ -40,20 +40,7 @@
 
 package org.jahia.test.core;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.Principal;
-import java.security.acl.Group;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Properties;
-
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
-import org.apache.jackrabbit.core.JackrabbitRepositoryStub;
+import org.apache.jackrabbit.core.RepositoryImpl;
 import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.test.NotExecutableException;
 import org.apache.jackrabbit.test.RepositoryStub;
@@ -65,6 +52,17 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+
+import javax.jcr.PathNotFoundException;
+import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.Principal;
+import java.security.acl.Group;
+import java.util.Collections;
+import java.util.Properties;
 
 public class JahiaJackrabbitRepositoryStub extends RepositoryStub {
 
@@ -114,7 +112,7 @@ public class JahiaJackrabbitRepositoryStub extends RepositoryStub {
     private static InputStream getResource(String name) {
         InputStream is = JahiaJackrabbitRepositoryStub.class.getResourceAsStream(name);
         if (is == null) {
-            is = JackrabbitRepositoryStub.class.getResourceAsStream(name);
+            is = RepositoryImpl.class.getResourceAsStream(name);
         }
         return is;
     }

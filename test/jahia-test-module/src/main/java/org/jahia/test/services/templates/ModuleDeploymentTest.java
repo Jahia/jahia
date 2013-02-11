@@ -99,7 +99,7 @@ public class ModuleDeploymentTest {
             @Override
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 SettingsBean settingsBean = SettingsBean.getInstance();
-                File deployedTemplatesFolder = new File(settingsBean.getJahiaModulesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module-war").getRootFolderWithVersion());
+                File deployedTemplatesFolder = new File(settingsBean.getJahiaModulesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module").getRootFolderWithVersion());
                 managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-" + VERSION + ".war"), session);
 
                 JahiaTemplatesPackage pack = managerService.getTemplatePackageByFileName("dummy1");
@@ -123,7 +123,7 @@ public class ModuleDeploymentTest {
     @Test
     public void testWarAutoDeploy() throws RepositoryException {
         SettingsBean settingsBean = SettingsBean.getInstance();
-        File deployedTemplatesFolder = new File(settingsBean.getJahiaModulesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module-war").getRootFolderWithVersion());
+        File deployedTemplatesFolder = new File(settingsBean.getJahiaModulesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module").getRootFolderWithVersion());
 
         try {
             FileUtils.copyFileToDirectory(new File(deployedTemplatesFolder, "resources/dummy1-" + VERSION + ".war"), new File(settingsBean.getJahiaModulesDiskPath()));
@@ -154,7 +154,7 @@ public class ModuleDeploymentTest {
             @Override
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 SettingsBean settingsBean = SettingsBean.getInstance();
-                File deployedTemplatesFolder = new File(settingsBean.getJahiaModulesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module-war").getRootFolderWithVersion());
+                File deployedTemplatesFolder = new File(settingsBean.getJahiaModulesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module").getRootFolderWithVersion());
                 JahiaTemplatesPackage pack = managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-" + VERSION + ".war"), session);
                 managerService.undeployModule(pack, session);
 

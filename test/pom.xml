@@ -53,6 +53,5 @@
     <modules>
         <module>dummy-modules</module>
         <module>jahia-test-module</module>
-        <module>jahia-test-module-war</module>
     </modules>
 </project>

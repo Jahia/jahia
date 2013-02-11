@@ -528,11 +528,11 @@ public class WAIValidator {
             }
         }
         if (headerCellCount == 0) {
-            final Result ve = new Result(bundle.get(
+            final Result ve = new Result(getMessage(
                     "org.jahia.services.htmlvalidator.WAIValidator.5.3",
                     "No header cell was found in the table"),
-                    node.toString(), node.toString(), bundle.get(
-                            "org.jahia.services.htmlvalidator.WAIValidator.5.3.example", ""), Type.WARNING);
+                    node.toString(), node.toString(), getMessage(
+                    "org.jahia.services.htmlvalidator.WAIValidator.5.3.example", ""), Type.WARNING);
             setPosition(node, source, ve);
             errors.add(ve);
         }
@@ -572,16 +572,12 @@ public class WAIValidator {
             }
 
             if (!HTMLElementName.TH.equals(element.getName())) {
-<<<<<<< .working
-                final Result ve = new Result(getMessage(
-=======
                 // deactivated this check because TD elements ARE allowed, even in THEAD sections.
                 /*
                 final Result ve = new Result(bundle.get(
->>>>>>> .merge-right.r44700
                         "org.jahia.services.htmlvalidator.WAIValidator.5.3",
                         "The first row of a 'table' element should contain 'th' elements only"),
-                        node.toString(), node.toString(), getMessage(
+                        node.toString(), node.toString(), bundle.get(
                                 "org.jahia.services.htmlvalidator.WAIValidator.5.3.example", ""));
                 setPosition(node, source, ve);
                 errors.add(ve);
@@ -592,33 +588,12 @@ public class WAIValidator {
                 final Attribute scope = element.getAttributes().get("scope");
                 final Attribute id = element.getAttributes().get("id");
 
-<<<<<<< .working
-            if ((scope == null && id == null) || (scope != null && id != null)) {
-                final Result ve = new Result(
-                        getMessage("org.jahia.services.htmlvalidator.WAIValidator.5.3.2",
-                                "'th' elements should have an attribute 'scope', set to 'col', OR an 'id' attribute"),
-                                node.toString(), node.toString(), getMessage(
-                                "org.jahia.services.htmlvalidator.WAIValidator.5.3.2.example", ""));
-                setPosition(node, source, ve);
-                errors.add(ve);
-                return errors;
-            }
-
-            if (id == null) {
-                if (!"col".equals(scope.getValue().toLowerCase())) {
-=======
                 if ((scope == null && id == null) || (scope != null && id != null)) {
->>>>>>> .merge-right.r44700
                     final Result ve = new Result(
-<<<<<<< .working
-                            getMessage("org.jahia.services.htmlvalidator.WAIValidator.5.3.3",
-                                    "The 'th' elements of the first row of the table should have a 'col' scope"),
-=======
-                            bundle.get("org.jahia.services.htmlvalidator.WAIValidator.5.3.2",
+                            getMessage("org.jahia.services.htmlvalidator.WAIValidator.5.3.2",
                                     "'th' elements should have an attribute 'scope', set to 'col' or 'row' OR an 'id' attribute, but not both at the same time"),
->>>>>>> .merge-right.r44700
-                                    node.toString(), node.toString(), getMessage(
-                                    "org.jahia.services.htmlvalidator.WAIValidator.5.3.2.example", ""));
+                            node.toString(), node.toString(), getMessage(
+                            "org.jahia.services.htmlvalidator.WAIValidator.5.3.2.example", ""));
                     setPosition(node, source, ve);
                     errors.add(ve);
                     return errors;
@@ -627,11 +602,11 @@ public class WAIValidator {
                 if (id == null) {
                     if (!"col".equals(scope.getValue().toLowerCase()) && elementCount > 0) {
                         final Result ve = new Result(
-                                bundle.get("org.jahia.services.htmlvalidator.WAIValidator.5.3.3",
+                                getMessage("org.jahia.services.htmlvalidator.WAIValidator.5.3.3",
                                         "The 'th' elements of the first row of the table should have a 'col' scope"),
-                                        node.toString(), node.toString(), bundle.get(
-                                        "org.jahia.services.htmlvalidator.WAIValidator.5.3.3.example",
-                                        ""));
+                                node.toString(), node.toString(), getMessage(
+                                "org.jahia.services.htmlvalidator.WAIValidator.5.3.3.example",
+                                ""));
                         setPosition(node, source, ve);
                         errors.add(ve);
                         return errors;
@@ -647,8 +622,8 @@ public class WAIValidator {
             final Result ve = new Result(
                     getMessage("org.jahia.services.htmlvalidator.WAIValidator.5.3.4",
                             "The 'th' elements of the first row of the table should all use the same attribute"),
-                            node.toString(), node.toString(), getMessage(
-                            "org.jahia.services.htmlvalidator.WAIValidator.5.3.4.example", ""));
+                    node.toString(), node.toString(), getMessage(
+                    "org.jahia.services.htmlvalidator.WAIValidator.5.3.4.example", ""));
             setPosition(node, source, ve);
             errors.add(ve);
             return errors;

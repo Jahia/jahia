@@ -62,7 +62,6 @@ import org.apache.lucene.search.*;
 import org.apache.lucene.util.DocIdBitSet;
 import org.apache.lucene.util.OpenBitSet;
 import org.apache.lucene.util.OpenBitSetDISI;
-import org.apache.poi.hssf.record.PrecisionRecord;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;

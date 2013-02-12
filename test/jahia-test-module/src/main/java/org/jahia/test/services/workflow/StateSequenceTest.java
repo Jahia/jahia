@@ -65,8 +65,8 @@ public class StateSequenceTest {
         JBPMProvider jBPMProvider = (JBPMProvider) SpringContextSingleton.getBean("jBPMProvider");
         repositoryService = jBPMProvider.getRepositoryService();
         executionService = jBPMProvider.getExecutionService();
-        deploymentId = repositoryService.createDeployment().addResourceFromClasspath(
-                "org/jahia/test/services/workflow/sequence_process.jpdl.xml").deploy();
+        deploymentId = repositoryService.createDeployment().addResourceFromInputStream("sequence_process.jpdl.xml",
+                StateSequenceTest.class.getClassLoader().getResourceAsStream("org/jahia/test/services/workflow/sequence_process.jpdl.xml")).deploy();
     }
 
     @AfterClass

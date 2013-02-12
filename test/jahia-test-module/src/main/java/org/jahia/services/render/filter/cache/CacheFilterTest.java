@@ -252,7 +252,10 @@ public class CacheFilterTest extends JahiaTestCase {
         		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/live/en" +
             node.getPath() + ".html");
         try {
+            // do the request once for the first time without using it, as it can contain jsessionid
             int responseCode = client.executeMethod(nodeGet);
+            
+            responseCode = client.executeMethod(nodeGet);
             assertEquals("Response code " + responseCode, 200, responseCode);
             firstResponse = nodeGet.getResponseBodyAsString();
             logger.info("Response body=[" + firstResponse + "]");

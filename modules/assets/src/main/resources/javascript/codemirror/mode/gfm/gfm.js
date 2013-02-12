@@ -1,4 +1,4 @@
-CodeMirror.defineMode("gfm", function(config, parserConfig) {
+CodeMirror.defineMode("gfm", function(config) {
   var codeDepth = 0;
   function blankLine(state) {
     state.code = false;
@@ -75,9 +75,10 @@ CodeMirror.defineMode("gfm", function(config, parserConfig) {
           return "link";
         }
       }
-      if (stream.match(/^((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/i)) {
+      if (stream.match(/^((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\([^\s()<>]*\))+(?:\([^\s()<>]*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/i)) {
         // URLs
         // Taken from http://daringfireball.net/2010/07/improved_regex_for_matching_urls
+        // And then (issue #1160) simplified to make it not crash the Chrome Regexp engine
         return "link";
       }
       stream.next();
@@ -91,4 +92,4 @@ CodeMirror.defineMode("gfm", function(config, parserConfig) {
     fencedCodeBlocks: true
   });
   return CodeMirror.overlayMode(CodeMirror.getMode(config, "gfmBase"), gfmOverlay);
-});
+}, "markdown");

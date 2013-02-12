@@ -2,10 +2,10 @@
  * Author: Hans Engel
  * Branched from CodeMirror's Scheme mode (by Koh Zi Han, based on implementation by Koh Zi Chun)
  */
-CodeMirror.defineMode("clojure", function (config, mode) {
-    var BUILTIN = "builtin", COMMENT = "comment", STRING = "string", TAG = "tag",
+CodeMirror.defineMode("clojure", function () {
+    var BUILTIN = "builtin", COMMENT = "comment", STRING = "string",
         ATOM = "atom", NUMBER = "number", BRACKET = "bracket", KEYWORD = "keyword";
-    var INDENT_WORD_SKIP = 2, KEYWORDS_SKIP = 1;
+    var INDENT_WORD_SKIP = 2;
 
     function makeKeywords(str) {
         var obj = {}, words = str.split(" ");
@@ -142,7 +142,7 @@ CodeMirror.defineMode("clojure", function (config, mode) {
                         returnType = COMMENT;
                     } else if (isNumber(ch,stream)){
                         returnType = NUMBER;
-                    } else if (ch == "(" || ch == "[") {
+                    } else if (ch == "(" || ch == "[" || ch == "{" ) {
                         var keyWord = '', indentTemp = stream.column(), letter;
                         /**
                         Either
@@ -172,9 +172,9 @@ CodeMirror.defineMode("clojure", function (config, mode) {
                         stream.backUp(stream.current().length - 1); // undo all the eating
 
                         returnType = BRACKET;
-                    } else if (ch == ")" || ch == "]") {
+                    } else if (ch == ")" || ch == "]" || ch == "}") {
                         returnType = BRACKET;
-                        if (state.indentStack != null && state.indentStack.type == (ch == ")" ? "(" : "[")) {
+                        if (state.indentStack != null && state.indentStack.type == (ch == ")" ? "(" : (ch == "]" ? "[" :"{"))) {
                             popStack(state);
                         }
                     } else if ( ch == ":" ) {
@@ -196,7 +196,7 @@ CodeMirror.defineMode("clojure", function (config, mode) {
             return returnType;
         },
 
-        indent: function (state, textAfter) {
+        indent: function (state) {
             if (state.indentStack == null) return state.indentation;
             return state.indentStack.indent;
         }

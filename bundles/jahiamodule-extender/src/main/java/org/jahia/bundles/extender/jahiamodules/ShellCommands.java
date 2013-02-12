@@ -1,5 +1,6 @@
 package org.jahia.bundles.extender.jahiamodules;
 
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.osgi.framework.Bundle;
 
 import java.util.*;
@@ -25,7 +26,7 @@ public class ShellCommands {
             System.out.println("----------------------------------------");
             Set<Bundle> bundlesInState = modulesByState.get(moduleState);
             for (Bundle bundleInState : bundlesInState) {
-                JahiaBundleTemplatesPackage modulePackage = activator.getRegisteredBundles().get(bundleInState);
+                JahiaTemplatesPackage modulePackage = activator.getRegisteredBundles().get(bundleInState);
                 String dependsOn = "";
                 if (modulePackage != null) {
                     dependsOn = " depends on " + modulePackage.getDepends();

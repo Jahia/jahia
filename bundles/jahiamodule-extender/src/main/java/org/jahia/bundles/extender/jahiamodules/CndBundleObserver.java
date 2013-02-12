@@ -1,6 +1,7 @@
 package org.jahia.bundles.extender.jahiamodules;
 
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.osgi.BundleResource;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ParseException;

@@ -51,12 +51,12 @@ package org.jahia.data.templates;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.jahia.bin.Jahia;
+import org.jahia.osgi.BundleResource;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.SourceControlManagement;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
 import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 import java.io.File;
@@ -71,6 +71,12 @@ import java.util.*;
  */
 public class JahiaTemplatesPackage {
 
+    private static final Resource[] NO_RESOURCES = new Resource[0];
+    
+    private Bundle bundle = null;
+
+    private ClassLoader classLoader;
+    
     /**
      * the full path to the source file or directory
      */
@@ -144,6 +150,14 @@ public class JahiaTemplatesPackage {
     private boolean isActiveVersion = false;
 
     private boolean isLastVersion = false;
+
+    public JahiaTemplatesPackage(Bundle bundle) {
+        this.bundle = bundle;
+    }
+
+    public Bundle getBundle() {
+        return bundle;
+    }
 
     /**
      * Return the template name
@@ -472,28 +486,37 @@ public class JahiaTemplatesPackage {
     }
 
     public Resource getResource(String relativePath) {
-        if (relativePath != null) {
-            return new FileSystemResource(new File(getFilePath(), relativePath));
+        if (relativePath == null) {
+            return null;
+        }
+        URL entryURL = bundle.getEntry(relativePath);
+        if (entryURL != null) {
+            return new BundleResource(entryURL, bundle);
         } else {
             return null;
         }
     }
 
     public Resource[] getResources(String relativePath) {
-        File parentPath = new File(getFilePath(), relativePath);
-        if (!parentPath.exists() || !parentPath.isDirectory()) {
-            return new Resource[0];
-        }
+        @SuppressWarnings("unchecked")
+        Enumeration<URL> resourceEnum = bundle.findEntries(relativePath, null, false);
         List<Resource> resources = new ArrayList<Resource>();
-        File[] files = parentPath.listFiles();
-        for (File file : files) {
-            resources.add(new FileSystemResource(file));
+        if (resourceEnum == null) {
+            return NO_RESOURCES;
+        } else {
+            while (resourceEnum.hasMoreElements()) {
+                resources.add(new BundleResource(resourceEnum.nextElement(), bundle));
+            }
         }
         return resources.toArray(new Resource[resources.size()]);
     }
 
     public ClassLoader getClassLoader() {
-        return null;
+        return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 
     public ClassLoader getChainedClassLoader() {
@@ -531,9 +554,8 @@ public class JahiaTemplatesPackage {
             }
         };
     }
-
-
-    public Bundle getBundle() {
-        return null;
+    
+    public void setRootFolderPath(String rootFolderPath) {
+        this.rootFolderPath = rootFolderPath;
     }
 }

@@ -913,21 +913,26 @@
                                 </artifactItem>
 
                                 <artifactItem>
-                                    <groupId>org.springframework.osgi</groupId>
-                                    <artifactId>spring-osgi-core</artifactId>
-                                    <version>${spring.osgi.version}</version>
+                                    <groupId>org.eclipse.gemini.blueprint</groupId>
+                                    <artifactId>gemini-blueprint-core</artifactId>
+                                    <version>${gemini.blueprint.version}</version>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>org.springframework.osgi</groupId>
-                                    <artifactId>spring-osgi-io</artifactId>
-                                    <version>${spring.osgi.version}</version>
+                                    <groupId>org.eclipse.gemini.blueprint</groupId>
+                                    <artifactId>gemini-blueprint-extender</artifactId>
+                                    <version>${gemini.blueprint.version}</version>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>org.springframework.osgi</groupId>
-                                    <artifactId>spring-osgi-web</artifactId>
-                                    <version>${spring.osgi.version}</version>
+                                    <groupId>org.eclipse.gemini.blueprint</groupId>
+                                    <artifactId>gemini-blueprint-io</artifactId>
+                                    <version>${gemini.blueprint.version}</version>
                                 </artifactItem>
 
+                                <artifactItem>
+                                    <groupId>org.jahia.bundles</groupId>
+                                    <artifactId>org.jahia.bundles.blueprint.extender.config</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
                                 <artifactItem>
                                     <groupId>org.jahia.bundles</groupId>
                                     <artifactId>org.jahia.bundles.extender.jahiamodules</artifactId>

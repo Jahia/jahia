@@ -43,6 +43,7 @@ import java.io.File;
 import java.util.Enumeration;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.ModuleVersion;
 import org.osgi.framework.Bundle;
@@ -53,7 +54,7 @@ import org.osgi.framework.Bundle;
  * @author Sergiy Shyrkov
  */
 class JahiaBundleTemplatesPackageHandler {
-    static JahiaBundleTemplatesPackage build(Bundle bundle) {
+    static JahiaTemplatesPackage build(Bundle bundle) {
         if (bundle == null) {
             throw new IllegalArgumentException("Provided bundle is null");
         }
@@ -65,7 +66,7 @@ class JahiaBundleTemplatesPackageHandler {
             return null;
         }
 
-        final JahiaBundleTemplatesPackage pkg = new JahiaBundleTemplatesPackage(bundle);
+        final JahiaTemplatesPackage pkg = new JahiaTemplatesPackage(bundle);
 
         pkg.setModuleType(moduleType);
 
@@ -107,7 +108,7 @@ class JahiaBundleTemplatesPackageHandler {
         return pkg;
     }
 
-    private static void detectResourceBundle(Bundle bundle, JahiaBundleTemplatesPackage pkg) {
+    private static void detectResourceBundle(Bundle bundle, JahiaTemplatesPackage pkg) {
         String resourceBundle = getHeader(bundle, "Jahia-Resource-Bundle");
         if (StringUtils.isNotBlank(resourceBundle)) {
             pkg.setResourceBundleName(resourceBundle.trim());

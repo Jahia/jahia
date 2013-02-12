@@ -2,6 +2,7 @@ package org.jahia.bundles.extender.jahiamodules;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.osgi.BundleResource;
 import org.jahia.services.content.rules.RulesListener;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.TemplatePackageRegistry;

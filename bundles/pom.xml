@@ -15,6 +15,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>blueprint-extender-config</module>
         <!--
         <module>basic-servlet</module>
         <module>jahia-bridge</module>
@@ -50,17 +51,5 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>none</phase>
-                    </execution>
-                </executions>
-            </plugin>
-
-        </plugins>
     </build>
 </project>

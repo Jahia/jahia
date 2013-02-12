@@ -11,6 +11,7 @@ import org.jahia.bundles.extender.jahiamodules.render.BundleJSR223ScriptFactory;
 import org.jahia.bundles.extender.jahiamodules.render.BundleRequestDispatcherScriptFactory;
 import org.jahia.bundles.extender.jahiamodules.render.BundleScriptResolver;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.osgi.BundleResource;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -34,8 +35,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
@@ -66,7 +68,7 @@ public class Activator implements BundleActivator {
     private List<ServiceRegistration> serviceRegistrations = new ArrayList<ServiceRegistration>();
     BundleListener bundleListener = null;
     Set<Bundle> installedBundles = new HashSet<Bundle>();
-    Map<Bundle, JahiaBundleTemplatesPackage> registeredBundles = new HashMap<Bundle, JahiaBundleTemplatesPackage>();
+    Map<Bundle, JahiaTemplatesPackage> registeredBundles = new HashMap<Bundle, JahiaTemplatesPackage>();
     Map<Bundle, ServiceTracker> bundleHttpServiceTrackers = new HashMap<Bundle, ServiceTracker>();
     JahiaTemplateManagerService templatesService = null;
     TemplatePackageRegistry templatePackageRegistry = null;
@@ -290,17 +292,17 @@ public class Activator implements BundleActivator {
         logger.info("--- Uninstalling Jahia OSGi bundle {} --", getDisplayName(bundle));
         long startTime = System.currentTimeMillis();
 
-        final JahiaBundleTemplatesPackage jahiaBundleTemplatesPackage = (JahiaBundleTemplatesPackage) templatePackageRegistry.lookupByFileNameAndVersion(bundle.getSymbolicName(), new ModuleVersion((String) bundle.getHeaders().get("Implementation-Version")));
+        final JahiaTemplatesPackage JahiaTemplatesPackage = (JahiaTemplatesPackage) templatePackageRegistry.lookupByFileNameAndVersion(bundle.getSymbolicName(), new ModuleVersion((String) bundle.getHeaders().get("Implementation-Version")));
 
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    templatePackageDeployer.clearModuleNodes(jahiaBundleTemplatesPackage, session);
+                    templatePackageDeployer.clearModuleNodes(JahiaTemplatesPackage, session);
                     return null;
                 }
             });
         } catch (RepositoryException e) {
-            logger.error("Error while initializing module content for module " + jahiaBundleTemplatesPackage, e);
+            logger.error("Error while initializing module content for module " + JahiaTemplatesPackage, e);
         }
         installedBundles.remove(bundle);
         long totalTime = System.currentTimeMillis() - startTime;
@@ -308,7 +310,7 @@ public class Activator implements BundleActivator {
     }
 
     private void parseBundle(Bundle bundle) {
-        final JahiaBundleTemplatesPackage pkg = JahiaBundleTemplatesPackageHandler.build(bundle);
+        final JahiaTemplatesPackage pkg = JahiaBundleTemplatesPackageHandler.build(bundle);
         
         if (null == pkg) {
             // is not a Jahia module -> skip
@@ -398,11 +400,11 @@ public class Activator implements BundleActivator {
         if (templatePackageRegistry.lookupByFileName(bundle.getSymbolicName()) != null) {
             try {
                 JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByFileName(bundle.getSymbolicName());
-                if (!(jahiaTemplatesPackage instanceof JahiaBundleTemplatesPackage)) {
+                if (!(jahiaTemplatesPackage instanceof JahiaTemplatesPackage)) {
                     logger.warn("Error, a non OSGi module conflicts with an OSGi module, please fix this for module name :" + bundle.getSymbolicName());
                 } else {
                     logger.info("Stopping module {} before activating new version...", getDisplayName(bundle));
-                    ((JahiaBundleTemplatesPackage) jahiaTemplatesPackage).getBundle().stop();
+                    ((JahiaTemplatesPackage) jahiaTemplatesPackage).getBundle().stop();
                 }
             } catch (BundleException e) {
                 logger.info("--- Cannot stop previous version of module " + bundle.getSymbolicName(), e);
@@ -411,8 +413,8 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void start(Bundle bundle) {
-        JahiaBundleTemplatesPackage jahiaBundleTemplatesPackage = (JahiaBundleTemplatesPackage) templatePackageRegistry.lookupByFileNameAndVersion(bundle.getSymbolicName(), new ModuleVersion((String) bundle.getHeaders().get("Implementation-Version")));
-        if (jahiaBundleTemplatesPackage == null) {
+        JahiaTemplatesPackage jahiaTemplatesPackage = (JahiaTemplatesPackage) templatePackageRegistry.lookupByFileNameAndVersion(bundle.getSymbolicName(), new ModuleVersion((String) bundle.getHeaders().get("Implementation-Version")));
+        if (jahiaTemplatesPackage == null) {
             for (Map.Entry<String, List<Bundle>> entry : toBeParsed.entrySet()) {
                 if (entry.getValue().contains(bundle)) {
                     if (!toBeStarted.containsKey(entry.getKey())) {
@@ -425,7 +427,7 @@ public class Activator implements BundleActivator {
                 }
             }
         }
-        List<String> dependsList = jahiaBundleTemplatesPackage.getDepends();
+        List<String> dependsList = jahiaTemplatesPackage.getDepends();
         if (!dependsList.contains("default") && !dependsList.contains("Default Jahia Templates") && !bundle.getSymbolicName().equals("assets")&& !bundle.getSymbolicName().equals("default")) {
             dependsList.add("default");
         }
@@ -449,14 +451,23 @@ public class Activator implements BundleActivator {
         logger.info("--- Start Jahia OSGi bundle " + getDisplayName(bundle) + " --");
         long startTime = System.currentTimeMillis();
 
-        templatePackageRegistry.register(jahiaBundleTemplatesPackage);
+        templatePackageRegistry.register(jahiaTemplatesPackage);
+        
+        ApplicationContext ctx = getApplicationContext(bundle);
 
-        jahiaBundleTemplatesPackage.setClassLoader(BundleDelegatingClassLoader.createBundleClassLoaderFor(bundle, SpringContextSingleton.getInstance().getContext().getClassLoader()));
+        ClassLoader cl = ctx != null ?  ctx.getClassLoader() : BundleDelegatingClassLoader.createBundleClassLoaderFor(bundle, SpringContextSingleton.getInstance().getContext().getClassLoader()); 
+        jahiaTemplatesPackage.setClassLoader(cl);
+        
+        if (ctx != null) {
+            jahiaTemplatesPackage.setContext((AbstractApplicationContext) ctx);
+            logger.info("Setting application context and classloader for module {}",
+                    jahiaTemplatesPackage.getRootFolder());
+        }
 
-        jahiaBundleTemplatesPackage.setActiveVersion(true);
+        jahiaTemplatesPackage.setActiveVersion(true);
 
         // initialize spring context
-        createBundleApplicationContext(jahiaBundleTemplatesPackage, parentWebApplicationContext.getServletContext());
+        createBundleApplicationContext(jahiaTemplatesPackage, parentWebApplicationContext.getServletContext());
 
         // scan for resource and call observers
         for (BundleURLScanner bundleURLScanner : extensionObservers.keySet()) {
@@ -471,8 +482,23 @@ public class Activator implements BundleActivator {
         logger.info("--- Finished starting Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
         moduleStates.put(bundle, ModuleState.STARTED);
 
-        startDependantBundles(jahiaBundleTemplatesPackage.getRootFolder());
-        startDependantBundles(jahiaBundleTemplatesPackage.getName());
+        startDependantBundles(jahiaTemplatesPackage.getRootFolder());
+        startDependantBundles(jahiaTemplatesPackage.getName());
+    }
+
+    private ApplicationContext getApplicationContext(Bundle bundle) {
+        try {
+            ServiceReference[] refs = bundle.getBundleContext().getServiceReferences(
+                    ApplicationContext.class.getName(),
+                    "(org.eclipse.gemini.blueprint.context.service.name=" + bundle.getSymbolicName() + ")");
+            if (refs != null && refs.length > 0) {
+                return (ApplicationContext) bundle.getBundleContext().getService(refs[0]);
+            }
+        } catch (InvalidSyntaxException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        return null;
     }
 
     private String getDisplayName(Bundle bundle) {
@@ -504,20 +530,16 @@ public class Activator implements BundleActivator {
         logger.info("--- Stopping Jahia OSGi bundle {} --", getDisplayName(bundle));
         long startTime = System.currentTimeMillis();
 
-        JahiaBundleTemplatesPackage jahiaBundleTemplatesPackage = (JahiaBundleTemplatesPackage) templatePackageRegistry.lookupByFileNameAndVersion(bundle.getSymbolicName(), new ModuleVersion((String) bundle.getHeaders().get("Implementation-Version").toString()));
-        if (jahiaBundleTemplatesPackage == null) {
+        JahiaTemplatesPackage JahiaTemplatesPackage = (JahiaTemplatesPackage) templatePackageRegistry.lookupByFileNameAndVersion(bundle.getSymbolicName(), new ModuleVersion((String) bundle.getHeaders().get("Implementation-Version").toString()));
+        if (JahiaTemplatesPackage == null) {
             return;
         }
 
-        templatePackageRegistry.unregister(jahiaBundleTemplatesPackage);
-        jahiaBundleTemplatesPackage.setActiveVersion(false);
+        templatePackageRegistry.unregister(JahiaTemplatesPackage);
+        JahiaTemplatesPackage.setActiveVersion(false);
 
-        // stop spring context
-        if (jahiaBundleTemplatesPackage.getContext() != null) {
-            if (jahiaBundleTemplatesPackage.getContext().isActive()) {
-                jahiaBundleTemplatesPackage.getContext().close();
-                jahiaBundleTemplatesPackage.setContext(null);
-            }
+        if (JahiaTemplatesPackage.getContext() != null) {
+            JahiaTemplatesPackage.setContext(null);
         }
 
         // scan for resource and call observers
@@ -600,7 +622,7 @@ public class Activator implements BundleActivator {
         bundleHttpServiceTrackers.put(bundle, bundleServiceTracker);
     }
 
-    private void scanForImportFiles(Bundle bundle, JahiaBundleTemplatesPackage jahiaBundleTemplatesPackage) {
+    private void scanForImportFiles(Bundle bundle, JahiaTemplatesPackage JahiaTemplatesPackage) {
         Comparator<Resource> c = new Comparator<Resource>() {
             public int compare(Resource o1, Resource o2) {
                 return StringUtils.substringBeforeLast(o1.getFilename(), ".").compareTo(StringUtils.substringBeforeLast(o2.getFilename(), "."));
@@ -624,7 +646,7 @@ public class Activator implements BundleActivator {
         Collections.sort(importFiles, c);
         for (Resource importFile : importFiles) {
             try {
-                jahiaBundleTemplatesPackage.addInitialImport(importFile.getURL().getPath());
+                JahiaTemplatesPackage.addInitialImport(importFile.getURL().getPath());
             } catch (IOException e) {
                 logger.error("Error retrieving URL for resource " + importFile, e);
             }
@@ -636,95 +658,95 @@ public class Activator implements BundleActivator {
         urlObserver.removingEntries(bundle, foundURLs);
     }
 
-    public void createBundleApplicationContext(final JahiaBundleTemplatesPackage aPackage, ServletContext servletContext) throws BeansException {
-        final Bundle bundle = aPackage.getBundle();
-        Resource springFolder = aPackage.getResource("/META-INF/spring/");
-        if (springFolder != null && springFolder.exists()) {
-            logger.debug("Start initializing context for module {}", aPackage.getName());
-            long startTime = System.currentTimeMillis();
-
-            String configLocation = "classpath:org/jahia/defaults/config/spring/modules-applicationcontext-registry.xml";
-            @SuppressWarnings("unchecked")
-            Enumeration<URL> springFilesURLs = bundle.findEntries("META-INF/spring", "*.xml", true);
-            if (springFilesURLs == null) {
-                logger.info("Empty /META-INF/spring/ directory, will not initialize any beans");
-                return;
-            }
-            while (springFilesURLs.hasMoreElements()) {
-                configLocation += ",classpath:" + springFilesURLs.nextElement().getPath();
-            }
-            logger.info("Loading bean definitions from configLocation={}", configLocation);
-            OsgiBundleXmlWebApplicationContext bundleApplicationContext = new OsgiBundleXmlWebApplicationContext();
-            bundleApplicationContext.setParent(SpringContextSingleton.getInstance().getContext());
-            bundleApplicationContext.setClassLoader(aPackage.getClassLoader());
-            bundleApplicationContext.setServletContext(servletContext);
-            bundleApplicationContext.setBundleContext(bundle.getBundleContext());
-            servletContext.setAttribute(XmlWebApplicationContext.class.getName() + ".jahiaModule." + aPackage.getRootFolder(), bundleApplicationContext);
-            bundleApplicationContext.setConfigLocation(configLocation);
-            aPackage.setContext(bundleApplicationContext);
-            // @todo we need to add beans from other modules here, using a service filter to retrieve them.
-
-            bundleApplicationContext.addBeanFactoryPostProcessor(new BeanDefinitionRegistryPostProcessor() {
-                @Override
-                public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-                }
-
-                @Override
-                public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-                    beanFactory.addBeanPostProcessor(new JahiaModuleAwareProcessor(aPackage));
-
-                    String serviceFilter = "(jahiaModuleSpringBeanName=*)";
-                    try {
-                        ServiceReference[] otherModuleServiceReferences = bundle.getBundleContext().getAllServiceReferences(null, serviceFilter);
-                        if (otherModuleServiceReferences != null) {
-                            for (ServiceReference otherModuleServiceReference : otherModuleServiceReferences) {
-                                Object service = bundle.getBundleContext().getService(otherModuleServiceReference);
-                                if (classNameImportable(service.getClass().getName(), bundle)) {
-                                    beanFactory.registerSingleton(otherModuleServiceReference.getProperty("jahiaModuleSpringBeanName").toString(), service);
-                                }
-                            }
-                        }
-                    } catch (InvalidSyntaxException e) {
-                        logger.error("Invalid filter syntax :" + serviceFilter + ", will not register other module spring beans", e);
-                    }
-                }
-            });
-
-            bundleApplicationContext.refresh();
-            if (templatePackageRegistry.isAfterInitializeDone()) {
-                templatePackageRegistry.afterInitializationForModule(aPackage);
-            }
-            // now we will add the beans to the OSGi service registry by using the bean name as a service property so
-            // so that we may filter queries when adding them.
-
-            String[] beanNames = bundleApplicationContext.getBeanNamesForType(null, false, false);
-            for (String beanName : beanNames) {
-                try {
-                    Object bean = bundleApplicationContext.getBean(beanName);
-                    List<String> classNames = new ArrayList<String>();
-                    if (classNameExportable(bean.getClass().getName(), bundle)) {
-                        classNames.add(bean.getClass().getName());
-                        for (Class<?> classInterface : bean.getClass().getInterfaces()) {
-                            if (classNameExportable(classInterface.getName(), bundle)) {
-                                classNames.add(classInterface.getName());
-                            }
-                        }
-                        Hashtable<String, String> serviceProperties = new Hashtable<String, String>(1);
-                        serviceProperties.put("jahiaModuleSpringBeanName", beanName);
-                        serviceRegistrations.add(bundle.getBundleContext().registerService(classNames.toArray(new String[classNames.size()]), bean, serviceProperties));
-                        logger.debug("Registered bean {} as OSGi service under names: {}", beanName, classNames);
-                    }
-                } catch (Throwable t) {
-                    logger.warn("Couldn't register bean " + beanName + " since it couldn't be retrieved: " + t.getMessage());
-                }
-            }
-
-
-            logger.info(
-                    "'{}' [{}] context initialized in {} ms, registered {} beans",
-                    new Object[]{aPackage.getName(), aPackage.getRootFolder(),
-                            System.currentTimeMillis() - startTime, bundleApplicationContext.getBeanNamesForType(null).length});
-        }
+    public void createBundleApplicationContext(final JahiaTemplatesPackage aPackage, ServletContext servletContext) throws BeansException {
+//        final Bundle bundle = aPackage.getBundle();
+//        Resource springFolder = aPackage.getResource("/META-INF/spring1/");
+//        if (springFolder != null && springFolder.exists()) {
+//            logger.debug("Start initializing context for module {}", aPackage.getName());
+//            long startTime = System.currentTimeMillis();
+//
+//            String configLocation = "classpath:org/jahia/defaults/config/spring/modules-applicationcontext-registry.xml";
+//            @SuppressWarnings("unchecked")
+//            Enumeration<URL> springFilesURLs = bundle.findEntries("META-INF/spring", "*.xml", true);
+//            if (springFilesURLs == null) {
+//                logger.info("Empty /META-INF/spring/ directory, will not initialize any beans");
+//                return;
+//            }
+//            while (springFilesURLs.hasMoreElements()) {
+//                configLocation += ",classpath:" + springFilesURLs.nextElement().getPath();
+//            }
+//            logger.info("Loading bean definitions from configLocation={}", configLocation);
+//            OsgiBundleXmlWebApplicationContext bundleApplicationContext = new OsgiBundleXmlWebApplicationContext();
+//            bundleApplicationContext.setParent(SpringContextSingleton.getInstance().getContext());
+//            bundleApplicationContext.setClassLoader(aPackage.getClassLoader());
+//            bundleApplicationContext.setServletContext(servletContext);
+//            bundleApplicationContext.setBundleContext(bundle.getBundleContext());
+//            servletContext.setAttribute(XmlWebApplicationContext.class.getName() + ".jahiaModule." + aPackage.getRootFolder(), bundleApplicationContext);
+//            bundleApplicationContext.setConfigLocation(configLocation);
+//            aPackage.setContext(bundleApplicationContext);
+//            // @todo we need to add beans from other modules here, using a service filter to retrieve them.
+//
+//            bundleApplicationContext.addBeanFactoryPostProcessor(new BeanDefinitionRegistryPostProcessor() {
+//                @Override
+//                public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
+//                }
+//
+//                @Override
+//                public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+//                    beanFactory.addBeanPostProcessor(new JahiaModuleAwareProcessor(aPackage));
+//
+//                    String serviceFilter = "(jahiaModuleSpringBeanName=*)";
+//                    try {
+//                        ServiceReference[] otherModuleServiceReferences = bundle.getBundleContext().getAllServiceReferences(null, serviceFilter);
+//                        if (otherModuleServiceReferences != null) {
+//                            for (ServiceReference otherModuleServiceReference : otherModuleServiceReferences) {
+//                                Object service = bundle.getBundleContext().getService(otherModuleServiceReference);
+//                                if (classNameImportable(service.getClass().getName(), bundle)) {
+//                                    beanFactory.registerSingleton(otherModuleServiceReference.getProperty("jahiaModuleSpringBeanName").toString(), service);
+//                                }
+//                            }
+//                        }
+//                    } catch (InvalidSyntaxException e) {
+//                        logger.error("Invalid filter syntax :" + serviceFilter + ", will not register other module spring beans", e);
+//                    }
+//                }
+//            });
+//
+//            bundleApplicationContext.refresh();
+//            if (templatePackageRegistry.isAfterInitializeDone()) {
+//                templatePackageRegistry.afterInitializationForModule(aPackage);
+//            }
+//            // now we will add the beans to the OSGi service registry by using the bean name as a service property so
+//            // so that we may filter queries when adding them.
+//
+//            String[] beanNames = bundleApplicationContext.getBeanNamesForType(null, false, false);
+//            for (String beanName : beanNames) {
+//                try {
+//                    Object bean = bundleApplicationContext.getBean(beanName);
+//                    List<String> classNames = new ArrayList<String>();
+//                    if (classNameExportable(bean.getClass().getName(), bundle)) {
+//                        classNames.add(bean.getClass().getName());
+//                        for (Class<?> classInterface : bean.getClass().getInterfaces()) {
+//                            if (classNameExportable(classInterface.getName(), bundle)) {
+//                                classNames.add(classInterface.getName());
+//                            }
+//                        }
+//                        Hashtable<String, String> serviceProperties = new Hashtable<String, String>(1);
+//                        serviceProperties.put("jahiaModuleSpringBeanName", beanName);
+//                        serviceRegistrations.add(bundle.getBundleContext().registerService(classNames.toArray(new String[classNames.size()]), bean, serviceProperties));
+//                        logger.debug("Registered bean {} as OSGi service under names: {}", beanName, classNames);
+//                    }
+//                } catch (Throwable t) {
+//                    logger.warn("Couldn't register bean " + beanName + " since it couldn't be retrieved: " + t.getMessage());
+//                }
+//            }
+//
+//
+//            logger.info(
+//                    "'{}' [{}] context initialized in {} ms, registered {} beans",
+//                    new Object[]{aPackage.getName(), aPackage.getRootFolder(),
+//                            System.currentTimeMillis() - startTime, bundleApplicationContext.getBeanNamesForType(null).length});
+//        }
     }
 
     private boolean classNameExportable(String classOrInterfaceName, Bundle bundle) {
@@ -771,7 +793,7 @@ public class Activator implements BundleActivator {
         return false;
     }
 
-    public Map<Bundle, JahiaBundleTemplatesPackage> getRegisteredBundles() {
+    public Map<Bundle, JahiaTemplatesPackage> getRegisteredBundles() {
         return registeredBundles;
     }
 

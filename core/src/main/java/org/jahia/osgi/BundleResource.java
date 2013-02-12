@@ -1,4 +1,4 @@
-package org.jahia.bundles.extender.jahiamodules;
+package org.jahia.osgi;
 
 import org.osgi.framework.Bundle;
 import org.springframework.core.io.UrlResource;

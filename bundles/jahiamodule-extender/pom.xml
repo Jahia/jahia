@@ -122,24 +122,6 @@
           <version>${pax.web.version}</version>
           <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.osgi</groupId>
-            <artifactId>spring-osgi-core</artifactId>
-            <version>${spring.osgi.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.osgi</groupId>
-            <artifactId>spring-osgi-io</artifactId>
-            <version>${spring.osgi.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.osgi</groupId>
-            <artifactId>spring-osgi-web</artifactId>
-            <version>${spring.osgi.version}</version>
-            <scope>provided</scope>
-        </dependency>
 
         <!-- Embedded dependencies -->
         <dependency>

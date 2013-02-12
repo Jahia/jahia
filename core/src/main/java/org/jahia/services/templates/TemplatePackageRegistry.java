@@ -113,7 +113,6 @@ public class TemplatePackageRegistry {
     private Map<String, BackgroundAction> backgroundActions;
     private List<SimpleUrlHandlerMapping> urlHandlerMappings = new ArrayList<SimpleUrlHandlerMapping>();
     private JCRStoreService jcrStoreService;
-    private TemplatePackageApplicationContextLoader templatePackageApplicationContextLoader;
     private Map<String, JahiaTemplatesPackage> packagesForBundles = new HashMap<String, JahiaTemplatesPackage>();
     private boolean afterInitializeDone = false;
 
@@ -128,8 +127,6 @@ public class TemplatePackageRegistry {
 	    actions = new CaseInsensitiveMap();
 	    backgroundActions = new CaseInsensitiveMap();
     }
-
-// --------------------- GETTER / SETTER METHODS ---------------------
 
     public Map<String, Action> getActions() {
         return actions;
@@ -159,12 +156,6 @@ public class TemplatePackageRegistry {
     public void setJcrStoreService(JCRStoreService jcrStoreService) {
         this.jcrStoreService = jcrStoreService;
     }
-
-    public void setTemplatePackageApplicationContextLoader(TemplatePackageApplicationContextLoader templatePackageApplicationContextLoader) {
-        this.templatePackageApplicationContextLoader = templatePackageApplicationContextLoader;
-    }
-
-// -------------------------- OTHER METHODS --------------------------
 
     public void activateModuleVersion(JahiaTemplatesPackage module) throws BundleException {
         module.getBundle().start();

@@ -55,7 +55,6 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.applications.ApplicationsManagerServiceImpl;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.templates.TemplatePackageApplicationContextLoader;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.patches.GroovyPatcher;
 import org.jahia.utils.Patterns;
@@ -182,11 +181,6 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             
             GroovyPatcher.executeScripts(servletContext, "rootContextInitialized");
             
-            try {
-                ((TemplatePackageApplicationContextLoader) rootCtx.getBean("TemplatePackageApplicationContextLoader")).start();
-            } catch (Exception e) {
-                logger.error("Error initializing Jahia modules Spring application context. Cause: " + e.getMessage(), e);
-            }
             if (Jahia.isEnterpriseEdition()) {
                 requireLicense();
             }
@@ -249,18 +243,6 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             SpringContextSingleton.getInstance().publishEventInModuleContexts(new ServletContextDestroyedEvent(event.getServletContext()));
         }
         removePID(servletContext);
-        try {
-            if (ContextLoader.getCurrentWebApplicationContext() != null
-                    && ContextLoader.getCurrentWebApplicationContext().getBean(
-                            "TemplatePackageApplicationContextLoader") != null) {
-                ((TemplatePackageApplicationContextLoader) ContextLoader
-                        .getCurrentWebApplicationContext().getBean(
-                                "TemplatePackageApplicationContextLoader")).stop();
-            }
-        } catch (Exception e) {
-            logger.error("Error shutting down Jahia modules Spring application context. Cause: "
-                    + e.getMessage(), e);
-        }
         super.contextDestroyed(event);
     }
 

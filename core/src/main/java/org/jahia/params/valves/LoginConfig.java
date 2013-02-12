@@ -44,8 +44,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.jahia.services.templates.TemplatePackageApplicationContextLoader;
-import org.jahia.services.templates.TemplatePackageApplicationContextLoader.ContextInitializedEvent;
+import org.jahia.bin.listeners.JahiaContextLoaderListener.RootContextInitializedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactoryUtils;
@@ -56,7 +55,7 @@ import org.springframework.context.ApplicationListener;
  * 
  * @author Sergiy Shyrkov
  */
-public class LoginConfig implements ApplicationListener<ContextInitializedEvent> {
+public class LoginConfig implements ApplicationListener<RootContextInitializedEvent> {
 
     private static LoginConfig instance;
     
@@ -87,7 +86,7 @@ public class LoginConfig implements ApplicationListener<ContextInitializedEvent>
         return loginUrlProvider != null ? loginUrlProvider.getLoginUrl(request) : null;
     }
 
-    public void onApplicationEvent(ContextInitializedEvent event) {
+    public void onApplicationEvent(RootContextInitializedEvent event) {
         Map<String, LoginUrlProvider> beansOfType = BeanFactoryUtils.beansOfTypeIncludingAncestors(
                 event.getContext(),
                 LoginUrlProvider.class);

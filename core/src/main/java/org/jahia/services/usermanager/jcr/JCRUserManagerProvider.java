@@ -40,22 +40,21 @@
 
 package org.jahia.services.usermanager.jcr;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
-import org.jahia.services.templates.TemplatePackageApplicationContextLoader.ContextInitializedEvent;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerProvider;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.Patterns;
-import org.springframework.context.ApplicationListener;
 import org.springframework.web.context.ServletContextAware;
 
 import javax.jcr.*;
@@ -66,7 +65,8 @@ import javax.jcr.query.RowIterator;
 import javax.servlet.ServletContext;
 
 import java.io.File;
-import java.io.InputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.*;
 
 /**
@@ -77,8 +77,9 @@ import java.util.*;
  * @since JAHIA 6.5
  *        Created : 7 juil. 2009
  */
-public class JCRUserManagerProvider extends JahiaUserManagerProvider implements ServletContextAware, ApplicationListener<ContextInitializedEvent> {
-    private static final String ROOT_PWD_RESET_FILE = "/WEB-INF/etc/config/root.pwd";
+public class JCRUserManagerProvider extends JahiaUserManagerProvider implements ServletContextAware, JahiaAfterInitializationService {
+    private static final String ROOT_PWD_RESET_FILE = "root.pwd";
+    private static final String ROOT_PWD_RESET_FILE_PATH = "/WEB-INF/etc/config/" + ROOT_PWD_RESET_FILE;
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRUserManagerProvider.class);
     private transient JCRTemplate jcrTemplate;
     private static JCRUserManagerProvider mUserManagerService;
@@ -629,26 +630,37 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
 
     private void checkRootUserPwd() {
         try {
-            if (servletContext.getResource(ROOT_PWD_RESET_FILE) != null) {
-                InputStream is = servletContext.getResourceAsStream(ROOT_PWD_RESET_FILE);
-                try {
-                    String newPwd = IOUtils.toString(is);
-                    logger.info("Resetting root user password");
-                    lookupRootUser().setPassword(StringUtils.chomp(newPwd).trim());
-                    logger.info("New root user password set.");
-                } finally {
-                    IOUtils.closeQuietly(is);
-                    try {
-                        new File(servletContext.getRealPath(ROOT_PWD_RESET_FILE)).delete();
-                    } catch (Exception e) {
-                        logger.warn("Unable to delete " + ROOT_PWD_RESET_FILE
-                                + " file after resetting root password", e);
-                    }
-                }
+            String pwd = getNewRootUserPwd();
+            if (StringUtils.isNotEmpty(pwd)) {
+                logger.info("Resetting root user password");
+                lookupRootUser().setPassword(pwd);
+                logger.info("New root user password set.");
             }
         } catch (Exception e) {
             logger.warn(e.getMessage(), e);
         }
+    }
+
+    private String getNewRootUserPwd() throws MalformedURLException, IOException {
+        String pwd = null;
+        File pwdFile = null;
+
+        if (servletContext.getResource(ROOT_PWD_RESET_FILE_PATH) != null) {
+            String path = servletContext.getRealPath(ROOT_PWD_RESET_FILE_PATH);
+            pwdFile = path != null ? new File(path) : null;
+        } else {
+            pwdFile = new File(settingsBean.getJahiaVarDiskPath(), ROOT_PWD_RESET_FILE);
+        }
+        if (pwdFile != null && pwdFile.exists()) {
+            pwd = FileUtils.readFileToString(pwdFile);
+            try {
+                pwdFile.delete();
+            } catch (Exception e) {
+                logger.warn("Unable to delete " + pwdFile + " file after resetting root password", e);
+            }
+        }
+
+        return pwd != null ? StringUtils.chomp(pwd).trim() : null;
     }
 
     public void stop() throws JahiaException {
@@ -659,10 +671,6 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
         this.servletContext = servletContext;
     }
 
-    public void onApplicationEvent(ContextInitializedEvent event) {
-        checkRootUserPwd();
-    }
-
     /**
      * Returns the system root user (not cached).
      *
@@ -670,5 +678,10 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
      */
     public JCRUser lookupRootUser() {
         return new JCRUser(JCRUser.ROOT_USER_UUID);
+    }
+
+    @Override
+    public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
+        checkRootUserPwd();
     }
 }

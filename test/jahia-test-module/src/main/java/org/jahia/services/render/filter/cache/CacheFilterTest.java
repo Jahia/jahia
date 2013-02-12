@@ -197,26 +197,7 @@ public class CacheFilterTest extends JahiaTestCase {
     @Test
     public void testFixForEmptyCacheBug() throws Exception {
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
-<<<<<<< .working
         final JCRNodeWrapper node = liveSession.getNode("/sites/"+TESTSITE_NAME+"/home/testContent");
-=======
-        final JCRNodeWrapper node = liveSession.getNode("/sites/"+TESTSITE_NAME+"/home/testContent");        
-        HttpClient client = new HttpClient();
-        GetMethod nodeGet = new GetMethod(
-        		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/live/en" +
-            node.getPath() + ".html");
-        try {
-            // do the request once for the first time without using it, as it can contain jsessionid
-            int responseCode = client.executeMethod(nodeGet);
-            
-            responseCode = client.executeMethod(nodeGet);
-            assertEquals("Response code " + responseCode, 200, responseCode);
-            firstResponse = nodeGet.getResponseBodyAsString();
-            logger.info("Response body=[" + firstResponse + "]");
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
->>>>>>> .merge-right.r44738
         
         String relativeUrl = "/cms/render/live/en" + node.getPath() + ".html";
         String firstResponse = getAsText(relativeUrl);

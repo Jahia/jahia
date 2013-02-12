@@ -481,9 +481,6 @@
                             Embed-Transitive
                         </_removeheaders>
                     </instructions>
-                    <archive>
-                        <addMavenDescriptor>false</addMavenDescriptor>
-                    </archive>
                 </configuration>
             </plugin>
         </plugins>

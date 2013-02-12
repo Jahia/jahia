@@ -173,6 +173,7 @@ public class MultiLanguageTest extends JahiaTestCase {
         JCRSessionWrapper frenchEditSession = sf.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.FRENCH, defLocale);
         
         final String frenchText = "French text";
+        frenchEditSession.getNode(SITECONTENT_ROOT_NODE + "/home").setProperty("jcr:title","page");
         frenchEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/listA/textInvalidLanguage").setProperty("text", frenchText);
         
         frenchEditSession.save();

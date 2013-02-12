@@ -72,6 +72,7 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
 
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.slf4j.Logger;
 import org.springframework.core.io.FileSystemResource;
 import org.xml.sax.SAXException;
@@ -608,7 +609,7 @@ public class ImportExportTest {
         params.put(ImportExportService.INCLUDE_USERS, Boolean.TRUE);
         params.put(ImportExportService.VIEW_WORKFLOW, Boolean.TRUE);
         params.put(ImportExportService.XSL_PATH,
-                ((ParamBean) Jahia.getThreadParamBean()).getContext().getRealPath("/WEB-INF/etc/repository/export/cleanup.xsl"));
+                JahiaContextLoaderListener.getServletContext().getRealPath("/WEB-INF/etc/repository/export/cleanup.xsl"));
         ImportExportService importExportService = ServicesRegistry.getInstance().getImportExportService();
         File zipFile = null;
 
@@ -1079,7 +1080,7 @@ public class ImportExportTest {
         params.put(ImportExportService.VIEW_VERSION, Boolean.FALSE);
         params.put(ImportExportService.VIEW_WORKFLOW, Boolean.FALSE);
         params.put(ImportExportService.XSL_PATH,
-                ((ParamBean) Jahia.getThreadParamBean()).getContext().getRealPath("/WEB-INF/etc/repository/export/cleanup.xsl"));
+                JahiaContextLoaderListener.getServletContext().getRealPath("/WEB-INF/etc/repository/export/cleanup.xsl"));
         ImportExportService importExportService = ServicesRegistry.getInstance().getImportExportService();
         File zipFile = null;
 

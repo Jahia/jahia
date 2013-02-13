@@ -54,6 +54,7 @@ import net.htmlparser.jericho.OutputDocument;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.StartTag;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -158,14 +159,15 @@ public class HtmlExternalizationService {
                         JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
                                 .getTemplatePackageByFileName(module);
                         if (pack != null) {
-                            String version = pack.getVersion().toString();
-                            String prefixWithVersion = "/modules/" + module + "/" + version;
-                            if (!href.startsWith(prefixWithVersion)) {
-                                href = prefixWithVersion + "/" + StringUtils.substringAfter(after, "/");
+                            String prefix = "/modules/" + module ;
+                            if (!href.startsWith(prefix)) {
+                                href = prefix + "/" + StringUtils.substringAfter(after, "/");
                             }
                         }
+                        styleSheetContent = StringUtils.join(IOUtils.readLines(pack.getResource(StringUtils.substringAfter(after, "/")).getInputStream()),'\n');
+                    } else {
+                        styleSheetContent = httpClientService.getResourceAsString(href);
                     }
-                    styleSheetContent = httpClientService.getResourceAsString(href);
                 } else {
                     styleSheetContent = httpClientService.getResourceAsString(href, request, response);
                 }

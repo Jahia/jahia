@@ -50,7 +50,13 @@
     <name>Jahia Tasks</name>
     <packaging>bundle</packaging>
     <description>Jahia template module for leveraging simple user and shared task management.</description>
-
+    <dependencies>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>1.6</version>
+        </dependency>
+    </dependencies>
     <build>
         <plugins>
             <plugin>

@@ -1,5 +1,6 @@
 <%@ tag body-content="empty" description="Renders language selection control. By default all active languages of the site are used. This can be overridden by providing a list of languages to be displayed." %>
 <%@ tag import="java.util.Locale, org.jahia.services.sites.JahiaSite, org.jahia.utils.LanguageCodeConverters" %>
+<%@ tag import="java.util.Set" %>
 <%@ tag dynamic-attributes="attributes"%>
 <%@ attribute name="display" required="false" type="java.lang.Boolean"
               description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."
@@ -22,7 +23,7 @@
     <c:set var="value" value="${functions:default(paramValues['src_languages.values'], not empty value ? fn:split(value, ',') : null)}"/>
     <c:set var="selectedValues" value=",${not empty value ? fn:join(value, ',') : renderContext.mainResource.locale},"/>
     <c:if test="${empty valueOptions}">
-        <c:set var="valueOptions" value="${fn:join(renderContext.site.activeLanguageCodes, ',')}"/>
+        <c:set var="valueOptions" value="${fn:join(renderContext.site.activeLiveLanguages, ',')}"/>
     </c:if>
     <c:set var="allowAll" value="${not empty allowAll ? allowAll : false}"/>
     <c:set target="${attributes}" property="name" value="src_languages.values"/>

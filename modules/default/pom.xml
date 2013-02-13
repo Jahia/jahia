@@ -40,17 +40,24 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>jahia-modules</artifactId>
-    <groupId>org.jahia.modules</groupId>
-    <version>6.7.0.0-SNAPSHOT</version>
-  </parent>
-  <artifactId>default</artifactId>
-  <name>Default Jahia Templates</name>
-  <packaging>bundle</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>jahia-modules</artifactId>
+        <groupId>org.jahia.modules</groupId>
+        <version>6.7.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>default</artifactId>
+    <name>Default Jahia Templates</name>
+    <packaging>bundle</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>atg.taglib.json</groupId>
+            <artifactId>json-taglib</artifactId>
+            <version>0.4.1</version>
+        </dependency>
+    </dependencies>
 
-  <description>These are the custom templates for running on a Jahia server.</description>
+    <description>These are the custom templates for running on a Jahia server.</description>
 
     <build>
         <plugins>

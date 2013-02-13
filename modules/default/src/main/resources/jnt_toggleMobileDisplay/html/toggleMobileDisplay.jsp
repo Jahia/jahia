@@ -17,7 +17,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<c:set var="cookieName" value="<%= ChannelResolutionFilter.ACTIVE_CHANNEL_COOKIE_NAME%>" />
+<c:set var="cookieName" value="org.jahia.channels.activeChannel" />
 <c:if test="${not empty renderContext.channel and (not renderContext.channel.generic or not empty cookie[cookieName])}">
     <template:addResources type="javascript" resources="jquery.min.js"/>
     <template:addResources type="javascript" resources="jquery.cookie.js"/>
@@ -26,7 +26,7 @@
         <c:choose>
             <c:when test="${empty cookie[cookieName]}">
                 $("a#forceGenericChannel").click(function () {
-                    $.cookie("${cookieName}", "<%= Channel.GENERIC_CHANNEL %>");
+                    $.cookie("${cookieName}", "generic");
                     location.reload(true);
                 });
             </c:when>

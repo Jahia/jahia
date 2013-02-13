@@ -47,6 +47,11 @@ import org.jahia.utils.i18n.Messages;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * Helper wrapping calls to StubService to manage code snippets.
+ *
+ * @see StubService
+ */
 public class StubHelper {
 
     private StubService stubService;
@@ -56,8 +61,8 @@ public class StubHelper {
     }
 
     public String getLabel(String fileType, String snippetType, String fileName, Locale locale, Object... args) {
-        fileName = StringUtils.substringBeforeLast(fileName,".");
-        return Messages.format(Messages.getInternal("label.codesnippets." + fileType + "." + snippetType + "." + fileName, locale, fileName), args);
+        String fileNameWithoutExtension = StringUtils.substringBeforeLast(fileName,".");
+        return Messages.format(Messages.getInternal("label.codesnippets." + fileType + "." + snippetType + "." + fileNameWithoutExtension, locale, fileNameWithoutExtension), args);
     }
 
     public void setStubService(StubService stubService) {

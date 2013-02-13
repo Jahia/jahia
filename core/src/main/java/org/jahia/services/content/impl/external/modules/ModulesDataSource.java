@@ -82,9 +82,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ModulesDataSource extends VFSDataSource {
 
-    private static final List<String> JCR_CONTENT_LIST = Arrays.asList(Constants.JCR_CONTENT);
     protected static final String UNSTRUCTURED_PROPERTY = "__prop__";
     protected static final String UNSTRUCTURED_CHILD_NODE = "__node__";
+    private static final String PROPERTIES_EXTENSION = ".properties";
 
     private JahiaTemplatesPackage module;
 
@@ -94,10 +94,13 @@ public class ModulesDataSource extends VFSDataSource {
 
     private List<String> supportedNodeTypes;
 
-    private JahiaTemplateManagerService templateManagerService;
-
     private Map<String, NodeTypeRegistry> nodeTypeRegistryMap = new HashMap<String, NodeTypeRegistry>();
 
+    /**
+     * Return the children of the specified path.
+     * @param path path of which we want to know the children
+     * @return
+     */
     @Override
     public List<String> getChildren(String path) {
         if (path.endsWith(".cnd") || path.contains(".cnd/")) {
@@ -114,6 +117,12 @@ public class ModulesDataSource extends VFSDataSource {
         }
     }
 
+    /**
+     * Allows to know the nodetype associated to a filetype.
+     * @param fileObject the file object that we want to know the associated nodetype
+     * @return the associated nodetype
+     * @throws FileSystemException
+     */
     @Override
     public String getDataType(FileObject fileObject) throws FileSystemException {
         int relativeDepth = getFile("/").getName().getRelativeName(fileObject.getName()).split("/").length;
@@ -147,7 +156,7 @@ public class ModulesDataSource extends VFSDataSource {
         }
         if ((fileObject.getParent() !=null
                 && StringUtils.equals(Constants.JAHIANT_TEMPLATETYPEFOLDER,getDataType(fileObject.getParent()))))  {
-            if (StringUtils.endsWith(fileObject.getName().toString(),".properties")) {
+            if (StringUtils.endsWith(fileObject.getName().toString(), PROPERTIES_EXTENSION)) {
                 type = "jnt:editableFile";
             } else {
                 type = Constants.JAHIANT_VIEWFILE;
@@ -163,6 +172,11 @@ public class ModulesDataSource extends VFSDataSource {
         return type != null ? type : super.getDataType(fileObject);
     }
 
+    /**
+     * Test if the name is a known node type in the system
+     * @param name
+     * @return
+     */
     public boolean isNodeType(String name) {
         name = name.replaceFirst("_",":");
         for (Map.Entry<String, NodeTypeRegistry> entry : nodeTypeRegistryMap.entrySet()) {
@@ -176,13 +190,24 @@ public class ModulesDataSource extends VFSDataSource {
         return false;
     }
 
-
+    /**
+     * Return item by identifier
+     * @param identifier
+     * @return
+     * @throws ItemNotFoundException
+     */
     @Override
     public ExternalData getItemByIdentifier(String identifier) throws ItemNotFoundException {
         ExternalData data = super.getItemByIdentifier(identifier);
         return enhanceData(data.getPath(), data);
     }
 
+    /**
+     * Return item by path
+     * @param path
+     * @return
+     * @throws PathNotFoundException
+     */
     @Override
     public ExternalData getItemByPath(String path) throws PathNotFoundException {
         if (path.toLowerCase().contains(".cnd/")) {
@@ -219,13 +244,11 @@ public class ModulesDataSource extends VFSDataSource {
                     Properties properties = new SortedProperties();
                     is = null;
                     try {
-                        is = getFile(path.substring(0, path.lastIndexOf(".")) + ".properties").getContent().getInputStream();
+                        is = getFile(StringUtils.substringBeforeLast(path,".") + PROPERTIES_EXTENSION).getContent().getInputStream();
                         properties.load(is);
                         Map<String, String[]> dataProperties = new HashMap<String, String[]>();
-                        for (Iterator<?> iterator = properties.keySet().iterator(); iterator.hasNext(); ) {
-                            String k = (String) iterator.next();
-                            String v = properties.getProperty(k);
-                            dataProperties.put(k, v.split(","));
+                        for (Map.Entry<?, ?> property : properties.entrySet()) {
+                            dataProperties.put((String) property.getKey(), ((String) property.getValue()).split(","));
                         }
                         data.getProperties().putAll(dataProperties);
                     } catch (FileSystemException e) {
@@ -236,50 +259,6 @@ public class ModulesDataSource extends VFSDataSource {
                         IOUtils.closeQuietly(is);
                     }
                 }
-            } else if (path.endsWith(".properties")) {
-                /* these properties should be read only on demand to avoid memory issues
-                try {
-                    Properties properties = new Properties();
-                    FileObject file = getFile(path.substring(0, path.lastIndexOf(".")) + ".properties");
-
-                    for (FileObject subfile : file.getParent().getChildren()) {
-                        String baseName = file.getName().getBaseName();
-                        baseName = StringUtils.substringBeforeLast(baseName, ".");
-
-                        String filename = subfile.getName().getBaseName();
-                        if (filename.startsWith(baseName + "_") && filename.endsWith(".properties")) {
-                            filename = StringUtils.substringBeforeLast(filename,".");
-                            String langCode = StringUtils.substringAfterLast(filename,"_");
-
-                            InputStream is = subfile.getContent().getInputStream();
-                            Properties i18nproperties = new Properties();
-                            i18nproperties.load(is);
-                            Map<String,String[]> dataProperties = new HashMap<String, String[]>();
-                            for (Iterator<?> iterator = i18nproperties.keySet().iterator(); iterator.hasNext();) {
-                                String k = (String) iterator.next();
-                                String v = i18nproperties.getProperty(k);
-                                dataProperties.put(k,new String[] { v });
-                            }
-                            if (data.getI18nProperties() == null) {
-                                data.setI18nProperties(new HashMap<String, Map<String, String[]>>());
-                            }
-                            data.getI18nProperties().put(langCode, dataProperties);
-                        }
-                    }
-
-                    InputStream is = file.getContent().getInputStream();
-                    properties.load(is);
-                    Map<String,String[]> dataProperties = new HashMap<String, String[]>();
-                    for (Iterator<?> iterator = properties.keySet().iterator(); iterator.hasNext();) {
-                        String k = (String) iterator.next();
-                        String v = properties.getProperty(k);
-                        dataProperties.put(k,new String[] { v });
-                    }
-                    data.getProperties().putAll(dataProperties);
-                } catch (IOException e) {
-                    logger.error("Cannot read property file",e);
-                }
-                */
             }
         } catch (NoSuchNodeTypeException e) {
             logger.error("Unknown type", e);
@@ -287,6 +266,10 @@ public class ModulesDataSource extends VFSDataSource {
         return data;
     }
 
+    /**
+     * Return list of supported node types.
+     * @return
+     */
     @Override
     public List<String> getSupportedNodeTypes() {
         return supportedNodeTypes;
@@ -346,6 +329,13 @@ public class ModulesDataSource extends VFSDataSource {
         }
     }
 
+    /**
+     * Move a file from one path to another one.
+     * If file is of type cnd the definitions will be first remove from the registry.
+     * @param oldPath
+     * @param newPath
+     * @throws PathNotFoundException
+     */
     @Override
     public void move(String oldPath, String newPath) throws PathNotFoundException {
         if (oldPath.endsWith(".cnd")) {
@@ -416,6 +406,12 @@ public class ModulesDataSource extends VFSDataSource {
         }
     }
 
+    /**
+     * Order the node type inside a cnd file in alphabetical order
+     * @param path
+     * @param children
+     * @throws PathNotFoundException
+     */
     @Override
     public void order(String path, final List<String> children) throws PathNotFoundException {
         // Order only for nodeType
@@ -517,43 +513,34 @@ public class ModulesDataSource extends VFSDataSource {
         } catch (Exception e) {
             logger.error("Failed to write source code", e);
         } finally {
-            if (outputStream != null) {
-                try {
-                    outputStream.close();
-                } catch (IOException e) {
-                    logger.error("Failed to close output stream", e);
-                }
-            }
+            IOUtils.closeQuietly(outputStream);
         }
 
         // Handle properties
         if (type.isNodeType(Constants.JAHIAMIX_VIEWPROPERTIES)) {
-            saveProperties(data, outputStream);
+            saveProperties(data);
         }
     }
 
-    private void saveProperties(ExternalData data, OutputStream outputStream) {
+    private void saveProperties(ExternalData data) {
+        OutputStream outputStream = null;
         try {
             ExtendedNodeType propertiesType = NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIAMIX_VIEWPROPERTIES);
             Properties properties = new SortedProperties();
-            for (String property : data.getProperties().keySet()) {
-                if (propertiesType.getDeclaredPropertyDefinitionsAsMap().containsKey(property)) {
-                    String[] v = data.getProperties().get(property);
-                    StringBuilder propertyValue = new StringBuilder();
+            for (Map.Entry<String, String[]> property : data.getProperties().entrySet()) {
+                Map<String, ExtendedPropertyDefinition> propertyDefinitionMap = propertiesType.getDeclaredPropertyDefinitionsAsMap();
+                if (propertyDefinitionMap.containsKey(property.getKey())) {
+                    String[] v = property.getValue();
                     if (v != null) {
-                        for (String s : v) {
-                            if (propertyValue.length() > 0) {
-                                propertyValue.append(",");
-                            }
-                            propertyValue.append(s);
-                        }
-                        if (propertiesType.getDeclaredPropertyDefinitionsAsMap().get(property).getRequiredType() != PropertyType.BOOLEAN || !propertyValue.toString().equals("false")) {
-                            properties.put(property, propertyValue.toString());
+                        String propertyValue = StringUtils.join(v,",");
+                        if (propertyDefinitionMap.get(property.getKey()).getRequiredType() != PropertyType.BOOLEAN ||
+                            !propertyValue.equals("false")) {
+                            properties.put(property, propertyValue);
                         }
                     }
                 }
             }
-            FileObject file = getFile(data.getPath().substring(0, data.getPath().lastIndexOf(".")) + ".properties");
+            FileObject file = getFile(StringUtils.substringBeforeLast(data.getPath(),".") + PROPERTIES_EXTENSION);
             if (!properties.isEmpty()) {
                 outputStream = file.getContent().getOutputStream();
                 properties.store(outputStream, data.getPath());
@@ -570,11 +557,7 @@ public class ModulesDataSource extends VFSDataSource {
         } catch (NoSuchNodeTypeException e) {
             logger.error("Unable to find type : " + data.getType() + " for node " + data.getPath(), e);
         } finally {
-            try {
-                outputStream.close();
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
+            IOUtils.closeQuietly(outputStream);
         }
     }
 
@@ -684,7 +667,7 @@ public class ModulesDataSource extends VFSDataSource {
                     description = values[0];
                 }
 
-                String rbPath = rbBasePath + "_" + lang + ".properties";
+                String rbPath = rbBasePath + "_" + lang + PROPERTIES_EXTENSION;
                 InputStream is = null;
                 InputStreamReader isr = null;
                 OutputStream os = null;
@@ -1322,15 +1305,26 @@ public class ModulesDataSource extends VFSDataSource {
         }
     }
 
-
+    /**
+     * Inject mapping of file types to node types
+     * @param fileTypeMapping
+     */
     public void setFileTypeMapping(Map<String, String> fileTypeMapping) {
         this.fileTypeMapping = fileTypeMapping;
     }
 
+    /**
+     * Inject mapping of folder name (type) to node types
+     * @param folderTypeMapping
+     */
     public void setFolderTypeMapping(Map<String, String> folderTypeMapping) {
         this.folderTypeMapping = folderTypeMapping;
     }
 
+    /**
+     * Set the root folder of this module source
+     * @param root
+     */
     public void setRootResource(Resource root) {
         try {
             super.setRoot("file://" + root.getFile().getPath());
@@ -1339,18 +1333,18 @@ public class ModulesDataSource extends VFSDataSource {
         }
     }
 
+    /**
+     * Injection of supported node types
+     * @param supportedNodeTypes
+     */
     public void setSupportedNodeTypes(List<String> supportedNodeTypes) {
         this.supportedNodeTypes = supportedNodeTypes;
     }
 
-    public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
-        this.templateManagerService = templateManagerService;
-    }
-
-    public JahiaTemplatesPackage getModule() {
-        return module;
-    }
-
+    /**
+     * Injection on runtime of the template package associated with this module source provider.
+     * @param module
+     */
     public void setModule(JahiaTemplatesPackage module) {
         this.module = module;
 

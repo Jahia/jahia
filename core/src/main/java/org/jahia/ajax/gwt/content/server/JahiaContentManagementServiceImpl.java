@@ -251,6 +251,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         this.translationHelper = translationHelper;
     }
 
+    /**
+     * Injection of a StubHelper class to handle display of code Snippets in the code editor
+     * @param stubHelper instaqce to be injected.
+     * @see StubHelper
+     */
     public void setStubHelper(StubHelper stubHelper) {
         this.stubHelper = stubHelper;
     }
@@ -1470,10 +1475,26 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
+    /**
+     * Call to generate the war of the specified module and release it in Jahia.
+     * This will create a war from the current sources associated with the module.
+     * And upload it in Jahia and return the file to the caller.
+     * @param moduleName The module to compile and package as war file.
+     * @return The war file generated.
+     * @throws GWTJahiaServiceException if something bad happened (like impossible to compile the module)
+     */
     public GWTJahiaNode generateWar(String moduleName) throws GWTJahiaServiceException {
         return contentManager.releaseModule(moduleName, null, retrieveCurrentSession());
     }
 
+    /**
+     * This will release the module. This means we will compile, update the version number of the module and
+     * package it as war file an dthen deploy the newly created version in Jahia.
+     * @param moduleName The module to be released.
+     * @param nextVersion The version number for this new release
+     * @return A RpcMap with the filenale, the download url for the genererated module and the newly deployed module node.
+     * @throws GWTJahiaServiceException if something happened during compile/deploy of the module
+     */
     public RpcMap releaseModule(String moduleName, String nextVersion) throws GWTJahiaServiceException {
         try {
             JCRSessionWrapper session = retrieveCurrentSession();
@@ -1485,7 +1506,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             return r;
         } catch (Exception e) {
-            logger.error("", e);
+            logger.error("Error during releasing version " + nextVersion + " of module "+moduleName, e);
             throw new GWTJahiaServiceException(e.toString());
         }
     }
@@ -2323,28 +2344,36 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return result;
     }
 
-    public RpcMap initializeCodeEditor(String path, boolean isNew, String nodeTypeName, String fileType) throws GWTJahiaServiceException {
+    /**
+     * Initialize a map with all data needed to render the code editor.
+     * @param path path from where we are trying to open the code editor
+     * @param isNew is this a new file or an existing one
+     * @param nodeTypeName null or the node type associated with the file
+     * @param fileType the type o file we are creating/editing
+     * @return a RpcMap containing all information to display code editor
+     * @throws GWTJahiaServiceException if something happened
+     */
+
+    public RpcMap initializeCodeEditor(String path, boolean isNew, String nodeTypeName, String fileType)
+            throws GWTJahiaServiceException {
         RpcMap r = new RpcMap();
 
         try {
             if (path != null && nodeTypeName == null) {
                 JCRNodeWrapper node = retrieveCurrentSession().getNode(path);
-                JCRNodeWrapper parent = node.isNodeType("jnt:nodeTypeFolder") ? node : JCRContentUtils.getParentOfType(node,"jnt:nodeTypeFolder");
+                JCRNodeWrapper parent = node.isNodeType("jnt:nodeTypeFolder") ? node : JCRContentUtils.getParentOfType(
+                        node, "jnt:nodeTypeFolder");
                 if (parent != null) {
                     nodeTypeName = parent.getName().replaceFirst("_", ":");
                 }
             }
         } catch (RepositoryException e) {
-            e.printStackTrace();
-    }
+            logger.error("Error while trying to find the node type associated with this path "+path, e);
+        }
 
         if (isNew) {
-            Map<String,String> stubs = stubHelper.getCodeSnippets(fileType, "stub");
-            if (!stubs.isEmpty()) {
-                r.put("stub", stubs.values().iterator().next());
-            } else {
-                r.put("stub", "");
-            }
+            Map<String, String> stubs = stubHelper.getCodeSnippets(fileType, "stub");
+            r.put("stub", stubs.isEmpty() ? "" : stubs.values().iterator().next());
         }
 
         List<GWTJahiaValueDisplayBean> snippetsByType;
@@ -2369,7 +2398,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                             GWTJahiaValueDisplayBean displayBean = new GWTJahiaValueDisplayBean(propertySnippet, label);
                             displayBean.set("text", propertySnippet.replaceAll("<", "&lt;").replaceAll(">", "&gt;"));
                             snippetsByType.add(displayBean);
-        }
+                        }
 
                     }
                     snippets.put(snippetType, snippetsByType);
@@ -2381,21 +2410,28 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         r.put("availableResources", availableResources);
 
         snippetsByType = new ArrayList<GWTJahiaValueDisplayBean>();
-        for (Map.Entry<String,String> resourceSnippetEntry : stubHelper.getCodeSnippets(fileType, "resources").entrySet()) {
+        for (Map.Entry<String, String> resourceSnippetEntry : stubHelper.getCodeSnippets(fileType,
+                "resources").entrySet()) {
             for (Map.Entry<String, Set<String>> resourcesEntry : availableResources.entrySet()) {
                 for (String resource : resourcesEntry.getValue()) {
-                    String resourceSnippet = resourceSnippetEntry.getValue().replace("__resource__", resource).replace("__resourceType__",resourcesEntry.getKey());
-                    String label = stubHelper.getLabel(fileType, "resources", resourceSnippetEntry.getKey(),getUILocale(),resource);
+                    String resourceSnippet = resourceSnippetEntry.getValue().replace("__resource__", resource).replace(
+                            "__resourceType__", resourcesEntry.getKey());
+                    String label = stubHelper.getLabel(fileType, "resources", resourceSnippetEntry.getKey(),
+                            getUILocale(), resource);
                     snippetsByType.add(new GWTJahiaValueDisplayBean(resourceSnippet, label));
                 }
             }
         }
         snippets.put("resources", snippetsByType);
-        r.put("snippets",snippets);
+        r.put("snippets", snippets);
 
         return r;
     }
 
+    /**
+     * Injection of the list of code snippets we want to display in the code editor.
+     * @param propertiesSnippetTypes List of type of snippets to be displayed in the code editor.
+     */
     public void setPropertiesSnippetTypes(List<String> propertiesSnippetTypes) {
         this.propertiesSnippetTypes = propertiesSnippetTypes;
     }

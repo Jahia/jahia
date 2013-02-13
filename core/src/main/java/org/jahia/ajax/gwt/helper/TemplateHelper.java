@@ -74,6 +74,8 @@ import java.util.*;
  */
 public class TemplateHelper {
     private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TemplateHelper.class);
+    private static final String CSS = "css";
+    private static final String JAVASCRIPT = "javascript";
 
     private RenderService renderService;
     private ChannelService channelService;
@@ -195,13 +197,13 @@ public class TemplateHelper {
             Map<String, Map<String,Map<String,String>>> map = (Map<String, Map<String,Map<String,String>>>) renderContext.getRequest().getAttribute("staticAssets");
 
             if (channelIdentifier != null && !channelIdentifier.equals("generic")) {
-                Map<String,Map<String,String>> css  = map.get("css");
+                Map<String,Map<String,String>> css  = map.get(CSS);
                 SortedMap<String,Map<String,String>> cssWithParam  = new TreeMap<String, Map<String, String>>();
                 for (Map.Entry<String, Map<String, String>> entry : css.entrySet()) {
                     String k = entry.getKey() + "?channel="+channelIdentifier+(channelVariant!=null?"&variant="+channelVariant:"");
                     cssWithParam.put(k, entry.getValue());
                 }
-                map.put("css",cssWithParam);
+                map.put(CSS,cssWithParam);
             }
 
 
@@ -212,10 +214,10 @@ public class TemplateHelper {
             if (renderContext.isEditMode()) {
                 String customConfig = GWTInitializer.getCustomCKEditorConfig(renderContext);
                 if (customConfig != null) {
-                    Map<String, Map<String, String>> js = map.get("javascript");
+                    Map<String, Map<String, String>> js = map.get(JAVASCRIPT);
                     if (js == null) {
                         js = new HashMap<String, Map<String,String>>();
-                        map.put("javascript", js);
+                        map.put(JAVASCRIPT, js);
                     }
                     js.put(customConfig, Collections.<String, String>emptyMap());
                 }
@@ -246,8 +248,8 @@ public class TemplateHelper {
 
     public Map<String,Set<String>> getAvailableResources(String moduleName) {
         Map<String, Set<String>> m  = new HashMap<String, Set<String>>();
-        m.put("css",getAvailableResources(moduleName, "css", ".css"));
-        m.put("javascript", getAvailableResources(moduleName, "javascript", ".js"));
+        m.put(CSS,getAvailableResources(moduleName, CSS, ".css"));
+        m.put(JAVASCRIPT, getAvailableResources(moduleName, JAVASCRIPT, ".js"));
         return m;
     }
 
@@ -258,9 +260,7 @@ public class TemplateHelper {
 
         Set<JahiaTemplatesPackage> packages = new LinkedHashSet<JahiaTemplatesPackage>();
         packages.add(aPackage);
-        for (JahiaTemplatesPackage pack : aPackage.getDependencies()) {
-            packages.add(pack);
-        }
+        packages.addAll(aPackage.getDependencies());
 
         for (JahiaTemplatesPackage pack : packages) {
             String path = pack.getRootFolderPath() + "/" + pack.getVersion() +"/" + type + "/";

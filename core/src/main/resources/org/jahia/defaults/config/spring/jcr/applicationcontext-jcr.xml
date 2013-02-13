@@ -634,7 +634,6 @@
     </bean>
 
     <bean id="ModulesDataSourcePrototype" class="org.jahia.services.content.impl.external.modules.ModulesDataSource" scope="prototype">
-        <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
         <property name="supportedNodeTypes">
             <list>
                 <value>jnt:nodeTypeFolder</value>

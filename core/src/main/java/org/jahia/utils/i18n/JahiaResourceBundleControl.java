@@ -173,7 +173,7 @@ class JahiaResourceBundleControl extends Control {
         }
 
         ResourceBundle bundle = null;
-        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getPackageForBundle(baseName);
+        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getPackageForResourceBundle(baseName);
         String resourceName = null;
         InputStream stream = null;
         if (aPackage != null && aPackage.getSourcesFolder() != null) {
@@ -209,7 +209,7 @@ class JahiaResourceBundleControl extends Control {
 
     @Override
     public long getTimeToLive(String baseName, Locale locale) {
-        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getPackageForBundle(baseName);
+        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getPackageForResourceBundle(baseName);
         if (aPackage != null && aPackage.getSourcesFolder() != null) {
             return TTL_DONT_CACHE;
         }

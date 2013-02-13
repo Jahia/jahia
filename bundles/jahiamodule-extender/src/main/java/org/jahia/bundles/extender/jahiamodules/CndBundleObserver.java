@@ -39,7 +39,7 @@ public class CndBundleObserver implements BundleObserver<URL> {
         for (URL url : urls) {
             BundleResource bundleResource = new BundleResource(url, bundle);
             try {
-                JahiaTemplatesPackage module = templatePackageRegistry.lookupByFileNameAndVersion(bundle.getSymbolicName(), new ModuleVersion((String) bundle.getHeaders().get("Implementation-Version")));
+                JahiaTemplatesPackage module = templatePackageRegistry.lookupByBundle(bundle);
                 module.setDefinitionsFile(bundleResource.getURL().getPath().substring(1));
                 NodeTypeRegistry.getInstance().addDefinitionsFile(bundleResource, bundle.getSymbolicName(), module.getVersion());
                 jcrStoreService.deployDefinitions(bundle.getSymbolicName());

@@ -12,6 +12,7 @@ import org.jahia.bundles.extender.jahiamodules.render.BundleRequestDispatcherScr
 import org.jahia.bundles.extender.jahiamodules.render.BundleScriptResolver;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleResource;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -198,7 +199,7 @@ public class Activator implements BundleActivator {
 
             public void bundleChanged(final BundleEvent bundleEvent) {
                 Bundle bundle = bundleEvent.getBundle();
-                if (bundle == null || bundle.getHeaders().get("Jahia-Module-Type") == null) {
+                if (bundle == null || !BundleUtils.isJahiaBundle(bundle)) {
                     return;
                 }
                 
@@ -292,17 +293,17 @@ public class Activator implements BundleActivator {
         logger.info("--- Uninstalling Jahia OSGi bundle {} --", getDisplayName(bundle));
         long startTime = System.currentTimeMillis();
 
-        final JahiaTemplatesPackage JahiaTemplatesPackage = (JahiaTemplatesPackage) templatePackageRegistry.lookupByFileNameAndVersion(bundle.getSymbolicName(), new ModuleVersion((String) bundle.getHeaders().get("Implementation-Version")));
+        final JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle);
 
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    templatePackageDeployer.clearModuleNodes(JahiaTemplatesPackage, session);
+                    templatePackageDeployer.clearModuleNodes(jahiaTemplatesPackage, session);
                     return null;
                 }
             });
         } catch (RepositoryException e) {
-            logger.error("Error while initializing module content for module " + JahiaTemplatesPackage, e);
+            logger.error("Error while initializing module content for module " + jahiaTemplatesPackage, e);
         }
         installedBundles.remove(bundle);
         long totalTime = System.currentTimeMillis() - startTime;
@@ -397,15 +398,11 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void starting(Bundle bundle) {
-        if (templatePackageRegistry.lookupByFileName(bundle.getSymbolicName()) != null) {
+        JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByFileName(bundle.getSymbolicName());
+        if (jahiaTemplatesPackage != null) {
             try {
-                JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByFileName(bundle.getSymbolicName());
-                if (!(jahiaTemplatesPackage instanceof JahiaTemplatesPackage)) {
-                    logger.warn("Error, a non OSGi module conflicts with an OSGi module, please fix this for module name :" + bundle.getSymbolicName());
-                } else {
-                    logger.info("Stopping module {} before activating new version...", getDisplayName(bundle));
-                    ((JahiaTemplatesPackage) jahiaTemplatesPackage).getBundle().stop();
-                }
+                logger.info("Stopping module {} before activating new version...", getDisplayName(bundle));
+                jahiaTemplatesPackage.getBundle().stop();
             } catch (BundleException e) {
                 logger.info("--- Cannot stop previous version of module " + bundle.getSymbolicName(), e);
             }
@@ -413,7 +410,7 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void start(Bundle bundle) {
-        JahiaTemplatesPackage jahiaTemplatesPackage = (JahiaTemplatesPackage) templatePackageRegistry.lookupByFileNameAndVersion(bundle.getSymbolicName(), new ModuleVersion((String) bundle.getHeaders().get("Implementation-Version")));
+        JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle, false);
         if (jahiaTemplatesPackage == null) {
             for (Map.Entry<String, List<Bundle>> entry : toBeParsed.entrySet()) {
                 if (entry.getValue().contains(bundle)) {
@@ -448,21 +445,21 @@ public class Activator implements BundleActivator {
             }
         }
 
-        logger.info("--- Start Jahia OSGi bundle " + getDisplayName(bundle) + " --");
+        logger.info("--- Start Jahia OSGi bundle {} --", getDisplayName(bundle));
         long startTime = System.currentTimeMillis();
 
         templatePackageRegistry.register(jahiaTemplatesPackage);
         
-        ApplicationContext ctx = getApplicationContext(bundle);
-
-        ClassLoader cl = ctx != null ?  ctx.getClassLoader() : BundleDelegatingClassLoader.createBundleClassLoaderFor(bundle, SpringContextSingleton.getInstance().getContext().getClassLoader()); 
-        jahiaTemplatesPackage.setClassLoader(cl);
-        
-        if (ctx != null) {
-            jahiaTemplatesPackage.setContext((AbstractApplicationContext) ctx);
-            logger.info("Setting application context and classloader for module {}",
-                    jahiaTemplatesPackage.getRootFolder());
-        }
+//        ApplicationContext ctx = getApplicationContext(bundle);
+//
+//        ClassLoader cl = ctx != null ?  ctx.getClassLoader() : BundleDelegatingClassLoader.createBundleClassLoaderFor(bundle, SpringContextSingleton.getInstance().getContext().getClassLoader()); 
+//        jahiaTemplatesPackage.setClassLoader(cl);
+//        
+//        if (ctx != null) {
+//            jahiaTemplatesPackage.setContext((AbstractApplicationContext) ctx);
+//            logger.info("Setting application context and classloader for module {}",
+//                    jahiaTemplatesPackage.getRootFolder());
+//        }
 
         jahiaTemplatesPackage.setActiveVersion(true);
 
@@ -530,7 +527,7 @@ public class Activator implements BundleActivator {
         logger.info("--- Stopping Jahia OSGi bundle {} --", getDisplayName(bundle));
         long startTime = System.currentTimeMillis();
 
-        JahiaTemplatesPackage JahiaTemplatesPackage = (JahiaTemplatesPackage) templatePackageRegistry.lookupByFileNameAndVersion(bundle.getSymbolicName(), new ModuleVersion((String) bundle.getHeaders().get("Implementation-Version").toString()));
+        JahiaTemplatesPackage JahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle, false);
         if (JahiaTemplatesPackage == null) {
             return;
         }

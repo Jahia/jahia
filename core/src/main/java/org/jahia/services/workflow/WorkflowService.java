@@ -128,7 +128,7 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
 
         if (module != null) {
             modulesForWorkflowDefinition.put(definition, module.getRootFolder());
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().addPackageForBundle("org.jahia.modules.custom.workflow."+definition, module);
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().addPackageForResourceBundle("org.jahia.modules.custom.workflow."+definition, module);
         }
 
         if (perms != null) {

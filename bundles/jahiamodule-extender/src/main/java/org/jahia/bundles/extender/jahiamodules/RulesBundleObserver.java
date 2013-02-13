@@ -34,7 +34,7 @@ public class RulesBundleObserver implements BundleObserver<URL> {
             BundleResource bundleResource = new BundleResource(url, bundle);
             try {
 
-                JahiaTemplatesPackage module = templatePackageRegistry.lookupByFileNameAndVersion(bundle.getSymbolicName(), new ModuleVersion((String) bundle.getHeaders().get("Implementation-Version")));
+                JahiaTemplatesPackage module = templatePackageRegistry.lookupByBundle(bundle);
 
                 if (url.toString().endsWith(".dsl")) {
                     module.setRulesDescriptorFile(bundleResource.getURL().getPath().substring(1));
@@ -66,7 +66,7 @@ public class RulesBundleObserver implements BundleObserver<URL> {
     public void removingEntries(Bundle bundle, List<URL> urls) {
         for (URL url : urls) {
             BundleResource bundleResource = new BundleResource(url, bundle);
-            JahiaTemplatesPackage module = templatePackageRegistry.lookupByFileNameAndVersion(bundle.getSymbolicName(), new ModuleVersion((String) bundle.getHeaders().get("Implementation-Version")));
+            JahiaTemplatesPackage module = templatePackageRegistry.lookupByBundle(bundle);
             for (RulesListener listener : RulesListener.getInstances()) {
                 listener.removeRules(module.getName());
             }

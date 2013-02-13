@@ -69,6 +69,7 @@ import org.jahia.services.visibility.VisibilityService;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorklowTypeRegistration;
 import org.jahia.utils.i18n.ResourceBundles;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,7 +114,7 @@ public class TemplatePackageRegistry {
     private Map<String, BackgroundAction> backgroundActions;
     private List<SimpleUrlHandlerMapping> urlHandlerMappings = new ArrayList<SimpleUrlHandlerMapping>();
     private JCRStoreService jcrStoreService;
-    private Map<String, JahiaTemplatesPackage> packagesForBundles = new HashMap<String, JahiaTemplatesPackage>();
+    private Map<String, JahiaTemplatesPackage> packagesForResourceBundles = new HashMap<String, JahiaTemplatesPackage>();
     private boolean afterInitializeDone = false;
 
 // --------------------------- CONSTRUCTORS ---------------------------
@@ -294,6 +295,49 @@ public class TemplatePackageRegistry {
         if (packageName == null || registry == null) return null;
         return registry.get(packageName);
     }
+    
+    /**
+     * Returns the template package that corresponds to the provided OSGi bundle or <code>null</code> if the
+     * package is not registered.
+     *
+     * @param osgiBundle the corresponding OSGi bundle
+     * @return the template package that corresponds to the provided OSGi bundle or <code>null</code> if the
+     * package is not registered
+     */
+    public JahiaTemplatesPackage lookupByBundle(Bundle osgiBundle) {
+        return lookupByBundle(osgiBundle, true);
+    }
+
+    /**
+     * Returns the template package that corresponds to the provided OSGi bundle or <code>null</code> if the
+     * package is not registered.
+     *
+     * @param osgiBundle the corresponding OSGi bundle
+     * @param warnIfNotFound log a warning if the module is not found
+     * @return the template package that corresponds to the provided OSGi bundle or <code>null</code> if the
+     * package is not registered
+     */
+    public JahiaTemplatesPackage lookupByBundle(Bundle osgiBundle, boolean warnIfNotFound) {
+        if (registry == null) {
+            return null;
+        }
+        if (osgiBundle == null) {
+            throw new IllegalArgumentException("OSGi bundle is null");
+        }
+
+        String module = StringUtils.defaultIfEmpty((String) osgiBundle.getHeaders().get("Jahia-Root-Folder"),
+                osgiBundle.getSymbolicName());
+        String version = StringUtils.defaultIfEmpty((String) osgiBundle.getHeaders().get("Implementation-Version"),
+                osgiBundle.getVersion().toString());
+
+        JahiaTemplatesPackage pkg = lookupByFileNameAndVersion(module, new ModuleVersion(version));
+        if (pkg == null) {
+            logger.warn("Unable to find module for name {} and version {}" + " which corresponds to the bundle {}.",
+                    new String[] { module, version, osgiBundle.getSymbolicName() });
+        }
+        
+        return pkg;
+    }
 
     /**
      * Returns the requested template package or <code>null</code> if the
@@ -424,12 +468,12 @@ public class TemplatePackageRegistry {
     }
 
 
-    public JahiaTemplatesPackage getPackageForBundle(String bundle) {
-        return packagesForBundles.get(bundle);
+    public JahiaTemplatesPackage getPackageForResourceBundle(String resourceBundle) {
+        return packagesForResourceBundles.get(resourceBundle);
     }
 
-    public void addPackageForBundle(String bundle, JahiaTemplatesPackage module) {
-        packagesForBundles.put(bundle, module);
+    public void addPackageForResourceBundle(String bundle, JahiaTemplatesPackage module) {
+        packagesForResourceBundles.put(bundle, module);
     }
 
     private void computeResourceBundleHierarchy(JahiaTemplatesPackage templatePackage) {
@@ -451,7 +495,7 @@ public class TemplatePackageRegistry {
             templatePackage.getResourceBundleHierarchy().add(ResourceBundles.JAHIA_INTERNAL_RESOURCES);
         }
         if (templatePackage.getResourceBundleName() != null) {
-            addPackageForBundle(templatePackage.getResourceBundleName(), templatePackage);
+            addPackageForResourceBundle(templatePackage.getResourceBundleName(), templatePackage);
         }
     }
 
@@ -673,9 +717,10 @@ public class TemplatePackageRegistry {
 
             if (bean instanceof JCRNodeDecoratorDefinition) {
                 JCRNodeDecoratorDefinition jcrNodeDecoratorDefinition = (JCRNodeDecoratorDefinition) bean;
+                @SuppressWarnings("rawtypes")
                 Map<String, Class> decorators = jcrNodeDecoratorDefinition.getDecorators();
                 if (decorators != null) {
-                    for (Map.Entry<String, Class> decorator : decorators.entrySet()) {
+                    for (@SuppressWarnings("rawtypes") Map.Entry<String, Class> decorator : decorators.entrySet()) {
                         jcrStoreService.removeDecorator(decorator.getKey());
                     }
                 }
@@ -807,9 +852,10 @@ public class TemplatePackageRegistry {
 
             if (bean instanceof JCRNodeDecoratorDefinition) {
                 JCRNodeDecoratorDefinition jcrNodeDecoratorDefinition = (JCRNodeDecoratorDefinition) bean;
+                @SuppressWarnings("rawtypes")
                 Map<String, Class> decorators = jcrNodeDecoratorDefinition.getDecorators();
                 if (decorators != null) {
-                    for (Map.Entry<String, Class> decorator : decorators.entrySet()) {
+                    for (@SuppressWarnings("rawtypes") Map.Entry<String, Class> decorator : decorators.entrySet()) {
                         jcrStoreService.addDecorator(decorator.getKey(), decorator.getValue());
                     }
                 }

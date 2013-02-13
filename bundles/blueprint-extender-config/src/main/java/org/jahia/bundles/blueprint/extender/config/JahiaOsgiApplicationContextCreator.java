@@ -43,26 +43,25 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.gemini.blueprint.context.DelegatedExecutionOsgiBundleApplicationContext;
 import org.eclipse.gemini.blueprint.context.support.OsgiBundleXmlApplicationContext;
 import org.eclipse.gemini.blueprint.extender.OsgiApplicationContextCreator;
 import org.eclipse.gemini.blueprint.extender.support.ApplicationContextConfiguration;
 import org.eclipse.gemini.blueprint.extender.support.scanning.ConfigurationScanner;
 import org.eclipse.gemini.blueprint.extender.support.scanning.DefaultConfigurationScanner;
-import org.eclipse.gemini.blueprint.util.BundleDelegatingClassLoader;
 import org.eclipse.gemini.blueprint.util.OsgiStringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.services.SpringContextSingleton;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.util.ObjectUtils;
 
 /**
- * Jahia module application context creator implementation that sets core Jahia Spring context as a parent and also using
- * <code>modules-applicationcontext-registry.xml</code> resources in the configuration locations to load common bean definitions for module.
+ * Jahia module application context creator implementation that sets core Jahia Spring context as a parent and also uses
+ * <code>modules-applicationcontext-registry.xml</code> resource in the configuration locations to load common bean definitions for module.
  * 
  * If the bundle is not detected as a Jahia module bundle or any other kind of Jahia bundle, than default context creation scheme is used.
  * 
@@ -71,16 +70,6 @@ import org.springframework.util.ObjectUtils;
 public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContextCreator {
 
     private static final Logger logger = LoggerFactory.getLogger(JahiaOsgiApplicationContextCreator.class);
-
-    protected static boolean isJahiaBundle(Bundle bundle) {
-        return bundle.getHeaders().get("Jahia-Module-Type") != null
-                || StringUtils.defaultString((String) bundle.getHeaders().get("Bundle-Category")).toLowerCase()
-                        .contains("jahia");
-    }
-
-    protected static boolean isJahiaModuleBundle(Bundle bundle) {
-        return bundle.getHeaders().get("Jahia-Module-Type") != null;
-    }
 
     private ConfigurationScanner configurationScanner = new DefaultConfigurationScanner() {
         @Override
@@ -100,11 +89,14 @@ public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContex
 
     public DelegatedExecutionOsgiBundleApplicationContext createApplicationContext(BundleContext bundleContext)
             throws Exception {
-        long timer = System.currentTimeMillis();
         Bundle bundle = bundleContext.getBundle();
-        boolean isJahiaBundle = isJahiaBundle(bundle);
+
+        boolean isJahiaModuleBundle = BundleUtils.isJahiaModuleBundle(bundle);
+        boolean isJahiaBundle = isJahiaModuleBundle || BundleUtils.isJahiaBundle(bundle);
+
         ApplicationContextConfiguration config = new ApplicationContextConfiguration(bundle,
                 isJahiaBundle ? configurationScanner : defaultConfigurationScanner);
+
         if (logger.isDebugEnabled())
             logger.debug("Created configuration {} for bundle {}", config,
                     OsgiStringUtils.nullSafeNameAndSymName(bundle));
@@ -114,21 +106,25 @@ public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContex
             return null;
         }
 
-        logger.info("Discovered configurations " + ObjectUtils.nullSafeToString(config.getConfigurationLocations())
-                + " in bundle [" + OsgiStringUtils.nullSafeNameAndSymName(bundle) + "]");
-
         OsgiBundleXmlApplicationContext ctx = new OsgiBundleXmlApplicationContext(config.getConfigurationLocations());
         ApplicationContext parentContext = SpringContextSingleton.getInstance().getContext();
         ctx.setBundleContext(bundleContext);
         ctx.setPublishContextAsService(config.isPublishContextAsService());
-        if (isJahiaBundle) {
+        if (isJahiaBundle || isJahiaModuleBundle) {
             ctx.setParent(parentContext);
-            ctx.setClassLoader(BundleDelegatingClassLoader.createBundleClassLoaderFor(bundle,
-                    parentContext.getClassLoader()));
+            if (isJahiaModuleBundle) {
+                JahiaTemplatesPackage module = BundleUtils.getModuleForBundle(bundle);
+                if (module != null) {
+                    ctx.setClassLoader(module.getClassLoader());
+                    module.setContext(ctx);
+                }
+            } else {
+                ctx.setClassLoader(BundleUtils.createBundleClassLoader(bundle));
+            }
         }
 
-        logger.info("Initialization of context for bundle {} took {} ms",
-                OsgiStringUtils.nullSafeNameAndSymName(bundle), (System.currentTimeMillis() - timer));
+        logger.info("Started initialization of Spring application context for bundle {}",
+                OsgiStringUtils.nullSafeNameAndSymName(bundle));
 
         return ctx;
     }

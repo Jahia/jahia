@@ -18,7 +18,7 @@
 /**
  * This class was copied from the Spring OSGi sources since it was the only file we needed.
  */
-package org.jahia.bundles.extender.jahiamodules;
+package org.jahia.osgi;
 
 import java.io.IOException;
 import java.net.URL;
@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author Andy Piper
  * @author Costin Leau
  */
-public class BundleDelegatingClassLoader extends ClassLoader {
+class BundleDelegatingClassLoader extends ClassLoader {
 
 	/** use degradable logger */
 	private static final Logger log = LoggerFactory.getLogger(BundleDelegatingClassLoader.class);

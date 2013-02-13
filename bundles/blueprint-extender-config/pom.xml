@@ -11,7 +11,7 @@
     <name>Jahia Blueprint Extender Config</name>
     <description>Provides the configuration options and customized handling for the Eclipse gemini-blueprint-extender</description>
     <artifactId>org.jahia.bundles.blueprint.extender.config</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
 
     <build>
         <plugins>

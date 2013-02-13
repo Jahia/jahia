@@ -44,6 +44,7 @@ import java.util.Enumeration;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.ModuleVersion;
 import org.osgi.framework.Bundle;
@@ -104,6 +105,8 @@ class JahiaBundleTemplatesPackageHandler {
 
         pkg.setProvider(StringUtils.defaultString(getHeader(bundle, "Implementation-Vendor"),
                 "Jahia Solutions Group SA"));
+        
+        pkg.setClassLoader(BundleUtils.createBundleClassLoader(bundle));
 
         return pkg;
     }

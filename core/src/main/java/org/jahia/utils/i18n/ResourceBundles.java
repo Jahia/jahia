@@ -128,7 +128,7 @@ public final class ResourceBundles {
      * @return a resource bundle for the specified locale
      */
     public static ResourceBundle get(String bundleName, Locale locale) {
-        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getPackageForBundle(bundleName);
+        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getPackageForResourceBundle(bundleName);
         if (aPackage != null && aPackage.getClassLoader() != null) {
             return ResourceBundle.getBundle(bundleName, locale, aPackage.getClassLoader(), JahiaResourceBundleControl.getInstance());
         } else {

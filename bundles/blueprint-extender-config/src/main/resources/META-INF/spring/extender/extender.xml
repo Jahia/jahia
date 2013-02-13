@@ -8,4 +8,6 @@
     
     <bean id="osgiApplicationContextListener" class="org.jahia.bundles.blueprint.extender.config.JahiaOsgiBundleApplicationContextListener"/>
     
+    <bean id="jahiaOsgiBeanFactoryPostProcessor" class="org.jahia.bundles.blueprint.extender.config.JahiaOsgiBeanFactoryPostProcessor"/>
+    
 </beans>

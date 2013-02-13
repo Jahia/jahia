@@ -14,7 +14,7 @@
 <c:set var="siteKey" value="${site.name}"/>
 <c:set var="templatePackageName" value="${site.templatePackageName}"/>
 <%
-    JahiaTemplateManagerService templateService = ServicesRegsistry.getInstance().getJahiaTemplateManagerService();
+    JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
     
     pageContext.setAttribute("templateSetPackage", templateService.getTemplatePackage((String) pageContext.getAttribute("templatePackageName")));
     pageContext.setAttribute("modules", templateService.getInstalledModulesForSite((String) pageContext.getAttribute("siteKey"), false, true, false));

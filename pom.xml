@@ -143,13 +143,17 @@
             org.jahia.taglibs.utility.session,
             org.jahia.taglibs.utility.siteproperties,
             org.jahia.taglibs.workflow,
+            org.jahia.registries,
             org.jahia.services,
             org.jahia.services.channels,
+            org.jahia.services.channels.filters,
             org.jahia.services.channels.providers,
             org.jahia.services.content,
             org.jahia.services.content.decorator,
             org.jahia.services.content.nodetypes,
+            org.jahia.services.content.nodetypes.renderer,
             org.jahia.services.content.rules,
+            org.jahia.services.query,
             org.jahia.services.uicomponents.bean,
             org.jahia.services.uicomponents.bean.contentmanager,
             org.jahia.services.uicomponents.bean.editmode,
@@ -176,8 +180,20 @@
             org.apache.commons.id,
             org.apache.commons.lang,
             org.apache.commons.lang.math,
+            org.apache.lucene.document,
             org.apache.taglibs.unstandard,
-            org.drools
+            org.apache.solr.client.solrj.response,
+            org.apache.solr.schema,
+            org.drools,
+            atg.taglib.json,
+            atg.taglib.json.util,
+            com.jsptags.navigation.pager,
+            com.jsptags.navigation.pager.parser,
+            org.joda.time,
+            org.joda.time.format,
+            org.joda.time.base,
+
+
         </jahia.modules.importPackage>
     </properties>
 

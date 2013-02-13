@@ -128,6 +128,7 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
     public static void oneTimeSetUp() throws Exception {
         try {
             conf = CrawlDBTestUtil.createConfiguration();
+            conf.setClassLoader(CrawlingPageVisitorTest.class.getClassLoader());
             fs = FileSystem.get(conf);
             fs.delete(testdir, true);
             urlPath = new Path(testdir, "urls");

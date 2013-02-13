@@ -49,13 +49,6 @@
     <artifactId>default</artifactId>
     <name>Default Jahia Templates</name>
     <packaging>bundle</packaging>
-    <dependencies>
-        <dependency>
-            <groupId>atg.taglib.json</groupId>
-            <artifactId>json-taglib</artifactId>
-            <version>0.4.1</version>
-        </dependency>
-    </dependencies>
 
     <description>These are the custom templates for running on a Jahia server.</description>
 

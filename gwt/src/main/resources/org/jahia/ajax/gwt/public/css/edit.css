@@ -170,26 +170,18 @@
 }
 
 .x-panel-placeholder {
-    background : #dfe8f6 url(../images/placeholder-area.png) top left;
-    border: 1px solid #a3bae9;
-    font-family: tahoma,arial,verdana,sans-serif;
-    font-size: 11px;
-    padding: 2px 4px;
-    color: #333 !important;
-    font-weight: bold;
-    margin-bottom:2px;
-    display:block;
-    overflow:hidden;
-    text-shadow: 0;
-    line-height: 20px;
+    margin-bottom: 1em;
 }
 
 .x-panel-toolbar {
-  float: right;
+    float: right;
 }
 
 .label-placeholder, div.button-placeholder  {
     display:inline-block;
+}
+.label-placeholder {
+    display:none;
 }
 
 button.button-placeholder, div.button-placeholder {
@@ -394,26 +386,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
 }
-.studiolayoutmodeAreaTemplate{
-    /*background-color: #336699;*/
-    /*border:1px solid #003366;
-    color:#111;
-    padding:5px;
-    position:absolute;
-    left: 25%;
-    top: 25%;
-    width: 50%;
-    margin-left: auto;
-    margin-right: auto;
-    text-align:center;
-    font-family: tahoma, arial, verdana, sans-serif;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-    -moz-box-shadow: 0 1px 3px #999;
-    -webkit-box-shadow: 0 1px 3px #999;
-    box-shadow: 0 1px 3px #999;*/
-}
+
 .studiolayoutmodeBlockedArea {
     min-height:100px;
     overflow: hidden;
@@ -439,25 +412,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
 }
-.studiomodeAbsoluteAreaTemplate{
-    /*background-color: #c30;
-    border:1px solid #990000;
-    color:#111;
-    padding:5px;
-    left: 25%;
-    top: 25%;
-    width: 50%;
-    margin-left: auto;
-    margin-right: auto;
-    text-align:center;
-    font-family: tahoma, arial, verdana, sans-serif;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-    -moz-box-shadow: 0 1px 3px #999;
-    -webkit-box-shadow: 0 1px 3px #999;
-    box-shadow: 0 1px 3px #999;*/
-}
+
 .studiolayoutmodeAbsoluteArea {
     min-height:100px;
     overflow: hidden;
@@ -469,26 +424,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
 }
-.studiolayoutmodeAbsoluteAreaTemplate{
-    /*background-color: #c30;
-    border:1px solid #990000;
-    color:#111;
-    padding:5px;
-    position:absolute;
-    left: 25%;
-    top: 25%;
-    width: 50%;
-    margin-left: auto;
-    margin-right: auto;
-    text-align:center;
-    font-family: tahoma, arial, verdana, sans-serif;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-    -moz-box-shadow: 0 1px 3px #999;
-    -webkit-box-shadow: 0 1px 3px #999;
-    box-shadow: 0 1px 3px #999;*/
-}
+
 .mainResourceDisplay {
     min-height:100px;
     overflow:hidden;
@@ -500,26 +436,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
 }
-.mainResourceDisplayTemplate{
-    /*background-color: #333;
-    border:1px solid #000;
-    color:#fff;
-    padding:5px;
-    position:absolute;
-    left: 35%;
-    top: 35%;
-    width: 30%;
-    margin-left: auto;
-    margin-right: auto;
-    text-align:center;
-    font-family: tahoma, arial, verdana, sans-serif;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-    -moz-box-shadow: 0 1px 3px #999;
-    -webkit-box-shadow: 0 1px 3px #999;
-    box-shadow: 0 1px 3px #999;*/
-}
+
 .authorDisplayArea {
     min-height:100px;
     overflow: hidden;
@@ -531,26 +448,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
 }
-.authorDisplayTemplate{
-    /*background-color: #336699;
-    border:1px solid #003366;
-    color:#fff;
-    padding:5px;
-    position:absolute;
-    left: 35%;
-    top: 35%;
-    width: 30%;
-    margin-left: auto;
-    margin-right: auto;
-    text-align:center;
-    font-family: tahoma, arial, verdana, sans-serif;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-    -moz-box-shadow: 0 1px 3px #999;
-    -webkit-box-shadow: 0 1px 3px #999;
-    box-shadow: 0 1px 3px #999; */
-}
+
 .area-liveOnly {
     min-height:100px;
     overflow: hidden;
@@ -607,7 +505,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     background:transparent no-repeat;
     margin-left:2px;
     background-image:url(../images/default/panel/tool-sprites.gif);
-	background-position:0 -135px;
+    background-position:0 -135px;
 }
 .x-tool-pin-over {
     overflow:hidden;
@@ -618,7 +516,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     background:transparent no-repeat;
     margin-left:2px;
     background-image:url(../images/default/panel/tool-sprites.gif);
-	background-position:-15px -135px;
+    background-position:-15px -135px;
 }
 .x-tool-unpin {
     overflow:hidden;
@@ -629,7 +527,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     background:transparent no-repeat;
     margin-left:2px;
     background-image:url(../images/default/panel/tool-sprites.gif);
-	background-position:0 -150px;
+    background-position:0 -150px;
 }
 .x-tool-unpin-over {
     overflow:hidden;
@@ -640,5 +538,5 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     background:transparent no-repeat;
     margin-left:2px;
     background-image:url(../images/default/panel/tool-sprites.gif);
-	background-position:-15px -150px;
+    background-position:-15px -150px;
 }

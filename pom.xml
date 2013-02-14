@@ -89,7 +89,7 @@
         <equinox.ver>3.2.2</equinox.ver>
         <spring.maven.artifact.version>3.0.3.RELEASE</spring.maven.artifact.version>
         <slf4j.version>1.6.6</slf4j.version>
-        <pax.web.version>3.0.0.M2</pax.web.version>
+        <pax.web.version>3.0.0-SNAPSHOT</pax.web.version>
         <osgi.version>4.2.0</osgi.version>
         <pax.logging.version>1.7.0</pax.logging.version>
         <pax.swissbox.version>1.5.0</pax.swissbox.version>

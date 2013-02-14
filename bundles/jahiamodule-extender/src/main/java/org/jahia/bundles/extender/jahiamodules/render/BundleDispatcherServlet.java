@@ -1,6 +1,6 @@
 package org.jahia.bundles.extender.jahiamodules.render;
 
-import org.ops4j.pax.web.jsp.JspServletWrapper;
+import org.jahia.bundles.extender.jahiamodules.JspServletWrapper;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;

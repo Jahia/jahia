@@ -1,9 +1,10 @@
 package org.jahia.bundles.extender.jahiamodules;
 
+import org.apache.jasper.servlet.JspServlet;
 import org.jahia.bundles.extender.jahiamodules.render.BundleDispatcherServlet;
 import org.jahia.bundles.extender.jahiamodules.render.BundleScriptResolver;
 import org.jahia.services.SpringContextSingleton;
-import org.ops4j.pax.web.jsp.JspServletWrapper;
+import org.ops4j.pax.web.jsp.JasperClassLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletException;
 import java.io.File;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.*;
 
 /**
@@ -27,6 +29,8 @@ public class JspBundleObserver extends ScriptBundleObserver {
     private Map<Bundle, HttpService> bundleHttpServices = new HashMap<Bundle,HttpService>();
     private Map<Bundle, List<JspRegistration>> pendingRegistrations = new HashMap<Bundle, List<JspRegistration>>();
     private Map<Bundle, Set<String>> registeredAliases = new HashMap<Bundle, Set<String>>();
+    private Map<Bundle, JspServlet> bundleJspServlets = new HashMap<Bundle, JspServlet>();
+    private Map<Bundle, URLClassLoader> bundleURLClassLoaders = new HashMap<Bundle, URLClassLoader>();
 
     class JspRegistration {
         private boolean registration;
@@ -61,6 +65,11 @@ public class JspBundleObserver extends ScriptBundleObserver {
                 registeredAliases.remove(bundle);
             }
             bundleHttpServices.remove(bundle);
+            JspServlet bundleJspServlet = bundleJspServlets.remove(bundle);
+            if (bundleJspServlet != null) {
+                bundleJspServlet.destroy();
+            }
+            bundleURLClassLoaders.remove(bundle);
         } else {
             bundleHttpServices.put(bundle, httpService);
             if (pendingRegistrations.containsKey(bundle)) {
@@ -99,7 +108,19 @@ public class JspBundleObserver extends ScriptBundleObserver {
         for (URL url : urls) {
             URL[] sourceURLs = FileHttpContext.getSourceURLs(bundle);
             String urlAlias = url.getPath();
-            final JspServletWrapper jspServlet = new JspServletWrapper(bundle, urlAlias);
+            JspServlet jspServlet = bundleJspServlets.get(bundle);
+            boolean firstInstance = false;
+            if (jspServlet == null) {
+                jspServlet = new JspServlet();
+                firstInstance = true;
+                bundleJspServlets.put(bundle, jspServlet);
+            }
+            URLClassLoader urlClassLoader = bundleURLClassLoaders.get(bundle);
+            if (urlClassLoader == null) {
+                urlClassLoader = new JasperClassLoader(bundle, JasperClassLoader.class.getClassLoader());
+                bundleURLClassLoaders.put(bundle, urlClassLoader);
+            }
+            JspServletWrapper jspServletWrapper = new JspServletWrapper(jspServlet, urlClassLoader, urlAlias, firstInstance);
             Hashtable<String, String> props = new Hashtable<String, String>();
 
             Map<String,String> m = (Map<String, String>) SpringContextSingleton.getBean("jspConfig");
@@ -127,10 +148,10 @@ public class JspBundleObserver extends ScriptBundleObserver {
                 registered++;
                 logger.debug("Registering JSP {} for bundle {}", urlAlias, bundleName);
 
-                bundleHttpService.registerServlet("/"+bundle.getSymbolicName() + urlAlias, jspServlet, props, httpContext);
+                bundleHttpService.registerServlet("/"+bundle.getSymbolicName() + urlAlias, jspServletWrapper, props, httpContext);
                 registeredBundleAliases.add(urlAlias);
 
-                bundleDispatcherServlet.getJspMappings().put("/"+bundle.getSymbolicName() + urlAlias, jspServlet);
+                bundleDispatcherServlet.getJspMappings().put("/"+bundle.getSymbolicName() + urlAlias, jspServletWrapper);
             } catch (ServletException e) {
                 logger.error("Error registering JSP " + urlAlias, e);
             } catch (NamespaceException e) {

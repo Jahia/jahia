@@ -78,6 +78,11 @@ public final class BundleUtils {
         return getTemplateManagerService().lookupByBundle(bundle);
     }
 
+    /**
+     * Returns an instance of the {@link TemplatePackageRegistry} service.
+     * 
+     * @return an instance of the {@link TemplatePackageRegistry} service
+     */
     private static TemplatePackageRegistry getTemplateManagerService() {
         return ((JahiaTemplateManagerService) SpringContextSingleton.getBean("JahiaTemplateManagerService"))
                 .getTemplatePackageRegistry();

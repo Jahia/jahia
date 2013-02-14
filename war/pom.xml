@@ -784,6 +784,14 @@
                 </exclusion>
             </exclusions>
         </dependency>-->
+        
+        <dependency>
+            <!-- Required for Eclipse Gemini Blueprint when proxying classes rather then interfaces -->
+            <artifactId>cglib-nodep</artifactId>
+            <groupId>cglib</groupId>
+            <version>2.2.2</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>

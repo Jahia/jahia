@@ -62,10 +62,7 @@ import org.junit.Test;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 import static org.junit.Assert.*;
 
@@ -94,13 +91,22 @@ public class ModuleDeploymentTest {
     }
 
     @Test
-    public void testWarDeploy() throws RepositoryException {
+    public void testJarDeploy() throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             @Override
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 SettingsBean settingsBean = SettingsBean.getInstance();
-                File deployedTemplatesFolder = new File(settingsBean.getJahiaModulesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module").getRootFolderWithVersion());
-                managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-" + VERSION + ".war"), session);
+
+                try {
+                    File tmpFile = File.createTempFile("module",".jar");
+                    InputStream stream = managerService.getTemplatePackageByFileName("jahia-test-module").getResource("dummy1-" + VERSION + ".jar").getInputStream();
+                    FileUtils.copyInputStreamToFile(stream,  tmpFile);
+                    managerService.deployModule(tmpFile, session);
+                    tmpFile.delete();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    fail(e.toString());
+                }
 
                 JahiaTemplatesPackage pack = managerService.getTemplatePackageByFileName("dummy1");
                 assertNotNull(pack);
@@ -121,18 +127,28 @@ public class ModuleDeploymentTest {
     }
 
     @Test
-    public void testWarAutoDeploy() throws RepositoryException {
+    public void testJarAutoDeploy() throws RepositoryException {
         SettingsBean settingsBean = SettingsBean.getInstance();
-        File deployedTemplatesFolder = new File(settingsBean.getJahiaModulesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module").getRootFolderWithVersion());
+
 
         try {
-            FileUtils.copyFileToDirectory(new File(deployedTemplatesFolder, "resources/dummy1-" + VERSION + ".war"), new File(settingsBean.getJahiaModulesDiskPath()));
+            File tmpFile = File.createTempFile("module",".jar");
+            InputStream stream = managerService.getTemplatePackageByFileName("jahia-test-module").getResource("dummy1-" + VERSION + ".jar").getInputStream();
+            FileUtils.copyInputStreamToFile(stream,  tmpFile);
+            FileUtils.copyFileToDirectory(tmpFile, new File(settingsBean.getJahiaModulesDiskPath()));
+            tmpFile.delete();
         } catch (IOException e) {
             e.printStackTrace();
-            fail(e.getMessage());
+            fail(e.toString());
         }
 
-        //managerService.scanSharedModulesFolderNow();
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+//        managerService.scanSharedModulesFolderNow();
 
         JahiaTemplatesPackage pack = managerService.getTemplatePackageByFileName("dummy1");
         assertNotNull(pack);
@@ -149,24 +165,32 @@ public class ModuleDeploymentTest {
     }
 
     @Test
-    public void testWarUndeploy() throws RepositoryException {
+    public void testJarUndeploy() throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             @Override
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                SettingsBean settingsBean = SettingsBean.getInstance();
-                File deployedTemplatesFolder = new File(settingsBean.getJahiaModulesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module").getRootFolderWithVersion());
-                JahiaTemplatesPackage pack = managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-" + VERSION + ".war"), session);
-                managerService.undeployModule(pack, session);
-
-                pack = managerService.getTemplatePackageByFileName("dummy1");
-                assertNull(pack);
-                assertFalse("Action not unregistered", managerService.getActions().containsKey("my-post-action"));
                 try {
-                    NodeTypeRegistry.getInstance().getNodeType("jnt:testComponent1");
-                    fail("Definition not unregistered");
-                } catch (NoSuchNodeTypeException e) {
+                    File tmpFile = File.createTempFile("module",".jar");
+                    InputStream stream = managerService.getTemplatePackageByFileName("jahia-test-module").getResource("dummy1-" + VERSION + ".jar").getInputStream();
+                    FileUtils.copyInputStreamToFile(stream,  tmpFile);
+                    JahiaTemplatesPackage pack = managerService.deployModule(tmpFile, session);
+                    tmpFile.delete();
+
+                    managerService.undeployModule(pack, session);
+
+                    pack = managerService.getTemplatePackageByFileName("dummy1");
+                    assertNull(pack);
+                    assertFalse("Action not unregistered", managerService.getActions().containsKey("my-post-action"));
+//                    try {
+//                        NodeTypeRegistry.getInstance().getNodeType("jnt:testComponent1");
+//                        fail("Definition not unregistered");
+//                    } catch (NoSuchNodeTypeException e) {
+//                    }
+                    assertTrue("Module view is not correctly unregistered", managerService.getModulesWithViewsForComponent("jnt:testComponent1").isEmpty());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    fail(e.toString());
                 }
-                assertTrue("Module view is not correctly unregistered", managerService.getModulesWithViewsForComponent("jnt:testComponent1").isEmpty());
 
                 return null;
             }

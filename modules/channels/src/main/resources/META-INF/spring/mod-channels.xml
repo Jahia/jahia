@@ -4,7 +4,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean id="ChannelExclusionFilter" class="org.jahia.services.channels.filters.ChannelExclusionFilter">
+    <bean id="ChannelExclusionFilter" class="org.jahia.modules.channels.filters.ChannelExclusionFilter">
         <property name="priority" value="7" />
         <property name="channelService" ref="ChannelService" />
         <property name="description" value="Exclude a module from render if it is excluded for the channel"/>

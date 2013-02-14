@@ -1,4 +1,4 @@
-package org.jahia.services.channels.filters;
+package org.jahia.modules.channels.filters;
 
 import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelService;

@@ -7,7 +7,10 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.osgi.framework.BundleException;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -15,6 +18,7 @@ import javax.jcr.Session;
 import javax.jcr.Value;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,16 +35,41 @@ public class ModulesProviderTest {
     
     private Node root;
     private JahiaTemplatesPackage dummyPackage;
+    private JahiaTemplateManagerService templateManagerService;
+
+    @Before
+    public void setUp() {
+        try {
+            JCRSessionFactory.getInstance().closeAllSessions();
+            JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession();
+
+            // get default module
+            templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+            root = templateManagerService.checkoutModule(null, "scm:svn:https://devtools.jahia.com/svn/jahia/trunk/test/dummy-modules/dummy1/", null, "dummy1", null, s).getNode("sources");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            fail(e.getMessage());
+        }
+    }
+
+    @After
+    public void tearDown() {
+        try {
+            JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession();
+            JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName("dummy1");
+            if (pack != null) {
+                templateManagerService.undeployModule(pack, s);
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            fail(e.getMessage());
+        }
+    }
+
     // Read by type
     @Test
     public void readTypes() {
         try {
-            Session s = JCRSessionFactory.getInstance().getCurrentUserSession();
-
-            // get default module
-            JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-            dummyPackage = templateManagerService.getTemplatePackageByFileName("dummy1");
-            root = templateManagerService.checkoutModule(null, dummyPackage.getScmURI(), null, dummyPackage.getName(), null, (JCRSessionWrapper) s).getNode("sources");
 
             // Read
             readType("jnt:cssFolder","css");
@@ -67,15 +96,8 @@ public class ModulesProviderTest {
     // Write by type
     @Test
     public void writeAndReadProperties() {
-        Session s = null;
         try {
-            s = JCRSessionFactory.getInstance().getCurrentUserSession();
-
-            // get default module
-            JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-            dummyPackage = templateManagerService.getTemplatePackageByFileName("dummy1");
-            root = templateManagerService.checkoutModule(null, dummyPackage.getScmURI(), null, dummyPackage.getName(), null, (JCRSessionWrapper) s).getNode("sources");
-
+            JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession();
             //read properties
             Node viewNode = root.getNode("jnt_testComponent1/html/testComponent1.jsp");
             String sourceCode = viewNode.getProperty("sourceCode").getString();
@@ -109,14 +131,8 @@ public class ModulesProviderTest {
 
     @Test
     public void readNodeTypeDefinition() {
-        Session s = null;
         try {
-            s = JCRSessionFactory.getInstance().getCurrentUserSession();
-
-            JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-            dummyPackage = templateManagerService.getTemplatePackageByFileName("dummy1");
-            root = templateManagerService.checkoutModule(null, dummyPackage.getScmURI(), null, dummyPackage.getName(), null, (JCRSessionWrapper) s).getNode("sources");
-
+            JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession();
             Node nodeType = root.getNode("META-INF/definitions.cnd/jnt:testComponent2");
             assertEquals("jnt:primaryNodeType", nodeType.getPrimaryNodeType().getName());
             assertEquals("jnt:content", nodeType.getProperty("j:supertype").getString());
@@ -228,13 +244,8 @@ public class ModulesProviderTest {
 
     @Test
     public void writeNodeTypeDefinition() {
-        Session s = null;
         try {
-            s = JCRSessionFactory.getInstance().getCurrentUserSession();
-
-            JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-            dummyPackage = templateManagerService.getTemplatePackageByFileName("dummy1");
-            root = templateManagerService.checkoutModule(null, dummyPackage.getScmURI(), null, dummyPackage.getName(), null, (JCRSessionWrapper) s).getNode("sources");
+            JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession();
             String definitionsPath = "META-INF/definitions.cnd";
             Node definitions = root.getNode(definitionsPath);
             Node nodeType = definitions.addNode("jnt:testComponent4", "jnt:primaryNodeType");
@@ -254,7 +265,7 @@ public class ModulesProviderTest {
             s.logout();
             s = JCRSessionFactory.getInstance().getCurrentUserSession();
             dummyPackage = templateManagerService.getTemplatePackageByFileName("dummy1");
-            String cndPath = dummyPackage.getSourcesFolder().getAbsolutePath() + "/src/main/webapp/META-INF/definitions.cnd";
+            String cndPath = dummyPackage.getSourcesFolder().getAbsolutePath() + "/src/main/resources/META-INF/definitions.cnd";
             BufferedReader input =  new BufferedReader(new FileReader(cndPath));
             try {
                 String line = null;

@@ -40,6 +40,7 @@
 
 package org.jahia.services.templates;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Action;
@@ -50,8 +51,6 @@ import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRNodeDecoratorDefinition;
-import org.jahia.services.content.impl.external.ExternalContentStoreProvider;
-import org.jahia.services.content.impl.external.modules.ModulesDataSource;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ModuleChoiceListInitializer;
@@ -84,6 +83,7 @@ import javax.jcr.Workspace;
 import javax.jcr.observation.EventListenerIterator;
 import javax.jcr.observation.ObservationManager;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -440,20 +440,32 @@ public class TemplatePackageRegistry {
     public void mountSourcesProvider(JahiaTemplatesPackage templatePackage) {
         JCRStoreProvider provider = jcrStoreService.getSessionFactory().getProviders().get("module-"+templatePackage.getRootFolder()+"-"+templatePackage.getVersion().toString());
         if (provider == null) {
-            ModulesDataSource dataSource = (ModulesDataSource) SpringContextSingleton.getBean("ModulesDataSourcePrototype");
-            File oldStructure = new File(templatePackage.getSourcesFolder(), "src/main/webapp");
-            if (oldStructure.exists()) {
-                dataSource.setRoot(templatePackage.getSourcesFolder().toURI().toString()+"src/main/webapp");
-            } else {
-                dataSource.setRoot(templatePackage.getSourcesFolder().toURI().toString()+"src/main/resources");
-            }
-            dataSource.setModule(templatePackage);
-            ExternalContentStoreProvider ex = (ExternalContentStoreProvider) SpringContextSingleton.getBean("ModulesStoreProviderPrototype");
-            ex.setKey("module-"+templatePackage.getRootFolder()+"-"+templatePackage.getVersion().toString());
-            ex.setMountPoint("/modules/" + templatePackage.getRootFolderWithVersion() + "/sources");
-            ex.setDataSource(dataSource);
             try {
+                Object dataSource = SpringContextSingleton.getBean("ModulesDataSourcePrototype");
+                Map<String,Object> properties = new LinkedHashMap<String,Object>();
+                File oldStructure = new File(templatePackage.getSourcesFolder(), "src/main/webapp");
+                if (oldStructure.exists()) {
+                    properties.put("root",templatePackage.getSourcesFolder().toURI().toString()+"src/main/webapp");
+                } else {
+                    properties.put("root",templatePackage.getSourcesFolder().toURI().toString()+"src/main/resources");
+                }
+                properties.put("module",templatePackage);
+
+                BeanUtils.populate(dataSource, properties);
+
+                JCRStoreProvider ex = (JCRStoreProvider) SpringContextSingleton.getBean("ModulesStoreProviderPrototype");
+                properties.clear();
+                properties.put("key","module-"+templatePackage.getRootFolder()+"-"+templatePackage.getVersion().toString());
+                properties.put("mountPoint","/modules/" + templatePackage.getRootFolderWithVersion() + "/sources");
+                properties.put("dataSource",dataSource);
+
+                BeanUtils.populate(ex, properties);
+
                 ex.start();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
             } catch (JahiaInitializationException e) {
                 e.printStackTrace();
             }

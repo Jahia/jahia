@@ -23,8 +23,7 @@ import java.util.List;
  *         Date: Oct 11, 2010
  *         Time: 5:18:48 PM
  */
-public final class ProvisionActivator
-        implements BundleActivator {
+public final class ProvisionActivator implements BundleActivator {
 
     private static Logger logger = LoggerFactory.getLogger(ProvisionActivator.class);
 
@@ -70,6 +69,12 @@ public final class ProvisionActivator
             }
         }
 
+        //exposeBeansAsServices(context);
+    }
+
+    private void exposeBeansAsServices(BundleContext context) {
+        long timer = System.currentTimeMillis();
+        int registered = 0;
         String[] beanNames = SpringContextSingleton.getInstance().getContext().getBeanNamesForType(null, false, false);
         for (String beanName : beanNames) {
             try {
@@ -83,14 +88,17 @@ public final class ProvisionActivator
                         }
                     }
                     Hashtable<String, String> serviceProperties = new Hashtable<String, String>(1);
-                    serviceProperties.put("jahiaSpringBeanName", beanName);
+                    serviceProperties.put("org.jahia.spring.bean.name", beanName);
                     serviceRegistrations.add(context.registerService(classNames.toArray(new String[classNames.size()]), bean, serviceProperties));
+                    registered++;
                     logger.debug("Registered bean {} as OSGi service under names: {}", beanName, classNames);
                 }
             } catch (Exception t) {
                 logger.warn("Couldn't register bean " + beanName + " since it couldn't be retrieved: " + t.getMessage());
             }
         }
+        logger.info("Registered {} Spring beans as OSGi services in {} ms", registered,
+                (System.currentTimeMillis() - timer));
     }
 
     private boolean classNameAccessible(String classOrInterfaceName) {

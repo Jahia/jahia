@@ -541,7 +541,8 @@ public class JahiaTemplatesPackage {
                 return url;
             }
 
-            public Class loadClass(String name) throws ClassNotFoundException {
+            @Override
+            protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
                 for (ClassLoader loader : classLoaders) {
                     try {
                         return loader.loadClass(name);

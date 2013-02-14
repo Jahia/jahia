@@ -92,7 +92,7 @@ function updateSiteHtmlFiltering(btn) {
     <input type="hidden" name="jcr:mixinTypes" value="jmix:htmlSettings"/>
 
     <label class="checkbox" for="activateTagFiltering">
-        <input type="checkbox" name="activateTagFiltering" id="activateTagFiltering"${not empty propFilteringActivated && propFilteringActivated.boolean ? 'checked="checked"' : ''}/>&nbsp;<fmt:message key="label.active"/>
+        <input type="checkbox" name="activateTagFiltering" id="activateTagFiltering"${not empty propFilteringActivated && propFilteringActivated.boolean ? ' checked="checked"' : ''}/>&nbsp;<fmt:message key="label.active"/>
     </label>
 
                 <fmt:message key="label.add" var="i18nAdd"/>

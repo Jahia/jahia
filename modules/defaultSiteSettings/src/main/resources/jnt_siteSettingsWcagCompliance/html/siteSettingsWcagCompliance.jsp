@@ -42,6 +42,6 @@ function updateSiteWcagCompliance(btn) {
     <input type="hidden" name="jcr:mixinTypes" value="jmix:htmlSettings"/>
 
  <label for="activateWcagCompliance" class="checkbox">
-<input type="checkbox" name="activateWcagCompliance" id="activateWcagCompliance" onclick="updateSiteWcagCompliance($(this)); return true;"${not empty propActivated && propActivated.boolean ? 'checked="checked"' : ''}/> &nbsp;<fmt:message key="label.active"/>
+<input type="checkbox" name="activateWcagCompliance" id="activateWcagCompliance" onclick="updateSiteWcagCompliance($(this)); return true;"${not empty propActivated && propActivated.boolean ? ' checked="checked"' : ''}/> &nbsp;<fmt:message key="label.active"/>
 </label>
 </form>

@@ -796,18 +796,6 @@
 
     <build>
         <finalName>jahia</finalName>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>${maven3.site.plugin.version}</version>
-                    <configuration>
-                        <relativizeDecorationLinks>true</relativizeDecorationLinks>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

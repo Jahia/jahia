@@ -415,8 +415,30 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void zip(List<String> paths, String archiveName) throws GWTJahiaServiceException;
 
+    /**
+     * Request to an online service the translations for all the values of a list of properties
+     *
+     * @param properties a list of properties
+     * @param definitions the corresponding list of property definitions
+     * @param srcLanguage the source language code
+     * @param destLanguage the destination language code
+     * @param siteUUID the site UUID
+     * @return the properties with their values translated
+     * @throws GWTJahiaServiceException
+     */
     List<GWTJahiaNodeProperty> translate(List<GWTJahiaNodeProperty> properties, List<GWTJahiaItemDefinition> definitions, String srcLanguage, String destLanguage, String siteUUID) throws GWTJahiaServiceException;
 
+    /**
+     * Request to an online service the translations for the values of a property
+     *
+     * @param property a property
+     * @param definition the corresponding property definition
+     * @param srcLanguage the source language code
+     * @param destLanguage the destination language code
+     * @param siteUUID the site UUID
+     * @return the property with its values translated
+     * @throws GWTJahiaServiceException
+     */
     GWTJahiaNodeProperty translate(GWTJahiaNodeProperty property, GWTJahiaItemDefinition definition, String srcLanguage, String destLanguage, String siteUUID) throws GWTJahiaServiceException;
 
     RpcMap initializeCodeEditor(String path, boolean isNew, String nodeType, String fileType) throws GWTJahiaServiceException;

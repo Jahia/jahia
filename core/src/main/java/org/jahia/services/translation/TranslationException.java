@@ -40,24 +40,24 @@
 
 package org.jahia.services.translation;
 
-public abstract class AbstractTranslationProvider implements TranslationProvider {
+/**
+ * Exception to handle {@link TranslationService} problems
+ */
+public class TranslationException extends Exception {
 
-    private TranslationService translationService;
-    private String name;
-
-    public void init() {
-        translationService.addProvider(this);
+    public TranslationException() {
+        super();
     }
 
-    public String getName() {
-        return name;
+    public TranslationException(String s) {
+        super(s);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public TranslationException(String s, Throwable throwable) {
+        super(s, throwable);
     }
 
-    public void setTranslationService(TranslationService translationService) {
-        this.translationService = translationService;
+    public TranslationException(Throwable throwable) {
+        super(throwable);
     }
 }

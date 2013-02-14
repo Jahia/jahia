@@ -706,7 +706,10 @@ public class PropertiesEditor extends FormPanel {
                     });
                     panel.add(button);
                 }
-                if (isWriteable && translationSource != null && JahiaGWTParameters.getSiteLanguages().size() > 1 && definition.isInternationalized() && ((GWTJahiaPropertyDefinition)definition).getRequiredType() == GWTJahiaNodePropertyType.STRING) {
+                if (isWriteable && translationSource != null && JahiaGWTParameters.getSiteLanguages().size() > 1
+                        && ((GWTJahiaPropertyDefinition)definition).getRequiredType() == GWTJahiaNodePropertyType.STRING
+                        && definition.isInternationalized() && !definition.isHidden() && !definition.isProtected()
+                        && !((GWTJahiaPropertyDefinition) definition).isConstrained()) {
                     PropertiesEditor sourcePropertiesEditor = translationSource.getPropertiesEditorByLang(translationSource.getDisplayedLocale().getLanguage());
                     GWTJahiaNodeProperty sourceProperty = null;
                     for (GWTJahiaNodeProperty prop : sourcePropertiesEditor.getProperties(true, false, false)) {

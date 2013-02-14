@@ -61,7 +61,6 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 
 import java.util.Date;
 import java.util.List;
@@ -357,8 +356,28 @@ public interface JahiaContentManagementServiceAsync {
 
     void zip(List<String> paths, String archiveName, AsyncCallback async);
 
+    /**
+     * Request to an online service the translations for all the values of a list of properties
+     *
+     * @param properties a list of properties
+     * @param definitions the corresponding list of property definitions
+     * @param srcLanguage the source language code
+     * @param destLanguage the destination language code
+     * @param siteUUID the site UUID
+     * @param async callback to handle the properties with their values translated
+     */
     void translate(List<GWTJahiaNodeProperty> properties, List<GWTJahiaItemDefinition> definitions, String srcLanguage, String destLanguage, String siteUUID, AsyncCallback<List<GWTJahiaNodeProperty>> async);
 
+    /**
+     * Request to an online service the translations for the values of a property
+     *
+     * @param property a property
+     * @param definition the corresponding property definition
+     * @param srcLanguage the source language code
+     * @param destLanguage the destination language code
+     * @param siteUUID the site UUID
+     * @param async callback to handle the property with its values translated
+     */
     void translate(GWTJahiaNodeProperty property, GWTJahiaItemDefinition definition, String srcLanguage, String destLanguage, String siteUUID, AsyncCallback<GWTJahiaNodeProperty> async);
 
     void initializeCodeEditor(String path, boolean isNew, String nodeType, String fileType, AsyncCallback<RpcMap> async);

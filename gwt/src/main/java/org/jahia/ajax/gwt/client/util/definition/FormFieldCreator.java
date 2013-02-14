@@ -603,6 +603,12 @@ public class FormFieldCreator {
             // ?
         } else if (targetField instanceof TextField) {
             ((TextField<String>) targetField).setValue(sourceProperty.getValues().get(0).getString());
+        } else if (targetField instanceof MultipleTextField) {
+            List<String> v = new ArrayList<String>();
+            for (GWTJahiaNodePropertyValue value : sourceProperty.getValues()) {
+                v.add(value.getString());
+            }
+            ((MultipleTextField<String>) targetField).setValue(v);
         }
     }
 

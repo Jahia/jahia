@@ -99,7 +99,6 @@ import org.jahia.utils.i18n.ResourceBundles;
 import org.slf4j.Logger;
 
 import javax.jcr.*;
-import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.security.Privilege;
@@ -1064,18 +1063,42 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         zip.zip(paths, archiveName, retrieveCurrentSession(), getUILocale());
     }
 
+    /**
+     * Request to an online service the translations for all the values of a list of properties
+     *
+     * @param properties a list of properties
+     * @param definitions the corresponding list of property definitions
+     * @param srcLanguage the source language code
+     * @param destLanguage the destination language code
+     * @param siteUUID the site UUID
+     * @return the properties with their values translated
+     * @throws GWTJahiaServiceException
+     */
     public List<GWTJahiaNodeProperty> translate(List<GWTJahiaNodeProperty> properties, List<GWTJahiaItemDefinition> definitions, String srcLanguage, String destLanguage, String siteUUID) throws GWTJahiaServiceException {
         try {
             return translationHelper.translate(properties, definitions, srcLanguage, destLanguage, (JCRSiteNode) retrieveCurrentSession().getNodeByIdentifier(siteUUID));
-        } catch (RepositoryException e) {
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
+    /**
+     * Request to an online service the translations for the values of a property
+     *
+     * @param property a property
+     * @param definition the corresponding property definition
+     * @param srcLanguage the source language code
+     * @param destLanguage the destination language code
+     * @param siteUUID the site UUID
+     * @return the property with its values translated
+     * @throws GWTJahiaServiceException
+     */
     public GWTJahiaNodeProperty translate(GWTJahiaNodeProperty property, GWTJahiaItemDefinition definition, String srcLanguage, String destLanguage, String siteUUID) throws GWTJahiaServiceException {
         try {
             return translationHelper.translate(property, definition, srcLanguage, destLanguage, (JCRSiteNode) retrieveCurrentSession().getNodeByIdentifier(siteUUID));
-        } catch (RepositoryException e) {
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }

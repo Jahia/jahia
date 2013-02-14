@@ -42,11 +42,15 @@ package org.jahia.services.translation;
 
 import org.jahia.services.content.decorator.JCRSiteNode;
 
+import java.util.List;
+
 public interface TranslationProvider {
 
     String getName();
 
-    String translate(String text, String srcLanguage, String destLanguage, boolean isHtml, JCRSiteNode site);
+    String translate(String text, String srcLanguage, String destLanguage, boolean isHtml, JCRSiteNode site) throws TranslationException;
+
+    List<String> translate(List<String> texts, String srcLanguage, String destLanguage, boolean isHtml, JCRSiteNode site) throws TranslationException;
 
     boolean isEnabled(JCRSiteNode site);
 

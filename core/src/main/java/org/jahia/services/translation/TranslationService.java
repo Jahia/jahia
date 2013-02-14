@@ -42,43 +42,123 @@ package org.jahia.services.translation;
 
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.slf4j.Logger;
+import org.tuckey.web.filters.urlrewrite.utils.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+/**
+ * Service to translate text using an online translation service.
+ * Several {@link TranslationProvider}s can be contributed, each one representing an online service.
+ */
 public class TranslationService {
 
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(TranslationService.class);
 
     private Map<String, TranslationProvider> providers = new HashMap<String, TranslationProvider>();
 
-    public String translate(String text, String srcLanguage, String destLanguage, boolean isHtml, JCRSiteNode site) {
-        TranslationProvider provider = null;
-        for (TranslationProvider p : providers.values()) {
-            if (p.isEnabled(site)) {
-                provider = p;
-                break;
-            }
+    /**
+     * Calls the translate method from the first enabled {@link TranslationProvider} with a single text to translate.
+     * If the text is blank, it's just returned without calling the {@link TranslationProvider}.
+     *
+     * @param text a text to translate
+     * @param srcLanguage the source language code
+     * @param destLanguage the destination language code
+     * @param isHtml is the text html or plain text
+     * @param site the site
+     * @return the translated text
+     * @throws TranslationException
+     */
+    public String translate(String text, String srcLanguage, String destLanguage, boolean isHtml, JCRSiteNode site) throws TranslationException {
+        if (StringUtils.isBlank(text)) {
+            return text;
         }
+        TranslationProvider provider = getFirstEnabledProvider(site);
         if (provider == null) {
             return text;
         }
         return provider.translate(text, srcLanguage, destLanguage, isHtml, site);
     }
 
-    public boolean isEnabled(JCRSiteNode site) {
-        boolean enabled = false;
-        for (TranslationProvider p : providers.values()) {
-            if(p.isEnabled(site)) {
-                enabled = true;
-                break;
+    /**
+     * Calls the translate method from the first enabled {@link TranslationProvider} with a list of texts to translate.
+     * If the list contains only one text, the single text method is called.
+     * Blank texts are not passed to the {@link TranslationProvider}.
+     *
+     * @param texts a list of texts to translate
+     * @param srcLanguage the source language code
+     * @param destLanguage the destination language code
+     * @param isHtml are the texts html or plain texts
+     * @param site the site
+     * @return the translated texts
+     * @throws TranslationException
+     */
+    public List<String> translate(List<String> texts, String srcLanguage, String destLanguage, boolean isHtml, JCRSiteNode site) throws TranslationException {
+        TranslationProvider provider = getFirstEnabledProvider(site);
+        if (provider == null) {
+            return texts;
+        }
+        List<StringWithIndex> blankTexts = new ArrayList<StringWithIndex>();
+        for (int i = texts.size() - 1; i >= 0 ; i--) {
+            String text = texts.get(i);
+            if (StringUtils.isBlank(text)) {
+                blankTexts.add(0, new StringWithIndex(texts.remove(i), i));
             }
         }
-        return enabled;
+        List<String> translatedTexts;
+        if (!texts.isEmpty()) {
+            if (texts.size() == 1) {
+                translatedTexts = new ArrayList<String>();
+                translatedTexts.add(provider.translate(texts.get(0), srcLanguage, destLanguage, isHtml, site));
+            } else {
+                translatedTexts = provider.translate(texts, srcLanguage, destLanguage, isHtml, site);
+            }
+        } else {
+            translatedTexts = new ArrayList<String>();
+        }
+        for (StringWithIndex blankText : blankTexts) {
+            translatedTexts.add(blankText.index, blankText.text);
+        }
+        return translatedTexts;
+    }
+
+    private TranslationProvider getFirstEnabledProvider(JCRSiteNode site) {
+        for (TranslationProvider p : providers.values()) {
+            if (p.isEnabled(site)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Checks if one provider is enabled for a given site.
+     *
+     * @param site a site
+     * @return a boolean
+     */
+    public boolean isEnabled(JCRSiteNode site) {
+        for (TranslationProvider p : providers.values()) {
+            if(p.isEnabled(site)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void addProvider(TranslationProvider provider) {
         providers.put(provider.getName(), provider);
     }
 
+    private class StringWithIndex {
+        String text;
+        int index;
+
+        StringWithIndex(String text, int index) {
+            this.text = text;
+            this.index = index;
+        }
+    }
 }

@@ -7,6 +7,9 @@
           parent="abstractTranslationProvider">
         <property name="name" value="Microsoft Translator" />
         <property name="httpClientService" ref="HttpClientService" />
+        <property name="accessTokenUrl" value="https://datamarket.accesscontrol.windows.net/v2/OAuth2-13" />
+        <property name="translateUrl" value="http://api.microsofttranslator.com/v2/Http.svc/Translate" />
+        <property name="translateArrayUrl" value="http://api.microsofttranslator.com/v2/Http.svc/TranslateArray" />
     </bean>
 
 </beans>

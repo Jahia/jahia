@@ -21,6 +21,8 @@ import java.util.List;
 
 public class MultipleTextField<T> extends MultiField<List<T>> {
 
+    protected Button addFieldButton;
+
     public MultipleTextField() {
         super();
         setOrientation(Style.Orientation.VERTICAL);
@@ -28,14 +30,16 @@ public class MultipleTextField<T> extends MultiField<List<T>> {
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
-        Button add = new Button(Messages.get("label.add"));
-        lc.add(add);
-        add.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        addFieldButton = new Button(Messages.get("label.add"));
+        addFieldButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 addField(null);
             }
         });
+        if (!readOnly) {
+            lc.add(addFieldButton);
+        }
 
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override
@@ -65,6 +69,7 @@ public class MultipleTextField<T> extends MultiField<List<T>> {
         if (value != null) {
             field.setValue(value);
         }
+        field.setReadOnly(readOnly);
         fields.add(field);
 
         if (afterRender) {
@@ -110,6 +115,29 @@ public class MultipleTextField<T> extends MultiField<List<T>> {
         //
     }
 
+    @Override
+    public void setReadOnly(boolean readOnly) {
+        boolean reRender = false;
+        if (rendered) {
+            if (this.readOnly && !readOnly) {
+                lc.add(addFieldButton);
+                reRender = true;
+            }
+            if (!this.readOnly && readOnly) {
+                lc.remove(addFieldButton);
+                reRender = true;
+            }
+            reRender |= !fields.isEmpty();
+        }
+        this.readOnly = readOnly;
+        for (Field<?> field : fields) {
+            field.setReadOnly(readOnly);
+        }
+        if (reRender) {
+            lc.layout();
+        }
+    }
+
     class ItemField extends TriggerField<T> {
 
         ItemField() {
@@ -121,6 +149,12 @@ public class MultipleTextField<T> extends MultiField<List<T>> {
         protected void onTriggerClick(ComponentEvent ce) {
             fields.remove(this);
             removeFromParent();
+        }
+
+        @Override
+        public void setReadOnly(boolean readOnly) {
+            super.setReadOnly(readOnly);
+            setHideTrigger(readOnly);
         }
     }
 

@@ -272,7 +272,9 @@ public class LangPropertiesEditor extends LayoutContainer {
                                     List<GWTJahiaItemDefinition> defs = new ArrayList<GWTJahiaItemDefinition>();
                                     for (GWTJahiaNodeProperty prop : sourcePropertiesEditor.getProperties()) {
                                         GWTJahiaItemDefinition def = sourcePropertiesEditor.getGWTJahiaItemDefinition(prop);
-                                        if (def.isInternationalized() && ((GWTJahiaPropertyDefinition)def).getRequiredType() == GWTJahiaNodePropertyType.STRING) {
+                                        if (((GWTJahiaPropertyDefinition)def).getRequiredType() == GWTJahiaNodePropertyType.STRING
+                                                && def.isInternationalized() && !def.isHidden() && !def.isProtected()
+                                                && !((GWTJahiaPropertyDefinition) def).isConstrained()) {
                                             props.add(prop);
                                             defs.add(def);
                                         }

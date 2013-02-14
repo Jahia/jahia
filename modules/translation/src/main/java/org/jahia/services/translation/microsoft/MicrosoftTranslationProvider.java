@@ -44,30 +44,43 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.notification.HttpClientService;
 import org.jahia.services.translation.AbstractTranslationProvider;
+import org.jahia.services.translation.TranslationException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 import javax.jcr.RepositoryException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+/**
+ * Translation provider for Microsoft Translator.
+ * See {@link org.jahia.services.translation.TranslationService}.
+ */
 public class MicrosoftTranslationProvider extends AbstractTranslationProvider {
 
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(MicrosoftTranslationProvider.class);
 
     private HttpClientService httpClientService;
+    private String accessTokenUrl;
+    private String translateUrl;
+    private String translateArrayUrl;
 
     private Map<String, MicrosoftTranslatorAccess> accesses = new HashMap<String, MicrosoftTranslatorAccess>();
 
-    private String authenticate(JCRSiteNode site) {
+    private String authenticate(JCRSiteNode site) throws TranslationException {
         String clientId = null;
         String clientSecret = null;
         try {
@@ -76,13 +89,12 @@ public class MicrosoftTranslationProvider extends AbstractTranslationProvider {
                 clientSecret = site.getPropertyAsString("j:microsoftClientSecret");
             }
         } catch (RepositoryException e) {
-            logger.error("Failed to get Microsoft Translator credentials", e);
-            return null;
+            throw new TranslationException("Failed to get Microsoft Translator credentials", e);
         }
         String key = clientId + clientSecret;
         String accessToken;
         if (!accesses.containsKey(key) || accesses.get(key).getExpiration() < System.currentTimeMillis()) {
-            PostMethod method = new PostMethod("https://datamarket.accesscontrol.windows.net/v2/OAuth2-13");
+            PostMethod method = new PostMethod(accessTokenUrl);
             method.addParameter("grant_type", "client_credentials");
             method.addParameter("client_id", clientId);
             method.addParameter("client_secret", clientSecret);
@@ -94,20 +106,18 @@ public class MicrosoftTranslationProvider extends AbstractTranslationProvider {
                 returnCode = httpClientService.getHttpClient().executeMethod(method);
                 bodyAsString = method.getResponseBodyAsString();
             } catch (IOException e) {
-                logger.error("Failed to call token service", e);
-                return null;
+                throw new TranslationException("Failed to call Microsoft token service", e);
             }
             if (returnCode != HttpStatus.SC_OK) {
-                return null;
+                throw new TranslationException("Microsoft token service connection failed with status code " + returnCode);
             }
             try {
                 JSONObject jsonObject = new JSONObject(bodyAsString);
                 accessToken = jsonObject.getString("access_token");
                 accesses.put(key, new MicrosoftTranslatorAccess(accessToken,
-                        callTime + jsonObject.getLong("expires_in") * 1000));
+                        callTime + (jsonObject.getLong("expires_in") - 1) * 1000)); // substract 1 second to expiration time for execution time
             } catch (JSONException e) {
-                logger.error("Failed to parse access token", e);
-                return null;
+                throw new TranslationException("Failed to parse Microsoft Translator access token", e);
             }
         } else {
             accessToken = accesses.get(key).getToken();
@@ -115,33 +125,118 @@ public class MicrosoftTranslationProvider extends AbstractTranslationProvider {
         return accessToken;
     }
 
-    public String translate(String text, String srcLanguage, String destLanguage, boolean isHtml, JCRSiteNode site) {
-        String translatedText = text;
+    /**
+     * Calls the Microsoft Translator Translate GET method to translate a single text.
+     *
+     * @param text a text to translate
+     * @param srcLanguage the source language code
+     * @param destLanguage the destination language code
+     * @param isHtml is the text html or plain text
+     * @param site the site
+     * @return the translated text
+     * @throws TranslationException
+     */
+    public String translate(String text, String srcLanguage, String destLanguage, boolean isHtml, JCRSiteNode site) throws TranslationException {
         String accessToken = authenticate(site);
-        if (accessToken != null) {
-            GetMethod method = new GetMethod("http://api.microsofttranslator.com/v2/Http.svc/Translate");
-            method.setRequestHeader("Authorization", "Bearer " + accessToken);
-            method.setQueryString(new NameValuePair[]{
-                    new NameValuePair("text", text),
-                    new NameValuePair("from", srcLanguage),
-                    new NameValuePair("to", destLanguage),
-                    new NameValuePair("contentType", isHtml ? "text/html" : "text/plain")
-            });
-            try {
-                int returnCode = httpClientService.getHttpClient().executeMethod(method);
-                if (returnCode == HttpStatus.SC_OK) {
-                    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                    DocumentBuilder builder = factory.newDocumentBuilder();
-                    Document document = builder.parse(method.getResponseBodyAsStream());
-                    translatedText = document.getElementsByTagName("string").item(0).getTextContent();
-                }
-            } catch (Exception e) {
-                logger.error("Failed to get translation", e);
-            }
+        if (accessToken == null) {
+            throw new TranslationException("Failed to authenticate to Microsoft Translator");
+        }
+        GetMethod method = new GetMethod(translateUrl);
+        method.setRequestHeader("Authorization", "Bearer " + accessToken);
+        method.setQueryString(new NameValuePair[]{
+                new NameValuePair("text", text),
+                new NameValuePair("from", srcLanguage),
+                new NameValuePair("to", destLanguage),
+                new NameValuePair("contentType", isHtml ? "text/html" : "text/plain")
+        });
+        int returnCode;
+        try {
+            returnCode = httpClientService.getHttpClient().executeMethod(method);
+        } catch (Exception e) {
+            throw new TranslationException("Failed to call Microsoft Translator", e);
+        }
+        if (returnCode != HttpStatus.SC_OK) {
+            throw new TranslationException("Microsoft Translator connection failed with status code " + returnCode);
+        }
+        String translatedText;
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(method.getResponseBodyAsStream());
+            translatedText = document.getElementsByTagName("string").item(0).getTextContent();
+        } catch (Exception e) {
+            throw new TranslationException("Failed to parse Microsoft Translator response", e);
         }
         return translatedText;
     }
 
+    /**
+     * Calls the Microsoft Translator TranslateArray POST method to translate several texts at one.
+     *
+     * @param texts a list of texts to translate
+     * @param srcLanguage the source language code
+     * @param destLanguage the destination language code
+     * @param isHtml are the texts html or plain texts
+     * @param site the site
+     * @return the translated texts
+     * @throws TranslationException
+     */
+    public List<String> translate(List<String> texts, String srcLanguage, String destLanguage, boolean isHtml, JCRSiteNode site) throws TranslationException {
+        String accessToken = authenticate(site);
+        if (accessToken == null) {
+            throw new TranslationException("Failed to authenticate to Microsoft Translator");
+        }
+        PostMethod method = new PostMethod(translateArrayUrl);
+        method.setRequestHeader("Authorization", "Bearer " + accessToken);
+        String body = "<TranslateArrayRequest>" +
+                "<AppId />" +
+                "<From>" + srcLanguage + "</From>" +
+                "<Options>" +
+                "<Category xmlns=\"http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2\" />" +
+                "<ContentType xmlns=\"http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2\">" + (isHtml ? "text/html" : "text/plain") + "</ContentType>" +
+                "<ReservedFlags xmlns=\"http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2\" />" +
+                "<State xmlns=\"http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2\" />" +
+                "<Uri xmlns=\"http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2\" />" +
+                "<User xmlns=\"http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2\" />" +
+                "</Options>" +
+                "<Texts>";
+        for (String text : texts) {
+            body += "<string xmlns=\"http://schemas.microsoft.com/2003/10/Serialization/Arrays\">" + (isHtml ? StringEscapeUtils.escapeHtml(text) : text) + "</string>";
+        }
+        body += "</Texts>" +
+                "<To>" + destLanguage + "</To>" +
+                "</TranslateArrayRequest>";
+        int returnCode;
+        try {
+            method.setRequestEntity(new StringRequestEntity(body, "text/xml", "UTF-8"));
+            returnCode = httpClientService.getHttpClient().executeMethod(method);
+        } catch (Exception e) {
+            throw new TranslationException("Failed to call Microsoft Translator", e);
+        }
+        if (returnCode != HttpStatus.SC_OK) {
+            throw new TranslationException("Microsoft Translator connection failed with status code " + returnCode);
+        }
+        List<String> translatedTexts = new ArrayList<String>();
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(method.getResponseBodyAsStream());
+            NodeList nodes = document.getElementsByTagName("TranslatedText");
+            for (int i = 0; i < nodes.getLength(); i++) {
+                translatedTexts.add(nodes.item(i).getTextContent());
+            }
+        } catch (Exception e) {
+            throw new TranslationException("Failed to parse Microsoft Translator response", e);
+        }
+        return translatedTexts;
+    }
+
+    /**
+     * Checks if Microsoft Translator is enabled for a given site.
+     *
+     * @param site a site
+     * @return a boolean
+     */
     public boolean isEnabled(JCRSiteNode site) {
         try {
             return site.isNodeType("jmix:microsoftTranslatorSettings") && site.hasProperty("j:microsoftTranslationActivated") && site.getProperty("j:microsoftTranslationActivated").getBoolean();
@@ -153,6 +248,18 @@ public class MicrosoftTranslationProvider extends AbstractTranslationProvider {
 
     public void setHttpClientService(HttpClientService httpClientService) {
         this.httpClientService = httpClientService;
+    }
+
+    public void setAccessTokenUrl(String accessTokenUrl) {
+        this.accessTokenUrl = accessTokenUrl;
+    }
+
+    public void setTranslateUrl(String translateUrl) {
+        this.translateUrl = translateUrl;
+    }
+
+    public void setTranslateArrayUrl(String translateArrayUrl) {
+        this.translateArrayUrl = translateArrayUrl;
     }
 
     private class MicrosoftTranslatorAccess {

@@ -23,7 +23,11 @@
     <c:set var="value" value="${functions:default(paramValues['src_languages.values'], not empty value ? fn:split(value, ',') : null)}"/>
     <c:set var="selectedValues" value=",${not empty value ? fn:join(value, ',') : renderContext.mainResource.locale},"/>
     <c:if test="${empty valueOptions}">
-        <c:set var="valueOptions" value="${fn:join(renderContext.site.activeLiveLanguages, ',')}"/>
+        <c:set var="valueOptions" value=""/>
+        <c:forEach items="${renderContext.site.activeLiveLanguages}" var="lang" varStatus="s">
+            <c:if test="${s.count > 1 && !s.last}"><c:set var="valuesOptions" value="${valuesOptions},"/></c:if>
+            <c:set var="valuesOptions" value="${valuesOptions}${lang}"/>
+        </c:forEach>
     </c:if>
     <c:set var="allowAll" value="${not empty allowAll ? allowAll : false}"/>
     <c:set target="${attributes}" property="name" value="src_languages.values"/>

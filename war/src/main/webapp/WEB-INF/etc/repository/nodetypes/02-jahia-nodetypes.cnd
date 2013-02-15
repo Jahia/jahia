@@ -385,7 +385,11 @@
  - j:templateNode (weakreference,choicelist[templatesNode]) hidden < jnt:template
  - j:templateName (string,choicelist[templatesNode]) mandatory
 
+<<<<<<< .working
 [jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:requiredPermissions, jmix:renderable, jmix:observable, jmix:hasIcon, mix:title
+=======
+[jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:requiredPermissions, jmix:renderable, jmix:observable, mix:title
+>>>>>>> .merge-right.r44791
  - j:hiddenTemplate (boolean)
  - j:moduleTemplate (string) hidden nofulltext
  - j:sourceTemplate (weakreference) hidden nofulltext

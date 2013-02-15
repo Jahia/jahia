@@ -297,27 +297,13 @@ public class TemplatePackageRegistry {
     }
     
     /**
-     * Returns the template package that corresponds to the provided OSGi bundle or <code>null</code> if the
-     * package is not registered.
-     *
-     * @param osgiBundle the corresponding OSGi bundle
-     * @return the template package that corresponds to the provided OSGi bundle or <code>null</code> if the
-     * package is not registered
+     * Returns the template package that corresponds to the provided OSGi bundle or <code>null</code> if the package is not registered.
+     * 
+     * @param osgiBundle
+     *            the corresponding OSGi bundle
+     * @return the template package that corresponds to the provided OSGi bundle or <code>null</code> if the package is not registered
      */
     public JahiaTemplatesPackage lookupByBundle(Bundle osgiBundle) {
-        return lookupByBundle(osgiBundle, true);
-    }
-
-    /**
-     * Returns the template package that corresponds to the provided OSGi bundle or <code>null</code> if the
-     * package is not registered.
-     *
-     * @param osgiBundle the corresponding OSGi bundle
-     * @param warnIfNotFound log a warning if the module is not found
-     * @return the template package that corresponds to the provided OSGi bundle or <code>null</code> if the
-     * package is not registered
-     */
-    public JahiaTemplatesPackage lookupByBundle(Bundle osgiBundle, boolean warnIfNotFound) {
         if (registry == null) {
             return null;
         }
@@ -330,13 +316,7 @@ public class TemplatePackageRegistry {
         String version = StringUtils.defaultIfEmpty((String) osgiBundle.getHeaders().get("Implementation-Version"),
                 osgiBundle.getVersion().toString());
 
-        JahiaTemplatesPackage pkg = lookupByFileNameAndVersion(module, new ModuleVersion(version));
-        if (pkg == null) {
-            logger.warn("Unable to find module for name {} and version {}" + " which corresponds to the bundle {}.",
-                    new String[] { module, version, osgiBundle.getSymbolicName() });
-        }
-        
-        return pkg;
+        return lookupByFileNameAndVersion(module, new ModuleVersion(version));
     }
 
     /**
@@ -443,12 +423,12 @@ public class TemplatePackageRegistry {
             try {
                 Object dataSource = SpringContextSingleton.getBean("ModulesDataSourcePrototype");
                 Map<String,Object> properties = new LinkedHashMap<String,Object>();
-                File oldStructure = new File(templatePackage.getSourcesFolder(), "src/main/webapp");
-                if (oldStructure.exists()) {
+            File oldStructure = new File(templatePackage.getSourcesFolder(), "src/main/webapp");
+            if (oldStructure.exists()) {
                     properties.put("root",templatePackage.getSourcesFolder().toURI().toString()+"src/main/webapp");
-                } else {
+            } else {
                     properties.put("root",templatePackage.getSourcesFolder().toURI().toString()+"src/main/resources");
-                }
+            }
                 properties.put("module",templatePackage);
 
                 BeanUtils.populate(dataSource, properties);
@@ -463,11 +443,11 @@ public class TemplatePackageRegistry {
 
                 ex.start();
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             } catch (InvocationTargetException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             } catch (JahiaInitializationException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
     }

@@ -1,4 +1,4 @@
-package org.jahia.osgi.http.bridge;
+package org.jahia.osgi;
 
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.FelixConstants;

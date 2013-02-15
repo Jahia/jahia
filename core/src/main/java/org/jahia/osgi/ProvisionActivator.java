@@ -1,4 +1,4 @@
-package org.jahia.osgi.http.bridge;
+package org.jahia.osgi;
 
 import org.jahia.services.SpringContextSingleton;
 import org.osgi.framework.Bundle;

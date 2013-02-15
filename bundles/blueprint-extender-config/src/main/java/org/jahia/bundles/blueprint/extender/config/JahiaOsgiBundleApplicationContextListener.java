@@ -39,21 +39,16 @@
  */
 package org.jahia.bundles.blueprint.extender.config;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.gemini.blueprint.context.event.OsgiBundleApplicationContextEvent;
 import org.eclipse.gemini.blueprint.context.event.OsgiBundleApplicationContextListener;
 import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextClosedEvent;
 import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextFailedEvent;
 import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextRefreshedEvent;
 import org.eclipse.gemini.blueprint.util.OsgiStringUtils;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.osgi.BundleUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.config.SingletonBeanRegistry;
-import org.springframework.context.support.AbstractApplicationContext;
 
 /**
  * Listener for OSGi bundle application context life cycle events. Performs logging of events. Stops the corresponding bundle if the context
@@ -106,51 +101,6 @@ public class JahiaOsgiBundleApplicationContextListener implements
             } catch (BundleException e) {
                 logger.error("Unable to stop bundle " + bundleDisplayName + " due to: " + e.getMessage(), e);
             }
-        }
-
-        if (JahiaOsgiBeanFactoryPostProcessor.PERFORM_CROSS_CONTEXT_BEAN_IMPORT && event instanceof OsgiBundleContextRefreshedEvent && BundleUtils.isJahiaBundle(bundle)) {
-            long timer = System.currentTimeMillis();
-            logger.info("Checking if any Spring beans can be exported as OSGi services by the bundle {}",
-                    bundleDisplayName);
-
-            int exported = JahiaOsgiBeanFactoryPostProcessor.exportServices(bundle, event.getApplicationContext());
-
-            logger.info("Finished checking Spring beans for bundle {} in {} ms.{}", new Object[] { bundleDisplayName,
-                    (System.currentTimeMillis() - timer),
-                    exported > 0 ? " Exported " + exported + " beans as services." : "" });
-
-            if (exported > 0 && BundleUtils.isJahiaModuleBundle(bundle)) {
-                timer = System.currentTimeMillis();
-                logger.info("Checking for dependent modules of the bundle {}", bundleDisplayName);
-
-                performImportInDependentModules(bundle);
-
-                logger.info("Done importing beans into dependent module contexts in {} ms",
-                        (System.currentTimeMillis() - timer));
-            }
-        }
-    }
-
-    private void performImportInDependentModules(Bundle bundle) {
-        JahiaTemplatesPackage thisModule = BundleUtils.getModuleForBundle(bundle);
-        for (Bundle otherBundle : bundle.getBundleContext().getBundles()) {
-            if (!BundleUtils.isJahiaModuleBundle(otherBundle)
-                    || StringUtils.isEmpty((String) otherBundle.getHeaders().get("Import-Package"))) {
-                continue;
-            }
-            JahiaTemplatesPackage otherModule = BundleUtils.getModuleForBundle(otherBundle);
-            AbstractApplicationContext otherContext = otherModule.getContext();
-            if (otherContext == null
-                    || !(otherContext instanceof SingletonBeanRegistry)
-                    || otherModule.getDepends().isEmpty()
-                    || (!otherModule.getDepends().contains(thisModule.getRootFolder()) && !otherModule.getDepends()
-                            .contains(thisModule.getName()))) {
-                continue;
-            }
-            logger.info("Found dependent module {}. Importing beans.",
-                    OsgiStringUtils.nullSafeNameAndSymName(otherBundle));
-            JahiaOsgiBeanFactoryPostProcessor.importServices(otherBundle.getBundleContext(),
-                    (SingletonBeanRegistry) otherModule.getContext());
         }
     }
 

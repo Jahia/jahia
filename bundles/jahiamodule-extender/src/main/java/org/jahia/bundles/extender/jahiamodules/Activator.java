@@ -4,8 +4,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.ArtifactTransformer;
 import org.apache.felix.service.command.CommandProcessor;
-import org.apache.felix.utils.manifest.Clause;
-import org.apache.felix.utils.manifest.Parser;
 import org.jahia.bundles.extender.jahiamodules.render.BundleDispatcherServlet;
 import org.jahia.bundles.extender.jahiamodules.render.BundleJSR223ScriptFactory;
 import org.jahia.bundles.extender.jahiamodules.render.BundleRequestDispatcherScriptFactory;
@@ -32,19 +30,10 @@ import org.osgi.service.http.NamespaceException;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.XmlWebApplicationContext;
-
 import javax.jcr.RepositoryException;
 import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -294,16 +283,17 @@ public class Activator implements BundleActivator {
         long startTime = System.currentTimeMillis();
 
         final JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle);
-
-        try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
-                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    templatePackageDeployer.clearModuleNodes(jahiaTemplatesPackage, session);
-                    return null;
-                }
-            });
-        } catch (RepositoryException e) {
-            logger.error("Error while initializing module content for module " + jahiaTemplatesPackage, e);
+        if (jahiaTemplatesPackage != null) {
+            try {
+                JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
+                    public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        templatePackageDeployer.clearModuleNodes(jahiaTemplatesPackage, session);
+                        return null;
+                    }
+                });
+            } catch (RepositoryException e) {
+                logger.error("Error while initializing module content for module " + jahiaTemplatesPackage, e);
+            }
         }
         installedBundles.remove(bundle);
         long totalTime = System.currentTimeMillis() - startTime;
@@ -311,7 +301,8 @@ public class Activator implements BundleActivator {
     }
 
     private void parseBundle(Bundle bundle) {
-        final JahiaTemplatesPackage pkg = JahiaBundleTemplatesPackageHandler.build(bundle);
+        final JahiaTemplatesPackage pkg = BundleUtils.isJahiaModuleBundle(bundle) ? BundleUtils.getModule(bundle)
+                : null;
         
         if (null == pkg) {
             // is not a Jahia module -> skip
@@ -410,7 +401,7 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void start(Bundle bundle) {
-        JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle, false);
+        JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle);
         if (jahiaTemplatesPackage == null) {
             for (Map.Entry<String, List<Bundle>> entry : toBeParsed.entrySet()) {
                 if (entry.getValue().contains(bundle)) {
@@ -450,21 +441,7 @@ public class Activator implements BundleActivator {
 
         templatePackageRegistry.register(jahiaTemplatesPackage);
         
-//        ApplicationContext ctx = getApplicationContext(bundle);
-//
-//        ClassLoader cl = ctx != null ?  ctx.getClassLoader() : BundleDelegatingClassLoader.createBundleClassLoaderFor(bundle, SpringContextSingleton.getInstance().getContext().getClassLoader()); 
-//        jahiaTemplatesPackage.setClassLoader(cl);
-//        
-//        if (ctx != null) {
-//            jahiaTemplatesPackage.setContext((AbstractApplicationContext) ctx);
-//            logger.info("Setting application context and classloader for module {}",
-//                    jahiaTemplatesPackage.getRootFolder());
-//        }
-
         jahiaTemplatesPackage.setActiveVersion(true);
-
-        // initialize spring context
-        createBundleApplicationContext(jahiaTemplatesPackage, parentWebApplicationContext.getServletContext());
 
         // scan for resource and call observers
         for (BundleURLScanner bundleURLScanner : extensionObservers.keySet()) {
@@ -481,21 +458,6 @@ public class Activator implements BundleActivator {
 
         startDependantBundles(jahiaTemplatesPackage.getRootFolder());
         startDependantBundles(jahiaTemplatesPackage.getName());
-    }
-
-    private ApplicationContext getApplicationContext(Bundle bundle) {
-        try {
-            ServiceReference[] refs = bundle.getBundleContext().getServiceReferences(
-                    ApplicationContext.class.getName(),
-                    "(org.eclipse.gemini.blueprint.context.service.name=" + bundle.getSymbolicName() + ")");
-            if (refs != null && refs.length > 0) {
-                return (ApplicationContext) bundle.getBundleContext().getService(refs[0]);
-            }
-        } catch (InvalidSyntaxException e) {
-            logger.error(e.getMessage(), e);
-        }
-
-        return null;
     }
 
     private String getDisplayName(Bundle bundle) {
@@ -527,7 +489,7 @@ public class Activator implements BundleActivator {
         logger.info("--- Stopping Jahia OSGi bundle {} --", getDisplayName(bundle));
         long startTime = System.currentTimeMillis();
 
-        JahiaTemplatesPackage JahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle, false);
+        JahiaTemplatesPackage JahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle);
         if (JahiaTemplatesPackage == null) {
             return;
         }
@@ -560,6 +522,8 @@ public class Activator implements BundleActivator {
     }
 
     private void registerStaticResources(final Bundle bundle) {
+        final String displayName = getDisplayName(bundle);
+        
         final Hashtable<String, String> staticResources = new Hashtable<String, String>();
         String staticResourcesStr = (String) bundle.getHeaders().get(STATIC_RESOURCES_HEADERNAME);
         if (staticResourcesStr != null) {
@@ -595,7 +559,7 @@ public class Activator implements BundleActivator {
                         logger.error(e.getMessage(), e);
                     }
                 }
-                logger.info("Registered {} static resources for bundle {}", count, getDisplayName(bundle));
+                logger.info("Registered {} static resources for bundle {}", count, displayName);
                 jspBundleObserver.setBundleHttpService(bundle, httpService);
                 return httpService;
             }
@@ -609,7 +573,7 @@ public class Activator implements BundleActivator {
                     count++;
                     httpService.unregister(curEntry.getKey());
                 }
-                logger.info("Unregistered {} static resources for bundle {}", count, getDisplayName(bundle));
+                logger.info("Unregistered {} static resources for bundle {}", count, displayName);
                 jspBundleObserver.setBundleHttpService(bundle, null);
                 super.removedService(reference, service);
             }
@@ -653,141 +617,6 @@ public class Activator implements BundleActivator {
     private void removeResources(Bundle bundle, List<URL> foundURLs, BundleObserver<URL> urlObserver) {
         bundleResources.remove(bundle);
         urlObserver.removingEntries(bundle, foundURLs);
-    }
-
-    public void createBundleApplicationContext(final JahiaTemplatesPackage aPackage, ServletContext servletContext) throws BeansException {
-//        final Bundle bundle = aPackage.getBundle();
-//        Resource springFolder = aPackage.getResource("/META-INF/spring1/");
-//        if (springFolder != null && springFolder.exists()) {
-//            logger.debug("Start initializing context for module {}", aPackage.getName());
-//            long startTime = System.currentTimeMillis();
-//
-//            String configLocation = "classpath:org/jahia/defaults/config/spring/modules-applicationcontext-registry.xml";
-//            @SuppressWarnings("unchecked")
-//            Enumeration<URL> springFilesURLs = bundle.findEntries("META-INF/spring", "*.xml", true);
-//            if (springFilesURLs == null) {
-//                logger.info("Empty /META-INF/spring/ directory, will not initialize any beans");
-//                return;
-//            }
-//            while (springFilesURLs.hasMoreElements()) {
-//                configLocation += ",classpath:" + springFilesURLs.nextElement().getPath();
-//            }
-//            logger.info("Loading bean definitions from configLocation={}", configLocation);
-//            OsgiBundleXmlWebApplicationContext bundleApplicationContext = new OsgiBundleXmlWebApplicationContext();
-//            bundleApplicationContext.setParent(SpringContextSingleton.getInstance().getContext());
-//            bundleApplicationContext.setClassLoader(aPackage.getClassLoader());
-//            bundleApplicationContext.setServletContext(servletContext);
-//            bundleApplicationContext.setBundleContext(bundle.getBundleContext());
-//            servletContext.setAttribute(XmlWebApplicationContext.class.getName() + ".jahiaModule." + aPackage.getRootFolder(), bundleApplicationContext);
-//            bundleApplicationContext.setConfigLocation(configLocation);
-//            aPackage.setContext(bundleApplicationContext);
-//            // @todo we need to add beans from other modules here, using a service filter to retrieve them.
-//
-//            bundleApplicationContext.addBeanFactoryPostProcessor(new BeanDefinitionRegistryPostProcessor() {
-//                @Override
-//                public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-//                }
-//
-//                @Override
-//                public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-//                    beanFactory.addBeanPostProcessor(new JahiaModuleAwareProcessor(aPackage));
-//
-//                    String serviceFilter = "(jahiaModuleSpringBeanName=*)";
-//                    try {
-//                        ServiceReference[] otherModuleServiceReferences = bundle.getBundleContext().getAllServiceReferences(null, serviceFilter);
-//                        if (otherModuleServiceReferences != null) {
-//                            for (ServiceReference otherModuleServiceReference : otherModuleServiceReferences) {
-//                                Object service = bundle.getBundleContext().getService(otherModuleServiceReference);
-//                                if (classNameImportable(service.getClass().getName(), bundle)) {
-//                                    beanFactory.registerSingleton(otherModuleServiceReference.getProperty("jahiaModuleSpringBeanName").toString(), service);
-//                                }
-//                            }
-//                        }
-//                    } catch (InvalidSyntaxException e) {
-//                        logger.error("Invalid filter syntax :" + serviceFilter + ", will not register other module spring beans", e);
-//                    }
-//                }
-//            });
-//
-//            bundleApplicationContext.refresh();
-//            if (templatePackageRegistry.isAfterInitializeDone()) {
-//                templatePackageRegistry.afterInitializationForModule(aPackage);
-//            }
-//            // now we will add the beans to the OSGi service registry by using the bean name as a service property so
-//            // so that we may filter queries when adding them.
-//
-//            String[] beanNames = bundleApplicationContext.getBeanNamesForType(null, false, false);
-//            for (String beanName : beanNames) {
-//                try {
-//                    Object bean = bundleApplicationContext.getBean(beanName);
-//                    List<String> classNames = new ArrayList<String>();
-//                    if (classNameExportable(bean.getClass().getName(), bundle)) {
-//                        classNames.add(bean.getClass().getName());
-//                        for (Class<?> classInterface : bean.getClass().getInterfaces()) {
-//                            if (classNameExportable(classInterface.getName(), bundle)) {
-//                                classNames.add(classInterface.getName());
-//                            }
-//                        }
-//                        Hashtable<String, String> serviceProperties = new Hashtable<String, String>(1);
-//                        serviceProperties.put("jahiaModuleSpringBeanName", beanName);
-//                        serviceRegistrations.add(bundle.getBundleContext().registerService(classNames.toArray(new String[classNames.size()]), bean, serviceProperties));
-//                        logger.debug("Registered bean {} as OSGi service under names: {}", beanName, classNames);
-//                    }
-//                } catch (Throwable t) {
-//                    logger.warn("Couldn't register bean " + beanName + " since it couldn't be retrieved: " + t.getMessage());
-//                }
-//            }
-//
-//
-//            logger.info(
-//                    "'{}' [{}] context initialized in {} ms, registered {} beans",
-//                    new Object[]{aPackage.getName(), aPackage.getRootFolder(),
-//                            System.currentTimeMillis() - startTime, bundleApplicationContext.getBeanNamesForType(null).length});
-//        }
-    }
-
-    private boolean classNameExportable(String classOrInterfaceName, Bundle bundle) {
-        if (isSystemClassName(classOrInterfaceName)) return false;
-        String classPackageName = classOrInterfaceName.substring(0, classOrInterfaceName.lastIndexOf('.'));
-        String exportPackageHeader = (String) bundle.getHeaders().get("Export-Package");
-        if (exportPackageHeader != null) {
-            Clause[] headerClauses = Parser.parseHeader(exportPackageHeader);
-            for (Clause clause : headerClauses) {
-                String exportedPackageName = clause.getName();
-                if (classPackageName.equals(exportedPackageName)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean classNameImportable(String classOrInterfaceName, Bundle bundle) {
-        if (isSystemClassName(classOrInterfaceName)) return false;
-        String classPackageName = classOrInterfaceName.substring(0, classOrInterfaceName.lastIndexOf('.'));
-        String importPackageHeader = (String) bundle.getHeaders().get("Import-Package");
-        if (importPackageHeader != null) {
-            Clause[] headerClauses = Parser.parseHeader(importPackageHeader);
-            for (Clause clause : headerClauses) {
-                String importedPackageName = clause.getName();
-                if (classPackageName.equals(importedPackageName)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean isSystemClassName(String classOrInterfaceName) {
-        if (classOrInterfaceName.startsWith("java.")) {
-            // we ignore all Java classes for the moment.
-            return true;
-        }
-        if (classOrInterfaceName.startsWith("org.apache.felix.framework.")) {
-            // we ignore all Felix framework classes for the moment.
-            return true;
-        }
-        return false;
     }
 
     public Map<Bundle, JahiaTemplatesPackage> getRegisteredBundles() {

@@ -1,4 +1,4 @@
-package org.jahia.osgi.http.bridge;
+package org.jahia.osgi;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;

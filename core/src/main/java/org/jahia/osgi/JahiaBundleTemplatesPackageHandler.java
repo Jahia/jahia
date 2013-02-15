@@ -37,20 +37,19 @@
  * If you are unsure which license is appropriate for your use,
  * please contact the sales department at sales@jahia.com.
  */
-package org.jahia.bundles.extender.jahiamodules;
+package org.jahia.osgi;
 
 import java.io.File;
 import java.util.Enumeration;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.osgi.BundleUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.ModuleVersion;
 import org.osgi.framework.Bundle;
 
 /**
- * Utility class for creating {@link JahiaBundleTemplatesPackage} from a provided bundle and populating data from the manifest headers.
+ * Utility class for creating {@link JahiaTemplatesPackage} from a provided bundle and populating data from the manifest headers.
  * 
  * @author Sergiy Shyrkov
  */
@@ -105,7 +104,7 @@ class JahiaBundleTemplatesPackageHandler {
 
         pkg.setProvider(StringUtils.defaultString(getHeader(bundle, "Implementation-Vendor"),
                 "Jahia Solutions Group SA"));
-        
+
         pkg.setClassLoader(BundleUtils.createBundleClassLoader(bundle));
 
         return pkg;

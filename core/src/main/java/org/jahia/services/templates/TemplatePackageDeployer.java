@@ -60,7 +60,7 @@ import javax.jcr.Value;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.osgi.http.bridge.ProvisionActivator;
+import org.jahia.osgi.ProvisionActivator;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRObservationManager;

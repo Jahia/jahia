@@ -41,7 +41,7 @@
 package org.jahia.tools.precompile;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.osgi.http.bridge.FrameworkService;
+import org.jahia.osgi.FrameworkService;
 import org.osgi.framework.Bundle;
 import org.osgi.util.tracker.ServiceTracker;
 

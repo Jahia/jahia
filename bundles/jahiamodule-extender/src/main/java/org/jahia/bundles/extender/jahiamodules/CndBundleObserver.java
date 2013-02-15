@@ -5,7 +5,6 @@ import org.jahia.osgi.BundleResource;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ParseException;
-import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.TemplatePackageRegistry;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.osgi.framework.Bundle;

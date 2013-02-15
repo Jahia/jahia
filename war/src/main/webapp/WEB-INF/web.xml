@@ -256,7 +256,7 @@
     </listener>
 
     <listener>
-        <listener-class>org.jahia.osgi.http.bridge.StartupListener</listener-class>
+        <listener-class>org.jahia.osgi.StartupListener</listener-class>
     </listener>
 
     <servlet>

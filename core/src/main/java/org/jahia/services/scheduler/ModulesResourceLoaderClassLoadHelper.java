@@ -72,7 +72,7 @@ public class ModulesResourceLoaderClassLoadHelper extends ResourceLoaderClassLoa
             }
         } else if (result == true) {
             // this class comes from main class loader -> load it
-            super.loadClass(className);
+            return super.loadClass(className);
         }
 
         // lookup class in module class loaders

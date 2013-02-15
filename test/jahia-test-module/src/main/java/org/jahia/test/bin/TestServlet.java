@@ -128,7 +128,11 @@ public class TestServlet implements Controller, ServletContextAware {
                     JUnitCore junitcore = new JUnitCore();
                     SurefireJUnitXMLResultFormatter xmlResultFormatter = new SurefireJUnitXMLResultFormatter(httpServletResponse.getOutputStream());
                     junitcore.addListener(xmlResultFormatter);
-                    Class<?> testClass = Class.forName(className);
+                    JahiaTemplatesPackage testPackage = findPackageForTestCase(className);
+                    if (testPackage == null) {
+                        throw new Exception("Couldn't find origin module for test " + className);
+                    }
+                    Class<?> testClass = testPackage.getClassLoader().loadClass(className);
                     List<Class<?>> classes = getTestClasses(testClass, new ArrayList<Class<?>>());
                     if (classes.isEmpty()) {
                         Description description = Description.createSuiteDescription(testClass);
@@ -156,25 +160,17 @@ public class TestServlet implements Controller, ServletContextAware {
                 Pattern testNamePattern = StringUtils.isNotEmpty(pathInfo) ? Pattern
                         .compile(pathInfo.length() > 1 && pathInfo.startsWith("/") ? pathInfo
                                 .substring(1) : pathInfo) : null;
-                Map<String,TestBean> testBeans = new HashMap<String, TestBean>();
-                for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
-                    if (aPackage.getContext() != null) {
-                        testBeans.putAll(aPackage.getContext().getBeansOfType(TestBean.class));
-                    }
-                }
-                
+                Set<String> testCases = getAllTestCases();
+
 
                 PrintWriter pw = httpServletResponse.getWriter();
                 // Return the lists of available tests
                 List<String> tests = new LinkedList<String>();
-                SortedSet<TestBean> s = new TreeSet<TestBean>(testBeans.values());
-                for (TestBean testBean : s) {
-                    for (String o : testBean.getTestCases()) {
+                    for (String o : testCases) {
                         if (testNamePattern == null || testNamePattern.matcher(o).matches()) {
                             tests.add(o);
                         }
                     }
-                }
 
                 for (String c : tests) {
                     pw.println(c);
@@ -190,7 +186,40 @@ public class TestServlet implements Controller, ServletContextAware {
         }
 
     }
-    
+
+    private Set<String> getAllTestCases() {
+        Set<String> testCases = new TreeSet<String>();
+        for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
+            if (aPackage.getContext() != null) {
+                Map<String,TestBean> packageTestBeans = aPackage.getContext().getBeansOfType(TestBean.class);
+                if (packageTestBeans.size() > 0) {
+                    for (TestBean testBean : packageTestBeans.values()) {
+                        testCases.addAll(testBean.getTestCases());
+                    }
+                }
+            }
+        }
+        return testCases;
+    }
+
+    private JahiaTemplatesPackage findPackageForTestCase(String testCase) {
+        for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
+            if (aPackage.getContext() != null) {
+                Map<String,TestBean> packageTestBeans = aPackage.getContext().getBeansOfType(TestBean.class);
+                if (packageTestBeans.size() > 0) {
+                    for (TestBean testBean : packageTestBeans.values()) {
+                        for (String beanTestCase : testBean.getTestCases()) {
+                            if (beanTestCase.equals(testCase)) {
+                                return aPackage;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     private List<Class<?>> getTestClasses(Class<?> testClass, List<Class<?>> classes) {
         Method suiteMethod = null;
         try {

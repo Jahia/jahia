@@ -379,7 +379,7 @@
  itemtype = layout
  - j:templateNode (weakreference,choicelist[templatesNode]) mandatory < jnt:template
 
-[jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:requiredPermissions, jmix:renderable, jmix:observable
+[jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:requiredPermissions, jmix:renderable, jmix:observable, mix:title
  - j:hiddenTemplate (boolean)
  - j:moduleTemplate (string) hidden nofulltext
  - j:sourceTemplate (weakreference) hidden nofulltext

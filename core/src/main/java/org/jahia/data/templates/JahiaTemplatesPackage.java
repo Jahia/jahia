@@ -52,6 +52,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.jahia.bin.Jahia;
 import org.jahia.osgi.BundleResource;
+import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.SourceControlManagement;
 import org.jahia.settings.SettingsBean;
@@ -150,6 +151,8 @@ public class JahiaTemplatesPackage {
     private boolean isActiveVersion = false;
 
     private boolean isLastVersion = false;
+    
+    private boolean serviceInitialized;
 
     public JahiaTemplatesPackage(Bundle bundle) {
         this.bundle = bundle;
@@ -440,6 +443,8 @@ public class JahiaTemplatesPackage {
 
     public void setContext(AbstractApplicationContext context) {
         this.context = context;
+        // reset services state
+        serviceInitialized = false;
     }
 
     public boolean isActiveVersion() {
@@ -558,5 +563,25 @@ public class JahiaTemplatesPackage {
     
     public void setRootFolderPath(String rootFolderPath) {
         this.rootFolderPath = rootFolderPath;
+    }
+
+    /**
+     * Returns <code>true</code> if the Spring beans, implementing {@link JahiaAfterInitializationService}, were already initialized.
+     * 
+     * @return the serviceInitialized
+     */
+    public boolean isServiceInitialized() {
+        return serviceInitialized;
+    }
+
+    /**
+     * Set this to <code>true</code> to indicate that the Spring beans, implementing {@link JahiaAfterInitializationService}, were already
+     * initialized.
+     * 
+     * @param serviceInitialized
+     *            the state of the service initialization
+     */
+    public void setServiceInitialized(boolean serviceInitialized) {
+        this.serviceInitialized = serviceInitialized;
     }
 }

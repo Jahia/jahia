@@ -71,7 +71,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -116,7 +115,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Sergiy Shyrkov
  */
-public class JahiaTemplateManagerService extends JahiaService implements ApplicationEventPublisherAware, ApplicationListener<ApplicationEvent>, JahiaAfterInitializationService {
+public class JahiaTemplateManagerService extends JahiaService implements ApplicationEventPublisherAware, ApplicationListener<ApplicationEvent> {
 
     public static final String MODULE_TYPE_JAHIAPP = "jahiapp";
 
@@ -187,10 +186,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         templatePackageRegistry.reset();
 
         logger.info("... JahiaTemplateManagerService stopped successfully");
-    }
-
-    public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
-        templatePackageRegistry.afterInitializationForModules();
     }
 
     public void onApplicationEvent(final ApplicationEvent event) {

@@ -116,7 +116,6 @@ public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContex
                 JahiaTemplatesPackage module = BundleUtils.getModule(bundle);
                 if (module != null) {
                     ctx.setClassLoader(module.getClassLoader());
-                    module.setContext(ctx);
                 }
             } else {
                 ctx.setClassLoader(BundleUtils.createBundleClassLoader(bundle));

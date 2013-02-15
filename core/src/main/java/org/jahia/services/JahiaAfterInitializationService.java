@@ -43,11 +43,11 @@ package org.jahia.services;
 import org.jahia.exceptions.JahiaInitializationException;
 
 /**
+ * Spring beans, implementing this interface, will be notified after all Jahia services are started but before HTTP service becomes
+ * available, i.e. before server is able to serve HTTP requests.
  * 
- *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
- *        Created : 22 nov. 2010
  */
 public interface JahiaAfterInitializationService {
     void initAfterAllServicesAreStarted() throws JahiaInitializationException;

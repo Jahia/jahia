@@ -45,10 +45,15 @@ import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextClosedEvent;
 import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextFailedEvent;
 import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextRefreshedEvent;
 import org.eclipse.gemini.blueprint.util.OsgiStringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.osgi.BundleUtils;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.templates.TemplatePackageRegistry;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.AbstractApplicationContext;
 
 /**
  * Listener for OSGi bundle application context life cycle events. Performs logging of events. Stops the corresponding bundle if the context
@@ -100,6 +105,23 @@ public class JahiaOsgiBundleApplicationContextListener implements
                 logger.info("...bundle {} stopped", bundleDisplayName);
             } catch (BundleException e) {
                 logger.error("Unable to stop bundle " + bundleDisplayName + " due to: " + e.getMessage(), e);
+            }
+        }
+
+        if (event instanceof OsgiBundleContextRefreshedEvent && BundleUtils.isJahiaModuleBundle(bundle)) {
+            JahiaTemplatesPackage module = BundleUtils.getModule(bundle);
+            // set the context
+            module.setContext((AbstractApplicationContext) event.getApplicationContext());
+
+            TemplatePackageRegistry moduleRegistry = null;
+            // if module's Jahia late-initialization services were not initialized yet and the global initialization was already done
+            // (isAfterInitializeDone() == true) -> initialize services
+            if (module != null
+                    && !module.isServiceInitialized()
+                    && (moduleRegistry = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                            .getTemplatePackageRegistry()).isAfterInitializeDone()) {
+                // initializing services for module
+                moduleRegistry.afterInitializationForModule(module);
             }
         }
     }

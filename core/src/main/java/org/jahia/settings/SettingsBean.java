@@ -1006,6 +1006,12 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     }
 
     public void afterPropertiesSet() throws Exception {
+        // init build number
+        setBuildNumber(Jahia.getBuildNumber());
+        
+        // set maintenance mode state 
+        Jahia.setMaintenance(isMaintenanceMode());
+        
         if (licenseFileLocations != null) {
             for (String location : licenseFileLocations) {
                 String path = location.trim();

@@ -53,7 +53,6 @@ import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRVersionService;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
 import org.jahia.services.importexport.ImportExportBaseService;
-import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
@@ -61,16 +60,14 @@ import org.jahia.services.query.QueryService;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.search.SearchService;
 import org.jahia.services.sites.JahiaSitesBaseService;
-import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Collection;
-import java.util.Set;
 
 /**
  * The ServicesRegistry class that give a unique access point to Jahia Services.
@@ -83,52 +80,12 @@ import java.util.Set;
  */
 public class ServicesRegistry {
 
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(ServicesRegistry.class);
+    private transient static Logger logger = LoggerFactory.getLogger(ServicesRegistry.class);
     /**
-     * It's a Singleton *
+     * It's a Singleton
      */
     private static ServicesRegistry theObject = new ServicesRegistry();
 
-
-    /**
-     * Jahia Application Dispatching Service Name *
-     */
-    private static final String APPLICATIONS_DISPATCH_SERVICE =
-            "DispatchingService";
-
-    // Jahia Application Manager Service
-    private static final String APPLICATIONS_MANAGER_SERVICE =
-            "ApplicationsManagerService";
-
-    // Jahia User Manager Service
-    private static final String JAHIA_USER_MANAGER_SERVICE = "JahiaUserManagerService";
-    private static final String JAHIA_GROUP_MANAGER_SERVICE =
-            "JahiaGroupManagerService";
-
-    // Jahia FileWatcher Service
-    private static final String JAHIA_FILE_WATCHER_SERVICE = "JahiaFileWatcherService";
-
-    // Jahia Multi Sites Manager Service
-    private static final String JAHIA_SITES_SERVICE = "JahiaSitesService";
-
-    // Jahia Cache factory for every cache except the HTML one
-    private static final String JAHIA_CACHE_SERVICE = "JahiaCacheService";
-
-    private static final String MAIL_SERVICE = "MailService";
-
-    private static final String CATEGORY_SERVICE = "CategoryService";
-
-    private static final String SCHEDULER_SERVICE = "SchedulerService";
-
-    private static final String JCRSTORE_SERVICE = "JCRStoreService";
-
-    private static final String JCRPUBLICATION_SERVICE = "jcrPublicationService";
-
-    private static final String JCRVERSION_SERVICE = "jcrVersionService";
-
-    private static final String IMPORTEXPORT_SERVICE = "ImportExportService";
-
-    private static final String PREFERENCES_SERVICE = "JahiaPreferencesService";
 
     // This map is an optimization to avoid synchronization issues.
     private FastHashMap servicesCache;
@@ -150,24 +107,14 @@ public class ServicesRegistry {
     /**
      * Initialize the Services registry.
      *
-     * @param jSettings the Jahia settings
      * @throws JahiaException when a service could not be loaded and instantiated.
      */
-    public void init(SettingsBean jSettings)
-            throws JahiaException {
-        getServiceNames();
-    }
-
-    public void shutdown() throws JahiaException {
-    	// do nothing
+    public void init() throws JahiaException {
+        getServiceInstances();
     }
 
     public Collection<? extends JahiaService> getServiceInstances() {
         return SpringContextSingleton.getInstance().getContext().getBeansOfType(JahiaService.class).values();
-    }
-
-    public Set<String> getServiceNames() {
-        return SpringContextSingleton.getInstance().getContext().getBeansOfType(JahiaService.class).keySet();
     }
 
     // @author NK 21.12.2000
@@ -182,42 +129,42 @@ public class ServicesRegistry {
         if (jahiaService != null) {
             return jahiaService;
         }
-        ApplicationContext context = (ApplicationContext) SpringContextSingleton.getInstance().getContext();
+        ApplicationContext context = SpringContextSingleton.getInstance().getContext();
         if (context != null) {
-			jahiaService = (JahiaService) context.getBean(serviceName);
+            jahiaService = (JahiaService) context.getBean(serviceName);
             servicesCache.put(serviceName, jahiaService);
-		} else {
-            logger.warn("Application context is not (yet) available when trying to retrieve service " + serviceName + ", will return null !");
+        } else {
+            logger.warn("Application context is not (yet) available when trying to retrieve service " + serviceName
+                    + ", will return null !");
         }
         return jahiaService;
     } // end getService
 
-
     // @author NK 21.12.2000
     public DispatchingService getApplicationsDispatchService() {
         return (DispatchingService) getService(
-                APPLICATIONS_DISPATCH_SERVICE);
+                "DispatchingService");
     }
 
     /**
      * Return a reference on the DB User Manager service
      */
     public JahiaUserManagerService getJahiaUserManagerService() {
-        return (JahiaUserManagerService) getService(JAHIA_USER_MANAGER_SERVICE);
+        return (JahiaUserManagerService) getService("JahiaUserManagerService");
     }
 
     /**
      * Return a reference on the DB User Manager service
      */
     public JahiaGroupManagerService getJahiaGroupManagerService() {
-        return (JahiaGroupManagerService) getService(JAHIA_GROUP_MANAGER_SERVICE);
+        return (JahiaGroupManagerService) getService("JahiaGroupManagerService");
     }
 
     /**
      * NK 12.01.2001
      */
     public JahiaFileWatcherService getJahiaFileWatcherService() {
-        return (JahiaFileWatcherService) getService(JAHIA_FILE_WATCHER_SERVICE);
+        return (JahiaFileWatcherService) getService("JahiaFileWatcherService");
     }
 
     /**
@@ -225,53 +172,53 @@ public class ServicesRegistry {
      */
     public ApplicationsManagerService getApplicationsManagerService() {
         return (ApplicationsManagerService) getService(
-                APPLICATIONS_MANAGER_SERVICE);
+                "ApplicationsManagerService");
     }
 
     /**
      * NK 12.03.2001
      */
     public JahiaSitesBaseService getJahiaSitesService() {
-        return (JahiaSitesBaseService) getService(JAHIA_SITES_SERVICE);
+        return (JahiaSitesBaseService) getService("JahiaSitesService");
     }
 
     /**
      * Return a reference to the Jahia Cache Factory service
      */
     public CacheService getCacheService() {
-        return (CacheService) getService(JAHIA_CACHE_SERVICE);
+        return (CacheService) getService("JahiaCacheService");
     }
 
     public MailService getMailService() {
-        return (MailService) getService(MAIL_SERVICE);
+        return (MailService) getService("MailService");
     }
 
     public CategoryService getCategoryService() {
-        return (CategoryService) getService(CATEGORY_SERVICE);
+        return (CategoryService) getService("CategoryService");
     }
 
     public SchedulerService getSchedulerService() {
-        return (SchedulerService) getService(SCHEDULER_SERVICE);
+        return (SchedulerService) getService("SchedulerService");
     }
 
     public JCRStoreService getJCRStoreService() {
-        return (JCRStoreService) getService(JCRSTORE_SERVICE);
+        return (JCRStoreService) getService("JCRStoreService");
     }
 
     public JCRPublicationService getJCRPublicationService() {
-        return (JCRPublicationService) getService(JCRPUBLICATION_SERVICE);
+        return (JCRPublicationService) getService("jcrPublicationService");
     }
 
     public JCRVersionService getJCRVersionService() {
-        return (JCRVersionService) getService(JCRVERSION_SERVICE);
+        return (JCRVersionService) getService("jcrVersionService");
     }
 
     public ImportExportBaseService getImportExportService() {
-        return (ImportExportBaseService) getService(IMPORTEXPORT_SERVICE);
+        return (ImportExportBaseService) getService("ImportExportService");
     }
 
     public JahiaPreferencesService getJahiaPreferencesService() {
-        return (JahiaPreferencesService) getService(PREFERENCES_SERVICE);
+        return (JahiaPreferencesService) getService("JahiaPreferencesService");
     }
 
     public JahiaPasswordPolicyService getJahiaPasswordPolicyService() {

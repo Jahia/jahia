@@ -117,8 +117,6 @@ public class TemplatePackageRegistry {
     private Map<String, JahiaTemplatesPackage> packagesForResourceBundles = new HashMap<String, JahiaTemplatesPackage>();
     private boolean afterInitializeDone = false;
 
-// --------------------------- CONSTRUCTORS ---------------------------
-
     /**
      * Initializes an instance of this class.
      */
@@ -191,17 +189,24 @@ public class TemplatePackageRegistry {
     public boolean isAfterInitializeDone() {
         return afterInitializeDone;
     }
-
-    public void afterInitializationForModule(JahiaTemplatesPackage pack) {
-        if (pack.getContext() != null) {
+    
+    public synchronized void afterInitializationForModule(JahiaTemplatesPackage pack) {
+        if (pack.getContext() != null && !pack.isServiceInitialized()) {
+            int count = 0;
             Map<String, JahiaAfterInitializationService> map = pack.getContext().getBeansOfType(JahiaAfterInitializationService.class);
             for (JahiaAfterInitializationService initializationService : map.values()) {
                 try {
                     initializationService.initAfterAllServicesAreStarted();
+                    count++;
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }
             }
+            if (count > 0) {
+                logger.info("Post-initialized {} beans implementing JahiaAfterInitializationService for module {}",
+                        count, pack.getRootFolder());
+            }
+            pack.setServiceInitialized(true);
         }
     }
 

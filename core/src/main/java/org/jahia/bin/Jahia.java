@@ -6,7 +6,7 @@
  *
  * For more information, please visit http://www.jahia.com.
  *
- * Copyright (C) 2002-2012 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2013 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -58,35 +58,21 @@
 
 package org.jahia.bin;
 
-import org.apache.commons.io.IOUtils;
-import org.jahia.api.Constants;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.JahiaAfterInitializationService;
-import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
-import org.jahia.settings.SettingsBean;
-import org.jahia.commons.Version;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Map;
+
+import org.apache.commons.io.IOUtils;
+import org.jahia.api.Constants;
+import org.jahia.commons.Version;
+import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.params.ProcessingContext;
+import org.jahia.settings.SettingsBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * This is the main servlet of Jahia.
+ * Jahia version and support utilities.
  *   ----=[  Welcome to the Jahia portal  ]=----
  *
  * Copyright:    Copyright (c) 2002
@@ -97,32 +83,21 @@ import java.util.Map;
  * @author  Khue N'Guyen
  * @version 1.0
  */
-public final class Jahia extends HttpServlet implements JahiaInterface {
+public final class Jahia {
 
-    private static final long serialVersionUID = -4811687571425897497L;
-    
     private static Logger logger = LoggerFactory.getLogger(Jahia.class);
 
     static private final String INIT_PARAM_SUPPORTED_JDK_VERSIONS =
         "supported_jdk_versions";
 
     static public final String COPYRIGHT =
-            "&copy; Copyright 2002-2012  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
+            "&copy; Copyright 2002-2013  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
 
-    public final static String COPYRIGHT_TXT = "2012 Jahia Solutions Group SA" ;
+    public final static String COPYRIGHT_TXT = "2013 Jahia Solutions Group SA" ;
 
     static private boolean maintenance = false;
 
     private static SettingsBean jSettings;
-
-    static private ServletConfig staticServletConfig;
-
-    static protected String jahiaBasicFileName;
-    static protected String jahiaPropertiesPath;
-    static protected String jahiaTemplatesScriptsPath;
-    static protected String jahiaEtcFilesPath;
-    static protected String jahiaVarFilesPath;
-    static protected String jahiaBaseFilesPath = "";
 
     static private String jahiaServletPath;
     static private String jahiaContextPath;
@@ -226,75 +201,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     }
 
 
-    //-------------------------------------------------------------------------
-    /**
-     * Default init inherited from HttpServlet.
-     *
-     * @param   aConfig  Servlet configuration (inherited).
-     */
-    public void init (final ServletConfig aConfig)
-        throws ServletException {
-        super.init(aConfig);
-
-        try {
-
-	        // get servlet basic variables, like config and context...
-	        staticServletConfig = aConfig;
-	        final ServletContext context = aConfig.getServletContext();
-	
-	        jahiaEtcFilesPath = context.getRealPath("/WEB-INF/etc");
-	        jahiaVarFilesPath = context.getRealPath("/WEB-INF/var");
-	
-	        // set default paths...
-	        jahiaPropertiesPath = context.getRealPath("/WEB-INF/etc/config/");
-
-	        jahiaBaseFilesPath = context.getRealPath("/WEB-INF/var");
-	        jahiaTemplatesScriptsPath = jahiaBaseFilesPath + File.separator +
-	                                    "templates";
-
-	        Jahia.setMaintenance(SettingsBean.getInstance().isMaintenanceMode());
-	        
-	        try {
-	            // retrieve the jSettings object...
-	            Jahia.jSettings = SettingsBean.getInstance();
-	            
-	            Jahia.jSettings.setBuildNumber(getBuildNumber());
-	           
-	        } catch (Exception e) {
-	        	logger.error("Unable to initialize Jahia settings and build number", e);
-	        	throw new JahiaInitializationException("Unable to initialize Jahia settings and build number", e);
-	        }
-	
-	        // Initialize all the registered services.
-            initServicesRegistry();
-
-            JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
-
-            if (SpringContextSingleton.getInstance().isInitialized()) {
-                Map map = SpringContextSingleton.getInstance().getContext().getBeansOfType(
-                        JahiaAfterInitializationService.class);
-                for (Object o : map.values()) {
-                    JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
-                    initializationService.initAfterAllServicesAreStarted();
-                }
-            }
-        } catch (Exception je) {
-            logger.error("Error during initialization of Jahia", je);
-            // init error, stop Jahia!
-            if (je instanceof ServletException) {
-            	throw (ServletException) je;
-            } else {
-            	throw new ServletException(je);
-            }
-        } finally {
-            JCRSessionFactory.getInstance().setCurrentUser(null);
-        }
-    } // end init
-
-
-
-
-	public static void verifyJavaVersion(String supportedJDKVersions) throws JahiaInitializationException {
+    public static void verifyJavaVersion(String supportedJDKVersions) throws JahiaInitializationException {
         if (supportedJDKVersions != null) {
                 Version currentJDKVersion;
                 try {
@@ -332,20 +239,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
             }
 	}
 
-    /*
-     * Default service inherited from HttpServlet.
-     * @author  Alexandre Kraft
-     * @author  Fulco Houkes
-     *
-     * @param   request     Servlet request (inherited).
-     * @param   response    Servlet response (inherited).
-     */
-    public void service (final HttpServletRequest request,
-                         final HttpServletResponse response)
-        throws IOException,
-        ServletException {
-    } // end service
-
     public static String getServletPath () {
         return jahiaServletPath;
     }
@@ -364,37 +257,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     public static void setThreadParamBean(final ProcessingContext processingContext) {
         paramBeanThreadLocal.set(processingContext);
     }
-
-    //-------------------------------------------------------------------------
-    /**
-     * Call the initialization of the services registry.
-     *
-     * @return  Return <code>true</code> on success or <code>false</code> on any failure.
-     */
-    protected boolean initServicesRegistry ()
-        throws JahiaException {
-
-        logger.debug("Start the Services Registry ...");
-
-        try {
-            final ServicesRegistry registry = ServicesRegistry.getInstance();
-            if (registry != null) {
-                registry.init(Jahia.jSettings);
-                logger.debug("Services Registry is running...");
-                return true;
-            }
-
-            logger.debug(
-                "  -> ERROR : Could not get the Services Registry instance.");
-            return false;
-        } catch (JahiaException je) {
-            throw new JahiaException(je.getJahiaErrorMsg(),
-                "Service Registry Initialization Exception",
-                JahiaException.INITIALIZATION_ERROR,
-                JahiaException.FATAL_SEVERITY,
-                je);
-        }
-    } // end initServicesRegistry
 
     //-------------------------------------------------------------------------
     /**
@@ -518,10 +380,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
         }
 
         return true;
-    }
-
-    static public ServletConfig getStaticServletConfig() {
-        return staticServletConfig;
     }
 
     public static void initContextData() {

@@ -46,19 +46,26 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.VFS;
 import org.jahia.api.Constants;
+import org.jahia.osgi.FrameworkService;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.SpringContextSingleton;
+import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.pluto.driver.PortalStartupListener;
 import org.jahia.bin.Jahia;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.applications.ApplicationsManagerServiceImpl;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.patches.GroovyPatcher;
 import org.jahia.utils.Patterns;
 import org.springframework.beans.FatalBeanException;
+import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.web.context.ContextLoader;
@@ -78,10 +85,9 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Startup listener for the Spring's application context.
- * User: Serge Huber
- * Date: 22 juil. 2008
- * Time: 17:01:22
+ * Entry point and startup/shutdown listener for all Jahia services, including Spring application context, OSGi platform service etc.
+ * 
+ * @author Serge Huber
  */
 public class JahiaContextLoaderListener extends PortalStartupListener implements
         ServletRequestListener,
@@ -111,6 +117,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     
     private static final transient Logger logger = LoggerFactory
             .getLogger(JahiaContextLoaderListener.class);
+    
+    private FrameworkService osgiService;
 
     private static ServletContext servletContext;
     private static long startupTime;
@@ -120,6 +128,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     private static String pid = "";
 
     private static boolean contextInitialized = false;
+    
     private static Map<String, Object> jahiaContextListenersConfiguration;
 
     @SuppressWarnings("unchecked")
@@ -175,28 +184,89 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         }
 
         try {
+            long timer = System.currentTimeMillis();
+            logger.info("Start initializing Spring root application context");
+            
             super.contextInitialized(event);
+            
+            logger.info("Spring Root application context initialized in {} ms", (System.currentTimeMillis() - timer));
+
+            // initialize services registry
+            ServicesRegistry.getInstance().init();
+            
+            // fire Spring event that the root context is initialized
             WebApplicationContext rootCtx = ContextLoader.getCurrentWebApplicationContext();
             rootCtx.publishEvent(new RootContextInitializedEvent(rootCtx));
-            
-            GroovyPatcher.executeScripts(servletContext, "rootContextInitialized");
             
             if (Jahia.isEnterpriseEdition()) {
                 requireLicense();
             }
+            
+            // execute patches after root context initialization
+            GroovyPatcher.executeScripts(servletContext, "rootContextInitialized");
+            
+            // start OSGi container
+            timer = System.currentTimeMillis();
+            logger.info("Starting OSGi platform service");
+            
+            osgiService = new FrameworkService(event.getServletContext());
+            osgiService.start();
+            
+            logger.info("OSGi platform service initialized in {} ms", (System.currentTimeMillis() - timer));
+            
+            // do initialization of all services, implementing JahiaAfterInitializationService
+            initJahiaAfterInitializationServices();
+            
             // register listeners after the portal is started
             ApplicationsManagerServiceImpl.getInstance().registerListeners();
+            
+            // set fallback locale
             Config.set(servletContext, Config.FMT_FALLBACK_LOCALE, (SettingsBean.getInstance().getDefaultLanguageCode() != null) ? SettingsBean
                     .getInstance().getDefaultLanguageCode() : Locale.ENGLISH.getLanguage());
+            
             jahiaContextListenersConfiguration = (Map<String, Object>) ContextLoader.getCurrentWebApplicationContext().getBean("jahiaContextListenersConfiguration");
             if (isEventInterceptorActivated("interceptServletContextListenerEvents")) {
                 SpringContextSingleton.getInstance().publishEventInModuleContexts(new ServletContextInitializedEvent(event.getServletContext()));
             }
             contextInitialized = true;
-
+            
+            // execute patches after the complete initialization
             GroovyPatcher.executeScripts(servletContext, "contextInitialized");
+        } catch (JahiaException e) {
+            logger.error(e.getMessage(), e);
+            throw new JahiaRuntimeException(e);
+        } catch (BundleException e) {
+            logger.error(e.getMessage(), e);
+            throw new JahiaRuntimeException(e);
         } finally {
             JCRSessionFactory.getInstance().closeAllSessions();
+        }
+    }
+
+    private void initJahiaAfterInitializationServices() throws JahiaInitializationException {
+        try {
+            JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
+
+            // initializing core services
+            for (JahiaAfterInitializationService service : SpringContextSingleton.getInstance().getContext()
+                    .getBeansOfType(JahiaAfterInitializationService.class).values()) {
+                service.initAfterAllServicesAreStarted();
+            }
+            
+            // initializing services for modules
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry()
+                    .afterInitializationForModules();
+        } finally {
+            JCRSessionFactory.getInstance().setCurrentUser(null);
+        }
+    }
+
+    public static void initJahiaAfterInitializationServices(ListableBeanFactory beanfactory)
+            throws JahiaInitializationException {
+        Map<String, JahiaAfterInitializationService> map = beanfactory
+                .getBeansOfType(JahiaAfterInitializationService.class);
+        for (JahiaAfterInitializationService service : map.values()) {
+            service.initAfterAllServicesAreStarted();
         }
     }
 
@@ -240,10 +310,28 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     public void contextDestroyed(ServletContextEvent event) {
         contextInitialized = false;
         if (isEventInterceptorActivated("interceptServletContextListenerEvents")) {
-            SpringContextSingleton.getInstance().publishEventInModuleContexts(new ServletContextDestroyedEvent(event.getServletContext()));
+            SpringContextSingleton.getInstance().publishEventInModuleContexts(
+                    new ServletContextDestroyedEvent(event.getServletContext()));
         }
         removePID(servletContext);
+
+        long timer = System.currentTimeMillis();
+        logger.info("Stopping OSGi platform service");
+
+        try {
+            osgiService.stop();
+        } catch (Exception e) {
+            logger.error("Error stopping OSGi platform service. Cause: " + e.getMessage(), e);
+        }
+
+        logger.info("OSGi platform service stopped in {} ms", (System.currentTimeMillis() - timer));
+
+        timer = System.currentTimeMillis();
+        logger.info("Shutting down Spring root application context");
+
         super.contextDestroyed(event);
+
+        logger.info("Spring Root application context shut down in {} ms", (System.currentTimeMillis() - timer));
     }
 
     /**
@@ -438,6 +526,10 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         if (isEventInterceptorActivated("interceptServletRequestAttributeListenerEvents")) {
             SpringContextSingleton.getInstance().publishEventInModuleContexts(new ServletRequestAttributeReplacedEvent(srae));
         }
+    }
+
+    public static boolean isContextInitialized() {
+        return contextInitialized;
     }
 
     public class HttpSessionCreatedEvent extends ApplicationEvent {

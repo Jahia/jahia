@@ -47,7 +47,7 @@ import org.apache.pluto.driver.core.PortalRequestContext;
 import org.apache.pluto.driver.core.PortletWindowImpl;
 import org.apache.pluto.driver.services.portal.PortletWindowConfig;
 import org.apache.pluto.driver.url.PortalURL;
-import org.jahia.bin.Jahia;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
@@ -81,7 +81,7 @@ public class PlutoProcessActionFilter extends AbstractFilter {
         try {
             final JahiaUserRequestWrapper request = new JahiaUserRequestWrapper(renderContext.getUser(), renderContext.getRequest(), renderContext.getMainResource().getWorkspace());
             final HttpServletResponse response = renderContext.getResponse();
-            final ServletContext servletContext = Jahia.getStaticServletConfig().getServletContext();
+            final ServletContext servletContext = JahiaContextLoaderListener.getServletContext();
             final PortletContainer container = (PortletContainer) servletContext.getAttribute(AttributeKeys.PORTLET_CONTAINER);
             final PortalRequestContext portalRequestContext = new PortalRequestContext(servletContext, request, response);
             final PortalURL portalURL = portalRequestContext.getRequestedPortalURL();

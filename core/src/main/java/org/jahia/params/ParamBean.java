@@ -123,6 +123,7 @@ package org.jahia.params;
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.slf4j.Logger;
 import org.jahia.bin.Jahia;
+import org.jahia.bin.JahiaInterface;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.services.applications.ServletIncludeRequestWrapper;
@@ -453,7 +454,7 @@ public class ParamBean extends ProcessingContext {
             throw new JahiaSessionExpirationException();
         }
         final Integer i = (Integer) session.getAttribute(SESSION_JAHIA_RUNNING_MODE);
-        return i != null && (i.intValue() == Jahia.ADMIN_MODE);
+        return i != null && (i.intValue() == JahiaInterface.ADMIN_MODE);
     }
 
     // -------------------------------------------------------------------------

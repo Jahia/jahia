@@ -212,8 +212,8 @@ public class JahiaAdministration extends HttpServlet {
         try {
             // determine installation status...
             // set Jahia running mode to Admin
-            session.setAttribute(ProcessingContext.SESSION_JAHIA_RUNNING_MODE, Jahia.ADMIN_MODE);
-            logger.debug("Running mode : " + Jahia.ADMIN_MODE);
+            session.setAttribute(ProcessingContext.SESSION_JAHIA_RUNNING_MODE, JahiaInterface.ADMIN_MODE);
+            logger.debug("Running mode : " + JahiaInterface.ADMIN_MODE);
 
             userRequestDispatcher(request, response, session); // ok continue admin...
         } catch (Exception t) {

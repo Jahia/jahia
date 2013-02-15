@@ -248,22 +248,12 @@
     </listener>
 
     <listener>
-        <listener-class>org.jahia.bin.listeners.ShutdownLoggingConfigListener</listener-class>
-    </listener>
-
-    <listener>
         <listener-class>org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet</listener-class>
     </listener>
 
     <listener>
-        <listener-class>org.jahia.osgi.StartupListener</listener-class>
+        <listener-class>org.jahia.bin.listeners.ShutdownLoggingConfigListener</listener-class>
     </listener>
-
-    <servlet>
-        <servlet-name>Jahia</servlet-name>
-        <servlet-class>org.jahia.bin.Jahia</servlet-class>
-        <load-on-startup>8</load-on-startup>
-    </servlet>
 
     <servlet>
         <servlet-name>WelcomeServlet</servlet-name>

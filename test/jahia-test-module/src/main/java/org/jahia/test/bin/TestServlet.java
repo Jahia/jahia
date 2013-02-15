@@ -266,20 +266,19 @@ public class TestServlet implements Controller, ServletContextAware {
     }
     
     private Set<String> getIgnoreTests() {
-    	Map<String,TestBean> testBeans = new HashMap<String, TestBean>();
-        JahiaTemplatesPackage jahiaTestModule = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("jahia-test-module");
-        
-        if (jahiaTestModule.getContext() != null) {
-        	testBeans = jahiaTestModule.getContext().getBeansOfType(TestBean.class);
-        }
-
         // Return the lists of available tests
         Set<String> ignoreTests = new HashSet<String>();
 
-        SortedSet<TestBean> s = new TreeSet<TestBean>(testBeans.values());
-        for (TestBean testBean : s) {
-            if (testBean.getIgnoredTests() != null) {
-                ignoreTests.addAll(testBean.getIgnoredTests());
+        for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
+            if (aPackage.getContext() != null) {
+                Map<String,TestBean> packageTestBeans = aPackage.getContext().getBeansOfType(TestBean.class);
+                if (packageTestBeans.size() > 0) {
+                    for (TestBean testBean : packageTestBeans.values()) {
+                        if (testBean.getIgnoredTests() != null) {
+                            ignoreTests.addAll(testBean.getIgnoredTests());
+                        }
+                    }
+                }
             }
         }
 

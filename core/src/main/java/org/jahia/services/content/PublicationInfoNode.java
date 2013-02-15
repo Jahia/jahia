@@ -121,4 +121,32 @@ public class PublicationInfoNode implements Serializable {
     public void setSubtreeProcessed(boolean subtreeProcessed) {
         this.subtreeProcessed = subtreeProcessed;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        PublicationInfoNode that = (PublicationInfoNode) o;
+
+        if (!path.equals(that.path)) {
+            return false;
+        }
+        if (!uuid.equals(that.uuid)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = uuid.hashCode();
+        result = 31 * result + path.hashCode();
+        return result;
+    }
 }

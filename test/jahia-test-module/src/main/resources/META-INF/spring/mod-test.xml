@@ -54,14 +54,14 @@
                 <value>org.jahia.test.services.render.filter.ConditionalFilterTest</value>
                 <value>org.jahia.test.services.render.filter.EmailObfuscatorFilterTest</value>
                 <value>org.jahia.test.services.render.filter.URLFilterTest</value>
-                <value>org.jahia.services.render.filter.cache.CacheFilterTest</value>
+                <value>org.jahia.test.services.render.filter.cache.CacheFilterTest</value>
                 <value>org.jahia.test.services.render.filter.channels.ChannelResolutionAndExclusionTest</value>                
                 <value>org.jahia.test.services.search.SimpleSearchTest</value>
                 <value>org.jahia.test.services.seo.urlrewrite.UrlRewriteTest</value>
                 <value>org.jahia.test.services.tags.TaggingTest</value>
                 <value>org.jahia.test.services.templates.JahiaTemplateManagerServiceTest</value>
                 <value>org.jahia.test.services.templates.ModuleDeploymentTest</value>                
-                <value>org.jahia.services.usermanager.JahiaGroupManagerServiceTest</value>
+                <value>org.jahia.test.services.usermanager.JahiaGroupManagerServiceTest</value>
                 <value>org.jahia.test.services.validation.ValidationTest</value>                
                 <value>org.jahia.test.services.versioning.VersioningTest</value>
                 <value>org.jahia.test.services.visibility.VisibilityServiceTest</value>

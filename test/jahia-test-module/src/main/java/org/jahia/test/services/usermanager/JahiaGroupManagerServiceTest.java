@@ -38,7 +38,7 @@
  * please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.test.services.usermanager.usermanager;
+package org.jahia.test.services.usermanager;
 
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -52,7 +52,6 @@ import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import static org.junit.Assert.*;
 

@@ -879,7 +879,6 @@
                                     <artifactId>org.apache.felix.fileinstall</artifactId>
                                     <version>${felix.fileinstall.version}</version>
                                 </artifactItem>
-                                <!--
                                 <artifactItem>
                                     <groupId>org.apache.felix</groupId>
                                     <artifactId>org.apache.felix.gogo.runtime</artifactId>
@@ -895,7 +894,6 @@
                                     <artifactId>org.apache.felix.gogo.command</artifactId>
                                     <version>${gogo.command.version}</version>
                                 </artifactItem>
-                                -->
 
                                 <artifactItem>
                                     <groupId>org.ops4j.pax.web</groupId>

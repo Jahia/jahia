@@ -263,9 +263,11 @@ public final class Jahia {
      * Return the private settings
      *
      * @return JahiaPrivateSettings
+     * @deprecated use {@link SettingsBean#getInstance()} instead
      */
+    @Deprecated
     public static SettingsBean getSettings () {
-        return jSettings;
+        return SettingsBean.getInstance();
     }
 
     public static boolean isMaintenance() {

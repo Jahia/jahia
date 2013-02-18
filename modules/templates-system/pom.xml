@@ -38,7 +38,6 @@
     If you are unsure which license is appropriate for your use,
     please contact the sales department at sales@jahia.com.
 -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -50,7 +49,6 @@
     <name>Jahia System Templates</name>
     <packaging>bundle</packaging>
     <description>This is the custom module (templates-system) for running on a Jahia server.</description>
-
     <build>
         <plugins>
             <plugin>
@@ -59,7 +57,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Jahia-Depends>default,grid,skins,default-skins,tabularList,tags,profile,tasks,facets</Jahia-Depends>
+            <Jahia-Depends>default,assets,grid,skins,default-skins,tabularList,tags,profile,contentRetrieval,tasks,facets,article</Jahia-Depends>  
                         <Jahia-Module-Type>templatesSet</Jahia-Module-Type>
                     </instructions>
                 </configuration>

@@ -43,32 +43,40 @@ package org.jahia.services.stub;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
-import org.jahia.services.SpringContextSingleton;
 import org.slf4j.Logger;
-import org.springframework.core.io.Resource;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
+/**
+ * Service to provide Stubs for source edition in studio mode
+ */
 public class StubService {
 
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(StubService.class);
+    private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(StubService.class);
 
+    /**
+     * @param fileType type of the file
+     * @param snippetType type of the snippet
+     * @return Map of snippets fpr file type
+     */
     public Map<String,String> getCodeSnippets(String fileType, String snippetType) {
-        LinkedHashMap<String,String> stub = new LinkedHashMap<String, String>();
-        InputStream is = null;
+        Map<String,String> stub = new LinkedHashMap<String, String>();
+
         try {
             Set<String> resources = JahiaContextLoaderListener.getServletContext().getResourcePaths("/WEB-INF/etc/snippets/"+fileType+"/"+snippetType+"/");
             if (resources != null) {
                 for (String resource : resources) {
-                    InputStream st = JahiaContextLoaderListener.getServletContext().getResourceAsStream(resource);
-                    stub.put(StringUtils.substringAfterLast(resource,"/"), StringUtils.join(IOUtils.readLines(st), "\n"));
+                    InputStream is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(resource);
+                    stub.put(StringUtils.substringAfterLast(resource,"/"), StringUtils.join(IOUtils.readLines(is), "\n"));
+                    IOUtils.closeQuietly(is);
                 }
             }
         } catch (IOException e) {
             logger.error("Failed to read code snippets from " + fileType + "/" + snippetType, e);
-        } finally {
-            IOUtils.closeQuietly(is);
         }
         return stub;
     }

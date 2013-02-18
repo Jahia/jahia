@@ -60,7 +60,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * 
+ * Implementation of the {@link javax.jcr.Workspace} for the {@link org.jahia.services.content.impl.external.ExternalData}.
  * User: toto
  * Date: Apr 23, 2008
  * Time: 11:45:56 AM

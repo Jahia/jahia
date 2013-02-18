@@ -63,7 +63,7 @@ import static org.jahia.api.Constants.LIVE_WORKSPACE;
 import static org.jahia.api.Constants.NT_PROPERTYDEFINITION;
 
 /**
- * Implementation of the {@link javax.jcr.security.AccessControlManager} for the VFS provider.
+ * Implementation of the {@link javax.jcr.security.AccessControlManager} for the {@link org.jahia.services.content.impl.external.ExternalData}.
  *
  * @author Sergiy Shyrkov
  */

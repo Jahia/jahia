@@ -54,7 +54,7 @@ import javax.jcr.ValueFormatException;
 import org.apache.jackrabbit.util.ISO8601;
 
 /**
- * 
+ * Implementation of the {@link javax.jcr.ValueFactory} for the {@link org.jahia.services.content.impl.external.ExternalData}.
  * User: loom
  * Date: Aug 12, 2010
  * Time: 3:03:58 PM
@@ -116,10 +116,6 @@ public class ExternalValueFactoryImpl implements ValueFactory {
     }
 
     public ExternalValueImpl createValue(InputStream value) {
-        return new ExternalValueImpl(new ExternalBinaryImpl(value));
-    }
-
-    public ExternalValueImpl createValue(InputStream value, long size) {
         return new ExternalValueImpl(new ExternalBinaryImpl(value));
     }
 

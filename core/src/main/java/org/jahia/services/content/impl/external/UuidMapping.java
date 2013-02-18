@@ -44,6 +44,9 @@ import javax.persistence.*;
 
 import org.hibernate.annotations.Index;
 
+/**
+ * Map that link valid uuid and (@link org.jahia.services.content.impl.external.ExternalData} id
+ */
 @Entity
 @Table(name = "jahia_external_mapping")
 public class UuidMapping {

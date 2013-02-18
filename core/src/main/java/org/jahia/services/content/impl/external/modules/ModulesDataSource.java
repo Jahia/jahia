@@ -59,6 +59,8 @@ import org.jahia.services.content.impl.external.vfs.VFSDataSource;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.utils.LanguageCodeConverters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
@@ -82,6 +84,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ModulesDataSource extends VFSDataSource {
 
+    private static final Logger logger = LoggerFactory.getLogger(ModulesDataSource.class);
     protected static final String UNSTRUCTURED_PROPERTY = "__prop__";
     protected static final String UNSTRUCTURED_CHILD_NODE = "__node__";
     private static final String PROPERTIES_EXTENSION = ".properties";
@@ -483,7 +486,7 @@ public class ModulesDataSource extends VFSDataSource {
     }
 
     @Override
-    public void saveItem(ExternalData data) {
+    public void saveItem(ExternalData data) throws PathNotFoundException {
         super.saveItem(data);
 
         try {

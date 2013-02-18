@@ -42,7 +42,6 @@ package org.jahia.services.content.impl.external;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Restrictions;
@@ -51,7 +50,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 import javax.jcr.*;
-import javax.jcr.Session;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -62,10 +60,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.AccessControlException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * JCR session implementation for VFS provider.
+ * Implementation of the {@link javax.jcr.Session} for the {@link org.jahia.services.content.impl.external.ExternalData}.
  *
  * @author toto
  *         Date: Apr 23, 2008
@@ -166,8 +167,7 @@ public class ExternalSessionImpl implements Session {
             return new ExternalNodeImpl(changedData.get(path), this);
         }
         if (StringUtils.substringAfterLast(path, "/").startsWith("j:translation_")) {
-            String nodeName = StringUtils.substringAfterLast(path, "/");
-            String lang = StringUtils.substringAfterLast(nodeName, "_");
+            String lang = StringUtils.substringAfterLast(path, "_");
             ExternalData parentObject = repository.getDataSource().getItemByPath(StringUtils.substringBeforeLast(path,
                     "/"));
             if (parentObject.getI18nProperties() == null || !parentObject.getI18nProperties().containsKey(lang)) {
@@ -187,7 +187,7 @@ public class ExternalSessionImpl implements Session {
             throw new PathNotFoundException("This node has been deleted");
         }
         try {
-            ExternalData object = repository.getDataSource().getItemByPath(path);
+            repository.getDataSource().getItemByPath(path);
         } catch (PathNotFoundException fse) {
             return false;
         }

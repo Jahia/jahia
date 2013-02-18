@@ -54,7 +54,7 @@ import javax.jcr.query.QueryManager;
 import java.rmi.Naming;
 
 /**
- * JCR store provider implementation for VFS.
+ * Implementation of the {@link org.jahia.services.content.JCRStoreProvider} for the {@link org.jahia.services.content.impl.external.ExternalData}.
  * 
  * @author toto
  * Date: Apr 23, 2008

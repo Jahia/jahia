@@ -44,6 +44,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.*;
 import org.apache.jackrabbit.util.ISO8601;
+import org.apache.jackrabbit.value.BinaryImpl;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.impl.external.ExternalData;
@@ -60,13 +61,20 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 
+/**
+ * VFS Implementation of ExternalDataSource
+ */
 public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Writable {
     private static final List<String> SUPPORTED_NODE_TYPES = Arrays.asList(Constants.JAHIANT_FILE, Constants.JAHIANT_FOLDER, Constants.JCR_CONTENT);
-    public static final Logger logger = LoggerFactory.getLogger(VFSDataSource.class);
+    private static final Logger logger = LoggerFactory.getLogger(VFSDataSource.class);
     protected String root;
     protected String rootPath;
     protected FileSystemManager manager;
 
+    /**
+     * Defines the root point of the DataSource
+     * @param root
+     */
     public void setRoot(String root) {
         this.root = root;
 
@@ -100,7 +108,7 @@ public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Wr
             try {
                 return getItemByPath(identifier);
             } catch (PathNotFoundException e) {
-                throw new ItemNotFoundException(identifier);
+                throw new ItemNotFoundException(identifier,e);
             }
         }
         throw new ItemNotFoundException(identifier);
@@ -162,7 +170,7 @@ public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Wr
         }
     }
 
-    public void saveItem(ExternalData data) {
+    public void saveItem(ExternalData data) throws PathNotFoundException {
         if (data.getType().equals(Constants.NT_RESOURCE)) {
             OutputStream outputStream = null;
             try {
@@ -181,9 +189,9 @@ public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Wr
                     }
                 }
             } catch (IOException e) {
-                logger.error(e.getMessage(), e);
+                throw new PathNotFoundException("I/O on file : " + data.getPath(),e);
             } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
+                throw new PathNotFoundException("unable to get outputStream of : " + data.getPath(),e);
             } finally {
                 IOUtils.closeQuietly(outputStream);
             }
@@ -200,7 +208,6 @@ public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Wr
     }
 
     private ExternalData getFile(FileObject fileObject) throws FileSystemException {
-        String identifier =  fileObject.getURL().toString();
         String type;
 
         type = getDataType(fileObject);
@@ -211,9 +218,9 @@ public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Wr
             if (lastModifiedTime > 0) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(lastModifiedTime);
-                String[] timestampt = new String[] { ISO8601.format(calendar) };
-                properties.put(Constants.JCR_CREATED, timestampt);
-                properties.put(Constants.JCR_LASTMODIFIED, timestampt);
+                String[] timestamp = new String[] { ISO8601.format(calendar) };
+                properties.put(Constants.JCR_CREATED, timestamp);
+                properties.put(Constants.JCR_LASTMODIFIED, timestamp);
             }
         }
 
@@ -243,7 +250,11 @@ public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Wr
         properties.put(Constants.JCR_MIMETYPE, new String[] { s1 });
 
         Map<String,Binary[]> binaryProperties = new HashMap<String, Binary[]>();
-        binaryProperties.put(Constants.JCR_DATA, new Binary[] {new VFSBinaryImpl(content)});
+        try {
+            binaryProperties.put(Constants.JCR_DATA, new Binary[] {new BinaryImpl(content.getInputStream())});
+        } catch (IOException e) {
+            throw new FileSystemException(e);
+        }
 
         String path = content.getFile().getName().getPath().substring(rootPath.length());
 
@@ -251,60 +262,4 @@ public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Wr
         externalData.setBinaryProperties(binaryProperties);
         return externalData;
     }
-
-
-    class VFSBinaryImpl implements Binary {
-
-        FileContent fileContent;
-        InputStream inputStream = null;
-
-        public VFSBinaryImpl(InputStream inputStream) {
-            // here we should copy the content of the inputstream, but where ??? Keeping it in memory is a bad idea.
-            this.inputStream = inputStream;
-        }
-
-        public VFSBinaryImpl(FileContent fileContent) {
-            this.fileContent = fileContent;
-        }
-
-        public InputStream getStream() throws RepositoryException {
-            if (fileContent == null) {
-                return inputStream;
-            }
-            try {
-                inputStream = fileContent.getInputStream();
-            } catch (FileSystemException e) {
-                throw new RepositoryException("Error retrieving inputstream to file content", e);
-            }
-            return inputStream;
-        }
-
-        public int read(byte[] b, long position) throws IOException, RepositoryException {
-            if (inputStream == null) {
-                getStream();
-            }
-            return inputStream.read(b, (int) position, b.length);
-        }
-
-        public long getSize() throws RepositoryException {
-            try {
-                if (!fileContent.getFile().exists()) {
-                    return 0;
-                }
-                return fileContent.getSize();
-            } catch (FileSystemException e) {
-                throw new RepositoryException("Error retrieving file's size", e);
-            }
-        }
-
-        public void dispose() {
-            try {
-                fileContent.close();
-            } catch (FileSystemException e) {
-                logger.error("Error",e);
-            }
-        }
-    }
-
-
 }

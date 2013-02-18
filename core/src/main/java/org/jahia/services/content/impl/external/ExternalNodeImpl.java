@@ -66,10 +66,12 @@ import java.math.BigDecimal;
 import java.util.*;
 
 /**
+ * Implementation of the {@link javax.jcr.Node} for the {@link org.jahia.services.content.impl.external.ExternalData}.
  * User: toto
  * Date: Apr 23, 2008
  * Time: 11:46:22 AM
  */
+
 public class ExternalNodeImpl extends ExternalItemImpl implements Node {
 
     private ExternalData data;
@@ -183,11 +185,16 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
         if (!(session.getRepository().getDataSource() instanceof ExternalDataSource.Writable)) {
             throw new UnsupportedRepositoryOperationException();
         }
+        boolean hasProperty = false;
         if (data.getBinaryProperties() != null) {
+            hasProperty = data.getBinaryProperties().containsKey(name) || data.getProperties().containsKey(name);
             data.getBinaryProperties().remove(name);
         }
-        data.getProperties().remove(name);
-        session.getChangedData().put(getPath(),data);
+        if (hasProperty) {
+            data.getProperties().remove(name);
+            properties.remove(name);
+            session.getChangedData().put(getPath(), data);
+        }
     }
 
     public Node addNode(String relPath) throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
@@ -223,11 +230,23 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
         if (!(session.getRepository().getDataSource() instanceof ExternalDataSource.Writable)) {
             throw new UnsupportedRepositoryOperationException();
         }
-        data.getProperties().put(name, new String[]{value.getString()});
+        if (value == null) {
+            Property p = getProperty(name);
+            if (hasProperty(name)) {
+                removeProperty(name);
+                return p;
+            } else  {
+                String s = null;
+                return new ExternalPropertyImpl(new Name(name, NodeTypeRegistry.getInstance().getNamespaces()), this, session, new ExternalValueImpl(s));
+            }
+        }
+        if (!hasProperty(name) || (hasProperty(name) && !getProperty(name).equals(value))) {
+            data.getProperties().put(name, new String[]{value.getString()});
 
-        properties.put(name, new ExternalPropertyImpl(new Name(name, NodeTypeRegistry.getInstance().getNamespaces()), this, session, value));
-        session.getChangedData().put(getPath(),data);
-        return new ExternalPropertyImpl(new Name(name,NodeTypeRegistry.getInstance().getNamespaces()),this,(ExternalSessionImpl) getSession(), value);
+            properties.put(name, new ExternalPropertyImpl(new Name(name, NodeTypeRegistry.getInstance().getNamespaces()), this, session, value));
+            session.getChangedData().put(getPath(),data);
+        }
+        return getProperty(name);
     }
 
     public Property setProperty(String name, Value value, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -238,17 +257,31 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
         if (!(session.getRepository().getDataSource() instanceof ExternalDataSource.Writable)) {
             throw new UnsupportedRepositoryOperationException();
         }
-        String[]  s = null;
-        if (values != null) {
-            s = new String[values.length];
+        if (values == null) {
+            Property p = getProperty(name);
+            if (hasProperty(name)) {
+                removeProperty(name);
+                return p;
+            } else  {
+                String s = null;
+                return new ExternalPropertyImpl(new Name(name, NodeTypeRegistry.getInstance().getNamespaces()), this, session, new ExternalValueImpl(s));
+            }
+        }
+
+        if (!hasProperty(name) || (hasProperty(name) && !getProperty(name).equals(values))) {
+            String[] s = new String[values.length];
             for (int i = 0; i < values.length; i ++) {
-                s[i] = values[i].getString();
+                if (values[i] != null)  {
+                    s[i] = values[i].getString();
+                }   else {
+                    s[i] = null;
+                }
             }
             data.getProperties().put(name,s);
             properties.put(name, new ExternalPropertyImpl(new Name(name, NodeTypeRegistry.getInstance().getNamespaces()), this, session, values));
             session.getChangedData().put(getPath(),data);
         }
-        return new ExternalPropertyImpl(new Name(name,NodeTypeRegistry.getInstance().getNamespaces()),this,(ExternalSessionImpl) getSession(), values);
+        return getProperty(name);
     }
 
     public Property setProperty(String name, Value[] values, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -260,7 +293,11 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
         if (values != null) {
             v = new Value[values.length];
             for (int i =0; i < values.length; i ++ ) {
-                v[i] = getSession().getValueFactory().createValue(values[i]);
+                if (values[i] != null) {
+                    v[i] = getSession().getValueFactory().createValue(values[i]);
+                }  else {
+                    v[i] = null;
+                }
             }
         }
         return setProperty(name,v);
@@ -282,16 +319,30 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
         if (!(session.getRepository().getDataSource() instanceof ExternalDataSource.Writable)) {
             throw new UnsupportedRepositoryOperationException();
         }
+        if (value == null) {
+            if (hasProperty(name)) {
+                Property p = getProperty(name);
+                removeProperty(name);
+                return p;
+            } else {
+                Binary b = null;
+                return new ExternalPropertyImpl(new Name(name, NodeTypeRegistry.getInstance().getNamespaces()), this, session, new ExternalValueImpl(b));
+            }
+        }
         Value v = null;
+        Binary binary = null;
         try{
-            Binary[] b = {new BinaryImpl(value)};
+            binary = new BinaryImpl(value);
+            Binary[] b = {binary};
             data.getBinaryProperties().put(name,b);
-            v = getSession().getValueFactory().createValue(new BinaryImpl(value));
+            v = getSession().getValueFactory().createValue(binary);
         } catch (IOException e) {
+            if (binary != null) {
+                binary.dispose();
+            }
             throw new RepositoryException(e);
         }
-        session.getChangedData().put(getPath(),data);
-        return new ExternalPropertyImpl(new Name(name,NodeTypeRegistry.getInstance().getNamespaces()),this,(ExternalSessionImpl) getSession(), v);
+        return setProperty(name, v);
     }
 
     public Property setProperty(String name, boolean value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -595,6 +646,7 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
                         statelessSession.getTransaction().commit();
                     } catch (HibernateException e) {
                         statelessSession.getTransaction().rollback();
+                        throw new RepositoryException("issue when saving in uuidMap uuid : " + uuid.toString() + " for data : " + data.getId(), e);
                     }
                     return uuid.toString();
                 }

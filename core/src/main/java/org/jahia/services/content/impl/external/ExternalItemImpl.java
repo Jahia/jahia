@@ -47,12 +47,13 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
 
 /**
- * 
+ * Implementation of the {@link javax.jcr.Item} for the {@link org.jahia.services.content.impl.external.ExternalData}.
  * User: toto
  * Date: Apr 23, 2008
  * Time: 11:46:46 AM
  * 
  */
+
 public abstract class ExternalItemImpl implements Item {
     protected ExternalSessionImpl session;
 
@@ -84,14 +85,23 @@ public abstract class ExternalItemImpl implements Item {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, ReferentialIntegrityException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
         session.save();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void refresh(boolean b) throws InvalidItemStateException, RepositoryException {
         session.refresh(b);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
 
     }

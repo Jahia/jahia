@@ -55,7 +55,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 
 /**
- *
+ * Implementation of the {@link javax.jcr.Property} for the {@link org.jahia.services.content.impl.external.ExternalData}.
  * User: toto
  * Date: Apr 23, 2008
  * Time: 11:46:28 AM
@@ -116,11 +116,15 @@ public class ExternalPropertyImpl extends ExternalItemImpl implements Property {
 
     public void setValue(InputStream inputStream) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         if (inputStream != null) {
+            Binary b = null;
             try {
-            Binary b = new BinaryImpl(inputStream);
-            setValue(getSession().getValueFactory().createValue(b));
+                b = new BinaryImpl(inputStream);
+                setValue(getSession().getValueFactory().createValue(b));
             } catch (IOException e) {
-
+                if (b != null ) {
+                    b.dispose();
+                }
+                throw new RepositoryException(e);
             }
         } else {
             remove();
@@ -140,7 +144,7 @@ public class ExternalPropertyImpl extends ExternalItemImpl implements Property {
             setValue(getSession().getValueFactory().createValue(calendar));
         } else {
             remove();
-        };
+        }
     }
 
     public void setValue(boolean b) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -153,6 +157,14 @@ public class ExternalPropertyImpl extends ExternalItemImpl implements Property {
 
     public Value getValue() throws ValueFormatException, RepositoryException {
         return value;
+    }
+
+    public void setValue(BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        if (value != null) {
+            setValue(getSession().getValueFactory().createValue(value));
+        } else {
+            remove();
+        }
     }
 
     public Value[] getValues() throws ValueFormatException, RepositoryException {
@@ -223,14 +235,9 @@ public class ExternalPropertyImpl extends ExternalItemImpl implements Property {
 
     public void setValue(Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         if (value != null) {
-            setValue(getSession().getValueFactory().createValue(value));
-        } else {
-            remove();
-        }
-    }
-
-    public void setValue(BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        if (value != null) {
+            if (getBinary() != null) {
+                getBinary().dispose();
+            }
             setValue(getSession().getValueFactory().createValue(value));
         } else {
             remove();

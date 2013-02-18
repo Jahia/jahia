@@ -49,7 +49,7 @@ import javax.jcr.*;
 import java.util.*;
 
 /**
- * JCR repository implementation for VFS provider.
+ * Implementation of the {@link javax.jcr.Repository} for the {@link org.jahia.services.content.impl.external.ExternalData}.
  * @author toto
  * Date: Apr 23, 2008
  * Time: 11:45:50 AM

@@ -75,7 +75,10 @@ import org.w3c.dom.NodeList;
  * Jahia specific {@link IndexingConfiguration} implementation. 
  */
 public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
-    private static final String FACET_EXPRESSION = ":" + JahiaNodeIndexer.FACET_PREFIX;    
+    private static final String FACET_EXPRESSION = ":" + JahiaNodeIndexer.FACET_PREFIX;   
+    
+    private static final String SPELLCHECK_EXPRESSION = FieldNames.FULLTEXT + "-";
+    
     private static final Name TRANSLATION_TYPE = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "translation");
     
     /**
@@ -106,7 +109,7 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
     
     private Set<Name> excludesFromI18NCopy = new HashSet<Name>();
     
-    private final Analyzer facetAnalyzer = new KeywordAnalyzer();
+    private final Analyzer keywordAnalyzer = new KeywordAnalyzer();
     
     public JahiaIndexingConfigurationImpl() {
         super();
@@ -148,7 +151,7 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
      * @return the <code>analyzer</code> to use for indexing this property
      */
     public Analyzer getPropertyAnalyzer(String fieldName) {
-        Analyzer analyzer = StringUtils.contains(fieldName, FACET_EXPRESSION) ? facetAnalyzer
+        Analyzer analyzer = (StringUtils.contains(fieldName, FACET_EXPRESSION) || StringUtils.startsWith(fieldName, SPELLCHECK_EXPRESSION)) ? keywordAnalyzer
                 : super.getPropertyAnalyzer(fieldName); 
         return analyzer;
     }

@@ -506,9 +506,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                                                             fullTextName.toString()), 300, 10, site, language);
                                                 }
                                             }
-                                            time = System.currentTimeMillis() - time;
-                                            time = time / 1000;
-                                            logger.info("Spell checker index refreshed in {} seconds", time);
+                                            logger.info("Spell checker index refreshed in {} ms", System.currentTimeMillis() - time);
                                         } finally {
                                             reader.close();
                                         }

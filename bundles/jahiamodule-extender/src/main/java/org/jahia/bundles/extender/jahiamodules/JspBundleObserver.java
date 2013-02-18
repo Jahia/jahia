@@ -103,35 +103,43 @@ public class JspBundleObserver extends ScriptBundleObserver {
     }
 
     private void registerJSPs(Bundle bundle, List<URL> urls, HttpService bundleHttpService) {
-        String bundleName = bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version");
+        if (urls.size() == 0) {
+            return;
+        }
+        String bundleName = bundle.getSymbolicName() + " v"
+                + (String) bundle.getHeaders().get("Implementation-Version");
         int registered = 0;
+
+        URL[] sourceURLs = FileHttpContext.getSourceURLs(bundle);
+        JspServlet jspServlet = bundleJspServlets.get(bundle);
+        URLClassLoader urlClassLoader = bundleURLClassLoaders.get(bundle);
+
+        @SuppressWarnings("unchecked")
+        Map<String, String> jspConfig = new HashMap<String, String>(
+                (Map<String, String>) SpringContextSingleton.getBean("jspConfig"));
+        File scratchDirFile = new File(new File(System.getProperty("java.io.tmpdir"), "jahia-jsps"),
+                bundle.getSymbolicName());
+        if (!scratchDirFile.exists()) {
+            scratchDirFile.mkdirs();
+        }
+        jspConfig.put("scratchdir", scratchDirFile.getPath());
+
         for (URL url : urls) {
-            URL[] sourceURLs = FileHttpContext.getSourceURLs(bundle);
             String urlAlias = url.getPath();
-            JspServlet jspServlet = bundleJspServlets.get(bundle);
             boolean firstInstance = false;
             if (jspServlet == null) {
                 jspServlet = new JspServlet();
                 firstInstance = true;
                 bundleJspServlets.put(bundle, jspServlet);
             }
-            URLClassLoader urlClassLoader = bundleURLClassLoaders.get(bundle);
             if (urlClassLoader == null) {
                 urlClassLoader = new JasperClassLoader(bundle, JasperClassLoader.class.getClassLoader());
                 bundleURLClassLoaders.put(bundle, urlClassLoader);
             }
             JspServletWrapper jspServletWrapper = new JspServletWrapper(jspServlet, urlClassLoader, urlAlias, firstInstance);
-            Hashtable<String, String> props = new Hashtable<String, String>();
-
-            Map<String,String> m = (Map<String, String>) SpringContextSingleton.getBean("jspConfig");
-            props.putAll(m);
-
+            Hashtable<String, String> props = new Hashtable<String, String>(jspConfig.size() + 1);
+            props.putAll(jspConfig);
             props.put("alias", urlAlias);
-            File scratchDirFile = new File(new File(System.getProperty("java.io.tmpdir"),"jsp"), bundle.getSymbolicName());
-            if (!scratchDirFile.exists()) {
-                scratchDirFile.mkdirs();
-            }
-            props.put("scratchdir", scratchDirFile.getPath());
 
             HttpContext httpContext = new FileHttpContext(sourceURLs,bundleHttpService.createDefaultHttpContext());
             try {
@@ -178,15 +186,23 @@ public class JspBundleObserver extends ScriptBundleObserver {
     }
 
     private void unregisterJSPs(Bundle bundle, List<URL> urls, HttpService bundleHttpService) {
+        if (urls.size() == 0) {
+            return;
+        }
+        String bundleName = bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version");
+        int count = 0;
         for (URL url : urls) {
             String urlAlias = url.getPath();
-            logger.info("Unregistering JSP " + urlAlias + " for bundle " + bundle.getSymbolicName() + " v" + (String) bundle.getHeaders().get("Implementation-Version"));
+            logger.debug("Unregistering JSP {} for bundle {}", urlAlias, bundleName);
             Set<String> registeredBundleAliases = registeredAliases.get(bundle);
             if (registeredBundleAliases != null && registeredBundleAliases.contains(urlAlias)) {
                 bundleHttpService.unregister("/"+bundle.getSymbolicName() +urlAlias);
                 registeredBundleAliases.remove(urlAlias);
             }
             bundleDispatcherServlet.getJspMappings().remove("/"+bundle.getSymbolicName() +urlAlias);
+            count++;
         }
+        
+        logger.info("Unregistered {} JSPs for bundle {}", count, bundleName);
     }
 }

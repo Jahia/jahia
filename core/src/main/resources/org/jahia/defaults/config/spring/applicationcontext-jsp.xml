@@ -5,13 +5,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <util:map id="jspConfig" key-type="java.lang.String" value-type="java.lang.String">
+        <entry key="checkInterval" value="300"/>
         <entry key="development" value="true"/>
         <entry key="keepgenerated" value="true"/>
-        <entry key="saveByteCode" value="true"/>
-        <entry key="trimSpaces" value="false"/>
-        <entry key="checkInterval" value="0"/>
-        <entry key="javaEncoding" value="UTF8"/>
-        <entry key="xpoweredBy" value="false"/>
-        <!--<entry key="scratchDir" value=""/>-->
+        <entry key="saveBytecode" value="true"/>
+        <entry key="trimSpaces" value="true"/>
     </util:map>
 </beans>

@@ -282,7 +282,7 @@ public class SurefireJUnitXMLResultFormatter extends RunListener {
             // a TestSuite can contain Tests from multiple classes,
             // even tests with the same name - disambiguate them.
             currentTest.setAttribute(ATTR_CLASSNAME,
-                    test.getTestClass().getName());
+                    test.getClassName());
             rootElement.appendChild(currentTest);
             testElements.put(test, currentTest);
         } else {

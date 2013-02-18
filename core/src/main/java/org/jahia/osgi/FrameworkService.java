@@ -53,6 +53,7 @@ import javax.servlet.ServletContext;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * OSGi framework service
@@ -104,11 +105,12 @@ public class FrameworkService {
 
         @SuppressWarnings("unchecked")
         Map<String,String> unreplaced = (Map<String,String>) SpringContextSingleton.getBean("felixProperties");
+        
         PropertyPlaceholderHelper placeholderHelper = new PropertyPlaceholderHelper("${", "}");
-
+        Properties systemProps = System.getProperties();
         HashMap<String, Object> map = new HashMap<String, Object>();
         for (Map.Entry<String, String> entry : unreplaced.entrySet()) {
-            map.put(entry.getKey(), placeholderHelper.replacePlaceholders(entry.getValue(), System.getProperties()));
+            map.put(entry.getKey(), placeholderHelper.replacePlaceholders(entry.getValue(), systemProps));
         }
 
         map.put("org.jahia.servlet.context", context);

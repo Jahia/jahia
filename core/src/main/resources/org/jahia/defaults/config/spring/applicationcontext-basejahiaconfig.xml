@@ -17,11 +17,11 @@
   		</list>
   	</property>
     <property name="localOverride" value="true"/>
-    <property name="properties">
-        <bean class="org.jahia.settings.SystemPropertiesFactoryBean">
-            <property name="prefix" value="jahiaConfig."/>
-        </bean>
-    </property>
+    <property name="properties" ref="jahiaSystemProperties"/>
+  </bean>
+
+  <bean id="jahiaSystemProperties" class="org.jahia.settings.SystemPropertiesFactoryBean">
+    <property name="prefix" value="jahiaConfig." />
   </bean>
 
   <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">

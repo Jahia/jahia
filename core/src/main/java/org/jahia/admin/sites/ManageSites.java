@@ -873,7 +873,7 @@ public class ManageSites extends AbstractAdministrationModule {
             }
             Locale selectedLocale = (Locale) session.getAttribute(CLASS_NAME + "selectedLocale");
             if (selectedLocale == null) {
-                selectedLocale = Jahia.getSettings().getDefaultLocale();
+                selectedLocale = SettingsBean.getInstance().getDefaultLocale();
             }
             session.setAttribute(CLASS_NAME + "selectedLocale", selectedLocale);
             request.setAttribute("selectedLocale", selectedLocale);

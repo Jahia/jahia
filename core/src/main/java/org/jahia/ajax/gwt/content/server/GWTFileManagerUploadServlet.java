@@ -53,13 +53,13 @@ import org.slf4j.LoggerFactory;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.helper.VersioningHelper;
 import org.jahia.ajax.gwt.helper.ZipHelper;
-import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRVersionService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.Messages;
 
 import javax.jcr.RepositoryException;
@@ -88,7 +88,8 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);
-        upload.setSizeMax(Jahia.getSettings().getJahiaFileUploadMaxSize());
+        SettingsBean settingsBean = SettingsBean.getInstance();
+        upload.setSizeMax(settingsBean.getJahiaFileUploadMaxSize());
         upload.setHeaderEncoding("UTF-8");
         Map<String, FileItem> uploads = new HashMap<String, FileItem>();
         String location = null;
@@ -121,16 +122,16 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
             Locale locale = (Locale) request.getSession().getAttribute(ParamBean.SESSION_LOCALE);
             String locMsg = null;
             try {
-                locMsg = Messages.getInternalWithArguments("fileSizeError.label", locale, Jahia
-                        .getSettings().getJahiaFileUploadMaxSize());
+                locMsg = Messages.getInternalWithArguments("fileSizeError.label", locale, settingsBean
+                        .getJahiaFileUploadMaxSize());
             } catch (Exception ex) {
                 logger.debug("Error while using default engine resource bundle (internal) with locale " + locale, ex);
             }
             if (locMsg == null) {
-                locMsg = "File upload exceeding limit of " + Jahia.getSettings().getJahiaFileUploadMaxSize() + " bytes";
+                locMsg = "File upload exceeding limit of " + settingsBean.getJahiaFileUploadMaxSize() + " bytes";
             }
             logger.error(locMsg, e);
-            response.setContentType("text/plain; charset=" + Jahia.getSettings().getCharacterEncoding());
+            response.setContentType("text/plain; charset=" + settingsBean.getCharacterEncoding());
             printWriter.write("UPLOAD-ISSUE: " + locMsg + "\n");
             return;
         } catch (FileUploadException e) {

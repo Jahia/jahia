@@ -42,11 +42,11 @@ package org.jahia.utils.i18n;
 
 import org.slf4j.Logger;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 
 import java.io.BufferedInputStream;
@@ -170,8 +170,8 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
                     }
                 }
                 try {
-                    if (Jahia.getSettings() != null) {
-                        File file = new File(Jahia.getSettings().getClassDiskPath(), fileName);
+                    if (SettingsBean.getInstance() != null) {
+                        File file = new File(SettingsBean.getInstance().getClassDiskPath(), fileName);
                         if (file.exists()) {
                             return new BufferedInputStream(new FileInputStream(file));
                         }

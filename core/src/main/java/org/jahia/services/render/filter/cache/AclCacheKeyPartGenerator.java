@@ -196,23 +196,27 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             } else {
                 for (final String dependency : dependencies) {
                     if (!dependency.equals(nodePath)) {
-                        if (!JCRContentUtils.isNotJcrUuid(dependency)) {
-                            final boolean finalCheckRootPath = checkRootPath;
-                            JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Object>() {
-                                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                	try{
-                                		final JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(dependency);
-                                		aclsKeys.add(getAclsKeyPart(renderContext, finalCheckRootPath,
-                                            nodeByIdentifier.getPath(), true, null));
-                                	}catch(ItemNotFoundException ex) {
-                                		logger.warn("ItemNotFound: " + dependency + "  it could be an invalid reference, check jcr integrity");
-                                	}
-                                    return null;
-                                }
-                            });
-                        } else if (dependency.contains("/")) {
-                            aclsKeys.add(getAclsKeyPart(renderContext, checkRootPath, dependency, true, null));
-                        }
+                        try{
+                            if (!JCRContentUtils.isNotJcrUuid(dependency)) {
+                                final boolean finalCheckRootPath = checkRootPath;
+                                JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Object>() {
+                                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                        final JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(dependency);
+                                        aclsKeys.add(getAclsKeyPart(renderContext, finalCheckRootPath,
+                                                nodeByIdentifier.getPath(), true, null));
+                                        return null;
+                                    }
+                                });
+                            } else if (dependency.contains("/")) {
+                                aclsKeys.add(getAclsKeyPart(renderContext, checkRootPath, dependency, true, null));
+                            }
+                        } catch(ItemNotFoundException ex) {
+                            logger.warn("ItemNotFound: " + dependency + "  it could be an invalid reference, check jcr integrity");
+                        } catch (PathNotFoundException ex) {
+                            logger.warn("PathNotFound: "
+                                    + dependency
+                                    + "  it could be an invalid reference, check jcr integrity");
+                        }                                               
                     }
                 }
             }

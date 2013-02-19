@@ -122,7 +122,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             renderContext.getRequest().setAttribute("servedFromCache", servedFromCache);
         }
 
-        setAttributesForKey(renderContext, resource, chain);
+        Properties properties = setAttributesForKey(renderContext, resource, chain);
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
 
         if (debugEnabled) {
@@ -130,14 +130,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
         Element element = null;
         final Cache cache = cacheProvider.getCache();
-        boolean cacheable = !notCacheableFragment.containsKey(key);
-        if (renderContext.isLoggedIn() && renderContext.getRequest().getParameter("v") != null) {
-            cacheable = false;
-        }
-        if (renderContext.getRequest().getParameter("ec") != null && renderContext.getRequest().getParameter(
-                "ec").equals(resource.getNode().getIdentifier())) {
-            cacheable = false;
-        }
+        boolean cacheable = isCacheable(renderContext, resource, key, properties, true);
+
         String perUserKey = replacePlaceholdersInCacheKey(renderContext, key);
         LinkedList<String> userKeysLinkedList = userKeys.get();
         if (userKeysLinkedList == null) {
@@ -184,6 +178,38 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             return null;
         }
     }
+    
+    /**
+     * Is the current fragment cacheable or not
+     * 
+     * @param renderContext render context
+     * @param resource current resource
+     * @param key calculated cache key
+     * @param properties cache properties
+     * @param isInPrepare true if we are in filter prepare mode, and false if we are in filter execute mode
+     * @return true if fragments is cacheable, false if not
+     * @throws RepositoryException
+     */
+    protected boolean isCacheable(RenderContext renderContext, Resource resource, String key, Properties properties, boolean isInPrepare) throws RepositoryException {
+        boolean cacheable = !notCacheableFragment.containsKey(key);
+        if (renderContext.isLoggedIn() && renderContext.getRequest().getParameter("v") != null) {
+            cacheable = false;
+        }
+        if (renderContext.getRequest().getParameter("ec") != null && renderContext.getRequest().getParameter(
+                "ec").equals(resource.getNode().getIdentifier())) {
+            cacheable = false;
+        }
+        
+        return cacheable;
+    }
+    
+    /**
+     * Sets whether dependencies should be stored per cache object for this filter, which is useful for dependent flushes.
+     * @return true if filter uses dependencies, false if not
+     */
+    protected boolean useDependencies() {
+        return true;
+    }
 
     @SuppressWarnings("unchecked")
     protected String returnFromCache(RenderContext renderContext, Resource resource, boolean debugEnabled,
@@ -229,14 +255,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 }
             }
         }
-        boolean cacheable = !notCacheableFragment.containsKey(key);
-        if (renderContext.isLoggedIn() && renderContext.getRequest().getParameter("v") != null) {
-            cacheable = false;
-        }
-        if (renderContext.getRequest().getParameter("ec") != null && renderContext.getRequest().getParameter(
-                "ec").equals(resource.getNode().getIdentifier())) {
-            cacheable = false;
-        }
+        boolean cacheable = isCacheable(renderContext, resource, key, properties, false);
         final Cache cache = cacheProvider.getCache();
         boolean debugEnabled = logger.isDebugEnabled();
         boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
@@ -284,34 +303,36 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
     protected void doCache(String previousOut, RenderContext renderContext, Resource resource, Properties properties, Cache cache, String key, String perUserKey) throws RepositoryException, ParseException {
         Long expiration = getExpiration(renderContext, resource, properties);
-
-        final Cache dependenciesCache = cacheProvider.getDependenciesCache();
-        Set<String> depNodeWrappers = resource.getDependencies();
-        for (String path : depNodeWrappers) {
-            Element element1 = dependenciesCache.get(path);
-            Set<String> dependencies = element1 != null ? (Set<String>) element1.getValue() : Collections.<String>emptySet();
-            if (!dependencies.contains("ALL")) {
-                Set<String> newDependencies = new LinkedHashSet<String>(dependencies.size() + 1);
-                newDependencies.addAll(dependencies);
-                if ((newDependencies.size() + 1) > dependenciesLimit) {
-                    newDependencies.clear();
-                    newDependencies.add("ALL");
-                    dependenciesCache.put(new Element(path, newDependencies));
-                } else {
-                    addDependencies(renderContext, perUserKey, dependenciesCache, path, newDependencies);
+        Set<String> depNodeWrappers = Collections.emptySet();
+        if (useDependencies()) {
+            final Cache dependenciesCache = cacheProvider.getDependenciesCache();
+            depNodeWrappers = resource.getDependencies();
+            for (String path : depNodeWrappers) {
+                Element element1 = dependenciesCache.get(path);
+                Set<String> dependencies = element1 != null ? (Set<String>) element1.getValue() : Collections.<String>emptySet();
+                if (!dependencies.contains("ALL")) {
+                    Set<String> newDependencies = new LinkedHashSet<String>(dependencies.size() + 1);
+                    newDependencies.addAll(dependencies);
+                    if ((newDependencies.size() + 1) > dependenciesLimit) {
+                        newDependencies.clear();
+                        newDependencies.add("ALL");
+                        dependenciesCache.put(new Element(path, newDependencies));
+                    } else {
+                        addDependencies(renderContext, perUserKey, dependenciesCache, path, newDependencies);
+                    }
                 }
             }
+            final Cache regexpDependenciesCache = cacheProvider.getRegexpDependenciesCache();
+            Set<String> regexpDepNodeWrappers = resource.getRegexpDependencies();
+            for (String regexp : regexpDepNodeWrappers) {
+                Element element1 = regexpDependenciesCache.get(regexp);
+                Set<String> dependencies = element1 != null ? (Set<String>) element1.getValue() : Collections.<String>emptySet();
+                Set<String> newDependencies = new LinkedHashSet<String>(dependencies.size() + 1);
+                newDependencies.addAll(dependencies);
+                addDependencies(renderContext, perUserKey, regexpDependenciesCache, regexp, newDependencies);
+            }
         }
-        resource.getDependencies().clear();
-        final Cache regexpDependenciesCache = cacheProvider.getRegexpDependenciesCache();
-        Set<String> regexpDepNodeWrappers = resource.getRegexpDependencies();
-        for (String regexp : regexpDepNodeWrappers) {
-            Element element1 = regexpDependenciesCache.get(regexp);
-            Set<String> dependencies = element1 != null ? (Set<String>) element1.getValue() : Collections.<String>emptySet();
-            Set<String> newDependencies = new LinkedHashSet<String>(dependencies.size() + 1);
-            newDependencies.addAll(dependencies);
-            addDependencies(renderContext, perUserKey, regexpDependenciesCache, regexp, newDependencies);
-        }
+        resource.getDependencies().clear();        
         resource.getRegexpDependencies().clear();
         // append cache:include tag
         CacheEntry<String> cacheEntry = getCacheEntry(previousOut, renderContext, resource, key);

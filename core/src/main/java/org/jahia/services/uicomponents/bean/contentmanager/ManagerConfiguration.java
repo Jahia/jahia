@@ -291,6 +291,9 @@ public class ManagerConfiguration implements Serializable {
         this.displaySearchInContent = displaySearchInContent;
     }
 
+    /**
+     * @return Map of engine configurations
+     */
     public Map<String, EngineConfiguration> getEngineConfigurations() {
         return engineConfigurations;
     }

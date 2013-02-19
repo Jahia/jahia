@@ -212,6 +212,9 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         }
     }
 
+    /**
+     * @return when true, the default url and base are /modules/default(.html)
+     */
     public boolean isModulesOnly() {
         return modulesOnly;
     }
@@ -220,6 +223,9 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         this.modulesOnly = modulesOnly;
     }
 
+    /**
+     * @return List of paths to the components
+     */
     public List<String> getComponentsPaths() {
         return componentsPaths;
     }
@@ -228,6 +234,9 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         this.componentsPaths = componentsPaths;
     }
 
+    /**
+     * @return Set of editable types
+     */
     public Set<String> getEditableTypes() {
         return editableTypes;
     }
@@ -236,6 +245,9 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         this.editableTypes = editableTypes;
     }
 
+    /**
+     * @return Set of non editable types
+     */
     public Set<String> getNonEditableTypes() {
         return nonEditableTypes;
     }
@@ -244,6 +256,9 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         this.nonEditableTypes = nonEditableTypes;
     }
 
+    /**
+     * @return Set of types on witch we avoid to parse dom for module lookup (ex javascript, css, etc ..)
+     */
     public Set<String> getSkipMainModuleTypesDomParsing() {
         return skipMainModuleTypesDomParsing;
     }
@@ -252,6 +267,9 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         this.skipMainModuleTypesDomParsing = skipMainModuleTypesDomParsing;
     }
 
+    /**
+     * @return Set of visible Types
+     */
     public Set<String> getVisibleTypes() {
         return visibleTypes;
     }
@@ -260,6 +278,9 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         this.visibleTypes = visibleTypes;
     }
 
+    /**
+     * @return Set of types to hide
+     */
     public Set<String> getNonVisibleTypes() {
         return nonVisibleTypes;
     }
@@ -268,6 +289,9 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         this.nonVisibleTypes = nonVisibleTypes;
     }
 
+    /**
+     * @return if true, display button on the top right of the area
+     */
     public boolean isButtonsInLayer() {
         return buttonsInLayer;
     }
@@ -276,6 +300,11 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         this.buttonsInLayer = buttonsInLayer;
     }
 
+    /**
+     * @param node to check
+     * @return true if the node is visible (in visibleTypes or without nonVisibleTypes)
+     * @throws RepositoryException
+     */
     public boolean isVisible(JCRNodeWrapper node) throws RepositoryException {
         if (getNonVisibleTypes() != null && isNodeOfType(node, getNonVisibleTypes())) {
             return false;
@@ -285,6 +314,11 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         return true;
     }
 
+    /**
+     * @param node to check
+     * @return true if the node is editable (in editableTypes or without nonEditableTypes)
+     * @throws RepositoryException
+     */
     public boolean isEditable( JCRNodeWrapper node) throws RepositoryException{
         if (getNonEditableTypes() != null && isNodeOfType(node, getNonEditableTypes())) {
             return false;

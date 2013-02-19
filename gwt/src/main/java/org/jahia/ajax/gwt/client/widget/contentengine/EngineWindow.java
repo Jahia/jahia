@@ -101,4 +101,8 @@ public class EngineWindow extends Window implements EngineContainer {
     public void closeEngine() {
         hide();
     }
+
+    protected void doFocus() {
+        // windows hack
+    }
 }

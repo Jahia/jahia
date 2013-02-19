@@ -355,12 +355,9 @@ public class BundleScriptResolver implements ScriptResolver {
                         String filename = FilenameUtils.getName(scriptInBundle.getFile());
                         String pref = nt.getName().contains(":") ? StringUtils.substringAfter(nt.getName(), ":") : nt.getName();
                         if (filename.startsWith(pref + ".")) {
-                            String key = null;
-                            try {
-                                key = filename.substring(filename.indexOf(".") + 1, filename.lastIndexOf("."));
-                            } catch (StringIndexOutOfBoundsException e) {
-                                key = "default";
-                            }
+                            int start = filename.indexOf(".") + 1;
+                            int end = filename.lastIndexOf(".");
+                            String key = start < end ? filename.substring(filename.indexOf(".") + 1, filename.lastIndexOf(".")) : "default";
                             if (!views.containsKey(key)) {
                                 BundleView view = new BundleView(bundle, "/" + path + "/" + FilenameUtils.getName(scriptInBundle.getFile()), key, tplPackage, version, filename);
                                 views.put(key, view);

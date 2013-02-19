@@ -52,6 +52,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * Represent edit mode configuration, including side panel and side panel toolbar,
+ * top toolbar, main module toolbar and context menu.
+ * GWT side of EditConfiguration
  * User: toto
  * Date: Apr 20, 2010
  * Time: 6:27:19 PM

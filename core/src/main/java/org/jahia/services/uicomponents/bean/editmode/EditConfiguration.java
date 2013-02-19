@@ -52,7 +52,7 @@ import java.util.*;
 /**
  * Represent edit mode configuration, including side panel and side panel toolbar,
  * top toolbar, main module toolbar and context menu.
- * 
+ * Core side of GWTConfiguration. See link between this and GWTConfiguration in {@link org.jahia.ajax.gwt.helper.UIConfigHelper}
  * @author ktlili
  * Date: Apr 14, 2010
  * Time: 12:26:47 PM

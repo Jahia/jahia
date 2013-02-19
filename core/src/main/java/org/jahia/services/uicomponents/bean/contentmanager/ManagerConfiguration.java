@@ -48,7 +48,7 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * Content manager configuratino settings.
+ * Content manager configuration settings.
  * User: ktlili
  * Date: Apr 12, 2010
  * Time: 2:54:37 PM

@@ -778,9 +778,8 @@ public class NavigationHelper {
          
         List<String> inheritedTypes = new ArrayList<String>();
         List<String> nodeTypes = null; 
-        System.out.println("test");
-        
-    	try{
+
+        try{
     		if(!node.getPath().equals("/") && node.getParent().isNodeType(Constants.JAHIAMIX_AUTOSPLITFOLDERS)) { 
     			//reload the node when it is splittype that all pathes are correct, to load the permissios
     	        node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(node.getIdentifier()); 

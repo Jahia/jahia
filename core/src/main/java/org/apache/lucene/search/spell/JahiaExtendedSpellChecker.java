@@ -381,10 +381,10 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
 
     private static Document createDocument(String text, int ng1, int ng2, String site, String langCode) {
         Document doc = new Document();
-        doc.add(new Field(F_WORD + (langCode != null ? "-" + langCode : ""), text, Field.Store.YES,
-                Field.Index.NOT_ANALYZED)); // orig term
-        doc.add(new Field(F_LANGUAGE, langCode, Field.Store.YES, Field.Index.NOT_ANALYZED)); // language        
-        doc.add(new Field(F_SITE, site, Field.Store.YES, Field.Index.NOT_ANALYZED)); // site        
+        doc.add(new Field(F_WORD + (langCode != null ? "-" + langCode : ""), false, text, Field.Store.YES,
+                Field.Index.NOT_ANALYZED, Field.TermVector.NO)); // orig term
+        doc.add(new Field(F_LANGUAGE, false, langCode, Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.NO)); // language
+        doc.add(new Field(F_SITE, false, site, Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.NO)); // site
         addGram(text, doc, ng1, ng2);
         return doc;
     }
@@ -396,14 +396,14 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
             String end = null;
             for (int i = 0; i < len - ng + 1; i++) {
                 String gram = text.substring(i, i + ng);
-                doc.add(new Field(key, gram, Field.Store.NO, Field.Index.NOT_ANALYZED));
+                doc.add(new Field(key, false, gram, Field.Store.NO, Field.Index.NOT_ANALYZED, Field.TermVector.NO));
                 if (i == 0) {
-                    doc.add(new Field("start" + ng, gram, Field.Store.NO, Field.Index.NOT_ANALYZED));
+                    doc.add(new Field("start" + ng, false, gram, Field.Store.NO, Field.Index.NOT_ANALYZED, Field.TermVector.NO));
                 }
                 end = gram;
             }
             if (end != null) { // may not be present if len==ng1
-                doc.add(new Field("end" + ng, end, Field.Store.NO, Field.Index.NOT_ANALYZED));
+                doc.add(new Field("end" + ng, false, end, Field.Store.NO, Field.Index.NOT_ANALYZED, Field.TermVector.NO));
             }
         }
     }

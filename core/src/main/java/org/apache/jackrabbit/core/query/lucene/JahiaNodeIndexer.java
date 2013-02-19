@@ -517,7 +517,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
         // create facet index on property
         int idx = fieldName.indexOf(':');
         fieldName = fieldName.substring(0, idx + 1) + FACET_PREFIX + fieldName.substring(idx + 1);
-        Field f = new Field(fieldName, stringValue, Field.Store.NO, Field.Index.ANALYZED,
+        Field f = new Field(fieldName,false, stringValue, Field.Store.NO, Field.Index.ANALYZED,
                 Field.TermVector.NO);
         doc.add(f);
 
@@ -575,11 +575,11 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
         int hierarchyIndex = hierarchyPaths.size();
         for (String path : hierarchyPaths) {
-            doc.add(new Field(fieldName, hierarchyIndex + path, Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.NO));
+            doc.add(new Field(fieldName, false, hierarchyIndex + path, Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.NO));
             hierarchyIndex--;
         }
         for (String id : parentIds) {
-            doc.add(new Field(FACET_HIERARCHY, id, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
+            doc.add(new Field(FACET_HIERARCHY, false, id, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
         }
     }
 
@@ -691,12 +691,12 @@ public class JahiaNodeIndexer extends NodeIndexer {
                     logger.warn("The node " + parentNode.getId().toString() + " is in 'free floating' state. You should run a consistency check/fix on the repository.");
                 } else {
                     doc.add(new Field(
-                            TRANSLATED_NODE_PARENT, parentId.toString(),
+                            TRANSLATED_NODE_PARENT, false, parentId.toString(),
                             Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
                 }
 
                 doc.add(new Field(
-                        TRANSLATION_LANGUAGE, resolveLanguage(),
+                        TRANSLATION_LANGUAGE, false, resolveLanguage(),
                         Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
 
                 // copy properties from parent into translation node, including node types
@@ -734,7 +734,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 }
                 
                 if (isIndexed(J_VISIBILITY) && parentNode.hasChildNodeEntry(J_VISIBILITY)) {
-                    doc.add(new Field(CHECK_VISIBILITY, "1",
+                    doc.add(new Field(CHECK_VISIBILITY, false, "1",
                             Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
                             Field.TermVector.NO));
                 }
@@ -751,7 +751,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
             addAclUuid(doc);
         }
         if (isIndexed(J_VISIBILITY) && node.hasChildNodeEntry(J_VISIBILITY)) {
-            doc.add(new Field(CHECK_VISIBILITY, "1",
+            doc.add(new Field(CHECK_VISIBILITY, false, "1",
                     Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
                     Field.TermVector.NO));
         }
@@ -760,7 +760,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
             try {
                 PropertyState propState = (PropertyState) stateProvider.getItemState(id);
                 
-                doc.add(new Field(PUBLISHED, propState.getValues()[0].getString(),
+                doc.add(new Field(PUBLISHED, false, propState.getValues()[0].getString(),
                         Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
                         Field.TermVector.NO));
             } catch (ItemStateException e) {
@@ -801,7 +801,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
         } catch (ItemStateException e) {
             throwRepositoryException(e);
         }
-        doc.add(new Field(ACL_UUID, StringUtils.join(acls, " "),
+        doc.add(new Field(ACL_UUID, false, StringUtils.join(acls, " "),
                 Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
                 Field.TermVector.NO));
     }

@@ -53,12 +53,12 @@
         <property name="processEngine" ref="processEngine"/>
         <property name="processes">
             <list>
-                <value>classpath*:org/jahia/modules/custom/workflow/*.jpdl.xml</value>
+                <value>osgibundle:org/jahia/modules/custom/workflow/*.jpdl.xml</value>
             </list>
         </property>
         <property name="mailTemplates">
             <list>
-                <value>classpath*:org/jahia/modules/custom/workflow/*.mail</value>
+                <value>osgibundle:org/jahia/modules/custom/workflow/*.mail</value>
             </list>
         </property>
     </bean>

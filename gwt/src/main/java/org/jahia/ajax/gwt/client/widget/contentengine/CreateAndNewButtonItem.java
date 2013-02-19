@@ -46,6 +46,9 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 
+/**
+ * Button Item for create and new
+ */
 public class CreateAndNewButtonItem extends CreateButtonItem {
 
     @Override

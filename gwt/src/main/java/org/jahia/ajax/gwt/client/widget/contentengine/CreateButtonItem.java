@@ -66,6 +66,10 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.*;
 
+/**
+ * Button Item for create
+ */
+
 public class CreateButtonItem extends SaveButtonItem {
 
     private boolean useNamePopup = false;

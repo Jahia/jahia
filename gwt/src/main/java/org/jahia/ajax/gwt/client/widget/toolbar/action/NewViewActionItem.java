@@ -123,7 +123,7 @@ public class NewViewActionItem extends BaseActionItem  {
                             treeGrid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
                                 public void handleEvent(BaseEvent baseEvent) {
                                     GWTJahiaNodeType gwtJahiaNodeType = (GWTJahiaNodeType) (((TreeGridEvent) baseEvent).getModel()).get("componentNodeType");
-                                    if (gwtJahiaNodeType != null && linker != null && !gwtJahiaNodeType.isMixin()) {
+                                    if (gwtJahiaNodeType != null && linker != null) {
                                         createEngine(fileNodeType, selectedNode, gwtJahiaNodeType.getName().replaceAll(":", "_"));
                                         popup.hide();
                                     }

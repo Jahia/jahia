@@ -58,7 +58,9 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.*;
 
-
+/**
+ *create button for resources (css or javascript)
+ */
 public class CreateResourceButtonItem extends SaveButtonItem {
 
     private String defaultContainerFolder;
@@ -142,22 +144,23 @@ public class CreateResourceButtonItem extends SaveButtonItem {
             EditEngineTabItem item = tab.getData("item");
             item.doSave(null, engine.getChangedProperties(), engine.getChangedI18NProperties(), addedTypes, removedTypes, null, engine.getAcl());
         }
+        List<GWTJahiaNodeProperty> changedProperties = engine.getChangedProperties();
         if (properties.size() > 0) {
             // Edit
-            for (GWTJahiaNodeProperty p : properties) {
-                for (GWTJahiaNodeProperty p1 : engine.getChangedProperties()) {
-                    if (p.getName().equals(p1.getName())) {
-                        properties.get(properties.indexOf(p)).setValues(p1.getValues());
+            for (int i=0; i < properties.size(); i++ ) {
+                for (int j=0; j < changedProperties.size(); j++) {
+                    if (properties.get(i).getName().equals(changedProperties.get(j).getName())) {
+                        properties.get(i).setValues(changedProperties.get(j).getValues());
                     }
                 }
             }
         } else {
             // Create
-            properties = engine.getChangedProperties();
+            properties = changedProperties;
         }
         JahiaContentManagementService.App.getInstance().createNode(parentPath, nodeName, engine.getType().getName(), null, engine.getAcl(), properties, engine.changedI18NProperties, null, parentNodesType, false, new AsyncCallback<GWTJahiaNode>() {
             public void onFailure(Throwable throwable) {
-                MessageBox.alert("save not work as expected", throwable.getMessage(), null);
+                MessageBox.alert(Messages.get("label.error.processingRequestError","An error occurred while processing your request"), throwable.getMessage(), null);
             }
             public void onSuccess(GWTJahiaNode gwtJahiaNode) {
                 Linker linker = engine.getLinker();
@@ -173,6 +176,7 @@ public class CreateResourceButtonItem extends SaveButtonItem {
 
     @Override
     protected void prepareAndSave(final AbstractContentEngine engine, boolean closeAfterSave) {
+        //Nothing to do here
     }
 
     public void setDefaultContainerFolder(String defaultContainerFolder) {

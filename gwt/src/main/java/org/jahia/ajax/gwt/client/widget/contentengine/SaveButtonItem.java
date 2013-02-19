@@ -65,6 +65,9 @@ import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Default implementation of ButtonItem
+ */
 public abstract class SaveButtonItem implements ButtonItem {
 
     public Button create(final AbstractContentEngine engine) {

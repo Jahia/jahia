@@ -71,6 +71,10 @@ import java.util.*;
  */
 public class SaveAsViewButtonItem extends SaveButtonItem {
 
+    public static final int INDEX_OF_FILE_TYPE = 5;
+    public static final int INDEX_OF_FILE_NAME = 7;
+    public static final int INDEX_OF_TEMPLATE_TYPE = 6;
+
     public Button create(final AbstractContentEngine engine) {
         Button button = new Button(Messages.get("label.saveAs", "Save as ..."));
         button.setHeight(BUTTON_HEIGHT);
@@ -83,19 +87,19 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                 }
                 final String[] filePath = node.getPath().split("/");
 
-                String mv;
-                String ft= "";
-                String ftt= "html";
-                String fn = "";
+                String moduleVersionTmp;
+                String fileTypeTmp= "";
+                String fileTemplateTypeTmp= "html";
+                String fileNameTmp = "";
                 if ("modules".equals(filePath[1])) {
-                    mv = (String) JahiaGWTParameters.getSiteNode().getProperties().get("j:versionInfo");
+                    moduleVersionTmp = (String) JahiaGWTParameters.getSiteNode().getProperties().get("j:versionInfo");
                     if (engine instanceof CreateContentEngine) {
-                        ft = ((CreateContentEngine) engine).getTargetName();
-                        fn = ft.indexOf("_")>1?ft.substring(ft.indexOf("_") + 1) + ".jsp":ft+".jsp";
+                        fileTypeTmp = ((CreateContentEngine) engine).getTargetName();
+                        fileNameTmp = fileTypeTmp.indexOf("_")>1?fileTypeTmp.substring(fileTypeTmp.indexOf("_") + 1) + ".jsp":fileTypeTmp+".jsp";
                     } else {
-                        ft = filePath[5];
-                        fn = filePath[7];
-                        ftt=filePath[6];
+                        fileTypeTmp = filePath[INDEX_OF_FILE_TYPE];
+                        fileNameTmp = filePath[INDEX_OF_FILE_NAME];
+                        fileTemplateTypeTmp=filePath[INDEX_OF_TEMPLATE_TYPE];
                     }
 
                 } else {
@@ -104,11 +108,11 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                 }
                 final String modulePath = "/modules/" + filePath[2];
                 final String moduleName = filePath[2];
-                final String moduleVersion = mv;
-                final String fileName = fn;
+                final String moduleVersion = moduleVersionTmp;
+                final String fileName = fileNameTmp;
                 final String fileView = fileName.indexOf(".") == fileName.lastIndexOf(".") ? "default" : fileName.substring(fileName.indexOf(".") + 1, fileName.lastIndexOf("."));
-                final String fileType = ft;
-                final String fileTemplateType = ftt;
+                final String fileType = fileTypeTmp;
+                final String fileTemplateType = fileTemplateTypeTmp;
 
 
                 // Open popup to select module
@@ -214,22 +218,23 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
             EditEngineTabItem item = tab.getData("item");
             item.doSave(null, engine.getChangedProperties(), engine.getChangedI18NProperties(), addedTypes, removedTypes, null, engine.getAcl());
         }
+        List<GWTJahiaNodeProperty> changedProperties = engine.getChangedProperties();
         if (properties.size() > 0) {
             // Edit
-            for (GWTJahiaNodeProperty p : properties) {
-                for (GWTJahiaNodeProperty p1 : engine.getChangedProperties()) {
-                    if (p.getName().equals(p1.getName())) {
-                        properties.get(properties.indexOf(p)).setValues(p1.getValues());
+            for (int i=0; i < properties.size(); i++ ) {
+                for (int j=0; j < changedProperties.size(); j++) {
+                    if (properties.get(i).getName().equals(changedProperties.get(j).getName())) {
+                        properties.get(i).setValues(changedProperties.get(j).getValues());
                     }
                 }
             }
         } else {
             // Create
-            properties = engine.getChangedProperties();
+            properties = changedProperties;
         }
         JahiaContentManagementService.App.getInstance().createNode(modulePath, viewName, "jnt:viewFile", null, engine.getAcl(), properties, engine.changedI18NProperties, null, parentNodesType, false, new AsyncCallback<GWTJahiaNode>() {
             public void onFailure(Throwable throwable) {
-                MessageBox.alert("save not work as expected", throwable.getMessage(), null);
+                MessageBox.alert(Messages.get("label.error.processingRequestError","An error occurred while processing your request"), throwable.getMessage(), null);
             }
             public void onSuccess(GWTJahiaNode gwtJahiaNode) {
                 Linker linker = engine.getLinker();
@@ -254,5 +259,6 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
 
     @Override
     protected void prepareAndSave(final AbstractContentEngine engine, boolean closeAfterSave) {
+        //Nothing to do here
     }
 }

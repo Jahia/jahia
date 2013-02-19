@@ -65,8 +65,15 @@ import org.jahia.ajax.gwt.client.widget.form.CodeMirrorField;
 
 import java.util.*;
 
+/**
+ *  Engine Tab Item that contains a Code Editor (CodeMirror)
+ */
 public class CodeEditorTabItem extends EditEngineTabItem {
 
+
+    private static final long serialVersionUID = 5207870064789655518L;
+    public static final String FONT_SIZE = "font-size";
+    public static final String FONT_SIZE_VALUE = "11px";
     private String codePropertyName;
     private String stubType;
     private String codeMirrorMode = "htmlmixed";
@@ -94,7 +101,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
             if (stubType != null) {
                 snippetType = new ComboBox<GWTJahiaValueDisplayBean>();
                 snippetType.setTypeAhead(true);
-                snippetType.getListView().setStyleAttribute("font-size", "11px");
+                snippetType.getListView().setStyleAttribute(FONT_SIZE, FONT_SIZE_VALUE);
                 snippetType.setTriggerAction(ComboBox.TriggerAction.ALL);
                 snippetType.setForceSelection(true);
                 snippetType.setWidth(200);
@@ -106,6 +113,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                 snippetType.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaValueDisplayBean>() {
                     @Override
                     public void selectionChanged(SelectionChangedEvent<GWTJahiaValueDisplayBean> se) {
+                        mirrorTemplates.clear();
                         mirrorTemplates.getStore().removeAll();
                         mirrorTemplates.getStore().add(snippets.get(se.getSelectedItem().getValue()));
                     }
@@ -113,7 +121,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
 
                 mirrorTemplates = new ComboBox<GWTJahiaValueDisplayBean>();
                 mirrorTemplates.setTypeAhead(true);
-                mirrorTemplates.getListView().setStyleAttribute("font-size", "11px");
+                mirrorTemplates.getListView().setStyleAttribute(FONT_SIZE, FONT_SIZE_VALUE);
                 mirrorTemplates.setTriggerAction(ComboBox.TriggerAction.ALL);
                 mirrorTemplates.setForceSelection(true);
                 mirrorTemplates.setWidth(300);
@@ -133,11 +141,11 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                 horizontalPanel.setSpacing(10);
                 horizontalPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
                 Label label = new Label(Messages.get("label.snippetType", "Snippet Type"));
-                label.setStyleAttribute("font-size", "11px");
+                label.setStyleAttribute(FONT_SIZE, FONT_SIZE_VALUE);
                 horizontalPanel.add(label);
                 horizontalPanel.add(snippetType);
                 label = new Label(Messages.get("label.codeMirrorTemplates","Code Template"));
-                label.setStyleAttribute("font-size", "11px");
+                label.setStyleAttribute(FONT_SIZE, FONT_SIZE_VALUE);
                 horizontalPanel.add(label);
                 horizontalPanel.add(mirrorTemplates);
                 horizontalPanel.add(button);

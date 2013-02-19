@@ -58,6 +58,9 @@ import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
 import java.util.*;
 
+/**
+ * Button Item for update - used for edit content.
+ */
 public class UpdateButtonItem extends SaveButtonItem {
 
     @Override
@@ -73,8 +76,7 @@ public class UpdateButtonItem extends SaveButtonItem {
                 if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
                     Field<String> name = ((ContentTabItem) item).getName();
                     if(!name.isValid()) {
-                        com.google.gwt.user.client.Window.alert(Messages.get(
-                                "label.error.system.name.mandatory", "System name is mandatory and could not be empty"));
+                        com.google.gwt.user.client.Window.alert(name.getErrorMessage());
                         engine.unmask();
                         engine.setButtonsEnabled(true);
                         return;
@@ -82,10 +84,34 @@ public class UpdateButtonItem extends SaveButtonItem {
                     engine.setNodeName(name.getValue());
                     engine.getNode().setName(engine.getNodeName());
                 }
-                final List<CheckBox> values = ((ContentTabItem) item).getInvalidLanguagesCheckBoxes();
-                if (!values.isEmpty()) {
+                final List<CheckBox> validLanguagesChecked = ((ContentTabItem) item).getInvalidLanguagesCheckBoxes();
+                if (!validLanguagesChecked.isEmpty()) {
                     final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
-                    if ((!engine.getNode().getInvalidLanguages().isEmpty() && values.size() != engine.getNode().getInvalidLanguages().size()) || values.size() != siteLanguages.size()) {
+                    List<String> invalidLanguages = engine.getNode().getInvalidLanguages();
+                    boolean doCheck = false;
+                    List<String> newInvalidLanguages = new ArrayList<String>();
+                    for (GWTJahiaLanguage language : siteLanguages) {
+                        boolean found = false;
+                        for (CheckBox validLang : validLanguagesChecked) {
+                            if (language.getLanguage().equals(validLang.getValueAttribute())) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            newInvalidLanguages.add(language.getLanguage());
+                        }
+                    }
+                    boolean hasChanged = newInvalidLanguages.size() != invalidLanguages.size();
+                    if (!hasChanged) {
+                        for (String lang : newInvalidLanguages) {
+                            if (!invalidLanguages.contains(lang)) {
+                                hasChanged = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (hasChanged) {
                         List<String> strings = new ArrayList<String>(siteLanguages.size());
                         for (GWTJahiaLanguage siteLanguage : siteLanguages) {
                             strings.add(siteLanguage.getLanguage());
@@ -93,7 +119,7 @@ public class UpdateButtonItem extends SaveButtonItem {
                         GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
                         gwtJahiaNodeProperty.setName("j:invalidLanguages");
                         gwtJahiaNodeProperty.setMultiple(true);
-                        for (CheckBox value : values) {
+                        for (CheckBox value : validLanguagesChecked) {
                             if (value.getValue()) {
                                 strings.remove(value.getValueAttribute());
                             }

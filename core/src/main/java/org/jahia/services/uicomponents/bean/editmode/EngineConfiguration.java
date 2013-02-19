@@ -46,6 +46,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Core part of engine configuration
+ * see GWTEngineConfiguration for gwt part
+ * see {@link org.jahia.ajax.gwt.helper.UIConfigHelper} for link
+ */
+
 public class EngineConfiguration implements Serializable {
 
     private static final long serialVersionUID = -5991528610464460659L;
@@ -56,6 +62,9 @@ public class EngineConfiguration implements Serializable {
     private List<ButtonItem> editionButtons = new ArrayList<ButtonItem>();
     private List<ButtonItem> commonButtons = new ArrayList<ButtonItem>();
 
+    /***
+     * @return list of engine tabs
+     */
     public List<EngineTab> getEngineTabs() {
         return engineTabs;
     }
@@ -64,6 +73,9 @@ public class EngineConfiguration implements Serializable {
         this.engineTabs = engineTabs;
     }
 
+    /**
+     * @return List of button to display for create engine
+     */
     public List<ButtonItem> getCreationButtons() {
         return creationButtons;
     }
@@ -72,6 +84,9 @@ public class EngineConfiguration implements Serializable {
         this.creationButtons = creationButtons;
     }
 
+    /**
+     * @return List of ButtonItem for edit engine
+     */
     public List<ButtonItem> getEditionButtons() {
         return editionButtons;
     }
@@ -80,6 +95,9 @@ public class EngineConfiguration implements Serializable {
         this.editionButtons = editionButtons;
     }
 
+    /**
+     * @return List of button for both create and edit (like cancel)
+     */
     public List<ButtonItem> getCommonButtons() {
         return commonButtons;
     }

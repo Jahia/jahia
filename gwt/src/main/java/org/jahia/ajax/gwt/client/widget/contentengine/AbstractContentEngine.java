@@ -77,6 +77,7 @@ import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionIte
 import java.util.*;
 
 /**
+ * Abstract Method for Content Engine
  * User: toto
  * Date: Jan 7, 2010
  * Time: 1:57:03 PM
@@ -147,11 +148,17 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         container.getPanel().setFooter(true);
         loading();
     }
-    
+
+    /**
+     * Called when the engine is loaded
+     */
     public void loaded() {
         unmask();
     }
 
+    /**
+     * Called when the engine start to be loaded
+     */
     public void loading() {
         mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
     }

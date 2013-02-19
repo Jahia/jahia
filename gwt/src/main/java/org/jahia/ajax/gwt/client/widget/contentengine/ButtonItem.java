@@ -44,10 +44,18 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 
 import java.io.Serializable;
 
+/**
+ * Interface for ButtonItem
+ * Used to create button in {@link AbstractContentEngine}
+ */
 public interface ButtonItem extends Serializable {
 
     public static final int BUTTON_HEIGHT = 24;
 
+    /**
+     * @param engine engine where to create the button
+     * @return {@link Button} to create
+     */
     Button create(final AbstractContentEngine engine);
 
 }

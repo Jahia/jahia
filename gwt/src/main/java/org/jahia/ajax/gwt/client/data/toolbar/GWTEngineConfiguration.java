@@ -45,6 +45,11 @@ import org.jahia.ajax.gwt.client.widget.contentengine.ButtonItem;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * GWT part of engine configuration
+ * see EngineConfiguration for core part
+ */
+
 public class GWTEngineConfiguration implements Serializable {
 
     private List<GWTEngineTab> engineTabs;

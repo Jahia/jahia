@@ -145,6 +145,11 @@ public class BundleRequestDispatcherScript implements Script {
         }
 
         HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(request) {
+
+            private String requestURI = getContextPath().length() > 0 ? (getContextPath() + getServletPath()) : getServletPath();
+            
+            private String servletPath = "/" + view.getBundle().getSymbolicName() + view.getPath();
+            
             @Override
             public String getPathInfo() {
                 return null;
@@ -157,7 +162,7 @@ public class BundleRequestDispatcherScript implements Script {
 
             @Override
             public String getRequestURI() {
-                return getContextPath() + getServletPath();
+                return requestURI;
             }
 
             @Override
@@ -167,7 +172,7 @@ public class BundleRequestDispatcherScript implements Script {
 
             @Override
             public String getServletPath() {
-                return "/" + view.getBundle().getSymbolicName() + view.getPath();    //To change body of overridden methods use File | Settings | File Templates.
+                return servletPath;
             }
 
             @Override

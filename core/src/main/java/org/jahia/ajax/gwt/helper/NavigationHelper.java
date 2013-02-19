@@ -775,8 +775,20 @@ public class NavigationHelper {
         if (fields == null) {
             fields = Collections.emptyList();
         }
+         
         List<String> inheritedTypes = new ArrayList<String>();
-        List<String> nodeTypes = null;
+        List<String> nodeTypes = null; 
+        System.out.println("test");
+        
+    	try{
+    		if(!node.getPath().equals("/") && node.getParent().isNodeType(Constants.JAHIAMIX_AUTOSPLITFOLDERS)) { 
+    			//reload the node when it is splittype that all pathes are correct, to load the permissios
+    	        node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(node.getIdentifier()); 
+    		}
+    	}catch(Exception ex) {
+    		logger.warn("reload of node " + node.getName() + " on path " + node.getPath() + " failed", ex);
+    	}
+        
         try {
             nodeTypes = node.getNodeTypes();
             for (String s : nodeTypes) {

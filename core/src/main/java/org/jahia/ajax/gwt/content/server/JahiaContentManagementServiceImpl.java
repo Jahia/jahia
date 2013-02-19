@@ -628,7 +628,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         // save acl
         if (acl != null) {
             for (GWTJahiaNode node : nodes) {
-                contentManager.setACL(node.getPath(), acl, retrieveCurrentSession());
+                contentManager.setACL(node.getUUID(), acl, retrieveCurrentSession());
             }
         }
 
@@ -696,7 +696,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         // save acl
         if (acl != null) {
-            contentManager.setACL(node.getPath(), acl, jcrSessionWrapper);
+            contentManager.setACL(node.getUUID(), acl, jcrSessionWrapper);
         }
 
         if (node.get("vanityMappings") != null) {
@@ -764,7 +764,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             node = navigation.getGWTJahiaNode(jcrSessionWrapper.getNodeByUUID(res.getUUID()));
 
             if (acl != null) {
-                contentManager.setACL(res.getPath(), acl, jcrSessionWrapper);
+                contentManager.setACL(res.getUUID(), acl, jcrSessionWrapper);
             }
 
             jcrSessionWrapper.save();

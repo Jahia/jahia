@@ -70,7 +70,7 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
 
     private void deployDeclaredProcesses() throws IOException {
         if (processes != null && processes.length > 0) {
-            logger.info("Found " + processes.length + " workflow processes to be deployed.");
+            logger.info("Found {} workflow processes to be deployed.", processes.length);
             List<Deployment> deploymentList = repositoryService.createDeploymentQuery().list();
             for (Resource process : processes) {
                 long lastModified = process.lastModified();
@@ -113,7 +113,7 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
             logger.info("...workflow processes deployed.");
         }
         if (mailTemplates != null && mailTemplates.length > 0) {
-            logger.info("Found " + processes.length + " workflow mail templates to be deployed.");
+            logger.info("Found {} workflow mail templates to be deployed.", mailTemplates.length);
 
             List keys = Arrays.asList("from", "to", "cc", "bcc", "from-users", "to-users", "cc-users", "bcc-users", "from-groups", "to-groups", "cc-groups", "bcc-groups", "subject", "text", "html", "language");
 

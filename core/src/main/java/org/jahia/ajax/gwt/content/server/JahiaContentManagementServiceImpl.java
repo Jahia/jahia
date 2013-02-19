@@ -670,7 +670,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         // save acl
         if (acl != null) {
             for (GWTJahiaNode node : nodes) {
-                contentManager.setACL(node.getPath(), acl, retrieveCurrentSession());
+                contentManager.setACL(node.getUUID(), acl, retrieveCurrentSession());
             }
         }
         try {
@@ -784,7 +784,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         // save acl
         if (acl != null) {
-            contentManager.setACL(node.getPath(), acl, jcrSessionWrapper);
+            contentManager.setACL(node.getUUID(), acl, jcrSessionWrapper);
         }
 
         if (node.get("vanityMappings") != null) {
@@ -879,8 +879,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         try {
             node = navigation.getGWTJahiaNode(session.getNodeByUUID(res.getUUID()),fields);
 
+<<<<<<< .working
             if (acl != null && (!acl.getAce().isEmpty() || acl.isBreakAllInheritance())) {
                 contentManager.setACL(res.getPath(), acl, session);
+=======
+            if (acl != null) {
+                contentManager.setACL(res.getUUID(), acl, jcrSessionWrapper);
+>>>>>>> .merge-right.r44815
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

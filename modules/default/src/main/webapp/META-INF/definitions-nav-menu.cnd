@@ -11,7 +11,9 @@
 [jmix:hideInNavMenu] mixin
 - j:hideInNavMenu (boolean) = true
 
-[jnt:navMenu] > jnt:content, mix:title, jmix:siteComponent
+[jmix:navMenuComponent] mixin
+
+[jnt:navMenu] > jnt:content, mix:title, jmix:siteComponent, jmix:navMenuComponent
  orderable
  - j:baselineNode (string,choicelist) nofulltext < 'home', 'currentPage'
  - j:maxDepth (long) = 2

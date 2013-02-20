@@ -61,7 +61,7 @@ public class MenusChoiceListInitializerImpl implements ChoiceListInitializer{
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
         final ArrayList<ChoiceListValue> listValues = new ArrayList<ChoiceListValue>();
         Set<ChoiceListValue> set = new  TreeSet<ChoiceListValue>();
-        String nodetype = "jnt:navMenu";
+        String nodetype = "jmix:navMenuComponent";
         try {
             QueryManager qm = JCRSessionFactory.getInstance().getCurrentUserSession().getWorkspace().getQueryManager();
             JCRNodeWrapper node = (JCRNodeWrapper) context.get("contextNode");

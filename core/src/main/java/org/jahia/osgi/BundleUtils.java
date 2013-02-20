@@ -52,8 +52,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Convenient utilities for Jahia OSGi bundles.
  * 
- * TODO: implement unregistering of Bundles by uninstall
- * 
  * @author Sergiy Shyrkov
  */
 public final class BundleUtils {
@@ -90,10 +88,8 @@ public final class BundleUtils {
     public static JahiaTemplatesPackage getModule(Bundle bundle) {
         JahiaTemplatesPackage pkg = null;
 
-        String moduleName = StringUtils.defaultIfEmpty((String) bundle.getHeaders().get("Jahia-Root-Folder"),
-                bundle.getSymbolicName());
-        String version = StringUtils.defaultIfEmpty((String) bundle.getHeaders().get("Implementation-Version"), bundle
-                .getVersion().toString());
+        String moduleName = getModuleName(bundle);
+        String version = getModuleVersion(bundle);
 
         Map<String, JahiaTemplatesPackage> moduleVersions = modules.get(moduleName);
         if (moduleVersions == null) {
@@ -119,6 +115,16 @@ public final class BundleUtils {
         }
 
         return pkg;
+    }
+
+    private static String getModuleName(Bundle bundle) {
+        return StringUtils.defaultIfEmpty((String) bundle.getHeaders().get("Jahia-Root-Folder"),
+                bundle.getSymbolicName());
+    }
+
+    private static String getModuleVersion(Bundle bundle) {
+        return StringUtils.defaultIfEmpty((String) bundle.getHeaders().get("Implementation-Version"), bundle
+                .getVersion().toString());
     }
 
     /**
@@ -182,4 +188,20 @@ public final class BundleUtils {
         throw new ClassNotFoundException("Unable to find class '" + className + "' in the class loaders of modules");
     }
 
+    /**
+     * Removes the module instance that corresponds to the provided OSGi bundle from internal registry.
+     * 
+     * @param bundle
+     *            the corresponding OSGi bundle
+     */
+    public static void unregisterModule(Bundle bundle) {
+        String moduleName = getModuleName(bundle);
+        String version = getModuleVersion(bundle);
+
+        Map<String, JahiaTemplatesPackage> moduleVersions = modules.get(moduleName);
+        if (moduleVersions != null) {
+            JahiaTemplatesPackage pkg = moduleVersions.remove(version);
+            pkg.setClassLoader(null);
+        }
+    }
 }

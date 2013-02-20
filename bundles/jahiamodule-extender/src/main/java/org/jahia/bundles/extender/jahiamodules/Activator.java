@@ -30,6 +30,8 @@ import org.osgi.service.http.NamespaceException;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.ConstantException;
+import org.springframework.core.Constants;
 import org.springframework.core.io.Resource;
 import org.springframework.web.context.WebApplicationContext;
 import javax.jcr.RepositoryException;
@@ -43,6 +45,8 @@ import java.util.*;
  */
 public class Activator implements BundleActivator {
 
+    private static final Constants BUNDLE_EVENTS = new Constants(BundleEvent.class);
+    
     private static Logger logger = LoggerFactory.getLogger(Activator.class);
 
     public static final String STATIC_RESOURCES_HEADERNAME = "Jahia-Static-Resources";
@@ -74,6 +78,23 @@ public class Activator implements BundleActivator {
     public static enum ModuleState {
         UNINSTALLED, UNRESOLVED, RESOLVED, WAITING_TO_BE_PARSED, PARSED, INSTALLED, UPDATED, STOPPED, STOPPING, STARTING, WAITING_TO_BE_STARTED, ERROR_DURING_START, STARTED;
     }
+
+    /**
+     * Returns a String representation for the given bundle event.
+     * 
+     * @param eventType OSGi <code>BundleEvent</code> given as an int
+     * @return String representation for the bundle event
+     * @see org.eclipse.gemini.blueprint.util.OsgiStringUtils
+     */
+    public static String bundleEventToString(int eventType) {
+            try {
+                    return BUNDLE_EVENTS.toCode(Integer.valueOf(eventType), "");
+            } catch (ConstantException cex) {
+                    return "Unknown";
+            }
+
+    }
+    
     private Map<Bundle, ModuleState> moduleStates = new TreeMap<Bundle, ModuleState>();
 
     @Override
@@ -193,7 +214,7 @@ public class Activator implements BundleActivator {
                 }
                 
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Received event {} for bundle {}", bundleEvent.getType(),
+                    logger.debug("Received event {} for bundle {}", bundleEventToString(bundleEvent.getType()),
                             getDisplayName(bundleEvent.getBundle()));
                 }
                 try {
@@ -203,6 +224,7 @@ public class Activator implements BundleActivator {
                             install(bundle);
                             break;
                         case BundleEvent.UPDATED:
+                            BundleUtils.unregisterModule(bundle);
                             moduleStates.put(bundle, ModuleState.UPDATED);
                             install(bundle);
                             break;
@@ -227,6 +249,7 @@ public class Activator implements BundleActivator {
                             unresolve(bundle);
                             break;
                         case BundleEvent.UNINSTALLED:
+                            BundleUtils.unregisterModule(bundle);
                             moduleStates.put(bundle, ModuleState.UNINSTALLED);
                             uninstall(bundle);
                             break;
@@ -533,10 +556,10 @@ public class Activator implements BundleActivator {
                     String[] mapping = curMappingStr.split("=");
                     staticResources.put(mapping[0], mapping[1]);
                 } else {
-                    staticResources.put("/" + bundle.getSymbolicName() + curMappingStr, curMappingStr);
+                        staticResources.put("/" + bundle.getSymbolicName() + curMappingStr, curMappingStr);
+                    }
                 }
             }
-        }
 
         if (bundleHttpServiceTrackers.containsKey(bundle)) {
             bundleHttpServiceTrackers.remove(bundle).close();

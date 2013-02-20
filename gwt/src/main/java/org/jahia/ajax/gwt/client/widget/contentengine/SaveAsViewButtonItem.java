@@ -160,6 +160,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                                 if (n.getName().equals(dependenciesCombo.getSimpleValue())) {
                                     newModuleNode = n;
                                     newModuleName = dependenciesCombo.getSimpleValue();
+                                    newModulePath = n.getPath();
                                     newModuleVersion = (String) n.getProperties().get("j:versionInfo");
                                     break;
                                 }

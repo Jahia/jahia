@@ -70,6 +70,7 @@ class JahiaBundleTemplatesPackageHandler {
 
         pkg.setModuleType(moduleType);
 
+        pkg.setAutoDeployOnSite(StringUtils.defaultString(getHeader(bundle,"Jahia-Deploy-On-Site")));
         pkg.setName(StringUtils.defaultString(getHeader(bundle, "Implementation-Title", "Bundle-Name"),
                 bundle.getSymbolicName()));
 

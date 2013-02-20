@@ -123,6 +123,10 @@ public class DeletedNodeFact implements NodeFact {
         return workspace;
     }
 
+    public String getLanguage() throws RepositoryException {
+        return parent.getLanguage();
+    }
+
     /**
      * Returns the current JCR operation type.
      *

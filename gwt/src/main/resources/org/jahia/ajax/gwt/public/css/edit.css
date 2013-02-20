@@ -304,7 +304,6 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     padding:2px;
     color:#111;
     position:relative;
-    border: 1px dashed #99ccff;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
 }
@@ -315,7 +314,6 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     padding:2px;
     color:#111;
     position:relative;
-    border: 1px dashed #99ccff;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
 }
@@ -327,7 +325,6 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     padding:2px;
     color:#111;
     position:relative;
-    border: 1px dashed #99ccff;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
 }
@@ -338,7 +335,6 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     padding:2px;
     color:#111;
     position:relative;
-    border: 1px dashed #99ccff;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
 }
@@ -350,7 +346,6 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     padding:2px;
     color:#111;
     position:relative;
-    border: 1px dashed #aeff9b;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
 }
@@ -364,7 +359,6 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     padding:2px;
     color:#111;
     position:relative;
-    border: 1px dashed #cc6666;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
 }
@@ -376,7 +370,6 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     padding:2px;
     color:#111;
     position:relative;
-    border: 1px dashed #cc6666;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
 }
@@ -388,7 +381,6 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     padding:2px;
     color:#111;
     position:relative;
-    border: 1px dashed #333;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
 }
@@ -399,7 +391,6 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     padding:2px;
     color:#111;
     position:relative;
-    border: 1px dashed #99ccff;
     background:#d8effb url(../images/authorDisplayArea-bg.png) no-repeat scroll 50% 100% ;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
@@ -412,7 +403,6 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     padding:2px;
     color:#111;
     position:relative;
-    border: 1px dashed #99cc99;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
 }
@@ -470,7 +460,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     float:right;
     cursor:pointer;
     background:transparent no-repeat;
-    margin-left:2px;
+    margin-right:2px;
     background-image:url(../images/default/panel/tool-sprites.gif);
     background-position:-15px -135px;
 }
@@ -481,7 +471,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     float:right;
     cursor:pointer;
     background:transparent no-repeat;
-    margin-left:2px;
+    margin-right:2px;
     background-image:url(../images/default/panel/tool-sprites.gif);
     background-position:0 -150px;
 }
@@ -492,7 +482,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     float:right;
     cursor:pointer;
     background:transparent no-repeat;
-    margin-left:2px;
+    margin-right:2px;
     background-image:url(../images/default/panel/tool-sprites.gif);
     background-position:-15px -150px;
 }

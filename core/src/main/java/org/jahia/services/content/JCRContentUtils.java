@@ -714,9 +714,16 @@ public final class JCRContentUtils implements ServletContextAware {
         return subType;
     }
 
+    /**
+     * For a nodetype gets the folder that contains its icon
+     * for system and module default nodetypes, icons asset folder is returned
+     * @param primaryNodeType
+     * @return folder
+     * @throws RepositoryException
+     */
     public static String getIconsFolder(final ExtendedNodeType primaryNodeType) throws RepositoryException {
         String systemId = primaryNodeType.getSystemId();
-        JahiaTemplatesPackage aPackage = !systemId.startsWith("system-") ? ServicesRegistry
+        JahiaTemplatesPackage aPackage = !systemId.startsWith("system-") && !"default".equals(systemId) ? ServicesRegistry
                 .getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(systemId) : null;
 
         return aPackage != null ? aPackage.getRootFolder() + "/icons/" : "assets/icons/";

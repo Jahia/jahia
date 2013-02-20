@@ -130,7 +130,7 @@
 }
 
 .x-panel-placeholder {
-    margin-bottom: 1em;
+    margin-bottom: 2px;
 }
 
 .x-panel-toolbar {
@@ -150,7 +150,7 @@ button.button-placeholder, div.button-placeholder {
     font-weight:bold;
     text-align:center;
     text-transform:none;
-    background-color:#3399ff ;
+    background-color:#3399ff;
     border:none;
     color:#fff;
     padding:1px 3px 1px 2px;
@@ -173,7 +173,8 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     border-left: 1px solid #cc0033;
 }
 .selection-right-list {
-    border-right: 1px solid #cc0033;
+    border-left: 1px solid #cc0033;
+    margin-left: -1px;
 }
 
 
@@ -188,7 +189,8 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     border-left: 1px solid #cc0033;
 }
 .selection-right-simple {
-    border-right: 1px solid #cc0033;
+    border-left: 1px solid #cc0033;
+    margin-left: -1px;
 }
 
 
@@ -202,7 +204,8 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     border-left: 1px solid #cc0033;
 }
 .selection-right-area {
-    border-right: 1px solid #cc0033;
+    border-left: 1px solid #cc0033;
+    margin-left: -1px
 }
 
 
@@ -216,7 +219,8 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     border-left: 1px solid #39f;
 }
 .hover-right-list {
-    border-right: 1px solid #39f;
+    border-left: 1px solid #39f;
+    margin-left: -1px;
 }
 
 .hover-top-simple {
@@ -229,7 +233,8 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     border-left: 1px solid #39f;
 }
 .hover-right-simple {
-    border-right: 1px solid #39f;
+    border-left: 1px solid #39f;
+    margin-left: -1px;
 }
 
 
@@ -241,9 +246,11 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
 }
 .hover-left-area {
     border-left: 1px solid #39f;
+    margin-right: -1px;
 }
 .hover-right-area {
-    border-right: 1px solid #39f;
+    border-left: 1px solid #39f;
+    margin-left: -1px;
 }
 
 
@@ -257,7 +264,8 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     border-left: 0px solid #999;
 }
 .hover-right-list-secondary {
-    border-right: 0px solid #999;
+    border-left: 0px solid #999;
+    margin-left: -1px;
 }
 
 
@@ -272,6 +280,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
 }
 .hover-right-simple-secondary {
     border-right: 0px solid #999;
+    margin-right: -1px;
 }
 
 
@@ -286,6 +295,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
 }
 .hover-right-area-secondary {
     border-right: 0px solid #999;
+    margin-right: -1px;
 }
 
 /****************************************************************************/

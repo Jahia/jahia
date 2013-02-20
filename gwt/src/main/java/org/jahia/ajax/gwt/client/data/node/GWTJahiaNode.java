@@ -631,10 +631,18 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         return (Boolean) get("canMarkForDeletion");
     }
 
+    /**
+     * Return a list of invalid languages for the current node.
+     * @return a list of invalid languages for the current node.
+     */
     public List<String> getInvalidLanguages() {
         return invalidLanguages;
     }
 
+    /**
+     * Set the list of invalid languages.
+     * @param invalidLanguages List of invalid languages for this node.
+     */
     public void setInvalidLanguages(List<String> invalidLanguages) {
         this.invalidLanguages = invalidLanguages;
     }

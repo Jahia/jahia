@@ -99,7 +99,7 @@ public class CreateButtonItem extends SaveButtonItem {
                 if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
                     nodeName = ((ContentTabItem) item).getName().getValue();
                 }
-                final List<CheckBox> values = ((ContentTabItem) item).getInvalidLanguagesCheckBoxes();
+                final List<CheckBox> values = ((ContentTabItem) item).getCheckedLanguagesCheckBox();
                 if (!values.isEmpty()) {
                     final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
                     if (values.size() != siteLanguages.size()) {

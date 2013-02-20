@@ -99,7 +99,11 @@ public class ContentTabItem extends PropertiesTabItem {
         return nameText;
     }
 
-    public List<CheckBox> getInvalidLanguagesCheckBoxes() {
+    /**
+     * Get the list of checked languages checkboxes.
+     * @return the list of checked languages checkboxes.
+     */
+    public List<CheckBox> getCheckedLanguagesCheckBox() {
         List<CheckBox> values = new ArrayList<CheckBox>();
         if (invalidLanguagesCheckBoxes != null) {
             for (CheckBox check : invalidLanguagesCheckBoxes) {
@@ -394,6 +398,8 @@ public class ContentTabItem extends PropertiesTabItem {
             layoutContainer1.setLayout(new FillLayout(Style.Orientation.HORIZONTAL) {
                 @Override
                 protected void setSize(Component c, int width, int height) {
+                    // This method stays empty so that we do not rely on GWT to calculate the size of the
+                    // checkboxes but let the browser do it.
                 }
             });
             layoutContainer1.setWidth("100%");
@@ -407,10 +413,13 @@ public class ContentTabItem extends PropertiesTabItem {
                         CheckBox checkBox1 = (CheckBox) componentEvent.getSource();
                         if (engine instanceof AbstractContentEngine) {
                             final ComboBox<GWTJahiaLanguage> languageSwitcher = ((AbstractContentEngine) engine).getLanguageSwitcher();
-                            if (languageSwitcher != null && siteLanguage.isActive()) {
+                            if (languageSwitcher != null) {
                                 final ListStore<GWTJahiaLanguage> store = languageSwitcher.getStore();
-                                if (store != null)
-                                    store.findModel("language", checkBox1.getValueAttribute()).setActive(checkBox1.getValue());
+                                if (store != null) {
+                                    GWTJahiaLanguage storeModel = store.findModel("language",
+                                            checkBox1.getValueAttribute());
+                                    storeModel.setActive(checkBox1.getValue());
+                                }
                                 languageSwitcher.getView().refresh();
                             }
                         }

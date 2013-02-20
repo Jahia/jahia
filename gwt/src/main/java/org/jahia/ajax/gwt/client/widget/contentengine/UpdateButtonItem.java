@@ -84,7 +84,7 @@ public class UpdateButtonItem extends SaveButtonItem {
                     engine.setNodeName(name.getValue());
                     engine.getNode().setName(engine.getNodeName());
                 }
-                final List<CheckBox> validLanguagesChecked = ((ContentTabItem) item).getInvalidLanguagesCheckBoxes();
+                final List<CheckBox> validLanguagesChecked = ((ContentTabItem) item).getCheckedLanguagesCheckBox();
                 if (!validLanguagesChecked.isEmpty()) {
                     final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
                     List<String> invalidLanguages = engine.getNode().getInvalidLanguages();

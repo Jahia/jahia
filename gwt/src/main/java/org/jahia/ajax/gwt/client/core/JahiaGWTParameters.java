@@ -259,6 +259,10 @@ public class JahiaGWTParameters {
         return (List<GWTJahiaLanguage>) getSiteNode().get(GWTJahiaNode.SITE_LANGUAGES);
     }
 
+    /**
+     * Return a list of mandatory languages defined on current site.
+     * @return a list of mandatory languages defined on current site.
+     */
     public static List<String> getSiteMandatoryLanguages() {
         return (List<String>) getSiteNode().get(GWTJahiaNode.SITE_MANDATORY_LANGUAGES);
     }

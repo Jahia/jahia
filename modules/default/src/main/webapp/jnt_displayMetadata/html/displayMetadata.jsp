@@ -54,8 +54,8 @@
                     <dt><fmt:message key="jmix_keywords.j_keywords"/></dt>
                     <c:if test="${not empty boundComponent.properties['j:keywords']}">
                         <dd>
-                        <c:forEach items="${boundComponent.properties['j:keywords']}" var="keyword">
-                                ${keyword.string}
+                        <c:forEach items="${boundComponent.properties['j:keywords']}" var="keyword" varStatus="status">
+                                ${keyword.string}${!status.last ? separator : ''}
                             </c:forEach>
                         </dd>
                     </c:if>

@@ -75,7 +75,6 @@
     margin-bottom:2px;
     display:block;
     overflow:hidden;
-    line-height: 20px;
     text-shadow: none !important;
 }
 
@@ -89,7 +88,6 @@
     margin-bottom:2px;
     display:block;
     overflow:hidden;
-    line-height: 20px;
     text-shadow: none !important;
 }
 
@@ -103,7 +101,6 @@
     margin-bottom:2px;
     display:block;
     overflow:hidden;
-    line-height: 20px;
     text-shadow: none !important;
 }
 .x-panel-header-absoluteAreamodule {
@@ -116,7 +113,6 @@
     margin-bottom:2px;
     display:block;
     overflow:hidden;
-    line-height: 20px;
     text-shadow: none !important;
 }
 
@@ -130,7 +126,6 @@
     margin-bottom:2px;
     display:block;
     overflow:hidden;
-    line-height: 20px;
     text-shadow: none !important;
 }
 
@@ -159,7 +154,7 @@ button.button-placeholder, div.button-placeholder {
     border:none;
     color:#fff;
     padding:1px 3px 1px 2px;
-    margin:0 1px 0 0;
+    margin:0 1px 0 1px;
     cursor:pointer;
     line-height:15px !important;
     text-shadow: none !important;

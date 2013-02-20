@@ -87,6 +87,16 @@ public interface NodeFact {
     String getWorkspace() throws RepositoryException;
 
     /**
+     * Returns the current language.
+     *
+     * @return the current language
+     * @throws RepositoryException
+     *             in case of a repository access error
+     * @since Jahia 6.6
+     */
+    String getLanguage() throws RepositoryException;
+
+    /**
      * Returns the current JCR operation type.
      *
      * @return the current JCR operation type

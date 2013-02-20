@@ -46,6 +46,10 @@ public abstract class AbstractNodeFact implements NodeFact {
         return workspace;
     }
 
+    public String getLanguage() throws RepositoryException {
+        return node.getLanguage();
+    }
+
     /**
      * Returns the current JCR operation type.
      *

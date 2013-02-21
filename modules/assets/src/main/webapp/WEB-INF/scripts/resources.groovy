@@ -46,7 +46,7 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
         type.value.eachWithIndex { javascript, i ->
           condition = javascript.value != null ? javascript.value.get("condition") : null;
           if (condition != null) println("<!--["+condition+"]>");
-          println "<!--aggregatedscript id=\"staticAssetAggregatedJavascript${i}\" src=\"${javascript.key}\"><--/aggregatedscript>";
+          println "<!--<aggregatedscript id=\"staticAssetAggregatedJavascript${i}\" src=\"${javascript.key}\"></aggregatedscript>-->";
           if (condition != null) println("<![endif]-->");
         }
         break;

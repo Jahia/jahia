@@ -119,7 +119,7 @@ public class ImageResize extends Window {
         int extIndex = n.getName().lastIndexOf(".") ;
         if (extIndex > 0) {
             String dotExt = n.getName().substring(extIndex) ;
-            newname.setValue(n.getName().replaceAll(dotExt, "-resize" + w + "x" + h + dotExt));
+            newname.setValue(n.getName().replaceAll(dotExt+"+$", "-resize" + w + "x" + h + dotExt));
         } else {
             newname.setValue(n.getName() + "-resize" + w + "x" + h);
         }

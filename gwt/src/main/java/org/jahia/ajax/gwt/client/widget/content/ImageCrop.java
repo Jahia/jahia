@@ -75,6 +75,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Widget to crop image and save it
+ * this uses Jcrop
+ * Jcrop is used to perfom the crop
  * User: rfelden
  * Date: 21 oct. 2008 - 14:38:21
  */

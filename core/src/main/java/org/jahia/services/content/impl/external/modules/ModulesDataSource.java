@@ -538,7 +538,7 @@ public class ModulesDataSource extends VFSDataSource {
                         String propertyValue = StringUtils.join(v,",");
                         if (propertyDefinitionMap.get(property.getKey()).getRequiredType() != PropertyType.BOOLEAN ||
                             !propertyValue.equals("false")) {
-                            properties.put(property, propertyValue);
+                            properties.put(property.getKey(), propertyValue);
                         }
                     }
                 }

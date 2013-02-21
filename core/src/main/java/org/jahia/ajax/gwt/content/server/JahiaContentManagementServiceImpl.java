@@ -784,7 +784,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         // save acl
         if (acl != null) {
-            contentManager.setACL(node.getPath(), acl, jcrSessionWrapper);
+            contentManager.setACL(node.getUUID(), acl, jcrSessionWrapper);
         }
 
         if (node.get("vanityMappings") != null) {

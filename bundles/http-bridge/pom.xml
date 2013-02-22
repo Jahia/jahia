@@ -1,0 +1,76 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.jahia.bundles</groupId>
+        <artifactId>jahia-bundles</artifactId>
+        <version>6.7.0.0-SNAPSHOT</version>
+    </parent>
+
+    <name>Jahia Felix Http Bridge</name>
+    <artifactId>org.jahia.bundles.http.bridge</artifactId>
+    <packaging>bundle</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Activator>
+                            org.apache.felix.http.bridge.internal.BridgeActivator
+                        </Bundle-Activator>
+                        <Export-Package>
+                            org.apache.felix.http.api;version=2.0.4,
+                            org.osgi.service.http;version=1.2.0
+                        </Export-Package>
+                        <Private-Package>
+                            org.apache.felix.http.base.*,
+                            org.apache.felix.http.bridge.internal.*
+                        </Private-Package>
+                        <Import-Package>
+                            javax.servlet.*,
+                            *;resolution:=optional
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.1.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.http.api</artifactId>
+            <version>${felix.http.version}</version>
+			<scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.http.base</artifactId>
+            <version>${felix.http.version}</version>
+			<scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.http.bridge</artifactId>
+            <version>${felix.http.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>

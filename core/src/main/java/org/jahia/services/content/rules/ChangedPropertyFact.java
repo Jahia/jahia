@@ -322,6 +322,13 @@ public class ChangedPropertyFact implements Updateable {
         return 0;
     }
 
+    public String getLanguage() throws RepositoryException {
+        if (property != null) {
+            return property.getLocale();
+        }
+        return null;
+    }
+
     public AddedNodeFact getNode() {
         return nodeWrapper;
     }

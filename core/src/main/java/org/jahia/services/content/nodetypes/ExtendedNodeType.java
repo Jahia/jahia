@@ -41,8 +41,6 @@
 package org.jahia.services.content.nodetypes;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.jackrabbit.core.value.InternalValue;
 import org.apache.jackrabbit.spi.commons.nodetype.constraint.ValueConstraint;
 import org.apache.jackrabbit.spi.commons.value.QValueValue;
@@ -204,6 +202,11 @@ public class ExtendedNodeType implements NodeType {
 
 
     public ExtendedNodeType[] getSupertypes() {
+        Set<ExtendedNodeType> l = getSupertypeSet();
+        return l.toArray(new ExtendedNodeType[l.size()]);
+    }
+
+    public Set<ExtendedNodeType> getSupertypeSet() {
         Set<ExtendedNodeType> l = new LinkedHashSet<ExtendedNodeType>();
         boolean primaryFound = false;
         ExtendedNodeType[] d = getDeclaredSupertypes();
@@ -211,7 +214,7 @@ public class ExtendedNodeType implements NodeType {
             ExtendedNodeType s = d[i];
             if (s != null && !s.getNameObject().equals(getNameObject())) {
                 l.add(s);
-                l.addAll(Arrays.asList(s.getSupertypes()));
+                l.addAll(s.getSupertypeSet());
                 if (!s.isMixin()) {
                     primaryFound = true;
                 }
@@ -227,7 +230,7 @@ public class ExtendedNodeType implements NodeType {
                 logger.error("No such supertype for "+getName(),e);
             }
         }
-        return new ArrayList<ExtendedNodeType>(l).toArray(new ExtendedNodeType[l.size()]);
+        return l;
     }
 
     public ExtendedNodeType[] getPrimarySupertypes() {
@@ -1198,22 +1201,21 @@ public class ExtendedNodeType implements NodeType {
         }
     }    
     
+    @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        
-        if (obj != null && this.getClass() == obj.getClass()) {
-            final ExtendedNodeType castOther = (ExtendedNodeType) obj;
-            return new EqualsBuilder()
-                .append(this.getName(), castOther.getName())
-                .isEquals();
+        if (this == obj) {
+            return true;
         }
-        return false;
+        if (obj == null || this.getClass() != obj.getClass()) {
+            return false;
+        }
+        final ExtendedNodeType other = (ExtendedNodeType) obj;
+        return (getName() != null ? getName().equals(other.getName()) : other.getName() == null);
     }
 
+    @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(getName())
-                .toHashCode();
+        return getName() != null ? getName().hashCode() : 0;
     }
 
     public void clearLabels() {
@@ -1234,5 +1236,10 @@ public class ExtendedNodeType implements NodeType {
                 item.clearLabels();
             }
         }
+    }
+    
+    @Override
+    public String toString() {
+        return getName();
     }
 }

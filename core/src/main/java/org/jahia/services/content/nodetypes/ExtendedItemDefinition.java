@@ -47,8 +47,6 @@ import javax.jcr.nodetype.ItemDefinition;
 import javax.jcr.version.OnParentVersionAction;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jahia.services.content.JCRContentUtils;
 
 /**
@@ -275,26 +273,28 @@ public class ExtendedItemDefinition implements ItemDefinition {
         return overridenItemDefintion;
     }
     
+    @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        
-        if (obj != null && this.getClass() == obj.getClass()) {
-            final ExtendedItemDefinition castOther = (ExtendedItemDefinition) obj;
-            return new EqualsBuilder()
-                .append(this.getName(), castOther.getName())
-                .append(this.getDeclaringNodeType().getName(), castOther.getDeclaringNodeType().getName())                
-                .isEquals();
+        if (this == obj)
+            return true;
+
+        if (obj == null || this.getClass() != obj.getClass()) {
+            return false;
         }
-        return false;
+
+        final ExtendedItemDefinition other = (ExtendedItemDefinition) obj;
+
+        return (getName() != null ? getName().equals(other.getName()) : other.getName() == null)
+                && (getDeclaringNodeType().getName() != null ? getDeclaringNodeType().getName().equals(
+                        other.getDeclaringNodeType().getName()) : other.getDeclaringNodeType().getName() == null);
     }
 
+    @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(getName())
-                .append(getDeclaringNodeType().getName())                
-                .toHashCode();
-    }    
-
+        int hash = 17 * 37 + (getName() != null ? getName().hashCode() : 0);
+        hash = 37 * hash + (getDeclaringNodeType().getName() != null ? getDeclaringNodeType().getName().hashCode() : 0);
+        return hash;
+    }
 
     public void clearLabels() {
         labels.clear();

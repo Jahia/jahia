@@ -39,7 +39,8 @@
     please contact the sales department at sales@jahia.com.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>jahia-modules</artifactId>
@@ -52,6 +53,21 @@
 
     <description>These are the custom templates for running on a Jahia server.</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>atg.taglib.json</groupId>
+            <artifactId>json-taglib</artifactId>
+            <version>0.4.1</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-el</groupId>
+                    <artifactId>commons-el</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -62,6 +78,8 @@
                     <instructions>
                         <Jahia-Module-Type>system</Jahia-Module-Type>
                         <Jahia-Depends>assets</Jahia-Depends>
+                        <Embed-Dependency>*; scope=compile; type=!pom;
+                            inline=false</Embed-Dependency>
                     </instructions>
                 </configuration>
             </plugin>

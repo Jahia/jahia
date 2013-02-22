@@ -66,6 +66,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.admin.AbstractAdministrationModule;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.engines.EngineMessages;
 import org.jahia.exceptions.JahiaException;
@@ -1812,8 +1813,8 @@ public class ManageSites extends AbstractAdministrationModule {
                     Map<Object, Object> value = prepareSiteImport(i, imports.get(i));
                     if (value != null) {
                         Object legacyImport = value.get("legacyImport");
-                        if (legacyImport!=null && (Boolean) legacyImport && jParams instanceof ParamBean) {
-                            final String defaultMappingsFolderPath = ((ParamBean)jParams).getContext().getRealPath("/WEB-INF/var/legacyMappings");
+                        if (legacyImport!=null && (Boolean) legacyImport) {
+                            final String defaultMappingsFolderPath = JahiaContextLoaderListener.getServletContext().getRealPath("/WEB-INF/var/legacyMappings");
                             final File defaultMappingsFolder = defaultMappingsFolderPath != null ? new File(defaultMappingsFolderPath) : null;
                             Collection<File> legacyMappings = null;
                             Collection<File> legacyDefinitions = null;
@@ -1864,8 +1865,8 @@ public class ManageSites extends AbstractAdministrationModule {
                     sorted.add((File) info.get("importFile"));
                 }
 
-                jParams.getSessionState().setAttribute("importsInfos", importsInfos);
-                jParams.getSessionState().setAttribute("importsInfosSorted", sorted);
+                request.getSession().setAttribute("importsInfos", importsInfos);
+                request.getSession().setAttribute("importsInfosSorted", sorted);
             } catch (IOException e) {
                 logger.error("Cannot read import file :" + e.getMessage());
             } finally {

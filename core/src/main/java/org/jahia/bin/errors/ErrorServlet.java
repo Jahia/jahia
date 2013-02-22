@@ -65,6 +65,7 @@ import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.WebUtils;
+import org.springframework.core.io.Resource;
 
 /**
  * Error pages dispatcher servlet.
@@ -159,17 +160,10 @@ public class ErrorServlet extends HttpServlet {
                                         .getTemplatePackage(site
                                                 .getTemplatePackageName());
                                 if (pkg != null) {
-                                    pathToCheck = pkg.getRootFolderPath()
-                                            + "/errors/" + page;
-                                    path = getServletContext().getResource(
-                                            pathToCheck) != null ? pathToCheck
-                                            : null;
-                                    if (null == path) {
-                                        pathToCheck = pkg.getRootFolderPath()
-                                                + "/errors/error.jsp";
-                                        path = getServletContext().getResource(
-                                                pathToCheck) != null ? pathToCheck
-                                                : null;
+                                    if (pkg.getResource("/errors/" + page) != null) {
+                                        path = "/modules/"+pkg.getRootFolder() + "/errors/"+ page;
+                                    } else if (pkg.getResource("/errors/error.jsp") != null) {
+                                        path = "/modules/"+pkg.getRootFolder() + "/errors/error.jsp";
                                     }
                                 }
                             }

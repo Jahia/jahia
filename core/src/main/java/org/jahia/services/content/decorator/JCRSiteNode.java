@@ -103,7 +103,6 @@ public class JCRSiteNode extends JCRNodeDecorator {
     /**
      * @return list of inactive live languages
      */
-    @SuppressWarnings("unchecked")
     public Set<String> getInactiveLiveLanguages() {
         return getInactiveLanguages(inactiveLiveLanguages,SitesSettings.INACTIVE_LIVE_LANGUAGES);
     }
@@ -111,11 +110,11 @@ public class JCRSiteNode extends JCRNodeDecorator {
     /**
      * @return list of inactive languages
      */
-    @SuppressWarnings("unchecked")
     public Set<String> getInactiveLanguages() {
         return getInactiveLanguages(inactiveLanguages,SitesSettings.INACTIVE_LANGUAGES);
     }
 
+    @SuppressWarnings("unchecked")
     private Set<String> getInactiveLanguages(Set<String> languages,String propertyName) {
         if (languages == null) {
             Set<String> langs = new HashSet<String>();
@@ -181,6 +180,7 @@ public class JCRSiteNode extends JCRNodeDecorator {
         return getLanguagesAsLocales(getInactiveLiveLanguages());
     }
 
+    @SuppressWarnings("unchecked")
     private List<Locale> getLanguagesAsLocales(Set<String> languages) {
         List<Locale> localeList = new ArrayList<Locale>();
         if (languages != null) {

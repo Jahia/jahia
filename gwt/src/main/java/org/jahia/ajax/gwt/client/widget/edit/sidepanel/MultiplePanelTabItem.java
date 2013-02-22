@@ -47,6 +47,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -61,7 +62,7 @@ import java.util.Map;
  * tab item that contains SettingsPanel
  *
  */
-public class SettingsTabItem extends BrowseTabItem {
+public class MultiplePanelTabItem extends SidePanelTabItem {
 
     private transient  ContentPanel settingsPanels;
 
@@ -77,11 +78,15 @@ public class SettingsTabItem extends BrowseTabItem {
     @Override
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
-
-        // remove treecontainer from tab
-        tab.remove(treeContainer);
+        VBoxLayout l = new VBoxLayout();
+        l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
+        tab.setLayout(l);
         settingsPanels = new ContentPanel();
-        settingsPanels.setLayout(new AccordionLayout());
+        if (settingsPanelList.size() > 1) {
+            settingsPanels.setLayout(new AccordionLayout());
+        } else {
+            settingsPanels.setLayout(new FitLayout());
+        }
         settingsPanels.setScrollMode(Style.Scroll.NONE);
         settingsPanels.setHeaderVisible(false);
         settingsPanels.setBodyBorder(false);
@@ -93,11 +98,6 @@ public class SettingsTabItem extends BrowseTabItem {
 
     public void setSettingsPanelList(List<SettingsPanel> settingsPanelList) {
         this.settingsPanelList = settingsPanelList;
-    }
-
-    @Override
-    protected boolean acceptNode(GWTJahiaNode node) {
-        return true;
     }
 
     /**
@@ -119,7 +119,7 @@ public class SettingsTabItem extends BrowseTabItem {
     @Override
     public void doRefresh() {
         for (SettingsPanel panel : settingsPanelList) {
-           panel.refresh();
+            panel.refresh();
         }
     }
 

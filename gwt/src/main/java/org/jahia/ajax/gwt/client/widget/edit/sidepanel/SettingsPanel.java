@@ -82,7 +82,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Panel that display settings, this panel suppose to be contain in SettingsTabItem
+ * Panel that display settings, this panel suppose to be contain in MultiplePanelTabItem
  */
 
 public class SettingsPanel implements Serializable {

@@ -1,7 +1,5 @@
 package org.jahia.services.channels;
 
-import org.springframework.beans.factory.InitializingBean;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +9,8 @@ import java.util.Map;
  * /technologies (RSS), etc...
  */
 public class Channel implements Serializable {
+
+    private static final long serialVersionUID = -6550768281739417976L;
 
     public static final String GENERIC_CHANNEL = "generic";
 

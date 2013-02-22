@@ -54,9 +54,7 @@ import java.util.Enumeration;
 /**
  * JSR 223 ScriptEngine dispatcher.
  *
- * @author loom
- * Date: Jan 15, 2010
- * Time: 11:14:06 AM
+ * @author Serge Huber
  */
 public class JSR223Script implements Script {
 
@@ -79,7 +77,6 @@ public class JSR223Script implements Script {
      * @param context
      * @return the rendered resource
      * @throws org.jahia.services.render.RenderException
-     *
      */
     public String execute(Resource resource, RenderContext context) throws RenderException {
         ScriptEngine scriptEngine = null;
@@ -98,26 +95,29 @@ public class JSR223Script implements Script {
                     bindings.put(currentAttributeName, context.getRequest().getAttribute(currentAttributeName));
                 }
             }
-            InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(view.getPath());
-            if (scriptInputStream != null) {
-                Reader scriptContent = null;
-                try {
+            Reader scriptContent = null;
+            try {
+                InputStream scriptInputStream = getViewInputStream();
+                if (scriptInputStream != null) {
                     scriptContent = new InputStreamReader(scriptInputStream);
                     scriptContext.setWriter(new StringWriter());
                     scriptContext.setErrorWriter(new StringWriter());
                     // The following binding is necessary for Javascript, which doesn't offer a console by default.
                     bindings.put("out", new PrintWriter(scriptContext.getWriter()));
                     scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-                    scriptContext.setBindings(scriptContext.getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
+                    scriptContext.setBindings(scriptContext.getBindings(ScriptContext.GLOBAL_SCOPE),
+                            ScriptContext.GLOBAL_SCOPE);
                     scriptEngine.eval(scriptContent, scriptContext);
                     StringWriter writer = (StringWriter) scriptContext.getWriter();
                     return writer.toString().trim();
-                } catch (ScriptException e) {
-                    throw new RenderException("Error while executing script " + view.getPath(), e);
-                } finally {
-                    if (scriptContent != null) {
-                        IOUtils.closeQuietly(scriptContent);
-                    }
+                }
+            } catch (ScriptException e) {
+                throw new RenderException("Error while executing script " + view.getPath(), e);
+            } catch (IOException e) {
+                throw new RenderException("Error while retrieving input stream for the resource " + view.getPath(), e);
+            } finally {
+                if (scriptContent != null) {
+                    IOUtils.closeQuietly(scriptContent);
                 }
             }
         }
@@ -131,6 +131,16 @@ public class JSR223Script implements Script {
      */
     public View getView() {
         return view;
+    }
+
+    /**
+     * Returns an {@link InputStream} object that serves the content of the view script.
+     * 
+     * @return an {@link InputStream} object that serves the content of the view script
+     * @throws IOException in case of an error retrieving the resource stream
+     */
+    protected InputStream getViewInputStream() throws IOException {
+        return JahiaContextLoaderListener.getServletContext().getResourceAsStream(view.getPath());
     }
 
 }

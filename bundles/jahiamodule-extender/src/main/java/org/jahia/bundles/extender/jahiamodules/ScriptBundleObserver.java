@@ -1,6 +1,6 @@
 package org.jahia.bundles.extender.jahiamodules;
 
-import org.jahia.bundles.extender.jahiamodules.render.BundleScriptResolver;
+import org.jahia.services.render.scripting.bundle.BundleScriptResolver;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.osgi.framework.Bundle;
 
@@ -24,15 +24,11 @@ public class ScriptBundleObserver implements BundleObserver<URL> {
 
     @Override
     public void addingEntries(Bundle bundle, List<URL> urls) {
-        for (URL url : urls) {
-            bundleScriptResolver.addBundleScript(bundle, url);
-        }
+        bundleScriptResolver.addBundleScripts(bundle, urls);
     }
 
     @Override
     public void removingEntries(Bundle bundle, List<URL> urls) {
-        for (URL url : urls) {
-            bundleScriptResolver.removeBundleScript(bundle, url);
-        }
+        bundleScriptResolver.removeBundleScripts(bundle, urls);
     }
 }

@@ -79,8 +79,6 @@ class JahiaBundleTemplatesPackageHandler {
 
         pkg.setRootFolder(StringUtils.defaultString(getHeader(bundle, "Jahia-Root-Folder"), bundle.getSymbolicName()));
 
-        pkg.setRootFolderPath("/modules/" + pkg.getRootFolder());
-
         detectResourceBundle(bundle, pkg);
 
         String srcFolder = getHeader(bundle, "Jahia-Source-Folders");

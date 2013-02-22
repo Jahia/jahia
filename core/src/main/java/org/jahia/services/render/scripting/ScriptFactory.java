@@ -42,6 +42,9 @@ package org.jahia.services.render.scripting;
 
 import org.jahia.services.render.View;
 
+/**
+ * Factory used for instantiating the view execution script and initializing the view object.
+ */
 public interface ScriptFactory {
 
     public Script createScript(View view);

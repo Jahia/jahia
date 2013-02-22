@@ -6,7 +6,7 @@
  *
  * For more information, please visit http://www.jahia.com.
  *
- * Copyright (C) 2002-2012 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2013 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -37,22 +37,25 @@
  * If you are unsure which license is appropriate for your use,
  * please contact the sales department at sales@jahia.com.
  */
+package org.jahia.services.render.scripting.bundle;
 
-package org.jahia.services.render.scripting;
+import java.io.IOException;
+import java.io.InputStream;
 
-import org.jahia.services.render.View;
+import org.jahia.services.render.BundleView;
+import org.jahia.services.render.scripting.JSR223Script;
 
 /**
- * Factory used for instantiating the {@link JSR223Script} script for evaluation of a JSR223 view script.
+ * JSR-223 script engine dispatcher for view scripts, located in an OSGi bundle.
  */
-public class JSR223ScriptFactory implements ScriptFactory {
-    @Override
-    public Script createScript(View view) {
-        return new JSR223Script(view);
+public class BundleJSR223Script extends JSR223Script {
+
+    public BundleJSR223Script(BundleView view) {
+        super(view);
     }
 
     @Override
-    public void initView(View view) {
-        // no need to initialize the view
+    protected InputStream getViewInputStream() throws IOException {
+        return ((BundleView) getView()).getInputStream();
     }
 }

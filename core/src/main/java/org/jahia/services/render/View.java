@@ -41,14 +41,14 @@
 package org.jahia.services.render;
 
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.services.render.scripting.Script;
 
 import java.util.Properties;
 
 /**
- * @author toto
- * Date: Nov 16, 2009
- * Time: 11:05:46 AM
+ * Resource view that is used for rendering and is "executed" by the appropriate {@link Script}.
  * 
+ * @author Thomas Draier
  */
 public interface View {
     String getKey();
@@ -61,7 +61,7 @@ public interface View {
 
     String getFileExtension();
 
-    public String getPath();    
+    String getPath();    
 
     /**
      * Return printable information about the script : type, localization, file, .. in order to help

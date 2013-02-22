@@ -46,8 +46,11 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.SpringContextSingleton;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.ConstantException;
+import org.springframework.core.Constants;
 
 /**
  * Convenient utilities for Jahia OSGi bundles.
@@ -56,12 +59,31 @@ import org.slf4j.LoggerFactory;
  */
 public final class BundleUtils {
 
+    private static final Constants BUNDLE_EVENTS = new Constants(BundleEvent.class);
+
     private static final Logger logger = LoggerFactory.getLogger(BundleUtils.class);
 
     private static Map<String, String[]> moduleForClass = new ConcurrentHashMap<String, String[]>();
 
     private static Map<String, Map<String, JahiaTemplatesPackage>> modules = new ConcurrentHashMap<String, Map<String, JahiaTemplatesPackage>>(
             64);
+
+    /**
+     * Returns a String representation for the given bundle event.
+     * 
+     * @param eventType
+     *            OSGi <code>BundleEvent</code> given as an int
+     * @return String representation for the bundle event
+     * @see org.eclipse.gemini.blueprint.util.OsgiStringUtils
+     */
+    public static String bundleEventToString(int eventType) {
+        try {
+            return BUNDLE_EVENTS.toCode(Integer.valueOf(eventType), "");
+        } catch (ConstantException cex) {
+            return "Unknown";
+        }
+
+    }
 
     /**
      * Creates an instance of the {@link BundleDelegatingClassLoader} baked by the provided bundle and having Jahia root Spring context's
@@ -75,6 +97,17 @@ public final class BundleUtils {
     public static ClassLoader createBundleClassLoader(Bundle bundle) {
         return BundleDelegatingClassLoader.createBundleClassLoaderFor(bundle, SpringContextSingleton.getInstance()
                 .getContext().getClassLoader());
+    }
+
+    /**
+     * Returns the bundle display name containing module name (ID) and the version.
+     * 
+     * @param bundle
+     *            the bundle to get display name for
+     * @return the bundle display name containing module name (ID) and the version
+     */
+    public static String getDisplayName(Bundle bundle) {
+        return getModuleName(bundle) + " v" + getModuleVersion(bundle);
     }
 
     /**
@@ -100,7 +133,7 @@ public final class BundleUtils {
         }
 
         if (pkg == null) {
-            logger.info("Building JahiaTemplatesPackage instance for module {} v{}", moduleName, version);
+            logger.info("Building module instance for bundle {} v{}", moduleName, version);
             pkg = JahiaBundleTemplatesPackageHandler.build(bundle);
             if (pkg != null) {
                 moduleVersions.put(version, pkg);

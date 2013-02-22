@@ -18,7 +18,6 @@ package org.apache.felix.http.base.internal.dispatch;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.ServletException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletRequest;
@@ -29,7 +28,7 @@ import org.apache.felix.http.base.internal.handler.ServletHandler;
 public final class ServletPipeline
 {
     private final ServletHandler[] handlers;
-
+    
     public ServletPipeline(ServletHandler[] handlers)
     {
         this.handlers = handlers;
@@ -59,7 +58,7 @@ public final class ServletPipeline
                 return new Dispatcher(path, handler);
             }
         }
-        
+
         return null;
     }
 
@@ -78,34 +77,20 @@ public final class ServletPipeline
         public void forward(ServletRequest req, ServletResponse res)
             throws ServletException, IOException
         {
-            if (res.isCommitted()) {
+            if (res.isCommitted())
+            {
                 throw new ServletException("Response has been committed");
             }
 
-            this.handler.handle(new RequestWrapper((HttpServletRequest)req, this.path), (HttpServletResponse)res);
+            res.resetBuffer();
+
+            this.handler.handleInclude((HttpServletRequest) req, (HttpServletResponse) res);
         }
 
         public void include(ServletRequest req, ServletResponse res)
             throws ServletException, IOException
         {
-            this.handler.handle((HttpServletRequest)req, (HttpServletResponse)res);
-        }
-    }
-
-    private final class RequestWrapper
-        extends HttpServletRequestWrapper
-    {
-        private final String requestUri;
-        
-        public RequestWrapper(HttpServletRequest req, String requestUri)
-        {
-            super(req);
-            this.requestUri = requestUri;
-        }
-
-        public String getRequestURI()
-        {
-            return this.requestUri;
+            this.handler.handleInclude((HttpServletRequest) req, (HttpServletResponse) res);
         }
     }
 }

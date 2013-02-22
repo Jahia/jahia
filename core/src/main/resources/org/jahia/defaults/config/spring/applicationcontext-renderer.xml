@@ -9,6 +9,7 @@
     <bean id="org.jahia.services.render.scripting.RequestDispatcherScriptFactory" class="org.jahia.services.render.scripting.RequestDispatcherScriptFactory"/>
 
     <bean id="org.jahia.services.render.scripting.JSR223ScriptFactory" class="org.jahia.services.render.scripting.JSR223ScriptFactory"/>
+    <bean id="BundleJSR223ScriptFactory" class="org.jahia.services.render.scripting.bundle.BundleJSR223ScriptFactory"/>
 
     <bean id="org.jahia.services.render.webflow.WebflowDispatcherScriptFactory" class="org.jahia.services.render.webflow.WebflowDispatcherScriptFactory"/>
 
@@ -16,36 +17,39 @@
 		<property name="templateManagerService" ref="JahiaTemplateManagerService" />
         <property name="scriptResolvers">
 			<list>
-				<bean class="org.jahia.services.render.scripting.FileSystemScriptResolver">
-					<property name="scriptExtensionsOrdering">
-						<list>
-							<value>jsp</value>
-							<value>groovy</value>
-							<value>js</value>
-							<value>php</value>
-							<value>vm</value>
-							<value>fm</value>
-							<value>flow</value>
-						</list>
-					</property>
-                    <property name="scriptFactoryMap">
-                        <map>
-                            <entry key="jsp" value-ref="org.jahia.services.render.scripting.RequestDispatcherScriptFactory"/>
-                            <entry key="groovy" value-ref="org.jahia.services.render.scripting.JSR223ScriptFactory"/>
-                            <entry key="js" value-ref="org.jahia.services.render.scripting.JSR223ScriptFactory"/>
-                            <entry key="php" value-ref="org.jahia.services.render.scripting.RequestDispatcherScriptFactory"/>
-                            <entry key="vm" value-ref="org.jahia.services.render.scripting.JSR223ScriptFactory"/>
-                            <entry key="fm" value-ref="org.jahia.services.render.scripting.JSR223ScriptFactory"/>
-                            <entry key="flow" value-ref="org.jahia.services.render.webflow.WebflowDispatcherScriptFactory"/>
-                        </map>
-                    </property>
-                    <property name="templateManagerService" ref="JahiaTemplateManagerService" />
-				</bean>
+                <ref bean="BundleScriptResolver"/>
 			</list>
 		</property>
         <property name="aclCacheKeyPartGenerator" ref="aclCacheKeyPartGenerator"/>
         <property name="cacheProvider" ref="ehCacheProvider"/>
 	</bean>
+
+    <bean id="BundleScriptResolver" class="org.jahia.services.render.scripting.bundle.BundleScriptResolver">
+        <property name="scriptExtensionsOrdering">
+            <list>
+                <value>jsp</value>
+                <value>groovy</value>
+                <value>js</value>
+                <value>php</value>
+                <value>vm</value>
+                <value>fm</value>
+                <!-- <value>flow</value> -->
+            </list>
+        </property>
+        <property name="scriptFactoryMap">
+            <map>
+                <entry key="jsp" value-ref="org.jahia.services.render.scripting.RequestDispatcherScriptFactory" />
+                <entry key="groovy" value-ref="BundleJSR223ScriptFactory" />
+                <entry key="js" value-ref="BundleJSR223ScriptFactory" />
+                <entry key="php" value-ref="BundleJSR223ScriptFactory" />
+                <entry key="vm" value-ref="BundleJSR223ScriptFactory" />
+                <entry key="fm" value-ref="BundleJSR223ScriptFactory" />
+                <!-- <entry key="flow" value-ref="org.jahia.services.render.webflow.WebflowDispatcherScriptFactory"/> -->
+            </map>
+        </property>
+        <property name="templateManagerService" ref="JahiaTemplateManagerService" />
+    </bean>
+    
 
 	<bean
 		class="org.jahia.services.render.filter.portlet.PlutoProcessActionFilter">

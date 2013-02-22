@@ -52,20 +52,9 @@ import java.util.SortedSet;
 
 /**
  * A ScriptResolver is responsible for resolving the script to be used to render the resource.
- * User: toto
- * Date: Sep 28, 2009
- * Time: 7:22:55 PM
- * 
+ * @author Thomas Draier
  */
 public interface ScriptResolver {
-    @Deprecated
-    public Script resolveScript(Resource resource) throws TemplateNotFoundException;
-
-    @Deprecated
-    public boolean hasView(ExtendedNodeType nt, String viewName, JCRSiteNode site);
-
-    @Deprecated
-    public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site);
 
     public Script resolveScript(Resource resource, RenderContext renderContext) throws TemplateNotFoundException;
 

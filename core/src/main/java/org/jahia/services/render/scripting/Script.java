@@ -46,22 +46,22 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.View;
 
 /**
- * A template script, used to render a resource
+ * A template script, used to render a resource.
  *
- * @author toto
+ * @author Thomas Draier
  */
 public interface Script {
     /**
      * Execute the script and return the result as a string
      * @param resource resource to display
-     * @param context
+     * @param context current rendering context
      * @return the rendered resource
      * @throws org.jahia.services.render.RenderException
      */
     public String execute(Resource resource, RenderContext context) throws RenderException;
 
     /**
-     * Provides access to the template associated with this script
+     * Provides access to the view associated with this script
      * @return the View instance that will be executed
      */
     public View getView();

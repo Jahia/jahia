@@ -64,7 +64,10 @@ import javax.servlet.RequestDispatcher;
  * User: toto
  * Date: Sep 28, 2009
  * Time: 7:20:38 PM
+ * 
+ * @deprecated in favour of {@link BundleView}
  */
+@Deprecated
 public class FileSystemView implements Comparable<View>, View {
     private static final Properties EMPTY_PROPERTIES = new Properties();
     private static Logger logger = LoggerFactory.getLogger(FileSystemView.class);

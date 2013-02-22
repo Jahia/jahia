@@ -54,7 +54,6 @@ import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDependenci
 import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDeployedOnSiteEvent;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.services.templates.ModuleVersion;
-import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
@@ -63,7 +62,6 @@ import org.springframework.context.ApplicationListener;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -82,7 +80,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * [file_extension] is resolved based on the scriptExtensionsOrdering list, which is initialized in Spring.
  *
  * @author Thomas Draier
+ * 
+ * @deprecated in favour of {@link org.jahia.services.render.scripting.bundle.BundleScriptResolver}
  */
+@Deprecated
 public class FileSystemScriptResolver implements ScriptResolver, ApplicationListener<ApplicationEvent> {
 
     private static Logger logger = LoggerFactory.getLogger(FileSystemScriptResolver.class);
@@ -187,10 +188,6 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         return null;
     }
 
-    public Script resolveScript(Resource resource) throws TemplateNotFoundException {
-        return resolveScript(resource, null);
-    }
-
     public Script resolveScript(Resource resource, RenderContext renderContext) throws TemplateNotFoundException {
         try {
             ArrayList<String> searchLocations = new ArrayList<String>();
@@ -206,10 +203,6 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         } catch (RepositoryException e) {
             throw new TemplateNotFoundException(e);
         }
-    }
-
-    public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site) {
-        return hasView(nt,key,site,"html");
     }
 
     public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site, String templateType) {
@@ -228,10 +221,6 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
             }
         }
         return false;
-    }
-
-    public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site) {
-        return getViewsSet(nt,site,"html");
     }
 
     public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType) {

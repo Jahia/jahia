@@ -40,11 +40,9 @@
 
 package org.jahia.tools.precompile;
 
-import org.apache.commons.lang.StringUtils;
 import org.jahia.osgi.FrameworkService;
+import org.jahia.utils.StringResponseWrapper;
 import org.osgi.framework.Bundle;
-import org.osgi.util.tracker.ServiceTracker;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -52,11 +50,9 @@ import java.net.URL;
 import java.util.*;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -72,7 +68,6 @@ public class JspPrecompileServlet extends HttpServlet {
     private static final String COMPILE_TYPE_PARAM = "compile_type";
 
     private static final String MAGIC_TOMCAT_PARAM = "jsp_precompile=true";
-    private ServiceTracker serviceTracker;
 
     public void doGet(HttpServletRequest aRequest, HttpServletResponse aResponse)
             throws ServletException, IOException {
@@ -241,7 +236,8 @@ public class JspPrecompileServlet extends HttpServlet {
         int i = 1;
         for (final String jspPath : foundJsps) {
             try {
-                compile(jspPath, aRequest, aResponse, i);
+                StringResponseWrapper responseWrapper = new StringResponseWrapper(aResponse);
+                compile(jspPath, aRequest, responseWrapper, i);
                 System.out.println(" OK.");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -273,52 +269,9 @@ public class JspPrecompileServlet extends HttpServlet {
     }
 
     private void compile(final String jspPath, final HttpServletRequest aRequest, HttpServletResponse aResponse, int i) throws Exception {
-        if (jspPath.startsWith("modules/")) {
-            Servlet sf = getBundleDispatcherServlet();
-
-            HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(aRequest) {
-                @Override
-                public String getPathInfo() {
-                    return null;
-                }
-
-                @Override
-                public String getQueryString() {
-                    return MAGIC_TOMCAT_PARAM;
-                }
-
-                @Override
-                public String getRequestURI() {
-                    return getContextPath() + getServletPath();
-                }
-
-                @Override
-                public StringBuffer getRequestURL() {
-                    return new StringBuffer(getRequestURI());
-                }
-
-                @Override
-                public String getServletPath() {
-                    return "/" + StringUtils.substringAfter(jspPath, "/");
-                }
-            };
-
-            System.out.print("Compiling (" + i + ") " + jspPath + "...");
-            sf.service(requestWrapper, aResponse);
-        } else {
-            RequestDispatcher rd = aRequest.getRequestDispatcher("/" + jspPath);
-            System.out.print("Compiling (" + i + ") " + jspPath + "...");
-            rd.include(aRequest, aResponse);
-        }
-    }
-
-    private Servlet getBundleDispatcherServlet() {
-        if (serviceTracker == null) {
-            serviceTracker = new ServiceTracker(FrameworkService.getBundleContext(), "org.jahia.bundles.extender.jahiamodules.render.BundleDispatcherServlet", null);
-            serviceTracker.open();
-        }
-        Servlet sf = (Servlet) serviceTracker.getService();
-        return sf;
+        RequestDispatcher rd = aRequest.getRequestDispatcher("/" + jspPath);
+        System.out.print("Compiling (" + i + ") " + jspPath + "...");
+        rd.include(aRequest, aResponse);
     }
 
     /**

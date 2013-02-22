@@ -720,7 +720,7 @@
             <artifactId>standard</artifactId>
             <version>1.1.2</version>
         </dependency>
-
+        
         <!-- VFS CIFS provider for SBM shares -->
         <dependency>
             <groupId>jcifs</groupId>
@@ -830,16 +830,6 @@
                                     <artifactId>org.apache.felix.http.api</artifactId>
                                     <version>${felix.http.version}</version>
                                 </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.felix</groupId>
-                                    <artifactId>org.apache.felix.http.bridge</artifactId>
-                                    <version>${felix.http.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.felix</groupId>
-                                    <artifactId>org.apache.felix.http.whiteboard</artifactId>
-                                    <version>${felix.http.version}</version>
-                                </artifactItem>
                                 <!-- Felix WebConsole dependencies -->
                                 <artifactItem>
                                     <groupId>commons-io</groupId>
@@ -925,6 +915,11 @@
                                 <artifactItem>
                                     <groupId>org.jahia.bundles</groupId>
                                     <artifactId>org.jahia.bundles.extender.jahiamodules</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jahia.bundles</groupId>
+                                    <artifactId>org.jahia.bundles.http.bridge</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
                                 <artifactItem>

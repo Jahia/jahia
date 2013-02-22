@@ -4,38 +4,24 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.ArtifactTransformer;
 import org.apache.felix.service.command.CommandProcessor;
-import org.jahia.bundles.extender.jahiamodules.render.BundleDispatcherServlet;
-import org.jahia.bundles.extender.jahiamodules.render.BundleJSR223ScriptFactory;
-import org.jahia.bundles.extender.jahiamodules.render.BundleRequestDispatcherScriptFactory;
-import org.jahia.bundles.extender.jahiamodules.render.BundleScriptResolver;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.render.RenderService;
-import org.jahia.services.render.scripting.ScriptFactory;
-import org.jahia.services.render.scripting.ScriptResolver;
+import org.jahia.services.render.scripting.bundle.BundleScriptResolver;
 import org.jahia.services.templates.*;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.*;
-import org.osgi.service.http.HttpContext;
-import org.osgi.service.http.HttpService;
-import org.osgi.service.http.NamespaceException;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.ConstantException;
-import org.springframework.core.Constants;
 import org.springframework.core.io.Resource;
-import org.springframework.web.context.WebApplicationContext;
 import javax.jcr.RepositoryException;
-import javax.servlet.Servlet;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -45,56 +31,33 @@ import java.util.*;
  */
 public class Activator implements BundleActivator {
 
-    private static final Constants BUNDLE_EVENTS = new Constants(BundleEvent.class);
-    
-    private static Logger logger = LoggerFactory.getLogger(Activator.class);
-
-    public static final String STATIC_RESOURCES_HEADERNAME = "Jahia-Static-Resources";
-
-    CndBundleObserver cndBundleObserver = null;
-    JspBundleObserver jspBundleObserver = null;
-    RulesBundleObserver rulesBundleObserver = null;
-    ScriptBundleObserver scriptBundleObserver = null;
-    boolean scriptResolverAlreadyInstalled = false;
-    BundleScriptResolver bundleScriptResolver = null;
-    RenderService renderService = null;
-    JCRStoreService jcrStoreService = null;
-    private List<ServiceRegistration> serviceRegistrations = new ArrayList<ServiceRegistration>();
-    BundleListener bundleListener = null;
-    Set<Bundle> installedBundles = new HashSet<Bundle>();
-    Map<Bundle, JahiaTemplatesPackage> registeredBundles = new HashMap<Bundle, JahiaTemplatesPackage>();
-    Map<Bundle, ServiceTracker> bundleHttpServiceTrackers = new HashMap<Bundle, ServiceTracker>();
-    JahiaTemplateManagerService templatesService = null;
-    TemplatePackageRegistry templatePackageRegistry = null;
-    TemplatePackageDeployer templatePackageDeployer = null;
-    WebApplicationContext parentWebApplicationContext = null;
-
-    Map<Bundle, List<URL>> bundleResources = new HashMap<Bundle, List<URL>>();
-    Map<BundleURLScanner, BundleObserver<URL>> extensionObservers = new LinkedHashMap<BundleURLScanner, BundleObserver<URL>>();
-    private BundleURLScanner cndScanner;
-    private Map<String,List<Bundle>> toBeParsed = new HashMap<String, List<Bundle>>();
-    private Map<String,List<Bundle>> toBeStarted = new HashMap<String, List<Bundle>>();
-
     public static enum ModuleState {
         UNINSTALLED, UNRESOLVED, RESOLVED, WAITING_TO_BE_PARSED, PARSED, INSTALLED, UPDATED, STOPPED, STOPPING, STARTING, WAITING_TO_BE_STARTED, ERROR_DURING_START, STARTED;
     }
 
-    /**
-     * Returns a String representation for the given bundle event.
-     * 
-     * @param eventType OSGi <code>BundleEvent</code> given as an int
-     * @return String representation for the bundle event
-     * @see org.eclipse.gemini.blueprint.util.OsgiStringUtils
-     */
-    public static String bundleEventToString(int eventType) {
-            try {
-                    return BUNDLE_EVENTS.toCode(Integer.valueOf(eventType), "");
-            } catch (ConstantException cex) {
-                    return "Unknown";
-            }
+    private static Logger logger = LoggerFactory.getLogger(Activator.class);
 
-    }
+    private static final BundleURLScanner CND_SCANNER = new BundleURLScanner("META-INF", "*.cnd", false);
     
+    private static final Comparator<Resource> IMPORT_FILE_COMPARATOR = new Comparator<Resource>() {
+        public int compare(Resource o1, Resource o2) {
+            return StringUtils.substringBeforeLast(o1.getFilename(), ".").compareTo(StringUtils.substringBeforeLast(o2.getFilename(), "."));
+        }
+    };
+    
+    private CndBundleObserver cndBundleObserver = null;
+    private List<ServiceRegistration> serviceRegistrations = new ArrayList<ServiceRegistration>();
+    private BundleListener bundleListener = null;
+    private Set<Bundle> installedBundles = new HashSet<Bundle>();
+    private Map<Bundle, JahiaTemplatesPackage> registeredBundles = new HashMap<Bundle, JahiaTemplatesPackage>();
+    private Map<Bundle, ServiceTracker> bundleHttpServiceTrackers = new HashMap<Bundle, ServiceTracker>();
+    private TemplatePackageRegistry templatePackageRegistry = null;
+    private TemplatePackageDeployer templatePackageDeployer = null;
+
+    private Map<BundleURLScanner, BundleObserver<URL>> extensionObservers = new LinkedHashMap<BundleURLScanner, BundleObserver<URL>>();
+    private Map<String,List<Bundle>> toBeParsed = new HashMap<String, List<Bundle>>();
+    private Map<String,List<Bundle>> toBeStarted = new HashMap<String, List<Bundle>>();
+
     private Map<Bundle, ModuleState> moduleStates = new TreeMap<Bundle, ModuleState>();
 
     @Override
@@ -102,106 +65,55 @@ public class Activator implements BundleActivator {
         logger.info("== Starting Jahia Extender ============================================================== ");
         long startTime = System.currentTimeMillis();
 
-        parentWebApplicationContext = (WebApplicationContext) SpringContextSingleton.getInstance().getContext();
-        renderService = (RenderService) parentWebApplicationContext.getBean("RenderService");
-        jcrStoreService = (JCRStoreService) parentWebApplicationContext.getBean("JCRStoreService");
-        templatesService = (JahiaTemplateManagerService) parentWebApplicationContext.getBean("JahiaTemplateManagerService");
+        // obtain service instances
+        JahiaTemplateManagerService templatesService = (JahiaTemplateManagerService) SpringContextSingleton.getBean("JahiaTemplateManagerService");
         templatePackageDeployer = templatesService.getTemplatePackageDeployer();
         templatePackageRegistry = templatesService.getTemplatePackageRegistry();
 
-        cndBundleObserver = new CndBundleObserver();
-        cndBundleObserver.setJcrStoreService(jcrStoreService);
-        cndBundleObserver.setTemplatePackageRegistry(templatePackageRegistry);
-        cndScanner = new BundleURLScanner("META-INF", "*.cnd", false);
-
-        rulesBundleObserver = new RulesBundleObserver();
-        rulesBundleObserver.setTemplatePackageRegistry(templatePackageRegistry);
+        // register rule observers
+        RulesBundleObserver rulesBundleObserver = new RulesBundleObserver();
         extensionObservers.put(new BundleURLScanner("META-INF", "*.dsl", false), rulesBundleObserver);
         extensionObservers.put(new BundleURLScanner("META-INF", "*.drl", false), rulesBundleObserver);
-//        extensionObservers.put(cndScanner, cndBundleObserver);
 
-        Collection<ScriptResolver> scriptResolvers = renderService.getScriptResolvers();
-        for (ScriptResolver scriptResolver : scriptResolvers) {
-            if (scriptResolver instanceof BundleScriptResolver) {
-                scriptResolverAlreadyInstalled = true;
-                bundleScriptResolver = (BundleScriptResolver) scriptResolver;
-            }
-        }
-        BundleDispatcherServlet bundleDispatcherServlet = new BundleDispatcherServlet();
-        Hashtable<String, String> props = new Hashtable<String, String>();
-        props.put("alias", "/dispatcher");
-        serviceRegistrations.add(context.registerService(Servlet.class.getName(), bundleDispatcherServlet, props));
+        BundleScriptResolver bundleScriptResolver = (BundleScriptResolver) SpringContextSingleton.getBean("BundleScriptResolver");
 
-        if (!scriptResolverAlreadyInstalled) {
-            bundleScriptResolver = new BundleScriptResolver();
-            Map<String, ScriptFactory> scriptFactoryMap = new HashMap<String, ScriptFactory>();
-            BundleJSR223ScriptFactory bundleJSR223ScriptFactory = new BundleJSR223ScriptFactory();
-            BundleRequestDispatcherScriptFactory bundleRequestDispatcherScriptFactory = new BundleRequestDispatcherScriptFactory(bundleDispatcherServlet);
-            // @ todo remove these hardcoded lists
-            scriptFactoryMap.put("jsp", bundleRequestDispatcherScriptFactory);
-            scriptFactoryMap.put("groovy", bundleJSR223ScriptFactory);
-            scriptFactoryMap.put("js", bundleJSR223ScriptFactory);
-            scriptFactoryMap.put("php", bundleRequestDispatcherScriptFactory);
-            scriptFactoryMap.put("vm", bundleJSR223ScriptFactory);
-            scriptFactoryMap.put("fm", bundleJSR223ScriptFactory);
-            bundleScriptResolver.setScriptFactoryMap(scriptFactoryMap);
-            bundleScriptResolver.setTemplateManagerService(templatesService);
-            List<String> scriptExtensionsOrdering = new ArrayList<String>();
-            // @ todo remove these hardcoded lists
-            scriptExtensionsOrdering.add("jsp");
-            scriptExtensionsOrdering.add("groovy");
-            scriptExtensionsOrdering.add("js");
-            scriptExtensionsOrdering.add("php");
-            scriptExtensionsOrdering.add("vm");
-            scriptExtensionsOrdering.add("fm");
-            bundleScriptResolver.setScriptExtensionsOrdering(scriptExtensionsOrdering);
-            scriptResolvers.add(bundleScriptResolver);
-        }
-
-        jspBundleObserver = new JspBundleObserver(bundleScriptResolver, bundleDispatcherServlet);
-        extensionObservers.put(new BundleURLScanner("/", "*.jsp", true), jspBundleObserver);
-        serviceRegistrations.add(context.registerService(BundleDispatcherServlet.class.getName(), bundleDispatcherServlet, new Hashtable<Object, Object>()));
-
-        scriptBundleObserver = new ScriptBundleObserver(bundleScriptResolver);
-        List<String> scriptExtensions = new ArrayList<String>();
-        scriptExtensions.add("groovy");
-        scriptExtensions.add("js");
-        scriptExtensions.add("php");
-        scriptExtensions.add("vm");
-        scriptExtensions.add("fm");
-        for (String scriptExtension : scriptExtensions) {
+        // register view script observers 
+        ScriptBundleObserver scriptBundleObserver = new ScriptBundleObserver(bundleScriptResolver);
+        // add scanners for all types of scripts of the views to register them in the BundleScriptResolver
+        for (String scriptExtension : bundleScriptResolver.getScriptExtensionsOrdering()) {
             extensionObservers.put(new BundleURLScanner("/", "*." + scriptExtension, true), scriptBundleObserver);
         }
 
-        // now let's register artifact transformer to legacy Jahia module
-        /*
-        serviceRegistrations.add(context.registerService(
-            new String[] {ArtifactUrlTransformer.class.getName(), ArtifactListener.class.getName()},
-            new JahiaLegacyModuleTransformer(),
-            new Hashtable()
-        ));
-        */
+        // we won't register CND observer, but will rather call it manually
+        cndBundleObserver = new CndBundleObserver();
+        
+        // register Jahia legacy module transformer
         serviceRegistrations.add(context.registerService(
                 new String[]{ArtifactTransformer.class.getName(), ArtifactListener.class.getName()},
                 new JahiaLegacyModuleTransformer(),
                 new Hashtable<Object, Object>()
         ));
 
+        // add listener for other bundle life cycle events
         setupBundleListener(context);
 
+        // parse existing bundles
         for (Bundle bundle : context.getBundles()) {
             parseBundle(bundle);
         }
 
+        registerShellCommands(context);
+
+        logger.info("== Jahia Extender started in {}ms ============================================================== ", System.currentTimeMillis() - startTime);
+
+    }
+
+    private void registerShellCommands(BundleContext context) {
         Dictionary<String, Object> dict = new Hashtable<String, Object>();
         dict.put(CommandProcessor.COMMAND_SCOPE, "jahia");
         dict.put(CommandProcessor.COMMAND_FUNCTION, new String[] {"modules"});
         ShellCommands shellCommands = new ShellCommands(this);
         serviceRegistrations.add(context.registerService(ShellCommands.class.getName(), shellCommands, dict));
-
-        long totalTime = System.currentTimeMillis() - startTime;
-        logger.info("== Jahia Extender started in {}ms ============================================================== ", totalTime);
-
     }
 
     private synchronized void setupBundleListener(BundleContext context) {
@@ -214,7 +126,7 @@ public class Activator implements BundleActivator {
                 }
                 
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Received event {} for bundle {}", bundleEventToString(bundleEvent.getType()),
+                    logger.debug("Received event {} for bundle {}", BundleUtils.bundleEventToString(bundleEvent.getType()),
                             getDisplayName(bundleEvent.getBundle()));
                 }
                 try {
@@ -278,11 +190,6 @@ public class Activator implements BundleActivator {
         bundleListener = null;
         registeredBundles.clear();
 
-        if (!scriptResolverAlreadyInstalled) {
-            if (renderService != null) {
-                renderService.getScriptResolvers().remove(bundleScriptResolver);
-            }
-        }
         for (ServiceRegistration serviceRegistration : serviceRegistrations) {
             try {
                 serviceRegistration.unregister();
@@ -359,8 +266,10 @@ public class Activator implements BundleActivator {
 
         boolean latestDefinitions = NodeTypeRegistry.getInstance().isLatestDefinitions(bundle.getSymbolicName(), pkg.getVersion());
         if (latestDefinitions) {
-            List<URL> foundURLs = cndScanner.scan(bundle);
-            addResources(bundle, foundURLs, cndBundleObserver);
+            List<URL> foundURLs = CND_SCANNER.scan(bundle);
+            if (!foundURLs.isEmpty()) {
+                cndBundleObserver.addingEntries(bundle, foundURLs);
+            }
         }
 
         logger.info("--- Done parsing Jahia OSGi bundle {} v{} --", pkg.getRootFolder(), pkg.getVersion());
@@ -467,13 +376,14 @@ public class Activator implements BundleActivator {
         jahiaTemplatesPackage.setActiveVersion(true);
 
         // scan for resource and call observers
-        for (BundleURLScanner bundleURLScanner : extensionObservers.keySet()) {
-            List<URL> foundURLs = bundleURLScanner.scan(bundle);
-            BundleObserver<URL> urlObserver = extensionObservers.get(bundleURLScanner);
-            addResources(bundle, foundURLs, urlObserver);
+        for (Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver : extensionObservers.entrySet()) {
+            List<URL> foundURLs = scannerAndObserver.getKey().scan(bundle);
+            if (!foundURLs.isEmpty()) {
+                scannerAndObserver.getValue().addingEntries(bundle, foundURLs);
+            }
         }
 
-        registerStaticResources(bundle);
+        registerHttpResources(bundle);
 
         long totalTime = System.currentTimeMillis() - startTime;
         logger.info("--- Finished starting Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
@@ -484,7 +394,7 @@ public class Activator implements BundleActivator {
     }
 
     private String getDisplayName(Bundle bundle) {
-        return bundle.getSymbolicName() + " v" + bundle.getHeaders().get("Implementation-Version");
+        return BundleUtils.getDisplayName(bundle);
     }
 
     private void startDependantBundles(String key) {
@@ -525,10 +435,11 @@ public class Activator implements BundleActivator {
         }
 
         // scan for resource and call observers
-        for (BundleURLScanner bundleURLScanner : extensionObservers.keySet()) {
-            List<URL> foundURLs = bundleURLScanner.scan(bundle);
-            BundleObserver<URL> urlObserver = extensionObservers.get(bundleURLScanner);
-            removeResources(bundle, foundURLs, urlObserver);
+        for (Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver : extensionObservers.entrySet()) {
+            List<URL> foundURLs = scannerAndObserver.getKey().scan(bundle);
+            if (!foundURLs.isEmpty()) {
+                scannerAndObserver.getValue().removingEntries(bundle, foundURLs);
+            }
         }
 
         if (bundleHttpServiceTrackers.containsKey(bundle)) {
@@ -539,79 +450,25 @@ public class Activator implements BundleActivator {
         logger.info("--- Finished stopping Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
     }
 
-    private void addResources(Bundle bundle, List<URL> foundURLs, BundleObserver<URL> urlObserver) {
-        bundleResources.put(bundle, foundURLs);
-        urlObserver.addingEntries(bundle, foundURLs);
-    }
-
-    private void registerStaticResources(final Bundle bundle) {
+    private void registerHttpResources(final Bundle bundle) {
         final String displayName = getDisplayName(bundle);
-        
-        final Hashtable<String, String> staticResources = new Hashtable<String, String>();
-        String staticResourcesStr = (String) bundle.getHeaders().get(STATIC_RESOURCES_HEADERNAME);
-        if (staticResourcesStr != null) {
-            String[] staticResourcesArray = staticResourcesStr.split(",");
-            for (String curMappingStr : staticResourcesArray) {
-                if (curMappingStr.contains("=")) {
-                    String[] mapping = curMappingStr.split("=");
-                    staticResources.put(mapping[0], mapping[1]);
-                } else {
-                        staticResources.put("/" + bundle.getSymbolicName() + curMappingStr, curMappingStr);
-                    }
-                }
-            }
 
-        if (bundleHttpServiceTrackers.containsKey(bundle)) {
-            bundleHttpServiceTrackers.remove(bundle).close();
+        if (!BundleHttpResourcesTracker.getStaticResources(bundle).isEmpty()
+                || !BundleHttpResourcesTracker.getJsps(bundle).isEmpty()) {
+            logger.debug("Found HTTP resources for bundle {}." + " Will launch service tracker for HttpService",
+                    displayName);
+            if (bundleHttpServiceTrackers.containsKey(bundle)) {
+                bundleHttpServiceTrackers.remove(bundle).close();
+            }
+            ServiceTracker bundleServiceTracker = new BundleHttpResourcesTracker(bundle);
+            bundleServiceTracker.open();
+            bundleHttpServiceTrackers.put(bundle, bundleServiceTracker);
+        } else {
+            logger.debug("No HTTP resources found for bundle {}", displayName);
         }
-        ServiceTracker bundleServiceTracker = new ServiceTracker(bundle.getBundleContext(), HttpService.class.getName(), null) {
-
-            HttpContext httpContext;
-
-            @Override
-            public Object addingService(ServiceReference reference) {
-                HttpService httpService = (HttpService) super.addingService(reference);
-                httpContext = new FileHttpContext(FileHttpContext.getSourceURLs(bundle), httpService.createDefaultHttpContext());
-                int count = 0;
-                for (Map.Entry<String, String> curEntry : staticResources.entrySet()) {
-                    try {
-                        logger.debug("Registering static resource {}", curEntry.getKey());
-                        count++;
-                        httpService.registerResources(curEntry.getKey(), curEntry.getValue(), httpContext);
-                    } catch (NamespaceException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-                logger.info("Registered {} static resources for bundle {}", count, displayName);
-                jspBundleObserver.setBundleHttpService(bundle, httpService);
-                return httpService;
-            }
-
-            @Override
-            public void removedService(ServiceReference reference, Object service) {
-                HttpService httpService = (HttpService) service;
-                int count = 0;
-                for (Map.Entry<String, String> curEntry : staticResources.entrySet()) {
-                    logger.debug("Unregistering static resource {}", curEntry.getKey());
-                    count++;
-                    httpService.unregister(curEntry.getKey());
-                }
-                logger.info("Unregistered {} static resources for bundle {}", count, displayName);
-                jspBundleObserver.setBundleHttpService(bundle, null);
-                super.removedService(reference, service);
-            }
-        };
-
-        bundleServiceTracker.open();
-        bundleHttpServiceTrackers.put(bundle, bundleServiceTracker);
     }
 
-    private void scanForImportFiles(Bundle bundle, JahiaTemplatesPackage JahiaTemplatesPackage) {
-        Comparator<Resource> c = new Comparator<Resource>() {
-            public int compare(Resource o1, Resource o2) {
-                return StringUtils.substringBeforeLast(o1.getFilename(), ".").compareTo(StringUtils.substringBeforeLast(o2.getFilename(), "."));
-            }
-        };
+    private void scanForImportFiles(Bundle bundle, JahiaTemplatesPackage jahiaTemplatesPackage) {
         List<Resource> importFiles = new ArrayList<Resource>();
         @SuppressWarnings("unchecked")
         Enumeration<URL> importXMLEntryEnum = bundle.findEntries("META-INF", "import*.xml", false);
@@ -627,19 +484,14 @@ public class Activator implements BundleActivator {
                 importFiles.add(new BundleResource(importZIPEntryEnum.nextElement(), bundle));
             }
         }
-        Collections.sort(importFiles, c);
+        Collections.sort(importFiles, IMPORT_FILE_COMPARATOR);
         for (Resource importFile : importFiles) {
             try {
-                JahiaTemplatesPackage.addInitialImport(importFile.getURL().getPath());
+                jahiaTemplatesPackage.addInitialImport(importFile.getURL().getPath());
             } catch (IOException e) {
                 logger.error("Error retrieving URL for resource " + importFile, e);
             }
         }
-    }
-
-    private void removeResources(Bundle bundle, List<URL> foundURLs, BundleObserver<URL> urlObserver) {
-        bundleResources.remove(bundle);
-        urlObserver.removingEntries(bundle, foundURLs);
     }
 
     public Map<Bundle, JahiaTemplatesPackage> getRegisteredBundles() {

@@ -3,7 +3,10 @@ package org.jahia.bundles.extender.jahiamodules;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleResource;
+import org.jahia.osgi.BundleUtils;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.rules.RulesListener;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.TemplatePackageRegistry;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.osgi.framework.Bundle;
@@ -23,12 +26,18 @@ public class RulesBundleObserver implements BundleObserver<URL> {
 
     private TemplatePackageRegistry templatePackageRegistry;
 
-    public void setTemplatePackageRegistry(TemplatePackageRegistry templatePackageRegistry) {
-        this.templatePackageRegistry = templatePackageRegistry;
+    public RulesBundleObserver() {
+        super();
+        templatePackageRegistry = ((JahiaTemplateManagerService) SpringContextSingleton
+                .getBean("JahiaTemplateManagerService")).getTemplatePackageRegistry();
     }
 
     @Override
     public void addingEntries(Bundle bundle, List<URL> urls) {
+        if (urls.size() == 0) {
+            return;
+        }
+        String bundleName = BundleUtils.getDisplayName(bundle);
         for (URL url : urls) {
             BundleResource bundleResource = new BundleResource(url, bundle);
             try {
@@ -54,7 +63,7 @@ public class RulesBundleObserver implements BundleObserver<URL> {
                     }
                 }
 
-                logger.info("Registered rules from file " + url + " for bundle " + bundle);
+                logger.info("Registered rules from file {} for bundle {}", url, bundleName);
             } catch (IOException e) {
                 logger.error("Error registering rules file " + url + " for bundle " + bundle, e);
             }
@@ -63,12 +72,9 @@ public class RulesBundleObserver implements BundleObserver<URL> {
 
     @Override
     public void removingEntries(Bundle bundle, List<URL> urls) {
-        for (URL url : urls) {
-            BundleResource bundleResource = new BundleResource(url, bundle);
-            JahiaTemplatesPackage module = templatePackageRegistry.lookupByBundle(bundle);
-            for (RulesListener listener : RulesListener.getInstances()) {
-                listener.removeRules(module.getName());
-            }
+        JahiaTemplatesPackage module = templatePackageRegistry.lookupByBundle(bundle);
+        for (RulesListener listener : RulesListener.getInstances()) {
+            listener.removeRules(module.getName());
         }
     }
 }

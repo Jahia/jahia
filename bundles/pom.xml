@@ -16,6 +16,7 @@
 
     <modules>
         <module>blueprint-extender-config</module>
+        <module>http-bridge</module>
         <!--
         <module>basic-servlet</module>
         <module>jahia-bridge</module>

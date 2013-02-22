@@ -22,6 +22,8 @@ import java.util.List;
  * HttpContext that can look up resources in files as well as the default OSGi HttpContext
  */
 public class FileHttpContext implements HttpContext {
+    
+    private static final URL[] EMPTY_URL_ARRAY = new URL[0];
 
     private static Logger logger = LoggerFactory.getLogger(FileHttpContext.class);
 
@@ -29,18 +31,19 @@ public class FileHttpContext implements HttpContext {
     URL[] sourceURLs;
 
     public FileHttpContext(URL[] sourceURLs, HttpContext parentHttpContext) {
-        this.sourceURLs = sourceURLs;
+        this.sourceURLs = sourceURLs != null && sourceURLs.length == 0 ? null : sourceURLs;
         this.parentHttpContext = parentHttpContext;
     }
 
     public static URL[] getSourceURLs(Bundle bundle) {
+        URL[] urls = EMPTY_URL_ARRAY;
         String sourceFolderHeader = (String) bundle.getHeaders().get("Jahia-Source-Folders");
-        List<URL> sourceURLs = new ArrayList<URL>();
-        if (sourceFolderHeader != null) {
+        if (StringUtils.isNotEmpty(sourceFolderHeader)) {
+            List<URL> sourceURLs = new ArrayList<URL>();
             String[] sourceFolders = StringUtils.split(sourceFolderHeader, ",");
 
             for (String sourceFolder : sourceFolders) {
-                File resourceFolderFile = new File(sourceFolder + "/src/main/resources");
+                File resourceFolderFile = new File(sourceFolder, "src/main/resources");
                 if (resourceFolderFile.exists()) {
                     try {
                         sourceURLs.add(resourceFolderFile.toURI().toURL());
@@ -49,7 +52,7 @@ public class FileHttpContext implements HttpContext {
                     }
                 }
                 // Legacy sources
-                File webappFolderFile = new File(sourceFolder + "/src/main/webapp");
+                File webappFolderFile = new File(sourceFolder, "src/main/webapp");
                 if (webappFolderFile.exists()) {
                     try {
                         sourceURLs.add(webappFolderFile.toURI().toURL());
@@ -58,8 +61,10 @@ public class FileHttpContext implements HttpContext {
                     }
                 }
             }
+            urls = sourceURLs.toArray(new URL[sourceURLs.size()]);
+            logger.debug("Detected {} source folders for bundle {}", sourceURLs.size(), bundle.getSymbolicName());
         }
-        return sourceURLs.toArray(new URL[sourceURLs.size()]);
+        return urls;
     }
 
     @Override

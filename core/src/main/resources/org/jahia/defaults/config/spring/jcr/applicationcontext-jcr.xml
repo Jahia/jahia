@@ -304,6 +304,13 @@
                 </bean>
             </list>
         </property>
+        <property name="providerFactories">
+            <map>
+                <entry key="jnt:vfsMountPoint" >
+                    <bean class="org.jahia.services.content.impl.external.vfs.VFSProviderFactory"/>
+                </entry>
+            </map>
+        </property>
     </bean>
     
     <bean id="abstractRichTextPropertyInterceptor" class="org.jahia.services.content.interceptor.BaseInterceptor" abstract="true">
@@ -628,6 +635,10 @@
             <!--</util:map>-->
         <!--</property>-->
     <!--</bean>-->
+
+    <bean id="ExternalStoreProviderPrototype" class="org.jahia.services.content.impl.external.ExternalContentStoreProvider" parent="AbstractJCRStoreProviderPrototype" scope="prototype">
+        <property name="hibernateSession" ref="sessionFactory"/>
+    </bean>
 
     <bean id="ModulesStoreProviderPrototype" class="org.jahia.services.content.impl.external.ExternalContentStoreProvider" parent="AbstractJCRStoreProviderPrototype" scope="prototype">
         <property name="hibernateSession" ref="sessionFactory"/>

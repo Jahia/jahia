@@ -96,7 +96,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     private Map<String, Class> decorators = new HashMap<String, Class>();
     private Map<String, Constructor<?>> decoratorCreators = new HashMap<String, Constructor<?>>();
     private InterceptorChain interceptorChain;
-    private Map<String,ExternalProvider> externalProviders = new HashMap<String, ExternalProvider>();
+    private Map<String,ProviderFactory> providerFactories = new HashMap<String, ProviderFactory>();
     private List<PropertyInterceptor> interceptors = new LinkedList<PropertyInterceptor>();
     private Set<String> noValidityCheckTypes = new HashSet<String>();
     private Set<String> noLanguageValidityCheckTypes = new HashSet<String>();
@@ -130,8 +130,8 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         interceptorChain = null;
     }
 
-    public void addExternalProvider(String key, ExternalProvider externalProvider) {
-        this.externalProviders.put(key, externalProvider);
+    public void addProviderFactory(String nodeType, ProviderFactory externalProvider) {
+        this.providerFactories.put(nodeType, externalProvider);
     }
 
     public JCRNodeWrapper decorate(JCRNodeWrapper w) {
@@ -299,8 +299,12 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         interceptorChain = null;
     }
 
-    public Map<String, ExternalProvider> getExternalProviders() {
-        return externalProviders;
+    public Map<String, ProviderFactory> getProviderFactories() {
+        return providerFactories;
+    }
+
+    public void setProviderFactories(Map<String, ProviderFactory> providerFactories) {
+        this.providerFactories = providerFactories;
     }
 
     public void setListeners(Map<String, List<DefaultEventListener>> listeners) {

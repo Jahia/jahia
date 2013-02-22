@@ -87,21 +87,11 @@ public class ContentHubHelper {
                             if (!mounts.isCheckedOut()) {
                                 mounts.checkout();
                             }
-                            Map<String, ExternalProvider> providers = jcrStoreService.getExternalProviders();
                             // create the node depending of the root
-                            for (String k : providers.keySet()) {
-                                ExternalProvider ext;
-                                if (root.startsWith((ext = providers.get(k)).getPrefix())) {
-                                    childNode = (JCRMountPointNode) mounts.addNode(name,"jnt:mountPoint");
-                                    childNode.setProperty("j:provider", ext.getKey());
-                                    break;
-                                }
-                            }
-                            if (childNode == null) {
-                                childNode = (JCRMountPointNode) mounts.addNode(name, "jnt:mountPoint");
-                                childNode.setProperty("j:provider", "vfs");
-                            }
+
+                            childNode = (JCRMountPointNode) mounts.addNode(name,"jnt:vfsMountPoint");
                             childNode.setProperty("j:root", root);
+
                             boolean valid = childNode.checkMountPointValidity();
                             if (!valid) {
                                 childNode.remove();

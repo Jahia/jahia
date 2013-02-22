@@ -93,7 +93,7 @@ import java.util.*;
  */
 public class TemplatePackageRegistry {
     private static Logger logger = LoggerFactory.getLogger(TemplatePackageRegistry.class);
-    
+
     private static final Comparator<JahiaTemplatesPackage> TEMPLATE_PACKAGE_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
         public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
             if (o1.isDefault()) return 99;
@@ -189,7 +189,7 @@ public class TemplatePackageRegistry {
     public boolean isAfterInitializeDone() {
         return afterInitializeDone;
     }
-    
+
     public synchronized void afterInitializationForModule(JahiaTemplatesPackage pack) {
         if (pack.getContext() != null && !pack.isServiceInitialized()) {
             int count = 0;
@@ -280,7 +280,7 @@ public class TemplatePackageRegistry {
 
     /**
      * Returns a list of {@link RenderFilter} instances, configured for the specified templates package.
-     * 
+     *
      * @return a list of {@link RenderFilter} instances, configured for the specified templates package
      */
     public List<RenderFilter> getRenderFilters() {
@@ -300,10 +300,10 @@ public class TemplatePackageRegistry {
         if (packageName == null || registry == null) return null;
         return registry.get(packageName);
     }
-    
+
     /**
      * Returns the template package that corresponds to the provided OSGi bundle or <code>null</code> if the package is not registered.
-     * 
+     *
      * @param osgiBundle
      *            the corresponding OSGi bundle
      * @return the template package that corresponds to the provided OSGi bundle or <code>null</code> if the package is not registered
@@ -401,7 +401,7 @@ public class TemplatePackageRegistry {
 //        for (JahiaTemplatesPackage sourcePack : registry.values()) {
 //        computeResourceBundleHierarchy(templatePackage);
 //        }
-        
+
         Resource[] rootResources = templatePackage.getResources("");
         for (Resource rootResource : rootResources) {
             if (templatePackage.getResources(rootResource.getFilename()).length > 0 && rootResource.getFilename().contains("_")) {
@@ -428,12 +428,12 @@ public class TemplatePackageRegistry {
             try {
                 Object dataSource = SpringContextSingleton.getBean("ModulesDataSourcePrototype");
                 Map<String,Object> properties = new LinkedHashMap<String,Object>();
-            File oldStructure = new File(templatePackage.getSourcesFolder(), "src/main/webapp");
-            if (oldStructure.exists()) {
+                File oldStructure = new File(templatePackage.getSourcesFolder(), "src/main/webapp");
+                if (oldStructure.exists()) {
                     properties.put("root",templatePackage.getSourcesFolder().toURI().toString()+"src/main/webapp");
-            } else {
+                } else {
                     properties.put("root",templatePackage.getSourcesFolder().toURI().toString()+"src/main/resources");
-            }
+                }
                 properties.put("module",templatePackage);
 
                 BeanUtils.populate(dataSource, properties);
@@ -588,11 +588,11 @@ public class TemplatePackageRegistry {
 
     static class ModuleRegistry implements DestructionAwareBeanPostProcessor {
         private TemplatePackageRegistry templatePackageRegistry;
-        
+
         private ChoiceListInitializerService choiceListInitializers;
 
         private ChoiceListRendererService choiceListRendererService;
-        
+
         private RenderService renderService;
 
         private WorkflowService workflowService;
@@ -726,6 +726,11 @@ public class TemplatePackageRegistry {
             if (bean instanceof SimpleUrlHandlerMapping) {
                 templatePackageRegistry.urlHandlerMappings.remove((SimpleUrlHandlerMapping) bean);
             }
+
+            if (bean instanceof ProviderFactory) {
+                jcrStoreService.getProviderFactories().remove(((ProviderFactory)bean).getNodeTypeName());
+            }
+
         }
 
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
@@ -761,7 +766,7 @@ public class TemplatePackageRegistry {
                 }
                 choiceListInitializers.getInitializers().put(moduleChoiceListInitializer.getKey(),moduleChoiceListInitializer);
             }
-            
+
             if (bean instanceof ModuleChoiceListRenderer) {
                 ModuleChoiceListRenderer choiceListRenderer = (ModuleChoiceListRenderer) bean;
                 if (logger.isDebugEnabled()) {
@@ -781,7 +786,7 @@ public class TemplatePackageRegistry {
                         }
                     }
                 }
-            } 
+            }
             if (bean instanceof StaticAssetMapping) {
                 StaticAssetMapping mappings = (StaticAssetMapping) bean;
                 staticAssetMapping.putAll(mappings.getMapping());
@@ -796,7 +801,7 @@ public class TemplatePackageRegistry {
 	                    JCRTemplate.getInstance().doExecuteWithSystemSession(null,eventListener.getWorkspace(),new JCRCallback<Object>() {
 	                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
 	                            final Workspace workspace = session.getWorkspace();
-	
+
 	                            ObservationManager observationManager = workspace.getObservationManager();
                                 //first remove existing listener of same type
                                 final EventListenerIterator registeredEventListeners = observationManager.getRegisteredEventListeners();
@@ -821,7 +826,7 @@ public class TemplatePackageRegistry {
 	                }
                 } else {
                 	logger.info("Skipping listener {} as it has no event types configured.",
-					        eventListener.getClass().getName());                	
+					        eventListener.getClass().getName());
                 }
             }
             if (bean instanceof BackgroundAction) {
@@ -860,6 +865,10 @@ public class TemplatePackageRegistry {
 
             if (bean instanceof SimpleUrlHandlerMapping) {
                 templatePackageRegistry.urlHandlerMappings.add((SimpleUrlHandlerMapping) bean);
+            }
+
+            if (bean instanceof ProviderFactory) {
+                jcrStoreService.addProviderFactory(((ProviderFactory)bean).getNodeTypeName(), (ProviderFactory)bean);
             }
 
             return bean;

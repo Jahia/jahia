@@ -44,8 +44,10 @@ import java.util.Properties;
 
 import javax.jcr.RepositoryException;
 
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.slf4j.Logger;
 
 /**
  * Module content caching filter, which only caches the modules having an expiration set.
@@ -54,19 +56,41 @@ import org.jahia.services.render.Resource;
  * @since JAHIA 6.6.1.5
  */
 public class ExpiringCacheFilter extends AggregateCacheFilter {
+    protected transient static Logger logger = org.slf4j.LoggerFactory.getLogger(ExpiringCacheFilter.class);
+    
+    public static final String J_EXPIRATION = "j:expiration";
 
     @Override
     protected boolean isCacheable(RenderContext renderContext,
             Resource resource, String key, Properties properties,
             boolean isInPrepare) throws RepositoryException {
         return !isInPrepare ? getExpiration(renderContext, resource, properties) > 0
-                : super.isCacheable(renderContext, resource, key, properties,
-                        isInPrepare);
+                : getExpiration(resource, properties) > 0;
     }
 
     @Override
     protected boolean useDependencies() {
         return false;
+    }
+    
+    
+    /**
+     * Try to retrieve the j:expiration property of the node if we are in prepare phase, as the info is
+     * normally only available in execute phase, because TemplateAttributesFilter reads it.
+     */
+    private Long getExpiration(Resource resource, Properties properties) {
+        JCRNodeWrapper node = resource.getNode();
+        String cacheAttribute = null;
+        try {
+            if (node.hasProperty(J_EXPIRATION)) {
+                cacheAttribute = node.getProperty(J_EXPIRATION).getString();
+            }
+        } catch (RepositoryException e) {
+            logger.warn("Error retrieving j:expiration property, ignoring it!",
+                    e);
+        }
+        return cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long
+                .valueOf(properties.getProperty("cache.expiration", "-1"));
     }
 
 }

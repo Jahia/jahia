@@ -8,9 +8,9 @@
         <version>6.7.0.0-SNAPSHOT</version>
     </parent>
 
+    <artifactId>org.jahia.bundles.blueprint.extender.config</artifactId>
     <name>Jahia Blueprint Extender Config</name>
     <description>Provides the configuration options and customized handling for the Eclipse gemini-blueprint-extender</description>
-    <artifactId>org.jahia.bundles.blueprint.extender.config</artifactId>
     <packaging>bundle</packaging>
 
     <build>

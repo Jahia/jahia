@@ -66,6 +66,9 @@ public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostPro
     @Override
     public void postProcessBeanFactory(BundleContext bundleContext, ConfigurableListableBeanFactory beanFactory)
             throws BeansException, InvalidSyntaxException, BundleException {
+        if (!BundleUtils.isJahiaModuleBundle(bundleContext.getBundle())) {
+            return;
+        }
         long timer = System.currentTimeMillis();
         String bundleName = OsgiStringUtils.nullSafeNameAndSymName(bundleContext.getBundle());
 

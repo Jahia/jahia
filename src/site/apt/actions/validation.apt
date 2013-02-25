@@ -15,7 +15,7 @@ Actions Framework - Validation
                     'jcr:title': "required",
                     <c:if test="${not renderContext.loggedIn}">
                     pseudo: "required",
-                    captcha: "required"
+                    jcrCaptcha: "required"
                     </c:if>
                 }
             });
@@ -56,7 +56,7 @@ Actions Framework - Validation
                 <c:if test="${not renderContext.loggedIn}">
                     <p class="field">
                         <label class="left" for="captcha"><template:captcha/></label>
-                            <input type="text" id="captcha" name="captcha"/>
+                            <input type="text" id="captcha" name="jcrCaptcha"/>
                     </p>
                 </c:if>
                 <p>
@@ -161,7 +161,7 @@ the uuid is regenerated each time the form is displayed even if delivered from t
 <c:if test="${not renderContext.loggedIn}">
     <p class="field">
         <label class="left" for="captcha"><template:captcha/></label>
-        <input type="text" id="captcha" name="captcha"/>
+        <input type="text" id="captcha" name="jcrCaptcha"/>
     </p>
 </c:if>
 +-----------------------------
@@ -181,7 +181,7 @@ Validation of datas before and after submission
                     'jcr:title': "required",
                     <c:if test="${not renderContext.loggedIn}">
                     pseudo: "required",
-                    captcha: "required"
+                    jcrCaptcha: "required"
                     </c:if>
                 }
             });

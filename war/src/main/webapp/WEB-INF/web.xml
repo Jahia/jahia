@@ -769,6 +769,12 @@
     </servlet-mapping>
 
     <servlet-mapping>
+        <!-- Mapping for the Web Console -->
+        <servlet-name>osgiProxy</servlet-name>
+        <url-pattern>/tools/osgi/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
         <servlet-name>initializationCompletedServlet</servlet-name>
         <url-pattern>/initializationCompleted/*</url-pattern>
     </servlet-mapping>

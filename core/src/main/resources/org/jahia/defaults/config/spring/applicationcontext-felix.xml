@@ -8,7 +8,7 @@
         <property name="ignoreResourceNotFound" value="true"/>
         <property name="properties">
             <props value-type="java.lang.String">
-                <prop key="gosh.args">--nointeractive -sc telnetd start</prop>
+                <prop key="gosh.args">--nointeractive -sc telnetd --port=${felix.gogo.shell.telnet.port:2019} start</prop>
                 
                 <prop key="felix.cache.bufsize">65536</prop>
                 <prop key="felix.log.level">1</prop>
@@ -26,6 +26,8 @@
                 <prop key="org.osgi.framework.startlevel.beginning">2</prop>
                 <prop key="org.osgi.framework.storage">${jahiaWebAppRoot}/WEB-INF/var/bundles-deployed</prop>
                 <prop key="org.osgi.framework.storage.clean">none</prop>
+                
+                <prop key="felix.webconsole.manager.root">/console</prop>
                 
                 <prop key="org.jahia.bundles.url.jahiawar.importedPackages"><![CDATA[
                     javax.jcr,

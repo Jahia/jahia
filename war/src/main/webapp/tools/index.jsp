@@ -35,7 +35,7 @@
 <fieldset>
     <legend>Administration and Guidance</legend>
     <ul>
-        <li><a href="<c:url value='/modules/system/console'/>">OSGi console</a></li>
+        <li><a href="osgi/console/">OSGi console</a></li>
         <li><a href="jobadmin.jsp">Background job administration</a></li>
         <li><a href="search.jsp">Search engine management</a></li>
         <li><a href="dbQuery.jsp">DB query tool</a></li>
@@ -92,6 +92,6 @@
         </td>
     </tr>
 </table>
-<p>&copy; Copyright 2002-2012 Jahia Solutions Group SA - All rights reserved.</p>
+<p>&copy; Copyright 2002-2013 Jahia Solutions Group SA - All rights reserved.</p>
 </body>
 </html>

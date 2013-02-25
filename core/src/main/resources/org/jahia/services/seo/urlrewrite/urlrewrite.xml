@@ -24,6 +24,17 @@
     </rule>
     <!-- end of block direct access -->
     
+    <rule enabled="true">
+        <name>OSGi Web console access</name>
+        <note>Allow access via /tools/osgi/* path only to the OSGi Web console</note>
+        <condition type="attribute" name="javax.servlet.forward.request_uri" operator="equal">^$</condition>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/tools/osgi/console(/.*)?</condition>
+        <from>^/tools/osgi/.*$</from>
+        <set type="status">404</set>
+        <set type="request" name="UrlRewriteFilter.sendError">404</set>
+        <to>null</to>        
+    </rule>
+    
     <!-- GWT resources-->
     <rule>
         <note>GWT CKEditor resources</note>

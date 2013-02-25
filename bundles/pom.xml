@@ -26,6 +26,7 @@
         <!--
         <module>jahiamodules</module>
         -->
+		<module>webconsole-config</module>
     </modules>
 
     <build>

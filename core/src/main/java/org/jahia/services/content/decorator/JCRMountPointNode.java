@@ -41,7 +41,6 @@
 package org.jahia.services.content.decorator;
 
 import org.jahia.services.content.*;
-import org.jahia.services.content.impl.vfs.VFSContentStoreProvider;
 import org.springframework.beans.BeanUtils;
 
 import javax.jcr.*;
@@ -49,7 +48,6 @@ import javax.jcr.version.VersionException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import java.util.Map;
-import java.util.HashMap;
 import java.beans.PropertyDescriptor;
 import java.io.InputStream;
 

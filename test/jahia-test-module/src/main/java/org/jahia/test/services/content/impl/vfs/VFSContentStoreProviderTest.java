@@ -42,6 +42,7 @@ package org.jahia.test.services.content.impl.vfs;
 
 import org.apache.commons.io.FileUtils;
 import org.jahia.api.Constants;
+import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.JahiaAdminUser;
 import org.slf4j.Logger;
@@ -50,20 +51,10 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.helper.ContentHubHelper;
 import org.jahia.ajax.gwt.helper.NavigationHelper;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.ExternalReferenceValue;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.content.impl.vfs.VFSContentStoreProvider;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.test.TestHelper;
-import org.jahia.test.services.content.*;
 import org.jahia.utils.LanguageCodeConverters;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
@@ -78,14 +69,11 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Unit test for VFS content store provider.
- * 
+ *
  * @author loom
  * Date: Aug 20, 2010
  * Time: 3:29:57 PM
@@ -98,6 +86,7 @@ public class VFSContentStoreProviderTest {
     private static File staticMountDir;
     private static final String STATIC_MOUNT_FILE_NAME = "staticMountDirectory";
     private static final String DYNAMIC_MOUNT_FILE_NAME = "dynamicMountDirectory";
+    private static final String MOUNTS_STATIC_MOUNT_POINT_NAME = "static-mount-point";
     private static final String MOUNTS_STATIC_MOUNT_POINT = "/mounts/static-mount-point";
     private static final String MOUNTS_DYNAMIC_MOUNT_POINT = "/mounts/dynamic-mount-point";
     private static final String MOUNTS_DYNAMIC_MOUNT_POINT_NAME = "dynamic-mount-point";
@@ -128,7 +117,7 @@ public class VFSContentStoreProviderTest {
     public static void oneTimeSetUp()
             throws Exception {
         site = TestHelper.createSite(TESTSITE_NAME);
-        
+
         File sysTempDir = new File(System.getProperty("java.io.tmpdir"));
 
         staticMountDir = new File(sysTempDir, STATIC_MOUNT_FILE_NAME);
@@ -159,23 +148,15 @@ public class VFSContentStoreProviderTest {
 
     @Test
     public void testStaticMount() throws JahiaInitializationException, RepositoryException, GWTJahiaServiceException {
-        VFSContentStoreProvider vfsProvider = new VFSContentStoreProvider();
-        vfsProvider.setKey("local");
-        vfsProvider.setRoot("file://" + staticMountDir.getAbsolutePath());
-        //vfsProvider.setRmibind("local");
-        vfsProvider.setMountPoint(MOUNTS_STATIC_MOUNT_POINT);
-        vfsProvider.setUserManagerService(ServicesRegistry.getInstance().getJahiaUserManagerService());
-        vfsProvider.setGroupManagerService(ServicesRegistry.getInstance().getJahiaGroupManagerService());
-        vfsProvider.setSitesService(ServicesRegistry.getInstance().getJahiaSitesService());
-        vfsProvider.setService(ServicesRegistry.getInstance().getJCRStoreService());
-        JCRSessionFactory jcrSessionFactory = (JCRSessionFactory) SpringContextSingleton.getInstance().getContext().getBean("jcrSessionFactory");
-        vfsProvider.setSessionFactory(jcrSessionFactory);
-        vfsProvider.start();
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRNodeWrapper n = session.getNode("/mounts").addNode(MOUNTS_STATIC_MOUNT_POINT_NAME,"jnt:vfsMountPoint");
+        n.setProperty("j:root",staticMountDir.getAbsolutePath());
+        session.save();
 
+        JCRStoreProvider vfsProvider = JCRStoreService.getInstance().getProviderFactories().get("jnt:vfsMountPoint").mountProvider(n);
         try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
             assertRootNavigation(session);
-    
+
             JCRNodeWrapper mountNode = getNode(session, MOUNTS_STATIC_MOUNT_POINT);
             assertNode(mountNode, 0);
             createFolder(session, "folder1", mountNode);
@@ -196,7 +177,7 @@ public class VFSContentStoreProviderTest {
         List<String> paths = new ArrayList<String>();
         paths.add("/mounts");
         List<GWTJahiaNode> rootNodes = navigationHelper.retrieveRoot(paths, null,null,null,null,
-                            null,null,siteNode, session, locale);
+                null,null,siteNode, session, locale);
         List<String> nodeTypes = new ArrayList<String>();
         nodeTypes.add("nt:file");
         nodeTypes.add("nt:folder");
@@ -252,8 +233,8 @@ public class VFSContentStoreProviderTest {
             // we must recycle session because of internal session caches.
             session.refresh(false);
             session.logout();
-            
-            JCRSessionFactory.getInstance().closeAllSessions();            
+
+            JCRSessionFactory.getInstance().closeAllSessions();
 
             session = JCRSessionFactory.getInstance().getCurrentUserSession();
 

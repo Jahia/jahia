@@ -640,10 +640,6 @@
         <property name="hibernateSession" ref="sessionFactory"/>
     </bean>
 
-    <bean id="ModulesStoreProviderPrototype" class="org.jahia.services.content.impl.external.ExternalContentStoreProvider" parent="AbstractJCRStoreProviderPrototype" scope="prototype">
-        <property name="hibernateSession" ref="sessionFactory"/>
-    </bean>
-
     <bean id="ModulesDataSourcePrototype" class="org.jahia.services.content.impl.external.modules.ModulesDataSource" scope="prototype">
         <property name="supportedNodeTypes">
             <list>

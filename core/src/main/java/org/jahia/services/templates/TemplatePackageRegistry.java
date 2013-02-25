@@ -438,7 +438,7 @@ public class TemplatePackageRegistry {
 
                 BeanUtils.populate(dataSource, properties);
 
-                JCRStoreProvider ex = (JCRStoreProvider) SpringContextSingleton.getBean("ModulesStoreProviderPrototype");
+                JCRStoreProvider ex = (JCRStoreProvider) SpringContextSingleton.getBean("ExternalStoreProviderPrototype");
                 properties.clear();
                 properties.put("key","module-"+templatePackage.getRootFolder()+"-"+templatePackage.getVersion().toString());
                 properties.put("mountPoint","/modules/" + templatePackage.getRootFolderWithVersion() + "/sources");

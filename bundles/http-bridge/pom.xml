@@ -8,7 +8,7 @@
         <version>6.7.0.0-SNAPSHOT</version>
     </parent>
 
-    <name>Jahia Felix Http Bridge</name>
+    <name>Jahia Felix HTTP Bridge</name>
     <artifactId>org.jahia.bundles.http.bridge</artifactId>
     <packaging>bundle</packaging>
 

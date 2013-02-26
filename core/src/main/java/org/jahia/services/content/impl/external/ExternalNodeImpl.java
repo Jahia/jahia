@@ -334,6 +334,9 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
         try{
             binary = new BinaryImpl(value);
             Binary[] b = {binary};
+            if (data.getBinaryProperties() == null) {
+                data.setBinaryProperties(new HashMap<String, Binary[]>());
+            }
             data.getBinaryProperties().put(name,b);
             v = getSession().getValueFactory().createValue(binary);
         } catch (IOException e) {

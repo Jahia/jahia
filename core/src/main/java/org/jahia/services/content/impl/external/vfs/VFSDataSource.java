@@ -49,6 +49,8 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.impl.external.ExternalData;
 import org.jahia.services.content.impl.external.ExternalDataSource;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +58,8 @@ import javax.jcr.Binary;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -178,30 +182,41 @@ public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Wr
     }
 
     public void saveItem(ExternalData data) throws PathNotFoundException {
-        if (data.getType().equals(Constants.NT_RESOURCE)) {
-            OutputStream outputStream = null;
-            try {
-                final Binary[] binaries = data.getBinaryProperties().get(Constants.JCR_DATA);
-                if (binaries.length > 0) {
-                    outputStream = getFile(data.getPath().substring(0, data.getPath().indexOf("/" + Constants.JCR_CONTENT))).getContent().getOutputStream();
-                    for (Binary binary : binaries) {
-                        InputStream stream = null;
-                        try {
-                            stream = binary.getStream();
-                            IOUtils.copy(stream, outputStream);
-                        } finally {
-                            IOUtils.closeQuietly(stream);
-                            binary.dispose();
+        try {
+            ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(data.getType());
+            if (nodeType.isNodeType(Constants.NT_RESOURCE)) {
+                OutputStream outputStream = null;
+                try {
+                    final Binary[] binaries = data.getBinaryProperties().get(Constants.JCR_DATA);
+                    if (binaries.length > 0) {
+                        outputStream = getFile(data.getPath().substring(0, data.getPath().indexOf("/" + Constants.JCR_CONTENT))).getContent().getOutputStream();
+                        for (Binary binary : binaries) {
+                            InputStream stream = null;
+                            try {
+                                stream = binary.getStream();
+                                IOUtils.copy(stream, outputStream);
+                            } finally {
+                                IOUtils.closeQuietly(stream);
+                                binary.dispose();
+                            }
                         }
                     }
+                } catch (IOException e) {
+                    throw new PathNotFoundException("I/O on file : " + data.getPath(),e);
+                } catch (RepositoryException e) {
+                    throw new PathNotFoundException("unable to get outputStream of : " + data.getPath(),e);
+                } finally {
+                    IOUtils.closeQuietly(outputStream);
                 }
-            } catch (IOException e) {
-                throw new PathNotFoundException("I/O on file : " + data.getPath(),e);
-            } catch (RepositoryException e) {
-                throw new PathNotFoundException("unable to get outputStream of : " + data.getPath(),e);
-            } finally {
-                IOUtils.closeQuietly(outputStream);
+            } else if (nodeType.isNodeType("jnt:folder")) {
+                try {
+                    getFile(data.getPath()).createFolder();
+                } catch (FileSystemException e) {
+                    throw new PathNotFoundException(e);
+                }
             }
+        } catch (NoSuchNodeTypeException e) {
+            throw new PathNotFoundException(e);
         }
     }
 

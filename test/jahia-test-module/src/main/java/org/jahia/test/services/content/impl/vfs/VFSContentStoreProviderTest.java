@@ -181,7 +181,7 @@ public class VFSContentStoreProviderTest {
         List<String> nodeTypes = new ArrayList<String>();
         nodeTypes.add("nt:file");
         nodeTypes.add("nt:folder");
-        nodeTypes.add("jnt:mountPoints");
+        nodeTypes.add("jnt:mounts");
         List<String> fields = new ArrayList<String>();
         fields.add("providerKey");
         fields.add("icon");

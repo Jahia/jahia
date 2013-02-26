@@ -36,6 +36,40 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 /******************************************************************************
 * Header
 ******************************************************************************/
+/*Admin Mode*/
+.x-viewport-adminmode .x-toolbar-first{
+    background:none !important;
+    background-color : #333333 !important;
+    background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/adminMode.png) no-repeat top right !important;
+    border-top:4px solid #6666CC !important;
+    padding: 6px;
+}
+.x-viewport-adminmode .x-toolbar-first button {
+    color:#fff !important;
+}
+.x-viewport-adminmode .x-toolbar-first .x-btn-menu-active .x-btn-arrow,.x-viewport-adminmode .x-toolbar-first .x-btn-over .x-btn-arrow,.x-viewport-adminmode .x-toolbar-first .x-btn-active .x-btn-arrow {
+    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow2.gif) !important;
+}
+.x-viewport-adminmode .x-toolbar-first .x-btn-menu-active .x-btn-text  {
+    color:#3399ff !important;
+}
+.x-viewport-adminmode .x-toolbar-first .x-btn-tl, .x-viewport-adminmode .x-toolbar-first .x-btn-tr, .x-viewport-adminmode .x-toolbar-first .x-btn-tc, .x-viewport-adminmode .x-toolbar-first .x-btn-ml, .x-viewport-adminmode .x-toolbar-first .x-btn-mr, .x-viewport-adminmode .x-toolbar-first .x-btn-mc, .x-viewport-adminmode .x-toolbar-first .x-btn-bl, .x-viewport-adminmode .x-toolbar-first .x-btn-br, .x-viewport-adminmode .x-toolbar-first .x-btn-bc{
+    background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+}
+.x-viewport-adminmode .x-toolbar-first .xtb-sep {
+    background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+}
+.x-viewport-adminmode .x-toolbar-first .x-btn-over button {
+    color:#3399ff !important;
+}
+.x-viewport-adminmode .x-toolbar-first .x-btn-mc em.x-btn-arrow {
+    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
+}
+.x-viewport-adminmode .x-toolbar-first .x-menu-sep{
+    height:1px;
+    background-color: #333;
+    border-bottom-color: #000;
+}
 
 /*Studio Mode*/
 .x-viewport-studiomode .x-toolbar-first{

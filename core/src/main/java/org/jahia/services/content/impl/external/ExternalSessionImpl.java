@@ -257,10 +257,20 @@ public class ExternalSessionImpl implements Session {
                 writableDataSource.saveItem(data);
             }
             changedData.clear();
-            for (String path : deletedData.keySet()) {
-                writableDataSource.removeItemByPath(path);
+            if (!deletedData.isEmpty()) {
+                SessionFactory hibernateSession = repository.getStoreProvider().getHibernateSession();
+                StatelessSession statelessSession = hibernateSession.openStatelessSession();
+                String key = getRepository().getStoreProvider().getKey();
+                for (String path : deletedData.keySet()) {
+                    writableDataSource.removeItemByPath(path);
+                    Criteria criteria = statelessSession.createCriteria(UuidMapping.class);
+                    criteria.add(Restrictions.eq("externalIdHash", deletedData.get(path).getId().hashCode())).add(Restrictions.eq("providerKey", key));
+                    for (UuidMapping uuid :(List<UuidMapping>)  criteria.list()) {
+                        statelessSession.delete(uuid);
+                    }
+                }
+                deletedData.clear();
             }
-            deletedData.clear();
         }
     }
 

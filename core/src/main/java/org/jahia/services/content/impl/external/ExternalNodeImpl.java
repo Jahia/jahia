@@ -205,7 +205,8 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
         if (!(session.getRepository().getDataSource() instanceof ExternalDataSource.Writable)) {
             throw new UnsupportedRepositoryOperationException();
         }
-        ExternalData data = new ExternalData(this.data.getId() + "/" + relPath ,getPath() + ( getPath().equals("/")? "" : "/" ) + relPath,primaryNodeTypeName,new HashMap<String, String[]>());
+        String separator = StringUtils.equals(this.data.getId(),"/")?"":"/";
+        ExternalData data = new ExternalData(this.data.getId() + separator + relPath ,getPath() + ( getPath().equals("/")? "" : "/" ) + relPath,primaryNodeTypeName,new HashMap<String, String[]>());
         session.getChangedData().put(data.getPath(),data);
         return  new ExternalNodeImpl(data,session);
     }

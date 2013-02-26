@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spring="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring-2.0-M1.xsd">
+
+    <bean id="adminmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
+        <property name="requiredPermission" value="administrationAccess"/>
+        <property name="modulesOnly" value="true"/>
+        <property name="buttonsInLayer" value="true"/>
+        <property name="componentsPaths">
+            <list>
+                <value>/modules/*</value>
+            </list>
+        </property>
+        <property name="nonEditableTypes">
+            <set>
+                <value>jmix:layoutComponentContent</value>
+            </set>
+        </property>
+        <property name="skipMainModuleTypesDomParsing">
+            <list>
+                <value>jnt:editableFile</value>
+            </list>
+        </property>
+        <property name="defaultUrlMapping" value="/cms/admin"/>
+        <property name="sitesLocation" value="/modules/*"/>
+        <property name="topToolbar">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="layout" value="button-label"/>
+                <property name="items">
+                    <list>
+
+                        <ref bean="studiomode.managers.menu"/>
+                        <ref bean="Toolbar.Item.EditMode"/>
+                        <ref bean="Toolbar.Item.Studio"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="icon" value="start"/>
+                            <property name="titleKey" value="label.user.loggedAs"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Start"/>
+                                    <ref bean="Toolbar.Item.Logout"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="sidePanelToolbar">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="mainModuleToolbar">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                    </list>
+                </property>
+            </bean>
+        </property>
+
+        <!-- tabs-->
+        <property name="tabs">
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+                <ref bean="sidePanelTab.serverSettings"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="sidePanelTab.serverSettings" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+        <property name="key" value="serverSettings"/>
+        <property name="icon" value="serverSettings"/>
+        <property name="treeColumns">
+            <list>
+                <value>displayName,*,label.title</value>
+            </list>
+        </property>
+        <property name="tabItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.MultiplePanelTabItem">
+                <property name="settingsPanelList">
+                    <list>
+                        <bean id="serverSettings" class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SettingsPanel">
+                            <property name="settingsTemplateRoot" value="serverSettingsBase"/>
+                            <property name="label" value="label.serverSettings"/>
+                            <property name="requiredPermission" value="administrationAccess"/>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="requiredPermission" value="administrationAccess"/>
+    </bean>
+
+
+</beans>

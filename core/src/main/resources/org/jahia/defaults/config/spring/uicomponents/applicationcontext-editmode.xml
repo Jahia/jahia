@@ -586,7 +586,6 @@
                   </property>
                 </bean>
                 <ref bean="sidePanelTab.siteSettings"/>
-                <ref bean="sidePanelTab.serverSettings"/>
                 <!--<bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="lastContent"/>
                     <property name="icon" value="tab-lastcontent"/>
@@ -675,30 +674,6 @@
                         <bean id="siteSettings" class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SettingsPanel">
                             <property name="settingsTemplateRoot" value="siteSettingsBase"/>
                             <property name="label" value="org.jahia.admin.siteSettings.label"/>
-                            <property name="requiredPermission" value="administrationAccess"/>
-                        </bean>
-                    </list>
-                </property>
-            </bean>
-        </property>
-        <property name="requiredPermission" value="administrationAccess"/>
-    </bean>
-
-    <bean id="sidePanelTab.serverSettings" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
-        <property name="key" value="serverSettings"/>
-        <property name="icon" value="serverSettings"/>
-        <property name="treeColumns">
-            <list>
-                <value>displayName,*,label.title</value>
-            </list>
-        </property>
-        <property name="tabItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.MultiplePanelTabItem">
-                <property name="settingsPanelList">
-                    <list>
-                        <bean id="serverSettings" class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SettingsPanel">
-                            <property name="settingsTemplateRoot" value="serverSettingsBase"/>
-                            <property name="label" value="label.serverSettings"/>
                             <property name="requiredPermission" value="administrationAccess"/>
                         </bean>
                     </list>

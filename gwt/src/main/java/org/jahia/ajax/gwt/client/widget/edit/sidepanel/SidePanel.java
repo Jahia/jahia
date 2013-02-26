@@ -113,8 +113,10 @@ public class SidePanel extends ContentPanel {
 
     public void initWithLinker(final EditLinker editLinker) {
         ((ToolbarHeader) head).removeAllTools();
-        for (GWTJahiaToolbarItem item : config.getSidePanelToolbar().getGwtToolbarItems()) {
-            ((ToolbarHeader)head).addItem(editLinker, item);
+        if (config.getSidePanelToolbar() != null) {
+            for (GWTJahiaToolbarItem item : config.getSidePanelToolbar().getGwtToolbarItems()) {
+                ((ToolbarHeader)head).addItem(editLinker, item);
+            }
         }
         layout();
         refreshButton = new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {

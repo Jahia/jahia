@@ -33,7 +33,7 @@
                 <value>php</value>
                 <value>vm</value>
                 <value>fm</value>
-                <!-- <value>flow</value> -->
+                 <value>flow</value>
             </list>
         </property>
         <property name="scriptFactoryMap">
@@ -44,12 +44,12 @@
                 <entry key="php" value-ref="BundleJSR223ScriptFactory" />
                 <entry key="vm" value-ref="BundleJSR223ScriptFactory" />
                 <entry key="fm" value-ref="BundleJSR223ScriptFactory" />
-                <!-- <entry key="flow" value-ref="org.jahia.services.render.webflow.WebflowDispatcherScriptFactory"/> -->
+                 <entry key="flow" value-ref="org.jahia.services.render.webflow.WebflowDispatcherScriptFactory"/>
             </map>
         </property>
         <property name="templateManagerService" ref="JahiaTemplateManagerService" />
     </bean>
-    
+
 
 	<bean
 		class="org.jahia.services.render.filter.portlet.PlutoProcessActionFilter">
@@ -69,7 +69,7 @@
     <bean class="org.jahia.services.render.filter.EditModeFilter">
    		<property name="priority" value="-2" />
            <property name="description" value="Filter that embeds edit mode frame around content"/>
-   		<property name="applyOnModes" value="edit,studio,studiolayout,contribute" />
+   		<property name="applyOnModes" value="edit,studio,studiolayout,contribute,admin" />
    		<property name="applyOnConfigurations" value="page" />
    	</bean>
 	<bean class="org.jahia.services.render.filter.ExternalizeHtmlFilter">

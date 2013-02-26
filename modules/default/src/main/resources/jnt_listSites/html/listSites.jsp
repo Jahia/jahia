@@ -87,7 +87,7 @@
                     <c:if test="${currentNode.properties.administrationlink.boolean && jcr:hasPermission(node,'adminVirtualSites')}">
                         <img src="<c:url value='/icons/admin.png'/>" width="16" height="16" alt=" "
                              role="presentation" style="position:relative; top: 4px; margin-right:2px; "/><a
-                            href="<c:url value='/administration/?do=change&changesite=${siteId}#sites'/>"><fmt:message
+                            href="<c:url value='/cms/administration/?do=change&changesite=${siteId}#sites'/>"><fmt:message
                             key="label.administration"/></a>
                     </c:if>
                     <c:set var="baseLive" value="${url.baseLive}"/>

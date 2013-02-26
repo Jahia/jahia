@@ -816,7 +816,6 @@
                     </property>
                     <property name="requiredPermission" value="createSelector"/>
                 </bean>
-                <ref bean="sidePanelTab.serverSettings"/>
             </list>
         </property>
     </bean>

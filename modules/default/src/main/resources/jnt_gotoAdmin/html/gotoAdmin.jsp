@@ -7,7 +7,7 @@
 <c:if test="${!empty currentNode.properties['toAdminComponent']}">
     <template:addResources>
     <script type="text/javascript">
-        $.post("${url.context}/administration", null, null, "json");
+        $.post("${url.context}/welcome/adminmode", null, null, "json");
     </script>
     </template:addResources>
     <c:set var="optionURL" value="?do=${currentNode.properties['toAdminComponent'].string}&sub=display"/>
@@ -16,7 +16,7 @@
 <c:if test="${not empty linkTarget}"><c:set var="linkTarget"> target="${linkTarget}"</c:set></c:if>
 <c:choose>
     <c:when test="${not empty currentNode.properties['buttonClass']}">
-        <a href="${url.context}/administration${optionURL}" class="${currentNode.properties['buttonClass'].string}"${linkTarget}>
+        <a href="${url.context}/welcome/adminmode${optionURL}" class="${currentNode.properties['buttonClass'].string}"${linkTarget}>
             <c:if test="${!empty currentNode.properties['jcr:title']}" var="titlePresent">
                 ${fn:escapeXml(currentNode.properties["jcr:title"].string)}
             </c:if>
@@ -28,7 +28,7 @@
     <c:otherwise>
         <img src="${url.context}/icons/admin.png" width="16" height="16" alt=" " role="presentation"
              style="position:relative; top: 4px; margin-right:2px; "/><a
-            href="${url.context}/administration${optionURL}"${linkTarget}>
+            href="${url.context}/welcome/adminmode${optionURL}"${linkTarget}>
         <c:if test="${!empty currentNode.properties['jcr:title']}" var="titlePresent">
             ${fn:escapeXml(currentNode.properties["jcr:title"].string)}
         </c:if>

@@ -631,6 +631,7 @@ public class UIConfigHelper {
 
     private Map<String, GWTEngineConfiguration> createGWTEngineConfigurations(JCRNodeWrapper contextNode, JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, Map<String, EngineConfiguration> engineConfigurations, List<EngineTab> defaultEngineTabs) {
         Map<String, GWTEngineConfiguration> gwtEngineConfigurations = new HashMap<String, GWTEngineConfiguration>();
+        if (engineConfigurations != null) {
         for (Map.Entry<String, EngineConfiguration> type : engineConfigurations.entrySet()) {
             GWTEngineConfiguration gwtEngineConfiguration = new GWTEngineConfiguration();
             EngineConfiguration engineConfiguration = type.getValue();
@@ -643,6 +644,7 @@ public class UIConfigHelper {
             gwtEngineConfiguration.setEditionButtons(engineConfiguration.getEditionButtons());
             gwtEngineConfiguration.setCommonButtons(engineConfiguration.getCommonButtons());
             gwtEngineConfigurations.put(type.getKey(), gwtEngineConfiguration);
+        }
         }
         return gwtEngineConfigurations;
     }

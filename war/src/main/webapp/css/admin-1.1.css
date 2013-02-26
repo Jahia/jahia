@@ -77,9 +77,12 @@ select[multiple], select.principalList {
     position:absolute;
     top:0;
     left:0;
-    height:27px;
+    height:23px;
     width:100%;
-    background: #063996 url(images/andromeda/admin-bg.png) no-repeat top right;
+    background-color : #333333 !important;
+    background: #333 url(images/andromeda/admin-bg.png) no-repeat top right;
+    border-top:4px solid #6666CC !important;
+    padding: 6px;
 }
 /* Container structure */
 #mainAdminLayout {

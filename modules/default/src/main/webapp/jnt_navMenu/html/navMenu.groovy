@@ -65,7 +65,7 @@ printMenu = { node, navMenuLevel, omitFormatting ->
                 if (startLevelValue < navMenuLevel) {
 
 //                    print ("<h1>"+itemPath+closeUl+"</h1>")
-                    listItemCssClass = (hasChildren ? "hasChildren" : "") + (inpath ? " inpath" : "") + (selected ? " selected" : "") + (index == 0 ? " firstInLevel" : "") + (index == nbOfChilds - 1 ? " lastInLevel" : "");
+                    listItemCssClass = (hasChildren ? "hasChildren" : "noChildren") + (inpath ? " inpath" : "") + (selected ? " selected" : "") + (index == 0 ? " firstInLevel" : "") + (index == nbOfChilds - 1 ? " lastInLevel" : "");
                     Resource resource = new Resource(menuItem, "html", "menuElement", currentResource.getContextConfiguration());
                     def render = RenderService.getInstance().render(resource, renderContext)
                     if (render != "") {

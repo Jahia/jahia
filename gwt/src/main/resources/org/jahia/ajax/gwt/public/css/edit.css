@@ -304,6 +304,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     background :#eaeaea url(../images/deleted-overlay.png) top left;
     color:#f00;
     font-weight:bold;
+    border: 1px solid #ccc;
 }
 
 .studiomodeDisabledArea {
@@ -316,6 +317,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
     margin-bottom: 2px;
+    border: 1px solid #99ccff;
 }
 .studiomodeAreaTemplate{
     min-height:100px;
@@ -327,6 +329,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
     margin-bottom: 2px;
+    border: 1px solid #99ccff;
 }
 
 .studiolayoutmodeArea {
@@ -339,6 +342,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
     margin-bottom: 2px;
+    border: 1px solid #99ccff;
 }
 .studiolayoutmodeDisabledArea {
     min-height:100px;
@@ -350,6 +354,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
     margin-bottom: 2px;
+    border: 1px solid #99ccff;
 }
 
 .studiolayoutmodeBlockedArea {
@@ -362,6 +367,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
     margin-bottom: 2px;
+    border: 1px solid #99cc99;
 }
 .AreaInformation{
     color:#666;
@@ -376,6 +382,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
     margin-bottom: 2px;
+    border: 1px solid #cc6666;
 }
 
 .studiolayoutmodeAbsoluteArea {
@@ -388,6 +395,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
     margin-bottom: 2px;
+    border: 1px solid #cc6666;
 }
 
 .mainResourceDisplay {
@@ -400,6 +408,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
     margin-bottom: 2px;
+    border: 1px solid #ccc;
 }
 
 .authorDisplayArea {
@@ -412,6 +421,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
     margin-bottom: 2px;
+    border: 1px solid #99ccff;
 }
 
 .area-liveOnly {
@@ -424,6 +434,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
     margin-bottom: 2px;
+    border: 1px solid #99cc99;
 }
 .dashedArea {
     background : url(../images/placeholder-area.png) top left;

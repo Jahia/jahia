@@ -511,8 +511,11 @@ public class ModulesDataSource extends VFSDataSource {
         // Handle source code
         try {
             outputStream = getFile(data.getPath()).getContent().getOutputStream();
-            byte[] sourceCode = data.getProperties().get("sourceCode")[0].getBytes();
-            outputStream.write(sourceCode);
+            //don't write code if file is empty
+            if (data.getProperties().get("sourceCode") !=null) {
+                byte[] sourceCode = data.getProperties().get("sourceCode")[0].getBytes();
+                outputStream.write(sourceCode);
+            }
         } catch (Exception e) {
             logger.error("Failed to write source code", e);
         } finally {

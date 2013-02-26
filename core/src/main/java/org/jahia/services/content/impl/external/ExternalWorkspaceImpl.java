@@ -40,6 +40,7 @@
 
 package org.jahia.services.content.impl.external;
 
+import org.jahia.services.content.impl.external.vfs.ExternalVersionManagerImpl;
 import org.xml.sax.ContentHandler;
 
 import javax.jcr.*;
@@ -215,7 +216,7 @@ public class ExternalWorkspaceImpl implements Workspace {
     }
 
     public VersionManager getVersionManager() throws UnsupportedRepositoryOperationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException("Versioning is not supported by the external Repository");
+        return new ExternalVersionManagerImpl();
     }
 
     public void createWorkspace(String name) throws AccessDeniedException, UnsupportedRepositoryOperationException, RepositoryException {

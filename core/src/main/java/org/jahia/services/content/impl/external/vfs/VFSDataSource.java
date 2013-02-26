@@ -163,7 +163,14 @@ public class VFSDataSource implements ExternalDataSource , ExternalDataSource.Wr
     @Override
     public void removeItemByPath(String path) throws PathNotFoundException {
         try {
-            getFile(path).delete();
+            FileObject file = getFile(path);
+            if (file.getType().hasChildren() && file.getChildren().length != 0) {
+                logger.warn("failed to delete folder because not empty " + getFile(path).toString() + " - ");
+                throw new PathNotFoundException("failed to delete folder " + path + ". Folder not empty or contains hidden files");
+            }
+            if (!file.delete()) {
+                logger.warn("failed to delete FileObject " + getFile(path).toString() + " - ");
+            }
         }
         catch (FileSystemException e) {
             throw new PathNotFoundException(e);

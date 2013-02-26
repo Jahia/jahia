@@ -18,7 +18,7 @@
 
 <c:choose>
     <c:when test="${not empty inWrapper and inWrapper eq false}">
-        <div class="mainResourceDisplay<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
+        <div class="mainResourceDisplay<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string} mainResourceDisplay ${currentNode.properties['j:mockupStyle'].string}</c:if>">
             <c:if test="${not empty currentNode.properties['j:mainResourceView'].string}">
                 <div class="mainResourceDisplayTemplate">
                     <span>${currentNode.properties['j:mainResourceView'].string}</span>

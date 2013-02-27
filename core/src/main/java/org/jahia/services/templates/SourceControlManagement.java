@@ -54,7 +54,7 @@ public abstract class SourceControlManagement {
 
     protected File rootFolder;
 
-    protected ExecutionResult executeCommand(String command, String arguments) {
+    protected ExecutionResult executeCommand(String command, String arguments) throws IOException {
         try {
             StringBuilder resultOut = new StringBuilder();
             StringBuilder resultErr = new StringBuilder();
@@ -65,19 +65,19 @@ public abstract class SourceControlManagement {
             if (command.equals("svn") && arguments.startsWith("add")) {
                 logger.warn("Failed to execute command " + command + (arguments != null ? (" " + arguments) : ""));
             } else {
-                logger.error("Failed to execute command " + command + (arguments != null ? (" " + arguments) : ""), e);
+                throw new IOException("Failed to execute command " + command + (arguments != null ? (" " + arguments) : ""), e);
             }
         }
         return null;
     }
 
     class ExecutionResult {
-        int resultCode;
+        int exitValue;
         String out;
         String err;
 
-        ExecutionResult(int resultCode, String out, String err) {
-            this.resultCode = resultCode;
+        ExecutionResult(int exitValue, String out, String err) {
+            this.exitValue = exitValue;
             this.out = out;
             this.err = err;
         }

@@ -76,7 +76,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     background:none !important;
     background-color : #333333 !important;
     background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/studioMode-bg.png) no-repeat top right !important;
-    border-top:4px solid #ff6600 !important;
+    border-top:4px solid #A6D90F !important;
     padding: 6px;
 
 }
@@ -111,7 +111,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     background:none !important;
     background-color : #333333 !important;
     background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/studioLayoutMode-bg.png) no-repeat top right !important;
-    border-top:4px solid #cc0000 !important;
+    border-top:4px solid #669900 !important;
     padding: 6px;
 
 }

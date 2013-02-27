@@ -40,6 +40,8 @@
 
 package org.jahia.services.importexport;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import org.apache.commons.collections.set.ListOrderedSet;
 import org.apache.commons.io.FileCleaningTracker;
 import org.apache.commons.io.FileUtils;
@@ -48,52 +50,49 @@ import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.importexport.validation.*;
-import org.jahia.services.sites.JahiaSitesBaseService;
-import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.services.usermanager.jcr.JCRUser;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
-import org.jahia.utils.Url;
-import org.jahia.utils.zip.ZipInputStream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryService;
 import org.jahia.services.content.*;
+import org.jahia.services.content.nodetypes.JahiaCndReader;
 import org.jahia.services.content.nodetypes.JahiaCndReaderLegacy;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.nodetypes.JahiaCndReader;
 import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
+import org.jahia.services.importexport.validation.*;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.utils.zip.ZipEntry;
-import org.jahia.utils.zip.ZipOutputStream;
+import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
+import org.jahia.utils.Url;
+import org.jahia.utils.zip.ZipEntry;
+import org.jahia.utils.zip.ZipInputStream;
+import org.jahia.utils.zip.ZipOutputStream;
 import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.jdom.transform.XSLTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 
 import javax.jcr.*;
 import javax.xml.parsers.SAXParser;
@@ -500,6 +499,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 inputStream.close();
                 inputStream = new ByteArrayInputStream(stream.getData());
             }
+            System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl"); // use Saxon for XSLT 2.0 support
             XSLTransformer xslTransformer = new XSLTransformer(xsl);
             SAXBuilder saxBuilder = new SAXBuilder(false);
             Document document = saxBuilder.build(inputStream);

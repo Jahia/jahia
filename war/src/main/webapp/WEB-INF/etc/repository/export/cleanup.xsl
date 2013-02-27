@@ -28,6 +28,11 @@
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:when>
+            <xsl:when test="matches(.,'^/modules/.+/(\d+\.)*\d+(-SNAPSHOT)?/')">
+                <xsl:attribute name="{name()}" namespace="{namespace-uri()}">
+                    <xsl:value-of select="replace(.,'^(/modules/.+)/(\d+\.)*\d+(-SNAPSHOT)?(/.+)$','$1$4')" />
+                </xsl:attribute>
+            </xsl:when>
             <xsl:otherwise>
                 <xsl:copy/>
             </xsl:otherwise>

@@ -46,7 +46,7 @@
                     <c:if
                             test="${renderContext.mainResource.node.path ne pageNode.path || displayLinkOnCurrentPage.boolean}">
                     <a href="<c:url value='${url.base}${pageNode.path}.html'/>">
-                        </c:if> ${pageNode.properties['jcr:title'].string} <c:if
+                        </c:if> <c:out value="${pageNode.properties['jcr:title'].string}" /> <c:if
                             test="${renderContext.mainResource.node.path ne pageNode.path || displayLinkOnCurrentPage.boolean}">
                     </a>
                     </c:if></li>
@@ -60,10 +60,10 @@
                 </c:if>
                     <c:choose>
                         <c:when test="${param.moduleView == 'noAbbr'}">
-                            ${renderContext.mainResource.node.displayableName}
+                            <c:out value="${renderContext.mainResource.node.displayableName}" />
                         </c:when>
                         <c:otherwise>
-                            ${functions:abbreviate(renderContext.mainResource.node.displayableName,15,30,'...')}
+                            <c:out value="${functions:abbreviate(renderContext.mainResource.node.displayableName,15,30,'...')}" />
                         </c:otherwise>
                     </c:choose>
                 <c:if test="${displayLinkOnCurrentPage.boolean}">

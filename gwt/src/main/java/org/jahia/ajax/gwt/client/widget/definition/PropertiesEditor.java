@@ -112,6 +112,11 @@ public class PropertiesEditor extends FormPanel {
 
     private boolean displayHiddenProperties = false;
 
+    /**
+     * @param nodeTypes List of nodeTypes
+     * @param properties List of properties already set
+     * @param datatype datatype of content, set in definition, filter property fields to be displayed
+     */
     public PropertiesEditor(List<GWTJahiaNodeType> nodeTypes, Map<String, GWTJahiaNodeProperty> properties,
                             List<String> datatype) {
         super();

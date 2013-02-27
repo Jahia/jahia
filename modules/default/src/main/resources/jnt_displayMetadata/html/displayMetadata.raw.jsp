@@ -31,7 +31,7 @@
     ${boundComponent.properties['jcr:lastModifiedBy'].string}
 </c:if>
 <c:if test="${props.description.boolean}">
-    ${boundComponent.properties['jcr:description'].string}
+    <c:out value="${boundComponent.properties['jcr:description'].string}" />
 </c:if>
 <c:if test="${props.keywords.boolean}">
     <c:if test="${not empty boundComponent.properties['j:keywords']}">

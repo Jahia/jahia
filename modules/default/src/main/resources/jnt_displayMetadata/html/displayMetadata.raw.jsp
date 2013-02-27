@@ -35,8 +35,8 @@
 </c:if>
 <c:if test="${props.keywords.boolean}">
     <c:if test="${not empty boundComponent.properties['j:keywords']}">
-        <c:forEach items="${boundComponent.properties['j:keywords']}" var="keyword">
-            ${keyword.string}
+        <c:forEach items="${boundComponent.properties['j:keywords']}" var="keyword" varStatus="status">
+            ${keyword.string}${!status.last ? separator : ''}
         </c:forEach>
     </c:if>
 </c:if>

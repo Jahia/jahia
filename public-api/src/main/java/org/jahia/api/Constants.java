@@ -186,7 +186,6 @@ public class Constants {
     public static final String JAHIANT_LAYOUT = "jnt:layout";
     public static final String JAHIANT_LAYOUTITEM = "jnt:layoutItem";
     public static final String JAHIANT_MOUNTPOINT = "jnt:mountPoint";
-    public static final String JAHIANT_VFSMOUNTPOINT = "jnt:vfsMountPoint";
     public static final String JAHIANT_TAG = "jnt:tag";
     public static final String JAHIANT_TASK = "jnt:task";
     public static final String JAHIANT_TASKS = "jnt:tasks";

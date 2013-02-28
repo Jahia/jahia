@@ -40,18 +40,25 @@
 
 package org.jahia.services.content.impl.external;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Workspace;
 import javax.jcr.query.QueryManager;
 import java.rmi.Naming;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Implementation of the {@link org.jahia.services.content.JCRStoreProvider} for the {@link org.jahia.services.content.impl.external.ExternalData}.
@@ -60,7 +67,7 @@ import java.rmi.Naming;
  * Date: Apr 23, 2008
  * Time: 11:45:31 AM
  */
-public class ExternalContentStoreProvider extends JCRStoreProvider {
+public class ExternalContentStoreProvider extends JCRStoreProvider implements InitializingBean {
     
     private static final Logger logger = LoggerFactory.getLogger(ExternalContentStoreProvider.class);
     
@@ -72,6 +79,8 @@ public class ExternalContentStoreProvider extends JCRStoreProvider {
     
     private ExternalDataSource dataSource;
     private SessionFactory hibernateSession;
+
+    private String id;
 
     public Repository getRepository(){
         if (repo == null) {
@@ -139,5 +148,56 @@ public class ExternalContentStoreProvider extends JCRStoreProvider {
 
     public SessionFactory getHibernateSession() {
         return hibernateSession;
+    }
+
+    /**
+     * Invoked by a BeanFactory after it has set all bean properties supplied
+     * (and satisfied BeanFactoryAware and ApplicationContextAware).
+     * <p>This method allows the bean instance to perform initialization only
+     * possible when all bean properties have been set and to throw an
+     * exception in the event of misconfiguration.
+     *
+     * @throws Exception in the event of misconfiguration (such
+     *                   as failure to set an essential property) or if initialization fails.
+     */
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        if(getKey()!=null) {
+            SessionFactory hibernateSession = getHibernateSession();
+            org.hibernate.classic.Session statelessSession = hibernateSession.openSession();
+            try {
+                Criteria criteria = statelessSession.createCriteria(ExternalProviderID.class);
+                criteria.add(Restrictions.eq("providerKey", getKey()));
+                List<?> list = criteria.list();
+                if (list.size() > 0) {
+                    id = StringUtils.leftPad(((ExternalProviderID)list.get(0)).getId().toString(), 8, "f");
+                } else {
+                    ExternalProviderID providerID = new ExternalProviderID();
+                    providerID.setProviderKey(getKey());
+                    try {
+                        statelessSession.beginTransaction();
+                        statelessSession.save(providerID);
+                        statelessSession.getTransaction().commit();
+                        id = StringUtils.leftPad(providerID.getId().toString(), 8, "f");
+                    } catch (HibernateException e) {
+                        statelessSession.getTransaction().rollback();
+                        throw new RepositoryException("issue when saving in uuidMap uuid : " + providerID.toString(), e);
+                    }
+                }
+            } finally {
+                statelessSession.close();
+            }
+        }
+    }
+
+    public String getId() {
+        if(id==null) {
+            try {
+                afterPropertiesSet();
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return id;
     }
 }

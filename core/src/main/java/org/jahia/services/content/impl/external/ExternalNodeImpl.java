@@ -646,11 +646,12 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
 
     public String getIdentifier() throws RepositoryException {
         if (!session.getRepository().getDataSource().isSupportsUuid() || data.getId().startsWith("translation:")) {
-            SessionFactory hibernateSession = ((ExternalSessionImpl) getSession()).getRepository().getStoreProvider().getHibernateSession();
+            ExternalContentStoreProvider storeProvider = ((ExternalSessionImpl) getSession()).getRepository().getStoreProvider();
+            SessionFactory hibernateSession = storeProvider.getHibernateSession();
             org.hibernate.classic.Session statelessSession = hibernateSession.openSession();
             try {
                 Criteria criteria = statelessSession.createCriteria(UuidMapping.class);
-                String key = ((ExternalSessionImpl) getSession()).getRepository().getStoreProvider().getKey();
+                String key = storeProvider.getKey();
                 criteria.add(Restrictions.eq("externalIdHash", data.getId().hashCode())).add(Restrictions.eq("providerKey", key));
                 List<?> list = criteria.list();
                 if (list.size() > 0) {
@@ -660,7 +661,7 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
                     UuidMapping uuidMapping = new UuidMapping();
                     uuidMapping.setExternalId(data.getId());
                     uuidMapping.setProviderKey(key);
-                    uuidMapping.setInternalUuid(uuid.toString());
+                    uuidMapping.setInternalUuid(storeProvider.getId()+"-"+StringUtils.substringAfter(uuid.toString(),"-"));
                     try {
                         statelessSession.beginTransaction();
                         statelessSession.save(uuidMapping);

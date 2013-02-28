@@ -118,6 +118,9 @@ public class ExternalSessionImpl implements Session {
     }
 
     public Node getNodeByUUID(String uuid) throws ItemNotFoundException, RepositoryException {
+        if (!uuid.startsWith(getRepository().getStoreProvider().getId())) {
+            throw new ItemNotFoundException("Item " + uuid + " could not been found in this repository");
+        }
         if (!repository.getDataSource().isSupportsUuid() || uuid.startsWith("translation:")) {
             // Translate uuid to external mapping
             SessionFactory hibernateSession = repository.getStoreProvider().getHibernateSession();

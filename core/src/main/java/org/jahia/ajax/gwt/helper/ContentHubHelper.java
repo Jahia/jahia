@@ -40,6 +40,12 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
@@ -49,9 +55,8 @@ import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import java.util.*;
 
 /**
  *
@@ -65,52 +70,38 @@ public class ContentHubHelper {
 
     private JCRSessionFactory sessionFactory;
     private JCRStoreService jcrStoreService;
+    private ContentDefinitionHelper definitionHelper;
+    private ContentManagerHelper contentManager;
+
     public void setSessionFactory(JCRSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
-    public void mount(final String name, final String root, final JahiaUser user,final Locale uiLocale) throws GWTJahiaServiceException {
-        if (user.isRoot()) {
-            try {
-                JCRTemplate.getInstance().doExecuteWithSystemSession(user.getName(), new JCRCallback<Object>() {
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        JCRNodeWrapper parent = session.getNode("/");
-                        JCRNodeWrapper mounts;
-                        try {
-                            mounts = parent.getNode("mounts");
-                        } catch (PathNotFoundException nfe) {
-                            mounts = parent.addNode("mounts", "jnt:systemFolder");
-                        }
-
-                        JCRMountPointNode childNode = null;
-                        if (!mounts.isFile()) {
-                            if (!mounts.isCheckedOut()) {
-                                mounts.checkout();
-                            }
-                            // create the node depending of the root
-
-                            childNode = (JCRMountPointNode) mounts.addNode(name,"jnt:vfsMountPoint");
-                            childNode.setProperty("j:root", root);
-
-                            boolean valid = childNode.checkMountPointValidity();
-                            if (!valid) {
-                                childNode.remove();
-                                throw new RepositoryException(Messages.getInternal("label.gwt.error.invalid.path",uiLocale));
-                            }
-                            session.save();
-                        }
-                        if (childNode == null) {
-                            throw new RepositoryException(Messages.getInternal("label.gwt.error.system.error.happened",uiLocale));
-                        }
-                        return null;
-                    }
-                });
-            } catch (RepositoryException e) {
-                logger.error(Messages.getInternal("label.gwt.error.system.error.happened",uiLocale), e);
-                throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.system.error.happened",uiLocale));
+    public List<GWTJahiaNodeType> getProviderFactoriesType(Locale uiLocale) throws GWTJahiaServiceException {
+        try {
+            List<GWTJahiaNodeType> providerFactoriesType = new ArrayList<GWTJahiaNodeType>();
+            for (ProviderFactory factory : jcrStoreService.getProviderFactories().values()) {
+                ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(factory.getNodeTypeName());
+                providerFactoriesType.add(definitionHelper.getGWTJahiaNodeType(type, uiLocale));
             }
-        } else {
-            throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.only.root.can.mount.folders",uiLocale));
+            return providerFactoriesType;
+        } catch (NoSuchNodeTypeException e) {
+            throw new GWTJahiaServiceException(e);
+        }
+    }
+
+    public void mount(String mountName, String providerType, List<GWTJahiaNodeProperty> properties, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
+        Map<String,String> parents = new HashMap<String, String>();
+        parents.put("mounts","jnt:systemFolder");
+        GWTJahiaNode n = contentManager.createNode("/mounts", mountName, providerType, null, properties, session, uiLocale, parents, false);
+        try {
+            if (((JCRMountPointNode) session.getNode(n.getPath())).checkMountPointValidity()) {
+                session.save();
+            } else {
+                n.removeAll();
+            }
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException("unable to mount " + mountName);
         }
     }
 
@@ -140,5 +131,13 @@ public class ContentHubHelper {
 
     public void setJcrStoreService(JCRStoreService jcrStoreService) {
         this.jcrStoreService = jcrStoreService;
+    }
+
+    public void setDefinitionHelper(ContentDefinitionHelper definitionHelper) {
+        this.definitionHelper = definitionHelper;
+    }
+
+    public void setContentManager(ContentManagerHelper contentManager) {
+        this.contentManager = contentManager;
     }
 }

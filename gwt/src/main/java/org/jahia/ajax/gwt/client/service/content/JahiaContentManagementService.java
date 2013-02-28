@@ -226,8 +226,6 @@ public interface JahiaContentManagementService extends RemoteService {
 
     GWTManagerConfiguration getManagerConfiguration(String name, String path) throws GWTJahiaServiceException;
 
-    List<GWTJahiaNode> getMountpoints() throws GWTJahiaServiceException;
-
     GWTJahiaNodeType getNodeType(String names) throws GWTJahiaServiceException;
 
     List<GWTJahiaNodeType> getNodeTypes(List<String> names) throws GWTJahiaServiceException;
@@ -323,7 +321,9 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void markForDeletion(List<String> paths, String comment) throws GWTJahiaServiceException;
 
-    void mount(String path, String target, String root) throws GWTJahiaServiceException;
+    void mount(String mountName, String providerType, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException;
+
+    List<GWTJahiaNodeType> getProviderFactoriesType() throws GWTJahiaServiceException;
 
     public void move(List<String> sourcePaths, String targetPath) throws GWTJahiaServiceException;
 

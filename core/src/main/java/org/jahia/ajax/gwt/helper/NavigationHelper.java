@@ -408,18 +408,6 @@ public class NavigationHelper {
         return userNodes;
     }
 
-    public List<GWTJahiaNode> getMountpoints(JCRSessionWrapper currentUserSession) {
-        List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
-        try {
-            String s = "select * from [jnt:mountPoint]";
-            Query q = currentUserSession.getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
-            return executeQuery(q, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null);
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return result;
-    }
-
     /**
      * Return a node if existing exception otherwise
      *

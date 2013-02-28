@@ -41,6 +41,7 @@
 package org.jahia.test.services.content.impl.vfs;
 
 import org.apache.commons.io.FileUtils;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
@@ -150,7 +151,7 @@ public class VFSContentStoreProviderTest {
     public void testStaticMount() throws JahiaInitializationException, RepositoryException, GWTJahiaServiceException {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
         JCRNodeWrapper n = session.getNode("/mounts").addNode(MOUNTS_STATIC_MOUNT_POINT_NAME,"jnt:vfsMountPoint");
-        n.setProperty("j:root",staticMountDir.getAbsolutePath());
+        n.setProperty("j:rootPath",staticMountDir.getAbsolutePath());
         session.save();
 
         JCRStoreProvider vfsProvider = JCRStoreService.getInstance().getProviderFactories().get("jnt:vfsMountPoint").mountProvider(n);
@@ -167,6 +168,8 @@ public class VFSContentStoreProviderTest {
             session.save();
         } finally {
             vfsProvider.stop();
+            n.remove();
+            session.save();
         }
     }
 
@@ -213,10 +216,11 @@ public class VFSContentStoreProviderTest {
     public void testDynamicMount() throws GWTJahiaServiceException, RepositoryException {
         ContentHubHelper contentHubHelper = (ContentHubHelper) SpringContextSingleton.getInstance().getContext().getBean("ContentHubHelper");
         JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
-        contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "file://" + dynamicMountDir.getAbsolutePath(), jahiaRootUser, Locale.getDefault());
+        GWTJahiaNodeProperty p = new GWTJahiaNodeProperty("j:rootPath","file://" + dynamicMountDir.getAbsolutePath());
         boolean mountNodeStillExists = true;
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+            contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "jnt:vfsMountPoint", Arrays.asList(p),session , Locale.getDefault());
             assertRootNavigation(session);
 
             JCRNodeWrapper mountNode = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT);
@@ -279,10 +283,10 @@ public class VFSContentStoreProviderTest {
                 .getBean("ContentHubHelper");
         JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
         try {
-            contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "file://" + dynamicMountDir.getAbsolutePath(), jahiaRootUser,
-                    Locale.getDefault());
 
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+            GWTJahiaNodeProperty p = new GWTJahiaNodeProperty("j:rootPath","file://" + dynamicMountDir.getAbsolutePath());
+            contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "jnt:vfsMountPoint", Arrays.asList(p),session , Locale.getDefault());
 
             JCRNodeWrapper mountNode = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT);
             assertNode(mountNode, 0);
@@ -419,9 +423,10 @@ public class VFSContentStoreProviderTest {
     public void testMarkForDeletion() throws Exception, RepositoryException, UnsupportedEncodingException {
         ContentHubHelper contentHubHelper = (ContentHubHelper) SpringContextSingleton.getInstance().getContext().getBean("ContentHubHelper");
         JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
-        contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "file://" + dynamicMountDir.getAbsolutePath(), jahiaRootUser, Locale.getDefault());
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+            GWTJahiaNodeProperty p = new GWTJahiaNodeProperty("j:rootPath","file://" + dynamicMountDir.getAbsolutePath());
+            contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "jnt:vfsMountPoint", Arrays.asList(p),session , Locale.getDefault());
 
             JCRNodeWrapper mountNode = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT);
             assertNode(mountNode, 0);

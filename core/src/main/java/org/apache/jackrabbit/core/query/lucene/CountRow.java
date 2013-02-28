@@ -40,7 +40,8 @@
 
 package org.apache.jackrabbit.core.query.lucene;
 
-import org.jahia.services.content.impl.external.ValueImpl;
+
+import org.jahia.services.content.nodetypes.ValueImpl;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;

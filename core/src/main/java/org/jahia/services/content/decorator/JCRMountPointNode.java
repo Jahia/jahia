@@ -40,6 +40,7 @@
 
 package org.jahia.services.content.decorator;
 
+import org.apache.log4j.Logger;
 import org.jahia.services.content.*;
 import org.springframework.beans.BeanUtils;
 
@@ -57,6 +58,8 @@ import java.io.InputStream;
  * Time: 2:19:40 PM
  */
 public class JCRMountPointNode extends JCRNodeDecorator {
+    private transient static Logger logger = Logger.getLogger(JCRMountPointNode.class);
+
     public JCRMountPointNode(JCRNodeWrapper node) {
         super(node);
 
@@ -119,33 +122,12 @@ public class JCRMountPointNode extends JCRNodeDecorator {
     }
 
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        getProvider().getSessionFactory().unmount(getMountProvider());
+        try {
+            getProvider().getSessionFactory().unmount(getMountProvider());
+        } catch (RepositoryException e) {
+            logger.warn("unable to unmount provider " + getProvider().getKey() + " at " + getPath() + " but node will be deleted anyway",e);
+        }
         super.remove();
     }
-
-
-    public JCRStoreProvider mount(Class<? extends JCRStoreProvider> providerClass, String mountPoint, String key, Map<String, Object> params) throws RepositoryException {
-        JCRStoreProvider provider = null;
-        try {
-            provider = providerClass.newInstance();
-            provider.setUserManagerService(getProvider().getUserManagerService());
-            provider.setGroupManagerService(getProvider().getGroupManagerService());
-            provider.setSitesService(getProvider().getSitesService());
-            provider.setService(getProvider().getService());
-            provider.setKey(key);
-            provider.setMountPoint(mountPoint);
-            provider.setDynamicallyMounted(true);
-            for (Map.Entry<String,Object> k : params.entrySet()) {
-                PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(providerClass, k.getKey());
-                pd.getWriteMethod().invoke(provider, k.getValue());
-            }
-            provider.setSessionFactory(getProvider().getSessionFactory());
-            provider.start();
-            return provider;
-        } catch (Exception e) {
-            throw new RepositoryException(e);
-        }
-    }
-
 
 }

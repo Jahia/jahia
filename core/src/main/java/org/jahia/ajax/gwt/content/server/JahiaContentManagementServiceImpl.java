@@ -80,6 +80,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -99,6 +100,7 @@ import org.jahia.utils.i18n.ResourceBundles;
 import org.slf4j.Logger;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.security.Privilege;
@@ -494,12 +496,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public void mount(String path, String target, String root) throws GWTJahiaServiceException {
-        contentHub.mount(target, root, getUser(), getUILocale());
+    public void mount(String mountName, String providerType, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
+        contentHub.mount(mountName,providerType,properties,retrieveCurrentSession(),getUILocale());
     }
 
-    public List<GWTJahiaNode> getMountpoints() throws GWTJahiaServiceException {
-        return navigation.getMountpoints(retrieveCurrentSession());
+    public List<GWTJahiaNodeType> getProviderFactoriesType() throws GWTJahiaServiceException {
+        return contentHub.getProviderFactoriesType(getUILocale());
     }
 
     public void storePasswordForProvider(String providerKey, String username, String password) {

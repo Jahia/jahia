@@ -81,6 +81,11 @@ public class ExternalPropertyImpl extends ExternalItemImpl implements Property {
         this.node = node;
         this.values = values;
     }
+    public ExternalPropertyImpl(Name name, Node node, ExternalSessionImpl session) {
+        super(session);
+        this.name = name;
+        this.node = node;
+    }
 
     public void setValue(Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         this.value = value;

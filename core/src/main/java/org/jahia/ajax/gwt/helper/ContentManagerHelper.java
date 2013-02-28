@@ -193,16 +193,18 @@ public class ContentManagerHelper {
                 }
             }
             parentNode = jcrSessionWrapper.getNode(parentPath);
-            String nodeName = JCRContentUtils.escapeLocalNodeName(name);
 
-            if (!forceCreation && checkExistence(parentPath + "/" + nodeName, currentUserSession, uiLocale)) {
-                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.node.already.exists.with.name", uiLocale, nodeName));
-            }
+            String nodeName;
 
-            if (nodeName == null) {
+            if (name == null) {
                 nodeName = findAvailableName(parentNode, nodeType.substring(nodeType.lastIndexOf(":") + 1)
                 );
             } else {
+                nodeName = JCRContentUtils.escapeLocalNodeName(name);
+
+                if (!forceCreation && checkExistence(parentPath + "/" + nodeName, currentUserSession, uiLocale)) {
+                    throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.node.already.exists.with.name", uiLocale, nodeName));
+                }
                 nodeName = findAvailableName(parentNode, nodeName);
             }
 

@@ -44,113 +44,136 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.ProgressBar;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.form.AdapterField;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.*;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
- * 
- *
+ * Window used to display mount properties and mount external provider
  * @author rfelden
  * @version 7 juil. 2008 - 17:45:41
  */
 public class Mounter extends Window {
+    final Button submit = new Button(Messages.get("label.ok")) ;
+    final FormPanel form = new FormPanel() ;
 
+    /**
+     * default Mounter constructor
+     * @param linker
+     */
     public Mounter(final Linker linker) {
         super() ;
         setHeading(Messages.get("label.mount"));
         setSize(500, 250);
         setResizable(false);
         ButtonBar buttons = new ButtonBar() ;
-        final FormPanel form = new FormPanel() ;
         form.setLabelWidth(150);
         form.setFieldWidth(300);
         form.setBodyBorder(false);
         form.setBorders(false);
         form.setHeaderVisible(false);
         setModal(true);
+        final ComboBox<GWTJahiaNodeType> factoriesTypeBox = new ComboBox<GWTJahiaNodeType>();
+        factoriesTypeBox.setDisplayField("label");
+        factoriesTypeBox.setAllowBlank(false);
+        factoriesTypeBox.setFieldLabel(Messages.get("label.chooose.providerType", "choose provider"));
+        final ListStore<GWTJahiaNodeType> store =  new ListStore<GWTJahiaNodeType>();
+        factoriesTypeBox.setStore(store);
+        final SelectionListener<ButtonEvent> selectionListener = new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
+                factoriesTypeBox.removeFromParent();
+                submit.removeSelectionListener(this);
+                mountPointPropertiesEditor(factoriesTypeBox.getValue(),linker);
+            }
 
-        final TextField<String> f = new TextField<String>();
-        f.setName("mountpoint");
-        f.setFieldLabel(Messages.get("mountpoint.label"));
-
-        form.add(f);
-
-        final TextField<String> t = new TextField<String>();
-        t.setName("root");
-        t.setValue("smb://");
-        t.setFieldLabel(Messages.get("serveraddress.label"));
-        form.add(t);
-
-        final Label disclaimer = new Label(Messages.get("mount.disclaimer.label"));
-        final AdapterField disclaimerField = new AdapterField(disclaimer);
-        disclaimerField.setFieldLabel(Messages.get("mount.disclaimer"));
-        form.add(disclaimerField);
-
-        final ProgressBar bar = new ProgressBar() ;
-        final AdapterField barField = new AdapterField(bar) ;
-        barField.setFieldLabel(Messages.get("statusbar.mounting.label"));
-        form.add(barField) ;
-        barField.setVisible(false);
-
+        };
+        JahiaContentManagementService.App.getInstance().getProviderFactoriesType(new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
+            @Override
+            public void onSuccess(List<GWTJahiaNodeType> result) {
+                if (result.size() > 1) {
+                    store.add(result);
+                    factoriesTypeBox.setValue(result.get(0));
+                    show();
+                }
+                else if (result.size() == 1) {
+                    factoriesTypeBox.removeFromParent();
+                    submit.removeSelectionListener(selectionListener);
+                    mountPointPropertiesEditor(result.get(0),linker);
+                    show();
+                }
+                else {
+                    MessageBox.alert(Messages.get("label.error","error"),Messages.get("label.noProviders","no provider defined"),null);
+                }
+            }
+        });
+        form.add(factoriesTypeBox, new FormData());
 
         final Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide() ;
             }
         });
-
-        final Button submit = new Button(Messages.get("label.ok")) ;
-        SelectionListener<ButtonEvent> selectionListener = new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                barField.setVisible(true);
-                bar.auto() ;
-                linker.loading(Messages.get("statusbar.mounting.label")) ;
-                submit.setEnabled(false);
-                cancel.setEnabled(false);
-                JahiaContentManagementService.App.getInstance().mount("", f.getValue(), t.getValue(), new BaseAsyncCallback() {
-                    public void onApplicationFailure(Throwable throwable) {
-                        Log.error(Messages.get("failure.mount.label"), throwable);
-                        linker.loaded() ;
-                        com.google.gwt.user.client.Window.alert(Messages.get("failure.mount.label") + " " + t.getValue());
-                        hide();
-                    }
-
-                    public void onSuccess(Object o) {
-                        //Log.info("success");
-                        bar.reset() ;
-                        linker.loaded() ;
-                        hide();
-                        Map<String, Object> data = new HashMap<String, Object>();
-                        data.put(Linker.REFRESH_ALL, true);
-                        linker.refresh(data);
-                    }
-
-                });
-
-            }
-        };
         submit.addSelectionListener(selectionListener);
         buttons.add(submit) ;
         buttons.add(cancel) ;
         setButtonAlign(Style.HorizontalAlignment.CENTER);
-        setTopComponent(buttons);
+        setBottomComponent(buttons);
 
         add(form);
         setScrollMode(Style.Scroll.AUTO);
-        show();
+
+    }
+    private void mountPointPropertiesEditor(final GWTJahiaNodeType type,final Linker linker) {
+        final TextField<String> mountName = new TextField<String>();
+        mountName.setFieldLabel(Messages.get("label.name","name"));
+        mountName.setEmptyText(Messages.get("label.enterMountNodeName", "mount node name"));
+        form.add(mountName, new FormData());
+        final PropertiesEditor pe = new PropertiesEditor(Arrays.asList(type),new HashMap<String, GWTJahiaNodeProperty>(), Arrays.asList(GWTJahiaItemDefinition.CONTENT));
+        pe.renderNewFormPanel();
+        form.add(pe);
+        submit.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                JahiaContentManagementService.App.getInstance().mount(
+                        mountName.getValue(),
+                        type.getName(),
+                        pe.getProperties(true, true, false),
+                        new AsyncCallback() {
+                            @Override
+                            public void onFailure(Throwable caught) {
+                                MessageBox.alert(Messages.get("label,error", "error"), caught.getMessage(), null);
+                                hide();
+                            }
+
+                            @Override
+                            public void onSuccess(Object result) {
+                                Map<String,Object> data = new HashMap<String, Object>();
+                                data.put(Linker.REFRESH_ALL, true);
+                                linker.refresh(data);
+                                hide();
+                            }
+                        });
+            }
+        });
+        layout();
     }
 
 }

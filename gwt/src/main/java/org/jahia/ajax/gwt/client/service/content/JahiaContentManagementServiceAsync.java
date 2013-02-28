@@ -62,10 +62,7 @@ import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Remote GWT service for content management tasks.
@@ -177,8 +174,6 @@ public interface JahiaContentManagementServiceAsync {
 
     void getManagerConfiguration(String name, String path, AsyncCallback<GWTManagerConfiguration> async);
 
-    void getMountpoints(AsyncCallback<List<GWTJahiaNode>> async);
-
     void getNodeType(String names, AsyncCallback<GWTJahiaNodeType> async);
 
     void getNodeTypes(List<String> names, AsyncCallback<List<GWTJahiaNodeType>> async);
@@ -271,7 +266,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void markForDeletion(List<String> paths, String comment, AsyncCallback async);
 
-    void mount(String path, String target, String root, AsyncCallback async);
+    void mount(String mountName, String providerType,List<GWTJahiaNodeProperty> properties, AsyncCallback async);
 
     void move(List<String> sourcePaths, String targetPath, AsyncCallback asyncCallback);
 
@@ -382,4 +377,5 @@ public interface JahiaContentManagementServiceAsync {
 
     void initializeCodeEditor(String path, boolean isNew, String nodeType, String fileType, AsyncCallback<RpcMap> async);
 
+    void getProviderFactoriesType(AsyncCallback<List<GWTJahiaNodeType>> async);
 }

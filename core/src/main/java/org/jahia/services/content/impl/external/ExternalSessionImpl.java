@@ -46,6 +46,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Restrictions;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.nodetypes.Name;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -179,7 +181,30 @@ public class ExternalSessionImpl implements Session {
                     "jnt:translation", i18nProps);
             return new ExternalNodeImpl(i18n, this);
         }
-        return new ExternalNodeImpl(repository.getDataSource().getItemByPath(path), this);
+        try {
+            ExternalData data = repository.getDataSource().getItemByPath(path);
+            return new ExternalNodeImpl(data, this);
+        } catch (PathNotFoundException e) {
+            ExternalData data = repository.getDataSource().getItemByPath(StringUtils.substringBeforeLast(path, "/"));
+            String propertyName = StringUtils.substringAfterLast(path, "/");
+            ExternalPropertyImpl p = new ExternalPropertyImpl(new Name(propertyName, NodeTypeRegistry.getInstance().getNamespaces()),new ExternalNodeImpl(data,this),this);
+            if (data.getProperties() != null && data.getProperties().get(propertyName) != null) {
+                p.setValue(data.getProperties().get(StringUtils.substringAfterLast(path, "/")));
+                return p;
+            } else if (data.getBinaryProperties() != null && data.getBinaryProperties().get(propertyName) != null) {
+                Binary[] binaries = data.getBinaryProperties().get(propertyName);
+                if (data.getBinaryProperties() != null && binaries != null) {
+                    Value[] values = new Value[binaries.length];
+                    for (int i = 0; i < binaries.length; i++) {
+                        values[i] = new ExternalValueImpl(binaries[i]);
+                    }
+                    p.setValue(values);
+                    return p;
+                }
+            }
+            throw new PathNotFoundException(e);
+        }
+
     }
 
     public boolean itemExists(String path) throws RepositoryException {

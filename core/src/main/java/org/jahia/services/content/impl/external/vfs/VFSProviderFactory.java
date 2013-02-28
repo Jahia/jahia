@@ -39,7 +39,7 @@ public class VFSProviderFactory implements ProviderFactory {
         provider.setMountPoint(mountPoint.getPath());
 
         VFSDataSource dataSource = new VFSDataSource();
-        dataSource.setRoot(mountPoint.getProperty("j:root").getString());
+        dataSource.setRoot(mountPoint.getProperty("j:rootPath").getString());
         provider.setDataSource(dataSource);
         provider.setDynamicallyMounted(true);
         provider.setSessionFactory(JCRSessionFactory.getInstance());

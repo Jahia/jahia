@@ -47,6 +47,7 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.*;
 
 import javax.jcr.*;
@@ -241,9 +242,25 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
                 return new ExternalPropertyImpl(new Name(name, NodeTypeRegistry.getInstance().getNamespaces()), this, session, new ExternalValueImpl(s));
             }
         }
-        if (!hasProperty(name) || (hasProperty(name) && !getProperty(name).equals(value))) {
-            data.getProperties().put(name, new String[]{value.getString()});
+        ExtendedPropertyDefinition epd = getPropertyDefinition(name);
 
+        if (!hasProperty(name) || (hasProperty(name) && !getProperty(name).equals(value))) {
+            if (name.equals(Constants.JCR_DATA)) {
+                if (data.getBinaryProperties() == null) {
+                    data.setBinaryProperties(new HashMap<String, Binary[]>());
+                }
+                data.getBinaryProperties().put(name, new Binary[]{value.getBinary()});
+            } else if (epd.isInternationalized()) {
+                Map<String,String[]> valMap = new HashMap<String, String[]>();
+                if (StringUtils.substringAfterLast(getPath(), "/").startsWith("j:translation_")) {
+                    String lang = StringUtils.substringAfterLast(getPath(), "_");
+                    valMap.put(lang,new String[]{value.getString()});
+                    data.getI18nProperties().put(name,valMap);
+                }
+
+            } else {
+                data.getProperties().put(name, new String[]{value.getString()});
+            }
             properties.put(name, new ExternalPropertyImpl(new Name(name, NodeTypeRegistry.getInstance().getNamespaces()), this, session, value));
             session.getChangedData().put(getPath(),data);
         }
@@ -305,7 +322,7 @@ public class ExternalNodeImpl extends ExternalItemImpl implements Node {
     }
 
     public Property setProperty(String name, String[] values, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return setProperty(name,values);
+        return setProperty(name, values);
     }
 
     public Property setProperty(String name, String value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {

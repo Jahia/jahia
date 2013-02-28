@@ -57,7 +57,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-            <Jahia-Depends>default,assets,grid,skins,default-skins,tabularList,tags,profile,contentRetrieval,tasks,facets,article</Jahia-Depends>  
+            <Jahia-Depends>default,assets,grid,skins,default-skins,tabularList,tags,profile,contentRetrieval,tasks,facets</Jahia-Depends>
                         <Jahia-Module-Type>templatesSet</Jahia-Module-Type>
                     </instructions>
                 </configuration>

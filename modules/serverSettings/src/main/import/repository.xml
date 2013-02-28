@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+    <modules jcr:primaryType="jnt:modules">
+        <serverSettings j:dependencies="default" j:installedModules="defaultSiteSettings" j:siteType="module" j:title="Jahia Default Site Settings" j:wcagCompliance="true" jcr:primaryType="jnt:virtualsite">
+            <portlets jcr:primaryType="jnt:portletFolder" />
+            <contents jcr:primaryType="jnt:contentFolder" />
+            <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
+                <files jcr:primaryType="jnt:folder">
+                </files>
+                <serverSettingsBase j:view="serverSettings" jcr:primaryType="jnt:template">
+                    <managesSites j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true" j:priority="100" jcr:primaryType="jnt:contentTemplate">
+                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(serverSettings.label.managesSites)##" />
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                        </pagecontent>
+                    </managesSites>
+                </serverSettingsBase>
+            </templates>
+        </serverSettings>
+    </modules>
+</content>

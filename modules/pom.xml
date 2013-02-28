@@ -209,6 +209,7 @@
                 <module>profile</module>
                 <module>search</module>
                 <module>seo</module>
+                <module>serverSettings</module>
                 <module>skins</module>
                 <module>tabularList</module>
                 <module>tags</module>

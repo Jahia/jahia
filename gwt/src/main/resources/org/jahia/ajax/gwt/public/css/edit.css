@@ -70,12 +70,14 @@
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 11px;
     font-weight: bold;
-    padding: 2px 2px 2px 4px;
+    padding: 5px 10px;
     color: #666665 !important;
-    margin-bottom:2px;
+    margin-bottom:5px;
     display:block;
     overflow:hidden;
     text-shadow: none !important;
+    transition: all 1s ease ;
+
 }
 
 .x-panel-header-listmodule {
@@ -89,6 +91,7 @@
     display:block;
     overflow:hidden;
     text-shadow: none !important;
+    transition: all 1s ease ;
 }
 
 .x-panel-header-areamodule {
@@ -96,18 +99,20 @@
     font-variant: small-caps;
     font-size: 11px;
     font-weight: bold;
-    padding: 2px 2px 2px 4px;
-    margin-bottom:2px;
+    margin-bottom:5px;
     display:block;
     overflow:hidden;
     text-shadow: none !important;
     text-align: center;
+    transition: all 1s ease ;
 }
 
 .x-panel-header-text-areamodule {
-    border-radius: 5px;
-    background-color: #000000 !important;
+    background-color: #333 !important;
     color: #ffffff !important;
+    padding:5px 10px;
+    display: inline-block;
+    transition: all 1s ease ;
 }
 
 .x-panel-header-absoluteAreamodule {
@@ -121,6 +126,7 @@
     display:block;
     overflow:hidden;
     text-shadow: none !important;
+    transition: all 1s ease ;
 }
 
 .x-panel-header-lockedmodule {
@@ -134,6 +140,7 @@
     display:block;
     overflow:hidden;
     text-shadow: none !important;
+    transition: all 1s ease ;
 }
 
 .x-panel-placeholder {
@@ -157,17 +164,18 @@ button.button-placeholder, div.button-placeholder {
     font-weight:bold;
     text-align:center;
     text-transform:none;
-    background-color: #c8c8c8;
+    background-color: #b7b7b7;
     border:none;
-    color:#666665;
+    color:#fff;
     padding:1px 3px 1px 2px;
     margin:0 0 0 1px;
     cursor:pointer;
     line-height:15px !important;
     text-shadow: none !important;
+
 }
 button.button-placeholder:hover,  div.button-placeholder:hover {
-    background-color: #b7b7b7;
+    background-color: #3399FF ;
 }
 
 button.button-enabledisable, div.button-enabledisable {
@@ -177,7 +185,7 @@ button.button-enabledisable, div.button-enabledisable {
     font-weight:bold;
     text-align:center;
     text-transform:none;
-    background-color:#3399ff;
+    background-color:#A6D90F ;
     border:none;
     color:#fff;
     padding:1px 3px 1px 2px;
@@ -193,6 +201,7 @@ button.button-enabledisable, div.button-enabledisable {
 }
 .selection-bottom-list {
     border-bottom: 1px solid #cc0033;
+    margin-top: -1px;
 }
 .selection-left-list {
     border-left: 1px solid #cc0033;
@@ -209,6 +218,7 @@ button.button-enabledisable, div.button-enabledisable {
 }
 .selection-bottom-simple {
     border-bottom: 1px solid #cc0033;
+    margin-top: -1px;
 }
 .selection-left-simple {
     border-left: 1px solid #cc0033;
@@ -224,6 +234,7 @@ button.button-enabledisable, div.button-enabledisable {
 }
 .selection-bottom-area {
     border-bottom: 1px solid #cc0033;
+    margin-top: -1px;
 }
 .selection-left-area {
     border-left: 1px solid #cc0033;
@@ -239,6 +250,7 @@ button.button-enabledisable, div.button-enabledisable {
 }
 .hover-bottom-list {
     border-bottom: 1px solid #39f;
+    margin-top: -1px;
 }
 .hover-left-list {
     border-left: 1px solid #39f;
@@ -253,6 +265,7 @@ button.button-enabledisable, div.button-enabledisable {
 }
 .hover-bottom-simple {
     border-bottom: 1px solid #39f;
+    margin-top: -1px;
 }
 .hover-left-simple {
     border-left: 1px solid #39f;
@@ -268,6 +281,7 @@ button.button-enabledisable, div.button-enabledisable {
 }
 .hover-bottom-area {
     border-bottom: 1px solid #39f;
+    margin-top: -1px;
 }
 .hover-left-area {
     border-left: 1px solid #39f;
@@ -284,6 +298,7 @@ button.button-enabledisable, div.button-enabledisable {
 }
 .hover-bottom-list-secondary {
     border-bottom: 0px solid #999;
+    margin-top: -1px;
 }
 .hover-left-list-secondary {
     border-left: 0px solid #999;
@@ -299,6 +314,7 @@ button.button-enabledisable, div.button-enabledisable {
 }
 .hover-bottom-simple-secondary {
     border-bottom: 0px solid #999;
+    margin-top: -1px;
 }
 .hover-left-simple-secondary {
     border-left: 0px solid #999;
@@ -314,6 +330,7 @@ button.button-enabledisable, div.button-enabledisable {
 }
 .hover-bottom-area-secondary {
     border-bottom: 0px solid #999;
+    margin-top: -1px;
 }
 .hover-left-area-secondary {
     border-left: 0px solid #999;
@@ -333,8 +350,18 @@ button.button-enabledisable, div.button-enabledisable {
 }
 
 .studiomodeArea {
-    border: 2px dashed #212734;
+    border: 1px dashed #333;
     padding: 5px;
+    margin-bottom: 5px;
+
+}
+.studiomodeArea:hover > .x-panel-header > span.x-panel-header-text-areamodule {
+    background-color: #3399ff !important;
+
+}
+.jahia-template-gxt:hover > div > .x-panel-header-simplemodule {
+    background-color: #3399ff !important;
+    color: #fff !important;
 }
 
 .studiomodeDisabledArea {
@@ -349,44 +376,7 @@ button.button-enabledisable, div.button-enabledisable {
     margin-bottom: 2px;
     border: 1px solid #99ccff;
 }
-.studiomodeAreaTemplate{
-    min-height:100px;
-    overflow: hidden;
-    background-color:#d8effb;
-    padding:2px;
-    color:#111;
-    position:relative;
-    font-family: tahoma, arial, verdana, sans-serif;
-    font-size:11px;
-    margin-bottom: 2px;
-    border: 1px solid #99ccff;
-}
 
-.studiovisualmodeDisabledArea {
-    min-height:100px;
-    overflow: hidden;
-    background-color:#d8effb;
-    padding:2px;
-    color:#111;
-    position:relative;
-    font-family: tahoma, arial, verdana, sans-serif;
-    font-size:11px;
-    margin-bottom: 2px;
-    border: 1px solid #99ccff;
-}
-
-.studiovisualmodeBlockedArea {
-    min-height:100px;
-    overflow: hidden;
-    background-color: #d4ffd3;
-    padding:2px;
-    color:#111;
-    position:relative;
-    font-family: tahoma, arial, verdana, sans-serif;
-    font-size:11px;
-    margin-bottom: 2px;
-    border: 1px solid #99cc99;
-}
 .AreaInformation{
     color:#666;
 }

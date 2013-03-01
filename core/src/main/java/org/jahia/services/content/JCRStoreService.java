@@ -55,11 +55,10 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableSet;
 
-import javax.jcr.NamespaceRegistry;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Workspace;
+import javax.jcr.*;
 import javax.jcr.observation.ObservationManager;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -214,6 +213,20 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JahiaPrivilegeRegistry.init(session);
+                    Query query = session.getWorkspace().getQueryManager().createQuery(
+                            "select * from [jnt:mountPoint] as mount", Query.JCR_SQL2);
+                    QueryResult queryResult = query.execute();
+                    NodeIterator queryResultNodes = queryResult.getNodes();
+                    while (queryResultNodes.hasNext()) {
+                        JCRNodeWrapper next = (JCRNodeWrapper) queryResultNodes.next();
+                        try {
+                            next.getNodes();
+                        } catch (RepositoryException e) {
+                            logger.warn(
+                                    "Issue while trying to mount an external provider ("+next.getPath()+") upon startup, all references " +
+                                    "to file coming from this mount won't be available until it is fixed", e);
+                        }
+                    }
                     return null;
                 }
             });

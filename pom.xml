@@ -188,9 +188,7 @@
             org.drools,
             org.joda.time,
             org.joda.time.format,
-            org.joda.time.base,
-
-
+            org.joda.time.base
         </jahia.modules.importPackage>
     </properties>
 

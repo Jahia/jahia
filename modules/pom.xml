@@ -304,6 +304,16 @@
                             <addToProjectResources>false</addToProjectResources>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>prepare-package-dependencies</id>
+                        <goals>
+                            <goal>dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <contentDefinitionCapabilitiesActivated>true</contentDefinitionCapabilitiesActivated>
+                        </configuration>
+                        <phase>prepare-package</phase>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -332,7 +342,9 @@
                         <Jahia-Static-Resources>/css,/icons,/images,/img,/javascript</Jahia-Static-Resources>
         
                         <Export-Package></Export-Package>
-                        <Import-Package>*,${jahia.modules.importPackage}</Import-Package>
+                        <Import-Package>*,${jahia.plugin.projectPackageImport}</Import-Package>
+                        <Provide-Capability>${jahia.plugin.providedNodeTypes}</Provide-Capability>
+                        <Require-Capability>${jahia.plugin.requiredNodeTypes}</Require-Capability>
                         <Embed-Dependency>*; scope=compile; type=!pom;
                             inline=true</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>

@@ -1040,20 +1040,40 @@
                 <groupId>org.jahia.server</groupId>
                 <artifactId>jahia-maven-plugin</artifactId>
                 <version>${jahia.plugin.version}</version>
-                <configuration>
-                    <propertiesInputFile>
-                        ${project.basedir}/src/main/webapp/WEB-INF/etc/config/felix-framework.properties
-                    </propertiesInputFile>
-                    <propertiesOutputFile>${project.build.directory}/generated-resources/felix-framework.properties
-                    </propertiesOutputFile>
-                    <outputPackagesWithNoVersions>true</outputPackagesWithNoVersions>
-                </configuration>
                 <executions>
                     <execution>
                         <id>generate-package-export</id>
                         <goals>
-                            <goal>buildFrameworkPackageList</goal>
+                            <goal>build-framework-package-list</goal>
                         </goals>
+                        <configuration>
+                            <propertiesInputFile>
+                                ${project.basedir}/src/main/webapp/WEB-INF/etc/config/felix-framework.properties
+                            </propertiesInputFile>
+                            <propertiesOutputFile>${project.build.directory}/generated-resources/felix-framework.properties
+                            </propertiesOutputFile>
+                            <outputPackagesWithNoVersions>true</outputPackagesWithNoVersions>
+                        </configuration>
+                        <phase>prepare-package</phase>
+                    </execution>
+                    <execution>
+                        <id>generate-system-capabilities</id>
+                        <goals>
+                            <goal>dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <propertiesInputFile>
+                                ${project.build.directory}/generated-resources/felix-framework.properties
+                            </propertiesInputFile>
+                            <propertiesOutputFile>${project.build.directory}/generated-resources/felix-framework.properties
+                            </propertiesOutputFile>
+                            <artifactExcludes>
+                                <exclude>org.jahia.modules:*</exclude>
+                                <exclude>org.jahia.templates:*</exclude>
+                                <exclude>org.jahia.test:*</exclude>
+                                <exclude>*.jahia.modules</exclude>
+                            </artifactExcludes>
+                        </configuration>
                         <phase>prepare-package</phase>
                     </execution>
                     <execution>

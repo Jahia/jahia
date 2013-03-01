@@ -60,6 +60,7 @@
                 <configuration>
                     <instructions>
                         <Jahia-Module-Type>system</Jahia-Module-Type>
+                        <Export-Package>org.jahia.modules.seo.rules</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

@@ -206,6 +206,14 @@ public class Activator implements BundleActivator {
     private synchronized void install(Bundle bundle) {
         installedBundles.add(bundle);
         parseBundle(bundle);
+        JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByFileName(bundle.getSymbolicName());
+        if (jahiaTemplatesPackage == null) {
+            try {
+                bundle.start();
+            } catch (BundleException e) {
+                logger.error("--- Failed to start module " + bundle.getSymbolicName(), e);
+            }
+        }
     }
 
     private synchronized void uninstall(Bundle bundle) {

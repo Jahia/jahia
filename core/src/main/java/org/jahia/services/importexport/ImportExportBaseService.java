@@ -42,6 +42,7 @@ package org.jahia.services.importexport;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import net.sf.saxon.TransformerFactoryImpl;
 import org.apache.commons.collections.set.ListOrderedSet;
 import org.apache.commons.io.FileCleaningTracker;
 import org.apache.commons.io.FileUtils;
@@ -81,12 +82,6 @@ import org.jahia.utils.Url;
 import org.jahia.utils.zip.ZipEntry;
 import org.jahia.utils.zip.ZipInputStream;
 import org.jahia.utils.zip.ZipOutputStream;
-import org.jdom.Document;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
-import org.jdom.transform.XSLTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -97,6 +92,11 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.jcr.*;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -283,7 +283,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     public void exportAll(OutputStream outputStream, Map<String, Object> params)
-            throws JahiaException, RepositoryException, IOException, SAXException, JDOMException {
+            throws JahiaException, RepositoryException, IOException, SAXException, TransformerException {
         Iterator<JahiaSite> en = sitesService.getSites();
         List<JahiaSite> l = new ArrayList<JahiaSite>();
         while (en.hasNext()) {
@@ -294,7 +294,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     public void exportSites(OutputStream outputStream, Map<String, Object> params, List<JahiaSite> sites)
-            throws RepositoryException, IOException, SAXException, JDOMException {
+            throws RepositoryException, IOException, SAXException, TransformerException {
         ZipOutputStream zout = new ZipOutputStream(outputStream);
 
         ZipEntry anEntry = new ZipEntry(EXPORT_PROPERTIES);
@@ -367,7 +367,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     private void exportSite(final JahiaSite site, OutputStream out, Set<String> externalReferences, Map<String, Object> params)
-            throws RepositoryException, SAXException, IOException, JDOMException {
+            throws RepositoryException, SAXException, IOException, TransformerException {
         ZipOutputStream zout = new ZipOutputStream(out);
 
         zout.putNextEntry(new ZipEntry(SITE_PROPERTIES));
@@ -384,7 +384,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         zout.finish();
     }
 
-    public void exportZip(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, JDOMException {
+    public void exportZip(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, TransformerException {
         ZipOutputStream zout = new ZipOutputStream(out);
         Set<JCRNodeWrapper> nodes = new HashSet<JCRNodeWrapper>();
         nodes.add(node);
@@ -392,7 +392,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         zout.finish();
     }
 
-    public void exportNode(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, JDOMException {
+    public void exportNode(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, TransformerException {
         TreeSet<JCRNodeWrapper> nodes = new TreeSet<JCRNodeWrapper>(new Comparator<JCRNodeWrapper>() {
             public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
                 return o1.getPath().compareTo(o2.getPath());
@@ -403,7 +403,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     private void exportNodesWithBinaries(JCRNodeWrapper rootNode, Set<JCRNodeWrapper> nodes, ZipOutputStream zout, Set<String> typesToIgnore, Set<String> externalReferences, Map<String, Object> params)
-            throws SAXException, IOException, RepositoryException, JDOMException {
+            throws SAXException, IOException, RepositoryException, TransformerException {
         TreeSet<JCRNodeWrapper> liveSortedNodes = new TreeSet<JCRNodeWrapper>(new Comparator<JCRNodeWrapper>() {
             public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
                 return o1.getPath().compareTo(o2.getPath());
@@ -455,7 +455,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     private void exportNodes(JCRNodeWrapper rootNode, TreeSet<JCRNodeWrapper> sortedNodes, OutputStream outputStream,
                              Set<String> typesToIgnore, Set<String> externalReferences, Map<String, Object> params)
-            throws IOException, RepositoryException, SAXException, JDOMException {
+            throws IOException, RepositoryException, SAXException, TransformerException {
         final String xsl = (String) params.get(XSL_PATH);
         final boolean skipBinary = !Boolean.FALSE.equals(params.get(SKIP_BINARY));
         final boolean noRecurse = Boolean.TRUE.equals(params.get(NO_RECURSE));
@@ -499,13 +499,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 inputStream.close();
                 inputStream = new ByteArrayInputStream(stream.getData());
             }
-            System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl"); // use Saxon for XSLT 2.0 support
-            XSLTransformer xslTransformer = new XSLTransformer(xsl);
-            SAXBuilder saxBuilder = new SAXBuilder(false);
-            Document document = saxBuilder.build(inputStream);
-            Document document1 = xslTransformer.transform(document);
-            XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
-            xmlOutputter.output(document1, outputStream);
+            TransformerFactory transformerFactory = TransformerFactoryImpl.newInstance();
+            Transformer transformer = transformerFactory.newTransformer(new StreamSource(new File(xsl)));
+            transformer.transform(new StreamSource(inputStream), new StreamResult(outputStream));
         }
     }
 

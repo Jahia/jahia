@@ -71,6 +71,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
+import javax.xml.transform.TransformerException;
 
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.slf4j.Logger;
@@ -627,7 +628,7 @@ public class ImportExportTest {
             logger.error("Exception during ImportExportTest", e);
         } catch (SAXException e) {
             logger.error("Exception during ImportExportTest", e);
-        } catch (JDOMException e) {
+        } catch (TransformerException e) {
             logger.error("Exception during ImportExportTest", e);
         }
         return zipFile;
@@ -1096,7 +1097,7 @@ public class ImportExportTest {
             logger.error("Exception during ImportExportTest", e);
         } catch (SAXException e) {
             logger.error("Exception during ImportExportTest", e);
-        } catch (JDOMException e) {
+        } catch (TransformerException e) {
             logger.error("Exception during ImportExportTest", e);
         }
         return zipFile;

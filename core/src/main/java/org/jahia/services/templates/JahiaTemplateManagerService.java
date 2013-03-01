@@ -102,6 +102,7 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
+import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -782,7 +783,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             logger.error(e11.getMessage(), e11);
         } catch (IOException e12) {
             logger.error(e12.getMessage(), e12);
-        } catch (JDOMException e13) {
+        } catch (TransformerException e13) {
             logger.error(e13.getMessage(), e13);
         }
 

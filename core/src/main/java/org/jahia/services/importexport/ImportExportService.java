@@ -46,11 +46,11 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.importexport.validation.ValidationResults;
 import org.jahia.services.sites.JahiaSite;
-import org.jdom.JDOMException;
 import org.springframework.core.io.Resource;
 import org.xml.sax.SAXException;
 
 import javax.jcr.RepositoryException;
+import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -94,7 +94,7 @@ public interface ImportExportService {
 
     // Export
 
-    void exportAll(OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, JDOMException;
+    void exportAll(OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, TransformerException;
 
     /**
      * Export complete sites
@@ -108,7 +108,7 @@ public interface ImportExportService {
      * @throws SAXException
      */
     void exportSites(OutputStream outputStream, Map<String, Object> params, List<JahiaSite> sites)
-            throws RepositoryException, IOException, SAXException, JDOMException;
+            throws RepositoryException, IOException, SAXException, TransformerException;
 
     /**
      * Export JCR node as xml
@@ -121,7 +121,7 @@ public interface ImportExportService {
      * @throws SAXException
      * @throws IOException
      */
-    void exportNode(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, JDOMException;
+    void exportNode(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, TransformerException;
 
     /**
      * Export JCR content along with binaries into a zip
@@ -134,7 +134,7 @@ public interface ImportExportService {
      * @throws SAXException
      * @throws IOException
      */
-    void exportZip(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, JDOMException;
+    void exportZip(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, TransformerException;
 
     // Import
 

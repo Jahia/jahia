@@ -47,7 +47,7 @@
             <c:if test="${props.description.boolean}">
                     <dt><fmt:message key="mix_title.jcr_description"/></dt>
                     <c:if test="${not empty boundComponent.properties['jcr:description']}">
-                            <dd>${boundComponent.properties['jcr:description'].string}  </dd>
+                            <dd><c:out value="${boundComponent.properties['jcr:description'].string}" />  </dd>
                     </c:if>
             </c:if>
             <c:if test="${props.keywords.boolean}">
@@ -55,7 +55,7 @@
                     <c:if test="${not empty boundComponent.properties['j:keywords']}">
                         <dd>
                         <c:forEach items="${boundComponent.properties['j:keywords']}" var="keyword" varStatus="status">
-                                ${keyword.string}${!status.last ? separator : ''}
+                                <c:out value="${keyword.string}" />${!status.last ? separator : ''}
                             </c:forEach>
                         </dd>
                     </c:if>

@@ -7,7 +7,7 @@
         <property name="priority" value="45"/>
         <property name="applyOnNodeTypes" value="jmix:list"/>
         <property name="skipOnConfigurations" value="include,wrapper"/>
-        <property name="skipOnModes" value="studiolayout"/>
+        <property name="skipOnModes" value="studio"/>
     </bean>
     <!--<bean id="skinsInitializer" class="org.jahia.modules.render.SkinsChoiceListInitializerImpl">-->
     <!--<property name="key" value="skins"/>-->

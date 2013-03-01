@@ -41,6 +41,7 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.form.*;
@@ -61,7 +62,7 @@ import java.util.Map;
  * Action item to create a new module
  */
 public class NewModuleActionItem extends BaseActionItem {
-    private String siteType;
+    private String siteType = null;
 
     public void setSiteType(String siteType) {
         this.siteType = siteType;
@@ -83,6 +84,22 @@ public class NewModuleActionItem extends BaseActionItem {
         form.setFrame(false);
         form.setLabelWidth(125);
 
+        final SimpleComboBox<String> moduleTypeCombo = new SimpleComboBox<String>();
+        if (siteType == null) {
+            moduleTypeCombo.setStore(new ListStore<SimpleComboValue<String>>());
+            moduleTypeCombo.setFieldLabel(Messages.get("label.moduleType", "Module type"));
+
+            // todo get archetypes list
+            moduleTypeCombo.add("module");
+            moduleTypeCombo.add("templatesSet");
+            moduleTypeCombo.add("jahiapp");
+            moduleTypeCombo.add("profileModule");
+            moduleTypeCombo.setSimpleValue("module");
+            moduleTypeCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
+
+            form.add(moduleTypeCombo);
+        }
+
         final TextField<String> name = new TextField<String>();
         name.setName("name");
         name.setAllowBlank(false);
@@ -100,7 +117,7 @@ public class NewModuleActionItem extends BaseActionItem {
             public void handleEvent(WindowEvent be) {
                 if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.OK)) {
                     linker.loading(Messages.get("statusbar.creatingTemplateSet.label"));
-                    JahiaContentManagementService.App.getInstance().createModule(name.getValue(), null, siteType, sources.getValue(), new BaseAsyncCallback<GWTJahiaNode>() {
+                    JahiaContentManagementService.App.getInstance().createModule(name.getValue(), null, siteType != null ? siteType : moduleTypeCombo.getSimpleValue() , sources.getValue(), new BaseAsyncCallback<GWTJahiaNode>() {
                         public void onSuccess(GWTJahiaNode result) {
                             linker.loaded();
                             Info.display(Messages.get("label.information", "Information"), Messages.get("message.templateSetCreated", "Templates set successfully created"));

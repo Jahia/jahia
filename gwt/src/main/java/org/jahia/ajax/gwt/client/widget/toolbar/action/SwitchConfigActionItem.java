@@ -41,30 +41,17 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
-import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.EditPanelViewport;
-
-import java.util.HashSet;
-import java.util.Set;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 public class SwitchConfigActionItem extends BaseActionItem {
     private String configurationName;
@@ -76,26 +63,41 @@ public class SwitchConfigActionItem extends BaseActionItem {
         final RootPanel panel = RootPanel.get("editmode");
         if (panel != null) {
             final String path = DOM.getElementAttribute(panel.getElement(), "path");
+            if (!MainModule.getInstance().getConfig().getName().equals(configurationName)) {
+                JahiaContentManagementService.App.getInstance().getEditConfiguration(path, configurationName, new BaseAsyncCallback<GWTEditConfiguration>() {
+                    public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
+                        getTextToolItem().setEnabled(true);
+                        config = gwtEditConfiguration;
+                    }
 
-            JahiaContentManagementService.App.getInstance().getEditConfiguration(path, configurationName, new BaseAsyncCallback<GWTEditConfiguration>() {
-                public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
-                    config = gwtEditConfiguration;
-                }
-
-                public void onApplicationFailure(Throwable throwable) {
-                    Log.error("Error when loading EditConfiguration", throwable);
-                }
-            });
+                    public void onApplicationFailure(Throwable throwable) {
+                        Log.error("Error when loading EditConfiguration", throwable);
+                    }
+                });
+                gwtToolbarItem.setSelected(false);
+            } else {
+                gwtToolbarItem.setSelected(true);
+            }
         }
     }
 
     @Override
     public void onComponentSelection() {
-        ((EditLinker)linker).switchConfig(config);
+        ((EditLinker)linker).switchConfig(config, false, false);
     }
 
     public void setConfigurationName(String configurationName) {
         this.configurationName = configurationName;
     }
 
+    @Override
+    public Component createNewToolItem() {
+        ToggleButton toggleButton = new ToggleButton();
+        toggleButton.setToggleGroup("switchConfig");
+        if (getGwtToolbarItem().isSelected()) {
+            toggleButton.setAllowDepress(false);
+        }
+        toggleButton.setEnabled(false);
+        return toggleButton;
+    }
 }

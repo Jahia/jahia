@@ -43,9 +43,9 @@
         <property name="workspace" value="default" />
     </bean>
 
-    <bean name="org.jahia.bin.StudioLayout" parent="abstractRender" class="org.jahia.bin.Edit">
+    <bean name="org.jahia.bin.StudioVisual" parent="abstractRender" class="org.jahia.bin.Edit">
         <property name="sessionExpiryTime" value="60" />
-        <property name="editConfiguration" ref="studiolayoutmode" />
+        <property name="editConfiguration" ref="studiovisualmode" />
         <property name="requiredPermission" value="studioModeAccess" />
         <property name="availableInProductionMode" value="false"/>
         <property name="availableInDistantPublicationServerMode" value="false"/>
@@ -85,8 +85,8 @@
                 <entry key="/contributeframe/**" value-ref="org.jahia.bin.Contribute"/>
                 <entry key="/studio/**" value-ref="org.jahia.bin.Studio"/>
                 <entry key="/studioframe/**" value-ref="org.jahia.bin.Studio"/>
-                <entry key="/studiolayout/**" value-ref="org.jahia.bin.StudioLayout"/>
-                <entry key="/studiolayoutframe/**" value-ref="org.jahia.bin.StudioLayout"/>
+                <entry key="/studiovisual/**" value-ref="org.jahia.bin.StudioVisual"/>
+                <entry key="/studiovisualframe/**" value-ref="org.jahia.bin.StudioVisual"/>
                 <entry key="/find/**">
                     <bean class="org.jahia.bin.Find">
                         <property name="urlResolverFactory" ref="urlResolverFactory" />

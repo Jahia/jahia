@@ -25,9 +25,18 @@
                 <property name="layout" value="button-label"/>
                 <property name="items">
                     <list>
-                        <ref bean="Toolbar.Item.Live"/>
-                        <ref bean="Toolbar.Item.Preview"/>
-                        <ref bean="Toolbar.Item.Contribute"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.mode"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Live"/>
+                                    <ref bean="Toolbar.Item.Preview"/>
+                                    <ref bean="Toolbar.Item.Contribute"/>
+                                    <ref bean="Toolbar.Item.Studio"/>
+                                    <ref bean="Toolbar.Item.Admin"/>
+                                </list>
+                            </property>
+                        </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.view"/>
                             <!-- <property name="icon" value="preview"/> -->
@@ -96,8 +105,6 @@
                         </bean>
 
                         <ref bean="Toolbar.Item.ShowTrashboard"/>
-                        <ref bean="Toolbar.Item.Admin"/>
-                        <ref bean="Toolbar.Item.Studio"/>
                         <ref bean="Toolbar.Item.WorkInProgress"/>
                         <ref bean="Toolbar.Item.WorkInProgressAdmin"/>
                         <ref bean="Toolbar.Item.ClipBoard"/>
@@ -139,9 +146,11 @@
             <bean id="editModeMainModuleToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
+                        <ref bean="Toolbar.Item.NodePath"/>
+                        <ref bean="Toolbar.Item.Fill"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.edit"/>
-                            <!-- <property name="icon" value="editAction"/>  -->
+                            <property name="icon" value="editAction"/>
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.EditContent"/>

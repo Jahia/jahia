@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spring="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring-2.0-M1.xsd">
+
+    <bean id="studiovisualmode" parent="studiomode">
+        <property name="forceHeaders" value="false"/>
+        <property name="visibleTypes">
+            <set>
+            </set>
+        </property>
+        <property name="nonEditableTypes">
+            <set>
+                <value>jmix:layoutComponentContent</value>
+            </set>
+        </property>
+        <property name="defaultUrlMapping" value="/cms/studiovisual"/>
+    </bean>
+
+</beans>

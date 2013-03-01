@@ -46,11 +46,10 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Text;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -59,8 +58,6 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import com.google.gwt.user.client.Element;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -83,9 +80,11 @@ public class AreaModule extends SimpleModule {
     public AreaModule(String id, String path, Element divElement, String moduleType, MainModule mainModule) {
         super(id, path, divElement, mainModule);
         hasDragDrop = false;
+        addIconInHeader = false;
+
         head = new Header();
 
-        if (editable || mainModule.getConfig().getName().equals("studiolayoutmode")) {
+        if (editable) {
             add(head);
         }
 
@@ -94,18 +93,16 @@ public class AreaModule extends SimpleModule {
         this.areaHolder =  DOM.getElementAttribute(divElement, "areaHolder");
 
         this.moduleType = moduleType;
-        String headerText;
         String areaTitle;
         if (path.contains("/")) {
             areaTitle = path.substring(path.lastIndexOf('/') + 1);
         } else {
             areaTitle = path;
         }
-        headerText = Messages.get("label."+moduleType)+" : " + areaTitle;
-        head.setId("JahiaGxtArea__" + areaTitle);
+        setHeaderText(areaTitle);
 
-        head.setText(headerText);
-//        setBodyBorder(false);
+        head.setId("JahiaGxtArea__" + areaTitle);
+        head.setTextStyle("x-panel-header-text-"+moduleType+"module");
         head.addStyleName("x-panel-header");
         head.addStyleName("x-panel-header-"+moduleType+"module");
 
@@ -113,70 +110,17 @@ public class AreaModule extends SimpleModule {
         add(html);
     }
 
-    LayoutContainer ctn;
-
     @Override public void onParsed() {
         super.onParsed();
-        String headerText = head.getText();
 
-        String areaTitle;
-        if (path.contains("/")) {
-            areaTitle = path.substring(path.lastIndexOf('/') + 1);
-        } else {
-            areaTitle = path;
-        }
+        addStyleName(mainModule.getConfig().getName()+"Area");
+        setBorders(true);
 
         if (missingList && editable) {
-            addStyleName(mainModule.getConfig().getName()+"DisabledArea");
-            headerText += " (" + Messages.get("label.notCreated", "not created")+ ")";
             if (mockupStyle != null) {
                 addStyleName(mockupStyle);
             }
-//            removeAll();
-
-            ctn = new LayoutContainer();
-            ctn.addText(headerText);
-
-//            removeAll();
-
-            LayoutContainer dash = new LayoutContainer();
-            dash.addStyleName(mainModule.getConfig().getName()+"AreaTemplate");
-
-            ctn = new LayoutContainer();
-            ctn.addStyleName(moduleType+"Template");
-            ctn.addText(headerText);
-
-            dash.add(ctn);
-            dash.add(html);
-
-            add(dash);
-        } else if (visibleChildCount == 0 && childCount > 0) {
-            addStyleName(mainModule.getConfig().getName()+"BlockedArea");
-            headerText += " ( content )";
-            if (mockupStyle != null) {
-                addStyleName(mockupStyle);
-            }
-//            removeAll();
-
-            ctn = new LayoutContainer();
-            ctn.addText(headerText);
-
-//            removeAll();
-
-            LayoutContainer dash = new LayoutContainer();
-            dash.addStyleName(mainModule.getConfig().getName()+"AreaTemplate");
-
-            ctn = new LayoutContainer();
-            ctn.addStyleName(moduleType+"Template");
-            ctn.addText(headerText);
-
-            dash.add(ctn);
-            dash.add(html);
-
-            add(dash);
-        } else {
-            addStyleName(mainModule.getConfig().getName()+"Area");
-            setBorders(false);
+            canHover = false;
         }
     }
 
@@ -185,12 +129,10 @@ public class AreaModule extends SimpleModule {
             Image icon =  ToolbarIconProvider.getInstance().getIcon("enableArea").createImage();
             icon.setTitle(Messages.get("label.areaEnable", "Enable area"));
             LayoutContainer p = new HorizontalPanel();
+
             p.add(icon);
-            if (getWidth() > 150) {
-                p.add(new Text(Messages.get("label.areaEnable", "Enable area")));
-            }
             p.sinkEvents(Event.ONCLICK);
-            p.addStyleName("button-placeholder");
+            p.addStyleName("button-enabledisable");
             p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
                 public void handleEvent(ComponentEvent be) {
                     createNode(new BaseAsyncCallback<GWTJahiaNode>() {
@@ -202,51 +144,7 @@ public class AreaModule extends SimpleModule {
                     });
                 }
             });
-            ctn.add(p);
-            ctn.layout();
-//        } else if (childCount == 0 && editable) {
-//            ctn.add(p);
-//
-//            if (mainModule.getConfig().isEnableDragAndDrop()) {
-//                DropTarget target = new ModuleDropTarget(this, node == null ? EditModeDNDListener.EMPTYAREA_TYPE : EditModeDNDListener.PLACEHOLDER_TYPE);
-//                target.setOperation(DND.Operation.COPY);
-//                target.setFeedback(DND.Feedback.INSERT);
-//                target.addDNDListener(mainModule.getEditLinker().getDndListener());
-//            }
-//            if (getNodeTypes() != null) {
-//                String[] nodeTypesArray = getNodeTypes().split(" ");
-//                for (final String s : nodeTypesArray) {
-//                    GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(s);
-//                    if (nodeType != null) {
-//                        Boolean canUseComponentForCreate = (Boolean) nodeType.get("canUseComponentForCreate");
-//                        if (canUseComponentForCreate != null && !canUseComponentForCreate) {
-//                            continue;
-//                        }
-//                    }
-//                    icon = ContentModelIconProvider.getInstance().getIcon(nodeType);
-//                    p = new HorizontalPanel();
-//                    p.add(icon.createImage());
-//                    if (getWidth() > 150) {
-//                        p.add(new Text(nodeType != null ? nodeType.getLabel() : s));
-//                    }
-//                    p.sinkEvents(Event.ONCLICK);
-//                    p.addStyleName("button-placeholder");
-//                    p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
-//                        public void handleEvent(ComponentEvent be) {
-//                            createNode(new BaseAsyncCallback<GWTJahiaNode>() {
-//                                public void onSuccess(GWTJahiaNode result) {
-//                                    if (node != null && PermissionsUtils.isPermitted("jcr:addChildNodes", node) && !node.isLocked()) {
-//                                        ContentActions.showContentWizard(mainModule.getEditLinker(), s, node, true);
-//                                    }
-//                                }
-//                            });
-//                        }
-//                    });
-//
-//                    ctn.add(p);
-//                }
-//            }
-//            ctn.layout();
+            head.addTool(p);
         }
     }
 
@@ -261,10 +159,6 @@ public class AreaModule extends SimpleModule {
     public void createNode(final AsyncCallback<GWTJahiaNode> callback) {
         if (node == null) {
             String areaType = this.areaType;
-            if (mainModule.getConfig().getName().contains("layout")) {
-                // move this config property
-                areaType = "jnt:layoutContentList";
-            }
             JahiaContentManagementService.App.getInstance().createNode(path.substring(0, path.lastIndexOf('/')), path.substring(path.lastIndexOf('/') + 1),
                     areaType, null,null,null,null, null, null, true, new AsyncCallback<GWTJahiaNode>() {
                 public void onSuccess(GWTJahiaNode result) {

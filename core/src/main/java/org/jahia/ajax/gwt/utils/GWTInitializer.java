@@ -44,7 +44,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -59,7 +58,6 @@ import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.RepositoryException;
@@ -173,7 +171,7 @@ public class GWTInitializer {
             URLGenerator url = (URLGenerator) request.getAttribute("url");
             params.put(JahiaGWTParameters.BASE_URL, url.getContext() + url.getBase());
             params.put(JahiaGWTParameters.STUDIO_URL, url.getContext() + url.getStudio());
-            params.put(JahiaGWTParameters.STUDIO_LAYOUT_URL, url.getContext() + url.getStudioLayout());
+            params.put(JahiaGWTParameters.STUDIO_VISUAL_URL, url.getContext() + url.getStudioVisual());
             addLanguageSwitcherLinks(renderContext, params, url);
         } else {
             params.put(JahiaGWTParameters.BASE_URL, request.getContextPath().equals("/") ? "" : request.getContextPath() + Render.getRenderServletPath() + "/" + params.get("workspace")  + "/" + locale.toString());

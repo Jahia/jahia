@@ -64,6 +64,7 @@ public abstract class Module extends LayoutContainer {
     protected String template;
     protected String scriptInfo;
     protected String sourceInfo;
+    protected String headerText;
     protected Map<String,List<String>> moduleParams;
     protected Module parentModule;
     protected MainModule mainModule;
@@ -163,9 +164,6 @@ public abstract class Module extends LayoutContainer {
 
     public void addChild(Module childModule) {
         this.childCount++;
-        if (!(childModule instanceof InvisibleModule)) {
-            this.visibleChildCount ++;
-        }
     }
 
     public void setParentModule(Module parentModule) {
@@ -177,10 +175,6 @@ public abstract class Module extends LayoutContainer {
 
     public int getChildCount() {
         return childCount;
-    }
-
-    public int getVisibleChildCount() {
-        return visibleChildCount;
     }
 
     public String getModuleId() {
@@ -256,6 +250,7 @@ public abstract class Module extends LayoutContainer {
     }
 
     protected void setHeaderText(String headerText) {
+        this.headerText = headerText;
         head.setText(headerText);
     }
 

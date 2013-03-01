@@ -115,7 +115,6 @@ public class MainModule extends Module {
 
         if (config.getMainModuleToolbar() != null && !config.getMainModuleToolbar().getGwtToolbarItems().isEmpty()) {
             head = new ToolbarHeader();
-            head.setText(Messages.get("label.page", "Page") + ": " + path);
             head.addStyleName("x-panel-header");
             head.setStyleAttribute("z-index", "999");
             head.setStyleAttribute("position", "relative");
@@ -574,9 +573,6 @@ public class MainModule extends Module {
         }
 
         this.path = path;
-        if (head != null) {
-            head.setText(Messages.get("label.page", "Page") + ": " + path);
-        }
         this.template = template;
 
         moduleParams = params;

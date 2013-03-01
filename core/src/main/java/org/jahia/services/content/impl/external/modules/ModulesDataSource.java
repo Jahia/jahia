@@ -53,11 +53,11 @@ import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileType;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.impl.external.ExternalData;
 import org.jahia.services.content.impl.external.vfs.VFSDataSource;
 import org.jahia.services.content.nodetypes.*;
-import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -261,6 +261,12 @@ public class ModulesDataSource extends VFSDataSource {
                     } finally {
                         IOUtils.closeQuietly(is);
                     }
+                }
+            } else {
+                String ext = StringUtils.substringAfterLast(path,".");
+                Map extensions = (Map) SpringContextSingleton.getBean("fileExtensionIcons");
+                if ("img".equals(extensions.get(ext))) {
+                    data.setMixin(Arrays.asList("jmix:image"));
                 }
             }
         } catch (NoSuchNodeTypeException e) {

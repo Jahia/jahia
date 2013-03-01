@@ -24,17 +24,26 @@
     <bean id="studiomode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         <property name="requiredPermission" value="studioModeAccess"/>
         <property name="modulesOnly" value="true"/>
-        <property name="buttonsInLayer" value="true"/>
+        <property name="forceHeaders" value="true"/>
         <property name="componentsPaths">
             <list>
                 <value>/modules/*</value>
             </list>
         </property>
-        <property name="nonEditableTypes">
+        <property name="visibleTypes">
             <set>
+                <value>jmix:areaComponent</value>
                 <value>jmix:layoutComponentContent</value>
+                <value>jmix:list</value>
+                <value>jnt:file</value>
             </set>
         </property>
+
+        <!--<property name="nonEditableTypes">-->
+            <!--<set>-->
+                <!--<value>jmix:layoutComponentContent</value>-->
+            <!--</set>-->
+        <!--</property>-->
         <property name="skipMainModuleTypesDomParsing">
             <list>
                 <value>jnt:editableFile</value>
@@ -48,42 +57,22 @@
                 <property name="items">
                     <list>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.mode"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.EditMode"/>
+                                    <ref bean="Toolbar.Item.Admin"/>
+                                </list>
+                            </property>
+                        </bean>
 
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.new"/>
-                            <property name="icon" value="newAction"/>
                             <property name="items">
                                 <list>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewModuleActionItem">
-                                                <property name="siteType" value="templatesSet"/>
-                                            </bean>
-                                        </property>
-                                        <property name="titleKey" value="label.newTemplatesSet"/>
-                                        <property name="icon" value="newTemplatesSet"/>
-                                    </bean>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewModuleActionItem">
-                                                <property name="siteType" value="jahiapp"/>
-                                            </bean>
-                                        </property>
-                                        <property name="titleKey" value="label.newApp"/>
-                                        <property name="icon" value="newJahiapp"/>
-                                    </bean>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewModuleActionItem">
-                                                <property name="siteType" value="profileModule"/>
-                                            </bean>
-                                        </property>
-                                        <property name="titleKey" value="label.newProfileModule"/>
-                                        <property name="icon" value="newProfileModule"/>
-                                    </bean>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewModuleActionItem">
-                                                <property name="siteType" value="module"/>
                                             </bean>
                                         </property>
                                         <property name="titleKey" value="label.newModule"/>
@@ -97,55 +86,68 @@
                                         <property name="titleKey" value="label.fetchModule"/>
                                         <property name="icon" value="fetchModule"/>
                                     </bean>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DuplicateModuleActionItem"/>
-                                        </property>
-                                        <property name="titleKey" value="label.duplicateTemplatesSet"/>
-                                        <property name="icon" value="duplicateTemplatesSet"/>
-                                    </bean>
-
-                                    <ref bean="Toolbar.Item.NewPage"/>
-                                    <ref bean="Toolbar.Item.NewContent"/>
-                                    <ref bean="Toolbar.Item.AddView"/>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
-                                                <property name="parentTypes" value="jnt:folder"/>
-                                                <property name="nodeTypes" value="jnt:cssFile"/>
-                                            </bean>
-                                        </property>
-                                        <property name="titleKey" value="label.newCssFile"/>
-                                        <property name="icon" value="newCssFile"/>
-                                    </bean>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
-                                                <property name="parentTypes" value="jnt:folder"/>
-                                                <property name="nodeTypes" value="jnt:javascriptFile"/>
-                                            </bean>
-                                        </property>
-                                        <property name="titleKey" value="label.newJavascriptFile"/>
-                                        <property name="icon" value="newJavascriptFile"/>
-                                    </bean>
                                 </list>
                             </property>
                         </bean>
 
-                        <ref bean="Toolbar.Item.Lock"/>
+                        <ref bean="Toolbar.Item.Separator"/>
 
-                        <ref bean="Toolbar.Item.Unlock"/>
-
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                            <property name="actionItem">
-                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem"/>
+                        <ref bean="studiomode.managers.menu"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.cache"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Flush"/>
+                                    <ref bean="Toolbar.Item.FlushSite"/>
+                                    <ref bean="Toolbar.Item.FlushAll"/>
+                                </list>
                             </property>
-                            <property name="titleKey" value="label.templatesDeploy"/>
                         </bean>
+                        <ref bean="Toolbar.Item.ClipBoard"/>
                         <ref bean="Toolbar.Item.Separator"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="icon" value="start"/>
+                            <property name="titleKey" value="label.user.loggedAs"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Start"/>
+                                    <ref bean="Toolbar.Item.Logout"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="sidePanelToolbar">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+
+                        <bean id="Toolbar.ItemsGroup.SitesSwitcher"
+                              class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem">
+                                    <property name="root" value="/modules/*"/>
+                                    <property name="filterOnAvailableSources" value="true"/>
+                                </bean>
+                            </property>
+                            <property name="titleKey" value="label.modules"/>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="mainModuleToolbar">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="layout" value="button-label"/>
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.SwitchConfigActionToStudio"/>
+                        <ref bean="Toolbar.Item.SwitchConfigActionToStudioVisual"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.edit"/>
-                            <property name="icon" value="editStudioAction"/>
+                            <property name="icon" value="editAction"/>
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.EditContent"/>
@@ -174,60 +176,6 @@
                             </property>
                         </bean>
 
-                        <ref bean="studiomode.managers.menu"/>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
-                            <property name="titleKey" value="label.cache"/>
-                            <property name="icon" value="publicationAction"/>
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.Flush"/>
-                                    <ref bean="Toolbar.Item.FlushSite"/>
-                                    <ref bean="Toolbar.Item.FlushAll"/>
-                                </list>
-                            </property>
-                        </bean>
-                        <ref bean="Toolbar.Item.Admin"/>
-                        <ref bean="Toolbar.Item.EditMode"/>
-                        <ref bean="Toolbar.Item.ClipBoard"/>
-                        <ref bean="Toolbar.Item.Separator"/>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
-                            <property name="icon" value="start"/>
-                            <property name="titleKey" value="label.user.loggedAs"/>
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.Start"/>
-                                    <ref bean="Toolbar.Item.Logout"/>
-                                </list>
-                            </property>
-                        </bean>
-                    </list>
-                </property>
-            </bean>
-        </property>
-        <property name="sidePanelToolbar">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                <property name="items">
-                    <list>
-                        <bean id="Toolbar.ItemsGroup.SitesSwitcher"
-                              class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                            <property name="actionItem">
-                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem">
-                                    <property name="root" value="/modules/*"/>
-                                    <property name="filterOnAvailableSources" value="true"/>
-                                </bean>
-                            </property>
-                            <property name="titleKey" value="label.modules"/>
-                        </bean>
-                    </list>
-                </property>
-            </bean>
-        </property>
-        <property name="mainModuleToolbar">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                <property name="items">
-                    <list>
-                        <ref bean="Toolbar.Item.SwitchConfigActionToStudioLayout"/>
-                        <ref bean="Toolbar.Item.EditContent"/>
                         <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>
                     </list>
                 </property>
@@ -558,7 +506,7 @@
                                         <property name="titleKey" value="label.newDefinition"/>
                                         <property name="icon" value="newDefinition"/>
                                     </bean>
-
+                                    <ref bean="Toolbar.Item.NewFolder"/>
                                     <ref bean="Toolbar.Item.Upload"/>
                                     <ref bean="Toolbar.Item.Download"/>
                                     <ref bean="Toolbar.Item.Rename"/>

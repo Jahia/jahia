@@ -146,6 +146,12 @@
         </property>
     </bean>
 
+    <bean id="Toolbar.Item.NodePath" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NodePathActionItem"/>
+        </property>
+    </bean>
+
     <!-- Live-->
     <bean id="Toolbar.Item.Live" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
@@ -305,17 +311,17 @@
         </property>
     </bean>
 
-    <bean id="Toolbar.Item.SwitchConfigActionToStudioLayout" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="titleKey" value="label.studio.layout"/>
-        <property name="icon" value="studio"/>
+    <bean id="Toolbar.Item.SwitchConfigActionToStudioVisual" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="titleKey" value="label.studio.visual"/>
+        <property name="icon" value="studio-visual"/>
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchToLayoutConfigActionItem">
-                <property name="configurationName" value="studiolayoutmode"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
+                <property name="configurationName" value="studiovisualmode"/>
             </bean>
         </property>
     </bean>
     <bean id="Toolbar.Item.SwitchConfigActionToStudio" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="titleKey" value="label.studio"/>
+        <property name="titleKey" value="label.studio.layout"/>
         <property name="icon" value="studio"/>
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
@@ -324,7 +330,7 @@
         </property>
     </bean>
 
-    <bean id="Toolbar.Item.StudioLayoutMode" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+    <bean id="Toolbar.Item.StudioVisualMode" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectOrOpenWindowActionItem"/>
         </property>
@@ -334,7 +340,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/welcome/studiolayoutmode"/>
+                    <property name="value" value="$context/welcome/studiovisualmode"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="target"/>

@@ -76,10 +76,6 @@ public class TemplatesTabItem extends BrowseTabItem {
             @Override
             protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
                 super.handleMouseClick(e);
-                if (editLinker.getConfig().getName().equals("studiolayoutmode") && getSelectedItem().get("supportsLayoutMode") == Boolean.FALSE) {
-                    Info.display(Messages.get("label.error"),Messages.get("label.error.element.not.visible.studio.layout.mode","This element can't be viewed in layout mode"));
-                    return;
-                }
                 if (!getSelectedItem().getPath().equals(editLinker.getMainModule().getPath())) {
                     if (!getSelectedItem().getNodeTypes().contains("jnt:virtualsite") && !getSelectedItem().getNodeTypes().contains("jnt:templatesFolder")) {
                         MainModule.staticGoTo(getSelectedItem().getPath(), null);

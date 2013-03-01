@@ -19,6 +19,8 @@
                                     <ref bean="Toolbar.Item.Live"/>
                                     <ref bean="Toolbar.Item.Preview"/>
                                     <ref bean="Toolbar.Item.Edit"/>
+                                    <ref bean="Toolbar.Item.Studio"/>
+                                    <ref bean="Toolbar.Item.Admin"/>
                                 </list>
                             </property>
                         </bean>
@@ -108,8 +110,6 @@
                         <ref bean="editmode.managers.menu"/>
 
                         <ref bean="Toolbar.Item.ShowTrashboard"/>
-                        <ref bean="Toolbar.Item.Admin"/>
-                        <ref bean="Toolbar.Item.Studio"/>
                         <ref bean="Toolbar.Item.ClipBoard"/>
 
                         <ref bean="Toolbar.Item.Separator"/>

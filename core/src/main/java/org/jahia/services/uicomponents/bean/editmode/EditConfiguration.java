@@ -89,7 +89,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private Set<String> nonVisibleTypes;
     private Set<String> skipMainModuleTypesDomParsing;
 
-    private boolean buttonsInLayer = false;
+    private boolean forceHeaders = false;
 
     public void addTab(SidePanelTab tab) {
         tabs.add(tab);
@@ -289,15 +289,12 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         this.nonVisibleTypes = nonVisibleTypes;
     }
 
-    /**
-     * @return if true, display button on the top right of the area
-     */
-    public boolean isButtonsInLayer() {
-        return buttonsInLayer;
+    public boolean isForceHeaders() {
+        return forceHeaders;
     }
 
-    public void setButtonsInLayer(boolean buttonsInLayer) {
-        this.buttonsInLayer = buttonsInLayer;
+    public void setForceHeaders(boolean forceHeaders) {
+        this.forceHeaders = forceHeaders;
     }
 
     /**
@@ -306,9 +303,9 @@ public class EditConfiguration implements Serializable, BeanNameAware {
      * @throws RepositoryException
      */
     public boolean isVisible(JCRNodeWrapper node) throws RepositoryException {
-        if (getNonVisibleTypes() != null && isNodeOfType(node, getNonVisibleTypes())) {
+        if (getNonVisibleTypes() != null && !getNonVisibleTypes().isEmpty() && isNodeOfType(node, getNonVisibleTypes())) {
             return false;
-        } else if (getVisibleTypes() != null && !isNodeOfType(node, getVisibleTypes())) {
+        } else if (getVisibleTypes() != null && !getVisibleTypes().isEmpty() && !isNodeOfType(node, getVisibleTypes())) {
             return false;
         }
         return true;
@@ -320,9 +317,9 @@ public class EditConfiguration implements Serializable, BeanNameAware {
      * @throws RepositoryException
      */
     public boolean isEditable( JCRNodeWrapper node) throws RepositoryException{
-        if (getNonEditableTypes() != null && isNodeOfType(node, getNonEditableTypes())) {
+        if (getNonEditableTypes() != null && !getNonEditableTypes().isEmpty() && isNodeOfType(node, getNonEditableTypes())) {
             return false;
-        } else if (getEditableTypes() != null && !isNodeOfType(node, getEditableTypes())) {
+        } else if (getEditableTypes() != null && !getEditableTypes().isEmpty() && !isNodeOfType(node, getEditableTypes())) {
             return false;
         }
         return true;

@@ -8,7 +8,6 @@
     <bean id="adminmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         <property name="requiredPermission" value="administrationAccess"/>
         <property name="modulesOnly" value="true"/>
-        <property name="buttonsInLayer" value="true"/>
         <property name="componentsPaths">
             <list>
                 <value>/modules/*</value>

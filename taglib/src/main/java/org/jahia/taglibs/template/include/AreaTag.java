@@ -42,6 +42,7 @@ package org.jahia.taglibs.template.include;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
@@ -320,4 +321,21 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
         }
     }
+
+    @Override
+    protected void render(RenderContext renderContext, Resource resource) throws IOException {
+        if (canEdit(renderContext) || !isEmptyArea() || path == null) {
+            super.render(renderContext, resource);
+        }
+    }
+
+    protected  boolean isEmptyArea() {
+        for (String s : constraints.split(" ")) {
+            if (!JCRContentUtils.getChildrenOfType(node, s).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

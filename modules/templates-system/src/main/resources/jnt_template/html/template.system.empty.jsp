@@ -27,7 +27,7 @@
 
     <title>${fn:escapeXml(renderContext.mainResource.node.displayableName)}</title>
 </head>
-<body>
+<body bgcolor="white">
     <template:area path="pagecontent"/>
 </body>
 </html>

@@ -36,11 +36,11 @@
             <c:set var="isEmpty" value="false"/>
         </c:forEach>
         <c:if test="${not omitFormatting}"><div class="clear"></div></c:if>
-        <c:if test="${moduleMap.editable and renderContext.editMode && !resourceReadOnly}">
-            <template:module path="*"/>
-        </c:if>
         <c:if test="${not empty moduleMap.emptyListMessage and (renderContext.editMode or moduleMap.forceEmptyListMessageDisplay) and isEmpty}">
             ${moduleMap.emptyListMessage}
+        </c:if>
+        <c:if test="${moduleMap.editable and renderContext.editMode && !resourceReadOnly}">
+            <template:module path="*"/>
         </c:if>
         <template:include view="hidden.footer"/>
     </c:otherwise>

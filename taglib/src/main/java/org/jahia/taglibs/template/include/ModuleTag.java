@@ -279,12 +279,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     pageContext.getRequest().setAttribute("editableModule", canEdit && checkStudioLock(renderContext, node));
                     if (canEdit) {
                         String type = getModuleType(renderContext);
-                        if (!isVisible) {
-                            type = "invisibleModule";
-                        }
                         List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
                         String oldNodeTypes = nodeTypes;
-                        String add = null;
+                        String add = "";
                         if (!checkStudioLock(renderContext, node)) {
                             add = "editable=\"false\"";
                         }
@@ -292,6 +289,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                             nodeTypes = StringUtils.join(contributeTypes, " ");
                             add = "editable=\"false\"";
                         }
+                        if (node.isNodeType("jmix:bindedComponent")) {
+                            add += " bindable=\"true\"";
+                        }
+
                         Script script = null;
                         try {
                             script = RenderService.getInstance().resolveScript(resource, renderContext);
@@ -315,6 +316,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         currentResource.getDependencies().add(node.getCanonicalPath());
                         if (isVisible) {
                             render(renderContext, resource);
+                        } else {
+                            pageContext.getOut().print("&nbsp;");
                         }
                         //Copy dependencies to parent Resource (only for include of the same node)
                         currentResource.getRegexpDependencies().addAll(resource.getRegexpDependencies());
@@ -490,15 +493,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     protected boolean checkStudioLock(RenderContext renderContext, JCRNodeWrapper node) {
         try {
             if (node != null && !renderContext.getEditModeConfig().isEditable(node)) {
-                if (renderContext.getEditModeConfig().getName().equals("studiomode")) {
-                    if (renderContext.getRequest().getAttribute("supportsLayoutMode") == null) {
-                        JCRNodeWrapper tpl = JCRContentUtils.getParentOfType(node,"jnt:template");
-                        Boolean value = tpl != null && JCRContentUtils.getChildrenOfType(tpl, "jnt:layoutContentList").isEmpty() && !JCRContentUtils.getChildrenOfType(tpl, "jnt:contentList").isEmpty();
-                        renderContext.getRequest().setAttribute("supportsLayoutMode", value);
-                    }
-                    return (Boolean) renderContext.getRequest().getAttribute("supportsLayoutMode");
-                }
-
                 return false;
             }
 ////                if (renderContext.getMainResource().getNode().getLockInfos().get(null) == null ||
@@ -570,38 +564,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     }
 
     protected void render(RenderContext renderContext, Resource resource) throws IOException {
-//        try {
-//
-//            if (!(this instanceof IncludeTag) && (resource.getNode().isLocked() || !resource.getNode().getLockedLocales().isEmpty())) {
-//            Node node = resource.getNode().getRealNode();
-//
-//            String out = node.getPath() + " shared : ";
-//            if (node.hasProperty("j:lockTypes")) {
-//                for (Value value : node.getProperty("j:lockTypes").getValues()) {
-//                    out += "<div style=\"color:red\" >" + value.getString() + "</div>";
-//                }
-//            }
-//            NodeIterator ni = node.getNodes("j:translation*");
-//            while (ni.hasNext()) {
-//                Node n = ni.nextNode();
-//                out += ", " + n.getProperty("jcr:language").getString() + " : ";
-//                if (n.isLocked()) {
-//                    if (n.hasProperty("j:lockTypes")) {
-//                        for (Value value : n.getProperty("j:lockTypes").getValues()) {
-//                            out += "<div style=\"color:red\" >" + value.getString() + "</div>";
-//                        }
-//                    }
-//                }
-//            }
-//
-//            pageContext.getOut().print("<div>"+out+"</div>");
-//            }
-//
-//        } catch (RepositoryException e) {
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//        }
-
-
         try {
             final Integer level =
                     (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
@@ -662,10 +624,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
         if (node.isNodeType("jmix:listContent")) {
             type = "list";
-        } else if (node.isNodeType("jmix:bindedComponent")) {
-            type = "bindedComponent";
-//        } else if (renderContext.getEditModeConfigName().equals("studiomode") && !node.isNodeType("jmix:layoutComponentContent")) {
-//            type = "existingNodeWithHeader";
+        } else if (renderContext.getEditModeConfig().isForceHeaders()) {
+            type = "existingNodeWithHeader";
         }
         return type;
     }

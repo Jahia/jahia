@@ -126,13 +126,17 @@ public class EditLinker implements Linker {
         return config;
     }
 
-    public void switchConfig(GWTEditConfiguration config) {
+    public void switchConfig(GWTEditConfiguration config, boolean updateSidePanel, boolean updateToolbar) {
         this.config = config;
         mainModule.setConfig(config);
-        sidePanel.initTabs(config);
-        toolbar.setToolbarSet(Arrays.asList(config.getTopToolbar()));
+        if (updateSidePanel) {
+            sidePanel.initTabs(config);
+        }
+        if (updateToolbar) {
+            toolbar.setToolbarSet(Arrays.asList(config.getTopToolbar()));
+        }
         EditPanelViewport.setViewportStyleName(config.getName());
-        registerLinker();
+        registerLinker(true, updateSidePanel, updateToolbar);
     }
 
     public EditModeDNDListener getDndListener() {
@@ -217,21 +221,28 @@ public class EditLinker implements Linker {
      * Set up linker (callback for each member).
      */
     protected void registerLinker() {
-        if (mainModule != null) {
+        registerLinker(true,true,true);
+    }
+
+    /**
+     * Set up linker (callback for each member).
+     */
+    protected void registerLinker(boolean doMainModule, boolean doSidePanel, boolean doToolbar) {
+        if (mainModule != null && doMainModule) {
             try {
                 mainModule.initWithLinker(this);
             } catch (Exception e) {
                 Log.error("Error on init linker",e);
             }
         }
-        if (sidePanel != null) {
+        if (sidePanel != null && doSidePanel) {
             try {
                 sidePanel.initWithLinker(this);
             } catch (Exception e) {
                 Log.error("Error on init linker",e);
             }
         }
-        if (toolbar != null) {
+        if (toolbar != null && doToolbar) {
             try {
                 toolbar.initWithLinker(this);
             } catch (Exception e) {

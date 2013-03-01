@@ -70,7 +70,7 @@ public class ListModule extends SimpleModule {
         setBorders(false);
 //        setBodyBorder(false);
         head.addStyleName("x-panel-header");
-        head.addStyleName("x-panel-header-areamodule");
+        head.addStyleName("x-panel-header-listmodule");
         html = new HTML(divElement.getInnerHTML());
         add(html);
     }

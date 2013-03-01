@@ -11,20 +11,6 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <c:set var="level" value="${currentNode.properties['j:level'].long}"/>
-<c:choose>
-    <c:when test="${(not empty inWrapper and inWrapper eq false)}">
-        <div class="${renderContext.editModeConfigName}AbsoluteArea <c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
-            <div class="${renderContext.editModeConfigName}AbsoluteAreaTemplate">
-                <c:if test="${empty level}" >
-                    <span>Absolute Area : ${currentNode.name} </span>
-                </c:if>
-                <c:if test="${not empty level}" >
-                    <span>Absolute Area : ${currentNode.name} - Level ${level}</span>
-                </c:if>
-            </div>
-        </div>
-    </c:when>
-    <c:otherwise>
         <jcr:nodeProperty node="${currentNode}" name="j:allowedTypes" var="restrictions"/>
         <c:if test="${not empty restrictions}">
             <c:forEach items="${restrictions}" var="value">
@@ -67,6 +53,4 @@
                 </c:if>
             </template:area>
         </c:if>
-    </c:otherwise>
-</c:choose>
 

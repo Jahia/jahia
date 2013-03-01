@@ -11,20 +11,6 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-
-<c:choose>
-    <c:when test="${(not empty inWrapper and inWrapper eq false) and editableModule}">
-        <c:set value="${currentNode.nodes}" var="currentList" scope="request"/>
-
-        <div class="${renderContext.editModeConfigName}Area<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
-            <div class="${renderContext.editModeConfigName}AreaTemplate"> <img src="<c:url value='${url.currentModule}/images/icons/edit.png'/>" alt="edit" style="display: inline;"/>
-                <span>Area : ${currentNode.name}</span>
-            </div>
-        </div>
-
-
-    </c:when>
-    <c:otherwise>
         <jcr:nodeProperty node="${currentNode}" name="j:allowedTypes" var="restrictions" scope="request"/>
         <c:if test="${not empty restrictions}">
             <c:forEach items="${restrictions}" var="value">
@@ -49,6 +35,4 @@
                 <template:param name="mockupStyle" value="${currentNode.properties['j:mockupStyle'].string}"/>
             </c:if>
         </template:area>
-    </c:otherwise>
-</c:choose>
 

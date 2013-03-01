@@ -88,7 +88,10 @@ public class ModulesTabItem extends BrowseTabItem {
             protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
                 super.handleMouseClick(e);
                 if (!getSelectedItem().getPath().equals(editLinker.getMainModule().getPath())) {
-                    if (!getSelectedItem().getNodeTypes().contains("jnt:virtualsite") && !getSelectedItem().getNodeTypes().contains("jnt:templatesFolder")) {
+                    if (!getSelectedItem().getNodeTypes().contains("jnt:virtualsite")
+                            && !getSelectedItem().getNodeTypes().contains("jnt:folder")
+                            && !getSelectedItem().getInheritedNodeTypes().contains("jnt:folder")
+                            && !getSelectedItem().getNodeTypes().contains("jnt:templatesFolder")) {
                         MainModule.staticGoTo(getSelectedItem().getPath(), null);
                     }
                 }

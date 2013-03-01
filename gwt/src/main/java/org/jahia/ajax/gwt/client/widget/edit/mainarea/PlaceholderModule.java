@@ -40,20 +40,23 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -65,7 +68,6 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
 import java.util.*;
@@ -83,8 +85,6 @@ public class PlaceholderModule extends Module {
     private LayoutContainer pasteButton;
     private LayoutContainer pasteAsReferenceButton;
 
-//    private static LayoutContainer currentlyVisiblePanel = null;
-
     public PlaceholderModule(String id, String path, Element divElement, final MainModule mainModule) {
         super(id, path, divElement, mainModule, new FlowLayout());
 
@@ -99,51 +99,8 @@ public class PlaceholderModule extends Module {
 
     @Override
     public void onParsed() {
-        if (mainModule.getConfig().isButtonsInLayer() && getParentModule()!=null && getParentModule().getHeader()!=null) {
-            final LayoutContainer visiblePanel = new LayoutContainer();
-            //        panel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
-            visiblePanel.addStyleName("x-small-editor");
-            visiblePanel.addStyleName("x-panel-header");
-            visiblePanel.addStyleName("x-panel-placeholder");
-
-            visiblePanel.setHeight(10);
-            visiblePanel.setStyleAttribute("position", "relative");
-
-//            panel = new LayoutContainer() {
-//                @Override
-//                protected void onShow() {
-//                    super.onShow();
-//                    if (currentlyVisiblePanel != null) {
-//                        currentlyVisiblePanel.hide();
-//                    }
-//                    currentlyVisiblePanel = this;
-//
-//                }
-//
-//                @Override
-//                protected void onHide() {
-//                    super.onHide();
-//                    currentlyVisiblePanel = null;
-//                }
-//            };
-//            panel.addStyleName("x-panel-buttons-layer");
-//
-            html = new HTML("");
-//            html.setStyleName("label-placeholder");
-//            panel.add(html);
-//            panel.hide();
-            add(visiblePanel);
-        } else {
-            panel = new LayoutContainer();
-            panel.addStyleName("x-small-editor");
-            panel.addStyleName("x-panel-header");
-            panel.addStyleName("x-panel-placeholder");
-
-            html = new HTML(Messages.get("label.add") + " : &nbsp;");
-            html.setStyleName("label-placeholder");
-            panel.add(html);
-            add(panel);
-        }
+        panel = new LayoutContainer(new RowLayout(Style.Orientation.VERTICAL));
+        add(panel);
     }
 
     public void onNodeTypesLoaded() {
@@ -159,58 +116,13 @@ public class PlaceholderModule extends Module {
             return;
         }
 
-        if (mainModule.getConfig().isButtonsInLayer()) {
-//            panel.setWidth(getParentModule().getContainer().getWidth());
-//            panel.setHeight(getParentModule().getContainer().getHeight());
-//            getParentModule().getContainer().setStyleAttribute("position","relative");
-//            getParentModule().getContainer().add(panel);
-//            getParentModule().getContainer().layout();
-//
-//            final LayoutContainer tool = new LayoutContainer();
-//            tool.setHeight(16);
-//            tool.setWidth(16);
-//            tool.setStyleAttribute("position", "relative");
-//            tool.addStyleName("x-panel-placeholder");
-//            tool.addListener(Events.OnClick, new Listener<BaseEvent>() {
-//                @Override
-//                public void handleEvent(BaseEvent be) {
-//                    panel.show();
-//                }
-//            });
-//
-//            panel.addListener(Events.OnClick, new Listener<BaseEvent>() {
-//                @Override
-//                public void handleEvent(BaseEvent be) {
-//                    panel.hide();
-//                }
-//            });
-//
-//            getParentModule().getHeader().addTool(tool);
-        }
-
-
-        String headerText;
-        if (parentModule.path != null && parentModule.path.contains("/")) {
-            headerText =  parentModule.path.substring(parentModule.path.lastIndexOf('/') + 1);
-        } else {
-            headerText =   parentModule.path;
-        }
-        if (getWidth() > 300) {
-            html.setHTML("<div class=\"label-placeholder\">"+Messages.get("label.addTo") + "&nbsp;" + headerText + " : &nbsp;"+"</div>");
-        }
-
         if (getParentModule() instanceof AreaModule && getParentModule().getChildCount() == 0 && ((AreaModule) getParentModule()).editable) {
             Image icon =  ToolbarIconProvider.getInstance().getIcon("disableArea").createImage();
             icon.setTitle(Messages.get("label.areaDisable", "Disable area"));
-            final LayoutContainer p = new HorizontalPanel();
+            final HorizontalPanel p = new HorizontalPanel();
             p.add(icon);
-            if (!mainModule.getConfig().isButtonsInLayer()) {
-                if (getWidth() > 150) {
-                    p.add(new Text(Messages.get("label.areaDisable", "Disable area")));
-                }
-            }
             p.sinkEvents(Event.ONCLICK);
-            p.addStyleName("button-placeholder");
+            p.addStyleName("button-enabledisable");
             p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
                 public void handleEvent(ComponentEvent be) {
                     JahiaContentManagementService.App.getInstance().deletePaths(Arrays.asList(parentModule.path), new BaseAsyncCallback<GWTJahiaNode>() {
@@ -222,11 +134,7 @@ public class PlaceholderModule extends Module {
                     });
                 }
             });
-            if (mainModule.getConfig().isButtonsInLayer()) {
-                getParentModule().getHeader().addTool(p);
-            } else {
-                panel.add(p);
-            }
+            getParentModule().getHeader().addTool(p);
         }
 
         String[] nodeTypesArray = null;
@@ -256,11 +164,10 @@ public class PlaceholderModule extends Module {
                 Image icon = ContentModelIconProvider.getInstance().getIcon(nodeType).createImage();
                 icon.setTitle(nodeType != null ? nodeType.getLabel() : s );
                 LayoutContainer p = new HorizontalPanel();
+                p.setWidth("100%");
                 p.add(icon);
-                if (!mainModule.getConfig().isButtonsInLayer() || getParentModule().getHeader()!=null) {
-                    if (getWidth() > 150) {
-                        p.add(new Text(nodeType != null ? nodeType.getLabel() : s));
-                    }
+                if (getWidth() > 150) {
+                    p.add(new Text(nodeType != null ? nodeType.getLabel() : s));
                 }
                 p.sinkEvents(Event.ONCLICK);
                 p.addStyleName("button-placeholder");
@@ -276,21 +183,15 @@ public class PlaceholderModule extends Module {
                         }
                     }
                 });
-                if (mainModule.getConfig().isButtonsInLayer() && getParentModule().getHeader()!=null) {
-                    getParentModule().getHeader().addTool(p);
-                } else {
-                    panel.add(p);
-                }
+                panel.add(p, new RowData());
             }
 
             Image icon = ToolbarIconProvider.getInstance().getIcon("paste").createImage();
             icon.setTitle(Messages.get("label.paste", "Paste"));
             pasteButton = new HorizontalPanel();
             pasteButton.add(icon);
-            if (!mainModule.getConfig().isButtonsInLayer()) {
-                if (getWidth() > 150) {
-                    pasteButton.add(new Text(Messages.get("label.paste", "Paste")));
-                }
+            if (getWidth() > 150) {
+                pasteButton.add(new Text(Messages.get("label.paste", "Paste")));
             }
             pasteButton.sinkEvents(Event.ONCLICK);
             pasteButton.addStyleName("button-placeholder");
@@ -324,14 +225,9 @@ public class PlaceholderModule extends Module {
             CopyPasteEngine.getInstance().addPlaceholder(this);
             updatePasteButton();
 
-            if (mainModule.getConfig().isButtonsInLayer() && getParentModule().getHeader()!=null) {
-                getParentModule().getHeader().addTool(pasteButton);
-                getParentModule().getHeader().addTool(pasteAsReferenceButton);
-            } else {
-                panel.add(pasteButton);
-                panel.add(pasteAsReferenceButton);
-                panel.layout();
-            }
+            panel.add(pasteButton, new RowData());
+            panel.add(pasteAsReferenceButton, new RowData());
+            panel.layout();
         }
     }
 

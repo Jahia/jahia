@@ -50,7 +50,6 @@ import org.jahia.params.valves.LogoutConfig;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.scripting.Script;
-import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Url;
@@ -93,7 +92,7 @@ public class URLGenerator {
     private String preview;
     private String contribute;
     private String studio;
-    private String studioLayout;
+    private String studioVisual;
     private String find;
     private String initializers;
     private Resource resource;
@@ -217,33 +216,33 @@ public class URLGenerator {
         return studio;
     }
 
-    public String getStudioLayout() {
+    public String getStudioVisual() {
         if (!SettingsBean.getInstance().isDistantPublicationServerMode() && !SettingsBean.getInstance().isProductionMode()) {
-            if (studioLayout == null) {
-                studioLayout = "/cms/studiolayout/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/modules";
+            if (studioVisual == null) {
+                studioVisual = "/cms/studiovisual/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/modules";
                 if (context.getSite() != null) {
                     try {
                         if (context.getSite().hasProperty("j:templatesSet")) {
-                            studioLayout += "/" + context.getSite().getProperty("j:templatesSet").getString();
-                            studioLayout += ".html";
+                            studioVisual += "/" + context.getSite().getProperty("j:templatesSet").getString();
+                            studioVisual += ".html";
                         } else if (context.getSite().getPath().startsWith("/modules")) {
-                            studioLayout = "/cms/studiolayout/" + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + context.getSite().getPath();
-                            studioLayout += ".html";
+                            studioVisual = "/cms/studiovisual/" + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + context.getSite().getPath();
+                            studioVisual += ".html";
                         }
                     } catch (RepositoryException e) {
                         logger.error("Cannot get studio url", e);
                     }
                 } else {
                     try {
-                        studioLayout += "/" + ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite().getNode().getProperty("j:templatesSet").getString();
-                        studioLayout += ".html";
+                        studioVisual += "/" + ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite().getNode().getProperty("j:templatesSet").getString();
+                        studioVisual += ".html";
                     } catch (RepositoryException e) {
                         logger.error("Cannot get studio url", e);
                     }
                 }
             }
         }
-        return studioLayout;
+        return studioVisual;
     }
 
     public String getFind() {

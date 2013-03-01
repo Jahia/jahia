@@ -66,7 +66,7 @@
 /** styles added for list module in order to make them as nice as jahia6 **/
 
 .x-panel-header-simplemodule {
-    background-color:#eaeaea;
+    background-color: #c8c8c8;
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 11px;
     font-weight: bold;
@@ -79,20 +79,7 @@
 }
 
 .x-panel-header-listmodule {
-    background-color:#3399ff;
-    font-family: tahoma,arial,verdana,sans-serif;
-    font-size: 11px;
-    font-weight: bold;
-    padding: 2px 2px 2px 4px;
-    color: #333 !important;
-    margin-bottom:2px;
-    display:block;
-    overflow:hidden;
-    text-shadow: none !important;
-}
-
-.x-panel-header-areamodule {
-    background-color:#d4d4d4;
+    background-color: #c8c8c8;
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 11px;
     font-weight: bold;
@@ -103,6 +90,26 @@
     overflow:hidden;
     text-shadow: none !important;
 }
+
+.x-panel-header-areamodule {
+    font-family: tahoma,arial,verdana,sans-serif;
+    font-variant: small-caps;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px 2px 2px 4px;
+    margin-bottom:2px;
+    display:block;
+    overflow:hidden;
+    text-shadow: none !important;
+    text-align: center;
+}
+
+.x-panel-header-text-areamodule {
+    border-radius: 5px;
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+
 .x-panel-header-absoluteAreamodule {
     background-color:#586370;
     font-family: tahoma,arial,verdana,sans-serif;
@@ -150,6 +157,26 @@ button.button-placeholder, div.button-placeholder {
     font-weight:bold;
     text-align:center;
     text-transform:none;
+    background-color: #c8c8c8;
+    border:none;
+    color:#666665;
+    padding:1px 3px 1px 2px;
+    margin:0 0 0 1px;
+    cursor:pointer;
+    line-height:15px !important;
+    text-shadow: none !important;
+}
+button.button-placeholder:hover,  div.button-placeholder:hover {
+    background-color: #b7b7b7;
+}
+
+button.button-enabledisable, div.button-enabledisable {
+    font-family: tahoma,arial,verdana,sans-serif;
+    font-variant: small-caps;
+    font-size:10px;
+    font-weight:bold;
+    text-align:center;
+    text-transform:none;
     background-color:#3399ff;
     border:none;
     color:#fff;
@@ -159,9 +186,7 @@ button.button-placeholder, div.button-placeholder {
     line-height:15px !important;
     text-shadow: none !important;
 }
-button.button-placeholder:hover,  div.button-placeholder:hover {
-    background-color: #0066cc;
-}
+
 
 .selection-top-list {
     border-top: 1px solid #cc0033;
@@ -307,6 +332,11 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     border: 1px solid #ccc;
 }
 
+.studiomodeArea {
+    border: 2px dashed #212734;
+    padding: 5px;
+}
+
 .studiomodeDisabledArea {
     min-height:100px;
     overflow: hidden;
@@ -332,19 +362,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     border: 1px solid #99ccff;
 }
 
-.studiolayoutmodeArea {
-    min-height:100px;
-    overflow: hidden;
-    background-color:#d8effb;
-    padding:2px;
-    color:#111;
-    position:relative;
-    font-family: tahoma, arial, verdana, sans-serif;
-    font-size:11px;
-    margin-bottom: 2px;
-    border: 1px solid #99ccff;
-}
-.studiolayoutmodeDisabledArea {
+.studiovisualmodeDisabledArea {
     min-height:100px;
     overflow: hidden;
     background-color:#d8effb;
@@ -357,7 +375,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     border: 1px solid #99ccff;
 }
 
-.studiolayoutmodeBlockedArea {
+.studiovisualmodeBlockedArea {
     min-height:100px;
     overflow: hidden;
     background-color: #d4ffd3;
@@ -385,7 +403,7 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
     border: 1px solid #cc6666;
 }
 
-.studiolayoutmodeAbsoluteArea {
+.studiovisualmodeAbsoluteArea {
     min-height:100px;
     overflow: hidden;
     background-color:#ffcccc;

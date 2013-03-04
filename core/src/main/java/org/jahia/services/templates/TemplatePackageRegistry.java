@@ -414,54 +414,8 @@ public class TemplatePackageRegistry {
             }
         }
 
-        if (templatePackage.getSourcesFolder() != null) {
-            mountSourcesProvider(templatePackage);
-        }
-
         logger.info("Registered '{}' [{}] version {}", new Object[] { templatePackage.getName(),
                 templatePackage.getRootFolder(), templatePackage.getVersion() });
-    }
-
-    public void mountSourcesProvider(JahiaTemplatesPackage templatePackage) {
-        JCRStoreProvider provider = jcrStoreService.getSessionFactory().getProviders().get("module-"+templatePackage.getRootFolder()+"-"+templatePackage.getVersion().toString());
-        if (provider == null) {
-            try {
-                Object dataSource = SpringContextSingleton.getBean("ModulesDataSourcePrototype");
-                Map<String,Object> properties = new LinkedHashMap<String,Object>();
-                File oldStructure = new File(templatePackage.getSourcesFolder(), "src/main/webapp");
-                if (oldStructure.exists()) {
-                    properties.put("root",templatePackage.getSourcesFolder().toURI().toString()+"src/main/webapp");
-                } else {
-                    properties.put("root",templatePackage.getSourcesFolder().toURI().toString()+"src/main/resources");
-                }
-                properties.put("module",templatePackage);
-
-                BeanUtils.populate(dataSource, properties);
-
-                JCRStoreProvider ex = (JCRStoreProvider) SpringContextSingleton.getBean("ExternalStoreProviderPrototype");
-                properties.clear();
-                properties.put("key","module-"+templatePackage.getRootFolder()+"-"+templatePackage.getVersion().toString());
-                properties.put("mountPoint","/modules/" + templatePackage.getRootFolderWithVersion() + "/sources");
-                properties.put("dataSource",dataSource);
-
-                BeanUtils.populate(ex, properties);
-
-                ex.start();
-            } catch (IllegalAccessException e) {
-                logger.error(e.getMessage(), e);
-            } catch (InvocationTargetException e) {
-                logger.error(e.getMessage(), e);
-            } catch (JahiaInitializationException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-    }
-
-    public void unmountSourcesProvider(JahiaTemplatesPackage templatePackage) {
-        JCRStoreProvider provider = jcrStoreService.getSessionFactory().getProviders().get("module-"+templatePackage.getRootFolder()+"-"+templatePackage.getVersion().toString());
-        if (provider != null) {
-            provider.stop();
-        }
     }
 
 
@@ -560,9 +514,6 @@ public class TemplatePackageRegistry {
             registry.remove(templatePackage.getName());
             fileNameRegistry.remove(templatePackage.getRootFolder());
             templatePackages = null;
-            if (templatePackage.getSourcesFolder() != null) {
-                unmountSourcesProvider(templatePackage);
-            }
         }
         if (templatePackage.isLastVersion()) {
             NodeTypeRegistry.getInstance().unregisterNodeTypes(templatePackage.getRootFolder());

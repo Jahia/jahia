@@ -304,13 +304,6 @@
                 </bean>
             </list>
         </property>
-        <property name="providerFactories">
-            <map>
-                <entry key="jnt:vfsMountPoint" >
-                    <bean class="org.jahia.services.content.impl.external.vfs.VFSProviderFactory"/>
-                </entry>
-            </map>
-        </property>
     </bean>
     
     <bean id="abstractRichTextPropertyInterceptor" class="org.jahia.services.content.interceptor.BaseInterceptor" abstract="true">
@@ -558,118 +551,6 @@
                 <bean class="org.jahia.services.importexport.validation.MissingNodetypesValidator"/>
                 <bean class="org.jahia.services.importexport.validation.MissingPortletsValidator"/>
             </list>
-        </property>
-    </bean>
-
-    <!--<bean id="MyStoreProvider" class="org.jahia.services.content.impl.external.ExternalContentStoreProvider"  parent="AbstractJCRStoreProvider">-->
-        <!--<property name="key" value="my"/>-->
-        <!--<property name="dataSource" >-->
-            <!--<bean class="org.jahia.services.content.impl.external.fs.FSDataSource">-->
-                <!--<property name="root" value="/tmp"/>-->
-            <!--</bean>-->
-        <!--</property>-->
-        <!--<property name="mountPoint" value="/tmp"/>-->
-    <!--</bean>-->
-
-
-    <!--<bean id="LdapStoreProvider" class="org.jahia.services.content.impl.external.ExternalContentStoreProvider"  parent="AbstractJCRStoreProvider">-->
-        <!--<property name="key" value="myldap"/>-->
-        <!--<property name="dataSource" >-->
-            <!--<bean class="org.jahia.services.content.impl.external.users.UsersDataSource">-->
-            <!--</bean>-->
-        <!--</property>-->
-        <!--<property name="mountPoint" value="/ldap"/>-->
-    <!--</bean>-->
-
-    <!--<bean id="VFStoreProvider" class="org.jahia.services.content.impl.external.ExternalContentStoreProvider"  parent="AbstractJCRStoreProvider">-->
-        <!--<property name="key" value="myvfs"/>-->
-        <!--<property name="dataSource" >-->
-            <!--<bean class="org.jahia.services.content.impl.external.vfs.VFSDataSource">-->
-                <!--<property name="root" value="file:///Users/toto/tmp"/>-->
-            <!--</bean>-->
-        <!--</property>-->
-        <!--<property name="mountPoint" value="/tmp2"/>-->
-    <!--</bean>-->
-
-    <bean id="ExternalContentStoreProvider" class="org.jahia.services.content.impl.external.ExternalContentStoreProvider" parent="AbstractJCRStoreProvider" abstract="true">
-        <property name="hibernateSession" ref="sessionFactory"/>
-    </bean>
-    
-    <!--<bean id="ModuleStoreProvider" parent="ExternalContentStoreProvider">-->
-        <!--<property name="key" value="module"/>-->
-        <!--<property name="dataSource" ref="ModulesDataSource"/>-->
-        <!--<property name="mountPoint" value="/modulesFileSystem"/>-->
-    <!--</bean>-->
-
-    <!--<bean id="ModulesDataSource" class="org.jahia.services.content.impl.external.modules.ModulesDataSource">-->
-        <!--<property name="rootResource" value="/modules"/>-->
-        <!--<property name="templateManagerService" ref="JahiaTemplateManagerService"/>-->
-        <!--<property name="supportedNodeTypes">-->
-            <!--<list>-->
-                <!--<value>jnt:nodeTypeFolder</value>-->
-                <!--<value>jnt:templateTypeFolder</value>-->
-                <!--<value>jnt:cssFolder</value>-->
-                <!--<value>jnt:cssFile</value>-->
-                <!--<value>jnt:javascriptFolder</value>-->
-                <!--<value>jnt:javascriptFile</value>-->
-                <!--<value>jnt:viewFile</value>-->
-                <!--<value>jnt:definitionFile</value>-->
-                <!--<value>nt:nodeType</value>-->
-                <!--<value>jnt:resourceBundleFolder</value>-->
-            <!--</list>-->
-        <!--</property>-->
-        <!--<property name="folderTypeMapping">-->
-            <!--<util:map key-type="java.lang.String" value-type="java.lang.String">-->
-                <!--<entry key="css" value="jnt:cssFolder"/>-->
-                <!--<entry key="javascript" value="jnt:javascriptFolder"/>-->
-                <!--<entry key="resources" value="jnt:resourceBundleFolder"/>-->
-            <!--</util:map>-->
-        <!--</property>-->
-        <!--<property name="fileTypeMapping">-->
-            <!--<util:map key-type="java.lang.String" value-type="java.lang.String">-->
-                <!--<entry key="cnd" value="jnt:definitionFile"/>-->
-                <!--<entry key="css" value="jnt:cssFile"/>-->
-                <!--<entry key="js" value="jnt:javascriptFile"/>-->
-                <!--<entry key="jsp" value="jnt:viewFile"/>-->
-                <!--<entry key="properties" value="jnt:resourceBundleFile"/>&lt;!&ndash; we will do an additional check in the ModulesDataSource if the parent is the jnt:resourceBundleFolder &ndash;&gt;-->
-            <!--</util:map>-->
-        <!--</property>-->
-    <!--</bean>-->
-
-    <bean id="ExternalStoreProviderPrototype" class="org.jahia.services.content.impl.external.ExternalContentStoreProvider" parent="AbstractJCRStoreProviderPrototype" scope="prototype">
-        <property name="hibernateSession" ref="sessionFactory"/>
-    </bean>
-
-    <bean id="ModulesDataSourcePrototype" class="org.jahia.services.content.impl.external.modules.ModulesDataSource" scope="prototype">
-        <property name="supportedNodeTypes">
-            <list>
-                <value>jnt:nodeTypeFolder</value>
-                <value>jnt:templateTypeFolder</value>
-                <value>jnt:cssFolder</value>
-                <value>jnt:cssFile</value>
-                <value>jnt:javascriptFolder</value>
-                <value>jnt:javascriptFile</value>
-                <value>jnt:viewFile</value>
-                <value>jnt:definitionFile</value>
-                <value>nt:nodeType</value>
-                <value>jnt:resourceBundleFolder</value>
-            </list>
-        </property>
-        <property name="folderTypeMapping">
-            <util:map key-type="java.lang.String" value-type="java.lang.String">
-                <entry key="css" value="jnt:cssFolder"/>
-                <entry key="javascript" value="jnt:javascriptFolder"/>
-                <entry key="resources" value="jnt:resourceBundleFolder"/>
-            </util:map>
-        </property>
-        <property name="fileTypeMapping">
-            <util:map key-type="java.lang.String" value-type="java.lang.String">
-                <entry key="cnd" value="jnt:definitionFile"/>
-                <entry key="css" value="jnt:cssFile"/>
-                <entry key="js" value="jnt:javascriptFile"/>
-                <entry key="jsp" value="jnt:viewFile"/>
-                <entry key="properties" value="jnt:resourceBundleFile"/><!-- we will do an additional check in the ModulesDataSource if the parent is the jnt:resourceBundleFolder -->
-            </util:map>
         </property>
     </bean>
 

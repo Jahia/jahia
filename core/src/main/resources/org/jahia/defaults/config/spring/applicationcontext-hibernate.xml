@@ -17,8 +17,6 @@
             <list>
                 <value>org.jahia.hibernate.model.JahiaDbTest</value>
                 <value>org.jahia.services.history.HistoryEntry</value>
-                <value>org.jahia.services.content.impl.external.UuidMapping</value>
-                <value>org.jahia.services.content.impl.external.ExternalProviderID</value>
             </list>
         </property>
         <property name="packagesToScan" value="org.jahia.modules"/>

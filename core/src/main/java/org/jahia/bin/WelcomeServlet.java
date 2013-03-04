@@ -160,7 +160,7 @@ public class WelcomeServlet extends HttpServlet {
             // edit mode was requested
             if (editConfiguration.isModulesOnly()) {
                 redirect(request.getContextPath() + mapping + "/"
-                       + Constants.EDIT_WORKSPACE + "/" + language + "/modules/default.html",response);
+                       + Constants.EDIT_WORKSPACE + "/" + language + "/sites/systemsite.manageModules.html",response);
                 return;
             }
         }
@@ -178,7 +178,7 @@ public class WelcomeServlet extends HttpServlet {
                 // edit mode was requested
                 if (editConfiguration.isModulesOnly()) {
                     base = request.getContextPath() + mapping + "/"
-                            + Constants.EDIT_WORKSPACE + "/" + language + "/modules/default";
+                            + Constants.EDIT_WORKSPACE + "/" + language + "/sites/systemsite.manageModules";
                 } else {
                     if(home!=null) {
                         base = request.getContextPath() + mapping + "/"

@@ -36,6 +36,8 @@
                 <value>jmix:layoutComponentContent</value>
                 <value>jmix:list</value>
                 <value>jnt:file</value>
+                <value>jnt:modules</value>
+                <value>jnt:virtualsite</value>
             </set>
         </property>
 
@@ -65,6 +67,14 @@
                                 </list>
                             </property>
                         </bean>
+
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem"/>
+                            </property>
+                            <property name="titleKey" value="label.templatesDeploy"/>
+                        </bean>
+
 
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.new"/>

@@ -46,7 +46,10 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.cache.CacheImplementation;
 import org.jahia.services.cache.CacheProvider;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.filter.RenderChain;
@@ -62,10 +65,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
-import javax.jcr.*;
+import javax.jcr.AccessDeniedException;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
-
 import java.io.IOException;
 import java.util.*;
 
@@ -78,7 +83,7 @@ public class RenderService {
 
     public static final String RENDER_SERVICE_TEMPLATES_CACHE = "RenderService.TemplatesCache";
 
-    private CacheImplementation<String,SortedSet<OrderedContentTemplate>> templatesCache;
+    private CacheImplementation<String, SortedSet<OrderedContentTemplate>> templatesCache;
 
     private AclCacheKeyPartGenerator aclCacheKeyPartGenerator;
 
@@ -260,7 +265,7 @@ public class RenderService {
             if (jsite == null && renderContext.getMainResource() != null) {
                 jsite = (String) renderContext.getMainResource().getModuleParams().get("jsite");
             }
-            if(jsite!=null) {
+            if (jsite != null) {
                 site = node.getSession().getNodeByIdentifier(jsite);
                 renderContext.setSite((JCRSiteNode) site);
             } else {
@@ -297,7 +302,7 @@ public class RenderService {
                     templateName = node.getProperty("j:templateName").getString();
                 }
 
-                List<String> installedModules = ((JCRSiteNode)site).getInstalledModules();
+                List<String> installedModules = ((JCRSiteNode) site).getInstalledModules();
                 for (int i = 0; i < installedModules.size(); i++) {
                     String installedModule = installedModules.get(i);
                     JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(installedModule);
@@ -308,7 +313,7 @@ public class RenderService {
                             }
                         }
                     } else {
-                        logger.error("Couldn't find module directory for module '" + installedModule + "' installed in site '"+site.getPath()+"'");
+                        logger.error("Couldn't find module directory for module '" + installedModule + "' installed in site '" + site.getPath() + "'");
                     }
                 }
                 installedModules.add("templates-system");
@@ -347,7 +352,7 @@ public class RenderService {
                     currentTemplate = currentTemplate.getNext();
                 } while (currentTemplate != null);
             } else {
-                template = new Template(null,null,null, null);
+                template = new Template(null, null, null, null);
             }
 
         } catch (AccessDeniedException e) {
@@ -363,7 +368,7 @@ public class RenderService {
             String rootTemplatePath = parent.getProperty("j:rootTemplatePath").getString();
 
             if (rootTemplatePath.contains("/")) {
-                rootTemplatePath = StringUtils.substringAfterLast(rootTemplatePath,"/");
+                rootTemplatePath = StringUtils.substringAfterLast(rootTemplatePath, "/");
             }
             if (!StringUtils.isEmpty(rootTemplatePath)) {
                 Template t = addTemplate(resource, renderContext, rootTemplatePath, modules, "jnt:template");
@@ -383,17 +388,17 @@ public class RenderService {
             JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName(s);
             if (pack != null) {
                 JCRNodeWrapper templateNode = resource.getNode().getSession().getNode("/modules/" + s + "/" + pack.getVersion());
-                    templates.addAll(addTemplates(resource, renderContext, templateName, templateNode, type));
+                templates.addAll(addTemplates(resource, renderContext, templateName, templateNode, type));
             }
         }
         return templates.isEmpty() ? null : templates.last().getTemplate();
     }
 
     private SortedSet<OrderedContentTemplate> addTemplates(Resource resource, RenderContext renderContext, String templateName,
-                                                    JCRNodeWrapper templateNode, String type) throws RepositoryException {
+                                                           JCRNodeWrapper templateNode, String type) throws RepositoryException {
         String key = new StringBuffer(templateNode.getPath()).append(type).append(
                 templateName != null ? templateName : "default").toString() + renderContext.getServletPath() + resource.getWorkspace() + renderContext.isLoggedIn() +
-                resource.getNode().getNodeTypes()+ aclCacheKeyPartGenerator.appendAcls(resource, renderContext, false);
+                resource.getNode().getNodeTypes() + aclCacheKeyPartGenerator.appendAcls(resource, renderContext, false);
         if (templatesCache.containsKey(key)) {
             return templatesCache.get(key);
         }
@@ -415,7 +420,7 @@ public class RenderService {
             final JCRNodeWrapper contentTemplateNode = (JCRNodeWrapper) ni.nextNode();
             addTemplate(resource, renderContext, contentTemplateNode, templates);
         }
-        templatesCache.put(key,null, templates);
+        templatesCache.put(key, null, templates);
         return templates;
     }
 
@@ -442,7 +447,7 @@ public class RenderService {
             Template template = new Template(
                     templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
                             null, templateNode.getIdentifier(), null, templateNode.getName());
-            templates.add(new OrderedContentTemplate(template,templateNode.hasProperty("j:priority")?(int) templateNode.getProperty("j:priority").getLong():0));
+            templates.add(new OrderedContentTemplate(template, templateNode.hasProperty("j:priority") ? (int) templateNode.getProperty("j:priority").getLong() : 0));
         }
     }
 
@@ -489,7 +494,7 @@ public class RenderService {
             }
         }
         if (templateNode.hasProperty("j:requirePrivilegedUser") && templateNode.getProperty("j:requirePrivilegedUser").getBoolean()) {
-            if (!renderContext.getUser().isMemberOfGroup(0,JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
+            if (!renderContext.getUser().isMemberOfGroup(0, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
                 return invert;
             }
         }

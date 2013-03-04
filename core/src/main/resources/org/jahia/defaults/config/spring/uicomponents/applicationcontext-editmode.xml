@@ -684,6 +684,7 @@
                             <property name="settingsTemplateRoot" value="siteSettingsBase"/>
                             <property name="label" value="org.jahia.admin.siteSettings.label"/>
                             <property name="requiredPermission" value="administrationAccess"/>
+                            <property name="settingPath" value="$site"/>
                         </bean>
                     </list>
                 </property>

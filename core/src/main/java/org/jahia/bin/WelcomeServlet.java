@@ -160,7 +160,7 @@ public class WelcomeServlet extends HttpServlet {
             // edit mode was requested
             if (editConfiguration.isModulesOnly()) {
                 redirect(request.getContextPath() + mapping + "/"
-                       + Constants.EDIT_WORKSPACE + "/" + language + "/sites/systemsite.manageModules.html",response);
+                       + Constants.EDIT_WORKSPACE + "/" + language + "/settings.manageModules.html",response);
                 return;
             }
         }

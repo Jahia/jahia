@@ -24,7 +24,7 @@
             <j:members jcr:primaryType="jnt:members"/>
         </privileged>
     </groups>
-
+    <settings jcr:primaryType="jnt:globalSettings"/>
     <sites jcr:primaryType="jnt:virtualsitesFolder"
            j:virtualsitesFolderSkeleton="WEB-INF/etc/repository/site.xml,WEB-INF/etc/repository/site-*.xml"/>
 

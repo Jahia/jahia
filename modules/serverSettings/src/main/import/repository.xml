@@ -8,11 +8,11 @@
                 <files jcr:primaryType="jnt:folder"/>
                 <contents jcr:primaryType="jnt:contentFolder"/>
                 <serverSettingsBase j:view="serverSettings" jcr:primaryType="jnt:template">
-                    <managesSites j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true"
+                    <managesSites j:applyOn="jnt:globalSettings" j:defaultTemplate="false" j:hiddenTemplate="true"
                                   j:priority="100" jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList"/>
                     </managesSites>
-                    <manageModules j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="false"
+                    <manageModules j:applyOn="jnt:globalSettings" j:defaultTemplate="false" j:hiddenTemplate="false"
                                    jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <manage-modules jcr:primaryType="jnt:serverSettingsManageModules"/>

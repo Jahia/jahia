@@ -49,29 +49,19 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
@@ -92,6 +82,7 @@ public class SettingsPanel implements Serializable {
 
     private transient ContentPanel settingsPanel;
     private transient  GWTJahiaNodeTreeFactory factory;
+    private String settingPath;
     private String settingTemplateRoot;
     private String label;
     private String requiredPermission;
@@ -141,13 +132,14 @@ public class SettingsPanel implements Serializable {
 
         tree.setHideHeaders(true);
         tree.setAutoExpand(true);
-
+        final String path = settingPath.replaceAll("$site","JahiaGWTParameters.getSiteNode().getPath()");
         // get List of site settings
         tree.setSelectionModel(new TreeGridSelectionModel<GWTJahiaNode>() {
             @Override
             protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
                 super.handleMouseClick(e);
-                    MainModule.staticGoTo(JahiaGWTParameters.getSiteNode().getPath() ,getSelectedItem().getName());
+
+                    MainModule.staticGoTo(path,getSelectedItem().getName());
             }
         });
         tree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
@@ -202,6 +194,14 @@ public class SettingsPanel implements Serializable {
 
     public void setRequiredPermission(String requiredPermission) {
         this.requiredPermission = requiredPermission;
+    }
+
+    /**
+     * setter for setting path.
+     * @param settingPath path used to display the setting, $site for current site path
+     */
+    public void setSettingPath(String settingPath) {
+        this.settingPath = settingPath;
     }
 
     public String getRequiredPermission() {

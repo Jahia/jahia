@@ -7,3 +7,28 @@
 
 [jnt:serverSettingsManageModules] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
 
+[jnt:serverSettingsAboutJahia] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
+
+[jnt:serverSettingsAdminProperties] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
+
+[jnt:serverSettingsReportAnIssue] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
+
+[jnt:serverSettingsDBSettings] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
+
+[jnt:serverSettingsCacheManagement] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
+
+[jnt:serverSettingsSystemInfos] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
+
+[jnt:serverSettingsPasswordPolicy] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
+
+[jnt:serverSettingsManagePortlets] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
+
+[jnt:serverSettingsManageUsers] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
+
+[jnt:serverSettingsMailServerSettings] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
+
+[jnt:serverSettingsWebProjectSettings] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
+
+[jnt:serverSettingsManagePermissions] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
+
+[jnt:serverSettingsManageMemory] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly

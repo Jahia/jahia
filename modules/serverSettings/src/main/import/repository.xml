@@ -18,6 +18,84 @@
                             <manage-modules jcr:primaryType="jnt:serverSettingsManageModules"/>
                         </pagecontent>
                     </manageModules>
+                    <aboutJahia j:applyOn="jnt:globalSettings" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                   jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <manage-modules jcr:primaryType="jnt:serverSettingsAboutJahia"/>
+                        </pagecontent>
+                    </aboutJahia>
+                    <adminProperties j:applyOn="jnt:globalSettings" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                   jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <manage-modules jcr:primaryType="jnt:serverSettingsAdminProperties"/>
+                        </pagecontent>
+                    </adminProperties>
+                    <reportAnIssue j:applyOn="jnt:globalSettings" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                   jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <manage-modules jcr:primaryType="jnt:serverSettingsReportAnIssue"/>
+                        </pagecontent>
+                    </reportAnIssue>
+                    <dbSettings j:applyOn="jnt:globalSettings" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                   jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <manage-modules jcr:primaryType="jnt:serverSettingsDBSettings"/>
+                        </pagecontent>
+                    </dbSettings>
+                    <cacheManagement j:applyOn="jnt:globalSettings" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                   jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <manage-modules jcr:primaryType="jnt:serverSettingsCacheManagement"/>
+                        </pagecontent>
+                    </cacheManagement>
+                    <systemInfos j:applyOn="jnt:globalSettings" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                   jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <manage-modules jcr:primaryType="jnt:serverSettingsSystemInfos"/>
+                        </pagecontent>
+                    </systemInfos>
+                    <passwordPolicy j:applyOn="jnt:globalSettings" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                   jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <manage-modules jcr:primaryType="jnt:serverSettingsPasswordPolicy"/>
+                        </pagecontent>
+                    </passwordPolicy>
+                    <managePortlets j:applyOn="jnt:globalSettings" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                   jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <manage-modules jcr:primaryType="jnt:serverSettingsManagePortlets"/>
+                        </pagecontent>
+                    </managePortlets>
+                    <manageUsers j:applyOn="jnt:globalSettings" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                    jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <manage-modules jcr:primaryType="jnt:serverSettingsManageUsers"/>
+                        </pagecontent>
+                    </manageUsers>
+                    <mailServerSettings j:applyOn="jnt:globalSettings" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                    jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <manage-modules jcr:primaryType="jnt:serverSettingsMailServerSettings"/>
+                        </pagecontent>
+                    </mailServerSettings>
+                    <webProjectSettings j:applyOn="jnt:globalSettings" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                    jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <manage-modules jcr:primaryType="jnt:serverSettingsWebProjectSettings"/>
+                        </pagecontent>
+                    </webProjectSettings>
+                    <managePermissions j:applyOn="jnt:globalSettings" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                    jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <manage-modules jcr:primaryType="jnt:serverSettingsManagePermissions"/>
+                        </pagecontent>
+                    </managePermissions>
+                    <manageMemory j:applyOn="jnt:globalSettings" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                    jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <manage-modules jcr:primaryType="jnt:serverSettingsManageMemory"/>
+                        </pagecontent>
+                    </manageMemory>
                 </serverSettingsBase>
             </templates>
             <portlets jcr:primaryType="jnt:portletFolder"/>

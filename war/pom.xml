@@ -459,6 +459,12 @@
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
+            <artifactId>serverSettings</artifactId>
+            <version>6.7.0.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>tabularList</artifactId>
             <version>6.7.0.0-SNAPSHOT</version>
             <scope>runtime</scope>

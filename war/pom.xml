@@ -936,20 +936,7 @@
                                     <artifactId>org.jahia.bundles.webconsole.config</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
-                            </artifactItems>
-                            <stripVersion>false</stripVersion>
-                            <outputDirectory>
-                                ${project.build.directory}/${project.build.finalName}/WEB-INF/bundles
-                            </outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-watched-bundles</id>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
+
                                 <artifactItem>
                                     <groupId>org.jahia.server</groupId>
                                     <artifactId>jahia-taglib</artifactId>
@@ -958,10 +945,24 @@
                             </artifactItems>
                             <stripVersion>false</stripVersion>
                             <outputDirectory>
-                                ${project.build.directory}/${project.build.finalName}/WEB-INF/var/bundles
+                                ${project.build.directory}/${project.build.finalName}/WEB-INF/bundles
                             </outputDirectory>
                         </configuration>
                     </execution>
+                    <!--<execution>-->
+                        <!--<id>copy-watched-bundles</id>-->
+                        <!--<goals>-->
+                            <!--<goal>copy</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<artifactItems>-->
+                            <!--</artifactItems>-->
+                            <!--<stripVersion>false</stripVersion>-->
+                            <!--<outputDirectory>-->
+                                <!--${project.build.directory}/${project.build.finalName}/WEB-INF/var/bundles-->
+                            <!--</outputDirectory>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
                 </executions>
             </plugin>
             <plugin>

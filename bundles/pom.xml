@@ -17,10 +17,6 @@
     <modules>
         <module>blueprint-extender-config</module>
         <module>http-bridge</module>
-        <!--
-        <module>basic-servlet</module>
-        <module>jahia-bridge</module>
-        -->
         <module>jahia-url-jahiawar</module>
         <module>jahiamodule-extender</module>
         <!--

@@ -39,9 +39,12 @@
     <c:forEach items="${providers}" var="provider" varStatus="status">
     <tr>
         <td align="center"><span style="font-size: 0.8em;">${status.index + 1}</span></td>
-        <td align="center"><strong>${provider.key}</strong></td>
-        <td align="center">${provider.value.mountPoint}</td>
-        <td></td>
+        <td>${provider.key}</td>
+        <td>${provider.value.mountPoint}</td>
+        <c:url var="browseUrl" value="/tools/jcrBrowser.jsp">
+            <c:param name="path" value="${provider.value.mountPoint}"/>
+        </c:url>
+        <td align="center"><a href="${browseUrl}" title="Browse with the JCR Browser"><img src="<c:url value='/icons/search.png'/>" height="16" width="16" title="Browse with the JCR Browser" border="0" style="vertical-align: middle;"/></a></td>
     </tr>
     </c:forEach>
     </tbody>

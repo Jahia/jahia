@@ -310,4 +310,8 @@
         <property name="urlResolverFactory" ref="urlResolverFactory" />
     </bean>
 
+    <bean id="jahiaBundleFlowRegistry" class="org.jahia.services.render.webflow.JahiaBundleFlowRegistry">
+
+    </bean>
+
 </beans>

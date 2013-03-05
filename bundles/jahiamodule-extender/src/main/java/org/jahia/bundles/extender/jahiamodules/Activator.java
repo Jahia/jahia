@@ -22,7 +22,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import javax.jcr.RepositoryException;
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.*;
 
@@ -79,11 +82,38 @@ public class Activator implements BundleActivator {
         BundleScriptResolver bundleScriptResolver = (BundleScriptResolver) SpringContextSingleton.getBean("BundleScriptResolver");
 
         // register view script observers 
-        ScriptBundleObserver scriptBundleObserver = new ScriptBundleObserver(bundleScriptResolver);
+        final ScriptBundleObserver scriptBundleObserver = new ScriptBundleObserver(bundleScriptResolver);
         // add scanners for all types of scripts of the views to register them in the BundleScriptResolver
         for (String scriptExtension : bundleScriptResolver.getScriptExtensionsOrdering()) {
             extensionObservers.put(new BundleURLScanner("/", "*." + scriptExtension, true), scriptBundleObserver);
         }
+
+        extensionObservers.put(new BundleURLScanner("/", "flow.xml", true), new BundleObserver<URL>() {
+            @Override
+            public void addingEntries(Bundle bundle, List<URL> entries) {
+                for (URL entry : entries) {
+                    try {
+                        URL parent = new URL(entry.getProtocol(), entry.getHost(), entry.getPort(), new File(entry.getFile()).getParent());
+                        scriptBundleObserver.addingEntries(bundle, Arrays.asList(parent));
+                    } catch (MalformedURLException e) {
+                        //
+                    }
+                }
+            }
+
+            @Override
+            public void removingEntries(Bundle bundle, List<URL> entries) {
+                for (URL entry : entries) {
+                    try {
+                        URL parent = new URL(entry.getProtocol(), entry.getHost(), entry.getPort(), new File(entry.getFile()).getParent());
+                        scriptBundleObserver.removingEntries(bundle, Arrays.asList(parent));
+                    } catch (MalformedURLException e) {
+                        //
+                    }
+                }
+            }
+        });
+
 
         // we won't register CND observer, but will rather call it manually
         cndBundleObserver = new CndBundleObserver();

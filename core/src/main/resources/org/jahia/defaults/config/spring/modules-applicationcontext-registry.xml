@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:webflow="http://www.springframework.org/schema/webflow-config"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/webflow-config http://www.springframework.org/schema/webflow-config/spring-webflow-config.xsd">
 
     <bean name="org.jahia.modules.default.ModuleRegistry"
           class="org.jahia.services.templates.TemplatePackageRegistry$ModuleRegistry">
@@ -62,5 +63,14 @@
             </list>
         </property>
     </bean>
+
+
+    <bean id="JahiaFlowConversionService" class="org.jahia.services.render.webflow.JahiaFlowConversionService"/>
+
+    <webflow:flow-builder-services id="jahiaFlowBuilderServices" development="true" conversion-service="JahiaFlowConversionService"/>
+
+    <webflow:flow-registry id="jahiaFlowRegistry" base-path="classpath:/" flow-builder-services="jahiaFlowBuilderServices">
+        <webflow:flow-location-pattern value="**/*.flow/**/flow.xml" />
+    </webflow:flow-registry>
 
 </beans>

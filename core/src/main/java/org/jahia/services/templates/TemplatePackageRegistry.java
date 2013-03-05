@@ -63,6 +63,7 @@ import org.jahia.services.render.RenderService;
 import org.jahia.services.render.StaticAssetMapping;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.render.filter.RenderServiceAware;
+import org.jahia.services.render.webflow.JahiaBundleFlowRegistry;
 import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.services.workflow.WorkflowService;
@@ -73,10 +74,12 @@ import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
+import org.springframework.webflow.definition.registry.FlowDefinitionRegistry;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Workspace;
@@ -820,6 +823,15 @@ public class TemplatePackageRegistry {
 
             if (bean instanceof ProviderFactory) {
                 jcrStoreService.addProviderFactory(((ProviderFactory)bean).getNodeTypeName(), (ProviderFactory)bean);
+            }
+
+            if (bean instanceof FactoryBean && bean.getClass().getName().equals("org.springframework.webflow.config.FlowRegistryFactoryBean")) {
+                try {
+                    FlowDefinitionRegistry flowDefinitionRegistry = (FlowDefinitionRegistry) ((FactoryBean) bean).getObject();
+                    ((JahiaBundleFlowRegistry)SpringContextSingleton.getBean("jahiaBundleFlowRegistry")).addFlowRegistry("formbuilder" /* modulename */,flowDefinitionRegistry);
+                } catch (Exception e) {
+                    logger.error("Cannot register webflow registry",e);
+                }
             }
 
             return bean;

@@ -62,6 +62,9 @@ class ViewResourceInfo {
         if (path == null) {
             throw new IllegalArgumentException("Path cannot be null");
         }
+        if (path.endsWith("/")) {
+            path = path.substring(0,path.length()-1);
+        }
         this.path = path;
         this.extension = StringUtils.substringAfterLast(path, ".");
         this.filename = FilenameUtils.getName(path);

@@ -97,7 +97,7 @@
             <object id="${currentNode.UUID}" class="vjs-flash-fallback" width="${currentNode.properties.width.string}" height="${currentNode.properties.height.string}" type="application/x-shockwave-flash" data="${url.server}${url.context}/modules/assets/swf/flowplayer-3.2.6.swf">
                 <param name="movie" value="${url.server}${url.context}/modules/assets/swf/flowplayer-3.2.6.swf" />
                 <param name="allowfullscreen" value="true" />
-                <param name="flashvars" value='config={"playlist":[{"url": "${url.server}${url.context}${currentNode.properties.source.node.url}","autoPlay":${currentNode.properties.autoplay.boolean},"autoBuffering":true}]}' />
+                <param name="flashvars" value='config={"playlist":[{"url": "${url.server}${currentNode.properties.source.node.url}","autoPlay":${currentNode.properties.autoplay.boolean},"autoBuffering":true}]}' />
 
                 <img src="" width="${currentNode.properties.width.string}" height="${currentNode.properties.height.string}" alt="Poster Image" title="No video playback capabilities." />
             </object>

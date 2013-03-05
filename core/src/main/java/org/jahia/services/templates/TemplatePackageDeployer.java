@@ -229,7 +229,7 @@ public class TemplatePackageDeployer {
             NodeIterator nodeIterator = moduleNode.getNodes();
             while (nodeIterator.hasNext()) {
                 JCRNodeWrapper next = (JCRNodeWrapper) nodeIterator.next();
-                if (!next.isNodeType("jnt:versionInfo")) {
+                if (!next.isNodeType("jnt:versionInfo") && !next.isNodeType("jnt:moduleVersionFolder")) {
                     next.remove();
                 }
             }

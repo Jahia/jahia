@@ -99,6 +99,7 @@ public class ContentHubHelper {
                 session.save();
             } else {
                 n.removeAll();
+                throw new GWTJahiaServiceException("unable to mount " + mountName);
             }
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException("unable to mount " + mountName);

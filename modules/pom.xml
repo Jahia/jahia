@@ -235,34 +235,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>jar</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <classifier>classes</classifier>
-                            <skipIfEmpty>true</skipIfEmpty>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <warSourceExcludes>resources/*.properties</warSourceExcludes>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <archive>
-                        <addMavenDescriptor>false</addMavenDescriptor>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.jahia.server</groupId>
                 <artifactId>jahia-maven-plugin</artifactId>
                 <executions>
@@ -277,32 +249,10 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>native2ascii-legacy</id>
-                        <goals>
-                            <goal>native2ascii</goal>
-                        </goals>
-                        <configuration>
-                            <src>${basedir}/src/main/webapp/resources</src>
-                            <dest>${project.build.directory}/${project.build.finalName}/resources</dest>
-                            <addToProjectResources>false</addToProjectResources>
-                            <defaultPropertiesFileLocale>en</defaultPropertiesFileLocale>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>package-imports</id>
                         <goals>
                             <goal>package-imports</goal>
                         </goals>
-                    </execution>
-                    <execution>
-                        <id>package-imports-legacy</id>
-                        <goals>
-                            <goal>package-imports</goal>
-                        </goals>
-                        <configuration>
-                            <dest>${project.build.directory}/${project.build.finalName}/META-INF</dest>
-                            <addToProjectResources>false</addToProjectResources>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>prepare-package-dependencies</id>

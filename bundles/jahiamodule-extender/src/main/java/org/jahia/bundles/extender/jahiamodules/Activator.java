@@ -139,7 +139,7 @@ public class Activator implements BundleActivator {
                         case BundleEvent.UPDATED:
                             BundleUtils.unregisterModule(bundle);
                             moduleStates.put(bundle, ModuleState.UPDATED);
-                            install(bundle);
+                            update(bundle);
                             break;
                         case BundleEvent.RESOLVED:
                             moduleStates.put(bundle, ModuleState.RESOLVED);
@@ -220,6 +220,11 @@ public class Activator implements BundleActivator {
                 }
             }.start();
         }
+    }
+
+    private synchronized void update(final Bundle bundle) {
+        installedBundles.add(bundle);
+        parseBundle(bundle);
     }
 
     private synchronized void uninstall(Bundle bundle) {

@@ -862,7 +862,7 @@ public class ContentDefinitionHelper {
                 }
             }
 
-            if (roots.size() == 1 && roots.get(0).isMixin()) {
+            if (roots.size() == 1 && (roots.get(0).isMixin() || roots.get(0).getName().equals("nt:base"))) {
                 List<ModelData> l = roots.get(0).getChildren();
                 roots.clear();
                 for (ModelData o : l) {

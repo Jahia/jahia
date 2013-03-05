@@ -86,7 +86,6 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.ResourceBundles;
-import org.jdom.JDOMException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
@@ -523,7 +522,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
                 if (checkValidSources(pack, sources)) {
                     pack.setSourcesFolder(sources);
-                    templatePackageRegistry.mountSourcesProvider(pack);
+//                    templatePackageRegistry.mountSourcesProvider(pack);
                     return sources;
                 }
             }
@@ -957,8 +956,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public void setSourcesFolderInPackageAndNode(JahiaTemplatesPackage pack, File sources, JCRNodeWrapper node) throws RepositoryException {
         setSourcesFolderInPackage(pack, sources);
         if (pack.getSourcesFolder() != null) {
-            templatePackageRegistry.unmountSourcesProvider(pack);
-            templatePackageRegistry.mountSourcesProvider(pack);
+//            templatePackageRegistry.unmountSourcesProvider(pack);
+//            templatePackageRegistry.mountSourcesProvider(pack);
             node.getNode("j:versionInfo").setProperty("j:sourcesFolder", pack.getSourcesFolder().getPath());
             if (pack.getSourceControl() != null) {
                 try {
@@ -1222,15 +1221,15 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     newNode = true;
                 }
 
-                if (!child.isNodeType("jnt:templatesFolder")) {
-                    templatesSynchro(child, node, session, references, newNode, false, true, moduleName, child.isNodeType("jnt:componentFolder"));
+                if (!child.isNodeType("jnt:templatesFolder") && !child.isNodeType("jnt:componentFolder")) {
+                    templatesSynchro(child, node, session, references, newNode, false, true, moduleName);
                 }
             }
         }
     }
 
     public void templatesSynchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode,
-                                 JCRSessionWrapper session, Map<String, List<String>> references, boolean doUpdate, boolean doRemove, boolean doChildren, String moduleName, boolean inTemplatesFolder)
+                                 JCRSessionWrapper session, Map<String, List<String>> references, boolean doUpdate, boolean doRemove, boolean doChildren, String moduleName)
             throws RepositoryException {
         if ("j:acl".equals(destinationNode.getName())) {
             return;
@@ -1383,9 +1382,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     }
                 }
                 if (isTemplateNode) {
-                    templatesSynchro(child, node, session, references, currentModule, currentModule, currentModule, moduleName, inTemplatesFolder);
+                    templatesSynchro(child, node, session, references, currentModule, currentModule, currentModule, moduleName);
                 } else {
-                    templatesSynchro(child, node, session, references, inTemplatesFolder || newNode, doRemove, doChildren && !(isPageNode && !newNode), moduleName, inTemplatesFolder);
+                    templatesSynchro(child, node, session, references, newNode, doRemove, doChildren && !(isPageNode && !newNode), moduleName);
                 }
             }
         }

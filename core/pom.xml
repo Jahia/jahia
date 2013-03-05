@@ -1156,12 +1156,8 @@
             <artifactId>org.apache.felix.framework</artifactId>
             <version>${felix.framework.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.http.proxy</artifactId>
-            <version>${felix.http.version}</version>
-        </dependency>
         <!-- End of OSGi dependencies -->
+        
         <dependency>
         	<!-- We use it for bi-derectional encryption of passwords for remote publication -->
         	<groupId>org.jasypt</groupId>

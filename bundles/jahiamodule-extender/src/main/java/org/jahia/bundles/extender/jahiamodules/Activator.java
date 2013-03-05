@@ -92,7 +92,7 @@ public class Activator implements BundleActivator {
         serviceRegistrations.add(context.registerService(
                 new String[]{ArtifactTransformer.class.getName(), ArtifactListener.class.getName()},
                 new JahiaLegacyModuleTransformer(),
-                new Hashtable<Object, Object>()
+                new Hashtable<String, Object>()
         ));
 
         // add listener for other bundle life cycle events

@@ -726,7 +726,6 @@
         </dependency>
         
 
-
         <!--Atmosphere dependencies-->
         <dependency>
             <groupId>org.atmosphere</groupId>
@@ -782,6 +781,13 @@
             <groupId>cglib</groupId>
             <version>2.2.2</version>
             <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+            <!-- Felix HTTP bridge -->
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.http.proxy</artifactId>
+            <version>${felix.http.version}</version>
         </dependency>
     </dependencies>
 
@@ -1026,7 +1032,6 @@
             <plugin>
                 <groupId>org.jahia.server</groupId>
                 <artifactId>jahia-maven-plugin</artifactId>
-                <version>${jahia.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>generate-package-export</id>

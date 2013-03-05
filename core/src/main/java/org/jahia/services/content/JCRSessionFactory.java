@@ -343,7 +343,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     }
 
     public Map<String, JCRStoreProvider> getProviders() {
-        return providers;
+        return new HashMap<String, JCRStoreProvider>(providers);
     }
 
     public JCRStoreProvider getDefaultProvider() {

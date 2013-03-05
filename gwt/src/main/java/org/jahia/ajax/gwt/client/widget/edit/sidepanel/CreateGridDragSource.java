@@ -56,13 +56,13 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeGridDragSource;
  * 
  */
 public class CreateGridDragSource extends EditModeGridDragSource {
-    public CreateGridDragSource(Grid<GWTJahiaNode> grid) {
+    public CreateGridDragSource(Grid<GWTJahiaNodeType> grid) {
         super(grid);
     }
 
     @Override
     protected void onDragStart(DNDEvent e) {
-        Object nodeType = grid.getSelectionModel().getSelectedItem().get("componentNodeType");
+        Object nodeType = grid.getSelectionModel().getSelectedItem();
         if (nodeType != null && !((GWTJahiaNodeType) nodeType).isMixin()) {
             e.setCancelled(false);
 

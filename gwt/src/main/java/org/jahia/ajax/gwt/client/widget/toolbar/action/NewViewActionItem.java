@@ -106,9 +106,9 @@ public class NewViewActionItem extends BaseActionItem  {
             if (!isLoading) {
                 linker.loading(Messages.get("label.loading", "Loading"));
             }
-            JahiaContentManagementService.App.getInstance().getContentTypesAsTree(paths, Arrays.asList("nt:base"), null, Arrays.asList("name"), true,  false,
-                    new BaseAsyncCallback<List<GWTJahiaNode>>() {
-                        public void onSuccess(List<GWTJahiaNode> result) {
+            JahiaContentManagementService.App.getInstance().getContentTypesAsTree(Arrays.asList("nt:base"), null, true,
+                    new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
+                        public void onSuccess(List<GWTJahiaNodeType> result) {
                             linker.loaded();
                             final com.extjs.gxt.ui.client.widget.Window popup = new com.extjs.gxt.ui.client.widget.Window();
                             popup.setHeading(Messages.get("label.addView", "Add view"));

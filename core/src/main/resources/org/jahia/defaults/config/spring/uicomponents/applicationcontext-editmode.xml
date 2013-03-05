@@ -20,6 +20,12 @@
         <property name="requiredPermission" value="editModeAccess"/>
         <property name="defaultUrlMapping" value="/cms/edit"/>
         <property name="sitesLocation" value="/sites/*"/>
+        <property name="nonEditableTypes">
+            <set>
+                <value>jmix:studioOnly</value>
+            </set>
+        </property>
+
         <property name="topToolbar">
             <bean id="editModeToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="layout" value="button-label"/>
@@ -660,7 +666,6 @@
                 <ref bean="Toolbar.Item.CategoryManager"/>
                 <ref bean="Toolbar.Item.TagManager"/>
                 <ref bean="Toolbar.Item.SiteManager"/>
-                <ref bean="Toolbar.Item.SiteComponentManager"/>
             </list>
         </property>
     </bean>

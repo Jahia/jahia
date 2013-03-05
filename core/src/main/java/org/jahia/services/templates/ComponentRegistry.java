@@ -46,7 +46,6 @@ import java.util.*;
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeTypeIterator;
 
-import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
@@ -222,110 +221,14 @@ public class ComponentRegistry {
 
     private TemplatePackageRegistry templatePackageRegistry;
 
-    private JCRNodeWrapper findComponent(JCRNodeWrapper components, String name)
-            throws RepositoryException {
-        if (components.hasNode(name)) {
-            return components.getNode(name);
-        }
-        JCRNodeWrapper found = null;
-        for (NodeIterator ni = components.getNodes(); ni.hasNext(); ) {
-            found = findComponent((JCRNodeWrapper) ni.nextNode(), name);
-            if (found != null) {
-                break;
-            }
-        }
-
-        return found;
-        // traversal seems 10x faster than the query below
-        // return session
-        // .getWorkspace()
-        // .getQueryManager()
-        // .createQuery(
-        // "select * from [jmix:droppableContent] where localname()='" + name
-        // + "' and isdescendantnode('" + components.getPath() + "')",
-        // Query.JCR_SQL2).execute().getNodes().hasNext();
-    }
-
-    private boolean registerComponent(JCRSessionWrapper session, boolean newDeployment, JCRNodeWrapper components, ExtendedNodeType nt) throws RepositoryException {
+    private boolean registerComponent(JCRNodeWrapper components, ExtendedNodeType nt) throws RepositoryException {
         boolean updated = false;
 
-        JCRNodeWrapper comp = findComponent(components, nt.getName());
-        JCRNodeWrapper folder = null;
-        if (!nt.isMixin() && !nt.isAbstract() && !JMIX_DROPPABLE_CONTENT.equals(nt.getName())
-                && nt.isNodeType(JMIX_DROPPABLE_CONTENT)) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Detected component type {}", nt.getName());
-            }
-
-            folder = components;
-            ExtendedNodeType[] supertypes = nt.getSupertypes();
-            for (int i = supertypes.length - 1; i >= 0; i--) {
-                ExtendedNodeType st = supertypes[i];
-                if (st.isMixin() && !st.getName().equals(JMIX_DROPPABLE_CONTENT)
-                        && st.isNodeType(JMIX_DROPPABLE_CONTENT)) {
-                    if (components.hasNode(st.getName())) {
-                        folder = components.getNode(st.getName());
-                        updated |= setTitle(folder, st);
-                    } else {
-                        folder = components.addNode(st.getName(), JNT_COMPONENT_FOLDER);
-                        updated = true;
-                    }
-                    break;
-                }
-            }
-        } else if (!nt.isMixin() && !nt.isAbstract()) {
-            if (components.hasNode("nonDroppableComponents")) {
-                folder = components.getNode("nonDroppableComponents");
-            } else {
-                folder = components.addNode("nonDroppableComponents",JNT_COMPONENT_FOLDER);
-                folder.addMixin(Constants.JAHIAMIX_HIDDEN_NODE);
-            }
-        }
-        if (folder != null) {
-            if (!folder.hasNode(nt.getName())) {
-                if (comp != null) {
-                    String newPath = folder.getPath() + "/" + comp.getName();
-                    session.move(comp.getPath(), newPath);
-                    session.save();
-                    comp = session.getNode(newPath);
-                } else {
-                    comp = folder.addNode(nt.getName(), JNT_SIMPLE_COMPONENT);
-                }
-                updated = true;
-            }
-
-            updated |= setTitle(comp, nt);
-
-            if (nt.isNodeType(JMIX_STUDIO_ONLY) && !comp.isNodeType(JMIX_STUDIO_ONLY)) {
-                comp.addMixin(JMIX_STUDIO_ONLY);
-                updated = true;
-            } else if (!nt.isNodeType(JMIX_STUDIO_ONLY) && comp.isNodeType(JMIX_STUDIO_ONLY)) {
-                comp.removeMixin(JMIX_STUDIO_ONLY);
-                updated = true;
-            }
-            if (logger.isDebugEnabled()) {
-                logger.debug("Created component node {}", comp.getPath());
-            }
+        if (!components.hasNode(nt.getName())) {
+            components.addNode(nt.getName(), JNT_SIMPLE_COMPONENT);
+            updated = true;
         }
 
-        return updated;
-    }
-
-    private boolean setTitle(JCRNodeWrapper folder, ExtendedNodeType st) throws RepositoryException {
-        boolean updated = false;
-        for (Locale locale : LanguageCodeConverters.getAvailableBundleLocales()) {
-            String label = st.getLabel(locale);
-            Node i18N = folder.getOrCreateI18N(locale);
-            if (label != null && (!i18N.hasProperty("jcr:title") || !i18N.getProperty("jcr:title").getString().equals(label))) {
-                i18N.setProperty("jcr:title", label);
-                updated = true;
-            }
-            String description = st.getDescription(locale);
-            if (description != null && (!i18N.hasProperty("jcr:description") || !i18N.getProperty("jcr:description").getString().equals(description))) {
-                i18N.setProperty("jcr:description", description);
-                updated = true;
-            }
-        }
         return updated;
     }
 
@@ -367,14 +270,14 @@ public class ComponentRegistry {
 
             if (pkg.getRootFolder().equals("default")) {
                 for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes("system-jahia"); nti.hasNext(); ) {
-                    if (registerComponent(session, newDeployment, components, (ExtendedNodeType) nti.nextNodeType())) {
+                    if (registerComponent(components, (ExtendedNodeType) nti.nextNodeType())) {
                         count++;
                     }
                 }
             }
 
             for (ExtendedNodeType type : types) {
-                if (registerComponent(session, newDeployment, components, type)) {
+                if (registerComponent(components, type)) {
                     count++;
                 }
             }

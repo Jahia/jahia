@@ -40,12 +40,12 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import com.extjs.gxt.ui.client.data.ModelData;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.*;
 import org.apache.jackrabbit.value.StringValue;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
@@ -65,6 +65,8 @@ import com.google.common.collect.Lists;
 import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeTypeIterator;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -784,229 +786,132 @@ public class ContentDefinitionHelper {
     }
 
 
-    public List<GWTJahiaNode> getContentTypesAsTree(List<String> paths, final List<String> nodeTypes, final List<String> excludedNodeTypes, final List<String> fields, final boolean includeSubTypes, final boolean includeNonDependentModules, final JCRSiteNode site,
-                                                    final Locale uiLocale, final JCRSessionWrapper session)
+    public List<GWTJahiaNodeType> getContentTypesAsTree(final List<String> nodeTypes, final List<String> excludedNodeTypes, final boolean includeSubTypes, final JCRSiteNode site,
+                                                        final Locale uiLocale, final JCRSessionWrapper session)
             throws GWTJahiaServiceException {
         try {
-            final List<String> dependencies = new ArrayList<String>();
-
-            if (!includeNonDependentModules) {
-                Set<JahiaTemplatesPackage> s = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(site.getTemplateFolder()).getDependencies();
-                for (JahiaTemplatesPackage aPackage : s) {
-                    dependencies.add(aPackage.getRootFolder());
-                }
-                if (dependencies.isEmpty()) {
-                    dependencies.add("default");
-                }
-                dependencies.add(site.getTemplateFolder());
+            Map <String,JCRNodeWrapper> nodesForTypes = new HashMap<String, JCRNodeWrapper>();
+            Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:component] as c ", Query.JCR_SQL2);
+            QueryResult qr = q.execute();
+            NodeIterator ni = qr.getNodes();
+            while (ni.hasNext()) {
+                JCRNodeWrapper node  = (JCRNodeWrapper) ni.next();
+                nodesForTypes.put(node.getName(), node);
             }
 
-            List<GWTJahiaNode> list = navigation.retrieveRoot(paths, null, null, null, fields, site, uiLocale, session, false, true, null, null);
+            List<JahiaTemplatesPackage> packages = new ArrayList<JahiaTemplatesPackage>();
 
-            final Map<JCRNodeWrapper, List<JCRNodeWrapper>> tree = new HashMap<JCRNodeWrapper, List<JCRNodeWrapper>>();
-
-            List<JCRNodeWrapper> roots = new ArrayList<JCRNodeWrapper>();
-
-            for (GWTJahiaNode node : list) {
-                final JCRNodeWrapper ch = session.getNode(node.getPath());
-
-                if (new Object() {
-                    public boolean buildTree(JCRNodeWrapper node) throws RepositoryException {
-
-                        if (node.isNodeType("jnt:component")) {
-                            if (nodeTypes != null) {
-                                if (includeSubTypes) {
-                                    if (isNodeType(nodeTypes, node.getName())) {
-                                        return excludedNodeTypes == null || !isNodeType(excludedNodeTypes, node.getName());
-                                    }
-                                } else {
-                                    for (String nodeType : nodeTypes) {
-                                        if (node.getName().equals(nodeType)) {
-                                            return excludedNodeTypes == null || !isNodeType(excludedNodeTypes, node.getName());
-                                        }
-                                    }
-                                }
-                            }
-                        } else if (node.isNodeType("jnt:virtualsite")) {
-                            if (dependencies.isEmpty() || dependencies.contains(node.getName())) {
-                                return addChildren(node);
-                            }
-                        } else if (node.isNodeType("jnt:moduleVersion")) {
-                            JahiaTemplatesPackage templatesPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getParent().getName());
-                            if (templatesPackage != null && templatesPackage.getVersion().toString().equals(node.getName())) {
-                                return addChildren(node);
-                            }
-                        } else if (node.isNodeType("jnt:componentFolder")) {
-                            return addChildren(node);
-                        }
-                        return false;
-                    }
-
-                    private boolean addChildren(JCRNodeWrapper node) throws RepositoryException {
-                        NodeIterator ni = node.getNodes();
-                        List<JCRNodeWrapper> children = new ArrayList<JCRNodeWrapper>();
-                        while (ni.hasNext()) {
-                            JCRNodeWrapper child2 = (JCRNodeWrapper) ni.nextNode();
-                            if (buildTree(child2)) {
-                                children.add(child2);
-                            }
-                        }
-                        if (children.size() == 1 && tree.get(children.get(0)) != null) {
-                            tree.put(node,tree.get(children.get(0)));
-                            return true;
-                        } else if (!children.isEmpty()) {
-                            tree.put(node,children);
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                }.buildTree(ch)) {
-                    roots.add(ch);
+            if (site.isNodeType("jnt:module")) {
+                JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(site.getTemplateFolder());
+                packages.add(aPackage);
+            } else {
+                for (String s : site.getInstalledModules()) {
+                    JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(s);
+                    packages.add(aPackage);
                 }
             }
-            if (roots.size() == 1) {
-                roots = tree.get(roots.get(0));
-            }
 
-
-            ArrayList<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
-            final List<String> fieldsCopy = new ArrayList<String>(fields);
-            fieldsCopy.add(GWTJahiaNode.ICON);
-
-            for (JCRNodeWrapper root : roots) {
-                nodes.add(new Object() {
-                    GWTJahiaNode convert(JCRNodeWrapper n) {
-                        GWTJahiaNode res = navigation.getGWTJahiaNode(n, fieldsCopy, uiLocale);
-                        if (tree.get(n) != null) {
-                            List<JCRNodeWrapper> ch = tree.get(n);
-                            for (JCRNodeWrapper child : ch) {
-                                res.add(convert(child));
-                            }
-                        }
-                        try {
-                            if (n.isNodeType("jnt:component") || n.isNodeType("jnt:componentFolder")) {
-                                GWTJahiaNodeType type = getNodeType(n.getName(), uiLocale);
-                                res.set("componentNodeType", type);
-                            }
-                        } catch (RepositoryException e) {
-                            // Ignore
-                        }
-                        return res;
+            for (int i = 0; i< packages.size(); i++) {
+                JahiaTemplatesPackage aPackage = packages.get(i);
+                for (JahiaTemplatesPackage dep : aPackage.getDependencies()) {
+                    if (!packages.contains(dep)) {
+                        packages.add(dep);
                     }
-                }.convert(root));
+                }
             }
-            return nodes;
 
-//            GWTJahiaNode root = new GWTJahiaNode();
-//            List<GWTJahiaNode> allNodes = new ArrayList<GWTJahiaNode>();
-//            allNodes.add(root);
-//            int found = 0;
-//            GWTJahiaNode lastAdded = null;
-//            for (int i = 0; i < allNodes.size(); i++) {
-//                GWTJahiaNode node = allNodes.get(i);
-//
-//                if (node.getNodeTypes() != null && node.getNodeTypes().contains("jnt:virtualsite") && dependencies != null && !dependencies.contains(node.getName())) {
-//                    continue;
-//                }
-//
-//                List<GWTJahiaNode> list;
-//                try {
-//                    if (node == root) {
-//                        list = navigation.retrieveRoot(paths, null, null, null, fields, site, uiLocale, session, false, true, null, null);
-//                    } else if (node.getNodeTypes().contains("jnt:virtualsite")) {
-//                        String compPath = node.getPath()+"/components";
-//                        if (session.nodeExists(compPath)) {
-//                            GWTJahiaNode comp = new GWTJahiaNode();
-//                            comp.setPath(compPath);
-//                            list = navigation.ls(comp, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
-//                                    false, null, null, session, false,uiLocale);
-//                        } else {
-//                            list = Collections.emptyList();
-//                        }
-//                    } else if (node.isNodeType("jnt:module")) {
-//                        list = Collections.emptyList();
-//                        List<GWTJahiaNode> vlist = navigation.ls(node, Arrays.asList("jnt:moduleVersion"), null, null, fields, false,
-//                                false, null, null, session, false, uiLocale);
-//                        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getName());
-//                        if (aPackage != null) {
-//                            String version = aPackage.getVersion().toString();
-//                            for (GWTJahiaNode versionNode : vlist) {
-//                                if (versionNode.getName().equals(version)) {
-//                                    List<GWTJahiaNode>  clist = navigation.ls(versionNode, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
-//                                            false, null, null, session, false, uiLocale);
-//                                    for (GWTJahiaNode compNode : clist) {
-//                                        if (compNode.getName().equals("components")) {
-//                                            list = navigation.ls(compNode, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
-//                                                    false, null, null, session, false, uiLocale);
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    } else {
-//                        list = navigation.ls(node, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
-//                                false, null, null, session, false, uiLocale);
-//                    }
-//                } catch (GWTJahiaServiceException e) {
-//                    e.printStackTrace();
-//                    continue;
-//                }
-//
-//                for (int j = 0; j < list.size(); j++) {
-//                    GWTJahiaNode child = list.get(j);
-//                    if (session.getNodeByIdentifier(child.getUUID()).hasPermission("useComponentForCreate") && !isNodeType(excludedNodeTypes, child.getName())) {
-//                        GWTJahiaNodeType type = getNodeType(child.getName(), uiLocale);
-//                        child.set("componentNodeType", type);
-//                        if (child.getInheritedNodeTypes().contains("jnt:component") && nodeTypes != null && type != null) {
-//                            if (includeSubTypes) {
-//                                HashSet<String> set = new HashSet<String>(type.getSuperTypes());
-//                                set.add(type.getName());
-//                                set.retainAll(nodeTypes);
-//                                if (!set.isEmpty()) {
-//                                    node.add(child);
-//                                    allNodes.add(child);
-//                                    lastAdded = child;
-//                                    found ++;
-//                                }
-//                            } else {
-//                                if (nodeTypes.contains(type.getName())) {
-//                                    node.add(child);
-//                                    allNodes.add(child);
-//                                    lastAdded = child;
-//                                    found ++;
-//                                }
-//                            }
-//                        } else {
-//                            node.add(child);
-//                            allNodes.add(child);
-//                        }
-//                    }
-//                }
-//                node.setExpandOnLoad(false);
-//            }
-//            if (found == 1) {
-//                return Arrays.asList(lastAdded);
-//            } else {
-//                for (int i = allNodes.size()-1; i > 0 ; i--) {
-//                    GWTJahiaNode node = allNodes.get(i);
-//                    if (!includeNonDependentModules && !node.getInheritedNodeTypes().contains("jnt:component") && node.get("hasDescendants") == null) {
-//                        root.getChildren().remove(node);
-//                        allNodes.remove(node);
-//                    }
-//                    if (node.getInheritedNodeTypes().contains("jnt:component") || node.get("hasDescendants") != null) {
-//                        node.getParent().set("hasDescendants", Boolean.TRUE);
-////                    } else  if (!node.getInheritedNodeTypes().contains("jnt:component") && node.get("hasDescendants") == null) {
-////                        node.getParent().remove(node);
-//                    }
-//                }
-//                return new ArrayList(root.getChildren());
-//            }
+            List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
+            for (JahiaTemplatesPackage pkg : packages) {
+                for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(pkg.getRootFolder()); nti.hasNext(); ) {
+                    ExtendedNodeType extendedNodeType = (ExtendedNodeType) nti.nextNodeType();
+                    if (isValidNodeType(extendedNodeType, nodeTypes, excludedNodeTypes, includeSubTypes, nodesForTypes.get(extendedNodeType.getName()))) {
+                        types.add(extendedNodeType);
+                    }
+                }
+                if (pkg.getRootFolder().equals("default")) {
+                    for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes("system-jahia"); nti.hasNext(); ) {
+                        ExtendedNodeType extendedNodeType = (ExtendedNodeType) nti.nextNodeType();
+                        if (isValidNodeType(extendedNodeType, nodeTypes, excludedNodeTypes, includeSubTypes, nodesForTypes.get(extendedNodeType.getName()))) {
+                            types.add(extendedNodeType);
+                        }
+                    }
+                }
+            }
+
+            Map<ExtendedNodeType,List<ExtendedNodeType>> r = new HashMap<ExtendedNodeType, List<ExtendedNodeType>>();
+            for (ExtendedNodeType nt : types) {
+                if (!nt.isMixin() && !nt.isAbstract()) {
+                    ExtendedNodeType parent = findFolder(nt);
+                    if (!r.containsKey(parent)) {
+                        r.put(parent, new ArrayList<ExtendedNodeType>());
+                    }
+                    r.get(parent).add(nt);
+                }
+            }
+
+            List<GWTJahiaNodeType> roots = new ArrayList<GWTJahiaNodeType>();
+            for (Map.Entry<ExtendedNodeType, List<ExtendedNodeType>> entry : r.entrySet()) {
+                if (entry.getValue().size() > 1) {
+                    GWTJahiaNodeType nt = getGWTJahiaNodeType(entry.getKey() != null ? entry.getKey() : NodeTypeRegistry.getInstance().getNodeType("nt:base"), uiLocale);
+                    roots.add(nt);
+                    for (ExtendedNodeType type : entry.getValue()) {
+                        nt.add(getGWTJahiaNodeType(type, uiLocale));
+                    }
+                } else {
+                    roots.add(getGWTJahiaNodeType(entry.getValue().get(0), uiLocale));
+                }
+            }
+
+            if (roots.size() == 1 && roots.get(0).isMixin()) {
+                List<ModelData> l = roots.get(0).getChildren();
+                roots.clear();
+                for (ModelData o : l) {
+                    roots.add((GWTJahiaNodeType) o);
+                }
+            }
+
+            return roots;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
+
+
+
+    private ExtendedNodeType findFolder(ExtendedNodeType nt) throws RepositoryException {
+        if (!"jmix:droppableContent".equals(nt.getName()) && nt.isNodeType("jmix:droppableContent")) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Detected component type {}", nt.getName());
+            }
+
+            ExtendedNodeType[] supertypes = nt.getSupertypes();
+            for (int i = supertypes.length - 1; i >= 0; i--) {
+                ExtendedNodeType st = supertypes[i];
+                if (st.isMixin() && !st.getName().equals("jmix:droppableContent")
+                        && st.isNodeType("jmix:droppableContent")) {
+                    return st;
+                }
+            }
+        }
+        return null;
+    }
+
+    private boolean isValidNodeType(ExtendedNodeType ent, List<String> nodeTypes, List<String> excludedNodeTypes, boolean includeSubTypes, JCRNodeWrapper nodeWrapper) {
+        if (includeSubTypes) {
+            if (isNodeType(nodeTypes, ent.getName()) && nodeWrapper.hasPermission("useComponentForCreate")) {
+                return excludedNodeTypes == null || !isNodeType(excludedNodeTypes, ent.getName());
+            }
+        } else {
+            for (String nodeType : nodeTypes) {
+                if (ent.getName().equals(nodeType) && nodeWrapper.hasPermission("useComponentForCreate")) {
+                    return excludedNodeTypes == null || !isNodeType(excludedNodeTypes, ent.getName());
+                }
+            }
+        }
+        return false;
+    }
+
 
     private boolean isNodeType(List<String> nodeTypes, String name) {
         if (nodeTypes != null) {

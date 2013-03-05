@@ -80,7 +80,6 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
-import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -100,7 +99,6 @@ import org.jahia.utils.i18n.ResourceBundles;
 import org.slf4j.Logger;
 
 import javax.jcr.*;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.security.Privilege;
@@ -2223,8 +2221,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         Map<String, JCRNodeWrapper> nodesForTypes = new HashMap<String, JCRNodeWrapper>();
         try {
             if (getSite().getPath().startsWith("/sites")) {
-                Query q = s.getWorkspace().getQueryManager().createQuery("select * from [jnt:component] as c " +
-                        "where isdescendantnode(c,'"+getSite().getPath()+"')", Query.JCR_SQL2);
+                Query q = s.getWorkspace().getQueryManager().createQuery("select * from [jnt:component] as c ", Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 NodeIterator ni = qr.getNodes();
                 while (ni.hasNext()) {
@@ -2272,9 +2269,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return contentDefinition.getContentTypes(baseTypes, new HashMap<String, Object>(), getUILocale(), includeSubTypes, displayStudioElement);
     }
 
-    public List<GWTJahiaNode> getContentTypesAsTree(List<String> paths, List<String> nodeTypes, List<String> excludedNodeTypes, List<String> fields,
-                                                    boolean includeSubTypes, boolean includeNonDependentModules) throws GWTJahiaServiceException {
-        List<GWTJahiaNode> result = contentDefinition.getContentTypesAsTree(paths, nodeTypes, excludedNodeTypes, fields, includeSubTypes, includeNonDependentModules, getSite(), getUILocale(), retrieveCurrentSession(getUILocale()));
+    public List<GWTJahiaNodeType> getContentTypesAsTree(List<String> nodeTypes, List<String> excludedNodeTypes,
+                                                        boolean includeSubTypes) throws GWTJahiaServiceException {
+        List<GWTJahiaNodeType> result = contentDefinition.getContentTypesAsTree(nodeTypes, excludedNodeTypes, includeSubTypes, getSite(), getUILocale(), retrieveCurrentSession());
         return result;
     }
 

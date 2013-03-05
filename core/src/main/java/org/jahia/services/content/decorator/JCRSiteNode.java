@@ -376,6 +376,10 @@ public class JCRSiteNode extends JCRNodeDecorator {
         return modules;
     }
 
+    /**
+     * Get installed modules with their dependencies
+     * @return
+     */
     public List<String> getAllInstalledModules() {
         List<String> modules = new ArrayList<String>();
         try {

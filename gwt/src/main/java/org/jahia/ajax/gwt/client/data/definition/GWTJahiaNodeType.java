@@ -41,6 +41,7 @@
 package org.jahia.ajax.gwt.client.data.definition;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.data.BaseTreeModel;
 
 import java.io.Serializable;
 import java.util.*;
@@ -52,7 +53,7 @@ import java.util.*;
  * Time: 7:36:01 PM
  * 
  */
-public class GWTJahiaNodeType extends BaseModelData implements Serializable {
+public class GWTJahiaNodeType extends BaseTreeModel implements Serializable {
 
     private List<GWTJahiaItemDefinition> inheritedItems;
     private List<GWTJahiaItemDefinition> items;

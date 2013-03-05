@@ -150,8 +150,8 @@ public interface JahiaContentManagementServiceAsync {
 
     void getContentTypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement, AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>> async);
 
-    void getContentTypesAsTree(List<String> paths, List<String> nodeTypes, List<String> excludedNodeTypes, List<String> fields,
-                               boolean includeSubTypes, boolean includeNonDependentModules, AsyncCallback<List<GWTJahiaNode>> async);
+    void getContentTypesAsTree(List<String> nodeTypes, List<String> excludedNodeTypes,
+                               boolean includeSubTypes, AsyncCallback<List<GWTJahiaNodeType>> async);
 
     void getEditConfiguration(String path, String name, AsyncCallback<GWTEditConfiguration> async);
 

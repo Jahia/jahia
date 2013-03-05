@@ -40,11 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget.edit;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.core.El;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.store.*;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.form.StoreFilterField;
@@ -54,16 +50,10 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
-import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -82,7 +72,7 @@ import java.util.List;
  */
 public class ContentTypeTree extends LayoutContainer {
 
-    private static final StoreSorter<GWTJahiaNode> SORTER = new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
+    private static final StoreSorter<GWTJahiaNodeType> SORTER = new StoreSorter<GWTJahiaNodeType>(new Comparator<Object>() {
         public int compare(Object o1, Object o2) {
             if (o1 instanceof String && o2 instanceof String) {
                 String s1 = (String) o1;
@@ -95,15 +85,15 @@ public class ContentTypeTree extends LayoutContainer {
         }
     }) {
         @Override
-        public int compare(Store<GWTJahiaNode> store, GWTJahiaNode n1, GWTJahiaNode n2,
+        public int compare(Store<GWTJahiaNodeType> store, GWTJahiaNodeType n1, GWTJahiaNodeType n2,
                 String property) {
-            return super.compare(store, n1, n2, "displayName");
+            return super.compare(store, n1, n2, "label");
         }
     };
 
-    private TreeGrid<GWTJahiaNode> treeGrid;
-    private StoreFilterField<GWTJahiaNode> nameFilterField;
-    private TreeStore<GWTJahiaNode> store;
+    private TreeGrid<GWTJahiaNodeType> treeGrid;
+    private StoreFilterField<GWTJahiaNodeType> nameFilterField;
+    private TreeStore<GWTJahiaNodeType> store;
     private boolean moduleFiltering;
 
     public ContentTypeTree() {
@@ -112,7 +102,6 @@ public class ContentTypeTree extends LayoutContainer {
 
     public ContentTypeTree(List<GWTColumn> columns) {
         setBorders(false);
-
 
         String autoExpand = null;
         List<ColumnConfig> columnList = new ArrayList<ColumnConfig>();
@@ -126,25 +115,24 @@ public class ContentTypeTree extends LayoutContainer {
             }
             if (column.getKey().equals("label")) {
                 ColumnConfig name = new ColumnConfig(column.getKey(), column.getTitle(), i);
-                name.setRenderer(new WidgetTreeGridCellRenderer<GWTJahiaNode>() {
+                name.setRenderer(new WidgetTreeGridCellRenderer<GWTJahiaNodeType>() {
                     @Override
-                    public Widget getWidget(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
-                                            ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> grid) {
+                    public Widget getWidget(GWTJahiaNodeType modelData, String s, ColumnData columnData, int i, int i1,
+                                            ListStore<GWTJahiaNodeType> listStore, Grid<GWTJahiaNodeType> grid) {
                         Label label;
-                        GWTJahiaNodeType gwtJahiaNodeType = (GWTJahiaNodeType) modelData.get("componentNodeType");
                         HorizontalPanel panel = new HorizontalPanel();
                         panel.setTableWidth("100%");
-                        label = new Label(modelData.getDisplayName());
+                        label = new Label(modelData.getLabel());
                         TableData tableData;
                         String descr = modelData.getDescription();
-                        if (gwtJahiaNodeType != null) {
+                        if (modelData != null) {
                             tableData = new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.MIDDLE);
                             tableData.setWidth("5%");
-                            panel.add(ContentModelIconProvider.getInstance().getIcon(gwtJahiaNodeType).createImage());
+                            panel.add(ContentModelIconProvider.getInstance().getIcon(modelData).createImage());
                             tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
                             tableData.setWidth("95%");
-                            if ((descr == null || descr.length() == 0) && !"".equals(gwtJahiaNodeType.getDescription())) {
-                                descr = gwtJahiaNodeType.getDescription();
+                            if ((descr == null || descr.length() == 0) && !"".equals(modelData.getDescription())) {
+                                descr = modelData.getDescription();
                             }
                         } else {
                             tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
@@ -157,128 +145,18 @@ public class ContentTypeTree extends LayoutContainer {
                         panel.layout();
                         return panel;
                     }
-
-                    @Override
-                    protected TreePanel.Joint calcualteJoint(TreeGrid<GWTJahiaNode> gwtJahiaNodeTreeGrid, GWTJahiaNode model, String property, int rowIndex, int colIndex) {
-                        if (model.getNodeTypes().contains("jnt:module")) {
-                            boolean checked = JahiaGWTParameters.getSiteNode().getName().equals(model.getName()) || (JahiaGWTParameters.getSiteNode().get("j:dependencies") != null && ((List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies")).contains(model.getName()));
-                            if (!checked) {
-                                model.set("cannotexpand", Boolean.TRUE);
-                                return TreePanel.Joint.NONE;
-                            } else {
-                                model.set("cannotexpand", null);
-                            }
-                        }
-                        return super.calcualteJoint(gwtJahiaNodeTreeGrid, model, property, rowIndex, colIndex);
-                    }
                 });
                 columnList.add(name);
-            } else if (column.getKey().equals("dependency")) {
-
-                CheckColumnConfig chk = new CheckColumnConfig(column.getKey(), column.getTitle(), i) {
-
-                    protected void init() {
-                        setRenderer(new GridCellRenderer<ModelData>() {
-                            public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
-                                                 ListStore<ModelData> store, Grid<ModelData> grid) {
-                                if (((GWTJahiaNode) model).getNodeTypes().contains("jnt:module")) {
-                                    String s = onRender(model, property, config, rowIndex, colIndex, store);
-                                    Text text = new Text(s);
-                                    boolean checked = JahiaGWTParameters.getSiteNode().get("j:dependencies") != null && ((List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies")).contains(((GWTJahiaNode) model).getName());
-                                    String tooltip = checked?Messages.get("label.removeDependency","Click to remove the dependency"):Messages.get("label.addDependency","Click to add the dependency");
-                                    text.setToolTip(tooltip);
-                                    return text;
-                                } else {
-                                    return "";
-                                }
-                            }
-                        });
-                    }
-
-
-                    @Override
-                    protected String getCheckState(ModelData model, String property, int rowIndex,
-                                                   int colIndex) {
-                        boolean checked = JahiaGWTParameters.getSiteNode().get("j:dependencies") != null && ((List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies")).contains(((GWTJahiaNode) model).getName());
-                        boolean disabled = JahiaGWTParameters.getSiteNode().getName().equals(((GWTJahiaNode) model).getName());
-                        if (disabled) {
-                            return "-disabled";
-                        } else if (checked) {
-                            return "-on";
-                        } else {
-                            return "";
-                        }
-                    }
-
-                    @Override
-                    protected void onMouseDown(GridEvent<ModelData> ge) {
-                        El el = ge.getTargetEl();
-                        if (el != null && el.hasStyleName("x-grid3-cc-" + getId()) && !el.hasStyleName("x-grid3-check-col-disabled")) {
-                            ge.stopEvent();
-                            GWTJahiaNode model = (GWTJahiaNode) ge.getModel();
-
-                            List<String> depends = (List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies");
-                            // init depends if not
-                            if (depends == null) {
-                                depends = new ArrayList<String>();
-                                JahiaGWTParameters.getSiteNode().set("j:dependencies", depends);
-                            }
-                            String modelName = model.getName();
-
-                            boolean checked = depends.contains(modelName);
-
-                            if (checked) {
-                                depends.remove(modelName);
-                                treeGrid.setExpanded(model, false);
-                            } else {
-                                depends.add(modelName);
-                            }
-
-                            StoreEvent<GWTJahiaNode> evt = new StoreEvent<GWTJahiaNode>(treeGrid.getStore());
-                            evt.setModel(model);
-                            treeGrid.getStore().fireEvent(Store.Update, evt);
-
-                            List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
-                            final GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
-                            gwtJahiaNodeProperty.setName("j:dependencies");
-
-                            final List<GWTJahiaNodePropertyValue> values = new ArrayList<GWTJahiaNodePropertyValue>();
-                            for (String s : depends) {
-                                values.add(new GWTJahiaNodePropertyValue(s, GWTJahiaNodePropertyType.STRING));
-                            }
-                            gwtJahiaNodeProperty.setMultiple(true);
-                            gwtJahiaNodeProperty.setValues(values);
-                            properties.add(gwtJahiaNodeProperty);
-                            treeGrid.mask(Messages.get("label.saving", "Saving..."));
-                            JahiaContentManagementService.App.getInstance().saveProperties(Arrays.asList(JahiaGWTParameters.getSiteNode()), properties, null, new BaseAsyncCallback() {
-                                public void onSuccess(Object result) {
-                                    Log.debug("ok");
-                                    treeGrid.unmask();
-                                }
-
-                                @Override
-                                public void onApplicationFailure(Throwable caught) {
-                                    Log.debug("ko");
-                                    treeGrid.unmask();
-                                }
-                            });
-
-                        }
-                    }
-                };
-                moduleFiltering = true;
-                columnList.add(chk);
-                pluginList.add(chk);
             }
         }
 
 
-        store = new TreeStore<GWTJahiaNode>();
+        store = new TreeStore<GWTJahiaNodeType>();
         store.setStoreSorter(SORTER);
 
-        treeGrid = new TreeGrid<GWTJahiaNode>(store, new ColumnModel(columnList)) {
+        treeGrid = new TreeGrid<GWTJahiaNodeType>(store, new ColumnModel(columnList)) {
             @Override
-            public void setExpanded(GWTJahiaNode model, boolean expand, boolean deep) {
+            public void setExpanded(GWTJahiaNodeType model, boolean expand, boolean deep) {
                 if (expand && model !=null && model.get("cannotexpand") != null) {
                     return;
                 }
@@ -305,23 +183,14 @@ public class ContentTypeTree extends LayoutContainer {
 
         setBorders(false);
 
-        nameFilterField = new StoreFilterField<GWTJahiaNode>() {
+        nameFilterField = new StoreFilterField<GWTJahiaNodeType>() {
             @Override
-            protected boolean doSelect(Store<GWTJahiaNode> store, GWTJahiaNode parent,
-                    GWTJahiaNode record, String property, String filter) {
+            protected boolean doSelect(Store<GWTJahiaNodeType> store, GWTJahiaNodeType parent,
+                                       GWTJahiaNodeType record, String property, String filter) {
 
-                if (record.getNodeTypes().contains("jnt:componentFolder")) {
-                    return false;
-                }
-                if (moduleFiltering) {
-                    String module = record.getPath().substring(record.getPath().indexOf('/',1)+1);
-                    if (module.indexOf("/") > -1) {
-                        module = module.substring(0, module.indexOf("/"));
-                    }
-                }
                 String s = filter.toLowerCase();
                 return record.getName().toLowerCase().contains(s)
-                        || record.getDisplayName().toLowerCase().contains(s);
+                        || record.getLabel().toLowerCase().contains(s);
             }
         };
         nameFilterField.bind(store);
@@ -333,28 +202,28 @@ public class ContentTypeTree extends LayoutContainer {
 
     }
 
-    public void fillStore(List<GWTJahiaNode> nodes) {
-        for (GWTJahiaNode node : nodes) {
+    public void fillStore(List<GWTJahiaNodeType> nodes) {
+        for (GWTJahiaNodeType node : nodes) {
             store.add(node, true);
         }
     }
 
     public void fillStore(List<String> paths, List<String> types, List<String> excludedTypes, boolean includeSubTypes, boolean includeNonDependentModules) {
         store.removeAll();
-        JahiaContentManagementService.App.getInstance().getContentTypesAsTree(paths, types, excludedTypes, Arrays.asList("name"), includeSubTypes,  includeNonDependentModules,
-                new BaseAsyncCallback<List<GWTJahiaNode>>() {
-                    public void onSuccess(List<GWTJahiaNode> result) {
+        JahiaContentManagementService.App.getInstance().getContentTypesAsTree(types, excludedTypes, includeSubTypes,
+                new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
+                    public void onSuccess(List<GWTJahiaNodeType> result) {
                         fillStore(result);
                     }
                 }
         );
     }
 
-    public TreeGrid<GWTJahiaNode> getTreeGrid() {
+    public TreeGrid<GWTJahiaNodeType> getTreeGrid() {
         return treeGrid;
     }
 
-    public StoreFilterField<GWTJahiaNode> getNameFilterField() {
+    public StoreFilterField<GWTJahiaNodeType> getNameFilterField() {
     	return nameFilterField;
     }
 

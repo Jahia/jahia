@@ -617,36 +617,6 @@
         </property>
     </bean>
     
-    <!-- Component Manager -->
-    <bean id="Toolbar.Item.SiteComponentManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
-        </property>
-        <property name="titleKey" value="label.componentmanager"/>
-        <property name="icon" value="componentManager"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="permission" value="componentManager"/>
-            </bean>
-        </property>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/manager.jsp?conf=sitecomponentmanager&amp;site=$siteuuid&amp;lang=$lang"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="width"/>
-                    <property name="value" value="1020"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="height"/>
-                    <property name="value" value="730"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
     <!-- Logout -->
     <bean id="Toolbar.Item.Logout" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">

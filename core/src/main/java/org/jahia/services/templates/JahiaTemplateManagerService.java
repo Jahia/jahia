@@ -1169,7 +1169,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private boolean addDependencyValue(JCRNodeWrapper originalNode, JCRNodeWrapper destinationNode, String propertyName) throws RepositoryException {
 //        Version v = templatePackageRegistry.lookupByFileName(originalNode.getName()).getLastVersion();
         String newStringValue = originalNode.getName();
-        Value newValue = originalNode.getSession().getValueFactory().createValue(newStringValue);
         if (destinationNode.hasProperty(propertyName)) {
             JCRPropertyWrapper installedModules = destinationNode.getProperty(propertyName);
             Value[] values = installedModules.getValues();

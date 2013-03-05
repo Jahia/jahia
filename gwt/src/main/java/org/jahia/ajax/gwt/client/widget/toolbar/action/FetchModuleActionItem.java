@@ -70,7 +70,7 @@ public class FetchModuleActionItem extends BaseActionItem {
                 JahiaContentManagementService.App.getInstance().checkoutModule(dialog.getModuleName(), dialog.getUri(), dialog.getScmType(), dialog.getBranchOrTag(), new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode result) {
                         linker.loaded();
-                        Info.display(Messages.get("label.information", "Information"), Messages.get("message.templateSetCreated", "Templates set successfully created"));
+                        Info.display(Messages.get("label.information", "Information"), Messages.get("message.moduleCreated", "Module successfully created"));
                         JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
                         JahiaGWTParameters.setSite(result, linker);
                         if (((EditLinker) linker).getSidePanel() != null) {

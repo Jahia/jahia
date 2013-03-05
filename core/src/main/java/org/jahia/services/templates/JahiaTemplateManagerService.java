@@ -1052,7 +1052,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public void autoInstallModulesToSites(JahiaTemplatesPackage module, JCRSessionWrapper session)
             throws RepositoryException {
-        if (module.getAutoDeployOnSite() != null) {
+        if (StringUtils.isNotBlank(module.getAutoDeployOnSite())) {
             if ("system".equals(module.getAutoDeployOnSite())) {
                 if (session.nodeExists("/sites/systemsite")) {
                     installModule(module, "/sites/systemsite", session);
@@ -1172,27 +1172,15 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         Value newValue = originalNode.getSession().getValueFactory().createValue(newStringValue);
         if (destinationNode.hasProperty(propertyName)) {
             JCRPropertyWrapper installedModules = destinationNode.getProperty(propertyName);
-            List<Value> newValues = new ArrayList<Value>();
             Value[] values = installedModules.getValues();
             for (Value value : values) {
-                String stringValue = value.getString();
-                if (stringValue.equals(newStringValue)) {
+                if (value.getString().equals(originalNode.getName())) {
                     return true;
                 }
-                if (!stringValue.startsWith(originalNode.getName() + ":")) {
-                    newValues.add(value);
-                } else {
-                    newValues.add(newValue);
-                }
-            }
-
-            if (!newValues.contains(newValue)) {
-                newValues.add(newValue);
             }
 
             destinationNode.getSession().checkout(destinationNode);
-
-            installedModules.setValue(newValues.toArray(new Value[newValues.size()]));
+            installedModules.addValue(originalNode.getName());
         } else {
             destinationNode.setProperty(propertyName, new String[]{newStringValue});
         }

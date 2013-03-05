@@ -18,7 +18,8 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Jahia-Deploy-On-Site>systemsite</Jahia-Deploy-On-Site>
+                        <Jahia-Depends>default</Jahia-Depends>
+                        <Jahia-Deploy-On-Site>system</Jahia-Deploy-On-Site>
                     </instructions>
                 </configuration>
             </plugin>

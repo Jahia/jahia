@@ -51,6 +51,7 @@ public class Activator implements BundleActivator {
     private Set<Bundle> installedBundles = new HashSet<Bundle>();
     private Map<Bundle, JahiaTemplatesPackage> registeredBundles = new HashMap<Bundle, JahiaTemplatesPackage>();
     private Map<Bundle, ServiceTracker> bundleHttpServiceTrackers = new HashMap<Bundle, ServiceTracker>();
+    private JahiaTemplateManagerService templatesService;
     private TemplatePackageRegistry templatePackageRegistry = null;
     private TemplatePackageDeployer templatePackageDeployer = null;
 
@@ -66,7 +67,7 @@ public class Activator implements BundleActivator {
         long startTime = System.currentTimeMillis();
 
         // obtain service instances
-        JahiaTemplateManagerService templatesService = (JahiaTemplateManagerService) SpringContextSingleton.getBean("JahiaTemplateManagerService");
+        templatesService = (JahiaTemplateManagerService) SpringContextSingleton.getBean("JahiaTemplateManagerService");
         templatePackageDeployer = templatesService.getTemplatePackageDeployer();
         templatePackageRegistry = templatesService.getTemplatePackageRegistry();
 
@@ -346,7 +347,7 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void start(Bundle bundle) {
-        JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle);
+        final JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle);
         if (jahiaTemplatesPackage == null) {
             for (Map.Entry<String, List<Bundle>> entry : toBeParsed.entrySet()) {
                 if (entry.getValue().contains(bundle)) {
@@ -354,7 +355,9 @@ public class Activator implements BundleActivator {
                         toBeStarted.put(entry.getKey(), new ArrayList<Bundle>());
                     }
                     logger.debug("Delaying module {} startup because it depends on module {} that is not yet started.", bundle.getSymbolicName(), entry.getKey());
-                    toBeStarted.get(entry.getKey()).add(bundle);
+                    if (!toBeStarted.get(entry.getKey()).contains(bundle)) {
+                        toBeStarted.get(entry.getKey()).add(bundle);
+                    }
                     moduleStates.put(bundle, ModuleState.WAITING_TO_BE_STARTED);
                     return;
                 }
@@ -385,7 +388,7 @@ public class Activator implements BundleActivator {
         long startTime = System.currentTimeMillis();
 
         templatePackageRegistry.register(jahiaTemplatesPackage);
-        
+
         jahiaTemplatesPackage.setActiveVersion(true);
 
         // scan for resource and call observers
@@ -404,6 +407,19 @@ public class Activator implements BundleActivator {
 
         startDependantBundles(jahiaTemplatesPackage.getRootFolder());
         startDependantBundles(jahiaTemplatesPackage.getName());
+
+        //auto deploy bundle according to bundle configuration
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    templatesService.autoInstallModulesToSites(jahiaTemplatesPackage, session);
+                    session.save();
+                    return null;
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error("Error while initializing module content for module " + jahiaTemplatesPackage, e);
+        }
     }
 
     private String getDisplayName(Bundle bundle) {
@@ -527,5 +543,13 @@ public class Activator implements BundleActivator {
             modulesByState.put(moduleState, bundlesInState);
         }
         return modulesByState;
+    }
+
+    public Map<String, List<Bundle>> getToBeParsed() {
+        return toBeParsed;
+    }
+
+    public Map<String, List<Bundle>> getToBeStarted() {
+        return toBeStarted;
     }
 }

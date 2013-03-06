@@ -40,13 +40,11 @@
 
 package org.jahia.services.templates;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
@@ -63,7 +61,7 @@ import org.jahia.services.render.RenderService;
 import org.jahia.services.render.StaticAssetMapping;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.render.filter.RenderServiceAware;
-import org.jahia.services.render.webflow.JahiaBundleFlowRegistry;
+import org.jahia.services.render.webflow.BundleFlowRegistry;
 import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.services.workflow.WorkflowService;
@@ -86,7 +84,6 @@ import javax.jcr.Workspace;
 import javax.jcr.observation.EventListenerIterator;
 import javax.jcr.observation.ObservationManager;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -685,6 +682,15 @@ public class TemplatePackageRegistry {
                 jcrStoreService.getProviderFactories().remove(((ProviderFactory)bean).getNodeTypeName());
             }
 
+            if (bean instanceof FactoryBean && bean.getClass().getName().equals("org.springframework.webflow.config.FlowRegistryFactoryBean")) {
+                try {
+                    FlowDefinitionRegistry flowDefinitionRegistry = (FlowDefinitionRegistry) ((FactoryBean) bean).getObject();
+                    ((BundleFlowRegistry)SpringContextSingleton.getBean("jahiaBundleFlowRegistry")).removeFlowRegistry(flowDefinitionRegistry);
+                } catch (Exception e) {
+                    logger.error("Cannot register webflow registry",e);
+                }
+            }
+
         }
 
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
@@ -828,7 +834,7 @@ public class TemplatePackageRegistry {
             if (bean instanceof FactoryBean && bean.getClass().getName().equals("org.springframework.webflow.config.FlowRegistryFactoryBean")) {
                 try {
                     FlowDefinitionRegistry flowDefinitionRegistry = (FlowDefinitionRegistry) ((FactoryBean) bean).getObject();
-                    ((JahiaBundleFlowRegistry)SpringContextSingleton.getBean("jahiaBundleFlowRegistry")).addFlowRegistry("formbuilder" /* modulename */,flowDefinitionRegistry);
+                    ((BundleFlowRegistry)SpringContextSingleton.getBean("jahiaBundleFlowRegistry")).addFlowRegistry(flowDefinitionRegistry);
                 } catch (Exception e) {
                     logger.error("Cannot register webflow registry",e);
                 }

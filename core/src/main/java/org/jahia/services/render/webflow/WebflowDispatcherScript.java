@@ -49,6 +49,9 @@ import org.jahia.services.render.scripting.RequestDispatcherScript;
 import org.jahia.utils.StringResponseWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.webflow.definition.registry.FlowDefinitionRegistry;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.RequestDispatcher;
@@ -84,7 +87,7 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
      *
      */
     public String execute(Resource resource, RenderContext context) throws RenderException {
-        View view = getView();
+        final View view = getView();
         if (view == null) {
             throw new RenderException("View not found for : " + resource);
         } else {
@@ -96,7 +99,7 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
         HttpServletRequest request = context.getRequest();
         HttpServletResponse response = context.getResponse();
 
-        flowPath = view.getPath().replace("/modules/", "/flow/");
+        flowPath = view.getPath().replaceFirst("/modules/[^/]*/", "");
 
         String identifier;
         try {
@@ -105,7 +108,7 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
             throw new RenderException(e);
         }
 
-        RequestDispatcher rd = request.getRequestDispatcher(flowPath);
+        RequestDispatcher rd = request.getRequestDispatcher("/flow/"+flowPath);
 
         Object oldModule = request.getAttribute("currentModule");
         request.setAttribute("currentModule", view.getModule());
@@ -117,6 +120,21 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
         StringResponseWrapper responseWrapper = new StringResponseWrapper(response);
 
         try {
+            FlowDefinitionRegistry reg = ((FlowDefinitionRegistry)view.getModule().getContext().getBean("jahiaFlowRegistry"));
+            final GenericApplicationContext applicationContext = (GenericApplicationContext) reg.getFlowDefinition(flowPath).getApplicationContext();
+            applicationContext.setClassLoader(view.getModule().getClassLoader());
+            applicationContext.setResourceLoader(new ResourceLoader() {
+                @Override
+                public org.springframework.core.io.Resource getResource(String location) {
+                    return applicationContext.getParent().getResource("/"+flowPath+"/"+location);
+                }
+
+                @Override
+                public ClassLoader getClassLoader() {
+                    return view.getModule().getClassLoader();
+                }
+            });
+
             rd.include(request, responseWrapper);
 
             while (responseWrapper.getRedirect() != null) {
@@ -152,7 +170,7 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
                     }
                 };
 
-                rd = requestWrapper.getRequestDispatcher(flowPath + "?" + qs);
+                rd = requestWrapper.getRequestDispatcher("/flow/"+flowPath + "?" + qs);
                 responseWrapper = new StringResponseWrapper(response);
                 rd.include(requestWrapper, responseWrapper);
             }
@@ -171,6 +189,6 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
     }
 
     public String getFlowPath() {
-        return flowPath;
+        return "/flow/"+flowPath;
     }
 }

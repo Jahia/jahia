@@ -67,7 +67,9 @@
 
     <bean id="JahiaFlowConversionService" class="org.jahia.services.render.webflow.JahiaFlowConversionService"/>
 
-    <webflow:flow-builder-services id="jahiaFlowBuilderServices" development="true" conversion-service="JahiaFlowConversionService"/>
+    <bean id="JahiaViewFactoryCreator" class="org.jahia.services.render.webflow.BundleViewFactoryCreator"/>
+
+    <webflow:flow-builder-services id="jahiaFlowBuilderServices" development="true" conversion-service="JahiaFlowConversionService" view-factory-creator="JahiaViewFactoryCreator"/>
 
     <webflow:flow-registry id="jahiaFlowRegistry" base-path="classpath:/" flow-builder-services="jahiaFlowBuilderServices">
         <webflow:flow-location-pattern value="**/*.flow/**/flow.xml" />

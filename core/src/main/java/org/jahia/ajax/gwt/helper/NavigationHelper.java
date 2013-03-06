@@ -350,7 +350,12 @@ public class NavigationHelper {
             }
             if (path.contains("$moduleversion/") || path.endsWith("$moduleversion")) {
                 String moduleName = path.split("/")[2];
-                path = path.replace("$moduleversion", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName).getVersion().toString());
+                if (ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName) != null) {
+                    path = path.replace("$moduleversion", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName).getVersion().toString());
+                }  else {
+                    logger.warn("read version - Unable to get bundle " + moduleName + " from registry");
+                    continue;
+                }
             }
             if (path.contains("$systemsite/") || path.endsWith("$systemsite")) {
                 String systemSiteKey = JCRContentUtils.getSystemSitePath();

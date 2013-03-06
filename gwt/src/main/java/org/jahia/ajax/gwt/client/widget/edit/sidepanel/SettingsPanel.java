@@ -115,6 +115,7 @@ public class SettingsPanel implements Serializable {
         }
 
         factory = new GWTJahiaNodeTreeFactory(paths);
+        factory.setFields(Arrays.asList(GWTJahiaNode.ICON));
         factory.setNodeTypes(Arrays.asList("jnt:contentTemplate"));
 
         NodeColumnConfigList columns = new NodeColumnConfigList(Arrays.asList(new GWTColumn("displayName", "", -1)));

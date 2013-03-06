@@ -512,9 +512,6 @@
 [jnt:mounts] > nt:base, jmix:nodenameInfo, jmix:systemNode
  + * (jnt:mountPoint)
 
-[jnt:vfsMountPoint] > jnt:mountPoint
- - j:rootPath (string) nofulltext
-
 //---------------------------------------------------------
 // Definition Content
 //---------------------------------------------------------

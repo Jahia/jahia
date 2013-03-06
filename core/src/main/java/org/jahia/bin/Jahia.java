@@ -192,6 +192,21 @@ public final class Jahia {
         return RELEASE_NUMBER;
     }
 
+    public static String getLicenseText() {
+        InputStream in = Jahia.class
+                .getResourceAsStream("/LICENSE");
+        String txt;
+        try {
+            txt = IOUtils.toString(in);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            txt = "Unable to parse licence file";
+        } finally {
+            IOUtils.closeQuietly(in);
+        }
+        return txt;
+    }
+
     public static int getPatchNumber() {
         return PATCH_NUMBER;
     }

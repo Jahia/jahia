@@ -30,7 +30,7 @@
                                    jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <rich-text j:originWS="default" jcr:created="2013-03-07T11:20:18.795-05:00" jcr:createdBy="root" jcr:lastModified="2013-03-07T11:20:19.053-05:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:bigText">
-                                <j:translation_en jcr:language="en" jcr:lastModified="2013-03-07T11:20:57.024-05:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:translation" text="<p>Please follow the link to report an issue to Jahia</p>"/>
+                                <j:translation_en jcr:language="en" jcr:lastModified="2013-03-07T11:20:57.024-05:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:translation" text="&lt;p&gt;Please follow the link to report an issue to Jahia&lt;/&gt;>"/>
                             </rich-text>
                             <report-an-issue jcr:primaryType="jnt:serverSettingsReportAnIssue"/>
                         </pagecontent>

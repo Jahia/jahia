@@ -691,6 +691,11 @@
                                     <value>jmix:visibleInPagesTree</value>
                                 </list>
                             </property>
+                            <property name="excludedFolderTypes">
+                                <list>
+                                    <value>jnt:moduleVersionFolder</value>
+                                </list>
+                            </property>
                         </bean>
                     </property>
                     <property name="treeColumns">

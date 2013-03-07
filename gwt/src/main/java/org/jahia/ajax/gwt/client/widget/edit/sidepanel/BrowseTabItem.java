@@ -74,6 +74,7 @@ import java.util.Map;
  */
 abstract class BrowseTabItem extends SidePanelTabItem {
     protected List<String> folderTypes = new ArrayList<String>();
+    protected List<String> excludedFolderTypes = new ArrayList<String>();
     private List<String> paths = new ArrayList<String>();
 
     protected transient LayoutContainer treeContainer;
@@ -94,6 +95,7 @@ abstract class BrowseTabItem extends SidePanelTabItem {
         treeContainer.setLayout(new FitLayout());
         factory = new GWTJahiaNodeTreeFactory(paths);
         factory.setNodeTypes(this.folderTypes);
+        factory.setHiddenTypes(this.excludedFolderTypes);
 
         NodeColumnConfigList columns = new NodeColumnConfigList(config.getTreeColumns());
         columns.init();
@@ -203,6 +205,14 @@ abstract class BrowseTabItem extends SidePanelTabItem {
 
     public void setFolderTypes(List<String> folderTypes) {
         this.folderTypes = folderTypes;
+    }
+
+    public List<String> getExcludedFolderTypes() {
+        return excludedFolderTypes;
+    }
+
+    public void setExcludedFolderTypes(List<String> excludedFolderTypes) {
+        this.excludedFolderTypes = excludedFolderTypes;
     }
 
     public List<String> getPaths() {

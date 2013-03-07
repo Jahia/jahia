@@ -1266,7 +1266,6 @@ public class ContentManagerHelper {
 
             if (nextVersion != null) {
                 templateManagerService.activateModuleVersion(moduleName, new ModuleVersion(nextVersion), session);
-                templateManagerService.undeployModule(previous, session);
             }
 
             JCRNodeWrapper privateFolder = session.getNode(session.getUser().getLocalPath() + "/files/private");

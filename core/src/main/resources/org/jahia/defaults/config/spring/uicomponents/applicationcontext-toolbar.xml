@@ -675,7 +675,7 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
                 <property name="nodeTypes" value="jnt:page"/>
                 <property name="includeSubTypes" value="false"/>
-                <property name="parentTypes" value="jnt:page jnt:virtualsite"/>
+                <property name="parentTypes" value="jnt:page jnt:virtualsite jnt:moduleVersion"/>
             </bean>
         </property>
         <property name="titleKey" value="label.newPage"/>

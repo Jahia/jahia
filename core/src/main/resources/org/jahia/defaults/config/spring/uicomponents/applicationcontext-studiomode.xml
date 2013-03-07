@@ -679,7 +679,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.ContentBrowseTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>$site/$moduleversion/*</value>
+                                    <value>$site/$moduleversion</value>
                                 </list>
                             </property>
                             <property name="folderTypes">

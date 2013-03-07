@@ -77,7 +77,7 @@
     </xsl:template>
     <xsl:template match="/">
         <xsl:copy>
-            <xsl:apply-templates select="child::node()|@*"/>
+            <xsl:apply-templates select="child::node()"/>
         </xsl:copy>
     </xsl:template>
 </xsl:stylesheet>

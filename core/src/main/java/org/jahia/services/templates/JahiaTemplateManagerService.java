@@ -79,6 +79,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportExportService;
+import org.jahia.services.importexport.NoCloseZipInputStream;
 import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.filter.RenderFilter;
@@ -704,14 +705,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
 
                 if (generatedWar != null) {
+                    FrameworkService.getBundleContext().installBundle(generatedWar.toURI().toString(), new FileInputStream(generatedWar));
                     JahiaTemplatesPackage pack = compileAndDeploy(module.getRootFolder(), sources, session);
-
                     JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
                     node.getNode("j:versionInfo").setProperty("j:sourcesFolder", sources.getPath());
                     if (scmUrl != null) {
                         node.getNode("j:versionInfo").setProperty("j:scmURI", scmUrl);
                     }
                     session.save();
+
+                    undeployModule(module, session);
                 }
 
                 return generatedWar;
@@ -742,9 +745,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
             Map<String, Object> params = new HashMap<String, Object>();
             params.put(ImportExportService.XSL_PATH, SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/export/templatesCleanup.xsl");
+            FileOutputStream out = new FileOutputStream(f);
             ImportExportBaseService
                     .getInstance().exportZip(session.getNode("/modules/" + aPackage.getRootFolderWithVersion()), session.getRootNode(),
-                    new FileOutputStream(f), params);
+                    out, params);
+            IOUtils.closeQuietly(out);
             ZipInputStream zis = null;
             try {
                 zis = new ZipInputStream(new FileInputStream(f));
@@ -878,7 +883,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             if (transCodeTarget != null) {
                 FileUtils.writeLines(target, transCodeTarget.name(), convertToNativeEncoding(IOUtils.readLines(source, Charsets.UTF_8), transCodeTarget), "\n");
             } else {
-                FileUtils.copyInputStreamToFile(source, target);
+                FileUtils.copyInputStreamToFile(new NoCloseZipInputStream(source), target);
             }
             return true;
         } else {

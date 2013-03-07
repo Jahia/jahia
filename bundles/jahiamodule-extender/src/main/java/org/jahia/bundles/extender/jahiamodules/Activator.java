@@ -25,7 +25,6 @@ import javax.jcr.RepositoryException;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.*;
 
@@ -237,19 +236,6 @@ public class Activator implements BundleActivator {
     private synchronized void install(final Bundle bundle) {
         installedBundles.add(bundle);
         parseBundle(bundle);
-        JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByFileName(bundle.getSymbolicName());
-        if (jahiaTemplatesPackage == null) {
-            new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        bundle.start();
-                    } catch (BundleException e) {
-                        logger.error("--- Failed to start module " + bundle.getSymbolicName(), e);
-                    }
-                }
-            }.start();
-        }
     }
 
     private synchronized void update(final Bundle bundle) {
@@ -354,7 +340,7 @@ public class Activator implements BundleActivator {
     private void parseDependantBundles(String key) {
         if (toBeParsed.get(key) != null) {
             for (Bundle bundle1 : toBeParsed.get(key)) {
-                logger.debug("Parsing module " + bundle1.getSymbolicName() + " since it is dependent on just started module " + key);
+                logger.debug("Parsing module " + bundle1.getSymbolicName() + " since it is dependent on just parsed module " + key);
                 parseBundle(bundle1);
             }
             toBeParsed.remove(key);

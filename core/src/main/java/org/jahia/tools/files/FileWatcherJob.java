@@ -38,8 +38,9 @@
  * please contact the sales department at sales@jahia.com.
  */
 
- package org.jahia.tools.files;
+package org.jahia.tools.files;
 
+import org.apache.commons.io.FileUtils;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -47,26 +48,25 @@ import org.quartz.StatefulJob;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class FileWatcherJob implements StatefulJob {
-    public FileWatcherJob () {
+    public FileWatcherJob() {
     }
 
-    public void execute (JobExecutionContext context)
-        throws JobExecutionException {
-
+    public void execute(JobExecutionContext context) throws JobExecutionException {
         //logger.debug("Checking files in directory " + m_Folder.toString() + "...");
         JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
         FileWatcher fileWatcher = (FileWatcher) jobDataMap.get("fileWatcher");
-        if ( fileWatcher != null ){
-
+        if (fileWatcher != null) {
             /** The List of new files **/
-            List newFiles = checkFiles(fileWatcher.getFolder(),
-                                         fileWatcher.getFileOnly(),
-                                         fileWatcher.getCheckDate(),
-                                         fileWatcher.getLastCheckTime());
-
+            List<File> newFiles = checkFiles(fileWatcher.getFolder(),
+                    fileWatcher.getFileOnly(),
+                    fileWatcher.isRecursive(),
+                    fileWatcher.getCheckDate(),
+                    fileWatcher.getLastCheckTime());
+            fileWatcher.setLastCheckTime(System.currentTimeMillis());
             // Notify Observers if number of files > 0
             if (newFiles.size() > 0) {
                 fileWatcher.externalSetChanged(); // Alert the Observable Object That there are change in the folder
@@ -78,45 +78,37 @@ public class FileWatcherJob implements StatefulJob {
     /**
      * Checks new files and builds the List of files
      * to pass to Observers
-     *
      */
-    protected List checkFiles (File folder, boolean fileOnly,
-                                 boolean checkDate, long lastCheckTime) {
+    protected List<File> checkFiles(File folder, boolean fileOnly, boolean recursive,
+                              boolean checkDate, long lastCheckTime) {
 
-        List newFiles = new ArrayList();
+        List<File> newFiles = new ArrayList<File>();
         if (folder.isDirectory()) {
 
             if (!checkDate) {
 
-                File[] files = folder.listFiles();
+                Collection<File> files = FileUtils.listFiles(folder, null, recursive);
                 if (files == null) {
                     return newFiles;
                 }
-                int size = files.length;
-
-                for (int i = 0; i < size; i++) {
-                    // logger.debug("FileWatcher found new file " + files[i].getName() );
-                    if (files[i].canWrite()) {
+                for (File file : files) {
+                    if (file.canWrite()) {
                         if (!fileOnly) {
-                            newFiles.add(files[i]);
-                        } else if (files[i].isFile()) {
-                            newFiles.add(files[i]);
+                            newFiles.add(file);
+                        } else if (file.isFile()) {
+                            newFiles.add(file);
                         }
                     }
                 }
 
             } else {
-
-                File[] files = folder.listFiles();
+                Collection<File> files = FileUtils.listFiles(folder, null, recursive);
                 if (files == null) {
                     return newFiles;
                 }
-                int size = files.length;
-
-                for (int i = 0; i < size; i++) {
-
-                    if (files[i].lastModified() > lastCheckTime) {
-                        newFiles.add(files[i]);
+                for (File file : files) {
+                    if (file.lastModified() > lastCheckTime) {
+                        newFiles.add(file);
                     }
                 }
 

@@ -96,6 +96,8 @@ public class FileWatcher extends Observable implements Serializable {
     /** Both file and directory or only file **/
     private boolean m_FileOnly = true;
 
+    private boolean recursive = false;
+
     /** Define if the Thread is User or Deamon Thread **/
     private boolean m_IsDeamon = true;
 
@@ -103,7 +105,7 @@ public class FileWatcher extends Observable implements Serializable {
     public boolean mCheckDate = false;
 
     /** the Last Time the Folder was checked **/
-    private long m_LastCheckTime;
+    private long lastCheckTime;
 
     private SchedulerService schedulerService;
     /**
@@ -200,6 +202,14 @@ public class FileWatcher extends Observable implements Serializable {
     }
 
     public void stop() {
+        try {
+            schedulerService.getRAMScheduler().unscheduleJob(trigger.getName(),Scheduler.DEFAULT_GROUP);
+        } catch (SchedulerException e) {
+        }
+        try {
+            schedulerService.getRAMScheduler().deleteJob(jobName + "_Job", Scheduler.DEFAULT_GROUP);
+        } catch (SchedulerException e) {
+        }
     }
 
     /**
@@ -268,6 +278,14 @@ public class FileWatcher extends Observable implements Serializable {
         return m_FileOnly;
     }
 
+    public boolean isRecursive() {
+        return recursive;
+    }
+
+    public void setRecursive(boolean recursive) {
+        this.recursive = recursive;
+    }
+
     /**
      * Returns The Check File Mode
      *
@@ -309,7 +327,11 @@ public class FileWatcher extends Observable implements Serializable {
     }
 
     public long getLastCheckTime() {
-        return m_LastCheckTime;
+        return lastCheckTime;
+    }
+
+    public void setLastCheckTime(long lastCheckTime) {
+        this.lastCheckTime = lastCheckTime;
     }
 
     public int getMaxJobNameLength() {
@@ -335,7 +357,7 @@ public class FileWatcher extends Observable implements Serializable {
            For Test Purpose
            ToChange : restore the last check time from ext. file !
         */
-        m_LastCheckTime = System.currentTimeMillis();
+        lastCheckTime = System.currentTimeMillis();
         logger.debug("Watching directory=" + getFolderPath()   );
         File tmpFile = new File(getFolderPath());
         if ( tmpFile.isDirectory() && !tmpFile.canWrite() ){

@@ -1209,21 +1209,21 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 }
 
                 if (!child.isNodeType("jnt:templatesFolder") && !child.isNodeType("jnt:componentFolder")) {
-                    templatesSynchro(child, node, session, references, newNode, false, true, moduleName);
+                    templatesSynchro(child, node, session, references, newNode, true);
                 }
             }
         }
     }
 
     public void templatesSynchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode,
-                                 JCRSessionWrapper session, Map<String, List<String>> references, boolean doUpdate, boolean doRemove, boolean doChildren, String moduleName)
+                                 JCRSessionWrapper session, Map<String, List<String>> references, boolean doUpdate, boolean doChildren)
             throws RepositoryException {
         if ("j:acl".equals(destinationNode.getName())) {
             return;
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Synchronizing node : " + destinationNode.getPath() + ", update=" + doUpdate + "/remove=" + doRemove + "/children=" + doChildren);
+            logger.debug("Synchronizing node : " + destinationNode.getPath() + ", update=" + doUpdate + "/children=" + doChildren);
         }
 
         // Set for jnt:template nodes : declares if the template was originally created with that module, false otherwise
@@ -1313,88 +1313,22 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         names.clear();
 
-        JCRNodeWrapper templatesDestinationNode = destinationNode;
-        if (source.isNodeType("jnt:templatesFolder") && source.hasProperty("j:rootTemplatePath")) {
-            String rootTemplatePath = source.getProperty("j:rootTemplatePath").getString();
-            if (rootTemplatePath.startsWith("/")) {
-                rootTemplatePath = rootTemplatePath.substring(1);
-            }
-            if (!rootTemplatePath.equals("")) {
-                templatesDestinationNode = templatesDestinationNode.getNode(rootTemplatePath);
-            }
-            templatesDestinationNode.getSession().checkout(templatesDestinationNode);
-        }
-
         while (ni.hasNext()) {
             JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
-            if (child.isNodeType(ComponentRegistry.JMIX_STUDIO_ONLY)
-                    && (child.isNodeType(ComponentRegistry.JNT_COMPONENT) || child
-                    .isNodeType(ComponentRegistry.JNT_COMPONENT_FOLDER))) {
-                // we do not deploy components which are dedicated for the Studio only
-                continue;
-            }
-            boolean isTemplateNode = child.isNodeType("jnt:template");
             boolean isPageNode = child.isNodeType("jnt:page");
 
-            JCRNodeWrapper currentDestination = isTemplateNode ? templatesDestinationNode : destinationNode;
-
-            if (doChildren || isTemplateNode) {
+            if (doChildren) {
                 names.add(child.getName());
 
-                boolean currentModule = false;
                 boolean newNode = false;
                 JCRNodeWrapper node = null;
-                if (currentDestination.hasNode(child.getName())) {
-                    node = currentDestination.getNode(child.getName());
-                    currentModule = (!node.hasProperty(Constants.JAHIA_MODULE_TEMPLATE) && moduleName == null) || (node.hasProperty(Constants.JAHIA_MODULE_TEMPLATE) && node.getProperty(Constants.JAHIA_MODULE_TEMPLATE).getString().equals(moduleName));
-                } else {
-                    // Handle template move
-                    PropertyIterator ref = child.getWeakReferences(Constants.JAHIA_SOURCE_TEMPLATE);
-                    while (ref.hasNext()) {
-                        JCRPropertyWrapper next = (JCRPropertyWrapper) ref.next();
-                        if (next.getPath().startsWith(destinationNode.getAncestor(3).getPath())) {
-                            session.move(next.getParent().getPath(), currentDestination.getPath() + "/" + child.getName());
-                            node = currentDestination.getNode(child.getName());
-                            break;
-                        }
-                    }
-                    if (node == null) {
-                        node = currentDestination.addNode(child.getName(), child.getPrimaryNodeTypeName());
-                        newNode = true;
-                        if (moduleName != null && node.isNodeType("jnt:template")) {
-                            node.setProperty(Constants.JAHIA_MODULE_TEMPLATE, moduleName);
-                            node.setProperty(Constants.JAHIA_SOURCE_TEMPLATE, child);
-                            currentModule = true;
-                        }
-                    }
+                if (destinationNode.hasNode(child.getName())) {
+                    node = destinationNode.getNode(child.getName());
+                } else if (node == null) {
+                    node = destinationNode.addNode(child.getName(), child.getPrimaryNodeTypeName());
+                    newNode = true;
                 }
-                if (isTemplateNode) {
-                    templatesSynchro(child, node, session, references, currentModule, currentModule, currentModule, moduleName);
-                } else {
-                    templatesSynchro(child, node, session, references, newNode, doRemove, doChildren && !(isPageNode && !newNode), moduleName);
-                }
-            }
-        }
-        if (doRemove) {
-            logger.debug("Remove unwanted child of : " + destinationNode.getPath());
-            ni = destinationNode.getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapper oldDestChild = (JCRNodeWrapper) ni.next();
-                if (!names.contains(oldDestChild.getName()) &&
-                        ((!oldDestChild.isNodeType("jnt:template")) ||
-                                (!oldDestChild.hasProperty(Constants.JAHIA_MODULE_TEMPLATE) && moduleName == null) ||
-                                (oldDestChild.hasProperty(Constants.JAHIA_MODULE_TEMPLATE) && oldDestChild.getProperty(Constants.JAHIA_MODULE_TEMPLATE).getString().equals(moduleName)))) {
-                    logger.debug(oldDestChild.getPath());
-                    if (oldDestChild.hasProperty("j:sourceTemplate")) {
-                        try {
-                            oldDestChild.getProperty("j:sourceTemplate").getNode();
-                            // Do not delete if source still exists somewhere
-                            continue;
-                        } catch (ItemNotFoundException e) {
-                        }
-                    }
-                    oldDestChild.remove();
-                }
+                templatesSynchro(child, node, session, references, newNode, doChildren && (!isPageNode || newNode));
             }
         }
         if (doUpdate) {

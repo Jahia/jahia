@@ -46,7 +46,9 @@ import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreSorter;
+import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -59,6 +61,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
@@ -77,16 +80,13 @@ import java.util.List;
 
 public class SettingsPanel implements Serializable {
 
-    protected transient ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
-    protected transient ListStore<GWTJahiaNode> contentStore;
-
     private transient ContentPanel settingsPanel;
-    private transient  GWTJahiaNodeTreeFactory factory;
     private String settingPath;
     private String settingTemplateRoot;
     private String label;
     private String requiredPermission;
-
+    private transient TreeLoader<GWTJahiaNode> settingsLoader;
+    private transient TreeStore<GWTJahiaNode> settingsStore;
     public SettingsPanel() {
 
     }
@@ -107,62 +107,58 @@ public class SettingsPanel implements Serializable {
         treeContainer.setLayout(new FitLayout());
         // resolve paths from dependencies
 
-        List<String> paths = new ArrayList<String>();
+        final List<String> paths = new ArrayList<String>();
         if (JahiaGWTParameters.getSiteNode() != null && JahiaGWTParameters.getSiteNode().getProperties().get("j:installedModules") != null) {
             for (String module : ((List<String>) JahiaGWTParameters.getSiteNode().get("j:installedModules"))) {
                     paths.add("/modules/" + module + "/$moduleversion/templates/" + settingTemplateRoot + "/*");
             }
         }
 
-        factory = new GWTJahiaNodeTreeFactory(paths);
-        factory.setFields(Arrays.asList(GWTJahiaNode.ICON));
-        factory.setNodeTypes(Arrays.asList("jnt:contentTemplate"));
-
         NodeColumnConfigList columns = new NodeColumnConfigList(Arrays.asList(new GWTColumn("displayName", "", -1)));
         columns.init();
         columns.get(0).setRenderer(NodeColumnConfigList.NAME_TREEGRID_RENDERER);
+        settingsLoader = new BaseTreeLoader<GWTJahiaNode>(
+                new RpcProxy<List<GWTJahiaNode>>() {
+                    @Override
+                    protected void load(Object loadConfig, final AsyncCallback<List<GWTJahiaNode>> callback) {
+                        List<String> fields = new ArrayList<String>();
+                        fields.add(GWTJahiaNode.LOCKS_INFO);
+                        fields.add(GWTJahiaNode.PERMISSIONS);
+                        fields.add(GWTJahiaNode.CHILDREN_INFO);
+                        fields.add(GWTJahiaNode.ICON);
+                        JahiaContentManagementService.App.getInstance()
+                                .getRoot(paths, Arrays.asList("jnt:contentTemplate"), null, null, fields, null, null, true,
+                                        false, null, null, new AsyncCallback<List<GWTJahiaNode>>() {
+                                    @Override
+                                    public void onFailure(Throwable caught) {
+                                        callback.onFailure(caught);
+                                    }
 
-        TreeGrid<GWTJahiaNode> tree = factory.getTreeGrid(new ColumnModel(columns));
-        tree.setAutoExpandColumn(columns.getAutoExpand());
-        tree.getTreeView().setRowHeight(25);
-        tree.getTreeView().setForceFit(true);
-        tree.setHeight("100%");
-        tree.setIconProvider(ContentModelIconProvider.getInstance());
+                                    @Override
+                                    public void onSuccess(List<GWTJahiaNode> nodes) {
+                                        List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
+                                        for (GWTJahiaNode node : nodes) {
+                                            String nodeName = node.getName();
+                                            boolean add = true;
+                                            for (GWTJahiaNode resultNode : result) {
+                                                if (resultNode.getName().equals(nodeName)) {
+                                                    add = false;
+                                                    break;
+                                                }
+                                            }
+                                            if (add) {
+                                                result.add(node);
+                                            }
+                                        }
+                                        callback.onSuccess(result);
+                                    }
+                                });
 
-        treeContainer.add(tree);
-
-        tree.setHideHeaders(true);
-        tree.setAutoExpand(true);
-        final String path = settingPath.replaceAll("$site","JahiaGWTParameters.getSiteNode().getPath()");
-        // get List of site settings
-        tree.setSelectionModel(new TreeGridSelectionModel<GWTJahiaNode>() {
-            @Override
-            protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
-                super.handleMouseClick(e);
-
-                    MainModule.staticGoTo(path,getSelectedItem().getName());
-            }
-        });
-        tree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
-        tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
-                listLoader.load(se.getSelectedItem());
-            }
-        });
-
-        // data proxy
-        RpcProxy<ListLoadResult<GWTJahiaNode>> listProxy = new RpcProxy<ListLoadResult<GWTJahiaNode>>() {
-            @Override
-            protected void load(final Object gwtJahiaFolder, final AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
-                // Creates a fake proxy, content never reloaded
-            }
-        };
-
-        listLoader = new BaseListLoader<ListLoadResult<GWTJahiaNode>>(listProxy);
-
-        contentStore = new ListStore<GWTJahiaNode>(listLoader);
-        contentStore.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
+                    }
+                }
+        );
+        settingsStore = new TreeStore<GWTJahiaNode>(settingsLoader);
+        settingsStore.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
             public int compare(Object o1, Object o2) {
                 if (o1 instanceof String && o2 instanceof String) {
                     String s1 = (String) o1;
@@ -174,7 +170,30 @@ public class SettingsPanel implements Serializable {
                 return 0;
             }
         }));
-        contentStore.setSortField("display");
+        TreeGrid<GWTJahiaNode> settingsTree = new TreeGrid<GWTJahiaNode>(settingsStore,new ColumnModel(columns));
+
+
+        settingsTree.setAutoExpandColumn(columns.getAutoExpand());
+        settingsTree.getTreeView().setRowHeight(25);
+        settingsTree.getTreeView().setForceFit(true);
+        settingsTree.setHeight("100%");
+        settingsTree.setIconProvider(ContentModelIconProvider.getInstance());
+
+        treeContainer.add(settingsTree);
+
+        settingsTree.setHideHeaders(true);
+        settingsTree.setAutoExpand(true);
+        final String path = settingPath.replaceAll("$site","JahiaGWTParameters.getSiteNode().getPath()");
+        // get List of site settings
+        settingsTree.setSelectionModel(new TreeGridSelectionModel<GWTJahiaNode>() {
+            @Override
+            protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
+                super.handleMouseClick(e);
+
+                    MainModule.staticGoTo(path,getSelectedItem().getName());
+            }
+        });
+
         VBoxLayoutData treeVBoxData = new VBoxLayoutData();
         treeVBoxData.setFlex(1);
 
@@ -210,7 +229,7 @@ public class SettingsPanel implements Serializable {
     }
 
     public void refresh() {
-        factory.getStore().removeAll();
-        factory.getLoader().load();
+        settingsStore.removeAll();
+        settingsLoader.load();
     }
 }

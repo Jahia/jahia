@@ -743,6 +743,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         try {
             File f = File.createTempFile("import", null);
 
+            if (session.getLocale() != null) {
+                throw new RepositoryException("Cannot generated export with i18n session");
+            }
+
             Map<String, Object> params = new HashMap<String, Object>();
             params.put(ImportExportService.XSL_PATH, SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/export/templatesCleanup.xsl");
             FileOutputStream out = new FileOutputStream(f);

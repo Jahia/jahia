@@ -1482,7 +1482,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void updateModule(String moduleName) throws GWTJahiaServiceException {
         try {
-            contentManager.updateModule(moduleName, retrieveCurrentSession());
+            contentManager.updateModule(moduleName, retrieveCurrentSession(null));
         } catch (Exception e) {
             logger.error("Cannot update module", e);
             throw new GWTJahiaServiceException(e.toString());
@@ -1491,7 +1491,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void compileAndDeploy(String moduleName) throws GWTJahiaServiceException {
         try {
-            contentManager.compileAndDeploy(moduleName, retrieveCurrentSession());
+            contentManager.compileAndDeploy(moduleName, retrieveCurrentSession(null));
         } catch (Exception e) {
             logger.error("Cannot update module", e);
             throw new GWTJahiaServiceException(e.toString());
@@ -1507,7 +1507,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException if something bad happened (like impossible to compile the module)
      */
     public GWTJahiaNode generateWar(String moduleName) throws GWTJahiaServiceException {
-        return contentManager.releaseModule(moduleName, null, retrieveCurrentSession());
+        return contentManager.releaseModule(moduleName, null, retrieveCurrentSession(null));
     }
 
     /**
@@ -1520,10 +1520,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     public RpcMap releaseModule(String moduleName, String nextVersion) throws GWTJahiaServiceException {
         try {
-            JCRSessionWrapper session = retrieveCurrentSession();
-            GWTJahiaNode node = contentManager.releaseModule(moduleName, nextVersion, session);
+            GWTJahiaNode node = contentManager.releaseModule(moduleName, nextVersion, retrieveCurrentSession(null));
             RpcMap r = new RpcMap();
-            r.put("newModule",navigation.getNode("/modules/"+moduleName, GWTJahiaNode.DEFAULT_SITE_FIELDS, session, getUILocale()));
+            r.put("newModule",navigation.getNode("/modules/"+moduleName, GWTJahiaNode.DEFAULT_SITE_FIELDS, retrieveCurrentSession(), getUILocale()));
             r.put("filename",node.getName());
             r.put("downloadUrl",node.getUrl());
 

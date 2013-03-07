@@ -178,7 +178,7 @@ public class WelcomeServlet extends HttpServlet {
                 // edit mode was requested
                 if (editConfiguration.isModulesOnly()) {
                     base = request.getContextPath() + mapping + "/"
-                            + Constants.EDIT_WORKSPACE + "/" + language + "/sites/systemsite.manageModules";
+                            + Constants.EDIT_WORKSPACE + "/" + language + "/settings.manageModules";
                 } else {
                     if(home!=null) {
                         base = request.getContextPath() + mapping + "/"

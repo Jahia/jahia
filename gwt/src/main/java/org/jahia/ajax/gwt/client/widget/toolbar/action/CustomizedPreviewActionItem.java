@@ -208,7 +208,6 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
                 combo.setStore(states);
             }
         });
-        combo.setEmptyText(Messages.get("label.preview.window.channel", "Channel") + "...");
         combo.setDisplayField("display");
         combo.setName("previewChannel");
         combo.setStore(states);

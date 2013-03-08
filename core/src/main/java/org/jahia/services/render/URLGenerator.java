@@ -197,20 +197,13 @@ public class URLGenerator {
             if (studio == null) {
                 studio = "/cms/studio/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/modules";
                 if (context.getSite() != null) {
-                    try {
-                        if (context.getSite().hasProperty("j:templatesSet")) {
-                            studio += "/" + context.getSite().getProperty("j:templatesSet").getString();
-                            studio += ".html";
-                        } else if (context.getSite().getPath().startsWith("/modules")) {
-                            studio = "/cms/studio/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + context.getSite().getPath();
-                            studio += ".html";
-                        }
-                    } catch (RepositoryException e) {
-                        logger.error("Cannot get studio url", e);
+                    if (context.getSite().getPath().startsWith("/modules")) {
+                        studio = "/cms/studio/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + context.getSite().getPath();
+                        studio += ".html";
+                        return studio;
                     }
-                } else {
-                    studio += ".html";
                 }
+                studio = "/welcome/studiomode";
             }
         }
         return studio;
@@ -221,25 +214,13 @@ public class URLGenerator {
             if (studioVisual == null) {
                 studioVisual = "/cms/studiovisual/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/modules";
                 if (context.getSite() != null) {
-                    try {
-                        if (context.getSite().hasProperty("j:templatesSet")) {
-                            studioVisual += "/" + context.getSite().getProperty("j:templatesSet").getString();
-                            studioVisual += ".html";
-                        } else if (context.getSite().getPath().startsWith("/modules")) {
-                            studioVisual = "/cms/studiovisual/" + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + context.getSite().getPath();
-                            studioVisual += ".html";
-                        }
-                    } catch (RepositoryException e) {
-                        logger.error("Cannot get studio url", e);
-                    }
-                } else {
-                    try {
-                        studioVisual += "/" + ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite().getNode().getProperty("j:templatesSet").getString();
+                    if (context.getSite().getPath().startsWith("/modules")) {
+                        studioVisual = "/cms/studiovisual/" + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + context.getSite().getPath();
                         studioVisual += ".html";
-                    } catch (RepositoryException e) {
-                        logger.error("Cannot get studio url", e);
+                        return studio;
                     }
                 }
+                studio = "/welcome/studiovisualmode";
             }
         }
         return studioVisual;

@@ -40,7 +40,7 @@
     padding: 10px 5px ;
     vertical-align: middle;
     horizontal-align:middle;
-    margin-bottom:5px;
+    margin-bottom:10px;
     margin-top:5px;
     text-align:center;
     font-family: tahoma, arial, verdana, sans-serif;
@@ -66,13 +66,13 @@
 /** styles added for list module in order to make them as nice as jahia6 **/
 
 .x-panel-header-simplemodule {
-    background-color: #c8c8c8;
+    background-color: #eaeaea;
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 11px;
     font-weight: bold;
-    padding: 5px 10px;
-    color: #666665 !important;
-    margin-bottom:5px;
+    padding: 5px;
+    color: #333 !important;
+    margin-bottom:10px;
     display:block;
     overflow:hidden;
     text-shadow: none !important;
@@ -81,13 +81,13 @@
 }
 
 .x-panel-header-listmodule {
-    background-color: #c8c8c8;
+    background-color: #999;
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 11px;
     font-weight: bold;
-    padding: 2px 2px 2px 4px;
-    color: #666665 !important;
-    margin-bottom:2px;
+    padding: 5px;
+    color: #333 !important;
+    margin-bottom:10px;
     display:block;
     overflow:hidden;
     text-shadow: none !important;
@@ -96,10 +96,11 @@
 
 .x-panel-header-areamodule {
     font-family: tahoma,arial,verdana,sans-serif;
-    font-variant: small-caps;
+    text-transform: uppercase;
     font-size: 11px;
     font-weight: bold;
-    margin-bottom:5px;
+    padding: 5px;
+    margin-bottom:10px;
     display:block;
     overflow:hidden;
     text-shadow: none !important;
@@ -116,27 +117,33 @@
 }
 
 .x-panel-header-absoluteAreamodule {
-    background-color:#586370;
     font-family: tahoma,arial,verdana,sans-serif;
+    text-transform: uppercase;
     font-size: 11px;
-    padding: 2px 2px 2px 4px;
-    color: #fff !important;
     font-weight: bold;
-    margin-bottom:2px;
+    padding: 5px;
+    margin-bottom:10px;
     display:block;
     overflow:hidden;
     text-shadow: none !important;
+    text-align: center;
     transition: all 1s ease ;
 }
-
+.x-panel-header-text-absoluteAreamodule {
+    background-color: #cc6666 !important;
+    color: #ffffff !important;
+    padding:5px 10px;
+    display: inline-block;
+    transition: all 1s ease ;
+}
 .x-panel-header-lockedmodule {
     background-color:#000;
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 11px;
-    font-weight: bold;
-    padding: 2px 2px 2px 4px;
+    padding: 5px;
     color: #ccc !important;
-    margin-bottom:2px;
+    font-weight: bold;
+    margin-bottom:10px;
     display:block;
     overflow:hidden;
     text-shadow: none !important;
@@ -144,7 +151,7 @@
 }
 
 .x-panel-placeholder {
-    margin-bottom: 2px;
+    margin-bottom: 10px;
 }
 
 .x-panel-toolbar {
@@ -160,22 +167,26 @@
 
 button.button-placeholder, div.button-placeholder {
     font-family:tahoma,arial,verdana,sans-serif;
-    font-size:10px;
+    font-size:11px;
     font-weight:bold;
     text-align:center;
     text-transform:none;
-    background-color: #b7b7b7;
+    background-color: #b7b7b7 ;
     border:none;
     color:#fff;
-    padding:1px 3px 1px 2px;
-    margin:0 0 0 1px;
+    padding:5px;
+    margin:0 0 1px 1px;
     cursor:pointer;
     line-height:15px !important;
     text-shadow: none !important;
-
+    width: auto !important;
+    display: block;
 }
 button.button-placeholder:hover,  div.button-placeholder:hover {
-    background-color: #3399FF ;
+    background-color: #39f ;
+}
+button.button-placeholder img, div.button-placeholder img   {
+    margin-right:5px;
 }
 
 button.button-enabledisable, div.button-enabledisable {
@@ -188,7 +199,7 @@ button.button-enabledisable, div.button-enabledisable {
     background-color:#A6D90F ;
     border:none;
     color:#fff;
-    padding:1px 3px 1px 2px;
+    padding:5px;
     margin:0 0 0 1px;
     cursor:pointer;
     line-height:15px !important;
@@ -355,15 +366,16 @@ button.button-enabledisable, div.button-enabledisable {
     margin-bottom: 5px;
 
 }
-.studiomodeArea:hover > .x-panel-header > span.x-panel-header-text-areamodule {
-    background-color: #3399ff !important;
+.editmodeArea  {
+}
+.studiovisualmodeArea  {
+
 
 }
-.jahia-template-gxt:hover > div > .x-panel-header-simplemodule {
-    background-color: #3399ff !important;
-    color: #fff !important;
-}
 
+.jahia-template-gxt  {
+    margin-bottom: 10px;
+}
 .studiomodeDisabledArea {
     min-height:100px;
     overflow: hidden;
@@ -373,12 +385,19 @@ button.button-enabledisable, div.button-enabledisable {
     position:relative;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
-    margin-bottom: 2px;
+    margin-bottom: 10px;
     border: 1px solid #99ccff;
 }
 
 .AreaInformation{
-    color:#666;
+    font-family: tahoma,arial,verdana,sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 5px;
+    color: #666665 !important;
+    margin-bottom:10px;
+    display:block;
+    overflow:hidden;
 }
 .studiomodeAbsoluteArea {
     min-height:100px;
@@ -389,7 +408,7 @@ button.button-enabledisable, div.button-enabledisable {
     position:relative;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
-    margin-bottom: 2px;
+    margin-bottom: 10px;
     border: 1px solid #cc6666;
 }
 
@@ -402,7 +421,7 @@ button.button-enabledisable, div.button-enabledisable {
     position:relative;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
-    margin-bottom: 2px;
+    margin-bottom: 10px;
     border: 1px solid #cc6666;
 }
 
@@ -415,7 +434,7 @@ button.button-enabledisable, div.button-enabledisable {
     position:relative;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
-    margin-bottom: 2px;
+    margin-bottom: 10px;
     border: 1px solid #ccc;
 }
 
@@ -428,7 +447,19 @@ button.button-enabledisable, div.button-enabledisable {
     background:#d8effb url(../images/authorDisplayArea-bg.png) no-repeat scroll 50% 100% ;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
-    margin-bottom: 2px;
+    margin-bottom: 10px;
+    border: 1px solid #99ccff;
+}
+.areaTemplate {
+    min-height:100px;
+    overflow: hidden;
+    background-color:#d8effb;
+    padding:2px;
+    color:#111;
+    position:relative;
+    font-family: tahoma, arial, verdana, sans-serif;
+    font-size:11px;
+    margin-bottom: 10px;
     border: 1px solid #99ccff;
 }
 
@@ -441,7 +472,7 @@ button.button-enabledisable, div.button-enabledisable {
     position:relative;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size:11px;
-    margin-bottom: 2px;
+    margin-bottom: 10px;
     border: 1px solid #99cc99;
 }
 .dashedArea {
@@ -523,4 +554,7 @@ button.button-enabledisable, div.button-enabledisable {
     margin-right:2px;
     background-image:url(../images/default/panel/tool-sprites.gif);
     background-position:-15px -150px;
+}
+.x-panel-inline-icon   {
+    margin-right:5px ;
 }

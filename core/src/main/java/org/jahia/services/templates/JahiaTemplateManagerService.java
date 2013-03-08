@@ -1061,14 +1061,17 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public void autoInstallModulesToSites(JahiaTemplatesPackage module, JCRSessionWrapper session)
             throws RepositoryException {
+        Set<String> autoInstalled = new HashSet<String>();
         if (StringUtils.isNotBlank(module.getAutoDeployOnSite())) {
             if ("system".equals(module.getAutoDeployOnSite())) {
                 if (session.nodeExists("/sites/systemsite")) {
                     installModule(module, "/sites/systemsite", session);
+                    autoInstalled.add("systemsite");
                 }
             } else if ("all".equals(module.getAutoDeployOnSite())) {
                 if (session.nodeExists("/sites/systemsite")) {
                     installModuleOnAllSites(module, session, null);
+                    return;
                 }
             }
         }
@@ -1077,6 +1080,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         NodeIterator ni = session.getNode("/sites").getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
+            if (autoInstalled.contains(next.getName())) {
+                continue;
+            }
             if (next.hasProperty("j:installedModules")) {
                 Value[] v = next.getProperty("j:installedModules").getValues();
                 for (Value value : v) {

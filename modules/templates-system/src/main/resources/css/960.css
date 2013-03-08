@@ -490,3 +490,7 @@ html body * dd.clear
 {
     display: block;
 }
+/* grid 960 remove bg  */
+.container_12, .container_16 {
+    background-size: 100% !important;
+}

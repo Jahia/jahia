@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -8,7 +9,7 @@
     <artifactId>serverSettings</artifactId>
     <name>Jahia Server Settings</name>
     <packaging>bundle</packaging>
-    <description>Server settings.</description>
+    <description>Server settings</description>
 
     <build>
         <plugins>
@@ -18,7 +19,6 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Jahia-Depends>default</Jahia-Depends>
                         <Jahia-Deploy-On-Site>system</Jahia-Deploy-On-Site>
                     </instructions>
                 </configuration>

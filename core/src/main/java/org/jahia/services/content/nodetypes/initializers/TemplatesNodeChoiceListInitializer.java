@@ -41,9 +41,13 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.commons.lang.StringUtils;
+<<<<<<< .working
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
+=======
+import org.jahia.api.Constants;
+>>>>>>> .merge-right.r44998
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -169,12 +173,35 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                 ok &= node.hasPermission("template-" + templateNode.getName());
             }
 
+<<<<<<< .working
             if (ok) {
                 ChoiceListValue v;
                 if (propertyDefinition.getRequiredType() == PropertyType.STRING) {
                     v = new ChoiceListValue(templateNode.getName(), null, session.getValueFactory().createValue(templateNode.getName(), PropertyType.STRING));
                 } else {
                     v = new ChoiceListValue(templateNode.getName(), null, session.getValueFactory().createValue(templateNode.getIdentifier(), PropertyType.WEAKREFERENCE));
+=======
+                if (ok) {
+
+                    String templateName = templateNode.getName();
+                    try {
+                        Property templateTitleProperty = templateNode.getI18N(locale).getProperty(Constants.JCR_TITLE);
+                        if (templateTitleProperty != null) {
+                            String templateTitle = templateTitleProperty.getString();
+                            if (StringUtils.isNotEmpty(templateTitle)) {
+                                templateName = templateTitle;
+                            }
+                        }
+                    } catch (RepositoryException re) {
+                        logger.warn("No title for template "+templateNode.getPath()+" in locale " + locale + ", will use template system name as display name");
+                    }
+                    ChoiceListValue v = new ChoiceListValue(templateName, null, session.getValueFactory().createValue(templateNode.getIdentifier(),
+                            PropertyType.WEAKREFERENCE));
+                    if (defaultTemplate !=  null && templateNode.getPath().equals(defaultTemplate.getPath())) {
+                        v.addProperty("defaultProperty",true);
+                    }
+                    vs.add(v);
+>>>>>>> .merge-right.r44998
                 }
                 if (defaultTemplate != null && templateNode.getPath().equals(defaultTemplate.getPath())) {
                     v.addProperty("defaultProperty", true);

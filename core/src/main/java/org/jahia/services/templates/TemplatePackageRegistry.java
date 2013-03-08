@@ -105,12 +105,12 @@ public class TemplatePackageRegistry {
     private Map<String, JahiaTemplatesPackage> registry = new TreeMap<String, JahiaTemplatesPackage>();
     private Map<String, JahiaTemplatesPackage> fileNameRegistry = new TreeMap<String, JahiaTemplatesPackage>();
     private List<JahiaTemplatesPackage> templatePackages;
-    private Map<String, Map<ModuleVersion,JahiaTemplatesPackage>> packagesWithVersion = new TreeMap<String, Map<ModuleVersion, JahiaTemplatesPackage>>();
-    private Map<String, Map<ModuleVersion,JahiaTemplatesPackage>> packagesWithVersionByFilename = new TreeMap<String, Map<ModuleVersion, JahiaTemplatesPackage>>();
+    private Map<String, Map<ModuleVersion, JahiaTemplatesPackage>> packagesWithVersion = new TreeMap<String, Map<ModuleVersion, JahiaTemplatesPackage>>();
+    private Map<String, Map<ModuleVersion, JahiaTemplatesPackage>> packagesWithVersionByFilename = new TreeMap<String, Map<ModuleVersion, JahiaTemplatesPackage>>();
     private Map<String, Set<JahiaTemplatesPackage>> modulesWithViewsPerComponents = new HashMap<String, Set<JahiaTemplatesPackage>>();
     private List<RenderFilter> filters = new LinkedList<RenderFilter>();
     private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
-    private Map<String,Action> actions;
+    private Map<String, Action> actions;
     private Map<String, BackgroundAction> backgroundActions;
     private List<SimpleUrlHandlerMapping> urlHandlerMappings = new ArrayList<SimpleUrlHandlerMapping>();
     private JCRStoreService jcrStoreService;
@@ -122,9 +122,9 @@ public class TemplatePackageRegistry {
      */
     @SuppressWarnings("unchecked")
     public TemplatePackageRegistry() {
-	    super();
-	    actions = new CaseInsensitiveMap();
-	    backgroundActions = new CaseInsensitiveMap();
+        super();
+        actions = new CaseInsensitiveMap();
+        backgroundActions = new CaseInsensitiveMap();
     }
 
     public Map<String, Action> getActions() {
@@ -160,8 +160,8 @@ public class TemplatePackageRegistry {
         module.getBundle().start();
     }
 
-    private boolean computeDependencies(Set<JahiaTemplatesPackage> dependencies,  JahiaTemplatesPackage pack) {
-        for (String depends : pack.getDepends()) {
+    private boolean computeDependencies(JahiaTemplatesPackage pack, JahiaTemplatesPackage currentPack) {
+        for (String depends : currentPack.getDepends()) {
             JahiaTemplatesPackage dependentPack = registry.get(depends);
             if (dependentPack == null) {
                 dependentPack = fileNameRegistry.get(depends);
@@ -169,11 +169,11 @@ public class TemplatePackageRegistry {
             if (dependentPack == null) {
                 return false;
             }
-            if (!dependencies.contains(dependentPack)) {
-                dependencies.add(dependentPack);
-                if (!computeDependencies(dependencies, dependentPack)) {
+            if (!pack.getDependencies().contains(dependentPack)) {
+                if (!computeDependencies(pack, dependentPack)) {
                     return false;
                 }
+                pack.addDependency(dependentPack);
             }
         }
         return true;
@@ -227,10 +227,10 @@ public class TemplatePackageRegistry {
      *
      * @param packageNames the list of template package names to check for
      * @return <code>true</code>, if specified template packages are all present
-     * 		   in the repository
+     *         in the repository
      */
     public boolean containsAll(List<String> packageNames) {
-    	return registry.keySet().containsAll(packageNames);
+        return registry.keySet().containsAll(packageNames);
     }
 
     public boolean containsFileName(String fileName) {
@@ -245,8 +245,8 @@ public class TemplatePackageRegistry {
     public List<JahiaTemplatesPackage> getAvailablePackages() {
         if (null == templatePackages) {
             templatePackages = Collections
-                .unmodifiableList(new LinkedList<JahiaTemplatesPackage>(
-                    registry.values()));
+                    .unmodifiableList(new LinkedList<JahiaTemplatesPackage>(
+                            registry.values()));
         }
         return templatePackages;
     }
@@ -265,9 +265,21 @@ public class TemplatePackageRegistry {
             return Collections.unmodifiableSet(packagesWithVersionByFilename.get(rootFolder).keySet());
         }
         if (packagesWithVersion.containsKey(rootFolder)) {
-        return Collections.unmodifiableSet(packagesWithVersion.get(rootFolder).keySet());
-    }
+            return Collections.unmodifiableSet(packagesWithVersion.get(rootFolder).keySet());
+        }
         return Collections.emptySet();
+    }
+
+    public String getRootFolderName(String moduleName) {
+        if (packagesWithVersionByFilename.containsKey(moduleName)) {
+            return moduleName;
+        }
+        if (packagesWithVersion.containsKey(moduleName)) {
+            for (JahiaTemplatesPackage aPackage : packagesWithVersion.get(moduleName).values()) {
+                return aPackage.getRootFolder();
+            }
+        }
+        return null;
     }
 
     public Set<String> getPackageFileNames() {
@@ -304,8 +316,7 @@ public class TemplatePackageRegistry {
     /**
      * Returns the template package that corresponds to the provided OSGi bundle or <code>null</code> if the package is not registered.
      *
-     * @param osgiBundle
-     *            the corresponding OSGi bundle
+     * @param osgiBundle the corresponding OSGi bundle
      * @return the template package that corresponds to the provided OSGi bundle or <code>null</code> if the package is not registered
      */
     public JahiaTemplatesPackage lookupByBundle(Bundle osgiBundle) {
@@ -341,7 +352,7 @@ public class TemplatePackageRegistry {
 
     public JahiaTemplatesPackage lookupByNameAndVersion(String fileName, ModuleVersion moduleVersion) {
         if (fileName == null || registry == null) return null;
-        Map<ModuleVersion,JahiaTemplatesPackage> packageVersions = packagesWithVersion.get(fileName);
+        Map<ModuleVersion, JahiaTemplatesPackage> packageVersions = packagesWithVersion.get(fileName);
         if (packageVersions != null) {
             return packageVersions.get(moduleVersion);
         } else {
@@ -351,7 +362,7 @@ public class TemplatePackageRegistry {
 
     public JahiaTemplatesPackage lookupByFileNameAndVersion(String fileName, ModuleVersion moduleVersion) {
         if (fileName == null || registry == null) return null;
-        Map<ModuleVersion,JahiaTemplatesPackage> packageVersions = packagesWithVersionByFilename.get(fileName);
+        Map<ModuleVersion, JahiaTemplatesPackage> packageVersions = packagesWithVersionByFilename.get(fileName);
         if (packageVersions != null) {
             return packageVersions.get(moduleVersion);
         } else {
@@ -393,9 +404,7 @@ public class TemplatePackageRegistry {
         fileNameRegistry.put(templatePackage.getRootFolder(), templatePackage);
 
         // handle dependencies
-        for (JahiaTemplatesPackage pack : registry.values()) {
-            computeDependencies(pack);
-        }
+        computeDependencies(templatePackage);
 
         // handle resource bundles
 //        for (JahiaTemplatesPackage sourcePack : registry.values()) {
@@ -414,8 +423,8 @@ public class TemplatePackageRegistry {
             }
         }
 
-        logger.info("Registered '{}' [{}] version {}", new Object[] { templatePackage.getName(),
-                templatePackage.getRootFolder(), templatePackage.getVersion() });
+        logger.info("Registered '{}' [{}] version {}", new Object[]{templatePackage.getName(),
+                templatePackage.getRootFolder(), templatePackage.getVersion()});
     }
 
 
@@ -451,8 +460,8 @@ public class TemplatePackageRegistry {
     }
 
     public boolean computeDependencies(JahiaTemplatesPackage pack) {
-        pack.getDependencies().clear();
-        if (computeDependencies(pack.getDependencies(), pack)) {
+        pack.resetDependencies();
+        if (computeDependencies(pack, pack)) {
             computeResourceBundleHierarchy(pack);
             return true;
         }
@@ -470,7 +479,7 @@ public class TemplatePackageRegistry {
                 }
                 jcrStoreService.deployDefinitions(templatePackage.getRootFolder());
             } catch (Exception e) {
-                logger.warn("Cannot parse definitions for "+templatePackage.getName(),e);
+                logger.warn("Cannot parse definitions for " + templatePackage.getName(), e);
             }
         }
         // add rules descriptor
@@ -482,7 +491,7 @@ public class TemplatePackageRegistry {
                     }
                 }
             } catch (Exception e) {
-                logger.warn("Cannot parse rules for "+templatePackage.getName(),e);
+                logger.warn("Cannot parse rules for " + templatePackage.getName(), e);
             }
         }
         // add rules
@@ -491,13 +500,13 @@ public class TemplatePackageRegistry {
                 for (String name : templatePackage.getRulesFiles()) {
                     for (RulesListener listener : RulesListener.getInstances()) {
                         List<String> filesAccepted = listener.getFilesAccepted();
-                        if(filesAccepted.contains(StringUtils.substringAfterLast(name, "/"))) {
+                        if (filesAccepted.contains(StringUtils.substringAfterLast(name, "/"))) {
                             listener.addRules(new File(rootFolder, name));
                         }
                     }
                 }
             } catch (Exception e) {
-                logger.warn("Cannot parse rules for "+templatePackage.getName(),e);
+                logger.warn("Cannot parse rules for " + templatePackage.getName(), e);
             }
         }
     }
@@ -594,7 +603,7 @@ public class TemplatePackageRegistry {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Unregistering ModuleGlobalObject '" + beanName + "'");
                 }
-                if(moduleGlobalObject.getGlobalRulesObject()!=null) {
+                if (moduleGlobalObject.getGlobalRulesObject() != null) {
                     for (RulesListener listener : RulesListener.getInstances()) {
                         for (Map.Entry<String, Object> entry : moduleGlobalObject.getGlobalRulesObject().entrySet()) {
                             listener.removeGlobalObject(entry.getKey());
@@ -612,32 +621,32 @@ public class TemplatePackageRegistry {
             if (bean instanceof DefaultEventListener) {
                 final DefaultEventListener eventListener = (DefaultEventListener) bean;
                 if (eventListener.getEventTypes() > 0) {
-	                try {
-	                    JCRTemplate.getInstance().doExecuteWithSystemSession(null,eventListener.getWorkspace(),new JCRCallback<Object>() {
-	                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-	                            final Workspace workspace = session.getWorkspace();
+                    try {
+                        JCRTemplate.getInstance().doExecuteWithSystemSession(null, eventListener.getWorkspace(), new JCRCallback<Object>() {
+                            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                final Workspace workspace = session.getWorkspace();
 
-	                            ObservationManager observationManager = workspace.getObservationManager();
+                                ObservationManager observationManager = workspace.getObservationManager();
                                 //first remove existing listener of same type
                                 final EventListenerIterator registeredEventListeners = observationManager.getRegisteredEventListeners();
                                 javax.jcr.observation.EventListener toBeRemoved = null;
                                 while (registeredEventListeners.hasNext()) {
                                     javax.jcr.observation.EventListener next = registeredEventListeners.nextEventListener();
-                                    if(next.getClass().equals(eventListener.getClass())) {
+                                    if (next.getClass().equals(eventListener.getClass())) {
                                         toBeRemoved = next;
                                         break;
                                     }
                                 }
                                 observationManager.removeEventListener(toBeRemoved);
-	                            return null;
-	                        }
-	                    });
-	                    if (logger.isDebugEnabled()) {
-	                        logger.debug("Unregistering event listener"+eventListener.getClass().getName()+" for workspace '" + eventListener.getWorkspace() + "'");
-	                    }
-	                } catch (RepositoryException e) {
-	                    logger.error(e.getMessage(), e);
-	                }
+                                return null;
+                            }
+                        });
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Unregistering event listener" + eventListener.getClass().getName() + " for workspace '" + eventListener.getWorkspace() + "'");
+                        }
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                    }
                 }
             }
             if (bean instanceof BackgroundAction) {
@@ -649,7 +658,7 @@ public class TemplatePackageRegistry {
                 templatePackageRegistry.backgroundActions.remove(backgroundAction.getName());
             }
 
-            if(bean instanceof WorklowTypeRegistration) {
+            if (bean instanceof WorklowTypeRegistration) {
                 WorklowTypeRegistration registration = (WorklowTypeRegistration) bean;
                 workflowService.unregisterWorkflowType(registration.getType(), registration.getDefinition());
             }
@@ -679,15 +688,15 @@ public class TemplatePackageRegistry {
             }
 
             if (bean instanceof ProviderFactory) {
-                jcrStoreService.getProviderFactories().remove(((ProviderFactory)bean).getNodeTypeName());
+                jcrStoreService.getProviderFactories().remove(((ProviderFactory) bean).getNodeTypeName());
             }
 
             if (bean instanceof FactoryBean && bean.getClass().getName().equals("org.springframework.webflow.config.FlowRegistryFactoryBean")) {
                 try {
                     FlowDefinitionRegistry flowDefinitionRegistry = (FlowDefinitionRegistry) ((FactoryBean) bean).getObject();
-                    ((BundleFlowRegistry)SpringContextSingleton.getBean("jahiaBundleFlowRegistry")).removeFlowRegistry(flowDefinitionRegistry);
+                    ((BundleFlowRegistry) SpringContextSingleton.getBean("jahiaBundleFlowRegistry")).removeFlowRegistry(flowDefinitionRegistry);
                 } catch (Exception e) {
-                    logger.error("Cannot register webflow registry",e);
+                    logger.error("Cannot register webflow registry", e);
                 }
             }
 
@@ -695,7 +704,7 @@ public class TemplatePackageRegistry {
 
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
             if (bean instanceof SharedService) {
-                ((ConfigurableApplicationContext)SpringContextSingleton.getInstance().getContext()).getBeanFactory().registerSingleton(beanName, bean);
+                ((ConfigurableApplicationContext) SpringContextSingleton.getInstance().getContext()).getBeanFactory().registerSingleton(beanName, bean);
             }
             if (bean instanceof RenderServiceAware) {
                 ((RenderServiceAware) bean).setRenderService(renderService);
@@ -724,7 +733,7 @@ public class TemplatePackageRegistry {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Registering ModuleChoiceListInitializer '" + moduleChoiceListInitializer.getKey() + "' (" + beanName + ")");
                 }
-                choiceListInitializers.getInitializers().put(moduleChoiceListInitializer.getKey(),moduleChoiceListInitializer);
+                choiceListInitializers.getInitializers().put(moduleChoiceListInitializer.getKey(), moduleChoiceListInitializer);
             }
 
             if (bean instanceof ModuleChoiceListRenderer) {
@@ -732,17 +741,17 @@ public class TemplatePackageRegistry {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Registering ChoiceListRenderer '" + choiceListRenderer.getKey() + "' (" + beanName + ")");
                 }
-                choiceListRendererService.getRenderers().put(choiceListRenderer.getKey(),choiceListRenderer);
+                choiceListRendererService.getRenderers().put(choiceListRenderer.getKey(), choiceListRenderer);
             }
             if (bean instanceof ModuleGlobalObject) {
                 ModuleGlobalObject moduleGlobalObject = (ModuleGlobalObject) bean;
                 if (logger.isDebugEnabled()) {
                     logger.debug("Registering ModuleGlobalObject '" + beanName + "'");
                 }
-                if(moduleGlobalObject.getGlobalRulesObject()!=null) {
+                if (moduleGlobalObject.getGlobalRulesObject() != null) {
                     for (RulesListener listener : RulesListener.getInstances()) {
                         for (Map.Entry<String, Object> entry : moduleGlobalObject.getGlobalRulesObject().entrySet()) {
-                            listener.addGlobalObject(entry.getKey(),entry.getValue());
+                            listener.addGlobalObject(entry.getKey(), entry.getValue());
                         }
                     }
                 }
@@ -757,36 +766,36 @@ public class TemplatePackageRegistry {
             if (bean instanceof DefaultEventListener) {
                 final DefaultEventListener eventListener = (DefaultEventListener) bean;
                 if (eventListener.getEventTypes() > 0) {
-	                try {
-	                    JCRTemplate.getInstance().doExecuteWithSystemSession(null,eventListener.getWorkspace(),new JCRCallback<Object>() {
-	                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-	                            final Workspace workspace = session.getWorkspace();
+                    try {
+                        JCRTemplate.getInstance().doExecuteWithSystemSession(null, eventListener.getWorkspace(), new JCRCallback<Object>() {
+                            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                final Workspace workspace = session.getWorkspace();
 
-	                            ObservationManager observationManager = workspace.getObservationManager();
+                                ObservationManager observationManager = workspace.getObservationManager();
                                 //first remove existing listener of same type
                                 final EventListenerIterator registeredEventListeners = observationManager.getRegisteredEventListeners();
                                 javax.jcr.observation.EventListener toBeRemoved = null;
                                 while (registeredEventListeners.hasNext()) {
                                     javax.jcr.observation.EventListener next = registeredEventListeners.nextEventListener();
-                                    if(next.getClass().equals(eventListener.getClass())) {
+                                    if (next.getClass().equals(eventListener.getClass())) {
                                         toBeRemoved = next;
                                         break;
                                     }
                                 }
                                 observationManager.removeEventListener(toBeRemoved);
                                 observationManager.addEventListener(eventListener, eventListener.getEventTypes(), eventListener.getPath(), eventListener.isDeep(), eventListener.getUuids(), eventListener.getNodeTypes(), false);
-	                            return null;
-	                        }
-	                    });
-	                    if (logger.isDebugEnabled()) {
-	                        logger.debug("Registering event listener"+eventListener.getClass().getName()+" for workspace '" + eventListener.getWorkspace() + "'");
-	                    }
-	                } catch (RepositoryException e) {
-	                    logger.error(e.getMessage(), e);
-	                }
+                                return null;
+                            }
+                        });
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Registering event listener" + eventListener.getClass().getName() + " for workspace '" + eventListener.getWorkspace() + "'");
+                        }
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                    }
                 } else {
-                	logger.info("Skipping listener {} as it has no event types configured.",
-					        eventListener.getClass().getName());
+                    logger.info("Skipping listener {} as it has no event types configured.",
+                            eventListener.getClass().getName());
                 }
             }
             if (bean instanceof BackgroundAction) {
@@ -809,7 +818,7 @@ public class TemplatePackageRegistry {
                     logger.debug(
                             "Registering Visibility Condition Rule '" + conditionRule.getClass().getName() + "' (" + beanName + ")");
                 }
-                visibilityService.addCondition(conditionRule.getAssociatedNodeType(),conditionRule);
+                visibilityService.addCondition(conditionRule.getAssociatedNodeType(), conditionRule);
             }
 
             if (bean instanceof JCRNodeDecoratorDefinition) {
@@ -828,15 +837,15 @@ public class TemplatePackageRegistry {
             }
 
             if (bean instanceof ProviderFactory) {
-                jcrStoreService.addProviderFactory(((ProviderFactory)bean).getNodeTypeName(), (ProviderFactory)bean);
+                jcrStoreService.addProviderFactory(((ProviderFactory) bean).getNodeTypeName(), (ProviderFactory) bean);
             }
 
             if (bean instanceof FactoryBean && bean.getClass().getName().equals("org.springframework.webflow.config.FlowRegistryFactoryBean")) {
                 try {
                     FlowDefinitionRegistry flowDefinitionRegistry = (FlowDefinitionRegistry) ((FactoryBean) bean).getObject();
-                    ((BundleFlowRegistry)SpringContextSingleton.getBean("jahiaBundleFlowRegistry")).addFlowRegistry(flowDefinitionRegistry);
+                    ((BundleFlowRegistry) SpringContextSingleton.getBean("jahiaBundleFlowRegistry")).addFlowRegistry(flowDefinitionRegistry);
                 } catch (Exception e) {
-                    logger.error("Cannot register webflow registry",e);
+                    logger.error("Cannot register webflow registry", e);
                 }
             }
 

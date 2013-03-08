@@ -487,7 +487,7 @@ class NodeHelper {
 
     private void populateDependencies(GWTJahiaNode n, JCRNodeWrapper node) {
         List<String> dependencies = new ArrayList<String>();
-        Set<JahiaTemplatesPackage> s = null;
+        List<JahiaTemplatesPackage> s = null;
         try {
             JahiaTemplatesPackage templatePackageByFileName = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getResolveSite().getTemplateFolder());
             if (templatePackageByFileName != null) {

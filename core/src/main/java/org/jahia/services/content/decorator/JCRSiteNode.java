@@ -394,7 +394,7 @@ public class JCRSiteNode extends JCRNodeDecorator {
                 final JahiaTemplatesPackage templatePackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(
                         getProperty("j:templatesSet").getString());
                 if (templatePackage != null) {
-                final Set<JahiaTemplatesPackage> dependencies = templatePackage.getDependencies();
+                final List<JahiaTemplatesPackage> dependencies = templatePackage.getDependencies();
                 for (JahiaTemplatesPackage dependency : dependencies) {
                     if(!modules.contains(dependency.getRootFolder())) {
                         modules.add(dependency.getRootFolder());

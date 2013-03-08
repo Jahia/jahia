@@ -112,7 +112,7 @@ public class JahiaTemplatesPackage {
 
     private String description;
 
-    private Set<JahiaTemplatesPackage> dependencies = new LinkedHashSet<JahiaTemplatesPackage>();
+    private List<JahiaTemplatesPackage> dependencies = new ArrayList<JahiaTemplatesPackage>();
     
     // set the module-type property from the manifest
 
@@ -308,7 +308,7 @@ public class JahiaTemplatesPackage {
     }
 
     public String toString() {
-        return ReflectionToStringBuilder.toString(this);
+        return getRootFolder();
     }
 
     /**
@@ -393,8 +393,18 @@ public class JahiaTemplatesPackage {
     /**
      * @return the dependencies
      */
-    public Set<JahiaTemplatesPackage> getDependencies() {
-        return dependencies;
+    public List<JahiaTemplatesPackage> getDependencies() {
+        return Collections.unmodifiableList(dependencies);
+    }
+
+    public void addDependency(JahiaTemplatesPackage dep) {
+        if (!dependencies.contains(dep)) {
+            dependencies.add(dep);
+        }
+    }
+
+    public void resetDependencies() {
+        dependencies.clear();
     }
 
     /**

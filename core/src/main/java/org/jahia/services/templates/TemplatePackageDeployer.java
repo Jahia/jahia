@@ -307,10 +307,9 @@ public class TemplatePackageDeployer {
         }
         List<Value> l = new ArrayList<Value>();
         for (String d : pack.getDepends()) {
-            if (templatePackageRegistry.lookup(d) != null) {
-                l.add(session.getValueFactory().createValue(templatePackageRegistry.lookup(d).getRootFolder()));
-            } else if (templatePackageRegistry.lookupByFileName(d) != null) {
-                l.add(session.getValueFactory().createValue(templatePackageRegistry.lookupByFileName(d).getRootFolder()));
+            String v = templatePackageRegistry.getRootFolderName(d);
+            if (v != null) {
+                l.add(session.getValueFactory().createValue(v));
             } else {
                 logger.warn("Cannot find dependency {} for package '{}'", d, pack.getName());
             }

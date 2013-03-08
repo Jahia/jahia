@@ -217,7 +217,7 @@ public class URLGenerator {
                     if (context.getSite().getPath().startsWith("/modules")) {
                         studioVisual = "/cms/studiovisual/" + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + context.getSite().getPath();
                         studioVisual += ".html";
-                        return studio;
+                        return studioVisual;
                     }
                 }
                 studio = "/welcome/studiovisualmode";

@@ -65,6 +65,7 @@ import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 
@@ -139,6 +140,17 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                 return p;
             }
             return "";
+        }
+    };
+
+    public static final GridCellRenderer<GWTJahiaNode> SCM_STATUS_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+        public Object render(GWTJahiaNode node, String property, ColumnData config, int rowIndex, int colIndex,
+                             ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
+            String scmStatus = (String) node.getProperties().get("scmStatus");
+            if (scmStatus == null) {
+                return "";
+            }
+            return ToolbarIconProvider.getInstance().getIcon("scmStatus/" + scmStatus).createImage();
         }
     };
 
@@ -275,6 +287,8 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                 col.setRenderer(SIZE_RENDERER);
             } else if ("publicationInfo".equals(column.getKey())) {
                 col.setRenderer(PUBLICATION_RENDERER);
+            } else if ("scmStatus".equals(column.getKey())) {
+                col.setRenderer(SCM_STATUS_RENDERER);
             } else if ("version".equals(column.getKey())) {
                 col.setAlignment(Style.HorizontalAlignment.CENTER);
                 col.setRenderer(VERSION_RENDERER);

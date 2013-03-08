@@ -96,6 +96,7 @@ abstract class BrowseTabItem extends SidePanelTabItem {
         factory = new GWTJahiaNodeTreeFactory(paths);
         factory.setNodeTypes(this.folderTypes);
         factory.setHiddenTypes(this.excludedFolderTypes);
+        factory.setFields(config.getTreeColumnKeys());
 
         NodeColumnConfigList columns = new NodeColumnConfigList(config.getTreeColumns());
         columns.init();

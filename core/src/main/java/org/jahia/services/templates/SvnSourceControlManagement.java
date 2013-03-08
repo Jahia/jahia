@@ -42,9 +42,7 @@ package org.jahia.services.templates;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
@@ -111,5 +109,47 @@ public class SvnSourceControlManagement extends SourceControlManagement {
     @Override
     public void commit(String message) throws IOException {
         executeCommand("svn", "commit -m \"" + message + "\"");
+    }
+
+    @Override
+    protected Map<String, Status> getStatusMap() throws IOException {
+        if (statusMap == null) {
+            statusMap = new HashMap<String, Status>();
+            ExecutionResult result = executeCommand("svn", "status");
+            for (String line : result.out.split("\n")) {
+                if (StringUtils.isBlank(line)) {
+                    continue;
+                }
+                String path = line.substring(8);
+                String combinedStatus = line.substring(0, 7);
+                char firstColumn = combinedStatus.charAt(0);
+                Status status = null;
+                if (firstColumn == 'A') {
+                    status = Status.ADDED;
+                } else if (firstColumn == 'C') {
+                    status = Status.UNMERGED;
+                } else if (firstColumn == 'D' || firstColumn == '!') {
+                    status = Status.DELETED;
+                } else if (firstColumn == 'M') {
+                    status = Status.MODIFIED;
+                } else if (firstColumn == '?') {
+                    status = Status.UNTRACKED;
+                }
+                if (status != null) {
+                    statusMap.put(path, status);
+                    String[] pathSegments = path.split("/");
+                    String subPath = "";
+                    for (String segment : pathSegments) {
+                        statusMap.put(subPath, Status.MODIFIED);
+                        if (subPath.isEmpty()) {
+                            subPath = segment;
+                        } else {
+                            subPath += "/" + segment;
+                        }
+                    }
+                }
+            }
+        }
+        return statusMap;
     }
 }

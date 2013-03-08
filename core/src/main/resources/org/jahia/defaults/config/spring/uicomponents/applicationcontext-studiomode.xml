@@ -484,6 +484,7 @@
                     <property name="treeColumns">
                         <list>
                             <value>displayName,*,label.title</value>
+                            <value>scmStatus,20</value>
                         </list>
                     </property>
                     <property name="treeContextMenu">

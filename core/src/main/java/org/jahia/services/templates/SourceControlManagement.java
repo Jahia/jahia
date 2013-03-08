@@ -40,19 +40,21 @@
 
 package org.jahia.services.templates;
 
-import org.apache.commons.lang.StringUtils;
 import org.jahia.utils.ProcessHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.List;
+import java.util.Map;
 
 public abstract class SourceControlManagement {
 
     private static Logger logger = LoggerFactory.getLogger(SourceControlManagement.class);
 
     protected File rootFolder;
+
+    protected Map<String, Status> statusMap;
 
     protected ExecutionResult executeCommand(String command, String arguments) throws IOException {
         try {
@@ -83,26 +85,8 @@ public abstract class SourceControlManagement {
         }
     }
 
-    protected void executeCommandUsingProcessBuidler(List<String> cmdList) {
-        try {
-            ProcessBuilder processBuilder = new ProcessBuilder(cmdList);
-            processBuilder.directory(rootFolder);
-            processBuilder.redirectErrorStream(true);
-            Process process = processBuilder.start();
-            int code = process.waitFor();
-            if (logger.isDebugEnabled()) {
-                logger.debug("Return with code " + code);
-                InputStream is = process.getInputStream();
-                InputStreamReader isr = new InputStreamReader(is);
-                BufferedReader br = new BufferedReader(isr);
-                String line;
-                while ((line = br.readLine()) != null) {
-                    logger.debug(line);
-                }
-            }
-        } catch (Exception e) {
-            logger.error("Failed to execute command " + StringUtils.join(cmdList, ' '), e);
-        }
+    public enum Status {
+        UNMODIFIED, MODIFIED, ADDED, DELETED, RENAMED, COPIED, UNMERGED, UNTRACKED
     }
 
     public static SourceControlManagement getSourceControlManagement(File workingDir) throws IOException {
@@ -176,4 +160,30 @@ public abstract class SourceControlManagement {
     public abstract void update() throws IOException;
 
     public abstract void commit(String message) throws IOException;
+
+    public Status getStatus(String path) throws IOException {
+        if (getStatusMap().containsKey(path)) {
+            return getStatusMap().get(path);
+        } else {
+            String[] pathSegments = path.split("/");
+            String subPath = "";
+            for (String segment : pathSegments) {
+                if (getStatusMap().containsKey(subPath) && getStatusMap().get(subPath) == Status.UNTRACKED) {
+                    return Status.UNTRACKED;
+                }
+                if (subPath.isEmpty()) {
+                    subPath = segment;
+                } else {
+                    subPath += "/" + segment;
+                }
+            }
+        }
+        return Status.UNMODIFIED;
+    }
+
+    protected abstract Map<String, Status> getStatusMap() throws IOException;
+
+    public void invalidateStatusCache() {
+        statusMap = null;
+    }
 }

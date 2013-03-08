@@ -43,7 +43,9 @@ package org.jahia.services.templates;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -108,16 +110,80 @@ public class GitSourceControlManagement extends SourceControlManagement {
             }
         }
         executeCommand("git", StringUtils.join(args, ' '));
+        invalidateStatusCache();
     }
 
     public void update() throws IOException {
         executeCommand("git", "stash");
         executeCommand("git", "pull --rebase");
         executeCommand("git", "stash pop");
+        invalidateStatusCache();
     }
 
     public void commit(String message) throws IOException {
         executeCommand("git", "commit -a -m \"" + message + "\"");
         executeCommand("git", "push -u origin master");
+        invalidateStatusCache();
+    }
+
+    @Override
+    protected Map<String, Status> getStatusMap() throws IOException {
+        if (statusMap == null) {
+            statusMap = new HashMap<String, Status>();
+            ExecutionResult result = executeCommand("git", "status --porcelain");
+            for (String line : result.out.split("\n")) {
+                if (StringUtils.isBlank(line)) {
+                    continue;
+                }
+                String path = line.substring(3);
+                if (path.contains(" -> ")) {
+                    path = StringUtils.substringAfter(path, " -> ");
+                }
+                path = StringUtils.removeEnd(path, "/");
+                String combinedStatus = line.substring(0, 2);
+                char indexStatus = combinedStatus.charAt(0);
+                char workTreeStatus = combinedStatus.charAt(1);
+                Status status = null;
+                if (workTreeStatus == ' ') {
+                    if (indexStatus == 'M') {
+                        status = Status.MODIFIED;
+                    } else if (indexStatus == 'A') {
+                        status = Status.ADDED;
+                    } else if (indexStatus == 'D') {
+                        status = Status.DELETED;
+                    } else if (indexStatus == 'R') {
+                        status = Status.RENAMED;
+                    } else if (indexStatus == 'C') {
+                        status = Status.COPIED;
+                    }
+                } else if (workTreeStatus == 'M') {
+                    status = Status.MODIFIED;
+                } else if (workTreeStatus == 'D') {
+                    if (indexStatus == 'D' || indexStatus == 'U') {
+                        status = Status.UNMERGED;
+                    } else {
+                        status = Status.DELETED;
+                    }
+                } else if (workTreeStatus == 'A' || workTreeStatus == 'U') {
+                    status = Status.UNMERGED;
+                } else if (workTreeStatus == '?') {
+                    status = Status.UNTRACKED;
+                }
+                if (status != null) {
+                    statusMap.put(path, status);
+                    String[] pathSegments = path.split("/");
+                    String subPath = "";
+                    for (String segment : pathSegments) {
+                        statusMap.put(subPath, Status.MODIFIED);
+                        if (subPath.isEmpty()) {
+                            subPath = segment;
+                        } else {
+                            subPath += "/" + segment;
+                        }
+                    }
+                }
+            }
+        }
+        return statusMap;
     }
 }

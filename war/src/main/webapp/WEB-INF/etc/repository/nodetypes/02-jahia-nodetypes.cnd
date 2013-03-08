@@ -812,6 +812,9 @@ extends = jnt:content
 // Modules filesystem nodes
 //---------------------------------------------------------
 
+[jmix:sourceControl] mixin
+ - scmStatus (string)
+
 [jnt:moduleVersionFolder] > jnt:folder
  - j:title (string) protected nofulltext primary
 

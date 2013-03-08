@@ -66,14 +66,17 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     public void addBundleScripts(Bundle bundle, List<URL> scripts) {
         // TODO consider versions of modules/bundles
         for (URL script : scripts) {
-            ViewResourceInfo scriptResource = new ViewResourceInfo(script.getPath());
-            Set<ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
-            if (existingBundleScripts == null) {
-                existingBundleScripts = new HashSet<ViewResourceInfo>();
-                availableScripts.put(bundle.getSymbolicName(), existingBundleScripts);
-                existingBundleScripts.add(scriptResource);
-            } else if (!existingBundleScripts.contains(scriptResource)) {
-                existingBundleScripts.add(scriptResource);
+            String path = script.getPath();
+            if (path.split("/").length == 4) {
+                ViewResourceInfo scriptResource = new ViewResourceInfo(path);
+                Set<ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
+                if (existingBundleScripts == null) {
+                    existingBundleScripts = new HashSet<ViewResourceInfo>();
+                    availableScripts.put(bundle.getSymbolicName(), existingBundleScripts);
+                    existingBundleScripts.add(scriptResource);
+                } else if (!existingBundleScripts.contains(scriptResource)) {
+                    existingBundleScripts.add(scriptResource);
+                }
             }
         }
         clearCaches();

@@ -1,10 +1,3 @@
-<%@ page import="org.hibernate.stat.EntityStatistics" %>
-<%@ page import="org.hibernate.stat.SecondLevelCacheStatistics" %>
-<%@ page import="java.util.Arrays" %>
-<%@ page import="java.util.Collections" %>
-<%@ page import="java.util.List" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -178,7 +171,6 @@
                     <tr>
                         <td>${hibernateStats.sessionOpenCount}</td>
                         <td>${hibernateStats.sessionCloseCount}</td>
-                        </td>
                     </tr>
                 </table>
             </div>

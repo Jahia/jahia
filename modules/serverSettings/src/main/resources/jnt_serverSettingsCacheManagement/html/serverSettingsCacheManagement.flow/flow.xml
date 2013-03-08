@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="
+		http://www.springframework.org/schema/webflow
+		http://www.springframework.org/schema/webflow/spring-webflow.xsd">
+
+    <var name="flowHandler" class="org.jahia.modules.serverSettings.flow.CacheFlushFlowHandler"/>
+    <var name="formDatas" class="java.util.HashMap"/>
+
+    <view-state id="cache">
+
+        <on-render>
+            <evaluate expression="flowHandler.ehCaches" result="requestScope.ehcaches" />
+            <evaluate expression="flowHandler.hibernateStats" result="requestScope.hibernateStats" />
+            <evaluate expression="flowHandler.secondLevelCacheStats" result="requestScope.secondLevelCacheStats" />
+            <evaluate expression="flowHandler.entityStats" result="requestScope.entityStats" />
+        </on-render>
+
+        <transition on="flushAllCaches" to="cache" >
+            <evaluate expression="flowHandler.flushAllCaches()"/>
+        </transition>
+
+        <transition on="flushOutputCaches" to="cache" >
+            <evaluate expression="flowHandler.flushOutputCaches()"/>
+        </transition>
+
+        <transition on="flushHibernateCaches" to="cache" >
+            <evaluate expression="flowHandler.flushHibernateCaches()"/>
+        </transition>
+
+        <transition on="flushCache" to="cache" >
+            <evaluate expression="flowHandler.flushCache(requestParameters.ehcache)"/>
+        </transition>
+
+        <transition on="toggleHibernateStats" to="cache" >
+            <evaluate expression="flowHandler.toggleHibernateStats()"/>
+        </transition>
+
+        <transition on="enableAllEHCacheStats" to="cache" >
+            <evaluate expression="flowHandler.enableAllEHCacheStats()"/>
+        </transition>
+
+        <transition on="disableAllEHCacheStats" to="cache" >
+            <evaluate expression="flowHandler.disableAllEHCacheStats()"/>
+        </transition>
+
+        <transition on="enableEHCacheStats" to="cache" >
+            <evaluate expression="flowHandler.enableEHCacheStats(requestParameters.ehcache)"/>
+        </transition>
+
+        <transition on="disableEHCacheStats" to="cache" >
+            <evaluate expression="flowHandler.disableEHCacheStats(requestParameters.ehcache)"/>
+        </transition>
+
+    </view-state>
+
+    <end-state id="success" />
+
+    <end-state id="cancel" />
+
+</flow>

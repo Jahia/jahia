@@ -7,7 +7,6 @@ import org.springframework.binding.expression.Expression;
 import org.springframework.binding.expression.ExpressionParser;
 import org.springframework.validation.MessageCodesResolver;
 import org.springframework.webflow.engine.builder.BinderConfiguration;
-import org.springframework.webflow.mvc.builder.FlowResourceFlowViewResolver;
 import org.springframework.webflow.mvc.builder.MvcViewFactoryCreator;
 import org.springframework.webflow.mvc.view.AbstractMvcViewFactory;
 import org.springframework.webflow.mvc.view.FlowViewResolver;
@@ -19,7 +18,7 @@ import org.springframework.webflow.validation.WebFlowMessageCodesResolver;
 public class BundleViewFactoryCreator extends MvcViewFactoryCreator implements JahiaModuleAware {
     private JahiaTemplatesPackage module;
 
-    private FlowViewResolver flowViewResolver = new FlowResourceFlowViewResolver();
+    private FlowViewResolver flowViewResolver = new BundleFlowViewResolver();
 
     private MessageCodesResolver messageCodesResolver = new WebFlowMessageCodesResolver();
 
@@ -29,7 +28,8 @@ public class BundleViewFactoryCreator extends MvcViewFactoryCreator implements J
     }
 
     protected AbstractMvcViewFactory createMvcViewFactory(Expression viewId, ExpressionParser expressionParser,
-                                                          ConversionService conversionService, BinderConfiguration binderConfiguration) {
+                                                          ConversionService conversionService,
+                                                          BinderConfiguration binderConfiguration) {
         return new BundleMvcViewFactory(viewId, flowViewResolver, expressionParser, conversionService,
                 binderConfiguration, null, module);
     }

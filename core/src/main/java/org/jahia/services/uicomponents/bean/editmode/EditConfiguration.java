@@ -87,6 +87,9 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private Set<String> nonEditableTypes;
     private Set<String> visibleTypes;
     private Set<String> nonVisibleTypes;
+
+    private Set<String> bypassModeForTypes;
+
     private Set<String> skipMainModuleTypesDomParsing;
 
     private boolean forceHeaders = false;
@@ -289,6 +292,14 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         this.nonVisibleTypes = nonVisibleTypes;
     }
 
+    public Set<String> getBypassModeForTypes() {
+        return bypassModeForTypes;
+    }
+
+    public void setBypassModeForTypes(Set<String> bypassModeForTypes) {
+        this.bypassModeForTypes = bypassModeForTypes;
+    }
+
     public boolean isForceHeaders() {
         return forceHeaders;
     }
@@ -296,45 +307,5 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     public void setForceHeaders(boolean forceHeaders) {
         this.forceHeaders = forceHeaders;
     }
-
-    /**
-     * @param node to check
-     * @return true if the node is visible (in visibleTypes or without nonVisibleTypes)
-     * @throws RepositoryException
-     */
-    public boolean isVisible(JCRNodeWrapper node) throws RepositoryException {
-        if (getNonVisibleTypes() != null && !getNonVisibleTypes().isEmpty() && isNodeOfType(node, getNonVisibleTypes())) {
-            return false;
-        } else if (getVisibleTypes() != null && !getVisibleTypes().isEmpty() && !isNodeOfType(node, getVisibleTypes())) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * @param node to check
-     * @return true if the node is editable (in editableTypes or without nonEditableTypes)
-     * @throws RepositoryException
-     */
-    public boolean isEditable( JCRNodeWrapper node) throws RepositoryException{
-        if (getNonEditableTypes() != null && !getNonEditableTypes().isEmpty() && isNodeOfType(node, getNonEditableTypes())) {
-            return false;
-        } else if (getEditableTypes() != null && !getEditableTypes().isEmpty() && !isNodeOfType(node, getEditableTypes())) {
-            return false;
-        }
-        return true;
-    }
-
-    private boolean isNodeOfType(JCRNodeWrapper node, Set<String> types) throws RepositoryException {
-        if (types != null && node != null) {
-            for (String s : types) {
-                if (node.isNodeType(s)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
 
 }

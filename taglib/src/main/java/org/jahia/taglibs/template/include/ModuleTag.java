@@ -267,7 +267,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 boolean isVisible = true;
 
                 try {
-                    isVisible = renderContext.getEditModeConfig() == null || renderContext.getEditModeConfig().isVisible(node);
+                    isVisible = renderContext.getEditModeConfig() == null || renderContext.isVisible(node);
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }
@@ -492,7 +492,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected boolean checkStudioLock(RenderContext renderContext, JCRNodeWrapper node) {
         try {
-            if (node != null && !renderContext.getEditModeConfig().isEditable(node)) {
+            if (node != null && !renderContext.isEditable(node)) {
                 return false;
             }
 ////                if (renderContext.getMainResource().getNode().getLockInfos().get(null) == null ||

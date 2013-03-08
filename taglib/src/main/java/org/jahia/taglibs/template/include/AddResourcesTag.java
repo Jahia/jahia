@@ -95,7 +95,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
         boolean isVisible = true;
 
         try {
-            isVisible = getRenderContext().getEditModeConfig() == null || getRenderContext().getEditModeConfig().isVisible(currentResource.getNode());
+            isVisible = getRenderContext().getEditModeConfig() == null || getRenderContext().isVisible(currentResource.getNode());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

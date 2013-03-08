@@ -26,7 +26,7 @@
 </c:forTokens>
 
 <c:if test="${!empty currentNode.properties.divID}"> <div id="${currentNode.properties.divID.string}"></c:if>
-<div <c:if test="${renderContext.editModeConfigName eq 'studiomode'}">
+<div <c:if test="${editableModule and renderContext.editModeConfigName eq 'studiomode'}">
     <c:url var="background" value="${url.currentModule}/img/960_16_10_10.png"/>
     style="background-color: #FFFFFF;background-image: url('${background}');background-repeat: repeat-y;"
 </c:if>

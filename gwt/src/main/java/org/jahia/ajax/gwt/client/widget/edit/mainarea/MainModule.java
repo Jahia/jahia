@@ -779,10 +779,11 @@ public class MainModule extends Module {
 
 
                 }
-                ModuleHelper.initAllModules(MainModule.this, body,elBody);
-                ModuleHelper.buildTree(MainModule.this,el);
-                parse(el);
-
+                if (el != null) {
+                    ModuleHelper.initAllModules(MainModule.this, body,elBody);
+                    ModuleHelper.buildTree(MainModule.this,el);
+                    parse(el);
+                }
                 editLinker.getMainModule().unmask();
                 needParseAfterLayout = true;
                 layout();

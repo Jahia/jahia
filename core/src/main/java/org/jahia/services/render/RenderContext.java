@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -54,6 +55,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.services.channels.Channel;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
@@ -317,4 +319,59 @@ public class RenderContext {
     public void setChannel(Channel channel) {
         this.channel = channel;
     }
+
+
+    /**
+     * @param node to check
+     * @return true if the node is visible (in visibleTypes or without nonVisibleTypes)
+     * @throws javax.jcr.RepositoryException
+     */
+    public boolean isVisible(JCRNodeWrapper node) throws RepositoryException {
+        if (editModeConfig != null) {
+            if (editModeConfig.getBypassModeForTypes() != null && !editModeConfig.getBypassModeForTypes().isEmpty() && isNodeOfType(mainResource.getNode(),editModeConfig.getBypassModeForTypes())) {
+                return true;
+            }
+
+            if (editModeConfig.getNonVisibleTypes() != null && !editModeConfig.getNonVisibleTypes().isEmpty() && isNodeOfType(node, editModeConfig.getNonVisibleTypes())) {
+                return false;
+            } else if (editModeConfig.getVisibleTypes() != null && !editModeConfig.getVisibleTypes().isEmpty() && !isNodeOfType(node, editModeConfig.getVisibleTypes())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param node to check
+     * @return true if the node is editable (in editableTypes or without nonEditableTypes)
+     * @throws RepositoryException
+     */
+    public boolean isEditable( JCRNodeWrapper node) throws RepositoryException{
+        if (editModeConfig != null) {
+            if (editModeConfig.getBypassModeForTypes() != null && !editModeConfig.getBypassModeForTypes().isEmpty() && isNodeOfType(mainResource.getNode(),editModeConfig.getBypassModeForTypes())) {
+                return false;
+            }
+
+            if (editModeConfig.getNonEditableTypes() != null && !editModeConfig.getNonEditableTypes().isEmpty() && isNodeOfType(node, editModeConfig.getNonEditableTypes())) {
+                return false;
+            } else if (editModeConfig.getEditableTypes() != null && !editModeConfig.getEditableTypes().isEmpty() && !isNodeOfType(node, editModeConfig.getEditableTypes())) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isNodeOfType(JCRNodeWrapper node, Set<String> types) throws RepositoryException {
+        if (types != null && node != null) {
+            for (String s : types) {
+                if (node.isNodeType(s)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
 }

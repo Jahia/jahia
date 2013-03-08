@@ -30,14 +30,21 @@
                 <value>/modules/*</value>
             </list>
         </property>
+
+        <property name="bypassModeForTypes">
+            <set>
+                <value>jnt:globalSettings</value>
+                <value>jnt:modules</value>
+                <value>jnt:virtualsite</value>
+                <value>jnt:file</value>
+            </set>
+        </property>
+
         <property name="visibleTypes">
             <set>
                 <value>jmix:areaComponent</value>
                 <value>jmix:layoutComponentContent</value>
                 <value>jmix:list</value>
-                <value>jnt:file</value>
-                <value>jnt:modules</value>
-                <value>jnt:virtualsite</value>
             </set>
         </property>
 

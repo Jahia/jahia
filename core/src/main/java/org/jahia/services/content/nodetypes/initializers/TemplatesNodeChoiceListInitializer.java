@@ -41,6 +41,7 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -135,7 +136,20 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                 }
 
                 if (ok) {
-                    ChoiceListValue v = new ChoiceListValue(templateNode.getName(), null, session.getValueFactory().createValue(templateNode.getIdentifier(),
+
+                    String templateName = templateNode.getName();
+                    try {
+                        Property templateTitleProperty = templateNode.getI18N(locale).getProperty(Constants.JCR_TITLE);
+                        if (templateTitleProperty != null) {
+                            String templateTitle = templateTitleProperty.getString();
+                            if (StringUtils.isNotEmpty(templateTitle)) {
+                                templateName = templateTitle;
+                            }
+                        }
+                    } catch (RepositoryException re) {
+                        logger.warn("No title for template "+templateNode.getPath()+" in locale " + locale + ", will use template system name as display name");
+                    }
+                    ChoiceListValue v = new ChoiceListValue(templateName, null, session.getValueFactory().createValue(templateNode.getIdentifier(),
                             PropertyType.WEAKREFERENCE));
                     if (defaultTemplate !=  null && templateNode.getPath().equals(defaultTemplate.getPath())) {
                         v.addProperty("defaultProperty",true);

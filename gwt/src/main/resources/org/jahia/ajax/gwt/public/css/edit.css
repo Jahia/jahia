@@ -70,14 +70,13 @@
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 11px;
     font-weight: bold;
-    padding: 5px;
+    padding:3px 5px;
     color: #333 !important;
     margin-bottom:10px;
     display:block;
     overflow:hidden;
     text-shadow: none !important;
-    transition: all 1s ease ;
-
+    line-height: 100%;
 }
 
 .x-panel-header-listmodule {
@@ -85,16 +84,17 @@
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 11px;
     font-weight: bold;
-    padding: 5px;
+    padding:3px 5px;
     color: #333 !important;
     margin-bottom:10px;
     display:block;
     overflow:hidden;
     text-shadow: none !important;
-    transition: all 1s ease ;
+    line-height: 100%;
 }
 
 .x-panel-header-areamodule {
+    background-color: #333 !important;
     font-family: tahoma,arial,verdana,sans-serif;
     text-transform: uppercase;
     font-size: 11px;
@@ -104,19 +104,16 @@
     display:block;
     overflow:hidden;
     text-shadow: none !important;
-    text-align: center;
-    transition: all 1s ease ;
+    color: #fff !important;
+    line-height: 100%;
 }
 
 .x-panel-header-text-areamodule {
-    background-color: #333 !important;
-    color: #ffffff !important;
-    padding:5px 10px;
-    display: inline-block;
-    transition: all 1s ease ;
+
 }
 
 .x-panel-header-absoluteAreamodule {
+    background-color: #cc6666 !important;
     font-family: tahoma,arial,verdana,sans-serif;
     text-transform: uppercase;
     font-size: 11px;
@@ -126,28 +123,25 @@
     display:block;
     overflow:hidden;
     text-shadow: none !important;
-    text-align: center;
-    transition: all 1s ease ;
+    color: #ffffff !important;
+    line-height: 100%;
 }
 .x-panel-header-text-absoluteAreamodule {
-    background-color: #cc6666 !important;
-    color: #ffffff !important;
-    padding:5px 10px;
-    display: inline-block;
-    transition: all 1s ease ;
+
 }
 .x-panel-header-lockedmodule {
-    background-color:#000;
+    background-color: #000 !important;
     font-family: tahoma,arial,verdana,sans-serif;
+    text-transform: uppercase;
     font-size: 11px;
-    padding: 5px;
-    color: #ccc !important;
     font-weight: bold;
+    padding: 5px;
     margin-bottom:10px;
     display:block;
     overflow:hidden;
     text-shadow: none !important;
-    transition: all 1s ease ;
+    color: #ffffff !important;
+    line-height: 100%;
 }
 
 .x-panel-placeholder {
@@ -174,13 +168,14 @@ button.button-placeholder, div.button-placeholder {
     background-color: #b7b7b7 ;
     border:none;
     color:#fff;
-    padding:5px;
+    padding:3px 5px;
     margin:0 0 1px 1px;
     cursor:pointer;
     line-height:15px !important;
     text-shadow: none !important;
     width: auto !important;
     display: block;
+    line-height: 100%;
 }
 button.button-placeholder:hover,  div.button-placeholder:hover {
     background-color: #39f ;
@@ -196,14 +191,16 @@ button.button-enabledisable, div.button-enabledisable {
     font-weight:bold;
     text-align:center;
     text-transform:none;
-    background-color:#A6D90F ;
+    background-color:#39f ;
     border:none;
     color:#fff;
-    padding:5px;
+    padding:4px;
     margin:0 0 0 1px;
     cursor:pointer;
     line-height:15px !important;
     text-shadow: none !important;
+    margin: -5px;
+    line-height: 100%;
 }
 
 

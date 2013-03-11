@@ -136,7 +136,6 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         target.setFeedback(DND.Feedback.INSERT);
 
         grid.setHeight(200);
-        tab.add(grid, new RowData(1, 200, new Margins(2)));
 
         ToolBar toolBar = new ToolBar();
         Button add = new Button(Messages.get("label.add", "Add"));
@@ -313,6 +312,8 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         moveLast.setIcon(StandardIconsProvider.STANDARD_ICONS.moveLast());
         toolBar.add(moveLast);
         tab.add(toolBar, new RowData(1, -1, new Margins(2)));
+
+        tab.add(grid, new RowData(1, 200, new Margins(2)));
 
         grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override

@@ -39,6 +39,10 @@
  */
 package org.jahia.utils.i18n;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -51,12 +55,9 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.ResourceBundle.Control;
 
-import javax.servlet.ServletContext;
-
-import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,26 +69,25 @@ import org.slf4j.LoggerFactory;
  */
 class JahiaResourceBundleControl extends Control {
 
+    private TemplatePackageRegistry templatePackageRegistry;
+
     private static JahiaResourceBundleControl defaultControl;
 
     private static final Logger logger = LoggerFactory.getLogger(JahiaResourceBundleControl.class);
 
     public static JahiaResourceBundleControl getInstance() {
         if (defaultControl == null) {
-            defaultControl = new JahiaResourceBundleControl(JahiaContextLoaderListener.getServletContext(),
-                    SettingsBean.getInstance().isConsiderDefaultJVMLocale());
+            defaultControl = new JahiaResourceBundleControl(SettingsBean.getInstance().isConsiderDefaultJVMLocale());
         }
         return defaultControl;
     }
 
     private boolean considerDefaultJVMLocale;
 
-    private ServletContext servletContext;
-
-    private JahiaResourceBundleControl(ServletContext servletContext, boolean considerDefaultJVMLocale) {
+    private JahiaResourceBundleControl(boolean considerDefaultJVMLocale) {
         super();
-        this.servletContext = servletContext;
         this.considerDefaultJVMLocale = considerDefaultJVMLocale;
+        this.templatePackageRegistry = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry();
     }
 
     private InputStream getClasspathStream(final ClassLoader classLoader, final boolean reloadFlag,
@@ -130,31 +130,6 @@ class JahiaResourceBundleControl extends Control {
         return FORMAT_PROPERTIES;
     }
 
-    private InputStream getResourceBundleStream(final ClassLoader classLoader, final boolean reloadFlag,
-            final String resourceName, final String baseName) throws IOException {
-        InputStream stream = null;
-        // check if a JahiaInternalResources or JahiaTypesResources is requested
-        if (baseName.equals(ResourceBundles.JAHIA_INTERNAL_RESOURCES)
-                || baseName.equals(ResourceBundles.JAHIA_TYPES_RESOURCES)) {
-            stream = getClasspathStream(classLoader, reloadFlag, resourceName);
-        } else {
-            // check if a module resource bundle is requested
-            if (resourceName.startsWith("modules/")) {
-                // lookup using ServletContext
-                stream = getServletContextStream(resourceName);
-            } else {
-                // otherwise look up it as classpath resource
-                stream = getClasspathStream(classLoader, reloadFlag, resourceName);
-            }
-        }
-        return stream;
-    }
-
-    private InputStream getServletContextStream(String resourceName) throws IOException {
-        return servletContext != null ? servletContext.getResourceAsStream(resourceName.charAt(0) == '/' ? resourceName
-                : ('/' + resourceName)) : null;
-    }
-
     @Override
     public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
             throws IllegalAccessException, InstantiationException, IOException {
@@ -163,32 +138,11 @@ class JahiaResourceBundleControl extends Control {
             throw new IllegalArgumentException("Unknown format: " + format);
         }
 
-        if (servletContext == null) {
-            ResourceBundle rb = super.newBundle(baseName, locale, format, loader, reload);
-            if (logger.isDebugEnabled()) {
-                logger.debug("{} resource bundle for basename '{}' and locale '{}'", new Object[] {
-                        rb != null ? "Found" : "Cannot find", baseName, locale });
-            }
-            return rb;
-        }
-
         ResourceBundle bundle = null;
-        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getPackageForResourceBundle(baseName);
-        String resourceName = null;
-        InputStream stream = null;
-        if (aPackage != null && aPackage.getSourcesFolder() != null) {
-            String sourcesFolderPath = aPackage.getSourcesFolder().getPath();
-            String rbFileName = toBundleName(StringUtils.substringAfterLast(baseName, "."), locale) + ".properties";
-            resourceName = "file://" + sourcesFolderPath + "/src/main/webapp/resources/" + rbFileName;
-            stream = getResourceBundleStream(loader, reload, resourceName, baseName);
-            if (stream == null) {
-                resourceName = "file://" + sourcesFolderPath + "/src/main/resources/resources/" + rbFileName;
-                stream = getResourceBundleStream(loader, reload, resourceName, baseName);
-            }
-        }
+        String resourceName = toResourceName(toBundleName(baseName, locale), "properties");
+        InputStream stream = getStreamFromSources(baseName, resourceName);
         if (stream == null) {
-            resourceName = StringUtils.replace(toResourceName(toBundleName(baseName, locale), "properties"), "___", ".");
-            stream = getResourceBundleStream(loader, reload, resourceName, baseName);
+            stream = getClasspathStream(loader, reload, resourceName);
         }
 
         if (stream != null) {
@@ -207,9 +161,27 @@ class JahiaResourceBundleControl extends Control {
         return bundle;
     }
 
+    private InputStream getStreamFromSources(String baseName, String resourceName) throws FileNotFoundException {
+        JahiaTemplatesPackage aPackage = templatePackageRegistry.getPackageForResourceBundle(baseName);
+        if (aPackage == null || aPackage.getSourcesFolder() == null) {
+            return null;
+        }
+
+        File sourcesFolder = new File(new File(aPackage.getSourcesFolder(), "src/main/resources"), resourceName);
+        if (sourcesFolder.exists()) {
+            return new BufferedInputStream(new FileInputStream(sourcesFolder));
+        }
+
+        sourcesFolder = new File(new File(aPackage.getSourcesFolder(), "src/main/webapp"), resourceName);
+        if (sourcesFolder.exists()) {
+            return new BufferedInputStream(new FileInputStream(sourcesFolder));
+        }
+        return null;
+    }
+
     @Override
     public long getTimeToLive(String baseName, Locale locale) {
-        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getPackageForResourceBundle(baseName);
+        JahiaTemplatesPackage aPackage = templatePackageRegistry.getPackageForResourceBundle(baseName);
         if (aPackage != null && aPackage.getSourcesFolder() != null) {
             return TTL_DONT_CACHE;
         }

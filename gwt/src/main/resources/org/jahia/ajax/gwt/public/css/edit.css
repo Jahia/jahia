@@ -202,8 +202,52 @@ button.button-enabledisable, div.button-enabledisable {
     margin: -5px;
     line-height: 100%;
 }
+button.button-enabledisable:hover, div.button-enabledisable:hover {
+    background-color:#0066cc ;
+}
 
-
+button.button-enable, div.button-enable {
+    font-family: tahoma,arial,verdana,sans-serif;
+    font-variant: small-caps;
+    font-size:10px;
+    font-weight:bold;
+    text-align:center;
+    text-transform:none;
+    background-color:#39f ;
+    border:none;
+    color:#fff;
+    padding:4px;
+    margin:0 0 0 1px;
+    cursor:pointer;
+    line-height:15px !important;
+    text-shadow: none !important;
+    margin: -5px;
+    line-height: 100%;
+}
+button.button-enable:hover, div.button-enable:hover {
+    background-color:#0066cc ;
+}
+button.button-disable, div.button-disable {
+    font-family: tahoma,arial,verdana,sans-serif;
+    font-variant: small-caps;
+    font-size:10px;
+    font-weight:bold;
+    text-align:center;
+    text-transform:none;
+    background-color:#a6d90f ;
+    border:none;
+    color:#fff;
+    padding:4px;
+    margin:0 0 0 1px;
+    cursor:pointer;
+    line-height:15px !important;
+    text-shadow: none !important;
+    margin: -5px;
+    line-height: 100%;
+}
+button.button-disable:hover, div.button-disable:hover {
+    background-color:#99cc00 ;
+}
 .selection-top-list {
     border-top: 1px solid #cc0033;
 }

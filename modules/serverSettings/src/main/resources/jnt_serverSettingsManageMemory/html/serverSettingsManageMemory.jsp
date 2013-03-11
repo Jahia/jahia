@@ -1,9 +1,7 @@
+<%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ page import="org.apache.commons.lang.StringUtils" %>
 <%@ page import="org.jahia.bin.errors.ErrorFileDumper" %>
 <%@ page import="org.jahia.tools.jvm.ThreadMonitor" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -21,7 +19,7 @@
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <script type="text/javascript">
     $(document).ready(function () {
-        $("#accordion").accordion({collapsible:true, heightStyle:"content"});
+        $("#accordion").accordion({collapsible:true, heightStyle:"content"${param.tab == 'threads' ? ',active:1' : ''}});
     })
 </script>
 <%
@@ -44,7 +42,7 @@
 <p>&nbsp;</p>
 
 <div id="accordion">
-    <h3><fmt:message key="org.jahia.admin.status.ManageStatus.title.memorySection.label"/></h3>
+    <h3><fmt:message key="org.jahia.admin.status.ManageStatus.title.memorySection.label"/>&nbsp;(<%= 100 - Math.round((float) freeMemoryInBytes / (float) maxMemoryInBytes * 100f) %>%&nbsp;<fmt:message key="serverSettings.manageMemory.used"/>)</h3>
     <c:if test="${param['gc']}">
         <% System.gc(); %>
     </c:if>
@@ -53,7 +51,7 @@
             <tr>
                 <td width="100%">
                     <strong><fmt:message
-                            key="org.jahia.admin.status.ManageStatus.maxJvmMemory.label"/>&nbsp;:</strong><br>
+                            key="org.jahia.admin.status.ManageStatus.maxJvmMemory.label"/>:</strong><br>
                 </td>
                 <td>
                     <%=maxMemoryInMBytes%>&nbsp;<fmt:message
@@ -85,7 +83,7 @@
             </tr>
             <tr>
                 <td colspan="2" align="left">
-                    <a href="?do=status&amp;sub=display&amp;gc=true&amp;timestamp=${timestamp}#memory"><img
+                    <a href="?gc=true&amp;timestamp=${timestamp}"><img
                             src="<c:url value='/icons/showTrashboard.png'/>" height="16" width="16" alt=" "
                             align="top"/><fmt:message
                             key="org.jahia.admin.status.ManageStatus.runGarbageCollector"/></a>
@@ -125,7 +123,7 @@
             </tr>
             <tr>
                 <td align="left">
-                    <a href="?do=status&amp;sub=display&amp;threadDump=sysout&amp;timestamp=${timestamp}#threads"><img
+                    <a href="?threadDump=sysout&amp;timestamp=${timestamp}&amp;tab=threads"><img
                             src="<c:url value='/icons/tab-workflow.png'/>" height="16" width="16" alt=" "
                             align="top"/><fmt:message key="org.jahia.admin.status.ManageStatus.performThreadDump"/>
                         (System.out)</a>
@@ -133,7 +131,7 @@
             </tr>
             <tr>
                 <td align="left">
-                    <a href="?do=status&amp;sub=display&amp;threadDump=file&amp;timestamp=${timestamp}#threads"><img
+                    <a href="?threadDump=file&amp;timestamp=${timestamp}&amp;tab=threads"><img
                             src="<c:url value='/icons/globalRepository.png'/>" height="16" width="16" alt=" "
                             align="top"/><fmt:message key="org.jahia.admin.status.ManageStatus.performThreadDump"/>
                         (<fmt:message key="fileMenu.label"/>)</a>
@@ -142,7 +140,7 @@
             <tr>
                 <td align="left">
                     <a href="#dump"
-                       onclick="this.href='?do=status&amp;sub=display&amp;threadDump=file&amp;threadDumpCount=' + document.getElementById('threadDumpCount').value + '&amp;threadDumpInterval=' + document.getElementById('threadDumpInterval').value + '&amp;timestamp=${timestamp}#threads'; return true;"><img
+                       onclick="this.href='?threadDump=file&amp;threadDumpCount=' + document.getElementById('threadDumpCount').value + '&amp;threadDumpInterval=' + document.getElementById('threadDumpInterval').value + '&amp;timestamp=${timestamp}&amp;tab=threads'; return true;"><img
                             src="<c:url value='/icons/workflowManager.png'/>" height="16" width="16" alt=" "
                             align="top"/><fmt:message key="org.jahia.admin.status.ManageStatus.performThreadDump"/>
                         (<fmt:message key="org.jahia.admin.status.ManageStatus.performThreadDump.multiple"/>)</a>
@@ -176,9 +174,9 @@
                     <fmt:message key="label.started"/>
                     <% } else { %><fmt:message key="label.stopped"/> <% } %> -
                     <%if (ThreadMonitor.getInstance().isActivated()) {%><a
-                            href="?do=status&amp;sub=display&amp;enableThreadMonitor=false#threads"><fmt:message
+                            href="?enableThreadMonitor=false&amp;tab=threads"><fmt:message
                             key="label.stop.thread.monitor"/></a>
-                    <% } else { %><a href="?do=status&amp;sub=display&amp;enableThreadMonitor=true#threads"><fmt:message
+                    <% } else { %><a href="?enableThreadMonitor=true&amp;tab=threads"><fmt:message
                             key="label.start.thread.monitor"/></a><% } %>
                 </td>
             </tr>
@@ -198,10 +196,10 @@
                     <fmt:message key="label.started"/>
                     <% } else { %><fmt:message key="label.stopped"/> <% } %> -
                     <%if (ErrorFileDumper.isShutdown()) {%><a
-                            href="?do=status&amp;sub=display&amp;enableErrorFileDumper=true#threads"><fmt:message
+                            href="?enableErrorFileDumper=true&amp;tab=threads"><fmt:message
                             key="label.start.error.dumper"/></a>
                     <% } else { %><a
-                            href="?do=status&amp;sub=display&amp;enableErrorFileDumper=false#threads"><fmt:message
+                            href="?enableErrorFileDumper=false&amp;tab=threads"><fmt:message
                             key="label.stop.error.dumper"/></a><% } %>
                 </td>
             </tr>

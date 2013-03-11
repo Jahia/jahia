@@ -565,16 +565,15 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
 
     public boolean checkValidSources(JahiaTemplatesPackage pack, File sources) {
-        SAXReader reader = new SAXReader();
         if (!new File(sources,"src/main/resources").exists() && !new File(sources,"src/main/webapp").exists()) {
             return false;
         }
         File pom = new File(sources, "pom.xml");
         if (pom.exists()) {
             try {
-                Document document = reader.read(pom);
+                Document document = new SAXReader().read(pom);
                 Element element = document.getRootElement();
-                Iterator iterator = element.elementIterator("version");
+                Iterator<?> iterator = element.elementIterator("version");
                 if (iterator.hasNext()) {
                     element = (Element) iterator.next();
                 } else {

@@ -89,6 +89,6 @@
         </td>
     </tr>
 </table>
-<p>&copy; Copyright 2002-2012 Jahia Solutions Group SA - All rights reserved.</p>
+<p>&copy; Copyright 2002-2013 Jahia Solutions Group SA - All rights reserved.</p>
 </body>
 </html>

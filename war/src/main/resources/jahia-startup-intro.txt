@@ -15,7 +15,7 @@
                   v e r s i o n   :   @VERSION@
 
 
-   Copyright 2002-2012 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved
+   Copyright 2002-2013 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved
 
 
  *******************************************************************************

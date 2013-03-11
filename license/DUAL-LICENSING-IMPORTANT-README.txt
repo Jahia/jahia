@@ -9,7 +9,7 @@ unified by the simplicity of web content management.
 
 For more information, please visit http://www.jahia.com.
 
-Copyright (C) 2002-2012 Jahia Solutions Group SA. All rights reserved.
+Copyright (C) 2002-2013 Jahia Solutions Group SA. All rights reserved.
 
 THIS PROGRAM IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
 1/GPL OR 2/JSEL

@@ -2398,15 +2398,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
 
         List<GWTJahiaValueDisplayBean> snippetsByType;
-        Map<String, List<GWTJahiaValueDisplayBean>> snippets = new HashMap<String, List<GWTJahiaValueDisplayBean>>();
+        Map<String, List<GWTJahiaValueDisplayBean>> snippets = new LinkedHashMap<String, List<GWTJahiaValueDisplayBean>>();
 
         if (nodeTypeName != null) {
             GWTJahiaNodeType nodeType = contentDefinition.getNodeType(nodeTypeName, getUILocale());
             r.put("nodeType", nodeType);
             for (String snippetType : propertiesSnippetTypes) {
+                snippetsByType = new ArrayList<GWTJahiaValueDisplayBean>();
                 for (Map.Entry<String, String> propertySnippetEntry : stubHelper.getCodeSnippets(fileType,
                         snippetType).entrySet()) {
-                    snippetsByType = new ArrayList<GWTJahiaValueDisplayBean>();
                     List<GWTJahiaItemDefinition> items = new ArrayList<GWTJahiaItemDefinition>(nodeType.getItems());
                     items.addAll(nodeType.getInheritedItems());
 
@@ -2422,8 +2422,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                         }
 
                     }
-                    snippets.put(snippetType, snippetsByType);
                 }
+                snippets.put(snippetType, snippetsByType);
             }
         }
 

@@ -107,7 +107,6 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                 snippetType.setWidth(200);
                 snippetType.removeAllListeners();
                 snippetType.setStore(new ListStore<GWTJahiaValueDisplayBean>());
-                snippetType.getStore().sort("display", Style.SortDir.ASC);
                 snippetType.setAllowBlank(false);
                 snippetType.setDisplayField("display");
                 snippetType.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaValueDisplayBean>() {
@@ -159,6 +158,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                         for (String type : snippets.keySet()) {
                             snippetType.getStore().add(new GWTJahiaValueDisplayBean(type, Messages.get("label.snippetType." + type, type)));
                         }
+                        snippetType.setValue(snippetType.getStore().getAt(0));
 
                         if (!engine.getProperties().containsKey(codePropertyName)) {
                             codeProperty = new GWTJahiaNodeProperty(codePropertyName, (String) result.get("stub"), GWTJahiaNodePropertyType.STRING);

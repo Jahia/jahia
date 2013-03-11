@@ -72,7 +72,10 @@
         <c:set target="${colMap}" property="col2" value="6"/>
     </c:otherwise>
 </c:choose>
-<div class="container_16">
+<div <c:if test="${editableModule and renderContext.editModeConfigName eq 'studiomode'}">
+    <c:url var="background" value="${url.currentModule}/img/960_16_10_10.png"/>
+    style="background-color: #FFFFFF;background-image: url('${background}');background-repeat: repeat-y;"
+</c:if> class="container_16">
     <%--<c:if test="${renderContext.editModeConfigName eq 'studiovisualmode'}">--%>
         <%--<div class="grid_16">${jcr:label(currentNode.primaryNodeType,currentResource.locale)} ${currentNode.name} : ${column.string}</div>--%>
     <%--</c:if>--%>

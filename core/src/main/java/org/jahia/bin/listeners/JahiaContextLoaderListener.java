@@ -375,7 +375,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
                             + "\n"
                             + "                  v e r s i o n  :  @VERSION@\n"
                             + "\n\n"
-                            + "   Copyright 2002-2012 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved\n"
+                            + "   Copyright 2002-2013 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved\n"
                             + "\n\n"
                             + " *******************************************************************************\n"
                             + " * The contents of this software, or the files included with this software,    *\n"

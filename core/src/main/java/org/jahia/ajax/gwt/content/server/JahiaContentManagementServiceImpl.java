@@ -50,8 +50,6 @@ import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
-import org.apache.jackrabbit.core.security.PrivilegeImpl;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -60,7 +58,6 @@ import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
@@ -78,7 +75,6 @@ import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -87,7 +83,6 @@ import org.jahia.services.htmlvalidator.Result;
 import org.jahia.services.htmlvalidator.ValidatorResults;
 import org.jahia.services.htmlvalidator.WAIValidator;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
@@ -140,7 +135,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private ACLHelper acl;
     private DiffHelper diff;
     private SeoHelper seo;
-    private UIConfigHelper uiConfig;
     private int sessionPollingFrequency;
     private CacheHelper cacheHelper;
     private SchedulerHelper schedulerHelper;
@@ -215,10 +209,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         this.zip = zip;
     }
 
-    public void setUiConfig(UIConfigHelper uiConfig) {
-        this.uiConfig = uiConfig;
-    }
-
     public void setSessionPollingFrequency(int sessionPollingFrequency) {
         this.sessionPollingFrequency = sessionPollingFrequency;
     }
@@ -278,10 +268,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             if (!StringUtils.isEmpty(path)) {
                 context = retrieveCurrentSession().getNode(path);
             }
-            config = uiConfig.getGWTManagerConfiguration(context, getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
+            config = uiConfigHelper.getGWTManagerConfiguration(context, getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
                     getRequest(), name);
-            config.setSiteNode(navigation.getGWTJahiaNode(getSite(), GWTJahiaNode.DEFAULT_SITE_FIELDS, getUILocale()));
-            setAvailablePermissions(config);
         }catch (RepositoryException e) {
             logger.error("Cannot get node", e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -299,23 +287,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         GWTEditConfiguration config = null;
         try {
             JCRSessionWrapper session = retrieveCurrentSession();
-            config = uiConfig.getGWTEditConfiguration(session.getNode(path), getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
-                    getRequest(), name);
-            config.setSiteNode(navigation.getGWTJahiaNode(getSite(), GWTJahiaNode.DEFAULT_SITE_FIELDS, getUILocale()));
-
-            List<GWTJahiaNode> sites = getRoot(Arrays.asList(config.getSitesLocation()), Arrays.asList("jnt:virtualsite"), null, null, GWTJahiaNode.DEFAULT_SITE_FIELDS, null, null, false, false, null, null);
-            String permission = ((EditConfiguration)SpringContextSingleton.getBean(name)).getRequiredPermission();
-            Map<String, GWTJahiaNode> sitesMap = new HashMap<String, GWTJahiaNode>();
-            for (GWTJahiaNode site : sites) {
-                if (session.getNodeByUUID(site.getUUID()).hasPermission(permission)) {
-                    sitesMap.put(site.getSiteUUID(), site);
-                }
-            }
-            config.setSitesMap(sitesMap);
-
-            setAvailablePermissions(config);
-
-            config.setChannels(channelHelper.getChannels());
+            config = uiConfigHelper.getGWTEditConfiguration(name, path, getRemoteJahiaUser(), getLocale(), getUILocale(),
+                    getRequest(), session);
         } catch (Exception e) {
             logger.error("Cannot get node", e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -323,15 +296,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return config;
     }
 
-
-    private void setAvailablePermissions(GWTConfiguration config) throws RepositoryException, GWTJahiaServiceException {
-        Privilege[] p = JahiaPrivilegeRegistry.getRegisteredPrivileges();
-        List<String> l = new ArrayList<String>();
-        for (Privilege privilege : p) {
-            l.add(((PrivilegeImpl)privilege).getPrefixedName());
-        }
-        config.setPermissions(l);
-    }
 
     public BasePagingLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode parentNode, List<String> nodeTypes, List<String> mimeTypes,
                                                      List<String> filters, List<String> fields, boolean checkSubChild,

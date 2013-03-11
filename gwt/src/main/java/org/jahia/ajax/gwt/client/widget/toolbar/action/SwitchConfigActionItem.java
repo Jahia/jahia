@@ -46,8 +46,10 @@ import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -55,35 +57,52 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 public class SwitchConfigActionItem extends BaseActionItem {
     private String configurationName;
-    private transient GWTEditConfiguration config;
+    private boolean updateSidePanel =true;
+    private boolean updateToolbar =true;
 
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem,linker);
         final RootPanel panel = RootPanel.get("editmode");
         if (panel != null) {
-            final String path = DOM.getElementAttribute(panel.getElement(), "path");
             if (!MainModule.getInstance().getConfig().getName().equals(configurationName)) {
-                JahiaContentManagementService.App.getInstance().getEditConfiguration(path, configurationName, new BaseAsyncCallback<GWTEditConfiguration>() {
-                    public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
-                        getTextToolItem().setEnabled(true);
-                        config = gwtEditConfiguration;
-                    }
-
-                    public void onApplicationFailure(Throwable throwable) {
-                        Log.error("Error when loading EditConfiguration", throwable);
-                    }
-                });
-                gwtToolbarItem.setSelected(false);
+                getTextToolItem().setEnabled(true);
+                getGwtToolbarItem().setSelected(false);
             } else {
-                gwtToolbarItem.setSelected(true);
+                getGwtToolbarItem().setSelected(true);
             }
         }
     }
 
+    public boolean isUpdateSidePanel() {
+        return updateSidePanel;
+    }
+
+    public void setUpdateSidePanel(boolean updateSidePanel) {
+        this.updateSidePanel = updateSidePanel;
+    }
+
+    public boolean isUpdateToolbar() {
+        return updateToolbar;
+    }
+
+    public void setUpdateToolbar(boolean updateToolbar) {
+        this.updateToolbar = updateToolbar;
+    }
+
     @Override
     public void onComponentSelection() {
-        ((EditLinker)linker).switchConfig(config, false, false);
+        linker.loading(Messages.get("label.loading", "Loading..."));
+        JahiaContentManagementService.App.getInstance().getEditConfiguration(linker.getSelectionContext().getMainNode().getPath(), configurationName, new BaseAsyncCallback<GWTEditConfiguration>() {
+            public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
+                ((EditLinker)linker).switchConfig(gwtEditConfiguration, updateSidePanel, updateToolbar);
+            }
+
+            public void onApplicationFailure(Throwable throwable) {
+                Log.error("Error when loading EditConfiguration", throwable);
+            }
+        });
+
     }
 
     public void setConfigurationName(String configurationName) {

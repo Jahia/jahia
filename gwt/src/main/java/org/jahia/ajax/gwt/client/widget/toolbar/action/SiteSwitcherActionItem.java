@@ -164,7 +164,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
                     !((List<String>) jahiaNode.get("j:languages")).contains(JahiaGWTParameters.getLanguage())) {
                     editLinker.setLocale((GWTJahiaLanguage) jahiaNode.get(GWTJahiaNode.DEFAULT_LANGUAGE));
                 }
-                JahiaGWTParameters.setSite(jahiaNode, linker);
+                JahiaGWTParameters.setSiteFromNode(jahiaNode, linker);
                 if (editLinker.getSidePanel() != null) {
                     Map<String, Object> data = new HashMap<String, Object>();
                     data.put(Linker.REFRESH_ALL, true);

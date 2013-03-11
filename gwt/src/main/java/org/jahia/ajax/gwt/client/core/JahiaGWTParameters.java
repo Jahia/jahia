@@ -96,7 +96,6 @@ public class JahiaGWTParameters {
     private static String channelOrientation;
     private static List<GWTJahiaChannel> channels;
 
-    private static String sitesLocation;
     private static Map<String, GWTJahiaNode> sitesMap;
     private static GWTJahiaNode siteNode;
 
@@ -169,35 +168,6 @@ public class JahiaGWTParameters {
         }
     }-*/;
 
-    public static String getChannelIdentifier() {
-        if (channelIdentifier == null) {
-            channelIdentifier = jahiaParamDictionary.get(CHANNEL_IDENTIFIER);
-        }
-        return channelIdentifier;
-    }
-
-    public static String getChannelOrientation() {
-        if (channelOrientation == null) {
-            channelOrientation = jahiaParamDictionary.get(CHANNEL_ORIENTATION);
-        }
-        return channelOrientation;
-    }
-
-    public static void setChannel(String newChannelIdentifier, String newChannelOrientation) {
-        channelIdentifier = newChannelIdentifier;
-        channelOrientation = newChannelOrientation;
-        setNativeChannel(channelIdentifier, channelOrientation);
-    }
-
-    private static native void setNativeChannel(String newChannelIdentifier, String newChannelOrientation) /*-{
-        $wnd.jahiaGWTParameters.channelIdentifier  = newChannelIdentifier;
-        $wnd.jahiaGWTParameters.channelOrientation  = newChannelOrientation;
-        if ($wnd.contextJsParameters) {
-            $wnd.contextJsParameters.channelIdentifier = newChannelIdentifier;
-            $wnd.contextJsParameters.channelOrientation = newChannelOrientation;
-        }
-    }-*/;
-
     public static String getSiteUUID() {
         if (siteUUID == null) {
             if (jahiaParamDictionary.keySet().contains(SITE_UUID)) {
@@ -267,14 +237,6 @@ public class JahiaGWTParameters {
         return (List<String>) getSiteNode().get(GWTJahiaNode.SITE_MANDATORY_LANGUAGES);
     }
 
-    public static String getSitesLocation() {
-        return sitesLocation;
-    }
-
-    public static void setSitesLocation(String sitesLocation) {
-        JahiaGWTParameters.sitesLocation = sitesLocation;
-    }
-
     public static Map<String, GWTJahiaNode> getSitesMap() {
         return sitesMap;
     }
@@ -283,7 +245,7 @@ public class JahiaGWTParameters {
         JahiaGWTParameters.sitesMap = sitesMap;
     }
 
-    public static void setSite(GWTJahiaNode node, Linker linker) {
+    public static void setSiteFromNode(GWTJahiaNode node, Linker linker) {
         setSiteNode(sitesMap.get(node.getSiteUUID()));
         if (linker != null) {
             DeployTemplatesActionItem.refreshAllMenus(linker);
@@ -360,18 +322,6 @@ public class JahiaGWTParameters {
 
     public static interface UrlUpdater {
         void updateEntryPointUrl();
-    }
-
-    public static void refreshSitesList() {
-        JahiaContentManagementService
-                .App.getInstance().getRoot(Arrays.asList(sitesLocation), Arrays.asList("jnt:virtualsite"), null, null,GWTJahiaNode.DEFAULT_SITE_FIELDS,null,null, false, false, null, null, new BaseAsyncCallback<List<GWTJahiaNode>>() {
-            public void onSuccess(List<GWTJahiaNode> sites) {
-                sitesMap.clear();
-                for (GWTJahiaNode site : sites) {
-                    sitesMap.put(site.getUUID(), site);
-                }
-            }
-        });
     }
 
 }

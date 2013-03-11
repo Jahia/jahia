@@ -58,6 +58,7 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
     private GWTJahiaToolbar mainModuleToolbar;
     private boolean enableDragAndDrop;
     private String defaultUrlMapping;
+    private String defaultLocation;
 
     private List<GWTSidePanelTab> tabs;
 
@@ -119,4 +120,13 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
     public void setDefaultUrlMapping(String defaultUrlMapping) {
         this.defaultUrlMapping = defaultUrlMapping;
     }
+
+    public String getDefaultLocation() {
+        return defaultLocation;
+    }
+
+    public void setDefaultLocation(String defaultLocation) {
+        this.defaultLocation = defaultLocation;
+    }
+
 }

@@ -87,6 +87,8 @@ public class SettingsPanel implements Serializable {
     private String requiredPermission;
     private transient TreeLoader<GWTJahiaNode> settingsLoader;
     private transient TreeStore<GWTJahiaNode> settingsStore;
+    private transient List<String> paths;
+
     public SettingsPanel() {
 
     }
@@ -107,12 +109,7 @@ public class SettingsPanel implements Serializable {
         treeContainer.setLayout(new FitLayout());
         // resolve paths from dependencies
 
-        final List<String> paths = new ArrayList<String>();
-        if (JahiaGWTParameters.getSiteNode() != null && JahiaGWTParameters.getSiteNode().getProperties().get("j:installedModules") != null) {
-            for (String module : ((List<String>) JahiaGWTParameters.getSiteNode().get("j:installedModules"))) {
-                    paths.add("/modules/" + module + "/$moduleversion/templates/" + settingTemplateRoot + "/*");
-            }
-        }
+        paths = new ArrayList<String>();
 
         NodeColumnConfigList columns = new NodeColumnConfigList(Arrays.asList(new GWTColumn("displayName", "", -1)));
         columns.init();
@@ -229,6 +226,13 @@ public class SettingsPanel implements Serializable {
     }
 
     public void refresh() {
+        paths.clear();
+        if (JahiaGWTParameters.getSiteNode() != null && JahiaGWTParameters.getSiteNode().getProperties().get("j:installedModules") != null) {
+            for (String module : ((List<String>) JahiaGWTParameters.getSiteNode().get("j:installedModules"))) {
+                paths.add("/modules/" + module + "/$moduleversion/templates/" + settingTemplateRoot + "/*");
+            }
+        }
+
         settingsStore.removeAll();
         settingsLoader.load();
     }

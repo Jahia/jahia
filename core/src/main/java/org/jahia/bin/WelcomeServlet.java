@@ -154,44 +154,34 @@ public class WelcomeServlet extends HttpServlet {
         String redirect = null;
         String pathInfo = request.getPathInfo();
         String language = resolveLanguage(request, site, user);
-        if (site == null && pathInfo != null && pathInfo.endsWith("mode")) {
+
+        String defaultLocation = null;
+        String mapping = null;
+
+        if (pathInfo != null && pathInfo.endsWith("mode")) {
             EditConfiguration editConfiguration = (EditConfiguration) SpringContextSingleton.getInstance().getContext().getBean(StringUtils.substringAfter(pathInfo, "/"));
-            String mapping = editConfiguration.getDefaultUrlMapping();
-            // edit mode was requested
-            if (editConfiguration.isModulesOnly()) {
-                redirect(request.getContextPath() + mapping + "/"
-                       + Constants.EDIT_WORKSPACE + "/" + language + "/settings.manageModules.html",response);
-                return;
-            }
+            defaultLocation = editConfiguration.getDefaultLocation();
+            mapping = editConfiguration.getDefaultUrlMapping();
         }
 
-        if (site == null) {
+        if (site == null && (defaultLocation == null || defaultLocation.contains("$defaultSiteHome"))) {
             userRedirect(request, response, context);
-            return;
         } else {
-            String base = null;
-
-            JCRNodeWrapper home = site.getHome();
-            if (pathInfo != null && pathInfo.endsWith("mode")) {
-                EditConfiguration editConfiguration = (EditConfiguration) SpringContextSingleton.getInstance().getContext().getBean(StringUtils.substringAfter(pathInfo, "/"));
-                String mapping = editConfiguration.getDefaultUrlMapping();
-                // edit mode was requested
-                if (editConfiguration.isModulesOnly()) {
-                    base = request.getContextPath() + mapping + "/"
-                            + Constants.EDIT_WORKSPACE + "/" + language + "/settings.manageModules";
-                } else {
-                    if(home!=null) {
-                        base = request.getContextPath() + mapping + "/"
-                                + Constants.EDIT_WORKSPACE + "/" + language + home.getPath();
-                    } else {
-                        base = request.getContextPath() + mapping + "/"
-                                + Constants.EDIT_WORKSPACE + "/" + language + resolveSite(request, Constants.EDIT_WORKSPACE, defaultSitePath).getHome().getPath();
+            if (defaultLocation != null) {
+                if (site != null && defaultLocation.contains("$defaultSiteHome")) {
+                    JCRNodeWrapper home = site.getHome();
+                    if (home == null) {
+                        home = resolveSite(request, Constants.EDIT_WORKSPACE, defaultSitePath).getHome();
                     }
+                    defaultLocation = defaultLocation.replace("$defaultSiteHome",home.getPath());
                 }
+
+                redirect = request.getContextPath() + mapping + "/" + language +defaultLocation;
             } else {
+                JCRNodeWrapper home = site.getHome();
                 if (home != null) {
-                    base = request.getContextPath() + "/cms/render/"
-                            + Constants.LIVE_WORKSPACE + "/" + language + home.getPath();
+                    redirect = request.getContextPath() + "/cms/render/"
+                            + Constants.LIVE_WORKSPACE + "/" + language + home.getPath() + ".html";
                 } else if (!SettingsBean.getInstance().isDistantPublicationServerMode()) {
                     JCRSiteNode defSite = null;
                     try {
@@ -215,35 +205,33 @@ public class WelcomeServlet extends HttpServlet {
                                             Constants.LIVE_WORKSPACE)
                                     .getNode(defaultSitePath);
                             if (defaultSiteNode.getHome() != null) {
-                                base = request.getContextPath()
+                                redirect = request.getContextPath()
                                         + "/cms/render/"
                                         + Constants.LIVE_WORKSPACE + "/"
                                         + language
-                                        + defaultSiteNode.getHome().getPath();
+                                        + defaultSiteNode.getHome().getPath() + ".html";
                             }
                         }
                     }
-                    if (base == null && defSite != null && defSite.getHome() != null) {
+                    if (redirect == null && defSite != null && defSite.getHome() != null) {
                         if (defSite.getHome().hasPermission("editModeAccess")) {
-                            base = request.getContextPath() + "/cms/edit/"
+                            redirect = request.getContextPath() + "/cms/edit/"
                                     + Constants.EDIT_WORKSPACE + "/" + language
-                                    + defSite.getHome().getPath();
+                                    + defSite.getHome().getPath() + ".html";
                         } else if (defSite.getHome().hasPermission("contributeModeAccess")) {
-                            base = request.getContextPath() + "/cms/contribute/"
+                            redirect = request.getContextPath() + "/cms/contribute/"
                                     + Constants.EDIT_WORKSPACE + "/" + language
-                                    + defSite.getHome().getPath();
+                                    + defSite.getHome().getPath() + ".html";
                         } 
                     } 
                 } 
             }
-            if (base == null) {
+            if (redirect == null) {
                 redirect(request.getContextPath() + "/start", response);
                 return;
             }
-            redirect = base + ".html";
+            redirect(redirect, response);
         }
-
-        redirect(redirect, response);
     }
 
     protected JCRSiteNode resolveSite(HttpServletRequest request, String workspace, String fallbackSitePath) throws JahiaException, RepositoryException {

@@ -41,7 +41,10 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
+import org.apache.jackrabbit.core.security.PrivilegeImpl;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.*;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
@@ -50,9 +53,15 @@ import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageAware;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.render.URLResolver;
+import org.jahia.services.render.URLResolverFactory;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.uicomponents.bean.contentmanager.Column;
 import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
@@ -67,10 +76,13 @@ import org.jahia.services.uicomponents.bean.toolbar.Property;
 import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.ScriptEngineUtils;
+import org.jahia.utils.Url;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
+import javax.jcr.security.Privilege;
 import javax.script.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.StringWriter;
@@ -84,7 +96,18 @@ import java.util.*;
 public class UIConfigHelper {
     private static final Logger logger = LoggerFactory.getLogger(UIConfigHelper.class);
     private LanguageHelper languages;
+    private NavigationHelper navigation;
+    private ChannelHelper channelHelper;
+
     private ScriptEngineUtils scriptEngineUtils;
+
+    public void setNavigation(NavigationHelper navigation) {
+        this.navigation = navigation;
+    }
+
+    public void setChannelHelper(ChannelHelper channelHelper) {
+        this.channelHelper = channelHelper;
+    }
 
     public void setLanguages(LanguageHelper languages) {
         this.languages = languages;
@@ -347,6 +370,9 @@ public class UIConfigHelper {
                     gwtConfig.setManagerEngineTabs(managerTabs);
                 }
 
+                gwtConfig.setSiteNode(navigation.getGWTJahiaNode(site, GWTJahiaNode.DEFAULT_SITE_FIELDS, uiLocale));
+                setAvailablePermissions(gwtConfig);
+
                 return gwtConfig;
             } else {
                 logger.error("Config. " + name + " not found.");
@@ -545,12 +571,33 @@ public class UIConfigHelper {
      * @return
      * @throws GWTJahiaServiceException
      */
-    public GWTEditConfiguration getGWTEditConfiguration(JCRNodeWrapper contextNode, JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, String name) throws GWTJahiaServiceException {
+    public GWTEditConfiguration getGWTEditConfiguration(String name, String contextPath, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, JCRSessionWrapper session) throws GWTJahiaServiceException {
         try {
             EditConfiguration config = (EditConfiguration) SpringContextSingleton.getBean(name);
             if (config != null) {
                 GWTEditConfiguration gwtConfig = new GWTEditConfiguration();
                 gwtConfig.setName(config.getName());
+
+                String defaultLocation = config.getDefaultLocation();
+                if (defaultLocation.contains("$defaultSiteHome")) {
+                    JahiaSitesService siteService = JahiaSitesBaseService.getInstance();
+
+                    JahiaSite resolvedSite = !Url.isLocalhost(request.getServerName()) ? siteService.getSiteByServerName(request.getServerName()) : null;
+                    if (resolvedSite == null) {
+                        resolvedSite = JahiaSitesBaseService.getInstance().getDefaultSite();
+                    }
+                    if (resolvedSite != null) {
+                        JCRSiteNode siteNode = (JCRSiteNode) session.getNode(resolvedSite.getJCRLocalPath());
+                        defaultLocation = defaultLocation.replace("$defaultSiteHome", siteNode.getHome().getPath());
+                    } else {
+                        defaultLocation = null;
+                    }
+                }
+                gwtConfig.setDefaultLocation(defaultLocation);
+
+                JCRNodeWrapper contextNode = session.getNode(contextPath);
+                JCRSiteNode site = contextNode.getResolveSite();
+
                 gwtConfig.setTopToolbar(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getTopToolbar()));
                 gwtConfig.setSidePanelToolbar(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getSidePanelToolbar()));
                 gwtConfig.setMainModuleToolbar(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getMainModuleToolbar()));
@@ -566,15 +613,42 @@ public class UIConfigHelper {
                 gwtConfig.setSkipMainModuleTypesDomParsing(config.getSkipMainModuleTypesDomParsing());
                 gwtConfig.setVisibleTypes(config.getVisibleTypes());
                 gwtConfig.setNonVisibleTypes(config.getNonVisibleTypes());
+
+                gwtConfig.setSiteNode(navigation.getGWTJahiaNode(site, GWTJahiaNode.DEFAULT_SITE_FIELDS, uiLocale));
+
+                List<GWTJahiaNode> sites = navigation.retrieveRoot(Arrays.asList(config.getSitesLocation()), Arrays.asList("jnt:virtualsite"), null, null, GWTJahiaNode.DEFAULT_SITE_FIELDS, null, null, site, session, uiLocale, false, false, null, null);
+                String permission = ((EditConfiguration)SpringContextSingleton.getBean(name)).getRequiredPermission();
+                Map<String, GWTJahiaNode> sitesMap = new HashMap<String, GWTJahiaNode>();
+                for (GWTJahiaNode aSite : sites) {
+                    if (session.getNodeByUUID(aSite.getUUID()).hasPermission(permission)) {
+                        sitesMap.put(aSite.getSiteUUID(), aSite);
+                    }
+                }
+                gwtConfig.setSitesMap(sitesMap);
+
+                setAvailablePermissions(gwtConfig);
+
+                gwtConfig.setChannels(channelHelper.getChannels());
+
                 return gwtConfig;
             } else {
                 throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.bean.editconfig.not.found.in.spring.config.file",uiLocale));
             }
-        } catch (GWTJahiaServiceException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
+
+    private void setAvailablePermissions(GWTConfiguration config) throws RepositoryException, GWTJahiaServiceException {
+        Privilege[] p = JahiaPrivilegeRegistry.getRegisteredPrivileges();
+        List<String> l = new ArrayList<String>();
+        for (Privilege privilege : p) {
+            l.add(((PrivilegeImpl)privilege).getPrefixedName());
+        }
+        config.setPermissions(l);
+    }
+
 
     /**
      * Create GWTSidePanelTab list

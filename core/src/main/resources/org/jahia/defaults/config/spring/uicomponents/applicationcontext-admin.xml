@@ -7,7 +7,6 @@
 
     <bean id="adminmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         <property name="requiredPermission" value="administrationAccess"/>
-        <property name="modulesOnly" value="true"/>
         <property name="componentsPaths">
             <list>
                 <value>/modules/*</value>
@@ -24,7 +23,8 @@
             </list>
         </property>
         <property name="defaultUrlMapping" value="/cms/admin"/>
-        <property name="sitesLocation" value="/modules/*"/>
+        <property name="defaultLocation" value="/settings.manageModules.html"/>
+        <property name="sitesLocation" value="/sites/systemsite"/>
         <property name="topToolbar">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="layout" value="button-label"/>
@@ -32,7 +32,7 @@
                     <list>
 
                         <ref bean="studiomode.managers.menu"/>
-                        <ref bean="Toolbar.Item.EditMode"/>
+                        <ref bean="Toolbar.Item.Edit"/>
                         <ref bean="Toolbar.Item.Studio"/>
                         <ref bean="Toolbar.Item.Separator"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">

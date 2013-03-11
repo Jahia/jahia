@@ -45,6 +45,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.storage.client.Storage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
@@ -72,13 +73,23 @@ public class SidePanel extends ContentPanel {
     private final List<SidePanelTabItem> tabs;
     private GWTEditConfiguration config;
     private ToolButton refreshButton;
-    private final TabPanel tabPanel;
+    private TabPanel tabPanel;
 
     public SidePanel(GWTEditConfiguration config) {
         super(new FitLayout());
         this.head = new ToolbarHeader();
-
         tabs = new ArrayList<SidePanelTabItem>();
+        initTabs(config);
+    }
+
+    public void initTabs(GWTEditConfiguration config) {
+        removeAll();
+
+        tabs.clear();
+
+        this.config = config;
+
+        final Storage storage = Storage.getSessionStorageIfSupported();
 
         tabPanel = new TabPanel();
         tabPanel.setBorders(false);
@@ -91,24 +102,28 @@ public class SidePanel extends ContentPanel {
                 SidePanelTabItem selectedTab = ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem"));
                 selectedTab.refresh(selectedTab.getAutoRefreshData());
                 updateRefreshButton();
+                if (storage != null) {
+                    storage.setItem(SidePanel.this.config.getName() +"_selectedTab", Integer.toString(tabPanel.getItems().indexOf(tabPanel.getSelectedItem())));
+                }
             }
         });
 
-        initTabs(config);
-
-        add(tabPanel);
-    }
-
-    public void initTabs(GWTEditConfiguration config) {
-        tabPanel.removeAll();
-        this.config = config;
         for (GWTSidePanelTab tabConfig : config.getTabs()) {
             SidePanelTabItem tabItem = tabConfig.getTabItem();
             tabs.add(tabItem);
 
             tabPanel.add(tabItem.create(tabConfig));
         }
-        tabPanel.setSelection(tabPanel.getItem(0));
+
+        if (storage != null && storage.getItem(config.getName() +"_selectedTab") != null) {
+            int selectedTab = Integer.parseInt(storage.getItem(config.getName() + "_selectedTab"));
+            tabPanel.setSelection(tabPanel.getItem(selectedTab));
+            tabs.get(selectedTab).restoreState();
+        } else {
+            tabPanel.setSelection(tabPanel.getItem(0));
+        }
+
+        add(tabPanel);
     }
 
     public void initWithLinker(final EditLinker editLinker) {
@@ -123,7 +138,11 @@ public class SidePanel extends ContentPanel {
             public void componentSelected(IconButtonEvent event) {
                 Map<String, Object> data = new HashMap<String, Object>();
                 data.put(Linker.REFRESH_ALL, true);
-                ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem")).refresh(data);
+                if (tabs.size() == 1) {
+                    tabs.get(0).refresh(data);
+                } else {
+                    ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem")).refresh(data);
+                }
                 DeployTemplatesActionItem.refreshAllMenus(editLinker);
                 updateRefreshButton();
             }
@@ -162,6 +181,7 @@ public class SidePanel extends ContentPanel {
             tab.handleNewMainNodeLoaded(node);
         }
         ((ToolbarHeader)head).handleNewMainNodeLoaded(node);
+        layout();
     }
 
     public void handleNewMainSelection(String path) {
@@ -179,6 +199,7 @@ public class SidePanel extends ContentPanel {
 
     public void refresh(Map<String, Object> data) {
         SidePanelTabItem selected = ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem"));
+
         for (SidePanelTabItem tab : tabs) {
             if (tab == selected) {
                 tab.refresh(data);
@@ -187,5 +208,11 @@ public class SidePanel extends ContentPanel {
             }
         }
         updateRefreshButton();
+    }
+
+    public void setConfig(GWTEditConfiguration config) {
+        this.config = config;
+        setVisible(!config.getTabs().isEmpty());
+        initTabs(config);
     }
 }

@@ -82,7 +82,11 @@ public class EditEntryPoint extends CommonEntryPoint {
         final RootPanel panel = RootPanel.get("editmode");
         if (panel != null) {
             final String path = DOM.getElementAttribute(panel.getElement(), "path");
-            final String config = DOM.getElementAttribute(panel.getElement(), "config");
+            String config = DOM.getElementAttribute(panel.getElement(), "config");
+            String hash = Window.Location.getHash();
+            if (!hash.equals("")) {
+                config = hash.substring(1, hash.indexOf('|'));
+            }
             JahiaContentManagementService.App.getInstance().getEditConfiguration(path, config, new BaseAsyncCallback<GWTEditConfiguration>() {
                 public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
                     PermissionsUtils.loadPermissions(gwtEditConfiguration.getPermissions());

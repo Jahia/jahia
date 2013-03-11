@@ -147,6 +147,10 @@ public class SidePanelTabItem implements Serializable {
         tab.setEnabled(config.getRequiredPermission() == null || PermissionsUtils.isPermitted(config.getRequiredPermission(), node));
     }
 
+    public void restoreState() {
+        // do nothing by default
+    }
+
     /**
      * Creates the context menu using specified Spring toolbar bean name.
      *

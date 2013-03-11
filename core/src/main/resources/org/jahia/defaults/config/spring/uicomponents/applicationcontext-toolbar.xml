@@ -189,44 +189,24 @@
     </bean>
 
     <bean id="Toolbar.Item.Contribute" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchModeActionItem"/>
-        </property>
         <property name="titleKey" value="label.contribute"/>
         <property name="icon" value="contribute"/>
         <property name="requiredPermission" value="contributeModeAccess"/>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="workspace"/>
-                    <property name="value" value="default"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="servlet"/>
-                    <property name="value" value="contribute"/>
-                </bean>
-            </list>
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
+                <property name="configurationName" value="contributemode"/>
+            </bean>
         </property>
     </bean>
 
     <bean id="Toolbar.Item.Edit" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchModeActionItem"/>
-        </property>
         <property name="titleKey" value="label.editMode"/>
         <property name="icon" value="editMode"/>
         <property name="requiredPermission" value="editModeAccess"/>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="workspace"/>
-                    <property name="value" value="default"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="servlet"/>
-                    <property name="value" value="edit"/>
-                </bean>
-            </list>
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
+                <property name="configurationName" value="editmode"/>
+            </bean>
         </property>
     </bean>
 
@@ -252,26 +232,12 @@
     </bean>
 
     <bean id="Toolbar.Item.Studio" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectOrOpenWindowActionItem"/>
-        </property>
         <property name="titleKey" value="label.studio"/>
         <property name="icon" value="studio"/>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value" value="$context/welcome/studiomode"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="target"/>
-                    <property name="value" value="_blank"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="no-options"/>
-                    <property name="value" value=""/>
-                </bean>
-            </list>
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
+                <property name="configurationName" value="studiomode"/>
+            </bean>
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
@@ -283,26 +249,12 @@
     </bean>
 
     <bean id="Toolbar.Item.EditMode" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectOrOpenWindowActionItem"/>
-        </property>
         <property name="titleKey" value="label.editMode"/>
         <property name="icon" value="editMode"/>
-        <property name="properties">
-            <list>
-				<bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-					<property name="name" value="url" />
-					<property name="value" value="$context/welcome/editmode" />
-				</bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="target"/>
-                    <property name="value" value="_blank"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="no-options"/>
-                    <property name="value" value=""/>
-                </bean>
-            </list>
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
+                <property name="configurationName" value="editmode"/>
+            </bean>
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
@@ -317,6 +269,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
                 <property name="configurationName" value="studiovisualmode"/>
+                <property name="updateSidePanel" value="false"/>
             </bean>
         </property>
     </bean>
@@ -326,6 +279,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
                 <property name="configurationName" value="studiomode"/>
+                <property name="updateSidePanel" value="false"/>
             </bean>
         </property>
     </bean>
@@ -387,27 +341,13 @@
 
     <!-- Administration -->
     <bean id="Toolbar.Item.Admin" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectOrOpenWindowActionItem"/>
-        </property>
         <property name="titleKey" value="label.administration"/>
         <property name="icon" value="admin"/>
         <property name="visibility" value="administrationAccess"/>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value" value="$context/welcome/adminmode"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="target"/>
-                    <property name="value" value="_blank"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="no-options"/>
-                    <property name="value" value=""/>
-                </bean>
-            </list>
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
+                <property name="configurationName" value="adminmode"/>
+            </bean>
         </property>
     </bean>
 

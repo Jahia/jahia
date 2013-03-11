@@ -45,7 +45,6 @@ import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -76,7 +75,7 @@ public class DuplicateModuleActionItem extends BaseActionItem {
                             linker.loaded();
                             Info.display(Messages.get("label.information", "Information"), Messages.get("message.templateSetCreated", "Templates set successfully created"));
                             JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
-                            JahiaGWTParameters.setSite(result, linker);
+                            JahiaGWTParameters.setSiteFromNode(result, linker);
                             if (((EditLinker) linker).getSidePanel() != null) {
                                 Map<String, Object> data = new HashMap<String, Object>();
                                 data.put(Linker.REFRESH_ALL, true);

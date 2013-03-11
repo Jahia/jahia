@@ -18,6 +18,7 @@
 
     <bean id="editmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         <property name="requiredPermission" value="editModeAccess"/>
+        <property name="defaultLocation" value="$defaultSiteHome.html"/>
         <property name="defaultUrlMapping" value="/cms/edit"/>
         <property name="sitesLocation" value="/sites/*"/>
         <property name="nonEditableTypes">

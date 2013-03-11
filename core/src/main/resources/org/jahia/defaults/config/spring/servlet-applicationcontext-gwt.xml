@@ -48,7 +48,6 @@
         <property name="zip" ref="ZipHelper"/>
         <property name="diff" ref="DiffHelper"/>
         <property name="seo" ref="SeoHelper"/>
-        <property name="uiConfig" ref="UiConfigHelper"/>
         <property name="sessionPollingFrequency" value="300000"/>
         <property name="cacheHelper" ref="CacheHelper"/>
         <property name="schedulerHelper" ref="SchedulerHelper"/>

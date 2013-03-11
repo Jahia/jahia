@@ -23,7 +23,6 @@
 
     <bean id="studiomode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         <property name="requiredPermission" value="studioModeAccess"/>
-        <property name="modulesOnly" value="true"/>
         <property name="forceHeaders" value="true"/>
         <property name="componentsPaths">
             <list>
@@ -59,6 +58,7 @@
             </list>
         </property>
         <property name="defaultUrlMapping" value="/cms/studio"/>
+        <property name="defaultLocation" value="/settings.manageModules.html"/>
         <property name="sitesLocation" value="/modules/*"/>
         <property name="topToolbar">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
@@ -69,7 +69,7 @@
                             <property name="titleKey" value="label.mode"/>
                             <property name="items">
                                 <list>
-                                    <ref bean="Toolbar.Item.EditMode"/>
+                                    <ref bean="Toolbar.Item.Edit"/>
                                     <ref bean="Toolbar.Item.Admin"/>
                                 </list>
                             </property>

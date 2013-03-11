@@ -72,14 +72,14 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     private Map<String, EngineConfiguration> engineConfigurations;
 
+    private String defaultLocation;
+
     private String sitesLocation;
 
     private boolean enableDragAndDrop = true;
 
     private String requiredPermission;
     private String defaultUrlMapping;
-
-    private boolean modulesOnly = false;
 
     private List<String> componentsPaths = Arrays.asList("$site/components/*");
 
@@ -216,17 +216,6 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     }
 
     /**
-     * @return when true, the default url and base are /modules/default(.html)
-     */
-    public boolean isModulesOnly() {
-        return modulesOnly;
-    }
-
-    public void setModulesOnly(boolean modulesOnly) {
-        this.modulesOnly = modulesOnly;
-    }
-
-    /**
      * @return List of paths to the components
      */
     public List<String> getComponentsPaths() {
@@ -308,4 +297,11 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         this.forceHeaders = forceHeaders;
     }
 
+    public String getDefaultLocation() {
+        return defaultLocation;
+    }
+
+    public void setDefaultLocation(String defaultLocation) {
+        this.defaultLocation = defaultLocation;
+    }
 }

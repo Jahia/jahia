@@ -128,12 +128,17 @@ public class EditLinker implements Linker {
 
     public void switchConfig(GWTEditConfiguration config, boolean updateSidePanel, boolean updateToolbar) {
         this.config = config;
+
+        JahiaGWTParameters.setSiteNode(config.getSiteNode());
+        JahiaGWTParameters.setSitesMap(config.getSitesMap());
+        JahiaGWTParameters.setChannels(config.getChannels());
+
         mainModule.setConfig(config);
         if (updateSidePanel) {
-            sidePanel.initTabs(config);
+            sidePanel.setConfig(config);
         }
         if (updateToolbar) {
-            toolbar.setToolbarSet(Arrays.asList(config.getTopToolbar()));
+            toolbar.setConfig(config);
         }
         EditPanelViewport.setViewportStyleName(config.getName());
         registerLinker(true, updateSidePanel, updateToolbar);

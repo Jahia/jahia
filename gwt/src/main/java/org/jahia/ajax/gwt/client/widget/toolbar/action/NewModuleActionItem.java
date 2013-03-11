@@ -122,7 +122,7 @@ public class NewModuleActionItem extends BaseActionItem {
                             linker.loaded();
                             Info.display(Messages.get("label.information", "Information"), Messages.get("message.templateSetCreated", "Templates set successfully created"));
                             JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
-                            JahiaGWTParameters.setSite(result, linker);
+                            JahiaGWTParameters.setSiteFromNode(result, linker);
                             if (((EditLinker) linker).getSidePanel() != null) {
                                 Map<String, Object> data = new HashMap<String, Object>();
                                 data.put(Linker.REFRESH_ALL, true);

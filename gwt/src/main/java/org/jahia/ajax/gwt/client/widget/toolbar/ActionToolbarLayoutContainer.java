@@ -44,11 +44,13 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -145,4 +147,9 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
             createToolbarUI(toolbarSet);
         }
     }
+
+    public void setConfig(GWTEditConfiguration config) {
+        setToolbarSet(Arrays.asList(config.getTopToolbar()));
+    }
+
 }

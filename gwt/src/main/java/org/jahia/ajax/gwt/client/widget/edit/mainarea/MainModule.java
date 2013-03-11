@@ -54,6 +54,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.*;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.EventListener;
@@ -86,8 +87,9 @@ import java.util.*;
 public class MainModule extends Module {
 
     private static MainModule module;
-    private String originalHtml;
+
     private EditLinker editLinker;
+    private Storage storage;
     private ActionContextMenu contextMenu;
     private GWTEditConfiguration config;
 
@@ -101,26 +103,30 @@ public class MainModule extends Module {
     protected LayoutContainer scrollContainer;
     protected LayoutContainer center;
     protected EditFrame frame;
+    private final LayoutContainer headContainer;
 
     public MainModule(final String html, final String path, final String template, String nodeTypes, GWTEditConfiguration config) {
         super("main", path, template, nodeTypes, new BorderLayout());
         setScrollMode(Style.Scroll.NONE);
 
         this.id = "main";
-        this.originalHtml = html;
         this.path = path;
         this.template = template;
         this.config = config;
         this.depth = 0;
 
-        if (config.getMainModuleToolbar() != null && !config.getMainModuleToolbar().getGwtToolbarItems().isEmpty()) {
-            head = new ToolbarHeader();
-            head.addStyleName("x-panel-header");
-            head.setStyleAttribute("z-index", "999");
-            head.setStyleAttribute("position", "relative");
-            LayoutContainer c = new LayoutContainer(new FitLayout());
-            c.add(head);
-            add(c, new BorderLayoutData(Style.LayoutRegion.NORTH, 32));
+        storage = Storage.getSessionStorageIfSupported();
+
+        head = new ToolbarHeader();
+        head.addStyleName("x-panel-header");
+        head.setStyleAttribute("z-index", "999");
+        head.setStyleAttribute("position", "relative");
+        headContainer = new LayoutContainer(new FitLayout());
+        headContainer.add(head);
+        add(headContainer, new BorderLayoutData(Style.LayoutRegion.NORTH, 32));
+
+        if (config.getMainModuleToolbar() == null || config.getMainModuleToolbar().getGwtToolbarItems().isEmpty()) {
+            head.hide();
         }
 
         frame = new EditFrame();
@@ -181,8 +187,7 @@ public class MainModule extends Module {
     public void initWithLinker(EditLinker linker) {
         this.editLinker = linker;
 
-
-        if (head != null) {
+        if (config.getMainModuleToolbar() != null && !config.getMainModuleToolbar().getGwtToolbarItems().isEmpty()) {
             ((ToolbarHeader) head).removeAllTools();
             for (GWTJahiaToolbarItem item : config.getMainModuleToolbar().getGwtToolbarItems()) {
                 ((ToolbarHeader) head).addItem(linker, item);
@@ -195,10 +200,14 @@ public class MainModule extends Module {
                     refresh(data);
                 }
             }));
+            headContainer.show();
+        } else {
+            headContainer.hide();
         }
+
         String hash = Window.Location.getHash();
         if (!hash.equals("")) {
-            hash = hash.substring(1);
+            hash = hash.substring(hash.indexOf("|")+1);
             if (hash.contains("frame/") && !isValidUrl(hash)) {
                 String start = hash.substring(0,hash.indexOf("frame/"));
                 start = start.substring(JahiaGWTParameters.getContextPath().length());
@@ -349,7 +358,7 @@ public class MainModule extends Module {
         return false;
     }
 
-    private void goToUrl(final String url, final boolean forceImageRefresh) {
+    public void goToUrl(final String url, final boolean forceImageRefresh) {
         mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
         layoutChannel();
         frame.setForceImageRefresh(forceImageRefresh);
@@ -358,11 +367,15 @@ public class MainModule extends Module {
     }
 
     private String getUrl(String path, String template) {
+        return getBaseUrl() + path + (template != null ? ("." + template) : "") + ".html";
+    }
+
+    public String getBaseUrl() {
         String baseUrl = JahiaGWTParameters.getBaseUrl();
         baseUrl = baseUrl.substring(0, baseUrl.indexOf("/"+JahiaGWTParameters.getWorkspace()+"/"));
         baseUrl += "frame/" + JahiaGWTParameters.getWorkspace();
         baseUrl += "/" + (editLinker.getLocale() == null ? JahiaGWTParameters.getLanguage() : editLinker.getLocale());
-        return baseUrl + path + (template != null ? ("." + template) : "") + ".html";
+        return baseUrl;
     }
 
     @Override
@@ -465,7 +478,7 @@ public class MainModule extends Module {
         goToUrl(getUrl(path, template), false);
     }
 
-    private static void setHashMarker(String path) {
+    private void setHashMarker(String path) {
         String currentHref = Window.Location.getHref();
         if (currentHref.endsWith(path)) {
             return;
@@ -474,7 +487,11 @@ public class MainModule extends Module {
         if (currentHref.indexOf("#") > 0) {
             currentHref = currentHref.substring(0, currentHref.indexOf("#"));
         }
-        Window.Location.assign(currentHref + "#" + URL.encode(path));
+        Window.Location.assign(currentHref + "#" + MainModule.getInstance().getConfig().getName() + "|" + URL.encode(path));
+
+        if (storage != null) {
+            storage.setItem(MainModule.getInstance().getConfig().getName() +"_path", path);
+        }
     }
 
     public void switchLanguage(GWTJahiaLanguage language) {
@@ -501,7 +518,7 @@ public class MainModule extends Module {
                     Messages.get("info_sharednode", "This is a shared node")));
         }
         if (node.getSiteUUID() != null && !JahiaGWTParameters.getSiteUUID().equals(node.getSiteUUID())) {
-            JahiaGWTParameters.setSite(node, editLinker);
+            JahiaGWTParameters.setSiteFromNode(node, editLinker);
             SiteSwitcherActionItem.refreshAllSitesList(editLinker);
             if (editLinker.getSidePanel() != null) {
                 Map<String, Object> data = new HashMap<String, Object>();
@@ -525,11 +542,23 @@ public class MainModule extends Module {
 
     public void setConfig(GWTEditConfiguration config) {
         JahiaGWTParameters.changeServletMapping(this.config.getDefaultUrlMapping(), config.getDefaultUrlMapping());
+
+        boolean changedRoot = !config.getSitesLocation().equals(this.config.getSitesLocation());
+
         this.config = config;
-        setHashMarker(getUrl(path, template));
-        Map<String, Object> data = new HashMap<String, Object>();
-        data.put(Linker.REFRESH_MAIN, true);
-        refresh(data);
+
+        if (changedRoot) {
+            if (storage != null && storage.getItem(config.getName() +"_path") != null) {
+                setHashMarker(storage.getItem(config.getName() + "_path"));
+            } else {
+                setHashMarker(getBaseUrl() + config.getDefaultLocation());
+            }
+        } else {
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put(Linker.REFRESH_MAIN, true);
+            refresh(data);
+        }
+
     }
 
     public void handleNewModuleSelection(Module selectedModule) {

@@ -106,6 +106,8 @@
     </bean>
 
     <bean name="UiConfigHelper" class="org.jahia.ajax.gwt.helper.UIConfigHelper">
+        <property name="navigation" ref="NavigationHelper"/>
+        <property name="channelHelper" ref="ChannelHelper"/>
         <property name="languages" ref="LanguagesHelper"/>
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
     </bean>

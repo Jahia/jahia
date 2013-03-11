@@ -5,6 +5,7 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
     <bean id="contributemode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         <property name="requiredPermission" value="contributeModeAccess"/>
+        <property name="defaultLocation" value="$defaultSiteHome.html"/>
         <property name="defaultUrlMapping" value="/cms/contribute"/>
         <property name="sitesLocation" value="/sites/*"/>
         <property name="topToolbar">

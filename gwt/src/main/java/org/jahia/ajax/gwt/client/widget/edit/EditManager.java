@@ -72,7 +72,6 @@ public class EditManager extends ContentPanel {
         long start = System.currentTimeMillis();
 
         JahiaGWTParameters.setSiteNode(config.getSiteNode());
-        JahiaGWTParameters.setSitesLocation(config.getSitesLocation());
         JahiaGWTParameters.setSitesMap(config.getSitesMap());
         JahiaGWTParameters.setChannels(config.getChannels());
 
@@ -80,25 +79,18 @@ public class EditManager extends ContentPanel {
         setLayout(borderLayout);
         setHeaderVisible(false);
 
-        if (!config.getTabs().isEmpty()) {
-//        GWT.runAsync(new RunAsyncCallback() {
-//            public void onFailure(Throwable reason) {
-//                
-//            }
-//
-//            public void onSuccess() {
-                BorderLayoutData data = new BorderLayoutData(Style.LayoutRegion.WEST, 300);
-                data.setCollapsible(true);
-                data.setSplit(true);
-                data.setFloatable(true);
+        sidePanel = new SidePanel(config);
 
-                sidePanel = new SidePanel(config);
-                sidePanel.setStyleAttribute("z-index", "999");
-                sidePanel.addStyleName("gwt-only-panel");
-                add(sidePanel, data);
-//            }
-//        });
-        }
+        BorderLayoutData data = new BorderLayoutData(Style.LayoutRegion.WEST, 300);
+        data.setCollapsible(true);
+        data.setSplit(true);
+        data.setFloatable(true);
+
+        sidePanel.setStyleAttribute("z-index", "999");
+        sidePanel.addStyleName("gwt-only-panel");
+        add(sidePanel, data);
+
+        sidePanel.setVisible(!config.getTabs().isEmpty());
 
         toolbar =  new ActionToolbarLayoutContainer(config.getTopToolbar());
         toolbar.setStyleAttribute("z-index", "999");

@@ -43,7 +43,6 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -122,7 +121,7 @@ public class UpdateModuleActionItem extends BaseActionItem {
                         public void onSuccess(GWTJahiaNode result) {
                             linker.loaded();
                             JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
-                            JahiaGWTParameters.setSite(result, linker);
+                            JahiaGWTParameters.setSiteFromNode(result, linker);
                             if (((EditLinker) linker).getSidePanel() != null) {
                                 Map<String, Object> data = new HashMap<String, Object>();
                                 data.put(Linker.REFRESH_ALL, true);

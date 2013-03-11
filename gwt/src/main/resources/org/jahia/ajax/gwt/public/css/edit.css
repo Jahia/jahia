@@ -361,10 +361,12 @@ button.button-enabledisable, div.button-enabledisable {
     border: 1px dashed #333;
     padding: 5px;
     margin-bottom: 5px;
-
+    font-family: tahoma,arial,verdana,sans-serif;
+    font-size: 11px;
 }
 .editmodeArea  {
 }
+
 .studiovisualmodeArea  {
 
 

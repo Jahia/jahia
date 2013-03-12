@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="
+		http://www.springframework.org/schema/webflow
+		http://www.springframework.org/schema/webflow/spring-webflow.xsd">
+
+    <var name="flowHandler" class="org.jahia.modules.serverSettings.flow.ManageModulesFlowHandler"/>
+    <var name="formDatas" class="java.util.HashMap"/>
+
+    <view-state id="view">
+
+        <on-render>
+            <evaluate expression="JahiaTemplateManagerService.templatePackageRegistry.allModuleVersions" result="requestScope.allModuleVersions" />
+            <evaluate expression="JahiaTemplateManagerService.templatePackageRegistry.registeredModules" result="requestScope.registeredModules" />
+        </on-render>
+
+    </view-state>
+
+</flow>

@@ -5,9 +5,6 @@
 		http://www.springframework.org/schema/webflow
 		http://www.springframework.org/schema/webflow/spring-webflow.xsd">
 
-    <var name="flowHandler" class="org.jahia.modules.serverSettings.flow.ManageModulesFlowHandler"/>
-    <var name="formDatas" class="java.util.HashMap"/>
-
     <view-state id="view">
 
         <on-render>

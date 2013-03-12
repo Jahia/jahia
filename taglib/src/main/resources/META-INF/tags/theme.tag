@@ -22,12 +22,3 @@
     </c:if>
   </c:forEach>
 </c:catch>
-<c:if test="${not empty catchException}">
-<%
-    //Exceptions are catched. Most of time it will be SessionInvalidate exceptions
-    Logger log = Logger.getLogger(this.getClass().getName());
-    log.warn("Error in theme tag ", (java.lang.Exception)jspContext.findAttribute("catchException"));
-    //flush the current output cache, that next requests use the correct theme
-    org.jahia.services.cache.CacheHelper.flushOutputCaches();
-%>
-</c:if>  

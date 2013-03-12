@@ -179,6 +179,11 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                         if (StringUtils.isNotEmpty(templateTitle)) {
                             templateName = templateTitle;
                         }
+<<<<<<< .working
+=======
+                    } catch (RepositoryException re) {
+                        logger.debug("No title for template "+templateNode.getPath()+" in locale " + locale + ", will use template system name as display name");
+>>>>>>> .merge-right.r45057
                     }
                 } catch (RepositoryException re) {
                     logger.warn("No title for template "+templateNode.getPath()+" in locale " + locale + ", will use template system name as display name");

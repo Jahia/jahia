@@ -203,6 +203,7 @@ public class SettingsPanel implements Serializable {
         treeVBoxData.setFlex(1);
 
         settingsPanel.add(treeContainer, treeVBoxData);
+        refresh();
     }
 
     public ContentPanel getSettingsPanel() {

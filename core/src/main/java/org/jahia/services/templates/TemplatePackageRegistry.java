@@ -270,6 +270,10 @@ public class TemplatePackageRegistry {
         return Collections.emptySet();
     }
 
+    public Map<String, Map<ModuleVersion, JahiaTemplatesPackage>> getAllModuleVersions() {
+        return packagesWithVersionByFilename;
+    }
+
     public String getRootFolderName(String moduleName) {
         if (packagesWithVersionByFilename.containsKey(moduleName)) {
             return moduleName;
@@ -288,6 +292,10 @@ public class TemplatePackageRegistry {
 
     public Set<String> getPackageNames() {
         return registry.keySet();
+    }
+
+    public Map<String, JahiaTemplatesPackage> getRegisteredModules() {
+        return fileNameRegistry;
     }
 
     /**

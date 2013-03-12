@@ -114,46 +114,53 @@ public class SettingsPanel implements Serializable {
         NodeColumnConfigList columns = new NodeColumnConfigList(Arrays.asList(new GWTColumn("displayName", "", -1)));
         columns.init();
         columns.get(0).setRenderer(NodeColumnConfigList.NAME_TREEGRID_RENDERER);
-        settingsLoader = new BaseTreeLoader<GWTJahiaNode>(
-                new RpcProxy<List<GWTJahiaNode>>() {
-                    @Override
-                    protected void load(Object loadConfig, final AsyncCallback<List<GWTJahiaNode>> callback) {
-                        List<String> fields = new ArrayList<String>();
-                        fields.add(GWTJahiaNode.LOCKS_INFO);
-                        fields.add(GWTJahiaNode.PERMISSIONS);
-                        fields.add(GWTJahiaNode.CHILDREN_INFO);
-                        fields.add(GWTJahiaNode.ICON);
-                        JahiaContentManagementService.App.getInstance()
-                                .getRoot(paths, Arrays.asList("jnt:contentTemplate"), null, null, fields, null, null, true,
-                                        false, null, null, new AsyncCallback<List<GWTJahiaNode>>() {
-                                    @Override
-                                    public void onFailure(Throwable caught) {
-                                        callback.onFailure(caught);
-                                    }
+        RpcProxy<List<GWTJahiaNode>> proxy = new RpcProxy<List<GWTJahiaNode>>() {
+            @Override
+            protected void load(Object loadConfig, final AsyncCallback<List<GWTJahiaNode>> callback) {
+                List<String> fields = new ArrayList<String>();
+                fields.add(GWTJahiaNode.LOCKS_INFO);
+                fields.add(GWTJahiaNode.PERMISSIONS);
+                fields.add(GWTJahiaNode.CHILDREN_INFO);
+                fields.add(GWTJahiaNode.ICON);
+                JahiaContentManagementService.App.getInstance()
+                        .getRoot(paths, Arrays.asList("jnt:template"), null, null, fields, null, null, true,
+                                false, null, null, new AsyncCallback<List<GWTJahiaNode>>() {
+                            @Override
+                            public void onFailure(Throwable caught) {
+                                callback.onFailure(caught);
+                            }
 
-                                    @Override
-                                    public void onSuccess(List<GWTJahiaNode> nodes) {
-                                        List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
-                                        for (GWTJahiaNode node : nodes) {
-                                            String nodeName = node.getName();
-                                            boolean add = true;
-                                            for (GWTJahiaNode resultNode : result) {
-                                                if (resultNode.getName().equals(nodeName)) {
-                                                    add = false;
-                                                    break;
-                                                }
-                                            }
-                                            if (add) {
-                                                result.add(node);
-                                            }
+                            @Override
+                            public void onSuccess(List<GWTJahiaNode> nodes) {
+                                List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
+                                for (GWTJahiaNode node : nodes) {
+                                    String nodeName = node.getName();
+                                    boolean add = true;
+                                    for (GWTJahiaNode resultNode : result) {
+                                        if (resultNode.getName().equals(nodeName)) {
+                                            add = false;
+                                            break;
                                         }
-                                        callback.onSuccess(result);
                                     }
-                                });
+                                    if (add) {
+                                        result.add(node);
+                                    }
+                                }
+                                callback.onSuccess(result);
+                            }
+                        });
 
-                    }
-                }
-        );
+            }
+        };
+
+        settingsLoader = new BaseTreeLoader<GWTJahiaNode>(proxy) {
+            @Override
+            public boolean hasChildren(GWTJahiaNode parent) {
+                paths.clear();
+                paths.add(parent.getPath()+ "/*");
+                return !parent.isNodeType("jnt:contentTemplate");
+            }
+        };
         settingsStore = new TreeStore<GWTJahiaNode>(settingsLoader);
         settingsStore.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
             public int compare(Object o1, Object o2) {
@@ -170,7 +177,7 @@ public class SettingsPanel implements Serializable {
         TreeGrid<GWTJahiaNode> settingsTree = new TreeGrid<GWTJahiaNode>(settingsStore,new ColumnModel(columns));
 
 
-        settingsTree.setAutoExpandColumn(columns.getAutoExpand());
+        settingsTree.setAutoExpandColumn("displayName");
         settingsTree.getTreeView().setRowHeight(25);
         settingsTree.getTreeView().setForceFit(true);
         settingsTree.setHeight("100%");
@@ -186,8 +193,9 @@ public class SettingsPanel implements Serializable {
             @Override
             protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
                 super.handleMouseClick(e);
-
+                if (e.getModel().isNodeType("jnt:contentTemplate")) {
                     MainModule.staticGoTo(path,getSelectedItem().getName());
+                }
             }
         });
 

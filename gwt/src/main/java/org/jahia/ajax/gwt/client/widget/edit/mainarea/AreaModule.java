@@ -132,7 +132,7 @@ public class AreaModule extends SimpleModule {
 
             p.add(icon);
             p.sinkEvents(Event.ONCLICK);
-            p.addStyleName("button-enabledisable");
+            p.addStyleName("button-enable");
             p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
                 public void handleEvent(ComponentEvent be) {
                     createNode(new BaseAsyncCallback<GWTJahiaNode>() {

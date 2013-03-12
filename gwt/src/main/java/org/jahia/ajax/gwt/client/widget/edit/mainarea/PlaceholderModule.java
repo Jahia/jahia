@@ -122,7 +122,7 @@ public class PlaceholderModule extends Module {
             final HorizontalPanel p = new HorizontalPanel();
             p.add(icon);
             p.sinkEvents(Event.ONCLICK);
-            p.addStyleName("button-enabledisable");
+            p.addStyleName("button-disable");
             p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
                 public void handleEvent(ComponentEvent be) {
                     JahiaContentManagementService.App.getInstance().deletePaths(Arrays.asList(parentModule.path), new BaseAsyncCallback<GWTJahiaNode>() {

@@ -819,7 +819,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             Enumeration<?> parameterNames = req.getParameterNames();
             while (parameterNames.hasMoreElements()) {
                 String s = (String) parameterNames.nextElement();
-                if (s.startsWith("webflow-execution")) {
+                if (s.startsWith("webflowexecution")) {
                     webflowRequest = true;
                     break;
                 }

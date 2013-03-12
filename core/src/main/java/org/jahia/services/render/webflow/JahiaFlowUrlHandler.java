@@ -57,7 +57,7 @@ public class JahiaFlowUrlHandler extends DefaultFlowUrlHandler {
         JCRNodeWrapper n = (JCRNodeWrapper) request.getAttribute("currentNode");
         if (n != null) {
             try {
-                return request.getParameter( "webflow-execution-" + n.getIdentifier());
+                return request.getParameter( "webflowexecution" + n.getIdentifier().replaceAll("-",""));
             } catch (RepositoryException e) {
                 e.printStackTrace();
                 return super.getFlowExecutionKey(request);
@@ -86,7 +86,7 @@ public class JahiaFlowUrlHandler extends DefaultFlowUrlHandler {
             path.append('?');
             Map<String,String> params = new HashMap<String, String>();
             try {
-                params.put("webflow-execution-" + n.getIdentifier(), flowExecutionKey);
+                params.put("webflowexecution" + n.getIdentifier().replaceAll("-",""), flowExecutionKey);
                 appendQueryParameters(path, params, getEncodingScheme(request));
             } catch (RepositoryException e) {
                 e.printStackTrace();

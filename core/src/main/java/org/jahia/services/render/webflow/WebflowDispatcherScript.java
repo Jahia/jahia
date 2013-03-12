@@ -141,7 +141,7 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
                 String qs = StringUtils.substringAfter(responseWrapper.getRedirect(), "?");
                 final Map<String,String[]> params = new HashMap<String,String[]>();
                 if (!StringUtils.isEmpty(qs)) {
-                    params.put("webflow-execution-"+ identifier,new String[] {StringUtils.substringAfterLast(qs, "webflow-execution-" + identifier+"=")});
+                    params.put("webflowexecution"+ identifier.replaceAll("-",""),new String[] {StringUtils.substringAfterLast(qs, "webflowexecution" + identifier.replaceAll("-","")+"=")});
                 }
                 HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(request) {
                     @Override

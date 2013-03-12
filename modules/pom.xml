@@ -289,6 +289,8 @@
                         <Jahia-Module-Type>module</Jahia-Module-Type>
                         <Jahia-Root-Folder>${project.artifactId}</Jahia-Root-Folder>
                         <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
+                        <Jahia-Source-Control-Connection>${project.scm.connection}</Jahia-Source-Control-Connection>
+                        <Jahia-Source-Control-DeveloperConnection>${project.scm.developerConnection}</Jahia-Source-Control-DeveloperConnection>
                         <Jahia-Static-Resources>/css,/icons,/images,/img,/javascript</Jahia-Static-Resources>
         
                         <Export-Package></Export-Package>

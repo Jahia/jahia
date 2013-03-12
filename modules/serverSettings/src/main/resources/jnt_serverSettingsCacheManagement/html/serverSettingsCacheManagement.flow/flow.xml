@@ -5,7 +5,7 @@
 		http://www.springframework.org/schema/webflow
 		http://www.springframework.org/schema/webflow/spring-webflow.xsd">
 
-    <var name="flowHandler" class="org.jahia.modules.serverSettings.flow.CacheFlushFlowHandler"/>
+    <var name="flowHandler" class="org.jahia.modules.serversettings.flow.CacheFlushFlowHandler"/>
     <var name="formDatas" class="java.util.HashMap"/>
 
     <view-state id="cache">

@@ -30,7 +30,7 @@
  * between you and Jahia Limited. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.modules.serverSettings.flow;
+package org.jahia.modules.serversettings.flow;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;

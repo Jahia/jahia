@@ -364,6 +364,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
         return new ArrayList<GWTJahiaNodeProperty>();
     }
 
+    @Override
     public void setProcessed(boolean processed) {
         if (!processed && langPropertiesEditorMap != null) {
             langPropertiesEditorMap.clear();

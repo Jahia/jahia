@@ -66,7 +66,7 @@ public class ResourceBundleChoiceListInitializerImpl extends AbstractChoiceListR
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {
         JahiaTemplatesPackage pkg = epd.getDeclaringNodeType().getTemplatePackage();
-        ResourceBundle rb = ResourceBundles.get(pkg != null ? pkg : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage("Default Jahia Templates"), locale);
+        ResourceBundle rb = ResourceBundles.get(pkg != null ? pkg : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("default"), locale);
 
         if (values == null || values.size() == 0) {
             List<ChoiceListValue> l = new ArrayList<ChoiceListValue>();

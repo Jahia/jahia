@@ -40,7 +40,6 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 /**
@@ -70,6 +69,7 @@ public class HistoryTabItem extends EditEngineTabItem {
         tab.layout();
     }
 
+    @Override
     public void setProcessed(boolean processed) {
         if (!processed) {
             historyPanel = null;

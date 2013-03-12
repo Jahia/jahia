@@ -43,6 +43,7 @@ package org.jahia.ajax.gwt.helper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import javax.jcr.RepositoryException;
@@ -69,7 +70,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Sergiy Shyrkov
  */
-final public class GWTResourceBundleUtils {
+public final class GWTResourceBundleUtils {
 
     /**
      * Unicode escaping utility. Code from the ResourceBundle Editor Eclipse plugin (http://eclipse-rbe.sourceforge.net)
@@ -237,7 +238,7 @@ final public class GWTResourceBundleUtils {
                 JCRNodeWrapper current = nodesByLanguage.remove(lang);
                 InputStream is = null;
                 try {
-                    is = new ByteArrayInputStream(getAsString(lang, bundle).getBytes());
+                    is = new ByteArrayInputStream(getAsString(lang, bundle).getBytes("ISO-8859-1"));
                     if (current == null) {
                         // new language
                         logger.debug("Processing new resource bundle for language '{}'", lang);
@@ -249,6 +250,8 @@ final public class GWTResourceBundleUtils {
                                 current.getPath(), lang);
                         current.getFileContent().uploadFile(is, "text/plain");
                     }
+                } catch (UnsupportedEncodingException e) {
+                    throw new IllegalArgumentException(e.getMessage(), e);
                 } finally {
                     IOUtils.closeQuietly(is);
                 }
@@ -270,4 +273,7 @@ final public class GWTResourceBundleUtils {
 
     }
 
+    private GWTResourceBundleUtils() {
+        super();
+    }
 }

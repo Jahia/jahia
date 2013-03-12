@@ -37,7 +37,7 @@
  * If you are unsure which license is appropriate for your use,
  * please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.client.widget.resourcebundle;
+package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,8 +56,6 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
-import org.jahia.ajax.gwt.client.widget.contentengine.AbstractContentEngine;
-import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -115,7 +113,14 @@ import com.google.gwt.user.client.Element;
  */
 public class ResourceBundleEditor extends LayoutContainer {
 
-    protected class AutoScrollableListView<M extends ModelData> extends ListView<M> {
+    /**
+     * Custom {@link ListView} implementation that automatically scrolls into the view the selected list item.
+     * 
+     * @author Sergiy Shyrkov
+     * 
+     * @param <M>
+     */
+    protected static class AutoScrollableListView<M extends ModelData> extends ListView<M> {
         protected void autoScrollToSelected() {
             M selectedItem = getSelectionModel().getSelectedItem();
             if (selectedItem != null) {
@@ -511,7 +516,7 @@ public class ResourceBundleEditor extends LayoutContainer {
 
     protected void fillCurrentTab() {
         TabItem selectedTab = tabPanel.getSelectedItem();
-        if (selectedTab == null || !(selectedTab instanceof AsyncTabItem)) {
+        if (!(selectedTab instanceof AsyncTabItem)) {
             return;
         }
         AsyncTabItem currentTab = (AsyncTabItem) selectedTab;
@@ -542,7 +547,7 @@ public class ResourceBundleEditor extends LayoutContainer {
     }
 
     /**
-     * Returns current resource bundle values
+     * Returns current resource bundle values.
      * 
      * @return current resource bundle values
      */

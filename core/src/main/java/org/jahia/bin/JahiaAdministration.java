@@ -329,7 +329,7 @@ public class JahiaAdministration extends HttpServlet {
                             Config.FMT_LOCALIZATION_CONTEXT,
                             new LocalizationContext(templatePackageName != null ? ResourceBundles.get(
                                     ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                                            .getTemplatePackage(site.getTemplatePackageName()), uiLocale) : ResourceBundles
+                                            .getTemplatePackage(templatePackageName), uiLocale) : ResourceBundles
                                     .getInternal(uiLocale)));
 
                     AdministrationModulesRegistry modulesRegistry = (AdministrationModulesRegistry) SpringContextSingleton.getInstance().getContext().getBean("administrationModulesRegistry");

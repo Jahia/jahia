@@ -91,6 +91,7 @@ public class SeoTabItem extends EditEngineTabItem {
         tab.layout();
     }
 
+    @Override
     public void setProcessed(boolean processed) {
         if (!processed && editorsByLanguage != null) {
             editorsByLanguage.clear();

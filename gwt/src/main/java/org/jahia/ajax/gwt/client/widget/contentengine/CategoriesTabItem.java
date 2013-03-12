@@ -269,6 +269,7 @@ public class CategoriesTabItem extends EditEngineTabItem {
         }
     }
 
+    @Override
     public void setProcessed(boolean processed) {
         if (!processed && catStore != null) {
             catStore = null;

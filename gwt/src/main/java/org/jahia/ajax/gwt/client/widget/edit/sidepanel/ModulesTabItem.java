@@ -54,20 +54,17 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbar;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
-
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 
 
 public class ModulesTabItem extends BrowseTabItem {
+    private static final long serialVersionUID = 7656741991148114672L;
     protected transient ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
     protected transient ListStore<GWTJahiaNode> contentStore;
     protected transient ButtonBar buttonBar;
@@ -116,6 +113,7 @@ public class ModulesTabItem extends BrowseTabItem {
 
         contentStore = new ListStore<GWTJahiaNode>(listLoader);
         contentStore.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
+            @SuppressWarnings({ "unchecked", "rawtypes" })
             public int compare(Object o1, Object o2) {
                 if (o1 instanceof String && o2 instanceof String) {
                     String s1 = (String) o1;

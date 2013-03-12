@@ -94,7 +94,12 @@ public abstract class EditEngineTabItem implements Serializable {
     public void onLanguageChange(String language, TabItem tabItem) {
     }
 
+    /**
+     * Set the processed state of the tab.
+     * @param processed processed state
+     */
     public void setProcessed(boolean processed) {
+        // do nothing
     }
 
     public boolean isHandleMultipleSelection() {

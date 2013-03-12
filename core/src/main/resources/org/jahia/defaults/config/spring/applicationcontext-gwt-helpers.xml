@@ -27,7 +27,6 @@
         <property name="sitesService" ref="JahiaSitesService"/>
         <property name="properties" ref="PropertiesHelper"/>
         <property name="contentHistoryService" ref="ContentHistoryService"/>
-        <property name="cacheHelper" ref="CacheHelper"/>
     </bean>
 
     <bean name="PortletHelper" class="org.jahia.ajax.gwt.helper.PortletHelper">

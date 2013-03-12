@@ -359,7 +359,7 @@ public class ZipHelper {
                             try {
                                 nodeToUnzip.remove();
                             } catch (RepositoryException e) {
-                                logger.error(Messages.getInternalWithArguments("label.gwt.error.issue.when.trying.to.delete.original.archive",uiLocale, nodeToUnzip.getPath()), e);
+                                logger.error("Issue when trying to delete original archive " + nodeToUnzip.getPath(), e);
                             }
                         }
                     } catch (RepositoryException e) {

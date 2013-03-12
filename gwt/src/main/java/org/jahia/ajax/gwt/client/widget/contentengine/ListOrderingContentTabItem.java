@@ -147,6 +147,7 @@ public class ListOrderingContentTabItem extends ContentTabItem {
         tab.add(fieldSet);
     }
 
+    @Override
     public void setProcessed(boolean processed) {
         if (!processed && langPropertiesEditorMap != null) {
             manualListOrderingEditor = null;

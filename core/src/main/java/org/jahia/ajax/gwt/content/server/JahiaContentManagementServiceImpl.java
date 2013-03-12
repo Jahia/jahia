@@ -110,7 +110,6 @@ import java.util.regex.Pattern;
  * GWT server code implementation for the DMS repository services.
  *
  * @author rfelden
- * @version 5 mai 2008 - 17:23:39
  */
 public class JahiaContentManagementServiceImpl extends JahiaRemoteService implements JahiaContentManagementService {
 
@@ -1615,7 +1614,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 }
                 dumpLocks(nodeWrapper);
             } catch (UnsupportedRepositoryOperationException e) {
-                // do nothing is lock is not supported
+                // do nothing if lock is not supported
             }
             // get node type
             final List<GWTJahiaNodeType> nodeTypes =
@@ -1707,9 +1706,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             dumpLocks(n);
         } catch (UnsupportedRepositoryOperationException e) {
-            // do nothing is lock is not supported
-        }
-        catch (RepositoryException e) {
+            // do nothing if lock is not supported
+        } catch (RepositoryException e) {
+            logger.warn("Unable to unlock node " + nodepath, e);
             throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.cannot.unlock.node", getUILocale()));
         }
     }

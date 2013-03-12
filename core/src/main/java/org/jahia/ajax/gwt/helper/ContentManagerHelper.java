@@ -76,7 +76,6 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.i18n.Messages;
 import org.osgi.framework.BundleException;
 import org.quartz.JobDataMap;
@@ -95,11 +94,8 @@ import static org.jahia.api.Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT;
 
 /**
  * @author rfelden
- * @version 20 juin 2008 - 12:49:42
  */
 public class ContentManagerHelper {
-
-// ------------------------------ FIELDS ------------------------------
 
     private static Logger logger = LoggerFactory.getLogger(ContentManagerHelper.class);
 
@@ -109,9 +105,6 @@ public class ContentManagerHelper {
     private NavigationHelper navigation;
     private PropertiesHelper properties;
     private VersioningHelper versioning;
-    private CacheHelper cacheHelper;
-
-// --------------------- GETTER / SETTER METHODS ---------------------
 
     public void setNavigation(NavigationHelper navigation) {
         this.navigation = navigation;
@@ -131,10 +124,6 @@ public class ContentManagerHelper {
 
     public void setContentHistoryService(ContentHistoryService contentHistoryService) {
         this.contentHistoryService = contentHistoryService;
-    }
-
-    public void setCacheHelper(CacheHelper cacheHelper) {
-        this.cacheHelper = cacheHelper;
     }
 
     public JCRNodeWrapper addNode(JCRNodeWrapper parentNode, String name, String nodeType, List<String> mixin,
@@ -212,7 +201,7 @@ public class ContentManagerHelper {
             List<String> fields = Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.PERMISSIONS, GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
             return navigation.getGWTJahiaNode(jcrSessionWrapper.getNode(childNode.getPath()), fields);
         } catch (RepositoryException e) {
-            logger.error(e.toString(), e);
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(
                     new StringBuilder(parentPath).append(Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
         }
@@ -540,7 +529,7 @@ public class ContentManagerHelper {
             } catch (ReferentialIntegrityException e) {
                 missedPaths.add(new StringBuilder(nodeToDelete != null ? nodeToDelete.getPath() : "").append(" - is in use").toString());
             } catch (RepositoryException e) {
-                logger.error("error", e);
+                logger.error(e.getMessage(), e);
                 throw new GWTJahiaServiceException(e);
             }
         }
@@ -572,7 +561,7 @@ public class ContentManagerHelper {
             } catch (AccessDeniedException e) {
                 missedPaths.add(new StringBuilder(nodeToUndelete != null ? nodeToUndelete.getPath() : "").append(" - ACCESS DENIED").toString());
             } catch (RepositoryException e) {
-                logger.error("error", e);
+                logger.error(e.getMessage(), e);
                 throw new GWTJahiaServiceException(e);
             }
         }
@@ -620,7 +609,7 @@ public class ContentManagerHelper {
             node.saveSession();
             return node.getPath();
         } catch (RepositoryException e) {
-            logger.error("error", e);
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(
                     new StringBuilder("Could not save file ").append(node.getName()).append(" into ")
                             .append(newName).toString());
@@ -927,7 +916,7 @@ public class ContentManagerHelper {
             node.setAclInheritanceBreak(acl.isBreakAllInheritance());
             currentUserSession.save();
         } catch (RepositoryException e) {
-            logger.error("error", e);
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Could not save file " + node.getName());
         }
     }
@@ -1028,7 +1017,7 @@ public class ContentManagerHelper {
         try {
             currentUserSession.save();
         } catch (RepositoryException e) {
-            logger.error("error", e);
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Could not save session");
         }
         if (missedPaths.size() > 0) {
@@ -1164,7 +1153,6 @@ public class ContentManagerHelper {
     }
 
     private File getSource(String moduleName, JCRSessionWrapper session) throws RepositoryException {
-        String sources;
         JCRNodeWrapper n = session.getNode("/modules/" + moduleName);
 
         JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName);
@@ -1377,12 +1365,13 @@ public class ContentManagerHelper {
                     } catch (ReferentialIntegrityException e) {
                         missedPaths.add(new StringBuilder(referencedNode.getPath()).append(" - is in use").toString());
                     } catch (RepositoryException e) {
-                        logger.error("error", e);
+                        logger.error(e.getMessage(), e);
                         missedPaths.add(new StringBuilder(referencedNode.getPath()).append(" - UNSUPPORTED").toString());
                     }
                 }
             }
         } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
             missedPaths.add(new StringBuilder(path).append(Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale)).append(
                     e.toString()).toString());
         }
@@ -1421,6 +1410,7 @@ public class ContentManagerHelper {
             try {
                 session.save();
             } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
                 throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.occur.when.trying.to.save.the.node", uiLocale, node.getPath() + " (saveVisibilityConditions)"));
             }
             for (GWTJahiaNode condition : conditions) {

@@ -337,6 +337,7 @@ public class TagsTabItem extends EditEngineTabItem {
         }
     }
 
+    @Override
     public void setProcessed(boolean processed) {
         if (!processed && newValues != null) {
             newValues = null;

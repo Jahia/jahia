@@ -48,10 +48,6 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
-import org.jahia.ajax.gwt.client.widget.resourcebundle.ResourceBundleEditor;
-
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 
 /**
  * Edit engine tab that embeds resource bundle editor.
@@ -83,15 +79,12 @@ public class ResourceBundleEditorTabItem extends EditEngineTabItem {
             return;
         }
 
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-            public void execute() {
-                resourceBundleEditor = new ResourceBundleEditor(engine);
-                tab.add(resourceBundleEditor);
-                tab.layout();
-            }
-        });
+        resourceBundleEditor = new ResourceBundleEditor(engine);
+        tab.add(resourceBundleEditor);
+        tab.layout();
     }
 
+    @Override
     public void setProcessed(boolean processed) {
         if (!processed) {
             resourceBundleEditor = null;

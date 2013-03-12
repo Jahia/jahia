@@ -549,6 +549,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         return grid.getStore().getModels();
     }
 
+    @Override
     public void setProcessed(boolean processed) {
         if (!processed) {
             store = null;

@@ -257,6 +257,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
         node.set("activeWorkflows", activeWorkflows);
     }
 
+    @Override
     public void setProcessed(boolean processed) {
         if (!processed) {
             container = null;

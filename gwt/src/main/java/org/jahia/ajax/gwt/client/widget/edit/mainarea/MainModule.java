@@ -216,10 +216,10 @@ public class MainModule extends Module {
         }
 
         if ("".equals(Window.Location.getHash()) || !isValidUrl(hash)) {
-            goToUrl(getUrl(path, template), true);
+            goToUrl(getUrl(path, template), true, true, true);
         } else {
             hash = URL.decode(hash);
-            goToUrl(hash, true);
+            goToUrl(hash, true, true, true);
         }
 
 //        scrollContainer.sinkEvents();
@@ -350,7 +350,16 @@ public class MainModule extends Module {
 
     public void refresh(Map<String, Object> data) {
         if (data != null && (data.containsKey(Linker.REFRESH_ALL) || data.containsKey(Linker.REFRESH_MAIN) || needRefresh(data))) {
-            goToUrl(getUrl(path, template), data.containsKey("forceImageRefresh"));
+            boolean forceCssRefresh = false;
+            boolean forceJavascriptRefresh = false;
+            if (data.containsKey("node")) {
+                GWTJahiaNode n = (GWTJahiaNode) data.get("node");
+                if (n != null) {
+                    forceCssRefresh = n.getNodeTypes().contains("jnt:cssFile");
+                    forceJavascriptRefresh = n.getNodeTypes().contains("jnt:javascriptFile");
+                }
+            }
+            goToUrl(getUrl(path, template), data.containsKey("forceImageRefresh"), forceCssRefresh, forceJavascriptRefresh);
         }
     }
 
@@ -358,10 +367,12 @@ public class MainModule extends Module {
         return false;
     }
 
-    public void goToUrl(final String url, final boolean forceImageRefresh) {
+    public void goToUrl(final String url, final boolean forceImageRefresh, boolean forceCssRefresh, boolean forceJavascriptRefresh) {
         mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
         layoutChannel();
         frame.setForceImageRefresh(forceImageRefresh);
+        frame.setForceCssRefresh(forceCssRefresh);
+        frame.setForceJavascriptRefresh(forceJavascriptRefresh);
         frame.setUrl(url);
         center.layout(true);
     }
@@ -404,6 +415,42 @@ public class MainModule extends Module {
             com.google.gwt.dom.client.Element el = elementsByTagName.getItem(i);
             String url = el.getAttribute("src");
             if (url != null && url.startsWith(base)) {
+                el.setAttribute("src", url + (url.indexOf("?") == -1 ? "?" : "&") + suffix);
+            }
+        }
+    }
+
+    private void refreshCSS(Element element) {
+        NodeList<com.google.gwt.dom.client.Element> elementsByTagName = element
+                .getElementsByTagName("link");
+        if (elementsByTagName == null) {
+            return;
+        }
+        String base = JahiaGWTParameters.getContextPath() + "/modules/";
+        String suffix = "tst=" + System.currentTimeMillis();
+        for (int i = 0; i < elementsByTagName.getLength(); i++) {
+            com.google.gwt.dom.client.Element el = elementsByTagName.getItem(i);
+            String url = el.getAttribute("href");
+            String type = el.getAttribute("type");
+            if (type != null && type.equals("text/css") && url != null && url.startsWith(base)) {
+                el.setAttribute("href", url + (url.indexOf("?") == -1 ? "?" : "&") + suffix);
+            }
+        }
+    }
+
+    private void refreshScripts(Element element) {
+        NodeList<com.google.gwt.dom.client.Element> elementsByTagName = element
+                .getElementsByTagName("script");
+        if (elementsByTagName == null) {
+            return;
+        }
+        String base = JahiaGWTParameters.getContextPath() + "/modules/";
+        String suffix = "tst=" + System.currentTimeMillis();
+        for (int i = 0; i < elementsByTagName.getLength(); i++) {
+            com.google.gwt.dom.client.Element el = elementsByTagName.getItem(i);
+            String url = el.getAttribute("src");
+            String type = el.getAttribute("type");
+            if (type != null && type.equals("text/javascript") && url != null && url.startsWith(base)) {
                 el.setAttribute("src", url + (url.indexOf("?") == -1 ? "?" : "&") + suffix);
             }
         }
@@ -475,7 +522,7 @@ public class MainModule extends Module {
     }
 
     public void goTo(String path, String template) {
-        goToUrl(getUrl(path, template), false);
+        goToUrl(getUrl(path, template), false, false, false);
     }
 
     private void setHashMarker(String path) {
@@ -766,6 +813,8 @@ public class MainModule extends Module {
     private class EditFrame extends Frame {
         private String url = null;
         private boolean forceImageRefresh = false;
+        private boolean forceCssRefresh = false;
+        private boolean forceJavascriptRefresh = false;
 
         private EditFrame() {
         }
@@ -775,10 +824,19 @@ public class MainModule extends Module {
                 final IFrameElement iframe = IFrameElement.as(frame.getElement());
                 Document contentDocument = iframe.getContentDocument();
                 Element body = (Element) contentDocument.getElementsByTagName("body").getItem(0);
+                Element head = (Element) contentDocument.getElementsByTagName("head").getItem(0);
 
                 setHashMarker(getCurrentFrameUrl());
                 if (forceImageRefresh) {
                     refreshImages(body);
+                }
+                if (head != null) {
+                    if (forceCssRefresh) {
+                        refreshCSS(head);
+                    }
+                    if (forceJavascriptRefresh) {
+                        refreshScripts(head);
+                    }
                 }
                 Hover.getInstance().removeAll();
                 List<Element> el = null;
@@ -856,6 +914,14 @@ public class MainModule extends Module {
 
         public void setForceImageRefresh(boolean forceImageRefresh) {
             this.forceImageRefresh = forceImageRefresh;
+        }
+
+        public void setForceCssRefresh(boolean forceCssRefresh) {
+            this.forceCssRefresh = forceCssRefresh;
+        }
+
+        public void setForceJavascriptRefresh(boolean forceJavascriptRefresh) {
+            this.forceJavascriptRefresh = forceJavascriptRefresh;
         }
 
         @Override

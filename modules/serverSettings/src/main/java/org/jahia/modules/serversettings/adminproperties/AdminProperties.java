@@ -11,7 +11,6 @@ import org.springframework.binding.validation.ValidationContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.io.Serializable;
-import java.util.Locale;
 
 /**
  * Bean to handle Admin properties flow.

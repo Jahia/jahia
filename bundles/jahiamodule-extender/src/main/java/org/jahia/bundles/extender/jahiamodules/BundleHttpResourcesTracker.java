@@ -2,11 +2,7 @@ package org.jahia.bundles.extender.jahiamodules;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.ServletException;
 
@@ -140,12 +136,22 @@ class BundleHttpResourcesTracker extends ServiceTracker {
         int count = 0;
         // Looking for static resources
         staticResources = getStaticResources(bundle);
+        List<URL> jsps = getJsps(bundle);
+        List<String> excludes = new ArrayList<String>();
+        for (URL jsp : jsps) {
+            if (jsp.getFile().indexOf("/",1) > 0) {
+                excludes.add(jsp.getFile().substring(0, jsp.getFile().indexOf("/",1)));
+            }
+        }
+
         if (staticResources.size() > 0) {
             for (Map.Entry<String, String> res : staticResources.entrySet()) {
                 try {
                     logger.debug("Registering static resource {}", res.getKey());
                     count++;
-                    httpService.registerResources(res.getKey(), res.getValue(), httpContext);
+                    if (!excludes.contains(res.getValue())) {
+                        httpService.registerResources(res.getKey(), res.getValue(), httpContext);
+                    }
                 } catch (NamespaceException e) {
                     logger.error(e.getMessage(), e);
                 }

@@ -147,7 +147,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                             }
                         }
                     } catch (RepositoryException re) {
-                        logger.warn("No title for template "+templateNode.getPath()+" in locale " + locale + ", will use template system name as display name");
+                        logger.debug("No title for template "+templateNode.getPath()+" in locale " + locale + ", will use template system name as display name");
                     }
                     ChoiceListValue v = new ChoiceListValue(templateName, null, session.getValueFactory().createValue(templateNode.getIdentifier(),
                             PropertyType.WEAKREFERENCE));

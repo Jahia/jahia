@@ -89,6 +89,11 @@ class JahiaBundleTemplatesPackageHandler {
             }
         }
 
+        if (pkg.getScmURI() == null) {
+            String scmUri = getHeader(bundle, "Jahia-Source-Control-Connection");
+            pkg.setScmURI(scmUri);
+        }
+
         if (bundle.getEntry("/") != null) {
             pkg.setFilePath(bundle.getEntry("/").getPath());
         }

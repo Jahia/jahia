@@ -74,4 +74,10 @@ public class ListModule extends SimpleModule {
         html = new HTML(divElement.getInnerHTML());
         add(html);
     }
+
+    @Override
+    public void onParsed() {
+        super.onParsed();
+        addStyleName(mainModule.getConfig().getName()+"List");
+    }
 }

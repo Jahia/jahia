@@ -112,7 +112,6 @@ public class RepositoryTab extends ContentPanel {
         factory.setHiddenTypes(config.getHiddenTypes());
         factory.setHiddenRegex(config.getHiddenRegex());
         factory.setShowOnlyNodesWithTemplates(config.isShowOnlyNodesWithTemplates());
-        factory.setSaveOpenPath(true);
         loader = factory.getLoader();
         store = factory.getStore();
         

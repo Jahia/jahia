@@ -111,7 +111,6 @@ public class PublicationManagerEngine extends Window {
         factory.setFields(Arrays.asList(GWTJahiaNode.NAME, GWTJahiaNode.DISPLAY_NAME, GWTJahiaNode.PUBLICATION_INFOS,
                                         GWTJahiaNode.WORKFLOW_INFOS));
         factory.setSelectedPath(linker.getSelectionContext().getMainNode().getPath());
-        factory.setSaveOpenPath(true);
         loader = factory.getLoader();
         List<ColumnConfig> columns = new LinkedList<ColumnConfig>();
         ColumnConfig config = new ColumnConfig("displayName", Messages.get("label.name", "Name"), 150);

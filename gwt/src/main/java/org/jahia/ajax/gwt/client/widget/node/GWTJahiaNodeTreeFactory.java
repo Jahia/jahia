@@ -50,10 +50,12 @@ import com.extjs.gxt.ui.client.store.TreeStoreEvent;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
+import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.Collator;
@@ -78,7 +80,7 @@ public class GWTJahiaNodeTreeFactory {
     protected List<String> mimeTypes;
     protected List<String> selectedPath = new ArrayList<String>();
     protected List<String> openPath = new ArrayList<String>();
-    protected boolean saveOpenPath = false;
+    protected boolean saveOpenPathOnServer = false;
     protected GWTJahiaNodeTreeLoader loader;
     protected TreeStore<GWTJahiaNode> store;
     private boolean checkSubchilds = false;
@@ -86,6 +88,7 @@ public class GWTJahiaNodeTreeFactory {
     private String hiddenRegex;
     private boolean displayHiddenTypes = false;
     private boolean showOnlyNodesWithTemplates = false;
+    private final Storage storage;
 
     public GWTJahiaNodeTreeFactory(final List<String> paths) {
         this(paths, GWTJahiaNode.DEFAULT_FIELDS);
@@ -95,6 +98,8 @@ public class GWTJahiaNodeTreeFactory {
         this.paths = paths;
         this.fields = fields;
         this.repository = paths.toString();
+        repository = repository.replace("$siteKey", JahiaGWTParameters.getSiteKey());
+        this.storage = Storage.getSessionStorageIfSupported();
     }
 
     public GWTJahiaNodeTreeFactory(final List<String> paths, boolean checkSubchilds) {
@@ -190,8 +195,8 @@ public class GWTJahiaNodeTreeFactory {
         this.openPath = openPath;
     }
 
-    public void setSaveOpenPath(boolean saveOpenPath) {
-        this.saveOpenPath = saveOpenPath;
+    public void setSaveOpenPathOnServer(boolean saveOpenPathOnServer) {
+        this.saveOpenPathOnServer = saveOpenPathOnServer;
     }
 
     public void setDisplayHiddenTypes(boolean displayHiddenTypes) {
@@ -227,9 +232,7 @@ public class GWTJahiaNodeTreeFactory {
                         Log.debug("Save Path on expand " + openPath);
                         gwtJahiaNode.setExpandOnLoad(true);
 //                        refresh(gwtJahiaNode);
-                        if (saveOpenPath) {
-                            savePaths();
-                        }
+                        savePaths();
                     }
                 });
 
@@ -241,9 +244,7 @@ public class GWTJahiaNodeTreeFactory {
                         Log.debug("Save Path on collapse " + openPath);
                         gwtJahiaNode.setExpandOnLoad(false);
 //                        refresh(gwtJahiaNode);
-                        if (saveOpenPath) {
-                            savePaths();
-                        }
+                        savePaths();
                     }
                 });
 
@@ -272,9 +273,7 @@ public class GWTJahiaNodeTreeFactory {
                         Log.debug("Save Path on expand " + openPath);
                         gwtJahiaNode.setExpandOnLoad(true);
 //                        refresh(gwtJahiaNode);
-                        if (saveOpenPath) {
-                            savePaths();
-                        }
+                        savePaths();
                     }
                 });
 
@@ -286,9 +285,7 @@ public class GWTJahiaNodeTreeFactory {
                         Log.debug("Save Path on collapse " + openPath);
                         gwtJahiaNode.setExpandOnLoad(false);
 //                        refresh(gwtJahiaNode);
-                        if (saveOpenPath) {
-                            savePaths();
-                        }
+                        savePaths();
                     }
                 });
 
@@ -304,17 +301,27 @@ public class GWTJahiaNodeTreeFactory {
     }
 
     public void savePaths() {
-        JahiaContentManagementService.App.getInstance()
-                .saveOpenPathsForRepository(repository, openPath, new BaseAsyncCallback() {
-                    public void onSuccess(Object o) {
-                        // nothing to do
-                    }
+        if (saveOpenPathOnServer) {
+            JahiaContentManagementService.App.getInstance()
+                    .saveOpenPathsForRepository(repository, openPath, new BaseAsyncCallback() {
+                        public void onSuccess(Object o) {
+                            // nothing to do
+                        }
 
-                    public void onApplicationFailure(Throwable throwable) {
-                        Log.error("Could not save expanded paths into user preferences:\n\n" +
-                                throwable.getLocalizedMessage(), throwable);
-                    }
-                });
+                        public void onApplicationFailure(Throwable throwable) {
+                            Log.error("Could not save expanded paths into user preferences:\n\n" +
+                                    throwable.getLocalizedMessage(), throwable);
+                        }
+                    });
+        } else {
+            if (storage != null) {
+                String openPaths = "";
+                for (String s : openPath) {
+                    openPaths += s + "|";
+                }
+                storage.setItem("openPath-"+repository, openPaths);
+            }
+        }
     }
 
 
@@ -325,6 +332,12 @@ public class GWTJahiaNodeTreeFactory {
         @Override
         protected void load(Object currentPage, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
             if (currentPage == null) {
+                if (openPath.isEmpty()) {
+                    if (storage != null && storage.getItem("openPath-"+repository) != null) {
+                        String openPaths = storage.getItem("openPath-"+repository);
+                        openPath = Arrays.asList(openPaths.split("\\|"));
+                    }
+                }
                 JahiaContentManagementService.App.getInstance()
                         .getRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedPath, openPath, checkSubchilds,
                                 displayHiddenTypes, hiddenTypes, hiddenRegex, listAsyncCallback);

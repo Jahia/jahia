@@ -69,7 +69,6 @@ import org.jahia.services.importexport.validation.*;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.SourceControlManagement;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -1253,7 +1252,7 @@ public class ContentManagerHelper {
             }
 
             if (nextVersion != null) {
-                templateManagerService.activateModuleVersion(moduleName, new ModuleVersion(nextVersion), session);
+                templateManagerService.activateModuleVersion(moduleName, nextVersion);
             }
 
             JCRNodeWrapper privateFolder = session.getNode(session.getUser().getLocalPath() + "/files/private");

@@ -12,6 +12,38 @@
             <evaluate expression="JahiaTemplateManagerService.templatePackageRegistry.registeredModules" result="requestScope.registeredModules" />
         </on-render>
 
+        <transition on="downloadSources" to="downloadSources" />
+        <transition on="startModule" to="startModule" />
+        <transition on="stopModule" to="stopModule" />
     </view-state>
+
+    <view-state id="viewDownloadForm">
+        <on-render>
+            <evaluate expression="JahiaTemplateManagerService.getTemplatePackageByFileName(requestParameters.currentModule)" result="requestScope.currentModule" />
+        </on-render>
+
+        <transition on="downloadSources" to="downloadSources" />
+    </view-state>
+
+    <action-state id="downloadSources">
+        <evaluate expression="JahiaTemplateManagerService.checkoutModule(null,requestParameters.scmUri, null,requestParameters.module,null,jcrSessionFactory.currentUserSession)"/>
+        <transition to="sourcesDownloaded" />
+    </action-state>
+
+    <end-state id="sourcesDownloaded"/>
+
+    <action-state id="startModule">
+        <evaluate expression="JahiaTemplateManagerService.activateModuleVersion(requestParameters.module,requestParameters.version)"/>
+        <transition to="moduleStarted" />
+    </action-state>
+
+    <end-state id="moduleStarted"/>
+
+    <action-state id="stopModule">
+        <evaluate expression="JahiaTemplateManagerService.stopModule(requestParameters.module)"/>
+        <transition to="moduleStopped" />
+    </action-state>
+
+    <end-state id="moduleStopped"/>
 
 </flow>

@@ -288,6 +288,7 @@ public class NavigationHelper {
                 if (openPaths == null) {
                     openPaths = selectedNodes;
                 } else {
+                    openPaths = new ArrayList<String>(openPaths);
                     openPaths.addAll(selectedNodes);
                 }
             }

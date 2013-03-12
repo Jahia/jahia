@@ -605,14 +605,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                         scm = SourceControlManagement.getSourceControlManagement(sources);
                         if (scm != null) {
                             scm.commit("Release");
+                            return releaseModule(pack, nextVersion, sources, vi.getProperty("j:scmURI").getString(), session);
                         }
-                        return releaseModule(pack, nextVersion, sources, vi.getProperty("j:scmURI").getString(), session);
+
                     } catch (Exception e) {
                         logger.error("Cannot get SCM", e);
                     }
-                } else {
-                    return releaseModule(pack, nextVersion, sources, null, session);
                 }
+                return releaseModule(pack, nextVersion, sources, null, session);
             }
         }
         return null;
@@ -1535,11 +1535,15 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
-    public JahiaTemplatesPackage activateModuleVersion(String rootFolder, ModuleVersion version, JCRSessionWrapper session) throws RepositoryException, BundleException {
-        JahiaTemplatesPackage module = templatePackageRegistry.lookupByFileNameAndVersion(rootFolder, version);
+    public JahiaTemplatesPackage activateModuleVersion(String rootFolder, String version) throws RepositoryException, BundleException {
+        JahiaTemplatesPackage module = templatePackageRegistry.lookupByFileNameAndVersion(rootFolder, new ModuleVersion(version));
+        module.getBundle().start();
+        return module;
+    }
 
-        autoInstallModulesToSites(module, session);
-        templatePackageRegistry.activateModuleVersion(module);
+    public JahiaTemplatesPackage stopModule(String rootFolder) throws RepositoryException, BundleException {
+        JahiaTemplatesPackage module = templatePackageRegistry.lookupByFileName(rootFolder);
+        module.getBundle().stop();
         return module;
     }
 

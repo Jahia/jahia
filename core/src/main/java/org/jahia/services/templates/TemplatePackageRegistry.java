@@ -156,10 +156,6 @@ public class TemplatePackageRegistry {
         this.jcrStoreService = jcrStoreService;
     }
 
-    public void activateModuleVersion(JahiaTemplatesPackage module) throws BundleException {
-        module.getBundle().start();
-    }
-
     private boolean computeDependencies(JahiaTemplatesPackage pack, JahiaTemplatesPackage currentPack) {
         for (String depends : currentPack.getDepends()) {
             JahiaTemplatesPackage dependentPack = registry.get(depends);

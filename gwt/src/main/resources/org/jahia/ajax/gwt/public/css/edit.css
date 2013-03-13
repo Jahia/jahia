@@ -73,6 +73,8 @@
     -moz-user-select: none;
     background-color: #EAEAEA;
     background-image: linear-gradient(#FAFAFA, #EAEAEA);
+    background: -webkit-gradient(linear, left top, left bottom, from(#FAFAFA), to(#EAEAEA));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#EAEAEA');
     background-repeat: repeat-x;
     border-color: #DDDDDD #DDDDDD #C5C5C5;
     border-image: none;
@@ -102,6 +104,8 @@
     -moz-user-select: none;
     background-color: #cccccc;
     background-image: linear-gradient(#cccccc, #999999);
+    background: -webkit-gradient(linear, left top, left bottom, from(#cccccc), to(#999999));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cccccc', endColorstr='#999999');
     background-repeat: repeat-x;
     border-color: #999999 #999999 #666666;
     border-image: none;
@@ -130,6 +134,8 @@
     -moz-border-top-colors: none;
     background-color: #6D6D6D;
     background-image: linear-gradient(#8C8C8C, #6D6D6D);
+    background: -webkit-gradient(linear, left top, left bottom, from(#8C8C8C), to(#6D6D6D));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#8C8C8C', endColorstr='#6D6D6D');
     background-repeat: repeat-x;
     border-color: #707070 #707070 #595959;
     border-image: none;
@@ -153,6 +159,8 @@
 .hover-module > .x-panel-header-areamodule, .hover-module > .x-panel-header-listmodule {
     background-color: #39f;
     background-image: linear-gradient(#39f, #06c);
+    background: -webkit-gradient(linear, left top, left bottom, from(#39f), to(#06c));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#39f', endColorstr='#06c');
     background-repeat: repeat-x;
     border-color: #2A65A0;
     color: #FFFFFF !important;
@@ -171,6 +179,8 @@
     -moz-border-top-colors: none;
     background-color: #cc6666;
     background-image: linear-gradient(#cc6666, #993333);
+    background: -webkit-gradient(linear, left top, left bottom, from(#cc6666), to(#993333));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cc6666', endColorstr='#993333');
     background-repeat: repeat-x;
     border-color: #993333 #993333 #663333;
     border-image: none;
@@ -201,6 +211,8 @@
     -moz-border-top-colors: none;
     background-color: #333;
     background-image: linear-gradient(#333, #000);
+    background: -webkit-gradient(linear, left top, left bottom, from(#333), to(#000));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#333', endColorstr='#000');
     background-repeat: repeat-x;
     border-color: #000 #000 #000;
     border-image: none;
@@ -245,6 +257,8 @@ button.button-placeholder, div.button-placeholder {
     -moz-user-select: none;
     background-color: #EAEAEA;
     background-image: linear-gradient(#FAFAFA, #EAEAEA);
+    background: -webkit-gradient(linear, left top, left bottom, from(#FAFAFA), to(#EAEAEA));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#EAEAEA');
     background-repeat: repeat-x;
     border-color: #DDDDDD #DDDDDD #C5C5C5;
     border-image: none;
@@ -270,6 +284,8 @@ button.button-placeholder, div.button-placeholder {
 button.button-placeholder:hover,  div.button-placeholder:hover {
     background-color: #39f;
     background-image: linear-gradient(#39f, #06c);
+    background: -webkit-gradient(linear, left top, left bottom, from(#39f), to(#06c));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#39f', endColorstr='#06c');
     background-repeat: repeat-x;
     border-color: #2A65A0;
     color: #FFFFFF;
@@ -286,6 +302,8 @@ button.button-enable, div.button-enable {
     -moz-border-top-colors: none;
     background-color: #6D6D6D;
     background-image: linear-gradient(#8C8C8C, #6D6D6D);
+    background: -webkit-gradient(linear, left top, left bottom, from(#8C8C8C), to(#6D6D6D));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#8C8C8C', endColorstr='#6D6D6D');
     background-repeat: repeat-x;
     border-color: #707070 #707070 #595959;
     border-image: none;
@@ -307,6 +325,8 @@ button.button-enable, div.button-enable {
 button.button-enable:hover, div.button-enable:hover {
     background-color: #39f;
     background-image: linear-gradient(#39f, #06c);
+    background: -webkit-gradient(linear, left top, left bottom, from(#39f), to(#06c));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#39f', endColorstr='#06c');
     background-repeat: repeat-x;
     border-color: #2A65A0;
     color: #FFFFFF;
@@ -316,6 +336,8 @@ button.button-enable:hover, div.button-enable:hover {
 button.button-disable, div.button-disable {
     background-color: #39f;
     background-image: linear-gradient(#39f, #06c);
+    background: -webkit-gradient(linear, left top, left bottom, from(#39f), to(#06c));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#39f', endColorstr='#06c');
     background-repeat: repeat-x;
     border-color: #2A65A0;
     color: #FFFFFF;
@@ -342,6 +364,8 @@ button.button-disable, div.button-disable {
 }
 button.button-disable:hover, div.button-disable:hover {
     background-image: linear-gradient(#8C8C8C, #6D6D6D);
+    background: -webkit-gradient(linear, left top, left bottom, from(#8C8C8C), to(#6D6D6D));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#8C8C8C', endColorstr='#6D6D6D');
     background-repeat: repeat-x;
     border-color: #707070 #707070 #595959;
     text-decoration: none;
@@ -545,6 +569,34 @@ button.button-disable:hover, div.button-disable:hover {
     margin-bottom: 10px;
     border: 1px solid #99ccff;
 }
+/*
+.studiomodeDisableAreaContent {
+    min-height:100px;
+    overflow:hidden;
+    padding:2px;
+    color:#111;
+    position:relative;
+    font-family: tahoma, arial, verdana, sans-serif;
+    font-size:11px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    margin-top:-10px;
+    background:#eaeaea url(../images/studiomodeDisableAreaContent-bg.png) no-repeat scroll 50% 50% ;
+}
+.studiomodeEnabledEmptyAreaContent {
+    min-height:100px;
+    overflow: hidden;
+    padding:2px;
+    color:#111;
+    position:relative;
+    font-family: tahoma, arial, verdana, sans-serif;
+    font-size:11px;
+    margin-bottom: 10px;
+    border: 1px solid #99ccff;
+    margin-top:-10px;
+    background:#d8effb url(../images/studiomodeEnabledEmptyAreaContent-bg.png) no-repeat scroll 50% 50% ;
+}
+*/
 
 .AreaInformation{
     font-family: tahoma,arial,verdana,sans-serif;
@@ -568,6 +620,7 @@ button.button-disable:hover, div.button-disable:hover {
     margin-bottom: 10px;
     border: 1px solid #cc6666;
 }
+
 
 .studiovisualmodeAbsoluteArea {
     min-height:100px;

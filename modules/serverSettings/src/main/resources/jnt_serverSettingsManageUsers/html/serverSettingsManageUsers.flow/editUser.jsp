@@ -20,6 +20,15 @@
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <div>
     <span style="font-size: larger;">${userProperties.displayName}</span>
+
+    <p>
+        <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
+            <c:if test="${message.severity eq 'ERROR'}">
+                <span style="color: red;">${message.text}</span><br/>
+            </c:if>
+        </c:forEach>
+    </p>
+
     <form action="${flowExecutionUrl}" method="post">
         <fieldset>
             <label for="firstName"><fmt:message key="label.firstName"/></label>

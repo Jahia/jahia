@@ -898,6 +898,10 @@ public class ContentDefinitionHelper {
     }
 
     private boolean isValidNodeType(ExtendedNodeType ent, List<String> nodeTypes, List<String> excludedNodeTypes, boolean includeSubTypes, JCRNodeWrapper nodeWrapper) {
+        if (ent == null || nodeWrapper == null) {
+            return false;
+        }
+
         if (includeSubTypes) {
             if (isNodeType(nodeTypes, ent.getName()) && nodeWrapper.hasPermission("useComponentForCreate")) {
                 return excludedNodeTypes == null || !isNodeType(excludedNodeTypes, ent.getName());

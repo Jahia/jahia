@@ -66,46 +66,83 @@
 /** styles added for list module in order to make them as nice as jahia6 **/
 
 .x-panel-header-simplemodule {
-    background-color: #eaeaea;
-    font-family: tahoma,arial,verdana,sans-serif;
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    -moz-user-select: none;
+    background-color: #EAEAEA;
+    background-image: linear-gradient(#FAFAFA, #EAEAEA);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #DDDDDD #C5C5C5;
+    border-image: none;
+    border-radius: 3px 3px 3px 3px;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.075);
+    color: #333333;
+    cursor: pointer;
+    display:block;
     font-size: 11px;
     font-weight: bold;
-    padding:3px 5px;
-    color: #333 !important;
+    padding: 7px 15px;
+    position: relative;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+    vertical-align: middle;
     margin-bottom:10px;
-    display:block;
-    overflow:hidden;
-    text-shadow: none !important;
-    line-height: 100%;
 }
 
 .x-panel-header-listmodule {
-    background-color: #999;
-    font-family: tahoma,arial,verdana,sans-serif;
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    -moz-user-select: none;
+    background-color: #cccccc;
+    background-image: linear-gradient(#cccccc, #999999);
+    background-repeat: repeat-x;
+    border-color: #999999 #999999 #666666;
+    border-image: none;
+    border-radius: 3px 3px 0 0;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.075);
+    color: #333333;
+    cursor: pointer;
+    display:block;
     font-size: 11px;
     font-weight: bold;
-    padding:3px 5px;
-    color: #333 !important;
+    padding: 7px 15px;
+    position: relative;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    vertical-align: middle;
     margin-bottom:10px;
-    display:block;
-    overflow:hidden;
-    text-shadow: none !important;
-    line-height: 100%;
 }
 
 .x-panel-header-areamodule {
-    background-color: #333 !important;
-    font-family: tahoma,arial,verdana,sans-serif;
-    text-transform: uppercase;
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #6D6D6D;
+    background-image: linear-gradient(#8C8C8C, #6D6D6D);
+    background-repeat: repeat-x;
+    border-color: #707070 #707070 #595959;
+    border-image: none;
+    border-style: solid;
+    border-width: 1px;
+    color: #FFFFFF;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    border-radius: 3px 3px 0 0;
+    cursor: pointer;
+    display:block;
     font-size: 11px;
     font-weight: bold;
-    padding: 5px;
+    padding: 7px 15px;
+    position: relative;
+    vertical-align: middle;
     margin-bottom:10px;
-    display:block;
-    overflow:hidden;
-    text-shadow: none !important;
-    color: #fff !important;
-    line-height: 100%;
+    text-transform: uppercase;
 }
 
 .x-panel-header-text-areamodule {
@@ -160,30 +197,45 @@
 }
 
 button.button-placeholder, div.button-placeholder {
-    font-family:tahoma,arial,verdana,sans-serif;
-    font-size:11px;
-    font-weight:bold;
-    text-align:center;
-    text-transform:none;
-    background-color: #b7b7b7 ;
-    border:none;
-    color:#fff;
-    padding:3px 5px;
-    margin:0 0 1px 1px;
-    cursor:pointer;
-    line-height:15px !important;
-    text-shadow: none !important;
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    -moz-user-select: none;
+    background-color: #EAEAEA;
+    background-image: linear-gradient(#FAFAFA, #EAEAEA);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #DDDDDD #C5C5C5;
+    border-image: none;
+    border-radius: 3px 3px 3px 3px;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.075);
+    color: #333333;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 7px 15px;
+    position: relative;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+    vertical-align: middle;
     width: auto !important;
-    display: block;
-    line-height: 100%;
+    margin-left: 2px;
+    margin-bottom: 2px;
 }
 button.button-placeholder:hover,  div.button-placeholder:hover {
-    background-color: #39f ;
+    background-color: #39f;
+    background-image: linear-gradient(#39f, #06c);
+    background-repeat: repeat-x;
+    border-color: #2A65A0;
+    color: #FFFFFF;
+    text-decoration: none;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 button.button-placeholder img, div.button-placeholder img   {
     margin-right:5px;
 }
-
 button.button-enabledisable, div.button-enabledisable {
     font-family: tahoma,arial,verdana,sans-serif;
     font-variant: small-caps;
@@ -206,48 +258,6 @@ button.button-enabledisable:hover, div.button-enabledisable:hover {
     background-color:#0066cc ;
 }
 
-button.button-enable, div.button-enable {
-    font-family: tahoma,arial,verdana,sans-serif;
-    font-variant: small-caps;
-    font-size:10px;
-    font-weight:bold;
-    text-align:center;
-    text-transform:none;
-    background-color:#39f ;
-    border:none;
-    color:#fff;
-    padding:4px;
-    margin:0 0 0 1px;
-    cursor:pointer;
-    line-height:15px !important;
-    text-shadow: none !important;
-    margin: -5px;
-    line-height: 100%;
-}
-button.button-enable:hover, div.button-enable:hover {
-    background-color:#0066cc ;
-}
-button.button-disable, div.button-disable {
-    font-family: tahoma,arial,verdana,sans-serif;
-    font-variant: small-caps;
-    font-size:10px;
-    font-weight:bold;
-    text-align:center;
-    text-transform:none;
-    background-color:#a6d90f ;
-    border:none;
-    color:#fff;
-    padding:4px;
-    margin:0 0 0 1px;
-    cursor:pointer;
-    line-height:15px !important;
-    text-shadow: none !important;
-    margin: -5px;
-    line-height: 100%;
-}
-button.button-disable:hover, div.button-disable:hover {
-    background-color:#99cc00 ;
-}
 .selection-top-list {
     border-top: 1px solid #cc0033;
 }
@@ -402,12 +412,24 @@ button.button-disable:hover, div.button-disable:hover {
 }
 
 .studiomodeArea {
-    border: 1px dashed #333;
+    border: 2px solid #ccc !important;
     padding: 5px;
     margin-bottom: 5px;
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 11px;
+    border-radius: 3px 3px 3px 3px;
+    background-color: #fff;
 }
+.studiomodeList {
+    border: 2px solid #ccc !important;
+    padding: 5px;
+    margin-bottom: 5px;
+    font-family: tahoma,arial,verdana,sans-serif;
+    font-size: 11px;
+    border-radius: 3px 3px 3px 3px;
+    background-color: #eaeaea;
+}
+
 .editmodeArea  {
 }
 
@@ -415,6 +437,7 @@ button.button-disable:hover, div.button-disable:hover {
 
 
 }
+
 
 .jahia-template-gxt  {
     margin-bottom: 10px;

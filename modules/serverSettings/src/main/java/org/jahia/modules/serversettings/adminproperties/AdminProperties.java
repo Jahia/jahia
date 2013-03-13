@@ -56,7 +56,7 @@ public class AdminProperties implements Serializable {
                 }
 
             } else {
-                messages.addMessage(new MessageBuilder().error().source("password").defaultText(Messages.getInternal("label.passwordMissMatched",LocaleContextHolder.getLocale())).build());
+                messages.addMessage(new MessageBuilder().error().source("password").defaultText(Messages.getInternal("org.jahia.admin.userMessage.passwdNotMatch.label",LocaleContextHolder.getLocale())).build());
             }
         }
     }

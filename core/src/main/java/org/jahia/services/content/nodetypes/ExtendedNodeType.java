@@ -70,7 +70,7 @@ public class ExtendedNodeType implements NodeType {
 
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(ExtendedNodeType.class);
     public static final Name NT_BASE_NAME = new Name("base", org.apache.jackrabbit.spi.Name.NS_NT_PREFIX, org.apache.jackrabbit.spi.Name.NS_NT_URI);
-    
+
     private NodeTypeRegistry registry;
     private String systemId;
     private List<ExtendedItemDefinition> items = new ArrayList<ExtendedItemDefinition>();
@@ -351,7 +351,7 @@ public class ExtendedNodeType implements NodeType {
         ExtendedNodeType[] d = getDeclaredSupertypes();
         for (int i = 0; i < d.length; i++) {
             ExtendedNodeType s = d[i];
-            if (s.isNodeType(typeName)) {
+            if (s!= null && s.isNodeType(typeName)) {
                 return true;
             }
         }
@@ -396,9 +396,9 @@ public class ExtendedNodeType implements NodeType {
         	synchronized (this) {
         		if (allProperties == null) {
         			LinkedHashMap<String, ExtendedPropertyDefinition> props = new LinkedHashMap<String, ExtendedPropertyDefinition>();
-		
+
 		            props.putAll(properties);
-		
+
 		            ExtendedNodeType[] supertypes = getSupertypes();
 		            for (int i = supertypes.length-1; i >=0 ; i--) {
 		                ExtendedNodeType nodeType = supertypes[i];
@@ -411,7 +411,7 @@ public class ExtendedNodeType implements NodeType {
 		                c.keySet().removeAll(over.keySet());
 		                props.putAll(c);
 		            }
-		            
+
 		            allProperties = Collections.unmodifiableMap(props);
         		}
         	}
@@ -731,7 +731,7 @@ public class ExtendedNodeType implements NodeType {
         }
         return false;
     }
-    
+
     private boolean canAddChildNode(ExtendedNodeType nt, ExtendedNodeDefinition nodeDef) {
         String[] epd = nodeDef.getRequiredPrimaryTypeNames();
         for (String s : epd) {
@@ -740,7 +740,7 @@ public class ExtendedNodeType implements NodeType {
             }
         }
         return true;
-    }    
+    }
 
     public boolean canRemoveItem(String s) {
         try {
@@ -1079,7 +1079,7 @@ public class ExtendedNodeType implements NodeType {
             return r.toArray(new NodeDefinition[r.size()]);
         }
     }
-    
+
     /**
      * @param s
      * @throws ConstraintViolationException
@@ -1130,8 +1130,8 @@ public class ExtendedNodeType implements NodeType {
                 throw new ConstraintViolationException("can't remove protected property");
             }
         }
-    }    
-    
+    }
+
     private ExtendedPropertyDefinition getMatchingPropDef(Collection<ExtendedPropertyDefinition> defs, int type,
             boolean multiValued) {
         ExtendedPropertyDefinition match = null;
@@ -1156,7 +1156,7 @@ public class ExtendedNodeType implements NodeType {
         }
         return match;
     }
-    
+
     /**
      * Tests if the value constraints defined in the property definition
      * <code>pd</code> are satisfied by the the specified <code>values</code>.
@@ -1199,12 +1199,22 @@ public class ExtendedNodeType implements NodeType {
                 }
             }
         }
-    }    
-    
+    }
+
     @Override
     public boolean equals(Object obj) {
+<<<<<<< .working
         if (this == obj) {
             return true;
+=======
+        if (this == obj) return true;
+
+        if (obj != null && this.getClass() == obj.getClass()) {
+            final ExtendedNodeType castOther = (ExtendedNodeType) obj;
+            return new EqualsBuilder()
+                .append(this.getName(), castOther.getName())
+                .isEquals();
+>>>>>>> .merge-right.r45094
         }
         if (obj == null || this.getClass() != obj.getClass()) {
             return false;

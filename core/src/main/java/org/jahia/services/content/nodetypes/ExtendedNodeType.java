@@ -1203,18 +1203,8 @@ public class ExtendedNodeType implements NodeType {
 
     @Override
     public boolean equals(Object obj) {
-<<<<<<< .working
         if (this == obj) {
             return true;
-=======
-        if (this == obj) return true;
-
-        if (obj != null && this.getClass() == obj.getClass()) {
-            final ExtendedNodeType castOther = (ExtendedNodeType) obj;
-            return new EqualsBuilder()
-                .append(this.getName(), castOther.getName())
-                .isEquals();
->>>>>>> .merge-right.r45094
         }
         if (obj == null || this.getClass() != obj.getClass()) {
             return false;

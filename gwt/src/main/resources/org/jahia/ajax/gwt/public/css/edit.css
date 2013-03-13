@@ -150,6 +150,15 @@
     line-height: 16px !important;
     overflow: hidden;
 }
+.hover-module > .x-panel-header-areamodule, .hover-module > .x-panel-header-listmodule {
+    background-color: #39f;
+    background-image: linear-gradient(#39f, #06c);
+    background-repeat: repeat-x;
+    border-color: #2A65A0;
+    color: #FFFFFF !important;
+    text-decoration: none;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
 
 .x-panel-header-text-areamodule {
 

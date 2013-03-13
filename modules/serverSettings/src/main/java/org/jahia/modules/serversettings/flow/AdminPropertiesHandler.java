@@ -1,5 +1,6 @@
 package org.jahia.modules.serversettings.flow;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.modules.serversettings.adminproperties.AdminProperties;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
@@ -28,7 +29,9 @@ public class AdminPropertiesHandler implements Serializable {
      */
     public void save() {
         JCRUser rootNode = JCRUserManagerProvider.getInstance().lookupRootUser();
-        rootNode.setPassword(adminProperties.getPassword());
+        if (!StringUtils.isEmpty(adminProperties.getPassword())) {
+            rootNode.setPassword(adminProperties.getPassword());
+        }
         rootNode.setProperty("j:lastName",adminProperties.getLastName());
         rootNode.setProperty("j:firstName",adminProperties.getFirstName());
         rootNode.setProperty("j:organization",adminProperties.getOrganization());

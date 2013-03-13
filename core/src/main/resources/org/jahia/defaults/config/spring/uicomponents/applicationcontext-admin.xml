@@ -30,10 +30,16 @@
                 <property name="layout" value="button-label"/>
                 <property name="items">
                     <list>
-
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.mode"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Edit"/>
+                                    <ref bean="Toolbar.Item.Studio"/>
+                                </list>
+                            </property>
+                        </bean>
                         <ref bean="studiomode.managers.menu"/>
-                        <ref bean="Toolbar.Item.Edit"/>
-                        <ref bean="Toolbar.Item.Studio"/>
                         <ref bean="Toolbar.Item.Separator"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="icon" value="start"/>

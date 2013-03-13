@@ -102,17 +102,9 @@ public class PrincipalViewHelper implements Serializable {
     public static final String PROPERTIES = "Properties";
     public static final String INHERITANCE = "Inheritance";
 
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PrincipalViewHelper.class);
+    private static transient final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PrincipalViewHelper.class);
     
-    private static final Comparator<Principal> PRINCIPAL_COMPARATOR = new Comparator<Principal>() {
-        public int compare(Principal o1, Principal o2) {
-            if(o1 == o2) { return 0; }
-            if(o1 == null || o1.getName() == null) { return 1; }
-            if(o2 == null || o2.getName() == null) { return -1; }
-            
-            return o1.getName().compareTo(o2.getName());
-        }
-    };
+    private static transient final Comparator<Principal> PRINCIPAL_COMPARATOR = new PrincipalComparator();
 
     private Map<Principal, Integer[]> perms;
     private Set<Principal> inheritance;
@@ -811,4 +803,13 @@ public class PrincipalViewHelper implements Serializable {
         }
     }
 
+    private static class PrincipalComparator implements Comparator<Principal>,Serializable {
+        public int compare(Principal o1, Principal o2) {
+            if(o1 == o2) { return 0; }
+            if(o1 == null || o1.getName() == null) { return 1; }
+            if(o2 == null || o2.getName() == null) { return -1; }
+
+            return o1.getName().compareTo(o2.getName());
+        }
+    }
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="
+		http://www.springframework.org/schema/webflow
+		http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
+
+    <var name="flowHandler" class="org.jahia.modules.serversettings.flow.UsersFlowHandler"/>
+
+    <on-start>
+        <evaluate expression="flowHandler.init()" result="flowScope.users"/>
+        <evaluate expression="flowHandler.initCriteria()" result="flowScope.searchCriteria"/>
+    </on-start>
+
+    <view-state id="search" model="searchCriteria">
+        <on-render>
+            <evaluate expression="flowHandler.search(searchCriteria)" result="flowScope.users"/>
+            <evaluate expression="flowHandler.providersList" result="requestScope.providersList"/>
+        </on-render>
+        <transition on="search" to="search"/>
+        <transition on="addUser" to="createUser" bind="false" validate="false"/>
+        <transition on="editUser" to="editUser" bind="false" validate="false">
+            <evaluate expression="flowHandler.populateUser(requestParameters.selectedUsers)" result="flowScope.userProperties"/>
+        </transition>
+    </view-state>
+
+    <view-state id="createUser" model="userProperties">
+        <on-entry>
+            <evaluate expression="flowHandler.initUser()" result="flowScope.userProperties"/>
+        </on-entry>
+        <transition on="add" to="search">
+            <evaluate expression="flowHandler.addUser(userProperties)"/>
+        </transition>
+        <transition on="cancel" to="search" bind="false" validate="false"/>
+    </view-state>
+
+    <view-state id="editUser" model="userProperties">
+        <transition on="update" to="search">
+            <evaluate expression="flowHandler.updateUser(userProperties)"/>
+        </transition>
+        <transition on="cancel" to="search" bind="false" validate="false"/>
+    </view-state>
+</flow>

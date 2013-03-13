@@ -198,4 +198,12 @@ public class User {
     public static Boolean isPropertyEditable(JCRUserNode userNode, String name) {
         return userNode.isPropertyEditable(name);
     }
+
+    public static String formatUserValueOption(Principal principal) {
+        return new PrincipalViewHelper(new String[]{"Name,30","Properties,30"}).getPrincipalValueOption(principal);
+    }
+
+    public static String formatUserTextOption(Principal principal,String fieldsToDisplay) {
+        return new PrincipalViewHelper(fieldsToDisplay.split(";")).getPrincipalTextOption(principal);
+    }
 }

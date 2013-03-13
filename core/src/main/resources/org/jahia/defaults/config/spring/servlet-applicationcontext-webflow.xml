@@ -27,4 +27,6 @@
         <property name="flowExecutor" ref="jahiaFlowExecutor" />
     </bean>
 
+    <bean id="localeResolver" class="org.jahia.services.multilang.CurrentLocaleResolver" />
+
 </beans>

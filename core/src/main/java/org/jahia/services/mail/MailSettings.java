@@ -72,7 +72,7 @@ public class MailSettings implements Serializable {
         MAIL_NOTIFICATION_LEVELS.setFast(true);
     }
 
-    private boolean configugationValid;
+    private boolean configurationValid;
 
     private String from;
 
@@ -179,8 +179,8 @@ public class MailSettings implements Serializable {
      * 
      * @return the configugationValid
      */
-    public boolean isConfigugationValid() {
-        return configugationValid;
+    public boolean isConfigurationValid() {
+        return configurationValid;
     }
 
     /**
@@ -199,7 +199,7 @@ public class MailSettings implements Serializable {
      *            the configugationValid to set
      */
     public void setConfigurationValid(boolean configugationValid) {
-        this.configugationValid = configugationValid;
+        this.configurationValid = configugationValid;
     }
 
     /**

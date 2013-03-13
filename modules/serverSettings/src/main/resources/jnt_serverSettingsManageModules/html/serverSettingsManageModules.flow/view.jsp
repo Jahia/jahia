@@ -92,7 +92,12 @@
                     </c:when>
 
                     <c:otherwise>
-                        Not available
+                        <form action="${flowExecutionUrl}" method="POST">
+                            <input type="hidden" name="module" value="${entry.key}"/>
+                            <input type="hidden" name="scmUri" value="scm:git:"/>
+                            <fmt:message var="label" key='serverSettings.manageModules.downloadSources' />
+                            <input type="submit" name="_eventId_downloadSources" value="${label}" onclick=""/>
+                        </form>
                     </c:otherwise>
                 </c:choose>
 

@@ -132,6 +132,7 @@ public class Hover {
             return;
         }
         b.show();
+        module.addStyleName("hover-module");
         boxes.put(module, b);
     }
 
@@ -140,6 +141,7 @@ public class Hover {
         if (b != null) {
             b.hide();
             boxes.remove(module);
+            module.removeStyleName("hover-module");
         }
         if (boxes.isEmpty()) {
             mainModule.setSelectable(true);
@@ -147,8 +149,10 @@ public class Hover {
     }
 
     public void removeAll() {
-        for (Box box : boxes.values()) {
-            box.hide();
+        for (Map.Entry<Module, Box> entry : boxes.entrySet()) {
+            entry.getKey().removeStyleName("hover-module");
+            entry.getValue().hide();
+
         }
         boxes.clear();
     }

@@ -117,24 +117,7 @@ public class PlaceholderModule extends Module {
         }
 
         if (getParentModule() instanceof AreaModule && getParentModule().getChildCount() == 0 && ((AreaModule) getParentModule()).editable) {
-            Image icon =  ToolbarIconProvider.getInstance().getIcon("disableArea").createImage();
-            icon.setTitle(Messages.get("label.areaDisable", "Disable area"));
-            final HorizontalPanel p = new HorizontalPanel();
-            p.add(icon);
-            p.sinkEvents(Event.ONCLICK);
-            p.addStyleName("button-disable");
-            p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
-                public void handleEvent(ComponentEvent be) {
-                    JahiaContentManagementService.App.getInstance().deletePaths(Arrays.asList(parentModule.path), new BaseAsyncCallback<GWTJahiaNode>() {
-                        public void onSuccess(GWTJahiaNode result) {
-                            Map<String, Object> data = new HashMap<String, Object>();
-                            data.put(Linker.REFRESH_MAIN, true);
-                            mainModule.getEditLinker().refresh(data);
-                        }
-                    });
-                }
-            });
-            getParentModule().getHeader().addTool(p);
+           ((AreaModule) getParentModule()).setEnabledEmptyArea();
         }
 
         String[] nodeTypesArray = null;

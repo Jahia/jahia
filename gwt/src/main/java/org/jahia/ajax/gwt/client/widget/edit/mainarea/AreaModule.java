@@ -59,6 +59,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,6 +77,7 @@ public class AreaModule extends SimpleModule {
     private String areaType = "jnt:contentList";  // todo set the areatype
     private String areaHolder;
     private boolean missingList;
+    private final LayoutContainer content;
 
     public AreaModule(String id, String path, Element divElement, String moduleType, MainModule mainModule) {
         super(id, path, divElement, mainModule);
@@ -107,7 +109,10 @@ public class AreaModule extends SimpleModule {
         head.addStyleName("x-panel-header-"+moduleType+"module");
 
         html = new HTML(divElement.getInnerHTML());
-        add(html);
+
+        content = new LayoutContainer();
+        content.add(html);
+        add(content);
     }
 
     @Override public void onParsed() {
@@ -145,7 +150,35 @@ public class AreaModule extends SimpleModule {
                 }
             });
             head.addTool(p);
+
+            addStyleName(mainModule.getConfig().getName() + "DisableArea");
+            content.addStyleName(mainModule.getConfig().getName() + "DisableAreaContent");
+            layout();
         }
+    }
+
+    public void setEnabledEmptyArea() {
+        Image icon =  ToolbarIconProvider.getInstance().getIcon("disableArea").createImage();
+        icon.setTitle(Messages.get("label.areaDisable", "Disable area"));
+        final HorizontalPanel p = new HorizontalPanel();
+        p.add(icon);
+        p.sinkEvents(Event.ONCLICK);
+        p.addStyleName("button-disable");
+        p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent be) {
+                JahiaContentManagementService.App.getInstance().deletePaths(Arrays.asList(parentModule.path), new BaseAsyncCallback<GWTJahiaNode>() {
+                    public void onSuccess(GWTJahiaNode result) {
+                        Map<String, Object> data = new HashMap<String, Object>();
+                        data.put(Linker.REFRESH_MAIN, true);
+                        mainModule.getEditLinker().refresh(data);
+                    }
+                });
+            }
+        });
+        head.addTool(p);
+        addStyleName(mainModule.getConfig().getName()+"EnabledEmptyArea");
+        content.addStyleName(mainModule.getConfig().getName()+"EnabledEmptyAreaContent");
+        layout();
     }
 
     public String getAreaHolder() {

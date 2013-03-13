@@ -32,7 +32,8 @@
         <tr>
             <td>${currentModule.name}</td>
             <td>${entry.key}</td>
-            <td><a href="${url.base}/modules/${currentModule.rootFolder}.siteTemplate.html">Details</a>
+            <c:url var="detailUrl" value="${url.base}/modules/${currentModule.rootFolder}.siteTemplate.html"/>
+            <td><a href="${detailUrl}">Details</a>
             </td>
             <td>
                 <c:forEach items="${entry.value}" var="version">

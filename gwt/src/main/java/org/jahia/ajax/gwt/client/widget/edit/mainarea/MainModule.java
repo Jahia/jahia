@@ -940,12 +940,14 @@ public class MainModule extends Module {
          }-*/;
 
         public final native String onGWTFrameReady(IFrameElement iFrameElement) /*-{
-            var onFrameLoaded = iFrameElement.contentWindow.onGWTFrameLoaded;
-            for (var i = 0; i < onFrameLoaded.length; i++) {
-                onFrameLoaded[i]()
+            if (iFrameElement.contentWindow.onGWTFrameLoaded != null) {
+                var onFrameLoaded = iFrameElement.contentWindow.onGWTFrameLoaded;
+                for (var i = 0; i < onFrameLoaded.length; i++) {
+                    onFrameLoaded[i]()
+                }
+                iFrameElement.contentWindow.onGWTFrameLoaded = []
             }
-            iFrameElement.contentWindow.onGWTFrameLoaded = []
-         }-*/;
+        }-*/;
 
     }
 

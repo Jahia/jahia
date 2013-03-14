@@ -606,6 +606,17 @@
                                     <value>jnt:template</value>
                                 </list>
                             </property>
+                            <property name="displayedDetailTypes">
+                                <list>
+                                    <value>jnt:content</value>
+                                </list>
+                            </property>
+                            <property name="hiddenDetailTypes">
+                                <list>
+                                    <value>jnt:template</value>
+                                    <value>jnt:page</value>
+                                </list>
+                            </property>
                         </bean>
                     </property>
                     <property name="treeColumns">

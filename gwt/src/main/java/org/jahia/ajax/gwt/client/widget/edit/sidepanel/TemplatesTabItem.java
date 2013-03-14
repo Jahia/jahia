@@ -42,22 +42,36 @@ package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.GridEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
-import com.extjs.gxt.ui.client.widget.*;
-import com.extjs.gxt.ui.client.widget.grid.GridViewConfig;
+import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGridView;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.Collator;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.Hover;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
-import java.util.Comparator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Side panel tab item for browsing the pages tree.
@@ -69,6 +83,11 @@ public class TemplatesTabItem extends BrowseTabItem {
 
     protected transient ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
     protected transient ListStore<GWTJahiaNode> contentStore;
+    private transient TreeLoader<GWTJahiaNode> detailLoader;
+    private transient TreeStore<GWTJahiaNode> detailStore;
+    protected transient LayoutContainer contentContainer;
+    private transient List<String> displayedDetailTypes;
+    private transient List<String> hiddenDetailTypes;
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
@@ -87,6 +106,7 @@ public class TemplatesTabItem extends BrowseTabItem {
         this.tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
                 listLoader.load(se.getSelectedItem());
+                detailLoader.load(se.getSelectedItem());
             }
         });
 
@@ -115,9 +135,114 @@ public class TemplatesTabItem extends BrowseTabItem {
         }));
         contentStore.setSortField("display");
         tree.setContextMenu(createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel()));
+
+        NodeColumnConfigList columns = new NodeColumnConfigList(config.getTreeColumns());
+        columns.init();
+        columns.get(0).setRenderer(NodeColumnConfigList.NAME_TREEGRID_RENDERER);
+
+        RpcProxy<List<GWTJahiaNode>> proxy = new RpcProxy<List<GWTJahiaNode>>() {
+            @Override
+            protected void load(Object currentPage, final AsyncCallback<List<GWTJahiaNode>> callback) {
+                if (currentPage != null) {
+                    GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) currentPage;
+                    List<String> fields = new ArrayList<String>();
+                    fields.add(GWTJahiaNode.LOCKS_INFO);
+                    fields.add(GWTJahiaNode.PERMISSIONS);
+                    fields.add(GWTJahiaNode.CHILDREN_INFO);
+                    fields.add(GWTJahiaNode.ICON);
+                    JahiaContentManagementService.App.getInstance()
+                            .getRoot(Arrays.asList(gwtJahiaNode.getPath()+ "/*"), displayedDetailTypes, null, null, fields, null, null, true,
+                                    false, hiddenDetailTypes, null, new AsyncCallback<List<GWTJahiaNode>>() {
+                                @Override
+                                public void onFailure(Throwable caught) {
+                                    callback.onFailure(caught);
+                                }
+
+                                @Override
+                                public void onSuccess(List<GWTJahiaNode> nodes) {
+                                    callback.onSuccess(nodes);
+                                }
+                            });
+                }
+            }
+        };
+
+        detailLoader = new BaseTreeLoader<GWTJahiaNode>(proxy){
+            @Override
+            public boolean hasChildren(GWTJahiaNode parent) {
+                return parent.hasChildren();
+            }
+        };
+        detailStore = new TreeStore<GWTJahiaNode>(detailLoader);
+        detailStore.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
+            public int compare(Object o1, Object o2) {
+                if (o1 instanceof String && o2 instanceof String) {
+                    String s1 = (String) o1;
+                    String s2 = (String) o2;
+                    return Collator.getInstance().localeCompare(s1, s2);
+                } else if (o1 instanceof Comparable && o2 instanceof Comparable) {
+                    return ((Comparable) o1).compareTo(o2);
+                }
+                return 0;
+            }
+        }));
+        TreeGrid<GWTJahiaNode> detailTree = new TreeGrid<GWTJahiaNode>(detailStore,new ColumnModel(columns));
+
+
+        detailTree.setAutoExpandColumn("displayName");
+        detailTree.getTreeView().setRowHeight(25);
+        detailTree.getTreeView().setForceFit(true);
+        detailTree.setHeight("100%");
+        detailTree.setIconProvider(ContentModelIconProvider.getInstance());
+        detailTree.setHideHeaders(true);
+        detailTree.setAutoExpand(true);
+        detailTree.setContextMenu(createContextMenu(config.getTreeContextMenu(), detailTree.getSelectionModel()));
+        detailTree.setView(new TreeGridView() {
+
+            @Override
+            protected void handleComponentEvent(GridEvent ge) {
+                switch (ge.getEventTypeInt()) {
+                    case Event.ONMOUSEOVER:
+                        GWTJahiaNode selection = (GWTJahiaNode) ge.getModel();
+                        List<Module> modules = ModuleHelper.getModulesByPath().get(selection.getPath());
+                        for (Module module : modules) {
+                            Hover.getInstance().addHover(module);
+                        }
+                        break;
+                    case Event.ONMOUSEOUT:
+                        selection = (GWTJahiaNode) ge.getModel();
+                        modules = ModuleHelper.getModulesByPath().get(selection.getPath());
+                        for (Module module : modules) {
+                            Hover.getInstance().removeHover(module);
+                        }
+                        break;
+                }
+                super.handleComponentEvent(ge);
+            }
+
+        });
+        detailTree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
+                List<Module> modules = ModuleHelper.getModulesByPath().get(se.getSelectedItem().getPath());
+                for (Module module : modules) {
+                    editLinker.getMainModule().handleNewModuleSelection(module);
+                }
+            }
+        });
+
+        contentContainer=new LayoutContainer();
+        contentContainer.setBorders(true);
+        contentContainer.setScrollMode(Style.Scroll.AUTO);
+        contentContainer.setLayout(new FitLayout());
+        contentContainer.setTitle(Messages.get("label.detail","detail"));
+        contentContainer.add(detailTree);
+        VBoxLayoutData contentVBoxData = new VBoxLayoutData();
+        contentVBoxData.setFlex(2);
+        tab.add(contentContainer,contentVBoxData);
+
         return tab;
     }
-
     @Override
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
@@ -153,14 +278,21 @@ public class TemplatesTabItem extends BrowseTabItem {
     }
 
     public native String getTemplate() /*-{
-    return ['<tpl for=".">',
-        '<div style="padding: 5px ;border-bottom: 1px solid #D9E2F4;float: left;width: 100%;" class="thumb-wrap" id="{name}">',
-        '<div><b>{type}: </b>{name}</div>',
-        '<div><b>Template: </b>{template}</div>',
-        '<div><b>Key: </b>{key}</div>',
-        '<div><b>Apply on : </b>{applyOn}</div>',
-        '<div style="padding-left: 10px; padding-top: 10px; clear: left">{description}</div></div></tpl>',
-        '<div class="x-clear"></div>'].join("");
+        return ['<tpl for=".">',
+            '<div style="padding: 5px ;border-bottom: 1px solid #D9E2F4;float: left;width: 100%;" class="thumb-wrap" id="{name}">',
+            '<div><b>{type}: </b>{name}</div>',
+            '<div><b>Template: </b>{template}</div>',
+            '<div><b>Key: </b>{key}</div>',
+            '<div><b>Apply on : </b>{applyOn}</div>',
+            '<div style="padding-left: 10px; padding-top: 10px; clear: left">{description}</div></div></tpl>',
+            '<div class="x-clear"></div>'].join("");
     }-*/;
 
+    public void setDisplayedDetailTypes(List<String> displayedDetailTypes) {
+        this.displayedDetailTypes = displayedDetailTypes;
+    }
+
+    public void setHiddenDetailTypes(List<String> hiddenDetailTypes) {
+        this.hiddenDetailTypes = hiddenDetailTypes;
+    }
 }

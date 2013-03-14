@@ -278,6 +278,10 @@ public class ModuleHelper {
         return modules;
     }
 
+    public static Map<String, List<Module>> getModulesByPath() {
+        return modulesByPath;
+    }
+
     public static void tranformLinks(Element htmlElement) {
         long start = System.currentTimeMillis();
         String baseUrl = JahiaGWTParameters.getBaseUrl();

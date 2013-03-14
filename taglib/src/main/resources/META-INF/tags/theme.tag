@@ -1,5 +1,7 @@
 <%@ tag body-content="empty" description="Add the theme as a resource" %>
 <%@ tag import="org.apache.log4j.Logger" %>
+<%@ tag import="org.jahia.services.render.RenderContext" %>
+<%@ tag import="org.jahia.services.render.filter.cache.ModuleCacheProvider" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
@@ -27,7 +29,8 @@
     //Exceptions are catched. Most of time it will be SessionInvalidate exceptions
     Logger log = Logger.getLogger(this.getClass().getName());
     log.warn("Error in theme tag ", (java.lang.Exception)jspContext.findAttribute("catchException"));
-    //flush the current output cache, that next requests use the correct theme
-    org.jahia.services.cache.CacheHelper.flushOutputCaches();
+    //flush related output caches, that next requests use the correct theme
+    RenderContext renderContext = (RenderContext)jspContext.findAttribute("renderContext");
+    ModuleCacheProvider.getInstance().invalidate(renderContext.getMainResource().getNode().getPath(), false);
 %>
 </c:if>  

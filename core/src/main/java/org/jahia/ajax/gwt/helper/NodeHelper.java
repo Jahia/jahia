@@ -504,12 +504,11 @@ class NodeHelper {
 
     private void populateDescription(GWTJahiaNode n, JCRNodeWrapper node) {
         // get description
-        String description = "";
         try {
             if (node.hasProperty("jcr:description")) {
                 Value dValue = node.getProperty("jcr:description").getValue();
                 if (dValue != null) {
-                    description = dValue.getString();
+                    n.setDescription(dValue.getString());
                 }
             }
         } catch (RepositoryException e) {
@@ -822,8 +821,16 @@ class NodeHelper {
     }
 
     private void populateThumbnails(GWTJahiaNode n, JCRNodeWrapper node) {
-        // thumbnails
         n.setThumbnailsMap(new HashMap<String, String>());
+        try {
+            if (!node.hasNode("thumbnail")) {
+                return;
+            }
+        } catch (RepositoryException e) {
+            logger.warn("Error checking thumbnails for node " + n.getPath(), e);
+        }
+
+        // thumbnails
         List<String> names = node.getThumbnails();
         if (names.contains("thumbnail")) {
             n.setPreview(node.getThumbnailUrl("thumbnail"));

@@ -22,6 +22,9 @@
         <transition on="editUser" to="editUser" bind="false" validate="false">
             <evaluate expression="flowHandler.populateUser(requestParameters.selectedUsers)" result="flowScope.userProperties"/>
         </transition>
+        <transition on="removeUser" to="removeUser" bind="false" validate="false">
+            <evaluate expression="flowHandler.populateUser(requestParameters.selectedUsers)" result="flowScope.userProperties"/>
+        </transition>
     </view-state>
 
     <view-state id="createUser" model="userProperties">
@@ -37,6 +40,13 @@
     <view-state id="editUser" model="userProperties">
         <transition on="update" to="search">
             <evaluate expression="flowHandler.updateUser(userProperties)"/>
+        </transition>
+        <transition on="cancel" to="search" bind="false" validate="false"/>
+    </view-state>
+
+    <view-state id="removeUser" model="userProperties">
+        <transition on="confirm" to="search">
+            <evaluate expression="flowHandler.removeUser(userProperties)"/>
         </transition>
         <transition on="cancel" to="search" bind="false" validate="false"/>
     </view-state>

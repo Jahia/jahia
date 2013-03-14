@@ -26,7 +26,7 @@
         </c:if>
     </c:forEach> </p>
     <form action="${flowExecutionUrl}" method="post">
-        <fieldset>
+        <fieldset title="<fmt:message key="label.user.profile"/>">
             <label for="username"><fmt:message key="label.username"/></label>
             <input name="username" id="username" value="${userProperties.username}"><br/>
             <label for="firstName"><fmt:message key="label.firstName"/></label>
@@ -42,8 +42,21 @@
             <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
             <input type="password" name="passwordConfirm" id="passwordConfirm" value=""><br/>
         </fieldset>
+        <fieldset title="<fmt:message key='label.user.options'/>">
+            <label for="emailNotifications"><fmt:message key="label.emailNotifications"/>&nbsp;</label>
+            <input type="checkbox" name="emailNotifications" id="emailNotifications" <c:if test="${userProperties.emailNotifications}">checked="checked"</c:if>><br/>
+            <label for="accountLocked"><fmt:message key="label.accountLocked"/>&nbsp;</label>
+            <input type="checkbox" name="accountLocked" id="accountLocked" <c:if test="${userProperties.accountLocked}">checked="checked"</c:if>><br/>
+            <label for="preferredLanguage"><fmt:message key="org.jahia.admin.preferredLanguage.label"/></label>
+            <select id="preferredLanguage" name="preferredLanguage" size="1">
+                <c:forEach items="${functions:availableAdminBundleLocale(renderContext.UILocale)}" var="uiLanguage">
+                    <option value="${uiLanguage}" <c:if test="${uiLanguage eq userProperties.preferredLanguage}">selected="selected" </c:if>>${functions:displayLocaleNameWith(uiLanguage, renderContext.UILocale)}</option>
+                </c:forEach>
+            </select>
+        </fieldset>
         <fieldset>
             <input type="submit" name="_eventId_add" value="<fmt:message key='label.add'/>"/>
+            <input type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel'/>"/>
         </fieldset>
     </form>
 </div>

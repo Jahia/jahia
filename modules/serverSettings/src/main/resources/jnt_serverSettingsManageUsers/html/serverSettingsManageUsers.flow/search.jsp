@@ -23,7 +23,7 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $("#editUsers").submit(function () {
+        $(".needUsersSelection").submit(function () {
             $("input[name='selectedUsers']").val($("select[name='usersSelected']").val());
             return true;
         })
@@ -38,12 +38,12 @@
         <input type="submit" name="_eventId_addUser"
                value="<fmt:message key="org.jahia.admin.users.ManageUsers.createNewUser.label"/>"/>
     </form>
-    <form action="${flowExecutionUrl}" method="POST" id="editUsers">
+    <form action="${flowExecutionUrl}" method="POST" class="needUsersSelection">
         <input type="hidden" name="selectedUsers"/>
         <input type="submit" name="_eventId_editUser"
                value="<fmt:message key="org.jahia.admin.users.ManageUsers.editViewProp.label"/>"/>
     </form>
-    <form action="${flowExecutionUrl}" method="POST" id="removeUsers">
+    <form action="${flowExecutionUrl}" method="POST" class="needUsersSelection">
         <input type="hidden" name="selectedUsers"/>
         <input type="submit" name="_eventId_removeUser"
                value="<fmt:message key="org.jahia.admin.users.ManageUsers.removeSelectedUser.label"/>"/>

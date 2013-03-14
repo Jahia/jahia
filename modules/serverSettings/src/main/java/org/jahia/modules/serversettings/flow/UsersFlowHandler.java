@@ -32,17 +32,22 @@
  */
 package org.jahia.modules.serversettings.flow;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.modules.serversettings.users.management.SearchCriteria;
 import org.jahia.modules.serversettings.users.management.UserProperties;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerProvider;
 import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.io.Serializable;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -81,12 +86,19 @@ public class UsersFlowHandler implements Serializable {
 
     public void updateUser(UserProperties userProperties) {
         logger.info("Updating user");
-        JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userProperties.getUserKey());
-        if(jahiaUser!=null) {
-            jahiaUser.setProperty("j:firstName",userProperties.getFirstName());
-            jahiaUser.setProperty("j:lastName",userProperties.getLastName());
-            jahiaUser.setProperty("j:email",userProperties.getEmail());
-            jahiaUser.setProperty("j:organization",userProperties.getOrganization());
+        JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(
+                userProperties.getUserKey());
+        if (jahiaUser != null) {
+            jahiaUser.setProperty("j:firstName", userProperties.getFirstName());
+            jahiaUser.setProperty("j:lastName", userProperties.getLastName());
+            jahiaUser.setProperty("j:email", userProperties.getEmail());
+            jahiaUser.setProperty("j:organization", userProperties.getOrganization());
+            jahiaUser.setProperty("emailNotificationsDisabled", userProperties.getEmailNotifications().toString());
+            jahiaUser.setProperty("j:accountLocked", userProperties.getAccountLocked().toString());
+            jahiaUser.setProperty("preferredLanguage", userProperties.getPreferredLanguage().toString());
+            if (StringUtils.isNotBlank(userProperties.getPassword())) {
+                jahiaUser.setPassword(userProperties.getPassword());
+            }
         }
     }
 
@@ -102,9 +114,18 @@ public class UsersFlowHandler implements Serializable {
         userProperties.setEmail(jahiaUser.getProperty("j:email"));
         userProperties.setOrganization(jahiaUser.getProperty("j:organization"));
         userProperties.setEmailNotifications(Boolean.valueOf(jahiaUser.getProperty("emailNotificationsDisabled")));
-        userProperties.setPreferredLanguage(jahiaUser.getProperty("preferredLanguage"));
+        userProperties.setPreferredLanguage(UserPreferencesHelper.getPreferredLocale(jahiaUser));
         userProperties.setAccountLocked(Boolean.valueOf(jahiaUser.getProperty("j:accountLocked")));
         userProperties.setDisplayName(PrincipalViewHelper.getDisplayName(jahiaUser, LocaleContextHolder.getLocale()));
+        userProperties.setLocalPath(jahiaUser.getLocalPath());
+        final JahiaGroupManagerService managerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
+        final List<String> userMembership = managerService.getUserMembership(jahiaUser);
+        final List<JahiaGroup> groups = new ArrayList<JahiaGroup>(userMembership.size());
+        for (String groupName : userMembership) {
+            final JahiaGroup group = managerService.lookupGroup(groupName);
+            groups.add(group);
+        }
+        userProperties.setGroups(groups);
         return userProperties;
     }
 
@@ -112,8 +133,13 @@ public class UsersFlowHandler implements Serializable {
         return ServicesRegistry.getInstance().getJahiaUserManagerService().getProviderList();
     }
 
-    public UserProperties initUser(){
+    public UserProperties initUser() {
         return new UserProperties();
+    }
+
+    public void removeUser(UserProperties userProperties) {
+        JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userProperties.getUserKey());
+        ServicesRegistry.getInstance().getJahiaUserManagerService().deleteUser(jahiaUser);
     }
 
     private Properties transformUserProperties(UserProperties userProperties) {
@@ -122,6 +148,9 @@ public class UsersFlowHandler implements Serializable {
         properties.put("j:lastName", userProperties.getLastName());
         properties.put("j:email", userProperties.getEmail());
         properties.put("j:organization", userProperties.getOrganization());
+        properties.put("preferredLanguage", userProperties.getPreferredLanguage().toString());
+        properties.put("j:accountLocked", userProperties.getAccountLocked().toString());
+        properties.put("emailNotificationsDisabled", userProperties.getEmailNotifications().toString());
         return properties;
     }
 }

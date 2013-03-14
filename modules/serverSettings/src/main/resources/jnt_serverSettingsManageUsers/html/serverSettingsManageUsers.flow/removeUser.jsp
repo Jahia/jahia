@@ -20,8 +20,12 @@
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <div>
-    <span style="font-size: larger;"><fmt:message key="label.edit"/>&nbsp;${userProperties.displayName}</span>
-
+    <span style="font-size: larger;"><fmt:message key="label.remove"/>&nbsp;${userProperties.displayName}</span>
+    <p>
+        <fmt:message key="org.jahia.admin.users.ManageUsers.definitivelyRemove.label"/><br/>
+        <fmt:message key="org.jahia.admin.users.ManageUsers.definitivelyRemove.files.label"/>&nbsp;
+        (<a href="<c:url value='/cms/export/default${userProperties.localPath}.zip?cleanup=simple'/>" target="_blank"><fmt:message key="label.export"/></a>)
+    </p>
     <p>
         <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
             <c:if test="${message.severity eq 'ERROR'}">
@@ -33,31 +37,23 @@
     <form action="${flowExecutionUrl}" method="post" id="editUser">
         <fieldset title="<fmt:message key='label.user.profile'/>">
             <label for="firstName"><fmt:message key="label.firstName"/></label>
-            <input name="firstName" id="firstName" value="${userProperties.firstName}"><br/>
+            <input name="firstName" id="firstName" value="${userProperties.firstName}" disabled="disabled"><br/>
             <label for="lastName"><fmt:message key="label.lastName"/></label>
-            <input name="lastName" id="lastName" value="${userProperties.lastName}"><br/>
+            <input name="lastName" id="lastName" value="${userProperties.lastName}" disabled="disabled"><br/>
             <label for="email"><fmt:message key="label.email"/></label>
-            <input name="email" id="email" value="${userProperties.email}"><br/>
+            <input name="email" id="email" value="${userProperties.email}" disabled="disabled"><br/>
             <label for="organization"><fmt:message key="label.organization"/></label>
-            <input name="organization" id="organization" value="${userProperties.organization}"><br/>
-        </fieldset>
-        <fieldset title="<fmt:message key='label.user.password'/>">
-            <label for="password"><fmt:message key="label.password"/></label>
-            <input type="password" name="password" id="password" value=""><br/>
-            <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
-            <input type="password" name="passwordConfirm" id="passwordConfirm" value=""><br/>
+            <input name="organization" id="organization" value="${userProperties.organization}" disabled="disabled"><br/>
         </fieldset>
         <fieldset title="<fmt:message key='label.user.options'/>">
             <label for="emailNotifications"><fmt:message key="label.emailNotifications"/>&nbsp;</label>
             <input type="checkbox" name="emailNotifications" id="emailNotifications"
-                   <c:if test="${userProperties.emailNotifications}">checked="checked"</c:if>><br/>
-            <input type="hidden" name="_emailNotifications"/>
+                   <c:if test="${userProperties.emailNotifications}">checked="checked"</c:if> disabled="disabled"><br/>
             <label for="accountLocked"><fmt:message key="label.accountLocked"/>&nbsp;</label>
             <input type="checkbox" name="accountLocked" id="accountLocked"
-                   <c:if test="${userProperties.accountLocked}">checked="checked"</c:if>><br/>
-            <input type="hidden" name="_accountLocked"/>
+                   <c:if test="${userProperties.accountLocked}">checked="checked"</c:if> disabled="disabled"><br/>
             <label for="preferredLanguage"><fmt:message key="org.jahia.admin.preferredLanguage.label"/></label>
-            <select id="preferredLanguage" name="preferredLanguage" size="1">
+            <select id="preferredLanguage" name="preferredLanguage" size="1" disabled="disabled">
                 <c:forEach items="${functions:availableAdminBundleLocale(renderContext.UILocale)}" var="uiLanguage">
                     <option value="${uiLanguage}"
                             <c:if test="${uiLanguage eq userProperties.preferredLanguage}">selected="selected" </c:if>>${functions:displayLocaleNameWith(uiLanguage, renderContext.UILocale)}</option>
@@ -67,7 +63,7 @@
 
         <fieldset id="groupsFields" title="<fmt:message key="org.jahia.admin.users.ManageGroups.groupList.label"/>">
             <label for="groupsFields"><fmt:message key="org.jahia.admin.users.ManageGroups.groupList.label"/></label>
-            <select class="fontfix" name="selectMember" size="6" multiple>
+            <select class="fontfix" name="selectMember" size="6" multiple disabled="disabled">
                 <c:forEach items="${userProperties.groups}" var="group">
                     <option value="${user:formatUserValueOption(group)}">${user:formatUserTextOption(group, 'Name, 20;SiteTitle, 15;Properties, 20')}</option>
                 </c:forEach>
@@ -75,7 +71,7 @@
 
         </fieldset>
         <fieldset>
-            <input type="submit" name="_eventId_update" value="<fmt:message key='label.update'/>"/>
+            <input type="submit" name="_eventId_confirm" value="<fmt:message key='label.remove.confirm'/>"/>
             <input type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel'/>"/>
         </fieldset>
     </form>

@@ -34,11 +34,11 @@ package org.jahia.modules.serversettings.users.management;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.engines.EngineMessages;
-import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.Messages;
 import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
@@ -46,8 +46,8 @@ import org.springframework.binding.validation.ValidationContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.io.Serializable;
-import java.security.Principal;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.
@@ -63,14 +63,15 @@ public class UserProperties implements Serializable {
     private String username;
     private String email;
     private String organization;
-    private Boolean emailNotifications;
-    private String preferredLanguage;
+    private Boolean emailNotifications = Boolean.FALSE;
+    private Locale preferredLanguage;
     private String password;
     private String passwordConfirm;
-    private Boolean accountLocked;
-    private List<Principal> groups;
+    private Boolean accountLocked = Boolean.FALSE;
+    private List<JahiaGroup> groups;
     private String displayName;
     private String userKey;
+    private String localPath;
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
@@ -97,7 +98,7 @@ public class UserProperties implements Serializable {
         this.emailNotifications = emailNotifications;
     }
 
-    public void setPreferredLanguage(String preferredLanguage) {
+    public void setPreferredLanguage(Locale preferredLanguage) {
         this.preferredLanguage = preferredLanguage;
     }
 
@@ -133,7 +134,7 @@ public class UserProperties implements Serializable {
         return firstName;
     }
 
-    public List<Principal> getGroups() {
+    public List<JahiaGroup> getGroups() {
         return groups;
     }
 
@@ -149,7 +150,7 @@ public class UserProperties implements Serializable {
         return password;
     }
 
-    public String getPreferredLanguage() {
+    public Locale getPreferredLanguage() {
         return preferredLanguage;
     }
 
@@ -173,21 +174,25 @@ public class UserProperties implements Serializable {
         this.passwordConfirm = passwordConfirm;
     }
 
+    public void setGroups(List<JahiaGroup> groups) {
+        this.groups = groups;
+    }
+
     public void validateCreateUser(ValidationContext context) {
         MessageContext messages = context.getMessageContext();
         if (username == null || username.isEmpty()) {
             messages.addMessage(new MessageBuilder().error().source("username").defaultText(Messages.getInternal(
                     "org.jahia.admin.userMessage.specifyUserName.label", LocaleContextHolder.getLocale())).build());
-        } else if (!ServicesRegistry.getInstance().getJahiaUserManagerService()
-                .isUsernameSyntaxCorrect(username)) {
+        } else if (!ServicesRegistry.getInstance().getJahiaUserManagerService().isUsernameSyntaxCorrect(username)) {
             messages.addMessage(new MessageBuilder().error().source("username").defaultText(Messages.getInternal(
-                    "org.jahia.admin.users.ManageUsers.onlyCharacters.label", LocaleContextHolder.getLocale())).build());
+                    "org.jahia.admin.users.ManageUsers.onlyCharacters.label",
+                    LocaleContextHolder.getLocale())).build());
         } else if (ServicesRegistry.getInstance().getJahiaUserManagerService().userExists(username)) {
             messages.addMessage(new MessageBuilder().error().source("username").defaultText(Messages.getInternal(
                     "org.jahia.admin.userMessage.alreadyExist.label", LocaleContextHolder.getLocale())).build());
         }
-        if (StringUtils.isNotEmpty(email) &&
-            !email.matches("^$|^[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@([A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])$")) {
+        if (StringUtils.isNotEmpty(email) && !email.matches(
+                "^$|^[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@([A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])$")) {
             messages.addMessage(new MessageBuilder().error().source("email").defaultText(Messages.getInternal(
                     "org.jahia.admin.userMessage.emailFormatIsIncorrect.label",
                     LocaleContextHolder.getLocale())).build());
@@ -196,29 +201,29 @@ public class UserProperties implements Serializable {
         JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry.getInstance().getJahiaPasswordPolicyService();
         if (StringUtils.isEmpty(password) || StringUtils.isEmpty(passwordConfirm)) {
             messages.addMessage(new MessageBuilder().error().source("password").defaultText(Messages.getInternal(
-                    "org.jahia.admin.userMessage.specifyPassword.label",
-                    LocaleContextHolder.getLocale())).build());
+                    "org.jahia.admin.userMessage.specifyPassword.label", LocaleContextHolder.getLocale())).build());
         } else {
             if (!passwordConfirm.equals(password)) {
-                messages.addMessage(new MessageBuilder().error().source("passwordConfirm").defaultText(Messages.getInternal(
-                        "org.jahia.admin.userMessage.passwdNotMatch.label",
-                        LocaleContextHolder.getLocale())).build());
+                messages.addMessage(new MessageBuilder().error().source("passwordConfirm").defaultText(
+                        Messages.getInternal("org.jahia.admin.userMessage.passwdNotMatch.label",
+                                LocaleContextHolder.getLocale())).build());
             } else {
-            PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnUserCreate(username, password);
-            if (!evalResult.isSuccess()) {
-                List<String> textMessages = evalResult.getTextMessages();
-                for (String textMessage : textMessages) {
-                    messages.addMessage(new MessageBuilder().error().source("password").defaultText(textMessage).build());
+                PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnUserCreate(username, password);
+                if (!evalResult.isSuccess()) {
+                    List<String> textMessages = evalResult.getTextMessages();
+                    for (String textMessage : textMessages) {
+                        messages.addMessage(new MessageBuilder().error().source("password").defaultText(
+                                textMessage).build());
+                    }
                 }
-            }
             }
         }
     }
 
     public void validateEditUser(ValidationContext context) {
         MessageContext messages = context.getMessageContext();
-        if (StringUtils.isNotEmpty(email) &&
-            !email.matches("^$|^[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@([A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])$")) {
+        if (StringUtils.isNotEmpty(email) && !email.matches(
+                "^$|^[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@([A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])$")) {
             messages.addMessage(new MessageBuilder().error().source("email").defaultText(Messages.getInternal(
                     "org.jahia.admin.userMessage.emailFormatIsIncorrect.label",
                     LocaleContextHolder.getLocale())).build());
@@ -227,18 +232,30 @@ public class UserProperties implements Serializable {
         JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry.getInstance().getJahiaPasswordPolicyService();
         if (!StringUtils.isEmpty(password)) {
             if (!password.equals(passwordConfirm)) {
-                messages.addMessage(new MessageBuilder().error().source("passwordConfirm").defaultText(Messages.getInternal(
-                        "org.jahia.admin.userMessage.passwdNotMatch.label",
-                        LocaleContextHolder.getLocale())).build());
+                messages.addMessage(new MessageBuilder().error().source("passwordConfirm").defaultText(
+                        Messages.getInternal("org.jahia.admin.userMessage.passwdNotMatch.label",
+                                LocaleContextHolder.getLocale())).build());
             } else {
-                PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnUserCreate(username, password);
+                JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(
+                        userKey);
+                PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnPasswordChange(jahiaUser, password,
+                        true);
                 if (!evalResult.isSuccess()) {
                     List<String> textMessages = evalResult.getTextMessages();
                     for (String textMessage : textMessages) {
-                        messages.addMessage(new MessageBuilder().error().source("password").defaultText(textMessage).build());
+                        messages.addMessage(new MessageBuilder().error().source("password").defaultText(
+                                textMessage).build());
                     }
                 }
             }
         }
+    }
+
+    public void setLocalPath(String localPath) {
+        this.localPath = localPath;
+    }
+
+    public String getLocalPath() {
+        return localPath;
     }
 }

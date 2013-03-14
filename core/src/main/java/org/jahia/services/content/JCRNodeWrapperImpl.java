@@ -954,7 +954,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (provider.getService() != null) {
             Map<String, JCRStoreProvider> mountPoints = provider.getSessionFactory().getMountPoints();
             String p = "";
-            String[] splitPath = s.split("/");
+            String[] splitPath = StringUtils.split(s, "/");
             for (int i = 0; i < splitPath.length; i++) {
                 if (!p.isEmpty()) {
                     p += "/";

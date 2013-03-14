@@ -344,4 +344,13 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
             overflowToDisk="false"
             />
 
+    <cache
+            name="ExternalIndentifierMapping"
+            maxEntriesLocalHeap="100000"
+            overflowToDisk="true"
+            diskPersistent="true"
+            maxEntriesLocalDisk="10000000"
+            timeToIdleSeconds="3600"
+            timeToLiveSeconds="14400"
+            />
 </ehcache>

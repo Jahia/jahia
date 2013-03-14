@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:j="http://www.jahia.org/jahia/1.0"
          xmlns:jcr="http://www.jcp.org/jcr/1.0"
-         xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
          xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
     <modules jcr:primaryType="jnt:modules">
         <serverSettings j:dependencies="default"
@@ -9,9 +8,7 @@
                       j:moduleType="module"
                       j:title="Jahia Default Site Settings"
                       jcr:primaryType="jnt:module">
-                <portlets jcr:primaryType="jnt:portletFolder"/>
-                <files jcr:primaryType="jnt:folder"/>
-                <contents jcr:primaryType="jnt:contentFolder"/>
+                
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
                 <files jcr:primaryType="jnt:folder"/>
                 <contents jcr:primaryType="jnt:contentFolder"/>
@@ -24,6 +21,7 @@
                             <about-jahia jcr:primaryType="jnt:serverSettingsAboutJahia"/>
                         </pagecontent>
                             <j:translation_en jcr:language="en"
+                                    jcr:mixinTypes="mix:title"
                                     jcr:primaryType="jnt:translation"
                                     jcr:title="About Jahia"/>
                     </aboutJahia>
@@ -32,11 +30,12 @@
                                    j:hiddenTemplate="false"
                                     jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
-                            <web-project-settings jcr:primaryType="jnt:serverSettingsWebProjectSettings"/>
+                            <manage-web-projects jcr:primaryType="jnt:serverSettingsManageWebProjects"/>
                         </pagecontent>
                     </webProjectSettings>
                         <configurations j:hiddenTemplate="false" jcr:primaryType="jnt:template">
                             <j:translation_en jcr:language="en"
+                                    jcr:mixinTypes="mix:title"
                                     jcr:primaryType="jnt:translation"
                                     jcr:title="Configurations"/>
                             <mailServerSettings j:applyOn="jnt:globalSettings"
@@ -58,6 +57,7 @@
                         </configurations>
                         <system-components j:hiddenTemplate="false" jcr:primaryType="jnt:template">
                             <j:translation_en jcr:language="en"
+                                    jcr:mixinTypes="mix:title"
                                     jcr:primaryType="jnt:translation"
                                     jcr:title="System components "/>
                             <manageModules j:applyOn="jnt:globalSettings"
@@ -79,6 +79,7 @@
                         </system-components>
                         <users-and-roles j:hiddenTemplate="false" jcr:primaryType="jnt:template">
                             <j:translation_en jcr:language="en"
+                                    jcr:mixinTypes="mix:title"
                                     jcr:primaryType="jnt:translation"
                                     jcr:title="Users and roles"/>
                             <manageUsers j:applyOn="jnt:globalSettings"
@@ -116,6 +117,7 @@
                         </users-and-roles>
                         <system-health j:hiddenTemplate="false" jcr:primaryType="jnt:template">
                             <j:translation_en jcr:language="en"
+                                    jcr:mixinTypes="mix:title"
                                     jcr:primaryType="jnt:translation"
                                     jcr:title="System Health"/>
                             <systemInfos j:applyOn="jnt:globalSettings"
@@ -153,12 +155,16 @@
                         </system-health>
                         <web-projects j:hiddenTemplate="false" jcr:primaryType="jnt:template">
                             <j:translation_en jcr:language="en"
+                                    jcr:mixinTypes="mix:title"
                                     jcr:primaryType="jnt:translation"
                                     jcr:title="Web projects"/>
+                            <pagecontent jcr:primaryType="jnt:contentList"/>
                         </web-projects>
                 </serverSettingsBase>
             </templates>
-                
+                <portlets jcr:primaryType="jnt:portletFolder"/>
+                <files jcr:primaryType="jnt:folder"/>
+                <contents jcr:primaryType="jnt:contentFolder"/>
                 
         </serverSettings>
     </modules>

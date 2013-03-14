@@ -34,9 +34,6 @@
         <transition to="sourcesDownloaded" />
     </action-state>
 
-    <view-state id="downloadError">
-    </view-state>
-
     <end-state id="sourcesDownloaded"/>
 
     <action-state id="startModule">

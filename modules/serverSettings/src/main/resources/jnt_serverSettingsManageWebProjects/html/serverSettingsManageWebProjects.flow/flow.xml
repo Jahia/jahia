@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="
+		http://www.springframework.org/schema/webflow
+		http://www.springframework.org/schema/webflow/spring-webflow.xsd">
+
+    <var name="webprojectHandler" class="org.jahia.modules.serversettings.flow.WebprojectHandler"/>
+
+    <view-state id="view">
+
+        <transition on="createSite" to="createSite" >
+            <set name="flowScope.siteBean" value="webprojectHandler.newSite"/>
+        </transition>
+
+        <transition on="exportSites" to="exportSites" />
+        <transition on="exportStagingSites" to="exportStagingSites" />
+        <transition on="deleteSites" to="deleteSites" />
+
+    </view-state>
+
+    <view-state id="createSite" model="siteBean">
+        <transition on="previous" to="createSite" />
+        <transition on="next" to="createSiteAdministrator" />
+        <transition on="skipAdmin" to="createSiteSelectModules" />
+    </view-state>
+
+    <view-state id="createSiteAdministrator" model="siteBean">
+
+        <transition on="previous" to="createSite" />
+        <transition on="next" to="createSiteSelectModules" />
+    </view-state>
+
+    <view-state id="createSiteSelectModules" model="siteBean">
+        <on-render>
+            <evaluate expression="JahiaTemplateManagerService.availableTemplatePackages" result="flashScope.allModules"/>
+            <evaluate expression="T(org.jahia.utils.LanguageCodeConverters).getSortedLocaleList(externalContext.requestMap.currentResource.locale)" result="flashScope.allLocales"/>
+        </on-render>
+
+
+        <transition on="previous" to="createSite" />
+        <transition on="next" to="createSiteSummary" />
+    </view-state>
+
+    <view-state id="createSiteSummary" model="siteBean">
+        <transition on="previous" to="createSiteSelectModules" />
+        <transition on="next" to="createSiteAction" />
+    </view-state>
+
+    <action-state id="createSiteAction" >
+
+    </action-state>
+
+
+</flow>

@@ -77,6 +77,7 @@
     }
 %>
 <%
+long timer = System.currentTimeMillis();
 JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
 JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"));
 try {
@@ -414,7 +415,7 @@ function go(id1, value1, id2, value2, id3, value3) {
 </c:forEach>
     </pre><br>
     </c:if>
-
+    <div style="position: absolute; right: 20px; top: 10px; font-size: 80%">rendered in <%= System.currentTimeMillis() - timer %> ms</div>
 </fieldset>
 </body>
 <%} catch (javax.jcr.ItemNotFoundException e) {

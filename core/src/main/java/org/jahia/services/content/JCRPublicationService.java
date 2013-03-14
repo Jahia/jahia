@@ -1094,7 +1094,7 @@ public class JCRPublicationService extends JahiaService {
             return info;
         }
 
-        if (info != null && JCRContentUtils.isNotJcrUuid(uuid)) {
+        if (info != null && uuid == null) {
             info.setStatus(PublicationInfo.PUBLISHED);
             return info;
         }

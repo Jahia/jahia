@@ -1259,7 +1259,9 @@ public final class JCRContentUtils implements ServletContextAware {
      * @param uuid the UUID string to check
      * @return code>true</code> if the provided UUID string does not seem like a valid Jackrabbit node UUID. In such a case it comes from a
      *         different provide, like VFS
+     * @deprecated without any replacement 
      */
+    @Deprecated
     public static boolean isNotJcrUuid(String uuid) {
         return StringUtils.isEmpty(uuid) || uuid.contains("/");
     }
@@ -1312,7 +1314,7 @@ public final class JCRContentUtils implements ServletContextAware {
     }
 
     public static String replaceColon(String name) {
-        return name != null ? Patterns.COLON.matcher(name).replaceAll("_") : name;
+        return name != null ? StringUtils.replace(name, ":", "_") : name;
     }
 
 

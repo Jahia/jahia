@@ -217,10 +217,7 @@ public class JCRSessionWrapper implements Session {
                         " is not yet initialized, skipping...");
                 continue;
             }
-            if (provider instanceof JackrabbitStoreProvider && JCRContentUtils.isNotJcrUuid(uuid)) {
-                // not a valid UUID, probably a VFS node
-                continue;
-            }
+
             try {
                 Session session = getProviderSession(provider);
                 if (session instanceof JahiaSessionImpl && getUser() != null &&
@@ -258,8 +255,7 @@ public class JCRSessionWrapper implements Session {
                     originalEx = ee;
                 }
             } catch (UnsupportedRepositoryOperationException uso) {
-                logger.debug(
-                        "getNodeByUUID unsupported by : " + provider.getKey() + " / " + provider.getClass().getName());
+                logger.debug("getNodeByUUID unsupported by: {} / {}", provider.getKey(), provider.getClass().getName());
                 if (originalEx == null) {
                     originalEx = uso;
                 }

@@ -197,7 +197,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                 for (final String dependency : dependencies) {
                     if (!dependency.equals(nodePath)) {
                         try{
-                            if (!JCRContentUtils.isNotJcrUuid(dependency)) {
+                            if (!dependency.contains("/")) {
                                 final boolean finalCheckRootPath = checkRootPath;
                                 JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Object>() {
                                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -207,7 +207,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                                         return null;
                                     }
                                 });
-                            } else if (dependency.contains("/")) {
+                            } else {
                                 aclsKeys.add(getAclsKeyPart(renderContext, checkRootPath, dependency, true, null));
                             }
                         } catch(ItemNotFoundException ex) {

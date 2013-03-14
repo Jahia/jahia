@@ -98,6 +98,9 @@ public class ContentDefinitionHelper {
     private static final List<String> excludedTypes = Arrays.asList("nt:base", "mix:versionable", "jnt:workflow");
 
     public GWTJahiaNodeType getNodeType(String name, Locale uiLocale) {
+        if (StringUtils.isEmpty(name)) {
+            return null;
+        }
         ExtendedNodeType nodeType = null;
         try {
             nodeType = NodeTypeRegistry.getInstance().getNodeType(name);
@@ -371,11 +374,11 @@ public class ContentDefinitionHelper {
             List<GWTJahiaNodeType> list = new ArrayList<GWTJahiaNodeType>();
             for (String name : names) {
                 if (!StringUtils.isEmpty(name)) {
-                    GWTJahiaNodeType nodeType = getNodeType(name, uiLocale);
-                    if (nodeType != null) {
-                        list.add(nodeType);
-                    }
+                GWTJahiaNodeType nodeType = getNodeType(name, uiLocale);
+                if (nodeType != null) {
+                    list.add(nodeType);
                 }
+            }
             }
             return list;
         } catch (Exception e) {

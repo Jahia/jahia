@@ -42,6 +42,7 @@ package org.jahia.services.content.nodetypes;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.io.IOUtils;
+import org.codehaus.plexus.util.StringUtils;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
@@ -70,6 +71,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
 
     private Map<String,String> namespaces = new HashMap<String,String>();
 
+    @SuppressWarnings("unchecked")
     private Map<String,List<Resource>> files = new ListOrderedMap();
 
     private Map<ExtendedNodeType,Set<ExtendedNodeType>> mixinExtensions = new HashMap<ExtendedNodeType,Set<ExtendedNodeType>>();
@@ -232,7 +234,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
     }
 
     public ExtendedNodeType getNodeType(String name) throws NoSuchNodeTypeException {
-        ExtendedNodeType res = nodetypes.get(new Name(name, namespaces));
+        ExtendedNodeType res = StringUtils.isNotEmpty(name) ? nodetypes.get(new Name(name, namespaces)) : null;
         if (res == null) {
             throw new NoSuchNodeTypeException(name);
         }

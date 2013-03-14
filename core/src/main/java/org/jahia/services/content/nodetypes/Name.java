@@ -43,14 +43,11 @@ package org.jahia.services.content.nodetypes;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.utils.Patterns;
 
 /**
- * 
  * User: toto
  * Date: 14 mars 2008
  * Time: 18:43:40
- * 
  */
 public class Name {
     private String localName;
@@ -85,7 +82,7 @@ public class Name {
             }
         }
         if (localName == null) {
-            String s[] = Patterns.COLON.split(qualifiedName);
+            String s[] = StringUtils.split(qualifiedName, ":");
             if (s.length == 2) {
                 prefix = s[0];
                 localName = s[1];

@@ -40,7 +40,6 @@
 
 package org.jahia.services.content;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.query.JahiaQueryObjectModelImpl;
 import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
@@ -86,9 +85,7 @@ import javax.naming.StringRefAddr;
 import javax.naming.spi.ObjectFactory;
 import javax.servlet.ServletRequest;
 import java.io.*;
-import java.net.MalformedURLException;
 import java.rmi.Naming;
-import java.rmi.RemoteException;
 import java.util.*;
 
 /**
@@ -332,14 +329,6 @@ public class JCRStoreProvider {
             initContent();
             initDynamicMountPoints();
 
-            if (rmibind != null) {
-                try {
-                    Naming.rebind(rmibind, new ServerAdapterFactory().getRemoteRepository(repo));
-                } catch (MalformedURLException e) {
-                } catch (RemoteException e) {
-                }
-            }
-
             authenticationType = tmpAuthenticationType;
             if (groovyPatcher != null) {
                 groovyPatcher.executeScripts("jcrStoreProviderStarted");
@@ -401,7 +390,7 @@ public class JCRStoreProvider {
                             // we retrieve root node to keep the session alive (note : in Jackrabbit sessions never
                             // time-out but as this is possible in the spec, we do a simple read call in case we
                             // use other implementations).
-                            Node rootNode = session.getRootNode();
+                            session.getRootNode();
                         } catch (RepositoryException e) {
                             if (running && logger != null) logger.error(e.getMessage(), e);
                         }
@@ -486,6 +475,10 @@ public class JCRStoreProvider {
     public void stop() {
         running = false;
         getSessionFactory().removeProvider(key);
+        rmiUnbind();
+    }
+
+    protected void rmiUnbind() {
         if (rmibind != null) {
             try {
                 Naming.unbind(rmibind);
@@ -526,7 +519,7 @@ public class JCRStoreProvider {
         }
         if (needUpdate) {
             try {
-                repo = getRepository();
+                getRepository(); // create repository instance
                 JCRSessionWrapper session = sessionFactory.getSystemSession();
                 try {
                     Workspace workspace = session.getProviderSession(this).getWorkspace();
@@ -551,23 +544,39 @@ public class JCRStoreProvider {
         if (repo == null) {
             synchronized (syncRepoInit) {
                 if (repo == null) {
-                    if (repositoryName != null) {
-                        repo = getRepositoryByJNDI();
-                        if (rmibind != null) {
-                            try {
-                                Naming.rebind(rmibind, new ServerAdapterFactory().getRemoteRepository(repo));
-                            } catch (MalformedURLException e) {
-                            } catch (RemoteException e) {
-                            }
-                        }
-                        return repo;
-                    } else if (factory != null && url != null) {
-                        repo = getRepositoryByRMI();
-                    }
+                    repo = createRepository();
+                    rmiBind();
                 }
             }
         }
         return repo;
+    }
+
+    protected void rmiBind() {
+        if (rmibind != null && repo != null) {
+            try {
+                Naming.rebind(rmibind, new ServerAdapterFactory().getRemoteRepository(repo));
+            } catch (Exception e) {
+                logger.warn("Unable to bind remote JCR repository to RMI using " + rmibind, e);
+            }
+        }
+    }
+
+    /**
+     * Creates an instance of the content repository.
+     * 
+     * @return an instance of the {@link Repository}
+     */
+    protected Repository createRepository() {
+        Repository instance = null;
+
+        if (repositoryName != null) {
+            instance = getRepositoryByJNDI();
+        } else if (factory != null && url != null) {
+            instance = getRepositoryByRMI();
+        }
+
+        return instance;
     }
 
     public void setRepository(Repository repo) {
@@ -577,30 +586,30 @@ public class JCRStoreProvider {
     }
 
     protected Repository getRepositoryByJNDI() {
+        Repository instance = null;
         try {
             Hashtable<String, String> env = new Hashtable<String, String>();
             InitialContext initctx = new InitialContext(env);
-            // ((ObjectFactory)Class.forName(((Reference) initctx.lookup(repositoryName)).getFactoryClassName()).newInstance()).getObjectInstance(((Reference) initctx.lookup(repositoryName)), null,null,null)
-            repo = (Repository) initctx.lookup(repositoryName);
-            logger.info("Repository " + getKey() + " acquired via JNDI");
-            return repo;
+            instance = (Repository) initctx.lookup(repositoryName);
+            logger.info("Repository {} acquired via JNDI", getKey());
         } catch (NamingException e) {
             logger.error("Cannot get by JNDI", e);
         }
-        return null;
+        return instance;
     }
 
     protected Repository getRepositoryByRMI() {
+        Repository instance = null;
         try {
             Class<? extends ObjectFactory> factoryClass = Class.forName(factory).asSubclass(ObjectFactory.class);
             ObjectFactory factory = (ObjectFactory) factoryClass.newInstance();
-            repo = (Repository) factory.getObjectInstance(new Reference(Repository.class.getName(), new StringRefAddr("url", url)), null, null, null);
-            logger.info("Repository " + getKey() + " acquired via RMI");
-            return repo;
+            instance = (Repository) factory.getObjectInstance(new Reference(Repository.class.getName(),
+                    new StringRefAddr("url", url)), null, null, null);
+            logger.info("Repository {} acquired via RMI", getKey());
         } catch (Exception e) {
             logger.error("Cannot get by RMI", e);
         }
-        return null;
+        return instance;
     }
 
     public Session getSession(Credentials credentials, String workspace) throws RepositoryException {

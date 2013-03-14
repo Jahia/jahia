@@ -54,6 +54,8 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.version.VersionManager;
@@ -66,16 +68,9 @@ import java.util.ArrayList;
 
 /**
  * @author hollis
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class JackrabbitStoreProvider extends JCRStoreProvider {
-    private static org.slf4j.Logger logger =
-        org.slf4j.LoggerFactory.getLogger(JackrabbitStoreProvider.class);
-
-    public JackrabbitStoreProvider() {
-    }                 
+    private static Logger logger = LoggerFactory.getLogger(JackrabbitStoreProvider.class);
 
     @Override
     public void start() throws JahiaInitializationException {
@@ -144,6 +139,7 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
     }
 
     public void stop() {
+        super.stop();
     }
 
     protected void registerCustomNodeTypes(String systemId, Workspace ws) throws IOException, RepositoryException {
@@ -170,12 +166,6 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
 
     protected boolean canRegisterCustomNodeTypes() {
         return true;
-    }
-
-    protected void initializeAcl(Session session) throws RepositoryException, IOException {
-        Node rootNode = session.getRootNode();
-//        JCRNodeWrapperImpl.changeRoles(rootNode,"g:guest","r----");
-//        JCRNodeWrapperImpl.changeRoles(rootNode,"g:users","re---");
     }
 
 }

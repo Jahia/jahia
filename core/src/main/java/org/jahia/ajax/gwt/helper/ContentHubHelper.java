@@ -43,31 +43,24 @@ package org.jahia.ajax.gwt.helper;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.utils.i18n.Messages;
-import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.i18n.Messages;
 
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.util.*;
 
 /**
- *
  * User: toto
  * Date: Sep 28, 2009
  * Time: 2:47:08 PM
- *
  */
 public class ContentHubHelper {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ContentHubHelper.class);
-
     private JCRSessionFactory sessionFactory;
     private JCRStoreService jcrStoreService;
     private ContentDefinitionHelper definitionHelper;
@@ -99,10 +92,10 @@ public class ContentHubHelper {
                 session.save();
             } else {
                 n.removeAll();
-                throw new GWTJahiaServiceException("unable to mount " + mountName);
+                throw new GWTJahiaServiceException(Messages.getInternal("failure.mount.label", uiLocale) + " " + mountName);
             }
         } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException("unable to mount " + mountName);
+            throw new GWTJahiaServiceException(Messages.getInternal("failure.mount.label", uiLocale) + " " + mountName);
         }
     }
 

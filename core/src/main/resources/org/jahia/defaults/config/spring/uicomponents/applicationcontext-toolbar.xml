@@ -935,6 +935,7 @@
         </property>
         <property name="titleKey" value="label.mount"/>
         <property name="icon" value="mount"/>
+        <property name="visibility" ref="RemoteMenuVisibility"/>
     </bean>
 
     <bean id="Toolbar.Item.Paste" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
@@ -1059,6 +1060,7 @@
         </property>
         <property name="titleKey" value="label.unmount"/>
         <property name="icon" value="unmount"/>
+        <property name="visibility" ref="RemoteMenuVisibility"/>
     </bean>
 
     <bean id="Toolbar.Item.Upload" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
@@ -1346,4 +1348,5 @@
         <property name="icon" value="goto-view"/>
     </bean>
 
+    <bean id="RemoteMenuVisibility" class="org.jahia.services.uicomponents.bean.contentmanager.RemoteMenuVisibility"/>
 </beans>

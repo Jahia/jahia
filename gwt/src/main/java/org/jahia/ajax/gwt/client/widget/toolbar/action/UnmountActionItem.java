@@ -45,7 +45,6 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 import java.util.ArrayList;
@@ -54,23 +53,22 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Action item for unmounting the remote content repository.
  * 
-* User: toto
-* Date: Sep 25, 2009
-* Time: 6:58:02 PM
-* 
-*/
+ * @author Thomas Draier
+ */
+@SuppressWarnings("serial")
 public class UnmountActionItem extends BaseActionItem  {
     public void onComponentSelection() {
         GWTJahiaNode selection = linker.getSelectionContext().getSingleSelection();
         if (selection != null) {
             if (selection.isLocked()) {
                 Window.alert(Messages.get("failure.unmountLock1.label") + " " + selection.getName() + Messages.get("failure.unmountLock2.label") + " " + selection.getLockInfos());
-            } else if (Window.confirm(Messages.get("confirm.unmount.label") + " " + selection.getName() + " ?")) {
+            } else if (Window.confirm(Messages.getWithArgs("confirm.unmount.label", "Do you really want to unmount {0}?", new String[] {selection.getName()}))) {
                 linker.loading(Messages.get("statusbar.unmounting.label"));
                 List<String> selectedPaths = new ArrayList<String>(1);
                 selectedPaths.add(selection.getPath());
-                JahiaContentManagementService.App.getInstance().deletePaths(selectedPaths, new BaseAsyncCallback() {
+                JahiaContentManagementService.App.getInstance().deletePaths(selectedPaths, new BaseAsyncCallback<Object>() {
                     public void onApplicationFailure(Throwable throwable) {
                         Window.alert(Messages.get("failure.unmount.label") + "\n" + throwable.getLocalizedMessage());
                         linker.loaded();

@@ -40,25 +40,21 @@
 
 package org.jahia.ajax.gwt.client.widget.content;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.ProgressBar;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Label;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -67,9 +63,9 @@ import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import java.util.*;
 
 /**
- * Window used to display mount properties and mount external provider
+ * Window used to display mount properties for mounting external providers.
+ * 
  * @author rfelden
- * @version 7 juil. 2008 - 17:45:41
  */
 public class Mounter extends Window {
     final Button submit = new Button(Messages.get("label.ok")) ;
@@ -120,7 +116,8 @@ public class Mounter extends Window {
                     show();
                 }
                 else {
-                    MessageBox.alert(Messages.get("label.error","error"),Messages.get("label.noProviders","no provider defined"),null);
+                    MessageBox.info(Messages.get("label.information", "Information"),
+                                    Messages.get("label.noProviders", "no provider defined"), null);
                 }
             }
         });
@@ -156,10 +153,10 @@ public class Mounter extends Window {
                         mountName.getValue(),
                         type.getName(),
                         pe.getProperties(true, true, false),
-                        new AsyncCallback() {
+                        new AsyncCallback<Object>() {
                             @Override
                             public void onFailure(Throwable caught) {
-                                MessageBox.alert(Messages.get("label,error", "error"), caught.getMessage(), null);
+                                MessageBox.alert(Messages.get("label.error", "error"), caught.getMessage(), null);
                                 hide();
                             }
 

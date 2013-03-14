@@ -43,11 +43,11 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import org.jahia.ajax.gwt.client.widget.content.Mounter;
 
 /**
+ * Action item for displaying mount window for external content providers.
  * 
-* User: toto
-* Date: Sep 25, 2009
-* Time: 6:57:58 PM
-*/
+ * @author Thomas Draier
+ */
+@SuppressWarnings("serial")
 public class MountActionItem extends BaseActionItem {
     public void onComponentSelection() {
         new Mounter(linker);

@@ -130,9 +130,7 @@
                                     <ref bean="Toolbar.Item.Unmount"/>
                                 </list>
                             </property>
-                            <property name="visibility">
-                                <bean class="org.jahia.services.uicomponents.bean.contentmanager.RootUserVisibility"/>
-                            </property>
+                            <property name="visibility" ref="RemoteMenuVisibility"/>
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="imageMenu.label"/>
@@ -795,9 +793,7 @@
                                     <ref bean="Toolbar.Item.Unmount"/>
                                 </list>
                             </property>
-                            <property name="visibility">
-                                <bean class="org.jahia.services.uicomponents.bean.contentmanager.RootUserVisibility"/>
-                            </property>
+                            <property name="visibility" ref="RemoteMenuVisibility"/>
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey"

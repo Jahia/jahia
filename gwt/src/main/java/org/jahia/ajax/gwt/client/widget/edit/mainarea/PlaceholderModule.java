@@ -147,7 +147,6 @@ public class PlaceholderModule extends Module {
                 Image icon = ContentModelIconProvider.getInstance().getIcon(nodeType).createImage();
                 icon.setTitle(nodeType != null ? nodeType.getLabel() : s );
                 LayoutContainer p = new HorizontalPanel();
-                p.setWidth("100%");
                 p.add(icon);
                 if (getWidth() > 150) {
                     p.add(new Text(nodeType != null ? nodeType.getLabel() : s));

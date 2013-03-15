@@ -74,15 +74,5 @@
                 <property name="description" value="Runs JCR DataStore Garbag Collector that deletes no longer used entries" />
             </bean>
         </property>
-        <property name="trigger">
-            <bean class="org.quartz.CronTrigger">
-                <property name="name" value="DataStoreGarbageCollectorJobTrigger"/>
-                <!-- execute at night (01:30) -->
-                <property name="cronExpression" value="0 30 1 * * ?"/>
-                <!-- execute every hour 
-                <property name="cronExpression" value="0 0 * * * ?"/>
-                -->
-            </bean>
-        </property>
     </bean>
 </beans>

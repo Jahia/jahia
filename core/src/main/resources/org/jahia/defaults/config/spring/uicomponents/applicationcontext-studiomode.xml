@@ -805,7 +805,7 @@
                     <property name="tabItem">
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.DependenciesTabItem" />
                     </property>
-                    <property name="requiredPermission" value="createSelector"/>
+                    <property name="requiredPermission" value="dependenciesSelector"/>
                 </bean>
             </list>
         </property>

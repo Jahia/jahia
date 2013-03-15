@@ -127,7 +127,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                 final SimpleComboBox<String> dependenciesCombo = new SimpleComboBox<String>();
                 if (JahiaGWTParameters.getSiteNode() != null) {
                     dependenciesCombo.setStore(new ListStore<SimpleComboValue<String>>());
-                    dependenciesCombo.setFieldLabel(Messages.get("label.module", "module"));
+                    dependenciesCombo.setFieldLabel(Messages.get("label.module", "Module"));
                     dependenciesCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
                     dependenciesCombo.add(moduleName);
                     for (GWTJahiaNode n : JahiaGWTParameters.getSitesMap().values()) {

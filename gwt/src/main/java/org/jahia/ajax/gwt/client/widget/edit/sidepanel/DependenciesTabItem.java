@@ -42,14 +42,15 @@ package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.IconButtonEvent;
-import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.dnd.GridDragSource;
+import com.extjs.gxt.ui.client.dnd.GridDropTarget;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -57,6 +58,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -67,6 +69,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.Collator;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 
 import java.util.*;
 
@@ -79,7 +82,7 @@ import java.util.*;
 class DependenciesTabItem extends SidePanelTabItem {
 
     protected transient Grid<GWTJahiaNode> availableModules;
-    protected transient HorizontalPanel buttonBar;
+    protected transient ToolBar buttonBar;
     protected transient Grid<GWTJahiaNode> dependencyModules;
     protected transient ListStore modulesStore;
     protected transient ListStore dependenciesStore;
@@ -118,6 +121,13 @@ class DependenciesTabItem extends SidePanelTabItem {
         columnConfig.setHeader(Messages.get("label.module", "Module"));
         availableModules = new Grid<GWTJahiaNode>(modulesStore, new ColumnModel(Arrays.asList(columnConfig)));
         availableModules.setAutoExpandColumn("displayName");
+        new GridDragSource(availableModules);
+        new GridDropTarget(availableModules).addDNDListener(new DNDListener() {
+            @Override
+            public void dragDrop(DNDEvent e) {
+                saveDependencies();
+            }
+        });
         LayoutContainer modulesContainer = new LayoutContainer();
         modulesContainer.setBorders(false);
         modulesContainer.setScrollMode(Style.Scroll.AUTO);
@@ -127,22 +137,22 @@ class DependenciesTabItem extends SidePanelTabItem {
         modulesVBoxData.setFlex(1);
         tab.add(modulesContainer, modulesVBoxData);
 
-        buttonBar = new HorizontalPanel();
-        buttonBar.setTableWidth("100%");
-        buttonBar.setBorders(true);
-        buttonBar.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
-        IconButton up = new IconButton("arrow-up");
+        buttonBar = new ToolBar();
+        buttonBar.setAlignment(Style.HorizontalAlignment.CENTER);
+        Button up = new Button();
+        up.setIcon(ToolbarIconProvider.getInstance().getIcon("sort_up_minus"));
         up.setToolTip(Messages.get("label.removeDependency", "Click to remove the dependency"));
-        up.addListener(Events.Select, new Listener<IconButtonEvent>() {
-            public void handleEvent(IconButtonEvent be) {
+        up.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 removeDependencies();
             }
         });
         buttonBar.add(up);
-        IconButton down = new IconButton("arrow-down");
+        Button down = new Button();
+        down.setIcon(ToolbarIconProvider.getInstance().getIcon("sort_down_plus"));
         down.setToolTip(Messages.get("label.addDependency", "Click to add a dependency"));
-        down.addListener(Events.Select, new Listener<IconButtonEvent>() {
-            public void handleEvent(IconButtonEvent be) {
+        down.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
                 addDependencies();
             }
         });
@@ -154,6 +164,13 @@ class DependenciesTabItem extends SidePanelTabItem {
         columnConfig.setHeader(Messages.get("label.dependency", "Dependency"));
         dependencyModules = new Grid<GWTJahiaNode>(dependenciesStore, new ColumnModel(Arrays.asList(columnConfig)));
         dependencyModules.setAutoExpandColumn("displayName");
+        new GridDragSource(dependencyModules);
+        new GridDropTarget(dependencyModules).addDNDListener(new DNDListener() {
+            @Override
+            public void dragDrop(DNDEvent e) {
+                saveDependencies();
+            }
+        });
         LayoutContainer dependenciesContainer = new LayoutContainer();
         dependenciesContainer.setBorders(false);
         dependenciesContainer.setScrollMode(Style.Scroll.AUTO);

@@ -123,6 +123,7 @@
             <studioModeAccess jcr:primaryType="jnt:permission"/>
             <studioSelector jcr:primaryType="jnt:permission">
                 <templatesSelector jcr:primaryType="jnt:permission"/>
+                <dependenciesSelector jcr:primaryType="jnt:permission"/>
             </studioSelector>
         </studioMode>
 

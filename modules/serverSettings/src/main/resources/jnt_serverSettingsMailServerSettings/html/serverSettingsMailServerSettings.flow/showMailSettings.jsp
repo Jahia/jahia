@@ -53,10 +53,10 @@
                         workInProgressOverlay.stop();
                     }
                     if ("success" == textStatus) {
-                    <fmt:message key="org.jahia.admin.server.ManageServer.testSettings.success" var="msg"/>
+                    <fmt:message key="label.mailServer.testSettings.success" var="msg"/>
                         alert("${functions:escapeJavaScript(msg)}");
                     } else {
-                    <fmt:message key="org.jahia.admin.server.ManageServer.testSettings.failure" var="msg"/>
+                    <fmt:message key="label.mailServer.testSettings.failure" var="msg"/>
                         alert("${functions:escapeJavaScript(msg)}");
                     }
                 },
@@ -64,7 +64,7 @@
                     if (typeof workInProgressOverlay != 'undefined') {
                         workInProgressOverlay.stop();
                     }
-                    <fmt:message key="org.jahia.admin.server.ManageServer.testSettings.failure" var="msg"/>
+                    <fmt:message key="label.mailServer.testSettings.failure" var="msg"/>
                     alert("${functions:escapeJavaScript(msg)}" + "\n" + xhr.status + " " + xhr.statusText + "\n" +
                           xhr.responseText);
                 }
@@ -73,101 +73,83 @@
     }//-->
 </script>
 
-<div id="content" class="fit">
-    <span>
-        <fmt:message key="org.jahia.admin.emailSettings.label"/>
+<div>
+    <span style="font-size: larger; font: bold">
+        <fmt:message key="label.emailSettings"/>
     </span>
-
-    <div class="content-item">
+    <p>
+        <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
+            <c:if test="${message.severity eq 'ERROR'}">
+                <span style="color: red;">${message.text}</span><br/>
+            </c:if>
+        </c:forEach>
+    </p>
+    <div >
         <form name="jahiaAdmin" action='${flowExecutionUrl}' method="post">
             <table cellpadding="5" cellspacing="0" border="0">
-                <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
-                    <c:if test="${message.severity eq 'ERROR'}">
-                        <tr>
-                            <td>${message.text}</td>
-                        </tr>
-                    </c:if>
-                </c:forEach>
 
                 <tr>
                     <td>
                         <label for="serviceActivated">
-                            <fmt:message key="org.jahia.admin.server.ManageServer.serviceEnabled.label"/>&nbsp;:
+                            <fmt:message key="label.mailserver.serviceEnabled"/>&nbsp;:
                         </label>
                     </td>
                     <td>
-                        <input class="input" type="checkbox" name="serviceActivated"
-                               id="serviceActivated"
-                                <c:if test='${mailSettings.serviceActivated}'>
-                                    checked="checked"
-                                </c:if>/>
+                        <input type="checkbox" name="serviceActivated" id="serviceActivated"<c:if test='${mailSettings.serviceActivated}'> checked="checked"</c:if>/>
+                        <input type="hidden" name="_serviceActivated"/>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <fmt:message key="org.jahia.admin.server.ManageServer.mailServer.label"/>&nbsp;:
+                        <fmt:message key="label.mailServer.address"/>&nbsp;:
                     </td>
                     <td>
-                        <input class="input" type="text" name="host" size="70"
-                               maxlength="250"
-                               value="<c:out value='${mailSettings.host}'/>"/>
+                        <input type="text" name="host" size="70" maxlength="250" value="<c:out value='${mailSettings.host}'/>"/>
                         &nbsp;
-                        <a href="http://jira.jahia.org/browse/JKB-20" target="_blank" style="cursor: pointer;"><img
-                                src="${pageContext.request.contextPath}/engines/images/about.gif" alt="info"
-                                style="cursor: pointer;"/></a>
+                        <a href="http://jira.jahia.org/browse/JKB-20" target="_blank" style="cursor: pointer;"><img src="${pageContext.request.contextPath}/engines/images/about.gif" alt="info" style="cursor: pointer;"/></a>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <fmt:message key="org.jahia.admin.server.ManageServer.mailAdministrator.label"/>&nbsp;:
+                        <fmt:message key="label.mailServer.administrator"/>&nbsp;:
                     </td>
                     <td>
-                        <input class="input" type="text" name="to" size="64"
-                               maxlength="250" value="<c:out value='${mailSettings.to}'/>">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <fmt:message key="org.jahia.admin.server.ManageServer.mailFrom.label"/>&nbsp;:
-                    </td>
-                    <td>
-                        <input class="input" type="text" name="from" size="64"
-                               maxlength="250"
-                               value="<c:out value='${mailSettings.from}'/>">
+                        <input type="text" name="to" size="64" maxlength="250" value="<c:out value='${mailSettings.to}'/>">
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <fmt:message key="org.jahia.admin.server.ManageServer.eventNotificationLevel.label"/>&nbsp;:
+                        <fmt:message key="label.mailServer.from"/>&nbsp;:
                     </td>
                     <td>
-                        <select class="input" name="notificationLevel">
+                        <input type="text" name="from" size="64" maxlength="250" value="<c:out value='${mailSettings.from}'/>">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <fmt:message key="label.mailServer.eventNotificationLevel"/>&nbsp;:
+                    </td>
+                    <td>
+                        <select name="notificationLevel">
                             <option value="Disabled" ${mailSettings.notificationLevel == 'Disabled' ? 'selected="selected"' : ''}>
-                                <fmt:message key="org.jahia.admin.server.ManageServer.disabled.label"/></option>
+                                <fmt:message key="label.mailServer.eventNotificationLevel.disabled"/></option>
                             <option value="Standard" ${mailSettings.notificationLevel == 'Standard' ? 'selected="selected"' : ''}>
-                                <fmt:message key="org.jahia.admin.server.ManageServer.standard.label"/></option>
+                                <fmt:message key="label.mailServer.eventNotificationLevel.standard"/></option>
                             <option value="Wary" ${mailSettings.notificationLevel == 'Wary' ? 'selected="selected"' : ''}>
-                                <fmt:message key="org.jahia.admin.server.ManageServer.wary.label"/></option>
+                                <fmt:message key="label.mailServer.eventNotificationLevel.wary"/></option>
                             <option value="Paranoid" ${mailSettings.notificationLevel == 'Paranoid' ? 'selected="selected"' : ''}>
-                                <fmt:message key="org.jahia.admin.server.ManageServer.paranoid.label"/></option>
+                                <fmt:message key="label.mailServer.eventNotificationLevel.paranoid"/></option>
                         </select>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2" align="right">
-                                              <span class="dex-PushButton">
-                                                <span class="first-child">
-                                                  <a class="ico-mail-test" href="#"
-                                                     onclick="testSettings(); return false;"><fmt:message
-                                                          key="org.jahia.admin.server.ManageServer.testSettings.label"/></a>
-                                                </span>
-                                              </span>
-
+                        <a href="#" onclick="testSettings(); return false;"><fmt:message key="label.mailServer.testSettings"/></a>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" align="center"><input type="submit" name="_eventId_submitMailSettings"
-                                                          value='<fmt:message key="org.jahia.admin.saveChanges.label"/>'>
+                    <td colspan="2" align="center">
+                        <input type="submit" name="_eventId_submitMailSettings" value='<fmt:message key="label.save"/>'>
                     </td>
                 </tr>
             </table>

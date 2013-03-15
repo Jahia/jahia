@@ -55,30 +55,31 @@ public class MailSettingsValidator {
         if (mailSettings.isServiceActivated()) {
             if (mailSettings.getFrom() == null || mailSettings.getFrom().isEmpty()) {
                 validationContext.getMessageContext().addMessage(new MessageBuilder().error().source(
-                        "from").defaultText(Messages.getInternal("message.mailFrom_mustSet.label",
+                        "from").defaultText(Messages.get("resources.JahiaServerSettings","label.mailServer.errors.from.mandatory",
                         LocaleContextHolder.getLocale())).build());
+            } else if (!MailService.isValidEmailAddress(mailSettings.getFrom(), false)) {
+                validationContext.getMessageContext().addMessage(new MessageBuilder().error().source(
+                        "from").defaultText(Messages.getWithArgs("resources.JahiaServerSettings",
+                        "label.mailServer.errors.email",
+                        LocaleContextHolder.getLocale(),"from")).build());
             }
             if (mailSettings.getNotificationSeverity() != 0 &&
                 (mailSettings.getTo() == null || mailSettings.getTo().isEmpty())) {
                 validationContext.getMessageContext().addMessage(new MessageBuilder().error().source("to").defaultText(
-                        Messages.getInternal("message.mailAdmin_mustSet", LocaleContextHolder.getLocale())).build());
+                        Messages.getInternal("label.mailServer.errors.administrator.mandatory", LocaleContextHolder.getLocale())).build());
+            } else if (mailSettings.getNotificationSeverity() != 0 && !MailService.isValidEmailAddress(
+                    mailSettings.getTo(), true)) {
+                validationContext.getMessageContext().addMessage(new MessageBuilder().error().source(
+                        "to").defaultText(Messages.getWithArgs("resources.JahiaServerSettings",
+                        "label.mailServer.errors.email",
+                        LocaleContextHolder.getLocale(),"administrator")).build());
             }
             if (mailSettings.getUri() == null || mailSettings.getUri().isEmpty()) {
                 validationContext.getMessageContext().addMessage(new MessageBuilder().error().source("uri").defaultText(
-                        Messages.getInternal("message.mailServer_mustSet.label",
+                        Messages.get("resources.JahiaServerSettings","label.mailServer.errors.server.mandatory",
                                 LocaleContextHolder.getLocale())).build());
             }
-            if (mailSettings.getNotificationSeverity() != 0 && !MailService.isValidEmailAddress(mailSettings.getTo(),
-                    true)) {
-                validationContext.getMessageContext().addMessage(new MessageBuilder().error().source("to").defaultText(
-                        Messages.getInternal("org.jahia.admin.JahiaDisplayMessage.enterValidEmailAdmin.label",
-                                LocaleContextHolder.getLocale())).build());
-            } else if (!MailService.isValidEmailAddress(mailSettings.getFrom(), false)) {
-                validationContext.getMessageContext().addMessage(new MessageBuilder().error().source(
-                        "from").defaultText(Messages.getInternal(
-                        "org.jahia.admin.JahiaDisplayMessage.enterValidEmailFrom.label",
-                        LocaleContextHolder.getLocale())).build());
-            }
+
         } else {
             validationContext.getMessageContext().clearMessages();
         }

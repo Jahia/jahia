@@ -1,3 +1,3 @@
-import org.jahia.services.scheduler.SchedulerService
+import org.jahia.registries.ServicesRegistry
 
-SchedulerService.getScheduler().unscheduleJob("DataStoreGarbageCollectorJobTrigger", "DEFAULT");
+ServicesRegistry.getInstance().getSchedulerService().getScheduler().unscheduleJob("DataStoreGarbageCollectorJobTrigger", "DEFAULT"); 

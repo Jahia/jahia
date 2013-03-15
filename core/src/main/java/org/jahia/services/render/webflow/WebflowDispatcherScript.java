@@ -51,6 +51,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
 import org.springframework.webflow.definition.registry.FlowDefinitionRegistry;
 
 import javax.jcr.RepositoryException;
@@ -190,5 +191,11 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
 
     public String getFlowPath() {
         return "/flow/"+flowPath;
+    }
+
+    public boolean isMultipartRequest(final HttpServletRequest req) {
+        final String contentType = req.getHeader("Content-Type");
+
+        return ((contentType != null) && (contentType.indexOf("multipart/form-data") >= 0));
     }
 }

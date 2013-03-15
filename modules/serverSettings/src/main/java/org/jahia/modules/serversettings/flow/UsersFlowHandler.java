@@ -32,25 +32,25 @@
  */
 package org.jahia.modules.serversettings.flow;
 
+import au.com.bytecode.opencsv.CSVReader;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
+import org.jahia.modules.serversettings.users.management.CsvFile;
 import org.jahia.modules.serversettings.users.management.SearchCriteria;
 import org.jahia.modules.serversettings.users.management.UserProperties;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerProvider;
+import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
+import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
+import org.jahia.services.usermanager.*;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -60,7 +60,7 @@ import java.util.Set;
  *        Created : 13/03/13
  */
 public class UsersFlowHandler implements Serializable {
-    private transient static Logger logger = Logger.getLogger(UsersFlowHandler.class);
+    private static org.slf4j.Logger logger = LoggerFactory.getLogger(UsersFlowHandler.class);
 
     public Set<Principal> init() {
         return PrincipalViewHelper.getSearchResult(null, null, null, null, null);
@@ -138,8 +138,69 @@ public class UsersFlowHandler implements Serializable {
     }
 
     public void removeUser(UserProperties userProperties) {
-        JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userProperties.getUserKey());
+        JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(
+                userProperties.getUserKey());
         ServicesRegistry.getInstance().getJahiaUserManagerService().deleteUser(jahiaUser);
+    }
+
+    public CsvFile initCSVFile() {
+        CsvFile csvFile = new CsvFile();
+        csvFile.setCsvSeparator(",");
+        return csvFile;
+    }
+
+    public void bulkAddUser(CsvFile csvFile) {
+        logger.info("Bulk adding users");
+        long timer = 0;
+        try {
+            timer = System.currentTimeMillis();
+            CSVReader csvReader = new CSVReader(new InputStreamReader(csvFile.getCsvFile().getInputStream(), "UTF-8"),
+                    csvFile.getCsvSeparator().charAt(0));
+            // the first line contains the column names;
+            String[] headerElements = csvReader.readNext();
+            List<String> headerElementList = Arrays.asList(headerElements);
+            int userNamePos = headerElementList.indexOf("j:nodename");
+            int passwordPos = headerElementList.indexOf("j:password");
+            if ((userNamePos < 0) || (passwordPos < 0)) {
+                logger.error("Couldn't find user name or password column in CSV file, aborting batch creation !");
+                return;
+            }
+            String[] lineElements = null;
+            JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry.getInstance().getJahiaPasswordPolicyService();
+            JahiaUserManagerService userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
+
+            while ((lineElements = csvReader.readNext()) != null) {
+                List<String> lineElementList = Arrays.asList(lineElements);
+                Properties properties = buildProperties(headerElementList, lineElementList);
+                String userName = lineElementList.get(userNamePos);
+                String password = lineElementList.get(passwordPos);
+                if (userService.isUsernameSyntaxCorrect(userName)) {
+                    PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnUserCreate(userName, password);
+                    if (evalResult.isSuccess()) {
+                        JahiaUser jahiaUser = userService.createUser(userName, password, properties);
+                        if (jahiaUser != null) {
+                            logger.info("Successfully created user {}", userName);
+                        } else {
+                            logger.warn("Error creating user {}", userName);
+                        }
+                    } else {
+                        StringBuilder result = new StringBuilder();
+                        for (String msg : evalResult.getTextMessages()) {
+                            result.append(msg).append("\n");
+                        }
+                        logger.warn("Skipping user {}. Following password policy rules are violated\n{}", userName,
+                                result.toString());
+                    }
+                } else {
+                    logger.warn("Username {} is not valid. Skipping user.", userName);
+                }
+            }
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+
+        logger.info("Batch user create took " + (System.currentTimeMillis() - timer) + " ms");
     }
 
     private Properties transformUserProperties(UserProperties userProperties) {
@@ -152,5 +213,17 @@ public class UsersFlowHandler implements Serializable {
         properties.put("j:accountLocked", userProperties.getAccountLocked().toString());
         properties.put("emailNotificationsDisabled", userProperties.getEmailNotifications().toString());
         return properties;
+    }
+
+    private Properties buildProperties(List<String> headerElementList, List<String> lineElementList) {
+        Properties result = new Properties();
+        for (int i = 0; i < headerElementList.size(); i++) {
+            String currentHeader = headerElementList.get(i);
+            String currentValue = lineElementList.get(i);
+            if (!"j:nodename".equals(currentHeader) && !"j:password".equals(currentHeader)) {
+                result.setProperty(currentHeader.trim(), currentValue);
+            }
+        }
+        return result;
     }
 }

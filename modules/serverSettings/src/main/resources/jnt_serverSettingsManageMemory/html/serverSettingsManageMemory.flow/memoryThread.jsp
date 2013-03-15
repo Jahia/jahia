@@ -15,6 +15,8 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<%--@elvariable id="memoryInfo" type="org.jahia.modules.serversettings.memoryThread.MemoryThreadInformationManagement"--%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <script type="text/javascript">
@@ -22,18 +24,6 @@
         $("#accordion").accordion({collapsible:true, heightStyle:"content"${param.tab == 'threads' ? ',active:1' : ''}});
     })
 </script>
-<%
-    Long freeMemoryInBytes = new Long(Runtime.getRuntime().freeMemory());
-    Long totalMemoryInBytes = new Long(Runtime.getRuntime().totalMemory());
-    Long maxMemoryInBytes = new Long(Runtime.getRuntime().maxMemory());
-    long freeMemoryInKBytes = freeMemoryInBytes.longValue() >> 10;
-    long freeMemoryInMBytes = freeMemoryInBytes.longValue() >> 20;
-    long totalMemoryInKBytes = totalMemoryInBytes.longValue() >> 10;
-    long totalMemoryInMBytes = totalMemoryInBytes.longValue() >> 20;
-    long maxMemoryInKBytes = maxMemoryInBytes.longValue() >> 10;
-    long maxMemoryInMBytes = maxMemoryInBytes.longValue() >> 20;
-    pageContext.setAttribute("timestamp", System.currentTimeMillis());
-%>
 <div style="float:right;display:inline;padding:5px 10px 0 0">
     <a href="<c:url value='/tools/systemInfo.jsp?file=true'/>" target="_blank"><img
             src="<c:url value='/icons/download.png'/>" height="16" width="16" alt=" " align="top"/><fmt:message
@@ -42,57 +32,63 @@
 <p>&nbsp;</p>
 
 <div id="accordion">
-    <h3><fmt:message key="org.jahia.admin.status.ManageStatus.title.memorySection.label"/>&nbsp;(<%= 100 - Math.round((float) freeMemoryInBytes / (float) maxMemoryInBytes * 100f) %>%&nbsp;<fmt:message key="serverSettings.manageMemory.used"/>)</h3>
+    <h3><fmt:message key="label.memory"/>&nbsp;(${memoryInfo.memoryUsage}%&nbsp;<fmt:message
+            key="serverSettings.manageMemory.used"/>)</h3>
     <c:if test="${param['gc']}">
         <% System.gc(); %>
     </c:if>
     <div>
         <table width="100%" border="0" cellspacing="0" cellpadding="5">
             <tr>
-                <td width="100%">
-                    <strong><fmt:message
-                            key="org.jahia.admin.status.ManageStatus.maxJvmMemory.label"/>:</strong><br>
+                <td>
+                    <strong><fmt:message key="label.memory.used"/>&nbsp;:</strong><br>
                 </td>
                 <td>
-                    <%=maxMemoryInMBytes%>&nbsp;<fmt:message
-                        key="org.jahia.admin.status.ManageStatus.mB.label"/>&nbsp;(<%=maxMemoryInKBytes%>
-                    &nbsp;<fmt:message key="org.jahia.admin.status.ManageStatus.kB.label"/>)
+                    ${memoryInfo.usedMemory}
                 </td>
             </tr>
             <tr>
-                <td width="100%">
-                    <strong><fmt:message
-                            key="org.jahia.admin.status.ManageStatus.totalJvmMemory.label"/>&nbsp;:</strong><br>
+                <td>
+                    <strong><fmt:message key="label.memory.free"/>&nbsp;:</strong><br>
                 </td>
                 <td>
-                    <%=totalMemoryInMBytes%>&nbsp;<fmt:message
-                        key="org.jahia.admin.status.ManageStatus.mB.label"/>&nbsp;(<%=totalMemoryInKBytes%>
-                    &nbsp;<fmt:message key="org.jahia.admin.status.ManageStatus.kB.label"/>)
+                    ${memoryInfo.freeMemory}
                 </td>
             </tr>
             <tr>
-                <td width="100%">
-                    <strong><fmt:message
-                            key="org.jahia.admin.status.ManageStatus.freeMemory.label"/>&nbsp;:</strong><br>
+                <td>
+                    <strong><fmt:message key="label.memory.total"/>&nbsp;:</strong><br>
                 </td>
                 <td>
-                    <%=freeMemoryInMBytes%>&nbsp;<fmt:message
-                        key="org.jahia.admin.status.ManageStatus.mB.label"/>&nbsp;(<%=freeMemoryInKBytes%>
-                    &nbsp;<fmt:message key="org.jahia.admin.status.ManageStatus.kB.label"/>)
+                    ${memoryInfo.totalMemory}
                 </td>
             </tr>
             <tr>
-                <td colspan="2" align="left">
-                    <a href="?gc=true&amp;timestamp=${timestamp}"><img
-                            src="<c:url value='/icons/showTrashboard.png'/>" height="16" width="16" alt=" "
-                            align="top"/><fmt:message
-                            key="org.jahia.admin.status.ManageStatus.runGarbageCollector"/></a>
+                <td>
+                    <strong><fmt:message key="label.memory.max"/>:</strong><br>
+                </td>
+                <td>
+                    ${memoryInfo.maxMemory}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
+                        <input type="submit" name="_eventId_refresh"
+                               value="<fmt:message key="label.refresh"/>"/>
+                    </form>
+                </td>
+                <td>
+                    <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
+                        <input type="submit" name="_eventId_gc"
+                               value="<fmt:message key="label.memory.gc"/>"/>
+                    </form>
                 </td>
             </tr>
         </table>
     </div>
 
-    <h3><fmt:message key="org.jahia.admin.status.ManageStatus.title.threadsSection.label"/></h3>
+    <h3><fmt:message key="label.threads"/></h3>
     <c:if test="${empty param.threadDumpCount && (param.threadDump == 'sysout' || param.threadDump == 'file')}">
         <% ThreadMonitor.getInstance().dumpThreadInfo("sysout".equals(request.getParameter("threadDump")),
                 "file".equals(request.getParameter("threadDump"))); %>

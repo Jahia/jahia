@@ -1,0 +1,17 @@
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="
+		http://www.springframework.org/schema/webflow
+		http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
+    <var name="memoryInfo" class="org.jahia.modules.serversettings.memoryThread.MemoryThreadInformationManagement"/>
+
+    <view-state id="memoryThread">
+        <on-render>
+            <evaluate expression="memoryInfo.refresh()" result="requestScope.memoryInfo"/>
+        </on-render>
+        <transition on="refresh" to="memoryThread" bind="false" validate="false"/>
+        <transition on="gc" to="memoryThread" bind="false" validate="false">
+            <evaluate expression="memoryInfo.doGarbageCollection()"/>
+        </transition>
+    </view-state>
+</flow>

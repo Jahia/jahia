@@ -94,6 +94,11 @@
     margin-bottom:10px;
     line-height: 16px !important;
     overflow: hidden;
+    -webkit-transition: all 0.5s ease ;
+    -moz-transition: all 0.5s ease ;
+    -o-transition: all 0.5s ease ;
+    -ms-transition: all 0.5s ease ;
+    transition: all 0.5s ease ;
 }
 
 .x-panel-header-listmodule {
@@ -125,6 +130,11 @@
     margin-bottom:10px;
     line-height: 16px !important;
     overflow: hidden;
+    -webkit-transition: all 0.5s ease ;
+    -moz-transition: all 0.5s ease ;
+    -o-transition: all 0.5s ease ;
+    -ms-transition: all 0.5s ease ;
+    transition: all 0.5s ease ;
 }
 
 .x-panel-header-areamodule {
@@ -141,7 +151,7 @@
     border-image: none;
     border-style: solid;
     border-width: 1px;
-    color: #FFFFFF !important;
+    color: #EAEAEA !important;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     border-radius: 3px 3px 0 0;
     cursor: pointer;
@@ -155,6 +165,11 @@
     text-transform: uppercase;
     line-height: 16px !important;
     overflow: hidden;
+    -webkit-transition: all 0.5s ease ;
+    -moz-transition: all 0.5s ease ;
+    -o-transition: all 0.5s ease ;
+    -ms-transition: all 0.5s ease ;
+    transition: all 0.5s ease ;
 }
 
 .x-panel-header-text-areamodule {
@@ -175,7 +190,7 @@
     border-image: none;
     border-style: solid;
     border-width: 1px;
-    color: #FFFFFF !important;
+    color: #EAEAEA !important;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     border-radius: 3px 3px 0 0;
     cursor: pointer;
@@ -189,21 +204,16 @@
     text-transform: uppercase;
     line-height: 16px !important;
     overflow: hidden;
+    -webkit-transition: all 0.5s ease ;
+    -moz-transition: all 0.5s ease ;
+    -o-transition: all 0.5s ease ;
+    -ms-transition: all 0.5s ease ;
+    transition: all 0.5s ease ;
 }
 .x-panel-header-text-absoluteAreamodule {
 
 }
-.hover-module > .x-panel-header-areamodule, .hover-module > .x-panel-header-listmodule, .hover-module > .x-panel-header-absoluteAreamodule {
-    background-color: #39f;
-    background-image: linear-gradient(#39f, #06c);
-    background: -webkit-gradient(linear, left top, left bottom, from(#39f), to(#06c));
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#39f', endColorstr='#06c');
-    background-repeat: repeat-x;
-    border-color: #2A65A0;
-    color: #FFFFFF !important;
-    text-decoration: none;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-}
+
 .x-panel-header-lockedmodule {
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
@@ -218,7 +228,7 @@
     border-image: none;
     border-style: solid;
     border-width: 1px;
-    color: #FFFFFF !important;
+    color: #EAEAEA !important;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     border-radius: 3px 3px 0 0;
     cursor: pointer;
@@ -232,8 +242,23 @@
     text-transform: uppercase;
     line-height: 16px !important;
     overflow: hidden;
+    -webkit-transition: all 0.5s ease ;
+    -moz-transition: all 0.5s ease ;
+    -o-transition: all 0.5s ease ;
+    -ms-transition: all 0.5s ease ;
+    transition: all 0.5s ease ;
 }
-
+.hover-module > .x-panel-header-areamodule, .hover-module > .x-panel-header-listmodule, .hover-module > .x-panel-header-absoluteAreamodule {
+    background-color: #39f;
+    background-image: linear-gradient(#39f, #06c);
+    background: -webkit-gradient(linear, left top, left bottom, from(#39f), to(#06c));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#39f', endColorstr='#06c');
+    background-repeat: repeat-x;
+    border-color: #2A65A0;
+    color: #FFFFFF !important;
+    text-decoration: none;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
 .x-panel-placeholder {
     margin-bottom: 10px;
 }
@@ -280,6 +305,11 @@ button.button-placeholder, div.button-placeholder {
     margin-bottom: 2px;
     line-height: 16px !important;
     overflow: hidden;
+    -webkit-transition: all 0.5s ease ;
+    -moz-transition: all 0.5s ease ;
+    -o-transition: all 0.5s ease ;
+    -ms-transition: all 0.5s ease ;
+    transition: all 0.5s ease ;
 }
 button.button-placeholder:hover,  div.button-placeholder:hover {
     background-color: #39f;
@@ -321,6 +351,11 @@ button.button-enable, div.button-enable {
     vertical-align: middle;
     margin: -2px;
     overflow: hidden;
+    -webkit-transition: all 0.5s ease ;
+    -moz-transition: all 0.5s ease ;
+    -o-transition: all 0.5s ease ;
+    -ms-transition: all 0.5s ease ;
+    transition: all 0.5s ease ;
 }
 button.button-enable:hover, div.button-enable:hover {
     background-color: #39f;
@@ -361,6 +396,11 @@ button.button-disable, div.button-disable {
     vertical-align: middle;
     margin: -2px;
     overflow: hidden;
+    -webkit-transition: all 0.5s ease ;
+    -moz-transition: all 0.5s ease ;
+    -o-transition: all 0.5s ease ;
+    -ms-transition: all 0.5s ease ;
+    transition: all 0.5s ease ;
 }
 button.button-disable:hover, div.button-disable:hover {
     background-image: linear-gradient(#8C8C8C, #6D6D6D);
@@ -534,6 +574,7 @@ button.button-disable:hover, div.button-disable:hover {
     font-size: 11px;
     border-radius: 3px 3px 3px 3px;
     background-color: #fff;
+
 }
 .studiomodeList {
     border: 2px solid #ccc !important;
@@ -569,7 +610,7 @@ button.button-disable:hover, div.button-disable:hover {
     margin-bottom: 10px;
     border: 1px solid #99ccff;
 }
-/*
+
 .studiomodeDisableAreaContent {
     min-height:100px;
     overflow:hidden;
@@ -596,7 +637,7 @@ button.button-disable:hover, div.button-disable:hover {
     margin-top:-10px;
     background:#d8effb url(../images/studiomodeEnabledEmptyAreaContent-bg.png) no-repeat scroll 50% 50% ;
 }
-*/
+
 
 .AreaInformation{
     font-family: tahoma,arial,verdana,sans-serif;

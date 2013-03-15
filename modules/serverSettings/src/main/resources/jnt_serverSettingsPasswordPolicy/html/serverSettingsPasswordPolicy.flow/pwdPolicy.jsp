@@ -14,15 +14,12 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<div id="content" class="fit">
-    <div class="head">
-        <div class="object-title">
-            <fmt:message key="org.jahia.admin.passwordPolicies.mainMenu.label"/>
-        </div>
-    </div>
-    <div  class="content-item-noborder">
-        <form name="jahiaAdmin" action='${flowExecutionUrl}' method="post">
-            <table class="evenOddTable" border="0" cellpadding="5" cellspacing="0" width="100%">
+<div>
+    <span style="font-size: larger;"><fmt:message key="label.password.policies"/></span>
+
+    <div>
+        <form action='${flowExecutionUrl}' method="post">
+            <table border="0" cellpadding="5" cellspacing="0" width="100%">
                 <thead>
                 <tr>
                     <th width="7%">
@@ -31,25 +28,26 @@
                     <th width="50%">
                         <fmt:message key="label.name"/>
                     </th>
-                    <th width="43%" class="lastCol">
+                    <th width="43%">
                         <fmt:message key="label.parameters"/>
                     </th>
                 </tr>
                 </thead>
                 <c:forEach items="${jahiaPasswordPolicy.rules}" var="rule" varStatus="rlzStatus">
-                    <tr class="<c:if test='${rlzStatus.index % 2 == 0}'>oddLine</c:if>">
+                    <tr>
                         <td align="center">
                             <input type="checkbox" name="rules[<c:out value='${rlzStatus.index}'/>].active"
                             <c:if test="${rule.active}">
                                 checked="checked"
                             </c:if>
                             value="true"/>
+                            <input type="hidden" name="_rules[<c:out value='${rlzStatus.index}'/>].active"/>
                         </td>
                         <c:set var="i18nKey" value='org.jahia.admin.passwordPolicies.rule.${rule.name}'/>
                         <td>
                             <fmt:message key='${i18nKey}'/>
                         </td>
-                        <td class="lastCol">
+                        <td>
                             <table width="100%">
                                 <c:forEach items="${rule.conditionParameters}" var="condParam" varStatus="paramsStatus">
                                     <tr>

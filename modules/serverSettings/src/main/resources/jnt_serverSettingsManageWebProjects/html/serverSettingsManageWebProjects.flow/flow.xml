@@ -18,7 +18,21 @@
         <transition on="exportStagingSites" to="exportStagingSites" />
         <transition on="deleteSites" to="deleteSites" />
 
+        <transition on="exportSystemSite" to="exportSites" >
+            <set name="webprojectHandler.sites" value="'systemsite'"/>
+        </transition>
+
+        <transition on="exportStagingSystemSite" to="exportStagingSites" >
+            <set name="webprojectHandler.sites" value="'systemsite'"/>
+        </transition>
+
+        <transition on="importPrepackaged" to="importPrepackaged" />
+
+        <transition on="import" to="import" />
+
     </view-state>
+
+    <!-- Site creation -->
 
     <view-state id="createSite" model="siteBean">
         <transition on="next" to="createSiteAdministratorConditionNext" />
@@ -59,6 +73,8 @@
 
     <end-state id="siteCreated"/>
 
+    <!-- Site delete -->
+
     <view-state id="deleteSites">
         <transition on="deleteSitesConfirmed" to="deleteSitesConfirmed" />
         <transition on="cancel" to="view" />
@@ -70,5 +86,34 @@
     </action-state>
 
     <end-state id="sitesDeleted"/>
+
+    <!-- Site export -->
+    <end-state id="exportSites"/>
+    <end-state id="exportStagingSites"/>
+
+    <!-- Prepackaged Site import -->
+
+    <end-state id="importPrepackaged"/>
+
+    <!-- Site import -->
+
+    <action-state id="import">
+        <evaluate expression="webprojectHandler.prepareImport(messageContext)"/>
+        <transition to="displayImportContent"/>
+    </action-state>
+
+    <view-state id="displayImportContent" model="webprojectHandler">
+        <on-render>
+            <evaluate expression="JahiaTemplateManagerService.availableTemplatePackages" result="flashScope.allModules"/>
+        </on-render>
+        <transition on="next" to="processImport"/>
+    </view-state>
+
+    <action-state id="processImport">
+
+        <transition to="sitesImported"/>
+    </action-state>
+
+    <end-state id="sitesImported"/>
 
 </flow>

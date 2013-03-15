@@ -40,6 +40,7 @@
 
 package org.jahia.services.importexport.validation;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -57,7 +58,7 @@ import org.apache.commons.collections.map.LazyMap;
  * @author Sergiy Shyrkov
  * @since Jahia 6.6
  */
-public class ValidationResults {
+public class ValidationResults implements Serializable {
 
     private List<ValidationResult> results = new LinkedList<ValidationResult>();
 

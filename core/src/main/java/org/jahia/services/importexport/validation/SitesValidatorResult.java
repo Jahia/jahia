@@ -41,13 +41,14 @@
 package org.jahia.services.importexport.validation;
 
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Properties;
 
 /**
  * Validator that gets the list of all sites and sites properties from the xml import file
  */
-public class SitesValidatorResult implements ValidationResult {
+public class SitesValidatorResult implements ValidationResult, Serializable {
     private Map<String, Properties> sitesProperties;
 
     public SitesValidatorResult(Map<String, Properties> sitesProperties) {

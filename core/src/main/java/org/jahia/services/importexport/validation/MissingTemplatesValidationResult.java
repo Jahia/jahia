@@ -40,6 +40,7 @@
 
 package org.jahia.services.importexport.validation;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -53,7 +54,7 @@ import org.apache.commons.lang.StringUtils;
  * @author Sergiy Shyrkov
  * @since Jahia 6.6
  */
-public class MissingTemplatesValidationResult implements ValidationResult {
+public class MissingTemplatesValidationResult implements ValidationResult, Serializable {
 
     private Map<String, Set<String>> missing = new TreeMap<String, Set<String>>();
 

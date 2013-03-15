@@ -40,6 +40,8 @@
 
 package org.jahia.services.importexport.validation;
 
+import java.io.Serializable;
+
 /**
  * Implementors represent results of the validation checks for imported content items.
  * 

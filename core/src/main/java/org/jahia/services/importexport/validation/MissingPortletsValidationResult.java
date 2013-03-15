@@ -2,13 +2,14 @@ package org.jahia.services.importexport.validation;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * This class stores missing portlet validator results.
  */
-public class MissingPortletsValidationResult implements ValidationResult {
+public class MissingPortletsValidationResult implements ValidationResult, Serializable {
 
     private Set<String> missingPortlets = new HashSet<String>();
 

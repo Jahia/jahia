@@ -40,6 +40,7 @@
 
 package org.jahia.services.importexport.validation;
 
+import java.io.Serializable;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -51,7 +52,7 @@ import org.apache.commons.lang.StringUtils;
  * @author Sergiy Shyrkov
  * @since Jahia 6.6
  */
-public class MissingModulesValidationResult implements ValidationResult {
+public class MissingModulesValidationResult implements ValidationResult, Serializable {
 
     private Set<String> missing = new TreeSet<String>();
 

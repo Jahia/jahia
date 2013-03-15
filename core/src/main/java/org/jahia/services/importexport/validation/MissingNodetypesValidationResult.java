@@ -40,6 +40,7 @@
 
 package org.jahia.services.importexport.validation;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -50,7 +51,7 @@ import org.apache.commons.lang.StringUtils;
  * An instance of this class is being returned when validating JCR document view import files and contains information about expected import
  * failures.
  */
-public class MissingNodetypesValidationResult implements ValidationResult {
+public class MissingNodetypesValidationResult implements ValidationResult, Serializable {
 
     private Map<String, Set<String>> missingMixins = new TreeMap<String, Set<String>>();
 

@@ -134,7 +134,7 @@ public class ChannelsTabItem extends SidePanelTabItem {
 
         column = new ColumnConfig();
         column.setId("value");
-        column.setHeader(Messages.get("label.value", "Name"));
+        column.setHeader(Messages.get("label.value", "Value"));
         column.setWidth(100);
         configs.add(column);
         ColumnModel cm = new ColumnModel(configs);

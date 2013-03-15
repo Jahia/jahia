@@ -11,6 +11,7 @@
 
         <transition on="createSite" to="createSite" >
             <set name="flowScope.siteBean" value="webprojectHandler.newSite"/>
+            <set name="flowScope.siteBean.language" value="externalContext.requestMap.currentResource.locale.toString()" />
         </transition>
 
         <transition on="exportSites" to="exportSites" />
@@ -21,12 +22,18 @@
 
     <view-state id="createSite" model="siteBean">
         <transition on="previous" to="createSite" />
-        <transition on="next" to="createSiteAdministrator" />
-        <transition on="skipAdmin" to="createSiteSelectModules" />
+        <transition on="next" to="createSiteAdministratorConditionNext" />
     </view-state>
 
-    <view-state id="createSiteAdministrator" model="siteBean">
+    <decision-state id="createSiteAdministratorConditionNext" >
+        <if test="siteBean.createAdmin" then="adminPropertiesForm" else="createSiteSelectModules" />
+    </decision-state>
 
+    <decision-state id="createSiteAdministratorConditionPrevious" >
+        <if test="siteBean.createAdmin" then="adminPropertiesForm" else="createSite" />
+    </decision-state>
+
+    <view-state id="adminPropertiesForm" model="siteBean.adminProperties">
         <transition on="previous" to="createSite" />
         <transition on="next" to="createSiteSelectModules" />
     </view-state>
@@ -37,8 +44,7 @@
             <evaluate expression="T(org.jahia.utils.LanguageCodeConverters).getSortedLocaleList(externalContext.requestMap.currentResource.locale)" result="flashScope.allLocales"/>
         </on-render>
 
-
-        <transition on="previous" to="createSite" />
+        <transition on="previous" to="createSiteAdministratorConditionPrevious" />
         <transition on="next" to="createSiteSummary" />
     </view-state>
 
@@ -48,8 +54,11 @@
     </view-state>
 
     <action-state id="createSiteAction" >
-
+        <evaluate expression="webprojectHandler.createSite(siteBean)"/>
+        <transition to="siteCreated" />
     </action-state>
+
+    <end-state id="siteCreated"/>
 
 
 </flow>

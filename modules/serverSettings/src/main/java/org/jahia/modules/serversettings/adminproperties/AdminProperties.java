@@ -11,6 +11,7 @@ import org.springframework.binding.validation.ValidationContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.io.Serializable;
+import java.util.Properties;
 
 /**
  * Bean to handle Admin properties flow.
@@ -59,6 +60,14 @@ public class AdminProperties implements Serializable {
                 messages.addMessage(new MessageBuilder().error().source("password").defaultText(Messages.getInternal("org.jahia.admin.userMessage.passwdNotMatch.label",LocaleContextHolder.getLocale())).build());
             }
         }
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getFirstName() {
@@ -115,5 +124,14 @@ public class AdminProperties implements Serializable {
 
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
+    }
+
+    public Properties getUserProperties() {
+        Properties properties = new Properties();
+        properties.setProperty("j:lastName", getLastName());
+        properties.setProperty("j:firstName", getFirstName());
+        properties.setProperty("j:organization", getOrganization());
+        properties.setProperty("j:email", getEmail());
+        return properties;
     }
 }

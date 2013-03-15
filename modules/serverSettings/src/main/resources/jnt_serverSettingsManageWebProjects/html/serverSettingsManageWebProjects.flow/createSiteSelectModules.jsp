@@ -6,10 +6,11 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 
 <form action="${flowExecutionUrl}" method="POST">
+    <fmt:message key="serverSettings.manageWebProjects.createWebProject"/>
 
-        <fieldset>
+    <fieldset>
             <div>
-                <label for="templateSet">Please choose a template set</label>
+                <label for="templateSet"><fmt:message key="serverSettings.manageWebProjects.webProject.selectTemplateSet"/></label>
 
                 <select name="templateSet" id="templateSet">
                     <c:forEach items="${allModules}" var="module">
@@ -21,7 +22,7 @@
             </div>
 
             <div>
-                Choose modules to be deployed
+                <fmt:message key="serverSettings.manageWebProjects.webProject.selectModules"/>
                 <br/>
                 <input type="hidden" name="_modules"/>
                 <c:forEach items="${allModules}" var="module">
@@ -35,7 +36,7 @@
 
 
             <div>
-                <label for="language">Select the Web project default language</label>
+                <label for="language"><fmt:message key="serverSettings.manageWebProjects.webProject.selectLanguage"/></label>
 
                 <select name="language" id="language">
                     <c:forEach items="${allLocales}" var="locale">
@@ -47,6 +48,6 @@
 
         </fieldset>
 
-    <input type="submit" name="_eventId_previous" value="<fmt:message key='serverSettings.manageModules.previous'/>"/>
-    <input type="submit" name="_eventId_next" value="<fmt:message key='serverSettings.manageModules.next'/>"/>
+    <input type="submit" name="_eventId_previous" value="<fmt:message key='label.previous'/>"/>
+    <input type="submit" name="_eventId_next" value="<fmt:message key='label.next'/>"/>
 </form>

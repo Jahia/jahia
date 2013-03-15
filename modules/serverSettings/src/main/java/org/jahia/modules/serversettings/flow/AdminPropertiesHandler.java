@@ -35,7 +35,7 @@ public class AdminPropertiesHandler implements Serializable {
         rootNode.setProperty("j:lastName",adminProperties.getLastName());
         rootNode.setProperty("j:firstName",adminProperties.getFirstName());
         rootNode.setProperty("j:organization",adminProperties.getOrganization());
-        rootNode.setProperty("emailNotificationsDisabled",adminProperties.getOrganization());
+        rootNode.setProperty("emailNotificationsDisabled",Boolean.toString(adminProperties.isEmailNotificationsDisabled()));
         rootNode.setProperty("j:email",adminProperties.getEmail());
         if (adminProperties.isEmailNotificationsDisabled()) {
             rootNode.setProperty("emailNotificationsDisabled","on");

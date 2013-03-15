@@ -4,35 +4,41 @@
 
 
 <form action="${flowExecutionUrl}" method="POST">
+    <fmt:message key="serverSettings.manageWebProjects.createWebProject"/>
 
     <fieldset>
         <div>
-            <label for="title">Title</label>
+            <label for="title"><fmt:message key="serverSettings.manageWebProjects.webProject.title"/></label>
             <input id="title" name="title" value="${siteBean.title}"/>
         </div>
 
         <div>
-            <label for="serverName">Server name</label>
+            <label for="serverName"><fmt:message key="serverSettings.manageWebProjects.webProject.serverName"/></label>
             <input id="serverName" name="serverName" value="${siteBean.serverName}"/>
         </div>
 
         <div>
-            <label for="siteKey">Site key</label>
+            <label for="siteKey"><fmt:message key="serverSettings.manageWebProjects.webProject.siteKey"/></label>
             <input id="siteKey" name="siteKey" value="${siteBean.siteKey}"/>
         </div>
 
         <div>
-            <label for="description">Description</label>
+            <label for="description"><fmt:message key="serverSettings.manageWebProjects.webProject.description"/></label>
             <textarea id="description" name="description">${siteBean.description}</textarea>
         </div>
 
         <div>
-            <label for="defaultSite">Set as the default Web Project</label>
+            <label for="defaultSite"><fmt:message key="serverSettings.manageWebProjects.webProject.defaultSite"/></label>
             <input type="checkbox" name="defaultSite" id="defaultSite" <c:if test="${siteBean.defaultSite}">checked="checked"</c:if> />
             <input type="hidden" name="_defaultSite"/>
         </div>
+
+        <div>
+            <label for="createAdmin"><fmt:message key="serverSettings.manageWebProjects.webProject.createAdmin"/></label>
+            <input type="checkbox" name="createAdmin" id="createAdmin" <c:if test="${siteBean.createAdmin}">checked="checked"</c:if> />
+            <input type="hidden" name="_createAdmin"/>
+        </div>
     </fieldset>
 
-    <input type="submit" name="_eventId_skipAdmin" value="<fmt:message key='serverSettings.manageModules.skipAdmin'/>"/>
-    <input type="submit" name="_eventId_next" value="<fmt:message key='serverSettings.manageModules.next'/>"/>
+    <input type="submit" name="_eventId_next" value="<fmt:message key='label.next'/>"/>
 </form>

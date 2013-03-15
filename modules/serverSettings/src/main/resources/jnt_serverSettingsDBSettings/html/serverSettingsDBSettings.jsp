@@ -38,5 +38,5 @@ try {
 
 </c:if>
 <% } finally {
-   conn.close(); 
+   conn.close();
 }%>

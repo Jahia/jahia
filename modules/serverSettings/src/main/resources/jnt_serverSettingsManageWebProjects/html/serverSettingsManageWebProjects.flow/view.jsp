@@ -17,16 +17,16 @@
         <th>
         </th>
         <th>
-            Name
+            <fmt:message key="serverSettings.manageWebProjects.webProject.title"/>
         </th>
         <th>
-            Web project key
+            <fmt:message key="serverSettings.manageWebProjects.webProject.siteKey"/>
         </th>
         <th>
-            Web project host name
+            <fmt:message key="serverSettings.manageWebProjects.webProject.serverName"/>
         </th>
         <th>
-            Templates set
+            <fmt:message key="serverSettings.manageWebProjects.webProject.selectTemplateSet"/>
         </th>
         <th>
 

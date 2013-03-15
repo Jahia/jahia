@@ -180,7 +180,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
             NodeIterator ni = nodeWithReferences.getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
-                if (name.equals(ref.getProperty("j:fieldName").getString())) {
+                if (name.equals(ref.getProperty("j:fieldName").getString()) && ref.hasProperty("j:reference")) {
                     refs.put(ref.getProperty("j:reference").getString(), Long.valueOf(StringUtils.substringAfterLast(ref.getName(), "_")));
                 }
             }

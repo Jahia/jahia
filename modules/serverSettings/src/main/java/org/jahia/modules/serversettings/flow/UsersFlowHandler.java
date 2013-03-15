@@ -61,9 +61,9 @@ import java.util.*;
  */
 public class UsersFlowHandler implements Serializable {
     private static org.slf4j.Logger logger = LoggerFactory.getLogger(UsersFlowHandler.class);
-    private JahiaUserManagerService userManagerService;
-    private JahiaGroupManagerService groupManagerService;
-    private JahiaPasswordPolicyService pwdPolicyService;
+    private transient JahiaUserManagerService userManagerService;
+    private transient JahiaGroupManagerService groupManagerService;
+    private transient JahiaPasswordPolicyService pwdPolicyService;
 
     @Autowired
     public void setUserManagerService(JahiaUserManagerService userManagerService) {

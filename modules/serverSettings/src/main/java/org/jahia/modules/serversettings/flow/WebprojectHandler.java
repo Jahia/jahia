@@ -4,24 +4,33 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.modules.serversettings.adminproperties.AdminProperties;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSiteTools;
-import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Url;
+import org.jahia.utils.i18n.Messages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.binding.message.MessageBuilder;
+import org.springframework.binding.message.MessageContext;
+import org.springframework.binding.validation.ValidationContext;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 
+/**
+ * Handle creation of webprojects in webflow
+ */
 public class WebprojectHandler implements Serializable {
+    private List<JahiaSite> sites;
 
     @Autowired
-    private transient JahiaSitesService sitesService;
+    private transient JahiaSitesBaseService sitesService;
 
     @Autowired
     private transient JahiaUserManagerService userManagerService;
@@ -29,7 +38,7 @@ public class WebprojectHandler implements Serializable {
     @Autowired
     private transient JahiaGroupManagerService groupManagerService;
 
-    public void setSitesService(JahiaSitesService sitesService) {
+    public void setSitesService(JahiaSitesBaseService sitesService) {
         this.sitesService = sitesService;
     }
 
@@ -43,6 +52,23 @@ public class WebprojectHandler implements Serializable {
 
     public SiteBean getNewSite() {
         return new SiteBean();
+    }
+
+    public List<JahiaSite> getSites() {
+        return sites;
+    }
+
+    public void setSites(List<String> sites) {
+        this.sites = new ArrayList<JahiaSite>();
+        if (sites != null) {
+            for (String site : sites) {
+                try {
+                    this.sites.add(sitesService.getSiteByKey(site));
+                } catch (JahiaException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+            }
+        }
     }
 
     public void createSite(SiteBean bean) {
@@ -69,16 +95,44 @@ public class WebprojectHandler implements Serializable {
 
     }
 
+    public void deleteSites() {
+        if (sites != null) {
+            JahiaSite defSite = sitesService.getDefaultSite();
+
+            for (JahiaSite site : sites) {
+                try {
+                    sitesService.removeSite(site);
+                } catch (JahiaException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+            }
+
+            if (sites.contains(defSite.getSiteKey())) {
+                try {
+                    Iterator<JahiaSite> siteIterator = sitesService.getSites();
+                    if (siteIterator.hasNext()) {
+                        sitesService.setDefaultSite(siteIterator.next());
+                    } else {
+                        sitesService.setDefaultSite(null);
+                    }
+                } catch (JahiaException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+            }
+        }
+
+    }
+
 
     public class SiteBean implements Serializable {
-        private String siteKey;
-        private String title;
-        private String serverName;
+        private String siteKey = "mySite" ;
+        private String title = "localhost";
+        private String serverName = "My Site";
         private String description;
 
-        private boolean defaultSite;
+        private boolean defaultSite = false;
 
-        private boolean createAdmin;
+        private boolean createAdmin = false;
         private AdminProperties adminProperties;
 
         private String templateSet;
@@ -170,6 +224,55 @@ public class WebprojectHandler implements Serializable {
 
         public void setLanguage(String language) {
             this.language = language;
+        }
+
+        public void validateCreateSite (ValidationContext context) {
+            // check validity...
+            String title = (String) context.getUserValue("title");
+            String serverName = (String) context.getUserValue("serverName");
+            String siteKey = (String) context.getUserValue("siteKey");
+
+            MessageContext messages = context.getMessageContext();
+
+            try {
+                if (title != null && (title.length() > 0) && serverName != null &&
+                        (serverName.length() > 0) && siteKey != null && (siteKey.length() > 0)) {
+                    if (!sitesService.isSiteKeyValid(siteKey)) {
+                        messages.addMessage(new MessageBuilder().error().source("siteKey")
+                                .defaultText(Messages.getInternal("org.jahia.admin.warningMsg.onlyLettersDigitsUnderscore.label", LocaleContextHolder.getLocale()))
+                                .build());
+                    } else if (siteKey.equals("site")) {
+                        messages.addMessage(new MessageBuilder().error().source("siteKey")
+                                .defaultText(Messages.getInternal("org.jahia.admin.warningMsg.chooseAnotherSiteKey.label", LocaleContextHolder.getLocale()))
+                                .build());
+                    } else if (!sitesService.isServerNameValid(serverName)) {
+                        messages.addMessage(new MessageBuilder().error().source("siteKey")
+                                .defaultText(Messages.getInternal("org.jahia.admin.warningMsg.invalidServerName.label", LocaleContextHolder.getLocale()))
+                                .build());
+                    } else if (serverName.equals("default")) {
+                        messages.addMessage(new MessageBuilder().error().source("siteKey")
+                                .defaultText(Messages.getInternal("org.jahia.admin.warningMsg.chooseAnotherServerName.label", LocaleContextHolder.getLocale()))
+                                .build());
+                    } else if (!Url.isLocalhost(serverName) && sitesService.getSite(serverName) != null) {
+                        messages.addMessage(new MessageBuilder().error().source("siteKey")
+                                .defaultText(Messages.getInternal("org.jahia.admin.warningMsg.chooseAnotherServerName.label", LocaleContextHolder.getLocale()))
+                                .build());
+                    } else if (sitesService.getSiteByKey(siteKey) != null) {
+                        messages.addMessage(new MessageBuilder().error().source("siteKey")
+                                .defaultText(Messages.getInternal("org.jahia.admin.warningMsg.chooseAnotherSiteKey.label", LocaleContextHolder.getLocale()))
+                                .build());
+                    }
+                } else {
+                    messages.addMessage(new MessageBuilder().error().source("siteKey")
+                            .defaultText(Messages.getInternal("org.jahia.admin.warningMsg.completeRequestInfo.label", LocaleContextHolder.getLocale()))
+                            .build());
+                }
+            } catch (JahiaException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void validateCreateSiteSelectModules (ValidationContext context) {
         }
     }
 }

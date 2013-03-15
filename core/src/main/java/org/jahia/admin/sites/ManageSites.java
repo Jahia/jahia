@@ -124,9 +124,6 @@ import java.util.zip.ZipInputStream;
  */
 public class ManageSites extends AbstractAdministrationModule {
 
-	// authorized chars
-    private static final String AUTHORIZED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789.-";
-
     private static final HashSet<String> NON_SITE_IMPORTS = new HashSet<String>(Arrays.asList("serverPermissions.xml", "users.xml", "users.zip", JahiaSitesBaseService.SYSTEM_SITE_KEY + ".zip", "references.zip", "roles.zip"));
 
     private static final Map<String, Integer> RANK;
@@ -159,7 +156,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
     private static final Pattern LANGUAGE_RANK_PATTERN = Pattern.compile("(?:language.)(\\w+)(?:.rank)");
 
-    private static JahiaSitesService sMgr;
+    private static JahiaSitesBaseService sMgr;
 
     private ProcessingContext jParams;
 
@@ -456,13 +453,13 @@ public class ManageSites extends AbstractAdministrationModule {
             // check validity...
             if (siteTitle != null && (siteTitle.length() > 0) && siteServerName != null &&
                     (siteServerName.length() > 0) && siteKey != null && (siteKey.length() > 0)) {
-                if (!isSiteKeyValid(siteKey)) {
+                if (!sMgr.isSiteKeyValid(siteKey)) {
                     warningMsg =
                             getMessage("org.jahia.admin.warningMsg.onlyLettersDigitsUnderscore.label");
                 } else if (siteKey.equals("site")) {
                     warningMsg =
                             getMessage("org.jahia.admin.warningMsg.chooseAnotherSiteKey.label");
-                } else if (!isServerNameValid(siteServerName)) {
+                } else if (!sMgr.isServerNameValid(siteServerName)) {
                     warningMsg =
                             getMessage("org.jahia.admin.warningMsg.invalidServerName.label");
                 } else if (siteServerName.equals("default")) {
@@ -530,10 +527,6 @@ public class ManageSites extends AbstractAdministrationModule {
             request.getSession().setAttribute("lastPage", "processadd");
         }
     } // end processAdd
-
-    public static boolean isServerNameValid(String serverName) {
-        return StringUtils.isNotEmpty(serverName) && !serverName.contains(" ") && !serverName.contains(":");
-    }
 
     /**
      * Display page to create an administrator for the new site.
@@ -993,7 +986,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
             // clean site
             try {
-                delete(site, jParams.getUser(), true);
+                delete(site);
                 sMgr.removeSite(site);
             } catch (Exception t) {
                 logger.error("Error while cleaning site", t);
@@ -1398,7 +1391,7 @@ public class ManageSites extends AbstractAdministrationModule {
             // check validity...
             if (siteTitle != null && (siteTitle.trim().length() > 0) && siteServerName != null &&
                     (siteServerName.trim().length() > 0)) {
-                if (!isServerNameValid(siteServerName)) {
+                if (!sMgr.isServerNameValid(siteServerName)) {
                     warningMsg =
                             getMessage("org.jahia.admin.warningMsg.invalidServerName.label");
                     processError = true;
@@ -1554,7 +1547,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
             boolean deleteFiles = request.getParameter("deleteFileRepository") != null;
 
-            delete(site, theUser, deleteFiles);
+            delete(site);
 
             changeSiteIfCurrent(session, site);
 
@@ -1642,7 +1635,7 @@ public class ManageSites extends AbstractAdministrationModule {
             boolean deleteFiles = request.getParameter("deleteFileRepository") != null;
 
             for (JahiaSite site : sites) {
-                delete(site, theUser, deleteFiles);
+                delete(site);
                 changeSiteIfCurrent(session, site);
             }
 
@@ -1672,7 +1665,7 @@ public class ManageSites extends AbstractAdministrationModule {
         }
     }
 
-    private void delete(JahiaSite site, JahiaUser theUser, boolean deleteFiles) throws JahiaException, IOException {
+    private void delete(JahiaSite site) throws JahiaException, IOException {
         // now let's check if this site is the default site, in which case
         // we need to change the default site to another one.
         JahiaSite defSite = getDefaultSite();
@@ -1982,7 +1975,7 @@ public class ManageSites extends AbstractAdministrationModule {
                 } else {
                     try {
                         String siteKey = (String) importInfos.get("sitekey");
-                        boolean valid = isSiteKeyValid(siteKey);
+                        boolean valid = JahiaSitesBaseService.getInstance().isSiteKeyValid(siteKey);
                         importInfos.put("siteKeyInvalid", !valid);
                         importInfos.put("siteKeyExists",
                                 valid
@@ -1991,7 +1984,7 @@ public class ManageSites extends AbstractAdministrationModule {
                                                 .getSiteByKey(siteKey) != null);
                         String serverName = (String) importInfos
                                 .get("siteservername");
-                        valid = isServerNameValid(serverName);
+                        valid = sMgr.isServerNameValid(serverName);
                         importInfos.put("siteServerNameInvalid", !valid);
                         importInfos.put(
                                 "siteServerNameExists",
@@ -2056,7 +2049,7 @@ public class ManageSites extends AbstractAdministrationModule {
         List<Map<Object, Object>> importsInfos = (List<Map<Object, Object>>) session.getAttribute("importsInfos");
         Map<Object, Object> siteKeyMapping = new HashMap<Object, Object>();
         boolean stillBad = false;
-        final JahiaSitesService jahiaSitesService = ServicesRegistry.getInstance().getJahiaSitesService();
+        final JahiaSitesBaseService jahiaSitesService = ServicesRegistry.getInstance().getJahiaSitesService();
         for (Map<Object, Object> infos : importsInfos) {
             File file = (File) infos.get("importFile");
             infos.put("sitekey", StringUtils.left(request.getParameter(file.getName() + "siteKey") == null ? null :
@@ -2083,12 +2076,12 @@ public class ManageSites extends AbstractAdministrationModule {
                        	infos.put("siteTitleInvalid", StringUtils.isEmpty((String) infos.get("sitetitle")));
 
                         String siteKey = (String) infos.get("sitekey");
-	                    boolean valid = isSiteKeyValid(siteKey);
+	                    boolean valid = jahiaSitesService.isSiteKeyValid(siteKey);
 	                    infos.put("siteKeyInvalid", !valid);
                        	infos.put("siteKeyExists", valid && jahiaSitesService.getSiteByKey(siteKey) != null);
 
                        	String serverName = (String) infos.get("siteservername");
-	                    valid = isServerNameValid(serverName);
+	                    valid = sMgr.isServerNameValid(serverName);
 	                    infos.put("siteServerNameInvalid", !valid);
                        	infos.put("siteServerNameExists", valid && !Url.isLocalhost(serverName) && jahiaSitesService.getSite(serverName) != null);
 
@@ -2311,23 +2304,4 @@ public class ManageSites extends AbstractAdministrationModule {
         return val;
     }
 
-    public static boolean isSiteKeyValid(String name) {
-        if (StringUtils.isEmpty(name)) {
-            return false;
-        }
-
-        if (JahiaSitesBaseService.SYSTEM_SITE_KEY.equals(name)) {
-        	return false;
-        }
-
-        boolean valid = true;
-        for (char toBeTested : name.toCharArray()) {
-        	if (AUTHORIZED_CHARS.indexOf(toBeTested) == -1) {
-        		valid = false;
-        		break;
-        	}
-        }
-
-        return valid;
-    }
 }

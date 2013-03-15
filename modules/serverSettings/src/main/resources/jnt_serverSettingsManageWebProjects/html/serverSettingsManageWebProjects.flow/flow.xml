@@ -7,7 +7,7 @@
 
     <var name="webprojectHandler" class="org.jahia.modules.serversettings.flow.WebprojectHandler"/>
 
-    <view-state id="view">
+    <view-state id="view" model="webprojectHandler">
 
         <transition on="createSite" to="createSite" >
             <set name="flowScope.siteBean" value="webprojectHandler.newSite"/>
@@ -21,7 +21,6 @@
     </view-state>
 
     <view-state id="createSite" model="siteBean">
-        <transition on="previous" to="createSite" />
         <transition on="next" to="createSiteAdministratorConditionNext" />
     </view-state>
 
@@ -60,5 +59,16 @@
 
     <end-state id="siteCreated"/>
 
+    <view-state id="deleteSites">
+        <transition on="deleteSitesConfirmed" to="deleteSitesConfirmed" />
+        <transition on="cancel" to="view" />
+    </view-state>
+
+    <action-state id="deleteSitesConfirmed">
+        <evaluate expression="webprojectHandler.deleteSites()"/>
+        <transition to="sitesDeleted" />
+    </action-state>
+
+    <end-state id="sitesDeleted"/>
 
 </flow>

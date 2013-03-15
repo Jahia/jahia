@@ -46,6 +46,7 @@
 package org.jahia.services.sites;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.admin.sites.ManageSites;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.JahiaAfterInitializationService;
@@ -80,6 +81,8 @@ import java.util.regex.Pattern;
  * @author Khue ng
  */
 public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAfterInitializationService {
+    // authorized chars
+    private static final String AUTHORIZED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789.-";
     private static Logger logger = LoggerFactory.getLogger(JahiaSitesBaseService.class);
 
     private static final Pattern JCR_KEY_PATTERN = Pattern.compile("{jcr}", Pattern.LITERAL);
@@ -102,11 +105,6 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
     protected JahiaGroupManagerService groupService;
     protected JCRSessionFactory sessionFactory;
-    private String systemSiteDefaultLanguage = "en";
-    private Set<String> systemSiteLanguages = new HashSet<String>(Arrays.asList("en", "fr"));
-    private String systemSiteTitle = "System Site";
-    private String systemSiteServername = "";
-    private String systemSiteTemplateSetName = "templates-system";
 
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
@@ -992,26 +990,6 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 //        }
     }
 
-    public void setSystemSiteDefaultLanguage(String systemSiteDefaultLanguage) {
-        this.systemSiteDefaultLanguage = systemSiteDefaultLanguage;
-    }
-
-    public void setSystemSiteLanguages(Set<String> systemSiteLanguages) {
-        this.systemSiteLanguages = systemSiteLanguages;
-    }
-
-    public void setSystemSiteServername(String systemSiteServername) {
-        this.systemSiteServername = systemSiteServername;
-    }
-
-    public void setSystemSiteTemplateSetName(String systemSiteTemplateSetName) {
-        this.systemSiteTemplateSetName = systemSiteTemplateSetName;
-    }
-
-    public void setSystemSiteTitle(String systemSiteTitle) {
-        this.systemSiteTitle = systemSiteTitle;
-    }
-
     /**
      * Invalidates the cache for the specified site.
      *
@@ -1098,4 +1076,29 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
         return site;
     }
+
+    public boolean isSiteKeyValid(String name) {
+        if (StringUtils.isEmpty(name)) {
+            return false;
+        }
+
+        if (SYSTEM_SITE_KEY.equals(name)) {
+            return false;
+        }
+
+        boolean valid = true;
+        for (char toBeTested : name.toCharArray()) {
+            if (AUTHORIZED_CHARS.indexOf(toBeTested) == -1) {
+                valid = false;
+                break;
+            }
+        }
+
+        return valid;
+    }
+
+    public boolean isServerNameValid(String serverName) {
+        return StringUtils.isNotEmpty(serverName) && !serverName.contains(" ") && !serverName.contains(":");
+    }
+
 }

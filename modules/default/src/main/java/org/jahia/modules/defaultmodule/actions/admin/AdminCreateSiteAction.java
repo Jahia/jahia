@@ -1,7 +1,6 @@
 package org.jahia.modules.defaultmodule.actions.admin;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.admin.sites.ManageSites;
 import org.jahia.bin.ActionResult;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -26,9 +25,9 @@ import java.util.*;
 public class AdminCreateSiteAction extends AdminAction {
     private static Logger logger = LoggerFactory.getLogger(AdminCreateSiteAction.class);
 
-    protected JahiaSitesService sitesService;
+    protected JahiaSitesBaseService sitesService;
 
-    public void setSitesService(JahiaSitesService sitesService) {
+    public void setSitesService(JahiaSitesBaseService sitesService) {
         this.sitesService = sitesService;
     }
 
@@ -56,13 +55,13 @@ public class AdminCreateSiteAction extends AdminAction {
             // check validity...
             if (siteTitle != null && (siteTitle.length() > 0) && siteServerName != null &&
                     (siteServerName.length() > 0) && siteKey != null && (siteKey.length() > 0)) {
-                if (!ManageSites.isSiteKeyValid(siteKey)) {
+                if (!sitesService.isSiteKeyValid(siteKey)) {
                     result.put("warn", getMessage(renderContext.getUILocale(), "org.jahia.admin.warningMsg.onlyLettersDigitsUnderscore.label"));
                     return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject(result));
                 } else if (siteKey.equals("site")) {
                     result.put("warn", getMessage(renderContext.getUILocale(), "org.jahia.admin.warningMsg.chooseAnotherSiteKey.label"));
                     return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject(result));
-                } else if (!ManageSites.isServerNameValid(siteServerName)) {
+                } else if (!sitesService.isServerNameValid(siteServerName)) {
                     result.put("warn", getMessage(renderContext.getUILocale(), "org.jahia.admin.warningMsg.invalidServerName.label"));
                     return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject(result));
                 } else if (siteServerName.equals("default")) {

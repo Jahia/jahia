@@ -33,10 +33,11 @@
         </th>
     </tr>
 
+    <input name="_sites" type="hidden"/>
     <c:forEach items="${jcr:getChildrenOfType(sites,'jnt:virtualsite')}" var="site">
         <c:if test="${site.name ne 'systemsite'}">
             <tr>
-                <td><input type="checkbox"/></td>
+                <td><input name="sites" type="checkbox" value="${site.name}"/></td>
                 <td>${site.title}</td>
                 <td>${site.name}</td>
                 <td>${site.serverName}</td>

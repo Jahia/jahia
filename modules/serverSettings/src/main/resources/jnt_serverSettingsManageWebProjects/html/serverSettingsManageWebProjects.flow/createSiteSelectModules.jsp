@@ -5,6 +5,17 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 
+
+<c:if test="${!empty flowRequestContext.messageContext.allMessages}">
+    <div class="validationError">
+        <ul>
+            <c:forEach var="error" items="${flowRequestContext.messageContext.allMessages}">
+                <li>${error.text}</li>
+            </c:forEach>
+        </ul>
+    </div>
+</c:if>
+
 <form action="${flowExecutionUrl}" method="POST">
     <fmt:message key="serverSettings.manageWebProjects.createWebProject"/>
 

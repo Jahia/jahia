@@ -3,22 +3,32 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 
+<c:if test="${!empty flowRequestContext.messageContext.allMessages}">
+    <div class="validationError">
+        <ul>
+            <c:forEach var="error" items="${flowRequestContext.messageContext.allMessages}">
+                <li>${error.text}</li>
+            </c:forEach>
+        </ul>
+    </div>
+</c:if>
+
 <form action="${flowExecutionUrl}" method="POST">
     <fmt:message key="serverSettings.manageWebProjects.createWebProject"/>
 
     <fieldset>
         <div>
-            <label for="title"><fmt:message key="serverSettings.manageWebProjects.webProject.title"/></label>
+            <label for="title"><fmt:message key="serverSettings.manageWebProjects.webProject.title"/> * </label>
             <input id="title" name="title" value="${siteBean.title}"/>
         </div>
 
         <div>
-            <label for="serverName"><fmt:message key="serverSettings.manageWebProjects.webProject.serverName"/></label>
+            <label for="serverName"><fmt:message key="serverSettings.manageWebProjects.webProject.serverName"/> * </label>
             <input id="serverName" name="serverName" value="${siteBean.serverName}"/>
         </div>
 
         <div>
-            <label for="siteKey"><fmt:message key="serverSettings.manageWebProjects.webProject.siteKey"/></label>
+            <label for="siteKey"><fmt:message key="serverSettings.manageWebProjects.webProject.siteKey"/> * </label>
             <input id="siteKey" name="siteKey" value="${siteBean.siteKey}"/>
         </div>
 

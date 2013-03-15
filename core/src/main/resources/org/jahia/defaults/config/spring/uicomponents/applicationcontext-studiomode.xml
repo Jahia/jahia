@@ -798,6 +798,15 @@
                     </property>
                     <property name="requiredPermission" value="createSelector"/>
                 </bean>
+
+                <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+                    <property name="key" value="dependencies"/>
+                    <property name="icon" value="tab-dependencies"/>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.DependenciesTabItem" />
+                    </property>
+                    <property name="requiredPermission" value="createSelector"/>
+                </bean>
             </list>
         </property>
     </bean>

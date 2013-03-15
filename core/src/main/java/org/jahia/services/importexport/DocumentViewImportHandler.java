@@ -505,7 +505,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             if (site == null || !currentSite.getIdentifier().equals(site.getIdentifier())) {
                 dependencies = null;
                 site = currentSite;
-                if (site.hasProperty("j:dependencies")) {
+                if (site.hasProperty("j:resolvedDependencies")) {
                     dependencies = new ArrayList<String>();
                     dependencies.add(site.getName());
                     for (int i = 0; i < dependencies.size(); i++) {

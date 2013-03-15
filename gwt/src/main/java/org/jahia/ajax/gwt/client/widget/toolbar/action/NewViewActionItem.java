@@ -94,7 +94,7 @@ public class NewViewActionItem extends BaseActionItem  {
 
             ArrayList<String> paths = new ArrayList<String>();
             paths.add(JahiaGWTParameters.getSiteNode().getPath());
-            for (String s : (List<String>) JahiaGWTParameters.getSiteNode().getProperties().get("j:dependencies")) {
+            for (String s : (List<String>) JahiaGWTParameters.getSiteNode().getProperties().get("j:resolvedDependencies")) {
                 for (GWTJahiaNode n : JahiaGWTParameters.getSitesMap().values()) {
                     if (n.getName().equals(s)) {
                         paths.add(n.getPath());

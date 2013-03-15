@@ -802,24 +802,59 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             SAXReader reader = new SAXReader();
             File pom = new File(sources, "pom.xml");
             Document document = reader.read(pom);
-            Element root = document.getRootElement();
-            // todo : try to use xpath or a better way to get depends node
-            root = (Element) root.elements("build").get(0);
-            root = (Element) root.elements("plugins").get(0);
-            root = (Element) root.elements("plugin").get(0);
-            root = (Element) root.elements("configuration").get(0);
-            if (root.elements("archive").size() > 0) {
-                root = (Element) root.elements("archive").get(0);
-                root = (Element) root.elements("manifestEntries").get(0);
+            Element e = document.getRootElement();
+            List elements = e.elements("build");
+            if (elements.isEmpty()) {
+                e = e.addElement("build");
             } else {
-                root = (Element) root.elements("instructions").get(0);
+                e = (Element) elements.get(0);
             }
-            if (root.elements("Jahia-Depends").size() == 0) {
-                root = root.addElement("Jahia-Depends");
+            elements = e.elements("plugins");
+            if (elements.isEmpty()) {
+                e = e.addElement("plugins");
             } else {
-                root = (Element) root.elements("Jahia-Depends").get(0);
+                e = (Element) elements.get(0);
             }
-            root.setText(StringUtils.join(dependencies, ","));
+            Element pluginArtifactId = (Element) e.selectSingleNode("*[name()='plugin']/*[name()='artifactId' and text()='maven-bundle-plugin']");
+            if (pluginArtifactId == null) {
+                pluginArtifactId = (Element) e.selectSingleNode("*[name()='plugin']/*[name()='artifactId' and text()='maven-war-plugin']");
+                if (pluginArtifactId == null) {
+                    e = e.addElement("plugin");
+                    e.addElement("groupId").setText("org.apache.felix");
+                    e.addElement("artifactId").setText("maven-bundle-plugin");
+                    e.addElement("extensions").setText("true");
+                    e = e.addElement("configuration");
+                    e = e.addElement("instructions");
+                    e = e.addElement("Jahia-Depends");
+                } else {
+                    e = pluginArtifactId.getParent();
+                    e = (Element) e.elements("configuration").get(0);
+                    e = (Element) e.elements("archive").get(0);
+                    e = (Element) e.elements("manifestEntries").get(0);
+                    e = (Element) e.elements("depends").get(0);
+                }
+            } else {
+                e = pluginArtifactId.getParent();
+                elements = e.elements("configuration");
+                if (elements.isEmpty()) {
+                    e = e.addElement("configuration");
+                } else {
+                    e = (Element) elements.get(0);
+                }
+                elements = e.elements("instructions");
+                if (elements.isEmpty()) {
+                    e = e.addElement("instructions");
+                } else {
+                    e = (Element) elements.get(0);
+                }
+                elements = e.elements("Jahia-Depends");
+                if (elements.isEmpty()) {
+                    e = e.addElement("Jahia-Depends");
+                } else {
+                    e = (Element) elements.get(0);
+                }
+            }
+            e.setText(StringUtils.join(dependencies, ","));
             File modifiedPom = new File(sources, "pom-modified.xml");
             XMLWriter writer = new XMLWriter(new FileWriter(modifiedPom), OutputFormat.createPrettyPrint());
             try {

@@ -127,7 +127,7 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                 }
             }
         } else {
-//            List<String> dependencies = JahiaGWTParameters.getSiteNode().get("j:dependencies");
+//            List<String> dependencies = JahiaGWTParameters.getSiteNode().get("j:resolvedDependencies");
             for (GWTJahiaSite site : sites) {
                 // dependencies are not required modules anymore
                 // todo: add a way to manage required modules

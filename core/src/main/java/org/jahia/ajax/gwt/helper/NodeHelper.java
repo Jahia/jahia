@@ -296,7 +296,7 @@ class NodeHelper {
             populateSiteLanguages(n, node);
         }
 
-        if ((node instanceof JCRSiteNode) && fields.contains("j:dependencies")) {
+        if ((node instanceof JCRSiteNode) && fields.contains("j:resolvedDependencies")) {
             populateDependencies(n, node);
         }
         if (fields.contains(GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO)) {
@@ -495,7 +495,7 @@ class NodeHelper {
                 for (JahiaTemplatesPackage aPackage : s) {
                     dependencies.add(aPackage.getRootFolder());
                 }
-                n.set("j:dependencies",dependencies);
+                n.set("j:resolvedDependencies",dependencies);
             }
         } catch (RepositoryException e) {
             e.printStackTrace();

@@ -717,7 +717,7 @@ public class Service extends JahiaService {
     }
 
     public void updateDependencies(AddedNodeFact node) throws RepositoryException {
-        JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getName());
+        JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getNode().getParent().getName());
         if (pack != null) {
             Value[] dependencies = node.getNode().getProperty("j:dependencies").getValues();
             List<String> depends = new ArrayList<String>();

@@ -22,8 +22,8 @@
 <div>
     <span style="font-size: larger;"><fmt:message key="label.remove"/>&nbsp;${userProperties.displayName}</span>
     <p>
-        <fmt:message key="org.jahia.admin.users.ManageUsers.definitivelyRemove.label"/><br/>
-        <fmt:message key="org.jahia.admin.users.ManageUsers.definitivelyRemove.files.label"/>&nbsp;
+        <fmt:message key="label.user.definitivelyRemove"/><br/>
+        <fmt:message key="label.user.definitivelyRemove.files"/>&nbsp;
         (<a href="<c:url value='/cms/export/default${userProperties.localPath}.zip?cleanup=simple'/>" target="_blank"><fmt:message key="label.export"/></a>)
     </p>
     <p>
@@ -52,7 +52,7 @@
             <label for="accountLocked"><fmt:message key="label.accountLocked"/>&nbsp;</label>
             <input type="checkbox" name="accountLocked" id="accountLocked"
                    <c:if test="${userProperties.accountLocked}">checked="checked"</c:if> disabled="disabled"><br/>
-            <label for="preferredLanguage"><fmt:message key="org.jahia.admin.preferredLanguage.label"/></label>
+            <label for="preferredLanguage"><fmt:message key="label.preferredLanguage"/></label>
             <select id="preferredLanguage" name="preferredLanguage" size="1" disabled="disabled">
                 <c:forEach items="${functions:availableAdminBundleLocale(renderContext.UILocale)}" var="uiLanguage">
                     <option value="${uiLanguage}"
@@ -61,8 +61,8 @@
             </select>
         </fieldset>
 
-        <fieldset id="groupsFields" title="<fmt:message key="org.jahia.admin.users.ManageGroups.groupList.label"/>">
-            <label for="groupsFields"><fmt:message key="org.jahia.admin.users.ManageGroups.groupList.label"/></label>
+        <fieldset id="groupsFields" title="<fmt:message key="label.user.groups.list"/>">
+            <label for="groupsFields"><fmt:message key="label.user.groups.list"/></label>
             <select class="fontfix" name="selectMember" size="6" multiple disabled="disabled">
                 <c:forEach items="${userProperties.groups}" var="group">
                     <option value="${user:formatUserValueOption(group)}">${user:formatUserTextOption(group, 'Name, 20;SiteTitle, 15;Properties, 20')}</option>

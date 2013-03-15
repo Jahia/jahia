@@ -33,21 +33,22 @@
             <evaluate expression="flowHandler.initUser()" result="flowScope.userProperties"/>
         </on-entry>
         <transition on="add" to="search">
-            <evaluate expression="flowHandler.addUser(userProperties)"/>
+            <evaluate expression="flowHandler.addUser(userProperties, messageContext)"/>
         </transition>
         <transition on="cancel" to="search" bind="false" validate="false"/>
     </view-state>
 
     <view-state id="editUser" model="userProperties">
         <transition on="update" to="search">
-            <evaluate expression="flowHandler.updateUser(userProperties)"/>
+            <evaluate expression="flowHandler.updateUser(userProperties, messageContext)"/>
         </transition>
         <transition on="cancel" to="search" bind="false" validate="false"/>
+        <transition on="removeUser" to="removeUser" bind="false" validate="false"/>
     </view-state>
 
     <view-state id="removeUser" model="userProperties">
         <transition on="confirm" to="search">
-            <evaluate expression="flowHandler.removeUser(userProperties)"/>
+            <evaluate expression="flowHandler.removeUser(userProperties, messageContext)"/>
         </transition>
         <transition on="cancel" to="search" bind="false" validate="false"/>
     </view-state>
@@ -57,7 +58,7 @@
             <evaluate expression="flowHandler.initCSVFile()" result="flowScope.csvFile"/>
         </on-entry>
         <transition on="confirm" to="search">
-            <evaluate expression="flowHandler.bulkAddUser(csvFile)"/>
+            <evaluate expression="flowHandler.bulkAddUser(csvFile, messageContext)"/>
         </transition>
         <transition on="cancel" to="search" bind="false" validate="false"/>
     </view-state>

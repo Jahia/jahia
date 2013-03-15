@@ -116,6 +116,10 @@ public final class Messages {
         return ResourceBundles.get(bundle, locale).getString(key);
     }
 
+    public static String getWithArgs(String bundle, String key, Locale locale, Object... arguments) throws MissingResourceException {
+        return format(ResourceBundles.get(bundle, locale).getString(key), arguments);
+    }
+
     public static String get(String bundle, String key, Locale locale, String defaultValue) {
         try {
             return ResourceBundles.get(bundle, locale).getString(key);

@@ -47,7 +47,7 @@
             <input type="checkbox" name="emailNotifications" id="emailNotifications" <c:if test="${userProperties.emailNotifications}">checked="checked"</c:if>><br/>
             <label for="accountLocked"><fmt:message key="label.accountLocked"/>&nbsp;</label>
             <input type="checkbox" name="accountLocked" id="accountLocked" <c:if test="${userProperties.accountLocked}">checked="checked"</c:if>><br/>
-            <label for="preferredLanguage"><fmt:message key="org.jahia.admin.preferredLanguage.label"/></label>
+            <label for="preferredLanguage"><fmt:message key="label.preferredLanguage"/></label>
             <select id="preferredLanguage" name="preferredLanguage" size="1">
                 <c:forEach items="${functions:availableAdminBundleLocale(renderContext.UILocale)}" var="uiLanguage">
                     <option value="${uiLanguage}" <c:if test="${uiLanguage eq userProperties.preferredLanguage}">selected="selected" </c:if>>${functions:displayLocaleNameWith(uiLanguage, renderContext.UILocale)}</option>

@@ -24,7 +24,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $(".needUsersSelection").submit(function () {
-            $("input[name='selectedUsers']").val($("input[name='userSelected']").val());
+            $("input[name='selectedUsers']").val($("input[name='userSelected']:checked").val());
             return true;
         })
     });
@@ -35,70 +35,79 @@
     <div>
         <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
             <input type="submit" name="_eventId_addUser"
-                   value="<fmt:message key="org.jahia.admin.users.ManageUsers.createNewUser.label"/>"/>
+                   value="<fmt:message key="label.user.create"/>"/>
         </form>
         <form action="${flowExecutionUrl}" method="POST" class="needUsersSelection" style="display: inline;">
             <input type="hidden" name="selectedUsers"/>
             <input type="submit" name="_eventId_editUser"
-                   value="<fmt:message key="org.jahia.admin.users.ManageUsers.editViewProp.label"/>"/>
+                   value="<fmt:message key="label.user.edit"/>"/>
         </form>
         <form action="${flowExecutionUrl}" method="POST" class="needUsersSelection" style="display: inline;">
             <input type="hidden" name="selectedUsers"/>
             <input type="submit" name="_eventId_removeUser"
-                   value="<fmt:message key="org.jahia.admin.users.ManageUsers.removeSelectedUser.label"/>"/>
+                   value="<fmt:message key="label.user.remove"/>"/>
         </form>
         <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
             <input type="submit" name="_eventId_bulkAddUser"
-                   value="<fmt:message key="org.jahia.admin.users.ManageUsers.batchCreateUsers.label"/>"/>
+                   value="<fmt:message key="label.users.bulk.create"/>"/>
         </form>
     </div>
+
+    <p>
+        <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
+            <c:if test="${message.severity eq 'INFO'}">
+                <span style="color: green;">${message.text}</span><br/>
+            </c:if>
+            <c:if test="${message.severity eq 'ERROR'}">
+                <span style="color: red;">${message.text}</span><br/>
+            </c:if>
+        </c:forEach>
+    </p>
 
     <form action="${flowExecutionUrl}" id="searchForm" method="post">
         <fieldset>
             <label for="searchString"><fmt:message key="label.search"/></label>
             <input type="text" id="searchString" name="searchString" size="15"
                    value='${searchCriteria.searchString}'
-                   onkeydown="if (event.keyCode == 13) javascript:submitForm('search');"/><br/>
+                   onkeydown="if (event.keyCode == 13) submitForm('search');"/><br/>
             <label for="searchIn"><fmt:message key="label.in"/></label>
             <input type="radio" id="searchIn" name="searchIn" value="allProps"
                    <c:if test="${empty searchCriteria.searchIn or searchCriteria.searchIn eq 'allProps'}">checked</c:if>
                    onclick="$('.propCheck').attr('disabled',true);">&nbsp;<fmt:message
-                key="label.allProperties"/>
+                key="label.properties.all"/>
             <input type="radio" name="searchIn" value="properties"
                    <c:if test="${searchCriteria.searchIn eq 'properties'}">checked</c:if>
                    onclick="$('.propCheck').removeAttr('disabled');">&nbsp;<fmt:message
-                key="label.properties"/><br>
+                key="label.properties.selected"/><br>
             <fieldset>
-
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <input type="checkbox" class="propCheck" name="properties" value="username"
                        <c:if test="${searchCriteria.searchIn ne 'properties'}">disabled</c:if>
                        <c:if test="${not empty searchCriteria.properties and functions:contains(searchCriteria.properties, 'username')}">checked="checked"</c:if> >
-                <nobr><fmt:message key="label.username"/></nobr>
-                <br>
+                <fmt:message key="label.username"/><br/>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <input type="checkbox" class="propCheck" name="properties" value="j:firstName"
                        <c:if test="${searchCriteria.searchIn ne 'properties'}">disabled</c:if>
                        <c:if test="${not empty searchCriteria.properties and functions:contains(searchCriteria.properties, 'j:firstName')}">checked="checked"</c:if> >
-                <fmt:message key="org.jahia.admin.firstName.label"/><br>
+                <fmt:message key="label.firstName"/><br/>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <input type="checkbox" class="propCheck" name="properties" value="j:lastName"
                        <c:if test="${searchCriteria.searchIn ne 'properties'}">disabled</c:if>
                        <c:if test="${not empty searchCriteria.properties and functions:contains(searchCriteria.properties, 'j:lastName')}">checked="checked"</c:if> >
-                <fmt:message key="org.jahia.admin.lastName.label"/><br>
+                <fmt:message key="label.lastName"/><br/>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <input type="checkbox" class="propCheck" name="properties" value="j:email"
                        <c:if test="${searchCriteria.searchIn ne 'properties'}">disabled</c:if>
                        <c:if test="${not empty searchCriteria.properties and functions:contains(searchCriteria.properties, 'j:email')}">checked="checked"</c:if> >
-                <fmt:message key="label.email"/><br>
+                <fmt:message key="label.email"/><br/>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <input type="checkbox" class="propCheck" name="properties" value="j:organization"
                        <c:if test="${searchCriteria.searchIn ne 'properties'}">disabled</c:if>
                        <c:if test="${not empty searchCriteria.properties and functions:contains(searchCriteria.properties, 'j:organization')}">checked="checked"</c:if> >
-                <nobr><fmt:message key="org.jahia.admin.organization.label"/></nobr>
-                <br>
+                <fmt:message key="label.organization"/><br/>
             </fieldset>
             <label for="storedOn"><fmt:message key="label.on"/></label>
+            <%--@elvariable id="providersList" type="java.util.List"--%>
             <c:if test="${fn:length(providersList) gt 1}">
                 <input type="radio" name="storedOn" value="everywhere"
                        <c:if test="${empty searchCriteria.storedOn or searchCriteria.storedOn eq 'everywhere'}">checked</c:if>
@@ -110,8 +119,7 @@
             <c:if test="${fn:length(providersList) le 1 or searchCriteria.storedOn eq 'providers'}">
                    checked </c:if>
             <c:if test="${fn:length(providersList) gt 1}">
-                   onclick="$('.provCheck').removeAttr('disabled');"</c:if>>&nbsp;<fmt:message
-                key="label.providers"/></nobr>&nbsp;:<br>
+                   onclick="$('.provCheck').removeAttr('disabled');"</c:if>>&nbsp;<fmt:message key="label.providers"/>&nbsp;:<br>
             <fieldset>
                 <c:forEach items="${providersList}" var="curProvider">
                     &nbsp;&nbsp;&nbsp;&nbsp;
@@ -119,15 +127,14 @@
                            <c:if test="${fn:length(providersList) le 1 or searchCriteria.storedOn ne 'providers'}">disabled </c:if>
                     <c:if test="${fn:length(providersList) le 1 or (not empty searchCriteria.providers and functions:contains(searchCriteria.providers, curProvider.key))}">
                            checked </c:if>>
-                    ${curProvider.key}<br>
+                    ${curProvider.key}<br/>
                 </c:forEach>
-                <input type="submit" name="_eventId_search"
-                       value="<fmt:message key="label.search"/>"/>
             </fieldset>
+            <input type="submit" name="_eventId_search" value="<fmt:message key="label.search"/>"/>
         </fieldset>
     </form>
     <div>
-        <label><fmt:message key="org.jahia.admin.users.ManageUsers.searchResult.label"/></label><br/>
+        <label><fmt:message key="label.search.users.result"/></label><br/>
         <table border="1" cellpadding="5" cellspacing="5">
             <thead>
             <tr>
@@ -138,9 +145,10 @@
             </thead>
             <tbody>
             <c:choose>
+                <%--@elvariable id="users" type="java.util.List"--%>
                 <c:when test="${fn:length(users) eq 0}">
                     <tr>
-                        <td colspan="3"><fmt:message key="org.jahia.admin.users.ManageUsers.noUserFound.label"/></td>
+                        <td colspan="3"><fmt:message key="label.search.user.no.result"/></td>
                     </tr>
                 </c:when>
                 <c:otherwise>

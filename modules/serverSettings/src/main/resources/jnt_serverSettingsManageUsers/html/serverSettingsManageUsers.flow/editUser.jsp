@@ -42,6 +42,7 @@
             <input name="organization" id="organization" value="${userProperties.organization}"><br/>
         </fieldset>
         <fieldset title="<fmt:message key='label.user.password'/>">
+            <span style="font-size: small;"><fmt:message key="label.user.edit.password.no.change"/></span><br/>
             <label for="password"><fmt:message key="label.password"/></label>
             <input type="password" name="password" id="password" value=""><br/>
             <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
@@ -56,7 +57,7 @@
             <input type="checkbox" name="accountLocked" id="accountLocked"
                    <c:if test="${userProperties.accountLocked}">checked="checked"</c:if>><br/>
             <input type="hidden" name="_accountLocked"/>
-            <label for="preferredLanguage"><fmt:message key="org.jahia.admin.preferredLanguage.label"/></label>
+            <label for="preferredLanguage"><fmt:message key="label.preferredLanguage"/></label>
             <select id="preferredLanguage" name="preferredLanguage" size="1">
                 <c:forEach items="${functions:availableAdminBundleLocale(renderContext.UILocale)}" var="uiLanguage">
                     <option value="${uiLanguage}"
@@ -65,8 +66,8 @@
             </select>
         </fieldset>
 
-        <fieldset id="groupsFields" title="<fmt:message key="org.jahia.admin.users.ManageGroups.groupList.label"/>">
-            <label for="groupsFields"><fmt:message key="org.jahia.admin.users.ManageGroups.groupList.label"/></label>
+        <fieldset id="groupsFields" title="<fmt:message key="label.user.groups.list"/>">
+            <label for="groupsFields"><fmt:message key="label.user.groups.list"/></label>
             <select class="fontfix" name="selectMember" size="6" multiple>
                 <c:forEach items="${userProperties.groups}" var="group">
                     <option value="${user:formatUserValueOption(group)}">${user:formatUserTextOption(group, 'Name, 20;SiteTitle, 15;Properties, 20')}</option>
@@ -77,6 +78,9 @@
         <fieldset>
             <input type="submit" name="_eventId_update" value="<fmt:message key='label.update'/>"/>
             <input type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel'/>"/>
+            <input type="hidden" name="selectedUsers" value="${userProperties.userKey}"/>
+            <input type="submit" name="_eventId_removeUser"
+                   value="<fmt:message key="label.user.remove"/>"/>
         </fieldset>
     </form>
 </div>

@@ -20,6 +20,16 @@
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <div>
+    <p>
+        <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
+            <c:if test="${message.severity eq 'ERROR'}">
+                <span style="color: red;">${message.text}</span><br/>
+            </c:if>
+            <c:if test="${message.severity eq 'INFO'}">
+                <span style="color: green;">${message.text}</span><br/>
+            </c:if>
+        </c:forEach>
+    </p>
     <form action="${flowExecutionUrl}" method="post" enctype="multipart/form-data">
         <fieldset>
             <label for="csvFile"><fmt:message key="label.csvFile"/></label>
@@ -33,6 +43,6 @@
         </fieldset>
     </form>
     <p>
-        <fmt:message key="org.jahia.admin.users.ManageUsers.batchCreateUsersExplainFileFormat.label"/>
+        <fmt:message key="label.users.batch.file.format"/>
     </p>
 </div>

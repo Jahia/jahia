@@ -38,12 +38,12 @@ import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.modules.serversettings.users.management.CsvFile;
 import org.jahia.modules.serversettings.users.management.SearchCriteria;
 import org.jahia.modules.serversettings.users.management.UserProperties;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.usermanager.*;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.io.IOException;
@@ -61,6 +61,24 @@ import java.util.*;
  */
 public class UsersFlowHandler implements Serializable {
     private static org.slf4j.Logger logger = LoggerFactory.getLogger(UsersFlowHandler.class);
+    private JahiaUserManagerService userManagerService;
+    private JahiaGroupManagerService groupManagerService;
+    private JahiaPasswordPolicyService pwdPolicyService;
+
+    @Autowired
+    public void setUserManagerService(JahiaUserManagerService userManagerService) {
+        this.userManagerService = userManagerService;
+    }
+
+    @Autowired
+    public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
+        this.groupManagerService = groupManagerService;
+    }
+
+    @Autowired
+    public void setPwdPolicyService(JahiaPasswordPolicyService pwdPolicyService) {
+        this.pwdPolicyService = pwdPolicyService;
+    }
 
     public Set<Principal> init() {
         return PrincipalViewHelper.getSearchResult(null, null, null, null, null);
@@ -80,13 +98,13 @@ public class UsersFlowHandler implements Serializable {
 
     public void addUser(UserProperties userProperties) {
         logger.info("Adding user");
-        ServicesRegistry.getInstance().getJahiaUserManagerService().createUser(userProperties.getUsername(),
+        userManagerService.createUser(userProperties.getUsername(),
                 userProperties.getPassword(), transformUserProperties(userProperties));
     }
 
     public void updateUser(UserProperties userProperties) {
         logger.info("Updating user");
-        JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(
+        JahiaUser jahiaUser = userManagerService.lookupUserByKey(
                 userProperties.getUserKey());
         if (jahiaUser != null) {
             jahiaUser.setProperty("j:firstName", userProperties.getFirstName());
@@ -104,7 +122,7 @@ public class UsersFlowHandler implements Serializable {
 
     public UserProperties populateUser(String[] selectedUsers) {
         assert selectedUsers.length == 1;
-        JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(
+        JahiaUser jahiaUser = userManagerService.lookupUserByKey(
                 selectedUsers[0]);
         UserProperties userProperties = new UserProperties();
         userProperties.setFirstName(jahiaUser.getProperty("j:firstName"));
@@ -118,11 +136,10 @@ public class UsersFlowHandler implements Serializable {
         userProperties.setAccountLocked(Boolean.valueOf(jahiaUser.getProperty("j:accountLocked")));
         userProperties.setDisplayName(PrincipalViewHelper.getDisplayName(jahiaUser, LocaleContextHolder.getLocale()));
         userProperties.setLocalPath(jahiaUser.getLocalPath());
-        final JahiaGroupManagerService managerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        final List<String> userMembership = managerService.getUserMembership(jahiaUser);
+        final List<String> userMembership = groupManagerService.getUserMembership(jahiaUser);
         final List<JahiaGroup> groups = new ArrayList<JahiaGroup>(userMembership.size());
         for (String groupName : userMembership) {
-            final JahiaGroup group = managerService.lookupGroup(groupName);
+            final JahiaGroup group = groupManagerService.lookupGroup(groupName);
             groups.add(group);
         }
         userProperties.setGroups(groups);
@@ -130,7 +147,7 @@ public class UsersFlowHandler implements Serializable {
     }
 
     public List<? extends JahiaUserManagerProvider> getProvidersList() {
-        return ServicesRegistry.getInstance().getJahiaUserManagerService().getProviderList();
+        return userManagerService.getProviderList();
     }
 
     public UserProperties initUser() {
@@ -138,9 +155,9 @@ public class UsersFlowHandler implements Serializable {
     }
 
     public void removeUser(UserProperties userProperties) {
-        JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(
+        JahiaUser jahiaUser = userManagerService.lookupUserByKey(
                 userProperties.getUserKey());
-        ServicesRegistry.getInstance().getJahiaUserManagerService().deleteUser(jahiaUser);
+        userManagerService.deleteUser(jahiaUser);
     }
 
     public CsvFile initCSVFile() {
@@ -166,18 +183,16 @@ public class UsersFlowHandler implements Serializable {
                 return;
             }
             String[] lineElements = null;
-            JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry.getInstance().getJahiaPasswordPolicyService();
-            JahiaUserManagerService userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
 
             while ((lineElements = csvReader.readNext()) != null) {
                 List<String> lineElementList = Arrays.asList(lineElements);
                 Properties properties = buildProperties(headerElementList, lineElementList);
                 String userName = lineElementList.get(userNamePos);
                 String password = lineElementList.get(passwordPos);
-                if (userService.isUsernameSyntaxCorrect(userName)) {
+                if (userManagerService.isUsernameSyntaxCorrect(userName)) {
                     PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnUserCreate(userName, password);
                     if (evalResult.isSuccess()) {
-                        JahiaUser jahiaUser = userService.createUser(userName, password, properties);
+                        JahiaUser jahiaUser = userManagerService.createUser(userName, password, properties);
                         if (jahiaUser != null) {
                             logger.info("Successfully created user {}", userName);
                         } else {

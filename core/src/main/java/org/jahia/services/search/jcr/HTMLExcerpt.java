@@ -44,7 +44,10 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 import org.apache.jackrabbit.core.id.NodeId;
-import org.apache.jackrabbit.core.query.lucene.*;
+import org.apache.jackrabbit.core.query.lucene.AbstractExcerpt;
+import org.apache.jackrabbit.core.query.lucene.FieldNames;
+import org.apache.jackrabbit.core.query.lucene.TermFactory;
+import org.apache.jackrabbit.core.query.lucene.Util;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.index.IndexReader;
@@ -78,7 +81,7 @@ public class HTMLExcerpt extends AbstractExcerpt {
     protected String createExcerpt(TermPositionVector tpv, String text,
             int maxFragments, int maxFragmentSize) throws IOException {
         // TODO Auto-generated method stub
-        return DefaultHighlighter.highlight(tpv, getQueryTerms(), text,
+        return JahiaHighlighter.highlight(tpv, getQueryTerms(), text,
                 "<div>", "</div>", "<span>", "</span>", "<span class=\"searchHighlightedText\">", "</span>",
                 maxFragments, maxFragmentSize / 2);
     }

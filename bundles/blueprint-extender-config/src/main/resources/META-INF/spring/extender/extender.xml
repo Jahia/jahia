@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<beans xmlns="http://www.springframework.org/schema/beans"
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
     
     <bean id="applicationContextCreator" class="org.jahia.bundles.blueprint.extender.config.JahiaOsgiApplicationContextCreator"/>
     
@@ -10,4 +9,4 @@
     
     <bean id="jahiaOsgiBeanFactoryPostProcessor" class="org.jahia.bundles.blueprint.extender.config.JahiaOsgiBeanFactoryPostProcessor"/>
     
-</beans>
+</blueprint>

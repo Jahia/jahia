@@ -229,7 +229,8 @@ public class JCRSessionWrapper implements Session {
                                             return session.getNodeByUUID(uuid, checkVersion);
                                         }
                                     });
-                } else if (checkVersion  && (versionDate != null || versionLabel != null)) {
+                } 
+                if (checkVersion  && (versionDate != null || versionLabel != null)) {
                     wrapper = getFrozenVersionAsRegular(n, provider);
                 } else {
                     wrapper = provider.getNodeWrapper(n, this);    
@@ -339,7 +340,8 @@ public class JCRSessionWrapper implements Session {
                                                 return session.getNodeByUUID(node.getIdentifier(), checkVersion);
                                             }
                                         });
-                    } else if (checkVersion && (versionDate != null || versionLabel != null) && node.isNodeType("mix:versionable")) {
+                    } 
+                    if (checkVersion && (versionDate != null || versionLabel != null) && node.isNodeType("mix:versionable")) {
                         wrapper = getFrozenVersionAsRegular(node, provider);
                     } else {
                         wrapper = provider.getNodeWrapper(node, localPath, null, this);

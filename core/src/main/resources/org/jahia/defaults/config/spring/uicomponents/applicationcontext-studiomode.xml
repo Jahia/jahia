@@ -609,12 +609,14 @@
                             <property name="displayedDetailTypes">
                                 <list>
                                     <value>jnt:content</value>
+                                    <value>jmix:layoutComponentContent</value>
                                 </list>
                             </property>
                             <property name="hiddenDetailTypes">
                                 <list>
                                     <value>jnt:template</value>
                                     <value>jnt:page</value>
+                                    <value>jnt:folder</value>
                                 </list>
                             </property>
                         </bean>
@@ -681,10 +683,24 @@
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
                                 <list>
-                                    <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
+                                    <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Undelete"/>
                                     <ref bean="Toolbar.Item.DeletePermanently"/>
+                                    <ref bean="Toolbar.Item.EditSourceContent"/>
+                                    <ref bean="Toolbar.Item.Copy"/>
+                                    <ref bean="Toolbar.Item.Cut"/>
+                                    <ref bean="Toolbar.Item.Paste"/>
+                                    <ref bean="Toolbar.Item.PasteReference"/>
+                                    <ref bean="Toolbar.Item.TranslateMenu"/>
+                                    <ref bean="Toolbar.Item.Export"/>
+                                    <ref bean="Toolbar.Item.Import"/>
+                                    <ref bean="Toolbar.Item.Lock"/>
+                                    <ref bean="Toolbar.Item.Unlock"/>
+                                    <ref bean="Toolbar.Item.ClearLock"/>
+                                    <ref bean="Toolbar.Item.ClearAllLocks"/>
+                                    <ref bean="Toolbar.Item.OpenInContentManager"/>
+                                    <ref bean="Toolbar.Item.GoToViewDefinition"/>
                                 </list>
                             </property>
                         </bean>

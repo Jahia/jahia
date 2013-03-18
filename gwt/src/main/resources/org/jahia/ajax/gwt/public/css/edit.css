@@ -414,99 +414,99 @@ button.button-disable:hover, div.button-disable:hover {
 }
 
 .selection-top-list {
-    border-top: 1px solid #cc0033;
+    border-top: 3px solid #cc0033;
 }
 .selection-bottom-list {
-    border-bottom: 1px solid #cc0033;
-    margin-top: -1px;
+    border-bottom: 3px solid #cc0033;
+    margin-top: -3px;
 }
 .selection-left-list {
-    border-left: 1px solid #cc0033;
+    border-left: 3px solid #cc0033;
 }
 .selection-right-list {
-    border-left: 1px solid #cc0033;
-    margin-left: -1px;
+    border-left: 3px solid #cc0033;
+    margin-left: -3px;
 }
 
 
 
 .selection-top-simple {
-    border-top: 1px solid #cc0033;
+    border-top: 3px solid #cc0033;
 }
 .selection-bottom-simple {
-    border-bottom: 1px solid #cc0033;
-    margin-top: -1px;
+    border-bottom: 3px solid #cc0033;
+    margin-top: -3px;
 }
 .selection-left-simple {
-    border-left: 1px solid #cc0033;
+    border-left: 3px solid #cc0033;
 }
 .selection-right-simple {
-    border-left: 1px solid #cc0033;
-    margin-left: -1px;
+    border-left: 3px solid #cc0033;
+    margin-left: -3px;
 }
 
 
 .selection-top-area {
-    border-top: 1px solid #cc0033;
+    border-top: 3px solid #cc0033;
 }
 .selection-bottom-area {
-    border-bottom: 1px solid #cc0033;
-    margin-top: -1px;
+    border-bottom: 3px solid #cc0033;
+    margin-top: -3px;
 }
 .selection-left-area {
-    border-left: 1px solid #cc0033;
+    border-left: 3px solid #cc0033;
 }
 .selection-right-area {
-    border-left: 1px solid #cc0033;
-    margin-left: -1px
+    border-left: 3px solid #cc0033;
+    margin-left: -3px
 }
 
 
 .hover-top-list {
-    border-top: 1px solid #39f;
+    border-top: 3px solid #39f;
 }
 .hover-bottom-list {
-    border-bottom: 1px solid #39f;
-    margin-top: -1px;
+    border-bottom: 3px solid #39f;
+    margin-top: -3px;
 }
 .hover-left-list {
-    border-left: 1px solid #39f;
+    border-left: 3px solid #39f;
 }
 .hover-right-list {
-    border-left: 1px solid #39f;
-    margin-left: -1px;
+    border-left: 3px solid #39f;
+    margin-left: -3px;
 }
 
 .hover-top-simple {
-    border-top: 1px solid #39f;
+    border-top: 3px solid #39f;
 }
 .hover-bottom-simple {
-    border-bottom: 1px solid #39f;
-    margin-top: -1px;
+    border-bottom: 3px solid #39f;
+    margin-top: -3px;
 }
 .hover-left-simple {
-    border-left: 1px solid #39f;
+    border-left: 3px solid #39f;
 }
 .hover-right-simple {
-    border-left: 1px solid #39f;
-    margin-left: -1px;
+    border-left: 3px solid #39f;
+    margin-left: -3px;
 }
 
 
 .hover-top-area {
-    border-top: 1px solid #39f;
+    border-top: 3px solid #39f;
 }
 .hover-bottom-area {
-    border-bottom: 1px solid #39f;
-    margin-top: -1px;
+    border-bottom: 3px solid #39f;
+    margin-top: -3px;
 }
 .hover-left-area {
-    border-left: 1px solid #39f;
-    margin-right: -1px;
+    border-left: 3px solid #39f;
+    margin-right: -3px;
 }
 .hover-right-area {
-    border-left: 1px solid #39f;
-    margin-left: -1px;
+    border-left: 3px solid #39f;
+    margin-left: -3px;
 }
 
 
@@ -515,14 +515,14 @@ button.button-disable:hover, div.button-disable:hover {
 }
 .hover-bottom-list-secondary {
     border-bottom: 0px solid #999;
-    margin-top: -1px;
+    margin-top: -3px;
 }
 .hover-left-list-secondary {
     border-left: 0px solid #999;
 }
 .hover-right-list-secondary {
     border-left: 0px solid #999;
-    margin-left: -1px;
+    margin-left: -3px;
 }
 
 
@@ -531,14 +531,14 @@ button.button-disable:hover, div.button-disable:hover {
 }
 .hover-bottom-simple-secondary {
     border-bottom: 0px solid #999;
-    margin-top: -1px;
+    margin-top: -3px;
 }
 .hover-left-simple-secondary {
     border-left: 0px solid #999;
 }
 .hover-right-simple-secondary {
     border-right: 0px solid #999;
-    margin-right: -1px;
+    margin-right: -3px;
 }
 
 
@@ -547,14 +547,14 @@ button.button-disable:hover, div.button-disable:hover {
 }
 .hover-bottom-area-secondary {
     border-bottom: 0px solid #999;
-    margin-top: -1px;
+    margin-top: -3px;
 }
 .hover-left-area-secondary {
     border-left: 0px solid #999;
 }
 .hover-right-area-secondary {
     border-right: 0px solid #999;
-    margin-right: -1px;
+    margin-right: -3px;
 }
 
 /****************************************************************************/

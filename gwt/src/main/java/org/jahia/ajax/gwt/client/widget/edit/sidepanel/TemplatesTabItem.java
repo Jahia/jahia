@@ -42,9 +42,7 @@ package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.GridEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.store.TreeStore;
@@ -83,11 +81,12 @@ public class TemplatesTabItem extends BrowseTabItem {
 
     protected transient ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
     protected transient ListStore<GWTJahiaNode> contentStore;
+    private transient TreeGrid<GWTJahiaNode> detailTree;
     private transient TreeLoader<GWTJahiaNode> detailLoader;
     private transient TreeStore<GWTJahiaNode> detailStore;
     protected transient LayoutContainer contentContainer;
-    private transient List<String> displayedDetailTypes;
-    private transient List<String> hiddenDetailTypes;
+    private  List<String> displayedDetailTypes;
+    private  List<String> hiddenDetailTypes;
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
@@ -106,7 +105,9 @@ public class TemplatesTabItem extends BrowseTabItem {
         this.tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
                 listLoader.load(se.getSelectedItem());
+                detailTree.getSelectionModel().deselectAll();
                 detailLoader.load(se.getSelectedItem());
+
             }
         });
 
@@ -151,7 +152,7 @@ public class TemplatesTabItem extends BrowseTabItem {
                     fields.add(GWTJahiaNode.CHILDREN_INFO);
                     fields.add(GWTJahiaNode.ICON);
                     JahiaContentManagementService.App.getInstance()
-                            .getRoot(Arrays.asList(gwtJahiaNode.getPath()+ "/*"), displayedDetailTypes, null, null, fields, null, null, true,
+                            .getRoot(Arrays.asList(gwtJahiaNode.getPath()+ "/*"), displayedDetailTypes, null, null, fields, null, null, false,
                                     false, hiddenDetailTypes, null, new AsyncCallback<List<GWTJahiaNode>>() {
                                 @Override
                                 public void onFailure(Throwable caught) {
@@ -186,7 +187,7 @@ public class TemplatesTabItem extends BrowseTabItem {
                 return 0;
             }
         }));
-        TreeGrid<GWTJahiaNode> detailTree = new TreeGrid<GWTJahiaNode>(detailStore,new ColumnModel(columns));
+        detailTree = new TreeGrid<GWTJahiaNode>(detailStore,new ColumnModel(columns));
 
 
         detailTree.setAutoExpandColumn("displayName");
@@ -194,9 +195,8 @@ public class TemplatesTabItem extends BrowseTabItem {
         detailTree.getTreeView().setForceFit(true);
         detailTree.setHeight("100%");
         detailTree.setIconProvider(ContentModelIconProvider.getInstance());
-        detailTree.setHideHeaders(true);
         detailTree.setAutoExpand(true);
-        detailTree.setContextMenu(createContextMenu(config.getTreeContextMenu(), detailTree.getSelectionModel()));
+        detailTree.setContextMenu(createContextMenu(config.getTableContextMenu(), detailTree.getSelectionModel()));
         detailTree.setView(new TreeGridView() {
 
             @Override
@@ -204,19 +204,28 @@ public class TemplatesTabItem extends BrowseTabItem {
                 switch (ge.getEventTypeInt()) {
                     case Event.ONMOUSEOVER:
                         GWTJahiaNode selection = (GWTJahiaNode) ge.getModel();
-                        List<Module> modules = ModuleHelper.getModulesByPath().get(selection.getPath());
-                        for (Module module : modules) {
-                            Hover.getInstance().addHover(module);
+                        if (selection != null) {
+                            List<Module> modules = ModuleHelper.getModulesByPath().get(selection.getPath());
+                            if (modules != null) {
+                                for (Module module : modules) {
+                                    Hover.getInstance().addHover(module);
+                                }
+                            }
                         }
                         break;
                     case Event.ONMOUSEOUT:
                         selection = (GWTJahiaNode) ge.getModel();
-                        modules = ModuleHelper.getModulesByPath().get(selection.getPath());
-                        for (Module module : modules) {
-                            Hover.getInstance().removeHover(module);
+                        if (selection != null) {
+                            List<Module> modules = ModuleHelper.getModulesByPath().get(selection.getPath());
+                            if (modules != null) {
+                                for (Module module : modules) {
+                                    Hover.getInstance().removeHover(module);
+                                }
+                            }
                         }
                         break;
                 }
+                editLinker.getMainModule().setCtrlActive(ge.isControlKey());
                 super.handleComponentEvent(ge);
             }
 
@@ -224,15 +233,23 @@ public class TemplatesTabItem extends BrowseTabItem {
         detailTree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
-                List<Module> modules = ModuleHelper.getModulesByPath().get(se.getSelectedItem().getPath());
-                for (Module module : modules) {
-                    editLinker.getMainModule().handleNewModuleSelection(module);
+                if (se.getSelection() != null) {
+                    for (GWTJahiaNode selection : se.getSelection()) {
+                        List<Module> modules = ModuleHelper.getModulesByPath().get(selection.getPath());
+                        if (modules != null) {
+                            for (Module module : modules) {
+                                if (!editLinker.getMainModule().getSelections().containsKey(module))  {
+                                    editLinker.getMainModule().handleNewModuleSelection(module);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         });
 
         contentContainer=new LayoutContainer();
-        contentContainer.setBorders(true);
+        contentContainer.setBorders(false);
         contentContainer.setScrollMode(Style.Scroll.AUTO);
         contentContainer.setLayout(new FitLayout());
         contentContainer.setTitle(Messages.get("label.detail","detail"));

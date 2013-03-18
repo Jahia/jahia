@@ -13,5 +13,26 @@
         <transition on="gc" to="memoryThread" bind="false" validate="false">
             <evaluate expression="memoryInfo.doGarbageCollection()"/>
         </transition>
+        <transition on="performTD" to="memoryThread">
+            <evaluate expression="memoryInfo.performThreadDump(requestParameters.threadDump)"/>
+        </transition>
+        <transition on="scheduleTD" to="memoryThread">
+            <evaluate
+                    expression="memoryInfo.scheduleThreadDump(requestParameters.threadDump,requestParameters.threadDumpCount,requestParameters.threadDumpInterval)"/>
+        </transition>
+        <transition on="toggleTD" to="memoryThread" bind="false" validate="false">
+            <evaluate expression="memoryInfo.toggleThreadMonitor()"/>
+        </transition>
+        <transition on="toggleEFD" to="memoryThread" bind="false" validate="false">
+            <evaluate expression="memoryInfo.toggleErrorFileDumper()"/>
+        </transition>
+        <transition on="showTD" to="showThreadDump"/>
+    </view-state>
+    <view-state id="showThreadDump">
+        <on-render>
+            <evaluate expression="memoryInfo.executeThreadDump()" result="requestScope.threadDumpResult"
+                      result-type="java.lang.String"/>
+        </on-render>
+        <transition on="back" to="memoryThread"/>
     </view-state>
 </flow>

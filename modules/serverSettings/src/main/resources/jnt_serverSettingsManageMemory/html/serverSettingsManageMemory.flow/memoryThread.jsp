@@ -1,7 +1,4 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
-<%@ page import="org.apache.commons.lang.StringUtils" %>
-<%@ page import="org.jahia.bin.errors.ErrorFileDumper" %>
-<%@ page import="org.jahia.tools.jvm.ThreadMonitor" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -24,19 +21,11 @@
         $("#accordion").accordion({collapsible:true, heightStyle:"content"${param.tab == 'threads' ? ',active:1' : ''}});
     })
 </script>
-<div style="float:right;display:inline;padding:5px 10px 0 0">
-    <a href="<c:url value='/tools/systemInfo.jsp?file=true'/>" target="_blank"><img
-            src="<c:url value='/icons/download.png'/>" height="16" width="16" alt=" " align="top"/><fmt:message
-            key="org.jahia.admin.status.ManageStatus.downloadStatus"/></a>
-</div>
-<p>&nbsp;</p>
 
 <div id="accordion">
     <h3><fmt:message key="label.memory"/>&nbsp;(${memoryInfo.memoryUsage}%&nbsp;<fmt:message
             key="serverSettings.manageMemory.used"/>)</h3>
-    <c:if test="${param['gc']}">
-        <% System.gc(); %>
-    </c:if>
+
     <div>
         <table width="100%" border="0" cellspacing="0" cellpadding="5">
             <tr>
@@ -89,123 +78,78 @@
     </div>
 
     <h3><fmt:message key="label.threads"/></h3>
-    <c:if test="${empty param.threadDumpCount && (param.threadDump == 'sysout' || param.threadDump == 'file')}">
-        <% ThreadMonitor.getInstance().dumpThreadInfo("sysout".equals(request.getParameter("threadDump")),
-                "file".equals(request.getParameter("threadDump"))); %>
-    </c:if>
-    <c:if test="${not empty param.threadDumpCount && (param.threadDump == 'sysout' || param.threadDump == 'file')}">
-        <% ThreadMonitor.getInstance().dumpThreadInfoWithInterval("sysout".equals(request.getParameter("threadDump")),
-                "file".equals(request.getParameter("threadDump")), Integer.parseInt(StringUtils.defaultIfEmpty(
-                request.getParameter("threadDumpCount"), "10")), Integer.parseInt(StringUtils.defaultIfEmpty(
-                request.getParameter("threadDumpInterval"), "10"))); %>
-    </c:if>
+
     <div>
         <table width="100%" border="0" cellspacing="0" cellpadding="5">
             <tr>
                 <td align="left">
-                    <a href="<c:url value='/tools/threadDump.jsp'/>" target="_blank"><img
-                            src="<c:url value='/icons/filePreview.png'/>" height="16" width="16" alt=" "
-                            align="top"/><fmt:message key="org.jahia.admin.status.ManageStatus.performThreadDump"/>
-                        (<fmt:message key="org.jahia.admin.status.ManageStatus.performThreadDump.window"/>)</a>
+                    <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
+                        <input type="submit" name="_eventId_showTD"
+                               value="<fmt:message key="label.threads.performThreadDump.page"/>"/>
+                    </form>
                 </td>
             </tr>
             <tr>
                 <td align="left">
-                    <a href="<c:url value='/tools/threadDump.jsp?file=true'/>" target="_blank"><img
-                            src="<c:url value='/icons/download.png'/>" height="16" width="16" alt=" "
-                            align="top"/><fmt:message key="org.jahia.admin.status.ManageStatus.performThreadDump"/>
-                        (<fmt:message key="org.jahia.admin.status.ManageStatus.performThreadDump.download"/>)</a>
+                    <a href="<c:url value="/tools/threadDump.jsp?file=true"/>" target="_blank"><fmt:message key="label.threads.performThreadDump.file.download"/></a>
                 </td>
             </tr>
             <tr>
                 <td align="left">
-                    <a href="?threadDump=sysout&amp;timestamp=${timestamp}&amp;tab=threads"><img
-                            src="<c:url value='/icons/tab-workflow.png'/>" height="16" width="16" alt=" "
-                            align="top"/><fmt:message key="org.jahia.admin.status.ManageStatus.performThreadDump"/>
-                        (System.out)</a>
+                    <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
+                        <input type="hidden" name="threadDump" value="sysout"/>
+                        <input type="submit" name="_eventId_performTD"
+                               value="<fmt:message key="label.threads.performThreadDump.system.out"/>"/>
+                    </form>
                 </td>
             </tr>
             <tr>
                 <td align="left">
-                    <a href="?threadDump=file&amp;timestamp=${timestamp}&amp;tab=threads"><img
-                            src="<c:url value='/icons/globalRepository.png'/>" height="16" width="16" alt=" "
-                            align="top"/><fmt:message key="org.jahia.admin.status.ManageStatus.performThreadDump"/>
-                        (<fmt:message key="fileMenu.label"/>)</a>
+                    <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
+                        <input type="hidden" name="threadDump" value="file"/>
+                        <input type="submit" name="_eventId_performTD"
+                               value="<fmt:message key="label.threads.performThreadDump.file"/>"/>
+                    </form>
                 </td>
             </tr>
             <tr>
                 <td align="left">
-                    <a href="#dump"
-                       onclick="this.href='?threadDump=file&amp;threadDumpCount=' + document.getElementById('threadDumpCount').value + '&amp;threadDumpInterval=' + document.getElementById('threadDumpInterval').value + '&amp;timestamp=${timestamp}&amp;tab=threads'; return true;"><img
-                            src="<c:url value='/icons/workflowManager.png'/>" height="16" width="16" alt=" "
-                            align="top"/><fmt:message key="org.jahia.admin.status.ManageStatus.performThreadDump"/>
-                        (<fmt:message key="org.jahia.admin.status.ManageStatus.performThreadDump.multiple"/>)</a>
-                    &nbsp;&nbsp;
-                    <label for="threadDumpCount"><fmt:message key="column.count.label"/>:&nbsp;</label><input
-                        type="text" id="threadDumpCount" name="threadDumpCount" size="2"
-                        value="${not empty param.threadDumpCount ? param.threadDumpCount : '10'}"/>
-                    &nbsp;&nbsp;
-                    <label for="threadDumpInterval"><fmt:message key="label.interval"/>:&nbsp;</label><input type="text"
-                                                                                                             id="threadDumpInterval"
-                                                                                                             name="threadDumpInterval"
-                                                                                                             size="2"
-                                                                                                             value="${not empty param.threadDumpInterval ? param.threadDumpInterval : '10'}"/>&nbsp;<fmt:message
-                        key="label.seconds"/>
+                    <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
+                        <input type="hidden" name="threadDump" value="file"/>
+                        <input type="submit" name="_eventId_scheduleTD"
+                               value="<fmt:message key="label.threads.performThreadDump.multiple"/>"/>
+                        &nbsp;&nbsp;
+                        <label for="threadDumpCount"><fmt:message key="column.count.label"/>:&nbsp;</label>
+                        <input type="text" id="threadDumpCount" name="threadDumpCount" size="2" value="10"/>
+                        &nbsp;&nbsp;
+                        <label for="threadDumpInterval"><fmt:message key="label.interval"/>:&nbsp;</label>
+                        <input type="text" id="threadDumpInterval" name="threadDumpInterval" size="2" value="10"/>&nbsp;<fmt:message
+                            key="label.seconds"/>
+                    </form>
                 </td>
             </tr>
             <tr>
-                <td align="left"><img src="<c:url value='/icons/tab-workflow.png'/>" height="16" width="16" alt=" "
-                                      align="top"/>
-                    <%
-                        String enableThreadMonitor = request.getParameter("enableThreadMonitor");
-                        if ("true".equals(enableThreadMonitor)) {
-                            ThreadMonitor.getInstance().setActivated(true);
-                        } else if ("false".equals(enableThreadMonitor)) {
-                            ThreadMonitor.getInstance().setActivated(false);
-                        }
-
-                    %>
-                    <fmt:message
-                            key="label.thread.monitor.is"/>&nbsp;<%if (ThreadMonitor.getInstance().isActivated()) {%>
-                    <fmt:message key="label.started"/>
-                    <% } else { %><fmt:message key="label.stopped"/> <% } %> -
-                    <%if (ThreadMonitor.getInstance().isActivated()) {%><a
-                            href="?enableThreadMonitor=false&amp;tab=threads"><fmt:message
-                            key="label.stop.thread.monitor"/></a>
-                    <% } else { %><a href="?enableThreadMonitor=true&amp;tab=threads"><fmt:message
-                            key="label.start.thread.monitor"/></a><% } %>
+                <td align="left">
+                    <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
+                        <input type="submit" name="_eventId_toggleTD"
+                               value="<c:choose><c:when test="${memoryInfo.threadMonitorActivated}"><fmt:message key="label.threads.monitor.stop"/></c:when><c:otherwise><fmt:message key="label.threads.monitor.start"/></c:otherwise></c:choose>"/>
+                    </form>
                 </td>
             </tr>
             <tr>
-                <td align="left"><img src="<c:url value='/icons/tab-workflow.png'/>" height="16" width="16" alt=" "
-                                      align="top"/>
-                    <%
-                        String enableErrorFileDumper = request.getParameter("enableErrorFileDumper");
-                        if ("true".equals(enableErrorFileDumper)) {
-                            ErrorFileDumper.setFileDumpActivated(true);
-                        } else if ("false".equals(enableErrorFileDumper)) {
-                            ErrorFileDumper.setFileDumpActivated(false);
-                        }
-
-                    %>
-                    <fmt:message key="label.error.file.dumper.is"/>&nbsp;<%if (!ErrorFileDumper.isShutdown()) {%>
-                    <fmt:message key="label.started"/>
-                    <% } else { %><fmt:message key="label.stopped"/> <% } %> -
-                    <%if (ErrorFileDumper.isShutdown()) {%><a
-                            href="?enableErrorFileDumper=true&amp;tab=threads"><fmt:message
-                            key="label.start.error.dumper"/></a>
-                    <% } else { %><a
-                            href="?enableErrorFileDumper=false&amp;tab=threads"><fmt:message
-                            key="label.stop.error.dumper"/></a><% } %>
+                <td align="left">
+                    <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
+                        <input type="submit" name="_eventId_toggleEFD"
+                               value="<c:choose><c:when test="${memoryInfo.errorFileDumperActivated}"><fmt:message key="label.errors.dumper.stop"/></c:when><c:otherwise><fmt:message key="label.errors.dumper.start"/></c:otherwise></c:choose>"/>
+                    </form>
                 </td>
             </tr>
             <tr>
                 <td align="left">
                     <a href="http://java.net/projects/tda/downloads/download/webstart/tda.jnlp"
-                       title="<fmt:message key='org.jahia.admin.status.ManageStatus.launchTda.disclaimer'/>"
                        target="_blank"><img src="<c:url value='/icons/tda.gif'/>" height="16" width="16" alt=" "
                                             align="top"/><fmt:message
-                            key="org.jahia.admin.status.ManageStatus.launchTda"/></a>
+                            key="label.launchTda"/></a>
                 </td>
             </tr>
         </table>

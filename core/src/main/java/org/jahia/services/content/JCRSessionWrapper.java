@@ -236,7 +236,8 @@ public class JCRSessionWrapper implements Session {
                                             return session.getNodeByUUID(uuid, checkVersion);
                                         }
                                     });
-                } else if (checkVersion  && (versionDate != null || versionLabel != null)) {
+                } 
+                if (checkVersion  && (versionDate != null || versionLabel != null)) {
                     JCRNodeWrapper frozen = getFrozenVersionAsRegular(n, provider, false);
                     if (frozen != null) {
                         wrapper = frozen;
@@ -349,7 +350,8 @@ public class JCRSessionWrapper implements Session {
                                                 return session.getNodeByUUID(node.getIdentifier(), checkVersion);
                                             }
                                         });
-                    } else if (checkVersion && (versionDate != null || versionLabel != null) && node.isNodeType("mix:versionable")) {
+                    } 
+                    if (checkVersion && (versionDate != null || versionLabel != null) && node.isNodeType("mix:versionable")) {
                         JCRNodeWrapper frozen = getFrozenVersionAsRegular(node, provider, false);
                         if (frozen != null) {
                             wrapper = frozen;

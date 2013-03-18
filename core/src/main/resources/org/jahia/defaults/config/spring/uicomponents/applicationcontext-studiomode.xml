@@ -731,6 +731,12 @@
                                     <value>jnt:moduleVersionFolder</value>
                                 </list>
                             </property>
+                            <property name="displayGridForTypes">
+                                <list>
+                                    <value>jnt:folder</value>
+                                    <value>jnt:contentFolder</value>
+                                </list>
+                            </property>
                         </bean>
                     </property>
                     <property name="treeColumns">

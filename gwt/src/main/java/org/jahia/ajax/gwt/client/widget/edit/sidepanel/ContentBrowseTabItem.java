@@ -77,7 +77,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
     protected transient ListStore<GWTJahiaNode> contentStore;
     protected transient DisplayGridDragSource displayGridSource;
     protected transient Grid<GWTJahiaNode> grid;
-
+    private List<String> displayGridForTypes;
     public TabItem create(final GWTSidePanelTab config) {
         super.create(config);
 
@@ -139,6 +139,15 @@ class ContentBrowseTabItem extends BrowseTabItem {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
                 listLoader.load(event.getSelectedItem());
                 contentContainer.mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
+                boolean displayGrid = false;
+                for (String type : event.getSelectedItem().getNodeTypes()) {
+                    displayGrid |= displayGridForTypes.contains(type);
+                }
+                if (displayGrid) {
+                    contentContainer.show();
+                } else {
+                    contentContainer.hide();
+                }
             }
         });
 
@@ -178,4 +187,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
         return super.needRefresh(data);
     }
 
+    public void setDisplayGridForTypes(List<String> displayGridForTypes) {
+        this.displayGridForTypes = displayGridForTypes;
+    }
 }

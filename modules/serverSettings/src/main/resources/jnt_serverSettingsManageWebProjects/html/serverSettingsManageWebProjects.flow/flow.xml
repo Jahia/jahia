@@ -14,12 +14,15 @@
             <set name="flowScope.siteBean.language" value="externalContext.requestMap.currentResource.locale.toString()" />
         </transition>
 
-        <transition on="exportSites" to="exportSites" />
+        <transition on="exportSites">
+            <evaluate expression="webprojectHandler.exportSites(flowRequestContext)"/>
+        </transition>
         <transition on="exportStagingSites" to="exportStagingSites" />
         <transition on="deleteSites" to="deleteSites" />
 
-        <transition on="exportSystemSite" to="exportSites" >
+        <transition on="exportSystemSite">
             <set name="webprojectHandler.sites" value="'systemsite'"/>
+            <evaluate expression="webprojectHandler.exportSites(flowRequestContext)"/>
         </transition>
 
         <transition on="exportStagingSystemSite" to="exportStagingSites" >
@@ -88,12 +91,14 @@
     <end-state id="sitesDeleted"/>
 
     <!-- Site export -->
-    <end-state id="exportSites"/>
+
     <end-state id="exportStagingSites"/>
 
     <!-- Prepackaged Site import -->
-
-    <end-state id="importPrepackaged"/>
+    <action-state id="importPrepackaged">
+        <evaluate expression="webprojectHandler.preparePrepackageImport(messageContext)"/>
+        <transition to="displayImportContent"/>
+    </action-state>
 
     <!-- Site import -->
 
@@ -104,13 +109,13 @@
 
     <view-state id="displayImportContent" model="webprojectHandler">
         <on-render>
-            <evaluate expression="JahiaTemplateManagerService.availableTemplatePackages" result="flashScope.allModules"/>
+            <evaluate expression="JahiaTemplateManagerService.templateSetNames" result="requestScope.templateSets"/>
         </on-render>
-        <transition on="next" to="processImport"/>
+        <transition on="processImport" to="processImport"/>
     </view-state>
 
     <action-state id="processImport">
-
+        <evaluate expression="webprojectHandler.processImport(externalContext.requestMap.currentUser, messageContext)"/>
         <transition to="sitesImported"/>
     </action-state>
 

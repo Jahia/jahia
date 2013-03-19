@@ -1,0 +1,187 @@
+<%@ page language="java" contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<%--@elvariable id="mailSettings" type="org.jahia.services.mail.MailSettings"--%>
+<%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
+<%--@elvariable id="flowExecutionUrl" type="java.lang.String"--%>
+<%--@elvariable id="webprojectHandler" type="org.jahia.modules.serversettings.flow.WebprojectHandler"--%>
+<c:forEach var="checks" items="${importInfoMap.value.validationResult.results}">
+    <c:if test="${!checks.successful}">
+        <c:if test="${checks.class.name == 'org.jahia.services.importexport.validation.MissingModulesValidationResult'}">
+            <c:if test="${!checks.targetTemplateSetPresent}">
+                <fmt:message key="failure.import.missingTemplateSet" var="errorSummary">
+                    <fmt:param value="${checks.targetTemplateSet}"/>
+                </fmt:message>
+                <div>
+                    <span style="color: red">${fn:escapeXml(errorSummary)}</span>
+                </div>
+            </c:if>
+            <c:if test="${not empty checks.missingModules}">
+                <fmt:message key="failure.import.missingModules" var="errorSummary">
+                    <fmt:param value="${fn:length(checks.missingModules)}"/>
+                </fmt:message>
+                <div>
+                    <span style="color: red">${fn:escapeXml(errorSummary)}</span>&nbsp;
+                    <fmt:message key="label.detailed" var="i18nHelp"/><c:set var="i18nHelp"
+                                                                             value="${fn:escapeXml(i18nHelp)}"/>
+                    <a href="#details"
+                       onclick="toggle('validationErrorsDetailsModules'); return false;"
+                       title="${i18nHelp}"><img
+                            src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16"
+                            height="16" alt="${i18nHelp}" title="${i18nHelp}"></a>
+                </div>
+                <div id="validationErrorsDetailsModules" style="display: none">
+                    <ul>
+                        <c:forEach var="module" items="${checks.missingModules}">
+                            <li>${fn:escapeXml(module)}</li>
+                        </c:forEach>
+                    </ul>
+                </div>
+            </c:if>
+        </c:if>
+
+        <c:if test="${checks.class.name == 'org.jahia.services.importexport.validation.MissingNodetypesValidationResult'}">
+            <fmt:message key="failure.import.missingNodetypes" var="errorSummary">
+                <fmt:param value="${fn:length(checks.missingNodetypes)}"/>
+                <fmt:param value="${fn:length(checks.missingMixins)}"/>
+            </fmt:message>
+            <div>
+                <span style="color: red">${fn:escapeXml(errorSummary)}</span>&nbsp;
+                <fmt:message key="label.detailed" var="i18nHelp"/><c:set var="i18nHelp"
+                                                                         value="${fn:escapeXml(i18nHelp)}"/>
+                <a href="#details"
+                   onclick="toggle('validationErrorsDetailsNodetypes'); return false;"
+                   title="${i18nHelp}"><img
+                        src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16"
+                        height="16" alt="${i18nHelp}" title="${i18nHelp}"></a>
+            </div>
+            <div id="validationErrorsDetailsNodetypes" style="display: none">
+                <c:if test="${not empty checks.missingNodetypes}">
+                    <p><fmt:message key="label.import.missingNodetypes"/></p>
+                    <ul>
+                        <c:forEach var="nt" items="${checks.missingNodetypes}">
+                            <li>${fn:escapeXml(nt.key)}
+                                <ul>
+                                    <c:forEach var="path" items="${nt.value}" begin="0" end="2">
+                                        <li>${fn:escapeXml(path)}</li>
+                                    </c:forEach>
+                                    <c:if test="${fn:length(nt.value) > 3}">
+                                        <c:set var="all">
+                                            <c:forEach var="path" items="${nt.value}">
+                                                ${path}${lineBreak}
+                                            </c:forEach>
+                                        </c:set>
+                                        <li><a href="#showAll"
+                                               onclick='alert("${functions:escapeJavaScript(all)}"); return false;'>...&lt;<fmt:message
+                                                key="label.all"/>&gt;</a></li>
+                                    </c:if>
+                                </ul>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </c:if>
+                <c:if test="${not empty checks.missingMixins}">
+                    <p><fmt:message key="label.import.missingMixins"/></p>
+                    <ul>
+                        <c:forEach var="nt" items="${checks.missingMixins}">
+                            <li>${fn:escapeXml(nt.key)}
+                                <ul>
+                                    <c:forEach var="path" items="${nt.value}" begin="0" end="2">
+                                        <li>${fn:escapeXml(path)}</li>
+                                    </c:forEach>
+                                    <c:if test="${fn:length(nt.value) > 3}">
+                                        <c:set var="all">
+                                            <c:forEach var="path" items="${nt.value}">
+                                                ${path}${lineBreak}
+                                            </c:forEach>
+                                        </c:set>
+                                        <li><a href="#showAll"
+                                               onclick='alert("${functions:escapeJavaScript(all)}"); return false;'>...&lt;<fmt:message
+                                                key="label.all"/>&gt;</a></li>
+                                    </c:if>
+                                </ul>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </c:if>
+            </div>
+        </c:if>
+
+        <c:if test="${checks.class.name == 'org.jahia.services.importexport.validation.MissingTemplatesValidationResult'}">
+            <fmt:message key="failure.import.missingTemplates" var="errorSummary">
+                <fmt:param value="${fn:length(checks.missingTemplates)}"/>
+            </fmt:message>
+            <div style="display: block">
+                <span style="color: red">${fn:escapeXml(errorSummary)}</span>&nbsp;
+                <fmt:message key="label.detailed" var="i18nHelp"/><c:set var="i18nHelp"
+                                                                         value="${fn:escapeXml(i18nHelp)}"/>
+                <a href="#details"
+                   onclick="toggle('validationErrorsDetailsTemplates'); return false;"
+                   title="${i18nHelp}"><img
+                        src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16"
+                        height="16" alt="${i18nHelp}" title="${i18nHelp}"></a>
+            </div>
+            <div id="validationErrorsDetailsTemplates" style="display: none">
+                <ul>
+                    <c:forEach var="tmpl" items="${checks.missingTemplates}">
+                        <li>${fn:escapeXml(tmpl.key)}
+                            <ul>
+                                <c:forEach var="path" items="${tmpl.value}" begin="0" end="2">
+                                    <li>${fn:escapeXml(path)}</li>
+                                </c:forEach>
+                                <c:if test="${fn:length(tmpl.value) > 3}">
+                                    <c:set var="all">
+                                        <c:forEach var="path" items="${tmpl.value}">
+                                            ${path}${lineBreak}
+                                        </c:forEach>
+                                    </c:set>
+                                    <li><a href="#showAll"
+                                           onclick='alert("${functions:escapeJavaScript(all)}"); return false;'>...&lt;<fmt:message
+                                            key="label.all"/>&gt;</a></li>
+                                </c:if>
+                            </ul>
+                        </li>
+                    </c:forEach>
+                </ul>
+            </div>
+        </c:if>
+        <c:if test="${checks.class.name == 'org.jahia.services.importexport.validation.MissingPortletsValidationResult'}">
+            <fmt:message key="failure.import.missingPortlets" var="errorSummary">
+                <fmt:param value="${fn:length(checks.missingPortlets)}"/>
+            </fmt:message>
+            <div style="display: block">
+                <span style="color: red">${fn:escapeXml(errorSummary)}</span>&nbsp;
+                <fmt:message key="label.detailed" var="i18nHelp"/><c:set var="i18nHelp"
+                                                                         value="${fn:escapeXml(i18nHelp)}"/>
+                <a href="#details"
+                   onclick="toggle('validationErrorsDetailsTemplates'); return false;"
+                   title="${i18nHelp}"><img
+                        src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16"
+                        height="16" alt="${i18nHelp}" title="${i18nHelp}"></a>
+            </div>
+            <div id="validationErrorsDetailsTemplates" style="display: none">
+                <ul>
+                    <c:forEach var="portlet" items="${checks.missingPortlets}">
+                        <li>${fn:escapeXml(portlet)}</li>
+                    </c:forEach>
+                </ul>
+            </div>
+        </c:if>
+    </c:if>
+    <c:if test="${checks.class.name == 'org.jahia.services.importexport.validation.MissingTemplatesValidationResult'}">
+        <c:set var="templateSetsMissingCounts" value="${checks.templateSetsMissingCounts}"
+               scope="request"/>
+    </c:if>
+</c:forEach>

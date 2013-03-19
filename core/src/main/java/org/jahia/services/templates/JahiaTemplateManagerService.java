@@ -1550,10 +1550,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                             Set<String> templateSets = new TreeSet<String>();
                             for (NodeIterator nodes = qm
                                     .createQuery(
-                                            "select * from [jnt:module]"
-                                                    + " where ischildnode('/modules')"
-                                                    + " and name() <> 'templates-system'"
-                                                    + " and [j:moduleType] = 'templatesSet'",
+                                            "select * from [jnt:module] as module " +
+                                            "inner join [jnt:moduleVersion] as version on ischildnode(version,module) " +
+                                            "where isdescendantnode(module,'/modules') " +
+                                            "and name(module) <> 'templates-system' " +
+                                            "and version.[j:moduleType]='templatesSet'",
                                             Query.JCR_SQL2).execute().getNodes(); nodes.hasNext(); ) {
                                 Node node = nodes.nextNode();
                                 if (getTemplatePackageByFileName(node.getName()) != null) {

@@ -143,3 +143,29 @@ cache.expiration = 0
  Then we get the roles list for this user on the related path and we concatenate that with the groups list.
 
  We store this acl key in the user cache for this path so we do not need to do that a second time.
+ 
+* Caching in modes other than live
+
+ The AggregateCacheFilter is configured to only work for the live workspace in live mode. From 6.6.1.5 onwards Jahia provides a second filter, which can be used also to cache fragments in 
+ the default workspace to be used in other modes (e.g. contribute, edit or wise mode). This is the ExpiringCacheFilter, which only caches fragment, which have overriden the default expiration 
+ value. The fragments are thus only flushed on expiration and not by resolving dependencies like it is done in the AggregateCacheFilter.
+ 
+ This cache is not activated out-of-the-box (except for wise mode if the Jahia Wise templates are installed). In order to activate it for contribute mode, you need to define the filter in a Spring configuration file, like this:
+ 
++----------------------------------------- 
+<bean id="contributeModeCacheFilter" class="org.jahia.services.render.filter.cache.ExpiringCacheFilter">
+    <property name="disabled" value="${disableOutputCache:false}"/>
+    <property name="priority" value="16" />
+    <property name="description" value="Module content caching filter for contribute mode (caches only content with expiration set)." />
+    <property name="cacheProvider" ref="ModuleCacheProvider"/>
+    <property name="skipOnTemplateTypes" value="json"/>
+    <property name="skipOnConfigurations" value="include,wrapper,option"/>
+    <property name="applyOnModes" value="contribute"/>
+    <property name="generatorQueue" ref="moduleGeneratorQueue"/>
+    <property name="moduleParamsProperties">
+        <map key-type="java.lang.String" value-type="java.lang.String">
+            <entry key="j:subNodesView" value="subNodesView"/>
+        </map>
+    </property>
+</bean>            
++---------------------------------------

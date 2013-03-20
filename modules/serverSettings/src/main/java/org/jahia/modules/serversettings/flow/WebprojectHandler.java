@@ -593,12 +593,12 @@ public class WebprojectHandler implements Serializable {
             boolean valid = sitesService.isSiteKeyValid(siteKey);
             if (!valid) {
                 messageContext.addMessage(new MessageBuilder().error().source("siteKey").defaultText(
-                        Messages.getInternal("serverSettings.manageWebProjects.invalidSiteKey",
+                        Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.invalidSiteKey",
                                 LocaleContextHolder.getLocale())).build());
             }
             if (valid && sitesService.getSiteByKey(siteKey) != null) {
                 messageContext.addMessage(new MessageBuilder().error().source("siteKey").defaultText(
-                        Messages.getInternal("serverSettings.manageWebProjects.siteKeyExists",
+                        Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.siteKeyExists",
                                 LocaleContextHolder.getLocale())).build());
             }
 
@@ -606,13 +606,13 @@ public class WebprojectHandler implements Serializable {
             valid = sitesService.isServerNameValid(serverName);
             if (!valid) {
                 messageContext.addMessage(new MessageBuilder().error().source("siteKey").defaultText(
-                        Messages.getInternal("serverSettings.manageWebProjects.invalidServerName",
+                        Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.invalidServerName",
                                 LocaleContextHolder.getLocale())).build());
             }
 
             if (valid && !Url.isLocalhost(serverName) && sitesService.getSite(serverName) != null) {
                 messageContext.addMessage(new MessageBuilder().error().source("siteKey").defaultText(
-                        Messages.getInternal("serverSettings.manageWebProjects.serverNameExists",
+                        Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.serverNameExists",
                                 LocaleContextHolder.getLocale())).build());
             }
         } catch (JahiaException e) {

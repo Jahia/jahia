@@ -772,8 +772,8 @@ public class WebprojectHandler implements Serializable {
 
     public class SiteBean implements Serializable {
         private String siteKey = "mySite";
-        private String title = "localhost";
-        private String serverName = "My Site";
+        private String title = "My Site";
+        private String serverName = "localhost";
         private String description;
 
         private boolean defaultSite = false;
@@ -1027,8 +1027,8 @@ public class WebprojectHandler implements Serializable {
 
         public void loadSiteProperties(Properties siteProperties) {
             this.siteProperties = siteProperties;
-            siteKey = (String) siteProperties.get("sitekey");
-            siteTitle = (String) siteProperties.getProperty("sitetitle");
+            siteKey = siteProperties.getProperty("sitekey");
+            siteTitle = siteProperties.getProperty("sitetitle");
             siteServername = siteProperties.getProperty("siteservername");
             description = siteProperties.getProperty("description");
             templatePackageName=siteProperties.getProperty("templatePackageName");
@@ -1154,11 +1154,13 @@ public class WebprojectHandler implements Serializable {
 
         public Map<Object, Object> asMap() {
             Map<Object,Object> map = new LinkedHashMap<Object, Object>();
-            map.putAll(siteProperties);
-            map.put("sitekey",siteKey);
-            map.put("sitetitle",siteTitle);
-            map.put("siteservername",siteServername);
-            map.put("templates",templates);
+            if(siteProperties!=null) {
+                map.putAll(siteProperties);
+                map.put("sitekey",siteKey);
+                map.put("sitetitle",siteTitle);
+                map.put("siteservername",siteServername);
+                map.put("templates",templates);
+            }
             return map;
         }
 

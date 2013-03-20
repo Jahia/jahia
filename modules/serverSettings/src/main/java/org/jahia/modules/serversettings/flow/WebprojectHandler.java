@@ -87,7 +87,7 @@ public class WebprojectHandler implements Serializable {
 
     private String selectedPrepackagedSite;
 
-    private MultipartFile importFile;
+    private transient MultipartFile importFile;
     private String importPath;
     private boolean validityCheckOnImport = true;
 
@@ -105,7 +105,6 @@ public class WebprojectHandler implements Serializable {
 
     private Properties importProperties;
     private Map<String, ImportInfo> importsInfos;
-    private String cleanupXsl;
 
     public WebprojectHandler() {
         File[] files = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites").listFiles();

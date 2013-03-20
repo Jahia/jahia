@@ -3,13 +3,10 @@ package org.jahia.modules.serversettings.flow;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.Jahia;
-import org.jahia.bin.JahiaAdministration;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.modules.serversettings.users.admin.AdminProperties;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
@@ -17,7 +14,6 @@ import org.jahia.services.content.JCRObservationManager;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.importexport.ImportExportBaseService;
-import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.importexport.NoCloseZipInputStream;
 import org.jahia.services.importexport.SiteImportDefaults;
 import org.jahia.services.importexport.validation.ValidationResults;
@@ -31,7 +27,6 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Url;
-import org.jahia.utils.WebUtils;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,16 +37,10 @@ import org.springframework.binding.validation.ValidationContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.webflow.execution.RequestContext;
-import org.xml.sax.SAXException;
 
 import javax.jcr.RepositoryException;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -102,6 +91,9 @@ public class WebprojectHandler implements Serializable {
 
     @Autowired
     private transient ImportExportBaseService importExportBaseService;
+
+    @Autowired
+    private transient JahiaTemplateManagerService templateManagerService;
 
     private Properties importProperties;
     private Map<String, ImportInfo> importsInfos;
@@ -464,11 +456,10 @@ public class WebprojectHandler implements Serializable {
 
                         importInfos.setTemplates("");
                         if (p.containsKey("templatePackageName")) {
-                            JahiaTemplateManagerService templateManager = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-                            JahiaTemplatesPackage pack = templateManager.getTemplatePackageByFileName((String) p.get(
+                            JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName((String) p.get(
                                     "templatePackageName"));
                             if (pack == null) {
-                                pack = templateManager.getTemplatePackage((String) p.get("templatePackageName"));
+                                pack = templateManagerService.getTemplatePackage((String) p.get("templatePackageName"));
                             }
                             if (pack != null) {
                                 importInfos.setTemplates(pack.getRootFolder());
@@ -481,7 +472,7 @@ public class WebprojectHandler implements Serializable {
                     } else if (validityCheckOnImport && z.getName().contains("repository.xml")) {
                         try {
                             long timer = System.currentTimeMillis();
-                            ValidationResults validationResults = ImportExportBaseService.getInstance().validateImportFile(
+                            ValidationResults validationResults = importExportBaseService.validateImportFile(
                                     JCRSessionFactory.getInstance().getCurrentUserSession(), zis2, "application/xml",
                                     installedModules);
                             if (!validationResults.isSuccessful()) {
@@ -592,12 +583,12 @@ public class WebprojectHandler implements Serializable {
             boolean valid = sitesService.isSiteKeyValid(siteKey);
             if (!valid) {
                 messageContext.addMessage(new MessageBuilder().error().source("siteKey").defaultText(
-                        Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.invalidSiteKey",
+                        Messages.get("resources.JahiaServerSettings", "serverSettings.manageWebProjects.invalidSiteKey",
                                 LocaleContextHolder.getLocale())).build());
             }
             if (valid && sitesService.getSiteByKey(siteKey) != null) {
                 messageContext.addMessage(new MessageBuilder().error().source("siteKey").defaultText(
-                        Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.siteKeyExists",
+                        Messages.get("resources.JahiaServerSettings", "serverSettings.manageWebProjects.siteKeyExists",
                                 LocaleContextHolder.getLocale())).build());
             }
 
@@ -605,14 +596,14 @@ public class WebprojectHandler implements Serializable {
             valid = sitesService.isServerNameValid(serverName);
             if (!valid) {
                 messageContext.addMessage(new MessageBuilder().error().source("siteKey").defaultText(
-                        Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.invalidServerName",
-                                LocaleContextHolder.getLocale())).build());
+                        Messages.get("resources.JahiaServerSettings",
+                                "serverSettings.manageWebProjects.invalidServerName", LocaleContextHolder.getLocale())).build());
             }
 
             if (valid && !Url.isLocalhost(serverName) && sitesService.getSite(serverName) != null) {
                 messageContext.addMessage(new MessageBuilder().error().source("siteKey").defaultText(
-                        Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.serverNameExists",
-                                LocaleContextHolder.getLocale())).build());
+                        Messages.get("resources.JahiaServerSettings",
+                                "serverSettings.manageWebProjects.serverNameExists", LocaleContextHolder.getLocale())).build());
             }
         } catch (JahiaException e) {
             logger.error(e.getMessage(),e);
@@ -654,7 +645,7 @@ public class WebprojectHandler implements Serializable {
                     String type = infos.getType();
                     if (type.equals("files")) {
                         try {
-                            JahiaSite system = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
+                            JahiaSite system = sitesService.getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
 
                             Map<String,String> pathMapping = JCRSessionFactory.getInstance().getCurrentUserSession().getPathMapping();
                             pathMapping.put("/shared/files/", "/sites/" + system.getSiteKey() + "/files/");

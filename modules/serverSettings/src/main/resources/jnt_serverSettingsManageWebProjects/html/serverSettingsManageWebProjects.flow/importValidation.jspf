@@ -37,12 +37,12 @@
                     <fmt:message key="label.detailed" var="i18nHelp"/><c:set var="i18nHelp"
                                                                              value="${fn:escapeXml(i18nHelp)}"/>
                     <a href="#details"
-                       onclick="toggle('validationErrorsDetailsModules'); return false;"
+                       onclick="$('#validationErrorsDetailsModules${importInfoMap.value.siteKey}').toggle(); return false;"
                        title="${i18nHelp}"><img
                             src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16"
                             height="16" alt="${i18nHelp}" title="${i18nHelp}"></a>
                 </div>
-                <div id="validationErrorsDetailsModules" style="display: none">
+                <div id="validationErrorsDetailsModules${importInfoMap.value.siteKey}" style="display: none">
                     <ul>
                         <c:forEach var="module" items="${checks.missingModules}">
                             <li>${fn:escapeXml(module)}</li>
@@ -62,12 +62,12 @@
                 <fmt:message key="label.detailed" var="i18nHelp"/><c:set var="i18nHelp"
                                                                          value="${fn:escapeXml(i18nHelp)}"/>
                 <a href="#details"
-                   onclick="toggle('validationErrorsDetailsNodetypes'); return false;"
+                   onclick="$('#validationErrorsDetailsNodetypes${importInfoMap.value.siteKey}').toggle(); return false;"
                    title="${i18nHelp}"><img
                         src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16"
                         height="16" alt="${i18nHelp}" title="${i18nHelp}"></a>
             </div>
-            <div id="validationErrorsDetailsNodetypes" style="display: none">
+            <div id="validationErrorsDetailsNodetypes${importInfoMap.value.siteKey}" style="display: none">
                 <c:if test="${not empty checks.missingNodetypes}">
                     <p><fmt:message key="label.import.missingNodetypes"/></p>
                     <ul>
@@ -128,12 +128,12 @@
                 <fmt:message key="label.detailed" var="i18nHelp"/><c:set var="i18nHelp"
                                                                          value="${fn:escapeXml(i18nHelp)}"/>
                 <a href="#details"
-                   onclick="toggle('validationErrorsDetailsTemplates'); return false;"
+                   onclick="$('#validationErrorsDetailsTemplates${importInfoMap.value.siteKey}').toggle(); return false;"
                    title="${i18nHelp}"><img
                         src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16"
                         height="16" alt="${i18nHelp}" title="${i18nHelp}"></a>
             </div>
-            <div id="validationErrorsDetailsTemplates" style="display: none">
+            <div id="validationErrorsDetailsTemplates${importInfoMap.value.siteKey}" style="display: none">
                 <ul>
                     <c:forEach var="tmpl" items="${checks.missingTemplates}">
                         <li>${fn:escapeXml(tmpl.key)}
@@ -166,12 +166,12 @@
                 <fmt:message key="label.detailed" var="i18nHelp"/><c:set var="i18nHelp"
                                                                          value="${fn:escapeXml(i18nHelp)}"/>
                 <a href="#details"
-                   onclick="toggle('validationErrorsDetailsTemplates'); return false;"
+                   onclick="$('#validationErrorsDetailsTemplates${importInfoMap.value.siteKey}').toggle(); return false;"
                    title="${i18nHelp}"><img
                         src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16"
                         height="16" alt="${i18nHelp}" title="${i18nHelp}"></a>
             </div>
-            <div id="validationErrorsDetailsTemplates" style="display: none">
+            <div id="validationErrorsDetailsTemplates${importInfoMap.value.siteKey}" style="display: none">
                 <ul>
                     <c:forEach var="portlet" items="${checks.missingPortlets}">
                         <li>${fn:escapeXml(portlet)}</li>

@@ -136,7 +136,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     });
 
-    private static final Pattern TEMPLATE_PATTERN = Pattern.compile("/modules/[^/]*/templates/(.*)");
+    private static final Pattern TEMPLATE_PATTERN = Pattern.compile("/modules/[^/]*/[^/]*/templates/(.*)");
 
     private static Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
 
@@ -1689,14 +1689,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 found = true;
                 break;
             } else {
-                String basePath = null;
+                String basePath = "/base";
                 JCRNodeWrapper folder = JCRContentUtils
                         .getParentOfType(node, "jnt:templatesFolder");
                 if (folder != null && folder.hasProperty("j:rootTemplatePath")) {
                     basePath = folder.getProperty("j:rootTemplatePath").getString();
                 }
                 if (StringUtils.isNotEmpty(basePath) && !"/".equals(basePath)
-                        && templateName.equals(basePath + pathToCheck)) {
+                        && pathToCheck.equals(basePath + "/" + templateName)) {
                     // matched it considering the base path
                     found = true;
                     break;

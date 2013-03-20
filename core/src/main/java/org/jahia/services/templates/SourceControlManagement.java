@@ -91,16 +91,24 @@ public abstract class SourceControlManagement {
 
     public static SourceControlManagement getSourceControlManagement(File workingDir) throws IOException {
         SourceControlManagement scm = null;
-
-        if (new File(workingDir, ".git").exists()) {
-            scm = new GitSourceControlManagement();
-        } else if (new File(workingDir, ".svn").exists()) {
-            scm = new SvnSourceControlManagement();
-        } else {
-            return null;
+        while (true) {
+            if (new File(workingDir,".git").exists()) {
+                scm = new GitSourceControlManagement();
+                break;
+            } else if (new File(workingDir,".svn").exists()) {
+                scm = new SvnSourceControlManagement();
+                break;
+            } else {
+                if (workingDir.getParentFile() == null) {
+                    break;
+                }  else {
+                    workingDir = workingDir.getParentFile();
+                }
+            }
         }
-
-        scm.initWithWorkingDirectory(workingDir);
+        if (scm != null) {
+            scm.initWithWorkingDirectory(workingDir);
+        }
         return scm;
     }
 

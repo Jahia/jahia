@@ -248,7 +248,7 @@
             <list>
                 <value>/gwt/resources/css/gwt-1.4.min.css</value>
                 <value>/modules/assets/javascript/codemirror/lib/codemirror.css</value>
-                <value>/modules/assets/javascript/codemirror/theme/elegant.css</value>
+                <value>/modules/assets/css/codemirror/theme/elegant.css</value>
             </list>
             <!-- comment out gwt.css and uncomment the following CSS if you are in dev mode and are working on modifying those CSSs
             <list>

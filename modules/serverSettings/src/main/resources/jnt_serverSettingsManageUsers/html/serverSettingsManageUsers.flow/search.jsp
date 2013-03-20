@@ -24,7 +24,12 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $(".needUsersSelection").submit(function () {
-            $("input[name='selectedUsers']").val($("input[name='userSelected']:checked").val());
+            var selected = $("input[name='userSelected']:checked").val();
+            if(undefined==selected) {
+                alert('<fmt:message key="label.user.select.one"/>');
+                return false;
+            }
+            $("input[name='selectedUsers']").val(selected);
             return true;
         })
     });

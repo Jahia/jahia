@@ -1,4 +1,4 @@
-package org.jahia.modules.serversettings.adminproperties;
+package org.jahia.modules.serversettings.users.admin;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;

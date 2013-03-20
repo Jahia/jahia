@@ -8,7 +8,7 @@ import org.jahia.bin.JahiaAdministration;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.modules.serversettings.adminproperties.AdminProperties;
+import org.jahia.modules.serversettings.users.admin.AdminProperties;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;

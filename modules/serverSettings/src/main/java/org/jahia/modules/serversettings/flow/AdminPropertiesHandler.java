@@ -1,7 +1,7 @@
 package org.jahia.modules.serversettings.flow;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.modules.serversettings.adminproperties.AdminProperties;
+import org.jahia.modules.serversettings.users.admin.AdminProperties;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 

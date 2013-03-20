@@ -47,7 +47,7 @@
                 sitebox = sitebox + "&sitebox=" + selectedSites[i];
             }
             $(this).target = "_blank";
-            window.open("/cms/export/default/"+name+ '_export_${now}.zip?exportformat=site&live=false'+sitebox);
+            window.open("/cms/export/default/"+name+ '_staging_export_${now}.zip?exportformat=site&live=false'+sitebox);
         });
 
     })
@@ -108,7 +108,7 @@
         <div>System site</div>
 
         <a href="/cms/export/default/systemsite_export_${now}.zip?exportformat=site&live=true&sitebox=systemsite"><fmt:message key='serverSettings.manageWebProjects.export' /></a>
-        <a href="/cms/export/default/systemsite_export_${now}.zip?exportformat=site&live=false&sitebox=systemsite"><fmt:message key='serverSettings.manageWebProjects.exportStaging' /></a>
+        <a href="/cms/export/default/systemsite_staging_export_${now}.zip?exportformat=site&live=false&sitebox=systemsite"><fmt:message key='serverSettings.manageWebProjects.exportStaging' /></a>
 
     </div>
     <hr/>

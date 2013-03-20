@@ -40,13 +40,13 @@
 
 package org.jahia.services.templates;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 public class SvnSourceControlManagement extends SourceControlManagement {
 
@@ -114,39 +114,44 @@ public class SvnSourceControlManagement extends SourceControlManagement {
     @Override
     protected Map<String, Status> getStatusMap() throws IOException {
         if (statusMap == null) {
-            statusMap = new HashMap<String, Status>();
-            ExecutionResult result = executeCommand("svn", "status");
-            for (String line : result.out.split("\n")) {
-                if (StringUtils.isBlank(line)) {
-                    continue;
-                }
-                String path = line.substring(8);
-                String combinedStatus = line.substring(0, 7);
-                char firstColumn = combinedStatus.charAt(0);
-                Status status = null;
-                if (firstColumn == 'A') {
-                    status = Status.ADDED;
-                } else if (firstColumn == 'C') {
-                    status = Status.UNMERGED;
-                } else if (firstColumn == 'D' || firstColumn == '!') {
-                    status = Status.DELETED;
-                } else if (firstColumn == 'M') {
-                    status = Status.MODIFIED;
-                } else if (firstColumn == '?') {
-                    status = Status.UNTRACKED;
-                }
-                if (status != null) {
-                    statusMap.put(path, status);
-                    String[] pathSegments = path.split("/");
-                    String subPath = "";
-                    for (String segment : pathSegments) {
-                        statusMap.put(subPath, Status.MODIFIED);
-                        if (subPath.isEmpty()) {
-                            subPath = segment;
-                        } else {
-                            subPath += "/" + segment;
+            synchronized (SvnSourceControlManagement.class) {
+                if (statusMap == null) {
+                    Map<String, Status> newMap = new HashMap<String, Status>();
+                    ExecutionResult result = executeCommand("svn", "status");
+                    for (String line : result.out.split("\n")) {
+                        if (StringUtils.isBlank(line)) {
+                            continue;
+                        }
+                        String path = line.substring(8);
+                        String combinedStatus = line.substring(0, 7);
+                        char firstColumn = combinedStatus.charAt(0);
+                        Status status = null;
+                        if (firstColumn == 'A') {
+                            status = Status.ADDED;
+                        } else if (firstColumn == 'C') {
+                            status = Status.UNMERGED;
+                        } else if (firstColumn == 'D' || firstColumn == '!') {
+                            status = Status.DELETED;
+                        } else if (firstColumn == 'M') {
+                            status = Status.MODIFIED;
+                        } else if (firstColumn == '?') {
+                            status = Status.UNTRACKED;
+                        }
+                        if (status != null) {
+                            statusMap.put(path, status);
+                            String[] pathSegments = path.split("/");
+                            String subPath = "";
+                            for (String segment : pathSegments) {
+                                newMap.put(subPath, Status.MODIFIED);
+                                if (subPath.isEmpty()) {
+                                    subPath = segment;
+                                } else {
+                                    subPath += "/" + segment;
+                                }
+                            }
                         }
                     }
+                    statusMap = newMap;
                 }
             }
         }

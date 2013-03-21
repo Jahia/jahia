@@ -136,7 +136,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                         codeField.insertProperty(mirrorTemplates.getValue().getValue());
                     }
                 });
-                HorizontalPanel horizontalPanel = new HorizontalPanel();
+                final HorizontalPanel horizontalPanel = new HorizontalPanel();
                 horizontalPanel.setSpacing(10);
                 horizontalPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
                 Label label = new Label(Messages.get("label.snippetType", "Snippet Type"));
@@ -148,21 +148,27 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                 horizontalPanel.add(label);
                 horizontalPanel.add(mirrorTemplates);
                 horizontalPanel.add(button);
+                horizontalPanel.hide();
                 tab.add(horizontalPanel, new BorderLayoutData(Style.LayoutRegion.NORTH, 40));
 
                 String path = engine.isExistingNode() ? engine.getNode().getPath() : engine.getTargetNode().getPath();
                 String nodeType = typeName != null ? typeName.getValues().get(0).getString() : null;
                 JahiaContentManagementService.App.getInstance().initializeCodeEditor(path, !engine.isExistingNode(), nodeType, stubType, new BaseAsyncCallback<RpcMap>() {
                     public void onSuccess(RpcMap result) {
-                        snippets = (Map<String, List<GWTJahiaValueDisplayBean>>) result.get("snippets");
-                        for (String type : snippets.keySet()) {
-                            snippetType.getStore().add(new GWTJahiaValueDisplayBean(type, Messages.get("label.snippetType." + type, type)));
-                        }
-                        snippetType.setValue(snippetType.getStore().getAt(0));
+                        if (!result.isEmpty()) {
+                            snippets = (Map<String, List<GWTJahiaValueDisplayBean>>) result.get("snippets");
+                            for (String type : snippets.keySet()) {
+                                snippetType.getStore().add(new GWTJahiaValueDisplayBean(type, Messages.get("label.snippetType." + type, type)));
+                            }
+                            snippetType.setValue(snippetType.getStore().getAt(0));
 
-                        if (!engine.getProperties().containsKey(codePropertyName)) {
-                            codeProperty = new GWTJahiaNodeProperty(codePropertyName, (String) result.get("stub"), GWTJahiaNodePropertyType.STRING);
-                            initEditor(tab);
+                            if (!engine.getProperties().containsKey(codePropertyName)) {
+                                codeProperty = new GWTJahiaNodeProperty(codePropertyName, (String) result.get("stub"), GWTJahiaNodePropertyType.STRING);
+                                initEditor(tab);
+                            }
+                            horizontalPanel.show();
+                        } else {
+                            horizontalPanel.hide();
                         }
                     }
                 });

@@ -2391,7 +2391,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
 
         Map<String, Set<String>> availableResources = template.getAvailableResources(getSite().getName());
-        r.put("availableResources", availableResources);
 
         snippetsByType = new ArrayList<GWTJahiaValueDisplayBean>();
         for (Map.Entry<String, String> resourceSnippetEntry : stubHelper.getCodeSnippets(fileType,
@@ -2406,8 +2405,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 }
             }
         }
-        snippets.put("resources", snippetsByType);
-        r.put("snippets", snippets);
+        if (!snippetsByType.isEmpty()|| !snippets.isEmpty()) {
+            r.put("availableResources", availableResources);
+            snippets.put("resources", snippetsByType);
+            r.put("snippets", snippets);
+        }
 
         return r;
     }

@@ -468,7 +468,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.ModulesTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>/modules/$siteKey/$moduleversion/sources</value>
+                                    <value>$site/sources</value>
                                 </list>
                             </property>
                             <property name="folderTypes">
@@ -598,7 +598,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.TemplatesTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>$site/$moduleversion/templates</value>
+                                    <value>$site/templates</value>
                                 </list>
                             </property>
                             <property name="folderTypes">
@@ -714,7 +714,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.ContentBrowseTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>$site/$moduleversion</value>
+                                    <value>$site</value>
                                 </list>
                             </property>
                             <property name="folderTypes">

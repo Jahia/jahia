@@ -4,18 +4,28 @@
          xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
     <modules jcr:primaryType="jnt:modules">
         <serverSettings j:dependencies="default"
-                      j:installedModules="defaultSiteSettings"
+                      j:installedModules="serverSettings"
                       j:moduleType="module"
-                      j:title="Jahia Default Site Settings"
+                      j:title="Jahia Server Settings"
                       jcr:primaryType="jnt:module">
                 
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
-                <files jcr:primaryType="jnt:folder"/>
+                    <files jcr:primaryType="jnt:folder">
+                        <aboutJahia.png j:height="16"
+                               j:width="16"
+                               jcr:mixinTypes="jmix:image"
+                               jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                        </aboutJahia.png>
+                    </files>
                 <contents jcr:primaryType="jnt:contentFolder"/>
                 <serverSettingsBase j:view="serverSettings" jcr:primaryType="jnt:template">
                         <aboutJahia j:applyOn="jnt:globalSettings"
                            j:defaultTemplate="false"
                            j:hiddenTemplate="false"
+                           j:icon="/modules/serverSettings/templates/files/aboutJahia.png"
                                    jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <about-jahia jcr:primaryType="jnt:serverSettingsAboutJahia"/>
@@ -33,6 +43,7 @@
                             <manage-web-projects jcr:primaryType="jnt:serverSettingsManageWebProjects"/>
                         </pagecontent>
                             <j:translation_en jcr:language="en"
+                                    jcr:mixinTypes="mix:title"
                                     jcr:primaryType="jnt:translation"
                                     jcr:title="Web projects settings"/>
                     </webProjectSettings>

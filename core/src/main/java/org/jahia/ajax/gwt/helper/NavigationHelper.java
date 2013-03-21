@@ -341,7 +341,12 @@ public class NavigationHelper {
             // replace $user and $site by the right values
             String displayName = "";
             if (site != null && path.contains("$site/") || path.endsWith("$site")) {
-                path = path.replace("$site", site.getPath());
+                if (StringUtils.startsWith(site.getPath(),"/modules")) {
+                    String moduleName = StringUtils.split(site.getPath(),"/")[1];
+                    path = StringUtils.replace(path,"$site", site.getPath() + "/" + ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName).getVersion().toString());
+                } else {
+                    path = StringUtils.replace(path,"$site", site.getPath());
+                }
 //                if (!path.endsWith("*")) {
 //                    displayName = site.getSiteKey();
 //                }

@@ -152,16 +152,16 @@ public class TemplatesTabItem extends BrowseTabItem {
                     fields.add(GWTJahiaNode.CHILDREN_INFO);
                     fields.add(GWTJahiaNode.ICON);
                     JahiaContentManagementService.App.getInstance()
-                            .getRoot(Arrays.asList(gwtJahiaNode.getPath()+ "/*"), displayedDetailTypes, null, null, fields, null, null, false,
-                                    false, hiddenDetailTypes, null, new AsyncCallback<List<GWTJahiaNode>>() {
+                            .lsLoad(gwtJahiaNode, displayedDetailTypes, null, null, fields, false, 0, 0, false,
+                                    hiddenDetailTypes, null, false, new AsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
                                 @Override
                                 public void onFailure(Throwable caught) {
                                     callback.onFailure(caught);
                                 }
 
                                 @Override
-                                public void onSuccess(List<GWTJahiaNode> nodes) {
-                                    callback.onSuccess(nodes);
+                                public void onSuccess(PagingLoadResult<GWTJahiaNode> nodes) {
+                                    callback.onSuccess(nodes.getData());
                                 }
                             });
                 }
@@ -175,18 +175,6 @@ public class TemplatesTabItem extends BrowseTabItem {
             }
         };
         detailStore = new TreeStore<GWTJahiaNode>(detailLoader);
-        detailStore.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
-            public int compare(Object o1, Object o2) {
-                if (o1 instanceof String && o2 instanceof String) {
-                    String s1 = (String) o1;
-                    String s2 = (String) o2;
-                    return Collator.getInstance().localeCompare(s1, s2);
-                } else if (o1 instanceof Comparable && o2 instanceof Comparable) {
-                    return ((Comparable) o1).compareTo(o2);
-                }
-                return 0;
-            }
-        }));
         detailTree = new TreeGrid<GWTJahiaNode>(detailStore,new ColumnModel(columns));
 
 
@@ -286,6 +274,9 @@ public class TemplatesTabItem extends BrowseTabItem {
     public void doRefresh() {
         tree.getTreeStore().removeAll();
         tree.getTreeStore().getLoader().load();
+        detailTree.getTreeStore().removeAll();
+        detailTree.getTreeStore().getLoader().load();
+        detailLoader.load();
         listLoader.load();
     }
 

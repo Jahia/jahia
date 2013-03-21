@@ -100,6 +100,7 @@ public class RenderContext {
 
     // the current rendering channel, for example "iphone", "ipad", "android", etc...
     private Channel channel = null;
+    private String mode;
 
     public RenderContext(HttpServletRequest request, HttpServletResponse response, JahiaUser user) {
         this.request = request;
@@ -152,18 +153,6 @@ public class RenderContext {
     }
 
     public String getMode() {
-        String mode = StringUtils.substringAfterLast(getServletPath(), "/");
-        if (mode.endsWith("frame")) {
-            mode = StringUtils.substringBefore(mode,"frame");
-        }
-        if ("render".equals(mode)) {
-            if (workspace.equals("live")) {
-                return "live";
-            } else {
-                return "preview";
-            }
-        }
-
         return mode;
     }
 
@@ -186,6 +175,19 @@ public class RenderContext {
     public void setServletPath(String servletPath) {
         this.servletPath = servletPath;
         JCRSessionFactory.getInstance().setCurrentServletPath(servletPath);
+        
+        // compute current mode
+        mode = StringUtils.substringAfterLast(servletPath, "/");
+        if (mode.endsWith("frame")) {
+            mode = StringUtils.substringBefore(mode, "frame");
+        }
+        if ("render".equals(mode)) {
+            if (workspace.equals("live")) {
+                mode = "live";
+            } else {
+                mode = "preview";
+            }
+        }
     }
 
     public String getWorkspace() {

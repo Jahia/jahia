@@ -88,7 +88,7 @@ class JahiaPasswordPolicyManager {
 		SERIALIZER = new XStream(new XppDriver() {
 			@Override
 			public HierarchicalStreamWriter createWriter(Writer out) {
-				return new CompactWriter(out, xmlFriendlyReplacer());
+				return new CompactWriter(out, getNameCoder());
 			}
 		});
 		SERIALIZER.alias("password-policy", JahiaPasswordPolicy.class);

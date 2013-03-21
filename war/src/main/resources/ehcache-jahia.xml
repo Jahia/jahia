@@ -345,7 +345,7 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
             />
 
     <cache
-            name="ExternalIndentifierMapping"
+            name="ExternalIdentifierMapping"
             maxEntriesLocalHeap="100000"
             overflowToDisk="true"
             diskPersistent="true"

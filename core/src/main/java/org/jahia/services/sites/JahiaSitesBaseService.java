@@ -46,14 +46,11 @@
 package org.jahia.services.sites;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.admin.sites.ManageSites;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.templates.ModuleVersion;
-import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.exceptions.JahiaException;
@@ -833,8 +830,6 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         } catch (JahiaException e) {
             if (node != null) {
                 logger.error("Cannot update site " + node.getPath() + " because of " + e.getMessage(),e);
-            }  else {
-                logger.error("Cannot update site - site node is null");
             }
         }
     }

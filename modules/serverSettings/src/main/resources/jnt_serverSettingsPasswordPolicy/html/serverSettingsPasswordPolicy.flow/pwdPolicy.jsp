@@ -18,7 +18,7 @@
     <span style="font-size: larger;"><fmt:message key="label.password.policies"/></span>
 
     <div>
-        <form action='${flowExecutionUrl}' method="post">
+        <form action="${flowExecutionUrl}" method="post">
             <table border="0" cellpadding="5" cellspacing="0" width="100%">
                 <thead>
                 <tr>
@@ -36,16 +36,12 @@
                 <c:forEach items="${jahiaPasswordPolicy.rules}" var="rule" varStatus="rlzStatus">
                     <tr>
                         <td align="center">
-                            <input type="checkbox" name="rules[<c:out value='${rlzStatus.index}'/>].active"
-                            <c:if test="${rule.active}">
-                                checked="checked"
-                            </c:if>
-                            value="true"/>
+                            <input type="checkbox" id="pwd-rule-${rlzStatus.index}" name="rules[<c:out value='${rlzStatus.index}'/>].active" value="true" ${rule.active ? 'checked="checked"' : ''}/>
                             <input type="hidden" name="_rules[<c:out value='${rlzStatus.index}'/>].active"/>
                         </td>
                         <c:set var="i18nKey" value='org.jahia.admin.passwordPolicies.rule.${rule.name}'/>
                         <td>
-                            <fmt:message key='${i18nKey}'/>
+                            <label for="pwd-rule-${rlzStatus.index}"><fmt:message key='${i18nKey}'/></label>
                         </td>
                         <td>
                             <table width="100%">
@@ -65,7 +61,7 @@
                     </tr>
                 </c:forEach>
             </table>
-            <input type="submit" name="_eventId_submitPwdPolicy" value="<fmt:message key="org.jahia.admin.saveChanges.label"/>"/>
+            <input type="submit" name="_eventId_submitPwdPolicy" value="<fmt:message key='org.jahia.admin.saveChanges.label'/>"/>
         </form>
     </div>
 </div>

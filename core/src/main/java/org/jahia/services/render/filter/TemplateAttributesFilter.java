@@ -56,6 +56,7 @@ import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -65,6 +66,8 @@ import java.util.Map;
  * Time: 3:59:45 PM
  */
 public class TemplateAttributesFilter extends AbstractFilter {
+
+    public static final String FORCED_LOCALE_ATTRIBUTE = "org.jahia.utils.i18n.forceLocale";
 
     public String prepare(RenderContext context, Resource resource, RenderChain chain) throws Exception {
         JCRNodeWrapper node = resource.getNode();
@@ -91,12 +94,13 @@ public class TemplateAttributesFilter extends AbstractFilter {
         }
 
         Script script = (Script) request.getAttribute("script");
+        Locale locale = (Locale) request.getAttribute(FORCED_LOCALE_ATTRIBUTE);
         chain.pushAttribute(
                 context.getRequest(),
                 Config.FMT_LOCALIZATION_CONTEXT + ".request",
                 new LocalizationContext(ResourceBundles.get(context.getSite().getTemplatePackage()
                         .getResourceBundleName(), script.getView().getModule(),
-                        resource.getLocale())));
+                        locale != null ? locale : resource.getLocale())));
         return null;
     }
 

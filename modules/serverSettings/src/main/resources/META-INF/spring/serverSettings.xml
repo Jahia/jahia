@@ -4,4 +4,11 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <bean name="mailSettingsValidator" class="org.jahia.modules.serversettings.flow.validator.MailSettingsValidator"/>
+    
+    <bean name="ForceUILocaleForAdminFilter" class="org.jahia.services.render.filter.ForceUILocaleFilter">
+        <property name="priority" value="29" /><!-- should be before TemplateAttributesFilter which currently has a priority of 30 -->
+        <property name="description" value="Forces the usage of the UI locale in server administration views"/>
+        <property name="applyOnModes" value="admin"/>
+        <property name="applyOnConfigurations" value="page,include"/>
+    </bean>
 </beans>

@@ -8,7 +8,8 @@ import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import java.io.Serializable;
 
 public class AdminPropertiesHandler implements Serializable {
-
+    private static final long serialVersionUID = -1665000223980422529L;
+    
     private AdminProperties adminProperties;
 
     /**

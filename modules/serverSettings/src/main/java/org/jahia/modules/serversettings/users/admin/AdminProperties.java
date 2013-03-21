@@ -15,11 +15,10 @@ import java.util.Properties;
 
 /**
  * Bean to handle Admin properties flow.
- * User: david
- * Date: 3/12/13
- * Time: 2:15 PM
+ * @author david
  */
 public class AdminProperties implements Serializable {
+    private static final long serialVersionUID = -6704900404057859326L;
 
     private String firstName;
     private String lastName;

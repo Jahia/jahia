@@ -13,10 +13,10 @@ import java.util.*;
 
 /**
  * Init class for cache management
- * User: david
- * Date: 3/19/13
+ * @author david
  */
 public class CacheManagerHandler implements Serializable {
+    private static final long serialVersionUID = 8547213229629335665L;
 
     private Map<String, List<SerializedCacheManager>> managersMap;
     private String sizeMemory;
@@ -133,6 +133,7 @@ public class CacheManagerHandler implements Serializable {
      * Serializable implementation of the cache manager to be able to read it from the flow
      */
     public class SerializedCacheManager implements Serializable {
+        private static final long serialVersionUID = -5349727732290619923L;
         private String config;
         private boolean overflowToDisk;
         private String calculateInMemorySize;

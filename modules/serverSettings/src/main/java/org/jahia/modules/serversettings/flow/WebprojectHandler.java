@@ -7,7 +7,6 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.modules.serversettings.users.admin.AdminProperties;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRObservationManager;
@@ -52,6 +51,8 @@ import java.util.zip.ZipInputStream;
  * Handle creation of webprojects in webflow
  */
 public class WebprojectHandler implements Serializable {
+    private static final long serialVersionUID = -6643519526225787438L;
+
     private static Logger logger = LoggerFactory.getLogger(WebprojectHandler.class);
 
     private static final HashSet<String> NON_SITE_IMPORTS = new HashSet<String>(Arrays.asList("serverPermissions.xml",
@@ -761,6 +762,7 @@ public class WebprojectHandler implements Serializable {
     }
 
     public class SiteBean implements Serializable {
+        private static final long serialVersionUID = 2151226556427659305L;
         private String siteKey = "mySite";
         private String title = "My Site";
         private String serverName = "localhost";
@@ -914,6 +916,7 @@ public class WebprojectHandler implements Serializable {
 
     public class ImportInfo implements Serializable {
 
+        private static final long serialVersionUID = 1156948970758806329L;
         private File fileToBeImported;
         private boolean selected;
         private String importFileName;

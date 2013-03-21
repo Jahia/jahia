@@ -23,7 +23,7 @@
                 <thead>
                 <tr>
                     <th width="7%">
-                        <fmt:message key="org.jahia.admin.passwordPolicies.active.label"/>
+                        <fmt:message key="label.password.policies.active"/>
                     </th>
                     <th width="50%">
                         <fmt:message key="label.name"/>

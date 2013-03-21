@@ -138,7 +138,7 @@ public class SvnSourceControlManagement extends SourceControlManagement {
                             status = Status.UNTRACKED;
                         }
                         if (status != null) {
-                            statusMap.put(path, status);
+                            newMap.put(path, status);
                             String[] pathSegments = path.split("/");
                             String subPath = "";
                             for (String segment : pathSegments) {

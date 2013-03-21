@@ -567,6 +567,10 @@ public class JahiaNodeIndexer extends NodeIndexer {
                         .getParentId());
                 jcrPath = resolver.getJCRPath(hierarchyMgr.getPath(node.getNodeId()));
             }
+        } catch (NoSuchItemStateException e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(e.getMessage(), e);
+            }
         } catch (ItemStateException e) {
             logger.error(e.getMessage(), e);
         } catch (RepositoryException e) {

@@ -18,12 +18,12 @@
             </set>
         </property>
         <property name="skipMainModuleTypesDomParsing">
-            <list>
+            <set>
                 <value>jnt:editableFile</value>
-            </list>
+            </set>
         </property>
         <property name="defaultUrlMapping" value="/cms/admin"/>
-        <property name="defaultLocation" value="/settings.manageModules.html"/>
+        <property name="defaultLocation" value="/settings.aboutJahia.html"/>
         <property name="sitesLocation" value="/sites/systemsite"/>
         <property name="topToolbar">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">

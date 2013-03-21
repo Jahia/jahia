@@ -53,9 +53,9 @@
             <!--</set>-->
         <!--</property>-->
         <property name="skipMainModuleTypesDomParsing">
-            <list>
+            <set>
                 <value>jnt:editableFile</value>
-            </list>
+            </set>
         </property>
         <property name="defaultUrlMapping" value="/cms/studio"/>
         <property name="defaultLocation" value="/settings.manageModules.html"/>

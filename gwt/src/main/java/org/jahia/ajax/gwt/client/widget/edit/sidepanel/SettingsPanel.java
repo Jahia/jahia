@@ -186,7 +186,7 @@ public class SettingsPanel implements Serializable {
         treeContainer.add(settingsTree);
 
         settingsTree.setHideHeaders(true);
-        settingsTree.setAutoExpand(true);
+        settingsTree.setAutoExpand(false);
         final String path = settingPath.replaceAll("\\$site",JahiaGWTParameters.getSiteNode().getPath());
         // get List of site settings
         settingsTree.setSelectionModel(new TreeGridSelectionModel<GWTJahiaNode>() {

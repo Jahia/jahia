@@ -156,13 +156,6 @@
                                 </pagecontent>
                             </reportAnIssue>
                         </system-health>
-                        <web-projects j:hiddenTemplate="false" jcr:primaryType="jnt:template">
-                            <j:translation_en jcr:language="en"
-                                    jcr:mixinTypes="mix:title"
-                                    jcr:primaryType="jnt:translation"
-                                    jcr:title="Web projects"/>
-                            <pagecontent jcr:primaryType="jnt:contentList"/>
-                        </web-projects>
                 </serverSettingsBase>
             </templates>
                 <portlets jcr:primaryType="jnt:portletFolder"/>

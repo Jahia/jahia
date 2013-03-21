@@ -122,6 +122,7 @@ package org.jahia.params;
 
 import org.jahia.utils.Url;
 import org.slf4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaInterface;
 import org.jahia.exceptions.JahiaException;
@@ -193,7 +194,7 @@ public class ProcessingContext {
     public static final String SESSION_JAHIA_RUNNING_MODE = "org.jahia.bin.jahiarunningmode";
     public static final String SESSION_JAHIA_ENGINEMAP = "jahia_session_engineMap";
     public static final String SESSION_LOCALE = "org.jahia.services.multilang.currentlocale";
-    public static final String SESSION_UI_LOCALE = "org.jahia.services.multilang.uilocale";
+    public static final String SESSION_UI_LOCALE = Constants.SESSION_UI_LOCALE;
     public static final String SESSION_BACKUP = "org.jahia.session.backup";
     public static final String SESSION_LOCALE_ENGINE = "org.jahia.services.multilang.currentlocaleforengine";
 

@@ -134,7 +134,7 @@ import java.util.*;
  */
 public class JahiaCndReader {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaCndReader.class);
-    
+
     protected String systemId;
     protected String filename;
 
@@ -175,10 +175,10 @@ public class JahiaCndReader {
         }
         return false;
     }
-    
+
     /**
      * Returns the parsed property type or <code>-1</code> if the type is not recognized.
-     * 
+     *
      * @param token
      *            the token to parse property type from
      * @return the parsed property type or <code>-1</code> if the type is not recognized
@@ -217,7 +217,7 @@ public class JahiaCndReader {
 
     /**
      * Returns the parsed selector type or <code>-1</code> if the selector is not recognized.
-     * 
+     *
      * @param token
      *            the token to parse property type from
      * @return the parsed selector type or <code>-1</code> if the selector is not recognized
@@ -299,7 +299,7 @@ public class JahiaCndReader {
                 nodeTypesList.add(ntd);
             } catch (ParseException e) {
                 logger.error(e.getMessage(), e);
-                nextToken();    
+                nextToken();
                 while (!currentTokenEquals(Lexer.BEGIN_NODE_TYPE_NAME) && !currentTokenEquals(Lexer.EOF)) {
                     nextToken();
                 }
@@ -322,7 +322,7 @@ public class JahiaCndReader {
         }
 
     }
-    
+
     /**
      * processes the namespace declaration
      *
@@ -633,7 +633,7 @@ public class JahiaCndReader {
                 } else {
                     lexer.fail("Invalid value for tokenizer " + currentToken);
                 }
-                
+
             } else if (currentTokenEquals(Lexer.SORTABLE)) {
                 // deprecated , use NOQUERYORDER
                 pdi.setQueryOrderable(true);
@@ -885,7 +885,7 @@ public class JahiaCndReader {
             } else if (currentTokenEquals(Lexer.PROTECTED)) {
                 ndi.setProtected(true);
             } else if (currentTokenEquals(Lexer.MULTIPLE) /*|| currentTokenEquals(Lexer.SNS)*/) {
-                ndi.setAllowsSameNameSiblings(true);                
+                ndi.setAllowsSameNameSiblings(true);
             } else if (currentTokenEquals(Lexer.COPY)) {
                 ndi.setOnParentVersion(OnParentVersionAction.COPY);
             } else if (currentTokenEquals(Lexer.VERSION)) {
@@ -1004,7 +1004,7 @@ public class JahiaCndReader {
     protected Name parseName(String name) throws ParseException {
         Name res = new Name(name, registry.getNamespaces());
         if (!StringUtils.isEmpty(res.getPrefix()) && res.getUri() == null) {
-            lexer.fail("Cannot parse name");
+            lexer.fail("Cannot parse name: " + name);
         }
         return res;
     }

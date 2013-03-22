@@ -40,6 +40,10 @@
 
 package org.jahia.bin;
 
+import net.htmlparser.jericho.Element;
+import net.htmlparser.jericho.HTMLElementName;
+import net.htmlparser.jericho.OutputDocument;
+import net.htmlparser.jericho.Source;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.FilenameUtils;
@@ -134,6 +138,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String MARK_FOR_DELETION = "jcrMarkForDeletion";
     public static final String MARK_FOR_DELETION_MESSAGE = "jcrDeletionMessage";
     public static final String PREVIEW_DATE = "prevdate";
+    public static final String DISABLE_XSS_FILTERING = "disableXSSFiltering";
 
     private static final List<String> REDIRECT_CODE_MOVED_PERMANENTLY = new ArrayList<String>(
             Arrays.asList(new String[]{String.valueOf(HttpServletResponse.SC_MOVED_PERMANENTLY)}));
@@ -182,6 +187,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         reservedParameters.add(COOKIE_PATH);
         reservedParameters.add(CONTRIBUTE_POST);
         reservedParameters.add(MARK_FOR_DELETION);
+        reservedParameters.add(DISABLE_XSS_FILTERING);
     }
 
     private transient ServletConfig servletConfig;
@@ -392,12 +398,41 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     private Map<String, List<String>> toParameterMapOfListOfString(HttpServletRequest req) {
         Map<String, List<String>> parameters = new HashMap<String, List<String>>();
-        for (Object key : req.getParameterMap().keySet()) {
+        Map parameterMap = req.getParameterMap();
+        boolean doXSSFilter = !parameterMap.containsKey(DISABLE_XSS_FILTERING) || !"true".equals(((String[]) parameterMap.get(DISABLE_XSS_FILTERING))[0]);
+        for (Object key : parameterMap.keySet()) {
             if (key != null) {
-                parameters.put((String) key, new ArrayList<String>(Arrays.asList((String[]) req.getParameterMap().get(key))));
+                String[] parameterValues = (String[]) parameterMap.get(key);
+                List<String> stringList;
+                if (doXSSFilter && !reservedParameters.contains(key)) {
+                    stringList =  new ArrayList<String>();
+                    for (String s : parameterValues) {
+                        stringList.add(xssFilter(s));
+                    }
+                } else {
+                    stringList = new ArrayList<String>(Arrays.asList(parameterValues));
+                }
+                parameters.put((String) key, stringList);
             }
         }
         return parameters;
+    }
+
+    private String xssFilter(String stringValue) {
+        Source source = new Source(stringValue);
+        OutputDocument outputDocument = new OutputDocument(source);
+        List<Element> elements = source.getAllElements();
+
+        for (Element element : elements) {
+            if (HTMLElementName.SCRIPT.equals(element.getName())) {
+                outputDocument.remove(element.getStartTag());
+                if (!element.getStartTag().isSyntacticalEmptyElementTag()) {
+                    outputDocument.remove(element.getEndTag());
+                }
+            }
+        }
+
+        return outputDocument.toString();
     }
 
     private boolean checkForUploadedFiles(HttpServletRequest req, HttpServletResponse resp, String workspace,

@@ -50,8 +50,6 @@
 
 package org.jahia.services.sites;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -257,11 +255,7 @@ public class JahiaSite implements Serializable {
     }
 
     public List<String> getInstalledModules() {
-        List<String> l = new ArrayList<String>();
-        for (String installedModule : installedModules) {
-            l.add(StringUtils.substringBefore(installedModule,":"));
-        }
-        return l;
+        return new ArrayList<String>(installedModules);
     }
 
 
@@ -370,7 +364,7 @@ public class JahiaSite implements Serializable {
 
     public int hashCode() {
         // fix for PEU-77 (by PELTIER Olivier)
-        return new HashCodeBuilder().append(mSiteID).toHashCode();
+        return 17 * 37 + mSiteID;
     }
 
     /**

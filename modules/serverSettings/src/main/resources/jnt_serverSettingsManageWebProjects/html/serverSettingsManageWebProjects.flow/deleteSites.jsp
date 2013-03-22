@@ -8,7 +8,7 @@
 <p><fmt:message key="label.confirmContinue"/></p>
 <p style="color: red; font-weight: bold;"><fmt:message key="serverSettings.manageWebProjects.delete.warning"/></p>
 <form action="${flowExecutionUrl}" method="post">
-<table>
+<table border="1" cellpadding="5" cellspacing="0">
         <tr>
             <th>
                 <fmt:message key="serverSettings.manageWebProjects.webProject.title" />
@@ -35,7 +35,7 @@
         </c:forEach>
 
 </table>
-<input type="button" name="_eventId_cancel" value="<fmt:message key='label.cancel' />"/>
+<input type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel' />"/>
 <input type="submit" name="_eventId_deleteSitesConfirmed" value="<fmt:message key='label.delete' />"/>
 </form>
 

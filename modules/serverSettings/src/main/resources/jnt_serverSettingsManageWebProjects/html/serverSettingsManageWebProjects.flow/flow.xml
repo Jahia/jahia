@@ -9,11 +9,16 @@
 
     <view-state id="view" model="webprojectHandler">
 
-        <transition on="createSite" to="createSite" >
+        <transition on="createSite" to="createSite">
             <set name="flowScope.siteBean" value="webprojectHandler.newSite"/>
             <set name="flowScope.siteBean.language" value="externalContext.requestMap.currentResource.locale.toString()" />
         </transition>
 
+        <transition on="editSite" to="editSite" >
+            <set name="flowScope.selectedSite" value="webprojectHandler.getSites().get(0)"/>
+            <set name="flowScope.siteBean" value="webprojectHandler.selectedSiteBean"/>
+        </transition>
+        
         <transition on="exportSites">
             <evaluate expression="webprojectHandler.exportSites(flowRequestContext)"/>
         </transition>
@@ -77,6 +82,16 @@
 
     <end-state id="siteCreated"/>
 
+    <view-state id="editSite" model="siteBean">
+        <!-- edit site -->    
+        <transition on="next" to="updateSite" />
+        <transition on="cancel" to="view" validate="false" />
+    </view-state>
+    <action-state id="updateSite" >
+        <evaluate expression="webprojectHandler.updateSite(siteBean, messageContext)"/>
+        <transition to="view" />
+    </action-state>
+    
     <!-- Site delete -->
 
     <view-state id="deleteSites">

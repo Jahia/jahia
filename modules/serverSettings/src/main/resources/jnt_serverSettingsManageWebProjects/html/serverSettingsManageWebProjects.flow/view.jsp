@@ -13,14 +13,21 @@
 <jsp:useBean id="nowDate" class="java.util.Date" />
 <fmt:formatDate value="${nowDate}" pattern="yyyy-MM-dd-HH-mm" var="now"/>
 <script type="text/javascript">
-    function submitSiteForm(act) {
+    function submitSiteForm(act, site) {
+    	if (typeof site != 'undefined') {
+    		$("<input type='hidden' name='sites' />").attr("value", site).appendTo('#sitesForm');
+    	} else {
+    		$("#sitesForm input:checkbox[name='selectedSites']:checked").each(function() {
+    			$("<input type='hidden' name='sites' />").attr("value", $(this).val()).appendTo('#sitesForm');
+    		});
+    	}
     	$('#sitesFormAction').val(act);
     	$('#sitesForm').submit();
     }
     $(document).ready(function () {
     	$("a.sitesAction").click(function () {
     		var act=$(this).attr('id');
-    		if (act != 'createSite' && $("#sitesForm input:checkbox[name='sites']:checked").length == 0) {
+    		if (act != 'createSite' && $("#sitesForm input:checkbox[name='selectedSites']:checked").length == 0) {
         		<fmt:message key="serverSettings.manageWebProjects.noWebProjectSelected" var="i18nNoSiteSelected"/>
         		alert("${functions:escapeJavaScript(i18nNoSiteSelected)}");
     			return false;
@@ -30,7 +37,7 @@
     	});
         $("#exportSites").click(function (){
             var selectedSites = [];
-            var checkedSites = $("input[name='sites']:checked");
+            var checkedSites = $("input[name='selectedSites']:checked");
             checkedSites.each(function(){
                 selectedSites.push($(this).val());
             });
@@ -49,7 +56,7 @@
 
         $("#exportStagingSites").click(function (){
             var selectedSites = [];
-            var checkedSites = $("input[name='sites']:checked");
+            var checkedSites = $("input[name='selectedSites']:checked");
             checkedSites.each(function(){
                 selectedSites.push($(this).val());
             });
@@ -80,6 +87,11 @@
 
     <fieldset>
         <legend><fmt:message key="org.jahia.admin.site.ManageSites.virtualSitesListe.label"/></legend>
+        
+        <c:forEach var="msg" items="${flowRequestContext.messageContext.allMessages}">
+            <div class="${msg.severity == 'ERROR' ? 'validationError' : ''}" style="color: ${msg.severity == 'ERROR' ? 'red' : 'blue'};">${fn:escapeXml(msg.text)}</div>
+        </c:forEach>
+    
         <table border="1" cellpadding="5" cellspacing="0">
 
             <tr>
@@ -102,12 +114,11 @@
                 </th>
             </tr>
 
-            <input name="_sites" type="hidden"/>
-             <jcr:sql var="siteQuery" sql="select * from [jnt:virtualsite] where isdescendantnode('/sites') and localname()<>'systemsite' order by [j:title]"/>
+            <jcr:sql var="siteQuery" sql="select * from [jnt:virtualsite] where isdescendantnode('/sites') and localname()<>'systemsite' order by [j:title]"/>
             <c:forEach items="${siteQuery.nodes}" var="site" varStatus="loopStatus">
                 <c:if test="${site.name ne 'systemsite'}">
                     <tr>
-                        <td><input name="sites" type="checkbox" value="${site.name}"/></td>
+                        <td><input name="selectedSites" type="checkbox" value="${site.name}"/></td>
                         <td>
                             ${loopStatus.index + 1}
                             <c:if test="${site.identifier == defaultSite.string}">
@@ -116,12 +127,31 @@
                                      width="10" height="10" border="0" alt="+"/>
                             </c:if>
                         </td>
-                        <td>${fn:escapeXml(site.title)}</td>
+                        <td><a href="#edit" onclick="submitSiteForm('editSite', '${site.name}'); return false;">${fn:escapeXml(site.title)}</a></td>
                         <td>${fn:escapeXml(site.name)}</td>
                         <td>${fn:escapeXml(site.serverName)}</td>
                         <td title="${fn:escapeXml(site.templatePackageName)}">${fn:escapeXml(site.templateFolder)}</td>
                         <td>
-                        &nbsp;
+                            <c:set var="i18nExportStaging"><fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)</c:set>
+                            <c:set var="i18nExportStaging" value="${fn:escapeXml(i18nExportStaging)}"/>
+                            <c:url var="editUrl" value="/cms/edit/default/${site.defaultLanguage}${site.home.path}.html"/>
+                            <a href="${editUrl}"><img
+                                    src="<c:url value='/css/images/andromeda/icons/arrow_right_green.png'/>"
+                                    alt="<fmt:message key='org.jahia.admin.exit.label'/>" title="<fmt:message key='org.jahia.admin.exit.label'/>" width="16" height="16" border="0"/></a>
+                            <a href="#edit" onclick="submitSiteForm('editSite', '${site.name}'); return false;"><img
+                                    src="<c:url value='/engines/images/icons/admin/adromeda/edit.png'/>"
+                                    alt="<fmt:message key='label.edit'/>" title="<fmt:message key='label.edit'/>" width="16" height="16" border="0"/></a>
+                            <%--
+                            <a href="#edit" onclick="submitSiteForm('exportSites', '${site.name}'); return false;"><img
+                                    src="<c:url value='/css/images/andromeda/icons/export1.png'/>"
+                                    alt="<fmt:message key='label.export'/>" title="<fmt:message key='label.export'/>" width="16" height="16" border="0"/></a>
+                            <a href="#edit" onclick="submitSiteForm('exportStagingSites', '${site.name}'); return false;"><img
+                                    src="<c:url value='/css/images/andromeda/icons/export2.png'/>"
+                                    alt="${i18nExportStaging}" title="${i18nExportStaging}" width="16" height="16" border="0"/></a>
+                             --%>
+                            <a href="#delete" onclick="submitSiteForm('deleteSites', '${site.name}'); return false;"><img
+                                    src="<c:url value='/engines/images/icons/admin/adromeda/delete.png'/>"
+                                    alt="<fmt:message key='label.delete'/>" title="<fmt:message key='label.delete'/>" width="16" height="16" border="0"/></a>
                         </td>
                     </tr>
                 </c:if>

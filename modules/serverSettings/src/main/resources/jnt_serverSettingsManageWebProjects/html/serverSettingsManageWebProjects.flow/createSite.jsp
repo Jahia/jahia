@@ -14,7 +14,7 @@
     </div>
 </c:if>
 
-<form action="${flowExecutionUrl}" method="POST">
+<form id="createSiteForm" action="${flowExecutionUrl}" method="POST">
     <fmt:message key="serverSettings.manageWebProjects.createWebProject"/>
 
     <fieldset>
@@ -51,6 +51,6 @@
         </div>
     </fieldset>
 
-    <input type="button" name="_eventId_cancel" value="<fmt:message key='label.cancel' />"/>
+    <input type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel' />"/>
     <input type="submit" name="_eventId_next" value="<fmt:message key='label.next'/>"/>
 </form>

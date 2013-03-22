@@ -376,6 +376,8 @@
                 <value type="java.lang.String">mix:simpleVersionable</value>
                 <value type="java.lang.String">mix:versionable</value>
                 <value type="java.lang.String">nt:base</value>
+                <value type="java.lang.String">jnt:acl</value>
+                <value type="java.lang.String">jnt:translation</value>
             </set>
         </property>
         <property name="showHidden" value="false"/>

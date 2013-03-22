@@ -7,6 +7,7 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.modules.serversettings.users.admin.AdminProperties;
+import org.jahia.modules.serversettings.users.management.UserProperties;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRObservationManager;
@@ -40,6 +41,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.webflow.execution.RequestContext;
 
 import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -190,8 +194,8 @@ public class WebprojectHandler implements Serializable {
             }
 
             if (bean.createAdmin) {
-                AdminProperties admin = bean.getAdminProperties();
-                JahiaUser adminSiteUser = userManagerService.createUser(admin.getUserName(), admin.getPassword(),
+                UserProperties admin = bean.getAdminProperties();
+                JahiaUser adminSiteUser = userManagerService.createUser(admin.getUsername(), admin.getPassword(),
                         admin.getUserProperties());
                 groupManagerService.getAdministratorGroup(site.getSiteKey()).addMember(adminSiteUser);
             }
@@ -232,41 +236,54 @@ public class WebprojectHandler implements Serializable {
     }
 
     public void exportSites(RequestContext requestContext) {
-        /*HttpServletResponse response = (HttpServletResponse) requestContext.getExternalContext().getNativeResponse();
-        HttpServletRequest request = (HttpServletRequest) requestContext.getExternalContext().getNativeRequest();
-        response.reset();
-        response.setContentType("application/zip");
+//        HttpServletResponse response = (HttpServletResponse) requestContext.getExternalContext().getNativeResponse();
+//        HttpServletRequest request = (HttpServletRequest) requestContext.getExternalContext().getNativeRequest();
+//        RenderContext renderContext = (RenderContext) request.getAttribute("renderContext");
+//        renderContext.setRedirect("/cms/export/default/my_export.zip?exportformat=site&live=true&sitebox=mySite");
+//        return;
+        
+        //"localhost:8080/cms/export/default/my_export.zip?exportformat=site&live=true&sitebox=mySite"
+//        response.reset();
+        //response.setContentType("application/zip");
+//        response.setContentType("text/plain");
         //make sure this file is not cached by the client (or a proxy middleman)
-        WebUtils.setNoCacheHeaders(response);
-        Map<String,Object> params = new LinkedHashMap<String, Object>();
-        params.put(ImportExportService.INCLUDE_ALL_FILES, Boolean.TRUE);
-        params.put(ImportExportService.INCLUDE_TEMPLATES, Boolean.TRUE);
-        params.put(ImportExportService.INCLUDE_SITE_INFOS, Boolean.TRUE);
-        params.put(ImportExportService.INCLUDE_DEFINITIONS, Boolean.TRUE);
-        if (request.getParameter("live") == null || Boolean.valueOf(request.getParameter("live"))) {
-            params.put(ImportExportService.INCLUDE_LIVE_EXPORT, Boolean.TRUE);
-        }
-//                    if (request.getParameter("users") == null || Boolean.valueOf(request.getParameter("users"))) {
-        params.put(ImportExportService.INCLUDE_USERS, Boolean.TRUE);
-//                    }
-        params.put(ImportExportService.INCLUDE_ROLES, Boolean.TRUE);
-        params.put(ImportExportService.VIEW_WORKFLOW, Boolean.TRUE);
-        params.put(ImportExportService.XSL_PATH, cleanupXsl);
-
-        try {
-            OutputStream outputStream = response.getOutputStream();
-            importExportBaseService.exportSites(outputStream, params, sites);
-            outputStream.close();
-            requestContext.getExternalContext().recordResponseComplete();
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        } catch (SAXException e) {
-            logger.error(e.getMessage(), e);
-        } catch (TransformerException e) {
-            logger.error(e.getMessage(), e);
-        }*/
+//        WebUtils.setNoCacheHeaders(response);
+//        try {
+//            response.getWriter().append("Here is a test text");
+//            response.getWriter().flush();
+//        } catch (IOException e) {
+//            logger.error(e.getMessage(), e);
+//        }
+        
+//        Map<String,Object> params = new LinkedHashMap<String, Object>();
+//        params.put(ImportExportService.INCLUDE_ALL_FILES, Boolean.TRUE);
+//        params.put(ImportExportService.INCLUDE_TEMPLATES, Boolean.TRUE);
+//        params.put(ImportExportService.INCLUDE_SITE_INFOS, Boolean.TRUE);
+//        params.put(ImportExportService.INCLUDE_DEFINITIONS, Boolean.TRUE);
+//        if (request.getParameter("live") == null || Boolean.valueOf(request.getParameter("live"))) {
+//            params.put(ImportExportService.INCLUDE_LIVE_EXPORT, Boolean.TRUE);
+//        }
+////                    if (request.getParameter("users") == null || Boolean.valueOf(request.getParameter("users"))) {
+//        params.put(ImportExportService.INCLUDE_USERS, Boolean.TRUE);
+////                    }
+//        params.put(ImportExportService.INCLUDE_ROLES, Boolean.TRUE);
+//        params.put(ImportExportService.VIEW_WORKFLOW, Boolean.TRUE);
+//        params.put(ImportExportService.XSL_PATH, cleanupXsl);
+//
+//        try {
+//            OutputStream outputStream = response.getOutputStream();
+//            importExportBaseService.exportSites(outputStream, params, sites);
+//            outputStream.close();
+//            requestContext.getExternalContext().recordResponseComplete();
+//        } catch (IOException e) {
+//            logger.error(e.getMessage(), e);
+//        } catch (RepositoryException e) {
+//            logger.error(e.getMessage(), e);
+//        } catch (SAXException e) {
+//            logger.error(e.getMessage(), e);
+//        } catch (TransformerException e) {
+//            logger.error(e.getMessage(), e);
+//        }
     }
 
     public void prepareImport(MessageContext messageContext) {
@@ -827,7 +844,8 @@ public class WebprojectHandler implements Serializable {
 
         public AdminProperties getAdminProperties() {
             if (adminProperties == null) {
-                adminProperties = new AdminProperties(siteKey + "-admin");
+                adminProperties = new AdminProperties();
+                adminProperties.setUsername(siteKey + "-admin");
             }
             return adminProperties;
         }
@@ -840,12 +858,25 @@ public class WebprojectHandler implements Serializable {
             return templateSet;
         }
 
+        public JahiaTemplatesPackage getTemplateSetPackage() {
+            return templateManagerService.getTemplatePackageByFileName(templateSet);
+        }
+
         public void setTemplateSet(String templateSet) {
             this.templateSet = templateSet;
         }
 
         public List<String> getModules() {
             return modules;
+        }
+        
+        public List<JahiaTemplatesPackage> getModulePackages() {
+            List<JahiaTemplatesPackage> packs = new LinkedList<JahiaTemplatesPackage>();
+            for (String module : modules) {
+                packs.add(templateManagerService.getTemplatePackageByFileName(module));
+            }
+
+            return packs;
         }
 
         public void setModules(List<String> modules) {

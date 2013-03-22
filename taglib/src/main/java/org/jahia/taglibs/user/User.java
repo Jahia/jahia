@@ -130,21 +130,24 @@ public class User {
                 .getJahiaUserManagerService().lookupUser(user);
     }
 
-    public static Map<String, JahiaGroup> getUserMembership(JCRNodeWrapper user) {
+    public static Map<String, JahiaGroup> getUserMembership(String username) {
         Map<String, JahiaGroup> map = new LinkedHashMap<String, JahiaGroup>();
-        final JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(
-                user.getName());
+        final JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
         final JahiaGroupManagerService managerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         final List<String> userMembership = managerService.getUserMembership(
                 jahiaUser);
         for (String groupName : userMembership) {
-            final JahiaGroup group = managerService.lookupGroup(groupName);
             if(!groupName.equals(JahiaGroupManagerService.GUEST_GROUPNAME) &&
                     !groupName.equals(JahiaGroupManagerService.USERS_GROUPNAME)) {
+                final JahiaGroup group = managerService.lookupGroup(groupName);
                 map.put(groupName,group);
             }
         }
         return map;
+    }
+
+    public static Map<String, JahiaGroup> getUserMembership(JCRNodeWrapper user) {
+        return getUserMembership(user.getName());
     }
 
     /**

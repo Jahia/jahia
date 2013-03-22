@@ -39,17 +39,18 @@
 
     <view-state id="createSite" model="siteBean">
         <transition on="next" to="createSiteAdministratorConditionNext" />
+        <transition on="cancel" to="view" validate="false" />
     </view-state>
 
     <decision-state id="createSiteAdministratorConditionNext" >
-        <if test="siteBean.createAdmin" then="adminPropertiesForm" else="createSiteSelectModules" />
+        <if test="siteBean.createAdmin" then="siteAdminPropertiesForm" else="createSiteSelectModules" />
     </decision-state>
 
     <decision-state id="createSiteAdministratorConditionPrevious" >
-        <if test="siteBean.createAdmin" then="adminPropertiesForm" else="createSite" />
+        <if test="siteBean.createAdmin" then="siteAdminPropertiesForm" else="createSite" />
     </decision-state>
 
-    <view-state id="adminPropertiesForm" model="siteBean.adminProperties">
+    <view-state id="siteAdminPropertiesForm" model="siteBean.adminProperties">
         <transition on="previous" to="createSite" />
         <transition on="next" to="createSiteSelectModules" />
     </view-state>

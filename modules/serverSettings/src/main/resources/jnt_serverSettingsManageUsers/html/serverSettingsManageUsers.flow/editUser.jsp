@@ -42,17 +42,17 @@
             <input name="organization" id="organization" value="${userProperties.organization}"><br/>
         </fieldset>
         <fieldset title="<fmt:message key='label.user.password'/>">
-            <span style="font-size: small;"><fmt:message key="label.user.edit.password.no.change"/></span><br/>
+            <span style="font-size: small;">(<fmt:message key="label.user.edit.password.no.change"/>)</span><br/>
             <label for="password"><fmt:message key="label.password"/></label>
             <input type="password" name="password" id="password" value=""><br/>
             <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
             <input type="password" name="passwordConfirm" id="passwordConfirm" value=""><br/>
         </fieldset>
         <fieldset title="<fmt:message key='label.user.options'/>">
-            <label for="emailNotifications"><fmt:message key="label.emailNotifications"/>&nbsp;</label>
-            <input type="checkbox" name="emailNotifications" id="emailNotifications"
-                   <c:if test="${userProperties.emailNotifications}">checked="checked"</c:if>><br/>
-            <input type="hidden" name="_emailNotifications"/>
+            <label for="emailNotificationsDisabled"><fmt:message key="label.emailNotifications"/>&nbsp;</label>
+            <input type="checkbox" name="emailNotificationsDisabled" id="emailNotificationsDisabled"
+                   <c:if test="${userProperties.emailNotificationsDisabled}">checked="checked"</c:if>><br/>
+            <input type="hidden" name="_emailNotificationsDisabled"/>
             <label for="accountLocked"><fmt:message key="label.accountLocked"/>&nbsp;</label>
             <input type="checkbox" name="accountLocked" id="accountLocked"
                    <c:if test="${userProperties.accountLocked}">checked="checked"</c:if>><br/>

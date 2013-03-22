@@ -26,7 +26,7 @@
                 <select name="templateSet" id="templateSet">
                     <c:forEach items="${allModules}" var="module">
                         <c:if test="${module.moduleType eq 'templatesSet'}">
-                        <option value="${module.rootFolder}" ${siteBean.templateSet eq module.rootFolder ? 'selected="true"' : ''}>${module.name}</option>
+                        <option value="${module.rootFolder}" ${siteBean.templateSet eq module.rootFolder ? 'selected="true"' : ''}>${module.name}&nbsp;(${module.rootFolder})</option>
                         </c:if>
                     </c:forEach>
                 </select>
@@ -37,9 +37,9 @@
                 <br/>
                 <input type="hidden" name="_modules"/>
                 <c:forEach items="${allModules}" var="module">
-                    <c:if test="${module.moduleType ne 'templatesSet'}">
+                    <c:if test="${module.moduleType ne 'templatesSet' && module.moduleType ne 'system'}">
                         <input type="checkbox" name="modules" id="${module.rootFolder}" value="${module.rootFolder}" ${functions:contains(siteBean.modules,module.rootFolder) ? 'checked="true"' : ''} />
-                        <label for="${module.rootFolder}">${module.name}</label>
+                        <label for="${module.rootFolder}">${module.name} (${module.rootFolder})</label>
                         <br/>
                     </c:if>
                 </c:forEach>

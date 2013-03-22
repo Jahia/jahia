@@ -11,6 +11,7 @@ import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.usermanager.*;
+import org.jahia.taglibs.user.User;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,42 +30,34 @@ import java.util.*;
  * @author rincevent
  */
 public class UsersFlowHandler implements Serializable {
-    private static final long serialVersionUID = -7240178997123886031L;
     private static Logger logger = LoggerFactory.getLogger(UsersFlowHandler.class);
-    private transient JahiaUserManagerService userManagerService;
-    private transient JahiaGroupManagerService groupManagerService;
+    private static final long serialVersionUID = -7240178997123886031L;
+    
+    public static UserProperties populateUser(String userKey, UserProperties propertiesToPopulate) {
+        JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userKey);
+        if (propertiesToPopulate == null) {
+            propertiesToPopulate = new UserProperties();
+        }
+        propertiesToPopulate.setFirstName(jahiaUser.getProperty("j:firstName"));
+        propertiesToPopulate.setLastName(jahiaUser.getProperty("j:lastName"));
+        propertiesToPopulate.setUsername(jahiaUser.getUsername());
+        propertiesToPopulate.setUserKey(jahiaUser.getUserKey());
+        propertiesToPopulate.setEmail(jahiaUser.getProperty("j:email"));
+        propertiesToPopulate.setOrganization(jahiaUser.getProperty("j:organization"));
+        propertiesToPopulate.setEmailNotificationsDisabled(Boolean.valueOf(jahiaUser
+                .getProperty("emailNotificationsDisabled")));
+        propertiesToPopulate.setPreferredLanguage(UserPreferencesHelper.getPreferredLocale(jahiaUser));
+        propertiesToPopulate.setAccountLocked(Boolean.valueOf(jahiaUser.getProperty("j:accountLocked")));
+        propertiesToPopulate.setDisplayName(PrincipalViewHelper.getDisplayName(jahiaUser,
+                LocaleContextHolder.getLocale()));
+        propertiesToPopulate.setLocalPath(jahiaUser.getLocalPath());
+        propertiesToPopulate.setGroups(new LinkedList<JahiaGroup>(User.getUserMembership(jahiaUser.getUsername()).values()));
+        return propertiesToPopulate;
+    }
+    
     private transient JahiaPasswordPolicyService pwdPolicyService;
 
-    @Autowired
-    public void setUserManagerService(JahiaUserManagerService userManagerService) {
-        this.userManagerService = userManagerService;
-    }
-
-    @Autowired
-    public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
-        this.groupManagerService = groupManagerService;
-    }
-
-    @Autowired
-    public void setPwdPolicyService(JahiaPasswordPolicyService pwdPolicyService) {
-        this.pwdPolicyService = pwdPolicyService;
-    }
-
-    public Set<Principal> init() {
-        return PrincipalViewHelper.getSearchResult(null, null, null, null, null);
-    }
-
-    public SearchCriteria initCriteria() {
-        return new SearchCriteria();
-    }
-
-    public Set<Principal> search(SearchCriteria searchCriteria) {
-        Set<Principal> searchResult = PrincipalViewHelper.getSearchResult(searchCriteria.getSearchIn(),
-                searchCriteria.getSearchString(), searchCriteria.getProperties(), searchCriteria.getStoredOn(),
-                searchCriteria.getProviders());
-        searchResult = PrincipalViewHelper.removeJahiaAdministrators(searchResult);
-        return searchResult;
-    }
+    private transient JahiaUserManagerService userManagerService;
 
     public boolean addUser(UserProperties userProperties, MessageContext context) {
         logger.info("Adding user");
@@ -81,98 +74,16 @@ public class UsersFlowHandler implements Serializable {
         }
     }
 
-    public boolean updateUser(UserProperties userProperties, MessageContext context) {
-        logger.info("Updating user");
-        JahiaUser jahiaUser = userManagerService.lookupUserByKey(
-                userProperties.getUserKey());
-        boolean hasErrors = false;
-        if (jahiaUser != null) {
-            hasErrors = setUserProperty("j:firstName", userProperties.getFirstName(),"firstName", context, jahiaUser);
-            hasErrors |= setUserProperty("j:lastName", userProperties.getLastName(),"lastName", context, jahiaUser);
-            hasErrors |= setUserProperty("j:email", userProperties.getEmail(),"email", context, jahiaUser);
-            hasErrors |= setUserProperty("j:organization", userProperties.getOrganization(),"organization", context, jahiaUser);
-            hasErrors |= setUserProperty("emailNotificationsDisabled", userProperties.getEmailNotifications().toString(),"emailNotifications", context, jahiaUser);
-            hasErrors |= setUserProperty("j:accountLocked", userProperties.getAccountLocked().toString(),"accountLocked", context, jahiaUser);
-            hasErrors |= setUserProperty("preferredLanguage", userProperties.getPreferredLanguage().toString(),"preferredLanguage", context, jahiaUser);
-            if (StringUtils.isNotBlank(userProperties.getPassword())) {
-                if(jahiaUser.setPassword(userProperties.getPassword())) {
-                    context.addMessage(new MessageBuilder().info().defaultText(Messages.get("resources.JahiaServerSettings",
-                            "label.user.edit.password.changed", LocaleContextHolder.getLocale())).build());
-                } else {
-                    context.addMessage(new MessageBuilder().error().source("password").defaultText(Messages.get(
-                            "resources.JahiaServerSettings", "label.user.edit.errors.password",
-                            LocaleContextHolder.getLocale())).build());
-                    hasErrors = true;
-                }
+    private Properties buildProperties(List<String> headerElementList, List<String> lineElementList) {
+        Properties result = new Properties();
+        for (int i = 0; i < headerElementList.size(); i++) {
+            String currentHeader = headerElementList.get(i);
+            String currentValue = lineElementList.get(i);
+            if (!"j:nodename".equals(currentHeader) && !"j:password".equals(currentHeader)) {
+                result.setProperty(currentHeader.trim(), currentValue);
             }
         }
-        if(!hasErrors) {
-            context.addMessage(new MessageBuilder().info().defaultText(Messages.get("resources.JahiaServerSettings",
-                    "label.user.edit.successful", LocaleContextHolder.getLocale())).build());
-        }
-        return !hasErrors;
-    }
-
-    private boolean setUserProperty(String propertyName, String propertyValue,String source, MessageContext context, JahiaUser jahiaUser) {
-        if(!jahiaUser.setProperty(propertyName, propertyValue)){
-            context.addMessage(new MessageBuilder().error().source(source).defaultText(Messages.getWithArgs(
-                    "resources.JahiaServerSettings", "label.user.edit.errors.property",
-                    LocaleContextHolder.getLocale(),source)).build());
-            return true;
-        }
-        return false;
-    }
-
-    public UserProperties populateUser(String[] selectedUsers) {
-        assert selectedUsers.length == 1;
-        JahiaUser jahiaUser = userManagerService.lookupUserByKey(selectedUsers[0]);
-        UserProperties userProperties = new UserProperties();
-        userProperties.setFirstName(jahiaUser.getProperty("j:firstName"));
-        userProperties.setLastName(jahiaUser.getProperty("j:lastName"));
-        userProperties.setUsername(jahiaUser.getUsername());
-        userProperties.setUserKey(jahiaUser.getUserKey());
-        userProperties.setEmail(jahiaUser.getProperty("j:email"));
-        userProperties.setOrganization(jahiaUser.getProperty("j:organization"));
-        userProperties.setEmailNotifications(Boolean.valueOf(jahiaUser.getProperty("emailNotificationsDisabled")));
-        userProperties.setPreferredLanguage(UserPreferencesHelper.getPreferredLocale(jahiaUser));
-        userProperties.setAccountLocked(Boolean.valueOf(jahiaUser.getProperty("j:accountLocked")));
-        userProperties.setDisplayName(PrincipalViewHelper.getDisplayName(jahiaUser, LocaleContextHolder.getLocale()));
-        userProperties.setLocalPath(jahiaUser.getLocalPath());
-        final List<String> userMembership = groupManagerService.getUserMembership(jahiaUser);
-        final List<JahiaGroup> groups = new ArrayList<JahiaGroup>(userMembership.size());
-        for (String groupName : userMembership) {
-            final JahiaGroup group = groupManagerService.lookupGroup(groupName);
-            groups.add(group);
-        }
-        userProperties.setGroups(groups);
-        return userProperties;
-    }
-
-    public List<? extends JahiaUserManagerProvider> getProvidersList() {
-        return userManagerService.getProviderList();
-    }
-
-    public UserProperties initUser() {
-        return new UserProperties();
-    }
-
-    public boolean removeUser(UserProperties userProperties, MessageContext context) {
-        JahiaUser jahiaUser = userManagerService.lookupUserByKey(userProperties.getUserKey());
-        if(userManagerService.deleteUser(jahiaUser)) {
-            context.addMessage(new MessageBuilder().info().defaultText(Messages.get("resources.JahiaServerSettings",
-                    "label.user.remove.successful", LocaleContextHolder.getLocale())).build());
-            return true;
-        } else {
-            context.addMessage(new MessageBuilder().error().defaultText(Messages.get("resources.JahiaServerSettings",
-                    "label.user.remove.unsuccessful", LocaleContextHolder.getLocale())).build());
-            return false;
-        }
-    }
-
-    public CsvFile initCSVFile() {
-        CsvFile csvFile = new CsvFile();
-        csvFile.setCsvSeparator(",");
-        return csvFile;
+        return result;
     }
 
     public boolean bulkAddUser(CsvFile csvFile, MessageContext context) {
@@ -237,6 +148,74 @@ public class UsersFlowHandler implements Serializable {
         return !hasErrors;
     }
 
+    public List<? extends JahiaUserManagerProvider> getProvidersList() {
+        return userManagerService.getProviderList();
+    }
+
+    public Set<Principal> init() {
+        return PrincipalViewHelper.getSearchResult(null, null, null, null, null);
+    }
+
+    public SearchCriteria initCriteria() {
+        return new SearchCriteria();
+    }
+
+    public CsvFile initCSVFile() {
+        CsvFile csvFile = new CsvFile();
+        csvFile.setCsvSeparator(",");
+        return csvFile;
+    }
+
+    public UserProperties initUser() {
+        return new UserProperties();
+    }
+    
+    public UserProperties populateUser(String[] selectedUsers) {
+        assert selectedUsers.length == 1;
+        return populateUser(selectedUsers[0], null);
+    }
+
+    public boolean removeUser(UserProperties userProperties, MessageContext context) {
+        JahiaUser jahiaUser = userManagerService.lookupUserByKey(userProperties.getUserKey());
+        if(userManagerService.deleteUser(jahiaUser)) {
+            context.addMessage(new MessageBuilder().info().defaultText(Messages.get("resources.JahiaServerSettings",
+                    "label.user.remove.successful", LocaleContextHolder.getLocale())).build());
+            return true;
+        } else {
+            context.addMessage(new MessageBuilder().error().defaultText(Messages.get("resources.JahiaServerSettings",
+                    "label.user.remove.unsuccessful", LocaleContextHolder.getLocale())).build());
+            return false;
+        }
+    }
+
+    public Set<Principal> search(SearchCriteria searchCriteria) {
+        Set<Principal> searchResult = PrincipalViewHelper.getSearchResult(searchCriteria.getSearchIn(),
+                searchCriteria.getSearchString(), searchCriteria.getProperties(), searchCriteria.getStoredOn(),
+                searchCriteria.getProviders());
+        searchResult = PrincipalViewHelper.removeJahiaAdministrators(searchResult);
+        return searchResult;
+    }
+
+    @Autowired
+    public void setPwdPolicyService(JahiaPasswordPolicyService pwdPolicyService) {
+        this.pwdPolicyService = pwdPolicyService;
+    }
+
+    @Autowired
+    public void setUserManagerService(JahiaUserManagerService userManagerService) {
+        this.userManagerService = userManagerService;
+    }
+
+    private boolean setUserProperty(String propertyName, String propertyValue,String source, MessageContext context, JahiaUser jahiaUser) {
+        if(!jahiaUser.setProperty(propertyName, propertyValue)){
+            context.addMessage(new MessageBuilder().error().source(source).defaultText(Messages.getWithArgs(
+                    "resources.JahiaServerSettings", "label.user.edit.errors.property",
+                    LocaleContextHolder.getLocale(),source)).build());
+            return true;
+        }
+        return false;
+    }
+
     private Properties transformUserProperties(UserProperties userProperties) {
         Properties properties = new Properties();
         properties.put("j:firstName", userProperties.getFirstName());
@@ -245,19 +224,39 @@ public class UsersFlowHandler implements Serializable {
         properties.put("j:organization", userProperties.getOrganization());
         properties.put("preferredLanguage", userProperties.getPreferredLanguage().toString());
         properties.put("j:accountLocked", userProperties.getAccountLocked().toString());
-        properties.put("emailNotificationsDisabled", userProperties.getEmailNotifications().toString());
+        properties.put("emailNotificationsDisabled", userProperties.getEmailNotificationsDisabled().toString());
         return properties;
     }
 
-    private Properties buildProperties(List<String> headerElementList, List<String> lineElementList) {
-        Properties result = new Properties();
-        for (int i = 0; i < headerElementList.size(); i++) {
-            String currentHeader = headerElementList.get(i);
-            String currentValue = lineElementList.get(i);
-            if (!"j:nodename".equals(currentHeader) && !"j:password".equals(currentHeader)) {
-                result.setProperty(currentHeader.trim(), currentValue);
+    public boolean updateUser(UserProperties userProperties, MessageContext context) {
+        logger.info("Updating user");
+        JahiaUser jahiaUser = userManagerService.lookupUserByKey(
+                userProperties.getUserKey());
+        boolean hasErrors = false;
+        if (jahiaUser != null) {
+            hasErrors = setUserProperty("j:firstName", userProperties.getFirstName(),"firstName", context, jahiaUser);
+            hasErrors |= setUserProperty("j:lastName", userProperties.getLastName(),"lastName", context, jahiaUser);
+            hasErrors |= setUserProperty("j:email", userProperties.getEmail(),"email", context, jahiaUser);
+            hasErrors |= setUserProperty("j:organization", userProperties.getOrganization(),"organization", context, jahiaUser);
+            hasErrors |= setUserProperty("emailNotificationsDisabled", userProperties.getEmailNotificationsDisabled().toString(),"emailNotifications", context, jahiaUser);
+            hasErrors |= setUserProperty("j:accountLocked", userProperties.getAccountLocked().toString(),"accountLocked", context, jahiaUser);
+            hasErrors |= setUserProperty("preferredLanguage", userProperties.getPreferredLanguage().toString(),"preferredLanguage", context, jahiaUser);
+            if (StringUtils.isNotBlank(userProperties.getPassword())) {
+                if(jahiaUser.setPassword(userProperties.getPassword())) {
+                    context.addMessage(new MessageBuilder().info().defaultText(Messages.get("resources.JahiaServerSettings",
+                            "label.user.edit.password.changed", LocaleContextHolder.getLocale())).build());
+                } else {
+                    context.addMessage(new MessageBuilder().error().source("password").defaultText(Messages.get(
+                            "resources.JahiaServerSettings", "label.user.edit.errors.password",
+                            LocaleContextHolder.getLocale())).build());
+                    hasErrors = true;
+                }
             }
         }
-        return result;
+        if(!hasErrors) {
+            context.addMessage(new MessageBuilder().info().defaultText(Messages.get("resources.JahiaServerSettings",
+                    "label.user.edit.successful", LocaleContextHolder.getLocale())).build());
+        }
+        return !hasErrors;
     }
 }

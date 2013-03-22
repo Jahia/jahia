@@ -5,41 +5,38 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 
-<jcr:node var="sites" path="/sites"/>
-<form action="${flowExecutionUrl}" method="POST">
+<p><fmt:message key="label.confirmContinue"/></p>
+<p style="color: red; font-weight: bold;"><fmt:message key="serverSettings.manageWebProjects.delete.warning"/></p>
+<form action="${flowExecutionUrl}" method="post">
 <table>
-
         <tr>
             <th>
-                <fmt:message key="serverSettings.manageWebProjects.webProject.title"/>
+                <fmt:message key="serverSettings.manageWebProjects.webProject.title" />
             </th>
             <th>
-                <fmt:message key="serverSettings.manageWebProjects.webProject.siteKey"/>
+                <fmt:message key="serverSettings.manageWebProjects.webProject.siteKey" />
             </th>
             <th>
-                <fmt:message key="serverSettings.manageWebProjects.webProject.serverName"/>
+                <fmt:message key="serverSettings.manageWebProjects.webProject.serverName" />
             </th>
             <th>
-                <fmt:message key="serverSettings.manageWebProjects.webProject.selectTemplateSet"/>
-            </th>
-            <th>
-
+                <fmt:message key="serverSettings.manageWebProjects.webProject.templateSet" />
             </th>
         </tr>
 
         <input name="_sites" type="hidden"/>
         <c:forEach items="${webprojectHandler.sites}" var="site">
             <tr>
-                <td>${site.title}</td>
-                <td>${site.siteKey}</td>
-                <td>${site.serverName}</td>
-                <td>${site.templateFolder}</td>
+                <td>${fn:escapeXml(site.title)}</td>
+                <td>${fn:escapeXml(site.siteKey)}</td>
+                <td>${fn:escapeXml(site.serverName)}</td>
+                <td title="${fn:escapeXml(site.templatePackageName)}">${fn:escapeXml(site.templateFolder)}</td>
             </tr>
         </c:forEach>
 
 </table>
-<input type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel' />" onclick=""/>
-<input type="submit" name="_eventId_deleteSitesConfirmed" value="<fmt:message key='serverSettings.manageWebProjects.delete' />" onclick=""/>
+<input type="button" name="_eventId_cancel" value="<fmt:message key='label.cancel' />"/>
+<input type="submit" name="_eventId_deleteSitesConfirmed" value="<fmt:message key='label.delete' />"/>
 </form>
 
 

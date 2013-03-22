@@ -13,7 +13,7 @@
 
     <view-state id="adminPropertiesForm" model="adminProperties">
         <transition on="submit">
-            <evaluate expression="adminPropertiesHandler.save()" />
+            <evaluate expression="adminPropertiesHandler.save(messageContext)" />
         </transition>
     </view-state>
 </flow>

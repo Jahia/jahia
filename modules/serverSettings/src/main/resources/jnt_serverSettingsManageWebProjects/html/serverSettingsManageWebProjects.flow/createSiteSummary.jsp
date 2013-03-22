@@ -2,42 +2,43 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <form action="${flowExecutionUrl}" method="POST">
     <fmt:message key="serverSettings.manageWebProjects.createWebProject"/>
 
     <div>
-        <fmt:message key="serverSettings.manageWebProjects.webProject.siteKey"/> :
+        <fmt:message key="serverSettings.manageWebProjects.webProject.siteKey"/>:&nbsp;
         ${siteBean.siteKey}
     </div>
     <div>
-        <fmt:message key="serverSettings.manageWebProjects.webProject.title"/> :
-        ${siteBean.title}
+        <fmt:message key="serverSettings.manageWebProjects.webProject.title"/>:&nbsp;
+        ${fn:escapeXml(siteBean.title)}
     </div>
     <div>
-        <fmt:message key="serverSettings.manageWebProjects.webProject.serverName"/> :
-        ${siteBean.serverName}
+        <fmt:message key="serverSettings.manageWebProjects.webProject.serverName"/>:&nbsp;
+        ${fn:escapeXml(siteBean.serverName)}
     </div>
     <div>
-        <fmt:message key="serverSettings.manageWebProjects.webProject.description"/> :
-        ${siteBean.description}
+        <fmt:message key="serverSettings.manageWebProjects.webProject.description"/>:&nbsp;
+        ${fn:escapeXml(siteBean.description)}
     </div>
     <div>
-        <fmt:message key="serverSettings.manageWebProjects.webProject.defaultSite"/> :
+        <fmt:message key="serverSettings.manageWebProjects.webProject.defaultSite"/>:&nbsp;
         ${siteBean.defaultSite}
     </div>
     <div>
-        <fmt:message key="serverSettings.manageWebProjects.webProject.templateSet"/> :
-        ${siteBean.templateSet}
+        <fmt:message key="serverSettings.manageWebProjects.webProject.templateSet"/>:&nbsp;
+        ${siteBean.templateSetPackage.name}&nbsp;(${siteBean.templateSet})
     </div>
     <div>
-        <fmt:message key="serverSettings.manageWebProjects.webProject.modules"/> :
-        <c:forEach items="${siteBean.modules}" var="module">
-            ${module} &nbsp;
+        <fmt:message key="serverSettings.manageWebProjects.webProject.modules"/>:&nbsp;
+        <c:forEach items="${siteBean.modulePackages}" var="module" varStatus="loopStatus">
+            ${module.name}&nbsp;(${module.rootFolder})${!loopStatus.last ? ',&nbsp;' : ''}
         </c:forEach>
     </div>
     <div>
-        <fmt:message key="serverSettings.manageWebProjects.webProject.language"/> :
+        <fmt:message key="serverSettings.manageWebProjects.webProject.language"/>:&nbsp;
         ${siteBean.language}
     </div>
 

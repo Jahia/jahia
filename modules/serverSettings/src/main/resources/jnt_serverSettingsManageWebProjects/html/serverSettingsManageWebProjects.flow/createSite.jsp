@@ -1,13 +1,14 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 
 <c:if test="${!empty flowRequestContext.messageContext.allMessages}">
     <div class="validationError">
         <ul>
             <c:forEach var="error" items="${flowRequestContext.messageContext.allMessages}">
-                <li>${error.text}</li>
+                <li>${fn:escapeXml(error.text)}</li>
             </c:forEach>
         </ul>
     </div>
@@ -19,22 +20,22 @@
     <fieldset>
         <div>
             <label for="title"><fmt:message key="serverSettings.manageWebProjects.webProject.title"/> * </label>
-            <input id="title" name="title" value="${siteBean.title}"/>
+            <input id="title" name="title" value="${fn:escapeXml(siteBean.title)}"/>
         </div>
 
         <div>
             <label for="serverName"><fmt:message key="serverSettings.manageWebProjects.webProject.serverName"/> * </label>
-            <input id="serverName" name="serverName" value="${siteBean.serverName}"/>
+            <input id="serverName" name="serverName" value="${fn:escapeXml(siteBean.serverName)}"/>
         </div>
 
         <div>
             <label for="siteKey"><fmt:message key="serverSettings.manageWebProjects.webProject.siteKey"/> * </label>
-            <input id="siteKey" name="siteKey" value="${siteBean.siteKey}"/>
+            <input id="siteKey" name="siteKey" value="${fn:escapeXml(siteBean.siteKey)}"/>
         </div>
 
         <div>
             <label for="description"><fmt:message key="serverSettings.manageWebProjects.webProject.description"/></label>
-            <textarea id="description" name="description">${siteBean.description}</textarea>
+            <textarea id="description" name="description">${fn:escapeXml(siteBean.description)}</textarea>
         </div>
 
         <div>
@@ -50,5 +51,6 @@
         </div>
     </fieldset>
 
+    <input type="button" name="_eventId_cancel" value="<fmt:message key='label.cancel' />"/>
     <input type="submit" name="_eventId_next" value="<fmt:message key='label.next'/>"/>
 </form>

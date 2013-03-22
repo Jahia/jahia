@@ -17,8 +17,8 @@
     <fmt:message key="serverSettings.manageWebProjects.createWebProject"/>
     <fieldset>
         <div>
-            <label for="userName"><fmt:message key="label.username"/></label>
-            <input type="text" id="userName" value="${siteBean.adminProperties.userName}" name="userName"/>
+            <label for="username"><fmt:message key="label.username"/></label>
+            <input type="text" id="username" value="${siteBean.adminProperties.username}" name="username"/>
         </div>
 
         <div>
@@ -44,8 +44,8 @@
         </div>
 
         <div>
-            <label for="confirmPassword"><fmt:message key="label.confirmPassword"/></label>
-            <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="off"/>
+            <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
+            <input type="password" id="passwordConfirm" name="passwordConfirm" autocomplete="off"/>
         </div>
 
     </fieldset>

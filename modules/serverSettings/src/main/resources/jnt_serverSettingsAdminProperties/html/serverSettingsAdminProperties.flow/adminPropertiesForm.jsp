@@ -51,7 +51,7 @@
     (<fmt:message key="label.user.edit.password.no.change"/>)
     <br/>
 
-    <input id="submit" type="submit" value="ok" name="_eventId_submit">
+    <input id="submit" type="submit" value="<fmt:message key='label.save'/>" name="_eventId_submit">
 </form>
 <h3><fmt:message key="label.groups"/>:</h3>
 <ul>

@@ -166,7 +166,7 @@ public class AreaModule extends SimpleModule {
         p.addStyleName("button-disable");
         p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
-                JahiaContentManagementService.App.getInstance().deletePaths(Arrays.asList(parentModule.path), new BaseAsyncCallback<GWTJahiaNode>() {
+                JahiaContentManagementService.App.getInstance().deletePaths(Arrays.asList(path), new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode result) {
                         Map<String, Object> data = new HashMap<String, Object>();
                         data.put(Linker.REFRESH_MAIN, true);

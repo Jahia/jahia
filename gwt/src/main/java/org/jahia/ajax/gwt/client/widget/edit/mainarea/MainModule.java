@@ -126,7 +126,7 @@ public class MainModule extends Module {
         add(headContainer, new BorderLayoutData(Style.LayoutRegion.NORTH, 32));
 
         if (config.getMainModuleToolbar() == null || config.getMainModuleToolbar().getGwtToolbarItems().isEmpty()) {
-            head.hide();
+            headContainer.hide();
         }
 
         frame = new EditFrame();

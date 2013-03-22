@@ -129,7 +129,9 @@ public class SortableFieldnamesChoiceListInitializerImpl extends AbstractChoiceL
             while (children.hasNext()) {
 
                 JCRNodeWrapper child = (JCRNodeWrapper) children.nextNode();
-                if (defs == null) {
+                if(!excludedNodeTypes.isEmpty() && excludedNodeTypes.contains(child.getPrimaryNodeType().getName())) {
+                	continue;  //ignore current, go to next one
+                } else if (defs == null) {
                     // first child
                     defs = LazyMap.decorate(new HashMap<String, Map<String, ExtendedPropertyDefinition>>(),
                                             new Factory() {

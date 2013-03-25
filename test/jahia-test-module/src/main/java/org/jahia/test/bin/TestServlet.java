@@ -129,10 +129,10 @@ public class TestServlet implements Controller, ServletContextAware {
                     SurefireJUnitXMLResultFormatter xmlResultFormatter = new SurefireJUnitXMLResultFormatter(httpServletResponse.getOutputStream());
                     junitcore.addListener(xmlResultFormatter);
                     JahiaTemplatesPackage testPackage = findPackageForTestCase(className);
-                    if (testPackage == null) {
+                    Class<?> testClass = testPackage != null ? testPackage.getClassLoader().loadClass(className) : Class.forName(className);
+                    if (testClass == null) {
                         throw new Exception("Couldn't find origin module for test " + className);
-                    }
-                    Class<?> testClass = testPackage.getClassLoader().loadClass(className);
+                    }                    
                     List<Class<?>> classes = getTestClasses(testClass, new ArrayList<Class<?>>());
                     if (classes.isEmpty()) {
                         Description description = Description.createSuiteDescription(testClass);

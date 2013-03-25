@@ -242,6 +242,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 final Bindings bindings = scriptEngine.createBindings();
                 bindings.put("renderContext", renderContext);
                 bindings.put("resource", resource);
+                bindings.put("contextPath", renderContext.getRequest().getContextPath());
                 scriptContext.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
                 // The following binding is necessary for Javascript, which doesn't offer a console by default.
                 bindings.put("out", new PrintWriter(scriptContext.getWriter()));

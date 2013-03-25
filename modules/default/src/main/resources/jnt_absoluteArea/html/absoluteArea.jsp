@@ -30,7 +30,7 @@
         <c:if test="${empty level}">
             <template:area view="${currentNode.properties['j:referenceView'].string}"
                            path="${currentNode.name}"
-                           nodeTypes="${nodeTypes}" listLimit="${listLimit}" moduleType="absoluteArea">
+                           nodeTypes="${nodeTypes}" listLimit="${listLimit}" moduleType="absoluteArea" mockupStyle="${currentNode.properties['j:mockupStyle'].string}">
                 <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">
                     <template:param name="subNodesView"
                                     value="${currentNode.properties['j:subNodesView'].string}"/>
@@ -43,7 +43,7 @@
         <c:if test="${not empty level}">
             <template:area level="${level}" view="${currentNode.properties['j:referenceView'].string}"
                            path="${currentNode.name}"
-                           nodeTypes="${nodeTypes}" listLimit="${listLimit}" moduleType="absoluteArea">
+                           nodeTypes="${nodeTypes}" listLimit="${listLimit}" moduleType="absoluteArea" mockupStyle="${currentNode.properties['j:mockupStyle'].string}">
                 <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">
                     <template:param name="subNodesView"
                                     value="${currentNode.properties['j:subNodesView'].string}"/>

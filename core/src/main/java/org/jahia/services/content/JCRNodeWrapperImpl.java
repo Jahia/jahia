@@ -2512,7 +2512,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             return false;
         }
         if (!objectNode.isLocked()) {
-            lockNode(objectNode);
+            try {
+                lockNode(objectNode);
+            } catch (RepositoryException e) {
+                logger.error("Cannot store token for " + getPath(), e);
+                objectNode.unlock();
+                return false;
+            }
         } else {
             Property property = objectNode.getProperty("j:locktoken");
             String token = property.getString();
@@ -2527,7 +2533,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             try {
                 trans = getI18N(session.getLocale());
                 if (!trans.isLocked()) {
-                    lockNode(trans);
+                    try {
+                        lockNode(trans);
+                    } catch (RepositoryException e) {
+                        logger.error("Cannot store token for " + getPath(), e);
+                        trans.unlock();
+                        return false;
+                    }
                 }
                 addLockTypeValue(trans, userID + ":" + type);
             } catch (ItemNotFoundException e) {
@@ -2540,17 +2552,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     private void lockNode(final Node objectNode) throws RepositoryException {
         getSession().checkout(objectNode);
         Lock lock = objectNode.lock(false, false);
-        if (lock.getLockToken() != null) {
-            try {
-                objectNode.setProperty("j:locktoken", lock.getLockToken());
-//                objectNode.getSession().removeLockToken(lock.getLockToken());
-            } catch (RepositoryException e) {
-                logger.error("Cannot store token for " + getPath(), e);
-                objectNode.unlock();
-            }
-        } else {
-            logger.error("Lost lock ! " + localPathInProvider);
+        if (lock.getLockToken() == null) {
+             throw new RepositoryException("Lost lock ! " + localPathInProvider);
         }
+        objectNode.setProperty("j:locktoken", lock.getLockToken());
+//                objectNode.getSession().removeLockToken(lock.getLockToken());
     }
 
     private void addLockTypeValue(final Node objectNode, String l) throws RepositoryException {
@@ -2780,9 +2786,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             getSession().checkout(objectNode);
             objectNode.unlock();
             property.remove();
-            objectNode.getProperty(Constants.JAHIA_LOCKTYPES).remove();
+            if (objectNode.hasProperty(Constants.JAHIA_LOCKTYPES)) {
+                objectNode.getProperty(Constants.JAHIA_LOCKTYPES).remove();
+            }
 
             getSession().save();
+        } else {
+            objectNode.unlock();
         }
     }
 

@@ -56,24 +56,29 @@ import javax.jcr.query.qom.Comparison;
 import javax.jcr.query.qom.Constraint;
 import javax.jcr.query.qom.DynamicOperand;
 import javax.jcr.query.qom.EquiJoinCondition;
+import javax.jcr.query.qom.FullTextSearchScore;
 import javax.jcr.query.qom.Join;
 import javax.jcr.query.qom.LowerCase;
 import javax.jcr.query.qom.Not;
 import javax.jcr.query.qom.Or;
 import javax.jcr.query.qom.Ordering;
 import javax.jcr.query.qom.PropertyValue;
+import javax.jcr.query.qom.QueryObjectModelConstants;
 import javax.jcr.query.qom.Selector;
 import javax.jcr.query.qom.Source;
 import javax.jcr.query.qom.UpperCase;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.commons.JcrUtils;
 import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
 import org.apache.jackrabbit.core.query.FacetedQueryResult;
 import org.apache.jackrabbit.core.query.JahiaSimpleQueryResult;
 import org.apache.jackrabbit.core.query.lucene.FacetRow;
 import org.apache.jackrabbit.core.query.lucene.LuceneQueryFactory;
+import org.apache.jackrabbit.core.query.lucene.sort.DynamicOperandFieldComparatorSource;
 import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
@@ -152,6 +157,45 @@ public class JahiaQueryEngine extends QueryEngine {
             return result;
         }
     }
+    
+    public SortField[] createSortFields(Ordering[] orderings, Session session)
+            throws RepositoryException {
+
+        if (orderings == null || orderings.length == 0) {
+            return new SortField[] { SortField.FIELD_SCORE };
+        }
+        // orderings[] -> (property, ordering)
+        Map<String, Ordering> orderByProperties = new HashMap<String, Ordering>();
+        for (Ordering o : orderings) {
+            final String p = o.toString();
+            if (!orderByProperties.containsKey(p)) {
+                orderByProperties.put(p, o);
+            }
+        }
+        final DynamicOperandFieldComparatorSource dofcs = new DynamicOperandFieldComparatorSource(
+                session, evaluator, orderByProperties);
+
+        List<SortField> sortFields = new ArrayList<SortField>();
+
+        // as it turn out, orderByProperties.keySet() doesn't keep the original
+        // insertion order
+        for (Ordering o : orderings) {
+            final String p = o.toString();
+            // order on jcr:score does not use the natural order as
+            // implemented in lucene. score ascending in lucene means that
+            // higher scores are first. JCR specs that lower score values
+            // are first.
+            boolean isAsc = QueryObjectModelConstants.JCR_ORDER_ASCENDING
+                    .equals(o.getOrder());
+            if (o.getOperand() instanceof FullTextSearchScore || JcrConstants.JCR_SCORE.equals(p)) {
+                sortFields.add(new SortField(null, SortField.SCORE, isAsc));
+            } else {
+                // TODO use native sort if available
+                sortFields.add(new SortField(p, dofcs, !isAsc));
+            }
+        }
+        return sortFields.toArray(new SortField[sortFields.size()]);
+    }    
 
     private static String genString(int len) {
         StringBuilder sb = new StringBuilder();

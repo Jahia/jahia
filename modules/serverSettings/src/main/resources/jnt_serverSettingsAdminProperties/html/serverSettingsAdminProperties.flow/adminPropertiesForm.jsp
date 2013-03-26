@@ -23,14 +23,14 @@
 <form action="${flowExecutionUrl}" method="post" class="form">
     <h3><fmt:message key="label.username"/>:&nbsp;${adminUser.name}</h3>
     <label for="firstName"><fmt:message key="label.firstName"/></label>
-    <input type="text" id="firstName" value="${adminProperties.firstName}" name="firstName"/>  <br/>
+    <input type="text" id="firstName" value="${fn:escapeXml(adminProperties.firstName)}" name="firstName"/>  <br/>
 
     <label for="lastName"><fmt:message key="label.lastName"/></label>
-    <input type="text" id="lastName" value="${adminProperties.lastName}" name="lastName"/> <br/>
+    <input type="text" id="lastName" value="${fn:escapeXml(adminProperties.lastName)}" name="lastName"/> <br/>
     <label for="email"><fmt:message key="label.email"/></label>
-    <input type="text" id="email" value="${adminProperties.email}" name="email"/> <br/>
+    <input type="text" id="email" value="${fn:escapeXml(adminProperties.email)}" name="email"/> <br/>
     <label for="organization"><fmt:message key="label.organization"/></label>
-    <input type="text" id="organization" value="${adminProperties.organization}" name="organization" autocomplete="off"/>   <br/>
+    <input type="text" id="organization" value="${fn:escapeXml(adminProperties.organization)}" name="organization" autocomplete="off"/>   <br/>
     <label for="emailNotifications"><fmt:message key="label.emailNotifications"/></label>
     <input type="checkbox" id="emailNotifications" name="emailNotificationsDisabled" ${adminProperties.emailNotificationsDisabled?" checked":""}/>
     <input type="hidden" name="_emailNotificationsDisabled">
@@ -56,6 +56,6 @@
 <h3><fmt:message key="label.groupList"/>:</h3>
 <ul>
     <c:forEach items="${adminProperties.groups}" var="group">
-        <li>${group.groupname}</li>
+        <li>${fn:escapeXml(group.groupname)}</li>
     </c:forEach>
 </ul>

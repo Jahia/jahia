@@ -1187,7 +1187,7 @@ public class LegacyImportHandler extends DefaultHandler {
                 value = value + ((m.group(2) != null) ? m.group(2) : "");
             }
         }
-        return value;
+        return JCRContentUtils.escapeNodePath(value);
     }
 
     private String removeHtmlTags(String value) {

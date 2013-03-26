@@ -50,6 +50,8 @@ import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+
+import java.text.Collator;
 import java.util.*;
 
 /**
@@ -154,11 +156,13 @@ public class JCRSortTag extends AbstractJCRTag {
                                     r = Double.compare(p1.getDouble(),p2.getDouble());
                                     break;
                                 default:
+                                	final Collator collator = Collator.getInstance(new Locale(o1.getLanguage()));
                                 	if (ignoreCase) {
-                                		r = p1.getString().compareToIgnoreCase(p2.getString());
+                                		collator.setStrength(Collator.TERTIARY);
                                 	} else {
-                                		r = p1.getString().compareTo(p2.getString());
+                                		collator.setStrength(Collator.SECONDARY);
                                 	}
+                                	r = collator.compare(p1.getString(), p2.getString());
                                     break;
                             }
                             if (r != 0) {

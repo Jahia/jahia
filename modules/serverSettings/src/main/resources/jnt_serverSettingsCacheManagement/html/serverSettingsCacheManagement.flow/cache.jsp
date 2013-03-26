@@ -103,10 +103,10 @@
         </c:if>
     </h2>
     <c:if test="${cacheManagement.showActions}">
-        <a href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager}'); return false;" title="<fmt:message key="label.cache.flushCaches.title"/>">${flushIcon}<fmt:message key="label.cache.flushCaches"/></a>
+        <a href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager}'); return false;" title="<fmt:message key="label.cache.flushCaches.title"/>">${flushIcon}<fmt:message key="label.cache.flushCaches"/>&nbsp;${manager}</a>
         <c:if test="${cacheManager.clusterActivated}">
             &nbsp;&nbsp;
-            <a href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager}', 'propagate', 'true'); return false;" title="<fmt:message key="label.cache.flushCaches.cluster.title"/>">${flushIcon}<fmt:message key="label.cache.flushCaches.cluster"/></a>
+            <a href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager}', 'propagate', 'true'); return false;" title="<fmt:message key="label.cache.flushCaches.cluster.title"/>">${flushIcon}<fmt:message key="label.cache.flushCaches.cluster"/>&nbsp;${manager}</a>
         </c:if>
         &nbsp;&nbsp;
         <a href="#enableStats" onclick="go('action', 'enableStats', 'name', '${manager}'); return false;" title="<fmt:message key="label.cache.stats.enable.title"/>"><fmt:message key="label.cache.stats.enable"/></a>
@@ -126,7 +126,7 @@
             </c:if>
             <th colspan="4"><fmt:message key="label.cache.stats"/></th>
             <c:if test="${cacheManagement.showActions}">
-                <th rowspan="2"><fmt:message key="label.cache.actions"/></th>
+                <th rowspan="2"><fmt:message key="label.actions"/></th>
             </c:if>
         </tr>
         <tr>

@@ -240,7 +240,7 @@
                 <fmt:message key="org.jahia.admin.status.ManageStatus.successfulHits.label"/>:
                 ${cache.successHits} / ${cache.totalHits}
                 &nbsp;
-                <fmt:message key="org.jahia.admin.status.ManageStatus.totalHits.label"/>,
+                <fmt:message key="label.cache.total"/>,
                 <fmt:message key="org.jahia.admin.status.ManageStatus.efficiency.label"/>:
                 <span style="color: ${effColour}"><%=efficiencyStr%> %</span>
             </td>
@@ -294,7 +294,7 @@
 		                <fmt:message key="org.jahia.admin.status.ManageStatus.successfulHits.label"/>:
 		                ${ehcacheStats.cacheHits} / ${ehcacheStats.cacheHits + ehcacheStats.cacheMisses}
 		                &nbsp;
-		                <fmt:message key="org.jahia.admin.status.ManageStatus.totalHits.label"/>,
+		                <fmt:message key="label.cache.total"/>,
 		                <fmt:message key="org.jahia.admin.status.ManageStatus.efficiency.label"/>:
 		                
 		                <c:set var="cacheEfficiency" value="${ehcacheStats.cacheHits + ehcacheStats.cacheMisses > 0 ? ehcacheStats.cacheHits * 100 / (ehcacheStats.cacheHits + ehcacheStats.cacheMisses) : 0}"/>
@@ -456,7 +456,7 @@
 
 <div class="stretcher-head head" title="memory">
     <div class="object-title">
-      <a href="#memory" class="sectionLink"><fmt:message key="org.jahia.admin.status.ManageStatus.title.memorySection.label"/></a>
+      <a href="#memory" class="sectionLink"><fmt:message key="label.memory"/></a>
     </div>                
 </div>
 <c:if test="${param['gc']}">

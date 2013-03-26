@@ -31,8 +31,5 @@
             <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">
                 <template:param name="subNodesView" value="${currentNode.properties['j:subNodesView'].string}"/>
             </c:if>
-            <c:if test="${not empty currentNode.properties['j:mockupStyle'].string}">
-                <template:param name="mockupStyle" value="${currentNode.properties['j:mockupStyle'].string}"/>
-            </c:if>
         </template:area>
 

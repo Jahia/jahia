@@ -54,12 +54,9 @@ import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.ResourceBundleMarker;
-<<<<<<< .working
-import org.springframework.core.io.Resource;
-=======
 import org.jahia.utils.zip.ZipEntry;
 import org.slf4j.Logger;
->>>>>>> .merge-right.r45226
+import org.springframework.core.io.Resource;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -88,11 +85,7 @@ public class FilesAclImportHandler extends DefaultHandler {
 
     public static final DateFormat DATE_FORMAT = new SimpleDateFormat(ImportExportService.DATE_FORMAT);
 
-<<<<<<< .working
-    public FilesAclImportHandler(JahiaSite site, DefinitionsMapping mapping, Resource archive, List<String> fileList) {
-=======
-    public FilesAclImportHandler(JahiaSite site, DefinitionsMapping mapping, File archive, List<String> fileList, Map<String, String> filePath) {
->>>>>>> .merge-right.r45226
+    public FilesAclImportHandler(JahiaSite site, DefinitionsMapping mapping, Resource archive, List<String> fileList, Map<String, String> filePath) {
         this.site = site;
         this.mapping = mapping;
         this.archive = archive;

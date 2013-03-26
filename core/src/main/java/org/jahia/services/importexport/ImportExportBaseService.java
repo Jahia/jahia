@@ -1101,13 +1101,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     }
 
-<<<<<<< .working
-    private void importFilesAcl(JahiaSite site, Resource file, InputStream is, DefinitionsMapping mapping, List<String> fileList) {
-        handleImport(is, new FilesAclImportHandler(site, mapping, file, fileList));
-    }
-
-=======
->>>>>>> .merge-right.r45226
     private void importSiteProperties(final InputStream is, final JahiaSite site) throws IOException {
         if (site.getSiteKey().equals(JahiaSitesBaseService.SYSTEM_SITE_KEY)) {
             return;
@@ -1131,13 +1124,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         logger.info("Done loading properties for site {} in {} ms", site.getSiteKey(), (System.currentTimeMillis() - timer));
     }
 
-    private void importFilesAcl(JahiaSite site, File file, InputStream is, DefinitionsMapping mapping, List<String> fileList) {
+    private void importFilesAcl(JahiaSite site, Resource file, InputStream is, DefinitionsMapping mapping, List<String> fileList) {
         Map<String, String> filePath = new HashMap<String, String>();
         try {
             File temp = File.createTempFile("migration", "");
             temp.delete();
             temp.mkdir();
-            ZipInputStream zis = new NoCloseZipInputStream(new FileInputStream(file));
+            ZipInputStream zis = new NoCloseZipInputStream(new FileInputStream(file.getFile()));
             ZipEntry zipentry;
             while ((zipentry = zis.getNextEntry()) != null) {
                 String fileName = zipentry.getName();

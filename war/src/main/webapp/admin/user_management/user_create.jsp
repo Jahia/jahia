@@ -126,7 +126,7 @@
 </tr>
 <tr>
     <td align="right">
-        <fmt:message key="org.jahia.admin.firstName.label"/>&nbsp;
+        <fmt:message key="label.firstName"/>&nbsp;
     </td>
     <td>
         <input class="input" type="text" name='<%=ManageUsers.USER_PROPERTY_PREFIX+"j:firstName"%>'
@@ -135,7 +135,7 @@
 </tr>
 <tr>
     <td align="right">
-        <fmt:message key="org.jahia.admin.lastName.label"/>&nbsp;
+        <fmt:message key="label.lastName"/>&nbsp;
     </td>
     <td>
         <input class="input" type="text" name='<%=ManageUsers.USER_PROPERTY_PREFIX+"j:lastName"%>'
@@ -153,7 +153,7 @@
 </tr>
 <tr>
     <td align="right" nowrap>
-        <fmt:message key="org.jahia.admin.organization.label"/>&nbsp;
+        <fmt:message key="label.organization"/>&nbsp;
     </td>
     <td>
         <input class="input" type="text" name='<%=ManageUsers.USER_PROPERTY_PREFIX+"j:organization"%>'
@@ -175,7 +175,7 @@
 </tr>
 <tr>
     <td align="right">
-        <fmt:message key="org.jahia.admin.preferredLanguage.label"/>&nbsp;
+        <fmt:message key="label.preferredLanguage"/>&nbsp;
     </td>
     <td>
         <%

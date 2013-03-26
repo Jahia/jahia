@@ -116,7 +116,7 @@
                             </div>
                             <div class="head">
                                 <div class="object-title">
-                                    <fmt:message key="org.jahia.admin.users.ManageGroups.groupList.label"/>
+                                    <fmt:message key="label.groupList"/>
                                 </div>
                             </div>
                             <div  class="content-item-noborder">

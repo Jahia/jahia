@@ -141,8 +141,8 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
         columns.add(new ColumnConfig("display", Messages.get("label.username", "User name"), 150));
-        columns.add(new ColumnConfig("j:lastName", Messages.get("org.jahia.admin.lastName.label", "Last name"), 130));
-        columns.add(new ColumnConfig("j:firstName", Messages.get("org.jahia.admin.firstName.label", "First name"), 130));
+        columns.add(new ColumnConfig("j:lastName", Messages.get("label.lastName", "Last name"), 130));
+        columns.add(new ColumnConfig("j:firstName", Messages.get("label.firstName", "First name"), 130));
 //        columns.add(new ColumnConfig("siteName", "Site name", 80));
         columns.add(new ColumnConfig("provider", Messages.get("column.provider.label", "Provider"), 75));
 //        columns.add(new ColumnConfig("email", "Email", 100));

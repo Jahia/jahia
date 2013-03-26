@@ -235,7 +235,7 @@
 </tr>
 <tr>
     <td align="right">
-        <fmt:message key="org.jahia.admin.preferredLanguage.label"/>&nbsp;
+        <fmt:message key="label.preferredLanguage"/>&nbsp;
     </td>
     <td>
         <%

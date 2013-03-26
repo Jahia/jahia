@@ -62,7 +62,7 @@ public class AdminPropertiesHandler implements Serializable {
         messages.addMessage(new MessageBuilder()
                 .info()
                 .defaultText(
-                        Messages.get("resources.JahiaServerSettings", "label.user.edit.successful",
+                        Messages.get("resources.JahiaServerSettings", "label.changeSaved",
                                 LocaleContextHolder.getLocale())).build());
     }
 }

@@ -262,11 +262,11 @@ public class SubscriptionManager extends LayoutContainer {
 		columns.add(column);
 
 		columns.add(new ColumnConfig("subscriber", Messages.get("label.subscriber", "Subscriber"), 140));
-		column = new ColumnConfig("lastName", Messages.get("org.jahia.admin.lastName.label", "Last name"), 140);
+		column = new ColumnConfig("lastName", Messages.get("label.lastName", "Last name"), 140);
 		column.setSortable(false);
 		columns.add(column);
 
-		column = new ColumnConfig("firstName", Messages.get("org.jahia.admin.firstName.label", "First name"), 140);
+		column = new ColumnConfig("firstName", Messages.get("label.firstName", "First name"), 140);
 		column.setSortable(false);
 		columns.add(column);
 

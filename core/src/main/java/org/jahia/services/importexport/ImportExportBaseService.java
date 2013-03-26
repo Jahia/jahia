@@ -44,6 +44,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import net.sf.saxon.TransformerFactoryImpl;
 import org.apache.commons.collections.set.ListOrderedSet;
+import org.apache.commons.compress.archivers.zip.ZipUtil;
 import org.apache.commons.io.FileCleaningTracker;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -1100,10 +1101,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     }
 
+<<<<<<< .working
     private void importFilesAcl(JahiaSite site, Resource file, InputStream is, DefinitionsMapping mapping, List<String> fileList) {
         handleImport(is, new FilesAclImportHandler(site, mapping, file, fileList));
     }
 
+=======
+>>>>>>> .merge-right.r45226
     private void importSiteProperties(final InputStream is, final JahiaSite site) throws IOException {
         if (site.getSiteKey().equals(JahiaSitesBaseService.SYSTEM_SITE_KEY)) {
             return;
@@ -1125,6 +1129,33 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             logger.error(e.getMessage(), e);
         }
         logger.info("Done loading properties for site {} in {} ms", site.getSiteKey(), (System.currentTimeMillis() - timer));
+    }
+
+    private void importFilesAcl(JahiaSite site, File file, InputStream is, DefinitionsMapping mapping, List<String> fileList) {
+        Map<String, String> filePath = new HashMap<String, String>();
+        try {
+            File temp = File.createTempFile("migration", "");
+            temp.delete();
+            temp.mkdir();
+            ZipInputStream zis = new NoCloseZipInputStream(new FileInputStream(file));
+            ZipEntry zipentry;
+            while ((zipentry = zis.getNextEntry()) != null) {
+                String fileName = zipentry.getName();
+                if (!zipentry.isDirectory()) {
+                    fileName = fileName.replace('\\', '/');
+                    File newFile = new File(temp, fileName);
+                    newFile.getParentFile().mkdirs();
+                    FileUtils.copyInputStreamToFile(zis,newFile);
+                    filePath.put("/"+fileName, newFile.getPath());
+                }
+            }
+
+            handleImport(is, new FilesAclImportHandler(site, mapping, file, fileList, filePath));
+
+            FileUtils.deleteDirectory(temp);
+        } catch (IOException e) {
+            logger.error("Cannot extract zip",e);
+        }
     }
 
     private void importSiteProperties(JahiaSite site, Properties p, JCRSessionWrapper session) {

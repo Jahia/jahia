@@ -1,85 +1,36 @@
-/**
- * This file is part of Jahia, next-generation open source CMS:
- * Jahia's next-generation, open source CMS stems from a widely acknowledged vision
- * of enterprise application convergence - web, search, document, social and portal -
- * unified by the simplicity of web content management.
- *
- * For more information, please visit http://www.jahia.com.
- *
- * Copyright (C) 2002-2012 Jahia Solutions Group SA. All rights reserved.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
- *
- * Commercial and Supported Versions of the program (dual licensing):
- * alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms and conditions contained in a separate
- * written agreement between you and Jahia Solutions Group SA.
- *
- * If you are unsure which license is appropriate for your use,
- * please contact the sales department at sales@jahia.com.
- */
-
 package org.jahia.services.importexport;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.jahia.services.content.JCRObservationManager;
-import org.jahia.utils.Patterns;
-import org.jahia.utils.zip.ZipEntry;
-import org.slf4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRObservationManager;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.SelectorType;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.ResourceBundleMarker;
+<<<<<<< .working
 import org.springframework.core.io.Resource;
+=======
+import org.jahia.utils.zip.ZipEntry;
+import org.slf4j.Logger;
+>>>>>>> .merge-right.r45226
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-/**
- *
- * User: toto
- * Date: 6 juil. 2005
- * Time: 17:31:05
- */
 public class FilesAclImportHandler extends DefaultHandler {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(FilesAclImportHandler.class);
 
@@ -87,6 +38,7 @@ public class FilesAclImportHandler extends DefaultHandler {
     private NoCloseZipInputStream zis;
     private ZipEntry nextEntry;
     private List<String> fileList = new ArrayList<String>();
+    private Map<String, String> filePath = new HashMap<String, String>();
 
     private JahiaSite site;
     private DefinitionsMapping mapping;
@@ -96,11 +48,16 @@ public class FilesAclImportHandler extends DefaultHandler {
 
     public static final DateFormat DATE_FORMAT = new SimpleDateFormat(ImportExportService.DATE_FORMAT);
 
+<<<<<<< .working
     public FilesAclImportHandler(JahiaSite site, DefinitionsMapping mapping, Resource archive, List<String> fileList) {
+=======
+    public FilesAclImportHandler(JahiaSite site, DefinitionsMapping mapping, File archive, List<String> fileList, Map<String, String> filePath) {
+>>>>>>> .merge-right.r45226
         this.site = site;
         this.mapping = mapping;
         this.archive = archive;
         this.fileList = fileList;
+        this.filePath = filePath;
         try {
             this.session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession();
         } catch (RepositoryException e) {
@@ -114,7 +71,13 @@ public class FilesAclImportHandler extends DefaultHandler {
             String acl = attributes.getValue(ImportExportBaseService.JAHIA_URI, "fileacl");
 
             try {
-                boolean contentFound = findContent(path);
+                boolean contentFound = false;
+                InputStream content = null;
+                if(this.filePath != null){
+                    content = findExtractedContent(path);
+                } else {
+                    contentFound = findContent(path);
+                }
 
                 if (path.startsWith("/shared") || path.startsWith("/users")) {
                     path = "/sites/" + site.getSiteKey() + "/files" + path;
@@ -155,12 +118,16 @@ public class FilesAclImportHandler extends DefaultHandler {
                 String lastModifiedBy = attributes.getValue("dav:modificationuser");
 
                 checkoutNode(f);
-                if (!contentFound) {
-                    f = f.addNode(StringUtils.substringAfterLast(path, "/"), "jnt:folder", null, created, createdBy, lastModified, lastModifiedBy);
+                if (content == null && !contentFound) {
+                    f = f.addNode(StringUtils.substringAfterLast(path, "/"), "jnt:folder", null, created, createdBy,
+                            lastModified, lastModifiedBy);
                 } else {
                     f = f.addNode(StringUtils.substringAfterLast(path, "/"), "jnt:file", null, created, createdBy, lastModified, lastModifiedBy);
-                    f.getFileContent().uploadFile(zis, attributes.getValue("dav:getcontenttype"));
-                    zis.close();
+                    if (content != null) {
+                        f.getFileContent().uploadFile(content, attributes.getValue("dav:getcontenttype"));
+                    } else {
+                        f.getFileContent().uploadFile(zis, attributes.getValue("dav:getcontenttype"));
+                    }
                 }
                 if (acl != null && acl.length() > 0) {
                     StringTokenizer st = new StringTokenizer(acl, "|");
@@ -304,7 +271,7 @@ public class FilesAclImportHandler extends DefaultHandler {
                             List<Value> values = new ArrayList<Value>();
                             for (int i = 0; i < cats.length; i++) {
                                 String cat = cats[i];
-                                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:category] as cat where NAME(cat) = '"+cat+"'", Query.JCR_SQL2);
+                                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:category] as cat where NAME(cat) = '" + cat + "'", Query.JCR_SQL2);
                                 NodeIterator ni = q.execute().getNodes();
                                 if (ni.hasNext()) {
                                     values.add(session.getValueFactory().createValue(ni.nextNode()));
@@ -408,5 +375,16 @@ public class FilesAclImportHandler extends DefaultHandler {
         return false;
     }
 
+    private InputStream findExtractedContent(String path) throws IOException {
+        path = JCRContentUtils.replaceColon(path);
 
+        String pathInFS = filePath.get(path);
+        if(StringUtils.isNotBlank(pathInFS)){
+            File file = new File(pathInFS);
+            if(!file.isDirectory()){
+                return new FileInputStream(file);
+            }
+        }
+        return null;
+    }
 }

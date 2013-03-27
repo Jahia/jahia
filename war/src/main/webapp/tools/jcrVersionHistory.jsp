@@ -83,7 +83,7 @@ try {
             <p><input type="submit" name="delete" onclick="if (confirm('The version history for no longer existing nodes will be permanently deleted. Do you want to continue?')) { go('action', 'orphanedDelete'); } return false;" value="Delete orphaned version history"/> - searches for version history of already deleted nodes and deletes version items</p>
         </c:if>
         <c:if test="${checkRunning}">
-            <p>The version history is currently currently being checked for orphans.</p>
+            <p>The version history is currently being checked for orphans.</p>
             <p><input type="submit" name="stop" onclick="if (confirm('Do you want to stop the check running version history check process?')) { go('action', 'orphanedStop'); } return false;" value="Stop running orphaned version history check process"/></p>
         </c:if>
     </form>

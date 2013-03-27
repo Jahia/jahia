@@ -65,6 +65,8 @@ public class TokenizedFormTag extends BodyTagSupport {
 
     private static final long serialVersionUID = -1427914171244787502L;
 
+    private boolean disableXSSFiltering = false;
+
     @Override
     public int doStartTag() throws JspException {
         String id = java.util.UUID.randomUUID().toString();
@@ -122,6 +124,9 @@ public class TokenizedFormTag extends BodyTagSupport {
                 hiddenInputs.put("jcrCaptcha",Arrays.asList(java.util.UUID.randomUUID().toString()));
             }
 
+            hiddenInputs.put("disableXSSFiltering", Arrays.asList(String.valueOf(disableXSSFiltering)));
+            outputDocument.insert(formTag.getEnd(), "<input type=\"hidden\" name=\"disableXSSFiltering\" value=\"" + disableXSSFiltering + "\"/>");
+
             outputDocument.insert(formTag.getEnd(), "<input type=\"hidden\" name=\"form-token\" value=\"##formtoken(" + id + ")##\"/>");
 
 
@@ -151,5 +156,9 @@ public class TokenizedFormTag extends BodyTagSupport {
     @Override
     public int doAfterBody() throws JspException {
         return super.doAfterBody();
+    }
+
+    public void setDisableXSSFiltering(boolean disableXSSFiltering) {
+        this.disableXSSFiltering = disableXSSFiltering;
     }
 }

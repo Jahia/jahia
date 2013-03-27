@@ -58,6 +58,8 @@
 
 package org.jahia.bin;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -193,10 +195,10 @@ public final class Jahia {
     }
 
     public static String getLicenseText() {
-        InputStream in = Jahia.class
-                .getResourceAsStream("/LICENSE");
+        InputStream in = null;
         String txt;
         try {
+            in = new FileInputStream(new File(SettingsBean.getInstance().getJahiaHomeDiskPath() + "/LICENSE"));
             txt = IOUtils.toString(in);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);

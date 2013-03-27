@@ -365,36 +365,36 @@ public class ManageUsers extends AbstractAdministrationModule {
         }
         String username = request.getParameter("username").trim();
         if (username.length() == 0) {
-            userMessage = getMessage("org.jahia.admin.userMessage.specifyUserName.label");
+            userMessage = getMessage("serverSettings.user.errors.username.mandatory");
             return false;
         }
         String email = request.getParameter("manage-user-property#j:email").trim();
         if(!"".equals(email) && !email.matches("^$|^[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@([A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])$")){
-            userMessage = getMessage("org.jahia.admin.userMessage.emailFormatIsIncorrect.label");
+            userMessage = getMessage("serverSettings.user.errors.email");
             return false;
         }
         // The following test is really disputable because we should can enter
         // as well accentueted char and any internationalized char.
         else if (!ServicesRegistry.getInstance().getJahiaUserManagerService()
                 .isUsernameSyntaxCorrect(username)) {
-            userMessage = StringUtils.capitalize(getMessage("org.jahia.admin.users.ManageUsers.onlyCharacters.label"));
+            userMessage = StringUtils.capitalize(getMessage("serverSettings.user.errors.username.syntax"));
             return false;
         } else if (userManager.userExists(username)) {
 			userMessage = getMessage("label.user") + " [" + username + "] "
-			        + getMessage("org.jahia.admin.userMessage.alreadyExist.label");
+			        + getMessage("serverSettings.user.errors.username.exist");
             return false;
         }
         JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry.getInstance().getJahiaPasswordPolicyService();
         String passwd = request.getParameter("passwd").trim();
         if ("".equals(passwd)) {
             userMessage = getMessage(
-                    "org.jahia.admin.userMessage.specifyPassword.label");
+                    "serverSettings.user.errors.password.mandatory");
             return false;
         } else {
             String passwdConfirm = request.getParameter("passwdconfirm").trim();
             if (!passwdConfirm.equals(passwd)) {
                 userMessage = getMessage(
-                        "org.jahia.admin.userMessage.passwdNotMatch.label");
+                        "serverSettings.user.errors.password.not.matching");
                 return false;
             }
             PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnUserCreate(username, passwd);
@@ -560,7 +560,7 @@ public class ManageUsers extends AbstractAdministrationModule {
         String email = request.getParameter("manage-user-property#j:email");
         email = email != null ? email.trim() : null;
         if(StringUtils.isNotEmpty(email) && !email.matches("^$|^[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@([A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])$")){
-            userMessage = getMessage("org.jahia.admin.userMessage.emailFormatIsIncorrect.label");
+            userMessage = getMessage("serverSettings.user.errors.email");
             return false;
         }
         String passwd = request.getParameter("passwd");
@@ -572,7 +572,7 @@ public class ManageUsers extends AbstractAdministrationModule {
             String passwdConfirm = request.getParameter("passwdconfirm").
                                        trim();
             if (!passwdConfirm.equals(passwd)) {
-                userMessage = getMessage("org.jahia.admin.userMessage.passwdNotMatch.label");
+                userMessage = getMessage("serverSettings.user.errors.password.not.matching");
                 return false;
             }
             if (pwdPolicyService.isPolicyEnabled(usr)) {
@@ -706,23 +706,23 @@ public class ManageUsers extends AbstractAdministrationModule {
                 }
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
-                userMessage = getMessage("org.jahia.admin.userMessage.cannotRemoveUser.label") + " " + userName + ".";
+                userMessage = getMessage("serverSettings.user.remove.unsuccessful") + " " + userName + ".";
             }
         }
        	if (userNames.length > 1) {
        		if (!deleted.isEmpty()) {
 	            userMessage = getMessage("label.user");
 	            userMessage += " [" + StringUtils.join(deleted, ", ") + "] ";
-	            userMessage += getMessage("org.jahia.admin.userMessage.removed.label");
+	            userMessage += getMessage("serverSettings.user.remove.successful");
 	            isError = false;
        		} else {
-       			userMessage = getMessage("org.jahia.admin.userMessage.cannotRemoveUser.label") + " " + StringUtils.join(userNames, ", ") + ".";       			
+       			userMessage = getMessage("serverSettings.user.remove.unsuccessful") + " " + StringUtils.join(userNames, ", ") + ".";
        		}
        	} else {
        		if (userMessage == null && deleted.size() == 1) {
 	            userMessage = getMessage("label.user");
 	            userMessage += " [" + deleted.iterator().next() + "] ";
-	            userMessage += getMessage("org.jahia.admin.userMessage.removed.label");
+	            userMessage += getMessage("serverSettings.user.remove.successful");
 	            isError = false;
        		}
        	}

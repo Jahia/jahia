@@ -452,12 +452,12 @@
 
                 $("#changePassword").submit(function() {
                     if ($("#password").val() == "") {
-                        alert("<fmt:message key='org.jahia.admin.userMessage.specifyPassword.label'/>");
+                        alert("<fmt:message key='serverSettings.user.errors.password.mandatory'/>");
                         return false;
                     }
 
                     if ($("#password").val() != $("#passwordconfirm").val()) {
-                        alert("<fmt:message key='org.jahia.admin.userMessage.passwdNotMatch.label'/>");
+                        alert("<fmt:message key='serverSettings.user.errors.password.not.matching'/>");
                         return false;
                     }
 

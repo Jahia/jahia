@@ -32,9 +32,9 @@
     </p>
     <form action="${flowExecutionUrl}" method="post" enctype="multipart/form-data">
         <fieldset>
-            <label for="csvFile"><fmt:message key="serverSettings.user.csvFile"/></label>
+            <label for="csvFile"><fmt:message key="label.csvFile"/></label>
             <input type="file" name="csvFile" id="csvFile"/><br/>
-            <label for="csvSeparator"><fmt:message key="serverSettings.user.csvSeparator"/></label>
+            <label for="csvSeparator"><fmt:message key="label.csvSeparator"/></label>
             <input type="text" name="csvSeparator" value="${csvFile.csvSeparator}" id="csvSeparator"/>
         </fieldset>
         <fieldset>

@@ -45,10 +45,10 @@
             <span style="font-size: small;">(<fmt:message key="serverSettings.user.edit.password.no.change"/>)</span><br/>
             <label for="password"><fmt:message key="label.password"/></label>
             <input type="password" name="password" id="password" value=""><br/>
-            <label for="passwordConfirm"><fmt:message key="serverSettings.user.confirmPassword"/></label>
+            <label for="passwordConfirm"><fmt:message key="label.comfirmPassword"/></label>
             <input type="password" name="passwordConfirm" id="passwordConfirm" value=""><br/>
         </fieldset>
-        <fieldset title="<fmt:message key='serverSettings.user.options'/>">
+        <fieldset title="<fmt:message key='label.options'/>">
             <label for="emailNotificationsDisabled"><fmt:message key="serverSettings.user.emailNotifications"/>&nbsp;</label>
             <input type="checkbox" name="emailNotificationsDisabled" id="emailNotificationsDisabled"
                    <c:if test="${userProperties.emailNotificationsDisabled}">checked="checked"</c:if>><br/>

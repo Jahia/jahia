@@ -39,7 +39,7 @@
             <div id="content" class="fit">
 <div class="head">
     <div class="object-title">
-        <fmt:message key="org.jahia.admin.users.ManageUsers.removeSelectedUser.label"/>
+        <fmt:message key="serverSettings.user.remove"/>
     </div>
 </div>
 <div class="content-item"><!-- Remove user -->

@@ -91,22 +91,22 @@ function setFocus()
             <div id="operationMenu">
                 <span class="dex-PushButton"> 
                     <span class="first-child">                  
-                    <a class="ico-user-add" href="javascript:submitForm('create');"><fmt:message key="org.jahia.admin.users.ManageUsers.createNewUser.label"/></a>
+                    <a class="ico-user-add" href="javascript:submitForm('create');"><fmt:message key="serverSettings.user.create"/></a>
                     </span> 
                 </span>
                 <span class="dex-PushButton"> 
                     <span class="first-child">                  
-                    <a class="ico-user-view" href="javascript:submitForm('edit');"><fmt:message key="org.jahia.admin.users.ManageUsers.editViewProp.label"/></a>
+                    <a class="ico-user-view" href="javascript:submitForm('edit');"><fmt:message key="serverSettings.user.edit"/></a>
                     </span> 
                 </span>
                 <span class="dex-PushButton">
                     <span class="first-child">                  
-                    <a class="ico-user-delete" href="javascript:submitForm('remove');"><fmt:message key="org.jahia.admin.users.ManageUsers.removeSelectedUser.label"/></a>
+                    <a class="ico-user-delete" href="javascript:submitForm('remove');"><fmt:message key="serverSettings.user.remove"/></a>
                     </span> 
                 </span>
                 <span class="dex-PushButton">
                     <span class="first-child">
-                    <a class="ico-user-view" href="javascript:submitForm('batchCreate');"><fmt:message key="org.jahia.admin.users.ManageUsers.batchCreateUsers.label"/></a>
+                    <a class="ico-user-view" href="javascript:submitForm('batchCreate');"><fmt:message key="serverSettings.users.bulk.create"/></a>
                     </span>
                 </span>
             </div>

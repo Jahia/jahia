@@ -761,19 +761,19 @@ public class ManageSites extends AbstractAdministrationModule {
 
          if (adminUsername.length() == 0) {
             warningMsg =
-                    getMessage("org.jahia.admin.userMessage.specifyUserName.label");
+                    getMessage("serverSettings.user.errors.username.mandatory");
         } else if (!adminPassword.equals(adminConfirm)) {
             warningMsg =
                     getMessage("org.jahia.admin.JahiaDisplayMessage.confirmPasswdBeSame.label");
         } else if (adminPassword.length() == 0) {
             warningMsg =
-                    getMessage("org.jahia.admin.userMessage.specifyPassword.label");
+                    getMessage("serverSettings.user.errors.password.mandatory");
         } else if (!userManager.isUsernameSyntaxCorrect(adminUsername)) {
             warningMsg = StringUtils.capitalize(getMessage(
-                    "org.jahia.admin.users.ManageUsers.onlyCharacters.label"));
+                    "serverSettings.user.errors.username.syntax"));
         } else if ( userManager.lookupUser(adminUsername) != null) {
             warningMsg = getMessage("label.user") + " [" + adminUsername + "] " +
-                    getMessage("org.jahia.admin.userMessage.alreadyExist.label") +
+                    getMessage("serverSettings.user.errors.username.exist") +
                     " ";
         } else {
             JahiaPasswordPolicyService pwdPolicyService =

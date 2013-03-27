@@ -74,12 +74,12 @@ public class ChangePasswordAction extends Action {
 
         if ("".equals(passwd)) {
 
-            String userMessage = Messages.getInternal("org.jahia.admin.userMessage.specifyPassword.label", renderContext.getUILocale());
+            String userMessage = Messages.get("resources.JahiaServerSettings","serverSettings.user.errors.password.mandatory", renderContext.getUILocale());
             json.put("errorMessage", userMessage);
         } else {
             String passwdConfirm = req.getParameter("passwordconfirm").trim();
             if (!passwdConfirm.equals(passwd)) {
-                String userMessage = Messages.getInternal("org.jahia.admin.userMessage.passwdNotMatch.label", renderContext.getUILocale());
+                String userMessage = Messages.get("resources.JahiaServerSettings","serverSettings.user.errors.password.not.matching", renderContext.getUILocale());
                 json.put("errorMessage",userMessage);
             } else {
                 JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry.getInstance().getJahiaPasswordPolicyService();

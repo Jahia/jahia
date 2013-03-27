@@ -45,7 +45,7 @@
             <label for="organization"><fmt:message key="label.organization"/></label>
             <input name="organization" id="organization" value="${userProperties.organization}" disabled="disabled"><br/>
         </fieldset>
-        <fieldset title="<fmt:message key='serverSettings.user.options'/>">
+        <fieldset title="<fmt:message key='label.options'/>">
             <label for="emailNotificationsDisabled"><fmt:message key="serverSettings.user.emailNotifications"/>&nbsp;</label>
             <input type="checkbox" name="emailNotificationsDisabled" id="emailNotificationsDisabled"
                    <c:if test="${userProperties.emailNotificationsDisabled}">checked="checked"</c:if> disabled="disabled"><br/>

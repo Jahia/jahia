@@ -33,7 +33,7 @@ public class UserProperties implements Serializable {
                     .error()
                     .source("username")
                     .defaultText(
-                            Messages.get("resources.JahiaServerSettings", "serverSettings.user.errors.username.mandatory",
+                            Messages.get("resources.JahiaServerSettings", "serverSettings.user.errors.password.mandatory",
                                     LocaleContextHolder.getLocale())).build());
         } else if (!ServicesRegistry.getInstance().getJahiaUserManagerService().isUsernameSyntaxCorrect(username)) {
             messages.addMessage(new MessageBuilder()

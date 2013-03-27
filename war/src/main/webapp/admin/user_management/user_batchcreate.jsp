@@ -19,7 +19,7 @@
 <!-- Adiministration page position -->
 <div id="topTitle">
 <h1>Jahia</h1>
-<h2 class="edit"><fmt:message key="org.jahia.admin.users.ManageUsers.batchCreateUsers.label"/></h2>
+<h2 class="edit"><fmt:message key="serverSettings.users.bulk.create"/></h2>
 </div>
 <div id="main">
 <table style="width: 100%;" class="dex-TabPanel" cellpadding="0"
@@ -41,7 +41,7 @@
             <div id="content" class="fit">
 <div class="head">
     <div class="object-title">
-        <fmt:message key="org.jahia.admin.users.ManageUsers.batchCreateUsers.label"/>
+        <fmt:message key="serverSettings.users.bulk.create"/>
     </div>
 </div>
 <div class="content-item"><!-- Remove user -->

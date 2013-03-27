@@ -51,7 +51,7 @@
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><fmt:message key="org.jahia.admin.users.ManageUsers.createNewUser.label"/></h2>
+    <h2 class="edit"><fmt:message key="serverSettings.user.create"/></h2>
 </div>
 <div id="main">
 <table style="width: 100%;" class="dex-TabPanel" cellpadding="0"
@@ -73,7 +73,7 @@
 <div id="content" class="fit">
 <div class="head">
     <div class="object-title">
-        <fmt:message key="org.jahia.admin.users.ManageUsers.createNewUser.label"/>
+        <fmt:message key="serverSettings.user.create"/>
     </div>
 </div>
 <div class="content-item">
@@ -109,7 +109,7 @@
 <p>&nbsp;&nbsp;<fmt:message key="org.jahia.admin.users.ManageUsers.noteThat.label"/>&nbsp;:</p>
 <ul>
     <li><fmt:message key="org.jahia.admin.users.ManageUsers.userNameUniq.label"/></li>
-    <li><fmt:message key="org.jahia.admin.users.ManageUsers.onlyCharacters.label"/></li>
+    <li><fmt:message key="serverSettings.user.errors.username.syntax"/></li>
     <li><fmt:message key="org.jahia.admin.users.ManageUsers.inputMaxCharacter.label"/></li>
 </ul>
 

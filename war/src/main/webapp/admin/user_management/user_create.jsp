@@ -162,7 +162,7 @@
 </tr>
 <tr>
     <td align="right">
-        <label for="emailNotificationsDisabled"><fmt:message key="label.emailNotifications"/>&nbsp;</label>
+        <label for="emailNotificationsDisabled"><fmt:message key="serverSettings.user.emailNotifications"/>&nbsp;</label>
     </td>
     <td>
         <%
@@ -175,7 +175,7 @@
 </tr>
 <tr>
     <td align="right">
-        <fmt:message key="label.preferredLanguage"/>&nbsp;
+        <fmt:message key="serverSettings.user.preferredLanguage"/>&nbsp;
     </td>
     <td>
         <%

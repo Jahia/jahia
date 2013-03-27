@@ -26,7 +26,7 @@
         </c:if>
     </c:forEach> </p>
     <form action="${flowExecutionUrl}" method="post">
-        <fieldset title="<fmt:message key="label.user.profile"/>">
+        <fieldset title="<fmt:message key="serverSettings.user.profile"/>">
             <label for="username"><fmt:message key="label.username"/></label>
             <input name="username" id="username" value="${userProperties.username}"><br/>
             <label for="firstName"><fmt:message key="label.firstName"/></label>
@@ -39,15 +39,15 @@
             <input name="organization" id="organization" value="${userProperties.organization}"><br/>
             <label for="password"><fmt:message key="label.password"/></label>
             <input type="password" name="password" id="password" value=""><br/>
-            <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
+            <label for="passwordConfirm"><fmt:message key="serverSettings.user.confirmPassword"/></label>
             <input type="password" name="passwordConfirm" id="passwordConfirm" value=""><br/>
         </fieldset>
-        <fieldset title="<fmt:message key='label.user.options'/>">
-            <label for="emailNotificationsDisabled"><fmt:message key="label.emailNotifications"/>&nbsp;</label>
+        <fieldset title="<fmt:message key='serverSettings.user.options'/>">
+            <label for="emailNotificationsDisabled"><fmt:message key="serverSettings.user.emailNotifications"/>&nbsp;</label>
             <input type="checkbox" name="emailNotificationsDisabled" id="emailNotificationsDisabled" <c:if test="${userProperties.emailNotificationsDisabled}">checked="checked"</c:if>><br/>
             <label for="accountLocked"><fmt:message key="label.accountLocked"/>&nbsp;</label>
             <input type="checkbox" name="accountLocked" id="accountLocked" <c:if test="${userProperties.accountLocked}">checked="checked"</c:if>><br/>
-            <label for="preferredLanguage"><fmt:message key="label.preferredLanguage"/></label>
+            <label for="preferredLanguage"><fmt:message key="serverSettings.user.preferredLanguage"/></label>
             <select id="preferredLanguage" name="preferredLanguage" size="1">
                 <c:forEach items="${functions:availableAdminBundleLocale(renderContext.UILocale)}" var="uiLanguage">
                     <option value="${uiLanguage}" <c:if test="${uiLanguage eq userProperties.preferredLanguage}">selected="selected" </c:if>>${functions:displayLocaleNameWith(uiLanguage, renderContext.UILocale)}</option>

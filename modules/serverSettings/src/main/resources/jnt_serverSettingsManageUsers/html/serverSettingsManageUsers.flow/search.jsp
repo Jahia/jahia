@@ -26,7 +26,7 @@
         $(".needUsersSelection").submit(function () {
             var selected = $("input[name='userSelected']:checked").val();
             if(undefined==selected) {
-                alert('<fmt:message key="label.user.select.one"/>');
+                alert('<fmt:message key="serverSettings.user.select.one"/>');
                 return false;
             }
             $("input[name='selectedUsers']").val(selected);
@@ -40,21 +40,21 @@
     <div>
         <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
             <input type="submit" name="_eventId_addUser"
-                   value="<fmt:message key="label.user.create"/>"/>
+                   value="<fmt:message key="serverSettings.user.create"/>"/>
         </form>
         <form action="${flowExecutionUrl}" method="POST" class="needUsersSelection" style="display: inline;">
             <input type="hidden" name="selectedUsers"/>
             <input type="submit" name="_eventId_editUser"
-                   value="<fmt:message key="label.user.edit"/>"/>
+                   value="<fmt:message key="serverSettings.user.edit"/>"/>
         </form>
         <form action="${flowExecutionUrl}" method="POST" class="needUsersSelection" style="display: inline;">
             <input type="hidden" name="selectedUsers"/>
             <input type="submit" name="_eventId_removeUser"
-                   value="<fmt:message key="label.user.remove"/>"/>
+                   value="<fmt:message key="serverSettings.user.remove"/>"/>
         </form>
         <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
             <input type="submit" name="_eventId_bulkAddUser"
-                   value="<fmt:message key="label.users.bulk.create"/>"/>
+                   value="<fmt:message key="serverSettings.users.bulk.create"/>"/>
         </form>
     </div>
 
@@ -79,11 +79,11 @@
             <input type="radio" id="searchIn" name="searchIn" value="allProps"
                    <c:if test="${empty searchCriteria.searchIn or searchCriteria.searchIn eq 'allProps'}">checked</c:if>
                    onclick="$('.propCheck').attr('disabled',true);">&nbsp;<fmt:message
-                key="label.properties.all"/>
+                key="serverSettings.user.properties.all"/>
             <input type="radio" name="searchIn" value="properties"
                    <c:if test="${searchCriteria.searchIn eq 'properties'}">checked</c:if>
                    onclick="$('.propCheck').removeAttr('disabled');">&nbsp;<fmt:message
-                key="label.properties.selected"/><br>
+                key="serverSettings.user.properties.selected"/><br>
             <fieldset>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <input type="checkbox" class="propCheck" name="properties" value="username"
@@ -139,7 +139,7 @@
         </fieldset>
     </form>
     <div>
-        <label><fmt:message key="label.search.users.result"/></label><br/>
+        <label><fmt:message key="serverSettings.user.search.result"/></label><br/>
         <table border="1" cellpadding="5" cellspacing="5">
             <thead>
             <tr>
@@ -153,7 +153,7 @@
                 <%--@elvariable id="users" type="java.util.List"--%>
                 <c:when test="${fn:length(users) eq 0}">
                     <tr>
-                        <td colspan="3"><fmt:message key="label.search.user.no.result"/></td>
+                        <td colspan="3"><fmt:message key="serverSettings.user.search.no.result"/></td>
                     </tr>
                 </c:when>
                 <c:otherwise>

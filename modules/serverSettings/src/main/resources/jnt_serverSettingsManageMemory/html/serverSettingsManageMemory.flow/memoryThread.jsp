@@ -23,14 +23,14 @@
 </script>
 
 <div id="accordion">
-    <h3><fmt:message key="label.memory"/>&nbsp;(${memoryInfo.memoryUsage}%&nbsp;<fmt:message
+    <h3><fmt:message key="serverSettings.manageMemory.memory"/>&nbsp;(${memoryInfo.memoryUsage}%&nbsp;<fmt:message
             key="serverSettings.manageMemory.used"/>)</h3>
 
     <div>
         <table width="100%" border="0" cellspacing="0" cellpadding="5">
             <tr>
                 <td>
-                    <strong><fmt:message key="label.memory.used"/>&nbsp;:</strong><br>
+                    <strong><fmt:message key="serverSettings.manageMemory.memory.used"/>&nbsp;:</strong><br>
                 </td>
                 <td>
                     ${memoryInfo.usedMemory}
@@ -38,7 +38,7 @@
             </tr>
             <tr>
                 <td>
-                    <strong><fmt:message key="label.memory.free"/>&nbsp;:</strong><br>
+                    <strong><fmt:message key="serverSettings.manageMemory.memory.free"/>&nbsp;:</strong><br>
                 </td>
                 <td>
                     ${memoryInfo.freeMemory}
@@ -46,7 +46,7 @@
             </tr>
             <tr>
                 <td>
-                    <strong><fmt:message key="label.memory.total"/>&nbsp;:</strong><br>
+                    <strong><fmt:message key="serverSettings.manageMemory.memory.total"/>&nbsp;:</strong><br>
                 </td>
                 <td>
                     ${memoryInfo.totalMemory}
@@ -54,7 +54,7 @@
             </tr>
             <tr>
                 <td>
-                    <strong><fmt:message key="label.memory.max"/>:</strong><br>
+                    <strong><fmt:message key="serverSettings.manageMemory.memory.max"/>:</strong><br>
                 </td>
                 <td>
                     ${memoryInfo.maxMemory}
@@ -70,14 +70,14 @@
                 <td>
                     <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
                         <input type="submit" name="_eventId_gc"
-                               value="<fmt:message key="label.memory.gc"/>"/>
+                               value="<fmt:message key="serverSettings.manageMemory.memory.gc"/>"/>
                     </form>
                 </td>
             </tr>
         </table>
     </div>
 
-    <h3><fmt:message key="label.threads"/></h3>
+    <h3><fmt:message key="serverSettings.manageMemory.threads"/></h3>
 
     <div>
         <table width="100%" border="0" cellspacing="0" cellpadding="5">
@@ -85,13 +85,13 @@
                 <td align="left">
                     <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
                         <input type="submit" name="_eventId_showTD"
-                               value="<fmt:message key="label.threads.performThreadDump.page"/>"/>
+                               value="<fmt:message key="serverSettings.manageMemory.threads.performThreadDump.page"/>"/>
                     </form>
                 </td>
             </tr>
             <tr>
                 <td align="left">
-                    <a href="<c:url value="/tools/threadDump.jsp?file=true"/>" target="_blank"><fmt:message key="label.threads.performThreadDump.file.download"/></a>
+                    <a href="<c:url value="/tools/threadDump.jsp?file=true"/>" target="_blank"><fmt:message key="serverSettings.manageMemory.threads.performThreadDump.file.download"/></a>
                 </td>
             </tr>
             <tr>
@@ -99,7 +99,7 @@
                     <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
                         <input type="hidden" name="threadDump" value="sysout"/>
                         <input type="submit" name="_eventId_performTD"
-                               value="<fmt:message key="label.threads.performThreadDump.system.out"/>"/>
+                               value="<fmt:message key="serverSettings.manageMemory.threads.performThreadDump.system.out"/>"/>
                     </form>
                 </td>
             </tr>
@@ -108,7 +108,7 @@
                     <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
                         <input type="hidden" name="threadDump" value="file"/>
                         <input type="submit" name="_eventId_performTD"
-                               value="<fmt:message key="label.threads.performThreadDump.file"/>"/>
+                               value="<fmt:message key="serverSettings.manageMemory.threads.performThreadDump.file"/>"/>
                     </form>
                 </td>
             </tr>
@@ -117,7 +117,7 @@
                     <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
                         <input type="hidden" name="threadDump" value="file"/>
                         <input type="submit" name="_eventId_scheduleTD"
-                               value="<fmt:message key="label.threads.performThreadDump.multiple"/>"/>
+                               value="<fmt:message key="serverSettings.manageMemory.threads.performThreadDump.multiple"/>"/>
                         &nbsp;&nbsp;
                         <label for="threadDumpCount"><fmt:message key="column.count.label"/>:&nbsp;</label>
                         <input type="text" id="threadDumpCount" name="threadDumpCount" size="2" value="10"/>
@@ -132,7 +132,7 @@
                 <td align="left">
                     <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
                         <input type="submit" name="_eventId_toggleTD"
-                               value="<c:choose><c:when test="${memoryInfo.threadMonitorActivated}"><fmt:message key="label.threads.monitor.stop"/></c:when><c:otherwise><fmt:message key="label.threads.monitor.start"/></c:otherwise></c:choose>"/>
+                               value="<c:choose><c:when test="${memoryInfo.threadMonitorActivated}"><fmt:message key="serverSettings.manageMemory.threads.monitor.stop"/></c:when><c:otherwise><fmt:message key="serverSettings.manageMemory.threads.monitor.start"/></c:otherwise></c:choose>"/>
                     </form>
                 </td>
             </tr>
@@ -140,7 +140,7 @@
                 <td align="left">
                     <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
                         <input type="submit" name="_eventId_toggleEFD"
-                               value="<c:choose><c:when test="${memoryInfo.errorFileDumperActivated}"><fmt:message key="label.errors.dumper.stop"/></c:when><c:otherwise><fmt:message key="label.errors.dumper.start"/></c:otherwise></c:choose>"/>
+                               value="<c:choose><c:when test="${memoryInfo.errorFileDumperActivated}"><fmt:message key="serverSettings.manageMemory.errors.dumper.stop"/></c:when><c:otherwise><fmt:message key="serverSettings.manageMemory.errors.dumper.start"/></c:otherwise></c:choose>"/>
                     </form>
                 </td>
             </tr>
@@ -149,7 +149,7 @@
                     <a href="http://java.net/projects/tda/downloads/download/webstart/tda.jnlp"
                        target="_blank"><img src="<c:url value='/icons/tda.gif'/>" height="16" width="16" alt=" "
                                             align="top"/><fmt:message
-                            key="label.launchTda"/></a>
+                            key="serverSettings.manageMemory.launchTda"/></a>
                 </td>
             </tr>
         </table>

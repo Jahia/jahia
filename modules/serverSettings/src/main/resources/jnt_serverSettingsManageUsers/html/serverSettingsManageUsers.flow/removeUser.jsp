@@ -22,8 +22,8 @@
 <div>
     <span style="font-size: larger;"><fmt:message key="label.remove"/>&nbsp;${userProperties.displayName}</span>
     <p>
-        <fmt:message key="label.user.definitivelyRemove"/><br/>
-        <fmt:message key="label.user.definitivelyRemove.files"/>&nbsp;
+        <fmt:message key="serverSettings.user.definitivelyRemove"/><br/>
+        <fmt:message key="serverSettings.user.definitivelyRemove.files"/>&nbsp;
         (<a href="<c:url value='/cms/export/default${userProperties.localPath}.zip?cleanup=simple'/>" target="_blank"><fmt:message key="label.export"/></a>)
     </p>
     <p>
@@ -35,7 +35,7 @@
     </p>
 
     <form action="${flowExecutionUrl}" method="post" id="editUser">
-        <fieldset title="<fmt:message key='label.user.profile'/>">
+        <fieldset title="<fmt:message key='serverSettings.user.profile'/>">
             <label for="firstName"><fmt:message key="label.firstName"/></label>
             <input name="firstName" id="firstName" value="${userProperties.firstName}" disabled="disabled"><br/>
             <label for="lastName"><fmt:message key="label.lastName"/></label>
@@ -45,14 +45,14 @@
             <label for="organization"><fmt:message key="label.organization"/></label>
             <input name="organization" id="organization" value="${userProperties.organization}" disabled="disabled"><br/>
         </fieldset>
-        <fieldset title="<fmt:message key='label.user.options'/>">
-            <label for="emailNotificationsDisabled"><fmt:message key="label.emailNotifications"/>&nbsp;</label>
+        <fieldset title="<fmt:message key='serverSettings.user.options'/>">
+            <label for="emailNotificationsDisabled"><fmt:message key="serverSettings.user.emailNotifications"/>&nbsp;</label>
             <input type="checkbox" name="emailNotificationsDisabled" id="emailNotificationsDisabled"
                    <c:if test="${userProperties.emailNotificationsDisabled}">checked="checked"</c:if> disabled="disabled"><br/>
             <label for="accountLocked"><fmt:message key="label.accountLocked"/>&nbsp;</label>
             <input type="checkbox" name="accountLocked" id="accountLocked"
                    <c:if test="${userProperties.accountLocked}">checked="checked"</c:if> disabled="disabled"><br/>
-            <label for="preferredLanguage"><fmt:message key="label.preferredLanguage"/></label>
+            <label for="preferredLanguage"><fmt:message key="serverSettings.user.preferredLanguage"/></label>
             <select id="preferredLanguage" name="preferredLanguage" size="1" disabled="disabled">
                 <c:forEach items="${functions:availableAdminBundleLocale(renderContext.UILocale)}" var="uiLanguage">
                     <option value="${uiLanguage}"
@@ -61,8 +61,8 @@
             </select>
         </fieldset>
 
-        <fieldset id="groupsFields" title="<fmt:message key="label.user.groups.list"/>">
-            <label for="groupsFields"><fmt:message key="label.user.groups.list"/></label>
+        <fieldset id="groupsFields" title="<fmt:message key="serverSettings.user.groups.list"/>">
+            <label for="groupsFields"><fmt:message key="serverSettings.user.groups.list"/></label>
             <select class="fontfix" name="selectMember" size="6" multiple disabled="disabled">
                 <c:forEach items="${userProperties.groups}" var="group">
                     <option value="${user:formatUserValueOption(group)}">${user:formatUserTextOption(group, 'Name, 20;SiteTitle, 15;Properties, 20')}</option>

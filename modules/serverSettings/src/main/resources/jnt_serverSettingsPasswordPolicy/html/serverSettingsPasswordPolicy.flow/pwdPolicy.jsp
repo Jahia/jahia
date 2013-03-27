@@ -15,7 +15,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
 <div>
-    <span style="font-size: larger;"><fmt:message key="label.password.policies"/></span>
+    <span style="font-size: larger;"><fmt:message key="serverSettings.password.policies"/></span>
 
     <div>
         <form action="${flowExecutionUrl}" method="post">
@@ -23,7 +23,7 @@
                 <thead>
                 <tr>
                     <th width="7%">
-                        <fmt:message key="label.password.policies.active"/>
+                        <fmt:message key="serverSettings.password.policies.active"/>
                     </th>
                     <th width="50%">
                         <fmt:message key="label.name"/>

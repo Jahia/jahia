@@ -64,7 +64,7 @@
                             </li>
                             <li>
                                 <label for="${importInfoMap.value.siteKey}templates">
-                                    <fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>
+                                    <fmt:message key="serverSettings.webProjectSettings.pleaseChooseTemplateSet"/>
                                 </label>
                                 <select id="${importInfoMap.value.siteKey}templates" name="importsInfos['${importInfoMap.key}'].templates">
                                     <c:forEach items="${requestScope.templateSets}" var="module">

@@ -56,11 +56,11 @@
 </template:addResources>
 <fieldset style="position: absolute; right: 20px;">
     <form action="${flowExecutionUrl}" id="navigateForm" method="POST">
-        <legend><strong><fmt:message key="label.cache.settings"/></strong></legend>
+        <legend><strong><fmt:message key="serverSettings.cache.settings"/></strong></legend>
         <p>
-            <input id="cbActions" type="checkbox" name="showActions" ${cacheManagement.showActions?" checked":""} onclick="document.getElementById('navigateForm').submit()"/>&nbsp;<label for="cbActions"><fmt:message key="label.cache.showActions"/></label><br/>
-            <input id="cbConfig" type="checkbox" name="showConfig" ${cacheManagement.showConfig?" checked":""} onclick="document.getElementById('navigateForm').submit()"/>&nbsp;<label for="cbConfig"><fmt:message key="label.cache.showConfig"/></label><br/>
-            <input id="cbBytes" type="checkbox" name="showBytes" ${cacheManagement.showBytes?" checked":""} onclick="document.getElementById('navigateForm').submit()"/>&nbsp;<label for="cbBytes"><fmt:message key="label.cache.showBytes"/></label><br/>
+            <input id="cbActions" type="checkbox" name="showActions" ${cacheManagement.showActions?" checked":""} onclick="document.getElementById('navigateForm').submit()"/>&nbsp;<label for="cbActions"><fmt:message key="serverSettings.cache.showActions"/></label><br/>
+            <input id="cbConfig" type="checkbox" name="showConfig" ${cacheManagement.showConfig?" checked":""} onclick="document.getElementById('navigateForm').submit()"/>&nbsp;<label for="cbConfig"><fmt:message key="serverSettings.cache.showConfig"/></label><br/>
+            <input id="cbBytes" type="checkbox" name="showBytes" ${cacheManagement.showBytes?" checked":""} onclick="document.getElementById('navigateForm').submit()"/>&nbsp;<label for="cbBytes"><fmt:message key="serverSettings.cache.showBytes"/></label><br/>
         </p>
         <input type="hidden" name="_showActions"/>
         <input type="hidden" name="_showConfig"/>
@@ -75,15 +75,15 @@
 <p>
     <a href="#refresh" onclick="go(); return false;" title="Refresh"><img src="<c:url value='${url.currentModule}/images/refresh.png'/>" height="16" width="16" alt=" " align="top"/>Refresh</a>
     &nbsp;&nbsp;
-    <a href="#flushOutputCaches" onclick="go('action', 'flushOutputCaches'); return false;" title="<fmt:message key="label.cache.flushOutputCaches.title"/>">${flushIcon}<fmt:message key="label.cache.flushOutputCaches"/></a>
+    <a href="#flushOutputCaches" onclick="go('action', 'flushOutputCaches'); return false;" title="<fmt:message key="serverSettings.cache.flushOutputCaches.title"/>">${flushIcon}<fmt:message key="serverSettings.cache.flushOutputCaches"/></a>
     &nbsp;&nbsp;
     <c:if test="${cacheManager.clusterActivated}">
-        <a href="#flushOutputCaches" onclick="go('action', 'flushOutputCaches', 'propagate', 'true'); return false;" title="<fmt:message key="label.cache.flushOutputCaches.cluster.title"/>">${flushIcon}<fmt:message key="label.cache.flushOutputCaches.cluster"/></a>
+        <a href="#flushOutputCaches" onclick="go('action', 'flushOutputCaches', 'propagate', 'true'); return false;" title="<fmt:message key="serverSettings.cache.flushOutputCaches.cluster.title"/>">${flushIcon}<fmt:message key="serverSettings.cache.flushOutputCaches.cluster"/></a>
         &nbsp;&nbsp;
     </c:if>
-    <a href="#flushAllCaches" onclick="go('action', 'flushAllCaches'); return false;" title="<fmt:message key="label.cache.flushAllCaches.title"/>">${flushIcon}<fmt:message key="label.cache.flushAllCaches"/></a>
+    <a href="#flushAllCaches" onclick="go('action', 'flushAllCaches'); return false;" title="<fmt:message key="serverSettings.cache.flushAllCaches.title"/>">${flushIcon}<fmt:message key="serverSettings.cache.flushAllCaches"/></a>
     <c:if test="${cacheManager.clusterActivated}">
-        <a href="#flushAllCaches" onclick="go('action', 'flushAllCaches', 'propagate', 'true'); return false;" title="<fmt:message key="label.cache.flushAllCaches.cluster.title"/>">${flushIcon}<fmt:message key="label.cache.flushAllCaches.cluster"/></a>
+        <a href="#flushAllCaches" onclick="go('action', 'flushAllCaches', 'propagate', 'true'); return false;" title="<fmt:message key="serverSettings.cache.flushAllCaches.cluster.title"/>">${flushIcon}<fmt:message key="serverSettings.cache.flushAllCaches.cluster"/></a>
         &nbsp;&nbsp;
     </c:if>
 </p>
@@ -93,7 +93,7 @@
     <h2>Cache Manager: ${manager}
         <c:if test="${cacheManagement.showConfig}">
             &nbsp;
-            <a class="configLink" title="<fmt:message key="label.cache.configLink.title"/>" href="#managerconfig-${managerStatus.index}"><img src="<c:url value='${url.currentModule}/images/help.png'/>" width="16" height="16" alt="?" title="<fmt:message key="label.cache.configLink.title"/>"/></a>
+            <a class="configLink" title="<fmt:message key="serverSettings.cache.configLink.title"/>" href="#managerconfig-${managerStatus.index}"><img src="<c:url value='${url.currentModule}/images/help.png'/>" width="16" height="16" alt="?" title="<fmt:message key="serverSettings.cache.configLink.title"/>"/></a>
             <div style="display: none;">
                 <div id="managerconfig-${managerStatus.index}">
                     <h3>${fn:escapeXml(manager)}</h3>
@@ -103,14 +103,14 @@
         </c:if>
     </h2>
     <c:if test="${cacheManagement.showActions}">
-        <a href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager}'); return false;" title="<fmt:message key="label.cache.flushCaches.title"/>">${flushIcon}<fmt:message key="label.cache.flushCaches"/>&nbsp;${manager}</a>
+        <a href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager}'); return false;" title="<fmt:message key="serverSettings.cache.flushCaches.title"/>">${flushIcon}<fmt:message key="serverSettings.cache.flushCaches"/>&nbsp;${manager}</a>
         <c:if test="${cacheManager.clusterActivated}">
             &nbsp;&nbsp;
-            <a href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager}', 'propagate', 'true'); return false;" title="<fmt:message key="label.cache.flushCaches.cluster.title"/>">${flushIcon}<fmt:message key="label.cache.flushCaches.cluster"/>&nbsp;${manager}</a>
+            <a href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager}', 'propagate', 'true'); return false;" title="<fmt:message key="serverSettings.cache.flushCaches.cluster.title"/>">${flushIcon}<fmt:message key="serverSettings.cache.flushCaches.cluster"/>&nbsp;${manager}</a>
         </c:if>
         &nbsp;&nbsp;
-        <a href="#enableStats" onclick="go('action', 'enableStats', 'name', '${manager}'); return false;" title="<fmt:message key="label.cache.stats.enable.title"/>"><fmt:message key="label.cache.stats.enable"/></a>
-        <a href="#disableStats" onclick="go('action', 'disableStats', 'name', '${manager}'); return false;" title="<fmt:message key="label.cache.stats.disable.title"/>"><fmt:message key="label.cache.stats.disable"/></a>
+        <a href="#enableStats" onclick="go('action', 'enableStats', 'name', '${manager}'); return false;" title="<fmt:message key="serverSettings.cache.stats.enable.title"/>"><fmt:message key="serverSettings.cache.stats.enable"/></a>
+        <a href="#disableStats" onclick="go('action', 'disableStats', 'name', '${manager}'); return false;" title="<fmt:message key="serverSettings.cache.stats.disable.title"/>"><fmt:message key="serverSettings.cache.stats.disable"/></a>
     </c:if>
     <table border="1" cellspacing="0" cellpadding="5">
         <thead>
@@ -119,28 +119,28 @@
             <c:if test="${cacheManagement.showConfig}">
                 <th rowspan="2">?</th>
             </c:if>
-            <th rowspan="2"><fmt:message key="label.cache.names"/></th>
-            <th colspan="3">Entries<fmt:message key="label.cache.entries"/></th>
+            <th rowspan="2"><fmt:message key="serverSettings.cache.names"/></th>
+            <th colspan="3">Entries<fmt:message key="serverSettings.cache.entries"/></th>
             <c:if test="${cacheManagement.showBytes}">
-                <th colspan="2"><fmt:message key="label.cache.size"/></th>
+                <th colspan="2"><fmt:message key="serverSettings.cache.size"/></th>
             </c:if>
-            <th colspan="4"><fmt:message key="label.cache.stats"/></th>
+            <th colspan="4"><fmt:message key="serverSettings.cache.stats"/></th>
             <c:if test="${cacheManagement.showActions}">
                 <th rowspan="2"><fmt:message key="label.actions"/></th>
             </c:if>
         </tr>
         <tr>
-            <th><fmt:message key="label.cache.total"/></th>
-            <th><fmt:message key="label.cache.memory"/></th>
-            <th><fmt:message key="label.cache.disk"/></th>
+            <th><fmt:message key="serverSettings.cache.total"/></th>
+            <th><fmt:message key="serverSettings.cache.memory"/></th>
+            <th><fmt:message key="serverSettings.cache.disk"/></th>
             <c:if test="${cacheManagement.showBytes}">
-                <th><fmt:message key="label.cache.memory"/></th>
-                <th><fmt:message key="label.cache.disk"/></th>
+                <th><fmt:message key="serverSettings.cache.memory"/></th>
+                <th><fmt:message key="serverSettings.cache.disk"/></th>
             </c:if>
-            <th><fmt:message key="label.cache.total"/></th>
-            <th><fmt:message key="label.cache.hits"/></th>
-            <th><fmt:message key="label.cache.misses"/></th>
-            <th><fmt:message key="label.cache.rate"/></th>
+            <th><fmt:message key="serverSettings.cache.total"/></th>
+            <th><fmt:message key="serverSettings.cache.hits"/></th>
+            <th><fmt:message key="serverSettings.cache.misses"/></th>
+            <th><fmt:message key="serverSettings.cache.rate"/></th>
         </tr>
         </thead>
         <tbody>
@@ -163,7 +163,7 @@
                 <td><strong>${status.index + 1}</strong></td>
                 <c:if test="${cacheManagement.showConfig}">
                     <td align="center">
-                        <a class="configLink" title="<fmt:message key="label.cache.showDetail"/>" href="#config-${managerStatus.index}-${status.index}"><img src="<c:url value='${url.currentModule}/images/help.png'/>" width="16" height="16" alt="?" title="<fmt:message key="label.cache.showDetail"/>"/></a>
+                        <a class="configLink" title="<fmt:message key="serverSettings.cache.showDetail"/>" href="#config-${managerStatus.index}-${status.index}"><img src="<c:url value='${url.currentModule}/images/help.png'/>" width="16" height="16" alt="?" title="<fmt:message key="serverSettings.cache.showDetail"/>"/></a>
                         <div style="display: none;">
                             <div id="config-${managerStatus.index}-${status.index}">
                                 <h3>${fn:escapeXml(cacheEntry.name)}</h3>

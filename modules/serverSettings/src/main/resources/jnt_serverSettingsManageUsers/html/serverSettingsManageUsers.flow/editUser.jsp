@@ -31,7 +31,7 @@
     </p>
 
     <form action="${flowExecutionUrl}" method="post" id="editUser">
-        <fieldset title="<fmt:message key='label.user.profile'/>">
+        <fieldset title="<fmt:message key='serverSettings.user.profile'/>">
             <label for="firstName"><fmt:message key="label.firstName"/></label>
             <input name="firstName" id="firstName" value="${userProperties.firstName}"><br/>
             <label for="lastName"><fmt:message key="label.lastName"/></label>
@@ -41,15 +41,15 @@
             <label for="organization"><fmt:message key="label.organization"/></label>
             <input name="organization" id="organization" value="${userProperties.organization}"><br/>
         </fieldset>
-        <fieldset title="<fmt:message key='label.user.password'/>">
-            <span style="font-size: small;">(<fmt:message key="label.user.edit.password.no.change"/>)</span><br/>
+        <fieldset title="<fmt:message key='serverSettings.user.password'/>">
+            <span style="font-size: small;">(<fmt:message key="serverSettings.user.edit.password.no.change"/>)</span><br/>
             <label for="password"><fmt:message key="label.password"/></label>
             <input type="password" name="password" id="password" value=""><br/>
-            <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
+            <label for="passwordConfirm"><fmt:message key="serverSettings.user.confirmPassword"/></label>
             <input type="password" name="passwordConfirm" id="passwordConfirm" value=""><br/>
         </fieldset>
-        <fieldset title="<fmt:message key='label.user.options'/>">
-            <label for="emailNotificationsDisabled"><fmt:message key="label.emailNotifications"/>&nbsp;</label>
+        <fieldset title="<fmt:message key='serverSettings.user.options'/>">
+            <label for="emailNotificationsDisabled"><fmt:message key="serverSettings.user.emailNotifications"/>&nbsp;</label>
             <input type="checkbox" name="emailNotificationsDisabled" id="emailNotificationsDisabled"
                    <c:if test="${userProperties.emailNotificationsDisabled}">checked="checked"</c:if>><br/>
             <input type="hidden" name="_emailNotificationsDisabled"/>
@@ -57,7 +57,7 @@
             <input type="checkbox" name="accountLocked" id="accountLocked"
                    <c:if test="${userProperties.accountLocked}">checked="checked"</c:if>><br/>
             <input type="hidden" name="_accountLocked"/>
-            <label for="preferredLanguage"><fmt:message key="label.preferredLanguage"/></label>
+            <label for="preferredLanguage"><fmt:message key="serverSettings.user.preferredLanguage"/></label>
             <select id="preferredLanguage" name="preferredLanguage" size="1">
                 <c:forEach items="${functions:availableAdminBundleLocale(renderContext.UILocale)}" var="uiLanguage">
                     <option value="${uiLanguage}"
@@ -66,8 +66,8 @@
             </select>
         </fieldset>
 
-        <fieldset id="groupsFields" title="<fmt:message key="label.user.groups.list"/>">
-            <label for="groupsFields"><fmt:message key="label.user.groups.list"/></label>
+        <fieldset id="groupsFields" title="<fmt:message key="serverSettings.user.groups.list"/>">
+            <label for="groupsFields"><fmt:message key="serverSettings.user.groups.list"/></label>
             <select class="fontfix" name="selectMember" size="6" multiple>
                 <c:forEach items="${userProperties.groups}" var="group">
                     <option value="${user:formatUserValueOption(group)}">${user:formatUserTextOption(group, 'Name, 20;SiteTitle, 15;Properties, 20')}</option>
@@ -80,7 +80,7 @@
             <input type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel'/>"/>
             <input type="hidden" name="selectedUsers" value="${userProperties.userKey}"/>
             <input type="submit" name="_eventId_removeUser"
-                   value="<fmt:message key="label.user.remove"/>"/>
+                   value="<fmt:message key="serverSettings.user.remove"/>"/>
         </fieldset>
     </form>
 </div>

@@ -3,5 +3,5 @@
 
 <p>
     <fmt:message key="serverSettings.reportAnIssue.description"/>:&nbsp;
-    <a href="http://support.jahia.com" target="_blank"><fmt:message key="label.jira"/></a>
+    <a href="http://support.jahia.com" target="_blank"><fmt:message key="serverSettings.reportAnIssue.jira"/></a>
 </p>

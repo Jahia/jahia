@@ -17,9 +17,9 @@
 
 <div id="content" class="fit">
     <div class="head">
-            <fmt:message key='<%= "org.jahia.admin.info.LicenceInfo.jahiaEdition." + Jahia.getEdition().toLowerCase() %>'/>&nbsp;Jahia&nbsp;xCM&nbsp;<%= Jahia.VERSION %>&nbsp;<fmt:message key="org.jahia.admin.build.label"/>&nbsp;<%= Jahia.getBuildNumber() %>
+            <fmt:message key='<%= "serverSettings.aboutJahia.LicenceInfo.jahiaEdition." + Jahia.getEdition().toLowerCase() %>'/>&nbsp;Jahia&nbsp;xCM&nbsp;<%= Jahia.VERSION %>&nbsp;<fmt:message key="serverSettings.aboutJahia.build"/>&nbsp;<%= Jahia.getBuildNumber() %>
             <c:if test="${ licensePackage.customTermsAndConditions eq 'true' }">
-                / <fmt:message key="org.jahia.admin.info.LicenceInfo.customTermsAndConditionsNotice.label" />
+                / <fmt:message key="serverSettings.aboutJahia.LicenceInfo.customTermsAndConditionsNotice" />
             </c:if>
         </div>
     <div class="content-body">

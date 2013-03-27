@@ -53,10 +53,10 @@
                         workInProgressOverlay.stop();
                     }
                     if ("success" == textStatus) {
-                    <fmt:message key="label.mailServer.testSettings.success" var="msg"/>
+                    <fmt:message key="serverSettings.mailServerSettings.testSettings.success" var="msg"/>
                         alert("${functions:escapeJavaScript(msg)}");
                     } else {
-                    <fmt:message key="label.mailServer.testSettings.failure" var="msg"/>
+                    <fmt:message key="serverSettings.mailServerSettings.testSettings.failure" var="msg"/>
                         alert("${functions:escapeJavaScript(msg)}");
                     }
                 },
@@ -64,7 +64,7 @@
                     if (typeof workInProgressOverlay != 'undefined') {
                         workInProgressOverlay.stop();
                     }
-                    <fmt:message key="label.mailServer.testSettings.failure" var="msg"/>
+                    <fmt:message key="serverSettings.mailServerSettings.testSettings.failure" var="msg"/>
                     alert("${functions:escapeJavaScript(msg)}" + "\n" + xhr.status + " " + xhr.statusText + "\n" +
                           xhr.responseText);
                 }
@@ -75,7 +75,7 @@
 
 <div>
     <span style="font-size: larger; font: bold">
-        <fmt:message key="label.emailSettings"/>
+        <fmt:message key="serverSettings.mailServerSettings.title"/>
     </span>
     <p>
         <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
@@ -91,7 +91,7 @@
                 <tr>
                     <td>
                         <label for="serviceActivated">
-                            <fmt:message key="label.mailserver.serviceEnabled"/>&nbsp;:
+                            <fmt:message key="serverSettings.mailServerSettings.serviceEnabled"/>&nbsp;:
                         </label>
                     </td>
                     <td>
@@ -101,7 +101,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <fmt:message key="label.mailServer.address"/>&nbsp;:
+                        <fmt:message key="serverSettings.mailServerSettings.address"/>&nbsp;:
                     </td>
                     <td>
                         <input type="text" name="host" size="70" maxlength="250" value="<c:out value='${mailSettings.host}'/>"/>
@@ -111,7 +111,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <fmt:message key="label.mailServer.administrator"/>&nbsp;:
+                        <fmt:message key="serverSettings.mailServerSettings.administrator"/>&nbsp;:
                     </td>
                     <td>
                         <input type="text" name="to" size="64" maxlength="250" value="<c:out value='${mailSettings.to}'/>">
@@ -119,7 +119,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <fmt:message key="label.mailServer.from"/>&nbsp;:
+                        <fmt:message key="serverSettings.mailServerSettings.from"/>&nbsp;:
                     </td>
                     <td>
                         <input type="text" name="from" size="64" maxlength="250" value="<c:out value='${mailSettings.from}'/>">
@@ -127,24 +127,24 @@
                 </tr>
                 <tr>
                     <td>
-                        <fmt:message key="label.mailServer.eventNotificationLevel"/>&nbsp;:
+                        <fmt:message key="serverSettings.mailServerSettings.eventNotificationLevel"/>&nbsp;:
                     </td>
                     <td>
                         <select name="notificationLevel">
                             <option value="Disabled" ${mailSettings.notificationLevel == 'Disabled' ? 'selected="selected"' : ''}>
-                                <fmt:message key="label.mailServer.eventNotificationLevel.disabled"/></option>
+                                <fmt:message key="serverSettings.mailServerSettings.eventNotificationLevel.disabled"/></option>
                             <option value="Standard" ${mailSettings.notificationLevel == 'Standard' ? 'selected="selected"' : ''}>
-                                <fmt:message key="label.mailServer.eventNotificationLevel.standard"/></option>
+                                <fmt:message key="serverSettings.mailServerSettings.eventNotificationLevel.standard"/></option>
                             <option value="Wary" ${mailSettings.notificationLevel == 'Wary' ? 'selected="selected"' : ''}>
-                                <fmt:message key="label.mailServer.eventNotificationLevel.wary"/></option>
+                                <fmt:message key="serverSettings.mailServerSettings.eventNotificationLevel.wary"/></option>
                             <option value="Paranoid" ${mailSettings.notificationLevel == 'Paranoid' ? 'selected="selected"' : ''}>
-                                <fmt:message key="label.mailServer.eventNotificationLevel.paranoid"/></option>
+                                <fmt:message key="serverSettings.mailServerSettings.eventNotificationLevel.paranoid"/></option>
                         </select>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2" align="right">
-                        <a href="#" onclick="testSettings(); return false;"><fmt:message key="label.mailServer.testSettings"/></a>
+                        <a href="#" onclick="testSettings(); return false;"><fmt:message key="serverSettings.mailServerSettings.testSettings"/></a>
                     </td>
                 </tr>
                 <tr>

@@ -34,7 +34,7 @@ public class CacheManagerHandler implements Serializable {
     }
 
     /**
-     * Method called when the form is submited
+     * Method called when the form is submitted
      * @return must return a string to process the form
      */
     public String performAction() {

@@ -116,7 +116,7 @@
                             </div>
                             <div class="head">
                                 <div class="object-title">
-                                    <fmt:message key="label.groupList"/>
+                                    <fmt:message key="serverSettings.user.groupList"/>
                                 </div>
                             </div>
                             <div  class="content-item-noborder">

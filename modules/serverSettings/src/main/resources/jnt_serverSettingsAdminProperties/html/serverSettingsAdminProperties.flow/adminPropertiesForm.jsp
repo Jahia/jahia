@@ -16,7 +16,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
 <jcr:node path="/users/root" var="adminUser"/>
-<h2><fmt:message key="label.editSuperAdminProperties"/></h2>
+<h2><fmt:message key="serverSettings.adminProperties.title"/></h2>
 <c:forEach var="msg" items="${flowRequestContext.messageContext.allMessages}">
     <div class="${msg.severity == 'ERROR' ? 'validationError' : ''}" style="color: ${msg.severity == 'ERROR' ? 'red' : 'blue'};">${fn:escapeXml(msg.text)}</div>
 </c:forEach>
@@ -31,11 +31,11 @@
     <input type="text" id="email" value="${fn:escapeXml(adminProperties.email)}" name="email"/> <br/>
     <label for="organization"><fmt:message key="label.organization"/></label>
     <input type="text" id="organization" value="${fn:escapeXml(adminProperties.organization)}" name="organization" autocomplete="off"/>   <br/>
-    <label for="emailNotifications"><fmt:message key="label.emailNotifications"/></label>
+    <label for="emailNotifications"><fmt:message key="serverSettings.user.emailNotifications"/></label>
     <input type="checkbox" id="emailNotifications" name="emailNotificationsDisabled" ${adminProperties.emailNotificationsDisabled?" checked":""}/>
     <input type="hidden" name="_emailNotificationsDisabled">
     <br/>
-    <label for="preferredLanguage"><fmt:message key="label.preferredLanguage"/></label>
+    <label for="preferredLanguage"><fmt:message key="serverSettings.user.preferredLanguage"/></label>
     <select id="preferredLanguage" name="preferredLanguage" size="1">
         <c:forEach items="${functions:availableAdminBundleLocale(renderContext.UILocale)}" var="uiLanguage">
             <option value="${uiLanguage}" <c:if test="${uiLanguage eq adminProperties.preferredLanguage}">selected="selected" </c:if>>${functions:displayLocaleNameWith(uiLanguage, renderContext.UILocale)}</option>
@@ -44,16 +44,16 @@
     <br/>
     <label for="password"><fmt:message key="label.password"/></label>
     <input type="password" id="password" name="password" autocomplete="off"/>
-    (<fmt:message key="label.user.edit.password.no.change"/>)
+    (<fmt:message key="serverSettings.user.edit.password.no.change"/>)
     <br/>
-    <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
+    <label for="passwordConfirm"><fmt:message key="serverSettings.user.confirmPassword"/></label>
     <input type="password" id="passwordConfirm" name="passwordConfirm" autocomplete="off"/>
-    (<fmt:message key="label.user.edit.password.no.change"/>)
+    (<fmt:message key="serverSettings.user.edit.password.no.change"/>)
     <br/>
 
     <input id="submit" type="submit" value="<fmt:message key='label.save'/>" name="_eventId_submit">
 </form>
-<h3><fmt:message key="label.groupList"/>:</h3>
+<h3><fmt:message key="serverSettings.user.groupList"/>:</h3>
 <ul>
     <c:forEach items="${adminProperties.groups}" var="group">
         <li>${fn:escapeXml(group.groupname)}</li>

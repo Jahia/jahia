@@ -22,28 +22,28 @@ public class MailSettingsValidator implements Serializable {
         if (mailSettings.isServiceActivated()) {
             if (mailSettings.getFrom() == null || mailSettings.getFrom().isEmpty()) {
                 validationContext.getMessageContext().addMessage(new MessageBuilder().error().source(
-                        "from").defaultText(Messages.get("resources.JahiaServerSettings","label.mailServer.errors.from.mandatory",
+                        "from").defaultText(Messages.get("resources.JahiaServerSettings", "serverSettings.mailServerSettings.errors.from.mandatory",
                         LocaleContextHolder.getLocale())).build());
             } else if (!MailService.isValidEmailAddress(mailSettings.getFrom(), false)) {
                 validationContext.getMessageContext().addMessage(new MessageBuilder().error().source(
                         "from").defaultText(Messages.getWithArgs("resources.JahiaServerSettings",
-                        "label.mailServer.errors.email",
+                        "serverSettings.mailServerSettings.errors.email",
                         LocaleContextHolder.getLocale(),"from")).build());
             }
             if (mailSettings.getNotificationSeverity() != 0 &&
                 (mailSettings.getTo() == null || mailSettings.getTo().isEmpty())) {
                 validationContext.getMessageContext().addMessage(new MessageBuilder().error().source("to").defaultText(
-                        Messages.getInternal("label.mailServer.errors.administrator.mandatory", LocaleContextHolder.getLocale())).build());
+                        Messages.getInternal("serverSettings.mailServerSettings.errors.administrator.mandatory", LocaleContextHolder.getLocale())).build());
             } else if (mailSettings.getNotificationSeverity() != 0 && !MailService.isValidEmailAddress(
                     mailSettings.getTo(), true)) {
                 validationContext.getMessageContext().addMessage(new MessageBuilder().error().source(
                         "to").defaultText(Messages.getWithArgs("resources.JahiaServerSettings",
-                        "label.mailServer.errors.email",
+                        "serverSettings.mailServerSettings.errors.email",
                         LocaleContextHolder.getLocale(),"administrator")).build());
             }
             if (mailSettings.getUri() == null || mailSettings.getUri().isEmpty()) {
                 validationContext.getMessageContext().addMessage(new MessageBuilder().error().source("uri").defaultText(
-                        Messages.get("resources.JahiaServerSettings","label.mailServer.errors.server.mandatory",
+                        Messages.get("resources.JahiaServerSettings", "serverSettings.mailServerSettings.errors.server.mandatory",
                                 LocaleContextHolder.getLocale())).build());
             }
 

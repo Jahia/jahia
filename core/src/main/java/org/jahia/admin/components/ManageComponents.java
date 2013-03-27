@@ -209,7 +209,7 @@ public class ManageComponents extends AbstractAdministrationModule {
         }
 
         if (!doDeploy && !doPrepare) {
-            String dspMsg = getMessage("org.jahia.admin.components.ManageComponents.deploy.help");
+            String dspMsg = getMessage("serverSettings.portlets.deploy.help");
             response.getWriter().print(dspMsg);
             return;
         }
@@ -238,10 +238,10 @@ public class ManageComponents extends AbstractAdministrationModule {
 
                         if (doPrepare && !doDeploy) {
                             String url = JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=getPreparedWar&war=" + URLEncoder.encode(fileName, "UTF-8") + "&file=" + generatedFile.getName());
-                            String dspMsg = getMessage("message.portletReady");
+                            String dspMsg = getMessage("serverSettings.portletReady");
                             response.getWriter().append(dspMsg).append("<br/><br/>").append(getMessage("label.download")).append(":&nbsp;<a href='").append(url).append("'>").append(fileName).append("</a>");
                         } else {
-                            String dspMsg = getMessage("message.portletDeployed");
+                            String dspMsg = getMessage("serverSettings.portletDeployed");
                             response.getWriter().print(dspMsg);
                         }
 

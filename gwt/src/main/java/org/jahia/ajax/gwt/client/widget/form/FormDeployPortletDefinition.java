@@ -40,15 +40,19 @@
 
 package org.jahia.ajax.gwt.client.widget.form;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.HiddenField;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.i18n.client.Dictionary;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
-import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
 public abstract class FormDeployPortletDefinition extends FormPanel {
@@ -90,6 +94,11 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
         deployPortlet.setName("doDeploy");
         deployPortlet.setValue(false);
         add(deployPortlet);
+
+        final HiddenField<String> jcrReturnContentType = new HiddenField<String>();
+        jcrReturnContentType.setName("jcrReturnContentType");
+        jcrReturnContentType.setValue("json");
+        add(jcrReturnContentType);
 
         Button prepareButton = new Button(Messages.get("label.portletPrepareWar", "Prepare"));
         prepareButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -159,13 +168,21 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
                 if (doCloseParent) {
                     closeParent();
                 }
-                String html = formEvent.getResultHtml();
-                if (html != null) {
-                    MessageBox.info(Messages.get("label.deployNewPortlet", "Deploy new portlets"), html, new Listener<MessageBoxEvent>() {
-                        public void handleEvent(MessageBoxEvent be) {
-                            refreshParent();
-                        }
-                    });
+                String response = formEvent.getResultHtml();
+                if (response.startsWith("<pre>")) {
+                    response = response.substring(5, response.length() - 6);
+                }
+                if (!response.trim().isEmpty()) {
+                    JSONValue rspValue = JSONParser.parseStrict(response);
+                    if (rspValue != null && rspValue.isObject() != null && rspValue.isObject().containsKey("dspMsg")) {
+                        String dspMsg = rspValue.isObject().get("dspMsg").isString().stringValue();
+                        dspMsg = new HTML(dspMsg).getText();
+                        MessageBox.info(Messages.get("label.deployNewPortlet", "Deploy new portlets"), dspMsg, new Listener<MessageBoxEvent>() {
+                            public void handleEvent(MessageBoxEvent be) {
+                                refreshParent();
+                            }
+                        });
+                    }
                 }
                 form.unmask();
             }

@@ -11,4 +11,16 @@
         <property name="applyOnModes" value="admin"/>
         <property name="applyOnConfigurations" value="page,include"/>
     </bean>
+
+    <bean class="org.jahia.modules.serversettings.portlets.ManagePortletsAction" />
+
+    <bean name="preparedPortletsController" class="org.jahia.modules.serversettings.portlets.PreparedPortletsController"/>
+    <bean name="jahiaTestMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="urlMap">
+            <map>
+                <entry key="/preparedportlets" value-ref="preparedPortletsController"/>
+            </map>
+        </property>
+    </bean>
+
 </beans>

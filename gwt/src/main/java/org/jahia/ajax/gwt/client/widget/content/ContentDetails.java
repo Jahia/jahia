@@ -228,6 +228,8 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                                             item.setEnabled(true);
                                         }
                                     }
+                                } else {
+                                	ok.setEnabled(false); //disable save button
                                 }
 
                                 fillCurrentTab();

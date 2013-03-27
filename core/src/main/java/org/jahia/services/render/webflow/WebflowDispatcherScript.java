@@ -51,7 +51,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
 import org.springframework.webflow.definition.registry.FlowDefinitionRegistry;
 
 import javax.jcr.RepositoryException;
@@ -65,8 +64,11 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 public class WebflowDispatcherScript extends RequestDispatcherScript {
+    private static final Pattern MODULE_PREFIX_PATTERN = Pattern.compile("/modules/[^/]*/");
+
     private static final Logger logger = LoggerFactory.getLogger(WebflowDispatcherScript.class);
 
     private String flowPath;
@@ -100,7 +102,7 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
         HttpServletRequest request = context.getRequest();
         HttpServletResponse response = context.getResponse();
 
-        flowPath = view.getPath().replaceFirst("/modules/[^/]*/", "");
+        flowPath = MODULE_PREFIX_PATTERN.matcher(view.getPath()).replaceFirst("");
 
         String identifier;
         try {
@@ -142,7 +144,8 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
                 String qs = StringUtils.substringAfter(responseWrapper.getRedirect(), "?");
                 final Map<String,String[]> params = new HashMap<String,String[]>();
                 if (!StringUtils.isEmpty(qs)) {
-                    params.put("webflowexecution"+ identifier.replaceAll("-",""),new String[] {StringUtils.substringAfterLast(qs, "webflowexecution" + identifier.replaceAll("-","")+"=")});
+                    String identifierNoDashes = StringUtils.replace(identifier, "-", "");
+                    params.put("webflowexecution"+ identifierNoDashes,new String[] {StringUtils.substringAfterLast(qs, "webflowexecution" + identifierNoDashes+"=")});
                 }
                 HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(request) {
                     @Override

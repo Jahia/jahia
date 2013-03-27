@@ -119,11 +119,11 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
 
         if (doValidation || !skipIfEmpty) {
             if (cfg.getUri().length() == 0) {
-                result = new MailSettingsValidationResult("host", "message.mailServer_mustSet.label");
+                result = new MailSettingsValidationResult("host", "serverSettings.mailServerSettings.errors.server.mandatory");
             } else if (cfg.getNotificationSeverity() != 0 && cfg.getTo().length() == 0) {
-                result = new MailSettingsValidationResult("to", "message.mailAdmin_mustSet");
+                result = new MailSettingsValidationResult("to", "serverSettings.mailServerSettings.errors.administrator.mandatory");
             } else if (cfg.getFrom().length() == 0) {
-                result = new MailSettingsValidationResult("from", "message.mailFrom_mustSet.label");
+                result = new MailSettingsValidationResult("from", "serverSettings.mailServerSettings.errors.from.mandatory");
             } else if (cfg.getNotificationSeverity() != 0 && !MailService.isValidEmailAddress(cfg.getTo(), true)) {
                 result = new MailSettingsValidationResult("to",
                         "org.jahia.admin.JahiaDisplayMessage.enterValidEmailAdmin.label");

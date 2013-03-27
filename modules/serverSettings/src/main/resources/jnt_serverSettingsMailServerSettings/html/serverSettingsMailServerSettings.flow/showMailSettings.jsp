@@ -22,15 +22,15 @@
     <!--
     function testSettings() {
         if (document.jahiaAdmin.host.value.length == 0) {
-        <fmt:message key="message.mailServer_mustSet.label" var="msg"/>
+        <fmt:message key="serverSettings.mailServerSettings.errors.server.mandatory" var="msg"/>
             alert("${functions:escapeJavaScript(msg)}");
             document.jahiaAdmin.host.focus();
         } else if (document.jahiaAdmin.to.value.length == 0) {
-        <fmt:message key="message.mailAdmin_mustSet" var="msg"/>
+        <fmt:message key="serverSettings.mailServerSettings.errors.administrator.mandatory" var="msg"/>
             alert("${functions:escapeJavaScript(msg)}");
             document.jahiaAdmin.to.focus();
         } else if (document.jahiaAdmin.from.value.length == 0) {
-        <fmt:message key="message.mailFrom_mustSet.label" var="msg"/>
+        <fmt:message key="serverSettings.mailServerSettings.errors.from.mandatory" var="msg"/>
             alert("${functions:escapeJavaScript(msg)}");
             document.jahiaAdmin.from.focus();
         } else {

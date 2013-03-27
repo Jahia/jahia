@@ -103,17 +103,17 @@ public class Notifications extends JahiaMultiActionController {
             if (!MailService.isValidEmailAddress(from, false)) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().append(
-                        Messages.getInternal(
+                        Messages.get("serverSettings",
                                 "org.jahia.admin.JahiaDisplayMessage.enterValidEmailFrom.label",
                                 locale, "Please provide a valid sender e-mail address"));
                 return;
             }
 
-            String subject = Messages.getInternal(
-                    "org.jahia.admin.server.ManageServer.testSettings.mailSubject", locale,
+            String subject = Messages.get("serverSettings",
+                    "serverSettings.mailServerSettings.testSettings.mailSubject", locale,
                     "[Jahia] Test message");
-            String text = Messages.getInternal(
-                    "org.jahia.admin.server.ManageServer.testSettings.mailText", locale,
+            String text = Messages.get("serverSettings",
+                    "serverSettings.mailServerSettings.testSettings.mailText", locale,
                     "Test message");
 
             sendEmail(host, from, to, subject, text);

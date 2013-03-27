@@ -144,7 +144,8 @@ public class JahiaPersistenceCopier {
                 copy(node);
                 exclude.add(id);
             } catch (ItemStateException e) {
-                throw new RepositoryException("Unable to copy " + id, e);
+                logger.warn("Unable to copy " + id, e);
+                //throw new RepositoryException("Unable to copy " + id, e);
             }
         }
     }

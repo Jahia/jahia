@@ -116,6 +116,8 @@ pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(L
             <option value="20"${limit == '20' ? 'selected="selected"' : ''}>20</option>
             <option value="50"${limit == '50' ? 'selected="selected"' : ''}>50</option>
             <option value="100"${limit == '100' ? 'selected="selected"' : ''}>100</option>
+            <option value="1000"${limit == '1000' ? 'selected="selected"' : ''}>1000</option>
+            <option value="10000"${limit == '10000' ? 'selected="selected"' : ''}>10000</option>
             <option value="0"${limit == '0' ? 'selected="selected"' : ''}>all</option>
         </select>
         &nbsp;Offset:
@@ -127,6 +129,7 @@ pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(L
             <option value="200"${displayLimit == '200' ? 'selected="selected"' : ''}>200</option>
             <option value="500"${displayLimit == '500' ? 'selected="selected"' : ''}>500</option>
             <option value="1000"${displayLimit == '1000' ? 'selected="selected"' : ''}>1000</option>
+            <option value="10000"${displayLimit == '10000' ? 'selected="selected"' : ''}>10000</option>
             <option value="0"${displayLimit == '0' ? 'selected="selected"' : ''}>all</option>
         </select>
         <input type="submit" value="Execute query ([Ctrl+Enter])" />

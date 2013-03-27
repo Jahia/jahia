@@ -449,10 +449,17 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         }
 
         try {
-            if ((node.getParent().hasProperty("j:editableInContribution") && node.getParent().getProperty("j:editableInContribution").getBoolean()) ||
-                    (node.hasProperty("j:editableInContribution") && node.getProperty("j:editableInContribution").getBoolean()) ||
+            if ((node.hasProperty("j:editableInContribution") && node.getProperty("j:editableInContribution").getBoolean()) ||
                     (contributeNode != null && contributeNode.hasProperty("j:editableInContribution") && contributeNode.getProperty("j:editableInContribution").getBoolean())) {
                 return true;
+            }
+            if (node.getPath().startsWith(renderContext.getSite().getPath())){
+                while (!node.getPath().equals(renderContext.getSite().getPath())) {
+                    if (node.getParent().hasProperty("j:editableInContribution") && node.getParent().getProperty("j:editableInContribution").getBoolean()) {
+                        return true;
+                    }
+                    node = node.getParent();
+                }
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

@@ -118,7 +118,7 @@
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><fmt:message key="org.jahia.admin.site.ManageSites.virtualSitesListe.label"/></h2>
+    <h2 class="edit"><fmt:message key="serverSettings.manageWebProjects.virtualSitesListe"/></h2>
 </div>
 <div id="main">
 <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -167,7 +167,7 @@
     </div>
 </div>
 <div class="head headtop">
-    <div class="object-title"><fmt:message key="org.jahia.admin.site.ManageSites.virtualSitesListe.label"/>&nbsp;(${sitesListSize})</div>
+    <div class="object-title"><fmt:message key="serverSettings.manageWebProjects.virtualSitesListe"/>&nbsp;(${sitesListSize})</div>
 </div>
 <div  class="content-item-noborder">
     <% if (warningMsg != "" && !sub.equals("prepareimport")) { %>
@@ -337,12 +337,12 @@
             <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
                 <tr>
                     <td>
-                        <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.fileselect"/>&nbsp;
+                        <fmt:message key="serverSettings.manageWebProjects.importprepackaged.fileselect"/>&nbsp;
                     </td>
                     <td>
                         &nbsp;<select name="importpath">
                         <c:forEach var="file" items="${files}">
-                            <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.${file.name}" var="label"/>
+                            <fmt:message key="serverSettings.manageWebProjects.importprepackaged.${file.name}" var="label"/>
                             <c:set var="label" value="${fn:contains(label, '???') ? file.name : label}"/>
                             <option value='${file.path}'${file.name == defaultSet ? ' selected="selected"' : ''}>${fn:escapeXml(label)}</option>
                         </c:forEach>
@@ -413,7 +413,7 @@ else { %>
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><fmt:message key="org.jahia.admin.site.ManageSites.virtualSitesListe.label"/></h2>
+    <h2 class="edit"><fmt:message key="serverSettings.manageWebProjects.virtualSitesListe"/></h2>
 </div>
 <div id="main">
     <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -511,12 +511,12 @@ else { %>
                                         <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
                                             <tr>
                                                 <td>
-                                                    <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.fileselect"/>&nbsp;
+                                                    <fmt:message key="serverSettings.manageWebProjects.importprepackaged.fileselect"/>&nbsp;
                                                 </td>
                                                 <td>
                                                     &nbsp;<select name="importpath">
                                                     <c:forEach var="file" items="${files}">
-                                                        <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.${file.name}" var="label"/>
+                                                        <fmt:message key="serverSettings.manageWebProjects.importprepackaged.${file.name}" var="label"/>
                                                         <c:set var="label" value="${fn:contains(label, '???') ? file.name : label}"/>
                                                         <option value='${file.path}'${file.name == defaultSet ? ' selected="selected"' : ''}>${fn:escapeXml(label)}</option>
                                                     </c:forEach>

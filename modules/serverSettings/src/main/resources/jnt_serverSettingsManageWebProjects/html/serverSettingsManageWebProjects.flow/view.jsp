@@ -86,7 +86,7 @@
     </fieldset>
 
     <fieldset>
-        <legend><fmt:message key="org.jahia.admin.site.ManageSites.virtualSitesListe.label"/></legend>
+        <legend><fmt:message key="serverSettings.manageWebProjects.virtualSitesListe"/></legend>
         
         <c:forEach var="msg" items="${flowRequestContext.messageContext.allMessages}">
             <div class="${msg.severity == 'ERROR' ? 'validationError' : ''}" style="color: ${msg.severity == 'ERROR' ? 'red' : 'blue'};">${fn:escapeXml(msg.text)}</div>
@@ -172,7 +172,7 @@
         <legend><fmt:message key="serverSettings.manageWebProjects.importprepackaged"/></legend>
             <select name="selectedPrepackagedSite">
                 <c:forEach items="${webprojectHandler.prepackagedSites}" var="file">
-                    <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.${file.name}" var="label"/>
+                    <fmt:message key="serverSettings.manageWebProjects.importprepackaged.${file.name}" var="label"/>
                     <c:set var="label" value="${fn:contains(label, '???') ? file.name : label}"/>
                     <option value="${file.absolutePath}"${file.name == defaultPrepackagedSite ? ' selected="selected"':''}>${fn:escapeXml(label)}</option>
                 </c:forEach>

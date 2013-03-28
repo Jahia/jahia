@@ -44,7 +44,7 @@
         </div>
 
         <div>
-            <label for="passwordConfirm"><fmt:message key="serverSettings.user.confirmPassword"/></label>
+            <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
             <input type="password" id="passwordConfirm" name="passwordConfirm" autocomplete="off"/>
         </div>
 

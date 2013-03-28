@@ -188,13 +188,13 @@
                 <fmt:message key="label.name"/>
             </th>
             <th width="7%">
-                <fmt:message key="org.jahia.admin.site.ManageSites.siteKey.label"/>
+                <fmt:message key="serverSettings.manageWebProjects.webProject.siteKey"/>
             </th>
             <th width="20%">
-                <fmt:message key="org.jahia.admin.site.ManageSites.siteServerName.label"/>
+                <fmt:message key="serverSettings.manageWebProjects.webProject.serverName"/>
             </th>
             <th width="23%">
-                <fmt:message key="org.jahia.admin.site.ManageSites.templateSet.label"/>
+                <fmt:message key="serverSettings.manageWebProjects.webProject.templateSet"/>
             </th>
             <th width="14%" class="lastCol">
                 <fmt:message key="label.action"/>
@@ -227,7 +227,7 @@
                     <img
                             src="${pageContext.request.contextPath}/css/images/andromeda/icons/accept.png"
                             alt="+"
-                            title="<fmt:message key='org.jahia.admin.site.ManageSites.isTheDefaultSite.label'/>" width="10"
+                            title="<fmt:message key='serverSettings.manageWebProjects.webProject.isDefault'/>" width="10"
                             height="10" border="0"/>
                     <%
                     } else {
@@ -324,7 +324,7 @@
     <c:if test="${not empty files}">
     <div class="head headtop">
         <div class="object-title">
-            <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.label"/>
+            <fmt:message key="serverSettings.manageWebProjects.importprepackaged"/>
         </div>
     </div>
     <div  class="content-item">
@@ -352,7 +352,7 @@
                         <span class="dex-PushButton">
                             <span class="first-child">
                                 <a class="ico-import"
-                                    href="javascript:{showWorkInProgress();document.siteImportPrepackaged.submit();}"><fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.proceed"/></a>
+                                    href="javascript:{showWorkInProgress();document.siteImportPrepackaged.submit();}"><fmt:message key="serverSettings.manageWebProjects.importprepackaged.proceed"/></a>
                             </span>
                         </span>
                     </td>
@@ -365,7 +365,7 @@
     <!--   import backup -->
     <div class="head headtop">
         <div class="object-title">
-            <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.label"/>
+            <fmt:message key="serverSettings.manageWebProjects.multipleimport"/>
         </div>
     </div>
     <div  class="content-item">
@@ -382,14 +382,14 @@
             <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
                 <tr>
                     <td>
-                        <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/>&nbsp;
+                        <fmt:message key="serverSettings.manageWebProjects.multipleimport.fileselect"/>&nbsp;
                     </td>
                     <td>
                         :&nbsp;<input type="file" name="import" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
                     </td>
                 </tr><tr>
                 <td>
-                    <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileinput"/>&nbsp;
+                    <fmt:message key="serverSettings.manageWebProjects.multipleimport.fileinput"/>&nbsp;
                 </td>
                 <td>
                     :&nbsp;<input name="importpath" size="<%=inputSize%>">
@@ -398,7 +398,7 @@
                         <span class="dex-PushButton">
                             <span class="first-child">
                                 <a class="ico-import"
-                                   href="javascript:{showWorkInProgress(); document.siteImport.submit();}"><fmt:message key="org.jahia.admin.site.ManageSites.fileImport.label"/></a>
+                                   href="javascript:{showWorkInProgress(); document.siteImport.submit();}"><fmt:message key="serverSettings.manageWebProjects.fileImport"/></a>
                             </span>
                         </span>
                 </td>
@@ -499,7 +499,7 @@ else { %>
                                 <!-- prepackaged site -->
                                 <div class="head headtop">
                                     <div class="object-title">
-                                        <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.label"/>&nbsp;<fmt:message key="label.virtualSitesManagement.default"/>
+                                        <fmt:message key="serverSettings.manageWebProjects.importprepackaged"/>&nbsp;<fmt:message key="label.virtualSitesManagement.default"/>
                                     </div>
                                 </div>
                                 <div  class="content-item">
@@ -527,7 +527,7 @@ else { %>
                 	                    <span class="dex-PushButton">
                                           <span class="first-child">
                                             <a class="ico-import"
-                                               href="javascript:{showWorkInProgress();document.siteImportPrepackaged.submit();}"><fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.proceed"/></a>
+                                               href="javascript:{showWorkInProgress();document.siteImportPrepackaged.submit();}"><fmt:message key="serverSettings.manageWebProjects.importprepackaged.proceed"/></a>
                                           </span>
                                         </span>
 
@@ -540,7 +540,7 @@ else { %>
                                 <!--   import backup -->
                                 <div class="head headtop">
                                     <div class="object-title">
-                                        <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.label"/>
+                                        <fmt:message key="serverSettings.manageWebProjects.multipleimport"/>
                                     </div>
                                 </div>
                                 <div  class="content-item">
@@ -557,14 +557,14 @@ else { %>
                                         <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
                                             <tr>
                                                 <td>
-                                                    <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/>&nbsp;
+                                                    <fmt:message key="serverSettings.manageWebProjects.multipleimport.fileselect"/>&nbsp;
                                                 </td>
                                                 <td>
                                                     :&nbsp;<input type="file" name="import" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
                                                 </td>
                                             </tr><tr>
                                             <td>
-                                                <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileinput"/>&nbsp;
+                                                <fmt:message key="serverSettings.manageWebProjects.multipleimport.fileinput"/>&nbsp;
                                             </td>
                                             <td>
                                                 :&nbsp;<input name="importpath" size="<%=inputSize%>">
@@ -573,7 +573,7 @@ else { %>
                                             <span class="dex-PushButton">
                                               <span class="first-child">
                                                 <a class="ico-import"
-                                                   href="javascript:{showWorkInProgress(); document.siteImport.submit();}"><fmt:message key="org.jahia.admin.site.ManageSites.fileImport.label"/></a>
+                                                   href="javascript:{showWorkInProgress(); document.siteImport.submit();}"><fmt:message key="serverSettings.manageWebProjects.fileImport"/></a>
                                               </span>
                                             </span>
                                             </td>

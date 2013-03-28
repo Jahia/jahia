@@ -220,7 +220,7 @@
 </tr>
 <tr>
     <td align="right">
-        <fmt:message key="label.comfirmPassword"/>&nbsp;
+        <fmt:message key="label.confirmPassword"/>&nbsp;
     </td>
     <td>
         <input class="input" type="password" name="passwdconfirm"

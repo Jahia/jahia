@@ -11,7 +11,7 @@
 <table border="1" cellpadding="5" cellspacing="0">
         <tr>
             <th>
-                <fmt:message key="serverSettings.manageWebProjects.webProject.title" />
+                <fmt:message key="label.name" />
             </th>
             <th>
                 <fmt:message key="serverSettings.manageWebProjects.webProject.siteKey" />

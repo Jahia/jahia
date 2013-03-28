@@ -69,7 +69,7 @@
             </div>
             <div id="validationErrorsDetailsNodetypes${importInfoMap.value.siteKey}" style="display: none">
                 <c:if test="${not empty checks.missingNodetypes}">
-                    <p><fmt:message key="label.import.missingNodetypes"/></p>
+                    <p><fmt:message key="serverSettings.manageWebProjects.import.missingNodetypes"/></p>
                     <ul>
                         <c:forEach var="nt" items="${checks.missingNodetypes}">
                             <li>${fn:escapeXml(nt.key)}
@@ -93,7 +93,7 @@
                     </ul>
                 </c:if>
                 <c:if test="${not empty checks.missingMixins}">
-                    <p><fmt:message key="label.import.missingMixins"/></p>
+                    <p><fmt:message key="serverSettings.manageWebProjects.import.missingMixins"/></p>
                     <ul>
                         <c:forEach var="nt" items="${checks.missingMixins}">
                             <li>${fn:escapeXml(nt.key)}
@@ -158,7 +158,7 @@
             </div>
         </c:if>
         <c:if test="${checks.class.name == 'org.jahia.services.importexport.validation.MissingPortletsValidationResult'}">
-            <fmt:message key="failure.import.missingPortlets" var="errorSummary">
+            <fmt:message key="serverSettings.manageWebProjects.import.missingPortlets" var="errorSummary">
                 <fmt:param value="${fn:length(checks.missingPortlets)}"/>
             </fmt:message>
             <div style="display: block">

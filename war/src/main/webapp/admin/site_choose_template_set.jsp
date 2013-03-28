@@ -66,7 +66,7 @@
 
                         <div id="content" class="fit">
                                     <div class="head">
-                                        <div class="object-title"><fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>
+                                        <div class="object-title"><fmt:message key="serverSettings.webProjectSettings.pleaseChooseTemplateSet"/>
                                         </div>
                                         <div class="object-shared">
                                             <fmt:message key="label.step"/> 2 / 3

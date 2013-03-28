@@ -21,7 +21,7 @@
 
     <fieldset>
             <div>
-                <label for="templateSet"><fmt:message key="serverSettings.manageWebProjects.webProject.selectTemplateSet"/></label>
+                <label for="templateSet"><fmt:message key="serverSettings.webProjectSettings.pleaseChooseTemplateSet"/></label>
 
                 <select name="templateSet" id="templateSet">
                     <c:forEach items="${allModules}" var="module">

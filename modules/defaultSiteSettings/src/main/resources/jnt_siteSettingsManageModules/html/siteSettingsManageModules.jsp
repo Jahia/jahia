@@ -22,7 +22,7 @@
 %>
 <h2>${fn:escapeXml(currentNode.displayableName)} - ${fn:escapeXml(site.displayableName)}</h2>
 <p>
-<strong><fmt:message key="org.jahia.admin.site.ManageSites.templateSet.label"/>:&nbsp;</strong>
+<strong><fmt:message key="serverSettings.manageWebProjects.webProject.templateSet"/>:&nbsp;</strong>
 ${fn:escapeXml(templatePackageName)}&nbsp;(${templateSetPackage.lastVersion})
 </p>
 <table class="table table-bordered table-hover" cellpadding="0" cellspacing="0" >

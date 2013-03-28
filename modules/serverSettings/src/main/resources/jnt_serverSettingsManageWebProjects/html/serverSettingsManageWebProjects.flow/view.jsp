@@ -80,9 +80,9 @@
         <legend><fmt:message key="label.virtualSitesManagement"/></legend>
             <input type="hidden" id="sitesFormAction" name="_eventId" value="" />
             <a href="#create" id="createSite" class="sitesAction"><fmt:message key="serverSettings.manageWebProjects.add"/></a>
-            <a href="#export" id="exportSites" class="sitesAction-hide"><fmt:message key="serverSettings.manageWebProjects.export"/></a>
-            <a href="#exportStaging" id="exportStagingSites" class="sitesAction-hide"><fmt:message key="serverSettings.manageWebProjects.exportStaging"/></a>
-            <a href="#delete" id="deleteSites" class="sitesAction"><fmt:message key="serverSettings.manageWebProjects.delete"/></a>
+            <a href="#export" id="exportSites" class="sitesAction-hide"><fmt:message key="label.export"/></a>
+            <a href="#exportStaging" id="exportStagingSites" class="sitesAction-hide"><fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)</a>
+            <a href="#delete" id="deleteSites" class="sitesAction"><fmt:message key="label.delete"/></a>
     </fieldset>
 
     <fieldset>
@@ -98,7 +98,7 @@
                 <th>&nbsp;</th>
                 <th>#</th>
                 <th>
-                    <fmt:message key="serverSettings.manageWebProjects.webProject.title"/>
+                    <fmt:message key="label.name"/>
                 </th>
                 <th>
                     <fmt:message key="serverSettings.manageWebProjects.webProject.siteKey"/>
@@ -137,7 +137,7 @@
                             <c:url var="editUrl" value="/cms/edit/default/${site.defaultLanguage}${site.home.path}.html"/>
                             <a href="${editUrl}"><img
                                     src="<c:url value='/css/images/andromeda/icons/arrow_right_green.png'/>"
-                                    alt="<fmt:message key='org.jahia.admin.exit.label'/>" title="<fmt:message key='org.jahia.admin.exit.label'/>" width="16" height="16" border="0"/></a>
+                                    alt="<fmt:message key='serverSettings.manageWebProjects.exitToEdit'/>" title="<fmt:message key='serverSettings.manageWebProjects.exitToEdit'/>" width="16" height="16" border="0"/></a>
                             <a href="#edit" onclick="submitSiteForm('editSite', '${site.name}'); return false;"><img
                                     src="<c:url value='/engines/images/icons/admin/adromeda/edit.png'/>"
                                     alt="<fmt:message key='label.edit'/>" title="<fmt:message key='label.edit'/>" width="16" height="16" border="0"/></a>
@@ -163,13 +163,13 @@
     <fieldset>
         <legend>System Site</legend>
 
-        <a href="/cms/export/default/systemsite_export_${now}.zip?exportformat=site&live=true&sitebox=systemsite"><fmt:message key='serverSettings.manageWebProjects.export' /></a>
-        <a href="/cms/export/default/systemsite_staging_export_${now}.zip?exportformat=site&live=false&sitebox=systemsite"><fmt:message key='serverSettings.manageWebProjects.exportStaging' /></a>
+        <a href="/cms/export/default/systemsite_export_${now}.zip?exportformat=site&live=true&sitebox=systemsite"><fmt:message key='label.export' /></a>
+        <a href="/cms/export/default/systemsite_staging_export_${now}.zip?exportformat=site&live=false&sitebox=systemsite"><fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)</a>
 
     </fieldset>
     
     <fieldset>
-        <legend><fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.label"/></legend>
+        <legend><fmt:message key="serverSettings.manageWebProjects.importprepackaged"/></legend>
             <select name="selectedPrepackagedSite">
                 <c:forEach items="${webprojectHandler.prepackagedSites}" var="file">
                     <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.${file.name}" var="label"/>
@@ -179,22 +179,22 @@
             </select>
     
             <input type="submit" name="importPrepackaged"
-                   value="<fmt:message key='org.jahia.admin.site.ManageSites.importprepackaged.proceed' />" onclick="submitSiteForm('importPrepackaged'); return false;"/>
+                   value="<fmt:message key='serverSettings.manageWebProjects.importprepackaged.proceed' />" onclick="submitSiteForm('importPrepackaged'); return false;"/>
     </fieldset>
     
 </form>
     <fieldset>
-        <legend><fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.label"/></legend>
+        <legend><fmt:message key="serverSettings.manageWebProjects.multipleimport"/></legend>
         <form action="${flowExecutionUrl}" method="post" enctype="multipart/form-data">
             <div>
-                <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/>
+                <fmt:message key="serverSettings.manageWebProjects.multipleimport.fileselect"/>
                 <input type="file" name="importFile"/>
             </div>
             <div>
-                <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileinput"/> <input name="importPath"/>
+                <fmt:message key="serverSettings.manageWebProjects.multipleimport.fileinput"/> <input name="importPath"/>
             </div>
     
             <input type="submit" name="_eventId_import"
-                   value="<fmt:message key='org.jahia.admin.site.ManageSites.fileImport.label'/>" onclick=""/>
+                   value="<fmt:message key='serverSettings.manageWebProjects.fileImport'/>" onclick=""/>
         </form>
     </fieldset>

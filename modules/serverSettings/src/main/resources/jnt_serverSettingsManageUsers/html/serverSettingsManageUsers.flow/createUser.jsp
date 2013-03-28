@@ -39,7 +39,7 @@
             <input name="organization" id="organization" value="${userProperties.organization}"><br/>
             <label for="password"><fmt:message key="label.password"/></label>
             <input type="password" name="password" id="password" value=""><br/>
-            <label for="passwordConfirm"><fmt:message key="label.comfirmPassword"/></label>
+            <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
             <input type="password" name="passwordConfirm" id="passwordConfirm" value=""><br/>
         </fieldset>
         <fieldset title="<fmt:message key='label.options'/>">

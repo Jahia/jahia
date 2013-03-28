@@ -12,7 +12,7 @@
         ${siteBean.siteKey}
     </div>
     <div>
-        <fmt:message key="serverSettings.manageWebProjects.webProject.title"/>:&nbsp;
+        <fmt:message key="label.name"/>:&nbsp;
         ${fn:escapeXml(siteBean.title)}
     </div>
     <div>
@@ -20,7 +20,7 @@
         ${fn:escapeXml(siteBean.serverName)}
     </div>
     <div>
-        <fmt:message key="serverSettings.manageWebProjects.webProject.description"/>:&nbsp;
+        <fmt:message key="label.description"/>:&nbsp;
         ${fn:escapeXml(siteBean.description)}
     </div>
     <div>
@@ -32,7 +32,7 @@
         ${siteBean.templateSetPackage.name}&nbsp;(${siteBean.templateSet})
     </div>
     <div>
-        <fmt:message key="serverSettings.manageWebProjects.webProject.modules"/>:&nbsp;
+        <fmt:message key="label.modules"/>:&nbsp;
         <c:forEach items="${siteBean.modulePackages}" var="module" varStatus="loopStatus">
             ${module.name}&nbsp;(${module.rootFolder})${!loopStatus.last ? ',&nbsp;' : ''}
         </c:forEach>

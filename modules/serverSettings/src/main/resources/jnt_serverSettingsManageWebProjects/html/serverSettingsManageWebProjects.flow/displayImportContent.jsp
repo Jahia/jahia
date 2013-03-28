@@ -40,7 +40,7 @@
                         <ul>
                             <li>
                                 <label for="${importInfoMap.value.siteKey}siteTitle">
-                                    <fmt:message key="org.jahia.admin.site.ManageSites.siteTitle.label"/>
+                                    <fmt:message key="serverSettings.manageWebProjects.webProject.title"/>
                                 </label>
                                 <input type="text" id="${importInfoMap.value.siteKey}siteTitle"
                                        name="importsInfos['${importInfoMap.key}'].siteTitle"
@@ -48,7 +48,7 @@
                             </li>
                             <li>
                                 <label for="${importInfoMap.value.siteKey}siteServerName">
-                                    <fmt:message key="org.jahia.admin.site.ManageSites.siteServerName.label"/>
+                                    <fmt:message key="serverSettings.manageWebProjects.webProject.serverName"/>
                                 </label>
                                 <input type="text" id="${importInfoMap.value.siteKey}siteServerName"
                                        name="importsInfos['${importInfoMap.key}'].siteServername"
@@ -56,7 +56,7 @@
                             </li>
                             <li>
                                 <label for="${importInfoMap.value.siteKey}siteKey">
-                                    <fmt:message key="org.jahia.admin.site.ManageSites.siteKey.label"/>
+                                    <fmt:message key="serverSettings.manageWebProjects.webProject.siteKey"/>
                                 </label>
                                 <input type="text" id="${importInfoMap.value.siteKey}siteKey"
                                        name="importsInfos['${importInfoMap.key}'].siteKey"
@@ -75,7 +75,7 @@
                             <c:if test="${importInfoMap.value.legacyImport}">
                                 <li>
                                     <label for="${importInfoMap.value.siteKey}legacyMapping">
-                                        <fmt:message key="org.jahia.admin.site.ManageSites.selectDefinitionMapping"/>
+                                        <fmt:message key="serverSettings.manageWebProjects.selectDefinitionMapping"/>
                                     </label>
                                     <select id="${importInfoMap.value.siteKey}legacyMapping"
                                             name="importsInfos['${importInfoMap.key}'].selectedLegacyMapping">
@@ -87,7 +87,7 @@
                                 </li>
                                 <li>
                                     <label for="${importInfoMap.value.siteKey}legacyDefinitions">
-                                        <fmt:message key="org.jahia.admin.site.ManageSites.selectLegacyDefinitions"/>
+                                        <fmt:message key="serverSettings.manageWebProjects.selectLegacyDefinitions"/>
                                     </label>
                                     <select id="${importInfoMap.value.siteKey}legacyDefinitions"
                                             name="importsInfos['${importInfoMap.key}'].selectedLegacyDefinitions">

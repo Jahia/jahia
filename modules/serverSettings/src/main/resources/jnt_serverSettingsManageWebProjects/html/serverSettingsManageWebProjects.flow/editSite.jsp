@@ -25,7 +25,7 @@
         </div>
 
         <div>
-            <label for="title"><fmt:message key="serverSettings.manageWebProjects.webProject.title"/>*:</label>
+            <label for="title"><fmt:message key="label.name"/>*:</label>
             <input id="title" name="title" value="${fn:escapeXml(siteBean.title)}"/>
         </div>
 
@@ -40,7 +40,7 @@
         </div>
 
         <div>
-            <label><fmt:message key="serverSettings.manageWebProjects.webProject.modules"/>:</label>
+            <label><fmt:message key="label.modules"/>:</label>
             <c:forEach items="${siteBean.modulePackages}" var="module" varStatus="loopStatus">
                 ${module.name}&nbsp;(${module.rootFolder})${!loopStatus.last ? ',&nbsp;' : ''}
             </c:forEach>
@@ -60,7 +60,7 @@
         </div>
 
         <div>
-            <label for="description"><fmt:message key="serverSettings.manageWebProjects.webProject.description"/>:</label>
+            <label for="description"><fmt:message key="label.description"/>:</label>
             <textarea id="description" name="description">${fn:escapeXml(siteBean.description)}</textarea>
         </div>
     </fieldset>

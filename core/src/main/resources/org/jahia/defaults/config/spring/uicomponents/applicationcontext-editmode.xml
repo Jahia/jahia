@@ -349,7 +349,7 @@
                     </property>
                     <property name="treeColumns">
                         <list>
-                            <value>label,*,label.displayName</value>
+                            <value>label,*,label.name</value>
                         </list>
                     </property>
                     <property name="requiredPermission" value="createSelector"/>

@@ -419,7 +419,7 @@
                 <input type="password" id="password" name="password"/></p>
 </p>
 <p>
-                <span class="label"><fmt:message key="label.comfirmPassword"/></span>
+                <span class="label"><fmt:message key="label.confirmPassword"/></span>
                 <input type="password" id="passwordconfirm" name="passwordconfirm"/>
            </p>
 <div>     

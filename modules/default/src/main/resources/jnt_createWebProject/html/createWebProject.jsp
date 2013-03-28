@@ -31,11 +31,11 @@
         <p><label for="siteTitle"><fmt:message key="label.title"/> (*)</label>
             <input type="text" name="siteTitle" id="siteTitle" class="inputsize2" value="" tabindex="20"/></p>
 
-        <p><label for="siteKey"><fmt:message key="org.jahia.admin.site.ManageSites.siteKey.label"/> (*)</label>
+        <p><label for="siteKey"><fmt:message key="serverSettings.manageWebProjects.webProject.siteKey"/> (*)</label>
             <input type="text" name="siteKey" id="siteKey" class="inputsize2" value="" tabindex="20"/></p>
 
         <c:if test="${currentNode.properties['useServerName'].boolean}">
-            <p><label for="siteServerName"><fmt:message key="org.jahia.admin.site.ManageSites.siteServerName.label"/> (*)</label>
+            <p><label for="siteServerName"><fmt:message key="serverSettings.manageWebProjects.webProject.serverName"/> (*)</label>
                 <input type="text" name="siteServerName" id="siteServerName" class="inputsize2" value="localhost" tabindex="20"/></p>
         </c:if>
 
@@ -46,7 +46,7 @@
 
 
         <c:if test="${currentNode.properties['useTemplatesSet'].boolean}">
-            <p><label for="siteDescr"><fmt:message key="org.jahia.admin.site.ManageSites.templateSet.label"/></label>
+            <p><label for="siteDescr"><fmt:message key="serverSettings.manageWebProjects.webProject.templateSet"/></label>
                 <select name="templatesSet">
                     <jcr:node var="sets" path="/modules"/>
                     <c:forEach items="${sets.nodes}" var="set">

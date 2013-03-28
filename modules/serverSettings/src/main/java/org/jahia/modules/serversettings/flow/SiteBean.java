@@ -162,29 +162,29 @@ public class SiteBean implements Serializable {
                             .error()
                             .source("siteKey")
                             .defaultText(
-                                    Messages.getInternal(
-                                            "org.jahia.admin.warningMsg.onlyLettersDigitsUnderscore.label",
+                                    Messages.get("resources.JahiaServerSettings",
+                                            "serverSettings.manageWebProjects.warningMsg.onlyLettersDigitsUnderscore",
                                             LocaleContextHolder.getLocale())).build());
                 } else if (!sitesService.isServerNameValid(serverName)) {
                     messages.addMessage(new MessageBuilder()
                             .error()
                             .source("serverName")
                             .defaultText(
-                                    Messages.getInternal("org.jahia.admin.warningMsg.invalidServerName.label",
+                                    Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.warningMsg.invalidServerName",
                                             LocaleContextHolder.getLocale())).build());
                 } else if (!Url.isLocalhost(serverName) && sitesService.getSiteByServerName(serverName) != null) {
                     messages.addMessage(new MessageBuilder()
                             .error()
                             .source("serverName")
                             .defaultText(
-                                    Messages.getInternal("org.jahia.admin.warningMsg.chooseAnotherServerName.label",
+                                    Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.warningMsg.chooseAnotherServerName",
                                             LocaleContextHolder.getLocale())).build());
                 } else if (sitesService.getSiteByKey(siteKey) != null) {
                     messages.addMessage(new MessageBuilder()
                             .error()
                             .source("siteKey")
                             .defaultText(
-                                    Messages.getInternal("org.jahia.admin.warningMsg.chooseAnotherSiteKey.label",
+                                    Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.warningMsg.chooseAnotherSiteKey",
                                             LocaleContextHolder.getLocale())).build());
                 }
             } else {
@@ -192,7 +192,7 @@ public class SiteBean implements Serializable {
                         .error()
                         .source("siteKey")
                         .defaultText(
-                                Messages.getInternal("org.jahia.admin.warningMsg.completeRequestInfo.label",
+                                Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.warningMsg.completeRequestInfo",
                                         LocaleContextHolder.getLocale())).build());
             }
         } catch (JahiaException e) {
@@ -216,14 +216,14 @@ public class SiteBean implements Serializable {
                             .error()
                             .source("serverName")
                             .defaultText(
-                                    Messages.getInternal("org.jahia.admin.warningMsg.invalidServerName.label",
+                                    Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.warningMsg.invalidServerName",
                                             LocaleContextHolder.getLocale())).build());
                 } else if (!Url.isLocalhost(serverName) && sitesService.getSiteByServerName(serverName) != null) {
                     messages.addMessage(new MessageBuilder()
                             .error()
                             .source("serverName")
                             .defaultText(
-                                    Messages.getInternal("org.jahia.admin.warningMsg.chooseAnotherServerName.label",
+                                    Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.warningMsg.chooseAnotherServerName",
                                             LocaleContextHolder.getLocale())).build());
                 }
             } else {
@@ -231,7 +231,7 @@ public class SiteBean implements Serializable {
                         .error()
                         .source("siteKey")
                         .defaultText(
-                                Messages.getInternal("org.jahia.admin.warningMsg.completeRequestInfo.label",
+                                Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.warningMsg.completeRequestInfo",
                                         LocaleContextHolder.getLocale())).build());
             }
         } catch (JahiaException e) {

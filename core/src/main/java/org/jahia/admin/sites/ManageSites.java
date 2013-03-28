@@ -96,6 +96,7 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Url;
+import org.jahia.utils.i18n.Messages;
 import org.springframework.core.io.FileSystemResource;
 
 import javax.jcr.NodeIterator;
@@ -455,28 +456,28 @@ public class ManageSites extends AbstractAdministrationModule {
                     (siteServerName.length() > 0) && siteKey != null && (siteKey.length() > 0)) {
                 if (!sMgr.isSiteKeyValid(siteKey)) {
                     warningMsg =
-                            getMessage("org.jahia.admin.warningMsg.onlyLettersDigitsUnderscore.label");
+                            getMessage("serverSettings.manageWebProjects.warningMsg.onlyLettersDigitsUnderscore");
                 } else if (siteKey.equals("site")) {
                     warningMsg =
-                            getMessage("org.jahia.admin.warningMsg.chooseAnotherSiteKey.label");
+                            getMessage("serverSettings.manageWebProjects.warningMsg.chooseAnotherSiteKey");
                 } else if (!sMgr.isServerNameValid(siteServerName)) {
                     warningMsg =
-                            getMessage("org.jahia.admin.warningMsg.invalidServerName.label");
+                            getMessage("serverSettings.manageWebProjects.warningMsg.invalidServerName");
                 } else if (siteServerName.equals("default")) {
                     warningMsg =
-                            getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
+                            getMessage("serverSettings.manageWebProjects.warningMsg.chooseAnotherServerName");
                 } else if (!Url.isLocalhost(siteServerName) && sMgr.getSite(siteServerName) != null) {
                     warningMsg =
-                            getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
+                            getMessage("serverSettings.manageWebProjects.warningMsg.chooseAnotherServerName");
                 } else if (sMgr.getSiteByKey(siteKey) != null) {
                     warningMsg =
-                            getMessage("org.jahia.admin.warningMsg.chooseAnotherSiteKey.label");
+                            getMessage("serverSettings.manageWebProjects.warningMsg.chooseAnotherSiteKey");
                 } else {
                     processError = false;
                 }
             } else {
                 warningMsg =
-                        getMessage("org.jahia.admin.warningMsg.completeRequestInfo.label");
+                        getMessage("serverSettings.manageWebProjects.warningMsg.completeRequestInfo");
             }
 
             if (!processError) {
@@ -1393,18 +1394,18 @@ public class ManageSites extends AbstractAdministrationModule {
                     (siteServerName.trim().length() > 0)) {
                 if (!sMgr.isServerNameValid(siteServerName)) {
                     warningMsg =
-                            getMessage("org.jahia.admin.warningMsg.invalidServerName.label");
+                            getMessage("serverSettings.manageWebProjects.warningMsg.invalidServerName");
                     processError = true;
                 } else if (!site.getServerName().equals(siteServerName)) {
                     if (!Url.isLocalhost(siteServerName) && sMgr.getSite(siteServerName) != null) {
                         warningMsg =
-                                getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
+                                getMessage("serverSettings.manageWebProjects.warningMsg.chooseAnotherServerName");
                         processError = true;
                     }
                 }
             } else {
                 warningMsg =
-                        getMessage("org.jahia.admin.warningMsg.completeRequestInfo.label");
+                        getMessage("serverSettings.manageWebProjects.warningMsg.completeRequestInfo");
             }
 
             if (!processError) {

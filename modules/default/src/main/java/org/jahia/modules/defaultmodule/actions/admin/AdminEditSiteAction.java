@@ -7,6 +7,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.Url;
+import org.jahia.utils.i18n.Messages;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -22,6 +24,13 @@ import java.util.Map;
  */
 public class AdminEditSiteAction extends AdminSiteAction {
     private static Logger logger = LoggerFactory.getLogger(AdminEditSiteAction.class);
+
+    @Override
+    public String getMessage(Locale locale, String key) {
+        String message = Messages.get("resources.JahiaServerSettings", key, locale);
+        return StringUtils.isEmpty(message)?super.getMessage(locale, key):message;
+    }
+
 
     @Override
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, JahiaSite site, JCRSessionWrapper session, Map<String, List<String>> parameters) throws Exception {
@@ -41,16 +50,16 @@ public class AdminEditSiteAction extends AdminSiteAction {
             if (siteTitle != null && (siteTitle.trim().length() > 0) && siteServerName != null &&
                     (siteServerName.trim().length() > 0)) {
                 if (!isServerNameValid(siteServerName)) {
-                    result.put("warn", getMessage(renderContext.getUILocale(),"org.jahia.admin.warningMsg.invalidServerName.label"));
+                    result.put("warn", getMessage(renderContext.getUILocale(), "serverSettings.manageWebProjects.warningMsg.invalidServerName"));
                     return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject(result));
                 } else if (!site.getServerName().equals(siteServerName)) {
                     if (!Url.isLocalhost(siteServerName) && sitesService.getSite(siteServerName) != null) {
-                        result.put("warn", getMessage(renderContext.getUILocale(),"org.jahia.admin.warningMsg.chooseAnotherServerName.label"));
+                        result.put("warn", getMessage(renderContext.getUILocale(), "serverSettings.manageWebProjects.warningMsg.chooseAnotherServerName"));
                         return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject(result));
                     }
                 }
             } else {
-                result.put("warn", getMessage(renderContext.getUILocale(),"org.jahia.admin.warningMsg.completeRequestInfo.label"));
+                result.put("warn", getMessage(renderContext.getUILocale(), "serverSettings.manageWebProjects.warningMsg.completeRequestInfo"));
                 return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject(result));
             }
 

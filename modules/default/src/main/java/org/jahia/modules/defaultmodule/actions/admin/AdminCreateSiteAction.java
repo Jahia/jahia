@@ -11,6 +11,7 @@ import org.jahia.services.render.URLResolver;
 import org.jahia.services.sites.*;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Url;
+import org.jahia.utils.i18n.Messages;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,12 @@ public class AdminCreateSiteAction extends AdminAction {
 
     public void setSitesService(JahiaSitesBaseService sitesService) {
         this.sitesService = sitesService;
+    }
+
+    @Override
+    public String getMessage(Locale locale, String key) {
+        String message = Messages.get("resources.JahiaServerSettings",key,locale);
+        return StringUtils.isEmpty(message)?super.getMessage(locale, key):message;
     }
 
     @Override
@@ -56,26 +63,26 @@ public class AdminCreateSiteAction extends AdminAction {
             if (siteTitle != null && (siteTitle.length() > 0) && siteServerName != null &&
                     (siteServerName.length() > 0) && siteKey != null && (siteKey.length() > 0)) {
                 if (!sitesService.isSiteKeyValid(siteKey)) {
-                    result.put("warn", getMessage(renderContext.getUILocale(), "org.jahia.admin.warningMsg.onlyLettersDigitsUnderscore.label"));
+                    result.put("warn", getMessage(renderContext.getUILocale(), "serverSettings.manageWebProjects.warningMsg.onlyLettersDigitsUnderscore"));
                     return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject(result));
                 } else if (siteKey.equals("site")) {
-                    result.put("warn", getMessage(renderContext.getUILocale(), "org.jahia.admin.warningMsg.chooseAnotherSiteKey.label"));
+                    result.put("warn", getMessage(renderContext.getUILocale(), "serverSettings.manageWebProjects.warningMsg.chooseAnotherSiteKey"));
                     return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject(result));
                 } else if (!sitesService.isServerNameValid(siteServerName)) {
-                    result.put("warn", getMessage(renderContext.getUILocale(), "org.jahia.admin.warningMsg.invalidServerName.label"));
+                    result.put("warn", getMessage(renderContext.getUILocale(), "serverSettings.manageWebProjects.warningMsg.invalidServerName"));
                     return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject(result));
                 } else if (siteServerName.equals("default")) {
-                    result.put("warn", getMessage(renderContext.getUILocale(), "org.jahia.admin.warningMsg.chooseAnotherServerName.label"));
+                    result.put("warn", getMessage(renderContext.getUILocale(), "serverSettings.manageWebProjects.warningMsg.chooseAnotherServerName"));
                     return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject(result));
                 } else if (!Url.isLocalhost(siteServerName) && sitesService.getSite(siteServerName) != null) {
-                    result.put("warn", getMessage(renderContext.getUILocale(), "org.jahia.admin.warningMsg.chooseAnotherServerName.label"));
+                    result.put("warn", getMessage(renderContext.getUILocale(), "serverSettings.manageWebProjects.warningMsg.chooseAnotherServerName"));
                     return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject(result));
                 } else if (sitesService.getSiteByKey(siteKey) != null) {
-                    result.put("warn", getMessage(renderContext.getUILocale(), "org.jahia.admin.warningMsg.chooseAnotherSiteKey.label"));
+                    result.put("warn", getMessage(renderContext.getUILocale(), "serverSettings.manageWebProjects.warningMsg.chooseAnotherSiteKey"));
                     return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject(result));
                 }
             } else {
-                result.put("warn", getMessage(renderContext.getUILocale(), "org.jahia.admin.warningMsg.completeRequestInfo.label"));
+                result.put("warn", getMessage(renderContext.getUILocale(), "serverSettings.manageWebProjects.warningMsg.completeRequestInfo"));
                 return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject(result));
             }
 

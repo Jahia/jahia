@@ -2828,6 +2828,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         getSession().checkout(objectNode);
 
                         if (valueList.isEmpty()) {
+                            getSession().save();
                             objectNode.unlock();
                             property.remove();
                             objectNode.getProperty(Constants.JAHIA_LOCKTYPES).remove();

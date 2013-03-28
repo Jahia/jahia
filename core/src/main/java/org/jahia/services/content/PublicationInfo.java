@@ -50,7 +50,7 @@ import java.util.*;
  * @author toto
  */
 public class PublicationInfo implements Serializable {
-
+    
     private static final long serialVersionUID = -5752968731917175200L;
     
     public static final int PUBLISHED = 1;
@@ -71,13 +71,15 @@ public class PublicationInfo implements Serializable {
     private PublicationInfoNode root;
 
     public PublicationInfo() {
+        super();
     }
 
     public PublicationInfo(String rootUuid, String path) {
-        this.root = new PublicationInfoNode(rootUuid, path);
+        this(new PublicationInfoNode(rootUuid, path));
     }
 
     public PublicationInfo(PublicationInfoNode root) {
+        this();
         this.root = root;
     }
 
@@ -99,19 +101,23 @@ public class PublicationInfo implements Serializable {
         if (allUuids != null) {
             return allUuids;
         }
-        allUuids = new ArrayList<String>();
-        List<PublicationInfoNode> nodes = new ArrayList<PublicationInfoNode>();
+        allUuids = new LinkedList<String>();
+        LinkedList<PublicationInfoNode> nodes = new LinkedList<PublicationInfoNode>();
+        Set<PublicationInfoNode> processed = new LinkedHashSet<PublicationInfoNode>();
         nodes.add(root);
-        for (int i=0; i<nodes.size(); i++) {
-            final PublicationInfoNode node = nodes.get(i);
+        processed.add(root);
+        PublicationInfoNode node = nodes.poll();
+        while (node != null) {
             for (PublicationInfoNode infoNode : node.getChildren()) {
-                if (!nodes.contains(infoNode)) {
+                if (!processed.contains(infoNode)) {
                     nodes.add(infoNode);
+                    processed.add(infoNode);
                 }
             }
             if ((includeDeleted || node.getStatus() != DELETED) && (includePublished || node.getStatus() != PUBLISHED)) {
                 allUuids.add(node.getUuid());
             }
+            node = nodes.poll();
         }
         allUuidsCache.put(cacheKey, allUuids);
         return allUuids;
@@ -122,27 +128,32 @@ public class PublicationInfo implements Serializable {
     }
 
     public List<PublicationInfo> getAllReferences() {
-        List<PublicationInfo> uuids = new ArrayList<PublicationInfo>();
-        List<PublicationInfoNode> nodes = new ArrayList<PublicationInfoNode>();
-        getAllReferences(uuids, nodes);
-        return uuids;
+        LinkedHashSet<PublicationInfo> uuids = new LinkedHashSet<PublicationInfo>();
+        LinkedList<PublicationInfoNode> nodes = new LinkedList<PublicationInfoNode>();
+        Set<PublicationInfoNode> processed = new LinkedHashSet<PublicationInfoNode>();
+        getAllReferences(uuids, nodes, processed);
+        return new LinkedList<PublicationInfo>(uuids);
     }
 
-    private void getAllReferences(List<PublicationInfo> uuids, List<PublicationInfoNode> nodes) {
+    private void getAllReferences(LinkedHashSet<PublicationInfo> uuids, LinkedList<PublicationInfoNode> nodes, Set<PublicationInfoNode> processedNodes) {
         nodes.add(root);
-        for (int i=0; i<nodes.size(); i++) {
-            final PublicationInfoNode node = nodes.get(i);
+        processedNodes.add(root);
+        
+        PublicationInfoNode node = nodes.poll();
+        while(node != null) {
             for (PublicationInfoNode infoNode : node.getChildren()) {
-                if (!nodes.contains(infoNode)) {
+                if (!processedNodes.contains(infoNode)) {
                     nodes.add(infoNode);
+                    processedNodes.add(infoNode);
                 }
             }
             for (PublicationInfo refInfo : node.getReferences()) {
-                if (!nodes.contains(refInfo.getRoot())) {
-                    refInfo.getAllReferences(uuids, nodes);
+                if (!processedNodes.contains(refInfo.getRoot())) {
+                    refInfo.getAllReferences(uuids, nodes, processedNodes);
                 }
             }
             uuids.addAll(node.getReferences());
+            node = nodes.poll();
         }
     }
 
@@ -161,19 +172,31 @@ public class PublicationInfo implements Serializable {
         }
     }
 
+    /**
+     * Retrieves a set of all various statuses for the tree.
+     * 
+     * @param language
+     *            the language we are checking
+     * @return a set of all various statuses for the tree
+     */
     public Set<Integer> getTreeStatus(String language) {
         Set<Integer> status = new HashSet<Integer>();
-        List<PublicationInfoNode> nodes = new ArrayList<PublicationInfoNode>();
+        LinkedList<PublicationInfoNode> nodes = new LinkedList<PublicationInfoNode>();
+        Set<PublicationInfoNode> processed = new LinkedHashSet<PublicationInfoNode>();
         nodes.add(root);
-        for (int i=0; i<nodes.size(); i++) {
-            final PublicationInfoNode node = nodes.get(i);
+        processed.add(root);
+        PublicationInfoNode node = nodes.poll();
+        String translationNodePath = language != null && node.getChildren().size() > 0 ? "/j:translation_" + language : null;
+        while (node != null) {
             for (PublicationInfoNode infoNode : node.getChildren()) {
-                if (!nodes.contains(infoNode) &&
-                        (language == null || !infoNode.getPath().contains("/j:translation_") || infoNode.getPath().contains("/j:translation_"+language) )) {
+                if (!processed.contains(infoNode) &&
+                        (language == null || !infoNode.getPath().contains("/j:translation_") || infoNode.getPath().contains(translationNodePath) )) {
                     nodes.add(infoNode);
                 }
             }
             status.add(node.getStatus());
+            
+            node = nodes.poll();
         }
         return status;
 
@@ -205,5 +228,29 @@ public class PublicationInfo implements Serializable {
             }
         }
         return false;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        PublicationInfo that = (PublicationInfo) o;
+
+        return root == that.root || root != null && root.equals(that.root);
+    }
+
+    @Override
+    public int hashCode() {
+        return root != null ? (31 * super.hashCode() + root.hashCode()) : super.hashCode();
+    }
+    
+    @Override
+    public String toString() {
+        return root != null ? root.toString() : super.toString();
     }
 }

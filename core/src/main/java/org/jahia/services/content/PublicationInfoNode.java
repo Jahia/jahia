@@ -41,10 +41,8 @@
 package org.jahia.services.content;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author toto
@@ -148,5 +146,11 @@ public class PublicationInfoNode implements Serializable {
         int result = uuid.hashCode();
         result = 31 * result + path.hashCode();
         return result;
+    }
+
+    
+    @Override
+    public String toString() {
+        return path != null ? path : super.toString();
     }
 }

@@ -1155,13 +1155,31 @@ public class NavigationHelper {
             }
         }
 
-        if (n.isFile() && nodeTypes.contains("jmix:image")) {
-            fields = new LinkedList<String>(fields);
-            if (!fields.contains("j:height")) {
-                fields.add("j:height");
+        if (n.isFile() && (n.isNodeType("jmix:image") || n.isNodeType("jmix:size"))) {
+            // handle width and height
+            try {
+                if (node.hasProperty("j:height")) {
+                  n.set("j:height", node.getProperty("j:height").getString());
+                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get property j:height on node {}", node.getPath());
             }
-            if (!fields.contains("j:width")) {
-                fields.add("j:width");
+            try {
+                if (node.hasProperty("j:width")) {
+                  n.set("j:width", node.getProperty("j:width").getString());
+                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get property j:width on node {}", node.getPath());
+            }
+        }
+        
+        if (fields.contains("j:view") && n.isNodeType("jmix:renderable")) {
+            try {
+                if (node.hasProperty("j:view")) {
+                  n.set("j:view", node.getProperty("j:view").getString());
+                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get property j:view on node {}", node.getPath());
             }
         }
 
@@ -1181,7 +1199,7 @@ public class NavigationHelper {
                     n.set("referenceTypes", ConstraintsHelper.getReferenceTypes(cons, null));
                 }
             } catch (RepositoryException e) {
-                logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node " + node.getPath());
+                logger.error("Cannot get property " + GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO + " on node " + node.getPath());
             }
         }
 
@@ -1192,7 +1210,7 @@ public class NavigationHelper {
                     n.set(GWTJahiaNode.DEFAULT_LANGUAGE, languages.getCurrentLang(locale));
                 }
             } catch (RepositoryException e) {
-                logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node " + node.getPath());
+                logger.error("Cannot get property " + GWTJahiaNode.DEFAULT_LANGUAGE + " on node " + node.getPath());
             }
         }
 
@@ -1202,7 +1220,7 @@ public class NavigationHelper {
                  n.set(GWTJahiaNode.HOMEPAGE_PATH, ((JCRSiteNode) node).getHome().getPath());
                 }
             } catch (RepositoryException e) {
-                logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node " + node.getPath());
+                logger.error("Cannot get property " + GWTJahiaNode.HOMEPAGE_PATH + " on node " + node.getPath());
             }
         }
 
@@ -1228,7 +1246,7 @@ public class NavigationHelper {
                 } catch (RepositoryException e) {
                     logger.error("Cannot get property " + field + " on node " + node.getPath());
                 }
-            }
+            } 
         }
 
         // versions

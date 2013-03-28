@@ -39,7 +39,7 @@
                             <input type="checkbox" id="pwd-rule-${rlzStatus.index}" name="rules[<c:out value='${rlzStatus.index}'/>].active" value="true" ${rule.active ? 'checked="checked"' : ''}/>
                             <input type="hidden" name="_rules[<c:out value='${rlzStatus.index}'/>].active"/>
                         </td>
-                        <c:set var="i18nKey" value='org.jahia.admin.passwordPolicies.rule.${rule.name}'/>
+                        <c:set var="i18nKey" value='serverSettings.passwordPolicies.rule.${rule.name}'/>
                         <td>
                             <label for="pwd-rule-${rlzStatus.index}"><fmt:message key='${i18nKey}'/></label>
                         </td>
@@ -61,7 +61,7 @@
                     </tr>
                 </c:forEach>
             </table>
-            <input type="submit" name="_eventId_submitPwdPolicy" value="<fmt:message key='org.jahia.admin.saveChanges.label'/>"/>
+            <input type="submit" name="_eventId_submitPwdPolicy" value="<fmt:message key='label.save'/>"/>
         </form>
     </div>
 </div>

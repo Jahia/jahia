@@ -110,5 +110,5 @@ function updateSiteHtmlFiltering(btn) {
             </c:forTokens>
         </tbody>
     </table>
-    <button class="btn" type="button" name="save" onclick="updateSiteHtmlFiltering($(this)); return false;"><i class="icon-ok-sign icon-white"></i> <fmt:message key='org.jahia.admin.saveChanges.label'/></button>
+    <button class="btn" type="button" name="save" onclick="updateSiteHtmlFiltering($(this)); return false;"><i class="icon-ok-sign icon-white"></i> <fmt:message key='label.save'/></button>
 </form>

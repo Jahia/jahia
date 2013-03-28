@@ -71,7 +71,7 @@ stretcherToOpen   = 0; %>
                           </c:if>
                           value="true"/>
                         </td>
-                        <c:set var="i18nKey" value='org.jahia.admin.passwordPolicies.rule.${rule.name}'/>
+                        <c:set var="i18nKey" value='serverSettings.passwordPolicies.rule.${rule.name}'/>
                         <td>
                           <fmt:message key='<%= (String)pageContext.getAttribute("i18nKey") %>'/>
                         </td>

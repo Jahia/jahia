@@ -346,7 +346,7 @@ public class VanityUrlManager {
                     JAHIANT_VANITYURL);
         } else if (vanityUrlNode.getProperty(PROPERTY_ACTIVE).getBoolean() == vanityUrl
                 .isActive()
-                || vanityUrlNode.getProperty(PROPERTY_DEFAULT).getBoolean() == vanityUrl
+                && vanityUrlNode.getProperty(PROPERTY_DEFAULT).getBoolean() == vanityUrl
                         .isDefaultMapping()) {
             return false;
         } else {

@@ -115,15 +115,16 @@ public class PublicationHelper {
      */
     public Map<String,GWTJahiaPublicationInfo> getAggregatedPublicationInfosByLanguage(JCRNodeWrapper node, Set<String> languages, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
-            HashMap<String, GWTJahiaPublicationInfo> infos = new HashMap<String, GWTJahiaPublicationInfo>();
+            HashMap<String, GWTJahiaPublicationInfo> infos = new HashMap<String, GWTJahiaPublicationInfo>(languages.size());
             PublicationInfo pubInfo = publicationService.getPublicationInfo(node.getIdentifier(), languages, true, true, false, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
             for (String language : languages) {
                 GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(pubInfo.getRoot().getUuid(), pubInfo.getRoot().getStatus());
 //                if (pubInfo.getRoot().isLocked()  ) {
 //                gwtInfo.setLocked(true);
 //                }
+                String translationNodeName = pubInfo.getRoot().getChildren().size() > 0 ? "/j:translation_"+language : null;
                 for (PublicationInfoNode sub : pubInfo.getRoot().getChildren()) {
-                    if (sub.getPath().contains("/j:translation_"+language)) {
+                    if (sub.getPath().contains(translationNodeName)) {
                         if (sub.getStatus() > gwtInfo.getStatus()) {
                             gwtInfo.setStatus(sub.getStatus());
                         }
@@ -137,14 +138,24 @@ public class PublicationHelper {
                 }
 
                 gwtInfo.setIsAllowedToPublishWithoutWorkflow(node.hasPermission("publish"));
-                gwtInfo.setIsNonRootMarkedForDeletion(node.isNodeType("jmix:markedForDeletion") && !node.isNodeType("jmix:markedForDeletionRoot"));
+                gwtInfo.setIsNonRootMarkedForDeletion(gwtInfo.getStatus() == GWTJahiaPublicationInfo.MARKED_FOR_DELETION && !node.isNodeType("jmix:markedForDeletionRoot"));
 
-                if (gwtInfo.getStatus() < GWTJahiaPublicationInfo.NOT_PUBLISHED) {
-                    Set<Integer> status = new HashSet<Integer>(pubInfo.getTreeStatus(language));
-                    for (PublicationInfo refInfo : pubInfo.getAllReferences()) {
-                        status.addAll(refInfo.getTreeStatus(language));
+                if (gwtInfo.getStatus() == GWTJahiaPublicationInfo.PUBLISHED) {
+                    // the item status is published: check if the tree status or references are modified or unpublished
+                    Set<Integer> status = pubInfo.getTreeStatus(language);
+                    boolean overrideStatus = !status.isEmpty()
+                            && Collections.max(status) > GWTJahiaPublicationInfo.PUBLISHED;
+                    if (!overrideStatus) {
+                        // check references
+                        for (PublicationInfo refInfo : pubInfo.getAllReferences()) {
+                            status = refInfo.getTreeStatus(language);
+                            if (!status.isEmpty() && Collections.max(status) > GWTJahiaPublicationInfo.PUBLISHED) {
+                                overrideStatus = true;
+                                break;
+                            }
+                        }
                     }
-                    if (!status.isEmpty() && Collections.max(status) > GWTJahiaPublicationInfo.PUBLISHED) {
+                    if (overrideStatus) {
                         gwtInfo.setStatus(GWTJahiaPublicationInfo.MODIFIED);
                     }
                 }
@@ -307,8 +318,9 @@ public class PublicationHelper {
             gwtInfo.setWorkflowGroup("no-workflow");
         }
 
+        String translationNodeName = node.getChildren().size() > 0 ? "/j:translation_" + language : null;
         for (PublicationInfoNode sub : node.getChildren()) {
-            if (sub.getPath().contains("/j:translation_"+language)) {
+            if (sub.getPath().contains(translationNodeName)) {
                 String key = StringUtils.substringBeforeLast(sub.getPath(), "/j:translation");
                 GWTJahiaPublicationInfo lastPub = gwtInfos.get(key);
                 if (lastPub != null) {

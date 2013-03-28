@@ -422,7 +422,7 @@ public class FilesAclImportHandler extends DefaultHandler {
         File pathInFS = filePath.get(path);
         if(pathInFS != null && pathInFS.exists()){
             if(!pathInFS.isDirectory()){
-                return new FileInputStream(pathInFS);
+                return new BufferedInputStream(new FileInputStream(pathInFS));
             }
         }
         return null;

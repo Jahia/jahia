@@ -121,6 +121,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     
     private Map<String, ExtendedPropertyDefinition> applicablePropertyDefinition = new HashMap<String, ExtendedPropertyDefinition>();
     private Map<String, Boolean> hasPropertyCache = new HashMap<String, Boolean>();
+
+    private Date lastModified;
+    
+    private boolean lastModifiedRead;
+    
+    private Date lastPublished;
+    
+    private boolean lastPublishedRead;
     
     private static boolean doCopy(JCRNodeWrapper source, JCRNodeWrapper dest, String name,
             boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes,
@@ -1183,11 +1191,16 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public Date getLastModifiedAsDate() {
-        try {
-            return objectNode.getProperty(Constants.JCR_LASTMODIFIED).getDate().getTime();
-        } catch (Exception e) {
+        if (!lastModifiedRead) {
+            try {
+                lastModified = objectNode.getProperty(Constants.JCR_LASTMODIFIED).getDate().getTime();
+            } catch (Exception e) {
+                lastModified = null;
+            } finally {
+                lastModifiedRead = true;
+            }
         }
-        return null;
+        return lastModified;
     }
 
     /**
@@ -1207,11 +1220,16 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public Date getLastPublishedAsDate() {
-        try {
-            return objectNode.getProperty(Constants.LASTPUBLISHED).getDate().getTime();
-        } catch (Exception e) {
+        if (!lastPublishedRead) {
+            try {
+                lastPublished = objectNode.getProperty(Constants.LASTPUBLISHED).getDate().getTime();
+            } catch (Exception e) {
+                lastPublished = null;
+            } finally {
+                lastPublishedRead = true;
+            }
         }
-        return null;
+        return lastPublished;
     }
 
     /**
@@ -1668,6 +1686,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public JCRPropertyWrapper setProperty(String name, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         checkLock();
         hasPropertyCache.remove(name);
+        if (Constants.JCR_LASTMODIFIED.equals(name)) {
+            lastModifiedRead = false;
+        } else if (Constants.LASTPUBLISHED.equals(name)) {
+            lastPublishedRead = false;
+        }  
 
         name = ensurePrefixedName(name);
         final Locale locale = getSession().getLocale();
@@ -1716,6 +1739,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public JCRPropertyWrapper setProperty(String name, Value value, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         checkLock();
         hasPropertyCache.remove(name);
+        if (Constants.JCR_LASTMODIFIED.equals(name)) {
+            lastModifiedRead = false;
+        } else if (Constants.LASTPUBLISHED.equals(name)) {
+            lastPublishedRead = false;
+        }  
 
         final Locale locale = getSession().getLocale();
         name = ensurePrefixedName(name);
@@ -2568,7 +2596,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         if (!objectNode.isLocked()) {
             try {
-                lockNode(objectNode);
+            lockNode(objectNode);
             } catch (RepositoryException e) {
                 logger.error("Cannot store token for " + getPath(), e);
                 objectNode.unlock();
@@ -2589,7 +2617,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 trans = getI18N(session.getLocale());
                 if (!trans.isLocked()) {
                     try {
-                        lockNode(trans);
+                    lockNode(trans);
                     } catch (RepositoryException e) {
                         logger.error("Cannot store token for " + getPath(), e);
                         trans.unlock();
@@ -2610,7 +2638,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (lock.getLockToken() == null) {
              throw new RepositoryException("Lost lock ! " + localPathInProvider);
         }
-        objectNode.setProperty("j:locktoken", lock.getLockToken());
+                objectNode.setProperty("j:locktoken", lock.getLockToken());
 //                objectNode.getSession().removeLockToken(lock.getLockToken());
     }
 
@@ -2842,7 +2870,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             objectNode.unlock();
             property.remove();
             if (objectNode.hasProperty(Constants.JAHIA_LOCKTYPES)) {
-                objectNode.getProperty(Constants.JAHIA_LOCKTYPES).remove();
+            objectNode.getProperty(Constants.JAHIA_LOCKTYPES).remove();
             }
 
             getSession().save();

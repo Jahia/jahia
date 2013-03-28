@@ -42,6 +42,7 @@ package org.jahia.services.importexport;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.tika.io.IOUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -74,7 +75,7 @@ public class FilesAclImportHandler extends DefaultHandler {
     private NoCloseZipInputStream zis;
     private ZipEntry nextEntry;
     private List<String> fileList = new ArrayList<String>();
-    private Map<String, String> filePath = new HashMap<String, String>();
+    private Map<String, File> filePath = new HashMap<String, File>();
 
     private JahiaSite site;
     private DefinitionsMapping mapping;
@@ -84,7 +85,7 @@ public class FilesAclImportHandler extends DefaultHandler {
 
     public static final DateFormat DATE_FORMAT = new SimpleDateFormat(ImportExportService.DATE_FORMAT);
 
-    public FilesAclImportHandler(JahiaSite site, DefinitionsMapping mapping, File archive, List<String> fileList, Map<String, String> filePath) {
+    public FilesAclImportHandler(JahiaSite site, DefinitionsMapping mapping, File archive, List<String> fileList, Map<String, File> filePath) {
         this.site = site;
         this.mapping = mapping;
         this.archive = archive;
@@ -102,9 +103,10 @@ public class FilesAclImportHandler extends DefaultHandler {
             String path = attributes.getValue(ImportExportBaseService.JAHIA_URI, "path");
             String acl = attributes.getValue(ImportExportBaseService.JAHIA_URI, "fileacl");
 
+            InputStream content = null;
+
             try {
                 boolean contentFound = false;
-                InputStream content = null;
                 if(this.filePath != null){
                     content = findExtractedContent(path);
                 } else {
@@ -222,6 +224,8 @@ public class FilesAclImportHandler extends DefaultHandler {
                 session.save(JCRObservationManager.IMPORT);
             } catch (Exception e) {
                 logger.error("error", e);
+            } finally {
+                IOUtils.closeQuietly(content);
             }
         }
     }
@@ -410,11 +414,10 @@ public class FilesAclImportHandler extends DefaultHandler {
     private InputStream findExtractedContent(String path) throws IOException {
         path = JCRContentUtils.replaceColon(path);
 
-        String pathInFS = filePath.get(path);
-        if(StringUtils.isNotBlank(pathInFS)){
-            File file = new File(pathInFS);
-            if(!file.isDirectory()){
-                return new FileInputStream(file);
+        File pathInFS = filePath.get(path);
+        if(pathInFS != null && pathInFS.exists()){
+            if(!pathInFS.isDirectory()){
+                return new FileInputStream(pathInFS);
             }
         }
         return null;

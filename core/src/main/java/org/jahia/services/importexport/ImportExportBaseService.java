@@ -1084,7 +1084,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     private void importFilesAcl(JahiaSite site, File file, InputStream is, DefinitionsMapping mapping, List<String> fileList) {
-        Map<String, String> filePath = new HashMap<String, String>();
+        Map<String, File> filePath = new HashMap<String, File>();
         try {
             File temp = File.createTempFile("migration", "");
             temp.delete();
@@ -1098,7 +1098,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     File newFile = new File(temp, fileName);
                     newFile.getParentFile().mkdirs();
                     FileUtils.copyInputStreamToFile(zis,newFile);
-                    filePath.put("/"+fileName, newFile.getPath());
+                    filePath.put("/"+fileName, newFile);
                 }
             }
 

@@ -46,7 +46,7 @@
     <input type="password" id="password" name="password" autocomplete="off"/>
     (<fmt:message key="serverSettings.user.edit.password.no.change"/>)
     <br/>
-    <label for="passwordConfirm"><fmt:message key="serverSettings.user.confirmPassword"/></label>
+    <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
     <input type="password" id="passwordConfirm" name="passwordConfirm" autocomplete="off"/>
     (<fmt:message key="serverSettings.user.edit.password.no.change"/>)
     <br/>

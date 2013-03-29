@@ -56,6 +56,7 @@ public class TokenChecker {
                 }
                 return VALID_TOKEN;
             }
+            return INVALID_TOKEN;
         }
         return NO_TOKEN;
     }

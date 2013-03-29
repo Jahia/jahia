@@ -882,6 +882,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             case TokenChecker.NO_TOKEN:
                 break;
             case TokenChecker.INVALID_TOKEN:
+                throw new AccessDeniedException("Invalid token.");
             case TokenChecker.INVALID_CAPTCHA:
                 Map<String, String[]> formDatas = new HashMap<String, String[]>();
                 Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
@@ -911,12 +912,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         return originalAction.doExecute(req, renderContext, resource, systemSession, parameters, urlResolver);
                     }
                 };
-<<<<<<< .working
-=======
-            } else {
-                throw new AccessDeniedException("Invalid token.");
-            }
->>>>>>> .merge-right.r45295
         }
 
         if (!(action instanceof SystemAction)) {

@@ -50,6 +50,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
 
 /**
@@ -79,7 +80,7 @@ public class JCRObservationManager implements ObservationManager {
     private static ThreadLocal<Integer> lastOp = new ThreadLocal<Integer>();
     private static ThreadLocal<Map<JCRSessionWrapper, List<EventWrapper>>> events =
             new ThreadLocal<Map<JCRSessionWrapper, List<EventWrapper>>>();
-    private static List<EventConsumer> listeners = new ArrayList<EventConsumer>();
+    private static List<EventConsumer> listeners = new CopyOnWriteArrayList<EventConsumer>();
 
     private JCRWorkspaceWrapper ws;
 

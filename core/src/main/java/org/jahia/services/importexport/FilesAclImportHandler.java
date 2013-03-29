@@ -86,11 +86,7 @@ public class FilesAclImportHandler extends DefaultHandler {
 
     public static final DateFormat DATE_FORMAT = new SimpleDateFormat(ImportExportService.DATE_FORMAT);
 
-<<<<<<< .working
-    public FilesAclImportHandler(JahiaSite site, DefinitionsMapping mapping, Resource archive, List<String> fileList, Map<String, String> filePath) {
-=======
-    public FilesAclImportHandler(JahiaSite site, DefinitionsMapping mapping, File archive, List<String> fileList, Map<String, File> filePath) {
->>>>>>> .merge-right.r45278
+    public FilesAclImportHandler(JahiaSite site, DefinitionsMapping mapping, Resource archive, List<String> fileList, Map<String, File> filePath) {
         this.site = site;
         this.mapping = mapping;
         this.archive = archive;

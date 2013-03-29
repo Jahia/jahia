@@ -1130,19 +1130,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             temp = File.createTempFile("migration", "");
             temp.delete();
             temp.mkdir();
-<<<<<<< .working
-            ZipInputStream zis = new NoCloseZipInputStream(new FileInputStream(file.getFile()));
-            ZipEntry zipentry;
-            while ((zipentry = zis.getNextEntry()) != null) {
-                String fileName = zipentry.getName();
-                if (!zipentry.isDirectory()) {
-                    fileName = fileName.replace('\\', '/');
-                    File newFile = new File(temp, fileName);
-                    newFile.getParentFile().mkdirs();
-                    FileUtils.copyInputStreamToFile(zis,newFile);
-                    filePath.put("/"+fileName, newFile);
-=======
-            NoCloseZipInputStream zis = new NoCloseZipInputStream(new FileInputStream(file));
+            NoCloseZipInputStream zis = new NoCloseZipInputStream(new FileInputStream(file.getFile()));
             try {
                 ZipEntry zipentry;
                 while ((zipentry = zis.getNextEntry()) != null) {
@@ -1155,7 +1143,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         filePath.put("/"+fileName, newFile);
                     }
                     zis.closeEntry();
->>>>>>> .merge-right.r45282
                 }
             } finally {
                 zis.reallyClose();

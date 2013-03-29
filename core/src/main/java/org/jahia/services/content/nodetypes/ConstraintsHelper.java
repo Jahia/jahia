@@ -130,11 +130,20 @@ public class ConstraintsHelper {
         List<ExtendedNodeType> refs =
                 NodeTypeRegistry.getInstance().getNodeType("jmix:nodeReference").getSubtypesAsList();
 
-        String[] nodeTypesArray;
+        List<ExtendedNodeType> nodeTypesList = new ArrayList<ExtendedNodeType>();
+        List<ExtendedNodeType> referencesNodeTypesList = new ArrayList<ExtendedNodeType>();
+
         if (StringUtils.isEmpty(nodeTypes)) {
-            nodeTypesArray = new String[]{"nt:base"};
+            nodeTypesList.add(NodeTypeRegistry.getInstance().getNodeType("nt:base"));
         } else {
-            nodeTypesArray = Patterns.SPACE.split(nodeTypes);
+            for (String s : Patterns.SPACE.split(nodeTypes)) {
+                ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType(s);
+                if (nt.isNodeType("jmix:nodeReference")) {
+                    referencesNodeTypesList.add(nt);
+                } else {
+                    nodeTypesList.add(nt);
+                }
+            }
         }
         final String[] constraintsArray = Patterns.SPACE.split(constraints);
         for (ExtendedNodeType ref : refs) {
@@ -150,12 +159,12 @@ public class ConstraintsHelper {
                         }
                         List<String> finalConstraints = new ArrayList<String>();
                         for (String refConstraint : refConstraints) {
-                            for (String nt : nodeTypesArray) {
+                            for (ExtendedNodeType nt : nodeTypesList) {
                                 // if a node type is descending from a reference constraint, then use the node type
-                                if (NodeTypeRegistry.getInstance().getNodeType(nt).isNodeType(refConstraint)) {
-                                    finalConstraints.add(nt);
+                                if (nt.isNodeType(refConstraint)) {
+                                    finalConstraints.add(nt.getName());
                                     // otherwise if the reference constraint is descending from a node type, use the constraint
-                                } else if (NodeTypeRegistry.getInstance().getNodeType(refConstraint).isNodeType(nt)) {
+                                } else if (NodeTypeRegistry.getInstance().getNodeType(refConstraint).isNodeType(nt.getName())) {
                                     finalConstraints.add(refConstraint);
                                 }
                             }
@@ -178,6 +187,22 @@ public class ConstraintsHelper {
                         break;
                     }
                 }
+            }
+        }
+        for (ExtendedNodeType ref : referencesNodeTypesList) {
+            if (ref.getPropertyDefinitionsAsMap().get("j:node") != null) {
+                String[] refConstraints = ref.getPropertyDefinitionsAsMap().get("j:node").getValueConstraints();
+                buffer.append(ref.getName());
+                buffer.append("[");
+                if (refConstraints.length > 0) {
+                    for (int i = 0; i < refConstraints.length; i++) {
+                        buffer.append(refConstraints[i]);
+                        if (i + 1 < refConstraints.length) {
+                            buffer.append(",");
+                        }
+                    }
+                }
+                buffer.append("] ");
             }
         }
         return buffer.toString().trim();

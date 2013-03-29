@@ -113,6 +113,7 @@ public class FormFieldCreator {
             String emptyText = "";
             switch (definition.getSelector()) {
                 case GWTJahiaNodeSelectorType.SMALLTEXT:
+<<<<<<< .working
                     if (((GWTJahiaPropertyDefinition) definition).isMultiple()) {
                         field = new MultipleTextField<String>();
                     } else {
@@ -133,6 +134,28 @@ public class FormFieldCreator {
                         if (definition.getSelectorOptions().get("password") != null) {
                             ((TextField)field).setPassword(true);
                         }
+=======
+                    switch (propDefinition.getRequiredType()) {
+                        case GWTJahiaNodePropertyType.LONG:
+                            field = new NumberField();
+                            ((NumberField) field).setAllowDecimals(false);
+                            ((NumberField) field).setPropertyEditorType(Long.class);
+                            break;
+                        case GWTJahiaNodePropertyType.DOUBLE:
+                            field = new NumberField();
+                            ((NumberField) field).setAllowDecimals(true);
+                            break;
+                        default:
+                            final TextField<String> f = new TextField<String>();
+                            f.addListener(Events.Change, new Listener<ComponentEvent>() {
+                                public void handleEvent(ComponentEvent event) {
+                                    String s = f.getValue();
+                                    f.setValue(s.trim());
+                                }
+                            });
+                            field = f;
+                            break;
+>>>>>>> .merge-right.r45301
                     }
                     break;
                 case GWTJahiaNodeSelectorType.TEXTAREA:

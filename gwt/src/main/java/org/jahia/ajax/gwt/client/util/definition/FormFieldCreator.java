@@ -123,7 +123,14 @@ public class FormFieldCreator {
                             ((NumberField) field).setAllowDecimals(true);
                             break;
                         default:
-                            field = new TextField<String>();
+                            final TextField<String> f = new TextField<String>();
+                            f.addListener(Events.Change, new Listener<ComponentEvent>() {
+                                public void handleEvent(ComponentEvent event) {
+                                    String s = f.getValue();
+                                    f.setValue(s.trim());
+                                }
+                            });
+                            field = f;
                             break;
                     }
                     if (definition.getSelectorOptions().get("password") != null) {

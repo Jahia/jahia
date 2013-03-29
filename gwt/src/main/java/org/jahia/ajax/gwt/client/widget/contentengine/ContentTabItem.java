@@ -41,10 +41,7 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.FieldEvent;
-import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -65,10 +62,7 @@ import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: toto
@@ -129,7 +123,10 @@ public class ContentTabItem extends PropertiesTabItem {
                     autoUpdateName.removeAllListeners();
                 }
                 if (titleField != null) {
-                    titleField.removeAllListeners();
+                    List<Listener<? extends BaseEvent>> listeners = new ArrayList<Listener<? extends BaseEvent>>(titleField.getListeners(Events.KeyUp));
+                    for (Listener listener : listeners) {
+                        titleField.removeListener(Events.KeyUp, listener);
+                    }
                 }
                 isNodeNameFieldDisplayed = true;
                 boolean autoUpdate = true;
@@ -176,7 +173,7 @@ public class ContentTabItem extends PropertiesTabItem {
                     titleField.addListener(Events.KeyUp, new Listener<FieldEvent>() {
                         public void handleEvent(FieldEvent fe) {
                             if (autoUpdateName.getValue()) {
-                                if (titleField.getValue() != null) {
+                                if (titleField.getValue() != null && ((String)titleField.getValue()).trim().length()>0) {
                                     nameText.setValue(generateNodeName((String) titleField.getValue()));
                                 } else {
                                     nameText.setValue(engine.getNodeName());
@@ -266,7 +263,10 @@ public class ContentTabItem extends PropertiesTabItem {
             if (nodeName == null || !nodeName.equals(engine.getNodeName())) {
                 tab.setData("NodeName", engine.getNodeName());
                 if (titleField != null) {
-                    titleField.getField().removeAllListeners();
+                    List<Listener<? extends BaseEvent>> listeners = new ArrayList<Listener<? extends BaseEvent>>(titleField.getListeners(Events.KeyUp));
+                    for (Listener listener : listeners) {
+                        titleField.removeListener(Events.KeyUp, listener);
+                    }
                 }
                 nameText.setValue(engine.getNodeName());
                 if (autoUpdateName != null) {

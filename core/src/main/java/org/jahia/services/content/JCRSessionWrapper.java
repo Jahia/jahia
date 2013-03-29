@@ -227,16 +227,6 @@ public class JCRSessionWrapper implements Session {
                 }
                 Node n = session.getNodeByIdentifier(uuid);
                 JCRNodeWrapper wrapper = null;
-                if (getUser() != null && sessionFactory.getCurrentAliasedUser() != null &&
-                        !sessionFactory.getCurrentAliasedUser().equals(getUser())) {
-                    JCRTemplate.getInstance()
-                            .doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser().getUsername(),
-                                    session.getWorkspace().getName(), getLocale(), new JCRCallback<Object>() {
-                                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                            return session.getNodeByUUID(uuid, checkVersion);
-                                        }
-                                    });
-                } 
                 if (checkVersion  && (versionDate != null || versionLabel != null)) {
                     JCRNodeWrapper frozen = getFrozenVersionAsRegular(n, provider, false);
                     if (frozen != null) {
@@ -340,17 +330,6 @@ public class JCRSessionWrapper implements Session {
                 if (item.isNode()) {
                     final Node node = (Node) item;
                     JCRNodeWrapper wrapper = null;
-                    if (getUser() != null && sessionFactory.getCurrentAliasedUser() != null &&
-                            !sessionFactory.getCurrentAliasedUser().equals(getUser())) {
-                        JCRTemplate.getInstance()
-                                .doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser().getUsername(),
-                                        getWorkspace().getName(), getLocale(), new JCRCallback<Object>() {
-                                            public Object doInJCR(JCRSessionWrapper session)
-                                                    throws RepositoryException {
-                                                return session.getNodeByUUID(node.getIdentifier(), checkVersion);
-                                            }
-                                        });
-                    } 
                     if (checkVersion && (versionDate != null || versionLabel != null) && node.isNodeType("mix:versionable")) {
                         JCRNodeWrapper frozen = getFrozenVersionAsRegular(node, provider, false);
                         if (frozen != null) {

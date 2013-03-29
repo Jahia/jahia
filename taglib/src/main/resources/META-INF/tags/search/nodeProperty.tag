@@ -47,7 +47,10 @@
                     <select ${functions:attributes(attributes)}>
                         <option value=""><fmt:message key="searchForm.any"/></option>
                         <c:forEach items="${descriptor.allowedValues}" var="allowedValue">
-                            <option value="${fn:escapeXml(allowedValue)}" ${value == allowedValue ? 'selected="selected"' : ''}>${fn:escapeXml(allowedValue)}</option>
+                            <fmt:message key='${fn:replace(nodeType, ":", "_")}.${name}.${allowedValue}' var='dispvalue'/>
+                            <option value="${fn:escapeXml(allowedValue)}" ${value == allowedValue ? 'selected="selected"' : ''}>
+                               ${fn:startsWith(dispvalue, '???') ? fn:escapeXml(allowedValue) : dispvalue}
+                            </option>
                         </c:forEach>
                     </select>
                 </c:if>

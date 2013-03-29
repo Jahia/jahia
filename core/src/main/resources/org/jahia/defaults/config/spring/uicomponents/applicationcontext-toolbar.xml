@@ -615,7 +615,11 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
                 <property name="nodeTypes" value="jnt:page"/>
                 <property name="includeSubTypes" value="false"/>
+<<<<<<< .working
                 <property name="parentTypes" value="jnt:page jnt:virtualsite jnt:moduleVersion"/>
+=======
+                <property name="parentTypes" value="jnt:page jnt:virtualsite jnt:navMenuText"/>
+>>>>>>> .merge-right.r45297
             </bean>
         </property>
         <property name="titleKey" value="label.newPage"/>
@@ -1209,7 +1213,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
                 <property name="nodeTypes" value="jnt:nodeLink"/>
-                <property name="parentTypes" value="jnt:page"/>
+                <property name="parentTypes" value="jnt:page jnt:navMenuText"/>
             </bean>
         </property>
         <property name="titleKey" value="label.newInternalLink"/>
@@ -1219,7 +1223,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
                 <property name="nodeTypes" value="jnt:externalLink"/>
-                <property name="parentTypes" value="jnt:page"/>
+                <property name="parentTypes" value="jnt:page jnt:navMenuText"/>
             </bean>
         </property>
         <property name="titleKey" value="label.newExternalLink"/>

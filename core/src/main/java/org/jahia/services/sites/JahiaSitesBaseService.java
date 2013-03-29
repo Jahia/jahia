@@ -680,24 +680,6 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                     } catch (RepositoryException e) {
                         logger.warn("Error importing site ZIP", e);
                     }
-                } else {
-                    try {
-                        JCRNodeWrapper nodeWrapper = session.getNode("/sites/" + site.getSiteKey());
-                        if (!nodeWrapper.hasNode("home")) {
-                            session.checkout(nodeWrapper);
-                            JCRNodeWrapper page = nodeWrapper.addNode("home", "jnt:page");
-                            page.setProperty("jcr:title", "Welcome to " + site.getServerName());
-                            page.setProperty("j:isHomePage", true);
-                            session.save();
-                        }
-                        JCRNodeWrapper home = nodeWrapper.getNode("home");
-                        if (!home.hasProperty("jcr:title")) {
-                            home.setProperty("jcr:title", "Welcome to " + site.getServerName());
-                            session.save();
-                        }
-                    } catch (RepositoryException e) {
-                        logger.warn("Error adding home node", e);
-                    }
                 }
 
 //                JCRNodeWrapper nodeWrapper = session.getNode("/sites/" + site.getSiteKey());

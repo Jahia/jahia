@@ -117,6 +117,10 @@
             <adminHtmlSettings jcr:primaryType="jnt:permission"/>
             <adminUrlmapping jcr:primaryType="jnt:permission"/>
             <adminSiteTemplates jcr:primaryType="jnt:permission"/>
+            <adminDBSettings jcr:primaryType="jnt:permission"/>
+            <adminTemplates jcr:primaryType="jnt:permission"/>
+            <adminSystemInfos jcr:primaryType="jnt:permission"/>
+            <adminManageMemory jcr:primaryType="jnt:permission"/>
         </admin>
 
         <studioMode jcr:primaryType="jnt:permission">
@@ -309,6 +313,12 @@
                         /permissions/studioMode
                         /permissions/repository-default">
             </studio-access>
+            <modules-management jcr:primaryType="jnt:externalPermissions" j:path="/settings"
+                                j:permissions="/permissions/editMode
+                                               /permissions/studioMode
+                                               /permissions/repository-default
+                                               /permissions/admin/adminTemplates">
+            </modules-management>
         </web-designer>
 
         <site-administrator jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite" j:roleGroup="edit-role"

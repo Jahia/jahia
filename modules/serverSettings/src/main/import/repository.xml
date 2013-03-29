@@ -8,7 +8,7 @@
                       j:moduleType="module"
                       j:title="Jahia Server Settings"
                       jcr:primaryType="jnt:module">
-                
+
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
                     <files jcr:primaryType="jnt:folder">
                         <aboutJahia.png j:height="16"
@@ -26,6 +26,7 @@
                            j:defaultTemplate="false"
                            j:hiddenTemplate="false"
                            j:icon="/modules/serverSettings/templates/files/aboutJahia.png"
+                           j:requiredPermissions="#/permissions/admin/adminAbout"
                                    jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <about-jahia jcr:primaryType="jnt:serverSettingsAboutJahia"/>
@@ -38,6 +39,7 @@
                         <webProjectSettings j:applyOn="jnt:globalSettings"
                                    j:defaultTemplate="false"
                                    j:hiddenTemplate="false"
+                                   j:requiredPermissions="#/permissions/admin/adminVirtualSites"
                                     jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <manage-web-projects jcr:primaryType="jnt:serverSettingsManageWebProjects"/>
@@ -55,6 +57,7 @@
                             <mailServerSettings j:applyOn="jnt:globalSettings"
                                       j:defaultTemplate="false"
                                       j:hiddenTemplate="false"
+                                      j:requiredPermissions="#/permissions/admin/adminEmailSettings"
                                       jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <mailServer-settings jcr:primaryType="jnt:serverSettingsMailServerSettings"/>
@@ -63,6 +66,7 @@
                             <dbSettings j:applyOn="jnt:globalSettings"
                               j:defaultTemplate="false"
                               j:hiddenTemplate="false"
+                              j:requiredPermissions="#/permissions/admin/adminDBSettings"
                               jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <db-settings jcr:primaryType="jnt:serverSettingsDBSettings"/>
@@ -77,6 +81,7 @@
                             <manageModules j:applyOn="jnt:globalSettings"
                                  j:defaultTemplate="false"
                                  j:hiddenTemplate="false"
+                                 j:requiredPermissions="#/permissions/admin/adminTemplates"
                                  jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <manage-modules jcr:primaryType="jnt:serverSettingsManageModules"/>
@@ -85,6 +90,7 @@
                             <managePortlets j:applyOn="jnt:globalSettings"
                                   j:defaultTemplate="false"
                                   j:hiddenTemplate="false"
+                                  j:requiredPermissions="#/permissions/admin/adminPortlets"
                                   jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <manage-portlets jcr:primaryType="jnt:serverSettingsManagePortlets"/>
@@ -99,6 +105,7 @@
                             <manageUsers j:applyOn="jnt:globalSettings"
                                j:defaultTemplate="false"
                                j:hiddenTemplate="false"
+                               j:requiredPermissions="#/permissions/admin/adminUsers"
                                jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <manage-users jcr:primaryType="jnt:serverSettingsManageUsers"/>
@@ -107,6 +114,7 @@
                             <adminProperties j:applyOn="jnt:globalSettings"
                                    j:defaultTemplate="false"
                                    j:hiddenTemplate="false"
+                                   j:requiredPermissions="#/permissions/admin/adminRootUser"
                                    jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <admin-properties jcr:primaryType="jnt:serverSettingsAdminProperties"/>
@@ -115,6 +123,7 @@
                             <passwordPolicy j:applyOn="jnt:globalSettings"
                                   j:defaultTemplate="false"
                                   j:hiddenTemplate="false"
+                                  j:requiredPermissions="#/permissions/admin/adminPasswordPolicy"
                                   jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <password-policy jcr:primaryType="jnt:serverSettingsPasswordPolicy"/>
@@ -123,6 +132,7 @@
                             <managePermissions j:applyOn="jnt:globalSettings"
                                      j:defaultTemplate="false"
                                      j:hiddenTemplate="false"
+                                     j:requiredPermissions="#/permissions/admin/adminRoles"
                                      jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <manage-permissions jcr:primaryType="jnt:serverSettingsManagePermissions"/>
@@ -137,6 +147,7 @@
                             <systemInfos j:applyOn="jnt:globalSettings"
                                j:defaultTemplate="false"
                                j:hiddenTemplate="false"
+                               j:requiredPermissions="#/permissions/admin/adminSystemInfos"
                                jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <system-infos jcr:primaryType="jnt:serverSettingsSystemInfos"/>
@@ -145,6 +156,7 @@
                             <cacheManagement j:applyOn="jnt:globalSettings"
                                    j:defaultTemplate="false"
                                    j:hiddenTemplate="false"
+                                   j:requiredPermissions="#/permissions/admin/adminCache"
                                    jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <cache-management jcr:primaryType="jnt:serverSettingsCacheManagement"/>
@@ -153,6 +165,7 @@
                             <manageMemory j:applyOn="jnt:globalSettings"
                                 j:defaultTemplate="false"
                                 j:hiddenTemplate="false"
+                                j:requiredPermissions="#/permissions/admin/adminManageMemory"
                                 jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <manage-memory jcr:primaryType="jnt:serverSettingsManageMemory"/>
@@ -161,6 +174,7 @@
                             <reportAnIssue j:applyOn="jnt:globalSettings"
                                  j:defaultTemplate="false"
                                  j:hiddenTemplate="false"
+                                 j:requiredPermissions="#/permissions/admin/adminIssueTracking"
                                  jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <report-an-issue jcr:primaryType="jnt:serverSettingsReportAnIssue"/>
@@ -172,7 +186,7 @@
                 <portlets jcr:primaryType="jnt:portletFolder"/>
                 <files jcr:primaryType="jnt:folder"/>
                 <contents jcr:primaryType="jnt:contentFolder"/>
-                
+
         </serverSettings>
     </modules>
 </content>

@@ -44,7 +44,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import net.sf.saxon.TransformerFactoryImpl;
 import org.apache.commons.collections.set.ListOrderedSet;
-import org.apache.commons.compress.archivers.zip.ZipUtil;
 import org.apache.commons.io.FileCleaningTracker;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -1126,10 +1125,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     private void importFilesAcl(JahiaSite site, Resource file, InputStream is, DefinitionsMapping mapping, List<String> fileList) {
         Map<String, File> filePath = new HashMap<String, File>();
+        File temp = null;
         try {
-            File temp = File.createTempFile("migration", "");
+            temp = File.createTempFile("migration", "");
             temp.delete();
             temp.mkdir();
+<<<<<<< .working
             ZipInputStream zis = new NoCloseZipInputStream(new FileInputStream(file.getFile()));
             ZipEntry zipentry;
             while ((zipentry = zis.getNextEntry()) != null) {
@@ -1140,14 +1141,31 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     newFile.getParentFile().mkdirs();
                     FileUtils.copyInputStreamToFile(zis,newFile);
                     filePath.put("/"+fileName, newFile);
+=======
+            NoCloseZipInputStream zis = new NoCloseZipInputStream(new FileInputStream(file));
+            try {
+                ZipEntry zipentry;
+                while ((zipentry = zis.getNextEntry()) != null) {
+                    String fileName = zipentry.getName();
+                    if (!zipentry.isDirectory()) {
+                        fileName = fileName.replace('\\', '/');
+                        File newFile = new File(temp, fileName);
+                        newFile.getParentFile().mkdirs();
+                        FileUtils.copyInputStreamToFile(zis,newFile);
+                        filePath.put("/"+fileName, newFile);
+                    }
+                    zis.closeEntry();
+>>>>>>> .merge-right.r45282
                 }
+            } finally {
+                zis.reallyClose();
             }
 
             handleImport(is, new FilesAclImportHandler(site, mapping, file, fileList, filePath));
-
-            FileUtils.deleteDirectory(temp);
         } catch (IOException e) {
             logger.error("Cannot extract zip",e);
+        } finally {
+            FileUtils.deleteQuietly(temp);
         }
     }
 

@@ -69,10 +69,7 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Panel that display settings, this panel suppose to be contain in MultiplePanelTabItem
@@ -88,6 +85,7 @@ public class SettingsPanel implements Serializable {
     private transient TreeLoader<GWTJahiaNode> settingsLoader;
     private transient TreeStore<GWTJahiaNode> settingsStore;
     private transient List<String> paths;
+    private transient Map<String, Set<GWTJahiaNode>> nodesBySettingsPath;
 
     public SettingsPanel() {
 
@@ -110,6 +108,7 @@ public class SettingsPanel implements Serializable {
         // resolve paths from dependencies
 
         paths = new ArrayList<String>();
+        nodesBySettingsPath = new HashMap<String, Set<GWTJahiaNode>>();
 
         NodeColumnConfigList columns = new NodeColumnConfigList(Arrays.asList(new GWTColumn("displayName", "", -1)));
         columns.init();
@@ -134,6 +133,13 @@ public class SettingsPanel implements Serializable {
                             public void onSuccess(List<GWTJahiaNode> nodes) {
                                 List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
                                 for (GWTJahiaNode node : nodes) {
+                                    String settingsPath = getSettingsPath(node);
+                                    Set<GWTJahiaNode> nodeSet = nodesBySettingsPath.get(settingsPath);
+                                    if (nodeSet == null) {
+                                        nodeSet = new HashSet<GWTJahiaNode>();
+                                        nodesBySettingsPath.put(settingsPath, nodeSet);
+                                    }
+                                    nodeSet.add(node);
                                     String nodeName = node.getName();
                                     boolean add = true;
                                     for (GWTJahiaNode resultNode : result) {
@@ -157,7 +163,9 @@ public class SettingsPanel implements Serializable {
             @Override
             public boolean hasChildren(GWTJahiaNode parent) {
                 paths.clear();
-                paths.add(parent.getPath()+ "/*");
+                for (GWTJahiaNode n : nodesBySettingsPath.get(getSettingsPath(parent))) {
+                    paths.add(n.getPath()+ "/*");
+                }
                 return !parent.isNodeType("jnt:contentTemplate");
             }
         };
@@ -244,5 +252,10 @@ public class SettingsPanel implements Serializable {
 
         settingsStore.removeAll();
         settingsLoader.load();
+    }
+
+    private String getSettingsPath(GWTJahiaNode node) {
+        String nodePath = node.getPath();
+        return nodePath.substring(nodePath.indexOf(settingTemplateRoot) + settingTemplateRoot.length());
     }
 }

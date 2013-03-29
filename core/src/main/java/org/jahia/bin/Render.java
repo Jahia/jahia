@@ -707,19 +707,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
             req.setAttribute("urlResolver", urlResolver);
 
-            // check permission
-            try {
-                if (!hasAccess(urlResolver.getNode())) {
-                    if (JahiaUserManagerService.isGuest(jcrSessionFactory.getCurrentUser())) {
-                        throw new JahiaUnauthorizedException();
-                    } else {
-                        throw new JahiaForbiddenAccessException();
-                    }
-                }
-            } catch (PathNotFoundException e) {
-
-            }
-
             session.setAttribute("workspace", urlResolver.getWorkspace());
 
             if (sessionExpiryTime != null && session.getMaxInactiveInterval() != sessionExpiryTime * 60) {
@@ -736,6 +723,20 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             if (renderContext.isPreviewMode() && req.getParameter(ALIAS_USER) != null && !JahiaUserManagerService.isGuest(jcrSessionFactory.getCurrentUser())) {
                 jcrSessionFactory.setCurrentAliasedUser(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(req.getParameter(ALIAS_USER)));
             }
+
+            // check permission
+            try {
+                if (!hasAccess(urlResolver.getNode())) {
+                    if (JahiaUserManagerService.isGuest(jcrSessionFactory.getCurrentUser())) {
+                        throw new JahiaUnauthorizedException();
+                    } else {
+                        throw new JahiaForbiddenAccessException();
+                    }
+                }
+            } catch (PathNotFoundException e) {
+
+            }
+
             if (renderContext.isPreviewMode() && req.getParameter(PREVIEW_DATE) != null && !JahiaUserManagerService.isGuest(jcrSessionFactory.getCurrentUser())) {
                 Calendar previewDate = Calendar.getInstance();
                 previewDate.setTime(new Date(new Long(req.getParameter(PREVIEW_DATE))));

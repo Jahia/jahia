@@ -51,7 +51,7 @@
                 sitebox = sitebox + "&sitebox=" + selectedSites[i];
             }
             $(this).target = "_blank";
-            window.open("/cms/export/default/"+name+ '_export_${now}.zip?exportformat=site&live=true'+sitebox);
+            window.open("${url.context}/cms/export/default/"+name+ '_export_${now}.zip?exportformat=site&live=true'+sitebox);
         });
 
         $("#exportStagingSites").click(function (){
@@ -70,7 +70,7 @@
                 sitebox = sitebox + "&sitebox=" + selectedSites[i];
             }
             $(this).target = "_blank";
-            window.open("/cms/export/default/"+name+ '_staging_export_${now}.zip?exportformat=site&live=false'+sitebox);
+            window.open("${url.context}/cms/export/default/"+name+ '_staging_export_${now}.zip?exportformat=site&live=false'+sitebox);
         });
 
     })
@@ -163,8 +163,8 @@
     <fieldset>
         <legend>System Site</legend>
 
-        <a href="/cms/export/default/systemsite_export_${now}.zip?exportformat=site&live=true&sitebox=systemsite"><fmt:message key='label.export' /></a>
-        <a href="/cms/export/default/systemsite_staging_export_${now}.zip?exportformat=site&live=false&sitebox=systemsite"><fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)</a>
+        <a href="<c:url value='/cms/export/default/systemsite_export_${now}.zip?exportformat=site&live=true&sitebox=systemsite' />"><fmt:message key='label.export' /></a>
+        <a href="<c:url value='/cms/export/default/systemsite_staging_export_${now}.zip?exportformat=site&live=false&sitebox=systemsite' />"><fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)</a>
 
     </fieldset>
     

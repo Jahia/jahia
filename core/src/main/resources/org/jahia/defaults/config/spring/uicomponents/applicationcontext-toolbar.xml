@@ -615,11 +615,7 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
                 <property name="nodeTypes" value="jnt:page"/>
                 <property name="includeSubTypes" value="false"/>
-<<<<<<< .working
-                <property name="parentTypes" value="jnt:page jnt:virtualsite jnt:moduleVersion"/>
-=======
-                <property name="parentTypes" value="jnt:page jnt:virtualsite jnt:navMenuText"/>
->>>>>>> .merge-right.r45297
+                <property name="parentTypes" value="jnt:page jnt:virtualsite jnt:moduleVersion jnt:navMenuText"/>
             </bean>
         </property>
         <property name="titleKey" value="label.newPage"/>

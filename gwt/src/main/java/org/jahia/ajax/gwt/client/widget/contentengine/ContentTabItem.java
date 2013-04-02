@@ -41,20 +41,15 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 
-<<<<<<< .working
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
-=======
-import com.extjs.gxt.ui.client.event.*;
->>>>>>> .merge-right.r45301
 import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
-
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -71,15 +66,7 @@ import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
-<<<<<<< .working
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-=======
 import java.util.*;
->>>>>>> .merge-right.r45301
 
 /**
  * User: toto

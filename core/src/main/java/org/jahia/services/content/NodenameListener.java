@@ -96,11 +96,7 @@ public class NodenameListener extends DefaultEventListener {
                     for (Session jcrsession : sessions) {
                         jcrsession.save();
                     }
-<<<<<<< .working
-                    return null;  
-=======
                     return null;
->>>>>>> .merge-right.r45310
                 }
             });
         } catch (RepositoryException e) {

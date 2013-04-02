@@ -3,6 +3,25 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.blockUI.js"/>
+<template:addResources>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#${currentNode.identifier}-next').click(function() {
+                $.blockUI({ css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#000',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: .5,
+                    color: '#fff'
+                }, message: '<fmt:message key="org.jahia.admin.workInProgressTitle"/>' });
+            });
+        });
+    </script>
+</template:addResources>
 
 <form action="${flowExecutionUrl}" method="POST">
     <fmt:message key="serverSettings.manageWebProjects.createWebProject"/>
@@ -44,5 +63,5 @@
 
 
     <input type="submit" name="_eventId_previous" value="<fmt:message key='label.previous'/>"/>
-    <input type="submit" name="_eventId_next" value="<fmt:message key='label.next'/>"/>
+    <input type="submit" name="_eventId_next" id="${currentNode.identifier}-next" value="<fmt:message key='label.next'/>"/>
 </form>

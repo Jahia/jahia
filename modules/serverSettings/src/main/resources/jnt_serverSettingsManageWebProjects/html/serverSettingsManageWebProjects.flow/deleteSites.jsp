@@ -4,6 +4,24 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.blockUI.js"/>
+<template:addResources>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#${currentNode.identifier}-deleteSitesConfirmed').click(function() {
+                $.blockUI({ css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#000',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: .5,
+                    color: '#fff'
+                }, message: '<fmt:message key="org.jahia.admin.workInProgressTitle"/>' });
+            });
+        });
+    </script>
+</template:addResources>
 
 <p><fmt:message key="label.confirmContinue"/></p>
 <p style="color: red; font-weight: bold;"><fmt:message key="serverSettings.manageWebProjects.delete.warning"/></p>
@@ -36,7 +54,7 @@
 
 </table>
 <input type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel' />"/>
-<input type="submit" name="_eventId_deleteSitesConfirmed" value="<fmt:message key='label.delete' />"/>
+<input type="submit" name="_eventId_deleteSitesConfirmed" id="${currentNode.identifier}-deleteSitesConfirmed" value="<fmt:message key='label.delete' />"/>
 </form>
 
 

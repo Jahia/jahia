@@ -17,8 +17,25 @@
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
 <%--@elvariable id="flowExecutionUrl" type="java.lang.String"--%>
 <%--@elvariable id="webprojectHandler" type="org.jahia.modules.serversettings.flow.WebprojectHandler"--%>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.blockUI.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
+<template:addResources>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#${currentNode.identifier}-processImport').click(function() {
+            $.blockUI({ css: {
+                border: 'none',
+                padding: '15px',
+                backgroundColor: '#000',
+                '-webkit-border-radius': '10px',
+                '-moz-border-radius': '10px',
+                opacity: .5,
+                color: '#fff'
+            }, message: '<fmt:message key="org.jahia.admin.workInProgressTitle"/>' });
+        });
+    });
+</script>
+</template:addResources>
 <div>
 <p>
     <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
@@ -103,6 +120,6 @@
                 </li>
             </c:forEach>
         </ol>
-        <input type="submit" name="_eventId_processImport" value="<fmt:message key="label.next"/>"/>
+        <input type="submit" name="_eventId_processImport" id="${currentNode.identifier}-processImport" value="<fmt:message key="label.next"/>"/>
     </form>
 </div>

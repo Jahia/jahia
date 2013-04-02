@@ -2,6 +2,25 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.blockUI.js"/>
+<template:addResources>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#${currentNode.identifier}-next').click(function() {
+                $.blockUI({ css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#000',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: .5,
+                    color: '#fff'
+                }, message: '<fmt:message key="org.jahia.admin.workInProgressTitle"/>' });
+            });
+        });
+    </script>
+</template:addResources>
 
 <h1>EDIT SITE</h1>
 
@@ -66,5 +85,5 @@
     </fieldset>
 
     <input type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel' />"/>
-    <input type="submit" name="_eventId_next" value="<fmt:message key='label.save'/>"/>
+    <input type="submit" name="_eventId_next" id="${currentNode.identifier}-next" value="<fmt:message key='label.save'/>"/>
 </form>

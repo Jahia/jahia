@@ -40,6 +40,7 @@
 
 package org.jahia.services.content;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.slf4j.Logger;
 import static org.jahia.api.Constants.*;
@@ -52,7 +53,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Listener implementation used to update node name property a node is added/moved/renamed.
+ * Listener implementation used to update node name property when a node is added/moved/renamed.
  * User: toto
  * Date: Jul 21, 2008
  * Time: 2:36:05 PM
@@ -70,7 +71,7 @@ public class NodenameListener extends DefaultEventListener {
             if (userId.startsWith(JahiaLoginModule.SYSTEM)) {
                 userId = userId.substring(JahiaLoginModule.SYSTEM.length());
             }
-            JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback() {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     final Set<Session> sessions = new HashSet<Session>();
 
@@ -87,14 +88,19 @@ public class NodenameListener extends DefaultEventListener {
                                 logger.debug("Node has been added, we are updating its fullpath properties : "+path);
                             }
                             JCRNodeWrapper item = (JCRNodeWrapper) session.getItem(path);
-                            nodeAdded(item);
-                            sessions.add(item.getRealNode().getSession());
+                            if (nodeAdded(item)) {
+                                sessions.add(item.getRealNode().getSession());
+                            }
                         }
                     }
                     for (Session jcrsession : sessions) {
                         jcrsession.save();
                     }
+<<<<<<< .working
                     return null;  
+=======
+                    return null;
+>>>>>>> .merge-right.r45310
                 }
             });
         } catch (RepositoryException e) {
@@ -103,27 +109,23 @@ public class NodenameListener extends DefaultEventListener {
 
     }
 
-    private void nodeAdded(JCRNodeWrapper node) throws RepositoryException {
-        /*if (node.isNodeType(JAHIAMIX_SHAREABLE) && node.hasProperty(FULLPATH)) {
-            NodeIterator ni = node.getSharedSet();
-            while (ni.hasNext()) {
-                JCRNodeWrapper shared = (JCRNodeWrapper) ni.next();
-                if (shared.getPath().equals(oldPath)) {
-                    return;
-                }
-            }
-        }*/
-        if (node.isNodeType(JAHIAMIX_NODENAMEINFO)) {
+    private boolean nodeAdded(JCRNodeWrapper node) throws RepositoryException {
+        boolean updated = false;
+        if (node.isNodeType(JAHIAMIX_NODENAMEINFO)
+                && (!node.hasProperty(NODENAME) || !StringUtils.equals(node.getProperty(NODENAME).getString(),
+                        node.getName()))) {
             if (!node.isCheckedOut()) {
                 node.checkout();
             }
+            node.setProperty(NODENAME, node.getName());
+            updated = true;
             if (logger.isDebugEnabled() && !node.isNew()) {
-                logger.debug(
-                        "Node has been added, we are updating its name " +node.getName() + ")");
+                logger.debug("Node has been added, we are updating its name " + node.getName() + ")");
 
             }
-            node.setProperty(NODENAME, node.getName());
         }
+
+        return updated;
     }
 
 }

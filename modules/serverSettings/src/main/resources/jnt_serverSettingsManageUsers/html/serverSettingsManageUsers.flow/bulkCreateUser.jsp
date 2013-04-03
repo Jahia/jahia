@@ -17,8 +17,25 @@
 <%--@elvariable id="mailSettings" type="org.jahia.services.mail.MailSettings"--%>
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
 <%--@elvariable id="flowExecutionUrl" type="java.lang.String"--%>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.blockUI.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
+<template:addResources>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#${currentNode.identifier}-confirm').click(function() {
+                $.blockUI({ css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#000',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: .5,
+                    color: '#fff'
+                }, message: '<fmt:message key="org.jahia.admin.workInProgressTitle"/>' });
+            });
+        });
+    </script>
+</template:addResources>
 <div>
     <p>
         <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
@@ -38,7 +55,7 @@
             <input type="text" name="csvSeparator" value="${csvFile.csvSeparator}" id="csvSeparator"/>
         </fieldset>
         <fieldset>
-            <input type="submit" name="_eventId_confirm" value="<fmt:message key='label.ok'/>"/>
+            <input type="submit" name="_eventId_confirm" id="${currentNode.identifier}-confirm" value="<fmt:message key='label.ok'/>"/>
             <input type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel'/>"/>
         </fieldset>
     </form>

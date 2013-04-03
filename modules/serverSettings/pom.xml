@@ -19,6 +19,8 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
+                        <Import-Package>*,
+                            ${jahia.plugin.projectPackageImport}</Import-Package>
                         <Jahia-Deploy-On-Site>system</Jahia-Deploy-On-Site>
                     </instructions>
                 </configuration>

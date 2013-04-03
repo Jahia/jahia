@@ -23,6 +23,7 @@
         <module>jahiamodules</module>
         -->
 		<module>webconsole-config</module>
+        <module>jspapiusage-repackaging</module>
     </modules>
 
     <build>

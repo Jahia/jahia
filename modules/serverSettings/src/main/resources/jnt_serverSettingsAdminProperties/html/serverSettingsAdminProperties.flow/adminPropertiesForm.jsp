@@ -20,20 +20,19 @@
 <c:forEach var="msg" items="${flowRequestContext.messageContext.allMessages}">
     <div class="${msg.severity == 'ERROR' ? 'validationError' : ''}" style="color: ${msg.severity == 'ERROR' ? 'red' : 'blue'};">${fn:escapeXml(msg.text)}</div>
 </c:forEach>
-<form action="${flowExecutionUrl}" method="post" class="form">
+<form:form modelAttribute="adminProperties" class="form">
     <h3><fmt:message key="label.username"/>:&nbsp;${adminUser.name}</h3>
     <label for="firstName"><fmt:message key="label.firstName"/></label>
-    <input type="text" id="firstName" value="${fn:escapeXml(adminProperties.firstName)}" name="firstName"/>  <br/>
+    <form:input type="text" id="firstName" path="firstName"/>  <br/>
 
     <label for="lastName"><fmt:message key="label.lastName"/></label>
-    <input type="text" id="lastName" value="${fn:escapeXml(adminProperties.lastName)}" name="lastName"/> <br/>
+    <form:input type="text" id="lastName" path="lastName"/> <br/>
     <label for="email"><fmt:message key="label.email"/></label>
-    <input type="text" id="email" value="${fn:escapeXml(adminProperties.email)}" name="email"/> <br/>
+    <form:input type="text" id="email" path="email"/> <br/>
     <label for="organization"><fmt:message key="label.organization"/></label>
-    <input type="text" id="organization" value="${fn:escapeXml(adminProperties.organization)}" name="organization" autocomplete="off"/>   <br/>
+    <form:input type="text" id="organization" path="organization" autocomplete="off"/>   <br/>
     <label for="emailNotifications"><fmt:message key="serverSettings.user.emailNotifications"/></label>
-    <input type="checkbox" id="emailNotifications" name="emailNotificationsDisabled" ${adminProperties.emailNotificationsDisabled?" checked":""}/>
-    <input type="hidden" name="_emailNotificationsDisabled">
+    <form:checkbox id="emailNotifications" path="emailNotificationsDisabled" />
     <br/>
     <label for="preferredLanguage"><fmt:message key="serverSettings.user.preferredLanguage"/></label>
     <select id="preferredLanguage" name="preferredLanguage" size="1">
@@ -43,16 +42,16 @@
     </select>
     <br/>
     <label for="password"><fmt:message key="label.password"/></label>
-    <input type="password" id="password" name="password" autocomplete="off"/>
+    <form:input type="password" id="password" path="password" autocomplete="off"/>
     (<fmt:message key="serverSettings.user.edit.password.no.change"/>)
     <br/>
     <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
-    <input type="password" id="passwordConfirm" name="passwordConfirm" autocomplete="off"/>
+    <form:input type="password" id="passwordConfirm" path="passwordConfirm" autocomplete="off"/>
     (<fmt:message key="serverSettings.user.edit.password.no.change"/>)
     <br/>
 
     <input id="submit" type="submit" value="<fmt:message key='label.save'/>" name="_eventId_submit">
-</form>
+</form:form>
 <h3><fmt:message key="serverSettings.user.groupList"/>:</h3>
 <ul>
     <c:forEach items="${adminProperties.groups}" var="group">

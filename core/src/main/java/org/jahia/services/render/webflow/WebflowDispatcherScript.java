@@ -141,7 +141,7 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
             rd.include(request, responseWrapper);
 
             while (responseWrapper.getRedirect() != null) {
-                String qs = StringUtils.substringAfter(responseWrapper.getRedirect(), "?");
+                final String qs = StringUtils.substringAfter(responseWrapper.getRedirect(), "?");
                 final Map<String,String[]> params = new HashMap<String,String[]>();
                 if (!StringUtils.isEmpty(qs)) {
                     String identifierNoDashes = StringUtils.replace(identifier, "-", "");
@@ -171,6 +171,11 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
                     @Override
                     public String[] getParameterValues(String name) {
                         return params.get(name);
+                    }
+
+                    @Override
+                    public String getQueryString() {
+                        return qs;
                     }
                 };
 

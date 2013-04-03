@@ -942,6 +942,12 @@
                                     <artifactId>jahia-taglib</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jahia.bundles</groupId>
+                                    <artifactId>org.jahia.bundles.jspapiusage.repackaging</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+
                             </artifactItems>
                             <stripVersion>false</stripVersion>
                             <outputDirectory>
@@ -1045,6 +1051,15 @@
                             <propertiesOutputFile>${project.build.directory}/generated-resources/felix-framework.properties
                             </propertiesOutputFile>
                             <outputPackagesWithNoVersions>true</outputPackagesWithNoVersions>
+                            <packageExcludes>
+                                <packageExclude>org.jahia.taglibs*</packageExclude>
+                                <packageExclude>org.apache.taglibs.standard*</packageExclude>
+                                <packageExclude>javax.servlet.jsp*</packageExclude>
+                                <packageExclude>org.codehaus.groovy.ast*</packageExclude>
+                                <packageExclude>javax.el*,de.odysseus.el*</packageExclude>
+                                <packageExclude>org.springframework.web.servlet*</packageExclude>
+                                <packageExclude>org.springframework.web.util*</packageExclude>
+                            </packageExcludes>
                         </configuration>
                         <phase>prepare-package</phase>
                     </execution>

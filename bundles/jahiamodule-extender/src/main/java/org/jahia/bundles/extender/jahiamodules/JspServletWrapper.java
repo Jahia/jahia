@@ -3,13 +3,21 @@ package org.jahia.bundles.extender.jahiamodules;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jasper.Constants;
 import org.apache.jasper.servlet.JspServlet;
+import org.jahia.params.ProcessingContext;
+import org.jahia.services.multilang.CurrentLocaleResolver;
 import org.ops4j.pax.swissbox.core.ContextClassLoaderUtils;
+import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.net.URLClassLoader;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 
 /**
@@ -63,6 +71,25 @@ public class JspServletWrapper implements Servlet {
             req.setAttribute(Constants.JSP_FILE, jspPath);
         }
 
+        Object currentLocaleResolver = req.getAttribute(DispatcherServlet.LOCALE_RESOLVER_ATTRIBUTE);
+        req.setAttribute(DispatcherServlet.LOCALE_RESOLVER_ATTRIBUTE, new LocaleResolver() {
+
+            @Override
+            public Locale resolveLocale(HttpServletRequest request) {
+                HttpSession session = request.getSession();
+                if (session != null) {
+                    Locale currentLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_LOCALE);
+                    if (currentLocale != null) {
+                        return currentLocale;
+                    }
+                }
+                return request.getLocale();
+            }
+
+            @Override
+            public void setLocale(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+            }
+        });
         try {
             ContextClassLoaderUtils.doWithClassLoader(urlClassLoader,
                     new Callable<Void>() {
@@ -76,6 +103,7 @@ public class JspServletWrapper implements Servlet {
         } catch (Exception e) {
             throw new ServletException("Error during servlet servicing", e);
         }
+        req.setAttribute(DispatcherServlet.LOCALE_RESOLVER_ATTRIBUTE, currentLocaleResolver);
     }
 
     private String getJspFilePath(final ServletRequest req) {

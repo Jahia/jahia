@@ -71,6 +71,8 @@ public class SidePanel extends ContentPanel {
     private final List<SidePanelTabItem> tabs;
     private GWTEditConfiguration config;
     private ToolButton refreshButton;
+    private final TabPanel tabPanel;
+
     public SidePanel(GWTEditConfiguration config) {
         super(new FitLayout());
         this.head = new ToolbarHeader();
@@ -79,7 +81,7 @@ public class SidePanel extends ContentPanel {
 
         tabs = new ArrayList<SidePanelTabItem>();
 
-        TabPanel tabPanel = new TabPanel();
+        tabPanel = new TabPanel();
         tabPanel.setBorders(false);
         tabPanel.setBodyBorder(false);
         // this id is for the container, each tab has its own ID concatenated with this one
@@ -101,7 +103,11 @@ public class SidePanel extends ContentPanel {
         }
         refreshButton = new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
-                refresh(EditLinker.REFRESH_ALL + Linker.REFRESH_DEFINITIONS);
+                if (tabs.size() == 1) {
+                    tabs.get(0).refresh(EditLinker.REFRESH_ALL + Linker.REFRESH_DEFINITIONS);
+                } else {
+                    ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem")).refresh(EditLinker.REFRESH_ALL + Linker.REFRESH_DEFINITIONS);
+                }
                 DeployTemplatesActionItem.refreshAllMenus(editLinker);
                 refreshButton.removeStyleName("x-tool-refresh-red");
                 refreshButton.addStyleName("x-tool-refresh");

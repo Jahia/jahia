@@ -84,6 +84,7 @@ public class SidePanelTabItem implements Serializable {
         tab.getHeader().setToolTip(config.getTooltip());
         tab.getHeader().addStyleName("x-tab-strip-iconOnly");
         tab.setBorders(false);
+        tab.setData("tabItem", this);
         return tab;
     }
 

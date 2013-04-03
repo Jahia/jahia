@@ -1153,12 +1153,17 @@ public class JCRPublicationService extends JahiaService {
             NodeIterator ni = node.getNodes();
             while (ni.hasNext()) {
                 JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
+<<<<<<< .working
 
                 Value descriptorValue = sourceSession.getProviderSession(n.getProvider()).getRepository().getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED);
                 if (descriptorValue == null) {
                     continue;
                 }
                 boolean supportsPublication = descriptorValue.getBoolean();
+=======
+
+                boolean supportsPublication = sourceSession.getProviderSession(n.getProvider()).getRepository().getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED).getBoolean();
+>>>>>>> .merge-right.r45316
                 if (!supportsPublication) {
                     continue;
                 }

@@ -1167,6 +1167,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
         mandatoryLanguages.clear();
 
+<<<<<<< .working
         List<String> installedModules = site.getInstalledModules();
         try {
             // site.getInstalledModules() may return outdated data
@@ -1176,11 +1177,28 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
 
         String templateSet = site.getTemplateFolder();
+=======
+        List<String> installedModules = site.getInstalledModules();
+        try {
+            // site.getInstalledModules() may return outdated data
+            installedModules = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(site.getSiteKey()).getInstalledModules();
+        } catch (JahiaException e) {
+            logger.error("Cannot get installed modules ",e);
+        }
+
+        String templateSet = site.getTemplatePackageName();
+>>>>>>> .merge-right.r45316
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         try {
+<<<<<<< .working
             if (!installedModules.contains(templateSet)) {
                 templateManagerService.installModule(templateManagerService.getAnyDeployedTemplatePackage(templateSet), "/sites/" + site.getSiteKey(), session);
             }
+=======
+            if (!installedModules.contains(templateSet)) {
+                templateManagerService.deployModule("/templateSets/" + templateSet, "/sites/" + site.getSiteKey(), session);
+            }
+>>>>>>> .merge-right.r45316
         } catch (RepositoryException e) {
             logger.error("Cannot deploy module "+templateSet,e);
         }
@@ -1188,9 +1206,15 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         String defaultLanguage = null;
         String lowestRankLanguage = null;
         int currentRank = 0;
+<<<<<<< .working
 
         List<JahiaTemplatesPackage> modules = new ArrayList<JahiaTemplatesPackage>();
 
+=======
+
+        List<String> modules = new ArrayList<String>();
+
+>>>>>>> .merge-right.r45316
         for (Object key : keys) {
             String property = (String) key;
             String value = p.getProperty(property);
@@ -1234,11 +1258,17 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     value) && sitesService.getDefaultSite() == null) {
                 sitesService.setDefaultSite(site);
             } else if (firstKey.equals("installedModules")) {
+<<<<<<< .working
                 if (!installedModules.contains(value) && !templateSet.equals(value)) {
                     modules.add(templateManagerService.getAnyDeployedTemplatePackage(value));
+=======
+                if (!installedModules.contains(value) && !templateSet.equals(value)) {
+                    modules.add("/templateSets/" +value);
+>>>>>>> .merge-right.r45316
                 }
             }
         }
+<<<<<<< .working
 
         try {
             templateManagerService.installModules(modules, "/sites/" + site.getSiteKey(), session);
@@ -1248,6 +1278,15 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             logger.error("Cannot deploy module "+modules,e);
         }
 
+=======
+
+        try {
+            templateManagerService.deployModules(modules, "/sites/" + site.getSiteKey(), session);
+        } catch (RepositoryException e) {
+            logger.error("Cannot deploy module "+modules,e);
+        }
+
+>>>>>>> .merge-right.r45316
         @SuppressWarnings("unchecked")
         Set<String> siteLangs = ListOrderedSet.decorate(new LinkedList<String>(languages));
         if (!siteLangs.isEmpty()) {

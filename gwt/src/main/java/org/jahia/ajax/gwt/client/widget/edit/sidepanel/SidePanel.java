@@ -73,13 +73,8 @@ public class SidePanel extends ContentPanel {
     private final List<SidePanelTabItem> tabs;
     private GWTEditConfiguration config;
     private ToolButton refreshButton;
-<<<<<<< .working
     private TabPanel tabPanel;
 
-=======
-    private final TabPanel tabPanel;
-
->>>>>>> .merge-right.r45321
     public SidePanel(GWTEditConfiguration config) {
         super(new FitLayout());
         this.head = new ToolbarHeader();
@@ -141,7 +136,6 @@ public class SidePanel extends ContentPanel {
         layout();
         refreshButton = new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
-<<<<<<< .working
                 Map<String, Object> data = new HashMap<String, Object>();
                 data.put(Linker.REFRESH_ALL, true);
                 if (tabs.size() == 1) {
@@ -149,13 +143,6 @@ public class SidePanel extends ContentPanel {
                 } else {
                     ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem")).refresh(data);
                 }
-=======
-                if (tabs.size() == 1) {
-                    tabs.get(0).refresh(EditLinker.REFRESH_ALL + Linker.REFRESH_DEFINITIONS);
-                } else {
-                    ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem")).refresh(EditLinker.REFRESH_ALL + Linker.REFRESH_DEFINITIONS);
-                }
->>>>>>> .merge-right.r45321
                 DeployTemplatesActionItem.refreshAllMenus(editLinker);
                 updateRefreshButton();
             }

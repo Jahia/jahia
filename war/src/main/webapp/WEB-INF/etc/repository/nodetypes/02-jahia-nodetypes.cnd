@@ -83,15 +83,10 @@
 
 [jmix:unversionedBasemetadata] > mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, jmix:description, jmix:workflow, jmix:conditionalVisibility mixin
 
-<<<<<<< .working
 [jmix:basemetadata] > jmix:unversionedBasemetadata, mix:versionable mixin
 
 [jmix:nolive] mixin
 
-=======
-[jmix:nolive] mixin
-
->>>>>>> .merge-right.r45316
 [jmix:autoPublish] > jmix:observable mixin
 
 [jmix:size] mixin
@@ -557,11 +552,7 @@
  + * (jnt:componentFolder)
 
 // @since Jahia 6.6
-<<<<<<< .working
 [jnt:component] > nt:base, jmix:nodenameInfo, jmix:nolive, mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:i18n, jmix:originWS, jmix:description, mix:title
-=======
-[jnt:component] > nt:base, jmix:nodenameInfo, jmix:nolive, mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:i18n, jmix:originWS, jmix:description, mix:title, jmix:lastPublished
->>>>>>> .merge-right.r45316
  - j:moduleName (string) hidden nofulltext
 
 // @since Jahia 6.6

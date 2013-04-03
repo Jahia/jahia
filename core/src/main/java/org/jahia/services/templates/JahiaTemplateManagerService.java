@@ -626,7 +626,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             Element versionElement = (Element) document.getRootElement().elementIterator("version").next();
             String lastVersion = versionElement.getText();
 
-<<<<<<< .working
             String releaseVersion = StringUtils.substringBefore(lastVersion, "-SNAPSHOT");
 
 //            String lastVersion = pack.getLastVersion().toString();
@@ -650,23 +649,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
                     if (ret > 0) {
                         cli.doMain(new String[]{"release:rollback"}, sources.getPath(), System.out, System.err);
-=======
-    public void deployModule(final String modulePath, final String sitePath, String username)
-            throws RepositoryException {
-        deployModules(Arrays.asList(modulePath), sitePath, username);
-    }
-
-    public void deployModules(final List<String> modulesPath, final String sitePath, String username)
-            throws RepositoryException {
-        JCRTemplate.getInstance()
-                .doExecuteWithSystemSession(username, new JCRCallback<Object>() {
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        deployModules(modulesPath, sitePath, session);
->>>>>>> .merge-right.r45316
                         return null;
                     }
 
-<<<<<<< .working
                     File oldWar = new File(settingsBean.getJahiaModulesDiskPath(), module + "-" + lastVersion + ".war");
                     if (oldWar.exists()) {
                         oldWar.delete();
@@ -735,74 +720,27 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-=======
-    public void deployModule(final String modulePath, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
-        deployModules(Arrays.asList(modulePath), sitePath, session);
-    }
-
-    public void deployModules(final List<String> modulesPath, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
-        if (!sitePath.startsWith("/sites/")) {
-            return;
->>>>>>> .merge-right.r45316
         }
-<<<<<<< .working
         return null;
     }
-=======
-        final JCRNodeWrapper destinationNode = session.getNode(sitePath);
->>>>>>> .merge-right.r45316
 
-<<<<<<< .working
     public List<File> regenerateImportFile(String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException {
         List<File> modifiedFiles = new ArrayList<File>();
-=======
-        List<JCRNodeWrapper> originalNodes = new ArrayList<JCRNodeWrapper>();
 
-        HashMap<String, List<String>> references = new HashMap<String, List<String>>();
->>>>>>> .merge-right.r45316
-        for (String modulePath : modulesPath) {
-            JCRNodeWrapper originalNode = null;
-            try {
-                originalNode = session.getNode(modulePath);
-                originalNodes.add(originalNode);
-            } catch (PathNotFoundException e) {
-                logger.warn("Cannot find module for path {}. Skipping deployment to site {}.",
-                        modulePath, sitePath);
-                return;
-            }
-            String moduleName = originalNode.getName();
-
-<<<<<<< .working
         SourceControlManagement scm = null;
         try {
             scm = SourceControlManagement.getSourceControlManagement(sources);
         } catch (Exception e) {
             logger.error("Cannot get SCM", e);
         }
-=======
-            synchro(originalNode, destinationNode, session, moduleName, references);
->>>>>>> .merge-right.r45316
 
-<<<<<<< .working
         // Handle import
         File sourcesImportFolder = new File(sources, "src/main/import");
-=======
-            ReferencesHelper.resolveCrossReferences(session, references);
->>>>>>> .merge-right.r45316
 
-<<<<<<< .working
         JahiaTemplatesPackage aPackage = getTemplatePackageByFileName(moduleName);
-=======
-            addDependencyValue(originalNode, destinationNode, "j:installedModules");
-        }
->>>>>>> .merge-right.r45316
 
-<<<<<<< .working
         try {
             File f = File.createTempFile("import", null);
-=======
-        session.save();
->>>>>>> .merge-right.r45316
 
             if (session.getLocale() != null) {
                 throw new RepositoryException("Cannot generated export with i18n session");
@@ -856,15 +794,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             logger.error(e13.getMessage(), e13);
         }
 
-<<<<<<< .working
         return modifiedFiles;
     }
 
     private void setDependenciesInPom(File sources, List<String> dependencies) {
-=======
->>>>>>> .merge-right.r45316
         try {
-<<<<<<< .working
             SAXReader reader = new SAXReader();
             File pom = new File(sources, "pom.xml");
             Document document = reader.read(pom);
@@ -874,13 +808,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 e = e.addElement("build");
             } else {
                 e = (Element) elements.get(0);
-=======
-            List<String> modules = siteService.getSiteByKey(destinationNode.getName()).getInstalledModules();
-            for (JCRNodeWrapper originalNode : originalNodes) {
-                if (!modules.contains(originalNode.getName())) {
-                    modules.add(originalNode.getName());
-                }
->>>>>>> .merge-right.r45316
             }
             elements = e.elements("plugins");
             if (elements.isEmpty()) {

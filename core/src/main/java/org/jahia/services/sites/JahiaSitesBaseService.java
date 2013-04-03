@@ -549,7 +549,6 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
                         siteNode.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(templatePackage /*+ ":" + aPackage.getLastVersion()*/)});
 
-<<<<<<< .working
                         List<JahiaTemplatesPackage> modules = new ArrayList<JahiaTemplatesPackage>(
                                 2 + (modulesToDeploy != null ? modulesToDeploy.length : 0));
                         modules.add(templateService.getAnyDeployedTemplatePackage("default"));
@@ -559,20 +558,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                                 JahiaTemplatesPackage packageByFileName = templateService.getAnyDeployedTemplatePackage(s);
                                 if (!modules.contains(packageByFileName)) {
                                     modules.add(packageByFileName);
-=======
-                                List<String> modules = new ArrayList<String>(
-                                        2 + (modulesToDeploy != null ? modulesToDeploy.length : 0));
-                                modules.add("/templateSets/default");
-                                modules.add("/templateSets/"+templatePackage);
-                                if (modulesToDeploy != null) {
-                                    for (String s : modulesToDeploy) {
-                                        if (!modules.contains("/templateSets/"+s)) {
-                                            modules.add("/templateSets/"+s);
-                                        }
-                                    }
->>>>>>> .merge-right.r45316
                                 }
-<<<<<<< .working
                             }
                         }
                         String target = "/sites/" + siteKey1;
@@ -596,37 +582,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                                         logger.error("Unable to deploy module " + source + " to "
                                                 + target + ". Cause: " + re.getMessage(), re);
                                     }
-=======
-                                JahiaTemplateManagerService templateService = ServicesRegistry
-                                        .getInstance().getJahiaTemplateManagerService();
-                                String target = "/sites/" + siteKey1;
-                                try {
-                                    logger.info("Deploying modules {} to {}", modules, target);
-                                    templateService.deployModules(modules, target, session);
-                                } catch (RepositoryException re) {
-                                    logger.error("Unable to deploy module " + modules + " to "
-                                            + target + ". Cause: " + re.getMessage(), re);
->>>>>>> .merge-right.r45316
                                 }
-<<<<<<< .working
-=======
-                                //Auto deploy all modules that define this behavior on site creation
-                                final List<JahiaTemplatesPackage> availableTemplatePackages = templateService.getAvailableTemplatePackages();
-                                for (JahiaTemplatesPackage availableTemplatePackage : availableTemplatePackages) {
-                                    if (availableTemplatePackage.getAutoDeployOnSite() != null) {
-                                        if ("all".equals(availableTemplatePackage.getAutoDeployOnSite()) || siteKey1.equals(availableTemplatePackage.getAutoDeployOnSite())) {
-                                            String source = "/templateSets/" + availableTemplatePackage.getRootFolder();
-                                            try {
-                                                logger.info("Deploying module {} to {}", source, target);
-                                                templateService.deployModule(source, target, session);
-                                            } catch (RepositoryException re) {
-                                                logger.error("Unable to deploy module " + source + " to "
-                                                        + target + ". Cause: " + re.getMessage(), re);
-                                            }
-                                        }
-                                    }
-                                }
->>>>>>> .merge-right.r45316
                             }
                         }
                     }

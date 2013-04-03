@@ -9,17 +9,10 @@
 <%@page import="org.jahia.services.content.JCRSessionFactory"%>
 <%@page import="org.jahia.services.content.JCRSessionWrapper"%>
 <%@page import="org.jahia.services.usermanager.jcr.JCRUserManagerProvider"%>
-<<<<<<< .working
 <%@page import="javax.jcr.version.Version" %>
 <%@page import="org.apache.commons.lang.StringUtils" %>
 <%@page import="javax.jcr.version.VersionIterator" %>
 <%@page import="java.util.*" %>
-=======
-<%@ page import="javax.jcr.version.Version" %>
-<%@ page import="org.apache.commons.lang.StringUtils" %>
-<%@ page import="javax.jcr.version.VersionIterator" %>
-<%@ page import="java.util.*" %>
->>>>>>> .merge-right.r45316
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -28,7 +21,6 @@
 <%@taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType" scope="application"/>
-<<<<<<< .working
 <c:set var="showProperties" value="${functions:default(fn:escapeXml(param.showProperties), 'false')}"/>
 <c:set var="showReferences" value="${functions:default(fn:escapeXml(param.showReferences), 'false')}"/>
 <c:set var="showNodes" value="${functions:default(fn:escapeXml(param.showNodes), 'true')}"/>
@@ -36,63 +28,6 @@
 <c:set var="showVersions" value="${functions:default(param.showVersions, 'false')}"/>
 <c:set var="workspace" value="${functions:default(fn:escapeXml(param.workspace), 'default')}"/>
 <c:set var="nodeId" value="${not empty param.uuid ? fn:trim(fn:escapeXml(param.uuid)) : 'cafebabe-cafe-babe-cafe-babecafebabe'}"/>
-<%!
-    private void traceVersionTree(Version v, List<StringBuffer> lines, Map<String, int[]> m, int currentLine, int col) throws Exception {
-        m.put(v.getName(), new int[]{currentLine,col});
-        while (lines.size() <= currentLine) {
-            lines.add(new StringBuffer());
-        }
-
-        String preds = "";
-        for (Version pred : v.getPredecessors()) {
-            preds += pred.getName() + ",";
-        }
-
-        String[] s = v.getContainingHistory().getVersionLabels(v);
-
-        StringBuffer stringBuffer = lines.get(currentLine);
-        String str = (stringBuffer.length()==0 ? "  " : "  -> ") + v.getName() + " "+(s.length == 0 ? "": Arrays.asList(s));
-
-        for (Version version : v.getSuccessors()) {
-            if (m.containsKey(version.getName())) {
-                int[] c = m.get(version.getName());
-                if (c[0] == 0) {
-                    col = c[1];
-                    StringBuffer l = lines.get(currentLine - 1);
-                    if (l.length() < col + 3) {
-                        l.append(StringUtils.repeat(" ", col + 3 - l.length()));
-                    }
-                    l.append("-");
-                } else {
-                    str += ("(‚-"+version.getName());
-                }
-            }
-        }
-
-        if (stringBuffer.length() < col+str.length()) {
-            stringBuffer.append(StringUtils.repeat((stringBuffer.length()==0 ? " " : "-"), col+str.length() - stringBuffer.length()));
-        }
-        stringBuffer.replace(col, col + str.length(), str);
-
-        int nextCol = stringBuffer.length();
-        int lineNumber = currentLine;
-        for (Version version : v.getSuccessors()) {
-            if (!m.containsKey(version.getName())) {
-                traceVersionTree(version, lines, m ,lineNumber, nextCol);
-                lineNumber +=2;
-            }
-        }
-    }
-%>
-=======
-<c:set var="showProperties" value="${functions:default(param.showProperties, 'false')}"/>
-<c:set var="showReferences" value="${functions:default(param.showReferences, 'false')}"/>
-<c:set var="showNodes" value="${functions:default(param.showNodes, 'true')}"/>
-<c:set var="showActions" value="${functions:default(param.showActions, 'false')}"/>
-<c:set var="showVersions" value="${functions:default(param.showVersions, 'false')}"/>
-<c:set var="workspace" value="${functions:default(param.workspace, 'default')}"/>
-<c:set var="nodeId" value="${not empty param.uuid ? fn:trim(param.uuid) : 'cafebabe-cafe-babe-cafe-babecafebabe'}"/>
->>>>>>> .merge-right.r45316
 <%!
     private void traceVersionTree(Version v, List<StringBuffer> lines, Map<String, int[]> m, int currentLine, int col) throws Exception {
         m.put(v.getName(), new int[]{currentLine,col});
@@ -157,15 +92,6 @@ try {
     pageContext.setAttribute("currentNode", node);
     Value versioningSupported = jcrSession.getProviderSession(node.getProvider()).getRepository().getDescriptorValue(Repository.OPTION_SIMPLE_VERSIONING_SUPPORTED);
     if (versioningSupported != null && versioningSupported.getBoolean() && node.isVersioned()) {
-        VersionIterator versionIterator = jcrSession.getWorkspace().getVersionManager().getVersionHistory(node.getPath()).getAllLinearVersions();
-        pageContext.setAttribute("versionIterator", versionIterator);
-
-        Version v = jcrSession.getWorkspace().getVersionManager().getVersionHistory(node.getPath()).getRootVersion();
-        List<StringBuffer> lines = new ArrayList<StringBuffer>();
-        traceVersionTree(v, lines, new HashMap<String,int[]>(),0,0);
-        pageContext.setAttribute("versionGraph", lines);
-    }
-    if (node.isVersioned()) {
         VersionIterator versionIterator = jcrSession.getWorkspace().getVersionManager().getVersionHistory(node.getPath()).getAllLinearVersions();
         pageContext.setAttribute("versionIterator", versionIterator);
 
@@ -480,7 +406,6 @@ function go(id1, value1, id2, value2, id3, value3) {
     <c:if test="${empty showNodes || not showNodes}">
         </p>
     </c:if>
-<<<<<<< .working
 
     <c:if test="${showVersions}">
     <strong>Linear history:&nbsp;</strong>[<c:forEach items="${versionIterator}" var="version" varStatus="status">${status.index > 0 ? ", " : ""}<a href="#version" onclick="go('uuid', '${version.identifier}'); return false;">${version.name}</a></c:forEach>]<br>
@@ -491,18 +416,6 @@ function go(id1, value1, id2, value2, id3, value3) {
     </pre><br>
     </c:if>
     <div style="position: absolute; right: 20px; top: 10px; font-size: 80%">rendered in <%= System.currentTimeMillis() - timer %> ms</div>
-=======
-
-    <c:if test="${showVersions}">
-    <strong>Linear history:&nbsp;</strong>[<c:forEach items="${versionIterator}" var="version" varStatus="status">${status.index > 0 ? ", " : ""}<a href="#version" onclick="go('uuid', '${version.identifier}'); return false;">${version.name}</a></c:forEach>]<br>
-    <strong>Full version graph:&nbsp;</strong>
-    <pre>
-<c:forEach items="${versionGraph}" var="version" varStatus="status">${version}
-</c:forEach>
-    </pre><br>
-    </c:if>
-
->>>>>>> .merge-right.r45316
 </fieldset>
 </body>
 <%} catch (javax.jcr.ItemNotFoundException e) {

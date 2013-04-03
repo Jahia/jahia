@@ -43,10 +43,12 @@ package org.apache.jackrabbit.core;
 import org.apache.jackrabbit.core.config.WorkspaceConfig;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.jackrabbit.core.security.authentication.AuthContext;
+import org.apache.jackrabbit.core.session.SessionContext;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.NamespaceException;
 import javax.jcr.RepositoryException;
+import javax.jcr.Workspace;
 import javax.security.auth.Subject;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,6 +72,8 @@ public class JahiaSessionImpl extends XASessionImpl {
 
     private void init() {
         jahiaAttributes = new HashMap<String, Object>();
+        WorkspaceImpl ws = (WorkspaceImpl) getWorkspace();
+        ws.versionMgr = new JahiaVersionManagerImpl(this.context, ws.stateMgr, ws.hierMgr);
     }
 
     // @Override

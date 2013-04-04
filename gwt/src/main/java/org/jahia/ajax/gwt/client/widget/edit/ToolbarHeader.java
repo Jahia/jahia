@@ -81,6 +81,11 @@ public class ToolbarHeader extends Header {
         horizontalPanel.add(tool);
     }
 
+    @Override
+    public void removeTool(Component tool) {
+        horizontalPanel.remove(tool);
+    }
+
     public void addItem(Linker linker, GWTJahiaToolbarItem gwtToolbarItem) {
         if (gwtToolbarItem instanceof GWTJahiaToolbarMenu) {
             GWTJahiaToolbarMenu gwtToolbarMenu = (GWTJahiaToolbarMenu) gwtToolbarItem;

@@ -581,6 +581,7 @@ public class MainModule extends Module {
         }
 
         editLinker.handleNewMainNodeLoaded();
+        ((ToolbarHeader)head).handleNewMainNodeLoaded(node);
     }
 
     public GWTEditConfiguration getConfig() {

@@ -68,59 +68,42 @@ import java.util.List;
  */
 public class SaveAsReferencesMenuActionItem extends BaseActionItem {
     private GWTJahiaProperty targetName;
-
-    private static String siteKey;
-    private static List<GWTJahiaNode> pages;
-
     private GWTJahiaProperty allowedNodeType;
-    private boolean menuItemsCount;
-    private transient Menu menu;
 
     public void init(GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         super.init(gwtToolbarItem, linker);
-        menu = new Menu();
         setEnabled(false);
         targetName = gwtToolbarItem.getProperties().get("targetName");
         allowedNodeType = gwtToolbarItem.getProperties().get("allowedNodeType");
-        initMenu(linker);
     }
 
- private void initMenu(final Linker linker) {
+    @Override
+    public void onComponentSelection() {
         JahiaContentManagementService.App.getInstance().getPortalNodes(targetName.getValue(),
                 new BaseAsyncCallback<List<GWTJahiaNode>>() {
                     public void onSuccess(List<GWTJahiaNode> result) {
-                        pages = result;
-                        final Menu menu = new Menu();
+                        if (result != null && result.size() >= 1) {
+                            GWTJahiaNode page = result.get(0);
+                            if (PermissionsUtils.isPermitted("jcr:write", page.getPermissions())) {
+                                LinkerSelectionContext lh = linker.getSelectionContext();
+                                GWTJahiaNode target = lh.getSingleSelection();
+                                if (target != null) {
+                                    JahiaContentManagementService.App.getInstance().pasteReferences(
+                                            Arrays.asList(target.getPath()), page.getPath(), null,
+                                            new BaseAsyncCallback() {
+                                                public void onApplicationFailure(Throwable caught) {
+                                                    Info.display("Portal Components",
+                                                            "Error while making your component available for users in their portal page.");
+                                                }
 
-                        menu.removeAll();
-                        boolean displayMenu = false;
-                        if (pages != null) {
-                            if (pages.size() > 1) {
-                                for (final GWTJahiaNode page : pages) {
-                                    if (PermissionsUtils.isPermitted("jcr:write", page.getPermissions())) {
-                                        MenuItem item = new MenuItem(page.getDisplayName());
-                                        addSelectionListener(page, item, linker);
-                                        menu.add(item);
-                                        displayMenu = true;
-                                    }
-                                }
-                            } else if (pages.size() == 1) {
-                                GWTJahiaNode page = pages.get(0);
-                                if (PermissionsUtils.isPermitted("jcr:write", page.getPermissions())) {
-                                    addSelectionListener(page, getContextMenuItem(), linker);
-                                    displayMenu = true;
+                                                public void onSuccess(Object result) {
+                                                    //Info.display("Portal Components",
+                                                    //        "Your components is now available for users in their portal page.");
+                                                    com.google.gwt.user.client.Window.alert(Messages.get("label.saveAsPortalComponent.success"));
+                                                }
+                                            });
                                 }
                             }
-                        }
-                        if (displayMenu) {
-                            if (menu.getItemCount() > 0) {
-                                setSubMenu(menu);
-                            }
-                            setEnabled(true);
-                            menuItemsCount = true;
-                        } else {
-                            setEnabled(false);
-                            menuItemsCount = false;
                         }
                     }
 
@@ -130,40 +113,10 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
                 });
     }
 
-    private void addSelectionListener(final GWTJahiaNode page, MenuItem item, final Linker linker) {
-        item.addSelectionListener(new SelectionListener<MenuEvent>() {
-            @Override
-            public void componentSelected(MenuEvent ce) {
-                LinkerSelectionContext lh = linker.getSelectionContext();
-                GWTJahiaNode target = lh.getSingleSelection();
-                if (target != null) {
-                    JahiaContentManagementService.App.getInstance().pasteReferences(
-                            Arrays.asList(target.getPath()), page.getPath(), null,
-                            new BaseAsyncCallback() {
-                                public void onApplicationFailure(Throwable caught) {
-                                    Info.display("Portal Components",
-                                            "Error while making your component available for users in their portal page.");
-                                }
-
-                                public void onSuccess(Object result) {
-                                    //Info.display("Portal Components",
-                                    //        "Your components is now available for users in their portal page.");
-                                    com.google.gwt.user.client.Window.alert(Messages.get("label.saveAsPortalComponent.success"));
-                                }
-                            });
-                }
-            }
-        });
-    }
-
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && hasPermission(lh.getSingleSelection()) && lh.getSingleSelection().getInheritedNodeTypes().contains(
-                allowedNodeType.getValue()) && menuItemsCount);
+        setEnabled(lh.getSingleSelection() != null && hasPermission(lh.getSingleSelection()) && lh.getSingleSelection().getInheritedNodeTypes().contains(allowedNodeType.getValue()));
     }
 
-    public void setMenuItemsCount(boolean menuItemsCount) {
-        this.menuItemsCount = menuItemsCount;
-    }
 }
 

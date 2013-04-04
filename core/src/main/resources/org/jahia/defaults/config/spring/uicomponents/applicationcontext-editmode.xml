@@ -153,8 +153,12 @@
             <bean id="editModeMainModuleToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
+<<<<<<< .working
                         <ref bean="Toolbar.Item.NodePath"/>
                         <ref bean="Toolbar.Item.Fill"/>
+=======
+                        <ref bean="Toolbar.Item.PublicationStatus"/>
+>>>>>>> .merge-right.r45325
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.edit"/>
                             <property name="icon" value="editAction"/>
@@ -299,7 +303,7 @@
                         <list>
                             <value>displayName,*,label.title</value>
                             <value>locked,25</value>
-                            <value>publicationInfo,20</value>
+                            <value>quickPublicationInfo,20</value>
                         </list>
                     </property>
                     <property name="treeContextMenu">

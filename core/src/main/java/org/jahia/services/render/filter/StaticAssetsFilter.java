@@ -53,6 +53,7 @@ import org.apache.commons.collections.map.LazySortedMap;
 import org.apache.commons.collections.map.TransformedSortedMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.render.AssetsMapFactory;
@@ -383,9 +384,14 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             List<String> pathsToAggregate = new ArrayList<String>();
             for (; i < entries.size(); i++) {
                 Map.Entry<String, Map<String, String>> entry = entries.get(i);
-                File file = new File(context.getRealPath(entry.getKey()));
-                if (entry.getValue().isEmpty() && !excludesFromAggregateAndCompress.contains(entry.getKey()) && file.exists()) {
-                    pathsToAggregate.add(entry.getKey());
+                String key = entry.getKey();
+                if(Jahia.getContextPath() != null && Jahia.getContextPath().length() > 0 
+                		&& !Jahia.getContextPath().equals("/") && key.startsWith(Jahia.getContextPath())) {
+                	key = key.substring(Jahia.getContextPath().length());
+                }
+                File file = new File(context.getRealPath(key));
+                if (entry.getValue().isEmpty() && !excludesFromAggregateAndCompress.contains(key) && file.exists()) {
+                    pathsToAggregate.add(key);
                     long lastModified = file.lastModified();
                     if (filesDates < lastModified) {
                         filesDates = lastModified;

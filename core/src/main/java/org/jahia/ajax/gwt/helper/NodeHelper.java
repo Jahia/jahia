@@ -253,7 +253,11 @@ class NodeHelper {
         populateStatusInfo(n, node);
         if ((Boolean) n.get("supportsPublication")) {
             if (fields.contains(GWTJahiaNode.PUBLICATION_INFO)) {
-                populatePublicationInfo(n, node);
+                populatePublicationInfo(n, node, true, true);
+            }
+
+            if (fields.contains(GWTJahiaNode.QUICK_PUBLICATION_INFO)) {
+                populatePublicationInfo(n, node, false, false);
             }
 
             if (fields.contains(GWTJahiaNode.PUBLICATION_INFOS)) {
@@ -674,13 +678,13 @@ class NodeHelper {
         }
     }
 
-    private void populatePublicationInfo(GWTJahiaNode n, JCRNodeWrapper node) {
+    private void populatePublicationInfo(GWTJahiaNode n, JCRNodeWrapper node, boolean includesReferences, boolean includesSubnodes) {
         try {
             if (node.getSession().getLocale() != null) {
                 n.setAggregatedPublicationInfos(publication
                         .getAggregatedPublicationInfosByLanguage(node,
                                 Collections.singleton(node.getSession().getLocale().toString()),
-                                node.getSession()));
+                                node.getSession(), includesReferences, includesSubnodes));
             }
         } catch (UnsupportedRepositoryOperationException e) {
             // do nothing
@@ -700,7 +704,7 @@ class NodeHelper {
 
                 n.setAggregatedPublicationInfos(publication
                         .getAggregatedPublicationInfosByLanguage(node, siteNode.getLanguages(),
-                                session));
+                                session, true, true));
                 n.setFullPublicationInfos(publication.getFullPublicationInfosByLanguage(
                         Arrays.asList(node.getIdentifier()), siteNode.getLanguages(), session,
                         false));

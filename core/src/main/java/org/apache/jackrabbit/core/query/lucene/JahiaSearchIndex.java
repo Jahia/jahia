@@ -75,6 +75,8 @@ public class JahiaSearchIndex extends SearchIndex {
     private static final Name JNT_ACL = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "acl");
 
     private int maxClauseCount = 1024;
+    
+    private Boolean versionIndex;
 
     public int getMaxClauseCount() {
         return maxClauseCount;
@@ -119,9 +121,8 @@ public class JahiaSearchIndex extends SearchIndex {
             removedIds.add(nodeId);
             removeList.add(nodeId);
         }
-
-        final ItemStateManager itemStateManager = getContext().getItemStateManager();
-        if (!removeList.isEmpty()) {
+        
+        if (!isVersionIndex() && !removeList.isEmpty()) {
             final IndexReader reader = getIndexReader();
             final Searcher searcher = new IndexSearcher(reader);
             try {
@@ -153,26 +154,29 @@ public class JahiaSearchIndex extends SearchIndex {
             }
         }
 
-        for (final NodeState node : new ArrayList<NodeState>(addList)) {
-            for (ChildNodeEntry childNodeEntry : node.getChildNodeEntries()) {
-                if (childNodeEntry.getName().getLocalName().startsWith(TRANSLATION_LOCALNODENAME_PREFIX)) {
-                    try {
-                        addIdToBeIndexed(childNodeEntry.getId(), addedIds, removedIds, addList, removeList);
-                    } catch (ItemStateException e) {
-                        log.warn("Index of translation node may not be updated", e);
+        if (addList.size() > 0) {
+            final ItemStateManager itemStateManager = getContext().getItemStateManager();
+            for (final NodeState node : new ArrayList<NodeState>(addList)) {
+                for (ChildNodeEntry childNodeEntry : node.getChildNodeEntries()) {
+                    if (childNodeEntry.getName().getLocalName().startsWith(TRANSLATION_LOCALNODENAME_PREFIX)) {
+                        try {
+                            addIdToBeIndexed(childNodeEntry.getId(), addedIds, removedIds, addList, removeList);
+                        } catch (ItemStateException e) {
+                            log.warn("Index of translation node may not be updated", e);
+                        }
                     }
                 }
-            }
-            // if acl node is added for the first time we need to add our ACL_UUID field 
-            // to parent's and all affected subnodes' index documents 
-            if (JNT_ACL.equals(node.getNodeTypeName())) {
-                try {
-                    NodeState nodeParent = (NodeState) itemStateManager.getItemState(node
-                            .getParentId());
-                    addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
-                    recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, addList, removeList, itemStateManager);
-                } catch (ItemStateException e) {
-                    log.warn("ACL_UUID field in documents may not be updated, so access rights check in search may not work correctly", e);
+                // if acl node is added for the first time we need to add our ACL_UUID field 
+                // to parent's and all affected subnodes' index documents 
+                if (JNT_ACL.equals(node.getNodeTypeName())) {
+                    try {
+                        NodeState nodeParent = (NodeState) itemStateManager.getItemState(node
+                                .getParentId());
+                        addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
+                        recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, addList, removeList, itemStateManager);
+                    } catch (ItemStateException e) {
+                        log.warn("ACL_UUID field in documents may not be updated, so access rights check in search may not work correctly", e);
+                    }
                 }
             }
         }
@@ -364,5 +368,18 @@ public class JahiaSearchIndex extends SearchIndex {
             Util.closeOrRelease(reader);
         }
         return ids;
-    }    
+    }
+    
+    /**
+     * Returns <code>true</code> if the current search index corresponds to the index of the version store.
+     * 
+     * @return <code>true</code> if the current search index corresponds to the index of the version store
+     */
+    private boolean isVersionIndex() {
+        if (versionIndex == null) {
+            versionIndex = getIndexingConfigurationClass().equals(IndexingConfigurationImpl.class.getName());
+        }
+
+        return versionIndex;
+    }
 }

@@ -356,6 +356,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     * @deprecated
     */
     public boolean isGranted(ItemId id, int actions) throws ItemNotFoundException, RepositoryException {
+        if (isSystemPrincipal() && deniedPathes.get() == null) {
+            return true;
+        }
         Set<String> perm = new HashSet<String>();
         if ((actions & READ) == READ) {
             perm.add(getPrivilegeName(Privilege.JCR_READ, workspaceName));
@@ -377,11 +380,11 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     public boolean isGranted(Path absPath, int permissions) throws RepositoryException {
-        Set<String> privs = new HashSet<String>();
-
         if (isSystemPrincipal() && deniedPathes.get() == null) {
             return true;
         }
+
+        Set<String> privs = new HashSet<String>();
 
         for (Privilege privilege : privilegeRegistry.getPrivileges(permissions, workspaceName)) {
             privs.add(privilege.getName());

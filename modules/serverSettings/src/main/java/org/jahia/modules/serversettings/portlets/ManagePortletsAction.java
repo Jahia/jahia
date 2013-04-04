@@ -52,6 +52,7 @@ import org.jahia.services.render.URLResolver;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.i18n.Messages;
+import org.jahia.utils.i18n.ResourceBundles;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -112,7 +113,7 @@ public class ManagePortletsAction extends Action {
                             String url = req.getContextPath() + "/cms/preparedportlets?war=" + URLEncoder.encode(fileName, "UTF-8") + "&file=" + generatedFile.getName();
                             String dspMsg = Messages.get("resources.JahiaServerSettings", "serverSettings.portletReady", session.getLocale());
                             dspMsg += "<br/><br/>";
-                            dspMsg += Messages.get("JahiaInternalResources", "label.download", session.getLocale());
+                            dspMsg += Messages.get(ResourceBundles.JAHIA_INTERNAL_RESOURCES, "label.download", session.getLocale());
                             dspMsg += ":&nbsp;<a href='" + url + "'>" + fileName + "</a>";
                             return getDisplayMessageResult(dspMsg);
                         } else {
@@ -124,7 +125,7 @@ public class ManagePortletsAction extends Action {
                     }
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
-                    String dspMsg = Messages.get("JahiaInternalResources", "message.generalError", session.getLocale());
+                    String dspMsg = Messages.get(ResourceBundles.JAHIA_INTERNAL_RESOURCES, "message.generalError", session.getLocale());
                     return getDisplayMessageResult(dspMsg);
                 } finally {
                     FileUtils.deleteQuietly(f);

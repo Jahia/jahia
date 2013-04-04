@@ -7,6 +7,7 @@ import org.jahia.modules.serversettings.users.admin.AdminProperties;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.utils.i18n.Messages;
+import org.jahia.utils.i18n.ResourceBundles;
 import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -62,7 +63,7 @@ public class AdminPropertiesHandler implements Serializable {
         messages.addMessage(new MessageBuilder()
                 .info()
                 .defaultText(
-                        Messages.get("resources.JahiaServerSettings", "label.changeSaved",
+                        Messages.get(ResourceBundles.JAHIA_INTERNAL_RESOURCES, "label.changeSaved",
                                 LocaleContextHolder.getLocale())).build());
     }
 }

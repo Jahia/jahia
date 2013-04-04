@@ -1051,8 +1051,14 @@ public class NavigationHelper {
         try {
             if (fields.contains(GWTJahiaNode.PUBLICATION_INFO) && supportsPublication && node.getSession().getLocale() != null) {
                 n.setAggregatedPublicationInfos(publication.getAggregatedPublicationInfosByLanguage(node,
-                        Collections.singleton(node.getSession().getLocale().toString()), node.getSession()));
+                        Collections.singleton(node.getSession().getLocale().toString()), node.getSession(), true, true));
             }
+
+            if (fields.contains(GWTJahiaNode.QUICK_PUBLICATION_INFO) && supportsPublication && node.getSession().getLocale() != null) {
+                n.setAggregatedPublicationInfos(publication.getAggregatedPublicationInfosByLanguage(node,
+                        Collections.singleton(node.getSession().getLocale().toString()), node.getSession(), false, false));
+            }
+
         } catch (UnsupportedRepositoryOperationException e) {
             // do nothing
             logger.debug(e.getMessage());
@@ -1069,7 +1075,7 @@ public class NavigationHelper {
                     JCRSessionWrapper session = node.getSession();
 
                     n.setAggregatedPublicationInfos(publication.getAggregatedPublicationInfosByLanguage(node,
-                            siteNode.getLanguages(), session));
+                            siteNode.getLanguages(), session, true, true));
                     n.setFullPublicationInfos(publication.getFullPublicationInfosByLanguage(Arrays.asList(node.getIdentifier()), siteNode.getLanguages(),
                                         session, false));
                 }
@@ -1266,7 +1272,7 @@ public class NavigationHelper {
         try {
             if (node.isNodeType("jmix:nodeReference") && node.hasProperty("j:node")) {
                 JCRNodeWrapper referencedNode = (JCRNodeWrapper) node.getProperty("j:node").getNode();
-                n.setReferencedNode(n.getUUID().equals(referencedNode.getIdentifier()) ? n : getGWTJahiaNode(referencedNode));
+                n.setReferencedNode(n.getUUID().equals(referencedNode.getIdentifier()) ? n : getGWTJahiaNode(referencedNode, fields));
             }
         } catch (ItemNotFoundException e) {
             logger.debug(e.getMessage(), e);

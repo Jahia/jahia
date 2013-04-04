@@ -101,7 +101,6 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 
 import javax.jcr.*;
-import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.security.Privilege;
@@ -2088,7 +2087,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 result.set("j:forceMatchAllConditions", conditionalVisibilityNode.getProperty("j:forceMatchAllConditions").getValue().getBoolean());
                 String locale = node.getSession().getLocale().toString();
                 result.set("publicationInfo", publication.getAggregatedPublicationInfosByLanguage(conditionalVisibilityNode,
-                        Collections.singleton(locale), retrieveCurrentSession()).get(locale));
+                        Collections.singleton(locale), retrieveCurrentSession(), true, true).get(locale));
             } else {
                 result.set("j:forceMatchAllConditions",false);
             }

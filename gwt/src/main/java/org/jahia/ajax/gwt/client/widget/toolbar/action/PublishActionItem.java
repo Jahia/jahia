@@ -108,7 +108,7 @@ public class PublishActionItem extends BaseActionItem {
     protected transient GWTJahiaWorkflow wf;
 
     public void handleNewLinkerSelection() {
-        wf = null;
+        setEnabled(false);
         LinkerSelectionContext ctx = linker.getSelectionContext();
         if (ctx.getMultipleSelection() != null
                 && ctx.getMultipleSelection().size() > 1 && hasPermission(ctx.getSelectionPermissions())) {
@@ -118,35 +118,17 @@ public class PublishActionItem extends BaseActionItem {
             }
         } else {
             GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
-            if (gwtJahiaNode != null && gwtJahiaNode.getWorkflowInfo() != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode)) {
-                wf = gwtJahiaNode.getWorkflowInfo().getActiveWorkflows().get(new GWTJahiaWorkflowType(workflowType));
-                if (wf != null) {
-                    if (!wf.getAvailableTasks().isEmpty()) {
-                        setEnabled(true);
-                        updateTitle(wf.getAvailableTasks().get(0).getDisplayName() + " : " + gwtJahiaNode.getDisplayName());
-                    } else {
+            if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode)) {
+                setEnabled(true);
+                if(gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
+                    updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
+                    if(gwtJahiaNode.isFile()) {
                         setEnabled(false);
-                        updateTitle(Messages.get("label.workflow.started", "Workflow started") + " : " +wf.getDefinition().getDisplayName());
                     }
                 } else {
-                    wf = null;
-                    GWTJahiaPublicationInfo info = gwtJahiaNode.getAggregatedPublicationInfo();
-                    GWTJahiaWorkflowDefinition def = null;
-                    if (gwtJahiaNode.getWorkflowInfo() != null) {
-                        def = gwtJahiaNode.getWorkflowInfo().getPossibleWorkflows().get(new GWTJahiaWorkflowType(workflowType));
-                    }
-
-                    setEnabled((checkForUnpublication ? info.isUnpublishable() : info.isPublishable()) && (def != null || info.isAllowedToPublishWithoutWorkflow()));
-
-                    if(gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
-                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
-                    } else {
-                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
-                                    JahiaGWTParameters.getLanguageDisplayName());
-                    }
+                    updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
+                            JahiaGWTParameters.getLanguageDisplayName());
                 }
-            } else {
-                setEnabled(false);
             }
         }
     }
@@ -163,7 +145,22 @@ public class PublishActionItem extends BaseActionItem {
         setEnabled(false);
     }
 
+
+    @Override
     public void onComponentSelection() {
+        wf = null;
+        LinkerSelectionContext ctx = linker.getSelectionContext();
+        if (ctx.getMultipleSelection() != null
+                && ctx.getMultipleSelection().size() > 1 && hasPermission(ctx.getSelectionPermissions())) {
+            //
+        } else {
+            GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
+            if (gwtJahiaNode != null && gwtJahiaNode.getWorkflowInfo() != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode)) {
+                wf = gwtJahiaNode.getWorkflowInfo().getActiveWorkflows().get(new GWTJahiaWorkflowType(workflowType));
+            }
+        }
+
+
         if (wf == null) {
             if (!linker.getSelectionContext().getMultipleSelection().isEmpty()) {
                 final List<String> uuids = new ArrayList<String>();
@@ -177,16 +174,16 @@ public class PublishActionItem extends BaseActionItem {
                 }
                 linker.loading(Messages.get("label.gettingPublicationInfo", "Getting publication information"));
                 JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, checkForUnpublication, new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {
-                            public void onApplicationFailure(Throwable caught) {
-                                linker.loaded();
-                                Window.alert("Cannot get status: " + caught.getMessage());
-                            }
+                    public void onApplicationFailure(Throwable caught) {
+                        linker.loaded();
+                        com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
+                    }
 
-                            public void onSuccess(List<GWTJahiaPublicationInfo> result) {
-                                linker.loaded();
-                                callback(result);
-                            }
-                        });
+                    public void onSuccess(List<GWTJahiaPublicationInfo> result) {
+                        linker.loaded();
+                        callback(result);
+                    }
+                });
             }
         } else {
             EngineContainer container;
@@ -199,6 +196,7 @@ public class PublishActionItem extends BaseActionItem {
             container.showEngine();
         }
     }
+
 
     protected void callback(List<GWTJahiaPublicationInfo> result) {
         if (result.isEmpty()) {

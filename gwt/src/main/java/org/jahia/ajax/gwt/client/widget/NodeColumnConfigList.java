@@ -134,11 +134,29 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
         public Object render(GWTJahiaNode node, String property, ColumnData config, int rowIndex, int colIndex,
                              ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
             final GWTJahiaPublicationInfo info = node.getAggregatedPublicationInfo();
-            HorizontalPanel p = new HorizontalPanel();
             if (info != null) {
+                HorizontalPanel p = new HorizontalPanel();
                 Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(info.getStatus());
                 p.add(res);
                 return p;
+            }
+            return "";
+        }
+    };
+
+    public static final GridCellRenderer<GWTJahiaNode> QUICK_PUBLICATION_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+        public Object render(GWTJahiaNode node, String property, ColumnData config, int rowIndex, int colIndex,
+                             ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
+            final GWTJahiaPublicationInfo info = node.getAggregatedPublicationInfo();
+            if (info != null) {
+                if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                    HorizontalPanel p = new HorizontalPanel();
+                    Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(info.getStatus());
+                    p.add(res);
+                    return p;
+                } else {
+                    return "";
+                }
             }
             return "";
         }
@@ -277,6 +295,8 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                 col.setRenderer(SIZE_RENDERER);
             } else if ("publicationInfo".equals(column.getKey())) {
                 col.setRenderer(PUBLICATION_RENDERER);
+            } else if ("quickPublicationInfo".equals(column.getKey())) {
+                col.setRenderer(QUICK_PUBLICATION_RENDERER);
             } else if ("version".equals(column.getKey())) {
                 col.setAlignment(Style.HorizontalAlignment.CENTER);
                 col.setRenderer(VERSION_RENDERER);

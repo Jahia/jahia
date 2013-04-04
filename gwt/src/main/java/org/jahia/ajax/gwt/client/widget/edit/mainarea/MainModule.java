@@ -607,6 +607,7 @@ public class MainModule extends Module {
         setDocumentTitle(Messages.get("label." + config.getName().substring(0, config.getName().length() - 4), config.getName()) + " - " + node.getDisplayName());
 
         editLinker.handleNewMainNodeLoaded();
+        ((ToolbarHeader)head).handleNewMainNodeLoaded(node);
     }
 
     public GWTEditConfiguration getConfig() {

@@ -3133,7 +3133,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean hasNode(String s) throws RepositoryException {
-        // add mountpoints here
+        if (provider.getService() != null) {
+            if (provider.getSessionFactory().getAllMountPoints().contains(getPath() + "/" + s)) {
+                return true;
+            }
+        }
+
         final boolean b = objectNode.hasNode(s);
         if (b && Constants.LIVE_WORKSPACE.equals(getSession().getWorkspace().getName()) && !s.startsWith("j:translation")) {
             final JCRNodeWrapper wrapper;
@@ -3151,7 +3156,32 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean hasNodes() throws RepositoryException {
-        return objectNode.hasNodes();
+        if (provider.getService() != null) {
+            for (String entry : provider.getSessionFactory().getAllMountPoints()) {
+                if (!entry.equals("/")) {
+                    String mpp = entry.substring(0, entry.lastIndexOf('/'));
+                    if (mpp.equals("")) mpp = "/";
+                    if (mpp.equals(getPath())) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        final boolean b = objectNode.hasNodes();
+        if (b && Constants.LIVE_WORKSPACE.equals(getSession().getWorkspace().getName())) {
+            NodeIterator ni = objectNode.getNodes();
+            while (ni.hasNext()) {
+                try {
+                    if (getNode(ni.nextNode().getName()).checkValidity()) {
+                        return true;
+                    }
+                } catch (PathNotFoundException e) {
+                }
+            }
+            return false;
+        }
+        return b;
     }
 
     /**

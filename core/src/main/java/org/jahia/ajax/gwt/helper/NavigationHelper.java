@@ -188,12 +188,19 @@ public class NavigationHelper {
             boolean mimeTypeFilter = matchesMimeTypeFilters(childNode, mimeTypes);
             boolean nameFilter = matchesFilters(childNode.getName(), nameFilters);
             boolean hasNodes = false;
+<<<<<<< .working
             if (!mimeTypeFilter) { // we do not need to check for sub-nodes if the mimeTypeFilter is already true
                 try {
                     hasNodes = childNode.getNodes().hasNext();
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }
+=======
+            try {
+                hasNodes = childNode.hasNodes();
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+>>>>>>> .merge-right.r45347
             }
             // collection condition is available only if the parent node is not a nt:query. Else, the node has to match the node type condition
             if (matchVisibilityFilter && matchNodeType && (mimeTypeFilter || hasNodes) && nameFilter) {
@@ -695,7 +702,7 @@ public class NavigationHelper {
                     // use for pickers
                     boolean hasNodes = false;
                     try {
-                        hasNodes = n.getNodes().hasNext();
+                        hasNodes = n.hasNodes();
                     } catch (RepositoryException e) {
                         logger.error(e.getMessage(), e);
                     }

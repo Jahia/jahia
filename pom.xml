@@ -32,9 +32,14 @@
 
         <pluto.version>2.0.2</pluto.version>
         <spring.version>3.0.5.RELEASE</spring.version>
+<<<<<<< .working
         <springwebflow-version>2.3.2.RELEASE</springwebflow-version>
         <jackrabbit.version>2.4.2-rev1346887-patch9</jackrabbit.version>
         <lucene.version>3.0.3</lucene.version>
+=======
+        <jackrabbit.version>2.2.4-patch11-SNAPSHOT</jackrabbit.version>
+        <lucene.version>2.4.1</lucene.version>
+>>>>>>> .merge-right.r45339
         <jbpm.version>4.4</jbpm.version>
         <hibernate.version>3.3.2.GA</hibernate.version>
         <apache.tika.version>1.2</apache.tika.version>

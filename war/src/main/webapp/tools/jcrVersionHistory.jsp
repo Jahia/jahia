@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <%@page import="java.util.*"%>
 <%@page import="org.jahia.services.history.NodeVersionHistoryHelper"%>
-<%@page import="org.jahia.services.history.VersionHistoryCheckStatus"%>
+<%@page import="org.jahia.services.history.NodeVersionHistoryHelper.VersionHistoryCheckStatus"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>

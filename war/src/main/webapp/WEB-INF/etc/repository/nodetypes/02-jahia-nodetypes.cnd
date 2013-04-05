@@ -459,6 +459,10 @@
  extends = jnt:page, jnt:template
  - j:theme (weakreference,choicelist[nodes='$currentSite/templates/files/themes;jnt:folder'])
 
+// @since Jahia 6.7
+[jmix:useUILocale] mixin
+ extends = jnt:template
+
 //---------------------------------------------------------
 // Virtual sites
 //---------------------------------------------------------

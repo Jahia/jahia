@@ -40,10 +40,10 @@
 
 package org.jahia.services.render.filter;
 
-import javax.servlet.jsp.jstl.fmt.LocalizationContext;
-
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+
+import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
 /**
  * Filter that sets a request attribute to force the usage of the UI locale (instead of current resource locale) in views. This locale will
@@ -54,12 +54,9 @@ import org.jahia.services.render.Resource;
 public class ForceUILocaleFilter extends AbstractFilter {
 
     @Override
-    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
-            throws Exception {
-
+    public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         renderContext.getRequest().setAttribute(TemplateAttributesFilter.FORCED_LOCALE_ATTRIBUTE,
                 renderContext.getUILocale());
-
-        return previousOut;
+        return null;
     }
 }

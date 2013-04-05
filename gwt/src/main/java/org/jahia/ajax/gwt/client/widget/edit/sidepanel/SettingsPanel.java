@@ -123,7 +123,7 @@ public class SettingsPanel implements Serializable {
                 fields.add(GWTJahiaNode.ICON);
                 JahiaContentManagementService.App.getInstance()
                         .getRoot(paths, Arrays.asList("jnt:template"), null, null, fields, null, null, true,
-                                false, null, null, new AsyncCallback<List<GWTJahiaNode>>() {
+                                false, null, null, true, new AsyncCallback<List<GWTJahiaNode>>() {
                             @Override
                             public void onFailure(Throwable caught) {
                                 callback.onFailure(caught);

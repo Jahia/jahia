@@ -18,13 +18,13 @@
 <table border="1">
 
     <tr>
-        <th>Module name</th>
+        <th><fmt:message key='serverSettings.manageModules.moduleName' /></th>
         <th></th>
-        <th>Details</th>
-        <th>Versions</th>
-        <th>Status</th>
-        <th>Sources</th>
-        <th>Used in sites</th>
+        <th><fmt:message key='serverSettings.manageModules.details' /></th>
+        <th><fmt:message key='serverSettings.manageModules.versions' /></th>
+        <th><fmt:message key='serverSettings.manageModules.status' /></th>
+        <th><fmt:message key='serverSettings.manageModules.sources' /></th>
+        <th><fmt:message key='serverSettings.manageModules.usedInSites' /></th>
     </tr>
 
     <c:forEach items="${allModuleVersions}" var="entry" >
@@ -33,7 +33,7 @@
             <td>${currentModule.name}</td>
             <td>${entry.key}</td>
             <c:url var="detailUrl" value="${url.base}/modules/${currentModule.rootFolder}.siteTemplate.html"/>
-            <td><a href="${detailUrl}">Details</a>
+            <td><a href="${detailUrl}"><fmt:message key='serverSettings.manageModules.details' /></a>
             </td>
             <td>
                 <c:forEach items="${entry.value}" var="version">
@@ -76,7 +76,7 @@
                 <%--${currentModule.sourcesFolder}--%>
                 <c:choose>
                     <c:when test="${not empty currentModule.sourcesFolder}">
-                        <input type="button" onclick='window.parent.location.assign("/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.siteTemplate.html")' value="Go to studio"/>
+                        <input type="button" onclick='window.parent.location.assign("/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.siteTemplate.html")' value="<fmt:message key='serverSettings.manageModules.goToStudio' />"/>
                         <%--<c:if test="${renderContext.editModeConfigName ne 'studiomode' and renderContext.editModeConfigName ne 'studiolayoutmode'}">--%>
                             <%--<a href="/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.siteTemplate.html"></a>--%>
                         <%--</c:if>--%>

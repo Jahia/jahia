@@ -40,22 +40,20 @@
 
 package org.jahia.services.multilang;
 
-import java.util.Locale;
+import org.jahia.params.ProcessingContext;
+import org.jahia.services.render.filter.TemplateAttributesFilter;
+import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.jahia.params.ProcessingContext;
-import org.jahia.services.render.RenderContext;
-import org.springframework.web.servlet.LocaleResolver;
+import java.util.Locale;
 
 public class CurrentLocaleResolver implements LocaleResolver {
     public Locale resolveLocale(HttpServletRequest request) {
-        RenderContext context = (RenderContext) request.getAttribute("renderContext");
-        if (context != null && "admin".equals(context.getMode())) {
-            // for server administration mode use UI locale
-            return context.getUILocale();
+        Locale forcedLocale = (Locale) request.getAttribute(TemplateAttributesFilter.FORCED_LOCALE_ATTRIBUTE);
+        if (forcedLocale != null) {
+            return forcedLocale;
         }
         HttpSession session = request.getSession();
         if (session != null) {

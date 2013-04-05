@@ -8,7 +8,6 @@
                       j:moduleType="module"
                       j:title="Jahia Server Settings"
                       jcr:primaryType="jnt:module">
-
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
                     <files jcr:primaryType="jnt:folder">
                         <aboutJahia.png j:height="16"
@@ -21,7 +20,9 @@
                         </aboutJahia.png>
                     </files>
                 <contents jcr:primaryType="jnt:contentFolder"/>
-                <serverSettingsBase j:view="serverSettings" jcr:primaryType="jnt:template">
+                    <serverSettingsBase j:view="serverSettings"
+                                jcr:mixinTypes="jmix:useUILocale"
+                                jcr:primaryType="jnt:template">
                         <aboutJahia j:applyOn="jnt:globalSettings"
                            j:defaultTemplate="false"
                            j:hiddenTemplate="false"
@@ -34,7 +35,7 @@
                             <j:translation_en jcr:language="en"
                                     jcr:mixinTypes="mix:title"
                                     jcr:primaryType="jnt:translation"
-                                    jcr:title="About Jahia"/>
+                                    jcr:title="##resourceBundle(serverSettings.aboutJahia)##"/>
                     </aboutJahia>
                         <webProjectSettings j:applyOn="jnt:globalSettings"
                                    j:defaultTemplate="false"
@@ -47,13 +48,13 @@
                             <j:translation_en jcr:language="en"
                                     jcr:mixinTypes="mix:title"
                                     jcr:primaryType="jnt:translation"
-                                    jcr:title="Web projects settings"/>
+                                    jcr:title="##resourceBundle(serverSettings.manageWebProjects)##"/>
                     </webProjectSettings>
                         <configurations j:hiddenTemplate="false" jcr:primaryType="jnt:template">
                             <j:translation_en jcr:language="en"
                                     jcr:mixinTypes="mix:title"
                                     jcr:primaryType="jnt:translation"
-                                    jcr:title="Configurations"/>
+                                    jcr:title="##resourceBundle(serverSettings.configurations)##"/>
                             <mailServerSettings j:applyOn="jnt:globalSettings"
                                       j:defaultTemplate="false"
                                       j:hiddenTemplate="false"
@@ -62,6 +63,10 @@
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <mailServer-settings jcr:primaryType="jnt:serverSettingsMailServerSettings"/>
                                 </pagecontent>
+                                <j:translation_en jcr:language="en"
+                                                  jcr:mixinTypes="mix:title"
+                                                  jcr:primaryType="jnt:translation"
+                                                  jcr:title="##resourceBundle(serverSettings.mailServerSettings)##"/>
                             </mailServerSettings>
                             <dbSettings j:applyOn="jnt:globalSettings"
                               j:defaultTemplate="false"
@@ -71,13 +76,17 @@
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <db-settings jcr:primaryType="jnt:serverSettingsDBSettings"/>
                                 </pagecontent>
+                                <j:translation_en jcr:language="en"
+                                                  jcr:mixinTypes="mix:title"
+                                                  jcr:primaryType="jnt:translation"
+                                                  jcr:title="##resourceBundle(serverSettings.dbSettings)##"/>
                             </dbSettings>
                         </configurations>
                         <system-components j:hiddenTemplate="false" jcr:primaryType="jnt:template">
                             <j:translation_en jcr:language="en"
                                     jcr:mixinTypes="mix:title"
                                     jcr:primaryType="jnt:translation"
-                                    jcr:title="System components "/>
+                                    jcr:title="##resourceBundle(serverSettings.systemComponents)##"/>
                             <manageModules j:applyOn="jnt:globalSettings"
                                  j:defaultTemplate="false"
                                  j:hiddenTemplate="false"
@@ -86,6 +95,10 @@
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <manage-modules jcr:primaryType="jnt:serverSettingsManageModules"/>
                                 </pagecontent>
+                                <j:translation_en jcr:language="en"
+                                                  jcr:mixinTypes="mix:title"
+                                                  jcr:primaryType="jnt:translation"
+                                                  jcr:title="##resourceBundle(serverSettings.manageModules)##"/>
                             </manageModules>
                             <managePortlets j:applyOn="jnt:globalSettings"
                                   j:defaultTemplate="false"
@@ -95,13 +108,17 @@
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <manage-portlets jcr:primaryType="jnt:serverSettingsManagePortlets"/>
                                 </pagecontent>
+                                <j:translation_en jcr:language="en"
+                                                  jcr:mixinTypes="mix:title"
+                                                  jcr:primaryType="jnt:translation"
+                                                  jcr:title="##resourceBundle(serverSettings.managePortlets)##"/>
                             </managePortlets>
                         </system-components>
                         <users-and-roles j:hiddenTemplate="false" jcr:primaryType="jnt:template">
                             <j:translation_en jcr:language="en"
                                     jcr:mixinTypes="mix:title"
                                     jcr:primaryType="jnt:translation"
-                                    jcr:title="Users and roles"/>
+                                    jcr:title="##resourceBundle(serverSettings.usersAndRoles)##"/>
                             <manageUsers j:applyOn="jnt:globalSettings"
                                j:defaultTemplate="false"
                                j:hiddenTemplate="false"
@@ -110,6 +127,10 @@
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <manage-users jcr:primaryType="jnt:serverSettingsManageUsers"/>
                                 </pagecontent>
+                                <j:translation_en jcr:language="en"
+                                                  jcr:mixinTypes="mix:title"
+                                                  jcr:primaryType="jnt:translation"
+                                                  jcr:title="##resourceBundle(serverSettings.manageUsers)##"/>
                             </manageUsers>
                             <adminProperties j:applyOn="jnt:globalSettings"
                                    j:defaultTemplate="false"
@@ -119,6 +140,10 @@
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <admin-properties jcr:primaryType="jnt:serverSettingsAdminProperties"/>
                                 </pagecontent>
+                                <j:translation_en jcr:language="en"
+                                                  jcr:mixinTypes="mix:title"
+                                                  jcr:primaryType="jnt:translation"
+                                                  jcr:title="##resourceBundle(serverSettings.adminProperties)##"/>
                             </adminProperties>
                             <passwordPolicy j:applyOn="jnt:globalSettings"
                                   j:defaultTemplate="false"
@@ -128,13 +153,17 @@
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <password-policy jcr:primaryType="jnt:serverSettingsPasswordPolicy"/>
                                 </pagecontent>
+                                <j:translation_en jcr:language="en"
+                                                  jcr:mixinTypes="mix:title"
+                                                  jcr:primaryType="jnt:translation"
+                                                  jcr:title="##resourceBundle(serverSettings.passwordPolicy)##"/>
                             </passwordPolicy>
                         </users-and-roles>
                         <system-health j:hiddenTemplate="false" jcr:primaryType="jnt:template">
                             <j:translation_en jcr:language="en"
                                     jcr:mixinTypes="mix:title"
                                     jcr:primaryType="jnt:translation"
-                                    jcr:title="System Health"/>
+                                    jcr:title="##resourceBundle(serverSettings.systemHealth)##"/>
                             <systemInfos j:applyOn="jnt:globalSettings"
                                j:defaultTemplate="false"
                                j:hiddenTemplate="false"
@@ -143,6 +172,10 @@
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <system-infos jcr:primaryType="jnt:serverSettingsSystemInfos"/>
                                 </pagecontent>
+                                <j:translation_en jcr:language="en"
+                                                  jcr:mixinTypes="mix:title"
+                                                  jcr:primaryType="jnt:translation"
+                                                  jcr:title="##resourceBundle(serverSettings.systemInfos)##"/>
                             </systemInfos>
                             <cacheManagement j:applyOn="jnt:globalSettings"
                                    j:defaultTemplate="false"
@@ -152,6 +185,10 @@
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <cache-management jcr:primaryType="jnt:serverSettingsCacheManagement"/>
                                 </pagecontent>
+                                <j:translation_en jcr:language="en"
+                                                  jcr:mixinTypes="mix:title"
+                                                  jcr:primaryType="jnt:translation"
+                                                  jcr:title="##resourceBundle(serverSettings.cacheManagement)##"/>
                             </cacheManagement>
                             <manageMemory j:applyOn="jnt:globalSettings"
                                 j:defaultTemplate="false"
@@ -161,6 +198,10 @@
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <manage-memory jcr:primaryType="jnt:serverSettingsManageMemory"/>
                                 </pagecontent>
+                                <j:translation_en jcr:language="en"
+                                                  jcr:mixinTypes="mix:title"
+                                                  jcr:primaryType="jnt:translation"
+                                                  jcr:title="##resourceBundle(serverSettings.manageMemory)##"/>
                             </manageMemory>
                             <reportAnIssue j:applyOn="jnt:globalSettings"
                                  j:defaultTemplate="false"
@@ -170,14 +211,14 @@
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <report-an-issue jcr:primaryType="jnt:serverSettingsReportAnIssue"/>
                                 </pagecontent>
+                                <j:translation_en jcr:language="en"
+                                                  jcr:mixinTypes="mix:title"
+                                                  jcr:primaryType="jnt:translation"
+                                                  jcr:title="##resourceBundle(serverSettings.reportAnIssue)##"/>
                             </reportAnIssue>
                         </system-health>
                 </serverSettingsBase>
             </templates>
-                <portlets jcr:primaryType="jnt:portletFolder"/>
-                <files jcr:primaryType="jnt:folder"/>
-                <contents jcr:primaryType="jnt:contentFolder"/>
-
         </serverSettings>
     </modules>
 </content>

@@ -323,6 +323,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes,
                                       List<String> filters, List<String> fields, List<String> selectedNodes,
                                       List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex) throws GWTJahiaServiceException {
+        return getRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths, checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex, false);
+    }
+
+    public List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes,
+                                      List<String> filters, List<String> fields, List<String> selectedNodes,
+                                      List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes,
+                                      List<String> hiddenTypes, String hiddenRegex, boolean useUILocale) throws GWTJahiaServiceException {
         if (openPaths == null || openPaths.size() == 0) {
             openPaths = getOpenPathsForRepository(paths.toString());
         }
@@ -330,8 +337,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         if (logger.isDebugEnabled()) {
             logger.debug("retrieving open paths for " + paths + " :\n" + openPaths);
         }
+        Locale locale = useUILocale ? getUILocale() : getLocale();
         List<GWTJahiaNode> result = navigation.retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths, getSite(),
-                retrieveCurrentSession(), getLocale(), checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex);
+                retrieveCurrentSession(getWorkspace(), locale, true), locale, checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex);
         return result;
     }
 

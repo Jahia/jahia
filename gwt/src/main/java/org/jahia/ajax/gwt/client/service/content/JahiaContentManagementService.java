@@ -262,6 +262,8 @@ public interface JahiaContentManagementService extends RemoteService {
 
     List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex) throws GWTJahiaServiceException;
 
+    List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, boolean useUILocale) throws GWTJahiaServiceException;
+
     List<GWTJahiaNode> getSavedSearch() throws GWTJahiaServiceException;
 
     Map<String, String> getStoredPasswordsProviders() throws GWTJahiaServiceException;

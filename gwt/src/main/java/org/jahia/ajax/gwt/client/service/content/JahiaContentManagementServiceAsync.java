@@ -210,6 +210,8 @@ public interface JahiaContentManagementServiceAsync {
 
     void getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, AsyncCallback<List<GWTJahiaNode>> async);
 
+    void getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, boolean useUILocale, AsyncCallback<List<GWTJahiaNode>> async);
+
     void getSavedSearch(AsyncCallback<List<GWTJahiaNode>> async);
 
     void getStoredPasswordsProviders(AsyncCallback<Map<String, String>> async);

@@ -16,7 +16,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
 <jcr:node path="/users/root" var="adminUser"/>
-<h2><fmt:message key="serverSettings.adminProperties.title"/></h2>
+<h2><fmt:message key="serverSettings.adminProperties"/></h2>
 <c:forEach var="msg" items="${flowRequestContext.messageContext.allMessages}">
     <div class="${msg.severity == 'ERROR' ? 'validationError' : ''}" style="color: ${msg.severity == 'ERROR' ? 'red' : 'blue'};">${fn:escapeXml(msg.text)}</div>
 </c:forEach>

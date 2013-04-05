@@ -204,7 +204,13 @@
 		<property name="priority" value="28" />
         <property name="description" value="Handles permissions set on the template"/>
 	</bean>
-	<bean class="org.jahia.services.render.filter.TemplateAttributesFilter">
+  <bean class="org.jahia.services.render.filter.ForceUILocaleFilter">
+    <property name="priority" value="29" />
+    <property name="description" value="Forces the usage of the UI locale when the template has jmix:useUILocale mixin"/>
+    <property name="applyOnNodeTypes" value="jmix:useUILocale"/>
+    <property name="applyOnConfigurations" value="wrapper"/>
+  </bean>
+  <bean class="org.jahia.services.render.filter.TemplateAttributesFilter">
 		<property name="priority" value="30" />
         <property name="description" value="Module filter for parameter resolution."/>
 	</bean>

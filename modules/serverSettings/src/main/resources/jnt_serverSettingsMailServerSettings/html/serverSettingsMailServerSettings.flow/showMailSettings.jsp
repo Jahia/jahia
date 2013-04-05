@@ -75,7 +75,7 @@
 
 <div>
     <span style="font-size: larger; font: bold">
-        <fmt:message key="serverSettings.mailServerSettings.title"/>
+        <fmt:message key="serverSettings.mailServerSettings"/>
     </span>
     <p>
         <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">

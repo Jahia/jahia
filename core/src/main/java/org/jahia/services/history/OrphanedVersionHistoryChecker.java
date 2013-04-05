@@ -224,36 +224,31 @@ class OrphanedVersionHistoryChecker {
     }
 
     private void traverse(JCRSessionWrapper session) throws RepositoryException {
-        try {
-            Map<NodeId, NodeInfo> batch = getAllNodeInfos(null);
-            while (!batch.isEmpty()) {
-                NodeId lastId = null;
-                for (NodeInfo info : batch.values()) {
-                    lastId = info.getId();
-                    if (NAME_NT_VERSION_HISTORY.equals(info.getNodeTypeName())) {
-                        nodesToCheck.add(info.getId());
-                        if (nodesToCheck.size() >= checkOrphanedBatchSize) {
-                            checkOrphaned(session);
-                        }
-                    }
-                    if (status.orphaned >= maxOrphans) {
-                        break;
-                    }
-                    if (forceStop) {
-                        return;
+        Map<NodeId, NodeInfo> batch = getAllNodeInfos(null);
+        while (!batch.isEmpty()) {
+            NodeId lastId = null;
+            for (NodeInfo info : batch.values()) {
+                lastId = info.getId();
+                if (NAME_NT_VERSION_HISTORY.equals(info.getNodeTypeName())) {
+                    nodesToCheck.add(info.getId());
+                    if (nodesToCheck.size() >= checkOrphanedBatchSize) {
+                        checkOrphaned(session);
                     }
                 }
-                batch = status.orphaned < maxOrphans ? getAllNodeInfos(lastId) : Collections
-                        .<NodeId, NodeInfo> emptyMap();
+                if (status.orphaned >= maxOrphans) {
+                    break;
+                }
+                if (forceStop) {
+                    return;
+                }
             }
-            if (nodesToCheck.size() > 0) {
-                checkOrphaned(session);
-            }
-            if (deleteOrphans && orphans.size() > 0) {
-                delete(session);
-            }
-        } finally {
-            NodeInfo.clearPool();
+            batch = status.orphaned < maxOrphans ? getAllNodeInfos(lastId) : Collections.<NodeId, NodeInfo> emptyMap();
+        }
+        if (nodesToCheck.size() > 0) {
+            checkOrphaned(session);
+        }
+        if (deleteOrphans && orphans.size() > 0) {
+            delete(session);
         }
     }
 }

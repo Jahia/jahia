@@ -15,20 +15,11 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<div id="content" class="fit">
-    <div class="head">
+    <h2>
             <fmt:message key='<%= "serverSettings.aboutJahia.LicenceInfo.jahiaEdition." + Jahia.getEdition().toLowerCase() %>'/>&nbsp;Jahia&nbsp;xCM&nbsp;<%= Jahia.VERSION %>&nbsp;<fmt:message key="serverSettings.aboutJahia.build"/>&nbsp;<%= Jahia.getBuildNumber() %>
             <c:if test="${ licensePackage.customTermsAndConditions eq 'true' }">
                 / <fmt:message key="serverSettings.aboutJahia.LicenceInfo.customTermsAndConditionsNotice" />
             </c:if>
-        </div>
-    <div class="content-body">
-        <table class="evenOddTable" border="0" cellpadding="5" cellspacing="0" width="100%">
-            <tr>
-                <td>
-                    <pre><%=Jahia.getLicenseText()%>"%></pre>
-                </td>
-            </tr>
-        </table>
-    </div>
-</div>
+    </h2>
+
+    <pre class="text-center"><%=Jahia.getLicenseText()%></pre>

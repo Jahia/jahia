@@ -32,13 +32,12 @@
     <h1><fmt:message key="label.administration"/></h1>
 </div>
 
-
 <template:area path="pagecontent"/>
 
 <c:if test="${renderContext.editMode}">
     <template:addResources type="css" resources="edit.css" />
 </c:if>
-<template:addResources type="css" resources="bootstrap.css,960.css,01web.css"/>
+<template:addResources type="css" resources="bootstrap.css,admin.css"/>
 <template:theme/>
 
 </body>

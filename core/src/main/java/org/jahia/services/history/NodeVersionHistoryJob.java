@@ -42,7 +42,6 @@ package org.jahia.services.history;
 
 import java.util.Set;
 
-import org.jahia.services.history.NodeVersionHistoryHelper.VersionHistoryCheckStatus;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;

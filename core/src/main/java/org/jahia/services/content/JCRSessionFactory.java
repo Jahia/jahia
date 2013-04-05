@@ -77,6 +77,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private JahiaUserManagerService userService;
     private Map<String, JCRStoreProvider> providers = new HashMap<String, JCRStoreProvider>();
     private List<JCRStoreProvider> providerList = new ArrayList<JCRStoreProvider>();
+    private Set<String> allMountPoints = new HashSet<String>();
     private SortedMap<String, JCRStoreProvider> mountPoints = new TreeMap<String, JCRStoreProvider>();
     private SortedMap<String, JCRStoreProvider> dynamicMountPoints = new TreeMap<String, JCRStoreProvider>();
     private static JCRSessionFactory instance;
@@ -311,6 +312,9 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         return new Value[0];  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public Set<String> getAllMountPoints() {
+        return allMountPoints;
+    }
 
     public Map<String, JCRStoreProvider> getMountPoints() {
         return mountPoints;
@@ -338,6 +342,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
             } else {
                 mountPoints.put(mountPoint, p);
             }
+            allMountPoints.add(mountPoint);
         }
         logger.info("Added provider " + key + " at mount point " + mountPoint + " using implementation " + p.getClass().getName());
     }
@@ -348,6 +353,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         if (p != null && p.getMountPoint() != null) {
             mountPoints.remove(p.getMountPoint());
             dynamicMountPoints.remove(p.getMountPoint());
+            allMountPoints.remove(p.getMountPoint());
         }
         logger.info("Removed provider " + key + " at mount point " + p.getMountPoint() + " using implementation " + p.getClass().getName());
     }

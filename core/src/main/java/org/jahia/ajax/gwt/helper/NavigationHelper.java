@@ -236,7 +236,7 @@ public class NavigationHelper {
             boolean nameFilter = matchesFilters(childNode.getName(), nameFilters);
             boolean hasNodes = false;
             try {
-                hasNodes = childNode.getNodes().hasNext();
+                hasNodes = childNode.hasNodes();
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -743,7 +743,7 @@ public class NavigationHelper {
                     // use for pickers
                     boolean hasNodes = false;
                     try {
-                        hasNodes = n.getNodes().hasNext();
+                        hasNodes = n.hasNodes();
                     } catch (RepositoryException e) {
                         logger.error(e.getMessage(), e);
                     }

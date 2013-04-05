@@ -167,7 +167,7 @@ public class ModuleHelper {
         final String fmainTemplate = mainTemplate;
 
         JahiaContentManagementService.App.getInstance()
-                .getNodesAndTypes(list, Arrays.asList(GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.PERMISSIONS, GWTJahiaNode.WORKFLOW_INFO, GWTJahiaNode.VISIBILITY_INFO,GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO), new ArrayList<String>(allNodetypes),
+                .getNodesAndTypes(list, Arrays.asList(GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.PERMISSIONS, GWTJahiaNode.WORKFLOW_INFO, GWTJahiaNode.QUICK_PUBLICATION_INFO, GWTJahiaNode.VISIBILITY_INFO,GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO), new ArrayList<String>(allNodetypes),
                         new BaseAsyncCallback<Map<String, List<? extends ModelData>>>() {
                             public void onSuccess(Map<String, List<? extends ModelData>> result) {
                                 List<GWTJahiaNodeType> types = (List<GWTJahiaNodeType>) result.get("types");

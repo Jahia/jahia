@@ -52,14 +52,12 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
@@ -1248,25 +1246,23 @@ public class JCRPublicationService extends JahiaService {
                 // No modification date - node is published
                 status = PublicationInfo.PUBLISHED;
             } else {
-                Date modProp = node.getLastModifiedAsDate();
-                Date pubProp = node.getLastPublishedAsDate();
-                Date liveModProp = publishedNode.getLastModifiedAsDate();
-                if (pubProp == null) {
-                    pubProp = liveModProp;
-                }
-                if (modProp == null || pubProp == null) {
-                    logger.warn(node.getPath() + " : Some property is null [last modified / last published / last modified (live)]: " + modProp + "/" + pubProp + "/" +
-                            liveModProp);
-                    status = PublicationInfo.MODIFIED;
-                } else {
-                    if (modProp.after(pubProp)) {
-                        status = PublicationInfo.MODIFIED;
-                    } else {
-                        status = PublicationInfo.PUBLISHED;
-                    }
-                }
                 if (node.isNodeType("jmix:markedForDeletion")) {
                     status = PublicationInfo.MARKED_FOR_DELETION;
+                } else {
+                    Date pubProp = node.getLastPublishedAsDate();
+                    if (pubProp == null) {
+                        publishedNode.getLastModifiedAsDate();
+                    }
+                    Date modProp = pubProp != null ? node.getLastModifiedAsDate() : null;
+                    if (modProp == null || pubProp == null) {
+                        logger.warn(
+                                "Unable to check publication status for node {}."
+                                        + " One of properties [last published or last modified (live) / last modified] is null."
+                                        + " Considering node as modified.", node.getPath());
+                        status = PublicationInfo.MODIFIED;
+                    } else {
+                        status = modProp.after(pubProp) ? PublicationInfo.MODIFIED : PublicationInfo.PUBLISHED;
+                    }
                 }
             }
         }
@@ -1279,60 +1275,57 @@ public class JCRPublicationService extends JahiaService {
                                List<PublicationInfo> infos, PublicationInfoNode info) throws RepositoryException {
         List<ExtendedPropertyDefinition> defs = node.getReferenceProperties();
         for (ExtendedPropertyDefinition def : defs) {
-            if (!def.getName().equals("*") && node.hasProperty(def.getName())) {
-                Property p = node.getProperty(def.getName());
-                PropertyDefinition definition = p.getDefinition();
-                if (definition != null && (definition.getRequiredType() == PropertyType.REFERENCE ||
-                        definition.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) &&
-                        !p.getName().startsWith("jcr:") && !p.getName().equals("j:templateNode") && !p.getName().equals("j:sourceTemplate")) {
-                    if (definition.isMultiple()) {
-                        Value[] vs = p.getValues();
-                        for (Value v : vs) {
-                            try {
-                                JCRNodeWrapper ref = node.getSession().getNodeByUUID(v.getString());
-                                if (!ref.isNodeType("jnt:page")) {
-                                    PublicationInfoNode n =
-                                            getPublicationInfo(ref, languages, includesReferences, includesSubnodes, false,
-                                                    sourceSession, destinationSession, infosMap, infos);
-                                    info.addReference(new PublicationInfo(n));
-                                }
-                            } catch (ItemNotFoundException e) {
-                                if (definition.getRequiredType() == PropertyType.REFERENCE) {
-                                    logger.warn("Cannot get reference " + p.getName() + " = " + v.getString() + " from node " + node.getPath());
-                                } else {
-                                    if (logger.isDebugEnabled()) {
-                                        logger.debug("Cannot get reference " + p.getName() + " = " + v.getString() + " from node " + node.getPath());
-                                    }
-                                }
-
+            String propName = def.getName();
+            if (propName.equals("*") || propName.startsWith("jcr:") || propName.equals("j:templateNode")
+                    || propName.equals("j:sourceTemplate") || propName.equals("j:tags")
+                    || propName.equals("j:defaultCategory") || !node.hasProperty(propName)) {
+                continue;
+            }
+            Property p = node.getProperty(def.getName());
+            if (def.isMultiple()) {
+                Value[] vs = p.getValues();
+                for (Value v : vs) {
+                    try {
+                        JCRNodeWrapper ref = node.getSession().getNodeByUUID(v.getString());
+                        if (!ref.isNodeType(Constants.JAHIANT_PAGE) && !ref.isNodeType("jmix:autoPublish")) {
+                            PublicationInfoNode n = getPublicationInfo(ref, languages, includesReferences,
+                                    includesSubnodes, false, sourceSession, destinationSession, infosMap, infos);
+                            info.addReference(new PublicationInfo(n));
+                        }
+                    } catch (ItemNotFoundException e) {
+                        if (def.getRequiredType() == PropertyType.REFERENCE) {
+                            logger.warn("Cannot get reference " + p.getName() + " = " + v.getString() + " from node "
+                                    + node.getPath());
+                        } else {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Cannot get reference " + p.getName() + " = " + v.getString()
+                                        + " from node " + node.getPath());
                             }
                         }
+
+                    }
+                }
+            } else {
+                try {
+                    JCRNodeWrapper ref = (JCRNodeWrapper) p.getNode();
+                    if (!ref.isNodeType(Constants.JAHIANT_PAGE) && !ref.isNodeType("jmix:autoPublish")) {
+                        PublicationInfoNode n = getPublicationInfo(ref, languages, includesReferences,
+                                includesSubnodes, false, sourceSession, destinationSession, infosMap, infos);
+                        info.addReference(new PublicationInfo(n));
+                    }
+                } catch (ItemNotFoundException e) {
+                    if (def.getRequiredType() == PropertyType.REFERENCE) {
+                        logger.warn("Cannot get reference " + p.getName() + " = " + p.getString() + " from node "
+                                + node.getPath());
                     } else {
-                        try {
-                            JCRNodeWrapper ref = (JCRNodeWrapper) p.getNode();
-                            if (!ref.isNodeType("jnt:page")) {
-                                PublicationInfoNode n =
-                                        getPublicationInfo(ref, languages, includesReferences, includesSubnodes, false,
-                                                sourceSession, destinationSession, infosMap, infos);
-                                info.addReference(new PublicationInfo(n));
-                            }
-                        } catch (ItemNotFoundException e) {
-                            if (definition.getRequiredType() == PropertyType.REFERENCE) {
-                                logger.warn("Cannot get reference " + p.getName() + " = " + p.getString() + " from node " + node.getPath());
-                            } else {
-                                if (logger.isDebugEnabled()) {
-                                    logger.debug("Cannot get reference " + p.getName() + " = " + p.getString() + " from node " + node.getPath());
-                                }
-                            }
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Cannot get reference " + p.getName() + " = " + p.getString() + " from node "
+                                    + node.getPath());
                         }
                     }
                 }
             }
         }
-//        PropertyIterator pi = node.getProperties();
-//        while (pi.hasNext()) {
-//            Property p = pi.nextProperty();
-//        }
     }
 
     protected void addRemovedLabel(JCRNodeWrapper node, final String label) throws RepositoryException {

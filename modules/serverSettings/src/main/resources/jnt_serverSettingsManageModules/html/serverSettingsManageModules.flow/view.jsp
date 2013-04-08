@@ -15,45 +15,46 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<table border="1">
-
-    <tr>
-        <th><fmt:message key='serverSettings.manageModules.moduleName' /></th>
-        <th></th>
-        <th><fmt:message key='serverSettings.manageModules.details' /></th>
-        <th><fmt:message key='serverSettings.manageModules.versions' /></th>
-        <th><fmt:message key='serverSettings.manageModules.status' /></th>
-        <th><fmt:message key='serverSettings.manageModules.sources' /></th>
-        <th><fmt:message key='serverSettings.manageModules.usedInSites' /></th>
-    </tr>
-
+<table class="table table-bordered table-striped table-hover">
+    <thead>
+        <tr>
+            <th><fmt:message key='serverSettings.manageModules.moduleName' /></th>
+            <th></th>
+            <th><fmt:message key='serverSettings.manageModules.details' /></th>
+            <th><fmt:message key='serverSettings.manageModules.versions' /></th>
+            <th><fmt:message key='serverSettings.manageModules.status' /></th>
+            <th><fmt:message key='serverSettings.manageModules.sources' /></th>
+            <th><fmt:message key='serverSettings.manageModules.usedInSites' /></th>
+        </tr>
+    </thead>
+    <tbody>
     <c:forEach items="${allModuleVersions}" var="entry" >
         <c:set value="${registeredModules[entry.key]}" var="currentModule" />
         <tr>
-            <td>${currentModule.name}</td>
+            <td><strong>${currentModule.name}<strong></td>
             <td>${entry.key}</td>
             <c:url var="detailUrl" value="${url.base}/modules/${currentModule.rootFolder}.siteTemplate.html"/>
-            <td><a href="${detailUrl}"><fmt:message key='serverSettings.manageModules.details' /></a>
+            <td><a class="btn" style="padding: 2px 12px" href="${detailUrl}"><fmt:message key='serverSettings.manageModules.details' /></a>
             </td>
             <td>
                 <c:forEach items="${entry.value}" var="version">
                     <c:choose>
                         <c:when test="${version.key eq currentModule.version}">
-                            <div class="active-version">${version.key}
-                                <form action="${flowExecutionUrl}" method="POST">
+                            <div class="active-version">
+                                <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                     <input type="hidden" name="module" value="${entry.key}"/>
                                     <fmt:message var="label" key='serverSettings.manageModules.stopModule' />
-                                    <input type="submit" name="_eventId_stopModule" value="${label}" onclick=""/>
+                                    <input class="btn btn-danger" type="submit" name="_eventId_stopModule" value="${label}" onclick=""/>&nbsp; ${version.key}
                                 </form>
                             </div>
                         </c:when>
                         <c:otherwise>
-                            <div class="inactive-version">${version.key}
-                                <form action="${flowExecutionUrl}" method="POST">
+                            <div class="inactive-version">
+                                <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                     <input type="hidden" name="module" value="${entry.key}"/>
                                     <input type="hidden" name="version" value="${version.key}"/>
                                     <fmt:message var="label" key='serverSettings.manageModules.startModule' />
-                                    <input type="submit" name="_eventId_startModule" value="${label}" onclick=""/>
+                                    <input class="btn btn-success" type="submit" name="_eventId_startModule" value="${label}" onclick=""/>&nbsp; ${version.key}
                                 </form>
                             </div>
                         </c:otherwise>
@@ -64,10 +65,10 @@
             <td>
                 <c:choose>
                     <c:when test="${not empty currentModule}">
-                        Active
+                        <span class="label label-success"><strong>Active</strong></span>
                     </c:when>
                     <c:otherwise>
-                        Inactive
+                         <span class="label"><strong>Inactive</strong></span>
                     </c:otherwise>
                 </c:choose>
             </td>
@@ -76,34 +77,38 @@
                 <%--${currentModule.sourcesFolder}--%>
                 <c:choose>
                     <c:when test="${not empty currentModule.sourcesFolder}">
-                        <input type="button" onclick='window.parent.location.assign("/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.siteTemplate.html")' value="<fmt:message key='serverSettings.manageModules.goToStudio' />"/>
+                        <input class="btn" type="button" onclick='window.parent.location.assign("/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.siteTemplate.html")' value="<fmt:message key='serverSettings.manageModules.goToStudio' />"/>
                         <%--<c:if test="${renderContext.editModeConfigName ne 'studiomode' and renderContext.editModeConfigName ne 'studiolayoutmode'}">--%>
                             <%--<a href="/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.siteTemplate.html"></a>--%>
                         <%--</c:if>--%>
 
                     </c:when>
                     <c:when test="${not empty currentModule.scmURI}">
-                        <form action="${flowExecutionUrl}" method="POST">
+                        <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                             <input type="hidden" name="module" value="${entry.key}"/>
                             <input type="hidden" name="scmUri" value="${currentModule.scmURI}"/>
                             <fmt:message var="label" key='serverSettings.manageModules.downloadSources' />
-                            <input type="submit" name="_eventId_downloadSources" value="${label}" onclick=""/>
+                            <input class="btn" type="submit" name="_eventId_downloadSources" value="${label}" onclick=""/>
                         </form>
                     </c:when>
 
                     <c:otherwise>
-                        <form action="${flowExecutionUrl}" method="POST">
+                        <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                             <input type="hidden" name="module" value="${entry.key}"/>
                             <input type="hidden" name="scmUri" value="scm:git:"/>
                             <fmt:message var="label" key='serverSettings.manageModules.downloadSources' />
-                            <input type="submit" name="_eventId_downloadSources" value="${label}" onclick=""/>
+                            <input class="btn" type="submit" name="_eventId_downloadSources" value="${label}" onclick=""/>
                         </form>
                     </c:otherwise>
                 </c:choose>
+
+            </td>
+            <td>
 
             </td>
 
         </tr>
 
     </c:forEach>
+    </tbody>
 </table>

@@ -14,7 +14,7 @@
     <div class="error"><fmt:message key='${error}'/></div>
 </c:if>
 
-<form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-    <input class="input" name="scmUri" value="${scmUri}" size="80"/>
+<form class="form-inline" style="margin: 0;" action="${flowExecutionUrl}" method="POST">
+    <input class="input" type="text" name="scmUri" value="${scmUri}" size="80"/>
     <input class="btn" type="submit" name="_eventId_downloadSources" value="<fmt:message key='serverSettings.manageModules.downloadSources'/>"/>
 </form>

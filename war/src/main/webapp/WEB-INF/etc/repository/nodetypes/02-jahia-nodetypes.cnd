@@ -463,6 +463,10 @@
 [jmix:useUILocale] mixin
  extends = jnt:template
 
+// @since Jahia 6.7
+[jmix:rbTitle] mixin
+ - j:titleKey (string)
+
 //---------------------------------------------------------
 // Virtual sites
 //---------------------------------------------------------

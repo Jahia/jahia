@@ -3972,6 +3972,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
 
     public String getDisplayableName() {
+        try {
+            if (isNodeType(Constants.JAHIAMIX_RB_TITLE)) {
+                String rb = getProperty(Constants.JAHIA_TITLE_KEY).getValue().getString();
+                if (rb != null) {
+                    return getResourceBundle(rb);
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.debug("Failed to get resourceBundled title", e);
+        }
+
         String title = null;
         try {
             title = getProperty(Constants.JCR_TITLE).getValue().getString();
@@ -4020,6 +4031,27 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return title;
     }
 
+    private String getResourceBundle(String title) {
+        Locale locale = getSession().getLocale();
+        try {
+            JCRSiteNode site = getResolveSite();
+
+            for (String module : site.getInstalledModules()) {
+                try {
+                    return Messages.get(null,
+                            ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(module),
+                            title, locale != null ? locale : session.getFallbackLocale(), title);
+                } catch (Exception e) {
+                    // ignore
+                    return title;
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.warn("Unable to resolve the site for node {}. Cause: {}", getPath(),
+                    e.getMessage());
+        }
+        return title;
+    }
     public void flushLocalCaches() {
         hasPropertyCache.clear();
     }

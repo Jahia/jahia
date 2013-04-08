@@ -162,6 +162,8 @@ public class Constants {
 
     public static final String JAHIAMIX_HIDDEN_NODE = "jmix:hiddenNode";
 
+    public final static String JAHIAMIX_RB_TITLE = "jmix:rbTitle";
+
     public static final String JAHIANT_FOLDER = "jnt:folder";
     public static final String JAHIANT_FILE = "jnt:file";
     public static final String JAHIANT_RESOURCE = "jnt:resource";
@@ -279,7 +281,9 @@ public class Constants {
     public static final String MARKED_FOR_DELETION_USER = "j:deletionUser";
     public static final String MARKED_FOR_DELETION_DATE = "j:deletionDate";
     public static final String MARKED_FOR_DELETION_MESSAGE = "j:deletionMessage";
-    
+
+    public static final String JAHIA_TITLE_KEY = "j:titleKey";
+
     public static final Set<String> forbiddenPropertiesToCopy = new HashSet<String>(Arrays.asList(PROCESSID,JCR_FROZENUUID,
             JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE,JCR_UUID,JCR_BASEVERSION,JCR_MIXINTYPES,JCR_PRIMARYTYPE,
             JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT, JCR_CREATED, JCR_CREATEDBY, JAHIA_LOCKTYPES,

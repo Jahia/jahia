@@ -28,193 +28,167 @@
                            j:hiddenTemplate="false"
                            j:icon="/modules/serverSettings/templates/files/aboutJahia.png"
                            j:requiredPermissions="#/permissions/admin/adminAbout"
-                                   jcr:primaryType="jnt:contentTemplate">
+                           j:titleKey="serverSettings.aboutJahia"
+                           jcr:mixinTypes="jmix:rbTitle"
+                           jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <about-jahia jcr:primaryType="jnt:serverSettingsAboutJahia"/>
                         </pagecontent>
-                            <j:translation_en jcr:language="en"
-                                    jcr:mixinTypes="mix:title"
-                                    jcr:primaryType="jnt:translation"
-                                    jcr:title="##resourceBundle(serverSettings.aboutJahia)##"/>
                     </aboutJahia>
                         <webProjectSettings j:applyOn="jnt:globalSettings"
                                    j:defaultTemplate="false"
                                    j:hiddenTemplate="false"
                                    j:requiredPermissions="#/permissions/admin/adminVirtualSites"
-                                    jcr:primaryType="jnt:contentTemplate">
+                                   j:titleKey="serverSettings.manageWebProjects"
+                                   jcr:mixinTypes="jmix:rbTitle"
+                                   jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <manage-web-projects jcr:primaryType="jnt:serverSettingsManageWebProjects"/>
                         </pagecontent>
-                            <j:translation_en jcr:language="en"
-                                    jcr:mixinTypes="mix:title"
-                                    jcr:primaryType="jnt:translation"
-                                    jcr:title="##resourceBundle(serverSettings.manageWebProjects)##"/>
                     </webProjectSettings>
-                        <configurations j:hiddenTemplate="false" jcr:primaryType="jnt:template">
-                            <j:translation_en jcr:language="en"
-                                    jcr:mixinTypes="mix:title"
-                                    jcr:primaryType="jnt:translation"
-                                    jcr:title="##resourceBundle(serverSettings.configurations)##"/>
+                        <configurations
+                                j:hiddenTemplate="false"
+                                j:titleKey="serverSettings.configurations"
+                                jcr:mixinTypes="jmix:rbTitle"
+                                jcr:primaryType="jnt:template">
                             <mailServerSettings j:applyOn="jnt:globalSettings"
                                       j:defaultTemplate="false"
                                       j:hiddenTemplate="false"
                                       j:requiredPermissions="#/permissions/admin/adminEmailSettings"
+                                      j:titleKey="serverSettings.mailServerSettings"
+                                      jcr:mixinTypes="jmix:rbTitle"
                                       jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <mailServer-settings jcr:primaryType="jnt:serverSettingsMailServerSettings"/>
                                 </pagecontent>
-                                <j:translation_en jcr:language="en"
-                                                  jcr:mixinTypes="mix:title"
-                                                  jcr:primaryType="jnt:translation"
-                                                  jcr:title="##resourceBundle(serverSettings.mailServerSettings)##"/>
                             </mailServerSettings>
                             <dbSettings j:applyOn="jnt:globalSettings"
                               j:defaultTemplate="false"
                               j:hiddenTemplate="false"
                               j:requiredPermissions="#/permissions/admin/adminDBSettings"
+                              j:titleKey="serverSettings.dbSettings"
+                              jcr:mixinTypes="jmix:rbTitle"
                               jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <db-settings jcr:primaryType="jnt:serverSettingsDBSettings"/>
                                 </pagecontent>
-                                <j:translation_en jcr:language="en"
-                                                  jcr:mixinTypes="mix:title"
-                                                  jcr:primaryType="jnt:translation"
-                                                  jcr:title="##resourceBundle(serverSettings.dbSettings)##"/>
                             </dbSettings>
                         </configurations>
-                        <system-components j:hiddenTemplate="false" jcr:primaryType="jnt:template">
-                            <j:translation_en jcr:language="en"
-                                    jcr:mixinTypes="mix:title"
-                                    jcr:primaryType="jnt:translation"
-                                    jcr:title="##resourceBundle(serverSettings.systemComponents)##"/>
+                        <system-components
+                                j:hiddenTemplate="false"
+                                j:titleKey="serverSettings.systemComponents"
+                                jcr:mixinTypes="jmix:rbTitle"
+                                jcr:primaryType="jnt:template">
                             <manageModules j:applyOn="jnt:globalSettings"
                                  j:defaultTemplate="false"
                                  j:hiddenTemplate="false"
                                  j:requiredPermissions="#/permissions/admin/adminTemplates"
+                                 j:titleKey="serverSettings.manageModules"
+                                 jcr:mixinTypes="jmix:rbTitle"
                                  jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <manage-modules jcr:primaryType="jnt:serverSettingsManageModules"/>
                                 </pagecontent>
-                                <j:translation_en jcr:language="en"
-                                                  jcr:mixinTypes="mix:title"
-                                                  jcr:primaryType="jnt:translation"
-                                                  jcr:title="##resourceBundle(serverSettings.manageModules)##"/>
                             </manageModules>
                             <managePortlets j:applyOn="jnt:globalSettings"
                                   j:defaultTemplate="false"
                                   j:hiddenTemplate="false"
                                   j:requiredPermissions="#/permissions/admin/adminPortlets"
+                                  j:titleKey="serverSettings.managePortlets"
+                                  jcr:mixinTypes="jmix:rbTitle"
                                   jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <manage-portlets jcr:primaryType="jnt:serverSettingsManagePortlets"/>
                                 </pagecontent>
-                                <j:translation_en jcr:language="en"
-                                                  jcr:mixinTypes="mix:title"
-                                                  jcr:primaryType="jnt:translation"
-                                                  jcr:title="##resourceBundle(serverSettings.managePortlets)##"/>
                             </managePortlets>
                         </system-components>
-                        <users-and-roles j:hiddenTemplate="false" jcr:primaryType="jnt:template">
-                            <j:translation_en jcr:language="en"
-                                    jcr:mixinTypes="mix:title"
-                                    jcr:primaryType="jnt:translation"
-                                    jcr:title="##resourceBundle(serverSettings.usersAndRoles)##"/>
+                        <users-and-roles
+                                j:hiddenTemplate="false"
+                                j:titleKey="serverSettings.usersAndRoles"
+                                jcr:mixinTypes="jmix:rbTitle"
+                                jcr:primaryType="jnt:template">
                             <manageUsers j:applyOn="jnt:globalSettings"
                                j:defaultTemplate="false"
                                j:hiddenTemplate="false"
                                j:requiredPermissions="#/permissions/admin/adminUsers"
+                               j:titleKey="serverSettings.manageUsers"
+                               jcr:mixinTypes="jmix:rbTitle"
                                jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <manage-users jcr:primaryType="jnt:serverSettingsManageUsers"/>
                                 </pagecontent>
-                                <j:translation_en jcr:language="en"
-                                                  jcr:mixinTypes="mix:title"
-                                                  jcr:primaryType="jnt:translation"
-                                                  jcr:title="##resourceBundle(serverSettings.manageUsers)##"/>
                             </manageUsers>
                             <adminProperties j:applyOn="jnt:globalSettings"
                                    j:defaultTemplate="false"
                                    j:hiddenTemplate="false"
                                    j:requiredPermissions="#/permissions/admin/adminRootUser"
+                                   j:titleKey="serverSettings.adminProperties"
+                                   jcr:mixinTypes="jmix:rbTitle"
                                    jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <admin-properties jcr:primaryType="jnt:serverSettingsAdminProperties"/>
                                 </pagecontent>
-                                <j:translation_en jcr:language="en"
-                                                  jcr:mixinTypes="mix:title"
-                                                  jcr:primaryType="jnt:translation"
-                                                  jcr:title="##resourceBundle(serverSettings.adminProperties)##"/>
                             </adminProperties>
                             <passwordPolicy j:applyOn="jnt:globalSettings"
                                   j:defaultTemplate="false"
                                   j:hiddenTemplate="false"
                                   j:requiredPermissions="#/permissions/admin/adminPasswordPolicy"
+                                  j:titleKey="serverSettings.passwordPolicy"
+                                  jcr:mixinTypes="jmix:rbTitle"
                                   jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <password-policy jcr:primaryType="jnt:serverSettingsPasswordPolicy"/>
                                 </pagecontent>
-                                <j:translation_en jcr:language="en"
-                                                  jcr:mixinTypes="mix:title"
-                                                  jcr:primaryType="jnt:translation"
-                                                  jcr:title="##resourceBundle(serverSettings.passwordPolicy)##"/>
                             </passwordPolicy>
                         </users-and-roles>
-                        <system-health j:hiddenTemplate="false" jcr:primaryType="jnt:template">
-                            <j:translation_en jcr:language="en"
-                                    jcr:mixinTypes="mix:title"
-                                    jcr:primaryType="jnt:translation"
-                                    jcr:title="##resourceBundle(serverSettings.systemHealth)##"/>
+                        <system-health
+                                j:hiddenTemplate="false"
+                                j:titleKey="serverSettings.systemHealth"
+                                jcr:mixinTypes="jmix:rbTitle"
+                                jcr:primaryType="jnt:template">
                             <systemInfos j:applyOn="jnt:globalSettings"
                                j:defaultTemplate="false"
                                j:hiddenTemplate="false"
                                j:requiredPermissions="#/permissions/admin/adminSystemInfos"
+                               j:titleKey="serverSettings.systemInfos"
+                               jcr:mixinTypes="jmix:rbTitle"
                                jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <system-infos jcr:primaryType="jnt:serverSettingsSystemInfos"/>
                                 </pagecontent>
-                                <j:translation_en jcr:language="en"
-                                                  jcr:mixinTypes="mix:title"
-                                                  jcr:primaryType="jnt:translation"
-                                                  jcr:title="##resourceBundle(serverSettings.systemInfos)##"/>
                             </systemInfos>
                             <cacheManagement j:applyOn="jnt:globalSettings"
                                    j:defaultTemplate="false"
                                    j:hiddenTemplate="false"
                                    j:requiredPermissions="#/permissions/admin/adminCache"
+                                   j:titleKey="serverSettings.cacheManagement"
+                                   jcr:mixinTypes="jmix:rbTitle"
                                    jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <cache-management jcr:primaryType="jnt:serverSettingsCacheManagement"/>
                                 </pagecontent>
-                                <j:translation_en jcr:language="en"
-                                                  jcr:mixinTypes="mix:title"
-                                                  jcr:primaryType="jnt:translation"
-                                                  jcr:title="##resourceBundle(serverSettings.cacheManagement)##"/>
                             </cacheManagement>
                             <manageMemory j:applyOn="jnt:globalSettings"
                                 j:defaultTemplate="false"
                                 j:hiddenTemplate="false"
                                 j:requiredPermissions="#/permissions/admin/adminManageMemory"
+                                j:titleKey="serverSettings.manageMemory"
+                                jcr:mixinTypes="jmix:rbTitle"
                                 jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <manage-memory jcr:primaryType="jnt:serverSettingsManageMemory"/>
                                 </pagecontent>
-                                <j:translation_en jcr:language="en"
-                                                  jcr:mixinTypes="mix:title"
-                                                  jcr:primaryType="jnt:translation"
-                                                  jcr:title="##resourceBundle(serverSettings.manageMemory)##"/>
                             </manageMemory>
                             <reportAnIssue j:applyOn="jnt:globalSettings"
                                  j:defaultTemplate="false"
                                  j:hiddenTemplate="false"
                                  j:requiredPermissions="#/permissions/admin/adminIssueTracking"
+                                 j:titleKey="serverSettings.reportAnIssue"
+                                 jcr:mixinTypes="jmix:rbTitle"
                                  jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <report-an-issue jcr:primaryType="jnt:serverSettingsReportAnIssue"/>
                                 </pagecontent>
-                                <j:translation_en jcr:language="en"
-                                                  jcr:mixinTypes="mix:title"
-                                                  jcr:primaryType="jnt:translation"
-                                                  jcr:title="##resourceBundle(serverSettings.reportAnIssue)##"/>
                             </reportAnIssue>
                         </system-health>
                 </serverSettingsBase>

@@ -6,8 +6,7 @@
             <contents jcr:primaryType="jnt:contentFolder" />
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
                 <siteSettingsBase j:view="siteSettings" jcr:mixinTypes="jmix:useUILocale" jcr:primaryType="jnt:template">
-                    <translationSettings j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true" j:icon="/modules/defaultSiteSettings/templates/files/text_rich_colored.png" j:priority="100" jcr:primaryType="jnt:contentTemplate">
-                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(siteSettings.label.translation)##" />
+                    <translationSettings j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true" j:icon="/modules/defaultSiteSettings/templates/files/text_rich_colored.png" j:priority="100" j:titleKey="siteSettings.label.translation" jcr:mixinTypes="jmix:rbTitle" jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <editMicrosoftTranslatorSettings jcr:primaryType="jnt:editMicrosoftTranslatorSettings" />
                         </pagecontent>

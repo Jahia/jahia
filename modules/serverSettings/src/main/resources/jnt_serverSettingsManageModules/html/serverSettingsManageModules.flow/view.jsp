@@ -6,6 +6,8 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -14,6 +16,19 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
+<form:form modelAttribute="moduleFile" class="form" enctype="multipart/form-data" method="post">
+    <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
+        <c:if test="${message.severity eq 'INFO'}">
+            <span style="color: green;">${message.text}</span><br/>
+        </c:if>
+        <c:if test="${message.severity eq 'ERROR'}">
+            <span style="color: red;">${message.text}</span><br/>
+        </c:if>
+    </c:forEach>
+    <label for="moduleFile"><fmt:message key="serverSettings.manageModules.upload.module"/></label>
+    <input type="file" id="moduleFile" name="moduleFile" accept=""/><input type="submit" name="_eventId_upload" value="<fmt:message key="label.upload"/>"/> <br/>
+</form:form>
 
 <table class="table table-bordered table-striped table-hover">
     <thead>

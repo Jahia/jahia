@@ -5,47 +5,60 @@
 		http://www.springframework.org/schema/webflow
 		http://www.springframework.org/schema/webflow/spring-webflow.xsd">
 
-    <view-state id="view">
+    <var name="flowHandler" class="org.jahia.modules.serversettings.flow.ModuleManagementFlowHandler"/>
 
+    <view-state id="view" model="moduleFile">
+        <on-entry>
+            <evaluate expression="flowHandler.initModuleFile()" result="flowScope.moduleFile"/>
+        </on-entry>
         <on-render>
-            <evaluate expression="JahiaTemplateManagerService.templatePackageRegistry.allModuleVersions" result="requestScope.allModuleVersions" />
-            <evaluate expression="JahiaTemplateManagerService.templatePackageRegistry.registeredModules" result="requestScope.registeredModules" />
+            <evaluate expression="JahiaTemplateManagerService.templatePackageRegistry.allModuleVersions"
+                      result="requestScope.allModuleVersions"/>
+            <evaluate expression="JahiaTemplateManagerService.templatePackageRegistry.registeredModules"
+                      result="requestScope.registeredModules"/>
         </on-render>
 
-        <transition on="downloadSources" to="viewDownloadForm" >
+        <transition on="downloadSources" to="viewDownloadForm">
             <set value="requestParameters.currentModule" name="flowScope.currentModule"/>
             <set value="requestParameters.scmUri" name="flowScope.scmUri"/>
         </transition>
 
-        <transition on="startModule" to="startModule" />
-        <transition on="stopModule" to="stopModule" />
+        <transition on="startModule" to="startModule"/>
+        <transition on="stopModule" to="stopModule"/>
+
+
+        <transition on="upload" to="view">
+            <evaluate expression="flowHandler.uploadModule(moduleFile, messageContext)"/>
+        </transition>
     </view-state>
 
-    <view-state id="viewDownloadForm" model="flowScope" >
+    <view-state id="viewDownloadForm" model="flowScope">
 
-        <transition on="downloadSources" to="downloadSources" />
+        <transition on="downloadSources" to="downloadSources"/>
     </view-state>
 
     <action-state id="downloadSources">
-        <evaluate expression="JahiaTemplateManagerService.checkoutModule(null,flowScope.scmUri, null,flowScope.module,null,jcrSessionFactory.currentUserSession)"/>
+        <evaluate
+                expression="JahiaTemplateManagerService.checkoutModule(null,flowScope.scmUri, null,flowScope.module,null,jcrSessionFactory.currentUserSession)"/>
         <transition on-exception="java.lang.Exception" to="viewDownloadForm">
             <set name="flashScope.error" value="'serverSettings.manageModules.downloadSourcesError'"/>
         </transition>
-        <transition to="sourcesDownloaded" />
+        <transition to="sourcesDownloaded"/>
     </action-state>
 
     <end-state id="sourcesDownloaded"/>
 
     <action-state id="startModule">
-        <evaluate expression="JahiaTemplateManagerService.activateModuleVersion(requestParameters.module,requestParameters.version)"/>
-        <transition to="moduleStarted" />
+        <evaluate
+                expression="JahiaTemplateManagerService.activateModuleVersion(requestParameters.module,requestParameters.version)"/>
+        <transition to="moduleStarted"/>
     </action-state>
 
     <end-state id="moduleStarted"/>
 
     <action-state id="stopModule">
         <evaluate expression="JahiaTemplateManagerService.stopModule(requestParameters.module)"/>
-        <transition to="moduleStopped" />
+        <transition to="moduleStopped"/>
     </action-state>
 
     <end-state id="moduleStopped"/>

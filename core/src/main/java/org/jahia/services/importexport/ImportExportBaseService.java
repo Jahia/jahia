@@ -1240,14 +1240,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
         }
 
-        try {
-            templateManagerService.installModules(modules, "/sites/" + site.getSiteKey(), session);
-
-            session.save();
-        } catch (RepositoryException e) {
-            logger.error("Cannot deploy module "+modules,e);
-        }
-
         @SuppressWarnings("unchecked")
         Set<String> siteLangs = ListOrderedSet.decorate(new LinkedList<String>(languages));
         if (!siteLangs.isEmpty()) {
@@ -1280,6 +1272,15 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         } else {
             logger.error("Unable to find site languages in the provided site.properties descriptor. Skip importing site settings.");
         }
+
+        try {
+            templateManagerService.installModules(modules, "/sites/" + site.getSiteKey(), session);
+
+            session.save();
+        } catch (RepositoryException e) {
+            logger.error("Cannot deploy module "+modules,e);
+        }
+
     }
 
 

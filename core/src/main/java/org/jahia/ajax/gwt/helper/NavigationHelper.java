@@ -1055,8 +1055,8 @@ public class NavigationHelper {
             }
 
             if (fields.contains(GWTJahiaNode.QUICK_PUBLICATION_INFO) && supportsPublication && node.getSession().getLocale() != null) {
-                n.setAggregatedPublicationInfos(publication.getAggregatedPublicationInfosByLanguage(node,
-                        Collections.singleton(node.getSession().getLocale().toString()), node.getSession(), false, false));
+                n.setQuickPublicationInfo(publication.getAggregatedPublicationInfosByLanguage(node,
+                        Collections.singleton(node.getSession().getLocale().toString()), node.getSession(), false, false).values().iterator().next());
             }
 
         } catch (UnsupportedRepositoryOperationException e) {

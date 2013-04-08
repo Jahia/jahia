@@ -144,6 +144,8 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     // in case of a folder, it allows to know if the node is selectable or not
     private boolean matchFilters = false;
     private Map<String, GWTJahiaPublicationInfo> publicationInfos;
+    private GWTJahiaPublicationInfo quickPublicationInfo;
+
     private Map<String, GWTJahiaWorkflowInfo> workflowInfos;
     private Map<String, List<GWTJahiaPublicationInfo>> fullPublicationInfos;
     private boolean wcagCompliance;
@@ -536,6 +538,14 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public GWTJahiaWorkflowInfo getWorkflowInfo() {
         return workflowInfo;
+    }
+
+    public GWTJahiaPublicationInfo getQuickPublicationInfo() {
+        return quickPublicationInfo;
+    }
+
+    public void setQuickPublicationInfo(GWTJahiaPublicationInfo quickPublicationInfo) {
+        this.quickPublicationInfo = quickPublicationInfo;
     }
 
     public String toString() {

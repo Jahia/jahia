@@ -157,7 +157,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
     public static final GridCellRenderer<GWTJahiaNode> QUICK_PUBLICATION_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public Object render(GWTJahiaNode node, String property, ColumnData config, int rowIndex, int colIndex,
                              ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
-            final GWTJahiaPublicationInfo info = node.getAggregatedPublicationInfo();
+            final GWTJahiaPublicationInfo info = node.getQuickPublicationInfo();
             if (info != null) {
                 if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                     HorizontalPanel p = new HorizontalPanel();

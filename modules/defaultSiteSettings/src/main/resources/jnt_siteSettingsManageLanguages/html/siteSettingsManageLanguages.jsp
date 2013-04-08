@@ -42,8 +42,8 @@
             'j:mandatoryLanguages': (mandatoryLanguages.length == 0) ? ['jcrClearAllValues'] : mandatoryLanguages,
             'j:inactiveLanguages': (inactiveLanguages.length == 0) ? ['jcrClearAllValues'] : inactiveLanguages,
             'j:inactiveLiveLanguages': (inactiveLiveLanguages.length == 0) ? ['jcrClearAllValues'] : inactiveLiveLanguages,
-            'j:mixLanguage': $("#mixLanguages").attr('checked') != null,
-            'j:allowsUnlistedLanguages': $("#allowsUnlistedLanguages").attr('checked') != null
+            'j:mixLanguage': $("#mixLanguages").prop('checked'),
+            'j:allowsUnlistedLanguages': $("#allowsUnlistedLanguages").prop('checked')
         };
         $('#updateSiteForm').ajaxSubmit({
             data: data,
@@ -91,8 +91,8 @@
 //
 
         $("#updateSiteForm [name='activeLanguages'][value='${currentResource.locale}']").enable(false);
-        mix = $("#updateSiteForm [name='mixLanguage']").attr("checked") != null
-        $("#updateSiteForm [name='allowsUnlistedLanguages']").enable(mix);
+        mix = $("#mixLanguages").prop("checked");
+        $("#allowsUnlistedLanguages").prop("disabled", !mix);
     }
 
     $(document).ready(function() {

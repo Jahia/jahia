@@ -253,11 +253,11 @@ class NodeHelper {
         populateStatusInfo(n, node);
         if ((Boolean) n.get("supportsPublication")) {
             if (fields.contains(GWTJahiaNode.PUBLICATION_INFO)) {
-                populatePublicationInfo(n, node, true, true);
+                populatePublicationInfo(n, node);
             }
 
             if (fields.contains(GWTJahiaNode.QUICK_PUBLICATION_INFO)) {
-                populatePublicationInfo(n, node, false, false);
+                populateQuickPublicationInfo(n, node);
             }
 
             if (fields.contains(GWTJahiaNode.PUBLICATION_INFOS)) {
@@ -692,13 +692,29 @@ class NodeHelper {
         }
     }
 
-    private void populatePublicationInfo(GWTJahiaNode n, JCRNodeWrapper node, boolean includesReferences, boolean includesSubnodes) {
+    private void populatePublicationInfo(GWTJahiaNode n, JCRNodeWrapper node) {
         try {
             if (node.getSession().getLocale() != null) {
                 n.setAggregatedPublicationInfos(publication
                         .getAggregatedPublicationInfosByLanguage(node,
                                 Collections.singleton(node.getSession().getLocale().toString()),
-                                node.getSession(), includesReferences, includesSubnodes));
+                                node.getSession(), true, true));
+            }
+        } catch (UnsupportedRepositoryOperationException e) {
+            // do nothing
+            logger.debug(e.getMessage());
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        } catch (GWTJahiaServiceException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    private void populateQuickPublicationInfo(GWTJahiaNode n, JCRNodeWrapper node) {
+        try {
+            if (node.getSession().getLocale() != null) {
+                n.setQuickPublicationInfo(publication.getAggregatedPublicationInfosByLanguage(node,
+                        Collections.singleton(node.getSession().getLocale().toString()), node.getSession(), false, false).values().iterator().next());
             }
         } catch (UnsupportedRepositoryOperationException e) {
             // do nothing

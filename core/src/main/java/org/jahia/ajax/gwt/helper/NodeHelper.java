@@ -282,17 +282,31 @@ class NodeHelper {
             populatePrimaryTypeLabel(n, node);
         }
 
-        if (n.isFile() && n.getNodeTypes() != null && n.getNodeTypes().contains("jmix:image")) {
-            boolean containsHeight = fields.contains("j:height");
-            boolean containsWidth = fields.contains("j:width");
-            if (!containsHeight || !containsWidth) {
-                fields = new LinkedList<String>(fields);
+        if (n.isFile() && (n.isNodeType("jmix:image") || n.isNodeType("jmix:size"))) {
+            // handle width and height
+            try {
+                if (node.hasProperty("j:height")) {
+                  n.set("j:height", node.getProperty("j:height").getString());
+                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get property j:height on node {}", node.getPath());
             }
-            if (!containsHeight) {
-                fields.add("j:height");
+            try {
+                if (node.hasProperty("j:width")) {
+                  n.set("j:width", node.getProperty("j:width").getString());
+                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get property j:width on node {}", node.getPath());
             }
-            if (!containsWidth) {
-                fields.add("j:width");
+        }
+        
+        if (fields.contains("j:view") && n.isNodeType("jmix:renderable")) {
+            try {
+                if (node.hasProperty("j:view")) {
+                  n.set("j:view", node.getProperty("j:view").getString());
+                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get property j:view on node {}", node.getPath());
             }
         }
 
@@ -484,7 +498,7 @@ class NodeHelper {
                 n.set(GWTJahiaNode.DEFAULT_LANGUAGE, languages.getCurrentLang(locale));
             }
         } catch (RepositoryException e) {
-            logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node "
+            logger.error("Cannot get property " + GWTJahiaNode.DEFAULT_LANGUAGE + " on node "
                     + node.getPath());
         }
     }
@@ -526,7 +540,7 @@ class NodeHelper {
                 n.set(GWTJahiaNode.HOMEPAGE_PATH, ((JCRSiteNode) node).getHome().getPath());
             }
         } catch (RepositoryException e) {
-            logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node "
+            logger.error("Cannot get property " + GWTJahiaNode.HOMEPAGE_PATH + " on node "
                     + node.getPath());
         }
     }
@@ -798,7 +812,7 @@ class NodeHelper {
                 n.set("referenceTypes", ConstraintsHelper.getReferenceTypes(cons, null));
             }
         } catch (RepositoryException e) {
-            logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node "
+            logger.error("Cannot get property " + GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO + " on node "
                     + node.getPath());
         }
     }

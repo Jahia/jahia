@@ -73,86 +73,71 @@
     }//-->
 </script>
 
-<div>
-    <span style="font-size: larger; font: bold">
-        <fmt:message key="serverSettings.mailServerSettings"/>
-    </span>
-    <p>
-        <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
-            <c:if test="${message.severity eq 'ERROR'}">
-                <span style="color: red;">${message.text}</span><br/>
-            </c:if>
-        </c:forEach>
-    </p>
-    <div >
-        <form name="jahiaAdmin" action='${flowExecutionUrl}' method="post">
-            <table cellpadding="5" cellspacing="0" border="0">
 
-                <tr>
-                    <td>
-                        <label for="serviceActivated">
-                            <fmt:message key="serverSettings.mailServerSettings.serviceEnabled"/>&nbsp;:
-                        </label>
-                    </td>
-                    <td>
-                        <input type="checkbox" name="serviceActivated" id="serviceActivated"<c:if test='${mailSettings.serviceActivated}'> checked="checked"</c:if>/>
-                        <input type="hidden" name="_serviceActivated"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <fmt:message key="serverSettings.mailServerSettings.address"/>&nbsp;:
-                    </td>
-                    <td>
-                        <input type="text" name="host" size="70" maxlength="250" value="<c:out value='${mailSettings.host}'/>"/>
-                        &nbsp;
-                        <a href="http://jira.jahia.org/browse/JKB-20" target="_blank" style="cursor: pointer;"><img src="${pageContext.request.contextPath}/engines/images/about.gif" alt="info" style="cursor: pointer;"/></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <fmt:message key="serverSettings.mailServerSettings.administrator"/>&nbsp;:
-                    </td>
-                    <td>
-                        <input type="text" name="to" size="64" maxlength="250" value="<c:out value='${mailSettings.to}'/>">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <fmt:message key="serverSettings.mailServerSettings.from"/>&nbsp;:
-                    </td>
-                    <td>
-                        <input type="text" name="from" size="64" maxlength="250" value="<c:out value='${mailSettings.from}'/>">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <fmt:message key="serverSettings.mailServerSettings.eventNotificationLevel"/>&nbsp;:
-                    </td>
-                    <td>
-                        <select name="notificationLevel">
-                            <option value="Disabled" ${mailSettings.notificationLevel == 'Disabled' ? 'selected="selected"' : ''}>
-                                <fmt:message key="serverSettings.mailServerSettings.eventNotificationLevel.disabled"/></option>
-                            <option value="Standard" ${mailSettings.notificationLevel == 'Standard' ? 'selected="selected"' : ''}>
-                                <fmt:message key="serverSettings.mailServerSettings.eventNotificationLevel.standard"/></option>
-                            <option value="Wary" ${mailSettings.notificationLevel == 'Wary' ? 'selected="selected"' : ''}>
-                                <fmt:message key="serverSettings.mailServerSettings.eventNotificationLevel.wary"/></option>
-                            <option value="Paranoid" ${mailSettings.notificationLevel == 'Paranoid' ? 'selected="selected"' : ''}>
-                                <fmt:message key="serverSettings.mailServerSettings.eventNotificationLevel.paranoid"/></option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" align="right">
-                        <a href="#" onclick="testSettings(); return false;"><fmt:message key="serverSettings.mailServerSettings.testSettings"/></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" align="center">
-                        <input type="submit" name="_eventId_submitMailSettings" value='<fmt:message key="label.save"/>'>
-                    </td>
-                </tr>
-            </table>
-        </form>
+<h2>
+    <fmt:message key="serverSettings.mailServerSettings"/>
+</h2>
+<p>
+    <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
+        <c:if test="${message.severity eq 'ERROR'}">
+            <span style="color: red;">${message.text}</span><br/>
+        </c:if>
+    </c:forEach>
+</p>
+
+<form class="form-horizontal" name="jahiaAdmin" action='${flowExecutionUrl}' method="post">
+
+    <div class="control-group">
+        <div class="controls">
+            <label for="serviceActivated">
+                <input type="checkbox" name="serviceActivated" id="serviceActivated"<c:if test='${mailSettings.serviceActivated}'> checked="checked"</c:if>/>
+                <input type="hidden" name="_serviceActivated"/> <fmt:message key="serverSettings.mailServerSettings.serviceEnabled"/>
+            </label>
+        </div>
     </div>
-</div>
+
+    <div class="control-group">
+        <label class="control-label"><fmt:message key="serverSettings.mailServerSettings.address"/> &nbsp;:</label>
+        <div class="controls">
+            <input type="text" name="host" size="70" maxlength="250" value="<c:out value='${mailSettings.host}'/>"/>&nbsp;
+            <a class="btn btn-warning" href="http://jira.jahia.org/browse/JKB-20" target="_blank" style="cursor: pointer;"><i class="icon-info-sign icon-white"></i></a>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label"><fmt:message key="serverSettings.mailServerSettings.administrator"/>&nbsp;:</label>
+        <div class="controls">
+            <input type="text" name="to" size="64" maxlength="250" value="<c:out value='${mailSettings.to}'/>">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label"><fmt:message key="serverSettings.mailServerSettings.from"/>&nbsp;:</label>
+        <div class="controls">
+            <input type="text" name="from" size="64" maxlength="250" value="<c:out value='${mailSettings.from}'/>">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label"><fmt:message key="serverSettings.mailServerSettings.eventNotificationLevel"/>&nbsp;:</label>
+        <div class="controls">
+            <select name="notificationLevel">
+                <option value="Disabled" ${mailSettings.notificationLevel == 'Disabled' ? 'selected="selected"' : ''}>
+                    <fmt:message key="serverSettings.mailServerSettings.eventNotificationLevel.disabled"/></option>
+                <option value="Standard" ${mailSettings.notificationLevel == 'Standard' ? 'selected="selected"' : ''}>
+                    <fmt:message key="serverSettings.mailServerSettings.eventNotificationLevel.standard"/></option>
+                <option value="Wary" ${mailSettings.notificationLevel == 'Wary' ? 'selected="selected"' : ''}>
+                    <fmt:message key="serverSettings.mailServerSettings.eventNotificationLevel.wary"/></option>
+                <option value="Paranoid" ${mailSettings.notificationLevel == 'Paranoid' ? 'selected="selected"' : ''}>
+                    <fmt:message key="serverSettings.mailServerSettings.eventNotificationLevel.paranoid"/></option>
+            </select>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+            <a class="btn" href="#" onclick="testSettings(); return false;"><fmt:message key="serverSettings.mailServerSettings.testSettings"/></a>
+            <input class="btn btn-primary" type="submit" name="_eventId_submitMailSettings" value='<fmt:message key="label.save"/>'>
+        </div>
+    </div>
+</form>

@@ -122,14 +122,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     private Map<String, ExtendedPropertyDefinition> applicablePropertyDefinition = new HashMap<String, ExtendedPropertyDefinition>();
     private Map<String, Boolean> hasPropertyCache = new HashMap<String, Boolean>();
 
-    private Date lastModified;
-    
-    private boolean lastModifiedRead;
-    
-    private Date lastPublished;
-    
-    private boolean lastPublishedRead;
-    
     private static boolean doCopy(JCRNodeWrapper source, JCRNodeWrapper dest, String name,
             boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes,
             int maxBatch, MutableInt batchCount, boolean isTopObject) throws RepositoryException {
@@ -1191,16 +1183,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public Date getLastModifiedAsDate() {
-        if (!lastModifiedRead) {
-            try {
-                lastModified = objectNode.getProperty(Constants.JCR_LASTMODIFIED).getDate().getTime();
-            } catch (Exception e) {
-                lastModified = null;
-            } finally {
-                lastModifiedRead = true;
-            }
+        try {
+            return objectNode.getProperty(Constants.JCR_LASTMODIFIED).getDate().getTime();
+        } catch (Exception e) {
         }
-        return lastModified;
+        return null;
     }
 
     /**
@@ -1220,16 +1207,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public Date getLastPublishedAsDate() {
-        if (!lastPublishedRead) {
-            try {
-                lastPublished = objectNode.getProperty(Constants.LASTPUBLISHED).getDate().getTime();
-            } catch (Exception e) {
-                lastPublished = null;
-            } finally {
-                lastPublishedRead = true;
-            }
+        try {
+            return objectNode.getProperty(Constants.LASTPUBLISHED).getDate().getTime();
+        } catch (Exception e) {
         }
-        return lastPublished;
+        return null;
     }
 
     /**
@@ -1686,11 +1668,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public JCRPropertyWrapper setProperty(String name, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         checkLock();
         hasPropertyCache.remove(name);
-        if (Constants.JCR_LASTMODIFIED.equals(name)) {
-            lastModifiedRead = false;
-        } else if (Constants.LASTPUBLISHED.equals(name)) {
-            lastPublishedRead = false;
-        }  
 
         name = ensurePrefixedName(name);
         final Locale locale = getSession().getLocale();
@@ -1739,11 +1716,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public JCRPropertyWrapper setProperty(String name, Value value, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         checkLock();
         hasPropertyCache.remove(name);
-        if (Constants.JCR_LASTMODIFIED.equals(name)) {
-            lastModifiedRead = false;
-        } else if (Constants.LASTPUBLISHED.equals(name)) {
-            lastPublishedRead = false;
-        }  
 
         final Locale locale = getSession().getLocale();
         name = ensurePrefixedName(name);

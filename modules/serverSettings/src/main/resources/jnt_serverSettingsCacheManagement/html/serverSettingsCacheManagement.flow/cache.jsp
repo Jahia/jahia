@@ -54,39 +54,43 @@
         }
     </script>
 </template:addResources>
-<fieldset style="position: absolute; right: 20px;">
-    <form action="${flowExecutionUrl}" id="navigateForm" method="POST">
-        <legend><strong><fmt:message key="serverSettings.cache.settings"/></strong></legend>
-        <p>
-            <input id="cbActions" type="checkbox" name="showActions" ${cacheManagement.showActions?" checked":""} onclick="document.getElementById('navigateForm').submit()"/>&nbsp;<label for="cbActions"><fmt:message key="serverSettings.cache.showActions"/></label><br/>
-            <input id="cbConfig" type="checkbox" name="showConfig" ${cacheManagement.showConfig?" checked":""} onclick="document.getElementById('navigateForm').submit()"/>&nbsp;<label for="cbConfig"><fmt:message key="serverSettings.cache.showConfig"/></label><br/>
-            <input id="cbBytes" type="checkbox" name="showBytes" ${cacheManagement.showBytes?" checked":""} onclick="document.getElementById('navigateForm').submit()"/>&nbsp;<label for="cbBytes"><fmt:message key="serverSettings.cache.showBytes"/></label><br/>
-        </p>
-        <input type="hidden" name="_showActions"/>
-        <input type="hidden" name="_showConfig"/>
-        <input type="hidden" name="_showBytes"/>
-        <input type="hidden" id="action" name="action" value=""/>
-        <input type="hidden" id="name" name="name" value=""/>
-        <input type="hidden" id="propagate" name="propagate" value="false"/>
-        <input type="hidden" name="_eventId" value="submit"/>
-    </form>
-</fieldset>
 
-<p>
-    <a href="#refresh" onclick="go(); return false;" title="Refresh"><img src="<c:url value='${url.currentModule}/images/refresh.png'/>" height="16" width="16" alt=" " align="top"/>Refresh</a>
-    &nbsp;&nbsp;
-    <a href="#flushOutputCaches" onclick="go('action', 'flushOutputCaches'); return false;" title="<fmt:message key="serverSettings.cache.flushOutputCaches.title"/>">${flushIcon}<fmt:message key="serverSettings.cache.flushOutputCaches"/></a>
-    &nbsp;&nbsp;
+    <form style="margin: 0 0 5px 0;" action="${flowExecutionUrl}" id="navigateForm" method="POST">
+            <fieldset>
+            <div style="margin: 0;" class="alert alert-info">
+                <h2 style="margin: 0;"><fmt:message key="serverSettings.cache.settings"/></h2>
+                <label class="checkbox inline" for="cbActions">
+                    <input id="cbActions" type="checkbox" name="showActions" ${cacheManagement.showActions?" checked":""} onclick="document.getElementById('navigateForm').submit()"/> <fmt:message key="serverSettings.cache.showActions"/>
+                </label>
+                <label class="checkbox inline" for="cbConfig">
+                    <input id="cbConfig" type="checkbox" name="showConfig" ${cacheManagement.showConfig?" checked":""} onclick="document.getElementById('navigateForm').submit()"/> <fmt:message key="serverSettings.cache.showConfig"/>
+                </label>
+                <label class="checkbox inline" for="cbBytes">
+                    <input id="cbBytes" type="checkbox" name="showBytes" ${cacheManagement.showBytes?" checked":""} onclick="document.getElementById('navigateForm').submit()"/> <fmt:message key="serverSettings.cache.showBytes"/>
+                </label>
+            </div>
+            <input type="hidden" name="_showActions"/>
+            <input type="hidden" name="_showConfig"/>
+            <input type="hidden" name="_showBytes"/>
+            <input type="hidden" id="action" name="action" value=""/>
+            <input type="hidden" id="name" name="name" value=""/>
+            <input type="hidden" id="propagate" name="propagate" value="false"/>
+            <input type="hidden" name="_eventId" value="submit"/>
+        </fieldset>
+    </form>
+
+
+<div>
+    <a class="btn" href="#refresh" onclick="go(); return false;" title="Refresh"><img src="<c:url value='${url.currentModule}/images/refresh.png'/>" height="16" width="16" alt=" " align="top"/>&nbsp;Refresh</a>
+    <a class="btn" href="#flushOutputCaches" onclick="go('action', 'flushOutputCaches'); return false;" title="<fmt:message key="serverSettings.cache.flushOutputCaches.title"/>">${flushIcon}&nbsp;<fmt:message key="serverSettings.cache.flushOutputCaches"/></a>
     <c:if test="${cacheManager.clusterActivated}">
-        <a href="#flushOutputCaches" onclick="go('action', 'flushOutputCaches', 'propagate', 'true'); return false;" title="<fmt:message key="serverSettings.cache.flushOutputCaches.cluster.title"/>">${flushIcon}<fmt:message key="serverSettings.cache.flushOutputCaches.cluster"/></a>
-        &nbsp;&nbsp;
+        <a class="btn" href="#flushOutputCaches" onclick="go('action', 'flushOutputCaches', 'propagate', 'true'); return false;" title="<fmt:message key="serverSettings.cache.flushOutputCaches.cluster.title"/>">${flushIcon}&nbsp;<fmt:message key="serverSettings.cache.flushOutputCaches.cluster"/></a>
     </c:if>
-    <a href="#flushAllCaches" onclick="go('action', 'flushAllCaches'); return false;" title="<fmt:message key="serverSettings.cache.flushAllCaches.title"/>">${flushIcon}<fmt:message key="serverSettings.cache.flushAllCaches"/></a>
+    <a class="btn" href="#flushAllCaches" onclick="go('action', 'flushAllCaches'); return false;" title="<fmt:message key="serverSettings.cache.flushAllCaches.title"/>">${flushIcon}&nbsp;<fmt:message key="serverSettings.cache.flushAllCaches"/></a>
     <c:if test="${cacheManager.clusterActivated}">
-        <a href="#flushAllCaches" onclick="go('action', 'flushAllCaches', 'propagate', 'true'); return false;" title="<fmt:message key="serverSettings.cache.flushAllCaches.cluster.title"/>">${flushIcon}<fmt:message key="serverSettings.cache.flushAllCaches.cluster"/></a>
-        &nbsp;&nbsp;
+        <a class="btn" href="#flushAllCaches" onclick="go('action', 'flushAllCaches', 'propagate', 'true'); return false;" title="<fmt:message key="serverSettings.cache.flushAllCaches.cluster.title"/>">${flushIcon}&nbsp;<fmt:message key="serverSettings.cache.flushAllCaches.cluster"/></a>
     </c:if>
-</p>
+</div>
 
 <c:forEach items="${cacheManager.managersMap}" var="entry" varStatus="managerStatus">
     <c:set var="manager" value="${entry.key}"/>
@@ -103,16 +107,18 @@
         </c:if>
     </h2>
     <c:if test="${cacheManagement.showActions}">
-        <a href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager}'); return false;" title="<fmt:message key="serverSettings.cache.flushCaches.title"/>">${flushIcon}<fmt:message key="serverSettings.cache.flushCaches"/>&nbsp;${manager}</a>
-        <c:if test="${cacheManager.clusterActivated}">
+        <p>
+            <a class="btn" href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager}'); return false;" title="<fmt:message key="serverSettings.cache.flushCaches.title"/>">${flushIcon}&nbsp;<fmt:message key="serverSettings.cache.flushCaches"/>&nbsp;${manager}</a>
+            <c:if test="${cacheManager.clusterActivated}">
+                &nbsp;&nbsp;
+                <a class="btn" href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager}', 'propagate', 'true'); return false;" title="<fmt:message key="serverSettings.cache.flushCaches.cluster.title"/>">${flushIcon}&nbsp;<fmt:message key="serverSettings.cache.flushCaches.cluster"/>&nbsp;${manager}</a>
+            </c:if>
             &nbsp;&nbsp;
-            <a href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager}', 'propagate', 'true'); return false;" title="<fmt:message key="serverSettings.cache.flushCaches.cluster.title"/>">${flushIcon}<fmt:message key="serverSettings.cache.flushCaches.cluster"/>&nbsp;${manager}</a>
-        </c:if>
-        &nbsp;&nbsp;
-        <a href="#enableStats" onclick="go('action', 'enableStats', 'name', '${manager}'); return false;" title="<fmt:message key="serverSettings.cache.stats.enable.title"/>"><fmt:message key="serverSettings.cache.stats.enable"/></a>
-        <a href="#disableStats" onclick="go('action', 'disableStats', 'name', '${manager}'); return false;" title="<fmt:message key="serverSettings.cache.stats.disable.title"/>"><fmt:message key="serverSettings.cache.stats.disable"/></a>
+            <a class="btn" href="#enableStats" onclick="go('action', 'enableStats', 'name', '${manager}'); return false;" title="<fmt:message key="serverSettings.cache.stats.enable.title"/>"><fmt:message key="serverSettings.cache.stats.enable"/></a>
+            <a class="btn" href="#disableStats" onclick="go('action', 'disableStats', 'name', '${manager}'); return false;" title="<fmt:message key="serverSettings.cache.stats.disable.title"/>"><fmt:message key="serverSettings.cache.stats.disable"/></a>
+        </p>
     </c:if>
-    <table border="1" cellspacing="0" cellpadding="5">
+    <table class="table table-bordered table-hover table-striped">
         <thead>
         <tr>
             <th rowspan="2">#</th>
@@ -205,16 +211,16 @@
                     <c:set var="effColour" value="#222222"/>
                     <c:choose>
                         <c:when test="${cacheEfficiency > 0 && cacheEfficiency < 30}">
-                            <c:set var="effColour" value="red"/>
+                            <c:set var="effColour" value="label-important"/>
                         </c:when>
                         <c:when test="${cacheEfficiency >= 30 && cacheEfficiency < 70}">
-                            <c:set var="effColour" value="blue"/>
+                            <c:set var="effColour" value="label-info"/>
                         </c:when>
                         <c:when test="${cacheEfficiency >= 70}">
-                            <c:set var="effColour" value="green"/>
+                            <c:set var="effColour" value="label-success"/>
                         </c:when>
                     </c:choose>
-                    <td align="center"><span style="color: ${effColour}"><fmt:formatNumber value="${cacheEfficiency}" pattern="0.00"/></span></td>
+                    <td align="center"><span class="label ${effColour}"><fmt:formatNumber value="${cacheEfficiency}" pattern="0.00"/></span></td>
                 </c:if>
                 <c:if test="${!statsEnabled}">
                     <td align="center">-</td>

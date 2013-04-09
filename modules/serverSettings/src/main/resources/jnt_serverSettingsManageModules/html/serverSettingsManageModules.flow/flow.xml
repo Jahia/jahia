@@ -30,11 +30,29 @@
         <transition on="upload" to="view">
             <evaluate expression="flowHandler.uploadModule(moduleFile, messageContext)"/>
         </transition>
+
+        <transition on="viewDetails" to="detailedView">
+        </transition>
     </view-state>
 
     <view-state id="viewDownloadForm" model="flowScope">
 
         <transition on="downloadSources" to="downloadSources"/>
+    </view-state>
+
+    <view-state id="detailedView">
+        <on-entry>
+            <evaluate expression="requestParameters.selectedModule" result="flowScope.selectedModule"/>
+        </on-entry>
+        <on-render>
+            <evaluate expression="flowHandler.loadModuleInformation(flowRequestContext)" result="requestScope.detailedModule"/>
+        </on-render>
+        <transition on="startModule" to="startModule"/>
+        <transition on="stopModule" to="stopModule"/>
+        <transition on="downloadSources" to="viewDownloadForm">
+            <set value="requestParameters.module" name="flowScope.currentModule"/>
+            <set value="requestParameters.scmUri" name="flowScope.scmUri"/>
+        </transition>
     </view-state>
 
     <action-state id="downloadSources">

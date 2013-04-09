@@ -46,10 +46,13 @@
     <c:forEach items="${allModuleVersions}" var="entry" >
         <c:set value="${registeredModules[entry.key]}" var="currentModule" />
         <tr>
-            <td><strong>${currentModule.name}<strong></td>
+            <td><strong>${currentModule.name}</strong></td>
             <td>${entry.key}</td>
-            <c:url var="detailUrl" value="${url.base}/modules/${currentModule.rootFolder}.siteTemplate.html"/>
-            <td><a class="btn" style="padding: 2px 12px" href="${detailUrl}"><fmt:message key='serverSettings.manageModules.details' /></a>
+            <td>
+            <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
+                <input type="hidden" name="selectedModule" value="${entry.key}"/>
+                <input class="btn btn-info" type="submit" name="_eventId_viewDetails" value="<fmt:message key='serverSettings.manageModules.details' />" onclick=""/>
+                </form>
             </td>
             <td>
                 <c:forEach items="${entry.value}" var="version">

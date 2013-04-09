@@ -34,11 +34,15 @@ package org.jahia.modules.serversettings.flow;
 
 import org.apache.commons.io.FilenameUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.modules.serversettings.moduleManagement.ModuleFile;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.TemplatePackageDeployer;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
@@ -47,12 +51,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.binding.message.DefaultMessageResolver;
 import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
+import org.springframework.webflow.execution.RequestContext;
 
 import javax.jcr.RepositoryException;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -70,6 +75,8 @@ public class ModuleManagementFlowHandler implements Serializable {
     @Autowired
     private transient JCRTemplate jcrTemplate;
 
+    @Autowired
+    private transient JahiaSitesService sitesService;
 
     public ModuleFile initModuleFile() {
         return new ModuleFile();
@@ -90,5 +97,83 @@ public class ModuleManagementFlowHandler implements Serializable {
             logger.error(e.getMessage(), e);
         }
         return true;
+    }
+
+    public void loadModuleInformation(RequestContext context) {
+        String selectedModuleName = (String) context.getFlowScope().get("selectedModule");
+        Map<ModuleVersion, JahiaTemplatesPackage> selectedModule = templateManagerService.getTemplatePackageRegistry().getAllModuleVersions().get(
+                selectedModuleName);
+        if(selectedModule.size()>1) {
+            boolean foundActiveVersion = false;
+            for (Map.Entry<ModuleVersion, JahiaTemplatesPackage> entry : selectedModule.entrySet()) {
+                JahiaTemplatesPackage value = entry.getValue();
+                if (value.isActiveVersion()) {
+                    foundActiveVersion = true;
+                    populateActiveVersion(context, value);
+                }
+            }
+            if(!foundActiveVersion) {
+                // there is no active version take information from most recent installed version
+                LinkedList<ModuleVersion> sortedVersions = new LinkedList<ModuleVersion>(selectedModule.keySet());
+                Collections.sort(sortedVersions);
+                populateActiveVersion(context, selectedModule.get(sortedVersions.getFirst()));
+            }
+        }
+        else {
+            populateActiveVersion(context, selectedModule.values().iterator().next());
+        }
+        context.getRequestScope().put("otherVersions",selectedModule);
+        //populate information about sites
+        List<String> siteKeys = new ArrayList<String>();
+        List<String> directSiteDep = new ArrayList<String>();
+        List<String> templateSiteDep = new ArrayList<String>();
+        List<String> transitiveSiteDep = new ArrayList<String>();
+        try {
+            Iterator<JahiaSite> sites = sitesService.getSites();
+            while (sites.hasNext()) {
+                JahiaSite site = sites.next();
+                siteKeys.add(site.getSiteKey());
+                List<JahiaTemplatesPackage> directDependencies = templateManagerService.getInstalledModulesForSite(
+                        site.getSiteKey(), false, true, false);
+                for (JahiaTemplatesPackage directDependency : directDependencies) {
+                    if(directDependency.getRootFolder().equals(selectedModuleName)) {
+                        directSiteDep.add(site.getSiteKey());
+                    }
+                }
+                List<JahiaTemplatesPackage> templateDependencies = templateManagerService.getInstalledModulesForSite(
+                        site.getSiteKey(), true, false, false);
+                for (JahiaTemplatesPackage templateDependency : templateDependencies) {
+                    if(templateDependency.getRootFolder().equals(selectedModuleName)){
+                        templateSiteDep.add(site.getSiteKey());
+                    }
+                }
+                List<JahiaTemplatesPackage> transitiveDependencies = templateManagerService.getInstalledModulesForSite(
+                        site.getSiteKey(), false, false, true);
+                for (JahiaTemplatesPackage transitiveDependency : transitiveDependencies) {
+                    if(transitiveDependency.getRootFolder().equals(selectedModuleName)){
+                        transitiveSiteDep.add(site.getSiteKey());
+                    }
+                }
+            }
+        } catch (JahiaException e) {
+            logger.error(e.getMessage(), e);
+        }
+        context.getRequestScope().put("sites",siteKeys);
+        context.getRequestScope().put("sitesDirect",directSiteDep);
+        context.getRequestScope().put("sitesTemplates",templateSiteDep);
+        context.getRequestScope().put("sitesTransitive",transitiveSiteDep);
+    }
+
+    private void populateActiveVersion(RequestContext context, JahiaTemplatesPackage value) {
+        context.getRequestScope().put("activeVersion", value);
+        Map<String,String> bundleInfo = new HashMap<String, String>();
+        Dictionary<String,String> dictionary = value.getBundle().getHeaders();
+        Enumeration<String> keys = dictionary.keys();
+        while (keys.hasMoreElements()) {
+            String s = keys.nextElement();
+            bundleInfo.put(s,dictionary.get(s));
+        }
+        context.getRequestScope().put("bundleInfo", bundleInfo);
+        context.getRequestScope().put("activeVersionDate",new Date(value.getBundle().getLastModified()));
     }
 }

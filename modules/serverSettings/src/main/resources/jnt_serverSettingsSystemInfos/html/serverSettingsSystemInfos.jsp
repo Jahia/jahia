@@ -5,11 +5,11 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<h3><fmt:message key="serverSettings.systemInfo.systemProperties"/></h3>
+<h2><fmt:message key="serverSettings.systemInfo.systemProperties"/></h2>
 
 <div>
     <% pageContext.setAttribute("systemProperties", new TreeMap(System.getProperties())); %>
-    <table width="100%" border="0" cellspacing="0" cellpadding="5" style="table-layout: fixed;">
+    <table class="table table-bordered table-hover table-striped" >
         <c:forEach items="${systemProperties}" var="prop" varStatus="loopStatus">
         <tr class="${(loopStatus.index + 1) % 2 == 0 ? 'evenLine' : 'oddLine'}">
             <td style="width: 30%; overflow: hidden;" title="${fn:escapeXml(prop.key)}">
@@ -22,12 +22,12 @@
         </c:forEach>
     </table>
 </div>
-
-<h3><fmt:message key="serverSettings.systemInfo.environmentVariables"/></h3>
+<hr/>
+<h2><fmt:message key="serverSettings.systemInfo.environmentVariables"/></h2>
 
 <div>
     <% pageContext.setAttribute("envVariables", new TreeMap(System.getenv())); %>
-    <table width="100%" border="0" cellspacing="0" cellpadding="5" style="table-layout: fixed;">
+    <table class="table table-bordered table-hover table-striped">
         <c:forEach items="${envVariables}" var="prop" varStatus="loopStatus">
         <tr class="${(loopStatus.index + 1) % 2 == 0 ? 'evenLine' : 'oddLine'}">
             <td style="width: 30%; overflow: hidden;" title="${fn:escapeXml(prop.key)}">

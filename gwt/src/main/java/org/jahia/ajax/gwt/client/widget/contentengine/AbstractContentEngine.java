@@ -377,7 +377,14 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                                                                     .getDisplayValues()
                                                                     .contains(
                                                                             comboBox.getValue())) {
-                                                        comboBox.clear();
+                                                    	try {
+                                                           comboBox.clear();
+                                                    	}catch(Exception ex) {
+                                                    		/*
+                                                    		 * it could happen that the combobox is empty and so exception is thrown
+                                                    		 * and combobox isn't reinitialized
+                                                    		 */
+                                                    	}
                                                     }
                                                     ListStore<GWTJahiaValueDisplayBean> store = new ListStore<GWTJahiaValueDisplayBean>();
                                                     store.add(result.getDisplayValues());

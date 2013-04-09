@@ -17,15 +17,16 @@
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <c:if test="${not empty threadDumpResult}">
-    <div>
-        <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
-            <input type="submit" name="_eventId_back"
-                   value="<fmt:message key="serverSettings.manageMemory.memory.back"/>"/>
-        </form>
+<div>
+    <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
+        <input class="btn" type="submit" name="_eventId_back"
+               value="<fmt:message key="serverSettings.manageMemory.memory.back"/>"/>
+    </form>
+
     <pre>
-    <code class="java">
-            ${fn:escapeXml(threadDumpResult)}
-    </code>
-        </pre>
-    </div>
+        <code class="java">
+                ${fn:escapeXml(threadDumpResult)}
+        </code>
+    </pre>
+</div>
 </c:if>

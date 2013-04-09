@@ -993,7 +993,7 @@ table {
   border-radius: 4px;
 }
 .table-bordered th {
-    background-color: #ccc;
+    background-color: #DDDEDF;
 }
 .table-bordered th,
 .table-bordered td {

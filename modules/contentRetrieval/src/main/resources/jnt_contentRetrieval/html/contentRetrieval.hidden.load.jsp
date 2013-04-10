@@ -27,8 +27,8 @@
 <jcr:nodeProperty node="${currentNode}" name="j:subNodesView" var="subNodesView"/>
 <jcr:nodeProperty node="${currentNode}" name='j:noResultsMessage' var="noResultsMessage"/>
 
-<%-- Display title --%>
-<c:if test="${not empty title and not empty title.string}">
+<%-- Display title (if it is skinnable the title is displayed with skin--%>
+<c:if test="${not empty title and not empty title.string and not fn:contains(currentNode.nodeTypes, 'jmix:skinnable')}">
      <h3>${title.string}</h3>
 </c:if>
 <c:if test="${not empty startNode}">

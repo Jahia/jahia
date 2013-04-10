@@ -75,13 +75,16 @@
                             </property>
                         </bean>
 
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
                             <property name="actionItem">
-                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem"/>
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GoToActionItem">
+                                    <property name="path" value="/settings"/>
+                                    <property name="template" value="manageModules"/>
+                                </bean>
                             </property>
-                            <property name="titleKey" value="label.templatesDeploy"/>
+                            <property name="titleKey" value="label.modulesList"/>
+                            <property name="icon" value="modulesList"/>
                         </bean>
-
 
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.new"/>

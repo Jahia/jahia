@@ -92,6 +92,7 @@ public class MainModule extends Module {
     private Storage storage;
     private ActionContextMenu contextMenu;
     private GWTEditConfiguration config;
+    private Map<String,GWTEditConfiguration> configs = new HashMap<String, GWTEditConfiguration>();
 
     private InfoLayers infoLayers = new InfoLayers();
     private Map<String, Boolean> activeLayers = new HashMap<String, Boolean>();
@@ -104,6 +105,8 @@ public class MainModule extends Module {
     protected LayoutContainer center;
     protected EditFrame frame;
     private final LayoutContainer headContainer;
+    private String newLocation = null;
+    private boolean firstLoad = true;
 
     public MainModule(final String html, final String path, final String template, String nodeTypes, GWTEditConfiguration config) {
         super("main", path, template, nodeTypes, new BorderLayout());
@@ -113,6 +116,8 @@ public class MainModule extends Module {
         this.path = path;
         this.template = template;
         this.config = config;
+        configs.put(this.config.getName(), this.config);
+
         this.depth = 0;
 
         storage = Storage.getSessionStorageIfSupported();
@@ -187,12 +192,11 @@ public class MainModule extends Module {
     public void initWithLinker(EditLinker linker) {
         this.editLinker = linker;
 
+        ((ToolbarHeader) head).removeAllTools();
         if (config.getMainModuleToolbar() != null && !config.getMainModuleToolbar().getGwtToolbarItems().isEmpty()) {
-            ((ToolbarHeader) head).removeAllTools();
             for (GWTJahiaToolbarItem item : config.getMainModuleToolbar().getGwtToolbarItems()) {
                 ((ToolbarHeader) head).addItem(linker, item);
             }
-
             head.addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
                 public void componentSelected(IconButtonEvent event) {
                     Map<String, Object> data = new HashMap<String, Object>();
@@ -200,27 +204,35 @@ public class MainModule extends Module {
                     refresh(data);
                 }
             }));
+
+            ((ToolbarHeader) head).attachTools();
+
+            headContainer.add(head);
             headContainer.show();
         } else {
             headContainer.hide();
         }
 
-        String hash = Window.Location.getHash();
-        if (!hash.equals("")) {
-            hash = hash.substring(hash.indexOf("|")+1);
-            if (hash.contains("frame/") && !isValidUrl(hash)) {
-                String start = hash.substring(0,hash.indexOf("frame/"));
-                start = start.substring(JahiaGWTParameters.getContextPath().length());
-                hash = hash.replaceFirst(start+"frame/", config.getDefaultUrlMapping()+"frame/");
-            }
+
+        String location = newLocation;
+        newLocation = null;
+        if (location == null && !Window.Location.getHash().equals("")) {
+            location = Window.Location.getHash().substring(Window.Location.getHash().indexOf("|")+1);
+        }
+        if (location == null) {
+            location = Window.Location.getPath();
+        }
+        if (location.startsWith(config.getDefaultUrlMapping()+"/")) {
+            location = location.replaceFirst(config.getDefaultUrlMapping(), config.getDefaultUrlMapping()+"frame");
+        }
+        if (location.contains("frame/") && !isValidUrl(location)) {
+            String start = location.substring(0,location.indexOf("frame/"));
+            start = start.substring(JahiaGWTParameters.getContextPath().length());
+            location = location.replaceFirst(start+"frame/", config.getDefaultUrlMapping()+"frame/");
         }
 
-        if ("".equals(Window.Location.getHash()) || !isValidUrl(hash)) {
-            goToUrl(getUrl(path, template), true, true, true);
-        } else {
-            hash = URL.decode(hash);
-            goToUrl(hash, true, true, true);
-        }
+        location = URL.decode(location);
+        goToUrl(location, true, true, true);
 
 //        scrollContainer.sinkEvents();
 
@@ -521,6 +533,15 @@ public class MainModule extends Module {
         module.goTo(path, template);
     }
 
+    public static void popState(String location, String config) {
+        MainModule m = getInstance();
+        if (!config.equals(m.getConfig().getName())) {
+            m.getEditLinker().switchConfig(m.configs.get(config), location + "##" , true, true);
+        } else {
+            m.goToUrl(location + "##", false, false, false);
+        }
+    }
+
     public void goTo(String path, String template) {
         goToUrl(getUrl(path, template), false, false, false);
     }
@@ -530,14 +551,32 @@ public class MainModule extends Module {
         if (currentHref.endsWith(path)) {
             return;
         }
-        path = path.substring(path.indexOf(JahiaGWTParameters.getContextPath() + JahiaGWTParameters.getServletPath()));
-        if (currentHref.indexOf("#") > 0) {
-            currentHref = currentHref.substring(0, currentHref.indexOf("#"));
+
+        if (supportPushState()) {
+            if (!path.endsWith("##")) {
+                String pathWithoutFrame = path.replaceFirst("frame/", "/");
+                if (Window.Location.getQueryString().contains("gwt.codesvr")) {
+                    pathWithoutFrame += Window.Location.getQueryString();
+                }
+                if (!pathWithoutFrame.equals(currentHref) || firstLoad) {
+                    firstLoad = false;
+                    pushState(pathWithoutFrame, path, config.getName());
+                }
+            }
+        } else {
+            path = path.substring(path.indexOf(JahiaGWTParameters.getContextPath() + JahiaGWTParameters.getServletPath()));
+            if (currentHref.indexOf("#") > 0) {
+                currentHref = currentHref.substring(0, currentHref.indexOf("#"));
+            }
+            Window.Location.assign(currentHref + "#" + MainModule.getInstance().getConfig().getName() + "|" + URL.encode(path));
         }
-        Window.Location.assign(currentHref + "#" + MainModule.getInstance().getConfig().getName() + "|" + URL.encode(path));
 
         if (storage != null) {
-            storage.setItem(MainModule.getInstance().getConfig().getName() +"_path", path);
+            String storedPath = path;
+            if (storedPath.endsWith("##")) {
+                storedPath = storedPath.substring(0,storedPath.length()-2);
+            }
+            storage.setItem(MainModule.getInstance().getConfig().getName() +"_path", storedPath);
         }
     }
 
@@ -588,25 +627,23 @@ public class MainModule extends Module {
         return config;
     }
 
-    public void setConfig(GWTEditConfiguration config) {
+    public void setConfig(GWTEditConfiguration config, String newPath) {
         JahiaGWTParameters.changeServletMapping(this.config.getDefaultUrlMapping(), config.getDefaultUrlMapping());
 
         boolean changedRoot = !config.getSitesLocation().equals(this.config.getSitesLocation());
 
-        this.config = config;
-
-        if (changedRoot) {
+        if (newPath != null) {
+            newLocation = newPath;
+        } else if (changedRoot) {
             if (storage != null && storage.getItem(config.getName() +"_path") != null) {
-                setHashMarker(storage.getItem(config.getName() + "_path"));
+                newLocation = storage.getItem(config.getName() + "_path");
             } else {
-                setHashMarker(getBaseUrl() + config.getDefaultLocation());
+                newLocation = getBaseUrl() + config.getDefaultLocation();
             }
-        } else {
-            Map<String, Object> data = new HashMap<String, Object>();
-            data.put(Linker.REFRESH_MAIN, true);
-            refresh(data);
         }
 
+        this.config = config;
+        configs.put(this.config.getName(), this.config);
     }
 
     public void handleNewModuleSelection(Module selectedModule) {
@@ -805,11 +842,34 @@ public class MainModule extends Module {
         $wnd.goTo = function (path, template, params) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::staticGoTo(Ljava/lang/String;Ljava/lang/String;)(path, template);
         }
+        $wnd.addEventListener("popstate", function(event) {
+            if (event.state) {
+                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::popState(Ljava/lang/String;Ljava/lang/String;)(event.state.location, event.state.config);
+            }
+        });
     }-*/;
 
     public InfoLayers getInfoLayers() {
         return infoLayers;
     }
+
+    private native boolean supportPushState() /*-{
+        if ($wnd.history && $wnd.history.pushState) {
+            return true;
+        } else {
+            return false;
+        }
+    }-*/;
+
+    private native boolean pushState(String path, String location, String config) /*-{
+        var state = {location:location, config:config};
+        if ($wnd.history.state) {
+            $wnd.history.pushState(state, null, path);
+        } else {
+            $wnd.history.replaceState(state, null, path);
+        }
+        return true;
+    }-*/;
 
     private class EditFrame extends Frame {
         private String url = null;
@@ -903,6 +963,7 @@ public class MainModule extends Module {
 
         @Override
         public void setUrl(String url) {
+            url = getPathFromUrl(url);
             if (isValidUrl(url)) {
                 if (isAttached()) {
                     this.url = url;
@@ -950,6 +1011,14 @@ public class MainModule extends Module {
             }
         }-*/;
 
+    }
+
+    private String getPathFromUrl(String url) {
+        if (url.contains("://")) {
+            url = url.substring(url.indexOf("://")+3);
+            url = url.substring(url.indexOf("/"));
+        }
+        return url;
     }
 
 }

@@ -58,7 +58,6 @@ import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -126,14 +125,14 @@ public class EditLinker implements Linker {
         return config;
     }
 
-    public void switchConfig(GWTEditConfiguration config, boolean updateSidePanel, boolean updateToolbar) {
+    public void switchConfig(GWTEditConfiguration config, String newPath, boolean updateSidePanel, boolean updateToolbar) {
         this.config = config;
 
         JahiaGWTParameters.setSiteNode(config.getSiteNode());
         JahiaGWTParameters.setSitesMap(config.getSitesMap());
         JahiaGWTParameters.setChannels(config.getChannels());
 
-        mainModule.setConfig(config);
+        mainModule.setConfig(config, newPath);
         if (updateSidePanel) {
             sidePanel.setConfig(config);
         }

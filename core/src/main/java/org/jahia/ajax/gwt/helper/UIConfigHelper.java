@@ -51,6 +51,7 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageAware;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -590,7 +591,7 @@ public class UIConfigHelper {
                         JCRSiteNode siteNode = (JCRSiteNode) session.getNode(resolvedSite.getJCRLocalPath());
                         defaultLocation = defaultLocation.replace("$defaultSiteHome", siteNode.getHome().getPath());
                     } else {
-                        defaultLocation = null;
+                        throw new GWTJahiaServiceException("no sites available");
                     }
                 }
                 gwtConfig.setDefaultLocation(defaultLocation);
@@ -624,6 +625,10 @@ public class UIConfigHelper {
                         sitesMap.put(aSite.getSiteUUID(), aSite);
                     }
                 }
+                GWTJahiaNode systemSite = navigation.getGWTJahiaNode(session.getNode("/sites/systemsite"),GWTJahiaNode.DEFAULT_SITE_FIELDS);
+                if (!sitesMap.containsKey(systemSite.getUUID())) {
+                    sitesMap.put(systemSite.getUUID(), systemSite);
+                }
                 gwtConfig.setSitesMap(sitesMap);
 
                 setAvailablePermissions(gwtConfig);
@@ -634,7 +639,10 @@ public class UIConfigHelper {
             } else {
                 throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.bean.editconfig.not.found.in.spring.config.file",uiLocale));
             }
-        } catch (Exception e) {
+        } catch (JahiaException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }

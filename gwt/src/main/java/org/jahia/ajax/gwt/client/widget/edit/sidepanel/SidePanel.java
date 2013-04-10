@@ -133,7 +133,6 @@ public class SidePanel extends ContentPanel {
                 ((ToolbarHeader)head).addItem(editLinker, item);
             }
         }
-        layout();
         refreshButton = new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
                 Map<String, Object> data = new HashMap<String, Object>();
@@ -149,6 +148,8 @@ public class SidePanel extends ContentPanel {
         });
         refreshButton.setId("JahiaGxtRefreshSidePanelButton");
         head.addTool(refreshButton);
+        ((ToolbarHeader) head).attachTools();
+        layout();
 
         for (SidePanelTabItem tab : tabs) {
             tab.initWithLinker(editLinker);

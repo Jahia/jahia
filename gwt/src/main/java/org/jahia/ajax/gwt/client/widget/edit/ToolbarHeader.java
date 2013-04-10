@@ -46,6 +46,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarMenu;
@@ -66,33 +67,41 @@ import java.util.List;
  * 
  */
 public class ToolbarHeader extends Header {
-    private final HorizontalPanel horizontalPanel;
+    private HorizontalPanel horizontalPanel;
     private List<ActionItem> actionItems = new ArrayList<ActionItem>();
 
     public ToolbarHeader() {
         super();
         setHeight("22");
-        horizontalPanel = new HorizontalPanel();
-        horizontalPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
-        super.addTool(horizontalPanel);
+
     }
 
     public void removeAllTools() {
-        List<Component> tools = new ArrayList<Component>(getTools());
-        for (Component component : tools) {
-            removeTool(component);
+        if (horizontalPanel != null) {
+            super.removeTool(horizontalPanel);
+            horizontalPanel = null;
         }
-        actionItems.clear();
     }
 
     @Override
     public void addTool(Component tool) {
+        if (horizontalPanel == null) {
+            horizontalPanel = new HorizontalPanel();
+            horizontalPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
+
+        }
         horizontalPanel.add(tool);
     }
 
     @Override
     public void removeTool(Component tool) {
         horizontalPanel.remove(tool);
+    }
+
+    public void attachTools() {
+        if (horizontalPanel != null && horizontalPanel.getParent() == null) {
+            super.addTool(horizontalPanel);
+        }
     }
 
     public void addItem(Linker linker, GWTJahiaToolbarItem gwtToolbarItem) {

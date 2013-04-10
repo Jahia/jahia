@@ -303,4 +303,9 @@ public class TemplatesTabItem extends BrowseTabItem {
     public void setHiddenDetailTypes(List<String> hiddenDetailTypes) {
         this.hiddenDetailTypes = hiddenDetailTypes;
     }
+
+    @Override
+    public void handleNewMainNodeLoaded(GWTJahiaNode node) {
+        tree.getSelectionModel().select(node, false);
+    }
 }

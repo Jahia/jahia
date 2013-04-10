@@ -43,10 +43,9 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -92,17 +91,19 @@ public class SwitchConfigActionItem extends BaseActionItem {
 
     @Override
     public void onComponentSelection() {
-        linker.loading(Messages.get("label.loading", "Loading..."));
-        JahiaContentManagementService.App.getInstance().getEditConfiguration(linker.getSelectionContext().getMainNode().getPath(), configurationName, new BaseAsyncCallback<GWTEditConfiguration>() {
-            public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
-                ((EditLinker)linker).switchConfig(gwtEditConfiguration, updateSidePanel, updateToolbar);
-            }
+        if (!configurationName.equals(MainModule.getInstance().getConfig().getName())) {
+            linker.loading(Messages.get("label.loading", "Loading..."));
+            JahiaContentManagementService.App.getInstance().getEditConfiguration(linker.getSelectionContext().getMainNode().getPath(), configurationName, new BaseAsyncCallback<GWTEditConfiguration>() {
+                public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
+                    ((EditLinker)linker).switchConfig(gwtEditConfiguration, null, updateSidePanel, updateToolbar);
+                }
 
-            public void onApplicationFailure(Throwable throwable) {
-                Log.error("Error when loading EditConfiguration", throwable);
-            }
-        });
-
+                public void onApplicationFailure(Throwable throwable) {
+                    linker.loaded();
+                    Log.error("Error when loading EditConfiguration", throwable);
+                }
+            });
+        }
     }
 
     public void setConfigurationName(String configurationName) {
@@ -116,7 +117,6 @@ public class SwitchConfigActionItem extends BaseActionItem {
         if (getGwtToolbarItem().isSelected()) {
             toggleButton.setAllowDepress(false);
         }
-        toggleButton.setEnabled(false);
         return toggleButton;
     }
 }

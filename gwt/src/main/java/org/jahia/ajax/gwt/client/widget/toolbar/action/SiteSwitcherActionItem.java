@@ -124,9 +124,10 @@ public class SiteSwitcherActionItem extends BaseActionItem {
         }
         sitesCombo.removeAllListeners();
         sitesCombo.getStore().removeAll();
+        sitesCombo.setValue(null);
         sitesCombo.getStore().add(sites);
         Set<String> siteNames = new LinkedHashSet<String>();
-        boolean b = true;
+
         for (GWTJahiaNode site : sites) {
             String displayName = site.getDisplayName();
             if (siteNames.contains(site.getDisplayName())) {
@@ -141,15 +142,10 @@ public class SiteSwitcherActionItem extends BaseActionItem {
             siteNames.add(site.getDisplayName());
             if (site.getUUID().equals(JahiaGWTParameters.getSiteUUID())) {
                 sitesCombo.setValue(site);
-                b = !b;
             }
         }
         sitesCombo.getStore().sort("switcherDisplayName", Style.SortDir.ASC);
 
-        // Change the value to the first one of the list if not set before
-        if (b) {
-            sitesCombo.setValue(sitesCombo.getStore().getAt(0));
-        }
         sitesCombo.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
@@ -191,6 +187,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
         sitesCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
         sitesCombo.setForceSelection(true);
         sitesCombo.getListView().setStyleAttribute("font-size","11px");
+        sitesCombo.setAllowBlank(true);
 //        if (filterOnAvailableSources) {
 //            sitesCombo.setWidth(250);
 //        } else {

@@ -14,12 +14,11 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<div>
-    <span style="font-size: larger;"><fmt:message key="serverSettings.password.policies"/></span>
 
-    <div>
+    <h2><fmt:message key="serverSettings.password.policies"/></h2>
+
         <form action="${flowExecutionUrl}" method="post">
-            <table border="0" cellpadding="5" cellspacing="0" width="100%">
+            <table class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
                     <th width="7%">
@@ -44,24 +43,22 @@
                             <label for="pwd-rule-${rlzStatus.index}"><fmt:message key='${i18nKey}'/></label>
                         </td>
                         <td>
-                            <table width="100%">
+
                                 <c:forEach items="${rule.conditionParameters}" var="condParam" varStatus="paramsStatus">
-                                    <tr>
+
                                         <c:set var="i18nKey" value='label.${condParam.name}'/>
-                                        <td width="45%" align="right">
+
                                             <label for="rules_${paramsStatus.count}"><fmt:message key='${i18nKey}'/></label>
-                                        </td>
-                                        <td width="55%">
+
+
                                             <input type="text" id="rules_${paramsStatus.count}" name="rules[<c:out value='${rlzStatus.index}'/>].conditionParameters[<c:out value='${paramsStatus.index}'/>].value" value="<c:out value='${condParam.value}'/>"/>
-                                        </td>
-                                    </tr>
+
+
                                 </c:forEach>
-                            </table>
+
                         </td>
                     </tr>
                 </c:forEach>
             </table>
-            <input type="submit" name="_eventId_submitPwdPolicy" value="<fmt:message key='label.save'/>"/>
+            <input class="btn btn-primary" type="submit" name="_eventId_submitPwdPolicy" value="<fmt:message key='label.save'/>"/>
         </form>
-    </div>
-</div>

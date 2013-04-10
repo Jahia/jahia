@@ -17,17 +17,26 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
+<template:addResources type="javascript" resources="jquery.js,bootstrap.js"/>
 <form:form modelAttribute="moduleFile" class="form" enctype="multipart/form-data" method="post">
     <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
         <c:if test="${message.severity eq 'INFO'}">
-            <span style="color: green;">${message.text}</span><br/>
+            <div class="alert alert-success">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    ${message.text}
+            </div>
         </c:if>
         <c:if test="${message.severity eq 'ERROR'}">
-            <span style="color: red;">${message.text}</span><br/>
+            <div class="alert alert-error">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    ${message.text}
+            </div>
         </c:if>
     </c:forEach>
+    <div class="alert alert-info">
     <label for="moduleFile"><fmt:message key="serverSettings.manageModules.upload.module"/></label>
-    <input type="file" id="moduleFile" name="moduleFile" accept=""/><input type="submit" name="_eventId_upload" value="<fmt:message key="label.upload"/>"/> <br/>
+    <input type="file" id="moduleFile" name="moduleFile" accept=""/><input class="btn btn-primary" type="submit" name="_eventId_upload" value="<fmt:message key="label.upload"/>"/>
+    </div>
 </form:form>
 
 <table class="table table-bordered table-striped table-hover">

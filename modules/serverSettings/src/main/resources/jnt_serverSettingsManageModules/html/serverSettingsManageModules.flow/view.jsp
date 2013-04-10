@@ -104,7 +104,7 @@
                 <%--${currentModule.sourcesFolder}--%>
                 <c:choose>
                     <c:when test="${not empty currentModule.sourcesFolder}">
-                        <input class="btn" type="button" onclick='window.parent.location.assign("/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.siteTemplate.html")' value="<fmt:message key='serverSettings.manageModules.goToStudio' />"/>
+                        <input class="btn btn-block" type="button" onclick='window.parent.location.assign("/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.siteTemplate.html")' value="<fmt:message key='serverSettings.manageModules.goToStudio' />"/>
                         <%--<c:if test="${renderContext.editModeConfigName ne 'studiomode' and renderContext.editModeConfigName ne 'studiolayoutmode'}">--%>
                             <%--<a href="/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.siteTemplate.html"></a>--%>
                         <%--</c:if>--%>
@@ -115,7 +115,7 @@
                             <input type="hidden" name="module" value="${entry.key}"/>
                             <input type="hidden" name="scmUri" value="${currentModule.scmURI}"/>
                             <fmt:message var="label" key='serverSettings.manageModules.downloadSources' />
-                            <input class="btn" type="submit" name="_eventId_downloadSources" value="${label}" onclick=""/>
+                            <input class="btn btn-block" type="submit" name="_eventId_downloadSources" value="${label}" onclick=""/>
                         </form>
                     </c:when>
 
@@ -124,7 +124,7 @@
                             <input type="hidden" name="module" value="${entry.key}"/>
                             <input type="hidden" name="scmUri" value="scm:git:"/>
                             <fmt:message var="label" key='serverSettings.manageModules.downloadSources' />
-                            <input class="btn" type="submit" name="_eventId_downloadSources" value="${label}" onclick=""/>
+                            <input class="btn btn-block" type="submit" name="_eventId_downloadSources" value="${label}" onclick=""/>
                         </form>
                     </c:otherwise>
                 </c:choose>

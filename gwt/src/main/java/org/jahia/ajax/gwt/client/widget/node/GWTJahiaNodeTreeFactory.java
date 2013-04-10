@@ -335,7 +335,7 @@ public class GWTJahiaNodeTreeFactory {
                 if (openPath.isEmpty()) {
                     if (storage != null && storage.getItem("openPath-"+repository) != null) {
                         String openPaths = storage.getItem("openPath-"+repository);
-                        openPath = Arrays.asList(openPaths.split("\\|"));
+                        openPath = new ArrayList<String>(Arrays.asList(openPaths.split("\\|")));
                     }
                 }
                 JahiaContentManagementService.App.getInstance()

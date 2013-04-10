@@ -81,7 +81,7 @@ abstract class BrowseTabItem extends SidePanelTabItem {
     protected transient TreeGrid<GWTJahiaNode> tree;
     protected transient TreeGridDropTarget treeDropTarget;
     protected transient String repositoryType;
-    private transient GWTJahiaNodeTreeFactory factory;
+    protected transient GWTJahiaNodeTreeFactory factory;
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);

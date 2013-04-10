@@ -43,8 +43,6 @@ package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
@@ -60,7 +58,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -79,12 +76,12 @@ import java.util.*;
  */
 public class TemplatesTabItem extends BrowseTabItem {
 
-    protected transient ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
-    protected transient ListStore<GWTJahiaNode> contentStore;
     private transient TreeGrid<GWTJahiaNode> detailTree;
     private transient TreeLoader<GWTJahiaNode> detailLoader;
     private transient TreeStore<GWTJahiaNode> detailStore;
     protected transient LayoutContainer contentContainer;
+    protected transient SelectMainNodeTreeLoadListener selectMainNodeTreeLoadListener;
+
     private  List<String> displayedDetailTypes;
     private  List<String> hiddenDetailTypes;
 
@@ -104,10 +101,12 @@ public class TemplatesTabItem extends BrowseTabItem {
         this.tree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         this.tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
-                listLoader.load(se.getSelectedItem());
                 detailTree.getSelectionModel().deselectAll();
-                detailLoader.load(se.getSelectedItem());
-
+                if (se.getSelectedItem() != null) {
+                    detailLoader.load(se.getSelectedItem());
+                } else {
+                    detailStore.removeAll();
+                }
             }
         });
 
@@ -119,23 +118,8 @@ public class TemplatesTabItem extends BrowseTabItem {
             }
         };
 
-        listLoader = new BaseListLoader<ListLoadResult<GWTJahiaNode>>(listProxy);
-
-        contentStore = new ListStore<GWTJahiaNode>(listLoader);
-        contentStore.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
-            public int compare(Object o1, Object o2) {
-                if (o1 instanceof String && o2 instanceof String) {
-                    String s1 = (String) o1;
-                    String s2 = (String) o2;
-                    return Collator.getInstance().localeCompare(s1,s2);
-                } else if (o1 instanceof Comparable && o2 instanceof Comparable) {
-                    return ((Comparable) o1).compareTo(o2);
-                }
-                return 0;
-            }
-        }));
-        contentStore.setSortField("display");
         tree.setContextMenu(createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel()));
+        selectMainNodeTreeLoadListener = new SelectMainNodeTreeLoadListener(tree);
 
         NodeColumnConfigList columns = new NodeColumnConfigList(config.getTreeColumns());
         columns.init();
@@ -244,7 +228,7 @@ public class TemplatesTabItem extends BrowseTabItem {
         contentContainer.add(detailTree);
         VBoxLayoutData contentVBoxData = new VBoxLayoutData();
         contentVBoxData.setFlex(2);
-        tab.add(contentContainer,contentVBoxData);
+        tab.add(contentContainer, contentVBoxData);
 
         return tab;
     }
@@ -277,7 +261,6 @@ public class TemplatesTabItem extends BrowseTabItem {
         detailTree.getTreeStore().removeAll();
         detailTree.getTreeStore().getLoader().load();
         detailLoader.load();
-        listLoader.load();
     }
 
     @Override
@@ -305,7 +288,7 @@ public class TemplatesTabItem extends BrowseTabItem {
     }
 
     @Override
-    public void handleNewMainNodeLoaded(GWTJahiaNode node) {
-        tree.getSelectionModel().select(node, false);
+    public void handleNewMainSelection(String path) {
+        selectMainNodeTreeLoadListener.handleNewMainSelection(path);
     }
 }

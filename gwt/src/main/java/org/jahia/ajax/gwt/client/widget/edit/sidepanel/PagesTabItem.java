@@ -41,11 +41,9 @@
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.TreeGridDropTarget;
 import com.extjs.gxt.ui.client.event.DNDEvent;
-import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.Store;
@@ -63,13 +61,11 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeTreeGridDragSource;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Selection;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
@@ -85,10 +81,10 @@ public class PagesTabItem extends SidePanelTabItem {
     protected List<String> folderTypes = new ArrayList<String>();
     private List<String> paths = new ArrayList<String>();
 
-    protected transient Map<String,GWTJahiaNode> nodesByPath = new HashMap<String, GWTJahiaNode>();
     protected transient TreeGrid<GWTJahiaNode> pageTree;
     protected transient GWTJahiaNodeTreeFactory pageFactory;
     protected transient String path;
+    protected transient SelectMainNodeTreeLoadListener selectMainNodeTreeLoadListener;
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
@@ -148,42 +144,13 @@ public class PagesTabItem extends SidePanelTabItem {
         this.pageTree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         
         pageTree.setContextMenu(createContextMenu(config.getTreeContextMenu(), pageTree.getSelectionModel()));
-        pageTree.getTreeStore().getLoader().addLoadListener(new LoadListener() {
-            @Override
-            public void loaderLoad(LoadEvent le) {
-                for (GWTJahiaNode node : ((List<GWTJahiaNode>) le.getData())) {
-                    nodesByPath.put(node.getPath(), node);
-                    ModuleHelper.setNodeForModule(node);
-
-                    MainModule mainModule = MainModule.getInstance();
-                    if (mainModule.getNode().getPath().equals(node.getPath())) {
-                        mainModule.getEditLinker().handleNewMainSelection();
-                    }
-                };
-                List<String> selectedPath = pageFactory.getSelectedPath();
-                if (selectedPath.size() == 1 && pageTree.getSelectionModel().getSelectedItem() == null && nodesByPath.containsKey(selectedPath.get(0))) {
-                    pageTree.getSelectionModel().setFiresEvents(false);
-                    pageTree.getSelectionModel().setSelection(Arrays.asList(nodesByPath.get(selectedPath.get(0))));
-                    pageTree.getSelectionModel().setFiresEvents(true);
-                }
-            }
-        });
+        selectMainNodeTreeLoadListener = new SelectMainNodeTreeLoadListener(pageTree);
         tab.add(pageTree);
     }
 
     @Override
     public void handleNewMainSelection(String path) {
-        if (pageTree != null && (pageTree.getSelectionModel().getSelectedItem() == null || !path.equals(
-                pageTree.getSelectionModel().getSelectedItem().getPath()))) {
-            pageFactory.setSelectedPath(Arrays.asList(path));
-            pageTree.getSelectionModel().setFiresEvents(false);
-            if (nodesByPath.containsKey(path)) {
-                pageTree.getSelectionModel().setSelection(Arrays.asList(nodesByPath.get(path)));
-            } else {
-                pageTree.getSelectionModel().deselectAll();
-            }
-            pageTree.getSelectionModel().setFiresEvents(true);
-        }
+        selectMainNodeTreeLoadListener.handleNewMainSelection(path);
         super.handleNewMainSelection(path);
     }
 

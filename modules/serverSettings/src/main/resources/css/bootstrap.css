@@ -1945,7 +1945,7 @@ input.search-query {
   /* IE7 inline-block hack */
 
   *zoom: 1;
-  margin-bottom: 0;
+  margin-top: 0;
   vertical-align: middle;
 }
 .form-search .hide,

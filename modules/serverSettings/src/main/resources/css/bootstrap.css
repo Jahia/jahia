@@ -1989,7 +1989,7 @@ legend + .control-group {
   -webkit-margin-top-collapse: separate;
 }
 .form-horizontal .control-group {
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   *zoom: 1;
 }
 .form-horizontal .control-group:before,

@@ -140,12 +140,11 @@
                    onclick="$('.provCheck').removeAttr('disabled');"</c:if>>&nbsp;<fmt:message key="label.providers"/>:&nbsp;
 
                 <c:forEach items="${providersList}" var="curProvider">
-
                     <input type="checkbox" class="provCheck" name="providers" value="${curProvider.key}"
                            <c:if test="${fn:length(providersList) le 1 or searchCriteria.storedOn ne 'providers'}">disabled </c:if>
                     <c:if test="${fn:length(providersList) le 1 or (not empty searchCriteria.providers and functions:contains(searchCriteria.providers, curProvider.key))}">
                            checked </c:if>>
-                    ${curProvider.key}<br/>
+                    ${curProvider.key}
                 </c:forEach>
 
 

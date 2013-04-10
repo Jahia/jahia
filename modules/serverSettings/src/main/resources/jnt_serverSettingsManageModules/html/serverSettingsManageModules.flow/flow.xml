@@ -41,7 +41,7 @@
 
     <view-state id="detailedView">
         <on-entry>
-            <evaluate expression="requestParameters.selectedModule" result="flowScope.selectedModule"/>
+            <evaluate expression="requestParameters.selectedModule?:flowScope.selectedModule" result="flowScope.selectedModule"/>
         </on-entry>
         <on-render>
             <evaluate expression="flowHandler.loadModuleInformation(flowRequestContext)" result="requestScope.detailedModule"/>
@@ -53,6 +53,8 @@
             <set value="requestParameters.scmUri" name="flowScope.scmUri"/>
         </transition>
         <transition on="viewDetails" to="detailedView"/>
+        <transition on="deploy" to="deployToSite"/>
+        <transition on="undeploy" to="undeployFromSite"/>
     </view-state>
 
     <action-state id="downloadSources">
@@ -81,4 +83,21 @@
 
     <end-state id="moduleStopped"/>
 
+    <action-state id="deployToSite">
+        <evaluate
+                expression="JahiaTemplateManagerService.installModule(requestParameters.module,requestParameters.deployTo,null)"/>
+        <transition on-exception="java.lang.Exception" to="detailedView">
+            <set name="flashScope.error" value="'serverSettings.manageModules.modules.deploy.error'"/>
+        </transition>
+        <transition to="detailedView"/>
+    </action-state>
+
+    <action-state id="undeployFromSite">
+        <evaluate
+                expression="JahiaTemplateManagerService.uninstallModules(JahiaTemplateManagerService.getTemplatePackage(requestParameters.module),requestParameters.undeployFrom,jcrSessionFactory.currentUserSession)"/>
+        <transition on-exception="java.lang.Exception" to="detailedView">
+            <set name="flashScope.error" value="'serverSettings.manageModules.modules.undeploy.error'"/>
+        </transition>
+        <transition to="detailedView"/>
+    </action-state>
 </flow>

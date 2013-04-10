@@ -54,6 +54,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.value.StringValue;
 import org.apache.maven.cli.MavenCli;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.dom4j.Document;
@@ -1705,6 +1706,47 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
 
         return found;
+    }
+
+    public void uninstallModules(final JahiaTemplatesPackage module, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
+        if (!sitePath.startsWith("/sites/")) {
+            return;
+        }
+        final JCRSiteNode siteNode = (JCRSiteNode) session.getNode(sitePath);
+
+            logger.info("Uninstalling " + module.getName() + " on " + sitePath);
+            JCRNodeWrapper moduleNode = null;
+            try {
+                moduleNode = session.getNode("/modules/" + module.getRootFolder());
+
+                String moduleName = moduleNode.getName();
+
+                if (moduleNode.isNodeType("jnt:module")) {
+                    moduleNode = moduleNode.getNode(module.getVersion().toString());
+                }
+                /*synchro(moduleNode, siteNode, session, moduleName, references);
+
+                ReferencesHelper.resolveCrossReferences(session, references);*/
+
+                JCRPropertyWrapper installedModules = siteNode.getProperty("j:installedModules");
+                Value toBeRemoved = null;
+                Value[] values = installedModules.getValues();
+                for (Value value : values) {
+                    if (value.getString().equals(moduleName)) {
+                        toBeRemoved = value;
+                        break;
+                    }
+                }
+                installedModules.removeValue(toBeRemoved);
+                logger.info("Done uninstalling " + module.getName() + " on " + sitePath);
+            } catch (PathNotFoundException e) {
+                logger.warn("Cannot find module for path {}. Skipping deployment to site {}.",
+                        module, sitePath);
+                return;
+            }
+
+        siteService.updateSite(siteNode);
+        applicationEventPublisher.publishEvent(new ModuleDeployedOnSiteEvent(sitePath, JahiaTemplateManagerService.class.getName()));
     }
 
 // -------------------------- INNER CLASSES --------------------------

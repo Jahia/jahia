@@ -24,7 +24,23 @@
 <template:addResources type="javascript" resources="jquery.js,bootstrap.js"/>
 <div id="detailActiveVersion" style="border: thin groove;">
     <h2>${activeVersion.name}&nbsp;${activeVersion.version}</h2>
-
+    <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
+        <c:if test="${message.severity eq 'INFO'}">
+            <div class="alert alert-success">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    ${message.text}
+            </div>
+        </c:if>
+        <c:if test="${message.severity eq 'ERROR'}">
+            <div class="alert alert-error">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    ${message.text}
+            </div>
+        </c:if>
+    </c:forEach>
+    <c:if test="${not empty error}">
+        <div class="error"><fmt:message key='${error}'/></div>
+    </c:if>
     <p>
         ${bundleInfo['Bundle-Description']}
     </p>
@@ -90,115 +106,185 @@
     </dl>
 </div>
 <div class="accordion" id="accordion2">
-    <div class="accordion-group">
-        <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
-                <strong><fmt:message key="serverSettings.manageModules.versions"/></strong></a>
-        </div>
-        <div id="collapseOne" class="accordion-body collapse" style="height: 0px; ">
-            <div class="accordion-inner">
-                <table class="table table-striped table-bordered table-hover">
-                    <thead>
+<div class="accordion-group">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+            <strong><fmt:message key="serverSettings.manageModules.versions"/></strong></a>
+    </div>
+    <div id="collapseOne" class="accordion-body collapse" style="height: 0px; ">
+        <div class="accordion-inner">
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th><fmt:message key="serverSettings.manageModules.module.version"/></th>
+                    <th><fmt:message key="serverSettings.manageModules.module.state"/></th>
+                    <th><fmt:message key="serverSettings.manageModules.module.manage"/></th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach items="${otherVersions}" var="package">
                     <tr>
-                        <th><fmt:message key="serverSettings.manageModules.module.version"/></th>
-                        <th><fmt:message key="serverSettings.manageModules.module.state"/></th>
-                        <th><fmt:message key="serverSettings.manageModules.module.manage"/></th>
+                        <td>${package.key}</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${activeVersion.bundle.state eq 32}">
+                                    <fmt:message key="serverSettings.manageModules.module.state.active"/>
+                                </c:when>
+                                <c:when test="${activeVersion.bundle.state eq 16}">
+                                    <fmt:message key="serverSettings.manageModules.module.state.stopping"/>
+                                </c:when>
+                                <c:when test="${activeVersion.bundle.state eq 8}">
+                                    <fmt:message key="serverSettings.manageModules.module.state.starting"/>
+                                </c:when>
+                                <c:when test="${activeVersion.bundle.state eq 4}">
+                                    <fmt:message key="serverSettings.manageModules.module.state.resolved"/>
+                                </c:when>
+                                <c:when test="${activeVersion.bundle.state eq 2}">
+                                    <fmt:message key="serverSettings.manageModules.module.state.installed"/>
+                                </c:when>
+                                <c:when test="${activeVersion.bundle.state eq 1}">
+                                    <fmt:message key="serverSettings.manageModules.module.state.uninstalled"/>
+                                </c:when>
+                            </c:choose>
+                        </td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${package.key eq activeVersion.version and package.value.activeVersion}">
+                                    <div class="active-version">
+                                        <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
+                                            <input type="hidden" name="module" value="${package.value.rootFolder}"/>
+                                            <fmt:message var="label" key='serverSettings.manageModules.stopModule'/>
+                                            <input class="btn btn-danger" type="submit" name="_eventId_stopModule"
+                                                   value="${label}" onclick=""/>
+                                        </form>
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="inactive-version">
+                                        <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
+                                            <input type="hidden" name="module" value="${package.value.rootFolder}"/>
+                                            <input type="hidden" name="version" value="${package.key}"/>
+                                            <fmt:message var="label"
+                                                         key='serverSettings.manageModules.startModule'/>
+                                            <input class="btn btn-success" type="submit" name="_eventId_startModule"
+                                                   value="${label}" onclick=""/>
+                                        </form>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    <c:forEach items="${otherVersions}" var="package">
-                        <tr>
-                            <td>${package.key}</td>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${activeVersion.bundle.state eq 32}">
-                                        <fmt:message key="serverSettings.manageModules.module.state.active"/>
-                                    </c:when>
-                                    <c:when test="${activeVersion.bundle.state eq 16}">
-                                        <fmt:message key="serverSettings.manageModules.module.state.stopping"/>
-                                    </c:when>
-                                    <c:when test="${activeVersion.bundle.state eq 8}">
-                                        <fmt:message key="serverSettings.manageModules.module.state.starting"/>
-                                    </c:when>
-                                    <c:when test="${activeVersion.bundle.state eq 4}">
-                                        <fmt:message key="serverSettings.manageModules.module.state.resolved"/>
-                                    </c:when>
-                                    <c:when test="${activeVersion.bundle.state eq 2}">
-                                        <fmt:message key="serverSettings.manageModules.module.state.installed"/>
-                                    </c:when>
-                                    <c:when test="${activeVersion.bundle.state eq 1}">
-                                        <fmt:message key="serverSettings.manageModules.module.state.uninstalled"/>
-                                    </c:when>
-                                </c:choose>
-                            </td>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${package.key eq activeVersion.version and package.value.activeVersion}">
-                                        <div class="active-version">
-                                            <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                                                <input type="hidden" name="module" value="${package.value.rootFolder}"/>
-                                                <fmt:message var="label" key='serverSettings.manageModules.stopModule'/>
-                                                <input class="btn btn-danger" type="submit" name="_eventId_stopModule"
-                                                       value="${label}" onclick=""/>
-                                            </form>
-                                        </div>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <div class="inactive-version">
-                                            <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                                                <input type="hidden" name="module" value="${package.value.rootFolder}"/>
-                                                <input type="hidden" name="version" value="${package.key}"/>
-                                                <fmt:message var="label"
-                                                             key='serverSettings.manageModules.startModule'/>
-                                                <input class="btn btn-success" type="submit" name="_eventId_startModule"
-                                                       value="${label}" onclick=""/>
-                                            </form>
-                                        </div>
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
-                        </tr>
-                    </c:forEach>
-                    </tbody>
-                </table>
-            </div>
+                </c:forEach>
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
 
+<div class="accordion-group">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+            <strong><fmt:message key="serverSettings.manageModules.sites.management"/></strong></a>
+    </div>
+    <div id="collapseTwo" class="accordion-body collapse" style="height: 0px; ">
+        <div class="accordion-inner">
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th><fmt:message key="serverSettings.manageModules.module.site"/></th>
+                    <th><fmt:message key="serverSettings.manageModules.module.dependency.type"/></th>
+                    <th><fmt:message key="serverSettings.manageModules.module.manage"/></th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach items="${sites}" var="site">
+                    <tr>
+                        <td>${site}</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${functions:contains(sitesDirect,site)}">
+                                    <fmt:message key="serverSettings.manageModules.module.dependency.type.direct"/>
+                                </c:when>
+                                <c:when test="${functions:contains(sitesTemplates,site)}">
+                                    <fmt:message
+                                            key="serverSettings.manageModules.module.dependency.type.templates"/>
+                                </c:when>
+                                <c:when test="${functions:contains(sitesTransitive,site)}">
+                                    <fmt:message
+                                            key="serverSettings.manageModules.module.dependency.type.transitive"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <fmt:message key="serverSettings.manageModules.module.no.dependency"/>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${functions:contains(sitesDirect,site)}">
+                                    <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
+                                        <input type="hidden" name="module" value="${activeVersion.name}"/>
+                                        <input type="hidden" name="undeployFrom" value="/sites/${site}"/>
+                                        <fmt:message var="label"
+                                                     key='serverSettings.manageModules.module.undeploy'/>
+                                        <input class="btn btn-success" type="submit" name="_eventId_undeploy"
+                                               value="${label}" onclick=""/>
+                                    </form>
+                                </c:when>
+                                <c:when test="${functions:contains(sitesTemplates,site)}">
+                                    <fmt:message
+                                            key="serverSettings.manageModules.module.dependency.type.templates"/>
+                                </c:when>
+                                <c:when test="${functions:contains(sitesTransitive,site)}">
+                                    <fmt:message
+                                            key="serverSettings.manageModules.module.dependency.type.transitive"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
+                                        <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
+                                        <input type="hidden" name="deployTo" value="/sites/${site}"/>
+                                        <fmt:message var="label"
+                                                     key='serverSettings.manageModules.module.deploy'/>
+                                        <input class="btn btn-success" type="submit" name="_eventId_deploy"
+                                               value="${label}" onclick=""/>
+                                    </form>
+                                </c:otherwise>
+                            </c:choose>
+
+                        </td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<%--@elvariable id="nodeTypes" type="java.util.Map<java.lang.String,java.lang.Boolean>"--%>
+<c:if test="${not empty nodeTypes}">
     <div class="accordion-group">
         <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
-                <strong><fmt:message key="serverSettings.manageModules.sites.management"/></strong></a>
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">
+                <strong><fmt:message key="serverSettings.manageModules.module.nodetypes"/></strong></a>
         </div>
-        <div id="collapseTwo" class="accordion-body collapse" style="height: 0px; ">
+        <div id="collapseThree" class="accordion-body collapse" style="height: 0px; ">
             <div class="accordion-inner">
                 <table class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
-                        <th><fmt:message key="serverSettings.manageModules.module.site"/></th>
-                        <th><fmt:message key="serverSettings.manageModules.module.dependency.type"/></th>
-                        <th><fmt:message key="serverSettings.manageModules.module.manage"/></th>
+                        <th><fmt:message key="serverSettings.manageModules.module.nodetype.name"/></th>
+                        <th><fmt:message key='serverSettings.manageModules.module.nodetype.component'/></th>
                     </tr>
                     </thead>
                     <tbody>
-                    <c:forEach items="${sites}" var="site">
+                    <c:forEach items="${nodeTypes}" var="nodeType">
                         <tr>
-                            <td>${site}</td>
+                            <td><span style="font: bold">${nodeType.key}</span></td>
                             <td>
                                 <c:choose>
-                                    <c:when test="${functions:contains(sitesDirect,site)}">
-                                        <fmt:message key="serverSettings.manageModules.module.dependency.type.direct"/>
-                                    </c:when>
-                                    <c:when test="${functions:contains(sitesTemplates,site)}">
-                                        <fmt:message
-                                                key="serverSettings.manageModules.module.dependency.type.templates"/>
-                                    </c:when>
-                                    <c:when test="${functions:contains(sitesTransitive,site)}">
-                                        <fmt:message
-                                                key="serverSettings.manageModules.module.dependency.type.transitive"/>
+                                    <c:when test="${nodeType.value}">
+                                        <fmt:message key="label.yes"/>
                                     </c:when>
                                     <c:otherwise>
-                                        <fmt:message key="serverSettings.manageModules.module.no.dependency"/>
+                                        <fmt:message key="label.no"/>
                                     </c:otherwise>
                                 </c:choose>
                             </td>
@@ -209,77 +295,40 @@
             </div>
         </div>
     </div>
-    <%--@elvariable id="nodeTypes" type="java.util.Map<java.lang.String,java.lang.Boolean>"--%>
-    <c:if test="${not empty nodeTypes}">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">
-                    <strong><fmt:message key="serverSettings.manageModules.module.nodetypes"/></strong></a>
-            </div>
-            <div id="collapseThree" class="accordion-body collapse" style="height: 0px; ">
-                <div class="accordion-inner">
-                    <table class="table table-striped table-bordered table-hover">
-                        <thead>
+</c:if>
+<c:if test="${not empty activeVersion.dependencies}">
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFour">
+                <strong><fmt:message key="serverSettings.manageModules.module.dependencies"/></strong></a>
+        </div>
+        <div id="collapseFour" class="accordion-body collapse" style="height: 0px; ">
+            <div class="accordion-inner">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th><fmt:message key="serverSettings.manageModules.module.dependency.name"/></th>
+                        <th><fmt:message key='serverSettings.manageModules.details'/></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach items="${activeVersion.dependencies}" var="dependency">
                         <tr>
-                            <th><fmt:message key="serverSettings.manageModules.module.nodetype.name"/></th>
-                            <th><fmt:message key='serverSettings.manageModules.module.nodetype.component'/></th>
+                            <td><span style="font: bold">${dependency.name}</span></td>
+                            <td>
+                                <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
+                                    <input type="hidden" name="selectedModule" value="${dependency.rootFolder}"/>
+                                    <input class="btn btn-info" type="submit" name="_eventId_viewDetails"
+                                           value="<fmt:message key='serverSettings.manageModules.details' />"
+                                           onclick=""/>
+                                </form>
+                            </td>
                         </tr>
-                        </thead>
-                        <tbody>
-                        <c:forEach items="${nodeTypes}" var="nodeType">
-                            <tr>
-                                <td><span style="font: bold">${nodeType.key}</span></td>
-                                <td>
-                                    <c:choose>
-                                        <c:when test="${nodeType.value}">
-                                            <fmt:message key="label.yes"/>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <fmt:message key="label.no"/>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </td>
-                            </tr>
-                        </c:forEach>
-                        </tbody>
-                    </table>
-                </div>
+                    </c:forEach>
+                    </tbody>
+                </table>
             </div>
         </div>
-    </c:if>
-    <c:if test="${not empty activeVersion.dependencies}">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFour">
-                    <strong><fmt:message key="serverSettings.manageModules.module.dependencies"/></strong></a>
-            </div>
-            <div id="collapseFour" class="accordion-body collapse" style="height: 0px; ">
-                <div class="accordion-inner">
-                    <table class="table table-striped table-bordered table-hover">
-                        <thead>
-                        <tr>
-                            <th><fmt:message key="serverSettings.manageModules.module.dependency.name"/></th>
-                            <th><fmt:message key='serverSettings.manageModules.details'/></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <c:forEach items="${activeVersion.dependencies}" var="dependency">
-                            <tr>
-                                <td><span style="font: bold">${dependency.name}</span></td>
-                                <td>
-                                    <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                                        <input type="hidden" name="selectedModule" value="${dependency.rootFolder}"/>
-                                        <input class="btn btn-info" type="submit" name="_eventId_viewDetails"
-                                               value="<fmt:message key='serverSettings.manageModules.details' />"
-                                               onclick=""/>
-                                    </form>
-                                </td>
-                            </tr>
-                        </c:forEach>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </c:if>
+    </div>
+</c:if>
 </div>

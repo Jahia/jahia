@@ -21,58 +21,64 @@
 <%--@elvariable id="otherVersions" type="java.util.Map<org.jahia.services.templates.ModuleVersion,org.jahia.data.templates.JahiaTemplatesPackage>"--%>
 <%--@elvariable id="bundleInfo" type="java.util.Map<java.lang.String, java.lang.String>"--%>
 <%--@elvariable id="activeVersion" type="org.jahia.data.templates.JahiaTemplatesPackage"--%>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
-<template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
-<div id="detailActiveVersion" style="border: thin groove;">
-    <h3>${activeVersion.name}&nbsp;${activeVersion.version}</h3>
 
+<div id="detailActiveVersion">
+    <h2>${activeVersion.name}&nbsp;${activeVersion.version}</h2>
     <p>
         ${bundleInfo['Bundle-Description']}
     </p>
-    <dl>
-        <dt><fmt:message key="serverSettings.manageModules.module.type"/></dt>
-        <dd>${activeVersion.moduleType}</dd>
+    <table class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th width="30%"><fmt:message key="serverSettings.manageModules.module.type"/></th>
+                <th width="30%"><fmt:message key="serverSettings.manageModules.module.author"/></th>
+                <th width="30%"><fmt:message key="serverSettings.manageModules.module.source.uri"/></th>
+            </tr>
+        <tbody>
+            <tr>
+                <td>${activeVersion.moduleType}</td>
+                <td>${bundleInfo['Implementation-Vendor']}</td>
+                <td>
+                    <c:choose>
+                        <c:when test="${not empty activeVersion.sourcesFolder}">
+                            <input class="btn" type="button" onclick='window.parent.location.assign("/cms/studio/${currentResource.locale}/modules/${activeVersion.rootFolder}.siteTemplate.html")' value="<fmt:message key='serverSettings.manageModules.goToStudio' />"/>
+                            <%--<c:if test="${renderContext.editModeConfigName ne 'studiomode' and renderContext.editModeConfigName ne 'studiolayoutmode'}">--%>
+                            <%--<a href="/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.siteTemplate.html"></a>--%>
+                            <%--</c:if>--%>
 
-        <dt><fmt:message key="serverSettings.manageModules.module.author"/></dt>
-        <dd>${bundleInfo['Implementation-Vendor']}</dd>
+                        </c:when>
+                        <c:when test="${not empty activeVersion.scmURI}">
+                            <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
+                                <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
+                                <input type="hidden" name="scmUri" value="${activeVersion.scmURI}"/>
+                                <fmt:message var="label" key='serverSettings.manageModules.downloadSources' />
+                                <input class="btn" type="submit" name="_eventId_downloadSources" value="${label}" onclick=""/>
+                            </form>
+                        </c:when>
 
-        <dt><fmt:message key="serverSettings.manageModules.module.source.uri"/></dt>
-        <dd><c:choose>
-            <c:when test="${not empty activeVersion.sourcesFolder}">
-                <input class="btn" type="button" onclick='window.parent.location.assign("/cms/studio/${currentResource.locale}/modules/${activeVersion.rootFolder}.siteTemplate.html")' value="<fmt:message key='serverSettings.manageModules.goToStudio' />"/>
-                <%--<c:if test="${renderContext.editModeConfigName ne 'studiomode' and renderContext.editModeConfigName ne 'studiolayoutmode'}">--%>
-                <%--<a href="/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.siteTemplate.html"></a>--%>
-                <%--</c:if>--%>
-
-            </c:when>
-            <c:when test="${not empty activeVersion.scmURI}">
-                <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                    <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
-                    <input type="hidden" name="scmUri" value="${activeVersion.scmURI}"/>
-                    <fmt:message var="label" key='serverSettings.manageModules.downloadSources' />
-                    <input class="btn" type="submit" name="_eventId_downloadSources" value="${label}" onclick=""/>
-                </form>
-            </c:when>
-
-            <c:otherwise>
-                <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                    <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
-                    <input type="hidden" name="scmUri" value="scm:git:"/>
-                    <fmt:message var="label" key='serverSettings.manageModules.downloadSources' />
-                    <input class="btn" type="submit" name="_eventId_downloadSources" value="${label}" onclick=""/>
-                </form>
-            </c:otherwise>
-        </c:choose></dd>
-    </dl>
+                        <c:otherwise>
+                            <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
+                                <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
+                                <input type="hidden" name="scmUri" value="scm:git:"/>
+                                <fmt:message var="label" key='serverSettings.manageModules.downloadSources' />
+                                <input class="btn" type="submit" name="_eventId_downloadSources" value="${label}" onclick=""/>
+                            </form>
+                        </c:otherwise>
+                    </c:choose>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>
+
 <div id="versionsList">
-    <h3><fmt:message key="serverSettings.manageModules.versions"/></h3>
-    <table style="border: thin groove">
+    <h2><fmt:message key="serverSettings.manageModules.versions"/></h2>
+    <table class="table table-bordered table-striped table-hover">
         <thead>
         <tr>
-            <th><fmt:message key="serverSettings.manageModules.module.version"/></th>
-            <th><fmt:message key="serverSettings.manageModules.module.active"/></th>
-            <th><fmt:message key="serverSettings.manageModules.module.manage"/></th>
+            <th width="30%"><fmt:message key="serverSettings.manageModules.module.version"/></th>
+            <th width="30%"><fmt:message key="serverSettings.manageModules.module.active"/></th>
+            <th width="30%"><fmt:message key="serverSettings.manageModules.module.manage"/></th>
         </tr>
         </thead>
         <tbody>
@@ -114,13 +120,13 @@
 </div>
 
 <div id="sitesList">
-    <h3><fmt:message key="serverSettings.manageModules.sites.management"/></h3>
-    <table style="border: thin groove">
+    <h2><fmt:message key="serverSettings.manageModules.sites.management"/></h2>
+    <table class="table table-bordered table-striped table-hover">
         <thead>
         <tr>
-            <th><fmt:message key="serverSettings.manageModules.module.site"/></th>
-            <th><fmt:message key="serverSettings.manageModules.module.dependency.type"/></th>
-            <th><fmt:message key="serverSettings.manageModules.module.manage"/></th>
+            <th width="30%"><fmt:message key="serverSettings.manageModules.module.site"/></th>
+            <th width="30%"><fmt:message key="serverSettings.manageModules.module.dependency.type"/></th>
+            <th width="30%"><fmt:message key="serverSettings.manageModules.module.manage"/></th>
         </tr>
         </thead>
         <tbody>
@@ -142,6 +148,9 @@
                             <fmt:message key="serverSettings.manageModules.module.no.dependency"/>
                         </c:otherwise>
                     </c:choose>
+                </td>
+                <td>
+
                 </td>
             </tr>
         </c:forEach>

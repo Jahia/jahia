@@ -74,7 +74,7 @@ public class JCRSortTag extends AbstractJCRTag {
             this.list = (Collection) o;
         } else if (o instanceof Iterator) {
             this.list = new ArrayList<JCRNodeWrapper>();
-            final Iterator iterator = (Iterator) o;
+            final Iterator<?> iterator = (Iterator<?>) o;
             while (iterator.hasNext()) {
                 JCRNodeWrapper e = (JCRNodeWrapper) iterator.next();
                 this.list.add(e);
@@ -96,7 +96,8 @@ public class JCRSortTag extends AbstractJCRTag {
 
     @Override
     public int doEndTag() throws JspException {
-        List<JCRNodeWrapper> res = new ArrayList<JCRNodeWrapper>(list);
+        List<JCRNodeWrapper> res = new ArrayList<JCRNodeWrapper>(
+                list != null ? list : Collections.<JCRNodeWrapper> emptyList());
 
         String[] props = Patterns.COMMA.split(properties);
         Collections.sort(res,new NodeComparator(props));

@@ -98,36 +98,26 @@ pageContext.setAttribute("allJobs", allJobs);
 List<Object> jobs = new LinkedList<Object>();
 pageContext.setAttribute("jobs", jobs);
 int aliveCount = 0;
-if (Boolean.valueOf((String) pageContext.getAttribute("showCompleted"))) {
-    int limitCount = 0;
-    for (JobDetail job : allJobs) {
+int limitCount = 0;
+boolean showCompleted = Boolean.valueOf((String) pageContext.getAttribute("showCompleted"));
+
+for (JobDetail job : allJobs) {
+    if (showCompleted) {
         if (limitCount > 1000) {
             // we do not display more than 1000 jobs
             break;
         }
         limitCount++;
-        Trigger[] triggers = service.getScheduler().getTriggersOfJob(job.getName(), job.getGroup());
-        jobs.add(new Object[] {job, triggers.length > 0 ? triggers[0] : null});
-        if (triggers.length > 0) {
-            aliveCount++;
-        }
     }
-} else {
-    for (String triggerGroup : service.getScheduler().getTriggerGroupNames()) {
-        for (String triggerName : service.getScheduler().getTriggerNames(triggerGroup)) {
-            Trigger trigger = service.getScheduler().getTrigger(triggerName, triggerGroup);
-            if (trigger == null) {
-                continue;
-            }
-            JobDetail job = service.getScheduler().getJobDetail(trigger.getJobName(), trigger.getJobGroup());
-            if (job == null) {
-                continue;
-            }
-            jobs.add(new Object[] {job, trigger});
-            aliveCount++;
-        }
+    Trigger[] triggers = service.getScheduler().getTriggersOfJob(job.getName(), job.getGroup());
+    if (triggers.length > 0) {
+        aliveCount++;
     }
+	if (showCompleted || triggers.length > 0) {
+	    jobs.add(new Object[] {job, triggers.length > 0 ? triggers[0] : null});
+	}
 }
+
 pageContext.setAttribute("allCount", allJobs.size());
 pageContext.setAttribute("aliveCount", aliveCount);
 %>

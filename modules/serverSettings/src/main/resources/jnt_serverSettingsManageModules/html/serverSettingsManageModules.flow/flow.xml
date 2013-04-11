@@ -53,8 +53,8 @@
             <set value="requestParameters.scmUri" name="flowScope.scmUri"/>
         </transition>
         <transition on="viewDetails" to="detailedView"/>
-        <transition on="deploy" to="deployToSite"/>
-        <transition on="undeploy" to="undeployFromSite"/>
+        <transition on="enable" to="enableOnSite"/>
+        <transition on="disable" to="disableFromSite"/>
     </view-state>
 
     <action-state id="downloadSources">
@@ -83,20 +83,20 @@
 
     <end-state id="moduleStopped"/>
 
-    <action-state id="deployToSite">
+    <action-state id="enableOnSite">
         <evaluate
-                expression="JahiaTemplateManagerService.installModule(requestParameters.module,requestParameters.deployTo,null)"/>
+                expression="JahiaTemplateManagerService.installModule(requestParameters.module,requestParameters.enableOn,null)"/>
         <transition on-exception="java.lang.Exception" to="detailedView">
-            <set name="flashScope.error" value="'serverSettings.manageModules.modules.deploy.error'"/>
+            <set name="flashScope.error" value="'serverSettings.manageModules.modules.enable.error'"/>
         </transition>
         <transition to="detailedView"/>
     </action-state>
 
-    <action-state id="undeployFromSite">
+    <action-state id="disableFromSite">
         <evaluate
-                expression="JahiaTemplateManagerService.uninstallModules(JahiaTemplateManagerService.getTemplatePackage(requestParameters.module),requestParameters.undeployFrom,jcrSessionFactory.currentUserSession)"/>
+                expression="JahiaTemplateManagerService.uninstallModule(requestParameters.module,requestParameters.disableFrom,null)"/>
         <transition on-exception="java.lang.Exception" to="detailedView">
-            <set name="flashScope.error" value="'serverSettings.manageModules.modules.undeploy.error'"/>
+            <set name="flashScope.error" value="'serverSettings.manageModules.modules.disable.error'"/>
         </transition>
         <transition to="detailedView"/>
     </action-state>

@@ -222,11 +222,11 @@
                             <c:choose>
                                 <c:when test="${functions:contains(sitesDirect,site)}">
                                     <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                                        <input type="hidden" name="module" value="${activeVersion.name}"/>
-                                        <input type="hidden" name="undeployFrom" value="/sites/${site}"/>
+                                        <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
+                                        <input type="hidden" name="disableFrom" value="/sites/${site}"/>
                                         <fmt:message var="label"
-                                                     key='serverSettings.manageModules.module.undeploy'/>
-                                        <input class="btn btn-success" type="submit" name="_eventId_undeploy"
+                                                     key='serverSettings.manageModules.module.disable'/>
+                                        <input class="btn btn-success" type="submit" name="_eventId_disable"
                                                value="${label}" onclick=""/>
                                     </form>
                                 </c:when>
@@ -241,10 +241,10 @@
                                 <c:otherwise>
                                     <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                         <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
-                                        <input type="hidden" name="deployTo" value="/sites/${site}"/>
+                                        <input type="hidden" name="enableOn" value="/sites/${site}"/>
                                         <fmt:message var="label"
-                                                     key='serverSettings.manageModules.module.deploy'/>
-                                        <input class="btn btn-success" type="submit" name="_eventId_deploy"
+                                                     key='serverSettings.manageModules.module.enable'/>
+                                        <input class="btn btn-success" type="submit" name="_eventId_enable"
                                                value="${label}" onclick=""/>
                                     </form>
                                 </c:otherwise>

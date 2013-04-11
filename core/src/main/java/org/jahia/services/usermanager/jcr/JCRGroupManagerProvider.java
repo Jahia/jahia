@@ -41,6 +41,7 @@
 package org.jahia.services.usermanager.jcr;
 
 import org.jahia.services.content.*;
+import org.jahia.services.sites.JahiaSitesService;
 import org.slf4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
@@ -50,7 +51,6 @@ import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.*;
 import org.jahia.utils.Patterns;
 

@@ -26,9 +26,9 @@ import java.util.*;
 public class AdminCreateSiteAction extends AdminAction {
     private static Logger logger = LoggerFactory.getLogger(AdminCreateSiteAction.class);
 
-    protected JahiaSitesBaseService sitesService;
+    protected JahiaSitesService sitesService;
 
-    public void setSitesService(JahiaSitesBaseService sitesService) {
+    public void setSitesService(JahiaSitesService sitesService) {
         this.sitesService = sitesService;
     }
 
@@ -113,7 +113,7 @@ public class AdminCreateSiteAction extends AdminAction {
                     sitesService.setDefaultSite(site);
                 }
 
-                JahiaSite systemSite = sitesService.getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
+                JahiaSite systemSite = sitesService.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY);
                 // update the system site only if it does not yet contain at least one of the site languages
                 if (!systemSite.getLanguages().containsAll(site.getLanguages())) {
                     systemSite.getLanguages().addAll(site.getLanguages());

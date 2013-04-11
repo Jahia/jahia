@@ -66,7 +66,7 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
@@ -200,7 +200,7 @@ public class ContentManagerAccessCheckFilter implements Filter,
             if (StringUtils.isNotEmpty(siteId)) {
                 return currentUserSession.getNodeByUUID(siteId).getResolveSite();
             } else {
-                JahiaSitesBaseService siteService = JahiaSitesBaseService.getInstance();
+                JahiaSitesService siteService = JahiaSitesService.getInstance();
                 JahiaSite defaultSite = siteService.getDefaultSite();
                 if (defaultSite != null) {
                     return (JCRSiteNode) currentUserSession.getNodeByUUID(defaultSite.getUuid());

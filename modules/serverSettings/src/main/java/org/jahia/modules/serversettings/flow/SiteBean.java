@@ -10,7 +10,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.modules.serversettings.users.admin.AdminProperties;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.utils.Url;
 import org.jahia.utils.i18n.Messages;
@@ -152,7 +152,7 @@ public class SiteBean implements Serializable {
 
         MessageContext messages = context.getMessageContext();
 
-        JahiaSitesBaseService sitesService = ServicesRegistry.getInstance().getJahiaSitesService();
+        JahiaSitesService sitesService = ServicesRegistry.getInstance().getJahiaSitesService();
 
         try {
             if (title != null && (title.length() > 0) && serverName != null && (serverName.length() > 0)
@@ -207,7 +207,7 @@ public class SiteBean implements Serializable {
         // check validity...
         MessageContext messages = context.getMessageContext();
 
-        JahiaSitesBaseService sitesService = ServicesRegistry.getInstance().getJahiaSitesService();
+        JahiaSitesService sitesService = ServicesRegistry.getInstance().getJahiaSitesService();
 
         try {
             if (StringUtils.isNotBlank(title) && StringUtils.isNotBlank(serverName)) {

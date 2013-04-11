@@ -254,6 +254,17 @@
                         </td>
                     </tr>
                 </c:forEach>
+                <tr>
+                    <td align="right" colspan="3">
+                        <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
+                            <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
+                            <fmt:message var="label"
+                                         key='serverSettings.manageModules.module.disable.all'/>
+                            <input class="btn btn-success" type="submit" name="_eventId_disableAll"
+                                   value="${label}" onclick=""/>
+                        </form>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>

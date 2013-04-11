@@ -45,9 +45,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.jahia.services.sites.JahiaSitesService;
 import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.xml.sax.Attributes;

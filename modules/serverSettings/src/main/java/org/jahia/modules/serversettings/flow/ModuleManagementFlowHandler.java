@@ -36,9 +36,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.modules.serversettings.moduleManagement.ModuleFile;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
@@ -46,21 +45,17 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
-import org.jahia.services.templates.TemplatePackageDeployer;
 import org.jahia.settings.SettingsBean;
-import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.binding.message.DefaultMessageResolver;
 import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.webflow.execution.RequestContext;
 
-import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeTypeIterator;
-import javax.servlet.ServletRequest;
+import javax.jcr.RepositoryException;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -78,9 +73,6 @@ public class ModuleManagementFlowHandler implements Serializable {
 
     @Autowired
     private transient JahiaTemplateManagerService templateManagerService;
-
-    @Autowired
-    private transient JCRTemplate jcrTemplate;
 
     @Autowired
     private transient JahiaSitesService sitesService;
@@ -149,9 +141,8 @@ public class ModuleManagementFlowHandler implements Serializable {
         List<String> templateSiteDep = new ArrayList<String>();
         List<String> transitiveSiteDep = new ArrayList<String>();
         try {
-            Iterator<JahiaSite> sites = sitesService.getSites();
-            while (sites.hasNext()) {
-                JahiaSite site = sites.next();
+            List<JCRSiteNode> sites = sitesService.getSitesNodeList();
+            for (JCRSiteNode site : sites) {
                 siteKeys.add(site.getSiteKey());
                 List<JahiaTemplatesPackage> directDependencies = templateManagerService.getInstalledModulesForSite(
                         site.getSiteKey(), false, true, false);
@@ -176,6 +167,8 @@ public class ModuleManagementFlowHandler implements Serializable {
                 }
             }
         } catch (JahiaException e) {
+            logger.error(e.getMessage(), e);
+        } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
         context.getRequestScope().put("sites",siteKeys);

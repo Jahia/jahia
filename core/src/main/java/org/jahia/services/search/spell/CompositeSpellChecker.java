@@ -52,6 +52,7 @@ import org.apache.jackrabbit.spi.commons.query.TraversingQueryNodeVisitor;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.analysis.tokenattributes.TermAttribute;
+import org.jahia.services.sites.JahiaSitesService;
 import org.slf4j.Logger;
 import org.apache.lucene.search.spell.JahiaExtendedSpellChecker;
 import org.apache.lucene.search.spell.LuceneDictionary;
@@ -66,7 +67,6 @@ import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
-import org.jahia.services.sites.JahiaSitesBaseService;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -486,7 +486,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                                             long time = System.currentTimeMillis();
                                             logger.debug("Starting spell checker index refresh");
                                             for (String site : sites) {
-                                                for (String language : JahiaSitesBaseService.getInstance()
+                                                for (String language : JahiaSitesService.getInstance()
                                                         .getSiteByKey(site).getLanguages()) {
                                                     StringBuilder fullTextName = new StringBuilder(FieldNames.FULLTEXT);
                                                     if (site != null) {

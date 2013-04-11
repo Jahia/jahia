@@ -105,7 +105,7 @@ import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Template;
-import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -961,7 +961,7 @@ public final class JCRContentUtils implements ServletContextAware {
     }
 
     public static String getSystemSitePath() {
-        return "/sites/" + JahiaSitesBaseService.SYSTEM_SITE_KEY;
+        return "/sites/" + JahiaSitesService.SYSTEM_SITE_KEY;
     }
 
     /**

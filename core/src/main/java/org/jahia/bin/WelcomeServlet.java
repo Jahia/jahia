@@ -69,7 +69,6 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
@@ -147,7 +146,7 @@ public class WelcomeServlet extends HttpServlet {
     protected void defaultRedirect(HttpServletRequest request, HttpServletResponse response,
             ServletContext context) throws Exception {
         request.getSession(true);
-        JahiaSite defaultSite = JahiaSitesBaseService.getInstance().getDefaultSite();
+        JahiaSite defaultSite = JahiaSitesService.getInstance().getDefaultSite();
         String defaultSitePath = defaultSite != null ? defaultSite.getJCRLocalPath() : null;
         final JCRSiteNode site = resolveSite(request, Constants.LIVE_WORKSPACE, defaultSitePath);
         JahiaUser user = (JahiaUser) request.getSession().getAttribute(ProcessingContext.SESSION_USER);
@@ -235,7 +234,7 @@ public class WelcomeServlet extends HttpServlet {
     }
 
     protected JCRSiteNode resolveSite(HttpServletRequest request, String workspace, String fallbackSitePath) throws JahiaException, RepositoryException {
-        JahiaSitesService siteService = JahiaSitesBaseService.getInstance();
+        JahiaSitesService siteService = JahiaSitesService.getInstance();
         JahiaSite resolvedSite = !Url.isLocalhost(request.getServerName()) ? siteService.getSiteByServerName(request.getServerName()) : null;
         String sitePath = resolvedSite == null ? fallbackSitePath : resolvedSite.getJCRLocalPath(); 
 

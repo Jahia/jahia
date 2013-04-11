@@ -60,6 +60,7 @@
         <transition on="viewDetails" to="detailedView"/>
         <transition on="enable" to="enableOnSite"/>
         <transition on="disable" to="disableFromSite"/>
+        <transition on="disableAll" to="disableFromAllSites"/>
     </view-state>
 
     <action-state id="downloadSources">
@@ -107,6 +108,15 @@
                 expression="JahiaTemplateManagerService.uninstallModule(requestParameters.module,requestParameters.disableFrom,null,false)"/>
         <transition on-exception="java.lang.Exception" to="detailedView">
             <set name="flashScope.error" value="'serverSettings.manageModules.modules.disable.error'"/>
+        </transition>
+        <transition to="detailedView"/>
+    </action-state>
+
+    <action-state id="disableFromAllSites">
+        <evaluate
+                expression="JahiaTemplateManagerService.uninstallModulesFromAllSites(requestParameters.module,null)"/>
+        <transition on-exception="java.lang.Exception" to="detailedView">
+            <set name="flashScope.error" value="'serverSettings.manageModules.modules.undeploy.error'"/>
         </transition>
         <transition to="detailedView"/>
     </action-state>

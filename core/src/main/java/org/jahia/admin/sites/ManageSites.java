@@ -88,7 +88,6 @@ import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.search.spell.CompositeSpellChecker;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSiteTools;
-import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.*;
@@ -96,7 +95,6 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Url;
-import org.jahia.utils.i18n.Messages;
 import org.springframework.core.io.FileSystemResource;
 
 import javax.jcr.NodeIterator;
@@ -125,7 +123,7 @@ import java.util.zip.ZipInputStream;
  */
 public class ManageSites extends AbstractAdministrationModule {
 
-    private static final HashSet<String> NON_SITE_IMPORTS = new HashSet<String>(Arrays.asList("serverPermissions.xml", "users.xml", "users.zip", JahiaSitesBaseService.SYSTEM_SITE_KEY + ".zip", "references.zip", "roles.zip"));
+    private static final HashSet<String> NON_SITE_IMPORTS = new HashSet<String>(Arrays.asList("serverPermissions.xml", "users.xml", "users.zip", JahiaSitesService.SYSTEM_SITE_KEY + ".zip", "references.zip", "roles.zip"));
 
     private static final Map<String, Integer> RANK;
     static {
@@ -136,7 +134,7 @@ public class ManageSites extends AbstractAdministrationModule {
         RANK.put("users.xml", 10);
         RANK.put("serverPermissions.xml", 20);
         RANK.put("shared.zip", 30);
-        RANK.put(JahiaSitesBaseService.SYSTEM_SITE_KEY+".zip", 40);
+        RANK.put(JahiaSitesService.SYSTEM_SITE_KEY+".zip", 40);
     }
     private static final Comparator<Map<Object, Object>> IMPORTS_COMPARATOR = new Comparator<Map<Object,Object>>() {
         public int compare(Map<Object, Object> o1, Map<Object, Object> o2) {
@@ -157,7 +155,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
     private static final Pattern LANGUAGE_RANK_PATTERN = Pattern.compile("(?:language.)(\\w+)(?:.rank)");
 
-    private static JahiaSitesBaseService sMgr;
+    private static JahiaSitesService sMgr;
 
     private ProcessingContext jParams;
 
@@ -257,14 +255,14 @@ public class ManageSites extends AbstractAdministrationModule {
         }
 
         try {
-            Iterator<JahiaSite> siteEnum = sMgr.getSites();
+//            Iterator<JahiaSite> siteEnum = sMgr.getSites();
             List<JahiaSite> sortedSites = new ArrayList<JahiaSite>();
-            while (siteEnum.hasNext()) {
+            /*while (siteEnum.hasNext()) {
                 JahiaSite curSite = (JahiaSite) siteEnum.next();
-                if (!curSite.getSiteKey().equals(JahiaSitesBaseService.SYSTEM_SITE_KEY)) {
+                if (!curSite.getSiteKey().equals(JahiaSitesService.SYSTEM_SITE_KEY)) {
                     sortedSites.add(curSite);
                 }
-            }
+            }*/
             Locale defaultLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_LOCALE);
             if (defaultLocale != null) {
                 Collections.sort(sortedSites, JahiaSite.getTitleComparator(defaultLocale));
@@ -273,7 +271,7 @@ public class ManageSites extends AbstractAdministrationModule {
             }
             request.setAttribute("sitesList", sortedSites.iterator());
             request.setAttribute("sitesListSize", Integer.valueOf(sortedSites.size()));
-            request.setAttribute("systemSite", sMgr.getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY));
+            request.setAttribute("systemSite", sMgr.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY));
             if (sortedSites.size() == 0) {
                 JahiaSite newJahiaSite = (JahiaSite) session.getAttribute(CLASS_NAME + "newJahiaSite");
 
@@ -658,24 +656,23 @@ public class ManageSites extends AbstractAdministrationModule {
             }
         }
 
-        try {
             // get admins list...
             JahiaGroupManagerService groupManager = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-            Iterator<JahiaSite> allSites = sMgr.getSites();
+//            Iterator<JahiaSite> allSites = sMgr.getSites();
             List<JahiaSite> sitesList = new ArrayList<JahiaSite>();
             Integer siteIDInteger = new Integer(selectedSite);
 
             // clean sites...
-            while (allSites.hasNext()) {
+            /*while (allSites.hasNext()) {
                 JahiaSite site = (JahiaSite) allSites.next();
                 if (site.getID() > 0) {
                     sitesList.add(site);
                 }
-            }
+            }*/
 
             // set the Iterator to null if the List is empty...
             if (sitesList.size() == 0) {
-                allSites = null;
+//                allSites = null;
             } else {
                 Locale defaultLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_LOCALE);
                 if (defaultLocale != null) {
@@ -683,11 +680,11 @@ public class ManageSites extends AbstractAdministrationModule {
                 } else {
                     Collections.sort(sitesList, JahiaSite.getTitleComparator());
                 }
-                allSites = sitesList.iterator();
+//                allSites = sitesList.iterator();
             }
 
             // get users... only if allSites is not null...
-            if ((allSites != null) && (!selectedSite.equals("0"))) {
+            if ((!selectedSite.equals("0"))) {
                 List<Map<String, String>> allAdministrators = new ArrayList<Map<String, String>>();
 
                 JahiaGroup adminGroup = groupManager.getAdministratorGroup(siteIDInteger.intValue());
@@ -712,16 +709,12 @@ public class ManageSites extends AbstractAdministrationModule {
 
             // set attributes...
             session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", jahiaDisplayMessage);
-            request.setAttribute("allSites", allSites);
             request.setAttribute("allSitesJS", sitesList.iterator());
             request.setAttribute("selectedSite", new Integer(selectedSite));
 
             // redirect...
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "site_existant_admin.jsp");
-        } catch (JahiaException je) {
-            logger.error("Error while displaying existing administrator selection UI", je);
-            displayList(request, response, session);
-        }
+
 
         // set default values...
         session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", Jahia.COPYRIGHT);
@@ -951,7 +944,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
                 // set as current site if the session site is null or systemsite
                 JahiaSite sessionSite = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
-                if (sessionSite == null || sessionSite.getSiteKey().equals(JahiaSitesBaseService.SYSTEM_SITE_KEY)) {
+                if (sessionSite == null || sessionSite.getSiteKey().equals(JahiaSitesService.SYSTEM_SITE_KEY)) {
                     session.setAttribute(ProcessingContext.SESSION_SITE, site);
                     session.setAttribute(JahiaAdministration.CLASS_NAME + "manageSiteID", new Integer(site.getID()));
                 }
@@ -965,7 +958,7 @@ public class ManageSites extends AbstractAdministrationModule {
                 }
                 sMgr.updateSite(site);
 
-                JahiaSite jahiaSite = sMgr.getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
+                JahiaSite jahiaSite = sMgr.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY);
                 // update the system site only if it does not yet contain at least one of the site languages
                 if (!jahiaSite.getLanguages().containsAll(site.getLanguages())) {
                     jahiaSite.getLanguages().addAll(site.getLanguages());
@@ -1674,13 +1667,7 @@ public class ManageSites extends AbstractAdministrationModule {
         // first let's build a list of the all the sites except the
         // current one.
         List<JahiaSite> otherSites = new ArrayList<JahiaSite>();
-        for (Iterator<JahiaSite> siteIt = ServicesRegistry.getInstance().getJahiaSitesService().getSites();
-             siteIt.hasNext();) {
-            JahiaSite curSite = siteIt.next();
-            if (!curSite.getSiteKey().equals(site.getSiteKey())) {
-                otherSites.add(curSite);
-            }
-        }
+
         if (defSite == null) {
             // no default site, let's assign once that isn't the current
             // one being deleted.
@@ -1976,7 +1963,7 @@ public class ManageSites extends AbstractAdministrationModule {
                 } else {
                     try {
                         String siteKey = (String) importInfos.get("sitekey");
-                        boolean valid = JahiaSitesBaseService.getInstance().isSiteKeyValid(siteKey);
+                        boolean valid = JahiaSitesService.getInstance().isSiteKeyValid(siteKey);
                         importInfos.put("siteKeyInvalid", !valid);
                         importInfos.put("siteKeyExists",
                                 valid
@@ -2050,7 +2037,7 @@ public class ManageSites extends AbstractAdministrationModule {
         List<Map<Object, Object>> importsInfos = (List<Map<Object, Object>>) session.getAttribute("importsInfos");
         Map<Object, Object> siteKeyMapping = new HashMap<Object, Object>();
         boolean stillBad = false;
-        final JahiaSitesBaseService jahiaSitesService = ServicesRegistry.getInstance().getJahiaSitesService();
+        final JahiaSitesService jahiaSitesService = ServicesRegistry.getInstance().getJahiaSitesService();
         for (Map<Object, Object> infos : importsInfos) {
             File file = (File) infos.get("importFile");
             infos.put("sitekey", StringUtils.left(request.getParameter(file.getName() + "siteKey") == null ? null :
@@ -2145,7 +2132,8 @@ public class ManageSites extends AbstractAdministrationModule {
                     if (request.getParameter(file.getName() + "selected") != null) {
                         if (infos.get("type").equals("files")) {
                             try {
-                                JahiaSite system = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
+                                JahiaSite system = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(
+                                        JahiaSitesService.SYSTEM_SITE_KEY);
 
                                 Map<String,String> pathMapping = JCRSessionFactory.getInstance().getCurrentUserSession().getPathMapping();
                                 pathMapping.put("/shared/files/", "/sites/" + system.getSiteKey() + "/files/");

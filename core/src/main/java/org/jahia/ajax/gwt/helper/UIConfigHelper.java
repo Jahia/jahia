@@ -58,10 +58,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.render.URLResolver;
-import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.uicomponents.bean.contentmanager.Column;
@@ -581,11 +578,11 @@ public class UIConfigHelper {
 
                 String defaultLocation = config.getDefaultLocation();
                 if (defaultLocation.contains("$defaultSiteHome")) {
-                    JahiaSitesService siteService = JahiaSitesBaseService.getInstance();
+                    JahiaSitesService siteService = JahiaSitesService.getInstance();
 
                     JahiaSite resolvedSite = !Url.isLocalhost(request.getServerName()) ? siteService.getSiteByServerName(request.getServerName()) : null;
                     if (resolvedSite == null) {
-                        resolvedSite = JahiaSitesBaseService.getInstance().getDefaultSite();
+                        resolvedSite = JahiaSitesService.getInstance().getDefaultSite();
                     }
                     if (resolvedSite != null) {
                         JCRSiteNode siteNode = (JCRSiteNode) session.getNode(resolvedSite.getJCRLocalPath());

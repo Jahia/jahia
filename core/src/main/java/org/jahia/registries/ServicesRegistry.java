@@ -59,7 +59,7 @@ import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.query.QueryService;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.search.SearchService;
-import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -178,8 +178,8 @@ public class ServicesRegistry {
     /**
      * NK 12.03.2001
      */
-    public JahiaSitesBaseService getJahiaSitesService() {
-        return (JahiaSitesBaseService) getService("JahiaSitesService");
+    public JahiaSitesService getJahiaSitesService() {
+        return (JahiaSitesService) getService("JahiaSitesService");
     }
 
     /**

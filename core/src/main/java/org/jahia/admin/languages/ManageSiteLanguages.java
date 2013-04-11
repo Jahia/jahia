@@ -47,7 +47,6 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.CacheHelper;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.LoggerFactory;
@@ -203,7 +202,7 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
         try {
             JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
             service.updateSite(site);
-            JahiaSite jahiaSite = service.getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
+            JahiaSite jahiaSite = service.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY);
             // update the system site only if it does not yet contain at least one of the site languages
             if (!jahiaSite.getLanguages().containsAll(site.getLanguages())) {
                 jahiaSite.getLanguages().addAll(site.getLanguages());

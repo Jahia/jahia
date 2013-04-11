@@ -48,7 +48,7 @@ import org.jahia.admin.JspForwardAdministrationModule;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sites.SitesSettings;
 
 /**
@@ -59,7 +59,7 @@ import org.jahia.services.sites.SitesSettings;
 public class ManageHtmlSettings extends JspForwardAdministrationModule {
     
 
-    private JahiaSitesBaseService sitesService;
+    private JahiaSitesService sitesService;
 
     private void doDisplay(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
@@ -91,7 +91,7 @@ public class ManageHtmlSettings extends JspForwardAdministrationModule {
     private JahiaSite getSite(HttpServletRequest request) throws JahiaException {
         JahiaSite site = (JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE);
         if (site == null) {
-            site = sitesService.getSites().next();
+            site = sitesService.getDefaultSite();
         }
         
         sitesService.invalidateCache(site);
@@ -109,7 +109,7 @@ public class ManageHtmlSettings extends JspForwardAdministrationModule {
 
     }
 
-    public void setSitesService(JahiaSitesBaseService sitesService) {
+    public void setSitesService(JahiaSitesService sitesService) {
         this.sitesService = sitesService;
     }
 

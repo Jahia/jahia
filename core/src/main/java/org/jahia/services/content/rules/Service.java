@@ -49,7 +49,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
-import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -103,7 +103,7 @@ public class Service extends JahiaService {
     private static Service instance;
 
     private TaggingService taggingService;
-    private JahiaSitesBaseService sitesService;
+    private JahiaSitesService sitesService;
     private SchedulerService schedulerService;
     private CacheService cacheService;
     private JahiaUserManagerService userManagerService;
@@ -673,7 +673,7 @@ public class Service extends JahiaService {
         this.taggingService = taggingService;
     }
 
-    public void setSitesService(JahiaSitesBaseService sitesService) {
+    public void setSitesService(JahiaSitesService sitesService) {
         this.sitesService = sitesService;
     }
 

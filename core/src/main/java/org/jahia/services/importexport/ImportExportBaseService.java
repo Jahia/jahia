@@ -64,6 +64,7 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryService;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.JahiaCndReader;
 import org.jahia.services.content.nodetypes.JahiaCndReaderLegacy;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -71,7 +72,6 @@ import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
 import org.jahia.services.importexport.validation.*;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.jcr.JCRUser;
@@ -284,16 +284,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     public void exportAll(OutputStream outputStream, Map<String, Object> params)
             throws JahiaException, RepositoryException, IOException, SAXException, TransformerException {
-        Iterator<JahiaSite> en = sitesService.getSites();
-        List<JahiaSite> l = new ArrayList<JahiaSite>();
-        while (en.hasNext()) {
-            JahiaSite jahiaSite = (JahiaSite) en.next();
-            l.add(jahiaSite);
-        }
-        exportSites(outputStream, params, l);
+        exportSites(outputStream, params, sitesService.getSitesNodeList());
     }
 
-    public void exportSites(OutputStream outputStream, Map<String, Object> params, List<JahiaSite> sites)
+    public void exportSites(OutputStream outputStream, Map<String, Object> params, List<JCRSiteNode> sites)
             throws RepositoryException, IOException, SAXException, TransformerException {
         ZipOutputStream zout = new ZipOutputStream(outputStream);
 
@@ -308,7 +302,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         Set<String> externalReferences = new HashSet<String>();
 
-        for (JahiaSite jahiaSite : sites) {
+        for (JCRSiteNode jahiaSite : sites) {
             anEntry = new ZipEntry(jahiaSite.getSiteKey() + ".zip");
             zout.putNextEntry(anEntry);
             exportSite(jahiaSite, zout, externalReferences, params);
@@ -366,7 +360,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         zout.finish();
     }
 
-    private void exportSite(final JahiaSite site, OutputStream out, Set<String> externalReferences, Map<String, Object> params)
+    private void exportSite(final JCRSiteNode site, OutputStream out, Set<String> externalReferences, Map<String, Object> params)
             throws RepositoryException, SAXException, IOException, TransformerException {
         ZipOutputStream zout = new ZipOutputStream(out);
 
@@ -553,7 +547,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
     }
 
-    private void exportSiteInfos(OutputStream out, JahiaSite s) throws IOException {
+    private void exportSiteInfos(OutputStream out, JCRSiteNode s) throws IOException {
         Properties p = new OrderedProperties();
         p.setProperty("sitetitle", s.getTitle());
         p.setProperty("siteservername", s.getServerName());
@@ -576,7 +570,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             p.setProperty("language." + sls + ".disabledCompletely", "true");
         }
 
-        if (s.isDefault()) {
+        if (sitesService.getDefaultSite().getSiteKey().equals(s.getName())) {
             p.setProperty("defaultSite", "true");
         }
 
@@ -1101,7 +1095,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     private void importSiteProperties(final InputStream is, final JahiaSite site) throws IOException {
-        if (site.getSiteKey().equals(JahiaSitesBaseService.SYSTEM_SITE_KEY)) {
+        if (site.getSiteKey().equals(JahiaSitesService.SYSTEM_SITE_KEY)) {
             return;
         }
         logger.info("Loading properties for site {}", site.getSiteKey());
@@ -1260,7 +1254,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             site.setDefaultLanguage(defaultLanguage);
             try {
                 sitesService.updateSite(site);
-                JahiaSite jahiaSite = sitesService.getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
+                JahiaSite jahiaSite = sitesService.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY);
                 // update the system site only if it does not yet contain at least one of the site languages
                 if (!jahiaSite.getLanguages().containsAll(site.getLanguages())) {
                     jahiaSite.getLanguages().addAll(site.getLanguages());

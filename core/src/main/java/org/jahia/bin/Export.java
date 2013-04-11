@@ -62,6 +62,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.WebUtils;
@@ -158,12 +159,12 @@ public class Export extends JahiaController implements ServletContextAware {
                     throw new JahiaUnauthorizedException("Only root user can perform export of a site");
                 }
 
-                List<JahiaSite> sites = new ArrayList<JahiaSite>();
+                List<JCRSiteNode> sites = new ArrayList<JCRSiteNode>();
                 String[] sitekeys = request.getParameterValues("sitebox");
                 if (sitekeys != null) {
                     for (String sitekey : sitekeys) {
                         JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(sitekey);
-                        sites.add(site);
+                        sites.add((JCRSiteNode) site.getNode());
                     }
                 }
 

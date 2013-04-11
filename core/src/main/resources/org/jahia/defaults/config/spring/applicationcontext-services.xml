@@ -77,7 +77,7 @@
 		parent="jahiaServiceTemplate" factory-method="getInstance">
 		<property name="schedulerService" ref="SchedulerService" />
 	</bean>
-    <bean id="JahiaSitesService" class="org.jahia.services.sites.JahiaSitesBaseService" parent="jahiaServiceTemplate"
+    <bean id="JahiaSitesService" class="org.jahia.services.sites.JahiaSitesService" parent="jahiaServiceTemplate"
           factory-method="getInstance" lazy-init="true">
         <property name="groupService" ref="JahiaGroupManagerService"/>
         <property name="cacheService" ref="JahiaCacheService"/>

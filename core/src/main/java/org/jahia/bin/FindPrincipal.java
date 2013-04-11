@@ -41,21 +41,18 @@
 package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.sites.JahiaSitesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
-import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.*;
 import org.jahia.utils.Patterns;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.jcr.*;
 import javax.servlet.http.HttpServletRequest;
@@ -65,8 +62,6 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
-
-import static javax.servlet.http.HttpServletResponse.SC_METHOD_NOT_ALLOWED;
 
 /**
  * Separate servlet to search for users and/or groups

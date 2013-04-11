@@ -44,6 +44,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.validation.ValidationResults;
 import org.jahia.services.sites.JahiaSite;
 import org.springframework.core.io.Resource;
@@ -107,7 +108,7 @@ public interface ImportExportService {
      * @throws IOException
      * @throws SAXException
      */
-    void exportSites(OutputStream outputStream, Map<String, Object> params, List<JahiaSite> sites)
+    void exportSites(OutputStream outputStream, Map<String, Object> params, List<JCRSiteNode> sites)
             throws RepositoryException, IOException, SAXException, TransformerException;
 
     /**

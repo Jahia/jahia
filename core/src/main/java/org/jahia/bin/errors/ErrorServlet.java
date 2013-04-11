@@ -54,6 +54,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.render.URLResolverFactory;
+import org.jahia.services.sites.JahiaSitesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -61,11 +62,9 @@ import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.params.valves.LoginConfig;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.WebUtils;
-import org.springframework.core.io.Resource;
 
 /**
  * Error pages dispatcher servlet.

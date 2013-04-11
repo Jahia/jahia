@@ -44,7 +44,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Url;
 import org.slf4j.Logger;
@@ -108,7 +108,7 @@ public class ServerNameToSiteMapper {
         JahiaSite site = null;
         if (SpringContextSingleton.getInstance().isInitialized()) {
             try {
-                site = JahiaSitesBaseService.getInstance().getSiteByServerName(host);
+                site = JahiaSitesService.getInstance().getSiteByServerName(host);
             } catch (JahiaException e) {
                 logger.error("Error resolving site by server name '" + host + "'", e);
             }
@@ -142,7 +142,7 @@ public class ServerNameToSiteMapper {
 
         JahiaSite siteByKey = null;
         try {
-            siteByKey = JahiaSitesBaseService.getInstance().getSiteByKey(siteKey);
+            siteByKey = JahiaSitesService.getInstance().getSiteByKey(siteKey);
             boolean languageMatches = siteByKey.getDefaultLanguage().equals(language);
             request.setAttribute(ATTR_NAME_DEFAULT_LANG_MATCHES, languageMatches);
             request.setAttribute(ATTR_NAME_LANG_TOKEN, languageMatches ? "" : "/" + language);

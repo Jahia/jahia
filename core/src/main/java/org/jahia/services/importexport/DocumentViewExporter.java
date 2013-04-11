@@ -46,7 +46,7 @@ import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.value.ValueHelper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.sites.JahiaSitesService;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -320,7 +320,8 @@ public class DocumentViewExporter {
                     boolean root = rootNode.getPath().equals("/");
                     if (!root && !path.startsWith(rootNode.getPath()+"/") && !path.equals(rootNode.getPath())) {
                         externalReferences.add(v.getString());
-                    } else if (!typesToIgnore.contains(reference.getPrimaryNodeTypeName()) && reference.getResolveSite().getSiteKey().equals(JahiaSitesBaseService.SYSTEM_SITE_KEY)) {
+                    } else if (!typesToIgnore.contains(reference.getPrimaryNodeTypeName()) && reference.getResolveSite().getSiteKey().equals(
+                            JahiaSitesService.SYSTEM_SITE_KEY)) {
                         boolean foundInExportedNodes = false;
 
                         for (JCRNodeWrapper node : nodesList) {

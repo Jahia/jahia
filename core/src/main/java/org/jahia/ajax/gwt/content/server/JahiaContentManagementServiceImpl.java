@@ -2091,12 +2091,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
 
     public List<GWTJahiaSite> getAvailableSites() {
-        final Iterator<JahiaSite> sites;
+        final List<JCRSiteNode> sites;
         final List<GWTJahiaSite> returnedSites = new ArrayList<GWTJahiaSite>();
         try {
-            sites = ServicesRegistry.getInstance().getJahiaSitesService().getSites();
-            while (sites.hasNext()) {
-                JahiaSite jahiaSite = sites.next();
+            sites = ServicesRegistry.getInstance().getJahiaSitesService().getSitesNodeList();
+            for (JCRSiteNode jahiaSite : sites) {
                 GWTJahiaSite gwtJahiaSite = new GWTJahiaSite();
                 gwtJahiaSite.setSiteId(jahiaSite.getID());
                 gwtJahiaSite.setSiteName(jahiaSite.getTitle());
@@ -2106,7 +2105,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 gwtJahiaSite.setInstalledModules(jahiaSite.getInstalledModules());
                 returnedSites.add(gwtJahiaSite);
             }
-        } catch (JahiaException e) {
+        } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
 

@@ -2,6 +2,7 @@ package org.jahia.modules.defaultmodule.actions.admin;
 
 import org.jahia.bin.ActionResult;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.sites.JahiaSite;
 
@@ -24,10 +25,8 @@ public class AdminDeleteSiteAction extends AdminSiteAction {
 
         // first let's build a list of the all the sites except the
         // current one.
-        List<JahiaSite> otherSites = new ArrayList<JahiaSite>();
-        for (Iterator<JahiaSite> siteIt = sitesService.getSites();
-             siteIt.hasNext(); ) {
-            JahiaSite curSite = siteIt.next();
+        List<JCRSiteNode> otherSites = new ArrayList<JCRSiteNode>();
+        for (JCRSiteNode curSite: sitesService.getSitesNodeList()) {
             if (!curSite.getSiteKey().equals(site.getSiteKey())) {
                 otherSites.add(curSite);
             }
@@ -36,13 +35,13 @@ public class AdminDeleteSiteAction extends AdminSiteAction {
             // no default site, let's assign once that isn't the current
             // one being deleted.
             if (otherSites.size() > 0) {
-                sitesService.setDefaultSite(otherSites.get(0));
+                sitesService.setDefaultSite(sitesService.getSite(otherSites.get(0).getName()));
             }
         } else if (defSite.getSiteKey().equals(site.getSiteKey())) {
             // the default site IS the site being deleted, let's set
             // another site as a default site.
             if (otherSites.size() > 0) {
-                sitesService.setDefaultSite(otherSites.get(0));
+                sitesService.setDefaultSite(sitesService.getSite(otherSites.get(0).getName()));
             } else {
                 sitesService.setDefaultSite(null);
             }

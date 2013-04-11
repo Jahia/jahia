@@ -44,12 +44,13 @@ import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRObservationManager;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.NoCloseZipInputStream;
 import org.jahia.services.importexport.validation.ValidationResults;
 import org.jahia.services.search.spell.CompositeSpellChecker;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -89,7 +90,7 @@ public class WebprojectHandler implements Serializable {
 
     static Logger logger = LoggerFactory.getLogger(WebprojectHandler.class);
     private static final HashSet<String> NON_SITE_IMPORTS = new HashSet<String>(Arrays.asList("serverPermissions.xml",
-            "users.xml", "users.zip", JahiaSitesBaseService.SYSTEM_SITE_KEY + ".zip", "references.zip", "roles.zip"));
+            "users.xml", "users.zip", JahiaSitesService.SYSTEM_SITE_KEY + ".zip", "references.zip", "roles.zip"));
     private static final Map<String, Integer> RANK;
 
     private static final long serialVersionUID = -6643519526225787438L;
@@ -102,7 +103,7 @@ public class WebprojectHandler implements Serializable {
         RANK.put("users.xml", 10);
         RANK.put("serverPermissions.xml", 20);
         RANK.put("shared.zip", 30);
-        RANK.put(JahiaSitesBaseService.SYSTEM_SITE_KEY + ".zip", 40);
+        RANK.put(JahiaSitesService.SYSTEM_SITE_KEY + ".zip", 40);
     }
 
     @Autowired
@@ -124,7 +125,7 @@ public class WebprojectHandler implements Serializable {
     private List<JahiaSite> sites;
 
     @Autowired
-    private transient JahiaSitesBaseService sitesService;
+    private transient JahiaSitesService sitesService;
 
     @Autowired
     private transient JahiaTemplateManagerService templateManagerService;
@@ -183,13 +184,15 @@ public class WebprojectHandler implements Serializable {
 
             if (sites.contains(defSite)) {
                 try {
-                    Iterator<JahiaSite> siteIterator = sitesService.getSites();
-                    if (siteIterator.hasNext()) {
-                        sitesService.setDefaultSite(siteIterator.next());
+                    List<JCRSiteNode> sitesNodeList = sitesService.getSitesNodeList();
+                    if (!sitesNodeList.isEmpty()) {
+                        sitesService.setDefaultSite(sitesService.getSite(sitesNodeList.get(0).getName()));
                     } else {
                         sitesService.setDefaultSite(null);
                     }
                 } catch (JahiaException e) {
+                    logger.error(e.getMessage(), e);
+                } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }
             }
@@ -605,7 +608,7 @@ public class WebprojectHandler implements Serializable {
                     String type = infos.getType();
                     if (type.equals("files")) {
                         try {
-                            JahiaSite system = sitesService.getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
+                            JahiaSite system = sitesService.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY);
 
                             Map<String, String> pathMapping = JCRSessionFactory.getInstance().getCurrentUserSession()
                                     .getPathMapping();
@@ -764,7 +767,7 @@ public class WebprojectHandler implements Serializable {
         }
     }
 
-    public void setSitesService(JahiaSitesBaseService sitesService) {
+    public void setSitesService(JahiaSitesService sitesService) {
         this.sitesService = sitesService;
     }
 

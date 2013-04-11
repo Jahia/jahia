@@ -45,7 +45,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
@@ -94,7 +94,7 @@ public class LanguageHelper {
                 }
             } else {
                 JCRSiteNode siteByKey = (JCRSiteNode) ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(
-                        JahiaSitesBaseService.SYSTEM_SITE_KEY).getNode();
+                        JahiaSitesService.SYSTEM_SITE_KEY).getNode();
                 final Set<String>languages  = siteByKey.getLanguages();
                 final Set<String> activeLanguages = siteByKey.getActiveLiveLanguages();
                 final Set<String> mandatoryLanguages = site.getMandatoryLanguages();

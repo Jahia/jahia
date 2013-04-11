@@ -56,17 +56,14 @@ import org.apache.jackrabbit.spi.commons.conversion.PathResolver;
 import org.apache.jackrabbit.spi.commons.name.PathFactoryImpl;
 import org.apache.jackrabbit.spi.commons.namespace.NamespaceResolver;
 import org.apache.jackrabbit.spi.commons.namespace.SessionNamespaceResolver;
-import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -523,9 +520,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             // Todo : optimize site resolution
 //            int siteId = 0;
             String site = null;
-            if (jcrPath.startsWith(JahiaSitesBaseService.SITES_JCR_PATH)) {
-                if (jcrPath.length() > JahiaSitesBaseService.SITES_JCR_PATH.length() + 1) {
-                    site = StringUtils.substringBefore(jcrPath.substring(JahiaSitesBaseService.SITES_JCR_PATH.length() + 1), "/");
+            if (jcrPath.startsWith(JahiaSitesService.SITES_JCR_PATH)) {
+                if (jcrPath.length() > JahiaSitesService.SITES_JCR_PATH.length() + 1) {
+                    site = StringUtils.substringBefore(jcrPath.substring(JahiaSitesService.SITES_JCR_PATH.length() + 1), "/");
                 }
             } else {
                 Node s = n;

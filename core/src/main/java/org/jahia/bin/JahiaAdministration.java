@@ -713,7 +713,7 @@ public class JahiaAdministration extends HttpServlet {
 
                     // we now need to check if the user is site administrator of any other site, and allow him access
                     // to the first site we find that he has access to.
-                    Iterator<JahiaSite> siteIterator = ServicesRegistry.getInstance().getJahiaSitesService().getSites();
+                    /*Iterator<JahiaSite> siteIterator = ServicesRegistry.getInstance().getJahiaSitesService().getSites();
                     boolean hasSiteAccess = false;
                     while (siteIterator.hasNext() && !hasSiteAccess) {
                         theSite = siteIterator.next();
@@ -733,7 +733,7 @@ public class JahiaAdministration extends HttpServlet {
                             hasSiteAccess = true;
                             isValid = true;
                         }
-                    }
+                    }*/
                 }
             } else if (theUser.isAdminMember(0)) {
 
@@ -888,7 +888,7 @@ public class JahiaAdministration extends HttpServlet {
             throws JahiaException {
 
         List<JahiaSite> grantedSites = new ArrayList<JahiaSite>();
-        Iterator<JahiaSite> sitesList = ServicesRegistry.getInstance().
+        /*Iterator<JahiaSite> sitesList = ServicesRegistry.getInstance().
                 getJahiaSitesService().getSites();
 
         while (sitesList.hasNext()) {
@@ -903,7 +903,7 @@ public class JahiaAdministration extends HttpServlet {
                 logger.debug("granted site for " + jahiaSite.getSiteKey());
                 grantedSites.add(jahiaSite);
             }
-        }
+        }*/
 
         return grantedSites;
     }

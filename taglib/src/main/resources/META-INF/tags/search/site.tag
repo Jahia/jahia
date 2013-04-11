@@ -1,5 +1,6 @@
 <%@ tag body-content="empty" description="Renders site selection language selection control. By default all sites are used. This can be overridden by providing a list of sites to be disaplyed for selection." %>
 <%@ tag import="org.jahia.services.sites.JahiaSite" %>
+<%@ tag import="org.jahia.services.sites.JahiaSitesService" %>
 <%@ tag dynamic-attributes="attributes"%>
 <%@ attribute name="display" required="false" type="java.lang.Boolean"
               description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."
@@ -24,7 +25,7 @@
     <c:set var="selectedValues" value=",${not empty value ? fn:join(value, ',') : renderContext.site.name},"/>
     <c:set var="allowAll" value="${not empty allowAll ? allowAll : true}"/>
     <c:set target="${attributes}" property="name" value="src_sites.values"/>
-    <% jspContext.setAttribute("allSites", org.jahia.services.sites.JahiaSitesBaseService.getInstance().getSites()); %>
+    <% jspContext.setAttribute("allSites", JahiaSitesService.getInstance().getSites()); %>
     <c:if test="${not empty valueOptions}">
     	<c:set var="valueOptions" value=",${fn:replace(valueOptions, ' ', '')},"/>
     </c:if>

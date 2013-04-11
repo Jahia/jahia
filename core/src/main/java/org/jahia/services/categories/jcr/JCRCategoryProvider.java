@@ -41,7 +41,6 @@
 package org.jahia.services.categories.jcr;
 
 import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.sites.JahiaSitesBaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;

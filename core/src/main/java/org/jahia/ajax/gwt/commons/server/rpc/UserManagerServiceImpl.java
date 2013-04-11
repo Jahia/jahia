@@ -42,6 +42,7 @@ package org.jahia.ajax.gwt.commons.server.rpc;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 
+import org.jahia.services.sites.JahiaSitesService;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
@@ -50,7 +51,6 @@ import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.*;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.exceptions.JahiaException;

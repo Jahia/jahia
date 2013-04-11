@@ -1739,6 +1739,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 }
                 installedModules.removeValue(toBeRemoved);
                 logger.info("Done uninstalling " + module.getName() + " on " + sitePath);
+                session.save();
             } catch (PathNotFoundException e) {
                 logger.warn("Cannot find module for path {}. Skipping deployment to site {}.",
                         module, sitePath);

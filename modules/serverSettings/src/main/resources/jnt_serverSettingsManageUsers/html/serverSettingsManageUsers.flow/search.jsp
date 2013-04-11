@@ -19,6 +19,7 @@
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
 <%--@elvariable id="flowExecutionUrl" type="java.lang.String"--%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,bootstrap.js"/>
+<template:addResources type="css" resources="bootstrap.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 
 <script type="text/javascript">

@@ -99,9 +99,11 @@ import org.xml.sax.SAXException;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
 import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.nio.charset.Charset;
@@ -1395,16 +1397,29 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         references.get(value).add(destinationNode.getIdentifier() + "/" + property.getName());
     }
 
-    public void uninstallModule(final String module, final String sitePath, String username)
+    public void uninstallModule(final String module, final String sitePath, String username, final boolean purgeAllContent)
             throws RepositoryException {
         JCRTemplate.getInstance()
                 .doExecuteWithSystemSession(username, new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         uninstallModules(Arrays.asList(templatePackageRegistry.lookupByFileName(module)), sitePath, session);
+                        if (purgeAllContent) {
+                            purgeModuleContent(Arrays.asList(templatePackageRegistry.lookupByFileName(module)), sitePath, session);
+                        }
                         session.save();
                         return null;
                     }
                 });
+        if (purgeAllContent) {
+            JCRTemplate.getInstance()
+                    .doExecuteWithSystemSession(username, "live", new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            purgeModuleContent(Arrays.asList(templatePackageRegistry.lookupByFileName(module)), sitePath, session);
+                            session.save();
+                            return null;
+                        }
+                    });
+        }
     }
 
     public void uninstallModule(final JahiaTemplatesPackage module, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
@@ -1454,6 +1469,25 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         applicationEventPublisher.publishEvent(new ModuleDeployedOnSiteEvent(sitePath, JahiaTemplateManagerService.class.getName()));
     }
 
+    public void purgeModuleContent(final List<JahiaTemplatesPackage> modules, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
+        QueryManager manager = session.getWorkspace().getQueryManager();
+        for (JahiaTemplatesPackage module : modules) {
+            NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(module.getRootFolder());
+            while (nti.hasNext()) {
+                ExtendedNodeType next = (ExtendedNodeType) nti.next();
+                Query q = manager.createQuery("select * from ['" + next.getName() + "'] as c where isdescendantnode(c,'" + sitePath + "')", Query.JCR_SQL2);
+                try {
+                    NodeIterator ni = q.execute().getNodes();
+                    while (ni.hasNext()) {
+                        JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) ni.nextNode();
+                        nodeWrapper.remove();
+                    }
+                } catch (RepositoryException e) {
+                    logger.error("Cannot remove node", e);
+                }
+            }
+        }
+    }
 
 
 

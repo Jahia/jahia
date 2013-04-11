@@ -15,6 +15,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="memoryInfo" type="org.jahia.modules.serversettings.memoryThread.MemoryThreadInformationManagement"--%>
 <template:addResources type="javascript" resources="jquery.js,bootstrap.js"/>
+<template:addResources type="css" resources="bootstrap.css"/>
 
 <div class="accordion" id="accordion2">
     <div class="accordion-group">

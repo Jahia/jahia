@@ -18,6 +18,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
 <template:addResources type="javascript" resources="jquery.js,bootstrap.js"/>
+<template:addResources type="css" resources="bootstrap.css"/>
 <form:form modelAttribute="moduleFile" class="form" enctype="multipart/form-data" method="post">
     <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
         <c:if test="${message.severity eq 'INFO'}">

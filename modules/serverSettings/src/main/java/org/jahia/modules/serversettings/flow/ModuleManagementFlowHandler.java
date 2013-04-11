@@ -41,6 +41,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -59,6 +60,7 @@ import org.springframework.webflow.execution.RequestContext;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeTypeIterator;
+import javax.servlet.ServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -83,6 +85,19 @@ public class ModuleManagementFlowHandler implements Serializable {
     @Autowired
     private transient JahiaSitesService sitesService;
 
+    private String moduleName;
+
+    public boolean isInModule(RenderContext renderContext) {
+        try {
+            if (renderContext.getMainResource().getNode().isNodeType("jnt:module")) {
+                moduleName = renderContext.getMainResource().getNode().getName();
+                return true;
+            }
+        } catch (RepositoryException e) {
+        }
+        return false;
+    }
+
     public ModuleFile initModuleFile() {
         return new ModuleFile();
     }
@@ -105,7 +120,7 @@ public class ModuleManagementFlowHandler implements Serializable {
     }
 
     public void loadModuleInformation(RequestContext context) {
-        String selectedModuleName = (String) context.getFlowScope().get("selectedModule");
+        String selectedModuleName = moduleName != null ? moduleName : (String) context.getFlowScope().get("selectedModule");
         Map<ModuleVersion, JahiaTemplatesPackage> selectedModule = templateManagerService.getTemplatePackageRegistry().getAllModuleVersions().get(
                 selectedModuleName);
         if(selectedModule.size()>1) {

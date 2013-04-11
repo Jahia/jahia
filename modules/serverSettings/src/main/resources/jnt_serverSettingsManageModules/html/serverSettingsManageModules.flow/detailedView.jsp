@@ -22,6 +22,7 @@
 <%--@elvariable id="bundleInfo" type="java.util.Map<java.lang.String, java.lang.String>"--%>
 <%--@elvariable id="activeVersion" type="org.jahia.data.templates.JahiaTemplatesPackage"--%>
 <template:addResources type="javascript" resources="jquery.js,bootstrap.js"/>
+<template:addResources type="css" resources="bootstrap.css"/>
 <div id="detailActiveVersion" style="border: thin groove;">
     <h2>${activeVersion.name}&nbsp;${activeVersion.version}</h2>
     <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">

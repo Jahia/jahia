@@ -14,6 +14,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<template:addResources type="css" resources="bootstrap.css"/>
 <template:addResources type="javascript" resources="jquery.js,bootstrap.js"/>
 <jcr:node path="/users/root" var="adminUser"/>
 <h2><fmt:message key="serverSettings.adminProperties"/></h2>

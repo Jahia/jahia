@@ -12,4 +12,8 @@
     <site-administrator jcr:primaryType="jnt:role"
                      j:permissions="/permissions/managers/rolesManager"
                      j:privilegedAccess="true"/>
+
+    <server-administrator jcr:primaryType="jnt:role">
+        <settings-access jcr:primaryType="jnt:externalPermissions" j:permissions="/permissions/managers/rolesManager" />
+    </server-administrator>
 </roles>

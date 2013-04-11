@@ -98,7 +98,7 @@ public class ModulesProviderTest {
             JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession();
             JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName("dummy1");
             if (pack != null) {
-                templateManagerService.undeployModule(pack, s);
+                templateManagerService.undeployModule(pack);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

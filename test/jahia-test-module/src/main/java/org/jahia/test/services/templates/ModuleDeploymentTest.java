@@ -80,7 +80,7 @@ public class ModuleDeploymentTest {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JahiaTemplatesPackage oldpack = managerService.getTemplatePackageByFileName("dummy1");
                 if (oldpack != null) {
-                    managerService.undeployModule(oldpack, session);
+                    managerService.undeployModule(oldpack);
                 }
                 SettingsBean settingsBean = SettingsBean.getInstance();
                 FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), "dummy1-" + VERSION + ".war"));
@@ -176,7 +176,7 @@ public class ModuleDeploymentTest {
                     JahiaTemplatesPackage pack = managerService.deployModule(tmpFile, session);
                     tmpFile.delete();
 
-                    managerService.undeployModule(pack, session);
+                    managerService.undeployModule(pack);
 
                     pack = managerService.getTemplatePackageByFileName("dummy1");
                     assertNull(pack);

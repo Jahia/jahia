@@ -141,7 +141,7 @@ public class JahiaTemplateManagerServiceTest {
         }
         assertNotNull(articlePackage);
         String modulePath = "/modules/" + articlePackage.getRootFolderWithVersion();
-        templateManagerService.installModule(articlePackage, SITE_CONTENT_ROOT_NODE, "root");
+        templateManagerService.installModule(articlePackage.getRootFolder(), SITE_CONTENT_ROOT_NODE, "root");
         JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         JCRSessionWrapper session = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
         JCRSiteNode siteNode = (JCRSiteNode) session.getNode(SITE_CONTENT_ROOT_NODE);

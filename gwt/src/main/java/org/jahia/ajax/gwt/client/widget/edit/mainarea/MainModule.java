@@ -640,6 +640,8 @@ public class MainModule extends Module {
             } else {
                 newLocation = getBaseUrl() + config.getDefaultLocation();
             }
+        } else {
+            newLocation = frame.getCurrentFrameUrl().replaceFirst(this.config.getDefaultUrlMapping(), config.getDefaultUrlMapping());
         }
 
         this.config = config;

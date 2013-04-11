@@ -51,20 +51,28 @@ import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
@@ -72,10 +80,9 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * Panel that display settings, this panel suppose to be contain in MultiplePanelTabItem
+ * Panel that display settings
  */
-
-public class SettingsPanel implements Serializable {
+public class SettingsPanel extends SidePanelTabItem {
 
     private transient ContentPanel settingsPanel;
     private String settingPath;
@@ -87,20 +94,21 @@ public class SettingsPanel implements Serializable {
     private transient List<String> paths;
     private transient Map<String, Set<GWTJahiaNode>> nodesBySettingsPath;
 
-    public SettingsPanel() {
-
-    }
-
-    /**
-     * init method called first
-     */
-    public void init() {
-
+    @Override
+    public TabItem create(GWTSidePanelTab config) {
+        super.create(config);
+        tab.setLayout(new FitLayout());
         settingsPanel = new ContentPanel();
         settingsPanel.setAnimCollapse(false);
         settingsPanel.setHeading(Messages.get(label));
         settingsPanel.setLayout(new FitLayout());
+        tab.add(settingsPanel);
+        return tab;
+    }
 
+    @Override
+    public void handleNewMainNodeLoaded(final GWTJahiaNode mainNode) {
+        super.handleNewMainNodeLoaded(mainNode);
         LayoutContainer treeContainer = new LayoutContainer();
         treeContainer.setBorders(false);
         treeContainer.setScrollMode(Style.Scroll.AUTO);
@@ -112,7 +120,29 @@ public class SettingsPanel implements Serializable {
 
         NodeColumnConfigList columns = new NodeColumnConfigList(Arrays.asList(new GWTColumn("displayName", "", -1)));
         columns.init();
-        columns.get(0).setRenderer(NodeColumnConfigList.NAME_TREEGRID_RENDERER);
+        columns.get(0).setRenderer(new TreeGridCellRenderer<GWTJahiaNode>() {
+            @Override
+            protected String getText(TreeGrid<GWTJahiaNode> gwtJahiaNodeTreeGrid, GWTJahiaNode node, String property, int rowIndex, int colIndex) {
+                String v = super.getText(gwtJahiaNodeTreeGrid, node, property, rowIndex, colIndex);
+                if (v != null) {
+                    v = SafeHtmlUtils.htmlEscape(v);
+                }
+                List<String> requiredPermissions = node.get("j:requiredPermissions");
+                if (requiredPermissions != null) {
+                    boolean access = true;
+                    for (String p : requiredPermissions) {
+                        if (!PermissionsUtils.isPermitted(p.substring(p.lastIndexOf('/') + 1), mainNode)) {
+                            access = false;
+                            break;
+                        }
+                    }
+                    if (!access) {
+                        v = "<span class=\"accessForbidden\">" + v + "</span>";
+                    }
+                }
+                return v;
+            }
+        });
         RpcProxy<List<GWTJahiaNode>> proxy = new RpcProxy<List<GWTJahiaNode>>() {
             @Override
             protected void load(Object loadConfig, final AsyncCallback<List<GWTJahiaNode>> callback) {
@@ -121,6 +151,8 @@ public class SettingsPanel implements Serializable {
                 fields.add(GWTJahiaNode.PERMISSIONS);
                 fields.add(GWTJahiaNode.CHILDREN_INFO);
                 fields.add(GWTJahiaNode.ICON);
+                fields.add(GWTJahiaNode.LOCKS_INFO);
+                fields.add("j:requiredPermissions");
                 JahiaContentManagementService.App.getInstance()
                         .getRoot(paths, Arrays.asList("jnt:template"), null, null, fields, null, null, true,
                                 false, null, null, true, new AsyncCallback<List<GWTJahiaNode>>() {
@@ -211,11 +243,7 @@ public class SettingsPanel implements Serializable {
         treeVBoxData.setFlex(1);
 
         settingsPanel.add(treeContainer, treeVBoxData);
-        refresh();
-    }
-
-    public ContentPanel getSettingsPanel() {
-        return settingsPanel;
+        doRefresh();
     }
 
     public void setSettingsTemplateRoot(String settingTemplateRoot) {
@@ -242,7 +270,8 @@ public class SettingsPanel implements Serializable {
         return requiredPermission;
     }
 
-    public void refresh() {
+    @Override
+    public void doRefresh() {
         paths.clear();
         if (JahiaGWTParameters.getSiteNode() != null && JahiaGWTParameters.getSiteNode().getProperties().get("j:installedModules") != null) {
             for (String module : ((List<String>) JahiaGWTParameters.getSiteNode().get("j:installedModules"))) {
@@ -258,4 +287,5 @@ public class SettingsPanel implements Serializable {
         String nodePath = node.getPath();
         return nodePath.substring(nodePath.indexOf(settingTemplateRoot) + settingTemplateRoot.length());
     }
+
 }

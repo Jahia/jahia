@@ -251,7 +251,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                 v = "<span class=\"markedForDeletion\">" + v + "</span>";
             }
             if (!PermissionsUtils.isPermitted("editModeAccess", node) && !PermissionsUtils.isPermitted("jcr:write_default", node)) {
-                v = "<span class=\"noEditModeAccess\">" + v + "</span>";
+                v = "<span class=\"accessForbidden\">" + v + "</span>";
             }
             return v;
         }

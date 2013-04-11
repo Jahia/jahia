@@ -222,7 +222,7 @@ public class MainModule extends Module {
         if (location == null) {
             location = Window.Location.getPath();
         }
-        if (location.startsWith(config.getDefaultUrlMapping()+"/")) {
+        if (location.startsWith(JahiaGWTParameters.getContextPath() + config.getDefaultUrlMapping() + "/")) {
             location = location.replaceFirst(config.getDefaultUrlMapping(), config.getDefaultUrlMapping()+"frame");
         }
         if (location.contains("frame/") && !isValidUrl(location)) {

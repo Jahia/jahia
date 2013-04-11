@@ -684,17 +684,11 @@
             </list>
         </property>
         <property name="tabItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.MultiplePanelTabItem">
-                <property name="settingsPanelList">
-                    <list>
-                        <bean id="siteSettings" class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SettingsPanel">
-                            <property name="settingsTemplateRoot" value="siteSettingsBase"/>
-                            <property name="label" value="org.jahia.admin.siteSettings.label"/>
-                            <property name="requiredPermission" value="administrationAccess"/>
-                            <property name="settingPath" value="$site"/>
-                        </bean>
-                    </list>
-                </property>
+            <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SettingsPanel">
+                <property name="settingsTemplateRoot" value="siteSettingsBase"/>
+                <property name="label" value="org.jahia.admin.siteSettings.label"/>
+                <property name="requiredPermission" value="administrationAccess"/>
+                <property name="settingPath" value="$site"/>
             </bean>
         </property>
         <property name="requiredPermission" value="administrationAccess"/>

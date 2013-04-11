@@ -101,6 +101,7 @@
             <publish jcr:primaryType="jnt:permission"/>
         </repository-permissions>
         <admin jcr:primaryType="jnt:permission">
+            <!-- server settings -->
             <administrationAccess jcr:primaryType="jnt:permission"/>
             <adminVirtualSites jcr:primaryType="jnt:permission"/>
             <adminPortlets jcr:primaryType="jnt:permission"/>
@@ -112,15 +113,18 @@
             <adminDocumentation jcr:primaryType="jnt:permission"/>
             <adminAbout jcr:primaryType="jnt:permission"/>
             <adminUsers jcr:primaryType="jnt:permission"/>
+            <adminDBSettings jcr:primaryType="jnt:permission"/>
+            <adminTemplates jcr:primaryType="jnt:permission"/>
+            <adminSystemInfos jcr:primaryType="jnt:permission"/>
+            <adminManageMemory jcr:primaryType="jnt:permission"/>
+
+            <!-- site settings -->
             <adminGroups jcr:primaryType="jnt:permission"/>
             <adminSiteLanguages jcr:primaryType="jnt:permission"/>
             <adminHtmlSettings jcr:primaryType="jnt:permission"/>
             <adminUrlmapping jcr:primaryType="jnt:permission"/>
             <adminSiteTemplates jcr:primaryType="jnt:permission"/>
-            <adminDBSettings jcr:primaryType="jnt:permission"/>
-            <adminTemplates jcr:primaryType="jnt:permission"/>
-            <adminSystemInfos jcr:primaryType="jnt:permission"/>
-            <adminManageMemory jcr:primaryType="jnt:permission"/>
+            <adminWcagCompliance jcr:primaryType="jnt:permission"/>
         </admin>
 
         <studioMode jcr:primaryType="jnt:permission">
@@ -308,17 +312,15 @@
 
         <web-designer jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite" j:roleGroup="edit-role"
                       j:privilegedAccess="true">
-            <studio-access  jcr:primaryType="jnt:externalPermissions" j:path="/modules"
-                j:permissions="/permissions/editMode
-                        /permissions/studioMode
-                        /permissions/repository-default">
-            </studio-access>
+            <studio-access jcr:primaryType="jnt:externalPermissions" j:path="/modules"
+                           j:permissions="/permissions/editMode
+                                          /permissions/studioMode
+                                          /permissions/repository-permissions/jcr:all_default" />
             <modules-management jcr:primaryType="jnt:externalPermissions" j:path="/settings"
                                 j:permissions="/permissions/editMode
                                                /permissions/studioMode
-                                               /permissions/repository-default
-                                               /permissions/admin/adminTemplates">
-            </modules-management>
+                                               /permissions/repository-permissions/jcr:all_default
+                                               /permissions/admin/adminTemplates" />
         </web-designer>
 
         <site-administrator jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite" j:roleGroup="edit-role"
@@ -340,9 +342,35 @@
                             /permissions/admin/adminGroups
                             /permissions/admin/adminIssueTracking
                             /permissions/admin/adminSiteTemplates
+                            /permissions/admin/adminWcagCompliance
                             /permissions/templates"
-                            j:privilegedAccess="true"
-                />
+                            j:privilegedAccess="true" />
+
+        <server-administrator jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite" j:roleGroup="edit-role"
+                              j:permissions="/permissions/repository-permissions/jcr:all_default" j:privilegedAccess="true">
+            <settings-access jcr:primaryType="jnt:externalPermissions" j:path="/settings"
+                             j:permissions="/permissions/admin/administrationAccess
+                                            /permissions/admin/adminVirtualSites
+                                            /permissions/admin/adminPortlets
+                                            /permissions/admin/adminEmailSettings
+                                            /permissions/admin/adminRootUser
+                                            /permissions/admin/adminCache
+                                            /permissions/admin/adminPasswordPolicy
+                                            /permissions/admin/adminIssueTracking
+                                            /permissions/admin/adminDocumentation
+                                            /permissions/admin/adminAbout
+                                            /permissions/admin/adminUsers
+                                            /permissions/admin/adminDBSettings
+                                            /permissions/admin/adminTemplates
+                                            /permissions/admin/adminSystemInfos
+                                            /permissions/admin/adminManageMemory" />
+            <root-access jcr:primaryType="jnt:externalPermissions" j:path="/"
+                         j:permissions="/permissions/repository-permissions/jcr:all_default" />
+            <permissions-access jcr:primaryType="jnt:externalPermissions" j:path="/permissions"
+                                j:permissions="/permissions/repository-permissions/jcr:all_default" />
+            <roles-access jcr:primaryType="jnt:externalPermissions" j:path="/roles"
+                          j:permissions="/permissions/repository-permissions/jcr:all_default" />
+        </server-administrator>
 
     </roles>
 </content>

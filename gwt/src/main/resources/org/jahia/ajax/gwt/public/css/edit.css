@@ -758,7 +758,7 @@ button.button-disable:hover, div.button-disable:hover {
     text-decoration:line-through;
 }
 
-.noEditModeAccess {
+.accessForbidden {
     background: #FF9999;
 }
 

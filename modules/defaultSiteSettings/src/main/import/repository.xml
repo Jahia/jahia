@@ -68,39 +68,71 @@
               </urlmapping.png>
           </files>
           <siteSettingsBase j:view="siteSettings" jcr:mixinTypes="jmix:useUILocale" jcr:primaryType="jnt:template">
-          <manageLanguages j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true" j:icon="/modules/defaultSiteSettings/templates/files/signpost.png" j:priority="100" j:titleKey="siteSettings.label.manageLanguages" jcr:mixinTypes="jmix:rbTitle" jcr:primaryType="jnt:contentTemplate">
-            <pagecontent jcr:primaryType="jnt:contentList">
-              <manage-languages jcr:primaryType="jnt:siteSettingsManageLanguages" />
-            </pagecontent>
-          </manageLanguages>
-          <wcagCompliance j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true" j:icon="/modules/defaultSiteSettings/templates/files/text_rich_colored.png" j:priority="100" j:titleKey="siteSettings.label.wcagCompliance" jcr:mixinTypes="jmix:rbTitle" jcr:primaryType="jnt:contentTemplate">
-            <pagecontent jcr:primaryType="jnt:contentList">
-              <wcag-compliance jcr:primaryType="jnt:siteSettingsWcagCompliance" />
-            </pagecontent>
-          </wcagCompliance>
-          <htmlFiltering j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true" j:icon="/modules/defaultSiteSettings/templates/files/text_rich_colored.png" j:priority="100" j:titleKey="siteSettings.label.htmlFiltering" jcr:mixinTypes="jmix:rbTitle" jcr:primaryType="jnt:contentTemplate">
-            <pagecontent jcr:primaryType="jnt:contentList">
-              <html-filtering jcr:primaryType="jnt:siteSettingsHtmlFiltering" />
-            </pagecontent>
-          </htmlFiltering>
-          <vanityURLSetting j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true" j:icon="/modules/defaultSiteSettings/templates/files/urlmapping.png" j:priority="100" j:titleKey="siteSettings.label.vanityURLSettings" jcr:mixinTypes="jmix:rbTitle" jcr:primaryType="jnt:contentTemplate">
-            <pagecontent jcr:primaryType="jnt:contentList">
-              <pager displayNbOfItemsPerPage="true" displayNbOfItemsPerPageValues="5,10,25,50,100" displayPager="true" j:bindedComponent="/modules/defaultSiteSettings/templates/siteSettingsBase/vanityURLSetting/pagecontent/vanityurlslist" jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:pager" nbOfPages="10" pageSize="10">
-                <j:acl jcr:primaryType="jnt:acl" />
-              </pager>
-              <vanityurlslist jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:siteSettingsVanityUrlsList">
-                <j:acl jcr:primaryType="jnt:acl" />
-              </vanityurlslist>
-              <pager-1 displayNbOfItemsPerPage="true" displayNbOfItemsPerPageValues="5,10,25,50,100" displayPager="true" j:bindedComponent="/modules/defaultSiteSettings/templates/siteSettingsBase/vanityURLSetting/pagecontent/vanityurlslist" jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:pager" nbOfPages="10" pageSize="10">
-                <j:acl jcr:primaryType="jnt:acl" />
-              </pager-1>
-            </pagecontent>
-          </vanityURLSetting>
-          <manageModules j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true" j:icon="/modules/defaultSiteSettings/templates/files/briefcase_document.png" j:priority="100" j:titleKey="siteSettings.label.manageModules" jcr:mixinTypes="jmix:rbTitle" jcr:primaryType="jnt:contentTemplate">
-            <pagecontent jcr:primaryType="jnt:contentList">
-              <manage-modules jcr:primaryType="jnt:siteSettingsManageModules" />
-            </pagecontent>
-          </manageModules>
+              <manageLanguages j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true"
+                               j:icon="/modules/defaultSiteSettings/templates/files/signpost.png" j:priority="100"
+                               j:requiredPermissions="#/permissions/admin/adminSiteLanguages"
+                               j:titleKey="siteSettings.label.manageLanguages" jcr:mixinTypes="jmix:rbTitle"
+                               jcr:primaryType="jnt:contentTemplate">
+                  <pagecontent jcr:primaryType="jnt:contentList">
+                      <manage-languages jcr:primaryType="jnt:siteSettingsManageLanguages"/>
+                  </pagecontent>
+              </manageLanguages>
+              <wcagCompliance j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true"
+                              j:icon="/modules/defaultSiteSettings/templates/files/text_rich_colored.png"
+                              j:priority="100"
+                              j:requiredPermissions="#/permissions/admin/adminWcagCompliance"
+                              j:titleKey="siteSettings.label.wcagCompliance"
+                              jcr:mixinTypes="jmix:rbTitle" jcr:primaryType="jnt:contentTemplate">
+                  <pagecontent jcr:primaryType="jnt:contentList">
+                      <wcag-compliance jcr:primaryType="jnt:siteSettingsWcagCompliance"/>
+                  </pagecontent>
+              </wcagCompliance>
+              <htmlFiltering j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true"
+                             j:icon="/modules/defaultSiteSettings/templates/files/text_rich_colored.png"
+                             j:priority="100"
+                             j:requiredPermissions="#/permissions/admin/adminHtmlSettings"
+                             j:titleKey="siteSettings.label.htmlFiltering"
+                             jcr:mixinTypes="jmix:rbTitle" jcr:primaryType="jnt:contentTemplate">
+                  <pagecontent jcr:primaryType="jnt:contentList">
+                      <html-filtering jcr:primaryType="jnt:siteSettingsHtmlFiltering"/>
+                  </pagecontent>
+              </htmlFiltering>
+              <vanityURLSetting j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true"
+                                j:icon="/modules/defaultSiteSettings/templates/files/urlmapping.png" j:priority="100"
+                                j:requiredPermissions="#/permissions/admin/adminUrlmapping"
+                                j:titleKey="siteSettings.label.vanityURLSettings" jcr:mixinTypes="jmix:rbTitle"
+                                jcr:primaryType="jnt:contentTemplate">
+                  <pagecontent jcr:primaryType="jnt:contentList">
+                      <pager displayNbOfItemsPerPage="true" displayNbOfItemsPerPageValues="5,10,25,50,100"
+                             displayPager="true"
+                             j:bindedComponent="/modules/defaultSiteSettings/templates/siteSettingsBase/vanityURLSetting/pagecontent/vanityurlslist"
+                             jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:pager" nbOfPages="10"
+                             pageSize="10">
+                          <j:acl jcr:primaryType="jnt:acl"/>
+                      </pager>
+                      <vanityurlslist jcr:mixinTypes="jmix:accessControlled"
+                                      jcr:primaryType="jnt:siteSettingsVanityUrlsList">
+                          <j:acl jcr:primaryType="jnt:acl"/>
+                      </vanityurlslist>
+                      <pager-1 displayNbOfItemsPerPage="true" displayNbOfItemsPerPageValues="5,10,25,50,100"
+                               displayPager="true"
+                               j:bindedComponent="/modules/defaultSiteSettings/templates/siteSettingsBase/vanityURLSetting/pagecontent/vanityurlslist"
+                               jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:pager" nbOfPages="10"
+                               pageSize="10">
+                          <j:acl jcr:primaryType="jnt:acl"/>
+                      </pager-1>
+                  </pagecontent>
+              </vanityURLSetting>
+              <manageModules j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true"
+                             j:icon="/modules/defaultSiteSettings/templates/files/briefcase_document.png"
+                             j:priority="100"
+                             j:requiredPermissions="#/permissions/admin/adminSiteTemplates"
+                             j:titleKey="siteSettings.label.manageModules"
+                             jcr:mixinTypes="jmix:rbTitle" jcr:primaryType="jnt:contentTemplate">
+                  <pagecontent jcr:primaryType="jnt:contentList">
+                      <manage-modules jcr:primaryType="jnt:siteSettingsManageModules"/>
+                  </pagecontent>
+              </manageModules>
         </siteSettingsBase>
       </templates>
     </defaultSiteSettings>

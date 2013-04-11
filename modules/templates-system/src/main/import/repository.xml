@@ -216,7 +216,7 @@
                                 <user-base-layout-col3 jcr:primaryType="jnt:contentList">
                                     <administration-tools j:className="simple" j:skin="skins.box8" j:style="grey" j:view="unordered" jcr:mixinTypes="jmix:style jmix:renderable jmix:skinnable jmix:listOrdered" jcr:primaryType="jnt:contentList">
                                         <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.administrationTools)##" />
-                                        <gotoAdmin j:contextNodePath="/" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="#/permissions/admin/administrationAccess" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:gotoAdmin">
+                                        <gotoAdmin j:contextNodePath="/settings" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="#/permissions/admin/administrationAccess" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:gotoAdmin">
                                             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.serverAdministration)##" />
                                         </gotoAdmin>
                                         <gotoStudio j:contextNodePath="/modules" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="#/permissions/studioMode/studioModeAccess" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:gotoStudio">

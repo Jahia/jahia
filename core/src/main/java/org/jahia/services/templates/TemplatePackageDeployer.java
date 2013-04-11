@@ -370,7 +370,7 @@ public class TemplatePackageDeployer {
         return null;
     }
 
-    public void undeployModule(JahiaTemplatesPackage pack, JCRSessionWrapper session, boolean keepWarFile) throws RepositoryException {
+    public void undeployModule(JahiaTemplatesPackage pack) throws RepositoryException {
         Bundle[] bundles = ProvisionActivator.getInstance().getBundleContext().getBundles();
         for (Bundle bundle : bundles) {
             if (bundle.getHeaders().get("Jahia-Root-Folder") != null) {

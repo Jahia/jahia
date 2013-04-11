@@ -663,7 +663,7 @@ public class Service extends JahiaService {
         try {
 
             JahiaTemplateManagerService managerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-            ((JahiaTemplateManagerService) managerService).installModule(managerService.getTemplatePackageByFileName(moduleName), site.getPath(), user.getName());
+            ((JahiaTemplateManagerService) managerService).installModule(moduleName, site.getPath(), user.getName());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

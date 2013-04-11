@@ -80,8 +80,9 @@
                                 <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                     <input type="hidden" name="module" value="${entry.key}"/>
                                     <input type="hidden" name="version" value="${version.key}"/>
-                                    <fmt:message var="label" key='serverSettings.manageModules.startModule' />
-                                    <input class="btn btn-success" type="submit" name="_eventId_startModule" value="${label}" onclick=""/>&nbsp; ${version.key}
+                                    <fmt:message var="labelStart" key='serverSettings.manageModules.startModule' />
+                                    <fmt:message var="labelUndeployModule" key='serverSettings.manageModules.undeployModule' />
+                                    <input class="btn btn-success" type="submit" name="_eventId_startModule" value="${labelStart}" onclick=""/><input class="btn" type="submit" name="_eventId_undeployModule" value="${labelUndeployModule}" onclick=""/>&nbsp; ${version.key}
                                 </form>
                             </div>
                         </c:otherwise>

@@ -260,6 +260,7 @@ public class Activator implements BundleActivator {
                 logger.error("Error while initializing module content for module " + jahiaTemplatesPackage, e);
             }
         }
+        templatePackageRegistry.unregisterPackageVersion(jahiaTemplatesPackage);
         installedBundles.remove(bundle);
         long totalTime = System.currentTimeMillis() - startTime;
         logger.info("--- Finished uninstalling Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);

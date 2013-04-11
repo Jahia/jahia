@@ -25,6 +25,7 @@
 
         <transition on="startModule" to="startModule"/>
         <transition on="stopModule" to="stopModule"/>
+        <transition on="undeployModule" to="undeployModule"/>
 
 
         <transition on="upload" to="view">
@@ -82,6 +83,11 @@
     </action-state>
 
     <end-state id="moduleStopped"/>
+
+    <action-state id="undeployModule">
+        <evaluate expression="JahiaTemplateManagerService.undeployModule(requestParameters.module,requestParameters.version)"/>
+        <transition to="view"/>
+    </action-state>
 
     <action-state id="enableOnSite">
         <evaluate

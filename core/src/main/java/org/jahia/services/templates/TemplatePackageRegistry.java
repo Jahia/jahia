@@ -388,6 +388,15 @@ public class TemplatePackageRegistry {
         }
     }
 
+    public void unregisterPackageVersion(JahiaTemplatesPackage pack) {
+        Map<ModuleVersion, JahiaTemplatesPackage> map = packagesWithVersionByFilename.get(pack.getRootFolder());
+        JahiaTemplatesPackage jahiaTemplatesPackage = map.remove(pack.getVersion());
+        if (map.isEmpty()) {
+            packagesWithVersionByFilename.remove(pack.getRootFolder());
+            packagesWithVersion.remove(pack.getName());
+        }
+    }
+
     /**
      * Adds the template package to the repository.
      *

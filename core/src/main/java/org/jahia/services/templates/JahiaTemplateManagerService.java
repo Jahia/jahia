@@ -54,7 +54,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.value.StringValue;
 import org.apache.maven.cli.MavenCli;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.dom4j.Document;
@@ -714,7 +713,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     }
                     session.save();
 
-                    undeployModule(module, session);
+                    undeployModule(module);
                 }
 
                 return generatedWar;
@@ -1156,20 +1155,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public void installModule(final String module, final String sitePath, String username)
             throws RepositoryException {
-        installModule(templatePackageRegistry.lookupByFileName(module), sitePath, username);
-    }
-
-    public void installModule(final JahiaTemplatesPackage module, final String sitePath, String username)
-            throws RepositoryException {
-        installModules(Arrays.asList(module), sitePath, username);
-    }
-
-    public void installModules(final List<JahiaTemplatesPackage> modules, final String sitePath, String username)
-            throws RepositoryException {
         JCRTemplate.getInstance()
                 .doExecuteWithSystemSession(username, new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        installModules(modules, sitePath, session);
+                        installModules(Arrays.asList(templatePackageRegistry.lookupByFileName(module)), sitePath, session);
                         session.save();
                         return null;
                     }
@@ -1408,20 +1397,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public void uninstallModule(final String module, final String sitePath, String username)
             throws RepositoryException {
-        uninstallModule(templatePackageRegistry.lookupByFileName(module), sitePath, username);
-    }
-
-    public void uninstallModule(final JahiaTemplatesPackage module, final String sitePath, String username)
-            throws RepositoryException {
-        uninstallModules(Arrays.asList(module), sitePath, username);
-    }
-
-    public void uninstallModules(final List<JahiaTemplatesPackage> modules, final String sitePath, String username)
-            throws RepositoryException {
         JCRTemplate.getInstance()
                 .doExecuteWithSystemSession(username, new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        uninstallModules(modules, sitePath, session);
+                        uninstallModules(Arrays.asList(templatePackageRegistry.lookupByFileName(module)), sitePath, session);
                         session.save();
                         return null;
                     }
@@ -1654,8 +1633,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return module;
     }
 
-    public void undeployModule(JahiaTemplatesPackage pack, JCRSessionWrapper session) throws RepositoryException {
-        templatePackageDeployer.undeployModule(pack, session, false);
+    public void undeployModule(String module, String version) throws RepositoryException {
+        undeployModule(templatePackageRegistry.lookupByFileNameAndVersion(module, new ModuleVersion(version)));
+    }
+
+    public void undeployModule(JahiaTemplatesPackage pack) throws RepositoryException {
+        templatePackageDeployer.undeployModule(pack);
     }
 
     /**

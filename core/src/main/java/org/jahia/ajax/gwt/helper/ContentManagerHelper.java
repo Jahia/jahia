@@ -358,11 +358,32 @@ public class ContentManagerHelper {
         }
     }
 
+    public List<GWTJahiaNode> copy(final List<String> pathsToCopy, final String destinationPath, final String newName,
+            final boolean moveOnTop, final boolean cut, final boolean reference, boolean allLanguages,
+            JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+        return copy(pathsToCopy, destinationPath, newName, moveOnTop, cut, reference, allLanguages, currentUserSession,
+                currentUserSession.getLocale());
+    }
+
     public List<GWTJahiaNode> copy(final List<String> pathsToCopy, final String destinationPath, final String newName, final boolean moveOnTop,
                                    final boolean cut, final boolean reference, boolean allLanguages,
-                                   JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+                                   JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         final List<String> missedPaths = new ArrayList<String>();
         final List<GWTJahiaNode> res = new ArrayList<GWTJahiaNode>();
+        
+        // perform a check to prevent pasting content to itself or its children
+        for (Iterator<String> iterator = pathsToCopy.iterator(); iterator.hasNext();) {
+            String toCopy = iterator.next();
+            if (destinationPath.equals(toCopy) || destinationPath.startsWith(toCopy + "/")) {
+                missedPaths.add(JahiaResourceBundle.format(JahiaResourceBundle.getJahiaInternalResource(
+                        "failure.paste.cannot.paste", uiLocale, "Content {0} cannot be pasted into {1}"), toCopy,
+                        destinationPath));
+                iterator.remove();
+            }
+        }
+        if (!missedPaths.isEmpty() && pathsToCopy.isEmpty()) {
+            throw new GWTJahiaServiceException(StringUtils.join(missedPaths, "\n"));
+        }
 
         try {
             JCRCallback<List<String>> callback = new JCRCallback<List<String>>() {

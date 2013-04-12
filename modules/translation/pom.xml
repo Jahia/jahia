@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
     This file is part of Jahia, next-generation open source CMS:
     Jahia's next-generation, open source CMS stems from a widely acknowledged vision 
@@ -38,10 +39,7 @@
     If you are unsure which license is appropriate for your use, 
     please contact the sales department at sales@jahia.com.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">  
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>jahia-modules</artifactId>
@@ -52,7 +50,6 @@
     <name>Jahia Translation Providers</name>
     <packaging>bundle</packaging>
     <description>Registers providers for Translation Service</description>
-
     <build>
         <plugins>
             <plugin>
@@ -62,7 +59,7 @@
                 <configuration>
                     <instructions>
                         <Jahia-Module-Type>system</Jahia-Module-Type>
-                        <Jahia-Depends>default,defaultSiteSettings</Jahia-Depends>
+            <Jahia-Depends>default,defaultSiteSettings</Jahia-Depends> 
                     </instructions>
                 </configuration>
             </plugin>

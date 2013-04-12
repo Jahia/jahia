@@ -1,23 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+<content xmlns:j="http://www.jahia.org/jahia/1.0"
+         xmlns:jcr="http://www.jcp.org/jcr/1.0"
+         xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
+         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
     <modules jcr:primaryType="jnt:modules">
-        <translation j:dependencies="default" j:installedModules="translation" j:siteType="module" j:title="Jahia Translation Providers" j:wcagCompliance="true" jcr:primaryType="jnt:virtualsite">
-            <portlets jcr:primaryType="jnt:portletFolder" />
-            <contents jcr:primaryType="jnt:contentFolder" />
+        <translation j:dependencies="default defaultSiteSettings"
+                   j:installedModules="translation"
+                   j:moduleType="system"
+                   j:title="Jahia Translation Providers"
+                   jcr:primaryType="jnt:module">
+                
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
-                <siteSettingsBase j:view="siteSettings" jcr:mixinTypes="jmix:useUILocale" jcr:primaryType="jnt:template">
-                    <translationSettings j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true"
-                                         j:icon="/modules/defaultSiteSettings/templates/files/text_rich_colored.png"
+                    <siteSettingsBase j:view="siteSettings"
+                              jcr:mixinTypes="jmix:useUILocale"
+                              jcr:primaryType="jnt:template">
+                        <translationSettings j:applyOn="jnt:virtualsite"
+                                    j:defaultTemplate="false"
+                                    j:hiddenTemplate="true"
                                          j:priority="100"
                                          j:requiredPermissions="#/permissions/admin/adminMicrosoftTranslation"
                                          j:titleKey="siteSettings.label.translation"
-                                         jcr:mixinTypes="jmix:rbTitle" jcr:primaryType="jnt:contentTemplate">
+                                    jcr:mixinTypes="jmix:rbTitle"
+                                    jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <editMicrosoftTranslatorSettings jcr:primaryType="jnt:editMicrosoftTranslatorSettings"/>
                         </pagecontent>
                     </translationSettings>
                 </siteSettingsBase>
             </templates>
+                <portlets jcr:primaryType="jnt:portletFolder"/>
+                <contents jcr:primaryType="jnt:contentFolder"/>
+                
         </translation>
     </modules>
+    
 </content>

@@ -88,7 +88,6 @@ public class SettingsPanel extends SidePanelTabItem {
     private String settingPath;
     private String settingTemplateRoot;
     private String label;
-    private String requiredPermission;
     private transient TreeLoader<GWTJahiaNode> settingsLoader;
     private transient TreeStore<GWTJahiaNode> settingsStore;
     private transient List<String> paths;
@@ -254,20 +253,12 @@ public class SettingsPanel extends SidePanelTabItem {
         this.label = label;
     }
 
-    public void setRequiredPermission(String requiredPermission) {
-        this.requiredPermission = requiredPermission;
-    }
-
     /**
      * setter for setting path.
      * @param settingPath path used to display the setting, $site for current site path
      */
     public void setSettingPath(String settingPath) {
         this.settingPath = settingPath;
-    }
-
-    public String getRequiredPermission() {
-        return requiredPermission;
     }
 
     @Override

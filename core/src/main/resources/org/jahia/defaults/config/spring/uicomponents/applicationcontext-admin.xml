@@ -100,7 +100,6 @@
             <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SettingsPanel">
                 <property name="settingsTemplateRoot" value="serverSettingsBase"/>
                 <property name="label" value="label.serverSettings"/>
-                <property name="requiredPermission" value="administrationAccess"/>
                 <property name="settingPath" value="/settings"/>
             </bean>
         </property>

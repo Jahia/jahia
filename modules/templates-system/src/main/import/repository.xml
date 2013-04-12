@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
     <modules jcr:primaryType="jnt:modules">
-        <templates-system j:dependencies="contentRetrieval default default-skins facets grid profile skins tabularList tags tasks"
+        <templates-system j:dependencies="contentRetrieval default default-skins facets grid profile serverSettings skins tabularList tags tasks"
                         j:installedModules="Jahia System Templates"
                         j:moduleType="templatesSet"
                         j:title="Jahia System Templates"
@@ -200,18 +200,6 @@
                             </custom-rows-960gs>
                         </pagecontent>
                     </fileTemplate>
-                        <siteTemplate j:applyOn="jnt:module"
-                             j:defaultTemplate="true"
-                             j:hiddenTemplate="false"
-                             jcr:primaryType="jnt:contentTemplate">
-                        <pagecontent jcr:primaryType="jnt:contentList">
-                            <custom-rows-960gs customColumn="16" divID="content" jcr:primaryType="jnt:customRow">
-                                <custom-rows-960gs-col1 jcr:primaryType="jnt:contentList">
-                                        <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay"/>
-                                </custom-rows-960gs-col1>
-                            </custom-rows-960gs>
-                        </pagecontent>
-                    </siteTemplate>
                         <home jcr:primaryType="jnt:pageTemplate"/>
                     <pagecontent jcr:primaryType="jnt:contentList">
                         <content jcr:primaryType="jnt:contentList">
@@ -1050,6 +1038,22 @@
                         </pagecontent>
                     </viewContent>
                 </baseempty>
+                    <moduletemplate j:applyOn="jnt:module"
+                            j:defaultTemplate="true"
+                            j:hiddenTemplate="false"
+                            j:view="serverSettings"
+                            jcr:primaryType="jnt:contentTemplate">
+                        <j:translation_en jcr:language="en"
+                                 jcr:primaryType="jnt:translation"
+                                 jcr:title="moduleTemplate"/>
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <manage-modules jcr:primaryType="jnt:serverSettingsManageModules">
+                                <j:translation_en jcr:language="en"
+                                       jcr:primaryType="jnt:translation"
+                                       jcr:title="manage-modules"/>
+                            </manage-modules>
+                        </pagecontent>
+                    </moduletemplate>
             </templates>
                 <portlets jcr:primaryType="jnt:portletFolder"/>
                 <files jcr:primaryType="jnt:folder"/>

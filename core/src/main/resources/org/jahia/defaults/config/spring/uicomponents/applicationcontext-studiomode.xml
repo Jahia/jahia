@@ -58,7 +58,7 @@
             </set>
         </property>
         <property name="defaultUrlMapping" value="/cms/studio"/>
-        <property name="defaultLocation" value="/settings.manageModules.html"/>
+        <property name="defaultLocation" value="/modules.manageModules.html"/>
         <property name="sitesLocation" value="/modules/*"/>
         <property name="topToolbar">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
@@ -78,7 +78,7 @@
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
                             <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GoToActionItem">
-                                    <property name="path" value="/settings"/>
+                                    <property name="path" value="/modules"/>
                                     <property name="template" value="manageModules"/>
                                 </bean>
                             </property>

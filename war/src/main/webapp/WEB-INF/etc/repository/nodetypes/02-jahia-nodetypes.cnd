@@ -406,7 +406,7 @@
 [jnt:pageTemplate] > jnt:template
 
 [jnt:contentTemplate] > jnt:template
- - j:applyOn (string, choicelist[subnodetypes = 'jnt:content,jnt:contentList,jnt:folder,jnt:file,jnt:user,jnt:group,jnt:virtualsite,jnt:globalSettings',resourceBundle]) multiple
+ - j:applyOn (string, choicelist[subnodetypes = 'nt:base',resourceBundle]) multiple
  - j:defaultTemplate (boolean) = false
  - j:priority (long)
 

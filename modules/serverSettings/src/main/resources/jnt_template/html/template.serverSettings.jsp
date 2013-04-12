@@ -37,7 +37,7 @@
 <c:if test="${renderContext.editMode}">
     <template:addResources type="css" resources="edit.css" />
 </c:if>
-<template:addResources type="css" resources="admin.css"/>
+<template:addResources type="css" resources="bootstrap.css,admin.css"/>
 <template:theme/>
 
 </body>

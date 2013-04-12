@@ -54,15 +54,21 @@ import java.util.Map;
  */
 public class GitSourceControlManagement extends SourceControlManagement {
 
+    private String executable;
+
+    public GitSourceControlManagement(String executable) {
+        this.executable = executable;
+    }
+
     protected void initWithEmptyFolder(File workingDirectory, String url) throws IOException {
         this.rootFolder = workingDirectory;
-        executeCommand("git", "init");
-        executeCommand("git", "add .");
-        executeCommand("git", "commit -a -m \"First commit\"");
-        executeCommand("git", "remote add origin " + url);
-        executeCommand("git", "fetch");
-        executeCommand("git", "merge origin/master");
-        executeCommand("git", "push -u origin master");
+        executeCommand(executable, "init");
+        executeCommand(executable, "add .");
+        executeCommand(executable, "commit -a -m \"First commit\"");
+        executeCommand(executable, "remote add origin " + url);
+        executeCommand(executable, "fetch");
+        executeCommand(executable, "merge origin/master");
+        executeCommand(executable, "push -u origin master");
     }
 
     protected void initWithWorkingDirectory(File workingDirectory) throws IOException {
@@ -71,17 +77,17 @@ public class GitSourceControlManagement extends SourceControlManagement {
 
     protected void initFromURI(File workingDirectory, String uri, String branchOrTag) throws IOException {
         this.rootFolder = workingDirectory.getParentFile();
-        executeCommand("git", "clone " + uri + " " + workingDirectory.getName());
+        executeCommand(executable, "clone " + uri + " " + workingDirectory.getName());
         this.rootFolder = workingDirectory;
         if (!StringUtils.isEmpty(branchOrTag)) {
-            executeCommand("git", "checkout " + branchOrTag);
+            executeCommand(executable, "checkout " + branchOrTag);
         }
         this.rootFolder = workingDirectory;
     }
 
     @Override
     public String getURI() throws IOException {
-        ExecutionResult result = executeCommand("git", "remote -v");
+        ExecutionResult result = executeCommand(executable, "remote -v");
         String url = StringUtils.substringBefore(StringUtils.substringAfter(result.out,"origin"),"(").trim();
         if (!StringUtils.isEmpty(url)) {
             return "scm:git:"+url;
@@ -109,20 +115,20 @@ public class GitSourceControlManagement extends SourceControlManagement {
                 args.add(file.getPath().substring(rootPath.length() + 1));
             }
         }
-        executeCommand("git", StringUtils.join(args, ' '));
+        executeCommand(executable, StringUtils.join(args, ' '));
         invalidateStatusCache();
     }
 
     public void update() throws IOException {
-        executeCommand("git", "stash");
-        executeCommand("git", "pull --rebase");
-        executeCommand("git", "stash pop");
+        executeCommand(executable, "stash");
+        executeCommand(executable, "pull --rebase");
+        executeCommand(executable, "stash pop");
         invalidateStatusCache();
     }
 
     public void commit(String message) throws IOException {
-        executeCommand("git", "commit -a -m \"" + message + "\"");
-        executeCommand("git", "push -u origin master");
+        executeCommand(executable, "commit -a -m \"" + message + "\"");
+        executeCommand(executable, "push -u origin master");
         invalidateStatusCache();
     }
 
@@ -131,7 +137,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
             synchronized (GitSourceControlManagement.class) {
                 if (statusMap == null) {
                     Map<String, Status> newMap = new HashMap<String, Status>();
-                    ExecutionResult result = executeCommand("git", "status --porcelain");
+                    ExecutionResult result = executeCommand(executable, "status --porcelain");
                     for (String line : result.out.split("\n")) {
                         if (StringUtils.isBlank(line)) {
                             continue;

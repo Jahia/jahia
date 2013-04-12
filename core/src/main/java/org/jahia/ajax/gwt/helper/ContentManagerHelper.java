@@ -100,6 +100,7 @@ public class ContentManagerHelper {
 
     private JahiaSitesService sitesService;
     private ContentHistoryService contentHistoryService;
+    private JahiaTemplateManagerService templateManagerService;
 
     private NavigationHelper navigation;
     private PropertiesHelper properties;
@@ -123,6 +124,10 @@ public class ContentManagerHelper {
 
     public void setContentHistoryService(ContentHistoryService contentHistoryService) {
         this.contentHistoryService = contentHistoryService;
+    }
+
+    public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
+        this.templateManagerService = templateManagerService;
     }
 
     public JCRNodeWrapper addNode(JCRNodeWrapper parentNode, String name, String nodeType, List<String> mixin,
@@ -1113,7 +1118,7 @@ public class ContentManagerHelper {
     public void deployModule(final String moduleName, final String sitePath, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         try {
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().installModule(moduleName, sitePath, currentUserSession.getUser().getUsername());
+            templateManagerService.installModule(moduleName, sitePath, currentUserSession.getUser().getUsername());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -1121,8 +1126,6 @@ public class ContentManagerHelper {
     }
 
     public GWTJahiaNode createModule(String key, String baseSet, final String siteType, String sources, JCRSessionWrapper session) throws GWTJahiaServiceException {
-        JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-
         if (baseSet == null) {
             String shortName = JCRContentUtils.generateNodeName(key);
             try {
@@ -1173,7 +1176,7 @@ public class ContentManagerHelper {
     private File getSource(String moduleName, JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper n = session.getNode("/modules/" + moduleName);
 
-        JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName);
+        JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName(moduleName);
         n = n.getNode(pack.getVersion().toString());
         if (!n.hasNode("j:versionInfo")) {
             return null;
@@ -1187,9 +1190,8 @@ public class ContentManagerHelper {
 
     public void updateModule(String moduleName, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
         File sources = getSource(moduleName, session);
-        JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
 
-        SourceControlManagement scm = SourceControlManagement.getSourceControlManagement(sources);
+        SourceControlManagement scm = templateManagerService.getSourceControlFactory().getSourceControlManagement(sources);
         templateManagerService.regenerateImportFile(moduleName, sources, session);
         scm.update();
         templateManagerService.compileAndDeploy(moduleName, sources, session);
@@ -1197,8 +1199,6 @@ public class ContentManagerHelper {
 
     public GWTJahiaNode checkoutModule(String moduleName, String scmURI, String scmType, String branchOrTag, JCRSessionWrapper session) throws Exception {
         GWTJahiaNode node = null;
-
-        JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
 
         String fullUri = "scm:" + scmType + ":" + scmURI;
         JCRNodeWrapper nodeWrapper = templateManagerService.checkoutModule(null, fullUri, branchOrTag, moduleName, null, session);
@@ -1210,7 +1210,6 @@ public class ContentManagerHelper {
 
     public void sendToSourceControl(String moduleName, String scmURI, String scmType, JCRSessionWrapper session) throws RepositoryException {
         try {
-            JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
             templateManagerService.sendToSourceControl(moduleName, scmURI, scmType, session);
         } catch (Exception e) {
             e.printStackTrace();
@@ -1219,7 +1218,6 @@ public class ContentManagerHelper {
 
     public void compileAndDeploy(String moduleName, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
         File sources = getSource(moduleName, session);
-        JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
 
         templateManagerService.regenerateImportFile(moduleName, sources, session);
         templateManagerService.compileAndDeploy(moduleName, sources, session);
@@ -1229,7 +1227,7 @@ public class ContentManagerHelper {
         SourceControlManagement scm = null;
         File sources = getSource(moduleName, session);
         try {
-            scm = SourceControlManagement.getSourceControlManagement(sources);
+            scm = templateManagerService.getSourceControlFactory().getSourceControlManagement(sources);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1242,7 +1240,7 @@ public class ContentManagerHelper {
             }
         }
 
-        ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateImportFile(moduleName, sources, session);
+        templateManagerService.regenerateImportFile(moduleName, sources, session);
 
         if (scm != null) {
             try {
@@ -1256,8 +1254,6 @@ public class ContentManagerHelper {
 
     public GWTJahiaNode releaseModule(String moduleName, String nextVersion, JCRSessionWrapper session) {
         try {
-            JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-
             JahiaTemplatesPackage previous = templateManagerService.getTemplatePackageByFileName(moduleName);
 
             File f;

@@ -50,6 +50,12 @@ import java.util.*;
 
 public class SvnSourceControlManagement extends SourceControlManagement {
 
+    private String executable;
+
+    public SvnSourceControlManagement(String executable) {
+        this.executable = executable;
+    }
+
     @Override
     protected void initWithEmptyFolder(File workingDirectory, String url) throws IOException {
         this.rootFolder = workingDirectory;
@@ -63,13 +69,13 @@ public class SvnSourceControlManagement extends SourceControlManagement {
     @Override
     protected void initFromURI(File workingDirectory, String uri, String branchOrTag) throws IOException {
         this.rootFolder = workingDirectory.getParentFile();
-        executeCommand("svn", "checkout " + uri + " " + workingDirectory.getName());
+        executeCommand(executable, "checkout " + uri + " " + workingDirectory.getName());
         this.rootFolder = workingDirectory;
     }
 
     @Override
     public String getURI() throws IOException {
-        ExecutionResult result = executeCommand("svn", "info");
+        ExecutionResult result = executeCommand(executable, "info");
         String url = (String) CollectionUtils.find(Arrays.asList(result.out.split("\n")), new Predicate() {
             @Override
             public boolean evaluate(Object object) {
@@ -98,17 +104,17 @@ public class SvnSourceControlManagement extends SourceControlManagement {
                 args.add(file.getPath().substring(rootPath.length() + 1));
             }
         }
-        executeCommand("svn", StringUtils.join(args, ' '));
+        executeCommand(executable, StringUtils.join(args, ' '));
     }
 
     @Override
     public void update() throws IOException {
-        executeCommand("svn", "update");
+        executeCommand(executable, "update");
     }
 
     @Override
     public void commit(String message) throws IOException {
-        executeCommand("svn", "commit -m \"" + message + "\"");
+        executeCommand(executable, "commit -m \"" + message + "\"");
     }
 
     @Override
@@ -117,7 +123,7 @@ public class SvnSourceControlManagement extends SourceControlManagement {
             synchronized (SvnSourceControlManagement.class) {
                 if (statusMap == null) {
                     Map<String, Status> newMap = new HashMap<String, Status>();
-                    ExecutionResult result = executeCommand("svn", "status");
+                    ExecutionResult result = executeCommand(executable, "status");
                     for (String line : result.out.split("\n")) {
                         if (StringUtils.isBlank(line)) {
                             continue;

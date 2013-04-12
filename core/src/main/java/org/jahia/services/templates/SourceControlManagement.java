@@ -89,67 +89,6 @@ public abstract class SourceControlManagement {
         UNMODIFIED, MODIFIED, ADDED, DELETED, RENAMED, COPIED, UNMERGED, UNTRACKED
     }
 
-    public static SourceControlManagement getSourceControlManagement(File workingDir) throws IOException {
-        SourceControlManagement scm = null;
-        while (true) {
-            if (new File(workingDir,".git").exists()) {
-                scm = new GitSourceControlManagement();
-                break;
-            } else if (new File(workingDir,".svn").exists()) {
-                scm = new SvnSourceControlManagement();
-                break;
-            } else {
-                if (workingDir.getParentFile() == null) {
-                    break;
-                }  else {
-                    workingDir = workingDir.getParentFile();
-                }
-            }
-        }
-        if (scm != null) {
-            scm.initWithWorkingDirectory(workingDir);
-        }
-        return scm;
-    }
-
-    public static SourceControlManagement createNewRepository(File workingDir, String scmURI) throws IOException {
-        SourceControlManagement scm = null;
-
-        if (scmURI.startsWith("scm:")) {
-            String scmProvider = scmURI.substring(4, scmURI.indexOf(":", 4));
-            String scmUrl = scmURI.substring(scmURI.indexOf(":", 4) + 1);
-
-            if (scmProvider.equals("git")) {
-                scm = new GitSourceControlManagement();
-            } else {
-                throw new IOException("Unknown repository type");
-            }
-
-            scm.initWithEmptyFolder(workingDir, scmUrl);
-        }
-
-        return scm;
-    }
-
-    public static SourceControlManagement checkoutRepository(File workingDir, String scmURI, String branchOrTag) throws IOException {
-        SourceControlManagement scm = null;
-
-        if (scmURI.startsWith("scm:")) {
-            String scmProvider = scmURI.substring(4, scmURI.indexOf(":", 4));
-            String scmUrl = scmURI.substring(scmURI.indexOf(":", 4) + 1);
-
-            if (scmProvider.equals("git")) {
-                scm = new GitSourceControlManagement();
-            } else if (scmProvider.equals("svn")) {
-                scm = new SvnSourceControlManagement();
-            } else {
-                throw new IOException("Unknown repository type");
-            }
-
-            scm.initFromURI(workingDir, scmUrl, branchOrTag);
-        }
-        return scm;
-    }
 
     public File getRootFolder() {
         return rootFolder;

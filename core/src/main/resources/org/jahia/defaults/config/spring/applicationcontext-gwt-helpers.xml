@@ -25,6 +25,7 @@
         <property name="navigation" ref="NavigationHelper"/>
         <property name="versioning" ref="VersioningHelper"/>
         <property name="sitesService" ref="JahiaSitesService"/>
+        <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
         <property name="properties" ref="PropertiesHelper"/>
         <property name="contentHistoryService" ref="ContentHistoryService"/>
     </bean>

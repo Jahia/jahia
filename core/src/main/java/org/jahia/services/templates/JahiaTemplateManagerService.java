@@ -153,6 +153,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     private MavenCli cli = new MavenCli(new ClassWorld("plexus.core", getClass().getClassLoader()));
 
+    private SourceControlFactory sourceControlFactory;
+
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
     }
@@ -176,6 +178,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public TemplatePackageRegistry getTemplatePackageRegistry() {
         return templatePackageRegistry;
+    }
+
+    public SourceControlFactory getSourceControlFactory() {
+        return sourceControlFactory;
+    }
+
+    public void setSourceControlFactory(SourceControlFactory sourceControlFactory) {
+        this.sourceControlFactory = sourceControlFactory;
     }
 
     public void start() throws JahiaInitializationException {
@@ -223,7 +233,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         sources.getParentFile().mkdirs();
 
         try {
-            SourceControlManagement scm = SourceControlManagement.checkoutRepository(sources, scmURI, branchOrTag);
+            SourceControlManagement scm = sourceControlFactory.checkoutRepository(sources, scmURI, branchOrTag);
             File modulePath = null;
             File pom = null;
             if (!StringUtils.isEmpty(moduleName)) {
@@ -292,7 +302,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 FileUtils.moveDirectory(sources, newPath);
                 modulePath = new File(modulePath.getPath().replace(sources.getPath(), newPath.getPath()));
                 sources = newPath;
-                scm = SourceControlManagement.getSourceControlManagement(sources);
+                scm = sourceControlFactory.getSourceControlManagement(sources);
             }
 
             if (sources.equals(modulePath)) {
@@ -540,7 +550,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         String tempName = UUID.randomUUID().toString();
         final File tempSources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources", tempName);
         FileUtils.moveDirectory(sources, tempSources);
-        SourceControlManagement scm = SourceControlManagement.checkoutRepository(sources, fullUri, null);
+        SourceControlManagement scm = sourceControlFactory.checkoutRepository(sources, fullUri, null);
         final List<File> modifiedFiles = new ArrayList<File>();
         FileUtils.copyDirectory(tempSources, sources, new FileFilter() {
             @Override
@@ -603,7 +613,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 if (vi.hasProperty("j:scmURI")) {
                     SourceControlManagement scm = null;
                     try {
-                        scm = SourceControlManagement.getSourceControlManagement(sources);
+                        scm = sourceControlFactory.getSourceControlManagement(sources);
                         if (scm != null) {
                             scm.commit("Release");
                             return releaseModule(pack, nextVersion, sources, vi.getProperty("j:scmURI").getString(), session);
@@ -730,7 +740,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         SourceControlManagement scm = null;
         try {
-            scm = SourceControlManagement.getSourceControlManagement(sources);
+            scm = sourceControlFactory.getSourceControlManagement(sources);
         } catch (Exception e) {
             logger.error("Cannot get SCM", e);
         }
@@ -1017,7 +1027,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         if (checkValidSources(pack, sources)) {
             pack.setSourcesFolder(sources);
             try {
-                SourceControlManagement sourceControlManagement = SourceControlManagement.getSourceControlManagement(sources);
+                SourceControlManagement sourceControlManagement = sourceControlFactory.getSourceControlManagement(sources);
                 if (sourceControlManagement != null) {
                     pack.setSourceControl(sourceControlManagement);
                 }

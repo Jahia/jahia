@@ -140,8 +140,19 @@
         </property>
         <property name="siteService" ref="JahiaSitesService"/>
         <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
+        <property name="sourceControlFactory" ref="SourceControlFactory"/>
     </bean>
-    
+
+    <bean id="SourceControlFactory" class="org.jahia.services.templates.SourceControlFactory">
+        <property name="sourceControlExecutables">
+            <map>
+                <entry key="git" value="${gitPath:git}"/>
+                <entry key="svn" value="${svnPath:svn}"/>
+            </map>
+        </property>
+    </bean>
+
+
     <bean id="ComponentRegistry" class="org.jahia.services.templates.ComponentRegistry">
         <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
     </bean>

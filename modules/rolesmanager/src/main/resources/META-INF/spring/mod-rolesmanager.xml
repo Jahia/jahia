@@ -94,13 +94,4 @@
         </property>
     </bean>
 
-    <bean id="rolesAdministrationModule" class="org.jahia.modules.rolesmanager.ManageRoles" parent="abstractAdministrationModule">
-        <property name="urlKey" value="serverPermissions" />
-        <property name="permissionName" value="adminRoles" />
-        <property name="name" value="serverPermissions" />
-        <property name="icon" value="policeman_usa" />
-        <property name="label" value="label.serverroles" />
-        <property name="urlAction" value="serverPermissions" />
-        <property name="urlParams" value="&amp;sub=display" />
-    </bean>
 </beans>

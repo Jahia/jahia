@@ -46,6 +46,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
@@ -200,14 +201,6 @@ public class TestHelper {
     public static JahiaSite createSite(String name, String serverName, String templateSet,
                                        String prepackedZIPFile, String siteZIPName) throws Exception {
             return createSite(name, serverName, templateSet, prepackedZIPFile, siteZIPName, null);
-    }
-
-    public static void removeAllSites(JahiaSitesService service) throws JahiaException {
-        final Iterator<JahiaSite> sites = service.getSites();
-        while (sites.hasNext()) {
-            JahiaSite jahiaSite = sites.next();
-            service.removeSite(jahiaSite);
-        }
     }
 
     public static void deleteSite(String name) throws Exception {

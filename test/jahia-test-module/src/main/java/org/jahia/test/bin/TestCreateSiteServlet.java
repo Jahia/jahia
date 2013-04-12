@@ -40,6 +40,7 @@
 
 package org.jahia.test.bin;
 
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
@@ -204,9 +205,9 @@ public class TestCreateSiteServlet extends HttpServlet implements Controller, Se
             }
         } else if (httpServletRequest.getParameter("site").equals("delete")) {
             try {
-                Iterator<JahiaSite> sites = ServicesRegistry.getInstance().getJahiaSitesService().getSites();
+                Iterator<JCRSiteNode> sites = ServicesRegistry.getInstance().getJahiaSitesService().getSitesNodeList().iterator();
                 while (sites.hasNext()) {
-                    JahiaSite siteToDelete = sites.next();
+                    JCRSiteNode siteToDelete = sites.next();
                     if (siteToDelete.getID() != 1) {
                         TestHelper.deleteSite(siteToDelete.getSiteKey());
                     }

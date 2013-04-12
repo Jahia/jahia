@@ -21,10 +21,45 @@
 <%--@elvariable id="otherVersions" type="java.util.Map<org.jahia.services.templates.ModuleVersion,org.jahia.data.templates.JahiaTemplatesPackage>"--%>
 <%--@elvariable id="bundleInfo" type="java.util.Map<java.lang.String, java.lang.String>"--%>
 <%--@elvariable id="activeVersion" type="org.jahia.data.templates.JahiaTemplatesPackage"--%>
-<template:addResources type="javascript" resources="jquery.js,bootstrap.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery-ui.min.js,bootstrap.js"/>
 <template:addResources type="css" resources="bootstrap.css"/>
+<template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 
 <c:set value="${renderContext.editModeConfigName eq 'studiomode' or renderContext.editModeConfigName eq 'studiolayoutmode'}" var="isStudio"/>
+
+<script type="text/javascript">
+    $(function() {
+        var selectedForm;
+        $( "#disable-confirm" ).dialog({
+            autoOpen: false,
+            resizable: false,
+            height:200,
+            modal: true,
+            buttons: {
+                "Yes": function() {
+                    $('#'+selectedForm + ' input[name=purge]').val(true);
+                    $('#'+selectedForm).submit();
+                    $( this ).dialog( "close" );
+                },
+                "No": function() {
+                    $('#'+selectedForm).submit();
+                    $( this ).dialog( "close" );
+                },
+                Cancel: function() {
+                    $( this ).dialog( "close" );
+                }
+            }
+        });
+        $(".disable-button").click(function() {
+            selectedForm = $(".disable-button").parent().attr('id');
+            $( "#disable-confirm" ).dialog( "open" );
+        });
+    });
+</script>
+
+<div id="disable-confirm" title="Disable the module">
+    <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>Do you want to purge all content coming from this module ?</p>
+</div>
 
 <div id="detailActiveVersion">
     <h2>${activeVersion.name}&nbsp;${activeVersion.version}</h2>
@@ -228,7 +263,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${sites}" var="site">
+                <c:forEach items="${sites}" var="site" varStatus="status">
                     <tr>
                         <td>${site}</td>
                         <td>
@@ -252,13 +287,14 @@
                         <td>
                             <c:choose>
                                 <c:when test="${functions:contains(sitesDirect,site)}">
-                                    <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
+                                    <form id="disable${status.index}" style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                         <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
                                         <input type="hidden" name="disableFrom" value="/sites/${site}"/>
+                                        <input type="hidden" name="purge" value="false"/>
+                                        <input type="hidden" name="_eventId_disable" value="true"/>
                                         <fmt:message var="label"
                                                      key='serverSettings.manageModules.module.disable'/>
-                                        <input class="btn btn-danger" type="submit" name="_eventId_disable"
-                                               value="${label}" onclick=""/>
+                                        <input class="btn btn-danger disable-button" type="button" value="${label}" onclick=""/>
                                     </form>
                                 </c:when>
                                 <c:when test="${functions:contains(sitesTemplates,site)}">
@@ -286,12 +322,13 @@
                 </c:forEach>
                 <tr>
                     <td align="right" colspan="3">
-                        <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
+                        <form id="disableAll" style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                             <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
+                            <input type="hidden" name="purge" value="false"/>
+                            <input type="hidden" name="_eventId_disableAll" value="true"/>
                             <fmt:message var="label"
                                          key='serverSettings.manageModules.module.disable.all'/>
-                            <input class="btn btn-danger" type="submit" name="_eventId_disableAll"
-                                   value="${label}" onclick=""/>
+                            <input class="btn btn-danger disable-button" type="button" value="${label}" onclick=""/>
                         </form>
                     </td>
                 </tr>
@@ -300,6 +337,9 @@
         </div>
     </div>
 </div>
+
+
+
 <%--@elvariable id="nodeTypes" type="java.util.Map<java.lang.String,java.lang.Boolean>"--%>
 <c:if test="${not empty nodeTypes}">
     <div class="accordion-group">

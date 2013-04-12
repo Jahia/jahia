@@ -103,7 +103,6 @@ import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
 import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.nio.charset.Charset;
@@ -473,7 +472,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             int r = cli.doMain(installParams, sources.getPath(), System.out, System.err);
             if (r > 0) {
                 logger.error("Compilation error, returned status " + r);
-                throw new IOException("Compilation error, status "+r);
+                throw new IOException("Compilation error, status " + r);
             }
             File file = new File(sources.getPath() + "/target/" + moduleName + "-" + version + ".war");
             if (!file.exists()) {
@@ -482,11 +481,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             if (file.exists()) {
                 return new CompiledModuleInfo(file, moduleName, version);
             } else {
-                throw new IOException("Cannot find a module archive to deploy in folder "+file.getParentFile().getAbsolutePath());
+                throw new IOException("Cannot find a module archive to deploy in folder " + file.getParentFile().getAbsolutePath());
             }
         } catch (DocumentException e) {
             logger.error(e.getMessage(), e);
-            throw new IOException("Cannot parse pom file",e);
+            throw new IOException("Cannot parse pom file", e);
         }
     }
 
@@ -509,7 +508,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
             return node;
         } catch (DocumentException e) {
-            throw new IOException("Cannot parse pom file",e);
+            throw new IOException("Cannot parse pom file", e);
         }
     }
 
@@ -567,7 +566,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
 
     public boolean checkValidSources(JahiaTemplatesPackage pack, File sources) {
-        if (!new File(sources,"src/main/resources").exists() && !new File(sources,"src/main/webapp").exists()) {
+        if (!new File(sources, "src/main/resources").exists() && !new File(sources, "src/main/webapp").exists()) {
             return false;
         }
         File pom = new File(sources, "pom.xml");
@@ -1036,10 +1035,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     /**
      * get List of installed modules for a site.
-     * @param siteKey key of the site
-     * @param includeTemplateSet if true (default is false) include dependencies of the template set
-     * @param includeDirectDependencies if true (default is false) include dependencies of dependencies
-     * @param includeTransitiveDependencies   if true (default is false) include all dependencies
+     *
+     * @param siteKey                       key of the site
+     * @param includeTemplateSet            if true (default is false) include dependencies of the template set
+     * @param includeDirectDependencies     if true (default is false) include dependencies of dependencies
+     * @param includeTransitiveDependencies if true (default is false) include all dependencies
      * @return list of template packages
      * @throws JahiaException
      */
@@ -1442,19 +1442,28 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         applicationEventPublisher.publishEvent(new ModuleDeployedOnSiteEvent(sitePath, JahiaTemplateManagerService.class.getName()));
     }
 
-    public void uninstallModulesFromAllSites(final String module, final String username) throws RepositoryException {
-        uninstallModulesFromAllSites(templatePackageRegistry.lookupByFileName(module), username);
-    }
-
-    public void uninstallModulesFromAllSites(final JahiaTemplatesPackage module, final String username)
-            throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(username, new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                uninstallModulesFromAllSites(module,session);
-                session.save();
-                return null;
-            }
-        });
+    public void uninstallModulesFromAllSites(final String module, final String username, final boolean purgeAllContent) throws RepositoryException {
+        JCRTemplate.getInstance()
+                .doExecuteWithSystemSession(username, new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        uninstallModulesFromAllSites(templatePackageRegistry.lookupByFileName(module), session);
+                        if (purgeAllContent) {
+                            purgeModuleContent(Arrays.asList(templatePackageRegistry.lookupByFileName(module)), "/", session);
+                        }
+                        session.save();
+                        return null;
+                    }
+                });
+        if (purgeAllContent) {
+            JCRTemplate.getInstance()
+                    .doExecuteWithSystemSession(username, "live", new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            purgeModuleContent(Arrays.asList(templatePackageRegistry.lookupByFileName(module)), "/", session);
+                            session.save();
+                            return null;
+                        }
+                    });
+        }
     }
 
     public void uninstallModulesFromAllSites(final JahiaTemplatesPackage module, final JCRSessionWrapper session) throws RepositoryException {
@@ -1673,10 +1682,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                             for (NodeIterator nodes = qm
                                     .createQuery(
                                             "select * from [jnt:module] as module " +
-                                            "inner join [jnt:moduleVersion] as version on ischildnode(version,module) " +
-                                            "where isdescendantnode(module,'/modules') " +
-                                            "and name(module) <> 'templates-system' " +
-                                            "and version.[j:moduleType]='templatesSet'",
+                                                    "inner join [jnt:moduleVersion] as version on ischildnode(version,module) " +
+                                                    "where isdescendantnode(module,'/modules') " +
+                                                    "and name(module) <> 'templates-system' " +
+                                                    "and version.[j:moduleType]='templatesSet'",
                                             Query.JCR_SQL2).execute().getNodes(); nodes.hasNext(); ) {
                                 Node node = nodes.nextNode();
                                 if (getTemplatePackageByFileName(node.getName()) != null) {

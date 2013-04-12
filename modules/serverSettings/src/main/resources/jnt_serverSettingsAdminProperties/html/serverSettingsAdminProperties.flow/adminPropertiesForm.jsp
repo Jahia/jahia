@@ -60,12 +60,12 @@
                 <div class="span6">
                     <label for="password"><fmt:message key="label.password"/></label>
                     <form:input type="password" id="password" path="password" autocomplete="off"/>
-                    (<fmt:message key="serverSettings.user.edit.password.no.change"/>)
+                    <span class="text-info">(<fmt:message key="serverSettings.user.edit.password.no.change"/>)</span>
                 </div>
                 <div class="span6">
                     <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
                     <form:input type="password" id="passwordConfirm" path="passwordConfirm" autocomplete="off"/>
-                    (<fmt:message key="serverSettings.user.edit.password.no.change"/>)
+                    <span class="text-info">(<fmt:message key="serverSettings.user.edit.password.no.change"/>)</span>
                 </div>
             </div>
             <div class="row-fluid">

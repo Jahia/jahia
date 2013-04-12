@@ -375,9 +375,8 @@ public class ContentManagerHelper {
         for (Iterator<String> iterator = pathsToCopy.iterator(); iterator.hasNext();) {
             String toCopy = iterator.next();
             if (destinationPath.equals(toCopy) || destinationPath.startsWith(toCopy + "/")) {
-                missedPaths.add(JahiaResourceBundle.format(JahiaResourceBundle.getJahiaInternalResource(
-                        "failure.paste.cannot.paste", uiLocale, "Content {0} cannot be pasted into {1}"), toCopy,
-                        destinationPath));
+                missedPaths.add(Messages.format(Messages.getInternal("failure.paste.cannot.paste", uiLocale,
+                        "Content {0} cannot be pasted into {1}"), toCopy, destinationPath));
                 iterator.remove();
             }
         }

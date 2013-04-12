@@ -1242,7 +1242,7 @@ input[type="color"],
   display: inline-block;
   height: 16px;
   padding: 4px 6px;
-  margin-bottom: 8px;
+  margin-bottom:0;
   font-size: 11px;
   line-height: 16px;
   color: #555555;

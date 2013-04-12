@@ -84,7 +84,7 @@
                 <input type="text" id="searchString" name="searchString"
                        value='${searchCriteria.searchString}'
                        onkeydown="if (event.keyCode == 13) submitForm('search');"/>
-                <input class="btn btn-primary" style="font-size: 12px;" type="submit" name="_eventId_search" value="<fmt:message key="label.search"/>"/>
+                <input class="btn btn-primary" style="font-size: 13px;" type="submit" name="_eventId_search" value="<fmt:message key="label.search"/>"/>
             </div>
             <br/>
             <br/>

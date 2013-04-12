@@ -106,9 +106,9 @@
                 <%--${currentModule.sourcesFolder}--%>
                 <c:choose>
                     <c:when test="${not empty currentModule.sourcesFolder}">
-                        <input class="btn btn-block" type="button" onclick='window.parent.location.assign("/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.siteTemplate.html")' value="<fmt:message key='serverSettings.manageModules.goToStudio' />"/>
+                        <input class="btn btn-block" type="button" onclick='window.parent.location.assign("/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.html")' value="<fmt:message key='serverSettings.manageModules.goToStudio' />"/>
                         <%--<c:if test="${renderContext.editModeConfigName ne 'studiomode' and renderContext.editModeConfigName ne 'studiolayoutmode'}">--%>
-                            <%--<a href="/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.siteTemplate.html"></a>--%>
+                            <%--<a href="/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.html"></a>--%>
                         <%--</c:if>--%>
 
                     </c:when>

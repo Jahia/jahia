@@ -105,8 +105,8 @@ public class TemplatePackageRegistry {
     private Map<String, JahiaTemplatesPackage> registry = new TreeMap<String, JahiaTemplatesPackage>();
     private Map<String, JahiaTemplatesPackage> fileNameRegistry = new TreeMap<String, JahiaTemplatesPackage>();
     private List<JahiaTemplatesPackage> templatePackages;
-    private Map<String, Map<ModuleVersion, JahiaTemplatesPackage>> packagesWithVersion = new TreeMap<String, Map<ModuleVersion, JahiaTemplatesPackage>>();
-    private Map<String, Map<ModuleVersion, JahiaTemplatesPackage>> packagesWithVersionByFilename = new TreeMap<String, Map<ModuleVersion, JahiaTemplatesPackage>>();
+    private Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> packagesWithVersion = new TreeMap<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>>();
+    private Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> packagesWithVersionByFilename = new TreeMap<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>>();
     private Map<String, Set<JahiaTemplatesPackage>> modulesWithViewsPerComponents = new HashMap<String, Set<JahiaTemplatesPackage>>();
     private List<RenderFilter> filters = new LinkedList<RenderFilter>();
     private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
@@ -258,15 +258,15 @@ public class TemplatePackageRegistry {
 
     public Set<ModuleVersion> getAvailableVersionsForModule(String rootFolder) {
         if (packagesWithVersionByFilename.containsKey(rootFolder)) {
-            return Collections.unmodifiableSet(packagesWithVersionByFilename.get(rootFolder).keySet());
+            return Collections.unmodifiableSortedSet((SortedSet<ModuleVersion>)  packagesWithVersionByFilename.get(rootFolder).keySet());
         }
         if (packagesWithVersion.containsKey(rootFolder)) {
-            return Collections.unmodifiableSet(packagesWithVersion.get(rootFolder).keySet());
+            return Collections.unmodifiableSortedSet((SortedSet<ModuleVersion>)  packagesWithVersion.get(rootFolder).keySet());
         }
         return Collections.emptySet();
     }
 
-    public Map<String, Map<ModuleVersion, JahiaTemplatesPackage>> getAllModuleVersions() {
+    public Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> getAllModuleVersions() {
         return packagesWithVersionByFilename;
     }
 
@@ -376,9 +376,9 @@ public class TemplatePackageRegistry {
 
     public void registerPackageVersion(JahiaTemplatesPackage pack) {
         if (!packagesWithVersionByFilename.containsKey(pack.getRootFolder())) {
-            packagesWithVersionByFilename.put(pack.getRootFolder(), new HashMap<ModuleVersion, JahiaTemplatesPackage>());
+            packagesWithVersionByFilename.put(pack.getRootFolder(), new TreeMap<ModuleVersion, JahiaTemplatesPackage>());
         }
-        Map<ModuleVersion, JahiaTemplatesPackage> map = packagesWithVersionByFilename.get(pack.getRootFolder());
+        SortedMap<ModuleVersion, JahiaTemplatesPackage> map = packagesWithVersionByFilename.get(pack.getRootFolder());
         if (!packagesWithVersion.containsKey(pack.getName())) {
             packagesWithVersion.put(pack.getName(), map);
         }

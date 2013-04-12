@@ -23,6 +23,9 @@
 <%--@elvariable id="activeVersion" type="org.jahia.data.templates.JahiaTemplatesPackage"--%>
 <template:addResources type="javascript" resources="jquery.js,bootstrap.js"/>
 <template:addResources type="css" resources="bootstrap.css"/>
+
+<c:set value="${renderContext.editModeConfigName eq 'studiomode' or renderContext.editModeConfigName eq 'studiolayoutmode'}" var="isStudio"/>
+
 <div id="detailActiveVersion">
     <h2>${activeVersion.name}&nbsp;${activeVersion.version}</h2>
     <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
@@ -57,9 +60,12 @@
                 <th>
                     <fmt:message key="serverSettings.manageModules.module.author"/>
                 </th>
+
+<c:if test="${not isStudio}">
                 <th>
                     <fmt:message key="serverSettings.manageModules.module.source.uri"/>
                 </th>
+</c:if>
 
             </tr>
         </thead>
@@ -93,16 +99,13 @@
                 <td>
                     ${bundleInfo['Implementation-Vendor']}
                 </td>
+<c:if test="${not isStudio}">
                 <td>
                     <c:choose>
                         <c:when test="${not empty activeVersion.sourcesFolder}">
                             <input class="btn" type="button"
-                                   onclick='window.parent.location.assign("/cms/studio/${currentResource.locale}/modules/${activeVersion.rootFolder}.siteTemplate.html")'
+                                   onclick='window.parent.location.assign("/cms/studio/${currentResource.locale}/modules/${activeVersion.rootFolder}.html")'
                                    value="<fmt:message key='serverSettings.manageModules.goToStudio' />"/>
-                            <%--<c:if test="${renderContext.editModeConfigName ne 'studiomode' and renderContext.editModeConfigName ne 'studiolayoutmode'}">--%>
-                            <%--<a href="/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.siteTemplate.html"></a>--%>
-                            <%--</c:if>--%>
-
                         </c:when>
                         <c:when test="${not empty activeVersion.scmURI}">
                             <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
@@ -123,6 +126,7 @@
                         </c:otherwise>
                     </c:choose>
                 </td>
+</c:if>
             </tr>
         </tbody>
     </table>
@@ -141,7 +145,9 @@
                 <tr>
                     <th><fmt:message key="serverSettings.manageModules.module.version"/></th>
                     <th><fmt:message key="serverSettings.manageModules.module.state"/></th>
+                    <c:if test="${not isStudio}">
                     <th><fmt:message key="serverSettings.manageModules.module.manage"/></th>
+                    </c:if>
                 </tr>
                 </thead>
                 <tbody>
@@ -150,26 +156,27 @@
                         <td>${package.key}</td>
                         <td>
                             <c:choose>
-                                <c:when test="${activeVersion.bundle.state eq 32}">
+                                <c:when test="${package.value.bundle.state eq 32}">
                                     <fmt:message key="serverSettings.manageModules.module.state.active"/>
                                 </c:when>
-                                <c:when test="${activeVersion.bundle.state eq 16}">
+                                <c:when test="${package.value.bundle.state eq 16}">
                                     <fmt:message key="serverSettings.manageModules.module.state.stopping"/>
                                 </c:when>
-                                <c:when test="${activeVersion.bundle.state eq 8}">
+                                <c:when test="${package.value.bundle.state eq 8}">
                                     <fmt:message key="serverSettings.manageModules.module.state.starting"/>
                                 </c:when>
-                                <c:when test="${activeVersion.bundle.state eq 4}">
+                                <c:when test="${package.value.bundle.state eq 4}">
                                     <fmt:message key="serverSettings.manageModules.module.state.resolved"/>
                                 </c:when>
-                                <c:when test="${activeVersion.bundle.state eq 2}">
+                                <c:when test="${package.value.bundle.state eq 2}">
                                     <fmt:message key="serverSettings.manageModules.module.state.installed"/>
                                 </c:when>
-                                <c:when test="${activeVersion.bundle.state eq 1}">
+                                <c:when test="${package.value.bundle.state eq 1}">
                                     <fmt:message key="serverSettings.manageModules.module.state.uninstalled"/>
                                 </c:when>
                             </c:choose>
                         </td>
+                        <c:if test="${not isStudio}">
                         <td>
                             <c:choose>
                                 <c:when test="${package.key eq activeVersion.version and package.value.activeVersion}">
@@ -196,6 +203,7 @@
                                 </c:otherwise>
                             </c:choose>
                         </td>
+                        </c:if>
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -350,12 +358,17 @@
                         <tr>
                             <td><span style="font: bold">${dependency.name}</span></td>
                             <td>
+                                <c:if test="${isStudio and not empty dependency.sourcesFolder}">
+                                    <input class="btn btn-info" type="button" onclick='window.location.assign("${url.base}/modules/${dependency.rootFolder}.html")' value="<fmt:message key='serverSettings.manageModules.details' />"/>
+                                </c:if>
+                                <c:if test="${not isStudio}">
                                 <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                     <input type="hidden" name="selectedModule" value="${dependency.rootFolder}"/>
                                     <input class="btn btn-info" type="submit" name="_eventId_viewDetails"
                                            value="<fmt:message key='serverSettings.manageModules.details' />"
                                            onclick=""/>
                                 </form>
+                                </c:if>
                             </td>
                         </tr>
                     </c:forEach>

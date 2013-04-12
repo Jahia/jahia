@@ -19,6 +19,10 @@
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
 <template:addResources type="javascript" resources="jquery.js,bootstrap.js"/>
 <template:addResources type="css" resources="bootstrap.css"/>
+
+<c:set value="${renderContext.editModeConfigName eq 'studiomode' or renderContext.editModeConfigName eq 'studiolayoutmode'}" var="isStudio"/>
+
+<c:if test="${not isStudio}">
 <form:form modelAttribute="moduleFile" class="form" enctype="multipart/form-data" method="post">
     <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
         <c:if test="${message.severity eq 'INFO'}">
@@ -39,7 +43,7 @@
     <input type="file" id="moduleFile" name="moduleFile" accept=""/><input class="btn btn-primary" type="submit" name="_eventId_upload" value="<fmt:message key="label.upload"/>"/>
     </div>
 </form:form>
-
+</c:if>
 <table class="table table-bordered table-striped table-hover">
     <thead>
         <tr>
@@ -47,25 +51,36 @@
             <th></th>
             <th><fmt:message key='serverSettings.manageModules.details' /></th>
             <th><fmt:message key='serverSettings.manageModules.versions' /></th>
-            <th><fmt:message key='serverSettings.manageModules.status' /></th>
-            <th><fmt:message key='serverSettings.manageModules.sources' /></th>
+            <c:if test="${not isStudio}">
+                <th><fmt:message key='serverSettings.manageModules.status' /></th>
+            </c:if>
+            <c:if test="${not isStudio}">
+                <th><fmt:message key='serverSettings.manageModules.sources' /></th>
+            </c:if>
             <th><fmt:message key='serverSettings.manageModules.usedInSites' /></th>
         </tr>
     </thead>
     <tbody>
     <c:forEach items="${allModuleVersions}" var="entry" >
         <c:set value="${registeredModules[entry.key]}" var="currentModule" />
+        <c:if test="${not isStudio or not empty currentModule.sourcesFolder}">
         <tr>
             <td><strong>${currentModule.name}</strong></td>
             <td>${entry.key}</td>
             <td>
-            <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                <input type="hidden" name="selectedModule" value="${entry.key}"/>
-                <input class="btn btn-info" type="submit" name="_eventId_viewDetails" value="<fmt:message key='serverSettings.manageModules.details' />" onclick=""/>
-                </form>
+                <c:if test="${isStudio}">
+                    <input class="btn btn-info" type="button" onclick='window.location.assign("${url.base}/modules/${currentModule.rootFolder}.html")' value="<fmt:message key='serverSettings.manageModules.details' />"/>
+                </c:if>
+                <c:if test="${not isStudio}">
+                    <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
+                        <input type="hidden" name="selectedModule" value="${entry.key}"/>
+                        <input class="btn btn-info" type="submit" name="_eventId_viewDetails" value="<fmt:message key='serverSettings.manageModules.details' />" onclick=""/>
+                    </form>
+                </c:if>
             </td>
             <td>
                 <c:forEach items="${entry.value}" var="version">
+                    <c:if test="${not isStudio}">
                     <c:choose>
                         <c:when test="${version.key eq currentModule.version}">
                             <div class="active-version">
@@ -88,9 +103,17 @@
                             </div>
                         </c:otherwise>
                     </c:choose>
+                    </c:if>
+                    <c:if test="${isStudio and version.key eq currentModule.version}">
+                        <div class="active-version">
+                            ${version.key}
+                        </div>
+                    </c:if>
                 </c:forEach>
             </td>
 
+
+            <c:if test="${not isStudio}">
             <td>
                 <c:choose>
                     <c:when test="${not empty currentModule}">
@@ -101,16 +124,14 @@
                     </c:otherwise>
                 </c:choose>
             </td>
+            </c:if>
 
+            <c:if test="${not isStudio}">
             <td>
                 <%--${currentModule.sourcesFolder}--%>
                 <c:choose>
                     <c:when test="${not empty currentModule.sourcesFolder}">
                         <input class="btn btn-block" type="button" onclick='window.parent.location.assign("/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.html")' value="<fmt:message key='serverSettings.manageModules.goToStudio' />"/>
-                        <%--<c:if test="${renderContext.editModeConfigName ne 'studiomode' and renderContext.editModeConfigName ne 'studiolayoutmode'}">--%>
-                            <%--<a href="/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.html"></a>--%>
-                        <%--</c:if>--%>
-
                     </c:when>
                     <c:when test="${not empty currentModule.scmURI}">
                         <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
@@ -132,12 +153,13 @@
                 </c:choose>
 
             </td>
+            </c:if>
             <td>
 
             </td>
 
         </tr>
-
+        </c:if>
     </c:forEach>
     </tbody>
 </table>

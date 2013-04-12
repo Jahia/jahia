@@ -148,44 +148,44 @@
             <td>
                 <ol>
                     <c:forEach items="${package.definitionsFiles}" var="defFile">
-                        <%
-                            JahiaTemplatesPackage aPackage = (JahiaTemplatesPackage) pageContext.getAttribute(
-                                    "package");
-                            String file = aPackage.getFilePath() + File.separator + pageContext.getAttribute("defFile");
-                            String s = FileUtils.readFileToString(new File(file));
-                            pageContext.setAttribute("defFileName", UUID.randomUUID());
-                            pageContext.setAttribute("defFileContent", s);
-                        %>
-                        <li><a href="#${defFileName}" class="defFileLink">${defFile}</a>
+                        <%--<%--%>
+                            <%--JahiaTemplatesPackage aPackage = (JahiaTemplatesPackage) pageContext.getAttribute(--%>
+                                    <%--"package");--%>
+                            <%--String file = aPackage.getFilePath() + File.separator + pageContext.getAttribute("defFile");--%>
+                            <%--String s = FileUtils.readFileToString(new File(file));--%>
+                            <%--pageContext.setAttribute("defFileName", UUID.randomUUID());--%>
+                            <%--pageContext.setAttribute("defFileContent", s);--%>
+                        <%--%>--%>
+                        <%--<li><a href="#${defFileName}" class="defFileLink">${defFile}</a>--%>
 
-                            <div style="display: none;">
-                                <div id="${defFileName}">
-                                    <pre>${fn:escapeXml(defFileContent)}</pre>
-                                </div>
-                            </div>
-                        </li>
+                            <%--<div style="display: none;">--%>
+                                <%--<div id="${defFileName}">--%>
+                                    <%--<pre>${fn:escapeXml(defFileContent)}</pre>--%>
+                                <%--</div>--%>
+                            <%--</div>--%>
+                        <%--</li>--%>
                     </c:forEach>
                 </ol>
             </td>
             <td>
                 <ol>
                     <c:forEach items="${package.rulesFiles}" var="defFile">
-                        <%
-                            JahiaTemplatesPackage aPackage = (JahiaTemplatesPackage) pageContext.getAttribute(
-                                    "package");
-                            String file = aPackage.getFilePath() + File.separator + pageContext.getAttribute("defFile");
-                            String s = FileUtils.readFileToString(new File(file));
-                            pageContext.setAttribute("defFileName", UUID.randomUUID());
-                            pageContext.setAttribute("defFileContent", s);
-                        %>
-                        <li><a href="#${defFileName}" class="defFileLink">${defFile}</a>
+                        <%--<%--%>
+                            <%--JahiaTemplatesPackage aPackage = (JahiaTemplatesPackage) pageContext.getAttribute(--%>
+                                    <%--"package");--%>
+                            <%--String file = aPackage.getFilePath() + File.separator + pageContext.getAttribute("defFile");--%>
+                            <%--String s = FileUtils.readFileToString(new File(file));--%>
+                            <%--pageContext.setAttribute("defFileName", UUID.randomUUID());--%>
+                            <%--pageContext.setAttribute("defFileContent", s);--%>
+                        <%--%>--%>
+                        <%--<li><a href="#${defFileName}" class="defFileLink">${defFile}</a>--%>
 
-                            <div style="display: none;">
-                                <div id="${defFileName}">
-                                    <pre>${fn:escapeXml(defFileContent)}</pre>
-                                </div>
-                            </div>
-                        </li>
+                            <%--<div style="display: none;">--%>
+                                <%--<div id="${defFileName}">--%>
+                                    <%--<pre>${fn:escapeXml(defFileContent)}</pre>--%>
+                                <%--</div>--%>
+                            <%--</div>--%>
+                        <%--</li>--%>
                     </c:forEach>
                 </ol>
             </td>

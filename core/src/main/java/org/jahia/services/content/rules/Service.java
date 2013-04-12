@@ -51,6 +51,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.slf4j.Logger;
@@ -717,7 +718,7 @@ public class Service extends JahiaService {
     }
 
     public void updateDependencies(AddedNodeFact node) throws RepositoryException {
-        JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getNode().getParent().getName());
+        JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().lookupByFileNameAndVersion(node.getNode().getParent().getName(), new ModuleVersion(node.getName()));
         if (pack != null) {
             Value[] dependencies = node.getNode().getProperty("j:dependencies").getValues();
             List<String> depends = new ArrayList<String>();

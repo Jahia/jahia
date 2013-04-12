@@ -152,7 +152,6 @@ rule "Create dependency on module"
     when
         A property j:dependencies has been set on a node
 			- the node has the type jnt:moduleVersion
-            - not in operation import
     then
         Update dependencies for module
 end

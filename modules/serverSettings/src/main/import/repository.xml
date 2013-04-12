@@ -8,6 +8,9 @@
                       j:moduleType="module"
                       j:title="Jahia Server Settings"
                       jcr:primaryType="jnt:module">
+                <portlets jcr:primaryType="jnt:portletFolder"/>
+                <files jcr:primaryType="jnt:folder"/>
+                <contents jcr:primaryType="jnt:contentFolder"/>
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
                     <files jcr:primaryType="jnt:folder">
                         <aboutJahia.png j:height="16"
@@ -46,8 +49,7 @@
                             <manage-web-projects jcr:primaryType="jnt:serverSettingsManageWebProjects"/>
                         </pagecontent>
                     </webProjectSettings>
-                        <configurations
-                                j:hiddenTemplate="false"
+                        <configurations j:hiddenTemplate="false"
                                 j:titleKey="serverSettings.configurations"
                                 jcr:mixinTypes="jmix:rbTitle"
                                 jcr:primaryType="jnt:template">
@@ -74,12 +76,11 @@
                                 </pagecontent>
                             </dbSettings>
                         </configurations>
-                        <system-components
-                                j:hiddenTemplate="false"
+                        <system-components j:hiddenTemplate="false"
                                 j:titleKey="serverSettings.systemComponents"
                                 jcr:mixinTypes="jmix:rbTitle"
                                 jcr:primaryType="jnt:template">
-                            <manageModules j:applyOn="jnt:globalSettings"
+                            <manageModules j:applyOn="jnt:globalSettings jnt:modules"
                                  j:defaultTemplate="false"
                                  j:hiddenTemplate="false"
                                  j:requiredPermissions="#/permissions/admin/adminTemplates"
@@ -102,8 +103,7 @@
                                 </pagecontent>
                             </managePortlets>
                         </system-components>
-                        <users-and-roles
-                                j:hiddenTemplate="false"
+                        <users-and-roles j:hiddenTemplate="false"
                                 j:titleKey="serverSettings.usersAndRoles"
                                 jcr:mixinTypes="jmix:rbTitle"
                                 jcr:primaryType="jnt:template">
@@ -141,8 +141,7 @@
                                 </pagecontent>
                             </passwordPolicy>
                         </users-and-roles>
-                        <system-health
-                                j:hiddenTemplate="false"
+                        <system-health j:hiddenTemplate="false"
                                 j:titleKey="serverSettings.systemHealth"
                                 jcr:mixinTypes="jmix:rbTitle"
                                 jcr:primaryType="jnt:template">
@@ -193,6 +192,9 @@
                         </system-health>
                 </serverSettingsBase>
             </templates>
+                
+                
         </serverSettings>
     </modules>
+    
 </content>

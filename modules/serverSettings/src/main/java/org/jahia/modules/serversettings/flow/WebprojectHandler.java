@@ -783,7 +783,7 @@ public class WebprojectHandler implements Serializable {
                     || !StringUtils.equals(site.getDescr(), bean.getDescription())) {
                 site.setServerName(bean.getServerName());
                 site.setTitle(bean.getTitle());
-                site.setDescr(bean.getDescription());
+                site.setDescription(bean.getDescription());
 
                 sitesService.updateSite(site);
             }

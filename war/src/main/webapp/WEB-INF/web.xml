@@ -476,12 +476,6 @@
     </servlet>
 
     <servlet>
-        <servlet-name>JahiaAdministration</servlet-name>
-        <servlet-class>org.jahia.bin.JahiaAdministration</servlet-class>
-        <load-on-startup>7</load-on-startup>
-    </servlet>
-
-    <servlet>
         <servlet-name>ValidateTicket</servlet-name>
         <servlet-class>org.jahia.bin.ValidateTicket</servlet-class>
     </servlet>
@@ -633,11 +627,6 @@
     <servlet-mapping>
         <servlet-name>WelcomeServlet</servlet-name>
         <url-pattern>/welcome/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>JahiaAdministration</servlet-name>
-        <url-pattern>/administration/*</url-pattern>
     </servlet-mapping>
     
     <servlet-mapping>

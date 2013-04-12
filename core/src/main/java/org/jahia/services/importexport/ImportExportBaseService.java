@@ -1223,7 +1223,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             } else if (firstKey.equals("allowsUnlistedLanguages")) {
                 site.setAllowsUnlistedLanguages(Boolean.parseBoolean(value));
             } else if (firstKey.equals("description")) {
-                site.setDescr(value);
+                site.setDescription(value);
             } else if (firstKey.startsWith("defaultSite") && "true".equals(
                     value) && sitesService.getDefaultSite() == null) {
                 sitesService.setDefaultSite(site);

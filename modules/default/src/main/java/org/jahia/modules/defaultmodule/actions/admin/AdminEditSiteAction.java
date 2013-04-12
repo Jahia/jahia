@@ -66,7 +66,7 @@ public class AdminEditSiteAction extends AdminSiteAction {
             // save modified informations...
             site.setTitle(siteTitle);
             site.setServerName(siteServerName);
-            site.setDescr(siteDescr);
+            site.setDescription(siteDescr);
 
             sitesService.updateSite(site);
 

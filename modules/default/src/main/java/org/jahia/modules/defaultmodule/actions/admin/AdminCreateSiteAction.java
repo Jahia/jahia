@@ -86,10 +86,6 @@ public class AdminCreateSiteAction extends AdminAction {
                 return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject(result));
             }
 
-            // save new jahia site...
-            site = new JahiaSite(-1, siteTitle, siteServerName, siteKey, siteDescr, null, null);
-
-            Boolean defaultSite = false;
             Locale selectedLocale = resource.getLocale();
             String lang = getParameter(parameters, "language");
             if (lang != null) {
@@ -97,7 +93,7 @@ public class AdminCreateSiteAction extends AdminAction {
             }
 
             // add the site in siteManager...
-            site = sitesService.addSite(session.getUser(), site.getTitle(), site.getServerName(), site.getSiteKey(), site.getDescr(),
+            site = sitesService.addSite(session.getUser(), siteTitle, siteServerName, siteKey, siteDescr,
                     selectedLocale, getParameter(parameters,"templatesSet"),
                     null,null, null,null, false, null, null);
 
@@ -108,11 +104,6 @@ public class AdminCreateSiteAction extends AdminAction {
             }
 
             if (site != null) {
-                // set as default site
-                if (defaultSite.booleanValue()) {
-                    sitesService.setDefaultSite(site);
-                }
-
                 JahiaSite systemSite = sitesService.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY);
                 // update the system site only if it does not yet contain at least one of the site languages
                 if (!systemSite.getLanguages().containsAll(site.getLanguages())) {

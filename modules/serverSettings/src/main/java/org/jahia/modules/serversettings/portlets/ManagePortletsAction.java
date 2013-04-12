@@ -41,7 +41,6 @@
 package org.jahia.modules.serversettings.portlets;
 
 import org.apache.commons.io.FileUtils;
-import org.jahia.admin.components.AssemblerTask;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.configuration.deployers.ServerDeploymentInterface;

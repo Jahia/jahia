@@ -405,6 +405,10 @@ public class JahiaSite implements Serializable {
         mDescr = descr;
     }
 
+    public void setDescription(String description) {
+        setDescr(description);
+    }
+
     public void setID(int id) {
         mSiteID = id;
     }

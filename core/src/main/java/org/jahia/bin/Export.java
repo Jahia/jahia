@@ -169,8 +169,7 @@ public class Export extends JahiaController implements ServletContextAware {
                 }
 
                 if (sites.isEmpty()) {
-                    JahiaAdministration.doRedirect(request, response, request.getSession(),
-                            JahiaAdministration.JSP_PATH + "no_sites_selected.jsp");
+                    // Todo redirect to new administration
                 } else {
                     response.setContentType("application/zip");
                     //make sure this file is not cached by the client (or a proxy middleman)

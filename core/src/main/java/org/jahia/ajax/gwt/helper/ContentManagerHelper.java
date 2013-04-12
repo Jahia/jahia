@@ -645,12 +645,12 @@ public class ContentManagerHelper {
             ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
             JCRNodeWrapper parent = session.getNode(parentPath);
             JCRSiteNode resolveSite = parent.getResolveSite();
+            String detectedContentType = ImportExportBaseService.detectImportContentType(item);
             InputStream itemStream = null;
             ValidationResults results;
             try {
                 itemStream = item.getStream();
-                results = importExport.validateImportFile(session, itemStream, ImportExportBaseService.detectImportContentType(
-                        item), resolveSite != null ? resolveSite.getInstalledModules() : null);
+                results = importExport.validateImportFile(session, itemStream, detectedContentType, resolveSite != null ? resolveSite.getInstalledModules() : null);
             } finally {
                 IOUtils.closeQuietly(itemStream);
             }
@@ -662,8 +662,7 @@ public class ContentManagerHelper {
                             session.getUser().getLocalPath() + "/files/private");
                     String importFilename = "import" + Math.random() * 1000;
                     itemStream = item.getStream();
-                    JCRNodeWrapper jcrNodeWrapper = privateFilesFolder.uploadFile(importFilename, itemStream,
-                            item.getContentType());
+                    JCRNodeWrapper jcrNodeWrapper = privateFilesFolder.uploadFile(importFilename, itemStream, detectedContentType);
                     session.save();
                     // let's schedule an import job.
                     JobDetail jobDetail = BackgroundJob.createJahiaJob(Messages.getInternal("import.file", uiLocale,

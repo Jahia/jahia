@@ -98,9 +98,9 @@
 
     <div class="control-group">
         <label class="control-label"><fmt:message key="serverSettings.mailServerSettings.address"/> &nbsp;:</label>
-        <div class="controls">
+        <div class="controls ">
             <input type="text" name="host" size="70" maxlength="250" value="<c:out value='${mailSettings.host}'/>"/>&nbsp;
-            <a class="btn btn-warning" href="http://jira.jahia.org/browse/JKB-20" target="_blank" style="cursor: pointer;"><i class="icon-info-sign icon-white"></i></a>
+            <a class="btn btn-info" href="http://jira.jahia.org/browse/JKB-20" target="_blank" style="margin-top:-8px; cursor: pointer;"><i class="icon-info-sign icon-white"></i></a>
         </div>
     </div>
 

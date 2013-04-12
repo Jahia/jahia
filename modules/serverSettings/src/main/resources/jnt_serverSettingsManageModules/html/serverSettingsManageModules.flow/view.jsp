@@ -83,7 +83,7 @@
                                     <input type="hidden" name="version" value="${version.key}"/>
                                     <fmt:message var="labelStart" key='serverSettings.manageModules.startModule' />
                                     <fmt:message var="labelUndeployModule" key='serverSettings.manageModules.undeployModule' />
-                                    <input class="btn btn-success" type="submit" name="_eventId_startModule" value="${labelStart}" onclick=""/><input class="btn" type="submit" name="_eventId_undeployModule" value="${labelUndeployModule}" onclick=""/>&nbsp; ${version.key}
+                                    <input class="btn btn-success" type="submit" name="_eventId_startModule" value="${labelStart}" onclick=""/>&nbsp;<input class="btn" type="submit" name="_eventId_undeployModule" value="${labelUndeployModule}" onclick=""/>&nbsp; ${version.key}
                                 </form>
                             </div>
                         </c:otherwise>

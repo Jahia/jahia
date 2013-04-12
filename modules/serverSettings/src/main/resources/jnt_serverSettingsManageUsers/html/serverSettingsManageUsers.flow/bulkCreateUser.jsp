@@ -17,7 +17,7 @@
 <%--@elvariable id="mailSettings" type="org.jahia.services.mail.MailSettings"--%>
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
 <%--@elvariable id="flowExecutionUrl" type="java.lang.String"--%>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.blockUI.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.blockUI.js,bootstrap.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <template:addResources>
     <script type="text/javascript">
@@ -36,17 +36,23 @@
         });
     </script>
 </template:addResources>
-<div>
-    <p>
-        <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
-            <c:if test="${message.severity eq 'ERROR'}">
-                <span style="color: red;">${message.text}</span><br/>
-            </c:if>
-            <c:if test="${message.severity eq 'INFO'}">
-                <span style="color: green;">${message.text}</span><br/>
-            </c:if>
-        </c:forEach>
-    </p>
+
+<c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
+    <c:if test="${message.severity eq 'ERROR'}">
+        <div class="alert alert-danger">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                ${message.text}
+        </div>
+    </c:if>
+    <c:if test="${message.severity eq 'INFO'}">
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                ${message.text}
+        </div>
+    </c:if>
+</c:forEach>
+<h2><fmt:message key="serverSettings.users.bulk.create"/></h2>
+<div class="box-1">
     <form action="${flowExecutionUrl}" method="post" enctype="multipart/form-data">
         <fieldset>
             <label for="csvFile"><fmt:message key="label.csvFile"/></label>
@@ -55,8 +61,8 @@
             <input type="text" name="csvSeparator" value="${csvFile.csvSeparator}" id="csvSeparator"/>
         </fieldset>
         <fieldset>
-            <input type="submit" name="_eventId_confirm" id="${currentNode.identifier}-confirm" value="<fmt:message key='label.ok'/>"/>
-            <input type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel'/>"/>
+            <input class="btn btn-primary" type="submit" name="_eventId_confirm" id="${currentNode.identifier}-confirm" value="<fmt:message key='label.ok'/>"/>
+            <input class="btn" type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel'/>"/>
         </fieldset>
     </form>
     <p>

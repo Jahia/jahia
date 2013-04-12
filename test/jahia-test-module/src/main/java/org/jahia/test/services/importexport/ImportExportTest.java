@@ -617,7 +617,7 @@ public class ImportExportTest {
         try {
             zipFile = File.createTempFile("simpleimportexporttest", ".zip");
             OutputStream outputStream = new FileOutputStream(zipFile);
-            List<JahiaSite> sites = Lists.newArrayList(ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(TESTSITE_NAME));
+            List<JCRSiteNode> sites = Lists.newArrayList((JCRSiteNode)ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(TESTSITE_NAME).getNode());
             importExportService.exportSites(outputStream, params, sites);
             outputStream.close();
         } catch (FileNotFoundException e) {

@@ -25,7 +25,7 @@
     <c:set var="selectedValues" value=",${not empty value ? fn:join(value, ',') : renderContext.site.name},"/>
     <c:set var="allowAll" value="${not empty allowAll ? allowAll : true}"/>
     <c:set target="${attributes}" property="name" value="src_sites.values"/>
-    <% jspContext.setAttribute("allSites", JahiaSitesService.getInstance().getSites()); %>
+    <% jspContext.setAttribute("allSites", JahiaSitesService.getInstance().getSitesNodeList()); %>
     <c:if test="${not empty valueOptions}">
     	<c:set var="valueOptions" value=",${fn:replace(valueOptions, ' ', '')},"/>
     </c:if>

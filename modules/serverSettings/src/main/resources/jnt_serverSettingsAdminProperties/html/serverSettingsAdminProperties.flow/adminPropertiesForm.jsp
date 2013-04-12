@@ -68,7 +68,7 @@
             </div>
         </div>
         <div class="row-fluid">
-            <div class="span12 ">
+            <div class="span12"><br/><br/>
                 <input class="btn btn-primary" id="submit" type="submit" value="<fmt:message key='label.save'/>" name="_eventId_submit">
             </div>
         </div>

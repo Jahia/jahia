@@ -104,6 +104,22 @@ public class JahiaResourceBundle extends ResourceBundle {
         jahiaCacheList.clear();
     }
     
+    /**
+     * Returns the formatted messages with placeholders substituted by argument values.
+     * 
+     * @param text
+     *            the message text with placeholders
+     * @param arguments
+     *            an array of arguments to be used for substitution
+     * @return the formatted messages with placeholders substituted by argument values
+     */
+    public static String format(String text, Object... arguments) {
+        if (text == null || arguments.length == 0) {
+            return text;
+        }
+        return MessageFormat.format(StringUtils.replace(text, "'", "''"), arguments);
+    }
+    
     public JahiaResourceBundle(Locale locale, String templatesPackageName) {
         this(null, locale, templatesPackageName, null);
     }
@@ -369,7 +385,7 @@ public class JahiaResourceBundle extends ResourceBundle {
     }
 
     /**
-     * Get formateed message
+     * Get formatted message
      *
      * @param key
      * @param defaultValue
@@ -377,14 +393,7 @@ public class JahiaResourceBundle extends ResourceBundle {
      * @return
      */
     public String getFormatted(String key, String defaultValue, Object... arguments) {
-    	String text = get(key, defaultValue);
-    	if (text != null) {
-    		text = Patterns.SINGLE_QUOTE.matcher(text).replaceAll("''");
-    	}
-        String value = MessageFormat.format(text, arguments);
-
-
-        return value;
+    	return format(get(key, defaultValue), arguments);
     }
 
     /**

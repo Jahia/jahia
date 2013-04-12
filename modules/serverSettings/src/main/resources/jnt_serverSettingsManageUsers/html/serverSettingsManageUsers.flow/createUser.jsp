@@ -30,6 +30,7 @@
             </c:if>
         </c:forEach>
     </p>
+    <h2><fmt:message key="serverSettings.user.create"/></h2>
     <div class="box-1">
         <form action="${flowExecutionUrl}" method="post">
             <fieldset title="<fmt:message key="serverSettings.user.profile"/>">

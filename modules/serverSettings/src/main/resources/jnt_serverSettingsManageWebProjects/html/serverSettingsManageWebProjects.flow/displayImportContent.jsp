@@ -17,7 +17,7 @@
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
 <%--@elvariable id="flowExecutionUrl" type="java.lang.String"--%>
 <%--@elvariable id="webprojectHandler" type="org.jahia.modules.serversettings.flow.WebprojectHandler"--%>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.blockUI.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.blockUI.js,bootstrap.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <template:addResources>
 <script type="text/javascript">
@@ -36,90 +36,97 @@
     });
 </script>
 </template:addResources>
-<div>
-<p>
+
     <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
         <c:if test="${message.severity eq 'ERROR'}">
-            <span style="color: red;">${message.text}</span><br/>
+            <div class="alert alert-error">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    ${message.text}
+            </div>
         </c:if>
     </c:forEach>
-</p>
-    <form action="${flowExecutionUrl}" method="post">
-        <ol>
+
+<form action="${flowExecutionUrl}" method="post">
+        <div class="box-1">
             <c:forEach items="${webprojectHandler.importsInfos}" var="importInfoMap">
-                <li>
-                    <input type="checkbox" id="${importInfoMap.key}" name="importsInfos['${importInfoMap.key}'].selected" value="true"
-                           <c:if test="${importInfoMap.value.selected}">checked="checked"</c:if>/>
-                    <input type="hidden" id="${importInfoMap.key}" name="_importsInfos['${importInfoMap.key}'].selected"/>
-                    <label for="${importInfoMap.key}">${importInfoMap.key}</label>
+                    <label for="${importInfoMap.key}">
+                        <input type="checkbox" id="${importInfoMap.key}" name="importsInfos['${importInfoMap.key}'].selected" value="true"
+                               <c:if test="${importInfoMap.value.selected}">checked="checked"</c:if>/> ${importInfoMap.key}
+                        <input type="hidden" id="${importInfoMap.key}" name="_importsInfos['${importInfoMap.key}'].selected"/>
+                    </label>
                     <%@include file="importValidation.jspf"%>
                     <c:if test="${importInfoMap.value.site}">
-                        <ul>
-                            <li>
-                                <label for="${importInfoMap.value.siteKey}siteTitle">
-                                    <fmt:message key="serverSettings.manageWebProjects.webProject.title"/>
-                                </label>
-                                <input type="text" id="${importInfoMap.value.siteKey}siteTitle"
-                                       name="importsInfos['${importInfoMap.key}'].siteTitle"
-                                       value="${fn:escapeXml(importInfoMap.value.siteTitle)}"/>
-                            </li>
-                            <li>
-                                <label for="${importInfoMap.value.siteKey}siteServerName">
-                                    <fmt:message key="serverSettings.manageWebProjects.webProject.serverName"/>
-                                </label>
-                                <input type="text" id="${importInfoMap.value.siteKey}siteServerName"
-                                       name="importsInfos['${importInfoMap.key}'].siteServername"
-                                       value="${fn:escapeXml(importInfoMap.value.siteServername)}"/>
-                            </li>
-                            <li>
-                                <label for="${importInfoMap.value.siteKey}siteKey">
-                                    <fmt:message key="serverSettings.manageWebProjects.webProject.siteKey"/>
-                                </label>
-                                <input type="text" id="${importInfoMap.value.siteKey}siteKey"
-                                       name="importsInfos['${importInfoMap.key}'].siteKey"
-                                       value="${fn:escapeXml(importInfoMap.value.siteKey)}"/>
-                            </li>
-                            <li>
-                                <label for="${importInfoMap.value.siteKey}templates">
-                                    <fmt:message key="serverSettings.webProjectSettings.pleaseChooseTemplateSet"/>
-                                </label>
-                                <select id="${importInfoMap.value.siteKey}templates" name="importsInfos['${importInfoMap.key}'].templates">
-                                    <c:forEach items="${requestScope.templateSets}" var="module">
+                        <div class="container-fluid">
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <label for="${importInfoMap.value.siteKey}siteTitle">
+                                        <fmt:message key="serverSettings.manageWebProjects.webProject.title"/>
+                                    </label>
+                                    <input type="text" id="${importInfoMap.value.siteKey}siteTitle"
+                                           name="importsInfos['${importInfoMap.key}'].siteTitle"
+                                           value="${fn:escapeXml(importInfoMap.value.siteTitle)}"/>
+                                </div>
+                                <div class="span6">
+                                    <label for="${importInfoMap.value.siteKey}siteServerName">
+                                        <fmt:message key="serverSettings.manageWebProjects.webProject.serverName"/>
+                                    </label>
+                                    <input type="text" id="${importInfoMap.value.siteKey}siteServerName"
+                                           name="importsInfos['${importInfoMap.key}'].siteServername"
+                                           value="${fn:escapeXml(importInfoMap.value.siteServername)}"/>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <label for="${importInfoMap.value.siteKey}siteKey">
+                                        <fmt:message key="serverSettings.manageWebProjects.webProject.siteKey"/>
+                                    </label>
+                                    <input type="text" id="${importInfoMap.value.siteKey}siteKey"
+                                           name="importsInfos['${importInfoMap.key}'].siteKey"
+                                           value="${fn:escapeXml(importInfoMap.value.siteKey)}"/>
+                                </div>
+                                <div class="span6">
+                                    <label for="${importInfoMap.value.siteKey}templates">
+                                        <fmt:message key="serverSettings.webProjectSettings.pleaseChooseTemplateSet"/>
+                                    </label>
+                                    <select id="${importInfoMap.value.siteKey}templates" name="importsInfos['${importInfoMap.key}'].templates">
+                                        <c:forEach items="${requestScope.templateSets}" var="module">
                                             <option value="${module}" <c:if test="${importInfoMap.value.templates eq module}"> selected="selected"</c:if>>${module}</option>
-                                    </c:forEach>
-                                </select>
-                            </li>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                            </div>
                             <c:if test="${importInfoMap.value.legacyImport}">
-                                <li>
-                                    <label for="${importInfoMap.value.siteKey}legacyMapping">
-                                        <fmt:message key="serverSettings.manageWebProjects.selectDefinitionMapping"/>
-                                    </label>
-                                    <select id="${importInfoMap.value.siteKey}legacyMapping"
-                                            name="importsInfos['${importInfoMap.key}'].selectedLegacyMapping">
-                                        <c:forEach items="${importInfoMap.value.legacyMappings}" var="module">
-                                            <option value="${module.absolutePath}" <c:if
-                                                    test="${importInfoMap.value.selectedLegacyMapping eq module.name}"> selected="selected"</c:if>>${module.name}</option>
-                                        </c:forEach>
-                                    </select>
-                                </li>
-                                <li>
-                                    <label for="${importInfoMap.value.siteKey}legacyDefinitions">
-                                        <fmt:message key="serverSettings.manageWebProjects.selectLegacyDefinitions"/>
-                                    </label>
-                                    <select id="${importInfoMap.value.siteKey}legacyDefinitions"
-                                            name="importsInfos['${importInfoMap.key}'].selectedLegacyDefinitions">
-                                        <c:forEach items="${importInfoMap.value.legacyDefinitions}" var="module">
-                                            <option value="${module.absolutePath}" <c:if
-                                                    test="${importInfoMap.value.selectedLegacyDefinitions eq module.name}"> selected="selected"</c:if>>${module.name}</option>
-                                        </c:forEach>
-                                    </select>
-                                </li>
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <label for="${importInfoMap.value.siteKey}legacyMapping">
+                                            <fmt:message key="serverSettings.manageWebProjects.selectDefinitionMapping"/>
+                                        </label>
+                                        <select id="${importInfoMap.value.siteKey}legacyMapping"
+                                                name="importsInfos['${importInfoMap.key}'].selectedLegacyMapping">
+                                            <c:forEach items="${importInfoMap.value.legacyMappings}" var="module">
+                                                <option value="${module.absolutePath}" <c:if
+                                                        test="${importInfoMap.value.selectedLegacyMapping eq module.name}"> selected="selected"</c:if>>${module.name}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                    <div class="span6">
+                                        <label for="${importInfoMap.value.siteKey}legacyDefinitions">
+                                            <fmt:message key="serverSettings.manageWebProjects.selectLegacyDefinitions"/>
+                                        </label>
+                                        <select id="${importInfoMap.value.siteKey}legacyDefinitions"
+                                                name="importsInfos['${importInfoMap.key}'].selectedLegacyDefinitions">
+                                            <c:forEach items="${importInfoMap.value.legacyDefinitions}" var="module">
+                                                <option value="${module.absolutePath}" <c:if
+                                                        test="${importInfoMap.value.selectedLegacyDefinitions eq module.name}"> selected="selected"</c:if>>${module.name}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </div>
                             </c:if>
-                        </ul>
+                        </div>
                     </c:if>
-                </li>
             </c:forEach>
-        </ol>
-        <input type="submit" name="_eventId_processImport" id="${currentNode.identifier}-processImport" value="<fmt:message key="label.next"/>"/>
-    </form>
-</div>
+        <input class="btn btn-primary" type="submit" name="_eventId_processImport" id="${currentNode.identifier}-processImport" value="<fmt:message key="label.next"/>"/>
+    </div>
+</form>
+

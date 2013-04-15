@@ -3106,13 +3106,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public boolean hasNode(String s) throws RepositoryException {
         if (provider.getService() != null) {
-            if (provider.getSessionFactory().getAllMountPoints().contains(getPath() + "/" + s)) {
+            Set<String> allMountPoints = provider.getSessionFactory().getAllMountPoints();
+            if (allMountPoints.size() > 1 && allMountPoints.contains(getPath() + "/" + s)) {
                 return true;
             }
         }
 
-        final boolean b = objectNode.hasNode(s);
-        if (b && Constants.LIVE_WORKSPACE.equals(getSession().getWorkspace().getName()) && !s.startsWith("j:translation")) {
+        if (!objectNode.hasNode(s)) {
+            return false;
+        }
+        
+        if (Constants.LIVE_WORKSPACE.equals(getSession().getWorkspace().getName()) && !s.startsWith("j:translation")) {
             final JCRNodeWrapper wrapper;
             try {
                 wrapper = (JCRNodeWrapper) getNode(s);
@@ -3121,7 +3125,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
             return wrapper.checkValidity();
         }
-        return b;
+        
+        return true;
     }
 
     /**
@@ -3129,31 +3134,47 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public boolean hasNodes() throws RepositoryException {
         if (provider.getService() != null) {
-            for (String entry : provider.getSessionFactory().getAllMountPoints()) {
-                if (!entry.equals("/")) {
-                    String mpp = entry.substring(0, entry.lastIndexOf('/'));
-                    if (mpp.equals("")) mpp = "/";
-                    if (mpp.equals(getPath())) {
-                        return true;
+            Set<String> allMountPoints = provider.getSessionFactory().getAllMountPoints();
+            if (allMountPoints.size() > 1) {
+                for (String entry : allMountPoints) {
+                    if (!entry.equals("/")) {
+                        String mpp = entry.substring(0, entry.lastIndexOf('/'));
+                        if (mpp.equals("")) mpp = "/";
+                        if (mpp.equals(getPath())) {
+                            return true;
+                        }
                     }
                 }
             }
         }
 
-        final boolean b = objectNode.hasNodes();
-        if (b && Constants.LIVE_WORKSPACE.equals(getSession().getWorkspace().getName())) {
+        if (!objectNode.hasNodes()) {
+            // underlying node has no children
+            return false;
+        }
+
+        // if we are in live or session is localized, we need additional checks 
+        boolean inLive = Constants.LIVE_WORKSPACE.equals(getSession().getWorkspace().getName());
+        if (inLive || session.getLocale() != null) {
             NodeIterator ni = objectNode.getNodes();
             while (ni.hasNext()) {
                 try {
-                    if (getNode(ni.nextNode().getName()).checkValidity()) {
+                    Node child = ni.nextNode();
+                    String childName = child.getName();
+                    if (session.getLocale() != null && childName.startsWith("j:translation_")) {
+                        // skip j:translation_* nodes in localized session
+                        continue;
+                    }
+                    if (getNode(childName).checkValidity()) {
                         return true;
                     }
                 } catch (PathNotFoundException e) {
+                    // ignore
                 }
             }
             return false;
         }
-        return b;
+        return true;
     }
 
     /**

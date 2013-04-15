@@ -54,7 +54,7 @@
                                     <ref bean="Toolbar.Item.ShowVersionEngine"/>
                                     <ref bean="Toolbar.Item.ShowConsultPreviousVersionEngine"/>
                                     <ref bean="Toolbar.Item.ViewACLStatus"/>
-                                    <ref bean="Toolbar.Item.ViewPublicationIconStatus"/>
+                                    <!--<ref bean="Toolbar.Item.ViewPublicationIconStatus"/>-->
                                     <ref bean="Toolbar.Item.ViewVisibilityStatus"/>
                                 </list>
                             </property>

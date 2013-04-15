@@ -1354,7 +1354,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public GWTJahiaWorkflowInfo getWorkflowInfo(String path) throws GWTJahiaServiceException {
-        return workflow.getWorkflowInfo(path, retrieveCurrentSession(), getLocale());
+        return workflow.getWorkflowInfo(path, true, retrieveCurrentSession(), getLocale());
     }
 
     /**

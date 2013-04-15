@@ -226,7 +226,7 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
 
     public boolean isUnpublishable() {
         return  !isLocked() &&
-                getStatus() == GWTJahiaPublicationInfo.PUBLISHED || getStatus() == GWTJahiaPublicationInfo.MODIFIED;
+                getStatus() != GWTJahiaPublicationInfo.UNPUBLISHED && getStatus() != GWTJahiaPublicationInfo.NOT_PUBLISHED;
     }
 
 

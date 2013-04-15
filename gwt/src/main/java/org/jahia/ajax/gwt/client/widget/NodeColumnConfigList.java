@@ -256,11 +256,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                 classes += "notPublished ";
             }
             if (!PermissionsUtils.isPermitted("editModeAccess", node) && !PermissionsUtils.isPermitted("jcr:write_default", node)) {
-<<<<<<< .working
-                v = "<span class=\"accessForbidden\">" + v + "</span>";
-=======
-                classes += "noEditModeAccess ";
->>>>>>> .merge-right.r45507
+                classes += "accessForbidden ";
             }
             if (classes.length() > 0) {
                 v = "<span class=\""+classes+"\">" + v + "</span>";

@@ -143,6 +143,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     private static Pattern UNICODE_PATTERN = Pattern.compile("\\\\u([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})");
 
+    private OutputFormat prettyPrint = OutputFormat.createPrettyPrint();
+
     private TemplatePackageDeployer templatePackageDeployer;
 
     private TemplatePackageRegistry templatePackageRegistry;
@@ -186,6 +188,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public void setSourceControlFactory(SourceControlFactory sourceControlFactory) {
         this.sourceControlFactory = sourceControlFactory;
+    }
+
+    public void setXmlIndentation(int i) {
+        prettyPrint.setIndentSize(i);
     }
 
     public void start() throws JahiaInitializationException {
@@ -674,7 +680,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     File modifiedPom = new File(sources, "pom-modified.xml");
                     XMLWriter writer = null;
                     try {
-                        writer = new XMLWriter(new FileWriter(modifiedPom), OutputFormat.createPrettyPrint());
+                        writer = new XMLWriter(new FileWriter(modifiedPom), prettyPrint);
                         writer.write(document);
                     } finally {
                         if (writer != null) {
@@ -691,7 +697,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     generatedWar = compileModule(module.getRootFolder(), sources).getFile();
 
                     versionElement.setText(nextVersion);
-                    writer = new XMLWriter(new FileWriter(modifiedPom), OutputFormat.createPrettyPrint());
+                    writer = new XMLWriter(new FileWriter(modifiedPom), prettyPrint);
                     try {
                         writer.write(document);
                     } finally {
@@ -867,7 +873,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
             e.setText(StringUtils.join(dependencies, ","));
             File modifiedPom = new File(sources, "pom-modified.xml");
-            XMLWriter writer = new XMLWriter(new FileWriter(modifiedPom), OutputFormat.createPrettyPrint());
+            XMLWriter writer = new XMLWriter(new FileWriter(modifiedPom), prettyPrint);
             try {
                 writer.write(document);
             } finally {
@@ -902,7 +908,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 list.add(list.indexOf(root.elementIterator("description").next()) + 1, scm);
             }
             File modifiedPom = new File(sources, "pom-modified.xml");
-            XMLWriter writer = new XMLWriter(new FileWriter(modifiedPom), OutputFormat.createPrettyPrint());
+            XMLWriter writer = new XMLWriter(new FileWriter(modifiedPom), prettyPrint);
             try {
                 writer.write(document);
             } finally {

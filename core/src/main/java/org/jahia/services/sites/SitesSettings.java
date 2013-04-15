@@ -50,26 +50,6 @@ import java.util.Set;
  */
 public final class SitesSettings {
 
-    //--------------------------------------------------------------------------
-    /**
-     * Home page settings
-     */
-    public static final String USER_DEFAULT_HOMEPAGE_DEF
-            = "user_default_homepage_def";
-    public static final String GROUP_DEFAULT_HOMEPAGE_DEF
-            = "group_default_homepage_def";
-    public static final String USER_DEFAULT_HOMEPAGE_DEF_ACTIVE
-            = "user_default_homepage_def_active";
-    public static final String GROUP_DEFAULT_HOMEPAGE_DEF_ACTIVE
-            = "group_default_homepage_def_active";
-    public static final String USER_DEFAULT_HOMEPAGE_DEF_ATCREATION
-            = "user_default_homepage_def_atcreation";
-    public static final String GROUP_DEFAULT_HOMEPAGE_DEF_ATCREATION
-            = "group_default_homepage_def_atcreation";
-    public static final String VERSIONING_ENABLED = "versioning_enabled";
-
-    public static final String STAGING_ENABLED = "staging_enabled";
-
     /**
      * These checks settings are used for BigText fields
      */
@@ -85,8 +65,6 @@ public final class SitesSettings {
      * Language settings
      */
     public static final String MIX_LANGUAGES_ACTIVE = "j:mixLanguage";
-
-    public static final String JAHIA_GA_PROFILE = "jahiaGAprofile_";
 
     public static final String INACTIVE_LIVE_LANGUAGES = "j:inactiveLiveLanguages"; 
 

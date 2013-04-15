@@ -1192,9 +1192,13 @@ public class ContentManagerHelper {
         File sources = getSource(moduleName, session);
 
         SourceControlManagement scm = templateManagerService.getSourceControlFactory().getSourceControlManagement(sources);
-        templateManagerService.regenerateImportFile(moduleName, sources, session);
-        scm.update();
-        templateManagerService.compileAndDeploy(moduleName, sources, session);
+        if (scm != null) {
+            templateManagerService.regenerateImportFile(moduleName, sources, session);
+            scm.update();
+            templateManagerService.compileAndDeploy(moduleName, sources, session);
+        } else {
+            throw new IOException("No SCM configured");
+        }
     }
 
     public GWTJahiaNode checkoutModule(String moduleName, String scmURI, String scmType, String branchOrTag, JCRSessionWrapper session) throws Exception {
@@ -1223,7 +1227,7 @@ public class ContentManagerHelper {
         templateManagerService.compileAndDeploy(moduleName, sources, session);
     }
 
-    public void saveAndCommitModule(String moduleName, String message, JCRSessionWrapper session) throws RepositoryException {
+    public void saveAndCommitModule(String moduleName, String message, JCRSessionWrapper session) throws RepositoryException, IOException {
         SourceControlManagement scm = null;
         File sources = getSource(moduleName, session);
         try {
@@ -1233,21 +1237,11 @@ public class ContentManagerHelper {
         }
 
         if (scm != null) {
-            try {
-                scm.update();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        templateManagerService.regenerateImportFile(moduleName, sources, session);
-
-        if (scm != null) {
-            try {
-                scm.commit(message);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            scm.update();
+            templateManagerService.regenerateImportFile(moduleName, sources, session);
+            scm.commit(message);
+        } else {
+            throw new IOException("No SCM configured");
         }
 
     }

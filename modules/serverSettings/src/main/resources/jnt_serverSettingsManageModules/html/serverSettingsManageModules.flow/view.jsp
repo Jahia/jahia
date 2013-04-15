@@ -8,6 +8,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -17,8 +18,24 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
-<template:addResources type="javascript" resources="jquery.js,bootstrap.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,bootstrap.js,jquery.blockUI.js"/>
 <template:addResources type="css" resources="bootstrap.css"/>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.button-download').click(function() {
+            $.blockUI({ css: {
+                border: 'none',
+                padding: '15px',
+                backgroundColor: '#000',
+                '-webkit-border-radius': '10px',
+                '-moz-border-radius': '10px',
+                opacity: .5,
+                color: '#fff'
+            }, message: '<fmt:message key="org.jahia.admin.workInProgressTitle"/>' });
+        });
+    });
+</script>
 
 <c:set value="${renderContext.editModeConfigName eq 'studiomode' or renderContext.editModeConfigName eq 'studiolayoutmode'}" var="isStudio"/>
 
@@ -134,12 +151,14 @@
                         <input class="btn btn-block" type="button" onclick='window.parent.location.assign("/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.html")' value="<fmt:message key='serverSettings.manageModules.goToStudio' />"/>
                     </c:when>
                     <c:when test="${not empty currentModule.scmURI}">
-                        <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                            <input type="hidden" name="module" value="${entry.key}"/>
-                            <input type="hidden" name="scmUri" value="${currentModule.scmURI}"/>
-                            <fmt:message var="label" key='serverSettings.manageModules.downloadSources' />
-                            <input class="btn btn-block" type="submit" name="_eventId_downloadSources" value="${label}" onclick=""/>
-                        </form>
+                        <c:if test="${functions:contains(sourceControls, fn:substringBefore(fn:substringAfter(currentModule.scmURI, ':'),':'))}">
+                            <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
+                                <input type="hidden" name="module" value="${entry.key}"/>
+                                <input type="hidden" name="scmUri" value="${currentModule.scmURI}"/>
+                                <fmt:message var="label" key='serverSettings.manageModules.downloadSources' />
+                                <input class="btn btn-block button-download" type="submit" name="_eventId_downloadSources" value="${label}" onclick=""/>
+                            </form>
+                        </c:if>
                     </c:when>
 
                     <c:otherwise>

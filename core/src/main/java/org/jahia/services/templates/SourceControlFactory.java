@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class SourceControlFactory {
     private Map<String,String> sourceControlExecutables;
@@ -32,6 +33,10 @@ public class SourceControlFactory {
             }
             this.sourceControlExecutables.put(entry.getKey(), entry.getValue());
         }
+    }
+
+    public Set<String> getSupportedSourceControls() {
+        return sourceControlExecutables.keySet();
     }
 
     public SourceControlManagement getSourceControlManagement(File workingDir) throws IOException {

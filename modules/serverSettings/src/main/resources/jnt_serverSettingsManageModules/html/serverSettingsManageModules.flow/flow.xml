@@ -20,12 +20,17 @@
                       result="requestScope.allModuleVersions"/>
             <evaluate expression="JahiaTemplateManagerService.templatePackageRegistry.registeredModules"
                       result="requestScope.registeredModules"/>
+            <evaluate expression="JahiaTemplateManagerService.sourceControlFactory.supportedSourceControls"
+                      result="requestScope.sourceControls"/>
         </on-render>
 
-        <transition on="downloadSources" to="viewDownloadForm">
+        <transition on="viewDownloadForm" to="viewDownloadForm">
             <set value="requestParameters.currentModule" name="flowScope.currentModule"/>
             <set value="requestParameters.scmUri" name="flowScope.scmUri"/>
         </transition>
+
+        <transition on="downloadSources" to="downloadSources"/>
+
 
         <transition on="startModule" to="startModule"/>
         <transition on="stopModule" to="stopModule"/>
@@ -50,10 +55,12 @@
         </on-entry>
         <on-render>
             <evaluate expression="flowHandler.loadModuleInformation(flowRequestContext)" result="requestScope.detailedModule"/>
+            <evaluate expression="JahiaTemplateManagerService.sourceControlFactory.supportedSourceControls"
+                      result="requestScope.sourceControls"/>
         </on-render>
         <transition on="startModule" to="startModule"/>
         <transition on="stopModule" to="stopModule"/>
-        <transition on="downloadSources" to="viewDownloadForm">
+        <transition on="downloadSources" to="downloadSources">
             <set value="requestParameters.module" name="flowScope.currentModule"/>
             <set value="requestParameters.scmUri" name="flowScope.scmUri"/>
         </transition>
@@ -64,6 +71,10 @@
     </view-state>
 
     <action-state id="downloadSources">
+        <on-entry>
+            <evaluate expression="requestParameters.scmUri?:flowScope.scmUri" result="flowScope.scmUri"/>
+            <evaluate expression="requestParameters.module?:flowScope.module" result="flowScope.module"/>
+        </on-entry>
         <evaluate
                 expression="JahiaTemplateManagerService.checkoutModule(null,flowScope.scmUri, null,flowScope.module,null,jcrSessionFactory.currentUserSession)"/>
         <transition on-exception="java.lang.Exception" to="viewDownloadForm">

@@ -21,9 +21,25 @@
 <%--@elvariable id="otherVersions" type="java.util.Map<org.jahia.services.templates.ModuleVersion,org.jahia.data.templates.JahiaTemplatesPackage>"--%>
 <%--@elvariable id="bundleInfo" type="java.util.Map<java.lang.String, java.lang.String>"--%>
 <%--@elvariable id="activeVersion" type="org.jahia.data.templates.JahiaTemplatesPackage"--%>
-<template:addResources type="javascript" resources="jquery.js,jquery-ui.min.js,bootstrap.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery-ui.min.js,bootstrap.js,jquery.blockUI.js"/>
 <template:addResources type="css" resources="bootstrap.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.button-download').click(function() {
+            $.blockUI({ css: {
+                border: 'none',
+                padding: '15px',
+                backgroundColor: '#000',
+                '-webkit-border-radius': '10px',
+                '-moz-border-radius': '10px',
+                opacity: .5,
+                color: '#fff'
+            }, message: '<fmt:message key="org.jahia.admin.workInProgressTitle"/>' });
+        });
+    });
+</script>
 
 <c:set value="${renderContext.editModeConfigName eq 'studiomode' or renderContext.editModeConfigName eq 'studiolayoutmode'}" var="isStudio"/>
 
@@ -143,12 +159,14 @@
                                    value="<fmt:message key='serverSettings.manageModules.goToStudio' />"/>
                         </c:when>
                         <c:when test="${not empty activeVersion.scmURI}">
-                            <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                                <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
-                                <input type="hidden" name="scmUri" value="${activeVersion.scmURI}"/>
-                                <fmt:message var="label" key='serverSettings.manageModules.downloadSources'/>
-                                <input class="btn" type="submit" name="_eventId_downloadSources" value="${label}" onclick=""/>
-                            </form>
+                            <c:if test="${functions:contains(sourceControls, fn:substringBefore(fn:substringAfter(activeVersion.scmURI, ':'),':'))}">
+                                <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
+                                    <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
+                                    <input type="hidden" name="scmUri" value="${activeVersion.scmURI}"/>
+                                    <fmt:message var="label" key='serverSettings.manageModules.downloadSources'/>
+                                    <input class="btn button-download" type="submit" name="_eventId_downloadSources" value="${label}" onclick=""/>
+                                </form>
+                            </c:if>
                         </c:when>
 
                         <c:otherwise>
@@ -156,7 +174,7 @@
                                 <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
                                 <input type="hidden" name="scmUri" value="scm:git:"/>
                                 <fmt:message var="label" key='serverSettings.manageModules.downloadSources'/>
-                                <input class="btn" type="submit" name="_eventId_downloadSources" value="${label}" onclick=""/>
+                                <input class="btn" type="submit" name="_eventId_viewDownloadForm" value="${label}" onclick=""/>
                             </form>
                         </c:otherwise>
                     </c:choose>

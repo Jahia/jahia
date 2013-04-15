@@ -455,6 +455,10 @@
     text-decoration:line-through;
 }
 
+.notPublished {
+    opacity: 0.5;
+}
+
 .noEditModeAccess {
     background: #FF9999;
 }

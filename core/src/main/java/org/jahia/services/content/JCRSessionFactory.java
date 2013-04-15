@@ -141,7 +141,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     }
 
     public JCRSessionWrapper getCurrentUserSession(String workspace, Locale locale,Locale fallbackLocale) throws RepositoryException {
-        // thread user session might be inited/closed in an http filter, instead of keeping it
+        // thread user session might be initialized/closed in an HTTP filter, instead of keeping it
         Map<String, Map<String, JCRSessionWrapper>> smap = userSession.get();
         if (smap == null) {
             smap = new HashMap<String, Map<String, JCRSessionWrapper>>();

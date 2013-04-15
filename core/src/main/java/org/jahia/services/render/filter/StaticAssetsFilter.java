@@ -385,8 +385,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             for (; i < entries.size(); i++) {
                 Map.Entry<String, Map<String, String>> entry = entries.get(i);
                 String key = entry.getKey();
-                if(Jahia.getContextPath() != null && Jahia.getContextPath().length() > 0 
-                		&& !Jahia.getContextPath().equals("/") && key.startsWith(Jahia.getContextPath() + "/")) {
+                if(Jahia.getContextPath().length() > 0 && key.startsWith(Jahia.getContextPath() + "/")) {
                 	key = key.substring(Jahia.getContextPath().length());
                 }
                 File file = new File(context.getRealPath(key));

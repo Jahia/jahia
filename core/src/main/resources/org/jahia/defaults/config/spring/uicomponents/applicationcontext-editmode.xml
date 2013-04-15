@@ -300,7 +300,6 @@
                         <list>
                             <value>displayName,*,label.title</value>
                             <value>locked,25</value>
-                            <value>quickPublicationInfo,20</value>
                         </list>
                     </property>
                     <property name="treeContextMenu">

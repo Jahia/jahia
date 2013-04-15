@@ -758,7 +758,15 @@ button.button-disable:hover, div.button-disable:hover {
     text-decoration:line-through;
 }
 
+<<<<<<< .working
 .accessForbidden {
+=======
+.notPublished {
+    opacity: 0.5;
+}
+
+.noEditModeAccess {
+>>>>>>> .merge-right.r45507
     background: #FF9999;
 }
 

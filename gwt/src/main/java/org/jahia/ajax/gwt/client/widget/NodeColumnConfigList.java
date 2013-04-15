@@ -247,11 +247,23 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
             if (v != null) {
                 v = SafeHtmlUtils.htmlEscape(v);
             }
+            String classes = "";
             if (node.getNodeTypes().contains("jmix:markedForDeletion")) {
-                v = "<span class=\"markedForDeletion\">" + v + "</span>";
+                classes += "markedForDeletion ";
+            }
+            if (node.getQuickPublicationInfo() != null &&
+                    (node.getQuickPublicationInfo().getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || node.getQuickPublicationInfo().getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED)) {
+                classes += "notPublished ";
             }
             if (!PermissionsUtils.isPermitted("editModeAccess", node) && !PermissionsUtils.isPermitted("jcr:write_default", node)) {
+<<<<<<< .working
                 v = "<span class=\"accessForbidden\">" + v + "</span>";
+=======
+                classes += "noEditModeAccess ";
+>>>>>>> .merge-right.r45507
+            }
+            if (classes.length() > 0) {
+                v = "<span class=\""+classes+"\">" + v + "</span>";
             }
             return v;
         }

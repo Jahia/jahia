@@ -101,7 +101,12 @@ public class PagesTabItem extends SidePanelTabItem {
         for (GWTColumn c : config.getTreeColumns()) {
             c.setSortable(false);
         }
-        factory.setFields(config.getTreeColumnKeys());
+        List<String> fields = new ArrayList<String>(config.getTreeColumnKeys());
+        if (!fields.contains(GWTJahiaNode.QUICK_PUBLICATION_INFO) && !fields.contains(GWTJahiaNode.PUBLICATION_INFO)) {
+            fields.add(GWTJahiaNode.QUICK_PUBLICATION_INFO);
+        }
+        factory.setFields(fields);
+
         this.pageFactory = factory;
         this.pageFactory.setSelectedPath(path);
 

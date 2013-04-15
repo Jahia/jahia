@@ -977,10 +977,7 @@ public class NavigationHelper {
                 hasChildren = true;
             } else if (!node.isFile()) {
                 try {
-                    final NodeIterator nodesIterator = node.getNodes();
-                    if (nodesIterator.hasNext()) {
-                        hasChildren = true;
-                    }
+                    hasChildren = node.hasNodes();
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }

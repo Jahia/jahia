@@ -23,10 +23,13 @@
     </script>
 </template:addResources>
 
-<p><fmt:message key="label.confirmContinue"/></p>
-<p style="color: red; font-weight: bold;"><fmt:message key="serverSettings.manageWebProjects.delete.warning"/></p>
+<h2><fmt:message key="label.confirmContinue"/></h2>
+<div class="alert alert-error">
+    <fmt:message key="serverSettings.manageWebProjects.delete.warning"/>
+</div>
+
 <form action="${flowExecutionUrl}" method="post">
-<table border="1" cellpadding="5" cellspacing="0">
+<table class="table table-bordered table-striped table-hover">
         <tr>
             <th>
                 <fmt:message key="label.name" />
@@ -53,8 +56,8 @@
         </c:forEach>
 
 </table>
-<input type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel' />"/>
-<input type="submit" name="_eventId_deleteSitesConfirmed" id="${currentNode.identifier}-deleteSitesConfirmed" value="<fmt:message key='label.delete' />"/>
+<input class="btn" type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel' />"/>
+<input class="btn btn-danger" type="submit" name="_eventId_deleteSitesConfirmed" id="${currentNode.identifier}-deleteSitesConfirmed" value="<fmt:message key='label.delete' />"/>
 </form>
 
 

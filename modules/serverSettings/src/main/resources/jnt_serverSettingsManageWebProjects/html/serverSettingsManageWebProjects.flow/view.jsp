@@ -194,11 +194,11 @@
         <h2><fmt:message key="serverSettings.manageWebProjects.multipleimport"/></h2>
         <form action="${flowExecutionUrl}" method="post" enctype="multipart/form-data">
             <div>
-                <p><strong><fmt:message key="serverSettings.manageWebProjects.multipleimport.fileselect"/></strong></p>
+                <p><fmt:message key="serverSettings.manageWebProjects.multipleimport.fileselect"/></p>
                 <input type="file" name="importFile"/>
             </div>
             <div>
-                <p><strong><fmt:message key="serverSettings.manageWebProjects.multipleimport.fileinput"/></strong></p>
+                <p><fmt:message key="serverSettings.manageWebProjects.multipleimport.fileinput"/></p>
                 <input type="text"  name="importPath"/>
             </div>
 

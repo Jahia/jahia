@@ -41,31 +41,21 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflow;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowType;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
-import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
-import org.jahia.ajax.gwt.client.widget.contentengine.EngineContainer;
-import org.jahia.ajax.gwt.client.widget.contentengine.EnginePanel;
-import org.jahia.ajax.gwt.client.widget.contentengine.EngineWindow;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
-import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
  * User: toto
  * Date: Sep 25, 2009
  * Time: 6:58:56 PM
@@ -77,9 +67,8 @@ public class PublishActionItem extends BaseActionItem {
      * Returns <code>true</code> if the selected item (single-selection case) is locked by the marked for deletion operation on its parent.
      * In a multi-selection mode, the condition should be fulfilled for all selected items. If at least one of the selected items is not in
      * marked for deletion state this method returns false.
-     * 
-     * @param selection
-     *            the current selection context
+     *
+     * @param selection the current selection context
      * @return <code>true</code> if the selected item (single-selection case) is locked by the marked for deletion operation on its parent.
      *         In a multi-selection mode, the condition should be fulfilled for all selected items. If at least one of the selected items is
      *         not in marked for deletion state this method returns false.
@@ -100,12 +89,10 @@ public class PublishActionItem extends BaseActionItem {
 
         return markedForDeletion;
     }
-    
+
     protected transient String workflowType = "publish";
     protected transient boolean checkForUnpublication = false;
     protected transient boolean allSubTree = false;
-
-    protected transient GWTJahiaWorkflow wf;
 
     public void handleNewLinkerSelection() {
         setEnabled(false);
@@ -120,9 +107,14 @@ public class PublishActionItem extends BaseActionItem {
             GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
             if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode)) {
                 setEnabled(true);
-                if(gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
+
+                if (checkForUnpublication && !gwtJahiaNode.getQuickPublicationInfo().isUnpublishable()) {
+                    setEnabled(false);
+                }
+
+                if (gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
                     updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
-                    if(gwtJahiaNode.isFile()) {
+                    if (gwtJahiaNode.isFile()) {
                         setEnabled(false);
                     }
                 } else {
@@ -148,52 +140,29 @@ public class PublishActionItem extends BaseActionItem {
 
     @Override
     public void onComponentSelection() {
-        wf = null;
         LinkerSelectionContext ctx = linker.getSelectionContext();
-        if (ctx.getMultipleSelection() != null
-                && ctx.getMultipleSelection().size() > 1 && hasPermission(ctx.getSelectionPermissions())) {
-            //
-        } else {
-            GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
-            if (gwtJahiaNode != null && gwtJahiaNode.getWorkflowInfo() != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode)) {
-                wf = gwtJahiaNode.getWorkflowInfo().getActiveWorkflows().get(new GWTJahiaWorkflowType(workflowType));
-            }
-        }
-
-
-        if (wf == null) {
-            if (!linker.getSelectionContext().getMultipleSelection().isEmpty()) {
-                final List<String> uuids = new ArrayList<String>();
-                List<GWTJahiaNode> jahiaNodes = linker.getSelectionContext().getMultipleSelection();
-                if (jahiaNodes.size() > 1) {
-                    for (GWTJahiaNode jahiaNode : jahiaNodes) {
-                        uuids.add(jahiaNode.getUUID());
-                    }
-                } else {
-                    uuids.add(linker.getSelectionContext().getSingleSelection().getUUID());
+        if (!linker.getSelectionContext().getMultipleSelection().isEmpty()) {
+            final List<String> uuids = new ArrayList<String>();
+            List<GWTJahiaNode> jahiaNodes = linker.getSelectionContext().getMultipleSelection();
+            if (jahiaNodes.size() > 1) {
+                for (GWTJahiaNode jahiaNode : jahiaNodes) {
+                    uuids.add(jahiaNode.getUUID());
                 }
-                linker.loading(Messages.get("label.gettingPublicationInfo", "Getting publication information"));
-                JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, checkForUnpublication, new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {
-                    public void onApplicationFailure(Throwable caught) {
-                        linker.loaded();
-                        com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
-                    }
-
-                    public void onSuccess(List<GWTJahiaPublicationInfo> result) {
-                        linker.loaded();
-                        callback(result);
-                    }
-                });
-            }
-        } else {
-            EngineContainer container;
-            if (linker instanceof ManagerLinker) {
-                container = new EngineWindow();
             } else {
-                container = new EnginePanel();
+                uuids.add(linker.getSelectionContext().getSingleSelection().getUUID());
             }
-            new WorkflowActionDialog(wf, wf.getAvailableTasks().get(0), linker, wf.getCustomWorkflowInfo(), container);
-            container.showEngine();
+            linker.loading(Messages.get("label.gettingPublicationInfo", "Getting publication information"));
+            JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, checkForUnpublication, new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {
+                public void onApplicationFailure(Throwable caught) {
+                    linker.loaded();
+                    com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
+                }
+
+                public void onSuccess(List<GWTJahiaPublicationInfo> result) {
+                    linker.loaded();
+                    callback(result);
+                }
+            });
         }
     }
 

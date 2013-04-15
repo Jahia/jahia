@@ -1092,7 +1092,7 @@ public class NavigationHelper {
         if (fields.contains(GWTJahiaNode.WORKFLOW_INFO) || fields.contains(GWTJahiaNode.PUBLICATION_INFO)) {
             try {
                 n.setWorkflowInfo(
-                        workflow.getWorkflowInfo(n.getPath(), node.getSession(), node.getSession().getLocale()));
+                        workflow.getWorkflowInfo(n.getPath(), false, node.getSession(), node.getSession().getLocale()));
             } catch (UnsupportedRepositoryOperationException e) {
 //                 do nothing
                 logger.debug(e.getMessage());
@@ -1113,7 +1113,7 @@ public class NavigationHelper {
                         Locale locale = LanguageCodeConverters.languageCodeToLocale(code);
                         JCRSessionWrapper localeSession =
                                 sessionFactory.getCurrentUserSession(session.getWorkspace().getName(), locale);
-                        GWTJahiaWorkflowInfo info = workflow.getWorkflowInfo(n.getPath(), localeSession, locale);
+                        GWTJahiaWorkflowInfo info = workflow.getWorkflowInfo(n.getPath(), true, localeSession, locale);
                         infoMap.put(code, info);
                     }
                     n.setWorkflowInfos(infoMap);

@@ -89,16 +89,12 @@ public class WorkflowHelper {
         this.service = service;
     }
 
-<<<<<<< .working
     public void start() {
         service.addWorkflowListener(new PollingWorkflowListener());
     }
 
 
-    public GWTJahiaWorkflowInfo getWorkflowInfo(String path, JCRSessionWrapper session, Locale locale)
-=======
     public GWTJahiaWorkflowInfo getWorkflowInfo(String path, boolean includeActiveWorfklows, JCRSessionWrapper session, Locale locale)
->>>>>>> .merge-right.r45485
             throws GWTJahiaServiceException {
         try {
             GWTJahiaWorkflowInfo info = new GWTJahiaWorkflowInfo();

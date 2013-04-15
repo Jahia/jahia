@@ -957,7 +957,7 @@ class NodeHelper {
 
     private void populateWorkflowInfo(GWTJahiaNode n, JCRNodeWrapper node) {
         try {
-            n.setWorkflowInfo(workflow.getWorkflowInfo(n.getPath(), node.getSession(), node
+            n.setWorkflowInfo(workflow.getWorkflowInfo(n.getPath(), false,  node.getSession(), node
                     .getSession().getLocale()));
         } catch (UnsupportedRepositoryOperationException e) {
             // do nothing
@@ -980,7 +980,7 @@ class NodeHelper {
                     JCRSessionWrapper localeSession = sessionFactory.getCurrentUserSession(session
                             .getWorkspace().getName(), locale);
                     GWTJahiaWorkflowInfo info = workflow.getWorkflowInfo(n.getPath(),
-                            localeSession, locale);
+                            true, localeSession, locale);
                     infoMap.put(code, info);
                 }
                 n.setWorkflowInfos(infoMap);

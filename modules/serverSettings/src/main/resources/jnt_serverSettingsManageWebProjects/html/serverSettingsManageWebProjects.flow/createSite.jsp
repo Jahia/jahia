@@ -39,7 +39,7 @@
                     </div>
                     <div class="span6">
                         <label for="description"><fmt:message key="label.description"/></label>
-                        <textarea class="span6" id="description" name="description">${fn:escapeXml(siteBean.description)}</textarea>
+                        <textarea class="span12" id="description" name="description">${fn:escapeXml(siteBean.description)}</textarea>
                     </div>
                 </div>
                 <div class="row-fluid">

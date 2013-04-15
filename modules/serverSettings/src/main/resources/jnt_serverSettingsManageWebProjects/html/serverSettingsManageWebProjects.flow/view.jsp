@@ -81,10 +81,10 @@
             <input type="hidden" id="sitesFormAction" name="_eventId" value="" />
 
         <div class="btn-group">
-            <a class="btn" href="#create" id="createSite" class="sitesAction"><fmt:message key="serverSettings.manageWebProjects.add"/></a>
-            <a class="btn" href="#export" id="exportSites" class="sitesAction-hide"><fmt:message key="label.export"/></a>
-            <a class="btn" href="#exportStaging" id="exportStagingSites" class="sitesAction-hide"><fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)</a>
-            <a class="btn" href="#delete" id="deleteSites" class="sitesAction"><fmt:message key="label.delete"/></a>
+            <a href="#create" id="createSite" class="btn sitesAction"><fmt:message key="serverSettings.manageWebProjects.add"/></a>
+            <a href="#export" id="exportSites" class="btn sitesAction-hide"><fmt:message key="label.export"/></a>
+            <a href="#exportStaging" id="exportStagingSites" class="btn sitesAction-hide"><fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)</a>
+            <a href="#delete" id="deleteSites" class="btn sitesAction"><fmt:message key="label.delete"/></a>
         </div>
     </fieldset>
 

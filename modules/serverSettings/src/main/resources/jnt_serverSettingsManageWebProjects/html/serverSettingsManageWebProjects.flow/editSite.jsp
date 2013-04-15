@@ -62,7 +62,7 @@
                         <p><fmt:message key="serverSettings.manageWebProjects.webProject.templateSet"/>: ${fn:escapeXml(selectedSite.templatePackageName)}&nbsp;(${fn:escapeXml(selectedSite.templateFolder)})</p>
 
                         <p><fmt:message key="label.modules"/>:</p>
-                        <p style="line-height: 20px;">
+                        <p style="line-height: 2em">
                             <c:forEach items="${siteBean.modulePackages}" var="module" varStatus="loopStatus">
                                 <span class="badge badge-info">${module.name}</span>
                             </c:forEach>

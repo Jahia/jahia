@@ -138,7 +138,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     }
 
     public JCRSessionWrapper getCurrentUserSession(String workspace, Locale locale,Locale fallbackLocale) throws RepositoryException {
-        // thread user session might be inited/closed in an http filter, instead of keeping it
+        // thread user session might be initialized/closed in an HTTP filter, instead of keeping it
         Map<String, Map<String, JCRSessionWrapper>> smap = userSession.get();
         if (smap == null) {
             smap = new HashMap<String, Map<String, JCRSessionWrapper>>();
@@ -297,19 +297,19 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     }
 
     public boolean isStandardDescriptor(String key) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;  
     }
 
     public boolean isSingleValueDescriptor(String key) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;  
     }
 
     public Value getDescriptorValue(String key) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public Value[] getDescriptorValues(String key) {
-        return new Value[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return new Value[0];  
     }
 
     public Set<String> getAllMountPoints() {

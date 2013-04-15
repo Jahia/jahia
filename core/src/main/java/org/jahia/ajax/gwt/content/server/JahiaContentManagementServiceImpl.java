@@ -1444,7 +1444,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void saveModule(String moduleName, String message) throws GWTJahiaServiceException {
         try {
-            contentManager.saveAndCommitModule(moduleName, message, retrieveCurrentSession());
+            contentManager.saveAndCommitModule(moduleName, message, retrieveCurrentSession(null));
         } catch (RepositoryException e) {
             logger.error("Cannot synchronize module into sources", e);
             throw new GWTJahiaServiceException(e.toString());

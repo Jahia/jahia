@@ -8,7 +8,7 @@
 <jcr:node var="sites" path="/sites"/>
 <jcr:nodeProperty name="j:defaultSite" node="${sites}" var="defaultSite"/>
 <c:set var="defaultPrepackagedSite" value="acmespace.zip"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,bootstrap.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <jsp:useBean id="nowDate" class="java.util.Date" />
 <fmt:formatDate value="${nowDate}" pattern="yyyy-MM-dd-HH-mm" var="now"/>
@@ -78,8 +78,7 @@
 <form id="sitesForm" action="${flowExecutionUrl}" method="post">
     <fieldset>
         <h2><fmt:message key="label.virtualSitesManagement"/></h2>
-            <input type="hidden" id="sitesFormAction" name="_eventId" value="" />
-
+        <input type="hidden" id="sitesFormAction" name="_eventId" value="" />
         <div class="btn-group">
             <a href="#create" id="createSite" class="btn sitesAction"><fmt:message key="serverSettings.manageWebProjects.add"/></a>
             <a href="#export" id="exportSites" class="btn sitesAction-hide"><fmt:message key="label.export"/></a>
@@ -90,11 +89,14 @@
 
     <fieldset>
         <h2><fmt:message key="serverSettings.manageWebProjects.virtualSitesListe"/></h2>
-        
+
         <c:forEach var="msg" items="${flowRequestContext.messageContext.allMessages}">
-            <div class="${msg.severity == 'ERROR' ? 'validationError' : ''}" style="color: ${msg.severity == 'ERROR' ? 'red' : 'blue'};">${fn:escapeXml(msg.text)}</div>
+            <div class="alert ${msg.severity == 'ERROR' ? 'validationError' : ''} ${msg.severity == 'ERROR' ? 'alert-error' : 'alert-success'}">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                ${fn:escapeXml(msg.text)}
+            </div>
         </c:forEach>
-    
+
         <table class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
@@ -172,7 +174,7 @@
             <a class="btn" href="<c:url value='/cms/export/default/systemsite_staging_export_${now}.zip?exportformat=site&live=false&sitebox=systemsite' />"><fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)</a>
         </div>
     </fieldset>
-    
+
     <fieldset>
         <h2><fmt:message key="serverSettings.manageWebProjects.importprepackaged"/></h2>
             <select name="selectedPrepackagedSite">
@@ -182,11 +184,11 @@
                     <option value="${file.absolutePath}"${file.name == defaultPrepackagedSite ? ' selected="selected"':''}>${fn:escapeXml(label)}</option>
                 </c:forEach>
             </select>
-    
+
             <input class="btn" type="submit" name="importPrepackaged"
                    value="<fmt:message key='serverSettings.manageWebProjects.importprepackaged.proceed' />" onclick="submitSiteForm('importPrepackaged'); return false;"/>
     </fieldset>
-    
+
 </form>
     <fieldset>
         <h2><fmt:message key="serverSettings.manageWebProjects.multipleimport"/></h2>
@@ -199,7 +201,7 @@
                 <p><strong><fmt:message key="serverSettings.manageWebProjects.multipleimport.fileinput"/></strong></p>
                 <input type="text"  name="importPath"/>
             </div>
-    
+
             <input class="btn btn-primary" type="submit" name="_eventId_import"
                    value="<fmt:message key='serverSettings.manageWebProjects.fileImport'/>" onclick=""/>
         </form>

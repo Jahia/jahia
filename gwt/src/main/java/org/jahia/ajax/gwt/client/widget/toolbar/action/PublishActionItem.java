@@ -114,9 +114,6 @@ public class PublishActionItem extends BaseActionItem {
 
                 if (gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
                     updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
-                    if (gwtJahiaNode.isFile()) {
-                        setEnabled(false);
-                    }
                 } else {
                     updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
                             JahiaGWTParameters.getLanguageDisplayName());

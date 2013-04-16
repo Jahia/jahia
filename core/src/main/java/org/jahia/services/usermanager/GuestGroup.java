@@ -91,4 +91,8 @@ public class GuestGroup extends JCRGroup {
     public boolean isMember(Principal principal) {
         return true;
     }
+
+    @Override
+    public void addMembers(Collection<Principal> principals) {
+    }
 }

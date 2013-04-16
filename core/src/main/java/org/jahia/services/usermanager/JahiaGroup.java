@@ -166,6 +166,13 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      */
     public abstract boolean addMember (Principal principal);
 
+    /**
+     * Adds the specified members to the group.
+     *
+     * @param principals The principals to add to this group.
+     *
+     */
+    public abstract void addMembers(final Collection<Principal> principals);
 
     /**
      * Compares this principal to the specified object. Returns true if the object

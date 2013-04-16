@@ -88,6 +88,9 @@ if (request.getParameter("path") != null && request.getParameter("path").length(
 }
 pageContext.setAttribute("node", node);
 pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
+%>
+<c:if test="${showVersions}">
+<%
     if (node.isVersioned()) {
         VersionIterator versionIterator = jcrSession.getWorkspace().getVersionManager().getVersionHistory(node.getPath()).getAllLinearVersions();
         pageContext.setAttribute("versionIterator", versionIterator);
@@ -96,8 +99,12 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
         List<StringBuffer> lines = new ArrayList<StringBuffer>();
         traceVersionTree(v, lines, new HashMap<String,int[]>(),0,0);
         pageContext.setAttribute("versionGraph", lines);
+        pageContext.setAttribute("versioningAvailable", Boolean.TRUE);
+    } else {
+        pageContext.setAttribute("versioningAvailable", Boolean.FALSE);
     }
 %>
+</c:if>
 <head>
 <title>JCR Browser</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -402,12 +409,15 @@ function go(id1, value1, id2, value2, id3, value3) {
     </c:if>
 
     <c:if test="${showVersions}">
+    <c:if test="${versioningAvailable}">
     <strong>Linear history:&nbsp;</strong>[<c:forEach items="${versionIterator}" var="version" varStatus="status">${status.index > 0 ? ", " : ""}<a href="#version" onclick="go('uuid', '${version.identifier}'); return false;">${version.name}</a></c:forEach>]<br>
     <strong>Full version graph:&nbsp;</strong>
     <pre>
 <c:forEach items="${versionGraph}" var="version" varStatus="status">${version}
 </c:forEach>
     </pre><br>
+    </c:if>
+    <c:if test="${not versioningAvailable}"><strong>Versions:</strong>&nbsp; node is not versionable</c:if>
     </c:if>
 
 </fieldset>

@@ -37,8 +37,10 @@
     function updateSite() {
         showLoading();
         inactiveLiveLanguages = inactiveLiveLanguages.concat($("#updateSiteForm #language_list").fieldValue());
+        currentLocale = '${currentResource.locale}';
+
         var data = {
-            'j:languages': $("#updateSiteForm [name='activeLanguages']").fieldValue().concat([defaultLang,'${currentResource.locale}']).concat($("#updateSiteForm #language_list").fieldValue()),
+            'j:languages': $("#updateSiteForm [name='activeLanguages']").fieldValue().concat(defaultLang != currentLocale ? [defaultLang,currentLocale] : defaultLang).concat($("#updateSiteForm #language_list").fieldValue()),
             'j:mandatoryLanguages': (mandatoryLanguages.length == 0) ? ['jcrClearAllValues'] : mandatoryLanguages,
             'j:inactiveLanguages': (inactiveLanguages.length == 0) ? ['jcrClearAllValues'] : inactiveLanguages,
             'j:inactiveLiveLanguages': (inactiveLiveLanguages.length == 0) ? ['jcrClearAllValues'] : inactiveLiveLanguages,
@@ -107,14 +109,13 @@
     JCRSiteNode site = (JCRSiteNode) pageContext.getAttribute("site");
     Resource r = (Resource) request.getAttribute("currentResource");
     final Locale currentLocale = r.getLocale();
-    List<Locale> siteLocales = new ArrayList<Locale>(site.getLanguagesAsLocales());
+    Set<Locale> siteLocales = new TreeSet<Locale>(new Comparator<Locale>() {
+        public int compare(Locale o1, Locale o2) {
+            return o1.getDisplayName(currentLocale).compareTo(o2.getDisplayName(currentLocale));
+        }
+    });
+    siteLocales.addAll(site.getLanguagesAsLocales());
     siteLocales.addAll(site.getInactiveLanguagesAsLocales());
-
-    Collections.sort(siteLocales, new Comparator<Locale>() {
-            public int compare(Locale o1, Locale o2) {
-                return o1.getDisplayName(currentLocale).compareTo(o2.getDisplayName(currentLocale));
-            }
-        });
 
     request.setAttribute("siteLocales", siteLocales);
 
@@ -173,7 +174,7 @@
         <select name="language_list" id="language_list" multiple="multiple" size="10">
             <c:forEach var="locale" items="${availableLocales}">
                 <c:set var="langAsString">${locale}</c:set>
-                <c:if test="${not functions:contains(siteLocales, langAsString)}">
+                <c:if test="${not functions:contains(siteLocales, locale)}">
                 <option value="${locale}"><%= ((Locale) pageContext.getAttribute("locale")).getDisplayName(currentLocale)%> (${locale})</option>
                 </c:if>
             </c:forEach>

@@ -41,11 +41,11 @@ try {
         <td><strong><fmt:message key="serverSettings.dbSettings.pool"/>:</strong></td>
         <td>
             <ul>
-                <li><strong><fmt:message key="serverSettings.dbSettings.pool.maxActive"/>:</strong>&nbsp;<span class="badge badge-success">${ds.maxActive}</span></li>
+                <li style="line-height: 2em;"><strong><fmt:message key="serverSettings.dbSettings.pool.maxActive"/>:</strong>&nbsp;<span class="badge badge-success">${ds.maxActive}</span></li>
 
-                <li><strong><fmt:message key="serverSettings.dbSettings.pool.numActive"/>:</strong>&nbsp;<span class="badge badge-info">${ds.numActive}</span></li>
+                <li style="line-height: 2em;"><strong><fmt:message key="serverSettings.dbSettings.pool.numActive"/>:</strong>&nbsp;<span class="badge badge-info">${ds.numActive}</span></li>
 
-                <li><strong><fmt:message key="serverSettings.dbSettings.pool.numIdle"/>:</strong>&nbsp;<span class="badge badge-info">${ds.numIdle}</span></li>
+                <li style="line-height: 2em;"><strong><fmt:message key="serverSettings.dbSettings.pool.numIdle"/>:</strong>&nbsp;<span class="badge badge-info">${ds.numIdle}</span></li>
             </ul>
         </td>
     </tr>

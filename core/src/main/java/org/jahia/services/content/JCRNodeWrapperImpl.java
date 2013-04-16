@@ -2968,7 +2968,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public boolean isVersioned() {
         try {
-            return objectNode.isNodeType(Constants.MIX_VERSIONABLE);
+            return getProvider().isVersioningAvailable() && objectNode.isNodeType(Constants.MIX_VERSIONABLE);
         } catch (RepositoryException e) {
             logger.error("Error while checking if object node is versioned", e);
         }

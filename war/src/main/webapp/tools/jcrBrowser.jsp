@@ -81,7 +81,6 @@ long timer = System.currentTimeMillis();
 JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
 JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"));
 try {
-<<<<<<< .working
     JCRNodeWrapper node = null;
     if (request.getParameter("path") != null && request.getParameter("path").length() > 0) {
         node = jcrSession.getNode(JCRContentUtils.escapeNodePath(request.getParameter("path")));
@@ -93,21 +92,6 @@ try {
     pageContext.setAttribute("currentNode", node);
     Value versioningSupported = jcrSession.getProviderSession(node.getProvider()).getRepository().getDescriptorValue(Repository.OPTION_SIMPLE_VERSIONING_SUPPORTED);
     if (versioningSupported != null && versioningSupported.getBoolean() && node.isVersioned()) {
-=======
-JCRNodeWrapper node = null;
-if (request.getParameter("path") != null && request.getParameter("path").length() > 0) {
-    node = jcrSession.getNode(JCRContentUtils.escapeNodePath(request.getParameter("path")));
-    pageContext.setAttribute("nodeId", node.getIdentifier());
-} else {
-    node = jcrSession.getNodeByIdentifier((String) pageContext.getAttribute("nodeId"));
-}
-pageContext.setAttribute("node", node);
-pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
-%>
-<c:if test="${showVersions}">
-<%
-    if (node.isVersioned()) {
->>>>>>> .merge-right.r45528
         VersionIterator versionIterator = jcrSession.getWorkspace().getVersionManager().getVersionHistory(node.getPath()).getAllLinearVersions();
         pageContext.setAttribute("versionIterator", versionIterator);
 
@@ -115,12 +99,8 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
         List<StringBuffer> lines = new ArrayList<StringBuffer>();
         traceVersionTree(v, lines, new HashMap<String,int[]>(),0,0);
         pageContext.setAttribute("versionGraph", lines);
-        pageContext.setAttribute("versioningAvailable", Boolean.TRUE);
-    } else {
-        pageContext.setAttribute("versioningAvailable", Boolean.FALSE);
     }
 %>
-</c:if>
 <head>
 <title>JCR Browser</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -428,7 +408,6 @@ function go(id1, value1, id2, value2, id3, value3) {
     </c:if>
 
     <c:if test="${showVersions}">
-    <c:if test="${versioningAvailable}">
     <strong>Linear history:&nbsp;</strong>[<c:forEach items="${versionIterator}" var="version" varStatus="status">${status.index > 0 ? ", " : ""}<a href="#version" onclick="go('uuid', '${version.identifier}'); return false;">${version.name}</a></c:forEach>]<br>
     <strong>Full version graph:&nbsp;</strong>
     <pre>
@@ -436,13 +415,7 @@ function go(id1, value1, id2, value2, id3, value3) {
 </c:forEach>
     </pre><br>
     </c:if>
-<<<<<<< .working
     <div style="position: absolute; right: 20px; top: 10px; font-size: 80%">rendered in <%= System.currentTimeMillis() - timer %> ms</div>
-=======
-    <c:if test="${not versioningAvailable}"><strong>Versions:</strong>&nbsp; node is not versionable</c:if>
-    </c:if>
-
->>>>>>> .merge-right.r45528
 </fieldset>
 </body>
 <%} catch (javax.jcr.ItemNotFoundException e) {

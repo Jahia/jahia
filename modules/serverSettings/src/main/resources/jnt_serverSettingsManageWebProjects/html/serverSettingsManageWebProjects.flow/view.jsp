@@ -80,10 +80,28 @@
         <h2><fmt:message key="label.virtualSitesManagement"/></h2>
         <input type="hidden" id="sitesFormAction" name="_eventId" value="" />
         <div class="btn-group">
-            <a href="#create" id="createSite" class="btn sitesAction"><fmt:message key="serverSettings.manageWebProjects.add"/></a>
-            <a href="#export" id="exportSites" class="btn sitesAction-hide"><fmt:message key="label.export"/></a>
-            <a href="#exportStaging" id="exportStagingSites" class="btn sitesAction-hide"><fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)</a>
-            <a href="#delete" id="deleteSites" class="btn sitesAction"><fmt:message key="label.delete"/></a>
+            <a href="#create" id="createSite" class="btn sitesAction">
+                <img src="<c:url value='/css/images/andromeda/icons/environment_add.png'/>"
+                     title="<fmt:message key="serverSettings.manageWebProjects.add"/>"
+                     width="16" height="16" border="0" alt="+"/>
+                <fmt:message key="serverSettings.manageWebProjects.add"/>
+            </a>
+            <a href="#export" id="exportSites" class="btn sitesAction-hide">
+                <img src="<c:url value='/css/images/andromeda/icons/export1.png'/>"
+                     title="<fmt:message key="label.export"/>"
+                     width="16" height="16" border="0" alt="+"/>
+                <fmt:message key="label.export"/></a>
+            <a href="#exportStaging" id="exportStagingSites" class="btn sitesAction-hide">
+                <img src="<c:url value='/css/images/andromeda/icons/export2.png'/>"
+                     title="<fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)"
+                     width="16" height="16" border="0" alt="+"/>
+                <fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)</a>
+            <a href="#delete" id="deleteSites" class="btn sitesAction">
+                <img src="<c:url value='/css/images/andromeda/icons/environment_delete.png'/>"
+                     title="<fmt:message key="label.delete"/>"
+                     width="16" height="16" border="0" alt="+"/>
+                <fmt:message key="label.delete"/>
+            </a>
         </div>
     </fieldset>
 
@@ -170,8 +188,18 @@
     <fieldset>
         <h2>System Site</h2>
         <div class="btn-group">
-            <a class="btn" href="<c:url value='/cms/export/default/systemsite_export_${now}.zip?exportformat=site&live=true&sitebox=systemsite' />"><fmt:message key='label.export' /></a>
-            <a class="btn" href="<c:url value='/cms/export/default/systemsite_staging_export_${now}.zip?exportformat=site&live=false&sitebox=systemsite' />"><fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)</a>
+            <a class="btn" href="<c:url value='/cms/export/default/systemsite_export_${now}.zip?exportformat=site&live=true&sitebox=systemsite' />">
+                <img src="<c:url value='/css/images/andromeda/icons/export1.png'/>"
+                     title="<fmt:message key='label.export' />"
+                     width="16" height="16" border="0" alt="+"/>
+                <fmt:message key='label.export' />
+            </a>
+            <a class="btn" href="<c:url value='/cms/export/default/systemsite_staging_export_${now}.zip?exportformat=site&live=false&sitebox=systemsite' />">
+                <img src="<c:url value='/css/images/andromeda/icons/export2.png'/>"
+                     title="<fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)"
+                     width="16" height="16" border="0" alt="+"/>
+                <fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)
+            </a>
         </div>
     </fieldset>
 

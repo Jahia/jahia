@@ -299,11 +299,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public BasePagingLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode parentNode, List<String> nodeTypes, List<String> mimeTypes,
                                                      List<String> filters, List<String> fields, boolean checkSubChild,
                                                      int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes,
-                                                     String hiddenRegex, boolean showOnlyNodesWithTemplates)
+                                                     String hiddenRegex, boolean showOnlyNodesWithTemplates, boolean useUILocale)
             throws GWTJahiaServiceException {
+
+        Locale locale = useUILocale ? getUILocale() : getLocale();
+
         List<GWTJahiaNode> filteredList = new ArrayList<GWTJahiaNode>();
         for (GWTJahiaNode n : navigation
-                .ls(parentNode, nodeTypes, mimeTypes, filters, fields, checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex, retrieveCurrentSession(),
+                .ls(parentNode, nodeTypes, mimeTypes, filters, fields, checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex, retrieveCurrentSession(getWorkspace(), locale, true),
                         showOnlyNodesWithTemplates, getUILocale())) {
             if (n.isMatchFilters()) {
                 filteredList.add(n);
@@ -318,12 +321,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
         }
         return new BasePagingLoadResult<GWTJahiaNode>(filteredList, offset, length);
-    }
-
-    public List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes,
-                                      List<String> filters, List<String> fields, List<String> selectedNodes,
-                                      List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex) throws GWTJahiaServiceException {
-        return getRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths, checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex, false);
     }
 
     public List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes,

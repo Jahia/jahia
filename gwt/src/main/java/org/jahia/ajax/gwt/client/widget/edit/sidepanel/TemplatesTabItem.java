@@ -137,7 +137,7 @@ public class TemplatesTabItem extends BrowseTabItem {
                     fields.add(GWTJahiaNode.ICON);
                     JahiaContentManagementService.App.getInstance()
                             .lsLoad(gwtJahiaNode, displayedDetailTypes, null, null, fields, false, 0, 0, false,
-                                    hiddenDetailTypes, null, false, new AsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
+                                    hiddenDetailTypes, null, false, false, new AsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
                                 @Override
                                 public void onFailure(Throwable caught) {
                                     callback.onFailure(caught);

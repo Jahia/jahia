@@ -40,17 +40,14 @@
 
 package org.jahia.ajax.gwt.client.widget.node;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.store.TreeStoreEvent;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
-import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -59,9 +56,9 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.Collator;
+import org.jahia.ajax.gwt.client.widget.edit.sidepanel.PathStorage;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -78,17 +75,14 @@ public class GWTJahiaNodeTreeFactory {
     protected List<String> filters;
     protected List<String> fields = GWTJahiaNode.DEFAULT_FIELDS;
     protected List<String> mimeTypes;
-    protected List<String> selectedPath = new ArrayList<String>();
-    protected List<String> openPath = new ArrayList<String>();
-    protected boolean saveOpenPathOnServer = false;
-    protected GWTJahiaNodeTreeLoader loader;
+    private PathStorage pathStorage;
+    protected TreeLoader<GWTJahiaNode> loader;
     protected TreeStore<GWTJahiaNode> store;
     private boolean checkSubchilds = false;
     private List<String> hiddenTypes = new ArrayList<String>();
     private String hiddenRegex;
     private boolean displayHiddenTypes = false;
     private boolean showOnlyNodesWithTemplates = false;
-    private final Storage storage;
 
     public GWTJahiaNodeTreeFactory(final List<String> paths) {
         this(paths, GWTJahiaNode.DEFAULT_FIELDS);
@@ -98,8 +92,8 @@ public class GWTJahiaNodeTreeFactory {
         this.paths = paths;
         this.fields = fields;
         this.repository = paths.toString();
+        pathStorage = new PathStorage(repository);
         repository = repository.replace("$siteKey", JahiaGWTParameters.getSiteKey());
-        this.storage = Storage.getSessionStorageIfSupported();
     }
 
     public GWTJahiaNodeTreeFactory(final List<String> paths, boolean checkSubchilds) {
@@ -107,7 +101,13 @@ public class GWTJahiaNodeTreeFactory {
         this.checkSubchilds = checkSubchilds;
     }
 
-    public GWTJahiaNodeTreeLoader getLoader() {
+    public GWTJahiaNodeTreeFactory(TreeLoader<GWTJahiaNode> loader, String repository) {
+        pathStorage = new PathStorage(repository);
+        this.loader = loader;
+        this.repository = repository;
+    }
+
+    public TreeLoader<GWTJahiaNode> getLoader() {
         if (loader == null) {
             loader = new GWTJahiaNodeTreeLoader(new GWTJahiaNodeProxy());
         }
@@ -137,7 +137,7 @@ public class GWTJahiaNodeTreeFactory {
     public GWTJahiaNodeTreeGrid getTreeGrid(ColumnModel cm) {
         GWTJahiaNodeTreeGrid grid = new GWTJahiaNodeTreeGrid(getStore(), cm);
         grid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
-        initOpenPathSaverTreeGrid(grid);
+        pathStorage.addStorageListener(grid);
 
         return grid;
     }
@@ -146,7 +146,7 @@ public class GWTJahiaNodeTreeFactory {
         GWTJahiaNodeTreePanel panel = new GWTJahiaNodeTreePanel(getStore());
         panel.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         panel.setAutoSelect(false);
-        initOpenPathSaverTreePanel(panel);
+        pathStorage.addStorageListener(panel);
 
         return panel;
     }
@@ -176,27 +176,27 @@ public class GWTJahiaNodeTreeFactory {
     }
 
     public List<String> getSelectedPath() {
-        return selectedPath;
+        return pathStorage.getSelectedPath();
     }
 
     public void setSelectedPath(String selectedPath) {
-        this.selectedPath.add(selectedPath);
+        pathStorage.setSelectedPath(selectedPath);
     }
 
     public void setSelectedPath(List<String> selectedPath) {
-        this.selectedPath = selectedPath;
+        pathStorage.setSelectedPath(selectedPath);
+    }
+
+    public List<String> getOpenPath() {
+        return pathStorage.getOpenPath();
     }
 
     public void setOpenPath(String openPath) {
-        this.openPath.add(openPath);
+        pathStorage.setOpenPath(openPath);
     }
 
     public void setOpenPath(List<String> openPath) {
-        this.openPath = openPath;
-    }
-
-    public void setSaveOpenPathOnServer(boolean saveOpenPathOnServer) {
-        this.saveOpenPathOnServer = saveOpenPathOnServer;
+        pathStorage.setOpenPath(openPath);
     }
 
     public void setDisplayHiddenTypes(boolean displayHiddenTypes) {
@@ -215,116 +215,6 @@ public class GWTJahiaNodeTreeFactory {
         this.showOnlyNodesWithTemplates = showOnlyNodesWithTemplates;
     }
 
-    /**
-     * init method()
-     */
-    public void initOpenPathSaverTreePanel(final GWTJahiaNodeTreePanel widget) {
-        // add listener after rendering
-        DeferredCommand.addCommand(new Command() {
-            public void execute() {
-                widget.addListener(Events.Expand, new Listener<TreePanelEvent>() {
-                    public void handleEvent(TreePanelEvent le) {
-                        GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) le.getItem();
-                        String path = gwtJahiaNode.getPath();
-                        if (!openPath.contains(path)) {
-                            openPath.add(path);
-                        }
-                        Log.debug("Save Path on expand " + openPath);
-                        gwtJahiaNode.setExpandOnLoad(true);
-//                        refresh(gwtJahiaNode);
-                        savePaths();
-                    }
-                });
-
-                widget.addListener(Events.Collapse, new Listener<TreePanelEvent>() {
-                    public void handleEvent(TreePanelEvent el) {
-                        GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) el.getItem();
-                        String path = gwtJahiaNode.getPath();
-                        openPath.remove(path);
-                        Log.debug("Save Path on collapse " + openPath);
-                        gwtJahiaNode.setExpandOnLoad(false);
-//                        refresh(gwtJahiaNode);
-                        savePaths();
-                    }
-                });
-
-                widget.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
-                    public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> selectionChangedEvent) {
-                        if (selectionChangedEvent.getSelectedItem() != null) {
-                            setSelectedPath(Arrays.asList(selectionChangedEvent.getSelectedItem().getPath()));
-                        }
-                    }
-                });
-            }
-        });
-    }
-
-    public void initOpenPathSaverTreeGrid(final GWTJahiaNodeTreeGrid widget) {
-        // add listener after rendering
-        DeferredCommand.addCommand(new Command() {
-            public void execute() {
-                widget.addListener(Events.Expand, new Listener<TreeGridEvent>() {
-                    public void handleEvent(TreeGridEvent le) {
-                        GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) le.getModel();
-                        String path = gwtJahiaNode.getPath();
-                        if (!openPath.contains(path)) {
-                            openPath.add(path);
-                        }
-                        Log.debug("Save Path on expand " + openPath);
-                        gwtJahiaNode.setExpandOnLoad(true);
-//                        refresh(gwtJahiaNode);
-                        savePaths();
-                    }
-                });
-
-                widget.addListener(Events.Collapse, new Listener<TreeGridEvent>() {
-                    public void handleEvent(TreeGridEvent el) {
-                        GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) el.getModel();
-                        String path = gwtJahiaNode.getPath();
-                        openPath.remove(path);
-                        Log.debug("Save Path on collapse " + openPath);
-                        gwtJahiaNode.setExpandOnLoad(false);
-//                        refresh(gwtJahiaNode);
-                        savePaths();
-                    }
-                });
-
-                widget.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
-                    public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> selectionChangedEvent) {
-                        if (selectionChangedEvent.getSelectedItem() != null) {
-                            setSelectedPath(Arrays.asList(selectionChangedEvent.getSelectedItem().getPath()));
-                        }
-                    }
-                });
-            }
-        });
-    }
-
-    public void savePaths() {
-        if (saveOpenPathOnServer) {
-            JahiaContentManagementService.App.getInstance()
-                    .saveOpenPathsForRepository(repository, openPath, new BaseAsyncCallback() {
-                        public void onSuccess(Object o) {
-                            // nothing to do
-                        }
-
-                        public void onApplicationFailure(Throwable throwable) {
-                            Log.error("Could not save expanded paths into user preferences:\n\n" +
-                                    throwable.getLocalizedMessage(), throwable);
-                        }
-                    });
-        } else {
-            if (storage != null) {
-                String openPaths = "";
-                for (String s : openPath) {
-                    openPaths += s + "|";
-                }
-                storage.setItem("openPath-"+repository, openPaths);
-            }
-        }
-    }
-
-
     class GWTJahiaNodeProxy extends RpcProxy<List<GWTJahiaNode>> {
         public GWTJahiaNodeProxy() {
         }
@@ -332,15 +222,9 @@ public class GWTJahiaNodeTreeFactory {
         @Override
         protected void load(Object currentPage, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
             if (currentPage == null) {
-                if (openPath.isEmpty()) {
-                    if (storage != null && storage.getItem("openPath-"+repository) != null) {
-                        String openPaths = storage.getItem("openPath-"+repository);
-                        openPath = new ArrayList<String>(Arrays.asList(openPaths.split("\\|")));
-                    }
-                }
                 JahiaContentManagementService.App.getInstance()
-                        .getRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedPath, openPath, checkSubchilds,
-                                displayHiddenTypes, hiddenTypes, hiddenRegex, listAsyncCallback);
+                        .getRoot(paths, nodeTypes, mimeTypes, filters, fields, pathStorage.getSelectedPath(), pathStorage.getOpenPath(), checkSubchilds,
+                                displayHiddenTypes, hiddenTypes, hiddenRegex, false, listAsyncCallback);
             } else {
                 GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) currentPage;
                 if (gwtJahiaNode.isExpandOnLoad()) {
@@ -352,7 +236,7 @@ public class GWTJahiaNodeTreeFactory {
                 } else {
                     JahiaContentManagementService.App.getInstance()
                             .lsLoad(gwtJahiaNode, nodeTypes, mimeTypes, filters, fields, checkSubchilds, -1, -1, displayHiddenTypes,
-                                    hiddenTypes, hiddenRegex, false, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
+                                    hiddenTypes, hiddenRegex, false, false, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
                                 public void onSuccess(PagingLoadResult<GWTJahiaNode> result) {
                                     listAsyncCallback.onSuccess(result.getData());
                                 }
@@ -382,7 +266,7 @@ public class GWTJahiaNodeTreeFactory {
     }
 
     public class GWTJahiaNodeTreeGrid extends TreeGrid<GWTJahiaNode> {
-        GWTJahiaNodeTreeGrid(TreeStore store, ColumnModel cm) {
+        public GWTJahiaNodeTreeGrid(TreeStore store, ColumnModel cm) {
             super(store, cm);
         }
 

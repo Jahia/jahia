@@ -43,6 +43,7 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
 import com.extjs.gxt.ui.client.data.LoadEvent;
+import com.extjs.gxt.ui.client.data.TreeLoader;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
@@ -95,7 +96,7 @@ public class RolePermissionsTabItem extends EditEngineTabItem {
         treeGridFactory.setOpenPath(openPath);
         treeGridFactory.setNodeTypes(Arrays.asList("jnt:permission"));
 
-        BaseTreeLoader<GWTJahiaNode> loader = treeGridFactory.getLoader();
+        TreeLoader<GWTJahiaNode> loader = treeGridFactory.getLoader();
         store = treeGridFactory.getStore();
         final List<ColumnConfig> configs1 = new ArrayList<ColumnConfig>();
         ColumnConfig column = new ColumnConfig();

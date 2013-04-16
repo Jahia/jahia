@@ -109,7 +109,7 @@ public abstract class AbstractView extends TopRightComponent {
                 JahiaContentManagementService.App.getInstance().lsLoad(root,
                         configuration.getNodeTypes(),
                         configuration.getMimeTypes(), configuration.getFilters(), keys,
-                        false, -1, -1, getLinker().isDisplayHiddenTypes(), configuration.getHiddenTypes(), configuration.getHiddenRegex(), configuration.isShowOnlyNodesWithTemplates(), listAsyncCallback);
+                        false, -1, -1, getLinker().isDisplayHiddenTypes(), configuration.getHiddenTypes(), configuration.getHiddenRegex(), configuration.isShowOnlyNodesWithTemplates(), false, listAsyncCallback);
             }
         };
 

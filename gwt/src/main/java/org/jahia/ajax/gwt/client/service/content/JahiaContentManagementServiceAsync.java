@@ -208,8 +208,6 @@ public interface JahiaContentManagementServiceAsync {
     void getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, List<String>> contextParams, boolean editMode, String configName,
                             String channelIdentifier, String channelVariant, AsyncCallback<GWTRenderResult> async);
 
-    void getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, AsyncCallback<List<GWTJahiaNode>> async);
-
     void getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, boolean useUILocale, AsyncCallback<List<GWTJahiaNode>> async);
 
     void getSavedSearch(AsyncCallback<List<GWTJahiaNode>> async);
@@ -264,7 +262,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void isValidSession(AsyncCallback<Integer> async);
 
-    public void lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, boolean showOnlyNodesWithTemplates, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);
+    void lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, boolean showOnlyNodesWithTemplates, boolean useUILocale, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);
 
     void markForDeletion(List<String> paths, String comment, AsyncCallback async);
 

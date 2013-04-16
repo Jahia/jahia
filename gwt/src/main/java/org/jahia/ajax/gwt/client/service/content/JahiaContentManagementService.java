@@ -260,8 +260,6 @@ public interface JahiaContentManagementService extends RemoteService {
     GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, List<String>> contextParams, boolean editMode,
                                        String configName, String channelIdentifier, String channelVariant) throws GWTJahiaServiceException;
 
-    List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex) throws GWTJahiaServiceException;
-
     List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, boolean useUILocale) throws GWTJahiaServiceException;
 
     List<GWTJahiaNode> getSavedSearch() throws GWTJahiaServiceException;
@@ -319,7 +317,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     Integer isValidSession() throws GWTJahiaServiceException;
 
-    PagingLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, boolean showOnlyNodesWithTemplates) throws GWTJahiaServiceException;
+    PagingLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, boolean showOnlyNodesWithTemplates, boolean useUILocale) throws GWTJahiaServiceException;
 
     void markForDeletion(List<String> paths, String comment) throws GWTJahiaServiceException;
 

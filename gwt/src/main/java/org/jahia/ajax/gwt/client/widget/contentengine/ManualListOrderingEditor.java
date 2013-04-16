@@ -119,7 +119,7 @@ public class ManualListOrderingEditor extends ContentPanel {
             protected void load(Object gwtJahiaFolder, AsyncCallback<PagingLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getPath());
                 JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.MANUALLY_ORDERABLE_NODETYPES, null, null,
-                        Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.DISPLAY_NAME, GWTJahiaNode.NAME, "jcr:created", "jcr:createdBy", "jcr:lastModified", "jcr:lastModifiedBy"), false, -1, -1, false, null, null,false, listAsyncCallback);
+                        Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.DISPLAY_NAME, GWTJahiaNode.NAME, "jcr:created", "jcr:createdBy", "jcr:lastModified", "jcr:lastModifiedBy"), false, -1, -1, false, null, null,false, false, listAsyncCallback);
                 childrenGrid.unmask();
             }
 

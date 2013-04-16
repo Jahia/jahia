@@ -99,7 +99,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
                     List<String> tableColumnKeys = new ArrayList<String> (config.getTableColumnKeys());
                     tableColumnKeys.addAll(Arrays.asList(GWTJahiaNode.PERMISSIONS,GWTJahiaNode.LOCKABLE, GWTJahiaNode.LOCKED, GWTJahiaNode.LOCKS_INFO));
                     JahiaContentManagementService.App.getInstance()
-                            .lsLoad((GWTJahiaNode) gwtJahiaFolder, loadedNodeTypes, null, null, tableColumnKeys, false, -1, -1, false, null, null,false, listAsyncCallback);
+                            .lsLoad((GWTJahiaNode) gwtJahiaFolder, loadedNodeTypes, null, null, tableColumnKeys, false, -1, -1, false, null, null,false, false, listAsyncCallback);
                 } else {
                     contentContainer.unmask();
                 }

@@ -97,7 +97,7 @@
             </list>
         </property>
         <property name="tabItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SettingsPanel">
+            <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SettingsTabItem">
                 <property name="settingsTemplateRoot" value="serverSettingsBase"/>
                 <property name="label" value="label.serverSettings"/>
                 <property name="settingPath" value="/settings"/>

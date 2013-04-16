@@ -119,7 +119,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
 
         if (engine.getNode() != null) {
             JahiaContentManagementService.App.getInstance().lsLoad(engine.getNode(), Arrays.asList(type), null,
-                    null, columnsKeys, false, -1, 0, false, null, null, false, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
+                    null, columnsKeys, false, -1, 0, false, null, null, false, false, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
                 public void onSuccess(PagingLoadResult<GWTJahiaNode> result) {
                     for (GWTJahiaNode itemDefinition : result.getData()) {
                         children.add(itemDefinition);

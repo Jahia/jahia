@@ -87,7 +87,7 @@ public abstract class FormQuickRemotePublication extends FormPanel {
         final ComboBox<GWTJahiaNode> localPath = new ComboBox<GWTJahiaNode>();
         final ListStore<GWTJahiaNode> store = new ListStore<GWTJahiaNode>();
 
-        JahiaContentManagementService.App.getInstance().getRoot(Arrays.asList("/sites/*"), Arrays.asList("jnt:virtualsite"), null, null,null,null,null, false, false, null, null, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+        JahiaContentManagementService.App.getInstance().getRoot(Arrays.asList("/sites/*"), Arrays.asList("jnt:virtualsite"), null, null,null,null,null, false, false, null, null, false, new BaseAsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> result) {
                 store.add(result);
             }

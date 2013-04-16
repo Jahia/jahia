@@ -683,7 +683,7 @@
             </list>
         </property>
         <property name="tabItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SettingsPanel">
+            <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SettingsTabItem">
                 <property name="settingsTemplateRoot" value="siteSettingsBase"/>
                 <property name="label" value="org.jahia.admin.siteSettings.label"/>
                 <property name="settingPath" value="$site"/>

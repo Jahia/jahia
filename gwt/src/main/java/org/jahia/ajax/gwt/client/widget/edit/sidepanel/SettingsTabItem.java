@@ -43,25 +43,20 @@ package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.GridEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
@@ -72,17 +67,15 @@ import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
  * Panel that display settings
  */
-public class SettingsPanel extends SidePanelTabItem {
+public class SettingsTabItem extends SidePanelTabItem {
 
     private transient ContentPanel settingsPanel;
     private String settingPath;
@@ -92,6 +85,8 @@ public class SettingsPanel extends SidePanelTabItem {
     private transient TreeStore<GWTJahiaNode> settingsStore;
     private transient List<String> paths;
     private transient Map<String, Set<GWTJahiaNode>> nodesBySettingsPath;
+    private transient GWTJahiaNodeTreeFactory factory;
+    private transient GWTJahiaNode mainNode;
 
     @Override
     public TabItem create(GWTSidePanelTab config) {
@@ -102,19 +97,15 @@ public class SettingsPanel extends SidePanelTabItem {
         settingsPanel.setHeading(Messages.get(label));
         settingsPanel.setLayout(new FitLayout());
         tab.add(settingsPanel);
-        return tab;
-    }
 
-    @Override
-    public void handleNewMainNodeLoaded(final GWTJahiaNode mainNode) {
-        super.handleNewMainNodeLoaded(mainNode);
         LayoutContainer treeContainer = new LayoutContainer();
         treeContainer.setBorders(false);
         treeContainer.setScrollMode(Style.Scroll.AUTO);
         treeContainer.setLayout(new FitLayout());
         // resolve paths from dependencies
 
-        paths = new ArrayList<String>();
+        resetPaths();
+
         nodesBySettingsPath = new HashMap<String, Set<GWTJahiaNode>>();
 
         NodeColumnConfigList columns = new NodeColumnConfigList(Arrays.asList(new GWTColumn("displayName", "", -1)));
@@ -142,65 +133,98 @@ public class SettingsPanel extends SidePanelTabItem {
                 return v;
             }
         });
+
+        final List<String> fields = new ArrayList<String>();
+        fields.add(GWTJahiaNode.LOCKS_INFO);
+        fields.add(GWTJahiaNode.PERMISSIONS);
+        fields.add(GWTJahiaNode.CHILDREN_INFO);
+        fields.add(GWTJahiaNode.ICON);
+        fields.add(GWTJahiaNode.LOCKS_INFO);
+        fields.add("j:requiredPermissions");
+
         RpcProxy<List<GWTJahiaNode>> proxy = new RpcProxy<List<GWTJahiaNode>>() {
             @Override
             protected void load(Object loadConfig, final AsyncCallback<List<GWTJahiaNode>> callback) {
-                List<String> fields = new ArrayList<String>();
-                fields.add(GWTJahiaNode.LOCKS_INFO);
-                fields.add(GWTJahiaNode.PERMISSIONS);
-                fields.add(GWTJahiaNode.CHILDREN_INFO);
-                fields.add(GWTJahiaNode.ICON);
-                fields.add(GWTJahiaNode.LOCKS_INFO);
-                fields.add("j:requiredPermissions");
-                JahiaContentManagementService.App.getInstance()
-                        .getRoot(paths, Arrays.asList("jnt:template"), null, null, fields, null, null, true,
-                                false, null, null, true, new AsyncCallback<List<GWTJahiaNode>>() {
-                            @Override
-                            public void onFailure(Throwable caught) {
-                                callback.onFailure(caught);
-                            }
+                if (mainNode == null) {
+                    return;
+                }
 
-                            @Override
-                            public void onSuccess(List<GWTJahiaNode> nodes) {
-                                List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
-                                for (GWTJahiaNode node : nodes) {
-                                    String settingsPath = getSettingsPath(node);
-                                    Set<GWTJahiaNode> nodeSet = nodesBySettingsPath.get(settingsPath);
-                                    if (nodeSet == null) {
-                                        nodeSet = new HashSet<GWTJahiaNode>();
-                                        nodesBySettingsPath.put(settingsPath, nodeSet);
-                                    }
-                                    nodeSet.add(node);
-                                    String nodeName = node.getName();
-                                    boolean add = true;
-                                    for (GWTJahiaNode resultNode : result) {
-                                        if (resultNode.getName().equals(nodeName)) {
-                                            add = false;
-                                            break;
-                                        }
-                                    }
-                                    if (add) {
-                                        result.add(node);
-                                    }
+                final AsyncCallback<List<GWTJahiaNode>> asyncCallback = new AsyncCallback<List<GWTJahiaNode>>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        callback.onFailure(caught);
+                    }
+
+                    @Override
+                    public void onSuccess(List<GWTJahiaNode> nodes) {
+                        List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
+                        for (GWTJahiaNode node : nodes) {
+                            String settingsPath = getSettingsPath(node);
+                            Set<GWTJahiaNode> nodeSet = nodesBySettingsPath.get(settingsPath);
+                            if (nodeSet == null) {
+                                nodeSet = new HashSet<GWTJahiaNode>();
+                                nodesBySettingsPath.put(settingsPath, nodeSet);
+                            }
+                            nodeSet.add(node);
+                            String nodeName = node.getName();
+                            boolean add = true;
+                            for (GWTJahiaNode resultNode : result) {
+                                if (resultNode.getName().equals(nodeName)) {
+                                    add = false;
+                                    break;
                                 }
-                                callback.onSuccess(result);
                             }
-                        });
+                            if (node.getName().equals(MainModule.getInstance().getTemplate())) {
+                                node.setSelectedOnLoad(true);
+                            }
+                            if (add) {
+                                result.add(node);
+                            }
+                        }
+                        callback.onSuccess(result);
+                    }
+                };
 
+                if (loadConfig == null) {
+                    JahiaContentManagementService.App.getInstance()
+                            .getRoot(paths, Arrays.asList("jnt:template"), null, null, fields, factory.getSelectedPath(), factory.getOpenPath(), true,
+                                    false, null, null, true, asyncCallback);
+                } else {
+                    GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) loadConfig;
+                    if (gwtJahiaNode.isExpandOnLoad()) {
+                        List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>();
+                        for (ModelData modelData : gwtJahiaNode.getChildren()) {
+                            list.add((GWTJahiaNode) modelData);
+                        }
+                        asyncCallback.onSuccess(list);
+                    } else {
+                        JahiaContentManagementService.App.getInstance()
+                                .lsLoad(gwtJahiaNode, Arrays.asList("jnt:template"), null, null, fields, true, -1, -1, false,
+                                        null, null, false, true, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
+                                    public void onSuccess(PagingLoadResult<GWTJahiaNode> result) {
+                                        asyncCallback.onSuccess(result.getData());
+                                    }
+
+                                    @Override
+                                    public void onApplicationFailure(Throwable caught) {
+                                        asyncCallback.onFailure(caught);
+                                    }
+
+                                });
+                    }
+                }
             }
         };
-
         settingsLoader = new BaseTreeLoader<GWTJahiaNode>(proxy) {
             @Override
             public boolean hasChildren(GWTJahiaNode parent) {
-                paths.clear();
-                for (GWTJahiaNode n : nodesBySettingsPath.get(getSettingsPath(parent))) {
-                    paths.add(n.getPath()+ "/*");
-                }
                 return !parent.isNodeType("jnt:contentTemplate");
             }
         };
-        settingsStore = new TreeStore<GWTJahiaNode>(settingsLoader);
+
+        factory = new GWTJahiaNodeTreeFactory(settingsLoader,"settingsTab");
+
+        settingsStore = factory.getStore();
         settingsStore.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
             public int compare(Object o1, Object o2) {
                 if (o1 instanceof String && o2 instanceof String) {
@@ -213,8 +237,7 @@ public class SettingsPanel extends SidePanelTabItem {
                 return 0;
             }
         }));
-        TreeGrid<GWTJahiaNode> settingsTree = new TreeGrid<GWTJahiaNode>(settingsStore,new ColumnModel(columns));
-
+        TreeGrid<GWTJahiaNode> settingsTree = factory.getTreeGrid(new ColumnModel(columns));
 
         settingsTree.setAutoExpandColumn("displayName");
         settingsTree.getTreeView().setRowHeight(25);
@@ -233,7 +256,7 @@ public class SettingsPanel extends SidePanelTabItem {
             protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
                 super.handleMouseClick(e);
                 if (e.getModel().isNodeType("jnt:contentTemplate")) {
-                    MainModule.staticGoTo(path,getSelectedItem().getName());
+                    MainModule.staticGoTo(path, getSelectedItem().getName());
                 }
             }
         });
@@ -242,7 +265,25 @@ public class SettingsPanel extends SidePanelTabItem {
         treeVBoxData.setFlex(1);
 
         settingsPanel.add(treeContainer, treeVBoxData);
-        doRefresh();
+
+        return tab;
+    }
+
+    @Override
+    public void handleNewMainNodeLoaded(GWTJahiaNode node) {
+        if (this.mainNode == null || !this.mainNode.getPath().equals(node.getPath())) {
+            this.mainNode = node;
+            doRefresh();
+        }
+    }
+
+    private void resetPaths() {
+        paths = new ArrayList<String>();
+        if (JahiaGWTParameters.getSiteNode() != null && JahiaGWTParameters.getSiteNode().getProperties().get("j:installedModules") != null) {
+            for (String module : ((List<String>) JahiaGWTParameters.getSiteNode().get("j:installedModules"))) {
+                paths.add("/modules/" + module + "/$moduleversion/templates/" + settingTemplateRoot + "/*");
+            }
+        }
     }
 
     public void setSettingsTemplateRoot(String settingTemplateRoot) {
@@ -263,13 +304,7 @@ public class SettingsPanel extends SidePanelTabItem {
 
     @Override
     public void doRefresh() {
-        paths.clear();
-        if (JahiaGWTParameters.getSiteNode() != null && JahiaGWTParameters.getSiteNode().getProperties().get("j:installedModules") != null) {
-            for (String module : ((List<String>) JahiaGWTParameters.getSiteNode().get("j:installedModules"))) {
-                paths.add("/modules/" + module + "/$moduleversion/templates/" + settingTemplateRoot + "/*");
-            }
-        }
-
+        resetPaths();
         settingsStore.removeAll();
         settingsLoader.load();
     }

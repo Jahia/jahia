@@ -400,8 +400,9 @@ public class JCRSessionWrapper implements Session {
             throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException,
             LockException, RepositoryException {
         getWorkspace().move(source, dest, true);
+        String sourcePrefix = source + "/";
         for (String s : sessionCacheByPath.keySet()) {
-            if (s.equals(source) || s.startsWith(source+"/")) {
+            if (s.equals(source) || s.startsWith(sourcePrefix)) {
                 JCRNodeWrapper n = sessionCacheByPath.get(s);
                 if (n instanceof JCRNodeDecorator) {
                     n = ((JCRNodeDecorator)n).getDecoratedNode();

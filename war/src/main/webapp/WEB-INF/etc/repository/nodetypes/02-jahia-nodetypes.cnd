@@ -465,6 +465,7 @@
 
 // @since Jahia 6.7
 [jmix:rbTitle] mixin
+ extends = jnt:template
  - j:titleKey (string)
 
 //---------------------------------------------------------

@@ -36,14 +36,17 @@
                     <p><strong><fmt:message key="serverSettings.manageWebProjects.webProject.selectModules"/></strong></p>
 
                     <input type="hidden" name="_modules"/>
-                    <c:forEach items="${allModules}" var="module">
-                        <c:if test="${module.moduleType ne 'templatesSet' && module.moduleType ne 'system'}">
-                            <label for="${module.rootFolder}">
-                                <input type="checkbox" name="modules" id="${module.rootFolder}" value="${module.rootFolder}" ${functions:contains(siteBean.modules,module.rootFolder) ? 'checked="true"' : ''} /> ${module.name} (${module.rootFolder})
-                            </label>
-                        </c:if>
-                    </c:forEach>
-
+                    <div class="clearfix">
+                        <c:forEach items="${allModules}" var="module">
+                            <c:if test="${module.moduleType ne 'templatesSet' && module.moduleType ne 'system'}">
+                                            <div style="float:left; width: 32%" >
+                                                <label style="padding: 5px;" for="${module.rootFolder}">
+                                                    <input type="checkbox" name="modules" id="${module.rootFolder}" value="${module.rootFolder}" ${functions:contains(siteBean.modules,module.rootFolder) ? 'checked="true"' : ''} /> ${module.name} (${module.rootFolder})
+                                                </label>
+                                            </div>
+                                        </c:if>
+                        </c:forEach>
+                    </div>
                 </div>
 
 

@@ -53,6 +53,7 @@ import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.NodeImpl;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
+import org.apache.jackrabbit.util.ChildrenCollectorFilter;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.util.Text;
 import org.jahia.services.visibility.VisibilityService;
@@ -103,6 +104,8 @@ import java.util.regex.Pattern;
  */
 public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWrapper {
     protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRNodeWrapper.class);
+    
+    private static final String[] TANSLATION_NODES_PATTERN = new String[] { "j:translation_*" };
 
     protected Node objectNode = null;
     protected JCRFileContent fileContent = null;
@@ -385,11 +388,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 Privilege[] p = accessControlManager.getPrivileges(localPathInProvider);
                 for (Privilege privilege : p) {
                     result.add(privilege.getName());
-                    for (Privilege privilege1 : privilege.getAggregatePrivileges()) {
-                        result.add(privilege1.getName());
+                        for (Privilege privilege1 : privilege.getAggregatePrivileges()) {
+                            result.add(privilege1.getName());
+                        }
                     }
                 }
-            }
         } catch (RepositoryException re) {
             logger.error("Cannot check perm ", re);
         }
@@ -872,6 +875,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+<<<<<<< .working
     public NodeIterator getNodes() throws RepositoryException {
         List<JCRNodeWrapper> list = new ArrayList<JCRNodeWrapper>();
         if (provider.getService() != null) {
@@ -943,6 +947,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+=======
+>>>>>>> .merge-right.r45542
     public JCRNodeWrapper getNode(String s) throws PathNotFoundException, RepositoryException {
         if (objectNode.hasNode(s)) {
             if (!s.contains("/")) {
@@ -3136,13 +3142,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (provider.getService() != null) {
             Set<String> allMountPoints = provider.getSessionFactory().getAllMountPoints();
             if (allMountPoints.size() > 1) {
+                String pathPrefix = getPath() + "/";
                 for (String entry : allMountPoints) {
-                    if (!entry.equals("/")) {
-                        String mpp = entry.substring(0, entry.lastIndexOf('/'));
-                        if (mpp.equals("")) mpp = "/";
-                        if (mpp.equals(getPath())) {
-                            return true;
-                        }
+                    if (!entry.equals("/") && entry.startsWith(pathPrefix)
+                            && entry.indexOf('/', pathPrefix.length() - 1) == -1) {
+                        return true;
                     }
                 }
             }
@@ -3499,12 +3503,78 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     /**
      * {@inheritDoc}
-     *
-     * @throws UnsupportedRepositoryOperationException
-     *          as long as Jahia doesn't support it
+     */
+    public NodeIterator getNodes() throws RepositoryException {
+        return getNodes(null, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public NodeIterator getNodes(String namePattern) throws RepositoryException {
+        return getNodes(namePattern, null);
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public NodeIterator getNodes(String[] nameGlobs) throws RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        return getNodes(null, nameGlobs);
+    }
+
+    protected NodeIterator getNodes(String namePattern, String[] nameGlobs) throws RepositoryException {
+        List<JCRNodeWrapper> list = new LinkedList<JCRNodeWrapper>();
+        if (provider.getService() != null) {
+            Map<String, JCRStoreProvider> mountPoints = provider.getSessionFactory().getMountPoints();
+            if (mountPoints.size() > 1) {
+                // if we have any registered mount points (except the default one, which is "/")
+                String path = getPath();
+                for (Map.Entry<String, JCRStoreProvider> entry : mountPoints.entrySet()) {
+                    String key = entry.getKey();
+                    // skip default provider and those, whose mount point path does not start with the path of this node 
+                    if (!key.equals("/") && key.startsWith(path)) {
+                        int pos = key.lastIndexOf('/');
+                        String mpp = pos > 0 ? key.substring(0, pos) : "/";
+                        if (mpp.equals(path)) {
+                            // mount point matches the path; check name patterns if they were specified 
+                            if (namePattern == null
+                                    && nameGlobs == null
+                                    || key.length() > pos + 1
+                                    && (namePattern != null
+                                            && ChildrenCollectorFilter.matches(key.substring(pos + 1), namePattern) || nameGlobs != null
+                                            && ChildrenCollectorFilter.matches(key.substring(pos + 1), nameGlobs))) {
+                                JCRStoreProvider storeProvider = entry.getValue();
+                                String root = storeProvider.getRelativeRoot();
+                                final Node node = session.getProviderSession(storeProvider).getNode(
+                                        root.length() == 0 ? "/" : root);
+                                list.add(storeProvider.getNodeWrapper(node, "/", this, session));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        NodeIterator ni = namePattern != null ? objectNode.getNodes(namePattern) : (nameGlobs != null ? objectNode
+                .getNodes(nameGlobs) : objectNode.getNodes());
+
+        while (ni.hasNext()) {
+            Node node = ni.nextNode();
+            if (session.getLocale() == null || !node.getName().startsWith("j:translation_")) {
+                try {
+                    JCRNodeWrapper child = provider.getNodeWrapper(node, buildSubnodePath(node.getName()), this, session);
+                    list.add(child);
+                } catch (ItemNotFoundException e) {
+                    if (logger.isDebugEnabled())
+                        logger.debug(e.getMessage(), e);
+                } catch (PathNotFoundException e) {
+                    if (logger.isDebugEnabled())
+                        logger.debug(e.getMessage(), e);
+                }
+            }
+        }
+
+        return new NodeIteratorImpl(list.iterator(), list.size());
     }
 
     /**
@@ -3813,16 +3883,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public boolean hasTranslations() throws RepositoryException {
-        NodeIterator ni = objectNode.getNodes();
-        boolean translated = false;
-        while (ni.hasNext()) {
-            Node n = ni.nextNode();
-            if (n.getName().startsWith("j:translation_")) {
-                translated = true;
-                break;
-            }
-        }
-        return translated;
+        return objectNode.getNodes(TANSLATION_NODES_PATTERN).hasNext();
     }
 
     public boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale)

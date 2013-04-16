@@ -106,4 +106,8 @@ public class UsersGroup extends JCRGroup {
 
         return true;
     }
+
+    @Override
+    public void addMembers(Collection<Principal> principals) {
+    }
 }

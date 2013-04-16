@@ -519,4 +519,50 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
     public boolean isExternal() {
         return external;
     }
+
+    public void addMembers(final Collection<Principal> principals) {
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    for (Principal principal:principals) {
+                        if (isMember(principal)) {
+                            continue;
+                        }
+                        if (principal.equals(JCRGroup.this)) {
+                            continue;
+                        }
+                        JCRPrincipal jcrUser = null;
+                        String name = principal.getName();
+                        if (principal instanceof JCRUser) {
+                            jcrUser = (JCRPrincipal) principal;
+                        } else if (principal instanceof JCRGroup) {
+                            name = name + "___" + ((JCRGroup) principal).getSiteID();
+                            jcrUser = (JCRPrincipal) principal;
+                        } else if (principal instanceof JahiaUser) {
+                            JCRTemplate.getInstance().getProvider("/").deployExternalUser((JahiaUser) principal);
+                            jcrUser = (JCRUser) JCRUserManagerProvider.getInstance().lookupExternalUser((JahiaUser) principal);
+                        } else if (principal instanceof JahiaGroup) {
+                            JCRTemplate.getInstance().getProvider("/").deployExternalGroup((JahiaGroup) principal);
+                            jcrUser = (JCRGroup) JCRGroupManagerProvider.getInstance().lookupExternalGroup(principal.getName());
+                        }
+                        if (jcrUser != null) {
+                            Node node = getNode(session);
+                            Node members = node.getNode("j:members");
+                            if (!members.hasNode(name)) {
+                                members.checkout();
+                                Node member = members.addNode(name, Constants.JAHIANT_MEMBER);
+                                member.setProperty("j:member", jcrUser.getIdentifier());
+                                JCRGroupManagerProvider.getInstance().updateMembershipCache(jcrUser.getIdentifier());
+                            }
+                            mMembers.add(principal);
+                        }
+                    }
+                    session.save();
+                    return null;
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error("Error while adding group member", e);
+        }
+    }
 }

@@ -5,6 +5,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<template:addResources type="javascript" resources="jquery.min.js,bootstrap.js"/>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -24,8 +25,9 @@
                 <fmt:message key="failure.import.missingTemplateSet" var="errorSummary">
                     <fmt:param value="${checks.targetTemplateSet}"/>
                 </fmt:message>
-                <div>
-                    <span style="color: red">${fn:escapeXml(errorSummary)}</span>
+                <div class="alert alert-error">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    ${fn:escapeXml(errorSummary)}
                 </div>
             </c:if>
             <c:if test="${not empty checks.missingModules}">
@@ -33,14 +35,17 @@
                     <fmt:param value="${fn:length(checks.missingModules)}"/>
                 </fmt:message>
                 <div>
-                    <span style="color: red">${fn:escapeXml(errorSummary)}</span>&nbsp;
+                    <div class="alert alert-error">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            ${fn:escapeXml(errorSummary)}
+                    </div>
                     <fmt:message key="label.detailed" var="i18nHelp"/><c:set var="i18nHelp"
                                                                              value="${fn:escapeXml(i18nHelp)}"/>
-                    <a href="#details"
+                    <a class="btn" href="#details"
                        onclick="$('#validationErrorsDetailsModules${importInfoMap.value.siteKey}').toggle(); return false;"
                        title="${i18nHelp}"><img
                             src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16"
-                            height="16" alt="${i18nHelp}" title="${i18nHelp}"></a>
+                            height="16" alt="${i18nHelp}" title="${i18nHelp}">&nbsp;${i18nHelp}</a>
                 </div>
                 <div id="validationErrorsDetailsModules${importInfoMap.value.siteKey}" style="display: none">
                     <ul>
@@ -58,18 +63,21 @@
                 <fmt:param value="${fn:length(checks.missingMixins)}"/>
             </fmt:message>
             <div>
-                <span style="color: red">${fn:escapeXml(errorSummary)}</span>&nbsp;
+                <div class="alert alert-error">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        ${fn:escapeXml(errorSummary)}
+                </div>
                 <fmt:message key="label.detailed" var="i18nHelp"/><c:set var="i18nHelp"
                                                                          value="${fn:escapeXml(i18nHelp)}"/>
-                <a href="#details"
+                <a class="btn" href="#details"
                    onclick="$('#validationErrorsDetailsNodetypes${importInfoMap.value.siteKey}').toggle(); return false;"
                    title="${i18nHelp}"><img
                         src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16"
-                        height="16" alt="${i18nHelp}" title="${i18nHelp}"></a>
+                        height="16" alt="${i18nHelp}" title="${i18nHelp}">&nbsp;${i18nHelp}</a>
             </div>
             <div id="validationErrorsDetailsNodetypes${importInfoMap.value.siteKey}" style="display: none">
                 <c:if test="${not empty checks.missingNodetypes}">
-                    <p><fmt:message key="serverSettings.manageWebProjects.import.missingNodetypes"/></p>
+                    <h2><fmt:message key="serverSettings.manageWebProjects.import.missingNodetypes"/></h2>
                     <ul>
                         <c:forEach var="nt" items="${checks.missingNodetypes}">
                             <li>${fn:escapeXml(nt.key)}
@@ -93,7 +101,7 @@
                     </ul>
                 </c:if>
                 <c:if test="${not empty checks.missingMixins}">
-                    <p><fmt:message key="serverSettings.manageWebProjects.import.missingMixins"/></p>
+                    <h2><fmt:message key="serverSettings.manageWebProjects.import.missingMixins"/></h2>
                     <ul>
                         <c:forEach var="nt" items="${checks.missingMixins}">
                             <li>${fn:escapeXml(nt.key)}
@@ -124,14 +132,17 @@
                 <fmt:param value="${fn:length(checks.missingTemplates)}"/>
             </fmt:message>
             <div style="display: block">
-                <span style="color: red">${fn:escapeXml(errorSummary)}</span>&nbsp;
+                <div class="alert alert-error">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        ${fn:escapeXml(errorSummary)}
+                </div>
                 <fmt:message key="label.detailed" var="i18nHelp"/><c:set var="i18nHelp"
                                                                          value="${fn:escapeXml(i18nHelp)}"/>
-                <a href="#details"
+                <a class="btn" href="#details"
                    onclick="$('#validationErrorsDetailsTemplates${importInfoMap.value.siteKey}').toggle(); return false;"
                    title="${i18nHelp}"><img
                         src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16"
-                        height="16" alt="${i18nHelp}" title="${i18nHelp}"></a>
+                        height="16" alt="${i18nHelp}" title="${i18nHelp}">&nbsp;${i18nHelp}</a>
             </div>
             <div id="validationErrorsDetailsTemplates${importInfoMap.value.siteKey}" style="display: none">
                 <ul>
@@ -162,14 +173,18 @@
                 <fmt:param value="${fn:length(checks.missingPortlets)}"/>
             </fmt:message>
             <div style="display: block">
-                <span style="color: red">${fn:escapeXml(errorSummary)}</span>&nbsp;
+                <div class="alert alert-error">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        ${fn:escapeXml(errorSummary)}
+                </div>
+
                 <fmt:message key="label.detailed" var="i18nHelp"/><c:set var="i18nHelp"
                                                                          value="${fn:escapeXml(i18nHelp)}"/>
-                <a href="#details"
+                <a class="btn" href="#details"
                    onclick="$('#validationErrorsDetailsTemplates${importInfoMap.value.siteKey}').toggle(); return false;"
                    title="${i18nHelp}"><img
                         src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16"
-                        height="16" alt="${i18nHelp}" title="${i18nHelp}"></a>
+                        height="16" alt="${i18nHelp}" title="${i18nHelp}"> &nbsp;${i18nHelp}</a>
             </div>
             <div id="validationErrorsDetailsTemplates${importInfoMap.value.siteKey}" style="display: none">
                 <ul>

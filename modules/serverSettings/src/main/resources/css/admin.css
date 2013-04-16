@@ -15,3 +15,19 @@
 .fontfix{
     font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
 }
+.moduleListItem {
+    float:left;
+    width: 32%;
+}
+@media (max-width: 767px) {
+    .moduleListItem {
+        width: 49%;
+    }
+}
+@media (max-width: 480px) {
+    .moduleListItem {
+        float: none;
+        display: block;
+        width: 100%;
+    }
+}

@@ -368,11 +368,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 Privilege[] p = accessControlManager.getPrivileges(localPathInProvider);
                 for (Privilege privilege : p) {
                     result.add(privilege.getName());
+                    if (privilege.isAggregate()) {
                         for (Privilege privilege1 : privilege.getAggregatePrivileges()) {
                             result.add(privilege1.getName());
                         }
                     }
                 }
+            }
         } catch (RepositoryException re) {
             logger.error("Cannot check perm ", re);
         }
@@ -383,14 +385,29 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         BitSet b = null;
         try {
             AccessControlManager accessControlManager = getAccessControlManager();
-            List<Privilege> app = Arrays.asList(accessControlManager.getPrivileges(localPathInProvider));
-            List<Privilege> pr = Arrays.asList(accessControlManager.getSupportedPrivileges(localPathInProvider));
-            b = new BitSet(pr.size());
-            for (Privilege privilege : app) {
-                b.set(pr.indexOf(privilege));
-                for (Privilege privilege1 : privilege.getAggregatePrivileges()) {
-                    b.set(pr.indexOf(privilege1));
+            Privilege[] app = accessControlManager.getPrivileges(localPathInProvider);
+            Privilege[] pr = accessControlManager.getSupportedPrivileges(localPathInProvider);
+            b = new BitSet(pr.length);
+            if (app.length == pr.length) {
+                // in case of admin user all supported permissions are present
+                for (int i=0; i<pr.length;i++) {
+                    b.set(i);
                 }
+                return b;
+            }
+            Set<Privilege> effective = new HashSet<Privilege>();
+            for (Privilege privilege : app) {
+                effective.add(privilege);
+                if (privilege.isAggregate()) {
+                    effective.addAll(Arrays.asList(privilege.getAggregatePrivileges()));
+                }
+            }
+            int position = 0;
+            for (Privilege privilege : pr) {
+                if (effective.contains(privilege)) {
+                    b.set(position);
+                }
+                position++;
             }
         } catch (RepositoryException e) {
             logger.error("Cannot check perm ", e);

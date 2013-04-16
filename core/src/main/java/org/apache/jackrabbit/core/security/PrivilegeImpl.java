@@ -55,6 +55,7 @@ public class PrivilegeImpl implements Privilege {
     private boolean isAbstract;
     private Set<Privilege> declaredAggregates;
     private Set<Privilege> aggregates;
+    private transient int hash;
 
     PrivilegeImpl(String prefixedName, String expandedName, boolean anAbstract, Set<Privilege> declaredAggregates) {
         this.prefixedName = prefixedName;
@@ -107,6 +108,11 @@ public class PrivilegeImpl implements Privilege {
 
     @Override
     public int hashCode() {
-        return expandedName != null ? expandedName.hashCode() : 0;
+        // Name is immutable, we can store the computed hash code value
+        int h = hash;
+        if (h == 0 && expandedName != null) {
+            hash = expandedName.hashCode();
+        }
+        return h;
     }
 }

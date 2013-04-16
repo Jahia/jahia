@@ -249,14 +249,14 @@ public class SettingsTabItem extends SidePanelTabItem {
 
         settingsTree.setHideHeaders(true);
         settingsTree.setAutoExpand(false);
-        final String path = settingPath.replaceAll("\\$site",JahiaGWTParameters.getSiteNode().getPath());
         // get List of site settings
         settingsTree.setSelectionModel(new TreeGridSelectionModel<GWTJahiaNode>() {
             @Override
             protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
                 super.handleMouseClick(e);
+                final String path = settingPath.replaceAll("\\$site",JahiaGWTParameters.getSiteNode().getPath());
                 if (e.getModel().isNodeType("jnt:contentTemplate")) {
-                    MainModule.staticGoTo(path, getSelectedItem().getName());
+                    MainModule.getInstance().staticGoTo(path, getSelectedItem().getName());
                 }
             }
         });

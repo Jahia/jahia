@@ -366,6 +366,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public List<GWTJahiaNode> getNodes(List<String> paths, List<String> fields) {
+        long timer = System.currentTimeMillis();
+        
         List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>();
         for (String path : paths) {
             try {
@@ -386,8 +388,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 }
             }
         }
+        if (logger.isDebugEnabled()) {
+            logger.debug("getNodes took {} ms for {} paths: {}, ...", new Object[] {
+                (System.currentTimeMillis() - timer), paths.size(),
+                paths.size() > 0 ? paths.get(0) : StringUtils.EMPTY });
+        }
         return list;
-
     }
 
     public Map<String,List<? extends ModelData>> getNodesAndTypes(List<String> paths, List<String> fields, List<String> types) throws GWTJahiaServiceException {

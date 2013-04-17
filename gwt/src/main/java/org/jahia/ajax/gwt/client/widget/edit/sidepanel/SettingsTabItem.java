@@ -117,18 +117,9 @@ public class SettingsTabItem extends SidePanelTabItem {
                 if (v != null) {
                     v = SafeHtmlUtils.htmlEscape(v);
                 }
-                List<String> requiredPermissions = node.get("j:requiredPermissions");
-                if (requiredPermissions != null) {
-                    boolean access = true;
-                    for (String p : requiredPermissions) {
-                        if (!PermissionsUtils.isPermitted(p.substring(p.lastIndexOf('/') + 1), mainNode)) {
-                            access = false;
-                            break;
-                        }
-                    }
-                    if (!access) {
-                        v = "<span class=\"accessForbidden\">" + v + "</span>";
-                    }
+                Boolean hasAccessToSettings = node.get("hasAccessToSettings");
+                if (hasAccessToSettings == Boolean.FALSE) {
+                    v = "<span class=\"accessForbidden\">" + v + "</span>";
                 }
                 return v;
             }
@@ -178,6 +169,17 @@ public class SettingsTabItem extends SidePanelTabItem {
                                 node.setSelectedOnLoad(true);
                             }
                             if (add) {
+                                List<String> requiredPermissions = node.get("j:requiredPermissions");
+                                boolean access = true;
+                                if (requiredPermissions != null) {
+                                    for (String p : requiredPermissions) {
+                                        if (!PermissionsUtils.isPermitted(p.substring(p.lastIndexOf('/') + 1), mainNode)) {
+                                            access = false;
+                                            break;
+                                        }
+                                    }
+                                }
+                                node.set("hasAccessToSettings", Boolean.valueOf(access));
                                 result.add(node);
                             }
                         }
@@ -255,7 +257,7 @@ public class SettingsTabItem extends SidePanelTabItem {
             protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
                 super.handleMouseClick(e);
                 final String path = settingPath.replaceAll("\\$site",JahiaGWTParameters.getSiteNode().getPath());
-                if (e.getModel().isNodeType("jnt:contentTemplate")) {
+                if (e.getModel().isNodeType("jnt:contentTemplate") && !Boolean.FALSE.equals(e.getModel().get("hasAccessToSettings"))) {
                     MainModule.getInstance().staticGoTo(path, getSelectedItem().getName());
                 }
             }

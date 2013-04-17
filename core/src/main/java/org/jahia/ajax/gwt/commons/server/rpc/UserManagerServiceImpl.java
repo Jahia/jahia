@@ -254,6 +254,18 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
                 if (site != null) {
                     list.add(site.getID());
                 }
+            } else if(context.equals("site:systemsite")) {
+            	//if it is systemSite all groups should be provided
+            	try {
+            		Iterator<JahiaSite> sites = sitesService.getSites();
+            		while(sites.hasNext()) {
+            			JahiaSite site = sites.next();
+            			list.add(site.getID());
+            		}
+            	}catch(JahiaException ex) {
+            		logger.error("Cannot get all Sites to search for Groups", ex);
+            	}
+
             } else if (context.startsWith("site:")) {
                 String sitekey = context.substring(5);
                 try {

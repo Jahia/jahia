@@ -59,6 +59,8 @@ import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import javax.jcr.RepositoryException;
+
 /**
  * GWT user management service.
  * User: hollis
@@ -257,12 +259,10 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
             } else if(context.equals("site:systemsite")) {
             	//if it is systemSite all groups should be provided
             	try {
-            		Iterator<JahiaSite> sites = sitesService.getSites();
-            		while(sites.hasNext()) {
-            			JahiaSite site = sites.next();
-            			list.add(site.getID());
-            		}
-            	}catch(JahiaException ex) {
+                    for (JCRSiteNode site : sitesService.getSitesNodeList()) {
+                        list.add(site.getID());
+                    }
+            	}catch(RepositoryException ex) {
             		logger.error("Cannot get all Sites to search for Groups", ex);
             	}
 

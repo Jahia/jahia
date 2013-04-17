@@ -364,9 +364,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
         }
         if (logger.isDebugEnabled()) {
-            logger.debug("getNodes took {} ms for {} paths: {}, ...", new Object[] {
-                (System.currentTimeMillis() - timer), paths.size(),
-                paths.size() > 0 ? paths.get(0) : StringUtils.EMPTY });
+            if (paths.size() > 3) {
+                logger.debug("getNodes took {} ms for {} paths: {},...", new Object[] {
+                        System.currentTimeMillis() - timer, paths.size(), StringUtils.join(paths.subList(0, 3), ", ") });
+            } else {
+                logger.debug("getNodes took {} ms for paths: {}", System.currentTimeMillis() - timer,
+                        StringUtils.join(paths, ", "));
+            }
         }
         return list;
     }
@@ -382,6 +386,21 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         m.put("types", getNodeTypes(types));
 
+<<<<<<< .working
+=======
+        if (logger.isDebugEnabled()) {
+            if (paths.size() > 3) {
+                logger.debug(
+                        "getNodesAndTypes took {} ms for {} paths: {},...",
+                        new Object[] { System.currentTimeMillis() - timer, paths.size(),
+                                StringUtils.join(paths.subList(0, 3), ", ") });
+            } else {
+                logger.debug("getNodesAndTypes took {} ms for paths: {}", System.currentTimeMillis() - timer,
+                        StringUtils.join(paths, ", "));
+            }
+        }
+        
+>>>>>>> .merge-right.r45570
         return m;
     }
 

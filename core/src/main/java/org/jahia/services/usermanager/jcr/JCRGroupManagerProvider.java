@@ -465,7 +465,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                                         try {
                                             String siteKey = group.getParent().getParent().getName();
                                             if (!StringUtils.isEmpty(siteKey)) {
-                                                siteID = sitesService.getSiteByKey(siteKey).getID();
+                                                siteID = sitesService.getSiteByKey(siteKey,session).getID();
                                             }
                                         } catch (NullPointerException e) {
                                             siteID = 0;

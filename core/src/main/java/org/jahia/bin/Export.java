@@ -164,7 +164,7 @@ public class Export extends JahiaController implements ServletContextAware {
                 if (sitekeys != null) {
                     for (String sitekey : sitekeys) {
                         JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(sitekey);
-                        sites.add((JCRSiteNode) site.getNode());
+                        sites.add((JCRSiteNode) site);
                     }
                 }
 

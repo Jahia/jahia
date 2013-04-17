@@ -149,7 +149,8 @@ public class GWTInitializer {
                     final JahiaSite attribute = (JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE);
                     if (attribute != null && !"".equals(attribute.getSiteKey())) {
                         try {
-                            params.put(JahiaGWTParameters.SITE_UUID, ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(attribute.getSiteKey()).getUuid());
+                            params.put(JahiaGWTParameters.SITE_UUID,
+                                    ((JCRSiteNode) ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(attribute.getSiteKey())).getIdentifier());
                             params.put(JahiaGWTParameters.SITE_KEY, attribute.getSiteKey());
                         } catch (JahiaException e) {
                             logger.error(e.getMessage(), e);

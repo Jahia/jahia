@@ -82,11 +82,6 @@ public class DisplaySitePropertiesTag extends AbstractJahiaTag {
             ResourceBundle i18n = retrieveResourceBundle();
 
             buff.append("<ul>\n");
-            buff.append("<li class=\"siteID\">");
-            buff.append(i18n.getString("siteproperty.siteID"));
-            buff.append(": ");
-            buff.append(theSite.getID());
-            buff.append("</li>\n");
 
             buff.append("<li class=\"siteKey\">");
             buff.append(i18n.getString("siteproperty.siteKey"));

@@ -15,7 +15,6 @@
         </transition>
 
         <transition on="editSite" to="editSite" >
-            <set name="flowScope.selectedSite" value="webprojectHandler.getSites().get(0)"/>
             <set name="flowScope.siteBean" value="webprojectHandler.selectedSiteBean"/>
         </transition>
         

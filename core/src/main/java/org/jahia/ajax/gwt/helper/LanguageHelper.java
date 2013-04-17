@@ -94,7 +94,7 @@ public class LanguageHelper {
                 }
             } else {
                 JCRSiteNode siteByKey = (JCRSiteNode) ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(
-                        JahiaSitesService.SYSTEM_SITE_KEY).getNode();
+                        JahiaSitesService.SYSTEM_SITE_KEY);
                 final Set<String>languages  = siteByKey.getLanguages();
                 final Set<String> activeLanguages = siteByKey.getActiveLiveLanguages();
                 final Set<String> mandatoryLanguages = site.getMandatoryLanguages();

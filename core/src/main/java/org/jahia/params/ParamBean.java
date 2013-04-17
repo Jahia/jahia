@@ -217,7 +217,6 @@ public class ParamBean extends ProcessingContext {
 
         setSite(aSite);
         if (aSite != null) {
-            setSiteID(aSite.getID());
             setSiteKey(aSite.getSiteKey());
         }
 

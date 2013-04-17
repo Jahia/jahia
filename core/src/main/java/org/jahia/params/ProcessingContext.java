@@ -294,7 +294,6 @@ public class ProcessingContext {
 
         setSite(aSite);
         if (aSite != null) {
-            setSiteID(aSite.getID());
             setSiteKey(aSite.getSiteKey());
         }
 
@@ -635,7 +634,7 @@ public class ProcessingContext {
      */
     public List<Locale> getLocales() throws JahiaException {
         JahiaSite site = getSite();
-        if (site != null && site.getID()>0) {
+        if (site != null) {
             return getLocales(site.isMixLanguagesActive());
         }
         return getLocales(false);
@@ -784,15 +783,11 @@ public class ProcessingContext {
     }
 
     protected void setSiteInfoFromSiteFound() {
-        setSiteID(getSite().getID());
         setSiteKey(getSite().getSiteKey());
         final JahiaSite oldSite = (JahiaSite) getSessionState().getAttribute(
                 SESSION_SITE);
         if (oldSite == null) {
             setSiteHasChanged(true);
-        } else if (oldSite.getID() != getSite().getID()) {
-            setSiteHasChanged(true);
-            // setUserGuest(this.getSiteID());
         }
 
         // if (! (settings().isSiteIDInURL())) {
@@ -979,7 +974,7 @@ public class ProcessingContext {
 
     private boolean findSiteFromSession() {
             site = (JahiaSite) getSessionState().getAttribute(SESSION_SITE);
-            return !(site == null || site.getID() <= 0);
+            return !(site == null);
         }
 
     /**
@@ -1684,7 +1679,6 @@ public class ProcessingContext {
 
     protected void setData(JahiaSite jSite, JahiaUser jUser) {
         site = jSite;
-        siteID = jSite.getID();
         siteKey = jSite.getSiteKey();
         theUser = jUser;
     }

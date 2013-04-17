@@ -15,10 +15,10 @@
 <script type="text/javascript">
     function submitSiteForm(act, site) {
     	if (typeof site != 'undefined') {
-    		$("<input type='hidden' name='sites' />").attr("value", site).appendTo('#sitesForm');
+    		$("<input type='hidden' name='sitesKey' />").attr("value", site).appendTo('#sitesForm');
     	} else {
     		$("#sitesForm input:checkbox[name='selectedSites']:checked").each(function() {
-    			$("<input type='hidden' name='sites' />").attr("value", $(this).val()).appendTo('#sitesForm');
+    			$("<input type='hidden' name='sitesKey' />").attr("value", $(this).val()).appendTo('#sitesForm');
     		});
     	}
     	$('#sitesFormAction').val(act);

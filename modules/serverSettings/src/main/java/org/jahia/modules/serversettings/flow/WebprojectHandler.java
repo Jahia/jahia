@@ -122,7 +122,9 @@ public class WebprojectHandler implements Serializable {
 
     private String selectedPrepackagedSite;
 
-    private List<JahiaSite> sites;
+    private transient List<JahiaSite> sites;
+
+    private List<String> sitesKey;
 
     @Autowired
     private transient JahiaSitesService sitesService;
@@ -171,18 +173,18 @@ public class WebprojectHandler implements Serializable {
     }
 
     public void deleteSites() {
-        if (sites != null) {
+        if (sitesKey != null) {
             JahiaSite defSite = sitesService.getDefaultSite();
-
-            for (JahiaSite site : sites) {
+            String siteKey = defSite.getSiteKey();
+            for (String site : sitesKey) {
                 try {
-                    sitesService.removeSite(site);
+                    sitesService.removeSite(sitesService.getSiteByKey(site));
                 } catch (JahiaException e) {
                     logger.error(e.getMessage(), e);
                 }
             }
 
-            if (sites.contains(defSite)) {
+            if (sitesKey.contains(siteKey)) {
                 try {
                     List<JCRSiteNode> sitesNodeList = sitesService.getSitesNodeList();
                     if (!sitesNodeList.isEmpty()) {
@@ -304,6 +306,7 @@ public class WebprojectHandler implements Serializable {
     }
 
     public SiteBean getSelectedSiteBean() {
+        getSites();
         if (sites.isEmpty()) {
             return null;
         }
@@ -324,6 +327,9 @@ public class WebprojectHandler implements Serializable {
     }
 
     public List<JahiaSite> getSites() {
+        if(sites==null && sitesKey !=null) {
+            setSitesKey(sitesKey);
+        }
         return sites;
     }
 
@@ -754,8 +760,9 @@ public class WebprojectHandler implements Serializable {
         this.selectedPrepackagedSite = selectedPrepackagedSite;
     }
 
-    public void setSites(List<String> sites) {
+    public void setSitesKey(List<String> sites) {
         this.sites = new ArrayList<JahiaSite>();
+        this.sitesKey = sites;
         if (sites != null) {
             for (String site : sites) {
                 try {

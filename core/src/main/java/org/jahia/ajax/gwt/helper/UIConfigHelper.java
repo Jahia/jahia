@@ -585,7 +585,7 @@ public class UIConfigHelper {
                         resolvedSite = JahiaSitesService.getInstance().getDefaultSite();
                     }
                     if (resolvedSite != null) {
-                        JCRSiteNode siteNode = (JCRSiteNode) session.getNode(resolvedSite.getJCRLocalPath());
+                        JCRSiteNode siteNode = (JCRSiteNode) session.getNode(((JCRSiteNode)resolvedSite).getPath());
                         defaultLocation = defaultLocation.replace("$defaultSiteHome", siteNode.getHome().getPath());
                     } else {
                         throw new GWTJahiaServiceException("no sites available");

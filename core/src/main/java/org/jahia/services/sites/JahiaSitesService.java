@@ -87,26 +87,11 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
 
     protected static JahiaSitesService instance = null;
 
-    public static final String SITE_CACHE_BYID = "JahiaSiteByIDCache";
-    public static final String SITE_CACHE_BYNAME = "JahiaSiteByNameCache";
-    public static final String SITE_CACHE_BYKEY = "JahiaSiteByKeyCache";
     public static final String SYSTEM_SITE_KEY = "systemsite";
     public static final String SITES_JCR_PATH = "/sites";
-    /**
-     * The cache in memory
-     */
-    private Cache<Comparable<?>, JahiaSite> siteCacheByID = null;
-    private Cache<String, Serializable> siteCacheByName = null;
-    private Cache<String, JahiaSite> siteCacheByKey = null;
-
-    private CacheService cacheService;
 
     protected JahiaGroupManagerService groupService;
     protected JCRSessionFactory sessionFactory;
-
-    public void setCacheService(CacheService cacheService) {
-        this.cacheService = cacheService;
-    }
 
     public void setGroupService(JahiaGroupManagerService groupService) {
         this.groupService = groupService;
@@ -158,90 +143,17 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
         while (ni.hasNext()) {
             JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) ni.next();
             if (nodeWrapper.isNodeType("jnt:virtualsite")) {
-                list.add((JCRSiteNode) nodeWrapper);
+                JCRSiteNode siteNode = (JCRSiteNode) nodeWrapper;
+                list.add(siteNode);
             }
         }
         return list;
     }
 
-    public void start()
-            throws JahiaInitializationException {
-
-        siteCacheByID = cacheService.getCache(SITE_CACHE_BYID, true);
-        siteCacheByName = cacheService.getCache(SITE_CACHE_BYNAME, true);
-        siteCacheByKey = cacheService.getCache(SITE_CACHE_BYKEY, true);
+    public void start() throws JahiaInitializationException {
     }
 
     public void stop() {
-    }
-
-    private JahiaSite getSite(JCRNodeWrapper node) throws RepositoryException {
-        if (node == null) {
-            return null;
-        }
-
-        int siteId = (int) node.getProperty("j:siteId").getLong();
-
-        Properties props = new Properties();
-
-        JahiaSite site = new JahiaSite(siteId, node.getProperty("j:title").getString(), node.getProperty("j:serverName").getString(),
-                node.getName(), node.getProperty("j:description").getString(), props, node.getPath());
-        Value s = node.getProperty("j:templatesSet").getValue();
-        final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                .getAnyDeployedTemplatePackage(s.getString());
-        if (aPackage != null) {
-            site.setTemplatePackageName(aPackage.getName());
-            site.setTemplateFolder(aPackage.getRootFolder());
-        }
-
-        List<String> installedModules = new ArrayList<String>();
-        Value[] modules = node.getProperty("j:installedModules").getValues();
-        for (Value module : modules) {
-            installedModules.add(module.getString());
-        }
-        site.setInstalledModules(installedModules);
-
-        site.setMixLanguagesActive(node.getProperty(SitesSettings.MIX_LANGUAGES_ACTIVE).getBoolean());
-        site.setAllowsUnlistedLanguages(node.hasProperty("j:allowsUnlistedLanguages") ? node.getProperty("j:allowsUnlistedLanguages").getBoolean() : Boolean.FALSE);
-        site.setDefaultLanguage(node.getProperty(SitesSettings.DEFAULT_LANGUAGE).getString());
-        Value[] languages = node.getProperty(SitesSettings.LANGUAGES).getValues();
-        Set<String> languagesList = new LinkedHashSet<String>();
-        for (Value language : languages) {
-            languagesList.add(language.getString());
-        }
-        site.setLanguages(languagesList);
-
-        if (node.hasProperty(SitesSettings.INACTIVE_LANGUAGES)) {
-            languagesList = new LinkedHashSet<String>();
-            for (Value language : node.getProperty(SitesSettings.INACTIVE_LANGUAGES).getValues()) {
-                languagesList.add(language.getString());
-            }
-            site.setInactiveLanguages(languagesList);
-        }
-
-        if (node.hasProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES)) {
-            languagesList = new LinkedHashSet<String>();
-            for (Value language : node.getProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES).getValues()) {
-                languagesList.add(language.getString());
-            }
-            site.setInactiveLiveLanguages(languagesList);
-        }
-
-        languages = node.getProperty(SitesSettings.MANDATORY_LANGUAGES).getValues();
-        languagesList = new LinkedHashSet<String>();
-        for (Value language : languages) {
-            languagesList.add(language.getString());
-        }
-        site.setMandatoryLanguages(languagesList);
-        site.setUuid(node.getIdentifier());
-
-        for (String setting : SitesSettings.HTML_SETTINGS) {
-            if (node.hasProperty(setting)) {
-                site.getSettings().put(setting, JCRContentUtils.getValue(node.getProperty(setting).getValue()));
-            }
-        }
-
-        return site;
     }
 
     /**
@@ -251,46 +163,23 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
      * @return JahiaSite the JahiaSite bean
      */
     public JahiaSite getSite(final int id) throws JahiaException {
-        JahiaSite site = siteCacheByID.get(Integer.valueOf(id));
-        if (site != null) {
-            return site;
-        }
-        // try to load from db
-
+        JahiaSite site = null;
         try {
-            site = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JahiaSite>() {
-                public JahiaSite doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    return getSite(JahiaSitesService.this.getSite(id, session));
-                }
-            });
+            site = getSite(id, sessionFactory.getCurrentUserSession());
         } catch (RepositoryException e) {
-            logger.error("cannot get site", e);
-        }
-
-        // if the site could be loaded, add it into the cache
-        if (site != null) {
-            addToCache(site);
+            logger.error(e.getMessage(), e);
         }
 
         return site;
     }
 
-    private JCRNodeWrapper getSite(int id, JCRSessionWrapper session) throws RepositoryException {
+    public JCRSiteNode getSite(int id, JCRSessionWrapper session) throws RepositoryException {
         Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:virtualsite] as s where s.[j:siteId]=" + id, Query.JCR_SQL2);
         NodeIterator ni = q.execute().getNodes();
         if (ni.hasNext()) {
-            return (JCRNodeWrapper) ni.next();
+            return (JCRSiteNode) ni.next();
         }
         return null;
-    }
-
-
-    private void addToCache(JahiaSite site) {
-        siteCacheByID.put(site.getID(), site);
-        if (site.getServerName() != null) {
-            siteCacheByName.put(site.getServerName(), site);
-        }
-        siteCacheByKey.put(site.getSiteKey(), site);
     }
 
     /**
@@ -304,36 +193,19 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
             return null;
         }
 
-        if (siteCacheByKey.containsKey(siteKey))
-            return siteCacheByKey.get(siteKey);
-
         JahiaSite site = null;
-
         try {
-            site = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JahiaSite>() {
-                public JahiaSite doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    return getSite(JahiaSitesService.this.getSiteByKey(siteKey, session));
-                }
-            });
+            site = getSiteByKey(siteKey, sessionFactory.getCurrentUserSession());
         } catch (PathNotFoundException e) {
             return null;
         } catch (RepositoryException e) {
             logger.error("cannot get site", e);
         }
-
-        // if the site could be loaded from the database, add it into the cache.
-        if (site != null) {
-            addToCache(site);
-        } else {
-            siteCacheByKey.put(siteKey, null);
-        }
-
         return site;
     }
 
-    private JCRNodeWrapper getSiteByKey(String siteKey, JCRSessionWrapper session) throws RepositoryException {
-        JCRNodeWrapper n = session.getNode("/sites/" + siteKey);
-        return n;
+    public JCRSiteNode getSiteByKey(String siteKey, JCRSessionWrapper session) throws RepositoryException {
+        return (JCRSiteNode) session.getNode("/sites/" + siteKey);
     }
 
     /**
@@ -350,41 +222,25 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
         if (serverName == null) {
             return null;
         }
-        Object cachedObj = siteCacheByName.get(serverName);
-
-        if (cachedObj != null) {
-            return cachedObj.equals("") ? null : (JahiaSite) cachedObj;
-        }
 
         // the site was not found in the cache, try to load it from the
         // database.
 
         JahiaSite site = null;
         try {
-            site = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JahiaSite>() {
-                public JahiaSite doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    return getSite(getSiteByServerName(serverName, session));
-                }
-            });
+            site = getSiteByServerName(serverName, sessionFactory.getCurrentUserSession());
         } catch (RepositoryException e) {
             logger.error("cannot get site", e);
-        }
-
-        // if the site could be loaded from the database, add it into the cache.
-        if (site != null) {
-            addToCache(site);
-        } else {
-            siteCacheByName.put(serverName, "");
         }
 
         return site;
     }
 
-    private JCRNodeWrapper getSiteByServerName(String serverName, JCRSessionWrapper session) throws RepositoryException {
+    public JCRSiteNode getSiteByServerName(String serverName, JCRSessionWrapper session) throws RepositoryException {
         Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:virtualsite] as s where s.[j:serverName]='" + serverName + "'", Query.JCR_SQL2);
         NodeIterator ni = q.execute().getNodes();
         if (ni.hasNext()) {
-            return (JCRNodeWrapper) ni.next();
+            return (JCRSiteNode) ni.next();
         }
         return null;
     }
@@ -447,36 +303,14 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                              Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy, String firstImport, Resource fileImport, String fileImportName,
                              Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease, String legacyMappingFilePath, String legacyDefinitionsFilePath, JCRSessionWrapper session) throws JahiaException, IOException {
-        JahiaSite site = new JahiaSite(-1, title, serverName, siteKey, descr, null, "/sites/" + siteKey);
-
-        final JahiaTemplateManagerService templateService = ServicesRegistry
-                .getInstance().getJahiaTemplateManagerService();
-
-        if (selectTmplSet != null) {
-            site.setTemplatePackageName(selectTmplSet);
-            site.setTemplateFolder(templateService.getAnyDeployedTemplatePackage(selectTmplSet).getRootFolder());
-        }
-        // create site language
-        site.setDefaultLanguage(selectedLocale.toString());
-        site.setLanguages(new LinkedHashSet<String>(Arrays.asList(selectedLocale.toString())));
-        site.setMandatoryLanguages(site.getLanguages());
-        site.setAllowsUnlistedLanguages(false);
-        site.setMixLanguagesActive(false);
         // check there is no site with same server name before adding
         boolean importingSystemSite = false;
-
+        final JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+        JCRSiteNode site=null;
         try {
 
-            if (getSiteByKey(site.getSiteKey()) == null) {
-                final String siteKey1 = site.getSiteKey();
-                final String templatePackage = site.getTemplateFolder();
-
-                site.setInstalledModules(new ArrayList<String>(Collections.singleton(templatePackage /*+ ":" + aPackage.getLastVersion()*/)));
-
-                final Set<String> languages = site.getLanguages();
-                final Set<String> inactiveLiveLanguages = site.getInactiveLiveLanguages();
-                final Set<String> inactiveLanguages = site.getInactiveLanguages();
-                final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
+            if (getSiteByKey(siteKey) == null) {
+                final String templatePackage = templateService.getAnyDeployedTemplatePackage(selectTmplSet).getRootFolder();
 
                 int id = 1;
                 List<JCRSiteNode> sites = getSitesNodeList();
@@ -485,9 +319,6 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
                         id = jahiaSite.getID() + 1;
                     }
                 }
-                final int siteId = id;
-                site.setID(id);
-                final JahiaSite finalSite = site;
 
                 Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:virtualsitesFolder]", Query.JCR_SQL2);
                 QueryResult qr = q.execute();
@@ -500,32 +331,31 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
                         options = sitesFolder.getProperty("j:virtualsitesFolderConfig").getString();
                     }
 
-                    JCRNodeWrapper f = JCRContentUtils.getPathFolder(sitesFolder, siteKey1, options, "jnt:virtualsitesFolder");
+                    JCRNodeWrapper f = JCRContentUtils.getPathFolder(sitesFolder, siteKey, options, "jnt:virtualsitesFolder");
                     try {
-                        f.getNode(siteKey1);
+                        f.getNode(siteKey);
                     } catch (PathNotFoundException e) {
-                        JCRNodeWrapper siteNode = f.addNode(siteKey1, "jnt:virtualsite");
+                        JCRNodeWrapper siteNode = f.addNode(siteKey, "jnt:virtualsite");
 
                         if (sitesFolder.hasProperty("j:virtualsitesFolderSkeleton")) {
                             String skeletons = sitesFolder.getProperty("j:virtualsitesFolderSkeleton").getString();
                             try {
-                                JCRContentUtils.importSkeletons(skeletons, f.getPath() + "/" + siteKey1, session);
+                                JCRContentUtils.importSkeletons(skeletons, f.getPath() + "/" + siteKey, session);
                             } catch (Exception importEx) {
                                 logger.error("Unable to import data using site skeleton " + skeletons, importEx);
                             }
                         }
 
-                        siteNode.setProperty("j:title", finalSite.getTitle());
-                        siteNode.setProperty("j:description", finalSite.getDescr());
-                        siteNode.setProperty("j:serverName", finalSite.getServerName());
-                        siteNode.setProperty("j:siteId", siteId);
-                        siteNode.setProperty(SitesSettings.DEFAULT_LANGUAGE, finalSite.getDefaultLanguage());
-                        siteNode.setProperty(SitesSettings.MIX_LANGUAGES_ACTIVE, finalSite.isMixLanguagesActive());
-                        siteNode.setProperty(SitesSettings.LANGUAGES, languages.toArray(new String[languages.size()]));
-                        siteNode.setProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES, inactiveLiveLanguages.toArray(new String[inactiveLiveLanguages.size()]));
-                        siteNode.setProperty(SitesSettings.INACTIVE_LANGUAGES, inactiveLanguages.toArray(new String[inactiveLanguages.size()]));
-                        siteNode.setProperty(SitesSettings.MANDATORY_LANGUAGES, mandatoryLanguages.toArray(new String[mandatoryLanguages
-                                .size()]));
+                        siteNode.setProperty("j:title", title);
+                        siteNode.setProperty("j:description", descr);
+                        siteNode.setProperty("j:serverName", serverName);
+                        siteNode.setProperty("j:siteId", id);
+                        siteNode.setProperty(SitesSettings.DEFAULT_LANGUAGE, selectedLocale.toString());
+                        siteNode.setProperty(SitesSettings.MIX_LANGUAGES_ACTIVE, false);
+                        siteNode.setProperty(SitesSettings.LANGUAGES, new String[]{selectedLocale.toString()});
+                        siteNode.setProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES, new String[]{});
+                        siteNode.setProperty(SitesSettings.INACTIVE_LANGUAGES, new String[]{});
+                        siteNode.setProperty(SitesSettings.MANDATORY_LANGUAGES, new String[]{});
                         siteNode.setProperty("j:templatesSet", templatePackage);
 
                         siteNode.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(templatePackage /*+ ":" + aPackage.getLastVersion()*/)});
@@ -542,7 +372,7 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
                                 }
                             }
                         }
-                        String target = "/sites/" + siteKey1;
+                        String target = "/sites/" + siteKey;
                         try {
                             logger.info("Deploying modules to {}", target);
                             templateService.installModules(modules, target, session);
@@ -554,7 +384,7 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
                         final List<JahiaTemplatesPackage> availableTemplatePackages = templateService.getAvailableTemplatePackages();
                         for (JahiaTemplatesPackage availableTemplatePackage : availableTemplatePackages) {
                             if (availableTemplatePackage.getAutoDeployOnSite() != null) {
-                                if ("all".equals(availableTemplatePackage.getAutoDeployOnSite()) || siteKey1.equals(availableTemplatePackage.getAutoDeployOnSite())) {
+                                if ("all".equals(availableTemplatePackage.getAutoDeployOnSite()) || siteKey.equals(availableTemplatePackage.getAutoDeployOnSite())) {
                                     String source = "/modules/" + availableTemplatePackage.getRootFolder();
                                     try {
                                         logger.info("Deploying module {} to {}", source, target);
@@ -566,24 +396,19 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
                                 }
                             }
                         }
+                        site = (JCRSiteNode) siteNode;
                     }
                 }
 
                 session.save();
-
-                if (site.getID() == -1) {
-                    return null;
-                }
-
-                addToCache(site);
             } else if (siteKey.equals(SYSTEM_SITE_KEY)) {
-                site = getSiteByKey(SYSTEM_SITE_KEY);
+                site = (JCRSiteNode) getSiteByKey(SYSTEM_SITE_KEY);
                 importingSystemSite = true;
             } else {
                 throw new IOException("site already exists");
             }
 
-            JCRSiteNode siteNode = (JCRSiteNode) session.getNode(site.getJCRLocalPath());
+            JCRSiteNode siteNode = (JCRSiteNode) session.getNode(site.getPath());
 
             // continue if the site is added correctly...
             if (siteNode.getID() != -1) {
@@ -595,18 +420,6 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
 
                     siteNode.setMixLanguagesActive(false);
                     session.save();
-                    updateSite(siteNode);
-
-                    // create default groups...
-                    JahiaGroup usersGroup = jgms.lookupGroup(null, JahiaGroupManagerService.USERS_GROUPNAME);
-                    if (usersGroup == null) {
-                        usersGroup = jgms.createGroup(null, JahiaGroupManagerService.USERS_GROUPNAME, null, false);
-                    }
-
-                    JahiaGroup guestGroup = jgms.lookupGroup(null, JahiaGroupManagerService.GUEST_GROUPNAME);
-                    if (guestGroup == null) {
-                        guestGroup = jgms.createGroup(null, JahiaGroupManagerService.GUEST_GROUPNAME, null, false);
-                    }
 
                     JahiaGroup privGroup = jgms.lookupGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME);
                     if (privGroup == null) {
@@ -648,11 +461,6 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
                     initialZip = fileImport;
                 }
 
-                // create the default homepage...
-                List<Locale> locales = new ArrayList<Locale>();
-                locales.add(selectedLocale);
-
-
                 if ("importRepositoryFile".equals(firstImport) || (initialZip != null && initialZip.exists() && !"noImport".equals(firstImport))) {
                     try {
                         Map<Object, Object> importInfos = new HashMap<Object, Object>();
@@ -662,13 +470,6 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
                         logger.warn("Error importing site ZIP", e);
                     }
                 }
-
-//                JCRNodeWrapper nodeWrapper = session.getNode("/sites/" + site.getSiteKey());
-//                if (nodeWrapper.hasNode("templates")) {
-//                    JCRPublicationService.getInstance().publishByMainId(nodeWrapper.getNode("templates").getIdentifier(), "default", "live", null, true, null);
-//                }
-
-                cacheService.getCache("JCRGroupCache").flush();
 
                 logger.debug("Site updated with Home Page");
             } else {
@@ -711,9 +512,9 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
                     return true;
                 }
             };
-            JCRTemplate.getInstance().doExecuteWithSystemSession(deleteCallback);
             // Now let's delete the live workspace site.
             JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, deleteCallback);
+            JCRTemplate.getInstance().doExecuteWithSystemSession(deleteCallback);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -739,9 +540,6 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
-        siteCacheByName.flush();
-        siteCacheByID.flush();
-        siteCacheByKey.flush();
     }
 
     /**
@@ -749,91 +547,17 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
      * @param node : JCRSSiteNode of the site to update
      */
     public void updateSite(JCRSiteNode node) {
-        try {
-            final JahiaSite legacySite = getSiteByKey(node.getName());
-            if (legacySite != null) {
-                legacySite.setTitle(node.getTitle());
-                legacySite.setDescr(node.getDescr());
-                legacySite.setServerName(node.getServerName());
 
-                legacySite.setLanguages(new HashSet<String>(node.getLanguages()));
-                legacySite.setInactiveLanguages(new HashSet<String>(node.getInactiveLanguages()));
-                legacySite.setInactiveLiveLanguages(new HashSet<String>(node.getInactiveLiveLanguages()));
-                legacySite.setMandatoryLanguages(new HashSet<String>(node.getMandatoryLanguages()));
-                legacySite.setDefaultLanguage(node.getDefaultLanguage());
-                legacySite.setMixLanguagesActive(node.isMixLanguagesActive());
-                legacySite.setAllowsUnlistedLanguages(node.isAllowsUnlistedLanguages());
-
-                legacySite.setInstalledModules(node.getInstalledModules());
-                legacySite.setTemplatePackageName(node.getTemplatePackageName());
-                legacySite.setTemplateFolder(node.getTemplateFolder());
-
-                if (node.getName().equals(SYSTEM_SITE_KEY)) {
-                    try {
-                        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-                            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                updateWorkspacePermissions(session, "default", legacySite);
-                                updateWorkspacePermissions(session, "live", legacySite);
-                                updateTranslatorRoles(session, legacySite);
-                                session.save();
-                                return null;
-                            }
-                        });
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                } else {
-                    JahiaSite systemSite = getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY);
-                    if (!systemSite.getLanguages().containsAll(legacySite.getLanguages())) {
-                        systemSite.getLanguages().addAll(legacySite.getLanguages());
-                        updateSite(systemSite);
-                    }
-                }
-            }
-        } catch (JahiaException e) {
-            if (node != null) {
-                logger.error("Cannot update site " + node.getPath() + " because of " + e.getMessage(),e);
-            }
-        }
     }
 
-    private void updateSite(JahiaSite site, JCRSessionWrapper session) throws RepositoryException {
+    public void updateSite(JahiaSite site, JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper sites = session.getNode(SITES_JCR_PATH);
         if (!sites.isCheckedOut()) {
             session.checkout(sites);
         }
-        JCRNodeWrapper siteNode = sites.getNode(site.getSiteKey());
+        JCRSiteNode siteNode = (JCRSiteNode) site;
         if (!siteNode.isCheckedOut()) {
             session.checkout(siteNode);
-        }
-        siteNode.setProperty("j:title", site.getTitle());
-        siteNode.setProperty("j:description", site.getDescr());
-        siteNode.setProperty("j:serverName", site.getServerName());
-//                    siteNode.setProperty("j:installedModules", new String[]{site.getTemplatePackageName()});
-        String defaultLanguage = site.getDefaultLanguage();
-        if (defaultLanguage != null)
-            siteNode.setProperty(SitesSettings.DEFAULT_LANGUAGE, defaultLanguage);
-        siteNode.setProperty(SitesSettings.MIX_LANGUAGES_ACTIVE, site.isMixLanguagesActive());
-        siteNode.setProperty("j:allowsUnlistedLanguages", site.isAllowsUnlistedLanguages());
-        siteNode.setProperty(SitesSettings.LANGUAGES, site.getLanguages().toArray(
-                new String[site.getLanguages().size()]));
-        siteNode.setProperty(SitesSettings.INACTIVE_LANGUAGES, site.getInactiveLanguages().toArray(
-                new String[site.getInactiveLanguages().size()]));
-        siteNode.setProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES, site.getInactiveLiveLanguages().toArray(
-                new String[site.getInactiveLiveLanguages().size()]));
-        siteNode.setProperty(SitesSettings.MANDATORY_LANGUAGES, site.getMandatoryLanguages().toArray(
-                new String[site.getMandatoryLanguages().size()]));
-
-        for (Map.Entry<Object, Object> prop : site.getSettings().entrySet()) {
-            if (!SitesSettings.HTML_SETTINGS.contains(prop.getKey())) {
-                continue;
-            }
-            try {
-                siteNode.setProperty(prop.getKey().toString(),
-                        JCRContentUtils.createValue(prop.getValue(), session.getValueFactory()));
-            } catch (RepositoryException e) {
-                logger.warn("Error setting site property '" + prop.getKey() + "'", e);
-            }
         }
 
         if (siteNode.getName().equals(SYSTEM_SITE_KEY)) {
@@ -857,29 +581,21 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
     }
 
     public JahiaSite getDefaultSite() {
-        JahiaSite site = siteCacheByID.get("default");
-        if (site != null) {
-            return site;
-        }
+        JahiaSite site =null;
 
         try {
-            site = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JahiaSite>() {
-                public JahiaSite doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    return JahiaSitesService.this.getDefaultSite(session);
-                }
-            });
+            site = JahiaSitesService.this.getDefaultSite(sessionFactory.getCurrentUserSession());
         } catch (RepositoryException e) {
             logger.error("cannot get site", e);
         }
 
-        siteCacheByID.put("default", site);
         return site;
     }
 
-    private JahiaSite getDefaultSite(JCRSessionWrapper session) throws RepositoryException {
+    public JahiaSite getDefaultSite(JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper node = session.getNode(SITES_JCR_PATH);
         if (node.hasProperty("j:defaultSite")) {
-            return getSite((JCRNodeWrapper) node.getProperty("j:defaultSite").getNode());
+            return (JCRSiteNode) node.getProperty("j:defaultSite").getNode();
         } else {
             return null;
         }
@@ -897,7 +613,6 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
         } catch (RepositoryException e) {
             logger.error("cannot set default site", e);
         }
-        siteCacheByID.put("default", site);
     }
 
     private void setDefaultSite(JahiaSite site, JCRSessionWrapper session) throws RepositoryException {
@@ -914,42 +629,6 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
     }
 
     public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
-//        try {
-//            JahiaUser jahiaUser = JCRSessionFactory.getInstance().getCurrentUser();
-//            if (getNbSites() == 0) {
-//                Locale selectedLocale = LanguageCodeConverters.languageCodeToLocale(systemSiteDefaultLanguage);
-//                JahiaSite site = addSite(jahiaUser, systemSiteTitle, systemSiteServername, SYSTEM_SITE_KEY, "", selectedLocale,
-//                        systemSiteTemplateSetName, null, "noImport", null, null, false, false, null);
-//                site.setMixLanguagesActive(true);
-//                site.setAllowsUnlistedLanguages(true);
-//                site.setLanguages(systemSiteLanguages);
-//                updateSite(site);
-//                final LinkedHashSet<String> languages = new LinkedHashSet<String>();
-//                languages.add(selectedLocale.toString());
-//                final List<String> uuids = new ArrayList<String>();
-//                try {
-//                    JCRNodeWrapper node = (JCRNodeWrapper) sessionFactory.getCurrentUserSession().getNode(SITES_JCR_PATH).getNodes().nextNode();
-//                    node.checkout();
-////                     node.changeRoles("g:users","re---");
-//                    uuids.add(node.getIdentifier());
-//                    List<PublicationInfo> publicationInfos = JCRPublicationService.getInstance().getPublicationInfo(node.getIdentifier(), languages, true, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
-//                    for (PublicationInfo publicationInfo : publicationInfos) {
-//                        if (publicationInfo.needPublication(null)) {
-//                            uuids.addAll(publicationInfo.getAllUuids());
-//                        }
-//                    }
-//                    JCRPublicationService.getInstance().publish(uuids, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, false, null);
-//                } catch (RepositoryException e) {
-//                    logger.error(e.getMessage(), e);
-//                } finally {
-//                    JCRSessionFactory.getInstance().closeAllSessions();
-//                }
-//            }
-//        } catch (JahiaException e) {
-//            logger.error(e.getMessage(), e);
-//        } catch (IOException e) {
-//            logger.error(e.getMessage(), e);
-//        }
     }
 
     /**
@@ -958,9 +637,6 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
      * @param site the site bean object
      */
     public void invalidateCache(JahiaSite site) throws JahiaException {
-        siteCacheByID.remove(site.getID());
-        siteCacheByName.remove(site.getServerName());
-        siteCacheByKey.remove(site.getSiteKey());
     }
 
     private void updateWorkspacePermissions(JCRSessionWrapper session, String ws, JahiaSite site) throws RepositoryException {
@@ -1012,31 +688,6 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
             }
         }
 
-    }
-
-    /**
-     * Returns the the {@link JahiaSite} bean for the specified UUID or <code>null</code> if the corresponding site cannot be found.
-     *
-     * @param jcrSiteIdentifier the UUID of the site noe
-     * @return JahiaSite the {@link JahiaSite} bean or <code>null</code> if the corresponding site cannot be found
-     */
-    public JahiaSite getSiteByIdenifier(final String jcrSiteIdentifier) throws JahiaException {
-        // TODO add cache by UUID
-
-        JahiaSite site = null;
-        try {
-            site = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JahiaSite>() {
-                public JahiaSite doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    return getSite(session.getNodeByIdentifier(jcrSiteIdentifier));
-                }
-            });
-        } catch (ItemNotFoundException e) {
-            logger.warn("Cannot get site for UUID {}", jcrSiteIdentifier);
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site for UUID " + jcrSiteIdentifier, e);
-        }
-
-        return site;
     }
 
     public boolean isSiteKeyValid(String name) {

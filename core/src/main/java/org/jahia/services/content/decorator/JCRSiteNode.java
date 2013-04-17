@@ -46,11 +46,12 @@ import org.apache.commons.collections.list.UnmodifiableList;
 import org.apache.commons.collections.set.UnmodifiableSet;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.services.content.*;
+import org.jahia.services.sites.JahiaSite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.sites.SitesSettings;
 import org.jahia.utils.LanguageCodeConverters;
 
@@ -58,6 +59,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -67,7 +69,7 @@ import java.util.*;
  * Date: Mar 30, 2010
  * Time: 12:37:45 PM
  */
-public class JCRSiteNode extends JCRNodeDecorator {
+public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     private static final Logger logger = LoggerFactory.getLogger(JCRSiteNode.class);
 
     private Set<String> inactiveLiveLanguages;
@@ -207,14 +209,7 @@ public class JCRSiteNode extends JCRNodeDecorator {
     }
 
     public String getDescr() {
-        try {
-            if (hasProperty("j:description")) {
-                return getProperty("j:description").getString();
-            }
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
-        }
-        return null;
+        return getDescription();
     }
 
     public JCRNodeWrapper getHome() throws RepositoryException {
@@ -572,5 +567,136 @@ public class JCRSiteNode extends JCRNodeDecorator {
         } catch (RepositoryException e) {
             logger.error("Cannot get site property",e);
         }
+    }
+
+    // JahiaSite Implementations
+
+
+    @Override
+    public String getDescription() {
+        try {
+            if (hasProperty("j:description")) {
+                return getProperty("j:description").getString();
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property",e);
+        }
+        return null;
+    }
+
+    /**
+     * Returns <code>true</code> if this site is the default one on the server.
+     *
+     * @return <code>true</code> if this site is the default one on the server
+     */
+    @Override
+    public boolean isDefault() {
+        try {
+            return getParent().getProperty("j:defaultSite").getString().equals(getIdentifier());
+        } catch (RepositoryException e) {
+            logger.debug(e.getMessage(), e);
+        }
+        return false;
+    }
+
+    @Override
+    public void setDescr(String descr) {
+        setDescription(descr);
+    }
+
+    @Override
+    public void setDescription(String description) {
+        try {
+            setProperty("j:description",description);
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Sets languages, which are completely deactivated for browsing and editing.
+     *
+     * @param inactiveLanguages the set of inactive languages
+     */
+    @Override
+    public void setInactiveLanguages(Set<String> inactiveLanguages) {
+        try {
+            List<Value> l = new ArrayList<Value>();
+            for (String s : inactiveLanguages) {
+                l.add(getSession().getValueFactory().createValue(s));
+            }
+
+            setProperty(SitesSettings.INACTIVE_LANGUAGES, l.toArray(new Value[l.size()]));
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property",e);
+        }
+    }
+
+    /**
+     * Sets languages, which are not considered in live mode browsing, i.e. are currently inactive in navigation.
+     *
+     * @param inactiveLiveLanguages the set of inactive languages
+     */
+    @Override
+    public void setInactiveLiveLanguages(Set<String> inactiveLiveLanguages) {
+        try {
+            List<Value> l = new ArrayList<Value>();
+            for (String s : inactiveLiveLanguages) {
+                l.add(getSession().getValueFactory().createValue(s));
+            }
+
+            setProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES, l.toArray(new Value[l.size()]));
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property",e);
+        }
+    }
+
+    @Override
+    public void setInstalledModules(List<String> installedModules) {
+        try {
+            List<Value> l = new ArrayList<Value>();
+            for (String s : installedModules) {
+                l.add(getSession().getValueFactory().createValue(s));
+            }
+
+            setProperty("j:installedModules", l.toArray(new Value[l.size()]));
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property",e);
+        }
+    }
+
+    @Override
+    public void setAllowsUnlistedLanguages(boolean allowsUnlistedLanguages) {
+        try {
+            setProperty("j:allowsUnlistedLanguages",allowsUnlistedLanguages);
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Set the Full Qualified Domain Name ( www.jahia.org )
+     */
+    @Override
+    public void setServerName(String name) {
+        try {
+            setProperty(name,"j:serverName");
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void setTitle(String value) {
+        try {
+            setProperty("j:title", value);
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public String getJCRLocalPath() {
+        return getPath();
     }
 }

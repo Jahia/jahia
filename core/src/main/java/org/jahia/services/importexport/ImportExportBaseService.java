@@ -570,8 +570,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             p.setProperty("language." + sls + ".disabledCompletely", "true");
         }
 
-        if (sitesService.getDefaultSite().getSiteKey().equals(s.getName())) {
-            p.setProperty("defaultSite", "true");
+        try {
+            if (sitesService.getDefaultSite(s.getSession()).getSiteKey().equals(s.getName())) {
+                p.setProperty("defaultSite", "true");
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
 
         p.store(out, "");
@@ -1154,12 +1158,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Set<Object> keys = p.keySet();
         boolean isMultiLang = true;
         final Set<String> languages = new HashSet<String>();
-        final Set<String> inactiveLanguages = site.getInactiveLanguages();
-        inactiveLanguages.clear();
-        final Set<String> inactiveLiveLanguages = site.getInactiveLiveLanguages();
-        inactiveLiveLanguages.clear();
-        final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
-        mandatoryLanguages.clear();
+        final Set<String> inactiveLanguages = new HashSet<String>();
+        final Set<String> inactiveLiveLanguages = new HashSet<String>();
+        final Set<String> mandatoryLanguages = new HashSet<String>();
 
         List<String> installedModules = site.getInstalledModules();
         try {
@@ -1253,12 +1254,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
             site.setDefaultLanguage(defaultLanguage);
             try {
-                sitesService.updateSite(site);
                 JahiaSite jahiaSite = sitesService.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY);
                 // update the system site only if it does not yet contain at least one of the site languages
-                if (!jahiaSite.getLanguages().containsAll(site.getLanguages())) {
-                    jahiaSite.getLanguages().addAll(site.getLanguages());
-                    sitesService.updateSite(jahiaSite);
+                Set<String> jahiaSiteLanguages = new HashSet<String>(jahiaSite.getLanguages());
+                if (!jahiaSiteLanguages.containsAll(site.getLanguages())) {
+                    jahiaSiteLanguages.addAll(site.getLanguages());
+                    jahiaSite.setLanguages(jahiaSiteLanguages);
                 }
             } catch (JahiaException e) {
                 logger.error("Cannot update site", e);

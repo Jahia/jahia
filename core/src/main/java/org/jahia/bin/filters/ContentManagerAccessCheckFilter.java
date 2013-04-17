@@ -203,7 +203,7 @@ public class ContentManagerAccessCheckFilter implements Filter,
                 JahiaSitesService siteService = JahiaSitesService.getInstance();
                 JahiaSite defaultSite = siteService.getDefaultSite();
                 if (defaultSite != null) {
-                    return (JCRSiteNode) currentUserSession.getNodeByUUID(defaultSite.getUuid());
+                    return (JCRSiteNode) currentUserSession.getNodeByUUID(((JCRSiteNode) defaultSite).getIdentifier());
                 }
             }
         } catch (RepositoryException e) {

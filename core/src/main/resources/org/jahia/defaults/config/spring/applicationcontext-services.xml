@@ -80,7 +80,6 @@
     <bean id="JahiaSitesService" class="org.jahia.services.sites.JahiaSitesService" parent="jahiaServiceTemplate"
           factory-method="getInstance" lazy-init="true">
         <property name="groupService" ref="JahiaGroupManagerService"/>
-        <property name="cacheService" ref="JahiaCacheService"/>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
 

@@ -482,9 +482,9 @@ public class ContentManagerHelper {
                     member.setProperty("j:member", node.getIdentifier());
                 } else if (node.getPrimaryNodeTypeName().equals("jnt:group")) {
                     Node node1 = node.getParent().getParent();
-                    int id = 0;
+                    String id = "systemsite";
                     if (node1 != null && node1.getPrimaryNodeType().getName().equals(Constants.JAHIANT_VIRTUALSITE)) {
-                        id = sitesService.getSiteByKey(node1.getName()).getID();
+                        id = sitesService.getSiteByKey(node1.getName()).getSiteKey();
                     }
                     name += ("___" + id);
                     Node member = targetNode.addNode(name, Constants.JAHIANT_MEMBER);

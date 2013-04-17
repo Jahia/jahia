@@ -855,7 +855,11 @@ class NodeHelper {
     }
 
     private void populateThumbnails(GWTJahiaNode n, JCRNodeWrapper node) {
-        n.setThumbnailsMap(new HashMap<String, String>());
+        if (!n.isNodeType("jmix:thumbnail")) {
+            n.setThumbnailsMap(new HashMap<String, String>(0));
+            return;
+        }
+        n.setThumbnailsMap(new HashMap<String, String>(1));
         try {
             if (!node.hasNode("thumbnail")) {
                 return;

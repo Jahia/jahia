@@ -792,16 +792,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             NodeIterator ni = objectNode.getNodes();
             while (ni.hasNext()) {
                 Node node = ni.nextNode();
-<<<<<<< .working
-                if (node != null && node.isNodeType("jnt:resource")) {
-                    if (!node.getName().equals("jcr:content")) {
+                if (node != null) {
+                    String name = node.getName();
+                    if (!name.equals("jcr:content") && node.isNodeType("jnt:resource")) {
                         names.add(node.getName());
                     }
-=======
-                String name = node.getName();
-                if (!name.equals("jcr:content") && node.isNodeType("jnt:resource")) {
-                    names.add(name);
->>>>>>> .merge-right.r45564
                 }
             }
         } catch (RepositoryException e) {

@@ -935,7 +935,7 @@ public class NavigationHelper {
             n.setVisible(visibilityService.matchesConditions(node));
         }
 
-        n.setThumbnailsMap(new HashMap<String, String>());
+        n.setThumbnailsMap(new HashMap<String, String>(1));
         n.setVersioned(node.isVersioned());
         n.setLanguageCode(node.getLanguage());
         try {
@@ -950,11 +950,10 @@ public class NavigationHelper {
         } catch (RepositoryException e) {
             logger.error("Error when getting sitekey", e);
         }
-        if (node.isFile()) {
-            n.setSize(node.getFileContent().getContentLength());
-
-        }
         n.setFile(node.isFile());
+        if (n.isFile()) {
+            n.setSize(node.getFileContent().getContentLength());
+        }
 
         n.setIsShared(false);
         try {
@@ -975,7 +974,7 @@ public class NavigationHelper {
             boolean hasChildren = false;
             if (node instanceof JCRMountPointNode) {
                 hasChildren = true;
-            } else if (!node.isFile()) {
+            } else if (!n.isFile()) {
                 try {
                     hasChildren = node.hasNodes();
                 } catch (RepositoryException e) {
@@ -1019,14 +1018,16 @@ public class NavigationHelper {
             }
         }
 
-        // thumbnails
-        List<String> names = node.getThumbnails();
-        if (names.contains("thumbnail")) {
-            n.setPreview(node.getThumbnailUrl("thumbnail"));
-            n.setDisplayable(true);
-        }
-        for (String name : names) {
-            n.getThumbnailsMap().put(name, node.getThumbnailUrl(name));
+        if (n.isNodeType("jmix:thumbnail")) {
+            // thumbnails
+            List<String> names = node.getThumbnails();
+            if (names.contains("thumbnail")) {
+                n.setPreview(node.getThumbnailUrl("thumbnail"));
+                n.setDisplayable(true);
+            }
+            for (String name : names) {
+                n.getThumbnailsMap().put(name, node.getThumbnailUrl(name));
+            }
         }
 
         //count

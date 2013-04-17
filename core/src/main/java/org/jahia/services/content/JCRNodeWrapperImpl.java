@@ -784,10 +784,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             NodeIterator ni = objectNode.getNodes();
             while (ni.hasNext()) {
                 Node node = ni.nextNode();
-                if (node.isNodeType("jnt:resource")) {
-                    if (!node.getName().equals("jcr:content")) {
-                        names.add(node.getName());
-                    }
+                String name = node.getName();
+                if (!name.equals("jcr:content") && node.isNodeType("jnt:resource")) {
+                    names.add(name);
                 }
             }
         } catch (RepositoryException e) {

@@ -108,8 +108,12 @@ public class PublishActionItem extends BaseActionItem {
             if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode)) {
                 setEnabled(true);
 
-                if (checkForUnpublication && !gwtJahiaNode.getQuickPublicationInfo().isUnpublishable()) {
-                    setEnabled(false);
+                if (checkForUnpublication) {
+                    GWTJahiaPublicationInfo publicationInfo = gwtJahiaNode.getAggregatedPublicationInfo() != null ? gwtJahiaNode
+                            .getAggregatedPublicationInfo() : gwtJahiaNode.getQuickPublicationInfo();
+                    if (publicationInfo != null && !publicationInfo.isUnpublishable()) {
+                        setEnabled(false);
+                    }
                 }
 
                 if (gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {

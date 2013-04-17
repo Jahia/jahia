@@ -48,6 +48,7 @@ import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.apache.jackrabbit.core.security.PrivilegeImpl;
 import org.jahia.ajax.gwt.client.data.*;
@@ -320,6 +321,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                                                      int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes,
                                                      String hiddenRegex, boolean showOnlyNodesWithTemplates)
             throws GWTJahiaServiceException {
+        long timer = System.currentTimeMillis();
         List<GWTJahiaNode> filteredList = new ArrayList<GWTJahiaNode>();
         for (GWTJahiaNode n : navigation
                 .ls(parentNode, nodeTypes, mimeTypes, filters, fields, checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex, retrieveCurrentSession(),
@@ -336,12 +338,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 filteredList = new ArrayList<GWTJahiaNode>(filteredList.subList(offset, Math.min(length-1,offset+limit)));
             }
         }
+        if (logger.isDebugEnabled()) {
+            logger.debug("lsLoad for {} took {} ms", parentNode.getPath(), System.currentTimeMillis() - timer);
+        }
         return new BasePagingLoadResult<GWTJahiaNode>(filteredList, offset, length);
     }
 
     public List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes,
                                       List<String> filters, List<String> fields, List<String> selectedNodes,
                                       List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex) throws GWTJahiaServiceException {
+        long timer = System.currentTimeMillis();
         if (openPaths == null || openPaths.size() == 0) {
             openPaths = getOpenPathsForRepository(paths.toString());
         }
@@ -351,6 +357,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         List<GWTJahiaNode> result = navigation.retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths, getSite(),
                 retrieveCurrentSession(), getLocale(), checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex);
+        
+        if (logger.isDebugEnabled()) {
+            logger.debug("getRoot took {} ms for paths: {}", (System.currentTimeMillis() - timer), paths);
+        }
+        
         return result;
     }
 
@@ -369,6 +380,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public Map<String,List<? extends ModelData>> getNodesAndTypes(List<String> paths, List<String> fields, List<String> types) throws GWTJahiaServiceException {
+        long timer = System.currentTimeMillis();
+        
         Map<String,List<? extends ModelData>> m = new HashMap<String,List<? extends ModelData>>();
         List<GWTJahiaNode> nodes = getNodes(paths, fields);
         m.put("nodes", nodes);
@@ -379,6 +392,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         m.put("types", getNodeTypes(types));
 
+        if (logger.isDebugEnabled()) {
+            logger.debug("getNodesAndTypes took {} ms for {} paths: {}, ...", new Object[] {
+                (System.currentTimeMillis() - timer), paths.size(),
+                paths.size() > 0 ? paths.get(0) : StringUtils.EMPTY });
+        }
+        
         return m;
     }
 
@@ -1040,6 +1059,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                                               String configuration, final Map<String, List<String>> contextParams,
                                               boolean editMode, String configName, String channelIdentifier,
                                               String channelVariant) throws GWTJahiaServiceException {
+        long timer = System.currentTimeMillis();
+        
         Locale localValue = getLocale();
         if (locale != null) {
             localValue = LanguageCodeConverters.languageCodeToLocale(locale);
@@ -1047,10 +1068,17 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 getSession().setAttribute(ProcessingContext.SESSION_LOCALE, localValue);
             }
         }
-        return this.template
+        GWTRenderResult renderedContent = this.template
                 .getRenderedContent(path, template, configuration, contextParams, editMode, configName, getRequest(),
                         getResponse(), retrieveCurrentSession(workspace, localValue, true), getUILocale(), channelIdentifier,
                         channelVariant);
+        
+        if (logger.isDebugEnabled()) {
+            logger.debug("Rendering for path {} took {} ms", path, (System.currentTimeMillis() - timer));
+        }
+        
+        return renderedContent;
+        
     }
 
     public String getNodeURL(String servlet, String path, Date versionDate, String versionLabel, String workspace,
@@ -2010,7 +2038,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public List<GWTJahiaNode> getContentTypesAsTree(List<String> paths, List<String> nodeTypes, List<String> fields,
                                                     boolean includeSubTypes, boolean includeNonDependentModules) throws GWTJahiaServiceException {
+        long timer = System.currentTimeMillis();
+        
         List<GWTJahiaNode> result = contentDefinition.getContentTypesAsTree(paths, nodeTypes, fields, includeSubTypes, includeNonDependentModules, getSite(), getUILocale(), retrieveCurrentSession(getUILocale()));
+        
+        if (logger.isDebugEnabled()) {
+            logger.debug("getContentTypesAsTree took {} ms for paths: {}", (System.currentTimeMillis() - timer), paths);
+        }
+        
         return result;
     }
 

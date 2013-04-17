@@ -509,13 +509,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut)
             throws GWTJahiaServiceException {
         contentManager
-                .copy(pathsToCopy, destinationPath, newName, false, cut, false, true, retrieveCurrentSession(getLocale()));
+                .copy(pathsToCopy, destinationPath, newName, false, cut, false, true, retrieveCurrentSession(getLocale()), getUILocale());
     }
 
     public void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName)
             throws GWTJahiaServiceException {
         contentManager
-                .copy(pathsToCopy, destinationPath, newName, false, false, true, false, retrieveCurrentSession(getLocale()));
+                .copy(pathsToCopy, destinationPath, newName, false, false, true, false, retrieveCurrentSession(getLocale()), getUILocale());
     }
 
     public GWTJahiaGetPropertiesResult getProperties(String path, String langCode) throws GWTJahiaServiceException {

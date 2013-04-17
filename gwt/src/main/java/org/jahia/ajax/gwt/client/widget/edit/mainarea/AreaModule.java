@@ -64,7 +64,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+<<<<<<< .working
  *
+=======
+ * The module that displays areas in edit mode.
+>>>>>>> .merge-right.r45551
  * User: toto
  * Date: Aug 18, 2009
  * Time: 7:25:48 PM
@@ -77,7 +81,11 @@ public class AreaModule extends SimpleModule {
     private String areaType = "jnt:contentList";  // todo set the areatype
     private String areaHolder;
     private boolean missingList;
+<<<<<<< .working
     private final LayoutContainer content;
+=======
+    private String conflictsWith = null;
+>>>>>>> .merge-right.r45551
 
     public AreaModule(String id, String path, Element divElement, String moduleType, MainModule mainModule) {
         super(id, path, divElement, mainModule);
@@ -92,7 +100,14 @@ public class AreaModule extends SimpleModule {
 
         this.mockupStyle = DOM.getElementAttribute(divElement, "mockupStyle");
         this.missingList = "true".equals(DOM.getElementAttribute(divElement, "missingList"));
+<<<<<<< .working
         this.areaHolder =  DOM.getElementAttribute(divElement, "areaHolder");
+=======
+        this.conflictsWith = DOM.getElementAttribute(divElement, "conflictsWith");
+        if (this.conflictsWith.length()==0) {
+            this.conflictsWith = null;
+        }
+>>>>>>> .merge-right.r45551
 
         this.moduleType = moduleType;
         String areaTitle;
@@ -130,7 +145,14 @@ public class AreaModule extends SimpleModule {
     }
 
     @Override public void onNodeTypesLoaded() {
-        if (missingList && editable) {
+        if (conflictsWith != null) {
+            LayoutContainer p = new HorizontalPanel();
+            if (getWidth() > 150) {
+                p.add(new Text(Messages.getWithArgs("label.areaConflicts", "Area conflicts with same name node {0}. Rename the area or the node", new String[] { conflictsWith })));
+            }
+            ctn.add(p);
+            ctn.layout();
+        } else if (missingList && editable) {
             Image icon =  ToolbarIconProvider.getInstance().getIcon("enableArea").createImage();
             icon.setTitle(Messages.get("label.areaEnable", "Enable area"));
             LayoutContainer p = new HorizontalPanel();

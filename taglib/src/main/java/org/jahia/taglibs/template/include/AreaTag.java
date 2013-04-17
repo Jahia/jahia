@@ -80,6 +80,8 @@ public class AreaTag extends ModuleTag implements ParamParent {
     private Template templateNode;
 
     private boolean areaAsSubNode;
+
+    private String conflictsWith = null;
     
     public void setAreaType(String areaType) {
         this.areaType = areaType;
@@ -126,6 +128,9 @@ public class AreaTag extends ModuleTag implements ParamParent {
             }
 
             String additionalParameters = "missingList=\"true\"";
+            if (conflictsWith != null) {
+                additionalParameters += " conflictsWith=\"" + conflictsWith + "\"";
+            }
             if (renderContext.getEditModeConfigName().equals("contributemode")) {
                 JCRNodeWrapper contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("areaListResource");
                 if (contributeNode == null || !contributeNode.hasProperty("j:contributeTypes")) {
@@ -247,9 +252,18 @@ public class AreaTag extends ModuleTag implements ParamParent {
                             if (currentResource.getNode().getParent().getPath().equals(this.node.getPath())) {
                                 this.node = null;
                             } else {
-                                found = true;
-                                pageContext.setAttribute("org.jahia.emptyArea",Boolean.FALSE, PageContext.PAGE_SCOPE);
-                                break;
+                                // now let's check if the content node matches the areaType. If not it means we have a
+                                // conflict with another content created outside of the content of the area (DEVMINEFI-223)
+                                if (!this.node.isNodeType(areaType)) {
+                                    conflictsWith = this.node.getPath();
+                                    found = false;
+                                    this.node = null;
+                                    break;
+                                } else {
+                                    found = true;
+                                    pageContext.setAttribute("org.jahia.emptyArea",Boolean.FALSE, PageContext.PAGE_SCOPE);
+                                    break;
+                                }
                             }
                         }
                         if (t != null && !isCurrentResource) {
@@ -317,6 +331,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
             templateNode = null;
             level = null;
             areaAsSubNode = false;
+            conflictsWith = null;
             pageContext.getRequest().setAttribute("inArea", o);
 
         }

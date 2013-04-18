@@ -56,7 +56,6 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
@@ -150,40 +149,57 @@ public class SettingsTabItem extends SidePanelTabItem {
                     public void onSuccess(List<GWTJahiaNode> nodes) {
                         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
                         for (GWTJahiaNode node : nodes) {
-                            String settingsPath = getSettingsPath(node);
-                            Set<GWTJahiaNode> nodeSet = nodesBySettingsPath.get(settingsPath);
-                            if (nodeSet == null) {
-                                nodeSet = new HashSet<GWTJahiaNode>();
-                                nodesBySettingsPath.put(settingsPath, nodeSet);
-                            }
-                            nodeSet.add(node);
-                            String nodeName = node.getName();
-                            boolean add = true;
-                            for (GWTJahiaNode resultNode : result) {
-                                if (resultNode.getName().equals(nodeName)) {
-                                    add = false;
-                                    break;
-                                }
-                            }
-                            if (node.getName().equals(MainModule.getInstance().getTemplate())) {
-                                node.setSelectedOnLoad(true);
-                            }
-                            if (add) {
-                                List<String> requiredPermissions = node.get("j:requiredPermissions");
-                                boolean access = true;
-                                if (requiredPermissions != null) {
-                                    for (String p : requiredPermissions) {
-                                        if (!PermissionsUtils.isPermitted(p.substring(p.lastIndexOf('/') + 1), mainNode)) {
-                                            access = false;
-                                            break;
-                                        }
-                                    }
-                                }
-                                node.set("hasAccessToSettings", Boolean.valueOf(access));
-                                result.add(node);
-                            }
+                            merge(result, node);
                         }
                         callback.onSuccess(result);
+                    }
+
+                    private void merge(List result, GWTJahiaNode node) {
+                        String settingsPath = getSettingsPath(node);
+                        Set<GWTJahiaNode> nodeSet = nodesBySettingsPath.get(settingsPath);
+                        if (nodeSet == null) {
+                            nodeSet = new HashSet<GWTJahiaNode>();
+                            nodesBySettingsPath.put(settingsPath, nodeSet);
+                        }
+                        nodeSet.add(node);
+                        String nodeName = node.getName();
+                        boolean add = true;
+                        for (Object data : result) {
+                            GWTJahiaNode previousNode = (GWTJahiaNode) data;
+                            if (previousNode.getName().equals(nodeName)) {
+                                add = false;
+                                if (previousNode.get("alternativePath") == null) {
+                                    previousNode.set("alternativePath", new ArrayList<String>());
+                                }
+                                ((List<String>) previousNode.get("alternativePath")).add(node.getPath() + "/*");
+                                for (ModelData child : node.getChildren()) {
+                                    merge(previousNode.getChildren(), (GWTJahiaNode)child);
+                                }
+                            }
+                        }
+                        if (node.getName().equals(MainModule.getInstance().getTemplate())) {
+                            node.setSelectedOnLoad(true);
+                        }
+                        if (add) {
+                            List<ModelData> all = new ArrayList<ModelData>(node.getChildren());
+                            node.getChildren().clear();
+                            for (ModelData child : all) {
+                                merge(node.getChildren(), (GWTJahiaNode)child);
+                            }
+
+                            List<String> requiredPermissions = node.get("j:requiredPermissions");
+                            boolean access = true;
+                            if (requiredPermissions != null) {
+                                for (String p : requiredPermissions) {
+                                    if (!PermissionsUtils.isPermitted(p.substring(p.lastIndexOf('/') + 1), mainNode)) {
+                                        access = false;
+                                        break;
+                                    }
+                                }
+                            }
+                            node.set("hasAccessToSettings", Boolean.valueOf(access));
+                            result.add(node);
+                        }
                     }
                 };
 
@@ -200,19 +216,15 @@ public class SettingsTabItem extends SidePanelTabItem {
                         }
                         asyncCallback.onSuccess(list);
                     } else {
+                        List<String> nodePaths = new ArrayList<String>();
+                        nodePaths.add(gwtJahiaNode.getPath() + "/*");
+                        List<String> alt = gwtJahiaNode.get("alternativePath");
+                        if (alt != null) {
+                            nodePaths.addAll(alt);
+                        }
                         JahiaContentManagementService.App.getInstance()
-                                .lsLoad(gwtJahiaNode, Arrays.asList("jnt:template"), null, null, fields, true, -1, -1, false,
-                                        null, null, false, true, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
-                                    public void onSuccess(PagingLoadResult<GWTJahiaNode> result) {
-                                        asyncCallback.onSuccess(result.getData());
-                                    }
-
-                                    @Override
-                                    public void onApplicationFailure(Throwable caught) {
-                                        asyncCallback.onFailure(caught);
-                                    }
-
-                                });
+                                .getRoot(nodePaths, Arrays.asList("jnt:template"), null, null, fields, factory.getSelectedPath(), factory.getOpenPath(), true,
+                                        false, null, null, true, asyncCallback);
                     }
                 }
             }

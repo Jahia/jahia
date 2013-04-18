@@ -122,6 +122,9 @@ public class PathStorage {
     private void collapse(GWTJahiaNode gwtJahiaNode) {
         String path = gwtJahiaNode.getPath();
         openPath.remove(path);
+        if (gwtJahiaNode.get("alternativePath") != null) {
+            openPath.removeAll((List<String>)gwtJahiaNode.get("alternativePath"));
+        }
         Log.debug("Save Path on collapse " + openPath);
         gwtJahiaNode.setExpandOnLoad(false);
         savePaths();
@@ -132,6 +135,10 @@ public class PathStorage {
         if (!openPath.contains(path)) {
             openPath.add(path);
         }
+        if (gwtJahiaNode.get("alternativePath") != null) {
+            openPath.addAll((List<String>)gwtJahiaNode.get("alternativePath"));
+        }
+
         Log.debug("Save Path on expand " + openPath);
         gwtJahiaNode.setExpandOnLoad(true);
         savePaths();

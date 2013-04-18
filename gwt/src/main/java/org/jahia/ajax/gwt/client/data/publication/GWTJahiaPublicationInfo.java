@@ -115,8 +115,8 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         return get("uuid");
     }
 
-    public void setUuid(String path) {
-        set("uuid", path);
+    public void setUuid(String uuid) {
+        set("uuid", uuid);
     }
 
     public String getI18nUuid() {

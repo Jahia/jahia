@@ -41,7 +41,6 @@
 package org.jahia.services.workflow.jbpm.custom;
 
 import org.slf4j.Logger;
-import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
@@ -80,7 +79,7 @@ public class Unpublish implements ExternalActivityBehaviour {
                 logger.debug("Launching unpublication of node " + node.getPath() + " at " + (new Date()).toString());
             }
         }
-        JCRPublicationService.getInstance().unpublish(ids, Collections.singleton(locale.toString()), false);
+        JCRPublicationService.getInstance().unpublish(ids, false);
         sessionFactory.setCurrentUser(currentUser);
         execution.takeDefaultTransition();
     }

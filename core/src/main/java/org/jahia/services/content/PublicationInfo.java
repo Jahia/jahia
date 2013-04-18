@@ -40,6 +40,8 @@
 
 package org.jahia.services.content;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.io.Serializable;
 import java.util.*;
 
@@ -228,6 +230,21 @@ public class PublicationInfo implements Serializable {
             }
         }
         return false;
+    }
+
+    public Set<String> getAllPublishedLanguages() {
+        final Set<String> result = new HashSet<String>();
+        new Object() {
+            public void getAllPublishedLanguages(PublicationInfoNode node) {
+                if (node.getStatus() != UNPUBLISHED  && node.getStatus() != NOT_PUBLISHED  && node.getPath().contains("/j:translation_")) {
+                    result.add(StringUtils.substringAfterLast(node.getPath(),"/j:translation_"));
+                }
+                for (PublicationInfoNode childNode : node.getChildren()) {
+                    getAllPublishedLanguages(childNode);
+                }
+            }
+        }.getAllPublishedLanguages(root);
+        return result;
     }
     
     @Override

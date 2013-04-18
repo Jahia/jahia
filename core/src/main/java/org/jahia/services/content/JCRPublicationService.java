@@ -818,23 +818,23 @@ public class JCRPublicationService extends JahiaService {
      * Unpublish a node from live workspace.
      * Referenced Node will not be unpublished.
      *
+     *
      * @param uuids     uuids of the node to unpublish
-     * @param languages
      * @throws javax.jcr.RepositoryException
      */
-    public void unpublish(final List<String> uuids, final Set<String> languages) throws RepositoryException {
-        unpublish(uuids, languages, true);
+    public void unpublish(final List<String> uuids) throws RepositoryException {
+        unpublish(uuids, true);
     }
 
     /**
      * Unpublish a node from live workspace.
      * Referenced Node will not be unpublished.
      *
+     *
      * @param uuids     uuids of the node to unpublish
-     * @param languages
      * @throws javax.jcr.RepositoryException
      */
-    public void unpublish(final List<String> uuids, final Set<String> languages, boolean checkPermissions) throws RepositoryException {
+    public void unpublish(final List<String> uuids, boolean checkPermissions) throws RepositoryException {
         final String username;
         final JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
         if (user != null) {
@@ -847,7 +847,7 @@ public class JCRPublicationService extends JahiaService {
         if (checkPermissions) {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
             for (String uuid : uuids) {
-                if (session.getNodeByIdentifier(uuid).hasPermission("publish")) {
+                if (uuid != null && session.getNodeByIdentifier(uuid).hasPermission("publish")) {
                     checkedUuids.add(uuid);
                 }
             }
@@ -855,144 +855,27 @@ public class JCRPublicationService extends JahiaService {
             checkedUuids.addAll(uuids);
         }
 
-        final Set<String> ignoredNodes = new HashSet<String>();
-
-        JCRTemplate.getInstance().doExecute(true, username, EDIT_WORKSPACE, null, new JCRCallback<Object>() {
+        JCRCallback<Object> callback = new JCRCallback<Object>() {
             public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
-                Set<String> translationLanguages = new HashSet<String>();
-                boolean first = true;
-                VersionManager vm = sourceSession.getWorkspace().getVersionManager();
-                List<JCRNodeWrapper> nodes = new ArrayList<JCRNodeWrapper>(checkedUuids.size());
-                for (String uuid : checkedUuids) {
-                    try {
-                        JCRNodeWrapper node = sourceSession.getNodeByIdentifier(uuid);
-                        if (first && !node.isNodeType(Constants.JAHIAMIX_PUBLICATION)) {
-                            if (!vm.isCheckedOut(node.getPath())) {
-                                vm.checkout(node.getPath());
-                            }
-                            node.addMixin(Constants.JAHIAMIX_PUBLICATION);
-                            first = false;
-                        }
-                        if (!node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
-                            nodes.add(node);
-
-                            if (languages != null) {
-                                NodeIterator ni = node.getNodes("j:translation*");
-                                if (!ni.hasNext()) {
-                                    ignoredNodes.add(node.getPath());
-                                }
-                                while (ni.hasNext()) {
-                                    JCRNodeWrapper i18n = (JCRNodeWrapper) ni.next();
-                                    if (i18n.hasProperty("j:published") && i18n.getProperty("j:published").getBoolean()) {
-                                        translationLanguages.add(i18n.getProperty("jcr:language").getString());
-                                    }
-                                }
-                            }
-                        }
-                    } catch (ItemNotFoundException e) {
-                        if (logger.isInfoEnabled()) {
-                            logger.info("Node {} does not exist in the default workspace any longer." +
-                                    " Skipping unpublishing it.", uuid);
-                        }
-                    }
-                }
-                // if not all languages are unpublished now, then also do not unpublish the
-                // nodes having no translations
-                if (languages != null) {
-                    if (languages.containsAll(translationLanguages)) {
-                        ignoredNodes.clear();
-                    } else {
-                        for (Iterator<JCRNodeWrapper> it = nodes.iterator(); it.hasNext(); ) {
-                            if (ignoredNodes.contains(it.next().getPath())) {
-                                it.remove();
-                            }
-                        }
-                    }
-                }
-                for (ListIterator<JCRNodeWrapper> it = nodes.listIterator(nodes.size()); it.hasPrevious(); ) {
-                    JCRNodeWrapper node = it.previous();
-                    unpublish(node, languages, ignoredNodes);
-                    sourceSession.save();
-                }
-                return null;
-            }
-        });
-
-        JCRTemplate.getInstance().doExecute(true, username, LIVE_WORKSPACE, new JCRCallback<Object>() {
-            public Object doInJCR(final JCRSessionWrapper destinationSession) throws RepositoryException {
-                for (ListIterator<String> it = uuids.listIterator(uuids.size()); it.hasPrevious(); ) {
+                for (ListIterator<String> it = checkedUuids.listIterator(checkedUuids.size()); it.hasPrevious(); ) {
                     String uuid = it.previous();
-                    JCRNodeWrapper destNode = destinationSession.getNodeByIdentifier(uuid);
-                    if (!destNode.isNodeType(Constants.JAHIANT_TRANSLATION)) {
-                        unpublish(destNode, languages, ignoredNodes);
+                    if (uuid != null) {
+                        JCRNodeWrapper destNode = sourceSession.getNodeByIdentifier(uuid);
+                        destNode.setProperty("j:published", false);
                     }
-                    destinationSession.save();
                 }
+                sourceSession.save();
                 return null;
             }
-        });
-
-    }
-
-    private void unpublish(JCRNodeWrapper node, Set<String> languages, Set<String> nodesNotUnpublished) throws RepositoryException {
-        boolean allLanguagesUnpublished = true;
-        NodeIterator ni = node.getNodes("j:translation*");
-        // if there are nodes not unpublished then we have to keep the ones without translations
-        if (!nodesNotUnpublished.isEmpty() && !ni.hasNext()) {
-            allLanguagesUnpublished = false;
-        }
-        while (ni.hasNext()) {
-            JCRNodeWrapper i18n = (JCRNodeWrapper) ni.next();
-            if (languages == null || languages.contains(i18n.getProperty("jcr:language").getString())) {
-                if (!i18n.isCheckedOut()) {
-                    i18n.checkout();
-                }
-                i18n.setProperty("j:published", false);
-            } else if (i18n.hasProperty("j:published") && i18n.getProperty("j:published").getBoolean()) {
-                allLanguagesUnpublished = false;
-            }
-        }
-        if (allLanguagesUnpublished) {
-            boolean allChildrenUnpublished = true;
-            for (String nodeNotUnpublished : nodesNotUnpublished) {
-                if (nodeNotUnpublished.startsWith(node.getPath())) {
-                    allChildrenUnpublished = false;
-                    break;
-                }
-            }
-            if (allChildrenUnpublished) {
-                if (!node.isCheckedOut()) {
-                    node.checkout();
-                }
-                node.setProperty("j:published", false);
-            } else {
-                nodesNotUnpublished.add(node.getPath());
-            }
-        } else {
-            nodesNotUnpublished.add(node.getPath());
-        }
-        boolean doLogging = loggingService.isEnabled();
-        if (doLogging) {
-            Integer operationType = JCRObservationManager.getCurrentOperationType();
-            if (operationType != null && operationType == JCRObservationManager.IMPORT) {
-                doLogging = false;
-            }
-        }
-        if (doLogging) {
-            String userID = node.getSession().getUserID();
-            if ((userID != null) && (userID.startsWith(JahiaLoginModule.SYSTEM))) {
-                userID = userID.substring(JahiaLoginModule.SYSTEM.length());
-            }
-            loggingService
-                    .logContentEvent(userID, "", "", node.getIdentifier(), node.getPath(), node.getPrimaryNodeTypeName(),
-                            "unpublishedNode", node.getSession().getWorkspace().getName());
-        }
+        };
+        JCRTemplate.getInstance().doExecute(true, username, EDIT_WORKSPACE, null, callback);
+        JCRTemplate.getInstance().doExecute(true, username, LIVE_WORKSPACE, null, callback);
     }
 
     public List<PublicationInfo> getPublicationInfos(List<String> uuids, Set<String> languages,
                                                      boolean includesReferences, boolean includesSubnodes,
                                                      boolean allsubtree, final String sourceWorkspace,
-                                                     final String destinationWorkspace, boolean checkForUnpublication) throws RepositoryException {
+                                                     final String destinationWorkspace) throws RepositoryException {
         List<PublicationInfo> infos = new ArrayList<PublicationInfo>();
 
         List<String> allUuids = new ArrayList<String>();
@@ -1003,19 +886,12 @@ public class JCRPublicationService extends JahiaService {
                         getPublicationInfo(uuid, languages, includesReferences, includesSubnodes, allsubtree,
                                 sourceWorkspace, destinationWorkspace);
                 for (PublicationInfo publicationInfo : publicationInfos) {
-                    if (publicationInfo.needPublication(null)) {
-                        infos.add(publicationInfo);
-                        allUuids.addAll(publicationInfo.getAllUuids());
-                    } else if (checkForUnpublication && publicationInfo.isUnpublicationPossible(null)) {
-                        infos.add(publicationInfo);
-                        allUuids.addAll(publicationInfo.getAllUuids());
-                    }
+                    infos.add(publicationInfo);
+                    allUuids.addAll(publicationInfo.getAllUuids());
                 }
             }
         }
-        for (PublicationInfo info : infos) {
-            info.clearInternalAndPublishedReferences(uuids);
-        }
+
         return infos;
     }
 

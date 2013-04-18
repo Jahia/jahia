@@ -44,7 +44,6 @@ import java.util.*;
 
 import javax.jcr.*;
 
-import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
@@ -56,7 +55,6 @@ import org.jahia.services.content.PublicationInfo;
 import org.jahia.services.content.PublicationInfoNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
-import org.jahia.test.services.content.*;
 import org.jahia.utils.LanguageCodeConverters;
 import org.junit.*;
 import org.slf4j.Logger;
@@ -200,7 +198,7 @@ public class PublicationTest {
 
         // Case 3 : not let's unpublish the node and test it's presence in the live workspace.
         JCRNodeWrapper editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
-        jcrService.unpublish(Lists.newArrayList(editTextNode1.getIdentifier()), Collections.singleton(englishLiveSession.getLocale().toString()));
+        jcrService.unpublish(Lists.newArrayList(editTextNode1.getIdentifier()));
 
         // Need to add this, as otherwise the unpublished node will still be served from cache
         JCRSessionFactory.getInstance().closeAllSessions();

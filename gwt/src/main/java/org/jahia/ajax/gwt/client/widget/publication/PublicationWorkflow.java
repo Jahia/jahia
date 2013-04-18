@@ -267,7 +267,9 @@ public class PublicationWorkflow implements CustomWorkflow {
         List<String> l = new ArrayList<String>();
         for (GWTJahiaPublicationInfo info : publicationInfos) {
             if (info.getStatus() != GWTJahiaPublicationInfo.DELETED) {
-                l.add(info.getUuid());
+                if (info.getUuid() != null) {
+                    l.add(info.getUuid());
+                }
                 if (info.getI18nUuid() != null) {
                     l.add(info.getI18nUuid());
                 }

@@ -52,6 +52,7 @@ import org.apache.jackrabbit.spi.commons.query.TraversingQueryNodeVisitor;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.analysis.tokenattributes.TermAttribute;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.sites.JahiaSitesService;
 import org.slf4j.Logger;
 import org.apache.lucene.search.spell.JahiaExtendedSpellChecker;
@@ -235,6 +236,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                 }
             }       
         } catch (RepositoryException e) {
+            logger.debug("issue while checking "+aqt,e.getMessage());
         }
 
         return spellChecker.suggest(spellcheckInfo.get("statement"), spellcheckInfo
@@ -311,13 +313,13 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
             List<Token> tokens = new ArrayList<Token>();
             tokenize(statement, words, tokens);
 
-            String[] suggestions = check((String[]) words.toArray(new String[words.size()]), site, language);
+            String[] suggestions = check(words.toArray(new String[words.size()]), site, language);
             if (suggestions != null) {
                 // replace words in statement in reverse order because length
                 // of statement will change
-                StringBuffer sb = new StringBuffer(statement);
+                StringBuilder sb = new StringBuilder(statement);
                 for (int i = suggestions.length - 1; i >= 0; i--) {
-                    Token t = (Token) tokens.get(i);
+                    Token t = tokens.get(i);
                     // only replace if word actually changed
                     if (!t.term().equalsIgnoreCase(suggestions[i])) {
                         sb.replace(t.startOffset(), t.endOffset(), suggestions[i]);
@@ -373,7 +375,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                     } else {
                         // very simple implementation: use termText with length
                         // closer to original word
-                        Token current = (Token) tokens.get(tokens.size() - 1);
+                        Token current = tokens.get(tokens.size() - 1);
                         if (Math.abs(origWord.length() - current.term().length()) > Math.abs(origWord.length()
                                 - termAttribute.term().length())) {
                             // replace current token and word
@@ -446,9 +448,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
         private void refreshSpellChecker() {
             if (lastRefresh + refreshInterval < System.currentTimeMillis()) {
                 synchronized (this) {
-                    if (refreshing) {
-                        return;
-                    } else {
+                    if (!refreshing) {
                         refreshing = true;
                         Runnable refresh = new Runnable() {
                             public void run() {
@@ -461,62 +461,58 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                                     }
                                 }
                                 try {
-                                    Set<String> sites = JCRTemplate.getInstance().doExecuteWithSystemSession(
+                                    JCRTemplate.getInstance().doExecuteWithSystemSession(
                                             new JCRCallback<Set<String>>() {
                                                 public Set<String> doInJCR(JCRSessionWrapper session)
                                                         throws RepositoryException {
-                                                    Set<String> sites = new HashSet<String>();
-                                                    if (session.nodeExists("/sites")) {
-                                                        Node sitesRoot = session.getNode("/sites");
-                                                        for (NodeIterator it = sitesRoot.getNodes(); it.hasNext();) {
-                                                            Node child = (Node) it.next();
-                                                            if (child.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
-                                                                sites.add(child.getName());
+                                                    IndexReader reader = null;
+                                                    try {
+                                                        reader = handler.getIndexReader();
+                                                        long time = System.currentTimeMillis();
+                                                        logger.debug("Starting spell checker index refresh");
+                                                        List<JCRSiteNode> siteNodes = JahiaSitesService.getInstance().getSitesNodeList(session);
+                                                        for (JCRSiteNode siteNode : siteNodes) {
+                                                            for (String language : siteNode.getLanguages()) {
+                                                                StringBuilder fullTextName = new StringBuilder(
+                                                                        FieldNames.FULLTEXT);
+
+                                                                String name = siteNode.getName();
+                                                                fullTextName.append("-").append(name);
+
+                                                                // add language independend
+                                                                // fulltext values first
+                                                                spellChecker.indexDictionary(new LuceneDictionary(
+                                                                        reader, fullTextName.toString()), 300, 10, name,
+                                                                        language);
+
+                                                                // add language dependend
+                                                                // fulltext values
+                                                                if (language != null) {
+                                                                    fullTextName.append("-").append(language);
+                                                                }
+                                                                spellChecker.indexDictionary(new LuceneDictionary(
+                                                                        reader, fullTextName.toString()), 300, 10, name,
+                                                                        language);
+                                                            }
+                                                        }
+                                                        logger.info("Spell checker index refreshed in {} ms",
+                                                                System.currentTimeMillis() - time);
+                                                    } catch (IOException e) {
+                                                        logger.error(e.getMessage(), e);
+                                                    } finally {
+                                                        if (reader != null) {
+                                                            try {
+                                                                reader.close();
+                                                            } catch (IOException e) {
+                                                                logger.error(e.getMessage(), e);
                                                             }
                                                         }
                                                     }
-                                                    return sites;
+                                                    return null;
                                                 }
                                             });
-
-                                    if (!sites.isEmpty()) {
-                                        IndexReader reader = handler.getIndexReader();
-                                        try {
-
-                                            long time = System.currentTimeMillis();
-                                            logger.debug("Starting spell checker index refresh");
-                                            for (String site : sites) {
-                                                for (String language : JahiaSitesService.getInstance()
-                                                        .getSiteByKey(site).getLanguages()) {
-                                                    StringBuilder fullTextName = new StringBuilder(FieldNames.FULLTEXT);
-                                                    if (site != null) {
-                                                        fullTextName.append("-").append(site);
-                                                    }
-                                                    // add language independend
-                                                    // fulltext values first
-                                                    spellChecker.indexDictionary(new LuceneDictionary(reader,
-                                                            fullTextName.toString()), 300, 10, site, language);
-
-                                                    // add language dependend
-                                                    // fulltext values
-                                                    if (language != null) {
-                                                        fullTextName.append("-").append(language);
-                                                    }
-                                                    spellChecker.indexDictionary(new LuceneDictionary(reader,
-                                                            fullTextName.toString()), 300, 10, site, language);
-                                                }
-                                            }
-                                            logger.info("Spell checker index refreshed in {} ms", System.currentTimeMillis() - time);
-                                        } finally {
-                                            reader.close();
-                                        }
-                                    }
                                 } catch (RepositoryException e) {
                                     logger.warn("Error creating spellcheck index", e);
-                                } catch (JahiaException e) {
-                                    logger.warn("Error creating spellcheck index", e);
-                                } catch (IOException e) {
-                                    // ignore
                                 } finally {
                                     synchronized (InternalSpellChecker.this) {
                                         refreshing = false;

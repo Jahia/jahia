@@ -381,11 +381,19 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return list;
     }
     
-    public Map<String,List<? extends ModelData>> getNodesAndTypes(List<String> paths, List<String> fields, List<String> types) throws GWTJahiaServiceException {
+    public Map<String,List<? extends ModelData>> getNodesAndTypes(List<ModelData> getNodesParams, List<String> types) throws GWTJahiaServiceException {
         long timer = System.currentTimeMillis();
         
         Map<String,List<? extends ModelData>> m = new HashMap<String,List<? extends ModelData>>();
-        List<GWTJahiaNode> nodes = getNodesInternal(paths, fields);
+
+        List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
+        List<String> paths = new ArrayList<String>();
+        for (ModelData params : getNodesParams) {
+            if (logger.isDebugEnabled()) {
+                paths.addAll(((List<String>) params.get("paths")));
+            }
+            nodes.addAll(getNodesInternal((List<String>) params.get("paths"), (List<String>) params.get("fields")));
+        }
         m.put("nodes", nodes);
         for (GWTJahiaNode node : nodes) {
             if (!types.contains(node.getNodeTypes().get(0))) {

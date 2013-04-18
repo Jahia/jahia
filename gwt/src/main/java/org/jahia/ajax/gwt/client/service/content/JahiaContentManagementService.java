@@ -235,7 +235,7 @@ public interface JahiaContentManagementService extends RemoteService {
     String getNodeURLByIdentifier(String servlet, String identifier, Date versionDate, String versionLabel,
                                   String workspace, String locale) throws GWTJahiaServiceException;
     List<GWTJahiaNode> getNodes(List<String> path, List<String> fields) throws GWTJahiaServiceException;
-    Map<String,List<? extends ModelData>> getNodesAndTypes(List<String> paths, List<String> fields, List<String> types) throws GWTJahiaServiceException;
+    Map<String,List<? extends ModelData>> getNodesAndTypes(List<ModelData> getNodesParams, List<String> types) throws GWTJahiaServiceException;
     PagingLoadResult<GWTJahiaNode> getNodesByCategory(GWTJahiaNode category, int offset, int limit) throws GWTJahiaServiceException;
 
     int getNumberOfTasksForUser() throws GWTJahiaServiceException;

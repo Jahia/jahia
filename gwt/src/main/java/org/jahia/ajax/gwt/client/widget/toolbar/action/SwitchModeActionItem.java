@@ -71,11 +71,18 @@ public class SwitchModeActionItem extends BaseActionItem {
         } else {
             if (workspace.equalsIgnoreCase("live")) {
                 final GWTJahiaNode node = linker.getSelectionContext().getMainNode();
-                if (node == null || node.getQuickPublicationInfo().getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED
-                        || node.getQuickPublicationInfo().getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                if (node == null) {
                     setEnabled(false);
                 } else {
-                    setEnabled(true);
+                    GWTJahiaPublicationInfo publicationInfo = node.getAggregatedPublicationInfo() != null ? node
+                            .getAggregatedPublicationInfo() : node.getQuickPublicationInfo();
+
+                    if (publicationInfo.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED
+                            ||  publicationInfo.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                        setEnabled(false);
+                    } else {
+                        setEnabled(true);
+                    }
                 }
             } else {
                 setEnabled(true);

@@ -40,8 +40,14 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
+
+import java.util.List;
 
 /**
  * 
@@ -63,4 +69,13 @@ public class UnpublishActionItem extends PublishActionItem {
         checkForUnpublication = true;
         workflowType = "unpublish";
     }
+
+    protected void callback(List<GWTJahiaPublicationInfo> result) {
+        if (result.isEmpty()) {
+            MessageBox.info(Messages.get("label.publish", "Publication"), Messages.get("label.publication.nothingToUnpublish", "Nothing to unpublish"), null);
+        } else {
+            PublicationWorkflow.create(result, linker, checkForUnpublication);
+        }
+    }
+
 }

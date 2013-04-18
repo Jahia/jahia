@@ -184,7 +184,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void getNodes(List<String> paths, List<String> fields, AsyncCallback<List<GWTJahiaNode>> async);
 
-    void getNodesAndTypes(List<String> paths, List<String> fields, List<String> types, AsyncCallback<Map<String,List<? extends ModelData>>> async);
+    void getNodesAndTypes(List<ModelData> getNodesParams, List<String> types, AsyncCallback<Map<String,List<? extends ModelData>>> async);
 
     void getNodesByCategory(GWTJahiaNode category, int offset, int limit, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);
 

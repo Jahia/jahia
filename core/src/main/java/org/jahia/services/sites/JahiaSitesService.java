@@ -52,6 +52,8 @@ import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.jcr.JCRUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.exceptions.JahiaException;
@@ -134,7 +136,7 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
      * @return List<JCRSiteNode> List of JCRSiteNode
      */
     public List<JCRSiteNode> getSitesNodeList() throws RepositoryException {
-        return getSitesNodeList(sessionFactory.getCurrentUserSession());
+        return getSitesNodeList(getUserSession());
     }
 
     public List<JCRSiteNode> getSitesNodeList(JCRSessionWrapper session) throws RepositoryException {
@@ -165,7 +167,7 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
     public JahiaSite getSite(final int id) throws JahiaException {
         JahiaSite site = null;
         try {
-            site = getSite(id, sessionFactory.getCurrentUserSession());
+            site = getSite(id, getUserSession());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -195,13 +197,21 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
 
         JahiaSite site = null;
         try {
-            site = getSiteByKey(siteKey, sessionFactory.getCurrentUserSession());
+            site = getSiteByKey(siteKey, getUserSession());
         } catch (PathNotFoundException e) {
             return null;
         } catch (RepositoryException e) {
             logger.error("cannot get site", e);
         }
         return site;
+    }
+
+    private JCRSessionWrapper getUserSession() throws RepositoryException {
+        if(JahiaUserManagerService.isGuest(sessionFactory.getCurrentUser())){
+            return sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE);
+        } else {
+            return sessionFactory.getCurrentUserSession();
+        }
     }
 
     public JCRSiteNode getSiteByKey(String siteKey, JCRSessionWrapper session) throws RepositoryException {
@@ -228,7 +238,7 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
 
         JahiaSite site = null;
         try {
-            site = getSiteByServerName(serverName, sessionFactory.getCurrentUserSession());
+            site = getSiteByServerName(serverName, getUserSession());
         } catch (RepositoryException e) {
             logger.error("cannot get site", e);
         }
@@ -584,7 +594,7 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
         JahiaSite site =null;
 
         try {
-            site = JahiaSitesService.this.getDefaultSite(sessionFactory.getCurrentUserSession());
+            site = getDefaultSite(getUserSession());
         } catch (RepositoryException e) {
             logger.error("cannot get site", e);
         }

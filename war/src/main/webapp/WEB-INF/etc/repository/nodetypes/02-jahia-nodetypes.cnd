@@ -472,7 +472,7 @@
 // Virtual sites
 //---------------------------------------------------------
 
-[jnt:virtualsitesFolder] > nt:base, jmix:systemNode, jmix:unversionedBasemetadata, jmix:list
+[jnt:virtualsitesFolder] > nt:base, jmix:systemNode, jmix:unversionedBasemetadata, jmix:list, jmix:autoPublish
  - j:defaultSite (weakreference) < jnt:virtualsite
  - j:virtualsitesFolderConfig (string) nofulltext
  - j:virtualsitesFolderSkeleton (string) nofulltext

@@ -42,6 +42,7 @@ package org.jahia.services.content;
 
 import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
+import org.jahia.api.Constants;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -129,7 +130,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
 
     public JCRSessionWrapper getCurrentUserSession() throws RepositoryException {
-        return getCurrentUserSession(null);
+        return getCurrentUserSession(JahiaUserManagerService.isGuest(getCurrentUser())? Constants.LIVE_WORKSPACE:Constants.EDIT_WORKSPACE);
     }
 
     public JCRSessionWrapper getCurrentUserSession(String workspace) throws RepositoryException {

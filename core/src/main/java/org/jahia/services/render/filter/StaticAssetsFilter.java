@@ -68,6 +68,7 @@ import org.jahia.utils.WebUtils;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
 
 import javax.script.Bindings;
@@ -87,7 +88,7 @@ import java.util.regex.Pattern;
  *
  * @author Sergiy Shyrkov
  */
-public class StaticAssetsFilter extends AbstractFilter implements ApplicationListener<TemplatePackageRedeployedEvent> {
+public class StaticAssetsFilter extends AbstractFilter implements ApplicationListener<TemplatePackageRedeployedEvent>, InitializingBean {
 
 
     private static final Transformer LOW_CASE_TRANSFORMER = new Transformer() {
@@ -106,6 +107,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     private static final Pattern URL_PATTERN_4 = Pattern.compile("url\\(([^'\"])");
 
+    private String jahiaContext = null;
+    
     static {
         RANK = new FastHashMap();
         RANK.put("inlinebefore", Integer.valueOf(0));
@@ -385,7 +388,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             for (; i < entries.size(); i++) {
                 Map.Entry<String, Map<String, String>> entry = entries.get(i);
                 String key = entry.getKey();
-                if(Jahia.getContextPath().length() > 0 && key.startsWith(Jahia.getContextPath() + "/")) {
+                if(Jahia.getContextPath().length() > 0 && key.startsWith(jahiaContext)) {
                 	key = key.substring(Jahia.getContextPath().length());
                 }
                 File file = new File(context.getRealPath(key));
@@ -594,5 +597,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         ajaxResolvedTemplate = null;
         resolvedTemplate = null;
     }
+    
+    public void afterPropertiesSet() throws Exception {
+        jahiaContext = Jahia.getContextPath() + "/";
+    }    
 
 }

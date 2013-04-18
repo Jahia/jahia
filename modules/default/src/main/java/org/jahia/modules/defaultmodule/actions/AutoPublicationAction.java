@@ -103,7 +103,7 @@ public class AutoPublicationAction extends Action {
         }
 
         if (unpublish) {
-            publicationService.unpublish(ImmutableList.of(node.getIdentifier()), null);
+            publicationService.unpublish(ImmutableList.of(node.getIdentifier()));
             if (logger.isDebugEnabled()) {
                 logger.debug("Unpublished node {}", node.getPath());
             }

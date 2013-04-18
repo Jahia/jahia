@@ -105,7 +105,7 @@ import java.util.regex.Pattern;
 public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWrapper {
     protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRNodeWrapper.class);
     
-    private static final String[] TANSLATION_NODES_PATTERN = new String[] { "j:translation_*" };
+    public static final String[] TRANSLATION_NODES_PATTERN = new String[] { "j:translation_*" };
 
     protected Node objectNode = null;
     protected JCRFileContent fileContent = null;
@@ -3770,7 +3770,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public boolean hasTranslations() throws RepositoryException {
-        return objectNode.getNodes(TANSLATION_NODES_PATTERN).hasNext();
+        return objectNode.getNodes(TRANSLATION_NODES_PATTERN).hasNext();
     }
 
     public boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale)

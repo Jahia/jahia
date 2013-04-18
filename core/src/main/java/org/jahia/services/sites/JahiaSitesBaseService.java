@@ -90,7 +90,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     public static final String SYSTEM_SITE_KEY = "systemsite";
     public static final String SITES_JCR_PATH = "/sites";
     
-    private static final String[] TANSLATOR_NODES_PATTERN = new String[] {"translator-*"};
+    private static final String[] TRANSLATOR_NODES_PATTERN = new String[] {"translator-*"};
     /**
      * The cache in memory
      */
@@ -963,7 +963,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         Node n = session.getNode("/roles");
         Set<String> languages = new HashSet<String>();
 
-        NodeIterator ni = n.getNodes(TANSLATOR_NODES_PATTERN);
+        NodeIterator ni = n.getNodes(TRANSLATOR_NODES_PATTERN);
         while (ni.hasNext()) {
             Node next = (Node) ni.next();
             languages.add(StringUtils.substringAfter(next.getName(), "translator-"));

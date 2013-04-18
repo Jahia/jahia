@@ -164,13 +164,11 @@ public class ModuleHelper {
         if (Log.isDebugEnabled()) {
             GWT.log("all pathes " + list);
         }
-<<<<<<< .working
 
         final String fmainPath = mainPath;
         final String fmainTemplate = mainTemplate;
 
-=======
-        list.remove(m.getPath());
+        list.remove(mainPath);
 
         List<ModelData> params = new ArrayList<ModelData>();
         BaseModelData modelData1 = new BaseModelData();
@@ -178,11 +176,10 @@ public class ModuleHelper {
         modelData1.set("fields", Arrays.asList(GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.PERMISSIONS, GWTJahiaNode.WORKFLOW_INFO, GWTJahiaNode.VISIBILITY_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO));
         params.add(modelData1);
         BaseModelData modelData2 = new BaseModelData();
-        modelData2.set("paths", Arrays.asList(m.getPath()));
+        modelData2.set("paths", Arrays.asList(mainPath));
         modelData2.set("fields", Arrays.asList(GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.PERMISSIONS, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.WORKFLOW_INFO, GWTJahiaNode.VISIBILITY_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO));
         params.add(modelData2);
 
->>>>>>> .merge-right.r45580
         JahiaContentManagementService.App.getInstance()
                 .getNodesAndTypes(params, new ArrayList<String>(allNodetypes),
                         new BaseAsyncCallback<Map<String, List<? extends ModelData>>>() {

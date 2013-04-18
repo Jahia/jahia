@@ -103,11 +103,6 @@ import java.util.regex.Pattern;
  */
 public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWrapper {
     protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRNodeWrapper.class);
-<<<<<<< .working
-=======
-    
-    public static final String[] TRANSLATION_NODES_PATTERN = new String[] { "j:translation_*" };
->>>>>>> .merge-right.r45574
 
     protected Node objectNode = null;
     protected JCRFileContent fileContent = null;
@@ -3819,7 +3814,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public boolean hasTranslations() throws RepositoryException {
-<<<<<<< .working
         NodeIterator ni = objectNode.getNodes();
         boolean translated = false;
         while (ni.hasNext()) {
@@ -3830,9 +3824,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
         return translated;
-=======
-        return objectNode.getNodes(TRANSLATION_NODES_PATTERN).hasNext();
->>>>>>> .merge-right.r45574
     }
 
     public boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale)

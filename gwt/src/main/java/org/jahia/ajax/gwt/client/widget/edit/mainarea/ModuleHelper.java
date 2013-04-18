@@ -41,6 +41,7 @@
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -150,6 +151,7 @@ public class ModuleHelper {
             }
         }
 
+
         ArrayList<String> list = new ArrayList<String>();
         for (String s : modulesByPath.keySet()) {
             if (!s.endsWith("*")) {
@@ -159,8 +161,20 @@ public class ModuleHelper {
         if (Log.isDebugEnabled()) {
             Log.debug("all pathes " + list);
         }
+        list.remove(m.getPath());
+
+        List<ModelData> params = new ArrayList<ModelData>();
+        BaseModelData modelData1 = new BaseModelData();
+        modelData1.set("paths", list);
+        modelData1.set("fields", Arrays.asList(GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.PERMISSIONS, GWTJahiaNode.WORKFLOW_INFO, GWTJahiaNode.VISIBILITY_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO));
+        params.add(modelData1);
+        BaseModelData modelData2 = new BaseModelData();
+        modelData2.set("paths", Arrays.asList(m.getPath()));
+        modelData2.set("fields", Arrays.asList(GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.PERMISSIONS, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.WORKFLOW_INFO, GWTJahiaNode.VISIBILITY_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO));
+        params.add(modelData2);
+
         JahiaContentManagementService.App.getInstance()
-                .getNodesAndTypes(list, Arrays.asList(GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.PERMISSIONS, GWTJahiaNode.WORKFLOW_INFO, GWTJahiaNode.QUICK_PUBLICATION_INFO, GWTJahiaNode.VISIBILITY_INFO,GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO), new ArrayList<String>(allNodetypes),
+                .getNodesAndTypes(params, new ArrayList<String>(allNodetypes),
                         new BaseAsyncCallback<Map<String, List<? extends ModelData>>>() {
                             public void onSuccess(Map<String, List<? extends ModelData>> result) {
                                 List<GWTJahiaNodeType> types = (List<GWTJahiaNodeType>) result.get("types");

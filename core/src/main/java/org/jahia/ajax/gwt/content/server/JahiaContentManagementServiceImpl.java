@@ -343,6 +343,21 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public List<GWTJahiaNode> getNodes(List<String> paths, List<String> fields) {
         long timer = System.currentTimeMillis();
         
+        List<GWTJahiaNode> list = getNodesInternal(paths, fields);
+
+        if (logger.isDebugEnabled()) {
+            if (paths.size() > 3) {
+                logger.debug("getNodes took {} ms for {} paths: {},...", new Object[] {
+                        System.currentTimeMillis() - timer, paths.size(), StringUtils.join(paths.subList(0, 3), ", ") });
+            } else {
+                logger.debug("getNodes took {} ms for paths: {}", System.currentTimeMillis() - timer,
+                        StringUtils.join(paths, ", "));
+            }
+        }
+        return list;
+    }
+
+    private List<GWTJahiaNode> getNodesInternal(List<String> paths, List<String> fields) {
         List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>();
         for (String path : paths) {
             try {
@@ -363,23 +378,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 }
             }
         }
-        if (logger.isDebugEnabled()) {
-            if (paths.size() > 3) {
-                logger.debug("getNodes took {} ms for {} paths: {},...", new Object[] {
-                        System.currentTimeMillis() - timer, paths.size(), StringUtils.join(paths.subList(0, 3), ", ") });
-            } else {
-                logger.debug("getNodes took {} ms for paths: {}", System.currentTimeMillis() - timer,
-                        StringUtils.join(paths, ", "));
-            }
-        }
         return list;
     }
-
+    
     public Map<String,List<? extends ModelData>> getNodesAndTypes(List<String> paths, List<String> fields, List<String> types) throws GWTJahiaServiceException {
         long timer = System.currentTimeMillis();
         
         Map<String,List<? extends ModelData>> m = new HashMap<String,List<? extends ModelData>>();
-        List<GWTJahiaNode> nodes = getNodes(paths, fields);
+        List<GWTJahiaNode> nodes = getNodesInternal(paths, fields);
         m.put("nodes", nodes);
         for (GWTJahiaNode node : nodes) {
             if (!types.contains(node.getNodeTypes().get(0))) {

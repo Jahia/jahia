@@ -119,7 +119,7 @@ public class WorkflowServiceTest {
         }
         JahiaUserManagerService userManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         JahiaGroupManagerService groupManagerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        groupManagerService.deleteGroup(groupManagerService.lookupGroup(site.getID(), "taskUsersGroup"));
+        groupManagerService.deleteGroup(groupManagerService.lookupGroup(site.getSiteKey(), "taskUsersGroup"));
         userManagerService.deleteUser(userManagerService.lookupUser("johndoe"));
         userManagerService.deleteUser(userManagerService.lookupUser("johnsmoe"));
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
@@ -396,7 +396,7 @@ public class WorkflowServiceTest {
 //            properties.setProperty("j:email", "johnsmoe@localhost.com");
             johnsmoe = userManagerService.createUser("johnsmoe", "johnsmoe", properties);
         }
-        group = groupManagerService.createGroup(site.getID(), "taskUsersGroup", new Properties(), true);
+        group = groupManagerService.createGroup(site.getSiteKey(), "taskUsersGroup", new Properties(), true);
         group.addMember(johndoe);
         group.addMember(johnsmoe);
 

@@ -75,6 +75,7 @@ import javax.jcr.version.VersionHistory;
 import javax.security.auth.Subject;
 import java.security.Principal;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Current ACL policy :
@@ -137,7 +138,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
         Map<String, String> wsp = PRIVILEGE_NAMES.get(workspace);
         if (wsp == null) {
-            wsp = new HashMap<String, String>();
+            wsp = new ConcurrentHashMap<String, String>();
             PRIVILEGE_NAMES.put(workspace, wsp);
         }
         String name = wsp.get(privilegeName);

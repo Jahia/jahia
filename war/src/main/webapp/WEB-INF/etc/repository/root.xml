@@ -346,10 +346,8 @@
                             /permissions/templates"
                             j:privilegedAccess="true" />
 
-        <server-administrator jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite" j:roleGroup="edit-role"
-                              j:permissions="/permissions/repository-permissions/jcr:all_default" j:privilegedAccess="true">
-            <settings-access jcr:primaryType="jnt:externalPermissions" j:path="/settings"
-                             j:permissions="/permissions/admin/administrationAccess
+        <server-administrator jcr:primaryType="jnt:role" j:nodeTypes="jnt:globalSettings" j:roleGroup="edit-role"
+                              j:permissions="/permissions/admin/administrationAccess
                                             /permissions/admin/adminVirtualSites
                                             /permissions/admin/adminPortlets
                                             /permissions/admin/adminEmailSettings
@@ -363,7 +361,7 @@
                                             /permissions/admin/adminDBSettings
                                             /permissions/admin/adminTemplates
                                             /permissions/admin/adminSystemInfos
-                                            /permissions/admin/adminManageMemory" />
+                                            /permissions/admin/adminManageMemory" >
             <root-access jcr:primaryType="jnt:externalPermissions" j:path="/"
                          j:permissions="/permissions/repository-permissions/jcr:all_default" />
             <permissions-access jcr:primaryType="jnt:externalPermissions" j:path="/permissions"

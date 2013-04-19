@@ -475,7 +475,7 @@ public class MainModule extends Module {
         }
         scrollContainer.add(html);
         ModuleHelper.tranformLinks(html);
-        ModuleHelper.initAllModules(this, html);
+        ModuleHelper.initAllModules(this, html, config);
         ModuleHelper.buildTree(this);
         long start = System.currentTimeMillis();
         parse();

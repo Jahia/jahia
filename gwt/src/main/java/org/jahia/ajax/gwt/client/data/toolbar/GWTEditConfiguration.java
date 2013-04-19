@@ -57,6 +57,7 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
     private GWTJahiaToolbar sidePanelToolbar;
     private GWTJahiaToolbar mainModuleToolbar;
     private boolean enableDragAndDrop;
+    private boolean useFullPublicationInfoInMainAreaModules;
 
     private List<GWTSidePanelTab> tabs;
 
@@ -109,5 +110,13 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
 
     public void setEnableDragAndDrop(boolean enableDragAndDrop) {
         this.enableDragAndDrop = enableDragAndDrop;
+    }
+
+    public boolean isUseFullPublicationInfoInMainAreaModules() {
+        return useFullPublicationInfoInMainAreaModules;
+    }
+
+    public void setUseFullPublicationInfoInMainAreaModules(boolean useFullPublicationInfoInMainAreaModules) {
+        this.useFullPublicationInfoInMainAreaModules = useFullPublicationInfoInMainAreaModules;
     }
 }

@@ -50,6 +50,7 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
 import java.util.*;
@@ -60,6 +61,10 @@ import java.util.*;
  * Time: 12:04:41 PM
  */
 public class ModuleHelper {
+    private static final List<String> FIELDS = Arrays.asList(GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.PERMISSIONS, GWTJahiaNode.WORKFLOW_INFO, GWTJahiaNode.VISIBILITY_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
+
+    private static final List<String> FIELDS_FULL_INFO = Arrays.asList(GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.PERMISSIONS, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.WORKFLOW_INFO, GWTJahiaNode.VISIBILITY_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
+
     public final static String JAHIA_TYPE = "jahiatype";
 
     private static List<Module> modules;
@@ -90,7 +95,7 @@ public class ModuleHelper {
         return list;
     }
 
-    public static void initAllModules(final MainModule m, HTML html) {
+    public static void initAllModules(final MainModule m, HTML html, GWTEditConfiguration editModeConfig) {
         long start = System.currentTimeMillis();
         modules = new ArrayList<Module>();
         modulesById = new HashMap<String, Module>();
@@ -161,17 +166,23 @@ public class ModuleHelper {
         if (Log.isDebugEnabled()) {
             Log.debug("all pathes " + list);
         }
-        list.remove(m.getPath());
-
         List<ModelData> params = new ArrayList<ModelData>();
-        BaseModelData modelData1 = new BaseModelData();
-        modelData1.set("paths", list);
-        modelData1.set("fields", Arrays.asList(GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.PERMISSIONS, GWTJahiaNode.WORKFLOW_INFO, GWTJahiaNode.VISIBILITY_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO));
-        params.add(modelData1);
-        BaseModelData modelData2 = new BaseModelData();
-        modelData2.set("paths", Arrays.asList(m.getPath()));
-        modelData2.set("fields", Arrays.asList(GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.PERMISSIONS, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.WORKFLOW_INFO, GWTJahiaNode.VISIBILITY_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO));
-        params.add(modelData2);
+        if (editModeConfig.isUseFullPublicationInfoInMainAreaModules()) {
+            BaseModelData modelData = new BaseModelData();
+            modelData.set("paths", list);
+            modelData.set("fields", FIELDS_FULL_INFO);
+            params.add(modelData);
+        } else {
+            list.remove(m.getPath());
+            BaseModelData modelData1 = new BaseModelData();
+            modelData1.set("paths", list);
+            modelData1.set("fields", FIELDS);
+            params.add(modelData1);
+            BaseModelData modelData2 = new BaseModelData();
+            modelData2.set("paths", Arrays.asList(m.getPath()));
+            modelData2.set("fields", FIELDS_FULL_INFO);
+            params.add(modelData2);
+        }
 
         JahiaContentManagementService.App.getInstance()
                 .getNodesAndTypes(params, new ArrayList<String>(allNodetypes),
@@ -204,7 +215,9 @@ public class ModuleHelper {
                                 Log.error("Unable to get node with publication info due to:", caught);
                             }
                         });
-        Log.info("Parsing : " + (System.currentTimeMillis() - start));
+        if (Log.isDebugEnabled()) {
+            Log.debug("Parsing : " + (System.currentTimeMillis() - start));
+        }
     }
 
     public static void buildTree(Module module) {
@@ -234,7 +247,9 @@ public class ModuleHelper {
                 }
             }
         }
-        Log.info("Build tree : " + (System.currentTimeMillis() - start));
+        if (Log.isDebugEnabled()) {
+            Log.debug("Build tree : " + (System.currentTimeMillis() - start));
+        }
     }
 
     public static Map<Element, Module> parse(Module module, Module parent) {
@@ -276,7 +291,9 @@ public class ModuleHelper {
             DOM.appendChild(divElement, moduleElement);
 
         }
-        Log.info("Move : " + (System.currentTimeMillis() - start));
+        if (Log.isDebugEnabled()) {
+            Log.debug("Move : " + (System.currentTimeMillis() - start));
+        }
     }
 
     public static List<Module> getModules() {
@@ -314,7 +331,9 @@ public class ModuleHelper {
                 }
             }
         }
-        Log.info("Transform links : " + (System.currentTimeMillis() - start));
+        if (Log.isDebugEnabled()) {
+            Log.debug("Transform links : " + (System.currentTimeMillis() - start));
+        }
     }
 
     public static List<Element> getAllLinks(Element parent) {

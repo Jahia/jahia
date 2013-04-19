@@ -77,6 +77,8 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private String requiredPermission;
     private String defaultUrlMapping;
 
+    private boolean useFullPublicationInfoInMainAreaModules;
+
     public void addTab(SidePanelTab tab) {
         tabs.add(tab);
     }
@@ -186,5 +188,13 @@ public class EditConfiguration implements Serializable, BeanNameAware {
                 }
             }
         }
+    }
+
+    public boolean isUseFullPublicationInfoInMainAreaModules() {
+        return useFullPublicationInfoInMainAreaModules;
+    }
+
+    public void setUseFullPublicationInfoInMainAreaModules(boolean useFullPublicationInfoInMainAreaModules) {
+        this.useFullPublicationInfoInMainAreaModules = useFullPublicationInfoInMainAreaModules;
     }
 }

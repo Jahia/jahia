@@ -46,6 +46,8 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowType;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -114,6 +116,14 @@ public class PublishActionItem extends BaseActionItem {
                     if (publicationInfo != null && !publicationInfo.isUnpublishable()) {
                         setEnabled(false);
                     }
+                } if (gwtJahiaNode.getAggregatedPublicationInfo() != null) {
+                    GWTJahiaPublicationInfo info = gwtJahiaNode.getAggregatedPublicationInfo();
+                    GWTJahiaWorkflowDefinition def = null;
+                    if (gwtJahiaNode.getWorkflowInfo() != null) {
+                        def = gwtJahiaNode.getWorkflowInfo().getPossibleWorkflows().get(new GWTJahiaWorkflowType(workflowType));
+                    }
+
+                    setEnabled(info.isPublishable() && (def != null || info.isAllowedToPublishWithoutWorkflow()));
                 }
 
                 if (gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {

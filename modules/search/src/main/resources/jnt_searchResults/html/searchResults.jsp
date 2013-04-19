@@ -26,19 +26,22 @@
 <c:set var="hitsCountName" value="hitsCount_${currentNode.identifier}"/>
 <c:choose>
     <c:when test='${searchMap[hitsName] eq null}'>
-        <s:results var="resultsHits">
+        <s:results var="resultsHits" approxCountVar="listApproxSize">
             <c:set target="${moduleMap}" property="listTotalSize" value="${count}" />
             <c:set target="${moduleMap}" property="resultsHits" value="${resultsHits}" />
+            <c:set target="${moduleMap}" property="listApproxSize" value="${listApproxSize}" />
             <c:if test='${searchMap == null}'>
                 <jsp:useBean id="searchMap" class="java.util.HashMap" scope="request"/>
             </c:if>
             <c:set target="${searchMap}" property="${hitsName}" value="${resultsHits}"/>
             <c:set target="${searchMap}" property="${hitsCountName}" value="${count}"/>
+            <c:set target="${searchMap}" property="listApproxSize" value="${listApproxSize}" />
         </s:results>
     </c:when>
     <c:otherwise>
         <c:set target="${moduleMap}" property="listTotalSize" value="${searchMap[hitsCountName]}" />
         <c:set target="${moduleMap}" property="resultsHits" value="${searchMap[hitsName]}" />
+        <c:set target="${moduleMap}" property="listApproxSize" value="${searchMap[listApproxSize]}" />
     </c:otherwise>
 </c:choose>
 
@@ -71,13 +74,13 @@
         	</s:suggestions>
        	</c:if>
     </c:if>
-	<c:if test="${moduleMap['listTotalSize'] > 0}">
+	<c:if test="${searchMap['listApproxSize'] > 0 || moduleMap['listTotalSize'] > 0}">
         <c:set var="termKey" value="src_terms[0].term"/>
-        <c:if test="${moduleMap['listTotalSize'] eq 2147483647}">
+        <c:if test="${searchMap['listApproxSize'] eq 2147483647 || (searchMap['listApproxSize'] eq 0 && moduleMap['listTotalSize'] eq 2147483647)}">
         <h3><fmt:message key="search.results.found"><fmt:param value="${fn:escapeXml(param[termKey])}"/><fmt:param value="more"/></fmt:message></h3>
         </c:if>
-        <c:if test="${moduleMap['listTotalSize'] < 2147483647}">
-        <h3><fmt:message key="search.results.found"><fmt:param value="${fn:escapeXml(param[termKey])}"/><fmt:param value="${moduleMap['listTotalSize']}"/></fmt:message></h3>
+        <c:if test="${searchMap['listApproxSize'] > 0 && searchMap['listApproxSize'] < 2147483647 || moduleMap['listTotalSize'] < 2147483647}">
+        <h3><fmt:message key="search.results.found"><fmt:param value="${fn:escapeXml(param[termKey])}"/><fmt:param value="${searchMap['listApproxSize'] > 0 ? searchMap['listApproxSize'] : moduleMap['listTotalSize']}"/></fmt:message></h3>
         </c:if>
         <c:set var="beginName" value="begin_${currentNode.identifier}"/>
         <c:set var="endName" value="end_${currentNode.identifier}"/>

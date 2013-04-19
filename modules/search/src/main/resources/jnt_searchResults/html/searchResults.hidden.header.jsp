@@ -16,21 +16,27 @@
 <c:set var="hitsName" value="hits_${currentNode.identifier}"/>
 <c:set var="hitsCountName" value="hitsCount_${currentNode.identifier}"/>
 <c:set var="limit" value="-1"/>
-<c:if test="${not empty moduleMap.pageSize and not empty moduleMap.pageStart}">
+<c:if test="${not empty moduleMap.pageSize or not empty moduleMap.pageStart}">
     <c:set var="limit" value="${moduleMap.pageSize + moduleMap.pageStart}"/>
+    <%-- put limit minimum to 100 that we get a good result count when we don't have much results --%>
+    <c:if test="${limit < 100}"> 
+    		 <c:set var="limit" value="100"/>
+    </c:if>
 </c:if>
 
 <c:choose>
     <c:when test='${searchMap[hitsName] eq null }'>
-        <s:results var="resultsHits" limit="${limit}">
+        <s:results var="resultsHits" limit="${limit}" approxCountVar="listApproxSize" >
             <c:set target="${moduleMap}" property="listTotalSize" value="${count}" />
             <c:set target="${moduleMap}" property="resultsHits" value="${resultsHits}" />
             <c:set target="${moduleMap}" property="displaySearchParams" value="true" />
+            <c:set target="${moduleMap}" property="listApproxSize" value="${listApproxSize}" />
             <c:if test='${searchMap == null}'>
                 <jsp:useBean id="searchMap" class="java.util.HashMap" scope="request"/>
             </c:if>
             <c:set target="${searchMap}" property="${hitsName}" value="${resultsHits}"/>
             <c:set target="${searchMap}" property="${hitsCountName}" value="${count}"/>
+            <c:set target="${searchMap}" property="listApproxSize" value="${listApproxSize}" />
         </s:results>
     </c:when>
     <c:otherwise>

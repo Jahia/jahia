@@ -266,10 +266,10 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
         } else {
             headers.put("From", from);
         }
-        if (StringUtils.isEmpty(ccList)) {
+        if (StringUtils.isNotEmpty(ccList)) {
             headers.put("Cc", ccList);
         }
-        if (StringUtils.isEmpty(bcclist)) {
+        if (StringUtils.isNotEmpty(bcclist)) {
             headers.put("Bcc", bcclist);
         }
         headers.put("Subject", subject);

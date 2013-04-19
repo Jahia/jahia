@@ -102,26 +102,26 @@ int limitCount = 0;
 boolean showCompleted = Boolean.valueOf((String) pageContext.getAttribute("showCompleted"));
 
 for (JobDetail job : allJobs) {
-    if (showCompleted) {
-        if (limitCount > 1000) {
-            // we do not display more than 1000 jobs
-            break;
-        }
-        limitCount++;
-    }
     Trigger[] triggers = service.getScheduler().getTriggersOfJob(job.getName(), job.getGroup());
     if (triggers.length > 0) {
         aliveCount++;
     }
 	if (showCompleted || triggers.length > 0) {
-	    jobs.add(new Object[] {job, triggers.length > 0 ? triggers[0] : null});
+        if (limitCount > 1000) {
+            // we do not display more than 1000 jobs
+            break;
+         }
+         limitCount++;
+         
+	     jobs.add(new Object[] {job, triggers.length > 0 ? triggers[0] : null});
 	}
 }
 
 pageContext.setAttribute("allCount", allJobs.size());
 pageContext.setAttribute("aliveCount", aliveCount);
+pageContext.setAttribute("limitReached", limitCount > 1000);
 %>
-<p>Total job count: <strong>${allCount}</strong> (<strong>${aliveCount}</strong> active/scheduled) <a href="#refresh" onclick="go(); return false;" title="refresh"><img src="<c:url value='/icons/refresh.png'/>" alt="refresh" title="refresh" height="16" width="16"/></a></p>
+<p>Total job count: <strong>${allCount}</strong> (<strong><c:if test="${limitReached}">more than </c:if>${aliveCount}</strong> active/scheduled) <a href="#refresh" onclick="go(); return false;" title="refresh"><img src="<c:url value='/icons/refresh.png'/>" alt="refresh" title="refresh" height="16" width="16"/></a></p>
 
 <c:if test="${not empty jobs}">
 <h2>Active/scheduled jobs</h2>

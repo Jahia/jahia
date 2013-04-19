@@ -130,6 +130,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private boolean isAliased = false;
     private Set<String> userMembership;
     private JahiaUser jahiaUser;
+    private boolean globalGroupMembershipCheckActivated = false;
 
     public static String getPrivilegeName(String privilegeName, String workspace) {
         if (workspace ==  null) {
@@ -199,6 +200,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 //        super.init(context, acProvider, wspAccessManager);
 
         pathPermissionCache = new LRUMap(SettingsBean.getInstance().getAccessManagerPathPermissionCacheMaxSize());
+        globalGroupMembershipCheckActivated = SettingsBean.getInstance().isGlobalGroupMembershipCheckActivated();
         subject = context.getSubject();
         resolver = context.getNamePathResolver();
         hierMgr = context.getHierarchyManager();
@@ -727,7 +729,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             }
         } else if (principal.charAt(0) == 'g') {
             if (principalName.equals("guest") || (!jahiaPrincipal.isGuest() &&
-                    (isUserMemberOf(principalName, site) || isUserMemberOf(principalName, null)))) {
+                    (isUserMemberOf(principalName, site) || (globalGroupMembershipCheckActivated && isUserMemberOf(principalName, null))))) {
                 return true;
             }
         }

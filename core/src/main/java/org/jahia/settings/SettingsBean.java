@@ -207,6 +207,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     private int queryApproxCountLimit;
 
+    private boolean globalGroupMembershipCheckActivated = false;
+
     /**
      * Default constructor.
      *
@@ -378,6 +380,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             accessManagerPathPermissionCacheMaxSize = getInt("accessManagerPathPermissionCacheMaxSize", 100);
 
             queryApproxCountLimit = getInt("queryApproxCountLimit", 100);
+
+            globalGroupMembershipCheckActivated = getBoolean("globalGroupMembershipCheckActivated", false);
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
@@ -1089,5 +1093,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public int getQueryApproxCountLimit() {
         return queryApproxCountLimit;
+    }
+
+    public boolean isGlobalGroupMembershipCheckActivated() {
+        return globalGroupMembershipCheckActivated;
     }
 }

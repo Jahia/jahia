@@ -76,6 +76,7 @@ import javax.jcr.query.Row;
 import javax.jcr.query.qom.*;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 
 import static org.apache.lucene.search.BooleanClause.Occur.MUST;
@@ -333,7 +334,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                     resultCount = hitsSize * resultCount / countType.getApproxCountLimit();
                     resultCount = (int) Math.ceil(MathUtils.round(resultCount,
                             resultCount < 1000 ? -1 : (resultCount < 10000 ? -2
-                                    : -3)));
+                                    : -3), BigDecimal.ROUND_UP));
                     wasApproxLimitReached = true;
                 }
                 rowList.add(0,CountHandler.createCountRow(resultCount, wasApproxLimitReached));

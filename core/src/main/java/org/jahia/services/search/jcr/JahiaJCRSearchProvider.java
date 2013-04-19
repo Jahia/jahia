@@ -43,6 +43,7 @@ package org.jahia.services.search.jcr;
 import static org.jahia.services.content.JCRContentUtils.stringToJCRSearchExp;
 import static org.jahia.services.content.JCRContentUtils.stringToQueryLiteral;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -63,6 +64,7 @@ import javax.jcr.query.RowIterator;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.math.util.MathUtils;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.lucene.queryParser.ParseException;
@@ -205,7 +207,11 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                                         if (index>=limit+offset) {
                                             response.setHasMore(true);
                                             if (it.getSize() > 0) {
-                                                response.setApproxCount(it.getSize() * addedHits.size() / count);
+                                            	int approxCount = ((int)it.getSize() * addedHits.size() / count);
+                                            	approxCount = (int) Math.ceil(MathUtils.round(approxCount,
+                                            	                            approxCount < 1000 ? -1 : (approxCount < 10000 ? -2
+                                            	                                    : -3), BigDecimal.ROUND_UP));
+                                            	response.setApproxCount(approxCount);
                                             }
                                             return response;
                                         }

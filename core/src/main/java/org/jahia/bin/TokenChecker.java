@@ -25,11 +25,15 @@ public class TokenChecker {
             @SuppressWarnings("unchecked")
             Map<String, Map<String, List<String>>> toks = (Map<String, Map<String, List<String>>>) req.getSession().getAttribute("form-tokens");
             if (toks != null && toks.containsKey(token)) {
-                Map<String, List<String>> m = toks.remove(token);
+                Map<String, List<String>> m = toks.get(token);
                 if (m == null) {
                     return INVALID_TOKEN;
                 }
                 Map<String, List<String>> values = new HashMap<String, List<String>>(m);
+                if (!values.remove(Render.ALLOWS_MULTIPLE_SUBMITS).contains("true")) {
+                    toks.remove(token);
+                }
+                values.remove(Render.DISABLE_XSS_FILTERING);
 
                 // Validate form token
                 List<String> stringList1 = values.remove("form-action");

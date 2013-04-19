@@ -438,7 +438,6 @@ public class MainModule extends Module {
         if (elementsByTagName == null) {
             return;
         }
-<<<<<<< .working
         String base = JahiaGWTParameters.getContextPath() + "/modules/";
         String suffix = "tst=" + System.currentTimeMillis();
         for (int i = 0; i < elementsByTagName.getLength(); i++) {
@@ -447,18 +446,6 @@ public class MainModule extends Module {
             String type = el.getAttribute("type");
             if (type != null && type.equals("text/css") && url != null && url.startsWith(base)) {
                 el.setAttribute("href", url + (url.indexOf("?") == -1 ? "?" : "&") + suffix);
-=======
-        scrollContainer.add(html);
-        ModuleHelper.tranformLinks(html);
-        ModuleHelper.initAllModules(this, html, config);
-        ModuleHelper.buildTree(this);
-        long start = System.currentTimeMillis();
-        parse();
-        Log.info("Parse : " + (System.currentTimeMillis() - start));
-        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-            public void execute() {
-                layout();
->>>>>>> .merge-right.r45610
             }
         }
     }
@@ -943,7 +930,7 @@ public class MainModule extends Module {
 
                 }
                 if (el != null) {
-                    ModuleHelper.initAllModules(MainModule.this, body,elBody);
+                    ModuleHelper.initAllModules(MainModule.this, body,elBody, config);
                     ModuleHelper.buildTree(MainModule.this,el);
                     parse(el);
                 }

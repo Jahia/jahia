@@ -40,12 +40,9 @@
 
 package org.jahia.services.uicomponents.bean.editmode;
 
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.render.RenderContext;
 import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 import org.springframework.beans.factory.BeanNameAware;
 
-import javax.jcr.RepositoryException;
 import java.io.Serializable;
 import java.util.*;
 
@@ -81,7 +78,6 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private String requiredPermission;
     private String defaultUrlMapping;
 
-<<<<<<< .working
     private List<String> componentsPaths = Arrays.asList("$site/components/*");
 
     private Set<String> editableTypes;
@@ -95,10 +91,8 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     private boolean forceHeaders = false;
 
-=======
     private boolean useFullPublicationInfoInMainAreaModules;
-
->>>>>>> .merge-right.r45610
+    
     public void addTab(SidePanelTab tab) {
         tabs.add(tab);
     }
@@ -219,7 +213,6 @@ public class EditConfiguration implements Serializable, BeanNameAware {
             }
         }
     }
-<<<<<<< .working
 
     /**
      * @return List of paths to the components
@@ -310,7 +303,6 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     public void setDefaultLocation(String defaultLocation) {
         this.defaultLocation = defaultLocation;
     }
-=======
 
     public boolean isUseFullPublicationInfoInMainAreaModules() {
         return useFullPublicationInfoInMainAreaModules;
@@ -319,5 +311,4 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     public void setUseFullPublicationInfoInMainAreaModules(boolean useFullPublicationInfoInMainAreaModules) {
         this.useFullPublicationInfoInMainAreaModules = useFullPublicationInfoInMainAreaModules;
     }
->>>>>>> .merge-right.r45610
 }

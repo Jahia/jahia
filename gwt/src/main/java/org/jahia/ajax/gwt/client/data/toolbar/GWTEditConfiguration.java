@@ -57,12 +57,9 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
     private GWTJahiaToolbar sidePanelToolbar;
     private GWTJahiaToolbar mainModuleToolbar;
     private boolean enableDragAndDrop;
-<<<<<<< .working
     private String defaultUrlMapping;
     private String defaultLocation;
-=======
     private boolean useFullPublicationInfoInMainAreaModules;
->>>>>>> .merge-right.r45610
 
     private List<GWTSidePanelTab> tabs;
 
@@ -116,7 +113,6 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
     public void setEnableDragAndDrop(boolean enableDragAndDrop) {
         this.enableDragAndDrop = enableDragAndDrop;
     }
-<<<<<<< .working
 
     public String getDefaultUrlMapping() {
         return defaultUrlMapping;
@@ -134,8 +130,6 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
         this.defaultLocation = defaultLocation;
     }
 
-=======
-
     public boolean isUseFullPublicationInfoInMainAreaModules() {
         return useFullPublicationInfoInMainAreaModules;
     }
@@ -143,5 +137,5 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
     public void setUseFullPublicationInfoInMainAreaModules(boolean useFullPublicationInfoInMainAreaModules) {
         this.useFullPublicationInfoInMainAreaModules = useFullPublicationInfoInMainAreaModules;
     }
->>>>>>> .merge-right.r45610
+
 }

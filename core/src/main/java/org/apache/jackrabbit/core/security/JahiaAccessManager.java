@@ -94,7 +94,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class JahiaAccessManager extends AbstractAccessControlManager implements AccessManager, AccessControlManager {
     private static final Logger logger = LoggerFactory.getLogger(JahiaAccessManager.class);
 
-    private static final Map<String, Map<String, String>> PRIVILEGE_NAMES = new HashMap<String, Map<String,String>>(2);
+    private static final Map<String, Map<String, String>> PRIVILEGE_NAMES = new ConcurrentHashMap<String, Map<String,String>>(2);
 
     /**
      * Subject whose access rights this AccessManager should reflect

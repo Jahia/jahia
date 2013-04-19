@@ -139,6 +139,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String MARK_FOR_DELETION_MESSAGE = "jcrDeletionMessage";
     public static final String PREVIEW_DATE = "prevdate";
     public static final String DISABLE_XSS_FILTERING = "disableXSSFiltering";
+    public static final String ALLOWS_MULTIPLE_SUBMITS = "allowsMultipleSubmits";
 
     private static final List<String> REDIRECT_CODE_MOVED_PERMANENTLY = new ArrayList<String>(
             Arrays.asList(new String[]{String.valueOf(HttpServletResponse.SC_MOVED_PERMANENTLY)}));
@@ -188,6 +189,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         reservedParameters.add(CONTRIBUTE_POST);
         reservedParameters.add(MARK_FOR_DELETION);
         reservedParameters.add(DISABLE_XSS_FILTERING);
+        reservedParameters.add(ALLOWS_MULTIPLE_SUBMITS);
     }
 
     private transient ServletConfig servletConfig;
@@ -399,7 +401,16 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private Map<String, List<String>> toParameterMapOfListOfString(HttpServletRequest req) {
         Map<String, List<String>> parameters = new HashMap<String, List<String>>();
         Map parameterMap = req.getParameterMap();
-        boolean doXSSFilter = !parameterMap.containsKey(DISABLE_XSS_FILTERING) || !"true".equals(((String[]) parameterMap.get(DISABLE_XSS_FILTERING))[0]);
+
+        boolean doXSSFilter = true;
+        String token = parameterMap.get("form-token")!=null?((String[])parameterMap.get("form-token"))[0]:null;
+        if (token != null) {
+            @SuppressWarnings("unchecked")
+            Map<String, Map<String, List<String>>> toks = (Map<String, Map<String, List<String>>>) req.getSession().getAttribute("form-tokens");
+            if (toks != null && toks.containsKey(token)) {
+                doXSSFilter = !toks.get(token).containsKey(DISABLE_XSS_FILTERING) || toks.get(token).get(DISABLE_XSS_FILTERING).contains("false");
+            }
+        }
         for (Object key : parameterMap.keySet()) {
             if (key != null) {
                 String[] parameterValues = (String[]) parameterMap.get(key);
@@ -878,6 +889,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
         int tokenResult = TokenChecker.checkToken(req, resp, parameters);
 
+<<<<<<< .working
         switch (tokenResult) {
             case TokenChecker.NO_TOKEN:
                 break;
@@ -888,7 +900,32 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
                 for (Map.Entry<String, List<String>> params : set) {
                     formDatas.put(params.getKey(), params.getValue().toArray(new String[params.getValue().size()]));
+=======
+            @SuppressWarnings("unchecked")
+            Map<String, Map<String, List<String>>> toks = (Map<String, Map<String, List<String>>>) req.getSession().getAttribute("form-tokens");
+            if (toks != null && toks.containsKey(token)) {
+                Map<String, List<String>> m = toks.get(token);
+                if (m == null) {
+                    Map<String, String[]> formDatas = new HashMap<String, String[]>();
+                    Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
+                    for (Map.Entry<String, List<String>> params : set) {
+                        formDatas.put(params.getKey(), params.getValue().toArray(new String[params.getValue().size()]));
+                    }
+                    String errorMessage = JahiaResourceBundle.getJahiaInternalResource("failure.captcha", urlResolver.getLocale(), "Your captcha is invalid");
+                    if (!isAjaxRequest) {
+                        req.getSession().setAttribute("formDatas", formDatas);
+                        req.getSession().setAttribute("formError", errorMessage);
+                        performRedirect(urlResolver.getRedirectUrl(), urlResolver.getPath(), req, resp, parameters, true);
+                    } else {
+                        resp.setContentType("application/json; charset=UTF-8");
+                        Map<String,String> res = new HashMap<String,String>();
+                        res.put("status", errorMessage);
+                        new JSONObject(res).write(resp.getWriter());
+                    }
+                    return;
+>>>>>>> .merge-right.r45607
                 }
+<<<<<<< .working
                 String errorMessage = Messages.getInternal("failure.captcha", urlResolver.getLocale(), "Your captcha is invalid");
                 if (!isAjaxRequest) {
                     req.getSession().setAttribute("formDatas", formDatas);
@@ -900,6 +937,23 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     Map<String,String> res = new HashMap<String,String>();
                     res.put("status", errorMessage);
                     new JSONObject(res).write(resp.getWriter());
+=======
+                Map<String, List<String>> values = new HashMap<String, List<String>>(m);
+                if (!values.remove(ALLOWS_MULTIPLE_SUBMITS).contains("true")) {
+                    toks.remove(token);
+                }
+                values.remove(DISABLE_XSS_FILTERING);
+
+                // Validate form token
+                List<String> stringList1 = values.remove("form-action");
+                String formAction = stringList1.isEmpty()?null:stringList1.get(0);
+                String characterEncoding = SettingsBean.getInstance().getCharacterEncoding();
+                if (formAction == null ||
+                        (!URLDecoder.decode(req.getRequestURI(), characterEncoding).equals(URLDecoder.decode(formAction, characterEncoding)) &&
+                        !URLDecoder.decode(resp.encodeURL(req.getRequestURI()), characterEncoding).equals(URLDecoder.decode(formAction, characterEncoding)))
+                        ) {
+                    throw new AccessDeniedException();
+>>>>>>> .merge-right.r45607
                 }
                 return;
             case TokenChecker.INVALID_HIDDEN_FIELDS:

@@ -506,6 +506,13 @@
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
+        <attribute>
+            <description>Disable XSS filtering (since Jahia 6.7). [false]</description>
+            <name>allowsMultipleSubmits</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
     </tag>
     <tag>
         <description>Captcha</description>

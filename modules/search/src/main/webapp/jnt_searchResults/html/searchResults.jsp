@@ -35,6 +35,7 @@
             </c:if>
             <c:set target="${searchMap}" property="${hitsName}" value="${resultsHits}"/>
             <c:set target="${searchMap}" property="${hitsCountName}" value="${count}"/>
+            <c:set target="${searchMap}" property="listApproxSize" value="${listApproxSize}" />
         </s:results>
     </c:when>
     <c:otherwise>

@@ -264,6 +264,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             }
         } else if (resource.getContextConfiguration().equals("page")) {
             if (renderContext.isEditMode()) {
+<<<<<<< .working
                 if (renderContext.getServletPath().endsWith("frame")) {
                     boolean doParse = true;
                     if (renderContext.getEditModeConfig().getSkipMainModuleTypesDomParsing() != null) {
@@ -279,6 +280,17 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                         Element bodyElement = bodyElementList.get(bodyElementList.size() - 1);
                         EndTag bodyEndTag = bodyElement.getEndTag();
                         outputDocument.replace(bodyEndTag.getBegin(), bodyEndTag.getBegin() + 1, "</div><");
+=======
+                // Add static div for edit mode
+                List<Element> bodyElementList = source.getAllElements(HTMLElementName.BODY);
+                Map<String, Map<String, String>> javascript = assets.get("javascript");
+                if (javascript == null) {
+                    assets.put("javascript", (javascript = new HashMap<String, Map<String, String>>()));
+                }
+                javascript.put("/modules/assets/javascript/jquery.min.js", null);
+                javascript.put("/modules/assets/javascript/jquery.Jcrop.js", null);
+                javascript.put("/modules/assets/javascript/clippy/jquery.clippy.min.js", null);
+>>>>>>> .merge-right.r45589
 
                         bodyElement = bodyElementList.get(0);
 

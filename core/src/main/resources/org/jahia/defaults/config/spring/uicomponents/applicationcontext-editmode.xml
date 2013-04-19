@@ -296,12 +296,7 @@
                             </property>
                         </bean>
                     </property>
-                    <property name="treeColumns">
-                        <list>
-                            <value>displayName,*,label.title</value>
-                            <value>locked,25</value>
-                        </list>
-                    </property>
+                    <property name="treeColumns" ref="#{jahiaProperties['useFullPublicationInfoInMainAreaModules'] == 'true' ? 'editModePagesTreeColumnListWithPublicationInfo' : 'editModePagesTreeColumnList'}"/>
                     <property name="treeContextMenu">
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
@@ -649,7 +644,19 @@
             </list>
         </property>
 
+        <property name="useFullPublicationInfoInMainAreaModules" value="#{jahiaProperties['useFullPublicationInfoInMainAreaModules'] != null ? jahiaProperties['useFullPublicationInfoInMainAreaModules'] : false}"/>
     </bean>
+
+    <util:list id="editModePagesTreeColumnList">
+        <value>displayName,*,label.title</value>
+        <value>locked,25</value>
+    </util:list>
+
+    <util:list id="editModePagesTreeColumnListWithPublicationInfo">
+        <value>displayName,*,label.title</value>
+        <value>locked,25</value>
+        <value>publicationInfo,20</value>
+    </util:list>
 
     <bean id="editmode.managers.menu" class="org.jahia.services.uicomponents.bean.toolbar.Menu">
         <property name="visibility">

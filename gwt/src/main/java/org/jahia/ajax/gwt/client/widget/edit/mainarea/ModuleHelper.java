@@ -51,6 +51,7 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
 import java.util.*;
@@ -61,6 +62,10 @@ import java.util.*;
  * Time: 12:04:41 PM
  */
 public class ModuleHelper {
+    private static final List<String> FIELDS = Arrays.asList(GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.PERMISSIONS, GWTJahiaNode.WORKFLOW_INFO, GWTJahiaNode.VISIBILITY_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
+
+    private static final List<String> FIELDS_FULL_INFO = Arrays.asList(GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.PERMISSIONS, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.WORKFLOW_INFO, GWTJahiaNode.VISIBILITY_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
+
     public final static String JAHIA_TYPE = "jahiatype";
 
     private static List<Module> modules;
@@ -91,7 +96,11 @@ public class ModuleHelper {
         return list;
     }
 
+<<<<<<< .working
     public static void initAllModules(final MainModule m, Element htmlElement, List<Element> el) {
+=======
+    public static void initAllModules(final MainModule m, HTML html, GWTEditConfiguration editModeConfig) {
+>>>>>>> .merge-right.r45610
         long start = System.currentTimeMillis();
         modules = new ArrayList<Module>();
         modulesById = new HashMap<String, Module>();
@@ -164,13 +173,17 @@ public class ModuleHelper {
         if (Log.isDebugEnabled()) {
             GWT.log("all pathes " + list);
         }
+<<<<<<< .working
 
+=======
+>>>>>>> .merge-right.r45610
         final String fmainPath = mainPath;
         final String fmainTemplate = mainTemplate;
 
         list.remove(mainPath);
 
         List<ModelData> params = new ArrayList<ModelData>();
+<<<<<<< .working
         BaseModelData modelData1 = new BaseModelData();
         modelData1.set("paths", list);
         modelData1.set("fields", Arrays.asList(GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.PERMISSIONS, GWTJahiaNode.WORKFLOW_INFO, GWTJahiaNode.VISIBILITY_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO));
@@ -179,6 +192,24 @@ public class ModuleHelper {
         modelData2.set("paths", Arrays.asList(mainPath));
         modelData2.set("fields", Arrays.asList(GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.PERMISSIONS, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.WORKFLOW_INFO, GWTJahiaNode.VISIBILITY_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO));
         params.add(modelData2);
+=======
+        if (editModeConfig.isUseFullPublicationInfoInMainAreaModules()) {
+            BaseModelData modelData = new BaseModelData();
+            modelData.set("paths", list);
+            modelData.set("fields", FIELDS_FULL_INFO);
+            params.add(modelData);
+        } else {
+            list.remove(m.getPath());
+            BaseModelData modelData1 = new BaseModelData();
+            modelData1.set("paths", list);
+            modelData1.set("fields", FIELDS);
+            params.add(modelData1);
+            BaseModelData modelData2 = new BaseModelData();
+            modelData2.set("paths", Arrays.asList(m.getPath()));
+            modelData2.set("fields", FIELDS_FULL_INFO);
+            params.add(modelData2);
+        }
+>>>>>>> .merge-right.r45610
 
         JahiaContentManagementService.App.getInstance()
                 .getNodesAndTypes(params, new ArrayList<String>(allNodetypes),
@@ -208,7 +239,13 @@ public class ModuleHelper {
                                 Log.error("Unable to get node with publication info due to:", caught);
                             }
                         });
+<<<<<<< .working
         GWT.log("Parsing : " + (System.currentTimeMillis() - start) + " ms");
+=======
+        if (Log.isDebugEnabled()) {
+            Log.debug("Parsing : " + (System.currentTimeMillis() - start));
+        }
+>>>>>>> .merge-right.r45610
     }
 
     public static void setNodeForModule(GWTJahiaNode gwtJahiaNode) {
@@ -246,7 +283,13 @@ public class ModuleHelper {
                 }
             }
         }
+<<<<<<< .working
         GWT.log("Build tree : " + (System.currentTimeMillis() - start) + " ms");
+=======
+        if (Log.isDebugEnabled()) {
+            Log.debug("Build tree : " + (System.currentTimeMillis() - start));
+        }
+>>>>>>> .merge-right.r45610
     }
 
     public static Map<Element, Module> parse(Module module, Module parent, List<Element> el) {
@@ -285,7 +328,13 @@ public class ModuleHelper {
             DOM.appendChild(divElement, moduleElement);
 
         }
+<<<<<<< .working
         GWT.log("Move : " + (System.currentTimeMillis() - start) + " ms");
+=======
+        if (Log.isDebugEnabled()) {
+            Log.debug("Move : " + (System.currentTimeMillis() - start));
+        }
+>>>>>>> .merge-right.r45610
     }
 
     public static List<Module> getModules() {
@@ -333,7 +382,13 @@ public class ModuleHelper {
 //                }
             }
         }
+<<<<<<< .working
         GWT.log("Transform links : " + (System.currentTimeMillis() - start) + " ms");
+=======
+        if (Log.isDebugEnabled()) {
+            Log.debug("Transform links : " + (System.currentTimeMillis() - start));
+        }
+>>>>>>> .merge-right.r45610
     }
 
     public static List<Element> getAllLinks(Element parent) {

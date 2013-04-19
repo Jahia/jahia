@@ -81,6 +81,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private String requiredPermission;
     private String defaultUrlMapping;
 
+<<<<<<< .working
     private List<String> componentsPaths = Arrays.asList("$site/components/*");
 
     private Set<String> editableTypes;
@@ -94,6 +95,10 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     private boolean forceHeaders = false;
 
+=======
+    private boolean useFullPublicationInfoInMainAreaModules;
+
+>>>>>>> .merge-right.r45610
     public void addTab(SidePanelTab tab) {
         tabs.add(tab);
     }
@@ -214,6 +219,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
             }
         }
     }
+<<<<<<< .working
 
     /**
      * @return List of paths to the components
@@ -304,4 +310,14 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     public void setDefaultLocation(String defaultLocation) {
         this.defaultLocation = defaultLocation;
     }
+=======
+
+    public boolean isUseFullPublicationInfoInMainAreaModules() {
+        return useFullPublicationInfoInMainAreaModules;
+    }
+
+    public void setUseFullPublicationInfoInMainAreaModules(boolean useFullPublicationInfoInMainAreaModules) {
+        this.useFullPublicationInfoInMainAreaModules = useFullPublicationInfoInMainAreaModules;
+    }
+>>>>>>> .merge-right.r45610
 }

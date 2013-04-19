@@ -130,7 +130,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
 
     public JCRSessionWrapper getCurrentUserSession() throws RepositoryException {
-        return getCurrentUserSession(JahiaUserManagerService.isGuest(getCurrentUser())? Constants.LIVE_WORKSPACE:Constants.EDIT_WORKSPACE);
+        return getCurrentUserSession(null);
     }
 
     public JCRSessionWrapper getCurrentUserSession(String workspace) throws RepositoryException {

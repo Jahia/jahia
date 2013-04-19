@@ -66,6 +66,7 @@ public class TokenizedFormTag extends BodyTagSupport {
     private static final long serialVersionUID = -1427914171244787502L;
 
     private boolean disableXSSFiltering = false;
+    private boolean allowsMultipleSubmits = false;
 
     @Override
     public int doStartTag() throws JspException {
@@ -125,6 +126,7 @@ public class TokenizedFormTag extends BodyTagSupport {
             }
 
             hiddenInputs.put("disableXSSFiltering", Arrays.asList(String.valueOf(disableXSSFiltering)));
+            hiddenInputs.put("allowsMultipleSubmits", Arrays.asList(String.valueOf(allowsMultipleSubmits)));
             outputDocument.insert(formTag.getEnd(), "<input type=\"hidden\" name=\"disableXSSFiltering\" value=\"" + disableXSSFiltering + "\"/>");
 
             outputDocument.insert(formTag.getEnd(), "<input type=\"hidden\" name=\"form-token\" value=\"##formtoken(" + id + ")##\"/>");
@@ -160,5 +162,9 @@ public class TokenizedFormTag extends BodyTagSupport {
 
     public void setDisableXSSFiltering(boolean disableXSSFiltering) {
         this.disableXSSFiltering = disableXSSFiltering;
+    }
+
+    public void setAllowsMultipleSubmits(boolean allowsMultipleSubmits) {
+        this.allowsMultipleSubmits = allowsMultipleSubmits;
     }
 }

@@ -20,13 +20,13 @@
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.fileupload-with-ui.min.js"/>
 <fmt:message key="label.dropHere.ie" var="i18nDropHereIE"/>
 <template:addResources type="inlinejavascript">
-<script type="text/javascript">
-$(document).ready(function() {
-	if (jQuery.browser.msie) {
-		$("#drop-box-file-upload-${currentNode.identifier}").empty().append("${functions:escapeJavaScript(i18nDropHereIE)}");
-	}
-});
-</script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            if (jQuery.browser.msie) {
+                $("#drop-box-file-upload-${currentNode.identifier}").empty().append("${functions:escapeJavaScript(i18nDropHereIE)}");
+            }
+        });
+    </script>
 </template:addResources>
 <c:set var="linked" value="${ui:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:set var="targetNode" value="${renderContext.mainResource.node}"/>
@@ -34,18 +34,18 @@ $(document).ready(function() {
     <c:set var="targetNode" value="${currentNode.properties.target.node}"/>
 </c:if>
 <c:if test="${jcr:isAllowedChildNodeType(targetNode, 'jnt:file')}">
-    <template:tokenizedForm>
-    <form class="file_upload" id="file_upload${currentNode.identifier}" action="<c:url value='${url.base}${targetNode.path}'/>" method="POST" enctype="multipart/form-data"  accept="application/json">
-        <div id="file_upload_container">
-            <input type="file" name="file" multiple>
-            <button><fmt:message key="label.upload"/></button>
-            <div id="drop-box-file-upload-${currentNode.identifier}"><fmt:message key="label.dropHere"/></div>
-        </div>
-        <c:url var="targetNodePath" value="${url.base}${linked.path}.html.ajax">
-            <c:param name="targetNodePath" value="${targetNode.path}"/>
-        </c:url>
+    <template:tokenizedForm  allowsMultipleSubmits="true" >
+        <form class="file_upload" id="file_upload${currentNode.identifier}" action="<c:url value='${url.base}${targetNode.path}'/>" method="POST" enctype="multipart/form-data"  accept="application/json">
+            <div id="file_upload_container">
+                <input type="file" name="file" multiple>
+                <button><fmt:message key="label.upload"/></button>
+                <div id="drop-box-file-upload-${currentNode.identifier}"><fmt:message key="label.dropHere"/></div>
+            </div>
+            <c:url var="targetNodePath" value="${url.base}${linked.path}.html.ajax">
+                <c:param name="targetNodePath" value="${targetNode.path}"/>
+            </c:url>
 
-    </form>
+        </form>
     </template:tokenizedForm>
     <table id="files${currentNode.identifier}" class="table"></table>
     <script>

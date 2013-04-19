@@ -77,6 +77,8 @@ public class TemplateHelper {
     public static final int LIVE = 0;
     public static final int PREVIEW = 1;
     public static final int EDIT = 2;
+    
+    private static final String[] ASSET_FILETYPES = new String[]{"css", "javascript"};
 
     public void setRenderService(RenderService renderService) {
         this.renderService = renderService;
@@ -190,6 +192,10 @@ public class TemplateHelper {
             String res = renderService.render(r, renderContext);
             Map<String, Map<String,Map<String,String>>> map = (Map<String, Map<String,Map<String,String>>>) renderContext.getRequest().getAttribute("staticAssets");
 
+            if (renderContext.getRequest().getContextPath().length() > 0) {
+                prefixAssetsWithContext(map, renderContext.getRequest().getContextPath());
+            }
+            
             if (channelIdentifier != null && !channelIdentifier.equals("generic")) {
                 Map<String,Map<String,String>> css  = map.get("css");
                 SortedMap<String,Map<String,String>> cssWithParam  = new TreeMap<String, Map<String, String>>();
@@ -237,6 +243,26 @@ public class TemplateHelper {
             }
         }
         return result;
+    }
+    
+    private Map<String, Map<String, Map<String, String>>> prefixAssetsWithContext(
+            Map<String, Map<String, Map<String, String>>> map,
+            String contextPath) {
+        TreeMap<String, Map<String, Map<String, String>>> modifiedMap = new TreeMap<String, Map<String, Map<String, String>>>(
+                map);
+        for (String assetKey : ASSET_FILETYPES) {
+            Map<String, Map<String, String>> assets = modifiedMap.get(assetKey);
+            if (assets != null) {
+                Map<String, Map<String, String>> modifiedCss = new LinkedHashMap<String, Map<String, String>>();
+                for (Map.Entry<String, Map<String, String>> entry : assets
+                        .entrySet()) {
+                    modifiedCss.put(contextPath + entry.getKey(),
+                            entry.getValue());
+                }
+                map.put(assetKey, modifiedCss);
+            }
+        }
+        return modifiedMap;
     }
 
     public List<String[]> getViewsSet(String path, JCRSessionWrapper currentUserSession)

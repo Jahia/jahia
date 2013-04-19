@@ -526,8 +526,11 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
             for (String s : languages) {
                 l.add(getSession().getValueFactory().createValue(s));
             }
-
             setProperty(SitesSettings.LANGUAGES, l.toArray(new Value[l.size()]));
+            this.languages = null;
+            this.languagesAsLocales = null;
+            this.inactiveLanguages = null;
+            this.inactiveLiveLanguages = null;
         } catch (RepositoryException e) {
             logger.error("Cannot get site property",e);
         }

@@ -53,14 +53,11 @@ import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.jcr.JCRUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.cache.Cache;
-import org.jahia.services.cache.CacheService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -71,7 +68,6 @@ import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -538,11 +534,11 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
      *
      * @param site the site bean object
      */
-    public synchronized void updateSite(final JahiaSite site) throws JahiaException {
+    public synchronized void updateSystemSitePermissions(final JahiaSite site) throws JahiaException {
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    updateSite(site, session);
+                    updateSystemSitePermissions(site, session);
                     session.save();
                     return null;
                 }
@@ -552,15 +548,7 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
         }
     }
 
-    /**
-     * Update JahiaSite for the specified site node
-     * @param node : JCRSSiteNode of the site to update
-     */
-    public void updateSite(JCRSiteNode node) {
-
-    }
-
-    public void updateSite(JahiaSite site, JCRSessionWrapper session) throws RepositoryException {
+    public void updateSystemSitePermissions(JahiaSite site, JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper sites = session.getNode(SITES_JCR_PATH);
         if (!sites.isCheckedOut()) {
             session.checkout(sites);
@@ -724,4 +712,23 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
         return StringUtils.isNotEmpty(serverName) && !serverName.contains(" ") && !serverName.contains(":");
     }
 
+    public boolean updateSystemSiteLanguages(JahiaSite site, JCRSessionWrapper session) {
+        if (!site.getSiteKey().equals(SYSTEM_SITE_KEY)) {
+            try {
+                JahiaSite jahiaSite = getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY, session);
+                // update the system site only if it does not yet contain at least one of the site languages
+                Set<String> jahiaSiteLanguages = new HashSet<String>(jahiaSite.getLanguages());
+                if (!jahiaSiteLanguages.containsAll(site.getLanguages())) {
+                    jahiaSiteLanguages.addAll(site.getLanguages());
+                    jahiaSite.setLanguages(jahiaSiteLanguages);
+                    return true;
+                }
+            } catch (PathNotFoundException e) {
+                logger.debug(e.getMessage(), e);
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return false;
+    }
 }

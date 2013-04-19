@@ -68,7 +68,7 @@ public class AdminEditSiteAction extends AdminSiteAction {
             site.setServerName(siteServerName);
             site.setDescription(siteDescr);
 
-            sitesService.updateSite(site);
+            sitesService.updateSystemSitePermissions(site);
 
             JahiaSite defSite = sitesService.getDefaultSite();
             if (defaultSite) {

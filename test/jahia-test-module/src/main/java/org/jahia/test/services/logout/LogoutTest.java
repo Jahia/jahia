@@ -74,7 +74,7 @@ public class LogoutTest extends JahiaTestCase {
         languages.add("en");
         site.setLanguages(languages);
         site.setDefaultLanguage("en");
-        service.updateSite(site);
+        service.updateSystemSitePermissions(site);
         service.setDefaultSite(site);
         
         ((ParamBean) Jahia.getThreadParamBean()).getSession(true).setAttribute(ParamBean.SESSION_SITE, site);

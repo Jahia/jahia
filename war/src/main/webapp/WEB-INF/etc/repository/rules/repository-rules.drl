@@ -173,3 +173,10 @@ rule "Clear site cache when updated"
 >       service.updateSite(node);
 end
 
+rule "Update language availability on system site"
+    when
+		A property has been set on a node
+			- the node has the type jnt:virtualsite
+    then
+>       service.updateSystemSiteLanguages(node, drools);
+end

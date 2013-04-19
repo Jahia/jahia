@@ -1253,17 +1253,18 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 defaultLanguage = StringUtils.isEmpty(lowestRankLanguage) ? siteLangs.iterator().next() : lowestRankLanguage;
             }
             site.setDefaultLanguage(defaultLanguage);
-            try {
-                JahiaSite jahiaSite = sitesService.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY);
+            /*try {
+                JahiaSite jahiaSite = sitesService.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY,session);
                 // update the system site only if it does not yet contain at least one of the site languages
                 Set<String> jahiaSiteLanguages = new HashSet<String>(jahiaSite.getLanguages());
                 if (!jahiaSiteLanguages.containsAll(site.getLanguages())) {
                     jahiaSiteLanguages.addAll(site.getLanguages());
                     jahiaSite.setLanguages(jahiaSiteLanguages);
                 }
-            } catch (JahiaException e) {
-                logger.error("Cannot update site", e);
-            }
+                sitesService.updateSystemSitePermissions(jahiaSite, session);
+            } catch (RepositoryException e) {
+                logger.error("Cannot update system site", e);
+            }*/
         } else {
             logger.error("Unable to find site languages in the provided site.properties descriptor. Skip importing site settings.");
         }

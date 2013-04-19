@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -188,7 +187,7 @@ public class WebprojectHandler implements Serializable {
                 try {
                     List<JCRSiteNode> sitesNodeList = sitesService.getSitesNodeList();
                     if (!sitesNodeList.isEmpty()) {
-                        sitesService.setDefaultSite(sitesService.getSite(sitesNodeList.get(0).getName()));
+                        sitesService.setDefaultSite(sitesService.getSiteByKey(sitesNodeList.get(0).getName()));
                     } else {
                         sitesService.setDefaultSite(null);
                     }
@@ -792,7 +791,7 @@ public class WebprojectHandler implements Serializable {
                 site.setTitle(bean.getTitle());
                 site.setDescription(bean.getDescription());
 
-                sitesService.updateSite(site);
+                sitesService.updateSystemSitePermissions(site);
             }
 
             if (!site.isDefault() && bean.isDefaultSite()) {

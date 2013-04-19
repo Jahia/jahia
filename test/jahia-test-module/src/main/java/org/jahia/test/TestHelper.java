@@ -42,11 +42,9 @@ package org.jahia.test;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
@@ -65,7 +63,6 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
 import java.io.*;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -104,7 +101,7 @@ public class TestHelper {
         if (mixLanguagesActive != site.isMixLanguagesActive()) {
             site.setMixLanguagesActive(mixLanguagesActive);
         }
-        service.updateSite(site);
+        service.updateSystemSitePermissions(site);
         return site;
     }
 

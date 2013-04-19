@@ -113,7 +113,7 @@ public class UrlRewriteTest {
         site.setLanguages(languages);
         site.setDefaultLanguage(DEFAULT_LANG);
         JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
-        service.updateSite(site);
+        service.updateSystemSitePermissions(site);
 
         ((ParamBean) Jahia.getThreadParamBean()).getSession(true).setAttribute(ParamBean.SESSION_SITE, site);
     }

@@ -8,7 +8,6 @@ import org.jahia.services.sites.JahiaSite;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +47,7 @@ public class AdminDeleteSiteAction extends AdminSiteAction {
         }
 
         // switch staging and versioning to false.
-        sitesService.updateSite(site);
+        sitesService.updateSystemSitePermissions(site);
 
         //remove site definition
         sitesService.removeSite(site);

@@ -115,7 +115,7 @@ public class MultiLanguageTest extends JahiaTestCase {
         // now let's test without mix language active.
         JCRSessionFactory.getInstance().closeAllSessions();
         site.setMixLanguagesActive(false);
-        ServicesRegistry.getInstance().getJahiaSitesService().updateSite(site);
+        ServicesRegistry.getInstance().getJahiaSitesService().updateSystemSitePermissions(site);
 
         frenchEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.FRENCH);
         frenchTextNode = frenchEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/text1");
@@ -123,7 +123,7 @@ public class MultiLanguageTest extends JahiaTestCase {
         assertNull("English text node should not be available in edit workspace when mixed language is de-activated.", frenchTextPropertyValue);
 
         site.setMixLanguagesActive(true);
-        ServicesRegistry.getInstance().getJahiaSitesService().updateSite(site);
+        ServicesRegistry.getInstance().getJahiaSitesService().updateSystemSitePermissions(site);
 
         // Now let's do the checks on the live sessions
 
@@ -136,7 +136,7 @@ public class MultiLanguageTest extends JahiaTestCase {
         // now let's test without mix language active.
         JCRSessionFactory.getInstance().closeAllSessions();
         site.setMixLanguagesActive(false);
-        ServicesRegistry.getInstance().getJahiaSitesService().updateSite(site);
+        ServicesRegistry.getInstance().getJahiaSitesService().updateSystemSitePermissions(site);
 
         frenchLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.FRENCH);
         try {

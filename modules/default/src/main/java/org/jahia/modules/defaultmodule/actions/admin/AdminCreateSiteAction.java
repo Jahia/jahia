@@ -100,7 +100,7 @@ public class AdminCreateSiteAction extends AdminAction {
             if (getParameter(parameters, "mixLanguage", "false").equals("true") || getParameter(parameters, "allowsUnlistedLanguages", "false").equals("true")) {
                 site.setMixLanguagesActive(getParameter(parameters, "mixLanguage", "false").equals("true"));
                 site.setAllowsUnlistedLanguages(getParameter(parameters, "allowsUnlistedLanguages", "false").equals("true"));
-                sitesService.updateSite(site);
+                sitesService.updateSystemSitePermissions(site);
             }
 
             if (site != null) {
@@ -108,7 +108,7 @@ public class AdminCreateSiteAction extends AdminAction {
                 // update the system site only if it does not yet contain at least one of the site languages
                 if (!systemSite.getLanguages().containsAll(site.getLanguages())) {
                     systemSite.getLanguages().addAll(site.getLanguages());
-                    sitesService.updateSite(systemSite);
+                    sitesService.updateSystemSitePermissions(systemSite);
                 }
             } else {
                 result.put("warn", getMessage(renderContext.getUILocale(), "label.error.processingRequestError"));

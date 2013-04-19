@@ -50,6 +50,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.sites.SitesSettings;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -800,7 +801,24 @@ public class Service extends JahiaService {
      */
 
     public void updateSite(AddedNodeFact node) {
-        sitesService.updateSite((JCRSiteNode) node.getNode());
+        try {
+            sitesService.updateSystemSitePermissions((JCRSiteNode) node.getNode(), node.getNode().getSession());
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    public void updateSystemSiteLanguages(AddedNodeFact node, KnowledgeHelper drools) {
+        try {
+            JCRSessionWrapper session = node.getNode().getSession();
+            if(!node.getName().equals(JahiaSitesService.SYSTEM_SITE_KEY) && sitesService.updateSystemSiteLanguages((JCRSiteNode) node.getNode(), session)) {
+                JCRSiteNode siteByKey = sitesService.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY, session);
+                sitesService.updateSystemSitePermissions(siteByKey, session);
+                drools.insert(new ChangedPropertyFact(new AddedNodeFact(siteByKey), siteByKey.getProperty(SitesSettings.LANGUAGES)));
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
     public void executeActionNow(NodeFact node, final String actionToExecute, KnowledgeHelper drools)

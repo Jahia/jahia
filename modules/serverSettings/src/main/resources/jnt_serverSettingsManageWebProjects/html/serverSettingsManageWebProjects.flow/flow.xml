@@ -130,7 +130,7 @@
     </view-state>
 
     <action-state id="processImport">
-        <evaluate expression="webprojectHandler.processImport(externalContext.requestMap.currentUser, messageContext)"/>
+        <evaluate expression="webprojectHandler.processImport(externalContext.sessionMap['org.jahia.usermanager.jahiauser'], messageContext)"/>
         <transition to="sitesImported"/>
     </action-state>
 

@@ -422,13 +422,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             System.setProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", getString("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "false"));
             System.setProperty("jahia.jackrabbit.searchIndex.autoRepair", getString("jahia.jackrabbit.searchIndex.autoRepair", "false"));
             
-<<<<<<< .working
             System.setProperty(QueryEngine.NATIVE_SORT_SYSTEM_PROPERTY, getString("jahia.jackrabbit.useNativeSort", "true"));
             
-=======
             System.setProperty("jahia.jackrabbit.bundleCacheSize", String.valueOf(getInt("jahia.jackrabbit.bundleCacheSize", 8)));
             
->>>>>>> .merge-right.r45614
             checkIndexConsistencyIfNeeded();
             
             reindexIfNeeded();

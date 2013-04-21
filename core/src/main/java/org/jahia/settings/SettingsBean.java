@@ -422,6 +422,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             System.setProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", getString("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "false"));
             System.setProperty("jahia.jackrabbit.searchIndex.autoRepair", getString("jahia.jackrabbit.searchIndex.autoRepair", "false"));
             
+            System.setProperty("jahia.jackrabbit.bundleCacheSize", String.valueOf(getInt("jahia.jackrabbit.bundleCacheSize", 8)));
+            
             checkIndexConsistencyIfNeeded();
             
             reindexIfNeeded();

@@ -546,17 +546,10 @@ public class PropertiesEditor extends FormPanel {
             }
             // case of a file upload
             else {
-<<<<<<< .working
-                if (fld.getValue() != null) {
-                    values.add(new GWTJahiaNodePropertyValue(fld.getValue().toString(),
-                            GWTJahiaNodePropertyType.ASYNC_UPLOAD));
-                }
-=======
                 Object value = fld.getValue();
                 if (value != null) {
                     values.add(new GWTJahiaNodePropertyValue(value.toString(), GWTJahiaNodePropertyType.ASYNC_UPLOAD));
                 }
->>>>>>> .merge-right.r45627
             }
         } else {
             GWTJahiaPropertyDefinition propDef = (GWTJahiaPropertyDefinition) itemDef;

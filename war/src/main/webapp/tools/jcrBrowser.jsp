@@ -411,7 +411,7 @@ function go(id1, value1, id2, value2, id3, value3) {
     <strong>Linear history:&nbsp;</strong>[<c:forEach items="${versionIterator}" var="version" varStatus="status">${status.index > 0 ? ", " : ""}<a href="#version" onclick="go('uuid', '${version.identifier}'); return false;">${version.name}</a></c:forEach>]<br>
     <strong>Full version graph:&nbsp;</strong>
     <pre>
-<c:forEach items="${versionGraph}" var="version" varStatus="status">${version}
+<c:forEach items="${versionGraph}" var="version" varStatus="status">${version}&nbsp;
 </c:forEach>
     </pre><br>
     </c:if>

@@ -10,9 +10,11 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 <html xmlns="http://www.w3.org/1999/xhtml">
+<c:set var="ramScheduler" value="${param.schedulerType == 'ram'}"/>
+<% boolean isRamScheduler = (Boolean) pageContext.getAttribute("ramScheduler"); %>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Job Administration</title>
+    <title>${ramScheduler ? 'RAM (in-memory) ' : ''}Job Administration</title>
     <link rel="stylesheet" href="tools.css" type="text/css" />
     <link type="text/css" href="<c:url value='/modules/assets/css/jquery.fancybox.css'/>" rel="stylesheet"/>
     <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.min.js'/>"></script>
@@ -41,12 +43,27 @@
 </head>
 <%
 SchedulerService service = ServicesRegistry.getInstance().getSchedulerService();
+Scheduler scheduler = isRamScheduler ? service.getRAMScheduler() : service.getScheduler();
 pageContext.setAttribute("service", service);
 %>
 <c:set var="showActions" value="${functions:default(fn:escapeXml(param.showActions), 'false')}"/>
 <c:set var="showCompleted" value="${functions:default(fn:escapeXml(param.showCompleted), 'false')}"/>
 <body>
-	<h1>Job Administration</h1>
+	<h1>${ramScheduler ? 'RAM (in-memory) ' : ''}Job Administration</h1>
+    <p>
+    <c:if test="${ramScheduler}">
+        This view lists all the jobs, managed by the RAM (in-memory) scheduler.
+        A RAM scheduler is a local (non-clustered) instance which has no persistence for jobs between the server restarts.
+        <br/>
+        <a title="Switch to persistent scheduler" href="#scheduler" onclick="go('schedulerType', ''); return false;">Switch to persistent scheduler</a>
+    </c:if>
+    <c:if test="${!ramScheduler}">
+        This view lists all the jobs, managed by the scheduler and whose state
+        is persisted in the database (maintained between server restarts).
+        <br/>
+        <a title="Switch to RAM (in-memory) scheduler" href="#scheduler" onclick="go('schedulerType', 'ram'); return false;">Switch to RAM (in-memory) scheduler</a>
+    </c:if>
+    </p>
 <fieldset style="position: absolute; right: 20px;">
     <legend><strong>Settings</strong></legend>
     <p>
@@ -61,22 +78,23 @@ pageContext.setAttribute("service", service);
         <input type="hidden" id="action" name="action" value=""/>
         <input type="hidden" id="name" name="name" value=""/>
         <input type="hidden" id="group" name="group" value=""/>
+        <input type="hidden" id="schedulerType" name="schedulerType" value="${ramScheduler ? 'ram' : ''}"/>
     </form>
 </fieldset>
 <c:if test="${'removeCompleted' == param.action}">
-    <% pageContext.setAttribute("jobsflushed", service.deleteAllCompletedJobs()); %>
+    <% pageContext.setAttribute("jobsflushed", isRamScheduler ? service.deleteAllCompletedRAMJobs() : service.deleteAllCompletedJobs()); %>
      <p style="color: blue">Removed <strong>${jobsflushed}</strong> completed jobs</p>
 </c:if>
 <c:if test="${'cancel' == param.action && not empty param.name && not empty param.group}">
     <%
-    Trigger toDelete = service.getScheduler().getTrigger(request.getParameter("name"), request.getParameter("group"));
+    Trigger toDelete = scheduler.getTrigger(request.getParameter("name"), request.getParameter("group"));
     if (toDelete != null) {
-        JobDetail jobDetail = service.getScheduler().getJobDetail(toDelete.getJobName(), toDelete.getJobGroup());
+        JobDetail jobDetail = scheduler.getJobDetail(toDelete.getJobName(), toDelete.getJobGroup());
         if (jobDetail != null) {
             jobDetail.getJobDataMap().put(BackgroundJob.JOB_STATUS, BackgroundJob.STATUS_CANCELED);
-            service.getScheduler().addJob(jobDetail, true);
+            scheduler.addJob(jobDetail, true);
         }
-        service.getScheduler().unscheduleJob(toDelete.getName(), toDelete.getGroup());
+        scheduler.unscheduleJob(toDelete.getName(), toDelete.getGroup());
     %>
     <p style="color: blue">Successfully unscheduled <strong>${param.group}.${param.name}</strong> job trigger</p>
     <% } else { %>
@@ -85,7 +103,7 @@ pageContext.setAttribute("service", service);
 </c:if>
 <c:if test="${'remove' == param.action && not empty param.name && not empty param.group}">
     <%
-    if (service.getScheduler().deleteJob(request.getParameter("name"), request.getParameter("group"))) {
+    if (scheduler.deleteJob(request.getParameter("name"), request.getParameter("group"))) {
     %>
     <p style="color: blue">Successfully deleted job <strong>${param.group}.${param.name}</strong></p>
     <% } else { %>
@@ -94,29 +112,32 @@ pageContext.setAttribute("service", service);
 </c:if>
 <c:if test="${'pause' == param.action && not empty param.name && not empty param.group}">
     <%
-    service.getScheduler().pauseJob(request.getParameter("name"), request.getParameter("group"));
+    scheduler.pauseJob(request.getParameter("name"), request.getParameter("group"));
     %>
     <p style="color: blue">Successfully paused <strong>${param.group}.${param.name}</strong> job</p>
 </c:if>
 <c:if test="${'resume' == param.action && not empty param.name && not empty param.group}">
     <%
-    service.getScheduler().resumeJob(request.getParameter("name"), request.getParameter("group"));
+    scheduler.resumeJob(request.getParameter("name"), request.getParameter("group"));
     %>
     <p style="color: blue">Successfully resumed <strong>${param.group}.${param.name}</strong> job</p>
 </c:if>
 <%
-List<JobDetail> allJobs = service.getAllJobs();
+List<JobDetail> allJobs = isRamScheduler ? service.getAllRAMJobs() : service.getAllJobs();
 pageContext.setAttribute("allJobs", allJobs);
 List<Object> jobs = new LinkedList<Object>();
 pageContext.setAttribute("jobs", jobs);
 int aliveCount = 0;
 int limitCount = 0;
+int addedCount = 0;
 boolean showCompleted = Boolean.valueOf((String) pageContext.getAttribute("showCompleted"));
 
 for (JobDetail job : allJobs) {
-    Trigger[] triggers = service.getScheduler().getTriggersOfJob(job.getName(), job.getGroup());
+    Trigger[] triggers = scheduler.getTriggersOfJob(job.getName(), job.getGroup());
     if (triggers.length > 0) {
         aliveCount++;
+    } else if (String.valueOf(job.getJobDataMap().get("status")).equals("added")) {
+        addedCount++;
     }
 	if (showCompleted || triggers.length > 0) {
         if (limitCount > 1000) {
@@ -131,6 +152,7 @@ for (JobDetail job : allJobs) {
 
 pageContext.setAttribute("allCount", allJobs.size());
 pageContext.setAttribute("aliveCount", aliveCount);
+pageContext.setAttribute("addedCount", addedCount);
 pageContext.setAttribute("limitReached", limitCount > 1000);
 %>
 <p>Total job count: <strong>${allCount}</strong> (<strong><c:if test="${limitReached}">more than </c:if>${aliveCount}</strong> active/scheduled) <a href="#refresh" onclick="go(); return false;" title="refresh"><img src="<c:url value='/icons/refresh.png'/>" alt="refresh" title="refresh" height="16" width="16"/></a></p>
@@ -161,7 +183,7 @@ pageContext.setAttribute("limitReached", limitCount > 1000);
         <c:if test="${not empty trigger}">
             <%
                 Trigger tr = (Trigger) pageContext.getAttribute("trigger");
-                pageContext.setAttribute("triggerState", service.getScheduler().getTriggerState(tr.getName(), tr.getGroup()));
+                pageContext.setAttribute("triggerState", scheduler.getTriggerState(tr.getName(), tr.getGroup()));
             %>
         </c:if>
         <tr style="${'executing' == state ? 'color: green; font-weight: bold;' : ''}">
@@ -223,10 +245,10 @@ pageContext.setAttribute("limitReached", limitCount > 1000);
             <td>
                 <c:if test="${not empty trigger}">
                     <c:if test="${triggerState == 0}">
-                        <a title="Pause job" href="#pause" onclick="if (confirm('You are about to temporary pause the job ${job.fullName}. Continue?')) { go('action', 'pause', 'name', '${job.name}', 'group', '${job.group}'); } return false;"><img src="<c:url value='/css/images/andromeda/icons/media_pause.png'/>" width="16" height="16" alt="cancel" title="Pause job"/></a>
+                        <a title="Pause job" href="#pause" onclick="if (confirm('You are about to temporary pause the job ${job.fullName}. Continue?')) { go('action', 'pause', 'name', '${functions:escapeJavaScript(job.name)}', 'group', '${job.group}'); } return false;"><img src="<c:url value='/css/images/andromeda/icons/media_pause.png'/>" width="16" height="16" alt="cancel" title="Pause job"/></a>
                     </c:if>
                     <c:if test="${triggerState == 1}">
-                        <a title="Resume job" href="#resume" onclick="if (confirm('You are about to resume suspended job ${job.fullName}. If its trigger missed the fire time it will fire immediately. Continue?')) { go('action', 'resume', 'name', '${job.name}', 'group', '${job.group}'); } return false;"><img src="<c:url value='/css/images/andromeda/icons/media_play_green.png'/>" width="16" height="16" alt="cancel" title="Resume job"/></a>
+                        <a title="Resume job" href="#resume" onclick="if (confirm('You are about to resume suspended job ${job.fullName}. If its trigger missed the fire time it will fire immediately. Continue?')) { go('action', 'resume', 'name', '${functions:escapeJavaScript(job.name)}', 'group', '${job.group}'); } return false;"><img src="<c:url value='/css/images/andromeda/icons/media_play_green.png'/>" width="16" height="16" alt="cancel" title="Resume job"/></a>
                     </c:if>
                     <c:if test="${job.durable}">
                         <a title="Cancel job (unschedule)" href="#cancel" onclick="if (confirm('You are about to cancel (unschedule) the job ${job.fullName}. Continue?')) { go('action', 'cancel', 'name', '${trigger.name}', 'group', '${trigger.group}'); } return false;"><img src="<c:url value='/css/images/andromeda/icons/cancel.png'/>" width="16" height="16" alt="cancel" title="Cancel job (unschedule)"/></a>
@@ -236,7 +258,7 @@ pageContext.setAttribute("limitReached", limitCount > 1000);
                     </c:if>
                 </c:if>
                 <c:if test="${empty trigger}">
-                    <a title="Delete job data" href="#remove" onclick="if (confirm('You are about to permanently delete the data of the job ${job.fullName}. Continue?')) { go('action', 'remove', 'name', '${job.name}', 'group', '${job.group}'); } return false;"><img src="<c:url value='/icons/showTrashboard.png'/>" width="16" height="16" alt="remove" title="Remove job data"/></a>
+                    <a title="Delete job data" href="#remove" onclick="if (confirm('You are about to permanently delete the data of the job ${job.fullName}. Continue?')) { go('action', 'remove', 'name', '${functions:escapeJavaScript(job.name)}', 'group', '${job.group}'); } return false;"><img src="<c:url value='/icons/showTrashboard.png'/>" width="16" height="16" alt="remove" title="Remove job data"/></a>
                 </c:if>
             </td>
             </c:if>
@@ -246,9 +268,9 @@ pageContext.setAttribute("limitReached", limitCount > 1000);
 </table>
 </c:if>
 
-<c:if test="${showActions && (allCount - aliveCount > 0)}">
+<c:if test="${showActions && (allCount - aliveCount - addedCount > 0)}">
 <p>
-    <img src="<c:url value='/icons/showTrashboard.png'/>" alt=" " height="16" width="16"/>&nbsp;<a href="#removeCompleted" onclick="if (confirm('You are about to permanently remove the data of completed jobs. Continue?')) { go('action', 'removeCompleted'); } return false;">remove all completed jobs (${allCount - aliveCount})</a>
+    <img src="<c:url value='/icons/showTrashboard.png'/>" alt=" " height="16" width="16"/>&nbsp;<a href="#removeCompleted" onclick="if (confirm('You are about to permanently remove the data of completed jobs. Continue?')) { go('action', 'removeCompleted'); } return false;">remove all completed jobs (${allCount - aliveCount - addedCount})</a>
 </p>
 </c:if>
 <%@ include file="gotoIndex.jspf" %>

@@ -135,7 +135,7 @@
 		  <param name="schemaObjectPrefix" value="jr_v_"/>
 		  <param name="externalBLOBs" value="@EXTERNAL_BLOBS@"/>
           <param name="schemaCheckEnabled" value="false"/>
-          <param name="bundleCacheSize" value="${jahia.jackrabbit.bundleCacheSize}"/>
+          <param name="bundleCacheSize" value="${jahia.jackrabbit.bundleCacheSize.versioning}"/>
           
           <param name="consistencyCheck" value="${jahia.jackrabbit.consistencyCheck}"/>
           <param name="consistencyFix" value="${jahia.jackrabbit.consistencyFix}"/>

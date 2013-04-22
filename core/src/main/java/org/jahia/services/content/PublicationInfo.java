@@ -103,9 +103,9 @@ public class PublicationInfo implements Serializable {
         if (allUuids != null) {
             return allUuids;
         }
-        allUuids = new LinkedList<String>();
+        allUuids = new ArrayList<String>();
         LinkedList<PublicationInfoNode> nodes = new LinkedList<PublicationInfoNode>();
-        Set<PublicationInfoNode> processed = new LinkedHashSet<PublicationInfoNode>();
+        Set<PublicationInfoNode> processed = new HashSet<PublicationInfoNode>();
         nodes.add(root);
         processed.add(root);
         PublicationInfoNode node = nodes.poll();
@@ -132,9 +132,9 @@ public class PublicationInfo implements Serializable {
     public List<PublicationInfo> getAllReferences() {
         LinkedHashSet<PublicationInfo> uuids = new LinkedHashSet<PublicationInfo>();
         LinkedList<PublicationInfoNode> nodes = new LinkedList<PublicationInfoNode>();
-        Set<PublicationInfoNode> processed = new LinkedHashSet<PublicationInfoNode>();
+        Set<PublicationInfoNode> processed = new HashSet<PublicationInfoNode>();
         getAllReferences(uuids, nodes, processed);
-        return new LinkedList<PublicationInfo>(uuids);
+        return new ArrayList<PublicationInfo>(uuids);
     }
 
     private void getAllReferences(LinkedHashSet<PublicationInfo> uuids, LinkedList<PublicationInfoNode> nodes, Set<PublicationInfoNode> processedNodes) {
@@ -184,7 +184,7 @@ public class PublicationInfo implements Serializable {
     public Set<Integer> getTreeStatus(String language) {
         Set<Integer> status = new HashSet<Integer>();
         LinkedList<PublicationInfoNode> nodes = new LinkedList<PublicationInfoNode>();
-        Set<PublicationInfoNode> processed = new LinkedHashSet<PublicationInfoNode>();
+        Set<PublicationInfoNode> processed = new HashSet<PublicationInfoNode>();
         nodes.add(root);
         processed.add(root);
         PublicationInfoNode node = nodes.poll();

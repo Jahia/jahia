@@ -390,16 +390,16 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             b = new BitSet(pr.length);
             if (app.length == pr.length) {
                 // in case of admin user all supported permissions are present
-                for (int i=0; i<pr.length;i++) {
-                    b.set(i);
-                }
+                b.set(0, pr.length);
                 return b;
             }
             Set<Privilege> effective = new HashSet<Privilege>();
             for (Privilege privilege : app) {
                 effective.add(privilege);
                 if (privilege.isAggregate()) {
-                    effective.addAll(Arrays.asList(privilege.getAggregatePrivileges()));
+                    for (Privilege p : privilege.getAggregatePrivileges()) {
+                        effective.add(p);
+                    }
                 }
             }
             int position = 0;

@@ -826,6 +826,7 @@ public class WebprojectHandler implements Serializable {
             infos.setSiteTitleInvalid(StringUtils.isEmpty((String) infos.getSiteTitle()));
 
             String siteKey = (String) infos.getSiteKey();
+            if (infos.isSite()) {
             boolean valid = sitesService.isSiteKeyValid(siteKey);
             if (!valid) {
                 messageContext.addMessage(new MessageBuilder()
@@ -866,6 +867,7 @@ public class WebprojectHandler implements Serializable {
                                 Messages.get("resources.JahiaServerSettings",
                                         "serverSettings.manageWebProjects.serverNameExists",
                                         LocaleContextHolder.getLocale())).build());
+            }
             }
         } catch (JahiaException e) {
             logger.error(e.getMessage(), e);

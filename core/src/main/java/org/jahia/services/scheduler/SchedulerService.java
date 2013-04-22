@@ -100,20 +100,30 @@ public class SchedulerService extends JahiaService implements JahiaAfterInitiali
         return deleteAllCompletedJobs(PURGE_ALL_STRATEGY, true);
     }
 
+    public Integer deleteAllCompletedRAMJobs() throws SchedulerException {
+        return deleteAllCompletedJobs(PURGE_ALL_STRATEGY, true, true);
+    }
+
     public Integer deleteAllCompletedJobs(Map<Pattern, Long> purgeStrategy,
             boolean purgeWithNoEndDate) throws SchedulerException {
-        logger.info("Start looking for completed jobs");
+        return deleteAllCompletedJobs(purgeStrategy, purgeWithNoEndDate, false);
+    }
+
+    public Integer deleteAllCompletedJobs(Map<Pattern, Long> purgeStrategy,
+            boolean purgeWithNoEndDate, boolean isRAMScheduler) throws SchedulerException {
+        logger.info("Start looking for completed jobs in {} scheduler", isRAMScheduler ? "RAM" : "persistent");
         int deletedCount = 0;
 
-        for (String jobGroup : scheduler.getJobGroupNames()) {
-            String[] jobNames = scheduler.getJobNames(jobGroup);
+        Scheduler schedulerInstance = isRAMScheduler ? getRAMScheduler() : getScheduler();
+        for (String jobGroup : schedulerInstance.getJobGroupNames()) {
+            String[] jobNames = schedulerInstance.getJobNames(jobGroup);
             logger.info("Processing job group {} with {} jobs", jobGroup, jobNames.length);
             for (String jobName : jobNames) {
                 logger.debug("Checking job {}.{}", jobGroup, jobName);
-                if (ArrayUtils.isEmpty(scheduler.getTriggersOfJob(jobName, jobGroup))) {
+                if (ArrayUtils.isEmpty(schedulerInstance.getTriggersOfJob(jobName, jobGroup))) {
                     Long age = getAge(jobName, jobGroup, purgeStrategy);
                     if (age != null && age.longValue() >= 0) {
-                        JobDetail job = scheduler.getJobDetail(jobName, jobGroup);
+                        JobDetail job = schedulerInstance.getJobDetail(jobName, jobGroup);
                         if (job == null) {
                             logger.warn("Unable to find job {}.{}", jobGroup, jobName);
                             continue;
@@ -128,7 +138,7 @@ public class SchedulerService extends JahiaService implements JahiaAfterInitiali
                                 logger.debug("Job {} matches purge policy. Deleting it.",
                                         job.getFullName());
                                 try {
-                                    scheduler.deleteJob(jobName, jobGroup);
+                                    schedulerInstance.deleteJob(jobName, jobGroup);
                                     deletedCount++;
                                 } catch (SchedulerException e) {
                                     logger.warn("Error deleting job " + jobGroup + "." + jobName, e);
@@ -197,6 +207,14 @@ public class SchedulerService extends JahiaService implements JahiaAfterInitiali
         List<JobDetail> l = new LinkedList<JobDetail>();
         for (String group : scheduler.getJobGroupNames()) {
             l.addAll(getAllJobs(group));
+        }
+        return l;
+    }
+
+    public List<JobDetail> getAllRAMJobs() throws SchedulerException {
+        List<JobDetail> l = new LinkedList<JobDetail>();
+        for (String group : getRAMScheduler().getJobGroupNames()) {
+            l.addAll(getAllJobs(group, true));
         }
         return l;
     }

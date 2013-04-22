@@ -425,6 +425,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             System.setProperty(QueryEngine.NATIVE_SORT_SYSTEM_PROPERTY, getString("jahia.jackrabbit.useNativeSort", "true"));
             
             System.setProperty("jahia.jackrabbit.bundleCacheSize", String.valueOf(getInt("jahia.jackrabbit.bundleCacheSize", 8)));
+            System.setProperty("jahia.jackrabbit.bundleCacheSize.versioning", String.valueOf(getInt("jahia.jackrabbit.bundleCacheSize.versioning", 8)));
             
             checkIndexConsistencyIfNeeded();
             

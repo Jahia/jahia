@@ -400,16 +400,33 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         BitSet b = null;
         try {
             AccessControlManager accessControlManager = getAccessControlManager();
+<<<<<<< .working
             if (accessControlManager == null) {
+=======
+            Privilege[] app = accessControlManager.getPrivileges(localPathInProvider);
+            Privilege[] pr = accessControlManager.getSupportedPrivileges(localPathInProvider);
+            b = new BitSet(pr.length);
+            if (app.length == pr.length) {
+                // in case of admin user all supported permissions are present
+                b.set(0, pr.length);
+>>>>>>> .merge-right.r45633
                 return b;
             }
             List<Privilege> app = Arrays.asList(accessControlManager.getPrivileges(localPathInProvider));
             List<Privilege> pr = Arrays.asList(accessControlManager.getSupportedPrivileges(localPathInProvider));
             b = new BitSet(pr.size());
             for (Privilege privilege : app) {
+<<<<<<< .working
                 b.set(pr.indexOf(privilege));
                 for (Privilege privilege1 : privilege.getAggregatePrivileges()) {
                     b.set(pr.indexOf(privilege1));
+=======
+                effective.add(privilege);
+                if (privilege.isAggregate()) {
+                    for (Privilege p : privilege.getAggregatePrivileges()) {
+                        effective.add(p);
+                    }
+>>>>>>> .merge-right.r45633
                 }
             }
             if(!"/".equals(getProvider().getMountPoint())) {

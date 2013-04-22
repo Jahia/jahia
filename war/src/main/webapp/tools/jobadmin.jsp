@@ -53,7 +53,7 @@ pageContext.setAttribute("service", service);
         <input id="cbActions" type="checkbox" ${showActions ? 'checked="checked"' : ''}
                 onchange="go('showActions', '${!showActions}')"/>&nbsp;<label for="cbActions">Show actions</label><br/>
         <input id="cbCompleted" type="checkbox" ${showCompleted ? 'checked="checked"' : ''}
-                onchange="go('showCompleted', '${!showCompleted}')"/>&nbsp;<label for="cbCompleted">Show completed jobs</label><br/>
+                onchange="go('showCompleted', '${!showCompleted}')"/>&nbsp;<label for="cbCompleted">Show all jobs</label><br/>
     </p>
     <form id="navigateForm" action="?" method="get">
         <input type="hidden" id="showActions" name="showActions" value="${showActions}"/>
@@ -91,6 +91,18 @@ pageContext.setAttribute("service", service);
     <% } else { %>
     <p style="color: red">Unable to delete job <strong>${param.group}.${param.name}</strong></p>
     <% } %>
+</c:if>
+<c:if test="${'pause' == param.action && not empty param.name && not empty param.group}">
+    <%
+    service.getScheduler().pauseJob(request.getParameter("name"), request.getParameter("group"));
+    %>
+    <p style="color: blue">Successfully paused <strong>${param.group}.${param.name}</strong> job</p>
+</c:if>
+<c:if test="${'resume' == param.action && not empty param.name && not empty param.group}">
+    <%
+    service.getScheduler().resumeJob(request.getParameter("name"), request.getParameter("group"));
+    %>
+    <p style="color: blue">Successfully resumed <strong>${param.group}.${param.name}</strong> job</p>
 </c:if>
 <%
 List<JobDetail> allJobs = service.getAllJobs();
@@ -145,6 +157,13 @@ pageContext.setAttribute("limitReached", limitCount > 1000);
         <c:set var="job" value="${jobElement[0]}"/>
         <c:set var="trigger" value="${jobElement[1]}"/>
         <c:set var="state" value="${job.jobDataMap.status}"/>
+        <c:remove var="triggerState"/>
+        <c:if test="${not empty trigger}">
+            <%
+                Trigger tr = (Trigger) pageContext.getAttribute("trigger");
+                pageContext.setAttribute("triggerState", service.getScheduler().getTriggerState(tr.getName(), tr.getGroup()));
+            %>
+        </c:if>
         <tr style="${'executing' == state ? 'color: green; font-weight: bold;' : ''}">
             <td><strong>${status.index + 1}</strong></td>
             <td>
@@ -197,12 +216,18 @@ pageContext.setAttribute("limitReached", limitCount > 1000);
                 </div>
             </td>
             <td title="class: ${job.jobClass.name}">${fn:escapeXml(job.fullName)}</td>
-            <td style="text-align: center;">${state}</td>
+            <td style="text-align: center;">${state}${triggerState == 1 ? ' (paused)' : ''}</td>
             <td style="text-align: center;">${job.durable ? 'yes' : 'no'}</td>
             <td><c:if test="${not empty trigger && not empty trigger.nextFireTime}"><fmt:formatDate value="${trigger.nextFireTime}" pattern="yyyy-MM-dd HH:mm"/></c:if></td>
             <c:if test="${showActions}">
             <td>
                 <c:if test="${not empty trigger}">
+                    <c:if test="${triggerState == 0}">
+                        <a title="Pause job" href="#pause" onclick="if (confirm('You are about to temporary pause the job ${job.fullName}. Continue?')) { go('action', 'pause', 'name', '${job.name}', 'group', '${job.group}'); } return false;"><img src="<c:url value='/css/images/andromeda/icons/media_pause.png'/>" width="16" height="16" alt="cancel" title="Pause job"/></a>
+                    </c:if>
+                    <c:if test="${triggerState == 1}">
+                        <a title="Resume job" href="#resume" onclick="if (confirm('You are about to resume suspended job ${job.fullName}. If its trigger missed the fire time it will fire immediately. Continue?')) { go('action', 'resume', 'name', '${job.name}', 'group', '${job.group}'); } return false;"><img src="<c:url value='/css/images/andromeda/icons/media_play_green.png'/>" width="16" height="16" alt="cancel" title="Resume job"/></a>
+                    </c:if>
                     <c:if test="${job.durable}">
                         <a title="Cancel job (unschedule)" href="#cancel" onclick="if (confirm('You are about to cancel (unschedule) the job ${job.fullName}. Continue?')) { go('action', 'cancel', 'name', '${trigger.name}', 'group', '${trigger.group}'); } return false;"><img src="<c:url value='/css/images/andromeda/icons/cancel.png'/>" width="16" height="16" alt="cancel" title="Cancel job (unschedule)"/></a>
                     </c:if>

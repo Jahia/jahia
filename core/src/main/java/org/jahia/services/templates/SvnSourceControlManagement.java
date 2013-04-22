@@ -97,6 +97,7 @@ public class SvnSourceControlManagement extends SourceControlManagement {
         String rootPath = rootFolder.getPath();
         List<String> args = new ArrayList<String>();
         args.add("add");
+        args.add("--parents");
         for (File file : files) {
             if (file.getPath().equals(rootPath)) {
                 args.add(".");

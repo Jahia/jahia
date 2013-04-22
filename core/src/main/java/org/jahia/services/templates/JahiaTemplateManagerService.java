@@ -940,7 +940,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             if (transCodeTarget != null) {
                 FileUtils.writeLines(target, transCodeTarget.name(), convertToNativeEncoding(IOUtils.readLines(source, Charsets.UTF_8), transCodeTarget), "\n");
             } else {
-                FileUtils.copyInputStreamToFile(new NoCloseZipInputStream(source), target);
+                FileOutputStream output = FileUtils.openOutputStream(target);
+                try {
+                    IOUtils.copy(source, output);
+                    output.close();
+                } finally {
+                    IOUtils.closeQuietly(output);
+                }
             }
             return true;
         } else {

@@ -137,16 +137,19 @@ class ContentBrowseTabItem extends BrowseTabItem {
         tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
-                listLoader.load(event.getSelectedItem());
-                contentContainer.mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
                 boolean displayGrid = false;
-                for (String type : event.getSelectedItem().getNodeTypes()) {
-                    displayGrid |= displayGridForTypes.contains(type);
-                }
-                if (displayGrid) {
-                    contentContainer.show();
+                if (event.getSelectedItem() != null) {
+                    for (String type : event.getSelectedItem().getNodeTypes()) {
+                        displayGrid |= displayGridForTypes.contains(type);
+                    }
+                    if (displayGrid) {
+                        listLoader.load(event.getSelectedItem());
+                        contentContainer.mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
+                    } else {
+                        contentStore.removeAll();
+                    }
                 } else {
-                    contentContainer.hide();
+                    contentStore.removeAll();
                 }
             }
         });

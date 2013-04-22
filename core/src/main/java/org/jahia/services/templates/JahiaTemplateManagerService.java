@@ -777,7 +777,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 while ((zipentry = zis.getNextEntry()) != null) {
                     if (!zipentry.isDirectory()) {
                         try {
-                            File sourceFile = new File(sourcesImportFolder, zipentry.getName());
+                            String name = zipentry.getName();
+                            name = name.replace(aPackage.getRootFolderWithVersion(), aPackage.getRootFolder());
+                            File sourceFile = new File(sourcesImportFolder, name);
                             if (saveFile(zis, sourceFile)) {
                                 modifiedFiles.add(sourceFile);
                             }

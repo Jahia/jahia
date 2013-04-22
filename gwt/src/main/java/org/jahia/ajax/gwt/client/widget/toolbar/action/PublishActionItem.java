@@ -116,7 +116,7 @@ public class PublishActionItem extends BaseActionItem {
                     if (publicationInfo != null && !publicationInfo.isUnpublishable()) {
                         setEnabled(false);
                     }
-                } if (gwtJahiaNode.getAggregatedPublicationInfo() != null) {
+                } else if (gwtJahiaNode.getAggregatedPublicationInfo() != null) {
                     GWTJahiaPublicationInfo info = gwtJahiaNode.getAggregatedPublicationInfo();
                     GWTJahiaWorkflowDefinition def = null;
                     if (gwtJahiaNode.getWorkflowInfo() != null) {

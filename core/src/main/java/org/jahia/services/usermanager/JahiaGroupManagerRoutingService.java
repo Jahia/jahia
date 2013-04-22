@@ -58,7 +58,12 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.sites.JahiaSite;
+
+import javax.jcr.RepositoryException;
 
 /**
  * <p>Title: </p>
@@ -572,10 +577,15 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
         return providersTable.get(name);
     }
 
-    private int getSiteId(String siteKey) {
+    private int getSiteId(final String siteKey) {
         try {
             if (siteKey != null) {
-                return ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteKey).getID();
+                return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Integer>() {
+                    @Override
+                    public Integer doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        return ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteKey , session).getID();
+                    }
+                });
             }
         } catch (Exception e) {
         }

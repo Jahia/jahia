@@ -163,6 +163,7 @@ public class WebprojectHandler implements Serializable {
                         // set as default site
                         if (bean.isDefaultSite()) {
                             sitesService.setDefaultSite(site,session);
+                            session.save();
                         }
 
                         if (bean.isCreateAdmin()) {

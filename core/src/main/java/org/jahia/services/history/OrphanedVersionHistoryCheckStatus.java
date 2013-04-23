@@ -46,7 +46,7 @@ import org.slf4j.helpers.MessageFormatter;
  * 
  * @author Sergiy Shyrkov
  */
-public class OrhpanedVersionHistoryCheckStatus extends VersionHistoryCheckStatus {
+public class OrphanedVersionHistoryCheckStatus extends VersionHistoryCheckStatus {
 
     long limit;
 

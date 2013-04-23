@@ -39,6 +39,7 @@
  */
 package org.jahia.services.history;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -56,50 +57,54 @@ import org.apache.jackrabbit.core.state.ItemStateException;
 import org.apache.jackrabbit.core.version.InternalVersionManager;
 import org.apache.jackrabbit.core.version.InternalVersionManagerImpl;
 import org.apache.jackrabbit.core.version.InternalXAVersionManager;
+import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameConstants;
+import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
+import org.apache.jackrabbit.util.ISO8601;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Utility class for performing orphaned version history check and cleanup.
+ * Utility class for performing unused version check and cleanup.
  * 
  * @author Sergiy Shyrkov
  */
-class OrphanedVersionHistoryChecker {
+class UnusedVersionChecker {
 
     private static int loadVersionBundleBatchSize;
 
-    private static final Logger logger = LoggerFactory.getLogger(OrphanedVersionHistoryChecker.class);
+    private static final Logger logger = LoggerFactory.getLogger(UnusedVersionChecker.class);
 
-    private int checkOrphanedBatchSize;
+    private static Integer purgeVersionsBatchSize;
 
-    private final boolean deleteOrphans;
+    private int checkUnusedBatchSize;
+
+    private final boolean deleteUnused;
 
     private boolean forceStop;
 
-    private final long maxOrphans;
+    private final long maxUnused;
 
     private final List<NodeId> nodesToCheck = new LinkedList<NodeId>();
-
-    private final List<NodeId> orphans = new LinkedList<NodeId>();
 
     private final OutWrapper out;
 
     private BundleDbPersistenceManager persistenceManager;
 
-    private final OrphanedVersionHistoryCheckStatus status;
+    private final UnusedVersionCheckStatus status;
 
-    OrphanedVersionHistoryChecker(OrphanedVersionHistoryCheckStatus status, long maxOrphans, boolean deleteOrphans,
-            OutWrapper out) {
+    private final List<NodeId> unused = new LinkedList<NodeId>();
+
+    UnusedVersionChecker(UnusedVersionCheckStatus status, long maxUnused, boolean deleteUnused, OutWrapper out) {
         super();
         this.status = status;
-        this.maxOrphans = maxOrphans;
-        this.deleteOrphans = deleteOrphans;
+        this.maxUnused = maxUnused;
+        this.deleteUnused = deleteUnused;
         this.out = out;
     }
 
-    private void checkOrphaned(JCRSessionWrapper session) throws RepositoryException {
+    private void checkUnused(JCRSessionWrapper session) throws RepositoryException {
         try {
             long timer = System.currentTimeMillis();
             Map<NodeId, Boolean> existsReferencesToNodes = persistenceManager.existsReferencesToNodes(nodesToCheck);
@@ -111,8 +116,8 @@ class OrphanedVersionHistoryChecker {
             for (Map.Entry<NodeId, Boolean> ref : existsReferencesToNodes.entrySet()) {
                 if (!ref.getValue()) {
                     status.orphaned++;
-                    if (deleteOrphans) {
-                        orphans.add(ref.getKey());
+                    if (deleteUnused) {
+                        unused.add(ref.getKey());
                     }
                     if (isProcessingFinished(session)) {
                         break;
@@ -126,24 +131,25 @@ class OrphanedVersionHistoryChecker {
             logger.warn(e.getMessage(), e);
         } finally {
             nodesToCheck.clear();
-            if (status.orphaned < maxOrphans) {
+            if (status.orphaned < maxUnused) {
                 out.echo(status.toString());
             }
         }
     }
 
     private void delete(JCRSessionWrapper session) {
-        out.echo("Start deleting version history for {} nodes", orphans.size());
+        out.echo("Start deleting {} versions", unused.size());
         try {
-            long nb = status.deleted;
+            long nb = status.deletedVersionItems;
             long timer = System.currentTimeMillis();
-            NodeVersionHistoryHelper.purgeVersionHistories(orphans, session, status);
-            out.echo("deleted {} version histories in {} ms", status.deleted - nb, System.currentTimeMillis() - timer);
+            NodeVersionHistoryHelper.purgeUnusedVersions(unused, session, status);
+            out.echo("deleted {} version items in {} ms", status.deletedVersionItems - nb, System.currentTimeMillis()
+                    - timer);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             out.echo("Error deleting version histories. Cause: {}", e.getMessage());
         } finally {
-            orphans.clear();
+            unused.clear();
         }
     }
 
@@ -158,34 +164,56 @@ class OrphanedVersionHistoryChecker {
     }
 
     private void initBatchSizeLimits() {
-        checkOrphanedBatchSize = Integer.getInteger("org.jahia.services.history.checkOrphanedBatchSize", 0);
-        if (checkOrphanedBatchSize == 0) {
+        checkUnusedBatchSize = Integer.getInteger("org.jahia.services.history.checkUnusedBatchSize", 0);
+        if (checkUnusedBatchSize == 0) {
             if (persistenceManager instanceof DerbyPersistenceManager) {
-                checkOrphanedBatchSize = 100;
+                checkUnusedBatchSize = 100;
             } else if (persistenceManager.getStorageModel() == BundleDbPersistenceManager.SM_LONGLONG_KEYS) {
-                checkOrphanedBatchSize = 500;
+                checkUnusedBatchSize = 500;
             } else {
-                checkOrphanedBatchSize = 1000;
+                checkUnusedBatchSize = 1000;
             }
         }
 
         loadVersionBundleBatchSize = Integer.getInteger("org.jahia.services.history.loadVersionBundleBatchSize", 8000);
+
+        purgeVersionsBatchSize = Integer.getInteger("org.jahia.services.history.purgeVersionsBatchSize", 100);
+    }
+
+    private boolean isOlder(NodeInfo info, long purgeOlderThanTimestamp) {
+        if (purgeOlderThanTimestamp <= 0) {
+            return true;
+        }
+        Calendar created = null;
+        if (info.getCreated() != null) {
+            try {
+                created = ISO8601.parse(info.getCreated());
+            } catch (Exception e) {
+                if (logger.isDebugEnabled()) {
+                    logger.warn("Error parsing creation date " + info.getCreated() + " for node " + info.getId(), e);
+                } else {
+                    logger.warn("Error parsing creation date " + info.getCreated() + " for node " + info.getId());
+                }
+            }
+        }
+
+        return created != null && created.getTimeInMillis() < purgeOlderThanTimestamp;
     }
 
     private boolean isProcessingFinished(JCRSessionWrapper session) {
-        if (status.orphaned >= maxOrphans) {
-            out.echo("{} version histories checked and the limit of {}"
-                    + " orphaned version histories is reached. Stopping checks.", status.checked, maxOrphans);
+        if (status.orphaned >= maxUnused) {
+            out.echo("{} versions checked and the limit of {}" + " versions is reached. Stopping checks.",
+                    status.checked, maxUnused);
             return true;
         }
-        if (deleteOrphans && status.orphaned > 0 && orphans.size() >= NodeVersionHistoryHelper.PURGE_HISTORY_CHUNK) {
+        if (deleteUnused && status.orphaned > 0 && unused.size() >= purgeVersionsBatchSize) {
             delete(session);
         }
 
         return false;
     }
 
-    public void perform(JCRSessionWrapper session) throws RepositoryException {
+    public void perform(JCRSessionWrapper session, long purgeOlderThanTimestamp) throws RepositoryException {
         SessionImpl providerSession = (SessionImpl) session.getProviderSession(session.getNode("/").getProvider());
         InternalVersionManager vm = providerSession.getInternalVersionManager();
 
@@ -207,11 +235,11 @@ class OrphanedVersionHistoryChecker {
 
         initBatchSizeLimits();
 
-        traverse(session);
+        traverse(session, purgeOlderThanTimestamp);
 
         if (forceStop) {
             out.echo("Request received to stop checking nodes.");
-        } else if (deleteOrphans && orphans.size() > 0) {
+        } else if (deleteUnused && unused.size() > 0) {
             delete(session);
         }
     }
@@ -220,32 +248,42 @@ class OrphanedVersionHistoryChecker {
         this.forceStop = true;
     }
 
-    private void traverse(JCRSessionWrapper session) throws RepositoryException {
+    private void traverse(JCRSessionWrapper session, long purgeOlderThanTimestamp) throws RepositoryException {
         Map<NodeId, NodeInfo> batch = getAllNodeInfos(null);
         while (!batch.isEmpty()) {
             NodeId lastId = null;
             for (NodeInfo info : batch.values()) {
                 lastId = info.getId();
-                if (NameConstants.NT_VERSIONHISTORY.equals(info.getNodeTypeName())) {
-                    nodesToCheck.add(info.getId());
-                    if (nodesToCheck.size() >= checkOrphanedBatchSize) {
-                        checkOrphaned(session);
+                if (NameConstants.NT_VERSION.equals(info.getNodeTypeName())) {
+                    if (isRootVersion(info)) {
+                        continue;
+                    }
+                    if (isOlder(info, purgeOlderThanTimestamp)) {
+                        nodesToCheck.add(info.getId());
+                    }
+                    if (nodesToCheck.size() >= checkUnusedBatchSize) {
+                        checkUnused(session);
                     }
                 }
-                if (status.orphaned >= maxOrphans) {
+                if (status.orphaned >= maxUnused) {
                     break;
                 }
                 if (forceStop) {
                     return;
                 }
             }
-            batch = status.orphaned < maxOrphans ? getAllNodeInfos(lastId) : Collections.<NodeId, NodeInfo> emptyMap();
+            batch = status.orphaned < maxUnused ? getAllNodeInfos(lastId) : Collections.<NodeId, NodeInfo> emptyMap();
         }
         if (nodesToCheck.size() > 0) {
-            checkOrphaned(session);
+            checkUnused(session);
         }
-        if (deleteOrphans && orphans.size() > 0) {
+        if (deleteUnused && unused.size() > 0) {
             delete(session);
         }
+    }
+
+    private boolean isRootVersion(NodeInfo info) {
+        List<NodeId> predecessors = info.getReferences().get(NameConstants.JCR_PREDECESSORS);
+        return predecessors == null || predecessors.isEmpty();
     }
 }

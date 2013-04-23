@@ -311,7 +311,7 @@ public class JahiaVersionManagerImpl extends VersionManagerImpl {
             v[vals.length] = InternalValue.create(versionId);
             state.setPropertyValues(NameConstants.JCR_PREDECESSORS, PropertyType.REFERENCE, v, true);
 
-            state.store();
+            state.store(false);
             ops.save();
         } catch (ItemStateException e) {
             throw new RepositoryException(e);

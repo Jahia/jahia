@@ -41,19 +41,14 @@ package org.jahia.services.history;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-<<<<<<< .working
 import javax.jcr.PathNotFoundException;
 import javax.jcr.ReferentialIntegrityException;
-=======
-import javax.jcr.PathNotFoundException;
->>>>>>> .merge-right.r45654
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
@@ -79,11 +74,8 @@ import org.slf4j.helpers.MessageFormatter;
  */
 public final class NodeVersionHistoryHelper {
 
-<<<<<<< .working
     public static class OrhpanedVersionHistoryCheckStatus extends VersionHistoryCheckStatus {
 
-=======
->>>>>>> .merge-right.r45654
         long limit;
 
         long orphaned;
@@ -177,26 +169,10 @@ public final class NodeVersionHistoryHelper {
 
     private static boolean checkingOrphans;
 
-<<<<<<< .working
     private static boolean forceStop;
-=======
-    private static boolean checkingUnused;
 
-    private static OrphanedVersionHistoryChecker orphanedChecker;
-
-    private static UnusedVersionChecker unusedChecker;
-
-    static final Logger logger = LoggerFactory.getLogger(NodeVersionHistoryHelper.class);
->>>>>>> .merge-right.r45654
-
-<<<<<<< .working
     private static final Logger logger = LoggerFactory.getLogger(NodeVersionHistoryHelper.class);
-=======
-    protected static final int PURGE_HISTORY_CHUNK = Integer.getInteger(
-            "org.jahia.services.history.purgeVersionHistoryBatchSize", 100);
->>>>>>> .merge-right.r45654
 
-<<<<<<< .working
     public static String checkOrphaned(Node vhNode, JCRSessionWrapper session)
             throws RepositoryException {
         String targetId = vhNode.hasProperty("jcr:versionableUuid") ? vhNode.getProperty(
@@ -230,10 +206,6 @@ public final class NodeVersionHistoryHelper {
     public static synchronized OrhpanedVersionHistoryCheckStatus checkOrphaned(
             final String versionStorageStartPath, final long maxOrphans,
             final boolean deleteOrphans, final Writer statusOut) throws RepositoryException {
-=======
-    public static synchronized OrphanedVersionHistoryCheckStatus checkOrphaned(final long maxOrphans,
-            final boolean deleteOrphans, final Writer statusOut) throws RepositoryException {
->>>>>>> .merge-right.r45654
         if (checkingOrphans) {
             throw new IllegalStateException(
                     "The version history is currently beeing checked for orphans."
@@ -241,7 +213,7 @@ public final class NodeVersionHistoryHelper {
         }
         checkingOrphans = true;
         long timer = System.currentTimeMillis();
-        final OrphanedVersionHistoryCheckStatus status = new OrphanedVersionHistoryCheckStatus();
+        final OrhpanedVersionHistoryCheckStatus status = new OrhpanedVersionHistoryCheckStatus();
         final String startPath = StringUtils.defaultIfEmpty(versionStorageStartPath,
                 "/jcr:system/jcr:versionStorage");
 
@@ -250,15 +222,10 @@ public final class NodeVersionHistoryHelper {
         out.echo("Start {} orphaned version history under {}", deleteOrphans ? "deleting"
                 : "checking", startPath);
 
-<<<<<<< .working
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Long>() {
                 final Set<String> orphans = new HashSet<String>();
-=======
-        orphanedChecker = new OrphanedVersionHistoryChecker(status, maxOrphans, deleteOrphans, out);
->>>>>>> .merge-right.r45654
 
-<<<<<<< .working
                 private void check(JCRNodeWrapper node, JCRSessionWrapper session)
                         throws RepositoryException {
                     for (NodeIterator ni = node.getNodes(); ni.hasNext();) {
@@ -295,13 +262,6 @@ public final class NodeVersionHistoryHelper {
                             return;
                         }
                     }
-=======
-        try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    orphanedChecker.perform(session);
-                    return null;
->>>>>>> .merge-right.r45654
                 }
 
                 private void delete(JCRSessionWrapper session) {
@@ -332,11 +292,7 @@ public final class NodeVersionHistoryHelper {
 
         } finally {
             checkingOrphans = false;
-<<<<<<< .working
             forceStop = false;
-=======
-            orphanedChecker = null;
->>>>>>> .merge-right.r45654
             out.echo("Done checking orphaned version history in {} ms. Status: {}",
                     (System.currentTimeMillis() - timer), status.toString());
         }
@@ -344,67 +300,13 @@ public final class NodeVersionHistoryHelper {
         return status;
     }
 
-<<<<<<< .working
     public static void forceStop() {
         forceStop = true;
-=======
-    public static synchronized UnusedVersionCheckStatus checkUnused(final long maxUnused, final boolean deleteUnused,
-            final long purgeOlderThanTimestamp, final Writer statusOut) throws RepositoryException {
-        if (checkingUnused) {
-            throw new IllegalStateException("The version history is currently beeing checked for orphans."
-                    + " Cannot start the second process.");
-        }
->>>>>>> .merge-right.r45654
-        checkingUnused = true;
-        long timer = System.currentTimeMillis();
-        final UnusedVersionCheckStatus status = new UnusedVersionCheckStatus();
-
-        final OutWrapper out = new OutWrapper(logger, statusOut);
-
-        out.echo("Start {} unused versions{}", deleteUnused ? "deleting" : "checking",
-                purgeOlderThanTimestamp <= 0 ? "" : (" older than " + new Date(purgeOlderThanTimestamp)));
-
-        unusedChecker = new UnusedVersionChecker(status, maxUnused, deleteUnused, out);
-
-        try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    unusedChecker.perform(session, purgeOlderThanTimestamp);
-                    return null;
-                }
-            });
-        } finally {
-            checkingUnused = false;
-            unusedChecker = null;
-            out.echo("Done checking unused versions in {} ms. Status: {}", (System.currentTimeMillis() - timer),
-                    status.toString());
-        }
-
-        return status;
     }
 
-<<<<<<< .working
     public static boolean isCheckingOrphans() {
         return checkingOrphans;
     }
-=======
-    public static void forceStopOrphanedCheck() {
-        if (orphanedChecker != null) {
-            orphanedChecker.stop();
-        }
-    }
-
-    public static void forceStopUnusedCheck() {
-        if (unusedChecker != null) {
-            unusedChecker.stop();
-        }
-    }
-
-    static void internalPurgeVersionHistories(List<InternalVersionHistory> histories, JCRSessionWrapper session,
-            VersionHistoryCheckStatus status) throws VersionException, RepositoryException {
-        SessionImpl providerSession = (SessionImpl) session.getProviderSession(session.getNode("/").getProvider());
-        InternalVersionManager vm = providerSession.getInternalVersionManager();
->>>>>>> .merge-right.r45654
 
     private static boolean nodeExists(String id, JCRSessionWrapper session)
             throws RepositoryException {
@@ -414,17 +316,6 @@ public final class NodeVersionHistoryHelper {
         } catch (ItemNotFoundException e) {
             return false;
         }
-<<<<<<< .working
-=======
-
-        if (result != null) {
-            if (!(status instanceof OrphanedVersionHistoryCheckStatus)) {
-                status.checked += histories.size();
-            }
-            status.deleted += result[0];
-            status.deletedVersionItems += result[1];
-        }
->>>>>>> .merge-right.r45654
     }
 
     private static boolean purgeVersionHistoryForNode(String nodeIdentifier,
@@ -435,27 +326,8 @@ public final class NodeVersionHistoryHelper {
                 .getNode("/").getProvider());
         InternalVersionManager vm = session.getInternalVersionManager();
 
-<<<<<<< .working
         if (logger.isDebugEnabled()) {
             logger.debug("Start purging version history for node {}", nodeIdentifier);
-=======
-    public static boolean isCheckingUnused() {
-        return checkingUnused;
-    }
-
-    static void purgeVersionHistories(List<NodeId> historyIds, JCRSessionWrapper session,
-            VersionHistoryCheckStatus status) throws VersionException, RepositoryException {
-        SessionImpl providerSession = (SessionImpl) session.getProviderSession(session.getNode("/").getProvider());
-        InternalVersionManager vm = providerSession.getInternalVersionManager();
-
-        List<InternalVersionHistory> histories = new LinkedList<InternalVersionHistory>();
-        for (NodeId id : historyIds) {
-            try {
-                histories.add(vm.getVersionHistory(id));
-            } catch (ItemNotFoundException e) {
-                // no history found
-            }
->>>>>>> .merge-right.r45654
         }
         InternalVersionHistory history = null;
         try {
@@ -579,22 +451,5 @@ public final class NodeVersionHistoryHelper {
 
     private NodeVersionHistoryHelper() {
         super();
-    }
-
-    static void purgeUnusedVersions(List<NodeId> unusedVersions, JCRSessionWrapper session,
-            UnusedVersionCheckStatus status) throws PathNotFoundException, RepositoryException {
-        SessionImpl providerSession = (SessionImpl) session.getProviderSession(session.getNode("/").getProvider());
-        InternalVersionManager vm = providerSession.getInternalVersionManager();
-
-        int result = 0;
-        if (vm instanceof InternalVersionManagerImpl) {
-            result = ((InternalVersionManagerImpl) vm).purgeUnusedVersions(providerSession, unusedVersions);
-        } else if (vm instanceof InternalXAVersionManager) {
-            result = ((InternalXAVersionManager) vm).purgeUnusedVersions(providerSession, unusedVersions);
-        } else {
-            logger.warn("Unknown implemmentation of the InternalVersionManager: {}.", vm.getClass().getName());
-        }
-
-        status.deletedVersionItems += result;
     }
 }

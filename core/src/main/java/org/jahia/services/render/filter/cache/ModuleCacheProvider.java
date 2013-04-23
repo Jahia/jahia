@@ -159,29 +159,16 @@ public class ModuleCacheProvider implements InitializingBean {
                 if (logger.isDebugEnabled() && !removed) {
                     logger.debug("Failed to remove " + dep + " from cache");
                 }
-                try {
-                    blockingCache.remove(keyGenerator.replaceField(key, "template", "hidden.load"),
-                            !propageToOtherClusterNodes);
-                    blockingCache.remove(keyGenerator.replaceField(key, "template", "hidden.header"),
-                            !propageToOtherClusterNodes);
-                    blockingCache.remove(keyGenerator.replaceField(key, "template", "hidden.footer"),
-                            !propageToOtherClusterNodes);
-                } catch (ParseException e) {
-                    logger.warn(e.getMessage(), e);
-                }
+                blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.load"),
+                        !propageToOtherClusterNodes);
+                blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.header"),
+                        !propageToOtherClusterNodes);
+                blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.footer"),
+                        !propageToOtherClusterNodes);
                 if (logger.isDebugEnabled()) {
                     logger.debug("Removing entry from module output cache: " + dep);
                 }
             }
-<<<<<<< .working
-            blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.load"), !propageToOtherClusterNodes);
-            blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.header"), !propageToOtherClusterNodes);
-            blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.footer"), !propageToOtherClusterNodes);
-            if(logger.isDebugEnabled()) {
-                logger.debug("Removing entry from module output cache: " + dep);
-            }
-=======
->>>>>>> .merge-right.r45643
         }
     }
 

@@ -366,8 +366,13 @@ public class PropertiesTabItem extends EditEngineTabItem {
 
     @Override
     public void setProcessed(boolean processed) {
-        if (!processed && langPropertiesEditorMap != null) {
-            langPropertiesEditorMap.clear();
+        if (!processed) {
+            if (langPropertiesEditorMap != null) {
+                langPropertiesEditorMap.clear();
+            }
+            if (changedProperties != null) {
+                changedProperties.clear();
+            }
             propertiesEditor = null;
         }
         super.setProcessed(processed);

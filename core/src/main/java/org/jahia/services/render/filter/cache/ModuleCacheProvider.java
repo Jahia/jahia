@@ -152,16 +152,36 @@ public class ModuleCacheProvider implements InitializingBean {
 
     private void invalidateDependencies(Set<String> deps, boolean propageToOtherClusterNodes) {
         for (String dep : deps) {
-            boolean removed = blockingCache.remove(dep, !propageToOtherClusterNodes);
-            if(logger.isDebugEnabled() && ! removed) {
-                logger.debug("Failed to remove "+dep+" from cache");
+            String key;
+            key = KeyCompressor.decodeKey(dep);
+            if (key != null) {
+                boolean removed = blockingCache.remove(key, !propageToOtherClusterNodes);
+                if (logger.isDebugEnabled() && !removed) {
+                    logger.debug("Failed to remove " + dep + " from cache");
+                }
+                try {
+                    blockingCache.remove(keyGenerator.replaceField(key, "template", "hidden.load"),
+                            !propageToOtherClusterNodes);
+                    blockingCache.remove(keyGenerator.replaceField(key, "template", "hidden.header"),
+                            !propageToOtherClusterNodes);
+                    blockingCache.remove(keyGenerator.replaceField(key, "template", "hidden.footer"),
+                            !propageToOtherClusterNodes);
+                } catch (ParseException e) {
+                    logger.warn(e.getMessage(), e);
+                }
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Removing entry from module output cache: " + dep);
+                }
             }
+<<<<<<< .working
             blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.load"), !propageToOtherClusterNodes);
             blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.header"), !propageToOtherClusterNodes);
             blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.footer"), !propageToOtherClusterNodes);
             if(logger.isDebugEnabled()) {
                 logger.debug("Removing entry from module output cache: " + dep);
             }
+=======
+>>>>>>> .merge-right.r45643
         }
     }
 

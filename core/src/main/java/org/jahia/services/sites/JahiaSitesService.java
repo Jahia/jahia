@@ -613,7 +613,7 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
         }
     }
 
-    private void setDefaultSite(JahiaSite site, JCRSessionWrapper session) throws RepositoryException {
+    public void setDefaultSite(JahiaSite site, JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper node = session.getNode(SITES_JCR_PATH);
         if (!node.isCheckedOut()) {
             session.checkout(node);

@@ -39,10 +39,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.modules.serversettings.users.management.UserProperties;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRObservationManager;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.NoCloseZipInputStream;
@@ -130,8 +127,14 @@ public class WebprojectHandler implements Serializable {
 
     @Autowired
     private transient JahiaTemplateManagerService templateManagerService;
+
     @Autowired
     private transient JahiaUserManagerService userManagerService;
+
+
+    @Autowired
+    private transient JCRTemplate template;
+
 
     private boolean validityCheckOnImport = true;
 
@@ -142,30 +145,41 @@ public class WebprojectHandler implements Serializable {
         }
     }
 
-    public void createSite(SiteBean bean) {
+    public void createSite(final SiteBean bean) {
 
         try {
-            JahiaSite site = sitesService
-                    .addSite(JCRSessionFactory.getInstance().getCurrentUser(), bean.getTitle(), bean.getServerName(),
-                            bean.getSiteKey(), bean.getDescription(), LanguageCodeConverters.getLocaleFromCode(bean
-                                    .getLanguage()), bean.getTemplateSet(),
-                            bean.getModules().toArray(new String[bean.getModules().size()]), null, null, null, null,
-                            null, null);
+            template.doExecuteWithSystemSession(new JCRCallback<Object>() {
+                @Override
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    try {
+                        JahiaSite site = sitesService
+                                .addSite(JCRSessionFactory.getInstance().getCurrentUser(), bean.getTitle(),
+                                        bean.getServerName(), bean.getSiteKey(), bean.getDescription(),
+                                        LanguageCodeConverters.getLocaleFromCode(bean.getLanguage()),
+                                        bean.getTemplateSet(), bean.getModules().toArray(
+                                        new String[bean.getModules().size()]), null, null, null, null, null, null, null,
+                                        null, session);
 
-            // set as default site
-            if (bean.isDefaultSite()) {
-                sitesService.setDefaultSite(site);
-            }
+                        // set as default site
+                        if (bean.isDefaultSite()) {
+                            sitesService.setDefaultSite(site,session);
+                        }
 
-            if (bean.isCreateAdmin()) {
-                UserProperties admin = bean.getAdminProperties();
-                JahiaUser adminSiteUser = userManagerService.createUser(admin.getUsername(), admin.getPassword(),
-                        admin.getUserProperties());
-                groupManagerService.getAdministratorGroup(site.getSiteKey()).addMember(adminSiteUser);
-            }
-        } catch (JahiaException e) {
-            logger.error(e.getMessage(), e);
-        } catch (IOException e) {
+                        if (bean.isCreateAdmin()) {
+                            UserProperties admin = bean.getAdminProperties();
+                            JahiaUser adminSiteUser = userManagerService.createUser(admin.getUsername(), admin.getPassword(),
+                                    admin.getUserProperties());
+                            groupManagerService.getAdministratorGroup(site.getSiteKey()).addMember(adminSiteUser);
+                        }
+                    } catch (JahiaException e) {
+                        logger.error(e.getMessage(), e);
+                    } catch (IOException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                    return null;  //To change body of implemented methods use File | Settings | File Templates.
+                }
+            });
+        } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
 

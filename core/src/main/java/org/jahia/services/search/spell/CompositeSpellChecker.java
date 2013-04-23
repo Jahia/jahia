@@ -465,46 +465,49 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                                             new JCRCallback<Set<String>>() {
                                                 public Set<String> doInJCR(JCRSessionWrapper session)
                                                         throws RepositoryException {
-                                                    IndexReader reader = null;
-                                                    try {
-                                                        reader = handler.getIndexReader();
-                                                        long time = System.currentTimeMillis();
-                                                        logger.debug("Starting spell checker index refresh");
-                                                        List<JCRSiteNode> siteNodes = JahiaSitesService.getInstance().getSitesNodeList(session);
-                                                        for (JCRSiteNode siteNode : siteNodes) {
-                                                            for (String language : siteNode.getLanguages()) {
-                                                                StringBuilder fullTextName = new StringBuilder(
-                                                                        FieldNames.FULLTEXT);
+                                                    if (session.nodeExists("/sites")) {
+                                                        IndexReader reader = null;
+                                                        try {
+                                                            reader = handler.getIndexReader();
+                                                            long time = System.currentTimeMillis();
+                                                            logger.debug("Starting spell checker index refresh");
+                                                            List<JCRSiteNode> siteNodes = JahiaSitesService.getInstance().getSitesNodeList(
+                                                                    session);
+                                                            for (JCRSiteNode siteNode : siteNodes) {
+                                                                for (String language : siteNode.getLanguages()) {
+                                                                    StringBuilder fullTextName = new StringBuilder(
+                                                                            FieldNames.FULLTEXT);
 
-                                                                String name = siteNode.getName();
-                                                                fullTextName.append("-").append(name);
+                                                                    String name = siteNode.getName();
+                                                                    fullTextName.append("-").append(name);
 
-                                                                // add language independend
-                                                                // fulltext values first
-                                                                spellChecker.indexDictionary(new LuceneDictionary(
-                                                                        reader, fullTextName.toString()), 300, 10, name,
-                                                                        language);
+                                                                    // add language independend
+                                                                    // fulltext values first
+                                                                    spellChecker.indexDictionary(new LuceneDictionary(
+                                                                            reader, fullTextName.toString()), 300, 10,
+                                                                            name, language);
 
-                                                                // add language dependend
-                                                                // fulltext values
-                                                                if (language != null) {
-                                                                    fullTextName.append("-").append(language);
+                                                                    // add language dependend
+                                                                    // fulltext values
+                                                                    if (language != null) {
+                                                                        fullTextName.append("-").append(language);
+                                                                    }
+                                                                    spellChecker.indexDictionary(new LuceneDictionary(
+                                                                            reader, fullTextName.toString()), 300, 10,
+                                                                            name, language);
                                                                 }
-                                                                spellChecker.indexDictionary(new LuceneDictionary(
-                                                                        reader, fullTextName.toString()), 300, 10, name,
-                                                                        language);
                                                             }
-                                                        }
-                                                        logger.info("Spell checker index refreshed in {} ms",
-                                                                System.currentTimeMillis() - time);
-                                                    } catch (IOException e) {
-                                                        logger.error(e.getMessage(), e);
-                                                    } finally {
-                                                        if (reader != null) {
-                                                            try {
-                                                                reader.close();
-                                                            } catch (IOException e) {
-                                                                logger.error(e.getMessage(), e);
+                                                            logger.info("Spell checker index refreshed in {} ms",
+                                                                    System.currentTimeMillis() - time);
+                                                        } catch (IOException e) {
+                                                            logger.error(e.getMessage(), e);
+                                                        } finally {
+                                                            if (reader != null) {
+                                                                try {
+                                                                    reader.close();
+                                                                } catch (IOException e) {
+                                                                    logger.error(e.getMessage(), e);
+                                                                }
                                                             }
                                                         }
                                                     }

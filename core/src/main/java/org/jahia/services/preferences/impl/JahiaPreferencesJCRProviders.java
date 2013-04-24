@@ -40,8 +40,6 @@
 
 package org.jahia.services.preferences.impl;
 
-import org.apache.jackrabbit.util.ISO9075;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.preferences.JahiaPreference;
@@ -52,6 +50,7 @@ import org.jahia.services.preferences.exception.JahiaPreferenceNotDefinedPropert
 import org.jahia.services.preferences.exception.JahiaPreferencesNotValidException;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -71,7 +70,7 @@ import java.util.Map;
  * Time: 12:18:34
  */
 public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements JahiaPreferencesProvider<T> {
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaPreferencesJCRProviders.class);
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(JahiaPreferencesJCRProviders.class);
 
     // node name
     private static final String PREFERENCE = "preference";
@@ -103,17 +102,6 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
 
     public void setJCRSessionFactory(JCRSessionFactory jcrStoreService) {
         this.sessionFactory = jcrStoreService;
-    }
-
-    /**
-     * Create a new JahiaPrefrence Node
-     *
-     * @param processingContext to define the execution context of the method
-     * @return the newly created JahiaPreference
-     */
-    public JahiaPreference createJahiaPreferenceNode(ProcessingContext processingContext) {
-        JahiaPreference jahiaPreference = createJahiaPreferenceNode(processingContext.getUser());
-        return jahiaPreference;
     }
 
     /**
@@ -204,7 +192,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
     /**
      * Get all preferences of a user.
      * WARNING: if there is lots of preferences, it can be time consuming.
-     * @param principal the user for whom we want the prefrences
+     * @param principal the user for whom we want the preferences
      * @return a List of all JahiaPreference for this user
      */
     public List<JahiaPreference<T>> getJahiaAllPreferences(Principal principal) {
@@ -212,8 +200,8 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
     }
 
     /**
-     * Find all preferences for a user mathing certain sqlConstraint
-     * @param principal the user for whom we want the prefrences
+     * Find all preferences for a user matching certain sqlConstraint
+     * @param principal the user for whom we want the preferences
      * @param sqlConstraint the sql constraint of the preference
      * @return a List of all JahiaPreference for this user
      */
@@ -231,19 +219,9 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
     }
 
     /**
-     * Get all jahia preferences
-     *
-     * @param processingContext the execution context for this method
-     * @return a List of all JahiaPreference for this user
-     */
-    public List<JahiaPreference<T>> getAllJahiaPreferences(ProcessingContext processingContext) {
-        return getJahiaAllPreferences(processingContext.getUser());
-    }
-
-    /**
      * Delete Jahia Preference
      *
-     * @param principal the user for whom we want the prefrences
+     * @param principal the user for whom we want the preferences
      * @param sqlConstraint the sql constraint of the preference
      * @throws JahiaPreferenceNotDefinedAttributeException
      *

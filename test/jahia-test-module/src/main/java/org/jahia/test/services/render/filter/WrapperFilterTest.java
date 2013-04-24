@@ -40,7 +40,8 @@
 
 package org.jahia.test.services.render.filter;
 
-import org.jahia.params.ParamBean;
+import static junit.framework.Assert.assertTrue; 
+
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.render.RenderContext;
@@ -55,15 +56,15 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
-import org.jahia.data.JahiaData;
 import org.jahia.test.JahiaAdminUser;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Locale;
 import java.util.regex.Pattern;
-
-import junit.framework.TestCase;
 
 /**
  * Unit test for the {@link WrapperFilter} 
@@ -71,22 +72,16 @@ import junit.framework.TestCase;
  * Date: Nov 26, 2009
  * Time: 12:57:51 PM
  */
-public class WrapperFilterTest extends TestCase {
-    private ParamBean paramBean;
+public class WrapperFilterTest extends JahiaTestCase {
     private JCRSiteNode site;
     private JCRSessionWrapper session;
     private JCRNodeWrapper node;
 
-    @Override
+    @Before
     protected void setUp() throws Exception {
         JahiaSite site = TestHelper.createSite("test");
-
-        paramBean = (ParamBean) Jahia.getThreadParamBean();
-
-        paramBean.getSession(true).setAttribute(ParamBean.SESSION_SITE, site);
-
-        JahiaData jData = new JahiaData(paramBean, false);
-        paramBean.setAttribute(JahiaData.JAHIA_DATA, jData);
+        
+        setSessionSite(site);
 
         session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
         this.site = (JCRSiteNode) session.getNode("/sites/"+site.getSiteKey());
@@ -103,18 +98,19 @@ public class WrapperFilterTest extends TestCase {
         session.save();
     }
 
-    @Override
+    @After
     protected void tearDown() throws Exception {
         TestHelper.deleteSite("test");
         node.remove();
         session.save();
     }
 
+    @Test
     public void testFullpageWrapper() throws Exception {
 
         JahiaUser admin = JahiaAdminUser.getAdminUser(0);
 
-        RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
+        RenderContext context = new RenderContext(getRequest(), getResponse(), admin);
         context.setSite(site);
         Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);

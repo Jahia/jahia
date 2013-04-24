@@ -49,8 +49,6 @@
       </constructor-arg>
   </bean>
 
-	<bean id="org.jahia.params.ProcessingContextFactory" class="org.jahia.params.ProcessingContextFactoryImpl" />
-
     <bean id="JCRContentUtils" class="org.jahia.services.content.JCRContentUtils">
         <constructor-arg index="0">
             <map>

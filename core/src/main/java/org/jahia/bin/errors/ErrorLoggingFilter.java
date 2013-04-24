@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 
@@ -372,25 +373,16 @@ public class ErrorLoggingFilter implements Filter {
     }
 
     protected static String getUserInfo(HttpServletRequest request) {
-        String info = null;
-
-        // processing context available?
-        ProcessingContext ctx = (ProcessingContext) request
-                .getAttribute("org.jahia.params.ParamBean");
-        info = ctx != null && ctx.getUser() != null ? ctx.getUser()
-                .getUsername() : null;
-
-        if (null == info) {
-            // try out session user
-            JahiaUser user = null;
+        JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
+        if (user == null) {
             try {
                 user = (JahiaUser) request.getSession(true).getAttribute(
                         ProcessingContext.SESSION_USER);
-                info = user != null ? user.getUsername() : null;
             } catch (IllegalStateException ex) {
                 // ignore it
             }
         }
+        String info = user != null ? user.getUsername() : null;
 
         // last chance: request's user principal
         info = info != null ? info : String.valueOf(request.getUserPrincipal());

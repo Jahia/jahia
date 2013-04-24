@@ -42,8 +42,6 @@ package org.jahia.test.services.render.filter.cache;
 
 import net.sf.ehcache.Element;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
-import org.jahia.params.ParamBean;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.channels.Channel;
@@ -146,8 +144,7 @@ public class CacheFilterTest extends JahiaTestCase {
         
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
         JCRNodeWrapper node = liveSession.getNode("/sites/"+TESTSITE_NAME+"/home/testContent");
-        ParamBean paramBean = (ParamBean)Jahia.getThreadParamBean();        
-        RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
+        RenderContext context = new RenderContext(getRequest(), getResponse(), admin);
         context.setSite(node.getResolveSite());
         context.setServletPath("/render");
         ChannelService channelService = (ChannelService) SpringContextSingleton.getInstance().getContext().getBean("ChannelService");
@@ -192,8 +189,7 @@ public class CacheFilterTest extends JahiaTestCase {
                 Constants.LIVE_WORKSPACE, Locale.ENGLISH, new JCRCallback<Boolean>() {
                     public Boolean doInJCR(JCRSessionWrapper session)
                             throws RepositoryException {
-                        ParamBean paramBean = (ParamBean)Jahia.getThreadParamBean();
-                        RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), session.getUser());
+                        RenderContext context = new RenderContext(getRequest(), getResponse(), session.getUser());
                         context.setSite(node.getResolveSite());
                         ChannelService channelService = (ChannelService) SpringContextSingleton.getInstance().getContext().getBean("ChannelService");
                         context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));
@@ -263,8 +259,7 @@ public class CacheFilterTest extends JahiaTestCase {
         
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
         JCRNodeWrapper node = liveSession.getNode("/sites/"+TESTSITE_NAME+"/home/testContent");        
-        ParamBean paramBean = (ParamBean)Jahia.getThreadParamBean();
-        RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
+        RenderContext context = new RenderContext(getRequest(), getResponse(), admin);
         context.setSite(node.getResolveSite());
         ChannelService channelService = (ChannelService) SpringContextSingleton.getInstance().getContext().getBean("ChannelService");
         context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));        

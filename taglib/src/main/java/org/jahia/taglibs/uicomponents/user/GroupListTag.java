@@ -40,17 +40,17 @@
 
 package org.jahia.taglibs.uicomponents.user;
 
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerProvider;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.*;
@@ -67,7 +67,7 @@ import java.util.*;
  */
 @SuppressWarnings("serial")
 public class GroupListTag extends AbstractJahiaTag {
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(GroupListTag.class);
+    private static final Logger logger = LoggerFactory.getLogger(GroupListTag.class);
     private static final JahiaGroupManagerService GroupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
 
     private int displaylimit = 10;
@@ -82,24 +82,17 @@ public class GroupListTag extends AbstractJahiaTag {
     private boolean viewMembers = false;
 
     public int doStartTag() throws JspException {
-        //logger.debug("startag");
-
-        final JspWriter out = pageContext.getOut();
-        final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-        final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
-
-        //we check jParams
-        if (jParams == null) {
-            logger.debug("JParams is not available or null!");
+        RenderContext ctx = getRenderContext();
+        if (ctx == null) {
             return SKIP_BODY;
         }
-
+        
         //the list of providers
         List<? extends JahiaGroupManagerProvider> thelist = GroupService.getProviderList();//the list of all available providers
         final Set<JahiaGroup> searchResults = new HashSet<JahiaGroup>();
         Properties searchParameters = new Properties();
         StringBuffer sb = new StringBuffer();
-        int siteID = jParams.getSiteID();
+        String siteKey = ctx.getSite().getSiteKey();
         if (query == null || query.equalsIgnoreCase("")) query = "*";//default query
         if (query.indexOf("*") == -1) query += "*";
 
@@ -126,7 +119,7 @@ public class GroupListTag extends AbstractJahiaTag {
         if (thelist.size() == 1 || getScope().equalsIgnoreCase("all") || getScope().equalsIgnoreCase("everywhere")) {
             logger.debug("searching all");
             //we search on the current siteID domain
-            searchResults.addAll(GroupService.searchGroups(siteID, searchParameters));
+            searchResults.addAll(GroupService.searchGroups(siteKey, searchParameters));
         } else {
             String delimitor = " ";
             if (getScope().indexOf(",") != -1) delimitor = ",";
@@ -137,7 +130,7 @@ public class GroupListTag extends AbstractJahiaTag {
                     String token = tk.nextToken();
                     if (curProvider.getKey().trim().toLowerCase().indexOf(token.toLowerCase()) != -1) {
                         logger.debug("searching in " + curProvider.getKey());
-                        searchResults.addAll(GroupService.searchGroups(curProvider.getKey(), siteID, searchParameters));
+                        searchResults.addAll(GroupService.searchGroups(curProvider.getKey(), siteKey, searchParameters));
                     }
                 }
             }
@@ -190,7 +183,7 @@ public class GroupListTag extends AbstractJahiaTag {
             count++;
         }
         try {
-            out.println(sb.toString());
+            pageContext.getOut().println(sb.toString());
         } catch (IOException e) {
             logger.error("Error while rendering the group list tag", e);
         }

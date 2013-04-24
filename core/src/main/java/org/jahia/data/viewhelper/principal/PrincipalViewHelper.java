@@ -46,9 +46,7 @@ import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.sites.JahiaSite;
@@ -556,30 +554,6 @@ public class PrincipalViewHelper implements Serializable {
      * Get the user search result from the parameter form given by the request.
      * If the form is not in the request then all the Jahia users will be search.
      *
-     * @param processingContext the context that should contain the HTML formular with the
-     *                          following fields :
-     *                          - searchString
-     *                          - searchIn
-     *                          - properties
-     *                          - storedOn
-     *                          - providers
-     * @return a Properties object that contain the search criterium
-     */
-    public static Set<Principal> getSearchResult(ProcessingContext processingContext) {
-
-        String searchString = processingContext.getParameter("searchString");
-        String searchIn = processingContext.getParameter("searchIn");
-        String[] searchInProps = processingContext.getParameterValues("properties");
-        String storedOn = processingContext.getParameter("storedOn");
-        String[] providers = processingContext.getParameterValues("providers");
-
-        return getSearchResult(searchIn, searchString, searchInProps, storedOn, providers);
-    }
-
-    /**
-     * Get the user search result from the parameter form given by the request.
-     * If the form is not in the request then all the Jahia users will be search.
-     *
      * @param request the request that should contain the HTML formular with the
      *                following fields :
      *                - searchString
@@ -639,31 +613,6 @@ public class PrincipalViewHelper implements Serializable {
         return searchResults;
     }
 
-
-    /**
-     * Get the group search result from the parameter form given by the request.
-     * If the form is not in the request then all the Jahia groups will be search.
-     *
-     * @param processingContext the context that should contain the HTML formular with the
-     *                          following fields :
-     *                          - searchString
-     *                          - searchIn
-     *                          - properties
-     *                          - storedOn
-     *                          - providers
-     * @param siteID            The site ID containing the principal to search
-     * @return a Properties object that contain the search criterium
-     */
-    public static Set<Principal> getGroupSearchResult(ProcessingContext processingContext, int siteID) {
-
-        String searchString = processingContext.getParameter("searchString");
-        String searchIn = processingContext.getParameter("searchIn");
-        String[] searchInProps = processingContext.getParameterValues("properties");
-        String storedOn = processingContext.getParameter("storedOn");
-        String[] providers = processingContext.getParameterValues("providers");
-
-        return getGroupSearchResult(searchIn, siteID, searchString, searchInProps, storedOn, providers);
-    }
 
     /**
      * Get the group search result from the parameter form given by the request.
@@ -777,10 +726,6 @@ public class PrincipalViewHelper implements Serializable {
     private static Locale getLocale() {
         Locale locale = JCRSessionFactory.getInstance().getCurrentLocale();
         if (locale == null) {
-            // we are in Jahia Administration perhaps
-            locale = Jahia.getThreadParamBean() != null ? Jahia.getThreadParamBean().getUILocale() : null;
-        }
-        if (locale == null) {
             locale = SettingsBean.getInstance().getDefaultLocale();
         }
         if (locale == null) {
@@ -804,6 +749,8 @@ public class PrincipalViewHelper implements Serializable {
     }
 
     private static class PrincipalComparator implements Comparator<Principal>,Serializable {
+        private static final long serialVersionUID = 7942666955260548143L;
+
         public int compare(Principal o1, Principal o2) {
             if(o1 == o2) { return 0; }
             if(o1 == null || o1.getName() == null) { return 1; }

@@ -63,7 +63,6 @@ import org.jahia.api.Constants;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.JahiaService;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
@@ -78,6 +77,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.services.workflow.WorkflowService;
+import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.*;
 import org.springframework.core.io.FileSystemResource;
 
@@ -387,9 +387,6 @@ public class Service extends JahiaService {
     private void processFileImport(List<Map<Object, Object>> importsInfos, JahiaUser user)
             throws IOException, ServletException, JahiaException {
 
-        ProcessingContext ctx = new ProcessingContext(System.currentTimeMillis(), null,
-                user, ProcessingContext.EDIT);
-
         for (Map<Object, Object> infos : importsInfos) {
             File file = (File) infos.get("importFile");
             if (infos.get("importFileName").equals("users.xml")) {
@@ -402,7 +399,7 @@ public class Service extends JahiaService {
             File file = (File) infos.get("importFile");
             if (infos.get("type").equals("files")) {
                 try {
-                    ImportExportBaseService.getInstance().importSiteZip(file == null ? null : new FileSystemResource(file), ctx.getSite(), infos);
+                    ImportExportBaseService.getInstance().importSiteZip(file == null ? null : new FileSystemResource(file), null, infos);
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }
@@ -416,9 +413,12 @@ public class Service extends JahiaService {
                     tpl = null;
                 }
                 try {
+                    Locale locale = infos.containsKey("defaultLanguage") ? LanguageCodeConverters
+                            .languageCodeToLocale((String) infos.get("defaultLanguage")) : settingsBean
+                            .getDefaultLocale();
                         sitesService.addSite(user, (String) infos.get(
                                 "sitetitle"), (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
-                                ctx.getLocale(), tpl,
+                                locale, tpl,
                                 "fileImport", file == null ? null : new FileSystemResource(file),
                                 (String) infos.get(
                                         "importFileName"), true,

@@ -48,8 +48,11 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorkflowVariable;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.apache.commons.lang.StringUtils;
 import org.drools.spi.KnowledgeHelper;
-import org.jahia.bin.Jahia;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.tasks.Task;
 import org.jahia.services.tasks.TaskService;
 
@@ -62,14 +65,12 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * 
- *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
  *        Created : 5 janv. 2010
  */
 public class Tasks {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(Tasks.class);
+    private transient static Logger logger = LoggerFactory.getLogger(Tasks.class);
 
     private static Tasks instance;
     private TaskService taskService;
@@ -105,10 +106,20 @@ public class Tasks {
 
     public void createTaskForGroupMembers(String group, String title, String description, KnowledgeHelper drools)
     throws RepositoryException {
-        Integer siteId = Jahia.getThreadParamBean() != null ? Jahia.getThreadParamBean().getSiteID() : null;
-        if (siteId == null) {
-            logger.warn("Current site cannot be detected. Skip adding new task for members of group '" + group + "'");
-            return;
+        int siteId = 0;
+        if (group.startsWith("/sites/")) {
+            String siteKey = StringUtils.substringBetween(group, "/sites/", "/");
+            try {
+                JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteKey);
+                if (site != null) {
+                    siteId = site.getID();
+                }
+            } catch (JahiaException e) {
+                logger.warn("Unable to find site for key " + siteKey, e);
+            }
+        }
+        if (group.indexOf('/') != -1) {
+            group = StringUtils.substringAfterLast(group, "/");
         }
         taskService.createTaskForGroup(new Task(title, description), group, siteId);
     }

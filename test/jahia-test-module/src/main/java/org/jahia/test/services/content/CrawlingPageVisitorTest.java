@@ -58,7 +58,6 @@ import org.apache.nutch.crawl.Injector;
 import org.apache.nutch.fetcher.Fetcher;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
-import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -263,12 +262,11 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
     private List<String> getBaseUrls(String workspace, String sitePath) {
         List<String> urls = new ArrayList<String>();
         try {
-            ParamBean ctx = (ParamBean) Jahia.getThreadParamBean();
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace,
                     LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
 
             // generate seedlist
-            RenderContext renderCtx = new RenderContext(ctx.getRequest(), ctx.getResponse(), ctx.getUser());
+            RenderContext renderCtx = new RenderContext(getRequest(), getResponse(), getUser());
                         
             JCRNodeWrapper homeNode = null;
             try {

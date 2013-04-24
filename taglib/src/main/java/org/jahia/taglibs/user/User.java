@@ -41,9 +41,7 @@
 package org.jahia.taglibs.user;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.Jahia;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -105,11 +103,6 @@ public class User {
         int siteId = 0;
         if (renderContext != null && renderContext.getSite() != null) {
             siteId = renderContext.getSite().getID();
-        } else {
-             final ProcessingContext jParams = Jahia.getThreadParamBean();
-             if (jParams != null) {
-                 siteId = jParams.getSiteID();
-             }
         }
         return siteId;
     }

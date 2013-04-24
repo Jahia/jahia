@@ -44,14 +44,12 @@ import java.io.IOException;
 
 import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.ValueJahiaTag;
-import org.jahia.data.JahiaData;
-import org.jahia.params.ProcessingContext;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -59,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  */
 @SuppressWarnings("serial")
 public class IsLoginErrorTag extends ValueJahiaTag {
-    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(IsLoginErrorTag.class);
+    private static final transient Logger logger = LoggerFactory.getLogger(IsLoginErrorTag.class);
 
     public int doStartTag() {
         final String valveResult = (String) pageContext.findAttribute(LoginEngineAuthValveImpl.VALVE_RESULT);

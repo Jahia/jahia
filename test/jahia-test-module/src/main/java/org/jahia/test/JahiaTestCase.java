@@ -45,6 +45,8 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 
 import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -55,6 +57,10 @@ import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRPublicationService;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.test.bin.BaseTestController;
 
 /**
  * Super class for Jahia tests
@@ -63,21 +69,47 @@ import org.jahia.services.content.JCRPublicationService;
  */
 public class JahiaTestCase {
 
-    private static Logger logger = Logger.getLogger(JahiaTestCase.class);
-
     private final static String PORT = "9090";
+    
     private final static String BASE_URL = "http://localhost:" + PORT;
 
-    private HttpClient client;
-    
+    private static Logger logger = Logger.getLogger(JahiaTestCase.class);
+
+    /**
+     * Returns the <code>HttpServletRequest</code> object for the current call.
+     * 
+     * @return current {@link HttpServletRequest} object
+     */
+    protected static final HttpServletRequest getRequest() {
+        return BaseTestController.getThreadLocalRequest();
+    }
+
+    /**
+     * Returns the <code>HttpServletResponse</code> object for the current call.
+     * 
+     * @return current {@link HttpServletResponse} object
+     */
+    protected static final HttpServletResponse getResponse() {
+        return BaseTestController.getThreadLocalResponse();
+    }
+
+    protected static final JahiaUser getUser() {
+        return JCRSessionFactory.getInstance().getCurrentUser();
+    }
+
     protected static void publishAll(String nodeIdentifier) throws RepositoryException {
         JCRPublicationService.getInstance().publishByMainId(nodeIdentifier);
     }
-    
+
+    protected static void setSessionSite(JahiaSite site) {
+        getRequest().getSession(true).setAttribute(ProcessingContext.SESSION_SITE, site);
+    }
+
+    private HttpClient client;
+
     protected String getAsText(String relativeUrl) {
         String body = StringUtils.EMPTY;
-        GetMethod getMethod = new GetMethod(getBaseServerURL() + Jahia.getContextPath()
-                + relativeUrl);
+        GetMethod getMethod = new GetMethod(getBaseServerURL() + Jahia.getContextPath() + relativeUrl);
         try {
             int responseCode = getHttpClient().executeMethod(getMethod);
             assertEquals("Response code is not OK: " + responseCode, 200, responseCode);
@@ -87,22 +119,22 @@ public class JahiaTestCase {
         } finally {
             getMethod.releaseConnection();
         }
-        
+
         return body;
     }
 
     protected String getBaseServerURL() {
-        ProcessingContext ctx = Jahia.getThreadParamBean();
-        String url = ctx != null ? ctx.getScheme() + "://" + ctx.getServerName() + ":" + ctx.getServerPort() : BASE_URL;
+        HttpServletRequest req = getRequest();
+        String url = req != null ? req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() : BASE_URL;
         logger.info("Base URL for tests is: " + url);
         return url;
     }
 
     protected String getBaseServerURLPort() {
-        ProcessingContext ctx = Jahia.getThreadParamBean();
-        return ctx !=  null ? String.valueOf(ctx.getServerPort()) : PORT;
+        HttpServletRequest req = getRequest();
+        return req != null ? String.valueOf(getRequest().getServerPort()) : PORT;
     }
-    
+
     protected HttpClient getHttpClient() {
         if (client == null) {
             client = new HttpClient();
@@ -129,7 +161,7 @@ public class JahiaTestCase {
     protected void loginRoot() {
         login("root", "root1234");
     }
-    
+
     protected void logout() {
         PostMethod logoutMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/logout");
         logoutMethod.addParameter("redirectActive", "false");

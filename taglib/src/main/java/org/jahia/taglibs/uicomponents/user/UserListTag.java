@@ -43,17 +43,13 @@ package org.jahia.taglibs.uicomponents.user;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 
-import org.slf4j.Logger;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerProvider;
@@ -84,21 +80,12 @@ public class UserListTag extends AbstractJahiaTag {
 
     public int doStartTag() {
         final JspWriter out = pageContext.getOut();
-        final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-        final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
-
-        //we check jParams
-        if (jParams == null) {
-            logger.debug("JParams is not available or null!");
-            return SKIP_BODY;
-        }
 
         //the list of providers
         List<? extends JahiaUserManagerProvider> thelist = userservice.getProviderList();//the list of all available providers
         final Set<Principal> searchResults = new HashSet<Principal>();
         Properties searchParameters = new Properties();
         StringBuffer sb = new StringBuffer();
-        int siteID = jParams.getSiteID();
         if (query == null || query.equalsIgnoreCase("")) query = "*";//default query
         if (query.indexOf("*") == -1) query += "*";
 

@@ -41,14 +41,13 @@
 package org.jahia.test;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.Jahia;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
@@ -117,7 +116,6 @@ public class TestHelper {
                                        String prepackedZIPFile, String siteZIPName, String[] modulesToDeploy) throws Exception {
         modulesToDeploy = (modulesToDeploy == null) ? new String[0] : modulesToDeploy;
 
-        ProcessingContext ctx = Jahia.getThreadParamBean();
         JahiaUser admin = JahiaAdminUser.getAdminUser(0);
 
         JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
@@ -179,10 +177,9 @@ public class TestHelper {
                     logger.warn("shared.zip could not be imported", e);
                 }
             }
-            site = service.addSite(admin, name, serverName, name, name, ctx.getLocale(),
+            site = service.addSite(admin, name, serverName, name, name, SettingsBean.getInstance().getDefaultLocale(),
                     templateSet, modulesToDeploy, siteZIPFile == null ? "noImport" : "fileImport", siteZIPFile != null ? new FileSystemResource(siteZIPFile) : null,
                     null, false, false, null);
-            ctx.setSite(site);
         } finally {
             if (sharedZIPFile != null) {
                 sharedZIPFile.delete();

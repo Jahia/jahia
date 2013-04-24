@@ -42,12 +42,12 @@ package org.jahia.test.services.content.interceptor;
 
 import static junit.framework.Assert.*;
 
-import org.jahia.params.ParamBean;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.interceptor.URLInterceptor;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.jahia.bin.Jahia;
 import org.junit.After;
@@ -66,8 +66,7 @@ import java.util.Locale;
  * Date: Nov 30, 2009
  * Time: 5:30:59 PM
  */
-public class URLInterceptorTest {
-    private static ParamBean paramBean;
+public class URLInterceptorTest extends JahiaTestCase {
     private static JahiaSite site;
     private static JCRSessionWrapper session;
     private static JCRSessionWrapper localizedSession;
@@ -77,14 +76,7 @@ public class URLInterceptorTest {
     public static void oneTimeSetUp() throws Exception {
         site = TestHelper.createSite("test");
 
-        paramBean = (ParamBean) Jahia.getThreadParamBean();
-
-        paramBean.getSession(true).setAttribute(ParamBean.SESSION_SITE, site);
-
-        /*
-        JahiaData jData = new JahiaData(paramBean, false);
-        paramBean.setAttribute(JahiaData.JAHIA_DATA, jData);
-        */
+        setSessionSite(site);
     }
 
     @Before

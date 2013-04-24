@@ -197,6 +197,7 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
         try {
             site = getSiteByKey(siteKey, getUserSession());
         } catch (PathNotFoundException e) {
+            logger.warn("Unable to find site for key {}", siteKey);
             return null;
         } catch (RepositoryException e) {
             logger.error("cannot get site", e);

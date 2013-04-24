@@ -40,8 +40,6 @@
 
 package org.jahia.test.services.render.filter;
 
-import org.jahia.bin.Jahia;
-import org.jahia.params.ParamBean;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelService;
@@ -58,6 +56,7 @@ import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.test.JahiaAdminUser;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.junit.After;
 import org.junit.Before;
@@ -70,7 +69,7 @@ import static org.junit.Assert.assertTrue;
  *
  * @author Sergiy Shyrkov
  */
-public class ConditionalFilterTest {
+public class ConditionalFilterTest extends JahiaTestCase {
 
     private static class TestFilter extends AbstractFilter {
         @Override
@@ -81,7 +80,6 @@ public class ConditionalFilterTest {
     }
 
     private JCRNodeWrapper node;
-    private ParamBean paramBean;
     private JCRSessionWrapper session;
     private JCRSiteNode site;
 
@@ -89,9 +87,7 @@ public class ConditionalFilterTest {
     public void setUp() throws Exception {
         JahiaSite site = TestHelper.createSite("test");
 
-        paramBean = (ParamBean) Jahia.getThreadParamBean();
-
-        paramBean.getSession(true).setAttribute(ParamBean.SESSION_SITE, site);
+        setSessionSite(site);
 
         session = JCRSessionFactory.getInstance().getCurrentUserSession();
         this.site = (JCRSiteNode) session.getNode("/sites/" + site.getSiteKey());
@@ -130,7 +126,7 @@ public class ConditionalFilterTest {
         outFilter.setPriority(20);
         outFilter.setRenderService(RenderService.getInstance());
 
-        RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
+        RenderContext context = new RenderContext(getRequest(), getResponse(), admin);
         context.setSite(site);
         ChannelService channelService = (ChannelService) SpringContextSingleton.getInstance().getContext().getBean("ChannelService");
         context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));
@@ -215,7 +211,7 @@ public class ConditionalFilterTest {
         outFilter.setPriority(20);
         outFilter.setRenderService(RenderService.getInstance());
 
-        RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
+        RenderContext context = new RenderContext(getRequest(), getResponse(), admin);
         context.setSite(site);
         ChannelService channelService = (ChannelService) SpringContextSingleton.getInstance().getContext().getBean("ChannelService");
         context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));        
@@ -302,7 +298,7 @@ public class ConditionalFilterTest {
         outFilter.setPriority(20);
         outFilter.setRenderService(RenderService.getInstance());
 
-        RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
+        RenderContext context = new RenderContext(getRequest(), getResponse(), admin);
         context.setSite(site);
         ChannelService channelService = (ChannelService) SpringContextSingleton.getInstance().getContext().getBean("ChannelService");
         context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));        
@@ -379,7 +375,7 @@ public class ConditionalFilterTest {
         outFilter.setPriority(20);
         outFilter.setRenderService(RenderService.getInstance());
 
-        RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
+        RenderContext context = new RenderContext(getRequest(), getResponse(), admin);
         context.setSite(site);
         ChannelService channelService = (ChannelService) SpringContextSingleton.getInstance().getContext().getBean("ChannelService");
         context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));        

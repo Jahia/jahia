@@ -34,7 +34,7 @@ global Tasks tasks
 #       The node has a parent
 #   then
 #       Log "Notifying members of the group '" + parent.getParent().getName() + "' about new member '" + node.getName()
-#       Create task "New member in the group" with description "A new member was added to the group." for members of group parent.getParent().getName()
+#       Create task "New member in the group" with description "A new member was added to the group." for members of group parent.getParent().getPath()
 #end
 
 #rule "A task has been created"

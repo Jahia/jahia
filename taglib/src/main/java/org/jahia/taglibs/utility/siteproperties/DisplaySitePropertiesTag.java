@@ -40,17 +40,12 @@
 
 package org.jahia.taglibs.utility.siteproperties;
 
-import org.jahia.data.JahiaData;
-import org.jahia.params.ProcessingContext;
-import org.jahia.services.metadata.CoreMetadataConstant;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.utils.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.ResourceBundle;
 
 /**
@@ -58,6 +53,8 @@ import java.util.ResourceBundle;
  */
 @SuppressWarnings("serial")
 public class DisplaySitePropertiesTag extends AbstractJahiaTag {
+
+    private static final transient Logger logger = LoggerFactory.getLogger(DisplaySitePropertiesTag.class);
 
     public String dateFormat;
 
@@ -69,15 +66,9 @@ public class DisplaySitePropertiesTag extends AbstractJahiaTag {
         this.dateFormat = dateFormat;
     }
 
-    private static final transient org.slf4j.Logger logger =
-            org.slf4j.LoggerFactory.getLogger(DisplaySitePropertiesTag.class);
-
     public int doStartTag() {
         try {
-            final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-            final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-            final ProcessingContext jParams = jData.getProcessingContext();
-            final JahiaSite theSite = jParams.getSite();
+            final JahiaSite theSite = getRenderContext().getSite();
             final StringBuilder buff = new StringBuilder();
             ResourceBundle i18n = retrieveResourceBundle();
 
@@ -107,22 +98,6 @@ public class DisplaySitePropertiesTag extends AbstractJahiaTag {
             buff.append(theSite.getTemplatePackageName());
             buff.append("</li>\n");
 
-            buff.append("<li class=\"creationDate\">");
-            buff.append(i18n.getString("siteproperty.creationDate"));
-            buff.append(": ");
-            final Date creationDate = null;
-            if (creationDate != null) {
-                final SimpleDateFormat sdf;
-                if (dateFormat == null || dateFormat.length() == 0) {
-                    sdf = new SimpleDateFormat(DateUtils.DEFAULT_DATETIME_FORMAT);
-                } else {
-                    sdf = new SimpleDateFormat(dateFormat);
-                }
-                buff.append(sdf.format(creationDate));
-            } else {
-                buff.append("-");
-            }
-            buff.append("</li>\n");
             buff.append("</ul>\n");
 
             final JspWriter out = pageContext.getOut();

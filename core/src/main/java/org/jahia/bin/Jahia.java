@@ -104,8 +104,6 @@ public final class Jahia {
     static private String jahiaServletPath;
     static private String jahiaContextPath;
 
-    static private ThreadLocal<ProcessingContext> paramBeanThreadLocal = new ThreadLocal<ProcessingContext>();
-
     private static int BUILD_NUMBER = -1;
     private static int EE_BUILD_NUMBER = -1;
     
@@ -267,15 +265,6 @@ public final class Jahia {
         return jahiaContextPath;
     }
 
-    public static ProcessingContext getThreadParamBean () {
-        return paramBeanThreadLocal.get();
-    }
-
-    public static void setThreadParamBean(final ProcessingContext processingContext) {
-        paramBeanThreadLocal.set(processingContext);
-    }
-
-    //-------------------------------------------------------------------------
     /**
      * Return the private settings
      *

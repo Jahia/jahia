@@ -40,25 +40,19 @@
 
 package org.jahia.test.bin;
 
-import org.jahia.params.ProcessingContextFactory;
 import org.jahia.params.ProcessingContext;
-import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.SurefireJUnitXMLResultFormatter;
-import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.exceptions.JahiaException;
 import org.junit.internal.requests.FilterRequest;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
 import org.junit.runner.Result;
 import org.junit.runner.manipulation.Filter;
-import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import org.apache.commons.lang.StringUtils;
@@ -67,7 +61,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import java.io.*;
 import java.lang.reflect.Method;
@@ -83,42 +76,12 @@ import junit.framework.TestSuite;
  * Date: Feb 11, 2009
  * Time: 4:07:40 PM
  */
-public class TestServlet implements Controller, ServletContextAware {
+public class TestServlet extends BaseTestController {
     
     private transient static Logger logger = LoggerFactory.getLogger(TestServlet.class);
     
-    private ServletContext servletContext;
-    
     protected void handleGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
 
-        httpServletRequest.getSession().setAttribute(ProcessingContext.SESSION_LOCALE, Locale.ENGLISH);
-
-        final ProcessingContextFactory pcf = (ProcessingContextFactory) SpringContextSingleton.
-                getInstance().getContext().getBean(ProcessingContextFactory.class.getName());
-        ProcessingContext ctx = null;
-
-        try {
-            // should send response wrapper !
-            ctx = pcf.getContext(httpServletRequest, httpServletResponse, servletContext);
-        } catch (JahiaException e) {
-            logger.error("Error while trying to build ProcessingContext", e);
-            return;
-        }
-
-        try {
-            ctx.setOperationMode(ParamBean.EDIT);            
-//            ctx.setEntryLoadRequest(new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0, ctx.getLocales()));
-
-            JahiaUser admin = JahiaAdminUser.getAdminUser(0);
-            JCRSessionFactory.getInstance().setCurrentUser(admin);
-            ctx.setTheUser(admin);
-            
-            Jahia.setThreadParamBean(ctx);
-        } catch (JahiaException e) {
-            logger.error("Error getting user", e);
-        }
-
-        try {
             String pathInfo = StringUtils.substringAfter(httpServletRequest.getPathInfo(), "/test");
             if (StringUtils.isNotEmpty(pathInfo) && !pathInfo.contains("*")) {
                 final Set<String> ignoreTests = getIgnoreTests();
@@ -176,15 +139,6 @@ public class TestServlet implements Controller, ServletContextAware {
                     pw.println(c);
                 }
             }
-        } finally {
-            Jahia.setThreadParamBean(null);
-            try {
-                ctx.setUserGuest();
-            } catch (JahiaException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-
     }
 
     private Set<String> getAllTestCases() {
@@ -283,18 +237,5 @@ public class TestServlet implements Controller, ServletContextAware {
         }
 
         return ignoreTests;
-    }
-
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        if (request.getMethod().equalsIgnoreCase("get")) {
-            handleGet(request, response);
-        } else {
-            response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-        }
-        return null;
-    }
-
-    public void setServletContext(ServletContext servletContext) {
-        this.servletContext = servletContext;
     }
 }

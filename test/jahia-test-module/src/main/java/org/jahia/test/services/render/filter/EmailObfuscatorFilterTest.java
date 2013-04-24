@@ -40,13 +40,17 @@
 
 package org.jahia.test.services.render.filter;
 
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+
 import org.jahia.bin.Jahia;
-import org.jahia.params.ParamBean;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.EmailObfuscatorFilter;
 import org.jahia.services.render.filter.RenderChain;
+import org.jahia.test.JahiaTestCase;
+import org.junit.Test;
 
 import junit.framework.TestCase;
 
@@ -58,14 +62,16 @@ import java.util.regex.Pattern;
  * Date: Nov 26, 2009
  * Time: 12:19:43 PM
  */
-public class EmailObfuscatorFilterTest extends TestCase {
+public class EmailObfuscatorFilterTest extends JahiaTestCase {
 
     private Pattern mailPattern = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}");
 
+    @Test
     public void testMailInText() throws Exception {
         parseText("My email is jahia@jahia.com, please do not spam");
     }
 
+    @Test
     public void testMailInLink() throws Exception {
         parseText("My email is <a href=\"mailto:jahia@jahia.com\">mail</a>, please do not spam");
     }
@@ -82,8 +88,7 @@ public class EmailObfuscatorFilterTest extends TestCase {
                 return s;
             }
         });
-        ParamBean ctx = (ParamBean) Jahia.getThreadParamBean();
-        RenderContext renderCtx = new RenderContext(ctx.getRequest(), ctx.getResponse(), ctx.getUser());        
+        RenderContext renderCtx = new RenderContext(getRequest(), getResponse(), getUser());        
         
         String result = chain.doFilter(renderCtx, null);
 

@@ -41,9 +41,6 @@
 package org.jahia.test.services.search;
 
 import org.slf4j.Logger;
-import org.jahia.bin.Jahia;
-import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -59,6 +56,7 @@ import org.jahia.services.search.SearchService;
 import org.jahia.services.search.SearchCriteria.CommaSeparatedMultipleValue;
 import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.settings.SettingsBean;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 
 import java.util.*;
@@ -75,7 +73,7 @@ import javax.jcr.RepositoryException;
  * @author Benjamin Papez
  * 
  */
-public class SimpleSearchTest {
+public class SimpleSearchTest extends JahiaTestCase {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(SimpleSearchTest.class);
     private final static String FIRST_TESTSITE_NAME = "jcrSearchTest";
     private final static String SECOND_TESTSITE_NAME = "jcrSearchTest2";
@@ -138,10 +136,7 @@ public class SimpleSearchTest {
         SearchService searchService = ServicesRegistry.getInstance()
                 .getSearchService();
         try {
-            ProcessingContext ctx = Jahia.getThreadParamBean();
-            RenderContext context = new RenderContext(((ParamBean) ctx)
-                    .getRequest(), ((ParamBean) ctx).getResponse(), ctx
-                    .getUser());
+            RenderContext context = new RenderContext(getRequest(), getResponse(), getUser());
             JCRSessionWrapper session = JCRSessionFactory.getInstance()
                     .getCurrentUserSession(null, Locale.ENGLISH);
             JCRNodeWrapper homeNode = session
@@ -183,11 +178,7 @@ public class SimpleSearchTest {
         SearchService searchService = ServicesRegistry.getInstance()
                 .getSearchService();
         try {
-            ProcessingContext ctx = Jahia.getThreadParamBean();
-            RenderContext context = new RenderContext(((ParamBean) ctx)
-                    .getRequest(), ((ParamBean) ctx).getResponse(), ctx
-                    .getUser());
-            JCRSessionWrapper session = JCRSessionFactory.getInstance()
+            RenderContext context = new RenderContext(getRequest(), getResponse(), getUser());            JCRSessionWrapper session = JCRSessionFactory.getInstance()
                     .getCurrentUserSession(null, Locale.FRENCH);
             JCRNodeWrapper homeNode = session
                     .getNode(FIRST_SITECONTENT_ROOT_NODE + "/home");
@@ -225,11 +216,7 @@ public class SimpleSearchTest {
         SearchService searchService = ServicesRegistry.getInstance()
                 .getSearchService();
         try {
-            ProcessingContext ctx = Jahia.getThreadParamBean();
-            RenderContext context = new RenderContext(((ParamBean) ctx)
-                    .getRequest(), ((ParamBean) ctx).getResponse(), ctx
-                    .getUser());
-            JCRSessionWrapper session = JCRSessionFactory.getInstance()
+            RenderContext context = new RenderContext(getRequest(), getResponse(), getUser());            JCRSessionWrapper session = JCRSessionFactory.getInstance()
                     .getCurrentUserSession(null, Locale.ENGLISH);
             JCRNodeWrapper homeNode = session
                     .getNode(FIRST_SITECONTENT_ROOT_NODE + "/home");
@@ -275,11 +262,7 @@ public class SimpleSearchTest {
         SearchService searchService = ServicesRegistry.getInstance()
                 .getSearchService();
         try {
-            ProcessingContext ctx = Jahia.getThreadParamBean();
-            RenderContext context = new RenderContext(((ParamBean) ctx)
-                    .getRequest(), ((ParamBean) ctx).getResponse(), ctx
-                    .getUser());
-            JCRSessionWrapper session = JCRSessionFactory.getInstance()
+            RenderContext context = new RenderContext(getRequest(), getResponse(), getUser());            JCRSessionWrapper session = JCRSessionFactory.getInstance()
                     .getCurrentUserSession(null, Locale.ENGLISH);
             JCRNodeWrapper homeNode = session
                     .getNode(FIRST_SITECONTENT_ROOT_NODE + "/home");
@@ -343,11 +326,7 @@ public class SimpleSearchTest {
         SearchService searchService = ServicesRegistry.getInstance()
                 .getSearchService();
         try {
-            ProcessingContext ctx = Jahia.getThreadParamBean();
-            RenderContext context = new RenderContext(((ParamBean) ctx)
-                    .getRequest(), ((ParamBean) ctx).getResponse(), ctx
-                    .getUser());
-            JCRSessionWrapper session = JCRSessionFactory.getInstance()
+            RenderContext context = new RenderContext(getRequest(), getResponse(), getUser());            JCRSessionWrapper session = JCRSessionFactory.getInstance()
                     .getCurrentUserSession();
             JCRNodeWrapper homeNode = session
                     .getNode(SECOND_SITECONTENT_ROOT_NODE + "/home");

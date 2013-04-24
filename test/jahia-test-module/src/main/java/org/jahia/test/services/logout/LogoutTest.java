@@ -14,7 +14,6 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
-import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -77,7 +76,7 @@ public class LogoutTest extends JahiaTestCase {
         service.updateSystemSitePermissions(site);
         service.setDefaultSite(site);
         
-        ((ParamBean) Jahia.getThreadParamBean()).getSession(true).setAttribute(ParamBean.SESSION_SITE, site);
+        setSessionSite(site);
 
         // Add two page and publish one
         JCRPublicationService jcrService = ServicesRegistry.getInstance()

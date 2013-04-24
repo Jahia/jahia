@@ -42,7 +42,6 @@ package org.jahia.services.preferences;
 
 
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.JahiaService;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -50,9 +49,7 @@ import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.preferences.generic.GenericJahiaPreference;
 import org.jahia.services.preferences.impl.JahiaPreferencesJCRProviders;
-import org.jahia.services.usermanager.JahiaUser;
 
-import javax.jcr.RepositoryException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -140,15 +137,6 @@ public class JahiaPreferencesService extends JahiaService {
 
     public void setProviders(Map providers) {
         this.providers = providers;
-    }
-
-    /**
-     * Delete all preferences of the current user
-     *
-     * @param processingContext
-     */
-    public void deleteCurrentUserPreferences(ProcessingContext processingContext) {
-        deleteAllPreferencesByPrincipal(processingContext.getUser());
     }
 
     /**

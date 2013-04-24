@@ -45,13 +45,13 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import org.jahia.engines.EngineMessage;
-import org.jahia.params.ProcessingContext;
+import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.taglibs.utility.Utils;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,25 +154,8 @@ public class MessageTag extends TagSupport {
     }
 
     public int doStartTag() {
-        final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-        final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
-        Locale currentLocale = null;
-        if (jParams != null) {
-            if (currentLocale == null) {
-                currentLocale = jParams.getUILocale();
-            }
-        } else {
-            final HttpSession session = pageContext.getSession();
-            if (session != null) {
-                if (session.getAttribute(ProcessingContext.SESSION_LOCALE) != null) {
-                    currentLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_LOCALE);
-                }
-            }
-        }
-
-        if (currentLocale == null) {
-            currentLocale = request.getLocale();
-        }
+        Locale currentLocale = AbstractJahiaTag.getUILocale(Utils.getRenderContext(pageContext),
+                pageContext.getSession(), (HttpServletRequest) pageContext.getRequest());
 
         String resValue = null;
         try {

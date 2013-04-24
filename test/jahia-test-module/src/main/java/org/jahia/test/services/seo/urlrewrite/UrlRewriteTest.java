@@ -50,14 +50,13 @@ import java.util.Set;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
 
-import org.jahia.bin.Jahia;
-import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.seo.urlrewrite.UrlRewriteService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -73,7 +72,7 @@ import org.tuckey.web.filters.urlrewrite.RewrittenUrl;
  * 
  * @author Sergiy Shyrkov
  */
-public class UrlRewriteTest {
+public class UrlRewriteTest extends JahiaTestCase {
 
     private static final String DEFAULT_LANG = "en";
 
@@ -115,7 +114,7 @@ public class UrlRewriteTest {
         JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
         service.updateSystemSitePermissions(site);
 
-        ((ParamBean) Jahia.getThreadParamBean()).getSession(true).setAttribute(ParamBean.SESSION_SITE, site);
+        setSessionSite(site);
     }
 
     @AfterClass

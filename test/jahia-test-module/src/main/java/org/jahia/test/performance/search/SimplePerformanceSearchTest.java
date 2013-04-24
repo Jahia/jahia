@@ -40,9 +40,6 @@
 
 package org.jahia.test.performance.search;
 
-import org.jahia.bin.Jahia;
-import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -57,8 +54,8 @@ import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchCriteria.CommaSeparatedMultipleValue;
 import org.jahia.services.search.SearchService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
-import org.jahia.test.services.content.*;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -66,7 +63,6 @@ import org.slf4j.Logger;
 import org.springframework.util.StopWatch;
 
 import javax.jcr.RepositoryException;
-import javax.xml.registry.infomodel.Organization;
 import java.util.List;
 import java.util.Locale;
 
@@ -76,7 +72,7 @@ import java.util.Locale;
  *
  * @author Benjamin Papez
  */
-public class SimplePerformanceSearchTest {
+public class SimplePerformanceSearchTest extends JahiaTestCase {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(SimplePerformanceSearchTest.class);
     private final static String FIRST_TESTSITE_NAME = "jcrSearchTest";
     private final static String FIRST_SITECONTENT_ROOT_NODE = "/sites/" + FIRST_TESTSITE_NAME;
@@ -106,9 +102,7 @@ public class SimplePerformanceSearchTest {
     public void testSimpleFulltextSearchOnSingleSite() throws Exception {
         SearchService searchService = ServicesRegistry.getInstance().getSearchService();
         try {
-            ProcessingContext ctx = Jahia.getThreadParamBean();
-            RenderContext context = new RenderContext(((ParamBean) ctx).getRequest(), ((ParamBean) ctx).getResponse(),
-                    ctx.getUser());
+            RenderContext context = new RenderContext(getRequest(), getResponse(), getUser());
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(null, Locale.ENGLISH);
             JCRNodeWrapper homeNode = session.getNode(FIRST_SITECONTENT_ROOT_NODE + "/home");
             Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);

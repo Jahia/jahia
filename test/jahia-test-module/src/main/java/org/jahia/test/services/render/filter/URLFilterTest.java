@@ -51,7 +51,6 @@ import javax.jcr.PathNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 
-import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.URLResolver;
@@ -64,8 +63,7 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
-import org.jahia.data.JahiaData;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -81,7 +79,7 @@ import static org.junit.Assert.*;
 /**
  * Unit test for the {@link URLFilter} User: toto Date: Nov 26, 2009 Time: 12:57:51 PM
  */
-public class URLFilterTest {
+public class URLFilterTest extends JahiaTestCase {
     private final static String TESTSITE_NAME = "test";
     private final static String SITECONTENT_ROOT_NODE = "/sites/"
             + TESTSITE_NAME;
@@ -90,12 +88,7 @@ public class URLFilterTest {
     public static void oneTimeSetUp() throws Exception {
         JahiaSite site = TestHelper.createSite(TESTSITE_NAME, Sets.newHashSet("en", "fr"), null, false);
 
-        ParamBean paramBean = (ParamBean) Jahia.getThreadParamBean();
-
-        paramBean.getSession(true).setAttribute(ParamBean.SESSION_SITE, site);
-
-        JahiaData jData = new JahiaData(paramBean, false);
-        paramBean.setAttribute(JahiaData.JAHIA_DATA, jData);
+        setSessionSite(site);
     }
 
     @AfterClass

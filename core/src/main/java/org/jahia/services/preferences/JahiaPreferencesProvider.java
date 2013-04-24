@@ -40,7 +40,6 @@
 
 package org.jahia.services.preferences;
 
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.preferences.exception.JahiaPreferenceNotDefinedAttributeException;
 import org.jahia.services.preferences.exception.JahiaPreferenceNotDefinedPropertyException;
@@ -63,16 +62,6 @@ public interface JahiaPreferencesProvider<T extends JCRNodeWrapper> {
      * @return
      */
     abstract public String getType();
-
-
-    /**
-     * Create a JahiaPreference   with principal = ${current_jahiaUser}
-     * The implementation depends on the provider.
-     *
-     * @param processingContext
-     * @return
-     */
-    abstract public JahiaPreference<T> createJahiaPreferenceNode(ProcessingContext processingContext);
 
 
     /**
@@ -129,15 +118,6 @@ public interface JahiaPreferencesProvider<T extends JCRNodeWrapper> {
      */
     abstract public List<JahiaPreference<T>> findJahiaPreferences(Principal principal, String sqlConstraint);
 
-
-    /**
-     * Get jahia preferences of the current user
-     *
-     * @param processingContext
-     * @return list <preference> that contains all preferences of the principal.
-     */
-
-    abstract public List<JahiaPreference<T>> getAllJahiaPreferences(ProcessingContext processingContext);
 
     /**
      * Delete Jahia Preference

@@ -60,6 +60,7 @@ public class NodeVersionHistoryJob extends BackgroundJob {
 
     private static Logger logger = LoggerFactory.getLogger(NodeVersionHistoryJob.class);
 
+    @Override
     @SuppressWarnings("unchecked")
     public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {
         JobDataMap data = jobExecutionContext.getJobDetail().getJobDataMap();

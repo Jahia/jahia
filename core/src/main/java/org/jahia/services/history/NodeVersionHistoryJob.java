@@ -42,7 +42,6 @@ package org.jahia.services.history;
 
 import java.util.Set;
 
-import org.jahia.services.history.NodeVersionHistoryHelper.VersionHistoryCheckStatus;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -60,6 +59,7 @@ public class NodeVersionHistoryJob extends BackgroundJob {
 
     private static Logger logger = LoggerFactory.getLogger(NodeVersionHistoryJob.class);
 
+    @Override
     @SuppressWarnings("unchecked")
     public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {
         JobDataMap data = jobExecutionContext.getJobDetail().getJobDataMap();

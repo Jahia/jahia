@@ -71,6 +71,13 @@ public class NodeVersionHistoryListener extends DefaultEventListener {
         return Event.NODE_REMOVED;
     }
 
+    /**
+     * Processes a bundle of events to detect if this is a site deletion. If yes, a background maintenance job is started to delete the
+     * version histories of site nodes.
+     * 
+     * @param events
+     *            a bundle of events to process
+     */
     public void onEvent(EventIterator events) {
         String siteDeleted = null;
         Set<String> ids = new HashSet<String>();
@@ -111,6 +118,8 @@ public class NodeVersionHistoryListener extends DefaultEventListener {
     }
 
     /**
+     * Injects an instance of {@link SchedulerService}.
+     * 
      * @param schedulerService
      *            the schedulerService to set
      */

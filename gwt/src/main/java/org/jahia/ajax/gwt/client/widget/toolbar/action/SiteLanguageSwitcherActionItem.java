@@ -75,10 +75,14 @@ public class SiteLanguageSwitcherActionItem extends LanguageSwitcherActionItem {
                 for (GWTJahiaLanguage language : JahiaGWTParameters.getSiteLanguages()) {
                     if (language.getLanguage().equals(JahiaGWTParameters.getLanguage())) {
                         mainComponent.setSelection(Arrays.asList(language));
+                        break;
                     }
                 }
             }
             events = true;
+            if (!JahiaGWTParameters.getSiteLanguages().contains(mainComponent.getSelection().get(0))) {
+                mainComponent.setSelection(Arrays.asList(JahiaGWTParameters.getSiteLanguages().get(0)));
+            }
         }
 
 	}

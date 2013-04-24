@@ -40,21 +40,15 @@
 
 package org.jahia.taglibs.workflow;
 
-import org.apache.taglibs.standard.tag.common.core.Util;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.workflow.Workflow;
-import org.jahia.services.workflow.WorkflowDefinition;
-import org.jahia.services.workflow.WorkflowService;
-import org.jahia.taglibs.AbstractJahiaTag;
+import java.util.Locale;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+
+import org.apache.taglibs.standard.tag.common.core.Util;
+import org.jahia.services.workflow.Workflow;
+import org.jahia.services.workflow.WorkflowService;
+import org.jahia.taglibs.AbstractJahiaTag;
 
 /**
  * User: toto

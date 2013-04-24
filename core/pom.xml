@@ -832,36 +832,6 @@
             <version>1.4.4</version>
         </dependency>
 
-        <!-- Dependencies for rome RSS/ATOM Feed library -->
-        <dependency>
-            <groupId>rome</groupId>
-            <artifactId>rome</artifactId>
-            <version>1.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>jdom</groupId>
-                    <artifactId>jdom</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>rome</groupId>
-            <artifactId>rome-fetcher</artifactId>
-            <version>1.0</version>
-            <exclusions>
-            	<exclusion>
-                    <groupId>jdom</groupId>
-            		<artifactId>jdom</artifactId>
-            	</exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>rome</groupId>
-            <artifactId>opensearch</artifactId>
-            <version>0.1</version>
-        </dependency>
-
-
         <!-- JSON dependencies -->
         <dependency>
             <groupId>org.json</groupId>

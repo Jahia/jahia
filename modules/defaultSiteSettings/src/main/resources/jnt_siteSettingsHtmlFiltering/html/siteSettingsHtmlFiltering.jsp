@@ -40,10 +40,10 @@ function htmlFilteringAddHtmlTag() {
 		return;
 	}
 	if ($('#btnDeleteHtmlTag' + val).length == 0) {
-    	$('#tblHtmlTags').find('tbody:last').append('<tr><td><strong class="htmlTagToFilter">' + val + '</strong></td><td>'
-    			+ '<input type="image" title="${i18nDelete}" alt="${i18nDelete}" src="${iconDelete}" width="16" height="16" '
-    			+ ' onclick="$(this).parent().parent().remove(); return false;"/>'
-    			+ '</td></tr>');
+    	$('#tblHtmlTags').find('tbody:last').append('<tr><td>'
+                + '<input type="image" title="${i18nDelete}" alt="${i18nDelete}" src="${iconDelete}" width="16" height="16" '
+                + ' onclick="$(this).parent().parent().remove(); return false;"/>'
+                + '</td><td width="100%"><strong class="htmlTagToFilter">' + val + '</strong></td></tr>');
 	}
 	newTag.val('');
 }
@@ -96,18 +96,19 @@ function updateSiteHtmlFiltering(btn) {
         <fmt:message key="label.active"/>
     </label>
 
-                <fmt:message key="label.add" var="i18nAdd"/>
-                <input type="text" name="newHtmlTag" id="newHtmlTag" value="" size="10"/>
-                <input type="image" id="addHtmlTag" title="${i18nAdd}" alt="${i18nAdd}" src="<c:url value='/css/images/andromeda/icons/add2.png'/>" width="16" height="16" />
+    <fmt:message key="label.add" var="i18nAdd"/>
+    <div class="input-append">
+        <input type="text" name="newHtmlTag" id="newHtmlTag" value="" size="10"/>
+        <input class="btn" type="image" id="addHtmlTag" title="${i18nAdd}" alt="${i18nAdd}" src="<c:url value='/css/images/andromeda/icons/add2.png'/>" width="16" height="16" />
+    </div>
 
-        <table id="tblHtmlTags" class="table table-bordered table-striped table-hover" >
+    <table id="tblHtmlTags" class="table table-bordered table-striped table-hover" >
         <tbody>
             <c:forTokens var="tag" items="${filteredTags}" delims=", ">
                 <tr id="rowHtmlTag${tag}">
                     <fmt:message key="label.delete" var="i18nDelete"/><c:set var="i18nDelete" value="${fn:escapeXml(i18nDelete)}"/>
                     <td><input type="image" title="${i18nDelete}" alt="${i18nDelete}" src="${iconDelete}" width="16" height="16" onclick="$(this).parent().parent().remove(); return false;" /></td>
                     <td width="100%"><strong class="htmlTagToFilter">${tag}</strong></td>
-
                 </tr>
             </c:forTokens>
         </tbody>

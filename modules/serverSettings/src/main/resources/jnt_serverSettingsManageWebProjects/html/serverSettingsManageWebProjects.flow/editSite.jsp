@@ -16,7 +16,7 @@
                     '-moz-border-radius': '10px',
                     opacity: .5,
                     color: '#fff'
-                }, message: '<fmt:message key="org.jahia.admin.workInProgressTitle"/>' });
+                }, message: '<fmt:message key="label.workInProgressTitle"/>' });
             });
         });
     </script>

@@ -253,7 +253,7 @@
     </div>
 </div>
 <div style="display:none; position:fixed; left:0; top:0; width:100%; height:100%; z-index:9999" class="loading">
-    <h1><fmt:message key="org.jahia.admin.workInProgressTitle"/></h1>
+    <h1><fmt:message key="label.workInProgressTitle"/></h1>
 </div>
 
 <c:if test="${currentNode.properties.delete.boolean && jcr:hasPermission(root,'adminVirtualSites')}">

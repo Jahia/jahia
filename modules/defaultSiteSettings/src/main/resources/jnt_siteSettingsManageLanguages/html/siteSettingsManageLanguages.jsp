@@ -186,6 +186,6 @@
 
 <div style="display:none;" class="loading">
     <div class="alert alert-info">
-        <strong><fmt:message key="org.jahia.admin.workInProgressTitle"/></strong>
+        <strong><fmt:message key="label.workInProgressTitle"/></strong>
     </div>
 </div>

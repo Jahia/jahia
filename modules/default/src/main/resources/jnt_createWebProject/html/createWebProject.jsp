@@ -81,7 +81,7 @@
     </fieldset>
 </form>
     <div style="display:none;" class="loading">
-        <h1><fmt:message key="org.jahia.admin.workInProgressTitle"/></h1>
+        <h1><fmt:message key="label.workInProgressTitle"/></h1>
     </div>
 </template:tokenizedForm>
 

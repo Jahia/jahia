@@ -481,6 +481,16 @@ public class TemplatePackageRegistry {
         return false;
     }
 
+    public List<JahiaTemplatesPackage> getDependantModules(JahiaTemplatesPackage module) {
+        List<JahiaTemplatesPackage> modules = new ArrayList<JahiaTemplatesPackage>();
+        for (JahiaTemplatesPackage aPackage : registry.values()) {
+            if (aPackage.getDepends().contains(module.getRootFolder()) || aPackage.getDepends().contains(module.getName())) {
+                modules.add(aPackage);
+            }
+        }
+        return modules;
+    }
+
     public void registerDefinitions(JahiaTemplatesPackage templatePackage) {
         File rootFolder = new File(templatePackage.getFilePath());
         if (!templatePackage.getDefinitionsFiles().isEmpty()) {

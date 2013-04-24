@@ -33,19 +33,21 @@
 package org.jahia.modules.serversettings.flow;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.modules.serversettings.moduleManagement.ModuleFile;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.osgi.BundleUtils;
+import org.jahia.osgi.FrameworkService;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
-import org.jahia.settings.SettingsBean;
+import org.jahia.utils.i18n.Messages;
+import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,9 +59,12 @@ import org.springframework.webflow.execution.RequestContext;
 import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.RepositoryException;
 import java.io.File;
-import java.io.IOException;
+import java.io.FileInputStream;
 import java.io.Serializable;
+import java.net.URL;
 import java.util.*;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 /**
  * Created by IntelliJ IDEA.
@@ -101,11 +106,58 @@ public class ModuleManagementFlowHandler implements Serializable {
             return false;
         }
         try {
-            final File file = new File(SettingsBean.getInstance().getJahiaModulesDiskPath(),originalFilename);
+            final File file = File.createTempFile("module-", "."+StringUtils.substringAfterLast(originalFilename,"."));
             moduleFile.getModuleFile().transferTo(file);
+            Manifest manifest = new JarFile(file).getManifest();
+            String symbolicName = manifest.getMainAttributes().getValue("Bundle-SymbolicName");
+            if (symbolicName == null) {
+                symbolicName = manifest.getMainAttributes().getValue("root-folder");
+            }
+            String version = manifest.getMainAttributes().getValue("Implementation-Version");
+            Bundle bundle = templateManagerService.findBundle(symbolicName, version);
 
-            context.addMessage(new MessageBuilder().source("moduleFile").defaultText("Module has been successfully uploaded. Check status in the list").build());
-        } catch (IOException e) {
+            String location = file.toURI().toString();
+            if (file.getName().toLowerCase().endsWith(".war")) {
+                location = "jahiawar:"+location;
+            }
+
+            if (bundle != null) {
+                bundle.update(new URL(location).openStream());
+            } else {
+                bundle = FrameworkService.getBundleContext().installBundle(location, new URL(location).openStream());
+            }
+            List<String> deps = BundleUtils.getModule(bundle).getDepends();
+            List<String> missingDeps = new ArrayList<String>();
+            for (String dep : deps) {
+                if (templateManagerService.getTemplatePackageByFileName(dep) == null && templateManagerService.getTemplatePackage(dep) == null) {
+                    missingDeps.add(dep);
+                }
+            }
+            if (!missingDeps.isEmpty()) {
+                context.addMessage(new MessageBuilder().source("moduleFile")
+                        .defaultText(Messages.get("resources.JahiaServerSettings", "serverSettings.manageModules.install.missingDependencies",LocaleContextHolder.getLocale()))
+                        .arg(StringUtils.join(missingDeps, ","))
+                        .error()
+                        .build());
+            } else {
+                Set<ModuleVersion> allVersions = templateManagerService.getTemplatePackageRegistry().getAvailableVersionsForModule(bundle.getSymbolicName());
+                if (allVersions.contains(new ModuleVersion(version)) && allVersions.size() == 1) {
+                    bundle.start();
+                    context.addMessage(new MessageBuilder().source("moduleFile")
+                            .defaultText(Messages.get("resources.JahiaServerSettings", "serverSettings.manageModules.install.uploadedAndStarted",LocaleContextHolder.getLocale()))
+                            .build());
+                } else {
+                    context.addMessage(new MessageBuilder().source("moduleFile")
+                            .defaultText(Messages.get("resources.JahiaServerSettings", "serverSettings.manageModules.install.uploaded",LocaleContextHolder.getLocale()))
+                            .build());
+                }
+            }
+        } catch (Exception e) {
+            context.addMessage(new MessageBuilder().source("moduleFile")
+                    .defaultText(Messages.get("resources.JahiaServerSettings", "serverSettings.manageModules.install.failed",LocaleContextHolder.getLocale()))
+                    .arg(e.getMessage())
+                    .error()
+                    .build());
             logger.error(e.getMessage(), e);
         }
         return true;
@@ -135,11 +187,26 @@ public class ModuleManagementFlowHandler implements Serializable {
             populateActiveVersion(context, selectedModule.values().iterator().next());
         }
         context.getRequestScope().put("otherVersions",selectedModule);
+
+        populateSitesInformation(context);
+
+        // Get list of definitions
+        NodeTypeIterator nodeTypes = NodeTypeRegistry.getInstance().getNodeTypes(selectedModuleName);
+        Map<String,Boolean> booleanMap = new TreeMap<String, Boolean>();
+        while (nodeTypes.hasNext()) {
+            ExtendedNodeType nodeType = (ExtendedNodeType) nodeTypes.next();
+            booleanMap.put(nodeType.getLabel(LocaleContextHolder.getLocale()),nodeType.isNodeType(
+                    "jmix:droppableContent"));
+        }
+        context.getRequestScope().put("nodeTypes", booleanMap);
+    }
+
+    public void populateSitesInformation(RequestContext context) {
         //populate information about sites
         List<String> siteKeys = new ArrayList<String>();
-        List<String> directSiteDep = new ArrayList<String>();
-        List<String> templateSiteDep = new ArrayList<String>();
-        List<String> transitiveSiteDep = new ArrayList<String>();
+        Map<String,List<String>> directSiteDep = new HashMap<String,List<String>>();
+        Map<String,List<String>> templateSiteDep = new HashMap<String,List<String>>();
+        Map<String,List<String>> transitiveSiteDep = new HashMap<String,List<String>>();
         try {
             List<JCRSiteNode> sites = sitesService.getSitesNodeList();
             for (JCRSiteNode site : sites) {
@@ -147,23 +214,26 @@ public class ModuleManagementFlowHandler implements Serializable {
                 List<JahiaTemplatesPackage> directDependencies = templateManagerService.getInstalledModulesForSite(
                         site.getSiteKey(), false, true, false);
                 for (JahiaTemplatesPackage directDependency : directDependencies) {
-                    if(directDependency.getRootFolder().equals(selectedModuleName)) {
-                        directSiteDep.add(site.getSiteKey());
+                    if(!directSiteDep.containsKey(directDependency.getRootFolder())) {
+                        directSiteDep.put(directDependency.getRootFolder(), new ArrayList<String>());
                     }
+                    directSiteDep.get(directDependency.getRootFolder()).add(site.getSiteKey());
                 }
                 List<JahiaTemplatesPackage> templateDependencies = templateManagerService.getInstalledModulesForSite(
                         site.getSiteKey(), true, false, false);
                 for (JahiaTemplatesPackage templateDependency : templateDependencies) {
-                    if(templateDependency.getRootFolder().equals(selectedModuleName)){
-                        templateSiteDep.add(site.getSiteKey());
+                    if(!templateSiteDep.containsKey(templateDependency.getRootFolder())) {
+                        templateSiteDep.put(templateDependency.getRootFolder(), new ArrayList<String>());
                     }
+                    templateSiteDep.get(templateDependency.getRootFolder()).add(site.getSiteKey());
                 }
                 List<JahiaTemplatesPackage> transitiveDependencies = templateManagerService.getInstalledModulesForSite(
                         site.getSiteKey(), false, false, true);
                 for (JahiaTemplatesPackage transitiveDependency : transitiveDependencies) {
-                    if(transitiveDependency.getRootFolder().equals(selectedModuleName)){
-                        transitiveSiteDep.add(site.getSiteKey());
+                    if(!transitiveSiteDep.containsKey(transitiveDependency.getRootFolder())) {
+                        transitiveSiteDep.put(transitiveDependency.getRootFolder(), new ArrayList<String>());
                     }
+                    transitiveSiteDep.get(transitiveDependency.getRootFolder()).add(site.getSiteKey());
                 }
             }
         } catch (JahiaException e) {
@@ -174,16 +244,7 @@ public class ModuleManagementFlowHandler implements Serializable {
         context.getRequestScope().put("sites",siteKeys);
         context.getRequestScope().put("sitesDirect",directSiteDep);
         context.getRequestScope().put("sitesTemplates",templateSiteDep);
-        context.getRequestScope().put("sitesTransitive",transitiveSiteDep);
-        // Get list of definitions
-        NodeTypeIterator nodeTypes = NodeTypeRegistry.getInstance().getNodeTypes(selectedModuleName);
-        Map<String,Boolean> booleanMap = new TreeMap<String, Boolean>();
-        while (nodeTypes.hasNext()) {
-            ExtendedNodeType nodeType = (ExtendedNodeType) nodeTypes.next();
-            booleanMap.put(nodeType.getLabel(LocaleContextHolder.getLocale()),nodeType.isNodeType(
-                    "jmix:droppableContent"));
-        }
-        context.getRequestScope().put("nodeTypes", booleanMap);
+        context.getRequestScope().put("sitesTransitive", transitiveSiteDep);
     }
 
     private void populateActiveVersion(RequestContext context, JahiaTemplatesPackage value) {
@@ -197,5 +258,7 @@ public class ModuleManagementFlowHandler implements Serializable {
         }
         context.getRequestScope().put("bundleInfo", bundleInfo);
         context.getRequestScope().put("activeVersionDate",new Date(value.getBundle().getLastModified()));
+
+        context.getRequestScope().put("dependantModules", templateManagerService.getTemplatePackageRegistry().getDependantModules(value));
     }
 }

@@ -14,7 +14,7 @@
                 <prop key="felix.log.level">1</prop>
                 
                 <prop key="felix.fileinstall.active.level">2</prop>
-                <prop key="felix.fileinstall.bundles.new.start">true</prop>
+                <prop key="felix.fileinstall.bundles.new.start">false</prop>
                 <prop key="felix.fileinstall.dir">${jahiaWebAppRoot}/WEB-INF/var/bundles,${jahiaWebAppRoot}/WEB-INF/var/modules</prop>
                 <prop key="felix.fileinstall.noInitialDelay">true</prop>
                 <prop key="felix.fileinstall.start.level">2</prop>

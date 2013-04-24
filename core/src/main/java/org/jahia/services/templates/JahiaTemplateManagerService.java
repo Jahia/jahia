@@ -79,7 +79,6 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportExportService;
-import org.jahia.services.importexport.NoCloseZipInputStream;
 import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.filter.RenderFilter;
@@ -456,17 +455,26 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public JahiaTemplatesPackage compileAndDeploy(final String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException, IOException, BundleException {
         CompiledModuleInfo moduleInfo = compileModule(moduleName, sources);
-        for (Bundle bundle : FrameworkService.getBundleContext().getBundles()) {
-            if (bundle.getSymbolicName().equals(moduleName) && bundle.getHeaders().get("Implementation-Version") != null && bundle.getHeaders().get("Implementation-Version").toString().equals(moduleInfo.getVersion())) {
-                // Update existing module
-                bundle.update(new FileInputStream(moduleInfo.getFile()));
-                return templatePackageRegistry.lookupByFileNameAndVersion(moduleInfo.getModuleName(), new ModuleVersion(moduleInfo.getVersion()));
-            }
+        Bundle bundle = findBundle(moduleName, moduleInfo.getVersion());
+        if (bundle != null) {
+            bundle.update(new FileInputStream(moduleInfo.getFile()));
+            return templatePackageRegistry.lookupByFileNameAndVersion(moduleInfo.getModuleName(), new ModuleVersion(moduleInfo.getVersion()));
         }
         // No existing module found, deploy new one
-        Bundle bundle = FrameworkService.getBundleContext().installBundle(moduleInfo.getFile().toURI().toString(), new FileInputStream(moduleInfo.getFile()));
+        bundle = FrameworkService.getBundleContext().installBundle(moduleInfo.getFile().toURI().toString(), new FileInputStream(moduleInfo.getFile()));
         bundle.start();
         return templatePackageRegistry.lookupByFileNameAndVersion(moduleInfo.getModuleName(), new ModuleVersion(moduleInfo.getVersion()));
+    }
+
+    public Bundle findBundle(String moduleName, String version) throws BundleException {
+        for (Bundle bundle : FrameworkService.getBundleContext().getBundles()) {
+            String bundleVersion = bundle.getHeaders().get("Implementation-Version");
+            if (bundle.getSymbolicName() != null && bundle.getSymbolicName().equals(moduleName) && bundleVersion != null && bundleVersion.equals(version)) {
+                // Update existing module
+                return bundle;
+            }
+        }
+        return null;
     }
 
     public CompiledModuleInfo compileModule(final String moduleName, File sources) throws IOException {
@@ -1106,11 +1114,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 }
             }
         }
-
+        Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> all = templatePackageRegistry.getAllModuleVersions();
         List<JahiaTemplatesPackage> packages = new LinkedList<JahiaTemplatesPackage>();
         for (String m : modules) {
             JahiaTemplatesPackage pkg = getTemplatePackageByFileName(m);
             pkg = pkg != null ? pkg : getTemplatePackage(m);
+            if (pkg == null && all.containsKey(m)) {
+                pkg = all.get(m).get(all.get(m).firstKey());
+            }
             if (pkg != null) {
                 packages.add(pkg);
             }

@@ -76,6 +76,8 @@ public class JahiaTemplatesPackage {
     
     private Bundle bundle = null;
 
+    private ModuleState state;
+
     private ClassLoader classLoader;
     
     /**
@@ -113,7 +115,9 @@ public class JahiaTemplatesPackage {
     private String description;
 
     private List<JahiaTemplatesPackage> dependencies = new ArrayList<JahiaTemplatesPackage>();
-    
+
+    private List<JahiaTemplatesPackage> dependantModules = new ArrayList<JahiaTemplatesPackage>();
+
     // set the module-type property from the manifest
 
     private String moduleType;
@@ -160,6 +164,14 @@ public class JahiaTemplatesPackage {
 
     public Bundle getBundle() {
         return bundle;
+    }
+
+    public ModuleState getState() {
+        return state;
+    }
+
+    public void setState(ModuleState state) {
+        this.state = state;
     }
 
     /**

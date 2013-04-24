@@ -286,14 +286,14 @@
                         <td>${site}</td>
                         <td>
                             <c:choose>
-                                <c:when test="${functions:contains(sitesDirect,site)}">
+                                <c:when test="${not empty sitesDirect[activeVersion.rootFolder] and functions:contains(sitesDirect[activeVersion.rootFolder],site)}">
                                     <fmt:message key="serverSettings.manageModules.module.dependency.type.direct"/>
                                 </c:when>
-                                <c:when test="${functions:contains(sitesTemplates,site)}">
+                                <c:when test="${not empty sitesTemplates[activeVersion.rootFolder] and functions:contains(sitesTemplates[activeVersion.rootFolder],site)}">
                                     <fmt:message
                                             key="serverSettings.manageModules.module.dependency.type.templates"/>
                                 </c:when>
-                                <c:when test="${functions:contains(sitesTransitive,site)}">
+                                <c:when test="${not empty sitesTransitive[activeVersion.rootFolder] and functions:contains(sitesTransitive[activeVersion.rootFolder],site)}">
                                     <fmt:message
                                             key="serverSettings.manageModules.module.dependency.type.transitive"/>
                                 </c:when>
@@ -303,8 +303,9 @@
                             </c:choose>
                         </td>
                         <td>
+                            <c:if test="${activeVersion.moduleType ne 'templatesSet'}">
                             <c:choose>
-                                <c:when test="${functions:contains(sitesDirect,site)}">
+                                <c:when test="${not empty sitesDirect[activeVersion.rootFolder] and functions:contains(sitesDirect[activeVersion.rootFolder],site)}">
                                     <form id="disable${status.index}" style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                         <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
                                         <input type="hidden" name="disableFrom" value="/sites/${site}"/>
@@ -315,11 +316,11 @@
                                         <input class="btn btn-danger disable-button" type="button" value="${label}" onclick=""/>
                                     </form>
                                 </c:when>
-                                <c:when test="${functions:contains(sitesTemplates,site)}">
+                                <c:when test="${not empty sitesTemplates[activeVersion.rootFolder] and functions:contains(sitesTemplates[activeVersion.rootFolder],site)}">
                                     <fmt:message
                                             key="serverSettings.manageModules.module.dependency.type.templates"/>
                                 </c:when>
-                                <c:when test="${functions:contains(sitesTransitive,site)}">
+                                <c:when test="${not empty sitesTransitive[activeVersion.rootFolder] and functions:contains(sitesTransitive[activeVersion.rootFolder],site)}">
                                     <fmt:message
                                             key="serverSettings.manageModules.module.dependency.type.transitive"/>
                                 </c:when>
@@ -334,10 +335,11 @@
                                     </form>
                                 </c:otherwise>
                             </c:choose>
-
+                            </c:if>
                         </td>
                     </tr>
                 </c:forEach>
+                <c:if test="${activeVersion.moduleType ne 'templatesSet'}">
                 <tr>
                     <td align="right" colspan="3">
                         <form id="disableAll" style="margin: 0;" action="${flowExecutionUrl}" method="POST">
@@ -350,6 +352,7 @@
                         </form>
                     </td>
                 </tr>
+                </c:if>
                 </tbody>
             </table>
         </div>
@@ -436,4 +439,47 @@
         </div>
     </div>
 </c:if>
+<c:if test="${not empty dependantModules}">
+
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFive">
+                <strong><fmt:message key="serverSettings.manageModules.module.dependantModules"/></strong></a>
+        </div>
+        <div id="collapseFive" class="accordion-body collapse" style="height: 0px; ">
+            <div class="accordion-inner">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th><fmt:message key="serverSettings.manageModules.module.dependency.name"/></th>
+                        <th><fmt:message key='serverSettings.manageModules.details'/></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <c:forEach items="${dependantModules}" var="dependency">
+                        <tr>
+                            <td><span style="font: bold">${dependency.name}</span></td>
+                            <td>
+                                <c:if test="${isStudio and not empty dependency.sourcesFolder}">
+                                    <input class="btn btn-info" type="button" onclick='window.location.assign("${url.base}/modules/${dependency.rootFolder}.html")' value="<fmt:message key='serverSettings.manageModules.details' />"/>
+                                </c:if>
+                                <c:if test="${not isStudio}">
+                                    <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
+                                        <input type="hidden" name="selectedModule" value="${dependency.rootFolder}"/>
+                                        <input class="btn btn-info" type="submit" name="_eventId_viewDetails"
+                                               value="<fmt:message key='serverSettings.manageModules.details' />"
+                                               onclick=""/>
+                                    </form>
+                                </c:if>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</c:if>
+
 </div>

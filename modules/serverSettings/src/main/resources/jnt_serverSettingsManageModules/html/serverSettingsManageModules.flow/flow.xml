@@ -22,6 +22,7 @@
                       result="requestScope.registeredModules"/>
             <evaluate expression="JahiaTemplateManagerService.sourceControlFactory.supportedSourceControls"
                       result="requestScope.sourceControls"/>
+            <evaluate expression="flowHandler.populateSitesInformation(flowRequestContext)" />
         </on-render>
 
         <transition on="viewDownloadForm" to="viewDownloadForm">

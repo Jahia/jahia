@@ -138,10 +138,10 @@
         </thead>
         <tbody>
         <c:forEach var="locale" items="${siteLocales}" varStatus="status">
-            <c:set var="langAsString">${locale}</c:set>
-            <input type="hidden" name="allLanguages" value="${locale}" class="language"/>
             <tr>
-                <td><%= ((Locale) pageContext.getAttribute("locale")).getDisplayName(currentLocale)%> (${locale})</td>
+                <td><c:set var="langAsString">${locale}</c:set>
+                    <input type="hidden" name="allLanguages" value="${locale}" class="language"/>
+                    <%= ((Locale) pageContext.getAttribute("locale")).getDisplayName(currentLocale)%> (${locale})</td>
                 <td><input type="radio" name="j:defaultLanguage" value="${locale}" onchange="updateBoxes()"
                            <c:if test="${site.defaultLanguage eq locale}">checked="checked"</c:if> /></td>
                 <td><input type="checkbox" name="mandatoryLanguages" value="${locale}"  onchange="updateBoxes()"

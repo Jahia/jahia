@@ -28,37 +28,37 @@ ${fn:escapeXml(templatePackageName)}&nbsp;(${templateSetPackage.lastVersion})
 <table class="table table-bordered table-striped table-hover" >
     <thead>
         <tr>
-            <th>#</th>
-            <th><fmt:message key="siteSettings.label.modules.id"/></th>
+            <th width="1%">#</th>
             <th><fmt:message key="siteSettings.label.modules.name"/></th>
+            <th><fmt:message key="siteSettings.label.modules.id"/></th>
             <th><fmt:message key="siteSettings.label.modules.version"/></th>
             <th><fmt:message key="siteSettings.label.modules.type"/></th>
             <th><fmt:message key="siteSettings.label.modules.source"/></th>
         </tr>
     </thead>
     <tbody>
-        <tr>
+    <tr class="info" >
             <td colspan="6"><h3><fmt:message key="label.modules"/></h3></td>
         </tr>
         <c:forEach var="pkg" items="${modules}" varStatus="status">
         <tr>
             <td>${status.index + 1}</td>
+            <td><strong>${pkg.name}</strong></td>
             <td>${pkg.rootFolder}</td>
-            <td>${pkg.name}</td>
             <td>${pkg.lastVersion}</td>
             <td><fmt:message key="moduleType.${pkg.moduleType}.label"/></td>
             <td>${pkg.provider}</td>
         </tr>
         </c:forEach>
         <c:if test="${not empty requiredModules}">
-        <tr>
+        <tr class="warning" >
             <td colspan="6"><h3><fmt:message key="siteSettings.requiredModules"/></h3></td>
         </tr>
         <c:forEach var="pkg" items="${requiredModules}" varStatus="status">
         <tr>
             <td>${status.index + 1}</td>
+            <td><strong>${pkg.name}</strong></td>
             <td>${pkg.rootFolder}</td>
-            <td>${pkg.name}</td>
             <td>${pkg.lastVersion}</td>
             <td><fmt:message key="moduleType.${pkg.moduleType}.label"/></td>
             <td>${pkg.provider}</td>

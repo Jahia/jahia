@@ -52,10 +52,20 @@ public class OrphanedVersionHistoryCheckStatus extends VersionHistoryCheckStatus
 
     long orphaned;
 
+    /**
+     * Returns the maximum count of found orphaned version histories to stop the process on.
+     * 
+     * @return the maximum count of found orphaned version histories to stop the process on
+     */
     public long getLimit() {
         return limit;
     }
 
+    /**
+     * Returns the number of found orphaned version histories.
+     * 
+     * @return the number of found orphaned version histories
+     */
     public long getOrphaned() {
         return orphaned;
     }

@@ -59,25 +59,25 @@ class OutWrapper {
         this.out = out;
     }
 
-    public OutWrapper echo(String message) {
+    OutWrapper echo(String message) {
         log.info(message);
         out(message);
         return this;
     }
 
-    public OutWrapper echo(String format, Object arg1) {
+    OutWrapper echo(String format, Object arg1) {
         return echo(MessageFormatter.format(format, arg1));
     }
 
-    public OutWrapper echo(String format, Object arg1, Object arg2) {
+    OutWrapper echo(String format, Object arg1, Object arg2) {
         return echo(MessageFormatter.format(format, arg1, arg2));
     }
 
-    public OutWrapper echo(String format, Object arg1, Object arg2, Object arg3) {
+    OutWrapper echo(String format, Object arg1, Object arg2, Object arg3) {
         return echo(MessageFormatter.arrayFormat(format, new Object[] { arg1, arg2, arg3 }));
     }
 
-    public OutWrapper echo(String format, Object[] args) {
+    OutWrapper echo(String format, Object[] args) {
         return echo(MessageFormatter.format(format, args));
     }
 

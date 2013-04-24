@@ -54,14 +54,29 @@ public class VersionHistoryCheckStatus {
 
     long deletedVersionItems;
 
+    /**
+     * Returns the number of checked items.
+     * 
+     * @return the number of checked items
+     */
     public long getChecked() {
         return checked;
     }
 
+    /**
+     * Returns the number of deleted version histories.
+     * 
+     * @return the number of deleted version histories
+     */
     public long getDeleted() {
         return deleted;
     }
 
+    /**
+     * Returns the number of deleted version items.
+     * 
+     * @return the number of deleted version items
+     */
     public long getDeletedVersionItems() {
         return deletedVersionItems;
     }

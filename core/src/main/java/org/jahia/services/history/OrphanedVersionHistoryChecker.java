@@ -114,8 +114,13 @@ class OrphanedVersionHistoryChecker {
                     if (deleteOrphans) {
                         orphans.add(ref.getKey());
                     }
-                    if (isProcessingFinished(session)) {
+                    if (status.orphaned >= maxOrphans) {
+                        out.echo("{} version histories checked and the limit of {}"
+                                + " orphaned version histories is reached. Stopping checks.", status.checked, maxOrphans);
                         break;
+                    }
+                    if (deleteOrphans && status.orphaned > 0 && orphans.size() >= NodeVersionHistoryHelper.PURGE_HISTORY_CHUNK) {
+                        delete(session);
                     }
                 }
                 if (forceStop) {
@@ -172,20 +177,7 @@ class OrphanedVersionHistoryChecker {
         loadVersionBundleBatchSize = Integer.getInteger("org.jahia.services.history.loadVersionBundleBatchSize", 8000);
     }
 
-    private boolean isProcessingFinished(JCRSessionWrapper session) {
-        if (status.orphaned >= maxOrphans) {
-            out.echo("{} version histories checked and the limit of {}"
-                    + " orphaned version histories is reached. Stopping checks.", status.checked, maxOrphans);
-            return true;
-        }
-        if (deleteOrphans && status.orphaned > 0 && orphans.size() >= NodeVersionHistoryHelper.PURGE_HISTORY_CHUNK) {
-            delete(session);
-        }
-
-        return false;
-    }
-
-    public void perform(JCRSessionWrapper session) throws RepositoryException {
+    void perform(JCRSessionWrapper session) throws RepositoryException {
         SessionImpl providerSession = (SessionImpl) session.getProviderSession(session.getNode("/").getProvider());
         InternalVersionManager vm = providerSession.getInternalVersionManager();
 
@@ -216,7 +208,7 @@ class OrphanedVersionHistoryChecker {
         }
     }
 
-    public void stop() {
+    void stop() {
         this.forceStop = true;
     }
 

@@ -57,9 +57,7 @@ import org.apache.jackrabbit.core.state.ItemStateException;
 import org.apache.jackrabbit.core.version.InternalVersionManager;
 import org.apache.jackrabbit.core.version.InternalVersionManagerImpl;
 import org.apache.jackrabbit.core.version.InternalXAVersionManager;
-import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameConstants;
-import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.util.ISO8601;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.slf4j.Logger;
@@ -119,8 +117,13 @@ class UnusedVersionChecker {
                     if (deleteUnused) {
                         unused.add(ref.getKey());
                     }
-                    if (isProcessingFinished(session)) {
+                    if (status.orphaned >= maxUnused) {
+                        out.echo("{} versions checked and the limit of {}" + " versions is reached. Stopping checks.",
+                                status.checked, maxUnused);
                         break;
+                    }
+                    if (deleteUnused && status.orphaned > 0 && unused.size() >= purgeVersionsBatchSize) {
+                        delete(session);
                     }
                 }
                 if (forceStop) {
@@ -200,20 +203,12 @@ class UnusedVersionChecker {
         return created != null && created.getTimeInMillis() < purgeOlderThanTimestamp;
     }
 
-    private boolean isProcessingFinished(JCRSessionWrapper session) {
-        if (status.orphaned >= maxUnused) {
-            out.echo("{} versions checked and the limit of {}" + " versions is reached. Stopping checks.",
-                    status.checked, maxUnused);
-            return true;
-        }
-        if (deleteUnused && status.orphaned > 0 && unused.size() >= purgeVersionsBatchSize) {
-            delete(session);
-        }
-
-        return false;
+    private boolean isRootVersion(NodeInfo info) {
+        List<NodeId> predecessors = info.getReferences().get(NameConstants.JCR_PREDECESSORS);
+        return predecessors == null || predecessors.isEmpty();
     }
 
-    public void perform(JCRSessionWrapper session, long purgeOlderThanTimestamp) throws RepositoryException {
+    void perform(JCRSessionWrapper session, long purgeOlderThanTimestamp) throws RepositoryException {
         SessionImpl providerSession = (SessionImpl) session.getProviderSession(session.getNode("/").getProvider());
         InternalVersionManager vm = providerSession.getInternalVersionManager();
 
@@ -244,7 +239,7 @@ class UnusedVersionChecker {
         }
     }
 
-    public void stop() {
+    void stop() {
         this.forceStop = true;
     }
 
@@ -280,10 +275,5 @@ class UnusedVersionChecker {
         if (deleteUnused && unused.size() > 0) {
             delete(session);
         }
-    }
-
-    private boolean isRootVersion(NodeInfo info) {
-        List<NodeId> predecessors = info.getReferences().get(NameConstants.JCR_PREDECESSORS);
-        return predecessors == null || predecessors.isEmpty();
     }
 }

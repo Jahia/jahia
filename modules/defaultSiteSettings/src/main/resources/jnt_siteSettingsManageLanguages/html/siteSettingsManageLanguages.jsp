@@ -126,7 +126,7 @@
 <form id="updateSiteForm" action="<c:url value='${url.base}${renderContext.mainResource.node.resolveSite.path}'/>" method="post">
     <input type="hidden" name="jcrMethodToCall" value="put"/>
     <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
-    <table class="table table-bordered table-hover" cellpadding="0" cellspacing="0" >
+    <table class="table table-bordered table-striped table-hover" >
         <thead>
         <tr>
             <th><fmt:message key="siteSettings.label.language"/></th>
@@ -180,7 +180,7 @@
             </c:forEach>
         </select>
 
-    <button class="btn" type="button" id="updateSite_button" onclick="updateSite()"><i class="icon-plus-sign icon-white"></i> <fmt:message key="label.submit"/></button>
+    <button class="btn btn-primary" type="button" id="updateSite_button" onclick="updateSite()"><i class="icon-plus-sign icon-white"></i> <fmt:message key="label.submit"/></button>
 
 </form>
 

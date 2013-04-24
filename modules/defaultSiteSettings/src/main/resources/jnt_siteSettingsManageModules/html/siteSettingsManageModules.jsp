@@ -25,7 +25,7 @@
 <strong><fmt:message key="serverSettings.manageWebProjects.webProject.templateSet"/>:&nbsp;</strong>
 ${fn:escapeXml(templatePackageName)}&nbsp;(${templateSetPackage.lastVersion})
 </p>
-<table class="table table-bordered table-hover" cellpadding="0" cellspacing="0" >
+<table class="table table-bordered table-striped table-hover" >
     <thead>
         <tr>
             <th>#</th>

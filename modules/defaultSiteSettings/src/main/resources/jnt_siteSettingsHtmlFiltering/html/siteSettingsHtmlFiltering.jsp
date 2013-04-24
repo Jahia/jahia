@@ -92,23 +92,25 @@ function updateSiteHtmlFiltering(btn) {
     <input type="hidden" name="jcr:mixinTypes" value="jmix:htmlSettings"/>
 
     <label class="checkbox" for="activateTagFiltering">
-        <input type="checkbox" name="activateTagFiltering" id="activateTagFiltering"${not empty propFilteringActivated && propFilteringActivated.boolean ? ' checked="checked"' : ''}/>&nbsp;<fmt:message key="label.active"/>
+        <input type="checkbox" name="activateTagFiltering" id="activateTagFiltering"${not empty propFilteringActivated && propFilteringActivated.boolean ? ' checked="checked"' : ''}/>
+        <fmt:message key="label.active"/>
     </label>
 
                 <fmt:message key="label.add" var="i18nAdd"/>
                 <input type="text" name="newHtmlTag" id="newHtmlTag" value="" size="10"/>
                 <input type="image" id="addHtmlTag" title="${i18nAdd}" alt="${i18nAdd}" src="<c:url value='/css/images/andromeda/icons/add2.png'/>" width="16" height="16" />
 
-        <table id="tblHtmlTags" class="table table-striped" cellpadding="0" cellspacing="5" border="0">
+        <table id="tblHtmlTags" class="table table-bordered table-striped table-hover" >
         <tbody>
             <c:forTokens var="tag" items="${filteredTags}" delims=", ">
                 <tr id="rowHtmlTag${tag}">
-                    <td><strong class="htmlTagToFilter">${tag}</strong></td>
                     <fmt:message key="label.delete" var="i18nDelete"/><c:set var="i18nDelete" value="${fn:escapeXml(i18nDelete)}"/>
                     <td><input type="image" title="${i18nDelete}" alt="${i18nDelete}" src="${iconDelete}" width="16" height="16" onclick="$(this).parent().parent().remove(); return false;" /></td>
+                    <td width="100%"><strong class="htmlTagToFilter">${tag}</strong></td>
+
                 </tr>
             </c:forTokens>
         </tbody>
     </table>
-    <button class="btn" type="button" name="save" onclick="updateSiteHtmlFiltering($(this)); return false;"><i class="icon-ok-sign icon-white"></i> <fmt:message key='label.save'/></button>
+    <button class="btn btn-primary" type="button" name="save" onclick="updateSiteHtmlFiltering($(this)); return false;"><i class="icon-ok-sign icon-white"></i> <fmt:message key='label.save'/></button>
 </form>

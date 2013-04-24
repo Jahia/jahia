@@ -78,9 +78,6 @@ public class SiteLanguageSwitcherActionItem extends LanguageSwitcherActionItem {
                     }
                 }
             }
-            if (!JahiaGWTParameters.getSiteLanguages().contains(mainComponent.getSelection())) {
-                mainComponent.select(0);
-            }
             events = true;
         }
 

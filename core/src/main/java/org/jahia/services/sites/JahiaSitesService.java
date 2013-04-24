@@ -83,6 +83,8 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
 
     private static final Pattern JCR_KEY_PATTERN = Pattern.compile("{jcr}", Pattern.LITERAL);
 
+    private static final String[] TRANSLATOR_NODES_PATTERN = new String[] {"translator-*"};
+    
     protected static JahiaSitesService instance = null;
 
     public static final String SYSTEM_SITE_KEY = "systemsite";
@@ -641,12 +643,10 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
         Node n = session.getNode("/permissions/repository-permissions/jcr:all_" + ws + "/jcr:write_" + ws + "/jcr:modifyProperties_" + ws);
         Set<String> languages = new HashSet<String>();
 
-        NodeIterator ni = n.getNodes();
+        NodeIterator ni = n.getNodes(new String[] {"jcr:modifyProperties_" + ws + "_*"});
         while (ni.hasNext()) {
             Node next = (Node) ni.next();
-            if (next.getName().startsWith("jcr:modifyProperties_" + ws + "_")) {
-                languages.add(StringUtils.substringAfter(next.getName(), "jcr:modifyProperties_" + ws + "_"));
-            }
+            languages.add(StringUtils.substringAfter(next.getName(), "jcr:modifyProperties_" + ws + "_"));
         }
         for (String s : site.getLanguages()) {
             if (!languages.contains(s)) {
@@ -659,12 +659,10 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
         Node n = session.getNode("/roles");
         Set<String> languages = new HashSet<String>();
 
-        NodeIterator ni = n.getNodes();
+        NodeIterator ni = n.getNodes(TRANSLATOR_NODES_PATTERN);
         while (ni.hasNext()) {
             Node next = (Node) ni.next();
-            if (next.getName().startsWith("translator-")) {
-                languages.add(StringUtils.substringAfter(next.getName(), "translator-"));
-            }
+            languages.add(StringUtils.substringAfter(next.getName(), "translator-"));
         }
         for (String s : site.getLanguages()) {
             if (!languages.contains(s)) {

@@ -124,7 +124,7 @@ public class PublicationHelper {
             if (!includesSubnodes) {
                 // We don't include subnodes, but we still need the translation nodes to get the correct status
                 final JCRSessionWrapper unlocalizedSession = JCRSessionFactory.getInstance().getCurrentUserSession();
-                NodeIterator ni = unlocalizedSession.getNodeByIdentifier(node.getIdentifier()).getNodes("j:translation_*");
+                NodeIterator ni = unlocalizedSession.getNodeByIdentifier(node.getIdentifier()).getNodes(JCRNodeWrapperImpl.TRANSLATION_NODES_PATTERN);
                 while (ni.hasNext()) {
                     JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
                     PublicationInfo translationInfo = publicationService.getPublicationInfo(next.getIdentifier(), languages, includesReferences, false, false, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);

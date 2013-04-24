@@ -23,27 +23,30 @@
 </form>
 
 <table class="table table-bordered table-striped table-hover" cellpadding="0" cellspacing="0">
-    <tr>
-        <th><fmt:message key='label.urlmapping.mapping'/></th>
-        <th><fmt:message key='label.page'/></th>
-        <th><fmt:message key='label.urlmapping.lang'/></th>
-        <th><fmt:message key='label.urlmapping.active'/></th>
-        <th><fmt:message key='label.urlmapping.default'/></th>
-    </tr>
-
-    <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}"
-               varStatus="status">
-        <tr class="${status.index % 2 == 0 ? 'evenLine' : 'oddLine'}">
-            <template:module node="${subchild}" view="${moduleMap.subNodesView}"
-                             editable="${moduleMap.editable && !resourceReadOnly}"/>
+    <thead>
+        <tr>
+            <th><fmt:message key='label.urlmapping.mapping'/></th>
+            <th><fmt:message key='label.page'/></th>
+            <th><fmt:message key='label.urlmapping.lang'/></th>
+            <th><fmt:message key='label.urlmapping.active'/></th>
+            <th><fmt:message key='label.urlmapping.default'/></th>
         </tr>
-        <c:set var="isEmpty" value="false"/>
-    </c:forEach>
+    </thead>
+    <tbody>
+        <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}"
+                   varStatus="status">
+            <tr class="${status.index % 2 == 0 ? 'evenLine' : 'oddLine'}">
+                <template:module node="${subchild}" view="${moduleMap.subNodesView}"
+                                 editable="${moduleMap.editable && !resourceReadOnly}"/>
+            </tr>
+            <c:set var="isEmpty" value="false"/>
+        </c:forEach>
+    </tbody>
 </table>
 <c:if test="${not omitFormatting}">
     <div class="clear"></div>
 </c:if>
 <c:if test="${not empty moduleMap.emptyListMessage and (renderContext.editMode or moduleMap.forceEmptyListMessageDisplay) and isEmpty}">
-    ${moduleMap.emptyListMessage}
+    <div class="alert alert-info">${moduleMap.emptyListMessage}</div>
 </c:if>
 <template:include view="hidden.footer"/>

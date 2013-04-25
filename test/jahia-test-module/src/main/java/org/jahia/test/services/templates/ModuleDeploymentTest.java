@@ -84,7 +84,11 @@ public class ModuleDeploymentTest {
                 }
                 SettingsBean settingsBean = SettingsBean.getInstance();
                 FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), "dummy1-" + VERSION + ".war"));
-
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 return null;
             }
         });
@@ -110,6 +114,11 @@ public class ModuleDeploymentTest {
 
                 JahiaTemplatesPackage pack = managerService.getTemplatePackageByFileName("dummy1");
                 assertNotNull(pack);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 assertNotNull("Spring context is null", pack.getContext());
                 assertTrue("No action defined", !pack.getContext().getBeansOfType(Action.class).isEmpty());
                 assertTrue("Action not registered", managerService.getActions().containsKey("my-post-action"));
@@ -175,6 +184,12 @@ public class ModuleDeploymentTest {
                     FileUtils.copyInputStreamToFile(stream,  tmpFile);
                     JahiaTemplatesPackage pack = managerService.deployModule(tmpFile, session);
                     tmpFile.delete();
+
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
                     managerService.undeployModule(pack);
 

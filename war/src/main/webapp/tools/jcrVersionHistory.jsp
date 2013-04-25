@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="tools.css" type="text/css" />
 <title>JCR Version History Management</title>
 <script type="text/javascript">
-    function go(id1, value1, id2, value2, id3, value3) {
+    function go(form, id1, value1, id2, value2, id3, value3) {
         document.getElementById(id1).value=value1;
         if (id2) {
             document.getElementById(id2).value=value2;
@@ -21,7 +21,7 @@
         if (id3) {
             document.getElementById(id3).value=value3;
         }
-        document.getElementById('navigateForm').submit();
+        document.getElementById(form).submit();
     }
 </script>
 </head>
@@ -124,26 +124,28 @@ try {
         <legend>Orphaned version histories</legend>
         <c:if test="${not orphanedCheckRunning}">
             <p>Limit orphaned histories to: <input type="text" name="maxLimit" id="maxLimit" value="${maxLimit}" size="11"/></p>
-            <p><input type="submit" name="reportOrphaned" onclick="if (confirm('Start checking for the orhpaned version history?')) { go('action', 'orphanedReport'); } return false;" value="Check for orphaned version history"/> - searches for version history of already deleted nodes and prints a report</p>
-            <p><input type="submit" name="deleteOrphaned" onclick="if (confirm('The version history for no longer existing nodes will be permanently deleted. Do you want to continue?')) { go('action', 'orphanedDelete'); } return false;" value="Delete orphaned version history"/> - searches for version history of already deleted nodes and deletes version items</p>
+            <p><input type="submit" name="reportOrphaned" onclick="if (confirm('Start checking for the orhpaned version history?')) { go('navigateForm','action', 'orphanedReport'); } return false;" value="Check for orphaned version history"/> - searches for version history of already deleted nodes and prints a report</p>
+            <p><input type="submit" name="deleteOrphaned" onclick="if (confirm('The version history for no longer existing nodes will be permanently deleted. Do you want to continue?')) { go('navigateForm','action', 'orphanedDelete'); } return false;" value="Delete orphaned version history"/> - searches for version history of already deleted nodes and deletes version items</p>
         </c:if>
         <c:if test="${orphanedCheckRunning}">
             <p>The version history is currently being checked for orphans.</p>
-            <p><input type="submit" name="stopOrphaned" onclick="if (confirm('Do you want to stop the process running version history check?')) { go('action', 'orphanedStop'); } return false;" value="Stop running orphaned version history check process"/></p>
+            <p><input type="submit" name="stopOrphaned" onclick="if (confirm('Do you want to stop the process running version history check?')) { go('navigateForm','action', 'orphanedStop'); } return false;" value="Stop running orphaned version history check process"/></p>
         </c:if>
     </fieldset>    
-
+</form>
+<form id="navigateFormUnused" action="?" method="get">
+    <input type="hidden" name="action" id="actionUnused" value=""/>
     <fieldset>
         <legend>Unused versions</legend>
         <c:if test="${not unusedCheckRunning}">
             <p>Limit unused versions to: <input type="text" name="maxLimitUnused" id="maxLimitUnused" value="${maxLimitUnused}" size="11"/></p>
             <p>Remove only versions older than: <input type="text" name="age" id="age" value="${age}" size="2"/> days</p>
-            <p><input type="submit" name="reportUnused" onclick="if (confirm('Start checking for the unused versions?')) { go('action', 'unusedReport'); } return false;" value="Check for unused versions"/> - searches for old unused versions of nodes and prints a report</p>
-            <p><input type="submit" name="deleteUnused" onclick="if (confirm('The unused versions for all nodes will be permanently deleted. Do you want to continue?')) { go('action', 'unusedDelete'); } return false;" value="Delete unused versions"/> - searches for versions which are no longer used and deletes those version items</p>
+            <p><input type="submit" name="reportUnused" onclick="if (confirm('Start checking for the unused versions?')) { go('navigateFormUnused','actionUnused', 'unusedReport'); } return false;" value="Check for unused versions"/> - searches for old unused versions of nodes and prints a report</p>
+            <p><input type="submit" name="deleteUnused" onclick="if (confirm('The unused versions for all nodes will be permanently deleted. Do you want to continue?')) { go('navigateFormUnused','actionUnused', 'unusedDelete'); } return false;" value="Delete unused versions"/> - searches for versions which are no longer used and deletes those version items</p>
         </c:if>
         <c:if test="${unusedCheckRunning}">
             <p>The version history is currently being checked for orphans.</p>
-            <p><input type="submit" name="stopUnused" onclick="if (confirm('Do you want to stop the process running unused versions check?')) { go('action', 'unusedStop'); } return false;" value="Stop running unused versions check process"/></p>
+            <p><input type="submit" name="stopUnused" onclick="if (confirm('Do you want to stop the process running unused versions check?')) { go('navigateFormUnused','actionUnused', 'unusedStop'); } return false;" value="Stop running unused versions check process"/></p>
         </c:if>
     </fieldset>    
 

@@ -1057,7 +1057,14 @@
                                 <packageExclude>javax.servlet.jsp*</packageExclude>
                                 <packageExclude>org.codehaus.groovy.ast*</packageExclude>
                                 <packageExclude>javax.el*,de.odysseus.el*</packageExclude>
-                                <packageExclude>org.springframework.web.servlet*</packageExclude>
+                                <packageExclude>org.springframework.web.servlet</packageExclude>
+                                <packageExclude>org.springframework.web.servlet.config*</packageExclude>
+                                <packageExclude>org.springframework.web.servlet.i18n*</packageExclude>
+                                <packageExclude>org.springframework.web.servlet.resource*</packageExclude>
+                                <packageExclude>org.springframework.web.servlet.support*</packageExclude>
+                                <packageExclude>org.springframework.web.servlet.tags*</packageExclude>
+                                <packageExclude>org.springframework.web.servlet.theme*</packageExclude>
+                                <packageExclude>org.springframework.web.servlet.view*</packageExclude>
                                 <packageExclude>org.springframework.web.util*</packageExclude>
                             </packageExcludes>
                         </configuration>

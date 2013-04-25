@@ -43,6 +43,8 @@
                            <version>${spring.version}</version>
                          <type>jar</type>
                          <includes>org/springframework/web/servlet/**/*</includes>
+                         <excludes>org/springframework/web/servlet/handler/**/*</excludes>
+                         <excludes>org/springframework/web/servlet/mvc/**/*</excludes>
                        </artifactItem>
                    </artifactItems>
                    <outputDirectory>${project.build.directory}/classes</outputDirectory>

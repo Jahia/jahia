@@ -60,7 +60,7 @@ public final class Messages {
     private static final String MISSING_RESOURCE = "???";
 
     private static final Pattern RB_MACRO = Pattern.compile("##resourceBundle\\((.*)\\)##");
-    
+
     /**
      * Returns the formatted messages with placeholders substituted by argument values.
      * 
@@ -77,10 +77,34 @@ public final class Messages {
         return MessageFormat.format(StringUtils.replace(text, "'", "''"), arguments);
     }
 
+    /**
+     * Looks up the resource bundle key considering locale and current module.
+     * 
+     * @param pkg
+     *            the current module
+     * @param key
+     *            the key to perform lookup for
+     * @param locale
+     *            current locale
+     * @return the label for the requested key
+     */
     public static String get(JahiaTemplatesPackage pkg, String key, Locale locale) {
         return ResourceBundles.get(pkg, locale).getString(key);
     }
 
+    /**
+     * Looks up the resource bundle key considering locale and current module. If not found the specified default value is returned.
+     * 
+     * @param pkg
+     *            the current module
+     * @param key
+     *            the key to perform lookup for
+     * @param locale
+     *            current locale
+     * @param defaultValue
+     *            the default value to return if the lookup has not found anything
+     * @return the label for the requested key; if not found the provided default value it returned
+     */
     public static String get(JahiaTemplatesPackage pkg, String key, Locale locale, String defaultValue) {
         String message;
         try {
@@ -91,6 +115,20 @@ public final class Messages {
         return message;
     }
 
+    /**
+     * Looks up the resource bundle key considering locale and specified {@link ResourceBundle} instance. If not found the specified default
+     * value is returned.
+     * 
+     * @param bundle
+     *            the resource bundle key to lookup the key
+     * @param key
+     *            the key to perform lookup for
+     * @param locale
+     *            current locale
+     * @param defaultValue
+     *            the default value to return if the lookup has not found anything
+     * @return the label for the requested key; if not found the provided default value it returned
+     */
     public static String get(ResourceBundle bundle, String key, String defaultValue) {
         try {
             return bundle.getString(key);
@@ -99,10 +137,41 @@ public final class Messages {
         }
     }
 
+    /**
+     * Looks up the resource bundle key considering locale, specified bundle name and current module.
+     * 
+     * @param primaryBundleName
+     *            the resource bundle name to perform lookup for the first turn
+     * @param pkg
+     *            the current module
+     * @param key
+     *            the key to perform lookup for
+     * @param locale
+     *            current locale
+     * @param defaultValue
+     *            the default value to return if the lookup has not found anything
+     * @return the label for the requested key
+     */
     public static String get(String primaryBundleName, JahiaTemplatesPackage pkg, String key, Locale locale) {
         return ResourceBundles.get(primaryBundleName, pkg, locale).getString(key);
     }
 
+    /**
+     * Looks up the resource bundle key considering locale, specified bundle name and current module. If not found the specified default
+     * value is returned.
+     * 
+     * @param primaryBundleName
+     *            the resource bundle name to perform lookup for the first turn
+     * @param pkg
+     *            the current module
+     * @param key
+     *            the key to perform lookup for
+     * @param locale
+     *            current locale
+     * @param defaultValue
+     *            the default value to return if the lookup has not found anything
+     * @return the label for the requested key; if not found the provided default value it returned
+     */
     public static String get(String primaryBundleName, JahiaTemplatesPackage pkg, String key, Locale locale,
             String defaultValue) {
         try {
@@ -112,14 +181,36 @@ public final class Messages {
         }
     }
 
+    /**
+     * Looks up the resource bundle key considering locale and specified bundle name.
+     * 
+     * @param bundle
+     *            the bundle name to perform the lookup
+     * @param key
+     *            the key to perform lookup for
+     * @param locale
+     *            current locale
+     * @return the label for the requested key
+     * @throws MissingResourceException
+     *             in case the key is not found in the specified bundle
+     */
     public static String get(String bundle, String key, Locale locale) throws MissingResourceException {
         return ResourceBundles.get(bundle, locale).getString(key);
     }
 
-    public static String getWithArgs(String bundle, String key, Locale locale, Object... arguments) throws MissingResourceException {
-        return format(ResourceBundles.get(bundle, locale).getString(key), arguments);
-    }
-
+    /**
+     * Looks up the resource bundle key considering locale and specified bundle name. If not found the specified default value is returned.
+     * 
+     * @param bundle
+     *            the bundle name to perform the lookup
+     * @param key
+     *            the key to perform lookup for
+     * @param locale
+     *            current locale
+     * @param defaultValue
+     *            the default value to return if the lookup has not found anything
+     * @return the label for the requested key; if not found the provided default value it returned
+     */
     public static String get(String bundle, String key, Locale locale, String defaultValue) {
         try {
             return ResourceBundles.get(bundle, locale).getString(key);
@@ -128,27 +219,117 @@ public final class Messages {
         }
     }
 
+    /**
+     * Looks up the resource bundle key in the {@link ResourceBundles#JAHIA_INTERNAL_RESOURCES} bundle, considering locale. This method does
+     * not throw {@link MissingResourceException} in case the key is not found, but rather returns the key itself.
+     * 
+     * @param key
+     *            the key to perform lookup for
+     * @param locale
+     *            current locale
+     * @return the label for the requested key
+     * 
+     * @see #getNonEmpty(String, String, Locale)
+     */
     public static String getInternal(String key, Locale locale) {
         return getNonEmpty(ResourceBundles.JAHIA_INTERNAL_RESOURCES, key, locale);
     }
 
+    /**
+     * Looks up the resource bundle key in the {@link ResourceBundles#JAHIA_INTERNAL_RESOURCES} bundle, considering locale. If not found the
+     * specified default value is returned.
+     * 
+     * @param key
+     *            the key to perform lookup for
+     * @param locale
+     *            current locale
+     * @param defaultValue
+     *            the default value to return if the lookup has not found anything
+     * @return the label for the requested key; if not found the provided default value it returned
+     */
     public static String getInternal(String key, Locale locale, String defaultValue) {
         return get(ResourceBundles.JAHIA_INTERNAL_RESOURCES, key, locale, defaultValue);
     }
 
+    /**
+     * Looks up the resource bundle key in the {@link ResourceBundles#JAHIA_INTERNAL_RESOURCES} bundle, considering locale. Additionally
+     * placeholders are replaced with the provided arguments.
+     * 
+     * @param key
+     *            the key to perform lookup for
+     * @param locale
+     *            current locale
+     * @param args
+     *            the arguments to replace placeholders with
+     * @return the label for the requested key
+     */
     public static String getInternalWithArguments(String key, Locale locale, Object... args) {
         return format(get(ResourceBundles.JAHIA_INTERNAL_RESOURCES, key, locale), args);
     }
 
+    /**
+     * Looks up the resource bundle key in the specified bundle, considering locale. This method does not throw
+     * {@link MissingResourceException} in case the key is not found, but rather returns the key itself.
+     * 
+     * @param bundle
+     *            the bundle name to perform the lookup
+     * @param key
+     *            the key to perform lookup for
+     * @param locale
+     *            current locale
+     * @return the label for the requested key
+     */
     public static String getNonEmpty(String bundle, String key, Locale locale) {
         String value = get(bundle, key, locale, null);
         return value != null ? value : (MISSING_RESOURCE + key + MISSING_RESOURCE);
     }
 
+    /**
+     * Looks up the resource bundle key in the {@link ResourceBundles#JAHIA_TYPES_RESOURCES} bundle, considering locale. If not found the
+     * specified default value is returned.
+     * 
+     * @param key
+     *            the key to perform lookup for
+     * @param locale
+     *            current locale
+     * @param defaultValue
+     *            the default value to return if the lookup has not found anything
+     * @return the label for the requested key; if not found the provided default value it returned
+     */
     public static String getTypes(String key, Locale locale, String defaultValue) {
         return get(ResourceBundles.JAHIA_TYPES_RESOURCES, key, locale, defaultValue);
     }
 
+    /**
+     * Looks up the resource bundle key in the specified bundle, considering locale. Additionally placeholders are replaced with the
+     * provided arguments.
+     * 
+     * @param bundle
+     *            the bundle name to perform the lookup
+     * @param key
+     *            the key to perform lookup for
+     * @param locale
+     *            current locale
+     * @param args
+     *            the arguments to replace placeholders with
+     * @return the label for the requested key
+     */
+    public static String getWithArgs(String bundle, String key, Locale locale, Object... arguments)
+            throws MissingResourceException {
+        return format(ResourceBundles.get(bundle, locale).getString(key), arguments);
+    }
+
+    /**
+     * Performs the interpolation (evaluation) of the resource bundle macro in the provided input.
+     * 
+     * @param input
+     *            the text to be interpolated
+     * @param locale
+     *            current local
+     * @param module
+     *            current module
+     * @return the text after evaluation of the resource bundle macros
+     */
     public static String interpolateResourceBundleMacro(String input, Locale locale, JahiaTemplatesPackage module) {
         if (StringUtils.isEmpty(input)) {
             return input;
@@ -184,5 +365,9 @@ public final class Messages {
         }
 
         return result;
+    }
+
+    private Messages() {
+        super();
     }
 }

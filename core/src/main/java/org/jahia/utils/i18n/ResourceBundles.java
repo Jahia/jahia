@@ -65,7 +65,7 @@ public final class ResourceBundles {
     public static final String JAHIA_TYPES_RESOURCES = "JahiaTypesResources";
 
     /**
-     * Triggers the clean up of the {@link ResourceBundle} caches
+     * Triggers the clean up of the {@link ResourceBundle} caches.
      */
     public static void flushCache() {
         try {
@@ -101,6 +101,18 @@ public final class ResourceBundles {
                 : get(bundleLookupChain.get(0), locale);
     }
 
+    /**
+     * Use the resource bundle lookup hierarchy of the provided template package, but first check for the specified bundle name.
+     * 
+     * @param primaryBundleName
+     *            the bundle name to peform lookup for in first turn
+     * @param pkg
+     *            the template package to use resources bundle lookup for
+     * @param locale
+     *            the target locale
+     * @return a resource bundle that is baked by the resource bundle lookup chain of a provided template package, considering specified
+     *         primary bundle name
+     */
     public static ResourceBundle get(String primaryBundleName, JahiaTemplatesPackage pkg, Locale locale) {
         if (pkg == null) {
             return get(primaryBundleName, locale);
@@ -145,5 +157,9 @@ public final class ResourceBundles {
      */
     public static ResourceBundle getInternal(Locale locale) {
         return get(JAHIA_INTERNAL_RESOURCES, locale);
+    }
+    
+    private ResourceBundles() {
+        super();
     }
 }

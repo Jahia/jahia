@@ -67,7 +67,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Sergiy Shyrkov
  */
-class JahiaResourceBundleControl extends Control {
+final class JahiaResourceBundleControl extends Control {
 
     private TemplatePackageRegistry templatePackageRegistry;
 

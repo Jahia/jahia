@@ -164,37 +164,57 @@ Basic Jahia REST API
 
  Request headers : see response format section below.
 
-*---------------------------+-------------+----------------------------------------------------------------------+
-|Name                       |Mandatory    |Description                                                           |
-*---------------------------+-------------+----------------------------------------------------------------------+
-|jcrNodeType                | yes         | Define the type of node you want to create.                          |
-*---------------------------+-------------+----------------------------------------------------------------------+
-|jcrNodeName                | no          | If defined we will create a node with this name (or use it as a      |
-|                           |             | prefix for the name. If not define you can call :                    |
-|                           |             | /cms/render/WORKSPACE/LANGUAGE/CONTENT_PATH/*                        |
-|                           |             | To create a subnode at the specified path using the nodetype for     |
-|                           |             | name.                                                                |
-*---------------------------+-------------+----------------------------------------------------------------------+
-|jcrNewNodeOutputFormat     | no          | Define at which format the newly created node will be returned, HTML |
-|                           |             | by default, JSON is another possible value, or any type of output    |
-|                           |             | you have define in  your templates.                                  |
-*---------------------------+-------------+----------------------------------------------------------------------+
-|jcrRedirectTo              | no          | If defined will redirect to the specified URL instead of the newly   |
-|                           |             | created node.                                                        |
-*---------------------------+-------------+----------------------------------------------------------------------+
-|jcrMethodToCall            | no          | For HTML form to override the method called, this allow to delete    |
-|                           |             | content with a simple POST form instead of send a DELETE HTTP request|
-*---------------------------+-------------+----------------------------------------------------------------------+
-|jcrAutoCheckin             | no          | Allow to force versioning of the newly created content.              |
-*---------------------------+-------------+----------------------------------------------------------------------+
-|jcrTargetDirectory         |no           | If you have multipart form, this will be the                         |
-|                           |             | location where the content is uploaded                               |
-*---------------------------+-------------+----------------------------------------------------------------------+
-|jcrVersion                 |no           | If "true" activate the versionning on the posted content             |
-|                           |             | (works only for files)                                               |
-*---------------------------+-------------+----------------------------------------------------------------------+
-|jcr:mixinTypes             |no           | Allow you to set a mixin on the new node                             |
-*---------------------------+-------------+----------------------------------------------------------------------+
+*----------------------------+--------------+----------------------------------------------------------------------+
+|Name                        |Mandatory     |Description                                                           |
+*----------------------------+--------------+----------------------------------------------------------------------+
+|jcrNodeType                 | yes          | Define the type of node you want to create.                          |
+*----------------------------+--------------+----------------------------------------------------------------------+
+|jcrNodeName                 | no           | If defined we will create a node with this name (or use it as a      |
+|                            |              | prefix for the name. If not define you can call :                    |
+|                            |              | /cms/render/WORKSPACE/LANGUAGE/CONTENT_PATH/*                        |
+|                            |              | To create a subnode at the specified path using the nodetype for     |
+|                            |              | name.                                                                |
+*----------------------------+--------------+----------------------------------------------------------------------+
+|jcrNewNodeOutputFormat      | no           | Define at which format the newly created node will be returned, after|
+|                            |              | the form submission (non-AJAX) is performed and a redirect is sent   |
+|                            |              | back to the browser. This value is used as a file extension at the   |
+|                            |              | end of the URL. The "html" value is the default value, but "json" or |
+|                            |              | any other view type you have defined in your templates is possible.  |
+*----------------------------+--------------+----------------------------------------------------------------------+
+|jcrReturnContentType        | no           | If you are expecting a JSON result to the REST call, you need to     |
+|                            |              | either set the "accept" header to "application/json" or use this     |
+|                            |              | parameter to force the generation of JSON output. The value must     |
+|                            |              | either be "json" to force JSON output or "" (or remove the parameter |
+|                            |              | completely to default to "accept" header checks. This parameter is   |
+|                            |              | useful when using framework such as JQuery that send "accept" headers|
+|                            |              | with a "*/*" value to match all types. In this case this parameter   |
+|                            |              | implies that we want a JSON response output. The difference between  |
+|                            |              | this parameter and the jcrNewNodeOutputFormat one is that this one   |
+|                            |              | is used to generate a direct HTTP response whereas the latter is used|
+|                            |              | to generate a redirection URL.                                       |
+*----------------------------+--------------+----------------------------------------------------------------------+
+|jcrReturnContentTypeOverride| no           | When the jcrReturnContentType is activated, it will default to the   |
+|                            |              | following response content type: application/json; charset=UTF-8     |
+|                            |              | This parameter makes it possible to override the response content    |
+|                            |              | type to anything you need. Note that if you don't include a charset  |
+|                            |              | directive it will automatically append a UTF-8 charset.              |
+*----------------------------+--------------+----------------------------------------------------------------------+
+|jcrRedirectTo               | no           | If defined will redirect to the specified URL instead of the newly   |
+|                            |              | created node.                                                        |
+*----------------------------+--------------+----------------------------------------------------------------------+
+|jcrMethodToCall             | no           | For HTML form to override the method called, this allow to delete    |
+|                            |              | content with a simple POST form instead of send a DELETE HTTP request|
+*----------------------------+--------------+----------------------------------------------------------------------+
+|jcrAutoCheckin              | no           | Allow to force versioning of the newly created content.              |
+*----------------------------+--------------+----------------------------------------------------------------------+
+|jcrTargetDirectory          | no           | If you have multipart form, this will be the                         |
+|                            |              | location where the content is uploaded                               |
+*----------------------------+--------------+----------------------------------------------------------------------+
+|jcrVersion                  | no           | If "true" activate the versionning on the posted content             |
+|                            |              | (works only for files)                                               |
+*----------------------------+--------------+----------------------------------------------------------------------+
+|jcr:mixinTypes              | no           | Allow you to set a mixin on the new node                             |
+*----------------------------+--------------+----------------------------------------------------------------------+
 
 ** AJAX requests
 

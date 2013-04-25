@@ -9,21 +9,28 @@
         <on-render>
             <evaluate expression="memoryInfo.refresh()" result="requestScope.memoryInfo"/>
         </on-render>
-        <transition on="refresh" to="memoryThread" bind="false" validate="false"/>
+        <transition on="refresh" to="memoryThread" bind="false" validate="false">
+            <set name="memoryInfo.mode" value="'memory'" />
+        </transition>
         <transition on="gc" to="memoryThread" bind="false" validate="false">
+            <set name="memoryInfo.mode" value="'memory'" />
             <evaluate expression="memoryInfo.doGarbageCollection()"/>
         </transition>
         <transition on="performTD" to="memoryThread">
+            <set name="memoryInfo.mode" value="'threads'" />
             <evaluate expression="memoryInfo.performThreadDump(requestParameters.threadDump)"/>
         </transition>
         <transition on="scheduleTD" to="memoryThread">
+            <set name="memoryInfo.mode" value="'threads'" />
             <evaluate
                     expression="memoryInfo.scheduleThreadDump(requestParameters.threadDump,requestParameters.threadDumpCount,requestParameters.threadDumpInterval)"/>
         </transition>
         <transition on="toggleTD" to="memoryThread" bind="false" validate="false">
+            <set name="memoryInfo.mode" value="'threads'" />
             <evaluate expression="memoryInfo.toggleThreadMonitor()"/>
         </transition>
         <transition on="toggleEFD" to="memoryThread" bind="false" validate="false">
+            <set name="memoryInfo.mode" value="'threads'" />
             <evaluate expression="memoryInfo.toggleErrorFileDumper()"/>
         </transition>
         <transition on="showTD" to="showThreadDump"/>
@@ -33,6 +40,8 @@
             <evaluate expression="memoryInfo.executeThreadDump()" result="requestScope.threadDumpResult"
                       result-type="java.lang.String"/>
         </on-render>
-        <transition on="back" to="memoryThread"/>
+        <transition on="back" to="memoryThread">
+            <set name="memoryInfo.mode" value="'threads'" />
+        </transition>
     </view-state>
 </flow>

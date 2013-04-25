@@ -13,14 +13,61 @@ import java.io.Serializable;
  */
 public class MemoryThreadInformationManagement implements Serializable {
     private static final long serialVersionUID = 9142360328755986891L;
-    private  String maxMemory;
-    private  String totalMemory;
     private  String freeMemory;
+    private  String maxMemory;
     private long memoryUsage;
+    private String mode = "memory";
+    private  String totalMemory;
     private String usedMemory;
 
     public MemoryThreadInformationManagement() {
         refresh();
+    }
+
+    public void doGarbageCollection() {
+        System.gc();
+    }
+
+    public String executeThreadDump() {
+        StringBuilder stringBuilder = new StringBuilder();
+        ErrorFileDumper.outputSystemInfo(new PrintWriter(new StringBuilderWriter(stringBuilder)), false, false, false, false, false, true, false, false);
+        return stringBuilder.toString();
+    }
+
+    public String getFreeMemory() {
+        return freeMemory;
+    }
+
+    public String getMaxMemory() {
+        return maxMemory;
+    }
+
+    public long getMemoryUsage() {
+        return memoryUsage;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public String getTotalMemory() {
+        return totalMemory;
+    }
+
+    public String getUsedMemory() {
+        return usedMemory;
+    }
+
+    public boolean isErrorFileDumperActivated() {
+        return ErrorFileDumper.isFileDumpActivated();
+    }
+
+    public boolean isThreadMonitorActivated() {
+        return ThreadMonitor.getInstance().isActivated();
+    }
+
+    public void performThreadDump(String output) {
+        ThreadMonitor.getInstance().dumpThreadInfo("sysout".equals(output), "file".equals(output));
     }
 
     public MemoryThreadInformationManagement refresh() {
@@ -34,58 +81,20 @@ public class MemoryThreadInformationManagement implements Serializable {
         return this;
     }
 
-    public String getFreeMemory() {
-        return freeMemory;
-    }
-
-    public String getMaxMemory() {
-        return maxMemory;
-    }
-
-    public String getTotalMemory() {
-        return totalMemory;
-    }
-
-    public long getMemoryUsage() {
-        return memoryUsage;
-    }
-
-    public String getUsedMemory() {
-        return usedMemory;
-    }
-
-    public void doGarbageCollection() {
-        System.gc();
-    }
-
-    public void performThreadDump(String output) {
-        ThreadMonitor.getInstance().dumpThreadInfo("sysout".equals(output), "file".equals(output));
-    }
-
     public void scheduleThreadDump(String output, Integer count, Integer interval) {
         ThreadMonitor.getInstance().dumpThreadInfoWithInterval("sysout".equals(output), "file".equals(output),
                 count > 0 ? count : 10, interval > 0 ? interval : 10);
     }
 
-    public boolean isThreadMonitorActivated() {
-        return ThreadMonitor.getInstance().isActivated();
-    }
-
-    public void toggleThreadMonitor() {
-        ThreadMonitor.getInstance().setActivated(!ThreadMonitor.getInstance().isActivated());
-    }
-
-    public boolean isErrorFileDumperActivated() {
-        return ErrorFileDumper.isFileDumpActivated();
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 
     public void toggleErrorFileDumper() {
         ErrorFileDumper.setFileDumpActivated(!ErrorFileDumper.isFileDumpActivated());
     }
 
-    public String executeThreadDump() {
-        StringBuilder stringBuilder = new StringBuilder();
-        ErrorFileDumper.outputSystemInfo(new PrintWriter(new StringBuilderWriter(stringBuilder)), false, false, false, false, false, true, false, false);
-        return stringBuilder.toString();
+    public void toggleThreadMonitor() {
+        ThreadMonitor.getInstance().setActivated(!ThreadMonitor.getInstance().isActivated());
     }
 }

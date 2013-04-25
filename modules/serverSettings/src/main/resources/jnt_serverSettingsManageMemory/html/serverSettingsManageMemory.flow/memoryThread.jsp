@@ -25,7 +25,7 @@
                     key="serverSettings.manageMemory.used"/>)</strong>
             </a>
         </div>
-        <div id="collapseOne" class="accordion-body collapse" style="height: 0px; ">
+        <div id="collapseOne" class="accordion-body collapse${memoryInfo.mode == 'memory' ? ' in' : ''}">
             <div class="accordion-inner">
                 <table class="table table-striped table-bordered table-hover">
                     <tr>
@@ -83,7 +83,7 @@
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
                 <strong><fmt:message key="serverSettings.manageMemory.threads"/></strong></a>
         </div>
-        <div id="collapseTwo" class="accordion-body collapse">
+        <div id="collapseTwo" class="accordion-body collapse${memoryInfo.mode == 'threads' ? ' in' : ''}">
             <div class="accordion-inner">
                 <table class="table table-striped table-bordered table-hover">
                     <tr>

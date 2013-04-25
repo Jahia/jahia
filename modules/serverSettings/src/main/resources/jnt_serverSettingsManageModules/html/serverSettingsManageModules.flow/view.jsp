@@ -217,9 +217,9 @@
                     </td>
                 </c:if>
                 <td>
-                    <c:if test="${not empty sitesDirect[entry.key]}"><fmt:message key='serverSettings.manageModules.usedInSites.direct'/></c:if>
                     <c:if test="${not empty sitesTemplates[entry.key]}"><fmt:message key='serverSettings.manageModules.usedInSites.templates'/></c:if>
-                    <c:if test="${not empty sitesTransitive[entry.key]}"><fmt:message key='serverSettings.manageModules.usedInSites.transitive'/></c:if>
+                    <c:if test="${not empty sitesDirect[entry.key]}"><fmt:message key='serverSettings.manageModules.usedInSites.direct'/></c:if>
+                    <c:if test="${empty sitesDirect[entry.key] and not empty sitesTransitive[entry.key]}"><fmt:message key='serverSettings.manageModules.usedInSites.transitive'/></c:if>
                 </td>
 
             </tr>

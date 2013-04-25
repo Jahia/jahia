@@ -287,15 +287,15 @@
                         <td>
                             <c:choose>
                                 <c:when test="${not empty sitesDirect[activeVersion.rootFolder] and functions:contains(sitesDirect[activeVersion.rootFolder],site)}">
-                                    <fmt:message key="serverSettings.manageModules.module.dependency.type.direct"/>
+                                    <fmt:message key="serverSettings.manageModules.usedInSites.direct"/>
                                 </c:when>
                                 <c:when test="${not empty sitesTemplates[activeVersion.rootFolder] and functions:contains(sitesTemplates[activeVersion.rootFolder],site)}">
                                     <fmt:message
-                                            key="serverSettings.manageModules.module.dependency.type.templates"/>
+                                            key="serverSettings.manageModules.usedInSites.templates"/>
                                 </c:when>
                                 <c:when test="${not empty sitesTransitive[activeVersion.rootFolder] and functions:contains(sitesTransitive[activeVersion.rootFolder],site)}">
                                     <fmt:message
-                                            key="serverSettings.manageModules.module.dependency.type.transitive"/>
+                                            key="serverSettings.manageModules.usedInSites.transitive"/>
                                 </c:when>
                                 <c:otherwise>
                                     <fmt:message key="serverSettings.manageModules.module.no.dependency"/>
@@ -314,15 +314,10 @@
                                         <fmt:message var="label"
                                                      key='serverSettings.manageModules.module.disable'/>
                                         <input class="btn btn-danger disable-button" type="button" value="${label}" onclick=""/>
+                                        <c:set var="usedOnce" value="true"/>
                                     </form>
                                 </c:when>
-                                <c:when test="${not empty sitesTemplates[activeVersion.rootFolder] and functions:contains(sitesTemplates[activeVersion.rootFolder],site)}">
-                                    <fmt:message
-                                            key="serverSettings.manageModules.module.dependency.type.templates"/>
-                                </c:when>
                                 <c:when test="${not empty sitesTransitive[activeVersion.rootFolder] and functions:contains(sitesTransitive[activeVersion.rootFolder],site)}">
-                                    <fmt:message
-                                            key="serverSettings.manageModules.module.dependency.type.transitive"/>
                                 </c:when>
                                 <c:otherwise>
                                     <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
@@ -339,7 +334,7 @@
                         </td>
                     </tr>
                 </c:forEach>
-                <c:if test="${activeVersion.moduleType ne 'templatesSet'}">
+                <c:if test="${not empty usedOnce}">
                 <tr>
                     <td align="right" colspan="3">
                         <form id="disableAll" style="margin: 0;" action="${flowExecutionUrl}" method="POST">

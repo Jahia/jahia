@@ -219,16 +219,14 @@ public class ModuleManagementFlowHandler implements Serializable {
                     }
                     directSiteDep.get(directDependency.getRootFolder()).add(site.getSiteKey());
                 }
-                List<JahiaTemplatesPackage> templateDependencies = templateManagerService.getInstalledModulesForSite(
-                        site.getSiteKey(), true, false, false);
-                for (JahiaTemplatesPackage templateDependency : templateDependencies) {
-                    if(!templateSiteDep.containsKey(templateDependency.getRootFolder())) {
-                        templateSiteDep.put(templateDependency.getRootFolder(), new ArrayList<String>());
-                    }
-                    templateSiteDep.get(templateDependency.getRootFolder()).add(site.getSiteKey());
+
+                if(!templateSiteDep.containsKey(site.getTemplatePackage().getRootFolder())) {
+                    templateSiteDep.put(site.getTemplatePackage().getRootFolder(), new ArrayList<String>());
                 }
+                templateSiteDep.get(site.getTemplatePackage().getRootFolder()).add(site.getSiteKey());
+
                 List<JahiaTemplatesPackage> transitiveDependencies = templateManagerService.getInstalledModulesForSite(
-                        site.getSiteKey(), false, false, true);
+                        site.getSiteKey(), true, false, true);
                 for (JahiaTemplatesPackage transitiveDependency : transitiveDependencies) {
                     if(!transitiveSiteDep.containsKey(transitiveDependency.getRootFolder())) {
                         transitiveSiteDep.put(transitiveDependency.getRootFolder(), new ArrayList<String>());

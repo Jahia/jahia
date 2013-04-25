@@ -27,7 +27,7 @@ public class CacheManagerHandler implements Serializable {
      * init class call during flow initialization
      */
     public void init() {
-        managersMap = new HashMap<String, List<SerializedCacheManager>>();
+        managersMap = new TreeMap<String, List<SerializedCacheManager>>();
         computeCacheMap(false);
         cacheManagement = new CacheManagement();
 
@@ -100,7 +100,7 @@ public class CacheManagerHandler implements Serializable {
         for (CacheManager manager : CacheManager.ALL_CACHE_MANAGERS) {
             List<SerializedCacheManager> cacheList = new ArrayList<SerializedCacheManager>();
             String[] names = manager.getCacheNames();
-            Arrays.sort(names, Collections.reverseOrder());
+            Arrays.sort(names);
 
             for (String name : names) {
                 Cache cache = manager.getCache(name);

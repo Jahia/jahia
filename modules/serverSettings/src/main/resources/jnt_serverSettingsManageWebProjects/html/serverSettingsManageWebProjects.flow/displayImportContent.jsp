@@ -22,17 +22,7 @@
 <template:addResources>
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#${currentNode.identifier}-processImport').click(function() {
-            $.blockUI({ css: {
-                border: 'none',
-                padding: '15px',
-                backgroundColor: '#000',
-                '-webkit-border-radius': '10px',
-                '-moz-border-radius': '10px',
-                opacity: .5,
-                color: '#fff'
-            }, message: '<fmt:message key="label.workInProgressTitle"/>' });
-        });
+        $('#${currentNode.identifier}-processImport').click(workInProgress)
     });
 </script>
 </template:addResources>

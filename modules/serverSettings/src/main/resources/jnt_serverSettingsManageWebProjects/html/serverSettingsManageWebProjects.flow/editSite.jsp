@@ -3,21 +3,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.blockUI.js,bootstrap.js"/>
 <template:addResources>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#${currentNode.identifier}-next').click(function() {
-                $.blockUI({ css: {
-                    border: 'none',
-                    padding: '15px',
-                    backgroundColor: '#000',
-                    '-webkit-border-radius': '10px',
-                    '-moz-border-radius': '10px',
-                    opacity: .5,
-                    color: '#fff'
-                }, message: '<fmt:message key="label.workInProgressTitle"/>' });
-            });
+            $('#${currentNode.identifier}-next').click(workInProgress)
         });
     </script>
 </template:addResources>

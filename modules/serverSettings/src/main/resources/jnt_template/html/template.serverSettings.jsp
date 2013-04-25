@@ -24,6 +24,24 @@
     <c:if test="${!empty author}"><meta name="author" content="${author.string}" /></c:if>
     <c:if test="${!empty keywords}"><meta name="keywords" content="${keywords}" /></c:if>
     <title>${fn:escapeXml(renderContext.mainResource.node.displayableName)}</title>
+
+    <script type="text/javascript">
+        function workInProgress() {
+            if (window.parent.waitingMask) {
+                window.parent.waitingMask('<fmt:message key="label.workInProgressTitle"/>');
+            } else {
+                $.blockUI({ css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#000',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: .5,
+                    color: '#fff'
+                }, message: '<fmt:message key="label.workInProgressTitle"/>' });
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -37,6 +55,7 @@
 <c:if test="${renderContext.editMode}">
     <template:addResources type="css" resources="edit.css" />
 </c:if>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.blockUI.js,bootstrap.js"/>
 <template:addResources type="css" resources="bootstrap.css,admin.css"/>
 <template:theme/>
 

@@ -195,8 +195,8 @@ public class MainModule extends Module {
         ((ToolbarHeader) head).removeAllTools();
         if (config.getMainModuleToolbar() != null && !config.getMainModuleToolbar().getGwtToolbarItems().isEmpty()) {
             for (GWTJahiaToolbarItem item : config.getMainModuleToolbar().getGwtToolbarItems()) {
-                ((ToolbarHeader) head).addItem(linker, item);
-            }
+                        ((ToolbarHeader) head).addItem(linker, item);
+                    }
             head.addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
                 public void componentSelected(IconButtonEvent event) {
                     Map<String, Object> data = new HashMap<String, Object>();
@@ -387,6 +387,10 @@ public class MainModule extends Module {
         frame.setForceJavascriptRefresh(forceJavascriptRefresh);
         frame.setUrl(url);
         center.layout(true);
+    }
+
+    public static void waitingMask(String text) {
+        getInstance().mask(text,"x-mask-loading");
     }
 
     private String getUrl(String path, String template) {
@@ -849,6 +853,9 @@ public class MainModule extends Module {
                 @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::popState(Ljava/lang/String;Ljava/lang/String;)(event.state.location, event.state.config);
             }
         });
+        $wnd.waitingMask = function (text) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::waitingMask(Ljava/lang/String;)(text);
+        }
     }-*/;
 
     public InfoLayers getInfoLayers() {

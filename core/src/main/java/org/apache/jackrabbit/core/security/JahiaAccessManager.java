@@ -112,7 +112,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
     private JahiaUserManagerService userService;
     private JahiaGroupManagerService groupService;
-    private JahiaSitesService sitesService;
 
     protected JahiaPrincipal jahiaPrincipal;
 
@@ -128,7 +127,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private static ThreadLocal<Collection<String>> deniedPathes = new ThreadLocal<Collection<String>>();
 
     private boolean isAliased = false;
-    private Set<String> userMembership;
     private JahiaUser jahiaUser;
     private boolean globalGroupMembershipCheckActivated = false;
 
@@ -216,17 +214,11 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
         userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        sitesService = ServicesRegistry.getInstance().getJahiaSitesService();
 
         if (!jahiaPrincipal.isSystem()) {
             if (!JahiaLoginModule.GUEST.equals(jahiaPrincipal.getName())) {
                 jahiaUser = userService.lookupUser(jahiaPrincipal.getName());
-                if (jahiaUser != null) {
-                    userMembership = new HashSet<String>(groupService.getUserMembership(jahiaUser));
-                }
             }
-        } else {
-            userMembership = new HashSet<String>();
         }
 
         initialized = true;

@@ -96,7 +96,7 @@
                     </tr>
                     <tr>
                         <td align="left">
-                            <a class="btn" href="<c:url value="/tools/threadDump.jsp?file=true"/>" target="_blank"><fmt:message key="serverSettings.manageMemory.threads.performThreadDump.file.download"/></a>
+                            <a class="btn" href="<c:url value='/tools/threadDump.jsp?file=true'/>" target="_blank"><fmt:message key="serverSettings.manageMemory.threads.performThreadDump.file.download"/></a>
                         </td>
                     </tr>
                     <tr>

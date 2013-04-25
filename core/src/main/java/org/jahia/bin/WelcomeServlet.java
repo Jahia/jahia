@@ -156,10 +156,13 @@ public class WelcomeServlet extends HttpServlet {
         String defaultLocation = null;
         String mapping = null;
 
-        if (pathInfo != null && pathInfo.endsWith("mode")) {
-            EditConfiguration editConfiguration = (EditConfiguration) SpringContextSingleton.getInstance().getContext().getBean(StringUtils.substringAfter(pathInfo, "/"));
-            defaultLocation = editConfiguration.getDefaultLocation();
-            mapping = editConfiguration.getDefaultUrlMapping();
+        if (pathInfo != null && pathInfo.endsWith("mode") || pathInfo.endsWith("mode/")) {
+            String mode = pathInfo.endsWith("/") ? StringUtils.substringBetween(pathInfo, "/", "/") : StringUtils.substringAfter(pathInfo, "/");
+            if (SpringContextSingleton.getInstance().getContext().containsBean(mode)) {
+                EditConfiguration editConfiguration =  (EditConfiguration) SpringContextSingleton.getInstance().getContext().getBean(mode);
+                defaultLocation = editConfiguration.getDefaultLocation();
+                mapping = editConfiguration.getDefaultUrlMapping();
+            }
         }
 
         if (site == null && (defaultLocation == null || defaultLocation.contains("$defaultSiteHome"))) {

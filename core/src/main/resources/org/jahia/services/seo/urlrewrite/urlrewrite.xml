@@ -71,4 +71,12 @@
         <to type="redirect">%{context-path}/tools/index.jsp</to>
     </rule>
     
+    <!-- Jahia Administration -->
+    <rule enabled="true">
+        <name>Jahia Administration</name>
+        <note>Redirects to new Jahia Server Administration page</note>
+        <from>^/administration(/)?$</from>
+        <to type="redirect">%{context-path}/welcome/adminmode</to>
+    </rule>
+    
 </urlrewrite>

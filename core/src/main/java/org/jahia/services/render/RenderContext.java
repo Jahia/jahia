@@ -153,6 +153,20 @@ public class RenderContext {
     }
 
     public String getMode() {
+        if (mode == null) {
+            // compute current mode
+            mode = StringUtils.substringAfterLast(servletPath, "/");
+            if (mode.endsWith("frame")) {
+                mode = StringUtils.substringBefore(mode, "frame");
+            }
+            if ("render".equals(mode)) {
+                if (workspace.equals("live")) {
+                    mode = "live";
+                } else {
+                    mode = "preview";
+                }
+            }
+        }
         return mode;
     }
 
@@ -175,19 +189,7 @@ public class RenderContext {
     public void setServletPath(String servletPath) {
         this.servletPath = servletPath;
         JCRSessionFactory.getInstance().setCurrentServletPath(servletPath);
-        
-        // compute current mode
-        mode = StringUtils.substringAfterLast(servletPath, "/");
-        if (mode.endsWith("frame")) {
-            mode = StringUtils.substringBefore(mode, "frame");
-        }
-        if ("render".equals(mode)) {
-            if (workspace.equals("live")) {
-                mode = "live";
-            } else {
-                mode = "preview";
-            }
-        }
+        this.mode = null;
     }
 
     public String getWorkspace() {
@@ -196,6 +198,7 @@ public class RenderContext {
 
     public void setWorkspace(String workspace) {
         this.workspace = workspace;
+        this.mode = null;
     }
 
     public boolean isContributionMode() {

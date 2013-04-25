@@ -81,7 +81,7 @@
 
 
 <div>
-    <a class="btn" href="#refresh" onclick="go(); return false;" title="Refresh"><img src="<c:url value='${url.currentModule}/images/refresh.png'/>" height="16" width="16" alt=" " align="top"/>&nbsp;Refresh</a>
+    <a class="btn" href="#refresh" onclick="go(); return false;" title="<fmt:message key='label.refresh'/>"><img src="<c:url value='${url.currentModule}/images/refresh.png'/>" height="16" width="16" alt=" " align="top"/>&nbsp;<fmt:message key="label.refresh"/></a>
     <a class="btn" href="#flushOutputCaches" onclick="go('action', 'flushOutputCaches'); return false;" title="<fmt:message key="serverSettings.cache.flushOutputCaches.title"/>">${flushIcon}&nbsp;<fmt:message key="serverSettings.cache.flushOutputCaches"/></a>
     <c:if test="${cacheManager.clusterActivated}">
         <a class="btn" href="#flushOutputCaches" onclick="go('action', 'flushOutputCaches', 'propagate', 'true'); return false;" title="<fmt:message key="serverSettings.cache.flushOutputCaches.cluster.title"/>">${flushIcon}&nbsp;<fmt:message key="serverSettings.cache.flushOutputCaches.cluster"/></a>
@@ -97,7 +97,7 @@
     <h2>Cache Manager: ${manager}
         <c:if test="${cacheManagement.showConfig}">
             &nbsp;
-            <a class="configLink" title="<fmt:message key="serverSettings.cache.configLink.title"/>" href="#managerconfig-${managerStatus.index}"><img src="<c:url value='${url.currentModule}/images/help.png'/>" width="16" height="16" alt="?" title="<fmt:message key='serverSettings.cache.configLink.title'/>"/></a>
+            <a class="configLink" title="<fmt:message key='serverSettings.cache.configLink.title'/>" href="#managerconfig-${managerStatus.index}"><img src="<c:url value='${url.currentModule}/images/help.png'/>" width="16" height="16" alt="?" title="<fmt:message key='serverSettings.cache.configLink.title'/>"/></a>
             <div style="display: none;">
                 <div id="managerconfig-${managerStatus.index}">
                     <h3>${fn:escapeXml(manager)}</h3>
@@ -126,7 +126,7 @@
                 <th rowspan="2">?</th>
             </c:if>
             <th rowspan="2"><fmt:message key="serverSettings.cache.names"/></th>
-            <th colspan="3">Entries<fmt:message key="serverSettings.cache.entries"/></th>
+            <th colspan="3"><fmt:message key="serverSettings.cache.entries"/></th>
             <c:if test="${cacheManagement.showBytes}">
                 <th colspan="2"><fmt:message key="serverSettings.cache.size"/></th>
             </c:if>
@@ -169,7 +169,7 @@
                 <td><strong>${status.index + 1}</strong></td>
                 <c:if test="${cacheManagement.showConfig}">
                     <td align="center">
-                        <a class="configLink" title="<fmt:message key="serverSettings.cache.showDetail"/>" href="#config-${managerStatus.index}-${status.index}"><img src="<c:url value='${url.currentModule}/images/help.png'/>" width="16" height="16" alt="?" title="<fmt:message key='serverSettings.cache.showDetail'/>"/></a>
+                        <a class="configLink" title="<fmt:message key='serverSettings.cache.showDetail'/>" href="#config-${managerStatus.index}-${status.index}"><img src="<c:url value='${url.currentModule}/images/help.png'/>" width="16" height="16" alt="?" title="<fmt:message key='serverSettings.cache.showDetail'/>"/></a>
                         <div style="display: none;">
                             <div id="config-${managerStatus.index}-${status.index}">
                                 <h3>${fn:escapeXml(cacheEntry.name)}</h3>
@@ -231,7 +231,7 @@
             </tr>
         </c:forEach>
         <tr>
-            <td colspan="${cacheManagement.showConfig ? '3' : '2'}">Total</td>
+            <td colspan="${cacheManagement.showConfig ? '3' : '2'}"><fmt:message key="serverSettings.cache.total"/></td>
             <td align="center">${entriesTotal}</td>
             <td align="center">${entriesMemory}</td>
             <td align="center">${entriesDisk}</td>

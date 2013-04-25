@@ -329,7 +329,7 @@ public class WebprojectHandler implements Serializable {
         SiteBean siteBean = new SiteBean();
         siteBean.setDefaultSite(site.isDefault());
         siteBean.setDescription(site.getDescr());
-
+        siteBean.setSiteKey(site.getSiteKey());
         siteBean.setServerName(site.getServerName());
         siteBean.setTitle(site.getTitle());
 
@@ -798,7 +798,8 @@ public class WebprojectHandler implements Serializable {
 
     public void updateSite(SiteBean bean, MessageContext messages) {
         try {
-            JahiaSite site = sitesService.getSiteByKey(getSites().get(0).getSiteKey());
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+            JahiaSite site = sitesService.getSiteByKey(getSites().get(0).getSiteKey(), session);
             if (!StringUtils.equals(site.getServerName(), bean.getServerName())
                     || !StringUtils.equals(site.getTitle(), bean.getTitle())
                     || !StringUtils.equals(site.getDescr(), bean.getDescription())) {
@@ -806,16 +807,19 @@ public class WebprojectHandler implements Serializable {
                 site.setTitle(bean.getTitle());
                 site.setDescription(bean.getDescription());
 
-                sitesService.updateSystemSitePermissions(site);
+                sitesService.updateSystemSitePermissions(site, session);
             }
 
             if (!site.isDefault() && bean.isDefaultSite()) {
                 sitesService.setDefaultSite(site);
             }
-
+            session.save();
             messages.addMessage(new MessageBuilder().info()
                     .defaultText(Messages.getInternal("label.changeSaved", LocaleContextHolder.getLocale())).build());
-        } catch (JahiaException e) {
+        } catch (Exception e) {
+            messages.addMessage(new MessageBuilder().error()
+                    .defaultText(Messages.getInternal("serverSettings.manageWebProjects.webProject.error", LocaleContextHolder.getLocale()))
+                    .arg(e.getMessage()).build());
             logger.error(e.getMessage(), e);
         }
     }

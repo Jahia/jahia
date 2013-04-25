@@ -39,7 +39,7 @@
             <div class="container-fluid">
                 <div class="row-fluid">
                     <div class="span12">
-                        <h3><fmt:message key="serverSettings.manageWebProjects.webProject.siteKey"/>: ${fn:escapeXml(selectedSite.siteKey)}</h3>
+                        <h3><fmt:message key="serverSettings.manageWebProjects.webProject.siteKey"/>: ${fn:escapeXml(siteBean.siteKey)}</h3>
                     </div>
                 </div>
             </div>
@@ -101,8 +101,8 @@
         <div class="container-fluid">
             <div class="row-fluid">
                 <div class="span12">
-                    <input class="btn" type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel' />"/>
                     <input class="btn btn-primary" type="submit" name="_eventId_next" id="${currentNode.identifier}-next" value="<fmt:message key='label.save'/>"/>
+                    <input class="btn" type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel' />"/>
                 </div>
             </div>
         </div>

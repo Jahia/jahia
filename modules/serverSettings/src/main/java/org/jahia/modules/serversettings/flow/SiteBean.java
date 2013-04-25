@@ -218,7 +218,7 @@ public class SiteBean implements Serializable {
                             .defaultText(
                                     Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.warningMsg.invalidServerName",
                                             LocaleContextHolder.getLocale())).build());
-                } else if (!Url.isLocalhost(serverName) && sitesService.getSiteByServerName(serverName) != null) {
+                } else if (!Url.isLocalhost(serverName) && sitesService.getSiteByServerName(serverName) != null && !sitesService.getSiteByServerName(serverName).getSiteKey().equals(siteKey)) {
                     messages.addMessage(new MessageBuilder()
                             .error()
                             .source("serverName")

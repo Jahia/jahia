@@ -683,7 +683,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     @Override
     public void setServerName(String name) {
         try {
-            setProperty(name,"j:serverName");
+            setProperty("j:serverName", name);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

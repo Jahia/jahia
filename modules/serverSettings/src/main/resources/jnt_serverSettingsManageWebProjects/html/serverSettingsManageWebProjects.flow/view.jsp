@@ -83,13 +83,13 @@
             <a href="#create" id="createSite" class="btn sitesAction">
                 <img src="<c:url value='/css/images/andromeda/icons/environment_add.png'/>"
                      title="<fmt:message key="serverSettings.manageWebProjects.add"/>"
-                     width="16" height="16" border="0" alt="<fmt:message key="serverSettings.manageWebProjects.add"/>"/>
+                     width="16" height="16" border="0" alt="<fmt:message key='serverSettings.manageWebProjects.add'/>"/>
                 <fmt:message key="serverSettings.manageWebProjects.add"/>
             </a>
             <a href="#export" id="exportSites" class="btn sitesAction-hide">
                 <img src="<c:url value='/css/images/andromeda/icons/export1.png'/>"
                      title="<fmt:message key="label.export"/>"
-                     width="16" height="16" border="0" alt="<fmt:message key="label.export"/>"/>
+                     width="16" height="16" border="0" alt="<fmt:message key='label.export'/>"/>
                 <fmt:message key="label.export"/>
             </a>
             <a href="#exportStaging" id="exportStagingSites" class="btn sitesAction-hide">
@@ -100,7 +100,7 @@
             <a href="#delete" id="deleteSites" class="btn sitesAction">
                 <img src="<c:url value='/css/images/andromeda/icons/environment_delete.png'/>"
                      title="<fmt:message key="label.delete"/>"
-                     width="16" height="16" border="0" alt="<fmt:message key="label.delete"/>"/>
+                     width="16" height="16" border="0" alt="<fmt:message key='label.delete'/>"/>
                 <fmt:message key="label.delete"/>
             </a>
         </div>

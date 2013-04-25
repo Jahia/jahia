@@ -30,7 +30,7 @@
                 <table class="table table-striped table-bordered table-hover">
                     <tr>
                         <td>
-                            <strong><fmt:message key="serverSettings.manageMemory.memory.used"/>&nbsp;:</strong><br>
+                            <strong><fmt:message key="serverSettings.manageMemory.memory.used"/></strong><br>
                         </td>
                         <td>
                             ${memoryInfo.usedMemory}
@@ -38,7 +38,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <strong><fmt:message key="serverSettings.manageMemory.memory.free"/>&nbsp;:</strong><br>
+                            <strong><fmt:message key="serverSettings.manageMemory.memory.free"/></strong><br>
                         </td>
                         <td>
                             ${memoryInfo.freeMemory}
@@ -46,7 +46,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <strong><fmt:message key="serverSettings.manageMemory.memory.total"/>&nbsp;:</strong><br>
+                            <strong><fmt:message key="serverSettings.manageMemory.memory.total"/></strong><br>
                         </td>
                         <td>
                             ${memoryInfo.totalMemory}
@@ -54,7 +54,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <strong><fmt:message key="serverSettings.manageMemory.memory.max"/>:</strong><br>
+                            <strong><fmt:message key="serverSettings.manageMemory.memory.max"/></strong><br>
                         </td>
                         <td>
                             ${memoryInfo.maxMemory}
@@ -64,13 +64,13 @@
                         <td>
                             <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
                                 <input class="btn" type="submit" name="_eventId_refresh"
-                                       value="<fmt:message key="label.refresh"/>"/>
+                                       value="<fmt:message key='label.refresh'/>"/>
                             </form>
                         </td>
                         <td>
                             <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
                                 <input class="btn" type="submit" name="_eventId_gc"
-                                       value="<fmt:message key="serverSettings.manageMemory.memory.gc"/>"/>
+                                       value="<fmt:message key='serverSettings.manageMemory.memory.gc'/>"/>
                             </form>
                         </td>
                     </tr>
@@ -90,7 +90,7 @@
                         <td align="left">
                             <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
                                 <input class="btn" type="submit" name="_eventId_showTD"
-                                       value="<fmt:message key="serverSettings.manageMemory.threads.performThreadDump.page"/>"/>
+                                       value="<fmt:message key='serverSettings.manageMemory.threads.performThreadDump.page'/>"/>
                             </form>
                         </td>
                     </tr>
@@ -104,7 +104,7 @@
                             <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
                                 <input type="hidden" name="threadDump" value="sysout"/>
                                 <input class="btn" type="submit" name="_eventId_performTD"
-                                       value="<fmt:message key="serverSettings.manageMemory.threads.performThreadDump.system.out"/>"/>
+                                       value="<fmt:message key='serverSettings.manageMemory.threads.performThreadDump.system.out'/>"/>
                             </form>
                         </td>
                     </tr>
@@ -113,7 +113,7 @@
                             <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
                                 <input type="hidden" name="threadDump" value="file"/>
                                 <input class="btn" type="submit" name="_eventId_performTD"
-                                       value="<fmt:message key="serverSettings.manageMemory.threads.performThreadDump.file"/>"/>
+                                       value="<fmt:message key='serverSettings.manageMemory.threads.performThreadDump.file'/>"/>
                             </form>
                         </td>
                     </tr>
@@ -122,7 +122,7 @@
                             <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
                                 <input type="hidden" name="threadDump" value="file"/>
                                 <input class="btn" type="submit" name="_eventId_scheduleTD"
-                                       value="<fmt:message key="serverSettings.manageMemory.threads.performThreadDump.multiple"/>"/>
+                                       value="<fmt:message key='serverSettings.manageMemory.threads.performThreadDump.multiple'/>"/>
                                 &nbsp;&nbsp;
                                 <label for="threadDumpCount"><fmt:message key="column.count.label"/>:&nbsp;</label>
                                 <input type="text" id="threadDumpCount" name="threadDumpCount" size="2" value="10"/>

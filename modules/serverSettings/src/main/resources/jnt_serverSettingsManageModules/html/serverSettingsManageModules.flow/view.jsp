@@ -60,7 +60,7 @@
             <label for="moduleFile"><fmt:message key="serverSettings.manageModules.upload.module"/></label>
             <input type="file" id="moduleFile" name="moduleFile" accept=""/><input class="btn btn-primary" type="submit"
                                                                                    name="_eventId_upload"
-                                                                                   value="<fmt:message key="label.upload"/>"/>
+                                                                                   value="<fmt:message key='label.upload'/>"/>
         </div>
     </form:form>
 </c:if>

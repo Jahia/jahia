@@ -41,21 +41,21 @@
     <div>
         <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
             <input class="btn" type="submit" name="_eventId_addUser"
-                   value="<fmt:message key="serverSettings.user.create"/>"/>
+                   value="<fmt:message key='serverSettings.user.create'/>"/>
         </form>
         <form action="${flowExecutionUrl}" method="POST" class="needUsersSelection" style="display: inline;">
             <input type="hidden" name="selectedUsers"/>
             <input class="btn" type="submit" name="_eventId_editUser"
-                   value="<fmt:message key="serverSettings.user.edit"/>"/>
+                   value="<fmt:message key='serverSettings.user.edit'/>"/>
         </form>
         <form action="${flowExecutionUrl}" method="POST" class="needUsersSelection" style="display: inline;">
             <input type="hidden" name="selectedUsers"/>
             <input class="btn" type="submit" name="_eventId_removeUser"
-                   value="<fmt:message key="serverSettings.user.remove"/>"/>
+                   value="<fmt:message key='serverSettings.user.remove'/>"/>
         </form>
         <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
             <input class="btn" type="submit" name="_eventId_bulkAddUser"
-                   value="<fmt:message key="serverSettings.users.bulk.create"/>"/>
+                   value="<fmt:message key='serverSettings.users.bulk.create'/>"/>
         </form>
     </div>
     <p>
@@ -83,7 +83,7 @@
                     <input type="text" id="searchString" name="searchString"
                            value='${searchCriteria.searchString}'
                            onkeydown="if (event.keyCode == 13) submitForm('search');"/>
-                    <input class="btn btn-primary" style="font-size: 13px;" type="submit" name="_eventId_search" value="<fmt:message key="label.search"/>"/>
+                    <input class="btn btn-primary" style="font-size: 13px;" type="submit" name="_eventId_search" value="<fmt:message key='label.search'/>"/>
                 </div>
                 <br/>
                 <br/>

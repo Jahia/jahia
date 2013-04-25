@@ -97,7 +97,7 @@
     <h2>Cache Manager: ${manager}
         <c:if test="${cacheManagement.showConfig}">
             &nbsp;
-            <a class="configLink" title="<fmt:message key="serverSettings.cache.configLink.title"/>" href="#managerconfig-${managerStatus.index}"><img src="<c:url value='${url.currentModule}/images/help.png'/>" width="16" height="16" alt="?" title="<fmt:message key="serverSettings.cache.configLink.title"/>"/></a>
+            <a class="configLink" title="<fmt:message key="serverSettings.cache.configLink.title"/>" href="#managerconfig-${managerStatus.index}"><img src="<c:url value='${url.currentModule}/images/help.png'/>" width="16" height="16" alt="?" title="<fmt:message key='serverSettings.cache.configLink.title'/>"/></a>
             <div style="display: none;">
                 <div id="managerconfig-${managerStatus.index}">
                     <h3>${fn:escapeXml(manager)}</h3>
@@ -169,7 +169,7 @@
                 <td><strong>${status.index + 1}</strong></td>
                 <c:if test="${cacheManagement.showConfig}">
                     <td align="center">
-                        <a class="configLink" title="<fmt:message key="serverSettings.cache.showDetail"/>" href="#config-${managerStatus.index}-${status.index}"><img src="<c:url value='${url.currentModule}/images/help.png'/>" width="16" height="16" alt="?" title="<fmt:message key="serverSettings.cache.showDetail"/>"/></a>
+                        <a class="configLink" title="<fmt:message key="serverSettings.cache.showDetail"/>" href="#config-${managerStatus.index}-${status.index}"><img src="<c:url value='${url.currentModule}/images/help.png'/>" width="16" height="16" alt="?" title="<fmt:message key='serverSettings.cache.showDetail'/>"/></a>
                         <div style="display: none;">
                             <div id="config-${managerStatus.index}-${status.index}">
                                 <h3>${fn:escapeXml(cacheEntry.name)}</h3>

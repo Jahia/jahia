@@ -124,7 +124,7 @@
                             <input class="btn btn" type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel'/>"/>
                             <input type="hidden" name="selectedUsers" value="${userProperties.userKey}"/>
                             <input class="btn" type="submit" name="_eventId_removeUser"
-                                   value="<fmt:message key="serverSettings.user.remove"/>"/>
+                                   value="<fmt:message key='serverSettings.user.remove'/>"/>
                         </div>
                     </div>
                 </div>

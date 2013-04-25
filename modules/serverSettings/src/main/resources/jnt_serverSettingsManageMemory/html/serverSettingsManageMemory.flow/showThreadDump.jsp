@@ -20,7 +20,7 @@
 <div>
     <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
         <input class="btn" type="submit" name="_eventId_back"
-               value="<fmt:message key="serverSettings.manageMemory.memory.back"/>"/>
+               value="<fmt:message key='serverSettings.manageMemory.memory.back'/>"/>
     </form>
 
     <pre>

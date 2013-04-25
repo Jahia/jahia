@@ -156,7 +156,7 @@ public class WelcomeServlet extends HttpServlet {
         String defaultLocation = null;
         String mapping = null;
 
-        if (pathInfo != null && pathInfo.endsWith("mode") || pathInfo.endsWith("mode/")) {
+        if (pathInfo != null && (pathInfo.endsWith("mode") || pathInfo.endsWith("mode/"))) {
             String mode = pathInfo.endsWith("/") ? StringUtils.substringBetween(pathInfo, "/", "/") : StringUtils.substringAfter(pathInfo, "/");
             if (SpringContextSingleton.getInstance().getContext().containsBean(mode)) {
                 EditConfiguration editConfiguration =  (EditConfiguration) SpringContextSingleton.getInstance().getContext().getBean(mode);

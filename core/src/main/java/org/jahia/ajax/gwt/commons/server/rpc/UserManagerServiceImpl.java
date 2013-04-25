@@ -256,6 +256,7 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
                 if (site != null) {
                     list.add(site.getID());
                 }
+<<<<<<< .working
             } else if(context.equals("site:systemsite")) {
             	//if it is systemSite all groups should be provided
             	try {
@@ -266,6 +267,8 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
             		logger.error("Cannot get all Sites to search for Groups", ex);
             	}
 
+=======
+>>>>>>> .merge-right.r45701
             } else if (context.startsWith("site:")) {
                 String sitekey = context.substring(5);
                 try {

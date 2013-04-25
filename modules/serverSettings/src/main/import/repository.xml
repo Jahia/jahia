@@ -131,7 +131,7 @@
                                   j:defaultTemplate="false"
                                   j:hiddenTemplate="false"
                                   j:requiredPermissions="#/permissions/admin/adminPasswordPolicy"
-                                  j:titleKey="serverSettings.passwordPolicy"
+                                  j:titleKey="serverSettings.password.policies"
                                   jcr:mixinTypes="jmix:rbTitle"
                                   jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">

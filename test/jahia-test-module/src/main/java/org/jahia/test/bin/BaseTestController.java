@@ -47,7 +47,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jahia.params.ProcessingContext;
+import org.jahia.api.Constants;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.test.JahiaAdminUser;
@@ -93,8 +93,8 @@ public abstract class BaseTestController implements Controller {
             JCRSessionFactory.getInstance().setCurrentUser(JahiaAdminUser.getAdminUser(0));
 
             // set English as session locale
-            Locale oldLocale = (Locale) request.getSession(true).getAttribute(ProcessingContext.SESSION_LOCALE);
-            request.getSession(true).setAttribute(ProcessingContext.SESSION_LOCALE, Locale.ENGLISH);
+            Locale oldLocale = (Locale) request.getSession(true).getAttribute(Constants.SESSION_LOCALE);
+            request.getSession(true).setAttribute(Constants.SESSION_LOCALE, Locale.ENGLISH);
 
             // set current request / response into ThreadLocal
             perThreadRequest.set(request);
@@ -107,7 +107,7 @@ public abstract class BaseTestController implements Controller {
                 perThreadResponse.set(null);
 
                 // reset locale
-                request.getSession(true).setAttribute(ProcessingContext.SESSION_LOCALE, oldLocale);
+                request.getSession(true).setAttribute(Constants.SESSION_LOCALE, oldLocale);
 
                 // reset user
                 JCRSessionFactory.getInstance().setCurrentUser(oldUser);

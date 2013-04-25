@@ -42,9 +42,6 @@
 
 import java.util.Map;
 import java.util.HashMap;
-import org.jahia.content.JahiaObject;
-import java.lang.reflect.InvocationTargetException;
-import org.jahia.params.ProcessingContext;
 
 /**
  * <p>Title: Abstract class that is the parent class of all bean wrappers
@@ -92,61 +89,6 @@ public abstract class AbstractJahiaObjectBean {
      */
     public static void unregisterType(String jahiaObjectClassName) {
         jahiaObjectToBeanClassNames.remove(jahiaObjectClassName);
-    }
-
-    /**
-     * Instance generator. Build an instance of the appropriate JavaBean
-     * compliant wrapper class corresponding to the JahiaObject instance and
-     * the current ProcessingContext that represents the current request.
-     *
-     * @param jahiaObject the JahiaObject child instance for which to create
-     * an AbstractJahiaObjectBean instance.
-     * @throws ClassNotFoundException if no class could be found for the type
-     * passed in the object key
-     */
-    public static AbstractJahiaObjectBean getInstance (JahiaObject jahiaObject, ProcessingContext processingContext)
-        throws ClassNotFoundException {
-        AbstractJahiaObjectBean resultObject = null;
-        if (!jahiaObjectToBeanClassNames.containsKey(jahiaObject.getClass().getName())) {
-            throw new ClassNotFoundException("No class defined for JahiaObject class name [" +
-                                             jahiaObject.getClass().getName() + "]");
-        }
-        try {
-            Class<? extends AbstractJahiaObjectBean> childClass = Class.forName( jahiaObjectToBeanClassNames.
-                                             get(jahiaObject.getClass().getName())).asSubclass(AbstractJahiaObjectBean.class);
-            Class<?>[] childClassParameters = new Class[2];
-            childClassParameters[0] = JahiaObject.class;
-            childClassParameters[1] = ProcessingContext.class;
-            java.lang.reflect.Method childClassMethod = childClass.
-                getMethod("getChildInstance", childClassParameters);
-            Object[] args = new Object[2];
-            args[0] = jahiaObject;
-            args[1] = processingContext;
-            resultObject = (AbstractJahiaObjectBean) childClassMethod.invoke(null, args);
-        } catch (ClassNotFoundException cnfe) {
-            logger.error("Error while creating instance of object " +
-                         jahiaObject, cnfe);
-        } catch (NoSuchMethodException nsme) {
-            logger.error("Error while creating instance of object " +
-                         jahiaObject, nsme);
-        } catch (SecurityException se) {
-            logger.error("Error while creating instance of object " +
-                         jahiaObject, se);
-        } catch (IllegalAccessException iae) {
-            logger.error("Error while creating instance of object " +
-                         jahiaObject, iae);
-        } catch (IllegalArgumentException iae2) {
-            logger.error("Error while creating instance of object " +
-                         jahiaObject, iae2);
-        } catch (InvocationTargetException ite) {
-            logger.error("Error while creating instance of object " +
-                         jahiaObject, ite);
-            logger.error(
-                "Error while creating instance of object " + jahiaObject +
-                ", target exception="
-                , ite.getTargetException());
-        }
-        return resultObject;
     }
 
 }

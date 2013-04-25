@@ -3,12 +3,9 @@ package org.jahia.bundles.extender.jahiamodules;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jasper.Constants;
 import org.apache.jasper.servlet.JspServlet;
-import org.jahia.params.ProcessingContext;
-import org.jahia.services.multilang.CurrentLocaleResolver;
 import org.ops4j.pax.swissbox.core.ContextClassLoaderUtils;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -78,7 +75,7 @@ public class JspServletWrapper implements Servlet {
             public Locale resolveLocale(HttpServletRequest request) {
                 HttpSession session = request.getSession();
                 if (session != null) {
-                    Locale currentLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_LOCALE);
+                    Locale currentLocale = (Locale) session.getAttribute(org.jahia.api.Constants.SESSION_LOCALE);
                     if (currentLocale != null) {
                         return currentLocale;
                     }

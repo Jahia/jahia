@@ -45,8 +45,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.pluto.driver.core.PortalRequestContext;
 import org.apache.pluto.driver.url.PortalURL;
-import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 
 /**
  * <p>Title: </p>

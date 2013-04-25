@@ -107,7 +107,7 @@ public class CategoryBean extends AbstractJahiaObjectBean {
 
     /**
      * @return the title of the category for the current locale accessed through
-     *         the ProcessingContext.getLocale() method.
+     *         the Constants.getLocale() method.
      */
     public String getTitle() {
         final String title = category.getTitle(JCRSessionFactory.getInstance().getCurrentLocale());

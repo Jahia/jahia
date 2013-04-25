@@ -62,7 +62,6 @@ import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
@@ -118,7 +117,7 @@ public class WelcomeServlet extends HttpServlet {
     }
 
     protected void userRedirect(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws Exception {
-        JahiaUser user = (JahiaUser) request.getSession().getAttribute(ProcessingContext.SESSION_USER);
+        JahiaUser user = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
         if (!JahiaUserManagerService.isGuest(user)) {
             JCRSiteNode site = resolveSite(request, Constants.LIVE_WORKSPACE,
                     JCRContentUtils.getSystemSitePath());
@@ -149,7 +148,7 @@ public class WelcomeServlet extends HttpServlet {
         JahiaSite defaultSite = JahiaSitesService.getInstance().getDefaultSite();
         String defaultSitePath = defaultSite != null ? defaultSite.getJCRLocalPath() : null;
         final JCRSiteNode site = resolveSite(request, Constants.LIVE_WORKSPACE, defaultSitePath);
-        JahiaUser user = (JahiaUser) request.getSession().getAttribute(ProcessingContext.SESSION_USER);
+        JahiaUser user = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
         String redirect = null;
         String pathInfo = request.getPathInfo();
         String language = resolveLanguage(request, site, user);

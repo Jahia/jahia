@@ -43,8 +43,6 @@
 import javax.portlet.PortletMode;
 import javax.servlet.http.HttpServletRequest;
 
-import org.jahia.params.ProcessingContext;
-import org.jahia.params.ParamBean;
 import org.apache.pluto.driver.core.PortalRequestContext;
 import org.apache.pluto.driver.url.PortalURL;
 

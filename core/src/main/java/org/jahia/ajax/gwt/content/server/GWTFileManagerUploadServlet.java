@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.helper.VersioningHelper;
 import org.jahia.ajax.gwt.helper.ZipHelper;
-import org.jahia.params.ParamBean;
+import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -119,7 +119,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                 }
             }
         } catch (FileUploadBase.SizeLimitExceededException e) {
-            Locale locale = (Locale) request.getSession().getAttribute(ParamBean.SESSION_LOCALE);
+            Locale locale = (Locale) request.getSession().getAttribute(Constants.SESSION_LOCALE);
             String locMsg = null;
             try {
                 locMsg = Messages.getInternalWithArguments("fileSizeError.label", locale, settingsBean
@@ -143,7 +143,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
         if (type == null || type.equals("sync")) {
             response.setContentType("text/plain");
 
-            final JahiaUser user = (JahiaUser) request.getSession().getAttribute(ParamBean.SESSION_USER);
+            final JahiaUser user = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
 
             final List<String> pathsToUnzip = new ArrayList<String>();
             for (String filename : uploads.keySet()) {
@@ -191,7 +191,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                 try {
                     ZipHelper zip = ZipHelper.getInstance();
                     //todo : in which workspace do we upload ?
-                    zip.unzip(pathsToUnzip, true, JCRSessionFactory.getInstance().getCurrentUserSession(),(Locale) request.getSession().getAttribute(ParamBean.SESSION_UI_LOCALE));
+                    zip.unzip(pathsToUnzip, true, JCRSessionFactory.getInstance().getCurrentUserSession(),(Locale) request.getSession().getAttribute(Constants.SESSION_UI_LOCALE));
                 } catch (RepositoryException e) {
                     logger.error("Auto-unzipping failed", e);
                 } catch (GWTJahiaServiceException e) {
@@ -293,7 +293,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                     locationFolder.getSession().getWorkspace().getVersionManager().checkout(locationFolder.getPath());
                 }
                 JCRNodeWrapper node = locationFolder.uploadFile(filename, is, JCRContentUtils.getMimeType(filename, item.getContentType()));
-                node.save();
+                node.getSession().save();
                 if (!node.getName().equals(filename)) {
                     name.delete(0, name.length());
                     name.append(node.getName());

@@ -45,8 +45,8 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.bin.Login;
-import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
@@ -86,7 +86,8 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
     }
 
     public class LoginEvent extends ApplicationEvent {
-
+        private static final long serialVersionUID = -7356560804745397662L;
+        
         private JahiaUser jahiaUser;
         private AuthValveContext authValveContext;
 
@@ -188,12 +189,12 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             // do a switch to the user's preferred language
             if (SettingsBean.getInstance().isConsiderPreferredLanguageAfterLogin()) {
                 Locale preferredUserLocale = UserPreferencesHelper.getPreferredLocale(theUser, LanguageCodeConverters.resolveLocaleForGuest(httpServletRequest));
-                JahiaSite site = (JahiaSite) authContext.getRequest().getSession().getAttribute(ProcessingContext.SESSION_SITE);
+                JahiaSite site = (JahiaSite) authContext.getRequest().getSession().getAttribute(Constants.SESSION_SITE);
                 if (site != null) {
                     List<Locale> siteLocales = site.getLanguagesAsLocales();
                     if (siteLocales.contains(preferredUserLocale)) {
                         httpServletRequest.getSession()
-                                .setAttribute(ProcessingContext.SESSION_LOCALE, preferredUserLocale);
+                                .setAttribute(Constants.SESSION_LOCALE, preferredUserLocale);
                     }
                 }
             }

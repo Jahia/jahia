@@ -42,7 +42,7 @@ package org.jahia.taglibs;
 
 import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.fmt.BundleSupport;
-import org.jahia.params.ProcessingContext;
+import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
@@ -309,8 +309,8 @@ public class AbstractJahiaTag extends BodyTagSupport {
     public static Locale getUILocale(RenderContext renderContext, HttpSession session, HttpServletRequest request) {
         Locale currentLocale = renderContext != null ? renderContext.getUILocale() : null;
         if (session != null) {
-            if (session.getAttribute(ProcessingContext.SESSION_UI_LOCALE) != null) {
-                currentLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
+            if (session.getAttribute(Constants.SESSION_UI_LOCALE) != null) {
+                currentLocale = (Locale) session.getAttribute(Constants.SESSION_UI_LOCALE);
             }
         }
 

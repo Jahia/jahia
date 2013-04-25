@@ -40,7 +40,6 @@
 
 package org.jahia.services.applications.pluto;
 
-import org.jahia.params.ParamBean;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.registries.ServicesRegistry;

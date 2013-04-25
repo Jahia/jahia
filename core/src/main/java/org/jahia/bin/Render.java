@@ -54,8 +54,6 @@ import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
-import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.applications.pluto.JahiaPortalURLParserImpl;
 import org.jahia.services.content.*;
@@ -144,6 +142,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private static final List<String> REDIRECT_CODE_MOVED_PERMANENTLY = new ArrayList<String>(
             Arrays.asList(new String[]{String.valueOf(HttpServletResponse.SC_MOVED_PERMANENTLY)}));
     private static final List<String> LIST_WITH_EMPTY_STRING = new ArrayList<String>(Arrays.asList(new String[]{StringUtils.EMPTY}));
+
+    public static final String PLUTO_PREFIX = "__";
+    public static final String PLUTO_ACTION = "ac";
+    public static final String PLUTO_RESOURCE = "rs";
 
     private String requiredPermission;
     private String workspace;
@@ -400,7 +402,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     private Map<String, List<String>> toParameterMapOfListOfString(HttpServletRequest req) {
         Map<String, List<String>> parameters = new HashMap<String, List<String>>();
-        Map parameterMap = req.getParameterMap();
+        Map<?, ?> parameterMap = req.getParameterMap();
 
         boolean doXSSFilter = true;
         String token = parameterMap.get("form-token")!=null?((String[])parameterMap.get("form-token"))[0]:null;
@@ -614,14 +616,14 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
      */
     public boolean isPortletRequest(final HttpServletRequest req) {
         String pathInfo = req.getPathInfo();
-        if (pathInfo != null && pathInfo.contains(ProcessingContext.PLUTO_PREFIX)) {
+        if (pathInfo != null && pathInfo.contains(PLUTO_PREFIX)) {
             StringTokenizer st = new StringTokenizer(pathInfo, "/", false);
             while (st.hasMoreTokens()) {
                 String token = st.nextToken();
                 // remder/resource url
-                if (token.startsWith(ProcessingContext.PLUTO_PREFIX + ProcessingContext.PLUTO_RESOURCE)) {
+                if (token.startsWith(PLUTO_PREFIX + PLUTO_RESOURCE)) {
                     return true;
-                } else if (token.startsWith(ProcessingContext.PLUTO_PREFIX + ProcessingContext.PLUTO_ACTION)) {
+                } else if (token.startsWith(PLUTO_PREFIX + PLUTO_ACTION)) {
                     return true;
                 }
             }
@@ -729,7 +731,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             renderContext.setWorkspace(urlResolver.getWorkspace());
 
             urlResolver.setRenderContext(renderContext);
-            req.getSession().setAttribute(ParamBean.SESSION_LOCALE, urlResolver.getLocale());
+            req.getSession().setAttribute(Constants.SESSION_LOCALE, urlResolver.getLocale());
             jcrSessionFactory.setCurrentLocale(urlResolver.getLocale());
             if (renderContext.isPreviewMode() && req.getParameter(ALIAS_USER) != null && !JahiaUserManagerService.isGuest(jcrSessionFactory.getCurrentUser())) {
                 jcrSessionFactory.setCurrentAliasedUser(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(req.getParameter(ALIAS_USER)));

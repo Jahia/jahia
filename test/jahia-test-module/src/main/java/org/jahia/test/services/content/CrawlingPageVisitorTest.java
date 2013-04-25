@@ -221,44 +221,6 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
         assertEquals("There were errors during the crawling", "", appender.getErrorLogs());        
     }
 
-//    @Test
-//    public void testFetchDefaultSiteEdit() throws IOException {
-//        JahiaSite defaultSite = ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
-//        String siteRootNode = defaultSite != null ? "sites/" + defaultSite.getSiteKey() : ACME_SITECONTENT_ROOT_NODE;
-//        crawlUrls(getBaseUrls(Constants.EDIT_WORKSPACE, ACME_SITECONTENT_ROOT_NODE));
-//        assertEquals("There were errors during the crawling", "", appender.getErrorLogs());
-//    }
-//
-//    @Test
-//    public void testFetchAdmin() throws IOException {
-//        try {
-//            ParamBean ctx = (ParamBean) Jahia.getThreadParamBean();
-//            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
-//                    LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
-//            // generate seedlist
-//            List<String> urls = new ArrayList<String>();
-//            JahiaSite defaultSite = ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
-//            if (defaultSite != null) {
-//                RenderContext renderCtx = new RenderContext(ctx.getRequest(), ctx.getResponse(), ctx.getUser());
-//                JCRNodeWrapper homeNode = session.getRootNode().getNode("sites/" + defaultSite.getSiteKey() + "/home");
-//                Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
-//                renderCtx.setMainResource(resource);
-//                renderCtx.setSite(homeNode.getResolveSite());
-//                URLGenerator urlgenerator = new URLGenerator(renderCtx, resource);
-//
-//                final StringBuffer adminUrl = new StringBuffer();
-//                adminUrl.append(ctx.getContextPath()).append(Jahia.getInitAdminServletPath()).append("?do=passthru");
-//                urls.add(urlgenerator.getServer() + adminUrl.toString());
-//
-//                crawlUrls(urls);
-//            }
-//
-//        } catch (Exception e) {
-//            logger.error("Exception during test", e);
-//        }
-//        assertEquals("There were errors during the crawling", "", appender.getErrorLogs());
-//    }
-
     private List<String> getBaseUrls(String workspace, String sitePath) {
         List<String> urls = new ArrayList<String>();
         try {

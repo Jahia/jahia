@@ -5,7 +5,7 @@ import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.cpr.DefaultBroadcaster;
 import org.atmosphere.gwt.server.AtmosphereGwtHandler;
 import org.atmosphere.gwt.server.GwtAtmosphereResource;
-import org.jahia.params.ProcessingContext;
+import org.jahia.api.Constants;
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +27,7 @@ public class GWTAtmosphereHandler extends AtmosphereGwtHandler {
         }
         resource.getAtmosphereResource().setBroadcaster(broadcaster);
 
-        JahiaUser user = (JahiaUser) resource.getSession().getAttribute(ProcessingContext.SESSION_USER);
+        JahiaUser user = (JahiaUser) resource.getSession().getAttribute(Constants.SESSION_USER);
 
         if (user != null) {
             Broadcaster userBroadcaster = BroadcasterFactory.getDefault().lookup(Broadcaster.class, GWT_BROADCASTER_ID + user.getName());

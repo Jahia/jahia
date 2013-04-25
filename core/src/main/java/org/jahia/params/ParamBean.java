@@ -6,7 +6,7 @@
  *
  * For more information, please visit http://www.jahia.com.
  *
- * Copyright (C) 2002-2012 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2013 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -120,11 +120,10 @@
 
 package org.jahia.params;
 
+import org.jahia.api.Constants;
+
 
 /**
- * This object contains most of the request context, including object such as the request and response objects, sessions, engines, contexts,
- * ... It also contains methods for generating URLs for output generation.
- *
  * @author Eric Vassalli
  * @author Khue NGuyen
  * @author Fulco Houkes
@@ -132,7 +131,7 @@ package org.jahia.params;
  * @author Serge Huber
  * @author Mikhael Janson
  * @author Xavier Lawrence
- * @deprecated
+ * @deprecated use {@link Constants} instead
  */
 @Deprecated
 public class ParamBean extends ProcessingContext {

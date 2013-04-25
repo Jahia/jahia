@@ -50,7 +50,6 @@ import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.params.valves.CookieAuthConfig;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
@@ -250,8 +249,8 @@ public class Logout implements Controller {
         if (cookieAuthConfig.isActivated()) {
             removeAuthCookie(request, response);
         }
-        Locale uiLocale = (Locale) request.getSession().getAttribute(ProcessingContext.SESSION_UI_LOCALE);
-        Locale locale = (Locale) request.getSession().getAttribute(ProcessingContext.SESSION_LOCALE);
+        Locale uiLocale = (Locale) request.getSession().getAttribute(Constants.SESSION_UI_LOCALE);
+        Locale locale = (Locale) request.getSession().getAttribute(Constants.SESSION_LOCALE);
 
         if (fireLogoutEvent) {
             SpringContextSingleton.getInstance().publishEventInModuleContexts(new LogoutEvent(this, request, response));
@@ -267,8 +266,8 @@ public class Logout implements Controller {
         JCRSessionFactory.getInstance()
                 .setCurrentUser(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(JahiaUserManagerService.GUEST_USERNAME));
 
-        request.getSession().setAttribute(ProcessingContext.SESSION_UI_LOCALE, uiLocale);
-        request.getSession().setAttribute(ProcessingContext.SESSION_LOCALE, locale);
+        request.getSession().setAttribute(Constants.SESSION_UI_LOCALE, uiLocale);
+        request.getSession().setAttribute(Constants.SESSION_LOCALE, locale);
 
         String redirectActiveStr = request.getParameter("redirectActive");
         if (redirectActiveStr == null || Boolean.parseBoolean(redirectActiveStr)) {

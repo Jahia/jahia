@@ -48,7 +48,6 @@
 package org.jahia.services.applications;
 
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ParamBean;
 import org.jahia.services.JahiaService;
 import org.jahia.services.usermanager.JahiaUser;
 

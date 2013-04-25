@@ -48,7 +48,6 @@ import org.slf4j.LoggerFactory;
 import org.jahia.ajax.gwt.client.core.SessionExpirationException;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
-import org.jahia.params.ParamBean;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -184,7 +183,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      * @return
      */
     protected Locale getUILocale() throws GWTJahiaServiceException {
-        Locale sessionLocale = (Locale) getSession().getAttribute(ParamBean.SESSION_UI_LOCALE);
+        Locale sessionLocale = (Locale) getSession().getAttribute(Constants.SESSION_UI_LOCALE);
         Locale locale = sessionLocale != null ? UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUser(), sessionLocale) : UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUser(), LanguageCodeConverters.resolveLocaleForGuest(request));
         if (locale == null) {
             if(JahiaUserManagerService.isNotGuest(getRemoteJahiaUser())) {

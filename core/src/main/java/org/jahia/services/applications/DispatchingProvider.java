@@ -43,11 +43,9 @@
 import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.params.ParamBean;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -67,17 +65,6 @@ public interface DispatchingProvider {
         throws JahiaInitializationException;
 
     public void stop();
-
-    /**
-     * This method is called by Jahia when an application is asked to process
-     * a request.
-     * @param appBean ApplicationBean
-     * @param windowID int
-     * @param jParams ProcessingContext
-     * @throws JahiaException
-     */
-    public void processAction(EntryPointInstance entryPointInstance, int windowID, ParamBean jParams)
-        throws JahiaException;
 
     /**
      * This method is called by Jahia when an application is asked to render

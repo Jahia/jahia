@@ -40,11 +40,11 @@
 
 package org.jahia.taglibs.uicomponents.portlets;
 
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.render.RenderContext;
 import org.jahia.settings.SettingsBean;
 import org.jahia.taglibs.utility.Utils;
 import org.jahia.utils.i18n.ResourceBundles;
+import org.jahia.api.Constants;
 import org.jahia.data.beans.portlets.PortletWindowBean;
 import org.jahia.data.beans.portlets.WindowStateBean;
 
@@ -305,7 +305,7 @@ public class WindowStatesTag extends TagSupport {
         }
 
         if (locale == null) {
-            locale = (Locale) pageContext.getAttribute(ProcessingContext.SESSION_LOCALE,
+            locale = (Locale) pageContext.getAttribute(Constants.SESSION_LOCALE,
                     PageContext.SESSION_SCOPE);
         }
 

@@ -43,7 +43,7 @@ package org.jahia.bin.filters.jcr;
 import org.jahia.services.scheduler.SchedulerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jahia.params.ProcessingContext;
+import org.jahia.api.Constants;
 import org.jahia.params.valves.AuthValveContext;
 import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.PipelineException;
@@ -98,7 +98,7 @@ public class JcrSessionFilter implements Filter {
                 sessionFactory
                         .setCurrentUser(userManagerService.lookupUser(JahiaUserManagerService.GUEST_USERNAME));
             } else {
-                ((HttpServletRequest)servletRequest).getSession().setAttribute(ProcessingContext.SESSION_USER, sessionFactory.getCurrentUser());
+                ((HttpServletRequest)servletRequest).getSession().setAttribute(Constants.SESSION_USER, sessionFactory.getCurrentUser());
             }
 
             filterChain.doFilter (servletRequest, servletResponse );

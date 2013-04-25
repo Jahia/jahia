@@ -130,9 +130,6 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
     private Set<String> typesToHideFromSearchResults;
 
-    /* (non-Javadoc)
-     * @see org.jahia.services.search.SearchProvider#search(org.jahia.services.search.SearchCriteria, org.jahia.params.ProcessingContext)
-     */
     public SearchResponse search(SearchCriteria criteria, RenderContext context) {
         SearchResponse response = new SearchResponse();
         List<Hit<?>> results = new LinkedList<Hit<?>>();

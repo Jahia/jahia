@@ -68,7 +68,6 @@ import org.apache.commons.io.IOUtils;
 import org.jahia.api.Constants;
 import org.jahia.commons.Version;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

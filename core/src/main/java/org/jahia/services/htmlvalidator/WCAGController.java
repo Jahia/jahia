@@ -48,10 +48,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jahia.api.Constants;
 import org.jahia.bin.JahiaMultiActionController;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.exceptions.JahiaUnauthorizedException;
-import org.jahia.params.ProcessingContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,7 +89,7 @@ public class WCAGController extends JahiaMultiActionController {
             String text = getParameter(request, "text");
 
             Locale locale = (Locale) request.getSession(true).getAttribute(
-                    ProcessingContext.SESSION_UI_LOCALE);
+                    Constants.SESSION_UI_LOCALE);
             locale = locale != null ? locale : request.getLocale();
 
             if (logger.isDebugEnabled()) {

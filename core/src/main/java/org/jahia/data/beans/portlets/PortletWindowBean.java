@@ -50,7 +50,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.pluto.container.PortletWindow;
 import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.applications.EntryPointInstance;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.usermanager.JahiaUser;
 
 /**

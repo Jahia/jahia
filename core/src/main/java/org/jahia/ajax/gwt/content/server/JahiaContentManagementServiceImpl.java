@@ -70,10 +70,10 @@ import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.*;
+import org.jahia.api.Constants;
 import org.jahia.bin.Export;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -1246,7 +1246,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         if (locale != null) {
             localValue = LanguageCodeConverters.languageCodeToLocale(locale);
             if (!getLocale().equals(localValue)) {
-                getSession().setAttribute(ProcessingContext.SESSION_LOCALE, localValue);
+                getSession().setAttribute(Constants.SESSION_LOCALE, localValue);
             }
         }
         return this.template

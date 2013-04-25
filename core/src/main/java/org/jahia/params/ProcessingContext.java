@@ -6,7 +6,7 @@
  *
  * For more information, please visit http://www.jahia.com.
  *
- * Copyright (C) 2002-2012 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2013 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -121,51 +121,26 @@
 package org.jahia.params;
 
 import org.jahia.api.Constants;
+import org.jahia.bin.Render;
 
 /**
- * This object contains most of the request context, including object such as the request and response objects, sessions, engines, contexts,
- * ... It also contains methods for generating URLs for output generation.
- *
  * @author Serge Huber
  * @author Xavier Lawrence
  * 
- * @deprecated
+ * @deprecated use {@link Constants} instead
  */
 @Deprecated
 public class ProcessingContext {
 
-    public static final String SITE_KEY_PARAMETER = "site";
-    public static final String PLUTO_PREFIX = "__";
-    public static final String PLUTO_ACTION = "ac";
-    public static final String PLUTO_RESOURCE = "rs";
-
-    public static final String LANGUAGE_CODE = "lang";
-    public static final String STEAL_LOCK = "stealLock";
-    public static final String RELEASE_LOCK = "releaseLock";
-
-    // http modes
-    public static final int GET_METHOD = 1;
-    public static final int POST_METHOD = 2;
-
-    // cache modes
-    public static final String CACHE_ON = "on";
+    public static final String PLUTO_PREFIX = Render.PLUTO_PREFIX;
+    public static final String PLUTO_ACTION = Render.PLUTO_ACTION;
+    public static final String PLUTO_RESOURCE = Render.PLUTO_RESOURCE;
 
     // session names
-    public static final String SESSION_USER = "org.jahia.usermanager.jahiauser";
-    public static final String SESSION_ALIASED_USER = "org.jahia.usermanager.aliaseduser";
-    public static final String SESSION_ALIASING_ROOT_USER = "org.jahia.usermanager.aliasingrootuser";
-    public static final String SESSION_ADV_PREVIEW_SETTINGS = "org.jahia.advpreview.settings";
-    public static final String SESSION_ADV_COMPARE_MODE_SETTINGS = "org.jahia.advcomparemode.settings";
-    public static final String SESSION_SITE = "org.jahia.services.sites.jahiasite";
-    public static final String SESSION_DEFAULT_SITE = "org.jahia.services.sites.jahiadefaultsite";
-    public static final String SESSION_JAHIA_RUNNING_MODE = "org.jahia.bin.jahiarunningmode";
-    public static final String SESSION_LOCALE = "org.jahia.services.multilang.currentlocale";
+    public static final String SESSION_USER = Constants.SESSION_USER;
+    public static final String SESSION_SITE = Constants.SESSION_SITE;
+    public static final String SESSION_LOCALE = Constants.SESSION_LOCALE;
     public static final String SESSION_UI_LOCALE = Constants.SESSION_UI_LOCALE;
-    public static final String SESSION_BACKUP = "org.jahia.session.backup";
-    public static final String SESSION_LOCALE_ENGINE = "org.jahia.services.multilang.currentlocaleforengine";
-
-    public static final String USERALIASING_MODE_ON = "on";
-    public static final String USERALIASING_MODE_OFF = "off";
 
     /**
      * Default constructor

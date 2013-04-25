@@ -40,7 +40,7 @@
 
 package org.jahia.services.multilang;
 
-import org.jahia.params.ProcessingContext;
+import org.jahia.api.Constants;
 import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,7 +52,7 @@ public class UILocaleResolver implements LocaleResolver {
     public Locale resolveLocale(HttpServletRequest request) {
         HttpSession session = request.getSession();
         if (session != null) {
-            Locale uiLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
+            Locale uiLocale = (Locale) session.getAttribute(Constants.SESSION_UI_LOCALE);
             if (uiLocale != null) {
                 return uiLocale;
             }

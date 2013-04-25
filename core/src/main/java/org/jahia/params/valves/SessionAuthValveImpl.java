@@ -40,7 +40,7 @@
 
 package org.jahia.params.valves;
 
-import org.jahia.params.ProcessingContext;
+import org.jahia.api.Constants;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
@@ -71,7 +71,7 @@ public class SessionAuthValveImpl extends BaseAuthValve {
         JahiaUser jahiaUser = null;
         HttpSession session = authContext.getRequest().getSession(false);
         if (session !=null) {
-            jahiaUser = (JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER);
+            jahiaUser = (JahiaUser) session.getAttribute(Constants.SESSION_USER);
         }
         if (jahiaUser != null) {
             jahiaUser =

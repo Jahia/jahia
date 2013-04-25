@@ -47,10 +47,9 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.api.Constants;
 import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -82,10 +81,10 @@ public class GWTInitializer {
         StringBuilder buf = new StringBuilder();
 
         if (uilocale == null) {
-            Locale sessionLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
+            Locale sessionLocale = (Locale) session.getAttribute(Constants.SESSION_UI_LOCALE);
             uilocale = sessionLocale != null ?
-                    UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER), sessionLocale) :
-                    UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER), LanguageCodeConverters.resolveLocaleForGuest(request));
+                    UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(Constants.SESSION_USER), sessionLocale) :
+                    UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(Constants.SESSION_USER), LanguageCodeConverters.resolveLocaleForGuest(request));
         }
         if (locale == null) {
             String language = request.getParameter("lang");
@@ -93,7 +92,7 @@ public class GWTInitializer {
                 locale = LanguageCodeConverters.getLocaleFromCode(language);
             }
             if (locale == null) {
-                locale = (Locale) session.getAttribute(ParamBean.SESSION_LOCALE);
+                locale = (Locale) session.getAttribute(Constants.SESSION_LOCALE);
             }
             if (locale == null) {
                 locale = Locale.ENGLISH;
@@ -115,7 +114,7 @@ public class GWTInitializer {
         params.put(JahiaGWTParameters.PATH_INFO, request.getPathInfo());
         params.put(JahiaGWTParameters.QUERY_STRING, request.getQueryString());
         params.put(JahiaGWTParameters.DEVELOPMENT_MODE, SettingsBean.getInstance().isDevelopmentMode()?"true":"false");
-        JahiaUser user = (JahiaUser) session.getAttribute(ParamBean.SESSION_USER);
+        JahiaUser user = (JahiaUser) session.getAttribute(Constants.SESSION_USER);
         if (user != null) {
             String name = user.getUsername();
             int index = name.indexOf(":");
@@ -146,7 +145,7 @@ public class GWTInitializer {
                 if (request.getParameter("site") != null) {
                     params.put(JahiaGWTParameters.SITE_UUID, request.getParameter("site"));
                 } else {
-                    final JahiaSite attribute = (JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE);
+                    final JahiaSite attribute = (JahiaSite) request.getSession().getAttribute(Constants.SESSION_SITE);
                     if (attribute != null && !"".equals(attribute.getSiteKey())) {
                         try {
                             params.put(JahiaGWTParameters.SITE_UUID,

@@ -54,8 +54,8 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.sites.JahiaSite;
@@ -102,7 +102,7 @@ public class JahiaTestCase {
     }
 
     protected static void setSessionSite(JahiaSite site) {
-        getRequest().getSession(true).setAttribute(ProcessingContext.SESSION_SITE, site);
+        getRequest().getSession(true).setAttribute(Constants.SESSION_SITE, site);
     }
 
     private HttpClient client;

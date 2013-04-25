@@ -86,7 +86,6 @@ public class Login implements Controller {
      * @throws Exception in case of errors
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // Login done by parambean and auth-valve
 
         boolean restMode = Boolean.valueOf(request.getParameter("restMode"));
         boolean redirectActive = !restMode;

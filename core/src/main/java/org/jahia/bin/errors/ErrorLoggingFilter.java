@@ -44,8 +44,8 @@ import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
@@ -376,8 +376,7 @@ public class ErrorLoggingFilter implements Filter {
         JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
         if (user == null) {
             try {
-                user = (JahiaUser) request.getSession(true).getAttribute(
-                        ProcessingContext.SESSION_USER);
+                user = (JahiaUser) request.getSession(true).getAttribute(Constants.SESSION_USER);
             } catch (IllegalStateException ex) {
                 // ignore it
             }

@@ -53,7 +53,6 @@ import org.apache.pluto.driver.url.PortalURL;
 import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.params.ParamBean;
 import org.jahia.services.applications.DispatchingProvider;
 import org.jahia.services.usermanager.JahiaUser;
 
@@ -81,17 +80,17 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
     DriverConfiguration driverConfiguration;
     AdminConfiguration adminConfiguration;
 
+    @Override
     public void start() throws JahiaInitializationException {
         // Copied from org.apache.pluto.driver.PortalStartupListener
-
     }
 
+    @Override
     public void stop() {
+        // do nothing
     }
 
-    public void processAction(EntryPointInstance entryPointInstance, int windowID, ParamBean jParams) throws JahiaException {
-    }
-
+     @Override
     public String render(EntryPointInstance entryPointInstance, String windowID, JahiaUser jahiaUser,
                          HttpServletRequest httpServletRequest,
                          HttpServletResponse httpServletResponse,

@@ -42,7 +42,7 @@ package org.jahia.taglibs.utility.i18n;
 
 import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
-import org.jahia.params.ProcessingContext;
+import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.AbstractJahiaTag;
@@ -90,7 +90,7 @@ public class SetBundleTag extends AbstractJahiaTag {
             Locale locale = useUiLocale ? getUILocale() : null;
             if (locale == null) {
                 try {
-                    locale = context != null ? context.getMainResourceLocale() : (Locale) pageContext.getAttribute(ProcessingContext.SESSION_LOCALE, PageContext.SESSION_SCOPE);
+                    locale = context != null ? context.getMainResourceLocale() : (Locale) pageContext.getAttribute(Constants.SESSION_LOCALE, PageContext.SESSION_SCOPE);
                 } catch (Exception e) {
                     logger.debug(e.getMessage(), e);
                     locale = pageContext.getRequest().getLocale();

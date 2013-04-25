@@ -40,8 +40,6 @@
 
  package org.jahia.content;
 
-import org.jahia.params.ProcessingContext;
-
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -245,9 +243,5 @@ public abstract class JahiaObject implements Serializable {
      */
     public ObjectKey getObjectKey() {
         return objectKey;
-    }
-
-    public String getDisplayName(ProcessingContext jParams) {
-        return objectKey.toString();
     }
 }

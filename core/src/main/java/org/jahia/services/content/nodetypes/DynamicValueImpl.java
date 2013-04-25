@@ -122,28 +122,6 @@ public class DynamicValueImpl implements Value {
         return params;
     }
 
-//    public String getString() {
-//        if (fn.equals("now")) {
-//            return ISO8601.format(new GregorianCalendar());
-//        } else if (fn.equals("resourceKey")) {
-//            String bundleId = ((ExtendedNodeType) declaringPropertyDefinition.getDeclaringNodeType()).getResourceBundleId();
-//            return ResourceBundleMarker.drawMarker(bundleId,declaringPropertyDefinition.getResourceBundleKey()+"."+getParams().get(0),getParams().get(0));
-//        } else if (fn.equals("useClass")) {
-//            String classname = getParams().get(0);
-//            try {
-//                ValueInitializer init = (ValueInitializer) Class.forName(classname).newInstance();
-//                return init.getValue(Jahia.getThreadParamBean());
-//            } catch (InstantiationException e) {
-//                logger.error(e.getMessage(), e);
-//            } catch (IllegalAccessException e) {
-//                logger.error(e.getMessage(), e);
-//            } catch (ClassNotFoundException e) {
-//                logger.error(e.getMessage(), e);
-//            }
-//        }
-//        return null;
-//    }
-
     public Value[] expand() {
         Value[] v = null;
         String classname;

@@ -40,7 +40,7 @@
 
 package org.jahia.bin;
 
-import org.jahia.params.ProcessingContext;
+import org.jahia.api.Constants;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.mail.MailServiceImpl;
 import org.jahia.utils.i18n.Messages;
@@ -84,7 +84,7 @@ public class Notifications extends JahiaMultiActionController {
             String to = getParameter(request, "to");
 
             Locale locale = (Locale) request.getSession(true).getAttribute(
-                    ProcessingContext.SESSION_UI_LOCALE);
+                    Constants.SESSION_UI_LOCALE);
             locale = locale != null ? locale : request.getLocale();
 
             if (logger.isDebugEnabled()) {

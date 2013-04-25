@@ -43,8 +43,6 @@ package org.jahia.taglibs.jcr.node;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.taglibs.jcr.AbstractJCRTag;
-import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 
 import javax.servlet.jsp.JspException;
 import javax.jcr.RepositoryException;

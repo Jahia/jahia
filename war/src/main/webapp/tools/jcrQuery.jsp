@@ -105,6 +105,7 @@ pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(L
         >${not empty param.query ? param.query : 'SELECT * FROM [nt:file]'}</textarea>
         <span>
         <span style="position: absolute;"><a id="helpLink" title="Help" href="#helpArea"><img src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16" height="16" alt="help" title="Help"></a></span>
+        <br/>
         <select name="lang" id="lang">
             <option value="JCR-SQL2"${lang == 'JCR-SQL2' ? 'selected="selected"' : ''}>JCR-SQL2</option>
             <option value="xpath"${lang == 'xpath' ? 'selected="selected"' : ''}>XPath</option>

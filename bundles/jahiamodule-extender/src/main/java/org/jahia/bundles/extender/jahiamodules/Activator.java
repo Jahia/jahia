@@ -87,8 +87,7 @@ public class Activator implements BundleActivator {
             extensionObservers.put(new BundleURLScanner("/", "*." + scriptExtension, true), scriptBundleObserver);
         }
 
-        bundleStarter = new BundleStarter(context);
-        bundleStarter.setDaemon(true);
+        bundleStarter = new BundleStarter();
 
         extensionObservers.put(new BundleURLScanner("/", "flow.xml", true), new BundleObserver<URL>() {
             @Override
@@ -150,14 +149,11 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void setupBundleListener(BundleContext context) {
+        context.addFrameworkListener(bundleStarter);
         context.addBundleListener(bundleListener = new SynchronousBundleListener() {
 
             public void bundleChanged(final BundleEvent bundleEvent) {
                 Bundle bundle = bundleEvent.getBundle();
-                if (bundle != null && bundle.getSymbolicName().equals("org.apache.felix.fileinstall") && bundleEvent.getType() == BundleEvent.STARTED) {
-                    bundleStarter.startAllBundles();
-                    bundleStarter.start();
-                }
                 if (bundle == null || !BundleUtils.isJahiaModuleBundle(bundle)) {
                     return;
                 }
@@ -604,14 +600,18 @@ public class Activator implements BundleActivator {
         return toBeStarted;
     }
 
-    private class BundleStarter extends Thread {
-        private final BundleContext context;
+    private class BundleStarter implements FrameworkListener {
+
         private List<Bundle> toStart = Collections.synchronizedList(new ArrayList<Bundle>());
         private List<Bundle> toStop = Collections.synchronizedList(new ArrayList<Bundle>());
 
-        public BundleStarter(BundleContext context) {
-            super("Jahia modules starter");
-            this.context = context;
+        @Override
+        public synchronized void frameworkEvent(FrameworkEvent event) {
+            switch (event.getType()) {
+                case FrameworkEvent.PACKAGES_REFRESHED:
+                    startAllBundles();
+                    stopAllBundles();
+            }
         }
 
         public void startBundle(Bundle bundle) {
@@ -622,49 +622,30 @@ public class Activator implements BundleActivator {
             toStop.add(bundle);
         }
 
-        public void run() {
-            while (!interrupted()) {
-                try {
-                    startAllBundles();
-                    stopAllBundles();
-                    synchronized (Activator.this) {
-                        Activator.this.wait(1000);
-                    }
-                } catch (InterruptedException e) {
-                    return;
-                } catch (Throwable e) {
-                    try {
-                        context.getBundle();
-                    } catch (IllegalStateException t) {
-                        // Activator bundle has been uninstalled, exiting loop
-                        return;
-                    }
-                }
-            }
-        }
-
         public void startAllBundles() {
             List<Bundle> toStart = new ArrayList<Bundle>(this.toStart);
-            for (Bundle installedBundle : toStart) {
+            this.toStart.removeAll(toStart);
+            for (Bundle bundle : toStart) {
                 try {
-                    installedBundle.start();
+                    bundle.start();
                 } catch (BundleException e) {
                     e.printStackTrace();
                 }
             }
-            this.toStart.removeAll(toStart);
         }
 
         public void stopAllBundles() {
             List<Bundle> toStop = new ArrayList<Bundle>(this.toStop);
-            for (Bundle installedBundle : toStop) {
+            this.toStop.removeAll(toStop);
+            for (Bundle bundle : toStop) {
                 try {
-                    installedBundle.stop();
+                    if (bundle.getState() != Bundle.UNINSTALLED) {
+                        bundle.stop();
+                    }
                 } catch (BundleException e) {
                     e.printStackTrace();
                 }
             }
-            this.toStop.removeAll(toStop);
         }
     }
 

@@ -12,7 +12,6 @@
 
     <modules>
         <module>dummy1</module>
-        <module>dummy2</module>
-		<module>dummy3</module>
+        <module>dummy1.1</module>
     </modules>
 </project>

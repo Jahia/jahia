@@ -187,6 +187,17 @@
                                     <report-an-issue jcr:primaryType="jnt:serverSettingsReportAnIssue"/>
                                 </pagecontent>
                             </reportAnIssue>
+                            <tools j:applyOn="jnt:globalSettings"
+                                 j:defaultTemplate="false"
+                                 j:hiddenTemplate="false"
+                                 j:requiredPermissions="#/permissions/admin/adminSystemInfos"
+                                 j:titleKey="serverSettings.tools"
+                                 jcr:mixinTypes="jmix:rbTitle"
+                                 jcr:primaryType="jnt:contentTemplate">
+                                <pagecontent jcr:primaryType="jnt:contentList">
+                                    <tools jcr:primaryType="jnt:serverSettingsTools"/>
+                                </pagecontent>
+                            </tools>
                         </system-health>
                 </serverSettingsBase>
             </templates>

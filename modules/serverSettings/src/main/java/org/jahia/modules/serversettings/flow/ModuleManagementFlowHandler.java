@@ -106,7 +106,8 @@ public class ModuleManagementFlowHandler implements Serializable {
     public boolean uploadModule(ModuleFile moduleFile, MessageContext context) {
         String originalFilename = moduleFile.getModuleFile().getOriginalFilename();
         if (!FilenameUtils.isExtension(originalFilename, Arrays.<String>asList("war","jar","WAR","JAR"))) {
-            context.addMessage(new MessageBuilder().error().source("moduleFile").defaultText("File should be a jar or a war file").build());
+            context.addMessage(new MessageBuilder().error().source("moduleFile")
+                    .defaultText(getMessage("serverSettings.manageModules.install.wrongFormat")).build());
             return false;
         }
         try {
@@ -139,7 +140,7 @@ public class ModuleManagementFlowHandler implements Serializable {
             }
             if (!missingDeps.isEmpty()) {
                 context.addMessage(new MessageBuilder().source("moduleFile")
-                        .defaultText(Messages.get("resources.JahiaServerSettings", "serverSettings.manageModules.install.missingDependencies",LocaleContextHolder.getLocale()))
+                        .defaultText(getMessage("serverSettings.manageModules.install.missingDependencies"))
                         .arg(StringUtils.join(missingDeps, ","))
                         .error()
                         .build());
@@ -148,17 +149,17 @@ public class ModuleManagementFlowHandler implements Serializable {
                 if (allVersions.contains(new ModuleVersion(version)) && allVersions.size() == 1) {
                     bundle.start();
                     context.addMessage(new MessageBuilder().source("moduleFile")
-                            .defaultText(Messages.get("resources.JahiaServerSettings", "serverSettings.manageModules.install.uploadedAndStarted",LocaleContextHolder.getLocale()))
+                            .defaultText(getMessage("serverSettings.manageModules.install.uploadedAndStarted"))
                             .build());
                 } else {
                     context.addMessage(new MessageBuilder().source("moduleFile")
-                            .defaultText(Messages.get("resources.JahiaServerSettings", "serverSettings.manageModules.install.uploaded",LocaleContextHolder.getLocale()))
+                            .defaultText(getMessage("serverSettings.manageModules.install.uploaded"))
                             .build());
                 }
             }
         } catch (Exception e) {
             context.addMessage(new MessageBuilder().source("moduleFile")
-                    .defaultText(Messages.get("resources.JahiaServerSettings", "serverSettings.manageModules.install.failed",LocaleContextHolder.getLocale()))
+                    .defaultText(getMessage("serverSettings.manageModules.install.failed"))
                     .arg(e.getMessage())
                     .error()
                     .build());
@@ -262,5 +263,9 @@ public class ModuleManagementFlowHandler implements Serializable {
         context.getRequestScope().put("activeVersionDate",new Date(value.getBundle().getLastModified()));
 
         context.getRequestScope().put("dependantModules", templateManagerService.getTemplatePackageRegistry().getDependantModules(value));
+    }
+    
+    private String getMessage(String key) {
+        return Messages.get("resources.JahiaServerSettings", key, LocaleContextHolder.getLocale());
     }
 }

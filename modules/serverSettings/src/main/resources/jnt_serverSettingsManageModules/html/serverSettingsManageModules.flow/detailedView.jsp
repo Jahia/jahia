@@ -62,7 +62,7 @@
 </script>
 
 <div id="disable-confirm" title="Disable the module">
-    <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>Do you want to purge all content coming from this module ?</p>
+    <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>Do you want to purge all content coming from this module?</p>
 </div>
 
 <div id="detailActiveVersion">
@@ -291,6 +291,7 @@
                             </c:choose>
                         </td>
                         <td>
+                            <c:set var="cellEmpty" value="true"/>
                             <c:if test="${activeVersion.moduleType ne 'templatesSet'}">
                             <c:choose>
                                 <c:when test="${not empty sitesDirect[activeVersion.rootFolder] and functions:contains(sitesDirect[activeVersion.rootFolder],site)}">
@@ -304,6 +305,7 @@
                                         <input class="btn btn-danger disable-button" type="button" value="${label}" onclick=""/>
                                         <c:set var="usedOnce" value="true"/>
                                     </form>
+                                    <c:set var="cellEmpty" value="false"/>
                                 </c:when>
                                 <c:when test="${not empty sitesTransitive[activeVersion.rootFolder] and functions:contains(sitesTransitive[activeVersion.rootFolder],site)}">
                                 </c:when>
@@ -316,9 +318,11 @@
                                         <input class="btn btn-success" type="submit" name="_eventId_enable"
                                                value="${label}" onclick=""/>
                                     </form>
+                                    <c:set var="cellEmpty" value="false"/>
                                 </c:otherwise>
                             </c:choose>
                             </c:if>
+                            <c:if test="${cellEmpty}">&nbsp;</c:if>
                         </td>
                     </tr>
                 </c:forEach>
@@ -444,8 +448,15 @@
                         <tr>
                             <td><span style="font: bold">${dependency.name}</span></td>
                             <td>
-                                <c:if test="${isStudio and not empty dependency.sourcesFolder}">
-                                    <input class="btn btn-info" type="button" onclick='window.location.assign("${url.base}/modules/${dependency.rootFolder}.html")' value="<fmt:message key='serverSettings.manageModules.details' />"/>
+                                <c:if test="${isStudio}">
+                                    <c:choose>
+                                        <c:when test="${not empty dependency.sourcesFolder}">
+                                            <input class="btn btn-info" type="button"
+                                                onclick='window.location.assign("${url.base}/modules/${dependency.rootFolder}.html")'
+                                                value="<fmt:message key='serverSettings.manageModules.details' />"/>
+                                        </c:when>
+                                        <c:otherwise>&nbsp;</c:otherwise>
+                                    </c:choose>
                                 </c:if>
                                 <c:if test="${not isStudio}">
                                     <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">

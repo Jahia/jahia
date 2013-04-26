@@ -52,6 +52,8 @@
         </div>
     </form:form>
 </c:if>
+<fmt:message key="serverSettings.manageModules.module.state.active" var="i18nModuleActive"/>
+<fmt:message key="serverSettings.manageModules.module.state.inactive" var="i18nModuleInactive"/>
 <table class="table table-bordered table-striped table-hover">
     <thead>
     <tr>
@@ -161,10 +163,10 @@
                     <td>
                         <c:choose>
                             <c:when test="${not empty currentModule}">
-                                <span class="label label-success"><strong>Active</strong></span>
+                                <span class="label label-success"><strong>${i18nModuleActive}</strong></span>
                             </c:when>
                             <c:otherwise>
-                                <span class="label"><strong>Inactive</strong></span>
+                                <span class="label"><strong>${i18nModuleInactive}</strong></span>
                             </c:otherwise>
                         </c:choose>
                     </td>
@@ -205,9 +207,12 @@
                     </td>
                 </c:if>
                 <td>
-                    <c:if test="${not empty sitesTemplates[entry.key]}"><fmt:message key='serverSettings.manageModules.usedInSites.templates'/></c:if>
-                    <c:if test="${not empty sitesDirect[entry.key]}"><fmt:message key='serverSettings.manageModules.usedInSites.direct'/></c:if>
-                    <c:if test="${empty sitesDirect[entry.key] and not empty sitesTransitive[entry.key]}"><fmt:message key='serverSettings.manageModules.usedInSites.transitive'/></c:if>
+                    <c:choose>
+                        <c:when test="${not empty sitesTemplates[entry.key]}"><fmt:message key='serverSettings.manageModules.usedInSites.templates'/></c:when>
+                        <c:when test="${not empty sitesDirect[entry.key]}"><fmt:message key='serverSettings.manageModules.usedInSites.direct'/></c:when>
+                        <c:when test="${empty sitesDirect[entry.key] and not empty sitesTransitive[entry.key]}"><fmt:message key='serverSettings.manageModules.usedInSites.transitive'/></c:when>
+                        <c:otherwise>&nbsp;</c:otherwise>
+                    </c:choose>
                 </td>
 
             </tr>

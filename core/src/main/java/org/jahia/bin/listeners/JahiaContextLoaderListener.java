@@ -156,6 +156,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         logger.info("Starting up Jahia, please wait...");
 
         servletContext = event.getServletContext();
+        
+        Jahia.setContextPath(servletContext.getContextPath());
+        
         String jahiaWebAppRoot = servletContext.getRealPath("/");
         System.setProperty("jahiaWebAppRoot", jahiaWebAppRoot);
         if (System.getProperty("jahia.config") == null) {

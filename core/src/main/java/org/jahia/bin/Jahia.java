@@ -258,10 +258,11 @@ public final class Jahia {
     }
 
     public static String getContextPath () {
-        if (jahiaContextPath == null) {
-            initContextData();
-        }
         return jahiaContextPath;
+    }
+
+    public static void setContextPath(String contextPath) {
+        jahiaContextPath = contextPath;
     }
 
     /**
@@ -387,19 +388,6 @@ public final class Jahia {
         }
 
         return true;
-    }
-
-    public static void initContextData() {
-        String ctxPath = ""; // assume ROOT context by default
-        ctxPath = SettingsBean.getInstance().getPropertiesFile().getProperty("jahia.contextPath");
-        if (ctxPath == null || ctxPath.length() > 0 && !ctxPath.startsWith("/")) {
-            logger.error("Invalid value for the jahia.contextPath in the "
-                    + SettingsBean.JAHIA_PROPERTIES_FILE_PATH + " resource. Unable to initialize Web application.");
-            throw new IllegalArgumentException("Invalid value for the jahia.contextPath in the "
-                    + SettingsBean.JAHIA_PROPERTIES_FILE_PATH + " resource. Unable to initialize Web application.");
-        }
-
-        Jahia.jahiaContextPath = ctxPath.equals("/") ? "" : ctxPath;
     }
 
     public static String getEdition() {

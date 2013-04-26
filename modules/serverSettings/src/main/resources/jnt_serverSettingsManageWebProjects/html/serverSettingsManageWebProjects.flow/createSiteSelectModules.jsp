@@ -25,7 +25,7 @@
 
                     <select name="templateSet" id="templateSet">
                         <c:forEach items="${allModules}" var="module">
-                            <c:if test="${module.moduleType eq 'templatesSet'}">
+                            <c:if test="${module.moduleType eq 'templatesSet' && module.rootFolder != 'templates-system'}">
                             <option value="${module.rootFolder}" ${siteBean.templateSet eq module.rootFolder ? 'selected="true"' : ''}>${module.name}&nbsp;(${module.rootFolder})</option>
                             </c:if>
                         </c:forEach>

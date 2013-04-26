@@ -27,7 +27,7 @@ int hash = indexRoot.getPath().hashCode();
         pageContext.setAttribute("obsolete", buf.toString().contains("could not read any segments file in directory"));
         %>
         <td width="25" align="right" style="padding-right: 5px">
-        <span style="color: ${ok ? 'green' : (obsolete ? 'brown' : 'red')}">
+        <span style="color: ${ok ? 'green' : (obsolete ? 'black' : 'red')}">
             ${ok ? 'OK' : (obsolete ? 'Obsolete' : '<strong>Problem</strong>')}
         <c:if test="${obsolete}">
             <a class="detailsLink" title="Obsolete index hint" href="#obsolete-hint">*</a>

@@ -960,7 +960,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
             if (keyGenerator instanceof DefaultCacheKeyGenerator) {
                 DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
-                Map<String, String> keyAttrbs = defaultCacheKeyGenerator.parse(key);
+                Map<String, String> keyAttrbs = defaultCacheKeyGenerator.parse(KeyCompressor.decodeKey(key));
                 String path = keyAttrbs.get("path");
                 List<String> removableKeys = new ArrayList<String>();
                 for (String notCacheableKey : notCacheableFragment.keySet()) {

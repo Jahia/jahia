@@ -61,8 +61,8 @@
         <div class="container-fluid">
             <div class="row-fluid">
                 <div class="span12">
-                    <input class="btn" type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel' />"/>
                     <input class="btn btn-primary" type="submit" name="_eventId_next" value="<fmt:message key='label.next'/>"/>
+                    <input class="btn" type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel' />"/>
                 </div>
             </div>
         </div>

@@ -229,7 +229,7 @@
                                             <input type="hidden" name="module" value="${package.value.rootFolder}"/>
                                             <fmt:message var="label" key='serverSettings.manageModules.stopModule'/>
                                             <input class="btn btn-danger" type="submit" name="_eventId_stopModule"
-                                                   value="${label}" onclick=""/>
+                                                   value="${label}" onclick=""/>&nbsp; ${package.key} ( ${package.value.state.state} )
                                         </form>
                                     </div>
                                 </c:when>
@@ -241,7 +241,7 @@
                                             <fmt:message var="label"
                                                          key='serverSettings.manageModules.startModule'/>
                                             <input class="btn btn-success" type="submit" name="_eventId_startModule"
-                                                   value="${label}" onclick=""/>
+                                                   value="${label}" onclick=""/>&nbsp; ${package.key} ( ${package.value.state.state} )
                                         </form>
                                     </div>
                                 </c:otherwise>

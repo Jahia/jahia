@@ -66,7 +66,7 @@
                     <div class="row-fluid">
                         <div class="span6">
                             <label for="password"><fmt:message key="label.password"/></label>
-                            <input type="password" type="password" name="password" id="password" value="">
+                            <input type="password" name="password" id="password" value="">
                         </div>
                         <div class="span6">
                             <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>

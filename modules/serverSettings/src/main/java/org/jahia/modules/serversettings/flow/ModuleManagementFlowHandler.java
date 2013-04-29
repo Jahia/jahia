@@ -268,4 +268,14 @@ public class ModuleManagementFlowHandler implements Serializable {
     private String getMessage(String key) {
         return Messages.get("resources.JahiaServerSettings", key, LocaleContextHolder.getLocale());
     }
+    
+    /**
+     * Logs the specified exception details.
+     * 
+     * @param e
+     *            the occurred exception to be logged
+     */
+    public void logError(Exception e) {
+        logger.error(e.getMessage(), e);
+    }
 }

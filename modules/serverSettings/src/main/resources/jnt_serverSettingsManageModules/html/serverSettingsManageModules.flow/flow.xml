@@ -80,6 +80,7 @@
                 expression="JahiaTemplateManagerService.checkoutModule(null,flowScope.scmUri, null,flowScope.module,null,jcrSessionFactory.currentUserSession)"/>
         <transition on-exception="java.lang.Exception" to="viewDownloadForm">
             <set name="flashScope.error" value="'serverSettings.manageModules.downloadSourcesError'"/>
+            <evaluate expression="flowHandler.logError(rootCauseException)"/>
         </transition>
         <transition to="sourcesDownloaded"/>
     </action-state>
@@ -110,7 +111,8 @@
         <evaluate
                 expression="JahiaTemplateManagerService.installModule(requestParameters.module,requestParameters.enableOn,null)"/>
         <transition on-exception="java.lang.Exception" to="detailedView">
-            <set name="flashScope.error" value="'serverSettings.manageModules.modules.enable.error'"/>
+            <set name="flashScope.error" value="'serverSettings.manageModules.module.enable.error'"/>
+            <evaluate expression="flowHandler.logError(rootCauseException)"/>
         </transition>
         <transition to="detailedView"/>
     </action-state>
@@ -119,7 +121,8 @@
         <evaluate
                 expression="JahiaTemplateManagerService.uninstallModule(requestParameters.module,requestParameters.disableFrom,null,requestParameters.purge)"/>
         <transition on-exception="java.lang.Exception" to="detailedView">
-            <set name="flashScope.error" value="'serverSettings.manageModules.modules.disable.error'"/>
+            <set name="flashScope.error" value="'serverSettings.manageModules.module.disable.error'"/>
+            <evaluate expression="flowHandler.logError(rootCauseException)"/>
         </transition>
         <transition to="detailedView"/>
     </action-state>
@@ -128,7 +131,8 @@
         <evaluate
                 expression="JahiaTemplateManagerService.uninstallModulesFromAllSites(requestParameters.module,null,requestParameters.purge)"/>
         <transition on-exception="java.lang.Exception" to="detailedView">
-            <set name="flashScope.error" value="'serverSettings.manageModules.modules.undeploy.error'"/>
+            <set name="flashScope.error" value="'serverSettings.manageModules.module.undeploy.error'"/>
+            <evaluate expression="flowHandler.logError(rootCauseException)"/>
         </transition>
         <transition to="detailedView"/>
     </action-state>

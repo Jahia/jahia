@@ -34,22 +34,22 @@
 <script type="text/javascript">
     $(function() {
         var selectedForm;
-        $( "#disable-confirm" ).dialog({
+        $("#disable-confirm").dialog({
             autoOpen: false,
             resizable: false,
             height:200,
             modal: true,
             buttons: {
-                "Yes": function() {
+                "<fmt:message key='label.yes'/>": function() {
                     $('#'+selectedForm + ' input[name=purge]').val(true);
                     $('#'+selectedForm).submit();
                     $( this ).dialog( "close" );
                 },
-                "No": function() {
+                "<fmt:message key='label.no'/>": function() {
                     $('#'+selectedForm).submit();
                     $( this ).dialog( "close" );
                 },
-                Cancel: function() {
+                "<fmt:message key='label.cancel'/>": function() {
                     $( this ).dialog( "close" );
                 }
             }
@@ -61,12 +61,15 @@
     });
 </script>
 
-<div id="disable-confirm" title="Disable the module">
-    <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>Do you want to purge all content coming from this module?</p>
+<div id="disable-confirm" title="<fmt:message key='serverSettings.manageModules.module.disable.purgeContent.title'/>">
+    <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span><fmt:message key="serverSettings.manageModules.module.disable.purgeContent.message"/></p>
 </div>
 
 <div id="detailActiveVersion">
     <h2>${activeVersion.name}&nbsp;${activeVersion.version}</h2>
+    <p>
+        ${fn:escapeXml(bundleInfo['Bundle-Description'])}
+    </p>
     <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
         <c:if test="${message.severity eq 'INFO'}">
             <div class="alert alert-success">
@@ -82,11 +85,11 @@
         </c:if>
     </c:forEach>
     <c:if test="${not empty error}">
-        <div class="error"><fmt:message key='${error}'/></div>
+        <div class="alert alert-error">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <fmt:message key="${error}"/>
+        </div>
     </c:if>
-    <p>
-        ${bundleInfo['Bundle-Description']}
-    </p>
     <table class="table table-striped table-bordered table-hover">
         <thead>
             <tr>

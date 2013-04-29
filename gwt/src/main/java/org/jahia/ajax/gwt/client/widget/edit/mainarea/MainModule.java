@@ -568,12 +568,12 @@ public class MainModule extends Module {
                 }
             }
         } else {
-            path = path.substring(path.indexOf(JahiaGWTParameters.getContextPath() + JahiaGWTParameters.getServletPath()));
             if (currentHref.indexOf("#") > 0) {
                 currentHref = currentHref.substring(0, currentHref.indexOf("#"));
             }
             Window.Location.assign(currentHref + "#" + MainModule.getInstance().getConfig().getName() + "|" + URL.encode(path));
         }
+        path = path.substring(path.indexOf(JahiaGWTParameters.getContextPath() + JahiaGWTParameters.getServletPath()));
 
         if (storage != null) {
             String storedPath = path;

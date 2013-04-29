@@ -8,7 +8,9 @@
                       j:moduleType="module"
                       j:title="Jahia Server Settings"
                       jcr:primaryType="jnt:module">
-                
+                <portlets jcr:primaryType="jnt:portletFolder"/>
+                <files jcr:primaryType="jnt:folder"/>
+                <contents jcr:primaryType="jnt:contentFolder"/>
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
                     <files jcr:primaryType="jnt:folder">
                         <aboutJahia.png j:height="16"
@@ -19,6 +21,200 @@
                             <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
                             <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
                         </aboutJahia.png>
+                        <serveradmin.rar jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="application/x-rar" jcr:primaryType="jnt:resource"/>
+                        </serveradmin.rar>
+                        <serveradmin jcr:primaryType="jnt:folder">
+                            <aboutJahia.png j:height="16"
+                                  j:width="16"
+                                  jcr:mixinTypes="jmix:image"
+                                  jcr:primaryType="jnt:file">
+                                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            </aboutJahia.png>
+                            <configurations jcr:primaryType="jnt:folder">
+                                <configurations.png j:height="16"
+                                         j:width="16"
+                                         jcr:mixinTypes="jmix:image"
+                                         jcr:primaryType="jnt:file">
+                                    <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                </configurations.png>
+                                <db_x0020_settings jcr:primaryType="jnt:folder">
+                                    <db_settings.png j:height="16"
+                                         j:width="16"
+                                         jcr:mixinTypes="jmix:image"
+                                         jcr:primaryType="jnt:file">
+                                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    </db_settings.png>
+                                </db_x0020_settings>
+                                <mail_x0020_server jcr:primaryType="jnt:folder">
+                                    <mail_preferences.png j:height="16"
+                                              j:width="16"
+                                              jcr:mixinTypes="jmix:image"
+                                              jcr:primaryType="jnt:file">
+                                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    </mail_preferences.png>
+                                </mail_x0020_server>
+                            </configurations>
+                            <system_x0020_components jcr:primaryType="jnt:folder">
+                                <modules jcr:primaryType="jnt:folder">
+                                    <modules.png j:height="16"
+                                     j:width="16"
+                                     jcr:mixinTypes="jmix:image"
+                                     jcr:primaryType="jnt:file">
+                                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    </modules.png>
+                                </modules>
+                                <portlets jcr:primaryType="jnt:folder">
+                                    <portlets.png j:height="16"
+                                      j:width="16"
+                                      jcr:mixinTypes="jmix:image"
+                                      jcr:primaryType="jnt:file">
+                                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    </portlets.png>
+                                </portlets>
+                                <system_components.png j:height="16"
+                                            j:width="16"
+                                            jcr:mixinTypes="jmix:image"
+                                            jcr:primaryType="jnt:file">
+                                    <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                </system_components.png>
+                            </system_x0020_components>
+                            <system_x0020_health jcr:primaryType="jnt:folder">
+                                <cache jcr:primaryType="jnt:folder"/>
+                                <memory jcr:primaryType="jnt:folder">
+                                    <memory.png j:height="16"
+                                    j:width="16"
+                                    jcr:mixinTypes="jmix:image"
+                                    jcr:primaryType="jnt:file">
+                                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    </memory.png>
+                                </memory>
+                                <report_x0020_issue jcr:primaryType="jnt:folder">
+                                    <report_issue.png j:height="16"
+                                          j:width="16"
+                                          jcr:mixinTypes="jmix:image"
+                                          jcr:primaryType="jnt:file">
+                                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    </report_issue.png>
+                                </report_x0020_issue>
+                                <system_x0020_info jcr:primaryType="jnt:folder">
+                                    <system_info.png j:height="16"
+                                         j:width="16"
+                                         jcr:mixinTypes="jmix:image"
+                                         jcr:primaryType="jnt:file">
+                                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    </system_info.png>
+                                </system_x0020_info>
+                                <system_health.png j:height="16"
+                                        j:width="16"
+                                        jcr:mixinTypes="jmix:image"
+                                        jcr:primaryType="jnt:file">
+                                    <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                </system_health.png>
+                                <tools jcr:primaryType="jnt:folder">
+                                    <tools.png j:height="16"
+                                   j:width="16"
+                                   jcr:mixinTypes="jmix:image"
+                                   jcr:primaryType="jnt:file">
+                                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    </tools.png>
+                                </tools>
+                                <cache_x0020_management jcr:primaryType="jnt:folder">
+                                    <cacheManagement.png j:height="16"
+                                             j:width="16"
+                                             jcr:mixinTypes="jmix:image"
+                                             jcr:primaryType="jnt:file">
+                                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    </cacheManagement.png>
+                                </cache_x0020_management>
+                            </system_x0020_health>
+                            <users_x0020_and_x0020_roles jcr:primaryType="jnt:folder">
+                                <admin_x0020_properties jcr:primaryType="jnt:folder">
+                                    <superadmin_properties.png j:height="16"
+                                                   j:width="16"
+                                                   jcr:mixinTypes="jmix:image"
+                                                   jcr:primaryType="jnt:file">
+                                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    </superadmin_properties.png>
+                                </admin_x0020_properties>
+                                <manage_x0020_users jcr:primaryType="jnt:folder">
+                                    <manage_users.png j:height="16"
+                                          j:width="16"
+                                          jcr:mixinTypes="jmix:image"
+                                          jcr:primaryType="jnt:file">
+                                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    </manage_users.png>
+                                </manage_x0020_users>
+                                <password_x0020_policy jcr:primaryType="jnt:folder">
+                                    <password_policy.png j:height="16"
+                                             j:width="16"
+                                             jcr:mixinTypes="jmix:image"
+                                             jcr:primaryType="jnt:file">
+                                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    </password_policy.png>
+                                </password_x0020_policy>
+                                <permissions jcr:primaryType="jnt:folder">
+                                    <permissions.png j:height="16"
+                                         j:width="16"
+                                         jcr:mixinTypes="jmix:image"
+                                         jcr:primaryType="jnt:file">
+                                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    </permissions.png>
+                                </permissions>
+                                <users_and_roles.png j:height="16"
+                                          j:width="16"
+                                          jcr:mixinTypes="jmix:image"
+                                          jcr:primaryType="jnt:file">
+                                    <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                </users_and_roles.png>
+                            </users_x0020_and_x0020_roles>
+                            <web_x0020_projects jcr:primaryType="jnt:folder">
+                                <webprojects.png j:height="16"
+                                      j:width="16"
+                                      jcr:mixinTypes="jmix:image"
+                                      jcr:primaryType="jnt:file">
+                                    <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                </webprojects.png>
+                            </web_x0020_projects>
+                        </serveradmin>
                     </files>
                 <contents jcr:primaryType="jnt:contentFolder"/>
                     <serverSettingsBase j:view="serverSettings"
@@ -39,6 +235,7 @@
                         <webProjectSettings j:applyOn="jnt:globalSettings"
                                    j:defaultTemplate="false"
                                    j:hiddenTemplate="false"
+                                   j:icon="/modules/serverSettings/templates/files/serveradmin/web_x0020_projects/webprojects.png"
                                    j:requiredPermissions="#/permissions/admin/adminVirtualSites"
                                    j:titleKey="serverSettings.manageWebProjects"
                                    jcr:mixinTypes="jmix:rbTitle"
@@ -48,12 +245,14 @@
                         </pagecontent>
                     </webProjectSettings>
                         <configurations j:hiddenTemplate="false"
+                               j:icon="/modules/serverSettings/templates/files/serveradmin/configurations/configurations.png"
                                 j:titleKey="serverSettings.configurations"
                                 jcr:mixinTypes="jmix:rbTitle"
                                 jcr:primaryType="jnt:template">
                             <mailServerSettings j:applyOn="jnt:globalSettings"
                                       j:defaultTemplate="false"
                                       j:hiddenTemplate="false"
+                                      j:icon="/modules/serverSettings/templates/files/serveradmin/configurations/mail_x0020_server/mail_preferences.png"
                                       j:requiredPermissions="#/permissions/admin/adminEmailSettings"
                                       j:titleKey="serverSettings.mailServerSettings"
                                       jcr:mixinTypes="jmix:rbTitle"
@@ -65,6 +264,7 @@
                             <dbSettings j:applyOn="jnt:globalSettings"
                               j:defaultTemplate="false"
                               j:hiddenTemplate="false"
+                              j:icon="/modules/serverSettings/templates/files/serveradmin/configurations/db_x0020_settings/db_settings.png"
                               j:requiredPermissions="#/permissions/admin/adminDBSettings"
                               j:titleKey="serverSettings.dbSettings"
                               jcr:mixinTypes="jmix:rbTitle"
@@ -75,12 +275,14 @@
                             </dbSettings>
                         </configurations>
                         <system-components j:hiddenTemplate="false"
+                                  j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_components/system_components.png"
                                 j:titleKey="serverSettings.systemComponents"
                                 jcr:mixinTypes="jmix:rbTitle"
                                 jcr:primaryType="jnt:template">
                             <manageModules j:applyOn="jnt:globalSettings jnt:modules"
                                  j:defaultTemplate="false"
                                  j:hiddenTemplate="false"
+                                 j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_components/modules/modules.png"
                                  j:requiredPermissions="#/permissions/admin/adminTemplates"
                                  j:titleKey="serverSettings.manageModules"
                                  jcr:mixinTypes="jmix:rbTitle"
@@ -92,6 +294,7 @@
                             <managePortlets j:applyOn="jnt:globalSettings"
                                   j:defaultTemplate="false"
                                   j:hiddenTemplate="false"
+                                  j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_components/portlets/portlets.png"
                                   j:requiredPermissions="#/permissions/admin/adminPortlets"
                                   j:titleKey="serverSettings.managePortlets"
                                   jcr:mixinTypes="jmix:rbTitle"
@@ -102,12 +305,14 @@
                             </managePortlets>
                         </system-components>
                         <users-and-roles j:hiddenTemplate="false"
+                                j:icon="/modules/serverSettings/templates/files/serveradmin/users_x0020_and_x0020_roles/users_and_roles.png"
                                 j:titleKey="serverSettings.usersAndRoles"
                                 jcr:mixinTypes="jmix:rbTitle"
                                 jcr:primaryType="jnt:template">
                             <manageUsers j:applyOn="jnt:globalSettings"
                                j:defaultTemplate="false"
                                j:hiddenTemplate="false"
+                               j:icon="/modules/serverSettings/templates/files/serveradmin/users_x0020_and_x0020_roles/manage_x0020_users/manage_users.png"
                                j:requiredPermissions="#/permissions/admin/adminUsers"
                                j:titleKey="serverSettings.manageUsers"
                                jcr:mixinTypes="jmix:rbTitle"
@@ -119,6 +324,7 @@
                             <adminProperties j:applyOn="jnt:globalSettings"
                                    j:defaultTemplate="false"
                                    j:hiddenTemplate="false"
+                                   j:icon="/modules/serverSettings/templates/files/serveradmin/users_x0020_and_x0020_roles/admin_x0020_properties/superadmin_properties.png"
                                    j:requiredPermissions="#/permissions/admin/adminRootUser"
                                    j:titleKey="serverSettings.adminProperties"
                                    jcr:mixinTypes="jmix:rbTitle"
@@ -130,6 +336,7 @@
                             <passwordPolicy j:applyOn="jnt:globalSettings"
                                   j:defaultTemplate="false"
                                   j:hiddenTemplate="false"
+                                  j:icon="/modules/serverSettings/templates/files/serveradmin/users_x0020_and_x0020_roles/password_x0020_policy/password_policy.png"
                                   j:requiredPermissions="#/permissions/admin/adminPasswordPolicy"
                                   j:titleKey="serverSettings.password.policies"
                                   jcr:mixinTypes="jmix:rbTitle"
@@ -140,12 +347,14 @@
                             </passwordPolicy>
                         </users-and-roles>
                         <system-health j:hiddenTemplate="false"
+                              j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_health/system_health.png"
                                 j:titleKey="serverSettings.systemHealth"
                                 jcr:mixinTypes="jmix:rbTitle"
                                 jcr:primaryType="jnt:template">
                             <systemInfos j:applyOn="jnt:globalSettings"
                                j:defaultTemplate="false"
                                j:hiddenTemplate="false"
+                               j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_health/system_x0020_info/system_info.png"
                                j:requiredPermissions="#/permissions/admin/adminSystemInfos"
                                j:titleKey="serverSettings.systemInfos"
                                jcr:mixinTypes="jmix:rbTitle"
@@ -157,6 +366,7 @@
                             <cacheManagement j:applyOn="jnt:globalSettings"
                                    j:defaultTemplate="false"
                                    j:hiddenTemplate="false"
+                                   j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_health/cache_x0020_management/cacheManagement.png"
                                    j:requiredPermissions="#/permissions/admin/adminCache"
                                    j:titleKey="serverSettings.cacheManagement"
                                    jcr:mixinTypes="jmix:rbTitle"
@@ -168,6 +378,7 @@
                             <manageMemory j:applyOn="jnt:globalSettings"
                                 j:defaultTemplate="false"
                                 j:hiddenTemplate="false"
+                                j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_health/memory/memory.png"
                                 j:requiredPermissions="#/permissions/admin/adminManageMemory"
                                 j:titleKey="serverSettings.manageMemory"
                                 jcr:mixinTypes="jmix:rbTitle"
@@ -179,6 +390,7 @@
                             <reportAnIssue j:applyOn="jnt:globalSettings"
                                  j:defaultTemplate="false"
                                  j:hiddenTemplate="false"
+                                 j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_health/report_x0020_issue/report_issue.png"
                                  j:requiredPermissions="#/permissions/admin/adminIssueTracking"
                                  j:titleKey="serverSettings.reportAnIssue"
                                  jcr:mixinTypes="jmix:rbTitle"
@@ -190,6 +402,7 @@
                             <tools j:applyOn="jnt:globalSettings"
                                  j:defaultTemplate="false"
                                  j:hiddenTemplate="false"
+                         j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_health/tools/tools.png"
                                  j:requiredPermissions="#/permissions/admin/adminSystemInfos"
                                  j:titleKey="serverSettings.tools"
                                  jcr:mixinTypes="jmix:rbTitle"
@@ -201,9 +414,7 @@
                         </system-health>
                 </serverSettingsBase>
             </templates>
-                <portlets jcr:primaryType="jnt:portletFolder"/>
-                <files jcr:primaryType="jnt:folder"/>
-                <contents jcr:primaryType="jnt:contentFolder"/>
+                
                 
         </serverSettings>
     </modules>

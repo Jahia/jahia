@@ -21,9 +21,6 @@
                             <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
                             <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
                         </aboutJahia.png>
-                        <serveradmin.rar jcr:primaryType="jnt:file">
-                            <jcr:content jcr:mimeType="application/x-rar" jcr:primaryType="jnt:resource"/>
-                        </serveradmin.rar>
                         <serveradmin jcr:primaryType="jnt:folder">
                             <aboutJahia.png j:height="16"
                                   j:width="16"

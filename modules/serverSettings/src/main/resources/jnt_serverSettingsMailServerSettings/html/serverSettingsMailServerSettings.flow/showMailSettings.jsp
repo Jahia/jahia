@@ -136,8 +136,8 @@
 
         <div class="control-group">
             <div class="controls">
-                <a class="btn" href="#" onclick="testSettings(); return false;"><fmt:message key="serverSettings.mailServerSettings.testSettings"/></a>
                 <input class="btn btn-primary" type="submit" name="_eventId_submitMailSettings" value='<fmt:message key="label.save"/>'>
+                <a class="btn" href="#" onclick="testSettings(); return false;"><fmt:message key="serverSettings.mailServerSettings.testSettings"/></a>
             </div>
         </div>
     </form>

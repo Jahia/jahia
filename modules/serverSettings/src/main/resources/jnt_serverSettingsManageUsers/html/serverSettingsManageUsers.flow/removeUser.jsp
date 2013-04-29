@@ -105,8 +105,8 @@
                 <div class="container-fluid">
                     <div class="row-fluid">
                         <div class="span6">
-                            <input class="btn" type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel'/>"/>
                             <input class="btn btn-danger" type="submit" name="_eventId_confirm" value="<fmt:message key='label.remove.confirm'/>"/>
+                            <input class="btn" type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel'/>"/>
                         </div>
                     </div>
                 </div>

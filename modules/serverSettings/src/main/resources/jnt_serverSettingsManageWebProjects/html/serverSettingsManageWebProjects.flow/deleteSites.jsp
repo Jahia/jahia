@@ -19,7 +19,7 @@
 </div>
 
 <form action="${flowExecutionUrl}" method="post">
-<table class="table table-bordered table-striped table-hover">
+    <table class="table table-bordered table-striped table-hover">
         <tr>
             <th>
                 <fmt:message key="label.name" />
@@ -44,10 +44,9 @@
                 <td title="${fn:escapeXml(site.templatePackageName)}">${fn:escapeXml(site.templateFolder)}</td>
             </tr>
         </c:forEach>
-
-</table>
-<input class="btn" type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel' />"/>
-<input class="btn btn-danger" type="submit" name="_eventId_deleteSitesConfirmed" id="${currentNode.identifier}-deleteSitesConfirmed" value="<fmt:message key='label.delete' />"/>
+    </table>
+    <input class="btn btn-danger" type="submit" name="_eventId_deleteSitesConfirmed" id="${currentNode.identifier}-deleteSitesConfirmed" value="<fmt:message key='label.delete' />"/>
+    <input class="btn" type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel' />"/>
 </form>
 
 

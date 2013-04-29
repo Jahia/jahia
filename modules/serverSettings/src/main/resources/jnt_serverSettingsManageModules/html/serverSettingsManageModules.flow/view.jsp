@@ -136,6 +136,8 @@
                                                          key='serverSettings.manageModules.startModule'/>
                                             <fmt:message var="labelUndeployModule"
                                                          key='serverSettings.manageModules.undeployModule'/>
+                                            <fmt:message var="labelUndeployModuleConfirm"
+                                                         key="serverSettings.manageModules.undeployModule.confirm"/>
 
                                             <input class="btn btn-success" type="submit" name="_eventId_startModule"
                                                    value="${labelStart}" onclick="" />&nbsp;
@@ -144,7 +146,7 @@
                                             <input class="btn" type="submit" name="_eventId_undeployModule"
                                                    ${(fn:length(entry.value) == 1 and used) ? "disabled='true'" :""}
                                                    value="${labelUndeployModule}"
-                                                   onclick=""/>&nbsp; ${version.key} ( ${version.value.state.state} )
+                                                   onclick="return confirm('${functions:escapeJavaScript(labelUndeployModuleConfirm)}');"/>&nbsp; ${version.key} ( ${version.value.state.state} )
                                         </form>
                                     </div>
                                 </c:otherwise>

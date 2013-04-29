@@ -68,7 +68,6 @@ import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorklowTypeRegistration;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -76,7 +75,7 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
+import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.webflow.definition.registry.FlowDefinitionRegistry;
 
 import javax.jcr.RepositoryException;
@@ -112,7 +111,7 @@ public class TemplatePackageRegistry {
     private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
     private Map<String, Action> actions;
     private Map<String, BackgroundAction> backgroundActions;
-    private List<SimpleUrlHandlerMapping> urlHandlerMappings = new ArrayList<SimpleUrlHandlerMapping>();
+    private List<HandlerMapping> springHandlerMappings = new ArrayList<HandlerMapping>();
     private JCRStoreService jcrStoreService;
     private Map<String, JahiaTemplatesPackage> packagesForResourceBundles = new HashMap<String, JahiaTemplatesPackage>();
     private boolean afterInitializeDone = false;
@@ -135,8 +134,8 @@ public class TemplatePackageRegistry {
         return backgroundActions;
     }
 
-    public List<SimpleUrlHandlerMapping> getUrlHandlerMappings() {
-        return urlHandlerMappings;
+    public List<HandlerMapping> getSpringHandlerMappings() {
+        return springHandlerMappings;
     }
 
     /**
@@ -706,8 +705,8 @@ public class TemplatePackageRegistry {
                 }
             }
 
-            if (bean instanceof SimpleUrlHandlerMapping) {
-                templatePackageRegistry.urlHandlerMappings.remove((SimpleUrlHandlerMapping) bean);
+            if (bean instanceof HandlerMapping) {
+                templatePackageRegistry.springHandlerMappings.remove((HandlerMapping) bean);
             }
 
             if (bean instanceof ProviderFactory) {
@@ -855,8 +854,8 @@ public class TemplatePackageRegistry {
                 }
             }
 
-            if (bean instanceof SimpleUrlHandlerMapping) {
-                templatePackageRegistry.urlHandlerMappings.add((SimpleUrlHandlerMapping) bean);
+            if (bean instanceof HandlerMapping) {
+                templatePackageRegistry.springHandlerMappings.add((HandlerMapping) bean);
             }
 
             if (bean instanceof ProviderFactory) {

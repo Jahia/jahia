@@ -68,6 +68,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.web.context.ServletContextAware;
+import org.springframework.web.servlet.HandlerExecutionChain;
+import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.tuckey.web.filters.urlrewrite.RewrittenUrl;
 import org.tuckey.web.filters.urlrewrite.utils.Log;
@@ -94,7 +96,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     private Resource[] lastConfigurationResources;
 
-    private List<SimpleUrlHandlerMapping> renderMapping;
+    private List<HandlerMapping> renderMapping;
 
     private Resource[] seoConfigurationResources;
 
@@ -193,21 +195,21 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         return urlRewriteEngine;
     }
 
-    protected List<SimpleUrlHandlerMapping> getRenderMapping() {
+    protected List<HandlerMapping> getRenderMapping() {
         if (renderMapping == null) {
-            LinkedList<SimpleUrlHandlerMapping> mapping = new LinkedList<SimpleUrlHandlerMapping>();
+            LinkedList<HandlerMapping> mapping = new LinkedList<HandlerMapping>();
             ApplicationContext ctx = (ApplicationContext) servletContext.getAttribute(
                     "org.springframework.web.servlet.FrameworkServlet.CONTEXT.RendererDispatcherServlet");
             if (ctx != null) {
-                mapping.addAll(ctx.getBeansOfType(SimpleUrlHandlerMapping.class).values());
-                mapping.addAll(ctx.getParent().getBeansOfType(SimpleUrlHandlerMapping.class)
+                mapping.addAll(ctx.getBeansOfType(HandlerMapping.class).values());
+                mapping.addAll(ctx.getParent().getBeansOfType(HandlerMapping.class)
                         .values());
                 renderMapping = mapping;
             }
         }
         if (renderMapping != null) {
-            List<SimpleUrlHandlerMapping> l = new LinkedList<SimpleUrlHandlerMapping>(renderMapping);
-            l.addAll(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getUrlHandlerMappings());
+            List<HandlerMapping> l = new LinkedList<HandlerMapping>(renderMapping);
+            l.addAll(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getSpringHandlerMappings());
             return l;
         }
         return null;
@@ -277,11 +279,21 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
         String path = request.getPathInfo() != null ? request.getPathInfo() : input;
         try{
-            List<SimpleUrlHandlerMapping> mappings = getRenderMapping();
+            List<HandlerMapping> mappings = getRenderMapping();
             if (mappings != null) {
-                for (SimpleUrlHandlerMapping mapping : mappings) {
-                    for (String registeredPattern : mapping.getUrlMap().keySet()) {
-                        if (mapping.getPathMatcher().match(registeredPattern, path)) {
+                for (HandlerMapping mapping : mappings) {
+                    if (mapping instanceof SimpleUrlHandlerMapping) {
+                        SimpleUrlHandlerMapping simpleUrlHandlerMapping = (SimpleUrlHandlerMapping) mapping;
+                        for (String registeredPattern : simpleUrlHandlerMapping.getUrlMap().keySet()) {
+                            if (simpleUrlHandlerMapping.getPathMatcher().match(registeredPattern, path)) {
+                                request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SKIP_INBOUND_SEO_RULES, Boolean.TRUE);
+                                return false;
+                            }
+                        }
+                    } else {
+                        HandlerExecutionChain handlerExecutionChain = mapping.getHandler(request);
+                        if (handlerExecutionChain != null) {
+                            // we found an execution chain for this handler, we deactivate SEO rules for this request.
                             request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SKIP_INBOUND_SEO_RULES, Boolean.TRUE);
                             return false;
                         }

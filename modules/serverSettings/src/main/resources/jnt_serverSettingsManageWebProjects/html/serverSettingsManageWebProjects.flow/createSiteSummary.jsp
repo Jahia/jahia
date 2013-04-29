@@ -88,7 +88,6 @@
 
             </tbody>
         </table>
-        <input class="btn" type="submit" name="_eventId_previous" value="<fmt:message key='label.previous'/>"/>
         <input class="btn btn-primary" type="submit" name="_eventId_next" id="${currentNode.identifier}-next" value="<fmt:message key='label.next'/>"/>
-
+        <input class="btn" type="submit" name="_eventId_previous" value="<fmt:message key='label.previous'/>"/>
     </form>

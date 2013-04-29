@@ -228,7 +228,7 @@
                 </c:if>
             </tr>
         </c:forEach>
-        <tr>
+        <tr class="info">
             <td colspan="${cacheManagement.showConfig ? '3' : '2'}"><fmt:message key="serverSettings.cache.total"/></td>
             <td align="center">${entriesTotal}</td>
             <td align="center">${entriesMemory}</td>

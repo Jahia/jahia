@@ -45,7 +45,7 @@
         <junit.version>4.8.1</junit.version>
         <junit.addons.version>1.4</junit.addons.version>
 
-        <driver.derby.version>10.10.1.1</driver.derby.version>
+        <driver.derby.version>10.9.1.0</driver.derby.version>
         <driver.mysql.version>5.1.24</driver.mysql.version>
         <driver.postgresql.version>9.2-1002.jdbc4</driver.postgresql.version>
 

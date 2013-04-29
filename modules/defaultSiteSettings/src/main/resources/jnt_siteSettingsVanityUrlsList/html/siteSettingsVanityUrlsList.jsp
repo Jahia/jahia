@@ -22,7 +22,7 @@
     <button class="btn btn-primary" type="submit"><i class="icon-filter icon-white"></i> <fmt:message key="filters.label"/></button>
 </form>
 
-<table class="table table-bordered table-striped table-hover" cellpadding="0" cellspacing="0">
+<table class="table table-bordered table-striped table-hover">
     <thead>
         <tr>
             <th><fmt:message key='label.urlmapping.mapping'/></th>

@@ -374,7 +374,7 @@ public class SimpleJahiaJcrFacets {
         }
         boolean multiToken = epd.isMultiple();
 // --> added by jahia as we don't use the UnInvertedField class yet due to not using SolrIndexSearcher        
-       enumMethod = enumMethod && multiToken;
+       enumMethod = enumMethod || multiToken;
 //        if (TrieField.getMainValuePrefix(ft) != null) {
 //          // A TrieField with multiple parts indexed per value... currently only
 //          // UnInvertedField can handle this case, so force it's use.

@@ -36,8 +36,11 @@
             <fieldset title="<fmt:message key="serverSettings.user.profile"/>">
                 <div class="container-fluid">
                     <div class="row-fluid">
+                        <p><fmt:message key="serverSettings.user.errors.username.note"/>:&nbsp;<fmt:message key="serverSettings.user.errors.username.syntax"/></p>
+                    </div>
+                    <div class="row-fluid">
                         <div class="span6">
-                            <label for="username"><fmt:message key="label.username"/></label>
+                            <label for="username"><fmt:message key="label.username"/> <span class="text-error"><strong>*</strong></span></label>
                             <input type="text" name="username" id="username" value="${userProperties.username}">
                         </div>
                         <div class="span6">
@@ -65,11 +68,11 @@
                     </div>
                     <div class="row-fluid">
                         <div class="span6">
-                            <label for="password"><fmt:message key="label.password"/></label>
+                            <label for="password"><fmt:message key="label.password"/> <span class="text-error"><strong>*</strong></span></label>
                             <input type="password" name="password" id="password" value="">
                         </div>
                         <div class="span6">
-                            <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
+                            <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/> <span class="text-error"><strong>*</strong></span></label>
                             <input type="password" name="passwordConfirm" id="passwordConfirm" value="">
                         </div>
                     </div>

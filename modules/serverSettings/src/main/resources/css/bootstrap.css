@@ -958,6 +958,7 @@ table {
   text-align: left;
   vertical-align: top;
   border-top: 1px solid #d0d0d0;
+  word-break: break-all;
 }
 .table th {
   font-weight: bold;

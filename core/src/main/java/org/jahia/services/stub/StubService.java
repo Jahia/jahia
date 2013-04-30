@@ -65,18 +65,21 @@ public class StubService {
      */
     public Map<String,String> getCodeSnippets(String fileType, String snippetType) {
         Map<String,String> stub = new LinkedHashMap<String, String>();
-
+        InputStream is = null;
         try {
             Set<String> resources = JahiaContextLoaderListener.getServletContext().getResourcePaths("/WEB-INF/etc/snippets/"+fileType+"/"+snippetType+"/");
             if (resources != null) {
                 for (String resource : resources) {
-                    InputStream is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(resource);
+                    is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(resource);
                     stub.put(StringUtils.substringAfterLast(resource,"/"), StringUtils.join(IOUtils.readLines(is), "\n"));
-                    IOUtils.closeQuietly(is);
                 }
             }
         } catch (IOException e) {
             logger.error("Failed to read code snippets from " + fileType + "/" + snippetType, e);
+        } finally {
+            if (is != null) {
+                IOUtils.closeQuietly(is);
+            }
         }
         return stub;
     }

@@ -79,6 +79,7 @@ import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.security.Privilege;
 import javax.script.*;
@@ -582,10 +583,12 @@ public class UIConfigHelper {
 
                     JahiaSite resolvedSite = !Url.isLocalhost(request.getServerName()) ? siteService.getSiteByServerName(request.getServerName()) : null;
                     if (resolvedSite == null) {
-                        if (StringUtils.startsWith(contextPath,"/sites/")) {
-                            resolvedSite = session.getNode(contextPath).getResolveSite();
-                        } else {
-                            resolvedSite = JahiaSitesService.getInstance().getDefaultSite();
+                        resolvedSite = JahiaSitesService.getInstance().getDefaultSite();
+                        if (resolvedSite == null) {
+                            List<JCRSiteNode> sites = JahiaSitesService.getInstance().getSitesNodeList();
+                            if (!sites.isEmpty()) {
+                                resolvedSite = sites.get(0);
+                            }
                         }
                     }
                     if (resolvedSite != null) {

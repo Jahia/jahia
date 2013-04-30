@@ -66,6 +66,7 @@
 /** styles added for list module in order to make them as nice as jahia6 **/
 
 .x-panel-header-simplemodule {
+    font-family: tahoma,arial,helvetica,sans-serif;
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
@@ -102,6 +103,7 @@
 }
 
 .x-panel-header-listmodule {
+    font-family: tahoma,arial,helvetica,sans-serif;
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
@@ -138,6 +140,7 @@
 }
 
 .x-panel-header-areamodule {
+    font-family: tahoma,arial,helvetica,sans-serif;
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
@@ -177,6 +180,7 @@
 }
 
 .x-panel-header-absoluteAreamodule {
+    font-family: tahoma,arial,helvetica,sans-serif;
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
@@ -215,6 +219,7 @@
 }
 
 .x-panel-header-lockedmodule {
+    font-family: tahoma,arial,helvetica,sans-serif;
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
@@ -275,6 +280,7 @@
 }
 
 button.button-placeholder, div.button-placeholder {
+    font-family: tahoma,arial,helvetica,sans-serif;
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
@@ -325,7 +331,22 @@ button.button-placeholder:hover,  div.button-placeholder:hover {
 button.button-placeholder img, div.button-placeholder img   {
     margin-right:5px;
 }
+button.button-placeholder table,
+div.button-placeholder table,
+button.button-placeholder tr,
+div.button-placeholder tr,
+button.button-placeholder td,
+div.button-placeholder td {
+     margin: 0;
+     padding: 0;
+     border: 0;
+     font-size: 100%;
+     font: inherit;
+     background: none;
+}
+
 button.button-enable, div.button-enable {
+    font-family: tahoma,arial,helvetica,sans-serif;
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
@@ -369,6 +390,7 @@ button.button-enable:hover, div.button-enable:hover {
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 button.button-disable, div.button-disable {
+    font-family: tahoma,arial,helvetica,sans-serif;
     background-color: #39f;
     background-image: linear-gradient(#39f, #06c);
     background: -webkit-gradient(linear, left top, left bottom, from(#39f), to(#06c));

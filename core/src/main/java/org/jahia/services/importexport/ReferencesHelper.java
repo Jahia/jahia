@@ -172,11 +172,8 @@ public class ReferencesHelper {
                 }
                 String pName = path.substring(path.lastIndexOf("/") + 1);
                 if (pName.startsWith("@")) {
-                    //shareable node
-                    JCRNodeWrapper source = session.getNodeByUUID(value);
-                    n.clone(source, pName.substring(1));
-    //                JCRWorkspaceWrapper wrapper = n.getSession().getWorkspace();
-    //                wrapper.clone(wrapper.getName(), source.getPath(), n.getPath() + "/" + pName.substring(1), false);
+                    JCRNodeWrapper ref = n.addNode(pName.substring(1), "jnt:contentReference");
+                    updateProperty(session, ref, "j:node", value);
                 } else {
                     try {
                         updateProperty(session, n, pName, value);

@@ -122,7 +122,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                         if (siteID == 0) {
                             parentNodeWrapper = session.getNode("/groups");
                         } else {
-                            String siteName = sitesService.getSite(siteID).getSiteKey();
+                            String siteName = sitesService.getSite(siteID, session).getSiteKey();
                             parentNodeWrapper = session.getNode("/sites/" + siteName + "/groups");
                         }
                         session.checkout(parentNodeWrapper);
@@ -260,33 +260,29 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<List<String>>() {
                 public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     final List<String> groups = new ArrayList<String>();
-                    try {
-                        if (session.getWorkspace().getQueryManager() != null) {
-                            StringBuffer query = new StringBuffer("SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP +
-                                    "] as group WHERE group.[" + JCRGroup.J_EXTERNAL +
-                                    "] = 'false'");
-                            if (siteID <= 0) {
-                                query.append(" AND ISCHILDNODE(group, '/groups");;
-                            } else {
-                                String siteName = sitesService.getSite(siteID).getSiteKey();
-                                query.append(" AND ISCHILDNODE(group, '/sites/").append(siteName).append("/groups')");
-                            }
-                            query.append(" ORDER BY group.[j:nodename]");
+                    if (session.getWorkspace().getQueryManager() != null) {
+                        StringBuffer query = new StringBuffer("SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP +
+                                "] as group WHERE group.[" + JCRGroup.J_EXTERNAL +
+                                "] = 'false'");
+                        if (siteID <= 0) {
+                            query.append(" AND ISCHILDNODE(group, '/groups");;
+                        } else {
+                            String siteName = sitesService.getSite(siteID, session).getSiteKey();
+                            query.append(" AND ISCHILDNODE(group, '/sites/").append(siteName).append("/groups')");
+                        }
+                        query.append(" ORDER BY group.[j:nodename]");
 
-                            Query q = session.getWorkspace().getQueryManager().createQuery(query.toString(), Query.JCR_SQL2);
-                            QueryResult qr = q.execute();
-                            RowIterator rows = qr.getRows();
-                            while (rows.hasNext()) {
-                                Row groupsFolderNode = rows.nextRow();
-                                String groupName =
-                                        "{jcr}" + groupsFolderNode.getValue("j:nodename").getString() + ":" + siteID;
-                                if (!groups.contains(groupName)) {
-                                    groups.add(groupName);
-                                }
+                        Query q = session.getWorkspace().getQueryManager().createQuery(query.toString(), Query.JCR_SQL2);
+                        QueryResult qr = q.execute();
+                        RowIterator rows = qr.getRows();
+                        while (rows.hasNext()) {
+                            Row groupsFolderNode = rows.nextRow();
+                            String groupName =
+                                    "{jcr}" + groupsFolderNode.getValue("j:nodename").getString() + ":" + siteID;
+                            if (!groups.contains(groupName)) {
+                                groups.add(groupName);
                             }
                         }
-                    } catch (JahiaException e) {
-                        logger.error("Error retrieving group list for site " + siteID, e);
                     }
                     return groups;
                 }
@@ -344,32 +340,28 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<List<String>>() {
                 public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     List<String> groups = new ArrayList<String>();
-                    try {
-                        if (session.getWorkspace().getQueryManager() != null) {
-                            StringBuilder query = new StringBuilder("SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP +
-                                    "] as group WHERE group.[" + JCRGroup.J_EXTERNAL +
-                                    "] = 'false'");
-                            if (siteID <= 0) {
-                                query.append(" AND ISCHILDNODE(group, '/groups')");
-                            } else {
-                                String siteName = sitesService.getSite(siteID).getSiteKey();
-                                query.append(" AND ISCHILDNODE(group, '/sites/" + siteName + "/groups')");
-                            }
-                            query.append(" ORDER BY group.[j:nodename]");
+                    if (session.getWorkspace().getQueryManager() != null) {
+                        StringBuilder query = new StringBuilder("SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP +
+                                "] as group WHERE group.[" + JCRGroup.J_EXTERNAL +
+                                "] = 'false'");
+                        if (siteID <= 0) {
+                            query.append(" AND ISCHILDNODE(group, '/groups')");
+                        } else {
+                            String siteName = sitesService.getSite(siteID, session).getSiteKey();
+                            query.append(" AND ISCHILDNODE(group, '/sites/" + siteName + "/groups')");
+                        }
+                        query.append(" ORDER BY group.[j:nodename]");
 
-                            Query q = session.getWorkspace().getQueryManager().createQuery(query.toString(), Query.JCR_SQL2);
-                            QueryResult qr = q.execute();
-                            RowIterator rows = qr.getRows();
-                            while (rows.hasNext()) {
-                                Row groupsFolderNode = rows.nextRow();
-                                String groupName = groupsFolderNode.getValue("j:nodename").getString();
-                                if (!groups.contains(groupName)) {
-                                    groups.add(groupName);
-                                }
+                        Query q = session.getWorkspace().getQueryManager().createQuery(query.toString(), Query.JCR_SQL2);
+                        QueryResult qr = q.execute();
+                        RowIterator rows = qr.getRows();
+                        while (rows.hasNext()) {
+                            Row groupsFolderNode = rows.nextRow();
+                            String groupName = groupsFolderNode.getValue("j:nodename").getString();
+                            if (!groups.contains(groupName)) {
+                                groups.add(groupName);
                             }
                         }
-                    } catch (JahiaException e) {
-                        logger.error("Error retrieving group name list for site " + siteID, e);
                     }
                     return groups;
                 }
@@ -516,19 +508,14 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
         try {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    try {
-                        Node groupNode;
-                        if (siteID == 0) {
-                            groupNode = session.getNode("/groups/" + name.trim());
-                        } else {
-                            String siteName = sitesService.getSite(siteID).getSiteKey();
-                            groupNode = session.getNode("/sites/" + siteName + "/groups/" + name.trim());
-                        }
-                        return groupNode != null && !groupNode.getProperty(JCRGroup.J_EXTERNAL).getBoolean();
-                    } catch (JahiaException e) {
-                        logger.error("Error testing existence of group " + name + " for site " + siteID, e);
-                        return false;
+                    Node groupNode;
+                    if (siteID == 0) {
+                        groupNode = session.getNode("/groups/" + name.trim());
+                    } else {
+                        String siteName = sitesService.getSite(siteID, session).getSiteKey();
+                        groupNode = session.getNode("/sites/" + siteName + "/groups/" + name.trim());
                     }
+                    return groupNode != null && !groupNode.getProperty(JCRGroup.J_EXTERNAL).getBoolean();
                 }
             });
 
@@ -623,7 +610,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                             if (siteID1 <= 0) {
                                 groupNode = session.getNode("/groups/" + name.trim());
                             } else {
-                                JahiaSite site = sitesService.getSite(siteID1);
+                                JahiaSite site = sitesService.getSite(siteID1,session);
                                 if (site == null) {
                                     // This can happen if this method is called during the creation of the site !
                                     logger.warn("Site " + siteID1 + " is not available, maybe it's being created ?");
@@ -720,77 +707,72 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
         try {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Set<JahiaGroup>>() {
                 public Set<JahiaGroup> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    try {
-                        Set<JahiaGroup> users = new HashSet<JahiaGroup>();
-                        if (session.getWorkspace().getQueryManager() != null) {
-                            StringBuilder query = new StringBuilder(
-                                    "SELECT * FROM [" + Constants.JAHIANT_GROUP + "] as g WHERE g.[" +
-                                            JCRGroup.J_EXTERNAL + "] = 'false'");
-                            if (siteID <= 0) {
-                                query.append(" AND ISCHILDNODE(g, '/groups')");
-                            } else {
-                                String siteName = sitesService.getSite(siteID).getSiteKey();
-                                query.append(" AND ISCHILDNODE(g, '/sites/" + siteName + "/groups')");
-                            }
-                            if (searchCriterias != null && searchCriterias.size() > 0) {
-                                // Avoid wildcard attribute
-                                if (!(searchCriterias.containsKey("*") && searchCriterias.size() == 1 &&
-                                        searchCriterias.getProperty("*").equals("*"))) {
-                                    Iterator<Map.Entry<Object, Object>> objectIterator =
-                                            searchCriterias.entrySet().iterator();
-                                    if (objectIterator.hasNext()) {
-                                        query.append(" AND (");
-                                        while (objectIterator.hasNext()) {
-                                            Map.Entry<Object, Object> entry = objectIterator.next();
-                                            String propertyKey = (String) entry.getKey();
-                                            if ("groupname".equals(propertyKey)) {
-                                                propertyKey = "j:nodename";
-                                            }
-                                            String propertyValue = (String) entry.getValue();
-                                            if ("*".equals(propertyValue)) {
-                                                propertyValue = "%";
+                    Set<JahiaGroup> users = new HashSet<JahiaGroup>();
+                    if (session.getWorkspace().getQueryManager() != null) {
+                        StringBuilder query = new StringBuilder(
+                                "SELECT * FROM [" + Constants.JAHIANT_GROUP + "] as g WHERE g.[" +
+                                        JCRGroup.J_EXTERNAL + "] = 'false'");
+                        if (siteID <= 0) {
+                            query.append(" AND ISCHILDNODE(g, '/groups')");
+                        } else {
+                            String siteName = sitesService.getSite(siteID,session).getSiteKey();
+                            query.append(" AND ISCHILDNODE(g, '/sites/" + siteName + "/groups')");
+                        }
+                        if (searchCriterias != null && searchCriterias.size() > 0) {
+                            // Avoid wildcard attribute
+                            if (!(searchCriterias.containsKey("*") && searchCriterias.size() == 1 &&
+                                    searchCriterias.getProperty("*").equals("*"))) {
+                                Iterator<Map.Entry<Object, Object>> objectIterator =
+                                        searchCriterias.entrySet().iterator();
+                                if (objectIterator.hasNext()) {
+                                    query.append(" AND (");
+                                    while (objectIterator.hasNext()) {
+                                        Map.Entry<Object, Object> entry = objectIterator.next();
+                                        String propertyKey = (String) entry.getKey();
+                                        if ("groupname".equals(propertyKey)) {
+                                            propertyKey = "j:nodename";
+                                        }
+                                        String propertyValue = (String) entry.getValue();
+                                        if ("*".equals(propertyValue)) {
+                                            propertyValue = "%";
+                                        } else {
+                                            if (propertyValue.contains("*")) {
+                                                propertyValue = Patterns.STAR.matcher(propertyValue).replaceAll("%");
                                             } else {
-                                                if (propertyValue.contains("*")) {
-                                                    propertyValue = Patterns.STAR.matcher(propertyValue).replaceAll("%");
-                                                } else {
-                                                    propertyValue = propertyValue + "%";
-                                                }
-                                            }
-                                            if ("*".equals(propertyKey)) {
-                                                query.append(
-                                                        "(CONTAINS(g.*,'" + Patterns.PERCENT.matcher(propertyValue).replaceAll("")
-                                                                + "') OR LOWER(g.[j:nodename]) LIKE '")
-                                                    .append(propertyValue.toLowerCase()).append("') ");
-                                            } else {
-                                                query.append("LOWER(g.[" + Patterns.DOT.matcher(propertyKey).replaceAll("\\\\.") + "])")
-                                                        .append(" LIKE '").append(propertyValue.toLowerCase()).append("'");
-                                            }
-                                            if (objectIterator.hasNext()) {
-                                                query.append(" OR ");
+                                                propertyValue = propertyValue + "%";
                                             }
                                         }
-                                        query.append(")");
+                                        if ("*".equals(propertyKey)) {
+                                            query.append(
+                                                    "(CONTAINS(g.*,'" + Patterns.PERCENT.matcher(propertyValue).replaceAll("")
+                                                            + "') OR LOWER(g.[j:nodename]) LIKE '")
+                                                .append(propertyValue.toLowerCase()).append("') ");
+                                        } else {
+                                            query.append("LOWER(g.[" + Patterns.DOT.matcher(propertyKey).replaceAll("\\\\.") + "])")
+                                                    .append(" LIKE '").append(propertyValue.toLowerCase()).append("'");
+                                        }
+                                        if (objectIterator.hasNext()) {
+                                            query.append(" OR ");
+                                        }
                                     }
+                                    query.append(")");
                                 }
                             }
-                            query.append(" ORDER BY g.[j:nodename]");
-                            if (logger.isDebugEnabled()) {
-                                logger.debug(query.toString());
-                            }
-                            Query q = session.getWorkspace().getQueryManager()
-                                    .createQuery(query.toString(), Query.JCR_SQL2);
-                            QueryResult qr = q.execute();
-                            NodeIterator ni = qr.getNodes();
-                            while (ni.hasNext()) {
-                                Node usersFolderNode = ni.nextNode();
-                                users.add(getGroup(usersFolderNode, usersFolderNode.getName(), siteID, false));
-                            }
                         }
-                        return users;
-                    } catch (JahiaException e) {
-                        logger.error("Error searching groups for site " + siteID, e);
-                        return null;
+                        query.append(" ORDER BY g.[j:nodename]");
+                        if (logger.isDebugEnabled()) {
+                            logger.debug(query.toString());
+                        }
+                        Query q = session.getWorkspace().getQueryManager()
+                                .createQuery(query.toString(), Query.JCR_SQL2);
+                        QueryResult qr = q.execute();
+                        NodeIterator ni = qr.getNodes();
+                        while (ni.hasNext()) {
+                            Node usersFolderNode = ni.nextNode();
+                            users.add(getGroup(usersFolderNode, usersFolderNode.getName(), siteID, false));
+                        }
                     }
+                    return users;
                 }
             });
 

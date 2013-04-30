@@ -134,6 +134,12 @@ public final class JahiaPrivilegeRegistry {
                 r.add(getPrivilege(entry.getValue(),workspace));
             }
         }
+        
+        // special case for MODIFY_CHILD_NODE_COLLECTION: in this case we enforce both ADD_NODE and REMOVE_NODE permissions
+        if ((permissions & Permission.MODIFY_CHILD_NODE_COLLECTION) == Permission.MODIFY_CHILD_NODE_COLLECTION) {
+            r.add(getPrivilege(STANDARD_PRIVILEGES.get(Permission.ADD_NODE), workspace));
+            r.add(getPrivilege(STANDARD_PRIVILEGES.get(Permission.REMOVE_NODE), workspace));
+        }
 
         return r;
     }

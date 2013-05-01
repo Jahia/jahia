@@ -200,7 +200,7 @@ public class ContentManagerHelper {
             }
 
             JCRNodeWrapper childNode = addNode(parentNode, nodeName, nodeType, mixin, props, uiLocale);
-            List<String> fields = Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.PERMISSIONS, GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
+            List<String> fields = Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
             return navigation.getGWTJahiaNode(jcrSessionWrapper.getNode(childNode.getPath()), fields);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

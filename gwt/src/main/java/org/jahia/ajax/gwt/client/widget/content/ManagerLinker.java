@@ -156,14 +156,12 @@ public class ManagerLinker implements Linker {
                         }
                     }
                 }
-                if (clearSelection) {
-                    if (m_bottomRightComponent.getComponentType().equals(PICKER)) {
-                        if (m_leftComponent != null) {
-                            m_bottomRightComponent.emptySelection();
-                        }
-                    } else {
-                        m_bottomRightComponent.fillData(m_leftComponent.getSelectedItem());
+                if (m_bottomRightComponent.getComponentType().equals(PICKER)) {
+                    if (clearSelection && m_leftComponent != null) {
+                        m_bottomRightComponent.emptySelection();
                     }
+                } else {
+                    m_bottomRightComponent.fillData(m_leftComponent.getSelectedItem());
                 }
             }
             if (m_topRightComponent != null) {

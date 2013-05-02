@@ -282,7 +282,7 @@ public class TemplatePackageDeployer {
         if (pack.getSourcesFolder() != null) {
             v.setProperty("j:sourcesFolder",pack.getSourcesFolder().getPath());
         }
-        if (pack.getScmURI() != null) {
+        if (pack.getScmURI() != null && !"scm:dummy:uri".equals(pack.getScmURI())) {
             try {
                 v.setProperty("j:scmURI",pack.getScmURI());
             } catch (Exception e) {

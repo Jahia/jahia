@@ -23,7 +23,7 @@
     <div class="${msg.severity == 'ERROR' ? 'validationError' : ''} alert ${msg.severity == 'ERROR' ? 'alert-error' : 'alert-success'}"><button type="button" class="close" data-dismiss="alert">&times;</button>${fn:escapeXml(msg.text)}</div>
 </c:forEach>
 <div class="box-1">
-    <form:form modelAttribute="adminProperties" class="form">
+    <form:form modelAttribute="adminProperties" class="form" autocomplete="off">
         <h3><fmt:message key="label.username"/>:&nbsp;${adminUser.name}</h3>
         <div class="container-fluid">
             <div class="row-fluid">

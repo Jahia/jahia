@@ -30,7 +30,7 @@
             </c:if>
         </c:forEach>
     <div class="box-1">
-        <form action="${flowExecutionUrl}" method="post" id="editUser">
+        <form action="${flowExecutionUrl}" method="post" id="editUser" autocomplete="off">
             <fieldset title="<fmt:message key='serverSettings.user.profile'/>">
                 <div class="container-fluid">
                     <div class="row-fluid">

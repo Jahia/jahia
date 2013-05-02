@@ -43,7 +43,7 @@
 </c:forEach>
 <h2><fmt:message key="serverSettings.users.bulk.create"/></h2>
 <div class="box-1">
-    <form action="${flowExecutionUrl}" method="post" enctype="multipart/form-data">
+    <form action="${flowExecutionUrl}" method="post" enctype="multipart/form-data" autocomplete="off">
         <fieldset>
             <label for="csvFile"><fmt:message key="label.csvFile"/></label>
             <input type="file" name="csvFile" id="csvFile"/><br/>

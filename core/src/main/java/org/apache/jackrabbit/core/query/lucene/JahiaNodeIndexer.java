@@ -517,7 +517,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
         // create facet index on property
         int idx = fieldName.indexOf(':');
         fieldName = fieldName.substring(0, idx + 1) + FACET_PREFIX + fieldName.substring(idx + 1);
-        Field f = new Field(fieldName,false, stringValue, Field.Store.NO, Field.Index.ANALYZED,
+        Field f = new Field(fieldName,true, stringValue, Field.Store.NO, Field.Index.ANALYZED,
                 Field.TermVector.NO);
         doc.add(f);
 
@@ -579,7 +579,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
         int hierarchyIndex = hierarchyPaths.size();
         for (String path : hierarchyPaths) {
-            doc.add(new Field(fieldName, false, hierarchyIndex + path, Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.NO));
+            doc.add(new Field(fieldName, true, hierarchyIndex + path, Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.NO));
             hierarchyIndex--;
         }
         for (String id : parentIds) {
@@ -601,10 +601,10 @@ public class JahiaNodeIndexer extends NodeIndexer {
             // We would be able to store the field compressed or not depending
             // on a criterion but then we could not determine later is this field
             // has been compressed or not, so we choose to store it uncompressed
-            return new Field(fieldName, false, value, Field.Store.YES,
+            return new Field(fieldName, true, value, Field.Store.YES,
                     Field.Index.ANALYZED, Field.TermVector.NO);
         } else {
-            return new Field(fieldName, false, value,
+            return new Field(fieldName, true, value,
                     Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.NO);
         }
     }

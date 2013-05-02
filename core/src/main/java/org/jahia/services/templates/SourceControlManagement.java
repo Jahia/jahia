@@ -44,7 +44,8 @@ import org.jahia.utils.ProcessHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -63,14 +64,8 @@ public abstract class SourceControlManagement {
             int res = ProcessHelper.execute(command, arguments, null, rootFolder, resultOut, resultErr);
             return new ExecutionResult(res, resultOut.toString(), resultErr.toString());
         } catch (Exception e) {
-            // TODO can we find a way to not call "svn add" on already versioned files? 
-            if (command.equals("svn") && arguments.startsWith("add")) {
-                logger.warn("Failed to execute command " + command + (arguments != null ? (" " + arguments) : ""));
-            } else {
-                throw new IOException("Failed to execute command " + command + (arguments != null ? (" " + arguments) : ""), e);
-            }
+            throw new IOException("Failed to execute command " + command + (arguments != null ? (" " + arguments) : ""), e);
         }
-        return null;
     }
 
     class ExecutionResult {

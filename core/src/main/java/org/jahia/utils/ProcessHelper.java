@@ -39,16 +39,17 @@
  */
 package org.jahia.utils;
 
-import java.io.File;
-import java.util.Map;
-
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.Map;
 
 /**
  * Utility class for executing external processes.
@@ -161,6 +162,8 @@ public final class ProcessHelper {
                 }
             }
             exitValue = executor.execute(cmd, System.getenv());
+        } catch (ExecuteException ee) {
+            return ee.getExitValue();
         } catch (Exception e) {
             throw new JahiaRuntimeException(e);
         } finally {

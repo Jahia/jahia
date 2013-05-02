@@ -158,6 +158,7 @@ public class JahiaQueryEngine extends QueryEngine {
         }
     }
     
+    @Override
     public SortField[] createSortFields(Ordering[] orderings, Session session)
             throws RepositoryException {
 

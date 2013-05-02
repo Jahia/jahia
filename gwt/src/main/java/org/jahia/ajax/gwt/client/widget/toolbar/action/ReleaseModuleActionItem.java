@@ -163,7 +163,7 @@ public class ReleaseModuleActionItem extends BaseActionItem {
         List<Integer> newOrderedVersionNumbers = new ArrayList<Integer>(orderedVersionNumbers);
         newOrderedVersionNumbers.set(index, orderedVersionNumbers.get(index) + 1);
         for (int i = index+1; i < orderedVersionNumbers.size(); i++) {
-            orderedVersionNumbers.set(i, 0);
+            orderedVersionNumbers.set(i, Integer.valueOf(0));
         }
         String s = "";
         for (Integer n : newOrderedVersionNumbers) {

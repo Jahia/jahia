@@ -683,6 +683,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     }
 
                     generatedWar = new File(sources.getPath() + "/target/checkout/target/" + module.getRootFolder() + "-" + releaseVersion + ".war");
+                    if (!generatedWar.exists()) {
+                        generatedWar = new File(sources.getPath() + "/target/checkout/target/" + module.getRootFolder() + "-" + releaseVersion + ".jar");
+                    }
                 } else {
                     versionElement.setText(releaseVersion);
                     File modifiedPom = new File(sources, "pom-modified.xml");
@@ -909,14 +912,31 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             Document document = reader.read(pom);
             Element root = document.getRootElement();
             Iterator it = root.elementIterator("scm");
+            Element scm;
             if (!it.hasNext()) {
-                Element scm = root.addElement("scm");
-                scm.addElement("connection").addText(uri);
-                scm.addElement("developerConnection").addText(uri);
-                List list = root.elements();
-                list.remove(scm);
-                list.add(list.indexOf(root.elementIterator("description").next()) + 1, scm);
+                scm = root.addElement("scm");
+            } else {
+                scm = root.element("scm");
             }
+            it = scm.elementIterator("connection");
+            Element connection;
+            if (!it.hasNext()) {
+                connection = scm.addElement("connection");
+            } else {
+                connection = scm.element("connection");
+            }
+            connection.setText(uri);
+            it = scm.elementIterator("developerConnection");
+            Element developerConnection;
+            if (!it.hasNext()) {
+                developerConnection = scm.addElement("developerConnection");
+            } else {
+                developerConnection = scm.element("developerConnection");
+            }
+            developerConnection.setText(uri);
+            List list = root.elements();
+            list.remove(scm);
+            list.add(list.indexOf(root.elementIterator("description").next()) + 1, scm);
             File modifiedPom = new File(sources, "pom-modified.xml");
             XMLWriter writer = new XMLWriter(new FileWriter(modifiedPom), prettyPrint);
             try {

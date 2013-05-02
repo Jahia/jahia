@@ -527,6 +527,17 @@
                                         <property name="titleKey" value="label.newDefinition"/>
                                         <property name="icon" value="newDefinition"/>
                                     </bean>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                                                <property name="parentTypes" value="jnt:definitionFile"/>
+                                                <property name="includeSubTypes" value="false"/>
+                                                <property name="nodeTypes" value="jnt:namespaceDefinition"/>
+                                            </bean>
+                                        </property>
+                                        <property name="titleKey" value="label.newNamespaceDefinition"/>
+                                        <property name="icon" value="newDefinition"/>
+                                    </bean>
                                     <ref bean="Toolbar.Item.NewFolder"/>
                                     <ref bean="Toolbar.Item.Upload"/>
                                     <ref bean="Toolbar.Item.Download"/>

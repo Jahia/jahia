@@ -865,12 +865,14 @@ extends = jnt:content
  + * (jnt:childNodeDefinition) = jnt:childNodeDefinition
 
 [jnt:mixinNodeType] > jnt:nodeType
+ - j:namespace (NAME,choicelist[namespace,resourceBundle])
  - j:mixins (NAME,choicelist[nodetypes='MIXIN;fromDependencies',resourceBundle]) multiple
  - j:isQueryable (BOOLEAN) = true mandatory
  - j:itemsType (string,choicelist) < 'content','metadata','layout','options'
  - j:mixinExtends (string,choicelist[nodetypes='PRIMARY;fromDependencies']) multiple
 
 [jnt:primaryNodeType] > jnt:nodeType
+ - j:namespace (NAME,choicelist[namespace,resourceBundle])
  - j:supertype (NAME,choicelist[nodetypes='PRIMARY;fromDependencies',resourceBundle])
  - j:mixins (NAME,choicelist[nodetypes='MIXIN;fromDependencies',resourceBundle]) multiple
  - j:isAbstract (BOOLEAN) mandatory
@@ -938,3 +940,7 @@ extends = jnt:content
 
 [jnt:resourceBundleFile] > jnt:editableFile
  - * (string) i18n
+
+[jnt:namespaceDefinition] > nt:base
+ - j:prefix (string) = 'jnt' mandatory
+ - j:uri (string) = 'http://www.jahia.org/jahia/nt/1.0' mandatory

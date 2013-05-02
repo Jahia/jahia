@@ -224,12 +224,12 @@ public class ModuleManagementFlowHandler implements Serializable {
                     }
                     directSiteDep.get(directDependency.getRootFolder()).add(site.getSiteKey());
                 }
-
-                if(!templateSiteDep.containsKey(site.getTemplatePackage().getRootFolder())) {
-                    templateSiteDep.put(site.getTemplatePackage().getRootFolder(), new ArrayList<String>());
+                if (site.getTemplatePackage() != null) {
+                    if(!templateSiteDep.containsKey(site.getTemplatePackage().getRootFolder())) {
+                        templateSiteDep.put(site.getTemplatePackage().getRootFolder(), new ArrayList<String>());
+                    }
+                    templateSiteDep.get(site.getTemplatePackage().getRootFolder()).add(site.getSiteKey());
                 }
-                templateSiteDep.get(site.getTemplatePackage().getRootFolder()).add(site.getSiteKey());
-
                 List<JahiaTemplatesPackage> transitiveDependencies = templateManagerService.getInstalledModulesForSite(
                         site.getSiteKey(), true, false, true);
                 for (JahiaTemplatesPackage transitiveDependency : transitiveDependencies) {
@@ -264,14 +264,14 @@ public class ModuleManagementFlowHandler implements Serializable {
 
         context.getRequestScope().put("dependantModules", templateManagerService.getTemplatePackageRegistry().getDependantModules(value));
     }
-    
+
     private String getMessage(String key) {
         return Messages.get("resources.JahiaServerSettings", key, LocaleContextHolder.getLocale());
     }
-    
+
     /**
      * Logs the specified exception details.
-     * 
+     *
      * @param e
      *            the occurred exception to be logged
      */

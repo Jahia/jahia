@@ -789,14 +789,13 @@ public class UIConfigHelper {
         if (logger.isDebugEnabled()) {
             logger.debug("Resources key: " + key);
         }
-        String baseName = null;
+        String value = null;
         if (key.contains("@")) {
-            baseName = StringUtils.substringAfter(key, "@");
+            String baseName = StringUtils.substringAfter(key, "@");
             key = StringUtils.substringBefore(key, "@");
+            value = Messages.get(baseName, site != null ? site.getTemplatePackage() : null, key, locale, key);
         }
-
         
-        String value = Messages.get(baseName, site != null ? site.getTemplatePackage() : null, key, locale, key);
         if (value == null || value.length() == 0) {
             value = Messages.getInternal(key, locale);
         }

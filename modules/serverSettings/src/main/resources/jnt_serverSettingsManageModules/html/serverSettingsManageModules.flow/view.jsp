@@ -118,12 +118,58 @@
                                     </div>
                                 </c:when>
                                 <c:when test="${version.key eq currentModule.version}">
+                                    <c:set var="usedSites" value=""/>
+                                    <c:set var="isSystemDependency" value="false"/>
+                                    <c:forEach items="${sitesTemplates[entry.key]}" var="siteName">
+                                        <c:if test="${siteName eq 'systemsite'}">
+                                            <c:set var="isSystemDependency" value="true"/>
+                                        </c:if>
+                                        <c:set var="siteName"> ${siteName}</c:set>
+                                        <c:if test="${not fn:contains(usedSites,siteName)}">
+                                            <c:set var="usedSites" value="${usedSites} ${siteName}"/>
+                                        </c:if>
+                                    </c:forEach>
+                                    <c:forEach items="${sitesDirect[entry.key]}" var="siteName">
+                                        <c:if test="${siteName eq 'systemsite'}">
+                                            <c:set var="isSystemDependency" value="true"/>
+                                        </c:if>
+                                        <c:set var="siteName"> ${siteName}</c:set>
+                                        <c:if test="${not fn:contains(usedSites,siteName)}">
+                                            <c:set var="usedSites" value="${usedSites} ${siteName}"/>
+                                        </c:if>
+                                    </c:forEach>
+                                    <c:forEach items="${sitesTransitive[entry.key]}" var="siteName">
+                                        <c:if test="${siteName eq 'systemsite'}">
+                                            <c:set var="isSystemDependency" value="true"/>
+                                        </c:if>
+                                        <c:set var="siteName"> ${siteName}</c:set>
+                                        <c:if test="${not fn:contains(usedSites,siteName)}">
+                                            <c:set var="usedSites" value="${usedSites} ${siteName}"/>
+                                        </c:if>
+                                    </c:forEach>
                                     <div class="active-version">
                                         <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                             <input type="hidden" name="module" value="${entry.key}"/>
                                             <fmt:message var="label" key='serverSettings.manageModules.stopModule'/>
+                                            <c:choose>
+                                                <c:when test="${not empty sitesTemplates[entry.key] or not empty sitesDirect[entry.key] or not empty sitesTransitive[entry.key]}">
+                                                    <fmt:message var="labelUndeployModuleConfirm"
+                                                                 key="serverSettings.manageModules.stopModules.confirm">
+                                                                    <fmt:param value="${currentModule.name}"/>
+                                                                    <fmt:param value="${usedSites}"/>
+                                                                 </fmt:message>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <fmt:message var="labelUndeployModuleConfirm"
+                                                                 key="serverSettings.manageModules.stopModule.confirm">
+                                                        <fmt:param value="${currentModule.name}"/>
+                                                    </fmt:message>
+                                                </c:otherwise>
+                                            </c:choose>
+                                            <c:if test="${not(isSystemDependency eq 'true')}">
                                             <input class="btn btn-danger" type="submit" name="_eventId_stopModule"
-                                                   value="${label}" onclick=""/>&nbsp; ${version.key} ( ${version.value.state.state} )
+                                                   value="${label}" onclick="return confirm('${functions:escapeJavaScript(labelUndeployModuleConfirm)}');"/></c:if>&nbsp; ${version.key} ( ${version.value.state.state} )
+
                                         </form>
                                     </div>
                                 </c:when>

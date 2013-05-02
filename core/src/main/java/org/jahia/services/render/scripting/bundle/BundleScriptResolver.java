@@ -283,7 +283,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
                         }
                     }
                 } else {
-                    logger.error("Couldn't find module '" + key + "' installed in site '" + sitePath + "'");
+                    logger.warn("Couldn't find module '" + key + "' installed in site '" + sitePath + "'");
                 }
             }
         } else if (sitePath.startsWith("/modules/")) {

@@ -152,7 +152,7 @@ public class SeoService {
     /**
      * Injects an instance of the {@link VanityUrlService}.
      * 
-     * @param urlManager an instance of the {@link VanityUrlService}
+     * @param urlService an instance of the {@link VanityUrlService}
      */
     public void setUrlService(VanityUrlService urlService) {
         this.urlService = urlService;

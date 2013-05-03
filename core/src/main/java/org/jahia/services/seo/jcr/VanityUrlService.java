@@ -146,12 +146,7 @@ public class VanityUrlService {
     public boolean removeVanityUrlMapping(final JCRNodeWrapper contentNode,
             final VanityUrl vanityUrl) throws RepositoryException {
         cacheByUrl.flush();
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRNodeWrapper currentContentNode = session.getNodeByUUID(contentNode.getIdentifier());                
-                return vanityUrlManager.removeVanityUrlMapping(currentContentNode, vanityUrl, session);
-            }
-        });
+        return vanityUrlManager.removeVanityUrlMapping(contentNode, vanityUrl, contentNode.getSession());
     }
 
     /**
@@ -168,12 +163,7 @@ public class VanityUrlService {
     public boolean removeVanityUrlMappings(final JCRNodeWrapper contentNode,
             final String languageCode) throws RepositoryException {
         cacheByUrl.flush();
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRNodeWrapper currentContentNode = session.getNodeByUUID(contentNode.getIdentifier());                
-                return vanityUrlManager.removeVanityUrlMappings(currentContentNode, languageCode, session);
-            }
-        });
+        return vanityUrlManager.removeVanityUrlMappings(contentNode, languageCode, contentNode.getSession());
     }
 
     /**
@@ -201,12 +191,7 @@ public class VanityUrlService {
     public boolean saveVanityUrlMapping(final JCRNodeWrapper contentNode, final VanityUrl vanityUrl)
             throws RepositoryException {
         cacheByUrl.flush();
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRNodeWrapper currentContentNode = session.getNodeByUUID(contentNode.getIdentifier());
-                return vanityUrlManager.saveVanityUrlMapping(currentContentNode, vanityUrl, session);
-            }
-        });
+        return vanityUrlManager.saveVanityUrlMapping(contentNode, vanityUrl, contentNode.getSession());
     }
 
     /**
@@ -239,13 +224,8 @@ public class VanityUrlService {
             final List<VanityUrl> vanityUrls, final Set<String> updatedLocales)
             throws RepositoryException {
         cacheByUrl.flush();
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRNodeWrapper currentContentNode = session.getNodeByUUID(contentNode.getIdentifier());                
-                return vanityUrlManager.saveVanityUrlMappings(currentContentNode, vanityUrls,
-                        updatedLocales, session);
-            }
-        });
+        return vanityUrlManager.saveVanityUrlMappings(contentNode, vanityUrls,
+                updatedLocales, contentNode.getSession());
     }
 
     /**

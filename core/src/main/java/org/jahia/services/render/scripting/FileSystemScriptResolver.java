@@ -303,6 +303,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                 String ext = StringUtils.substringAfterLast(file.getName(), ".");
                 if (scriptFactoryMap.containsKey(ext)) {
                     String filename = file.getName();
+<<<<<<< .working
                     String pref = nt.getName().contains(":") ? StringUtils.substringAfter(nt.getName(),":") : nt.getName();
                     if (filename.startsWith(pref+".")) {
                         String key = null;
@@ -316,6 +317,18 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                             views.put(key, view);
                             scriptFactoryMap.get(ext).initView(view);
                         }
+=======
+                    if (filename.indexOf(".") > 0 && filename.substring(0, filename.indexOf(".")).equals(nt.getLocalName())) {
+                        String key = null;
+                        try {
+                            key = filename.substring(filename.indexOf(".") + 1, filename.lastIndexOf("."));
+                        } catch (StringIndexOutOfBoundsException e) {
+                            key = "default";
+                        }
+                        if (!views.containsKey(key)) {
+                            views.put(key, new FileSystemView(SettingsBean.getInstance().getTemplatesContext() + path + "/" + file.getName(), key, tplPackage, filename));
+                        }
+>>>>>>> .merge-right.r45822
                     }
                 }
             }

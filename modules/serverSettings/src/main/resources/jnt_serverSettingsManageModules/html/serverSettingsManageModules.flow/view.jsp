@@ -107,8 +107,7 @@
                             <c:choose>
                                 <c:when test="${not empty unresolvedDependencies}">
                                     <div class="active-version">
-                                        <fmt:message key='serverSettings.manageModules.module.depends'/>
-                                        : ${unresolvedDependencies}
+                                        <fmt:message key='serverSettings.manageModules.module.depends'/>: ${unresolvedDependencies}
                                         <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                             <input type="hidden" name="module" value="${entry.key}"/>
                                             <fmt:message var="label" key='serverSettings.manageModules.startModule'/>

@@ -356,9 +356,9 @@ public class JCRSessionWrapper implements Session {
         JCRNodeWrapper referencedNode = ((JCRNodeWrapper) parent.getProperty("j:node").getNode());
         Node realReferencedNode = referencedNode.getRealNode();
         String fullPath = parent.getPath() + DEREF_SEPARATOR + refPath;
-        if (parent.getPath().startsWith(referencedNode.getPath()+ "/")) {
-            throw new PathNotFoundException(fullPath);
-        }
+//        if (parent.getPath().startsWith(referencedNode.getPath()+ "/")) {
+//            throw new PathNotFoundException(fullPath);
+//        }
         String refRootName = StringUtils.substringBefore(refPath, "/");
         if (!realReferencedNode.getName().equals(refRootName)) {
             throw new PathNotFoundException(fullPath);

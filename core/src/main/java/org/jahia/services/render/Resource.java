@@ -263,7 +263,7 @@ public class Resource {
 
         Resource resource = (Resource) o;
 
-        if (node != null ? !node.equals(resource.node) : resource.node != null) {
+        if (node != null ? !node.getCanonicalPath().equals(resource.node.getCanonicalPath()) : resource.node != null) {
             return false;
         }
         if (templateType != null ? !templateType.equals(resource.templateType) : resource.templateType != null) {

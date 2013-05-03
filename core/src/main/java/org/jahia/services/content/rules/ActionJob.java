@@ -40,6 +40,7 @@
 
 package org.jahia.services.content.rules;
 
+import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.registries.ServicesRegistry;
@@ -84,7 +85,8 @@ public class ActionJob extends BackgroundJob {
             if (action != null) {
                 BackgroundAction backgroundAction = (BackgroundAction) action;
                 final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
-                final JCRSessionWrapper jcrSessionWrapper = sessionFactory.getCurrentUserSession(map.getString(ActionJob.JOB_WORKSPACE));
+                final JCRSessionWrapper jcrSessionWrapper = sessionFactory.getCurrentUserSession(map.getString(ActionJob.JOB_WORKSPACE),
+                        map.getString(ActionJob.JOB_CURRENT_LOCALE) != null ? LanguageCodeConverters.getLocaleFromCode(map.getString(ActionJob.JOB_CURRENT_LOCALE)): null);
                 try {
                     JCRNodeWrapper node = jcrSessionWrapper.getNodeByUUID(map.getString(JOB_NODE_UUID));
                     backgroundAction.executeBackgroundAction(node);

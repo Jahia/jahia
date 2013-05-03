@@ -4,9 +4,9 @@
 <%@page import="org.jahia.bin.Jahia"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c" %>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="tools.css" type="text/css" />
-    <link rel="stylesheet" href="../modules/assets/css/admin-bootstrap.css" type="text/css" />
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="tools.css"/>
+    <link rel="stylesheet" href="../modules/assets/css/admin-bootstrap.css"/>
     <title>Jahia Tools</title>
 </head>
 <body>
@@ -43,7 +43,7 @@
                 </ul>
             </div>
             <% if (Jahia.isEnterpriseEdition()) { %>
-            <jsp:include page="indexEnterprise.jsp" />
+                <jsp:include page="indexEnterprise.jsp" />
             <% } %>
         </div>
         <div class="span6">

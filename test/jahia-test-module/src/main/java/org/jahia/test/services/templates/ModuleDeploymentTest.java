@@ -337,8 +337,8 @@ public class ModuleDeploymentTest {
                 assertTrue("Module content has not been copied", session.itemExists("/sites/"+TESTSITE_NAME+"/contents/test-contents"));
 
                 managerService.uninstallModule(pack, site.getJCRLocalPath(), session);
-                assertFalse("Module has not been removed from site", site.getInstalledModules().contains("dummy1"));
                 session.save();
+                assertFalse("Module has not been removed from site", site.getInstalledModules().contains("dummy1"));
                 return null;
             }
         });

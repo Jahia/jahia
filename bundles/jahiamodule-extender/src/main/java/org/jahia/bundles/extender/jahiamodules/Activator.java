@@ -56,6 +56,7 @@ import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.scripting.bundle.BundleScriptResolver;
 import org.jahia.services.templates.*;
+import org.jahia.settings.SettingsBean;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.*;
@@ -310,8 +311,32 @@ public class Activator implements BundleActivator {
             templatePackageRegistry.unregisterPackageVersion(jahiaTemplatesPackage);
         }
         installedBundles.remove(bundle);
+
+        deleteBundleFileIfNeeded(bundle);
+        
         long totalTime = System.currentTimeMillis() - startTime;
         logger.info("--- Finished uninstalling Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
+    }
+
+    private void deleteBundleFileIfNeeded(Bundle bundle) {
+        File bundleFile = null;
+        try {
+            URL bundleUrl = new URL(bundle.getLocation());
+            if (bundleUrl.getProtocol().equals("file")) {
+                bundleFile = new File(bundleUrl.getFile());
+            }
+        } catch (MalformedURLException e) {
+            // not located in a file
+        }
+        if (bundleFile != null
+                && bundleFile.getAbsolutePath().startsWith(
+                        SettingsBean.getInstance().getJahiaModulesDiskPath() + File.separatorChar)
+                && bundleFile.exists()) {
+            // remove bundle file from var/modules
+            if (!bundleFile.delete()) {
+                logger.warn("Unable to delete file for uninstalled bundle {}", bundleFile);
+            }
+        }
     }
 
     private void parseBundle(Bundle bundle, boolean shouldAutoStart) {

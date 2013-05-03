@@ -54,8 +54,8 @@
 <c:if test="${renderContext.editMode}">
     <template:addResources type="css" resources="edit.css" />
 </c:if>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.blockUI.js,bootstrap.js"/>
-<template:addResources type="css" resources="bootstrap.css,admin.css"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.blockUI.js,admin-bootstrap.js"/>
+<template:addResources type="css" resources="admin-bootstrap.css,admin-server-settings.css"/>
 <template:theme/>
 
 </body>

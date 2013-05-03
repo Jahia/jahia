@@ -6,7 +6,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<template:addResources type="javascript" resources="jquery.min.js,bootstrap.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,admin-bootstrap.js"/>
 
 <c:if test="${!empty flowRequestContext.messageContext.allMessages}">
             <c:forEach var="error" items="${flowRequestContext.messageContext.allMessages}">

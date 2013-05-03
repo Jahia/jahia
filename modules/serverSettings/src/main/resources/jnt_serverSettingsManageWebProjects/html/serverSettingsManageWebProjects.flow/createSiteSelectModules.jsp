@@ -4,7 +4,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
-<template:addResources type="javascript" resources="jquery.min.js,bootstrap.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,admin-bootstrap.js"/>
 
 
 <c:if test="${!empty flowRequestContext.messageContext.allMessages}">

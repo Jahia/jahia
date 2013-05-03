@@ -1063,7 +1063,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public String getPrimaryNodeTypeName() throws RepositoryException {
-        return objectNode.getPrimaryNodeType().getName();
+        String name = objectNode.getPrimaryNodeType().getName();
+        if (NodeTypeRegistry.getInstance().hasNodeType(name)) {
+            return name;
+        } else {
+            return "nt:base";
+        }
     }
 
     /**
@@ -1151,11 +1156,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public List<String> getNodeTypes() throws RepositoryException {
         List<String> results = new ArrayList<String>();
-        results.add(objectNode.getPrimaryNodeType().getName());
+        if (NodeTypeRegistry.getInstance().hasNodeType(objectNode.getPrimaryNodeType().getName())) {
+            results.add(objectNode.getPrimaryNodeType().getName());
+        } else {
+            results.add("nt:base");
+        }
         NodeType[] mixin = objectNode.getMixinNodeTypes();
         for (int i = 0; i < mixin.length; i++) {
             NodeType mixinType = mixin[i];
-            results.add(mixinType.getName());
+            if (NodeTypeRegistry.getInstance().hasNodeType(mixinType.getName())) {
+                results.add(mixinType.getName());
+            }
         }
         return results;
     }
@@ -2454,7 +2465,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 session.checkout(dest);
             }
             String typeName = getPrimaryNodeTypeName();
-            copy = dest.addNode(name, typeName);
+            try {
+                copy = dest.addNode(name, typeName);
+            } catch (ConstraintViolationException e) {
+                logger.error("Cannot copy node",e);
+                return false;
+            }
         }
 
         try {

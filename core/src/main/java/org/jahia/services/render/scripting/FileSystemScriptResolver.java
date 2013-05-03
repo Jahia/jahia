@@ -295,14 +295,16 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
             for (File file : files) {
                 if (!file.isDirectory()) {
                     String filename = file.getName();
-                    String key = null;
-                    try {
-                        key = filename.substring(filename.indexOf(".") + 1, filename.lastIndexOf("."));
-                    } catch (StringIndexOutOfBoundsException e) {
-                        key = "default";
-                    }
-                    if (!views.containsKey(key)) {
-                        views.put(key, new FileSystemView(SettingsBean.getInstance().getTemplatesContext() + path + "/" + file.getName(), key, tplPackage, filename));
+                    if (filename.indexOf(".") > 0 && filename.substring(0, filename.indexOf(".")).equals(nt.getLocalName())) {
+                        String key = null;
+                        try {
+                            key = filename.substring(filename.indexOf(".") + 1, filename.lastIndexOf("."));
+                        } catch (StringIndexOutOfBoundsException e) {
+                            key = "default";
+                        }
+                        if (!views.containsKey(key)) {
+                            views.put(key, new FileSystemView(SettingsBean.getInstance().getTemplatesContext() + path + "/" + file.getName(), key, tplPackage, filename));
+                        }
                     }
                 }
             }

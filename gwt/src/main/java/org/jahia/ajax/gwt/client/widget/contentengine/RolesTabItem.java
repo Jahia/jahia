@@ -105,6 +105,7 @@ public class RolesTabItem extends EditEngineTabItem {
     @Override
     public void setProcessed(boolean processed) {
         if (!processed) {
+            rolesEditors.remove(rolesEditor);
             rolesEditor = null;
         }
     }

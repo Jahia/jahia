@@ -327,7 +327,11 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
 
     public JCRNodeWrapper getContextualizedNode() throws ValueFormatException, RepositoryException {
         JCRNodeWrapper ref = getNode();
-        return session.getNode(getParent().getPath()+JCRSessionWrapper.DEREF_SEPARATOR+ref.getRealNode().getName());
+        try {
+            return session.getNode(getParent().getPath()+JCRSessionWrapper.DEREF_SEPARATOR+ref.getRealNode().getName());
+        } catch (PathNotFoundException e) {
+            throw new ItemNotFoundException(e.getMessage());
+        }
     }
 
     public JCRNodeWrapper getReferencedNode() throws ValueFormatException, RepositoryException {

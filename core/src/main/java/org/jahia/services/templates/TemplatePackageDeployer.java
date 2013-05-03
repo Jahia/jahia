@@ -47,10 +47,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NodeIterator;
@@ -224,8 +222,9 @@ public class TemplatePackageDeployer {
     }
 
     public void clearModuleNodes(JahiaTemplatesPackage pkg, JCRSessionWrapper session) throws RepositoryException {
-        if (session.nodeExists("/modules/" + pkg.getRootFolder() + "/" + pkg.getVersion())) {
-            JCRNodeWrapper moduleNode = session.getNode("/modules/" + pkg.getRootFolder() + "/" + pkg.getVersion());
+        String modulePath = "/modules/" + pkg.getRootFolder() + "/" + pkg.getVersion();
+        if (session.nodeExists(modulePath)) {
+            JCRNodeWrapper moduleNode = session.getNode(modulePath);
             NodeIterator nodeIterator = moduleNode.getNodes();
             while (nodeIterator.hasNext()) {
                 JCRNodeWrapper next = (JCRNodeWrapper) nodeIterator.next();

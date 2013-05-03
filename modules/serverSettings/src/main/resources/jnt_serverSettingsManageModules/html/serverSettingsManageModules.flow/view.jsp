@@ -99,9 +99,9 @@
                     <c:forEach items="${entry.value}" var="version">
                         <c:if test="${not isStudio}">
                             <c:set var="unresolvedDependencies" value=""/>
-                            <c:forEach items="${version.value.depends}" var="dep">
+                            <c:forEach items="${version.value.depends}" var="dep" varStatus="loopStatus">
                                 <c:if test="${empty registeredModules[dep]}">
-                                    <c:set var="unresolvedDependencies" value="${unresolvedDependencies} ${dep}"/>
+                                    <c:set var="unresolvedDependencies" value="${unresolvedDependencies}${fn:length(unresolvedDependencies) > 0 ? ', ' : ''}${dep}"/>
                                 </c:if>
                             </c:forEach>
                             <c:choose>
@@ -217,9 +217,7 @@
                             </c:otherwise>
                         </c:choose>
                     </td>
-                </c:if>
 
-                <c:if test="${not isStudio}">
                     <td>
                             <%--${currentModule.sourcesFolder}--%>
                         <c:choose>

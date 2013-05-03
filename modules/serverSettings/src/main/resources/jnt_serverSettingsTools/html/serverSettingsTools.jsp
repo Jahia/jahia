@@ -13,7 +13,7 @@
 </template:addResources>
 <template:addResources>
 <style type="text/css">
-html, body {height:100%; padding: 0; margin: 0; overflow: hidden;}
+html, body {height:100%; overflow: hidden;}
 </style>
 </template:addResources>
-<iframe id="toolsFrame" src="<c:url value='/tools/index.jsp'/>" width="100%" style="border:0; width: 100%;"></iframe>
+<iframe id="toolsFrame" src="<c:url value='/tools/index.jsp'/>" width="100%" style="border:1px solid #fff ; width: 100%;"></iframe>

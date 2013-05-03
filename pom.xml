@@ -56,7 +56,6 @@
         <jahia.manifest.vendor.email>info@jahia.com</jahia.manifest.vendor.email>
         <jahia.svn.base.url>https://devtools.jahia.com/svn/jahia/trunk</jahia.svn.base.url>
 
-        <license.plugin.version>1.8.0</license.plugin.version>
         <javadoc.plugin.version>2.8</javadoc.plugin.version>
         <assembly.plugin.version>2.2</assembly.plugin.version>
         <site.plugin.version>3.0</site.plugin.version>
@@ -395,7 +394,7 @@
                     <plugin>
                         <groupId>com.mycila.maven-license-plugin</groupId>
                         <artifactId>maven-license-plugin</artifactId>
-                        <version>${license.plugin.version}</version>
+                        <version>1.8.0</version>
                         <configuration>
                             <basedir>${basedir}</basedir>
                             <header>header.txt</header>
@@ -414,10 +413,9 @@
                                  -->
                             </includes>
                             <excludes>
-                                <exclude>src/main/java/compressionFilters/**</exclude>
                                 <exclude>src/main/java/name/fraser/**</exclude>
                                 <exclude>src/main/java/org/apache/**</exclude>
-                                <exclude>src/main/java/EDU/oswego/**</exclude>
+                                <exclude>src/main/java/net/sf/ehcache/**</exclude>
                             </excludes>
                             <useDefaultExcludes>true</useDefaultExcludes>
                             <mapping>
@@ -427,7 +425,7 @@
                             </mapping>
                             <useDefaultMapping>true</useDefaultMapping>
                             <properties>
-                                <year>2011</year>
+                                <year>2013</year>
                             </properties>
                             <encoding>UTF-8</encoding>
                             <headerDefinitions>

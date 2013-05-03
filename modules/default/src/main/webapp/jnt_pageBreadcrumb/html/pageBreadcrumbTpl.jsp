@@ -20,10 +20,10 @@
 <c:if test="${empty pageNodes}">
     <c:choose>
         <c:when test="${jcr:isNodeType(renderContext.mainResource.node, 'jnt:page')}">
-            <c:set var="pageNodes" value="${jcr:getMeAndParentsOfType(renderContext.mainResource.node,'jnt:page')}"/>
+            <c:set var="pageNodes" value="${jcr:getMeAndParentsOfType(renderContext.mainResource.node,'jmix:navMenuItem')}"/>
         </c:when>
         <c:otherwise>
-            <c:set var="pageNodes" value="${jcr:getParentsOfType(renderContext.mainResource.node, 'jnt:page')}"/>
+            <c:set var="pageNodes" value="${jcr:getParentsOfType(renderContext.mainResource.node, 'jmix:navMenuItem')}"/>
         </c:otherwise>
     </c:choose>
 </c:if>

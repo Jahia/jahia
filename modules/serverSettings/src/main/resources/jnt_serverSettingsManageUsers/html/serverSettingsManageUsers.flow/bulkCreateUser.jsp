@@ -44,12 +44,16 @@
 <h2><fmt:message key="serverSettings.users.bulk.create"/></h2>
 <div class="box-1">
     <form action="${flowExecutionUrl}" method="post" enctype="multipart/form-data" autocomplete="off">
-        <fieldset>
-            <label for="csvFile"><fmt:message key="label.csvFile"/></label>
-            <input type="file" name="csvFile" id="csvFile"/><br/>
-            <label for="csvSeparator"><fmt:message key="label.csvSeparator"/></label>
-            <input class="span6" type="text" name="csvSeparator" value="${csvFile.csvSeparator}" id="csvSeparator"/>
-        </fieldset>
+
+            <fieldset>
+                <div class="alert alert-info">
+                    <label for="csvFile"><fmt:message key="label.csvFile"/></label>
+                    <input type="file" name="csvFile" id="csvFile"/>
+                </div>
+                <label for="csvSeparator"><fmt:message key="label.csvSeparator"/></label>
+                <input class="span6" type="text" name="csvSeparator" value="${csvFile.csvSeparator}" id="csvSeparator"/>
+            </fieldset>
+
         <fieldset>
             <input class="btn btn-primary" type="submit" name="_eventId_confirm" id="${currentNode.identifier}-confirm" value="<fmt:message key='label.ok'/>"/>
             <input class="btn" type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel'/>"/>

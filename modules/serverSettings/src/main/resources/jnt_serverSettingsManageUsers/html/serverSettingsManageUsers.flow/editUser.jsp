@@ -91,7 +91,7 @@
                         </div>
                         <div class="span4">
                             <label for="preferredLanguage"><fmt:message key="serverSettings.user.preferredLanguage"/></label>
-                            <select id="preferredLanguage" name="preferredLanguage" size="1">
+                            <select class="span12" id="preferredLanguage" name="preferredLanguage">
                                 <c:forEach items="${functions:availableAdminBundleLocale(renderContext.UILocale)}" var="uiLanguage">
                                     <option value="${uiLanguage}"
                                             <c:if test="${uiLanguage eq userProperties.preferredLanguage}">selected="selected" </c:if>>${functions:displayLocaleNameWith(uiLanguage, renderContext.UILocale)}</option>

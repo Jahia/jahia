@@ -48,33 +48,33 @@
                     <c:if test="${importInfoMap.value.site}">
                         <div class="container-fluid">
                             <div class="row-fluid">
-                                <div class="span6">
+                                <div class="span4">
                                     <label for="${importInfoMap.value.siteKey}siteTitle">
                                         <fmt:message key="serverSettings.manageWebProjects.webProject.title"/>
                                     </label>
-                                    <input type="text" id="${importInfoMap.value.siteKey}siteTitle"
+                                    <input class="span12" type="text" id="${importInfoMap.value.siteKey}siteTitle"
                                            name="importsInfos['${importInfoMap.key}'].siteTitle"
                                            value="${fn:escapeXml(importInfoMap.value.siteTitle)}"/>
                                 </div>
-                                <div class="span6">
+                                <div class="span4">
                                     <label for="${importInfoMap.value.siteKey}siteServerName">
                                         <fmt:message key="serverSettings.manageWebProjects.webProject.serverName"/>
                                     </label>
-                                    <input type="text" id="${importInfoMap.value.siteKey}siteServerName"
+                                    <input class="span12" type="text" id="${importInfoMap.value.siteKey}siteServerName"
                                            name="importsInfos['${importInfoMap.key}'].siteServername"
                                            value="${fn:escapeXml(importInfoMap.value.siteServername)}"/>
                                 </div>
                             </div>
                             <div class="row-fluid">
-                                <div class="span6">
+                                <div class="span4">
                                     <label for="${importInfoMap.value.siteKey}siteKey">
                                         <fmt:message key="serverSettings.manageWebProjects.webProject.siteKey"/>
                                     </label>
-                                    <input type="text" id="${importInfoMap.value.siteKey}siteKey"
+                                    <input class="span12" type="text" id="${importInfoMap.value.siteKey}siteKey"
                                            name="importsInfos['${importInfoMap.key}'].siteKey"
                                            value="${fn:escapeXml(importInfoMap.value.siteKey)}"/>
                                 </div>
-                                <div class="span6">
+                                <div class="span4">
                                     <label for="${importInfoMap.value.siteKey}templates">
                                         <fmt:message key="serverSettings.webProjectSettings.pleaseChooseTemplateSet"/>
                                     </label>
@@ -87,7 +87,7 @@
                             </div>
                             <c:if test="${importInfoMap.value.legacyImport}">
                                 <div class="row-fluid">
-                                    <div class="span6">
+                                    <div class="span4">
                                         <label for="${importInfoMap.value.siteKey}legacyMapping">
                                             <fmt:message key="serverSettings.manageWebProjects.selectDefinitionMapping"/>
                                         </label>
@@ -99,7 +99,7 @@
                                             </c:forEach>
                                         </select>
                                     </div>
-                                    <div class="span6">
+                                    <div class="span4">
                                         <label for="${importInfoMap.value.siteKey}legacyDefinitions">
                                             <fmt:message key="serverSettings.manageWebProjects.selectLegacyDefinitions"/>
                                         </label>

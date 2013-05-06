@@ -22,37 +22,37 @@
         <fieldset>
             <div class="container-fluid">
                 <div class="row-fluid">
-                    <div class="span6">
+                    <div class="span4">
                         <label for="username"><fmt:message key="label.username"/></label>
-                        <input type="text" id="username" value="${siteBean.adminProperties.username}" name="username"/>
+                        <input class="span12" type="text" id="username" value="${siteBean.adminProperties.username}" name="username"/>
                     </div>
-                    <div class="span6">
+                    <div class="span4">
                         <label for="firstName"><fmt:message key="label.firstName"/></label>
-                        <input type="text" id="firstName" value="${siteBean.adminProperties.firstName}" name="firstName"/>
+                        <input class="span12" type="text" id="firstName" value="${siteBean.adminProperties.firstName}" name="firstName"/>
                     </div>
                 </div>
 
                 <div class="row-fluid">
-                    <div class="span6">
+                    <div class="span4">
                         <label for="lastName"><fmt:message key="label.lastName"/></label>
-                        <input type="text" id="lastName" value="${siteBean.adminProperties.lastName}" name="lastName"/>
+                        <input class="span12" type="text" id="lastName" value="${siteBean.adminProperties.lastName}" name="lastName"/>
                     </div>
-                    <div class="span6">
+                    <div class="span4">
                         <label for="email"><fmt:message key="label.email"/></label>
-                        <input type="text" id="email" value="${siteBean.adminProperties.email}" name="email"/>
+                        <input class="span12" type="text" id="email" value="${siteBean.adminProperties.email}" name="email"/>
                     </div>
                 </div>
                 <div class="row-fluid">
-                    <div class="span6">
+                    <div class="span4">
                         <label for="organization"><fmt:message key="label.organization"/></label>
-                        <input type="text" id="organization" value="${siteBean.adminProperties.organization}" name="organization" />
+                        <input class="span12" type="text" id="organization" value="${siteBean.adminProperties.organization}" name="organization" />
                     </div>
-                    <div class="span6">
+                    <div class="span4">
                         <label for="password"><fmt:message key="label.password"/></label>
-                        <input type="password" id="password" name="password" autocomplete="off"/>
+                        <input class="span12" type="password" id="password" name="password" autocomplete="off"/>
 
                         <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
-                        <input type="password" id="passwordConfirm" name="passwordConfirm" autocomplete="off"/>
+                        <input class="span12" type="password" id="passwordConfirm" name="passwordConfirm" autocomplete="off"/>
                     </div>
                 </div>
             </div>

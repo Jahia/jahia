@@ -222,13 +222,13 @@
     <fieldset>
         <h2><fmt:message key="serverSettings.manageWebProjects.multipleimport"/></h2>
         <form action="${flowExecutionUrl}" method="post" enctype="multipart/form-data">
-            <div>
+            <div class="alert alert-info">
                 <p><fmt:message key="serverSettings.manageWebProjects.multipleimport.fileselect"/></p>
                 <input type="file" name="importFile"/>
             </div>
             <div>
                 <p><fmt:message key="serverSettings.manageWebProjects.multipleimport.fileinput"/></p>
-                <input type="text"  name="importPath"/>
+                <input class="span6" type="text"  name="importPath"/>
             </div>
 
             <input class="btn btn-primary" type="submit" name="_eventId_import"

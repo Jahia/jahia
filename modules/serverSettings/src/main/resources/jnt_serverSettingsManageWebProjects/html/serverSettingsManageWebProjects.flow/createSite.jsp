@@ -23,33 +23,33 @@
         <fieldset>
             <div class="container-fluid">
                 <div class="row-fluid">
-                    <div class="span6">
+                    <div class="span4">
                         <label for="title"><fmt:message key="label.name"/> <span class="text-error"><strong>*</strong></span> </label>
-                        <input type="text" id="title" name="title" value="${fn:escapeXml(siteBean.title)}"/>
+                        <input class="span12" type="text" id="title" name="title" value="${fn:escapeXml(siteBean.title)}"/>
                     </div>
-                    <div class="span6">
+                    <div class="span4">
                         <label for="serverName"><fmt:message key="serverSettings.manageWebProjects.webProject.serverName"/> <span class="text-error"><strong>*</strong></span> </label>
-                        <input type="text" id="serverName" name="serverName" value="${fn:escapeXml(siteBean.serverName)}"/>
+                        <input class="span12" type="text" id="serverName" name="serverName" value="${fn:escapeXml(siteBean.serverName)}"/>
                     </div>
                 </div>
                 <div class="row-fluid">
-                    <div class="span6">
+                    <div class="span4">
                         <label for="siteKey"><fmt:message key="serverSettings.manageWebProjects.webProject.siteKey"/> <span class="text-error"><strong>*</strong></span> </label>
-                        <input type="text" id="siteKey" name="siteKey" value="${fn:escapeXml(siteBean.siteKey)}"/>
+                        <input class="span12" type="text" id="siteKey" name="siteKey" value="${fn:escapeXml(siteBean.siteKey)}"/>
                     </div>
-                    <div class="span6">
+                    <div class="span4">
                         <label for="description"><fmt:message key="label.description"/></label>
                         <textarea class="span12" id="description" name="description">${fn:escapeXml(siteBean.description)}</textarea>
                     </div>
                 </div>
                 <div class="row-fluid">
-                    <div class="span6">
+                    <div class="span4">
                         <label for="defaultSite">
                             <input type="checkbox" name="defaultSite" id="defaultSite" <c:if test="${siteBean.defaultSite}">checked="checked"</c:if> /> <fmt:message key="serverSettings.manageWebProjects.webProject.defaultSite"/>
                         </label>
                         <input type="hidden" name="_defaultSite"/>
                     </div>
-                    <div class="span6">
+                    <div class="span4">
                         <label for="createAdmin">
                             <input type="checkbox" name="createAdmin" id="createAdmin" <c:if test="${siteBean.createAdmin}">checked="checked"</c:if> /> <fmt:message key="serverSettings.manageWebProjects.webProject.createAdmin"/>
                         </label>

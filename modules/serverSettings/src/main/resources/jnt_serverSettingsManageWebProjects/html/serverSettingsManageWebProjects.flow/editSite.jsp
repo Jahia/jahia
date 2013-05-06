@@ -34,13 +34,13 @@
             </div>
             <div class="container-fluid">
                 <div class="row-fluid">
-                    <div class="span6">
+                    <div class="span4">
                         <label for="title"><fmt:message key="label.name"/><span class="text-error"><strong>*</strong></span>:</label>
-                        <input type="text" id="title" name="title" value="${fn:escapeXml(siteBean.title)}"/>
+                        <input class="span12" type="text" id="title" name="title" value="${fn:escapeXml(siteBean.title)}"/>
                     </div>
-                    <div class="span6">
+                    <div class="span4">
                         <label for="serverName"><fmt:message key="serverSettings.manageWebProjects.webProject.serverName"/><span class="text-error"><strong>*</strong></span>:</label>
-                        <input type="text" id="serverName" name="serverName" value="${fn:escapeXml(siteBean.serverName)}"/>
+                        <input class="span12" type="text" id="serverName" name="serverName" value="${fn:escapeXml(siteBean.serverName)}"/>
                     </div>
                 </div>
             </div>
@@ -70,7 +70,7 @@
                                 <input type="hidden" name="defaultSite" value="true"/>
                             </c:when>
                             <c:otherwise>
-                                <input type="checkbox" name="defaultSite" id="defaultSite" ${siteBean.defaultSite ? 'checked="checked"' : ''}/>
+                                <input style="margin-bottom:15px;" type="checkbox" name="defaultSite" id="defaultSite" ${siteBean.defaultSite ? 'checked="checked"' : ''}/>
                             </c:otherwise>
                         </c:choose>
                     </div>
@@ -79,7 +79,7 @@
 
             <div class="container-fluid">
                 <div class="row-fluid">
-                    <div class="span12">
+                    <div class="span4">
                         <label for="description"><fmt:message key="label.description"/>:</label>
                         <textarea class="span12" id="description" name="description">${fn:escapeXml(siteBean.description)}</textarea>
                     </div>

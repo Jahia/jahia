@@ -130,16 +130,6 @@
                                     <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
                                     <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
                                 </system_health.png>
-                                <tools jcr:primaryType="jnt:folder">
-                                    <tools.png j:height="16"
-                                   j:width="16"
-                                   jcr:mixinTypes="jmix:image"
-                                   jcr:primaryType="jnt:file">
-                                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                                    </tools.png>
-                                </tools>
                                 <cache_x0020_management jcr:primaryType="jnt:folder">
                                     <cacheManagement.png j:height="16"
                                              j:width="16"
@@ -396,18 +386,6 @@
                                     <report-an-issue jcr:primaryType="jnt:serverSettingsReportAnIssue"/>
                                 </pagecontent>
                             </reportAnIssue>
-                            <tools j:applyOn="jnt:globalSettings"
-                                 j:defaultTemplate="false"
-                                 j:hiddenTemplate="false"
-                         j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_health/tools/tools.png"
-                                 j:requiredPermissions="#/permissions/admin/adminSystemInfos"
-                                 j:titleKey="serverSettings.tools"
-                                 jcr:mixinTypes="jmix:rbTitle"
-                                 jcr:primaryType="jnt:contentTemplate">
-                                <pagecontent jcr:primaryType="jnt:contentList">
-                                    <tools jcr:primaryType="jnt:serverSettingsTools"/>
-                                </pagecontent>
-                            </tools>
                         </system-health>
                 </serverSettingsBase>
             </templates>

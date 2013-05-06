@@ -31,6 +31,4 @@
 
 [jnt:serverSettingsSystemInfos] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
 
-[jnt:serverSettingsTools] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
-
 [jnt:serverSettingsManageWebProjects] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly

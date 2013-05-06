@@ -48,6 +48,7 @@ import org.slf4j.Logger;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 import java.util.zip.InflaterOutputStream;
 
 /**
@@ -98,57 +99,15 @@ public class KeyCompressor {
         byte[] input = Base64.decodeBase64(inputString);
         // Decompress the bytes
         StringBuilder outputString = new StringBuilder();
-        Inflater inf = new Inflater();
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream(2048);
-<<<<<<< .working
             InflaterOutputStream inflaterOutputStream = new InflaterOutputStream(outputStream);
             inflaterOutputStream.write(input, 0, input.length);
-=======
-            byte[] buf = new byte[512];
-            int len = input.length;
-            int off = 0;
-            for (;;) {
-                int n;
-
-                // Fill the decompressor buffer with output data
-                if (inf.needsInput()) {
-                    int part;
-
-                    if (len < 1) {
-                        break;
-                    }
-
-                    part = (len < 512 ? len : 512);
-                    inf.setInput(input, off, part);
-                    off += part;
-                    len -= part;
-                }
-
-                // Decompress and write blocks of output data
-                do {
-                    n = inf.inflate(buf, 0, buf.length);
-                    if (n > 0) {
-                        outputStream.write(buf, 0, n);
-                    }
-                } while (n > 0);
-
-                // Check the decompressor
-                if (inf.finished()) {
-                    break;
-                }
-                if (inf.needsDictionary()) {
-                    throw new ZipException("ZLIB dictionary missing");
-                }
-            }
->>>>>>> .merge-right.r45849
             outputString.append(outputStream.toString("UTF-8"));
         } catch (UnsupportedEncodingException e) {
             logger.warn("Not able to decode dependency: " + inputString, e);
         } catch (IOException e) {
             logger.warn("Not able to encode dependency: " + inputString, e);
-        } finally {
-            inf.end();
         }
         return outputString.toString();
     }

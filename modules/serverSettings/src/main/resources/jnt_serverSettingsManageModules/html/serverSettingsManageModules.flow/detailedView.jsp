@@ -23,14 +23,15 @@
 <template:addResources type="css" resources="admin-bootstrap.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 
+<template:addResources>
 <script type="text/javascript">
-    $(document).ready(function() {
-        $('.button-download').click(workInProgress)
-    });
+    $(document).ready(function() { $('.button-download').click(workInProgress) });
 </script>
+</template:addResources>
 
 <c:set value="${renderContext.editModeConfigName eq 'studiomode' or renderContext.editModeConfigName eq 'studiolayoutmode'}" var="isStudio"/>
 
+<template:addResources>
 <script type="text/javascript">
     $(function() {
         var selectedForm;
@@ -60,6 +61,7 @@
         });
     });
 </script>
+</template:addResources>
 
 <div id="disable-confirm" title="<fmt:message key='serverSettings.manageModules.module.disable.purgeContent.title'/>">
     <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span><fmt:message key="serverSettings.manageModules.module.disable.purgeContent.message"/></p>

@@ -19,11 +19,11 @@
 <template:addResources type="javascript" resources="jquery.min.js,admin-bootstrap.js,jquery.blockUI.js"/>
 <template:addResources type="css" resources="admin-bootstrap.css"/>
 
+<template:addResources>
 <script type="text/javascript">
-    $(document).ready(function() {
-        $('.button-download').click(workInProgress)
-    });
+    $(document).ready(function() { $('.button-download').click(workInProgress) });
 </script>
+</template:addResources>
 
 <c:set value="${renderContext.editModeConfigName eq 'studiomode' or renderContext.editModeConfigName eq 'studiolayoutmode'}"
        var="isStudio"/>
@@ -183,7 +183,7 @@
                                                          key='serverSettings.manageModules.undeployModule'/>
                                             <fmt:message var="labelUndeployModuleConfirm"
                                                          key="serverSettings.manageModules.undeployModule.confirm"/>
-
+                                                         
                                             <input class="btn btn-success" type="submit" name="_eventId_startModule"
                                                    value="${labelStart}" onclick="" />&nbsp;
 
@@ -219,7 +219,6 @@
                     </td>
 
                     <td>
-                            <%--${currentModule.sourcesFolder}--%>
                         <c:choose>
                             <c:when test="${not empty currentModule.sourcesFolder}">
                                 <input class="btn btn-block" type="button"

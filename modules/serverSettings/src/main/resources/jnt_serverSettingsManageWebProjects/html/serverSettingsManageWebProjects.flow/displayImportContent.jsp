@@ -78,7 +78,7 @@
                                     <label for="${importInfoMap.value.siteKey}templates">
                                         <fmt:message key="serverSettings.webProjectSettings.pleaseChooseTemplateSet"/>
                                     </label>
-                                    <select id="${importInfoMap.value.siteKey}templates" name="importsInfos['${importInfoMap.key}'].templates">
+                                    <select class="span12" id="${importInfoMap.value.siteKey}templates" name="importsInfos['${importInfoMap.key}'].templates">
                                         <c:forEach items="${requestScope.templateSets}" var="module">
                                             <option value="${module}" <c:if test="${importInfoMap.value.templates eq module}"> selected="selected"</c:if>>${module}</option>
                                         </c:forEach>
@@ -91,7 +91,7 @@
                                         <label for="${importInfoMap.value.siteKey}legacyMapping">
                                             <fmt:message key="serverSettings.manageWebProjects.selectDefinitionMapping"/>
                                         </label>
-                                        <select id="${importInfoMap.value.siteKey}legacyMapping"
+                                        <select class="span12" id="${importInfoMap.value.siteKey}legacyMapping"
                                                 name="importsInfos['${importInfoMap.key}'].selectedLegacyMapping">
                                             <c:forEach items="${importInfoMap.value.legacyMappings}" var="module">
                                                 <option value="${module.absolutePath}" <c:if
@@ -103,7 +103,7 @@
                                         <label for="${importInfoMap.value.siteKey}legacyDefinitions">
                                             <fmt:message key="serverSettings.manageWebProjects.selectLegacyDefinitions"/>
                                         </label>
-                                        <select id="${importInfoMap.value.siteKey}legacyDefinitions"
+                                        <select class="span12" id="${importInfoMap.value.siteKey}legacyDefinitions"
                                                 name="importsInfos['${importInfoMap.key}'].selectedLegacyDefinitions">
                                             <c:forEach items="${importInfoMap.value.legacyDefinitions}" var="module">
                                                 <option value="${module.absolutePath}" <c:if

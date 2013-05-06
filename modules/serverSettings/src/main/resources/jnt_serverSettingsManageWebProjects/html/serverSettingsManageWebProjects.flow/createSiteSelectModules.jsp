@@ -23,7 +23,7 @@
                 <div>
                     <label for="templateSet"><strong><fmt:message key="serverSettings.webProjectSettings.pleaseChooseTemplateSet"/></strong></label>
 
-                    <select name="templateSet" id="templateSet">
+                    <select class="span6" name="templateSet" id="templateSet">
                         <c:forEach items="${allModules}" var="module">
                             <c:if test="${module.moduleType eq 'templatesSet' && module.rootFolder != 'templates-system'}">
                             <option value="${module.rootFolder}" ${siteBean.templateSet eq module.rootFolder ? 'selected="true"' : ''}>${module.name}&nbsp;(${module.rootFolder})</option>
@@ -53,7 +53,7 @@
                 <div>
                     <label for="language"><strong><fmt:message key="serverSettings.manageWebProjects.webProject.selectLanguage"/></strong></label>
 
-                    <select name="language" id="language">
+                    <select class="span6" name="language" id="language">
                         <c:forEach items="${allLocales}" var="locale">
                             <option value="${locale}" ${siteBean.language eq locale ? 'selected="true"' : ''}>${locale.displayName}</option>
                         </c:forEach>

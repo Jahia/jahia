@@ -206,7 +206,7 @@
 
     <fieldset>
         <h2><fmt:message key="serverSettings.manageWebProjects.importprepackaged"/></h2>
-            <select name="selectedPrepackagedSite">
+            <select class="span6" name="selectedPrepackagedSite">
                 <c:forEach items="${webprojectHandler.prepackagedSites}" var="file">
                     <fmt:message key="serverSettings.manageWebProjects.importprepackaged.${file.name}" var="label"/>
                     <c:set var="label" value="${fn:contains(label, '???') ? file.name : label}"/>
@@ -214,7 +214,7 @@
                 </c:forEach>
             </select>
 
-            <input class="btn" type="submit" name="importPrepackaged"
+            <input class="btn btn-primary" type="submit" name="importPrepackaged"
                    value="<fmt:message key='serverSettings.manageWebProjects.importprepackaged.proceed' />" onclick="submitSiteForm('importPrepackaged'); return false;"/>
     </fieldset>
 

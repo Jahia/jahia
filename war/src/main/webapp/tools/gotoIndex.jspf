@@ -1,1 +1,4 @@
-<a class="btn" href="<c:url value='/tools/index.jsp'/>">Jahia Tools overview</a>
+<p>
+    <img src="<c:url value='/engines/images/icons/home_on.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;
+    <a href="<c:url value='/tools/index.jsp'/>">to Jahia Tools overview</a>
+</p>

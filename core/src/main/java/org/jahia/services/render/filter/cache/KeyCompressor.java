@@ -50,8 +50,18 @@ import java.io.UnsupportedEncodingException;
 import java.util.zip.Deflater;
 import java.util.zip.InflaterOutputStream;
 
+/**
+ * Class of utility method for compressing/decompressing cache key.
+ */
+
 public class KeyCompressor {
     protected transient static Logger logger = org.slf4j.LoggerFactory.getLogger(KeyCompressor.class);
+
+    /**
+     * Encode a cacheKey.
+     * @param inputString The key to encode
+     * @return the encoded key as a Base-64 url safe string
+     */
     public static String encodeKey(String inputString) {
         if (StringUtils.isEmpty(inputString)) {
             return inputString;
@@ -68,16 +78,18 @@ public class KeyCompressor {
             return Base64.encodeBase64URLSafeString(copy);
         } catch (UnsupportedEncodingException e) {
             logger.warn("Not able to encode dependency: " + inputString, e);
+        } finally {
+            compresser.end();
         }
 
         return inputString;
     }
 
     /**
-     * Decode facet filter URL parameter
+     * Decode a base-64 url safe cache key.
      *
-     * @param inputString enocded facet filter URL query parameter
-     * @return decoded facet filter parameter
+     * @param inputString encoded key.
+     * @return decoded key
      */
     public static String decodeKey(String inputString) {
         if (StringUtils.isEmpty(inputString)) {
@@ -86,15 +98,57 @@ public class KeyCompressor {
         byte[] input = Base64.decodeBase64(inputString);
         // Decompress the bytes
         StringBuilder outputString = new StringBuilder();
+        Inflater inf = new Inflater();
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream(2048);
+<<<<<<< .working
             InflaterOutputStream inflaterOutputStream = new InflaterOutputStream(outputStream);
             inflaterOutputStream.write(input, 0, input.length);
+=======
+            byte[] buf = new byte[512];
+            int len = input.length;
+            int off = 0;
+            for (;;) {
+                int n;
+
+                // Fill the decompressor buffer with output data
+                if (inf.needsInput()) {
+                    int part;
+
+                    if (len < 1) {
+                        break;
+                    }
+
+                    part = (len < 512 ? len : 512);
+                    inf.setInput(input, off, part);
+                    off += part;
+                    len -= part;
+                }
+
+                // Decompress and write blocks of output data
+                do {
+                    n = inf.inflate(buf, 0, buf.length);
+                    if (n > 0) {
+                        outputStream.write(buf, 0, n);
+                    }
+                } while (n > 0);
+
+                // Check the decompressor
+                if (inf.finished()) {
+                    break;
+                }
+                if (inf.needsDictionary()) {
+                    throw new ZipException("ZLIB dictionary missing");
+                }
+            }
+>>>>>>> .merge-right.r45849
             outputString.append(outputStream.toString("UTF-8"));
         } catch (UnsupportedEncodingException e) {
             logger.warn("Not able to decode dependency: " + inputString, e);
         } catch (IOException e) {
             logger.warn("Not able to encode dependency: " + inputString, e);
+        } finally {
+            inf.end();
         }
         return outputString.toString();
     }

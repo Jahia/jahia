@@ -660,10 +660,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     String tag = module.getRootFolder() + "-" + releaseVersion;
 
                     int ret;
-                    String MAVEN_HOME = System.getenv().get("MAVEN_HOME") != null ? System.getenv().get("MAVEN_HOME") : "/usr/share/maven";
+//                    String MAVEN_HOME = System.getenv().get("MAVEN_HOME") != null ? System.getenv().get("MAVEN_HOME") : "/usr/share/maven";
 
                     String[] installParams = {"release:prepare", "release:perform",
-                            "-Dmaven.home=" + MAVEN_HOME,
+//                            "-Dmaven.home=" + MAVEN_HOME,
                             "-Dtag=" + tag,
                             "-DreleaseVersion=" + releaseVersion,
                             "-DdevelopmentVersion=" + nextVersion,

@@ -47,8 +47,13 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
+import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -68,21 +73,22 @@ public class ReleaseModuleActionItem extends BaseActionItem {
 
     @Override public void onComponentSelection() {
         final Window window = new Window();
-
-        window.setHeading(Messages.get("label.export"));
+        String versionInfo = JahiaGWTParameters.getSiteNode().get("j:versionInfo");
+        window.setHeading(Messages.get("label.releaseWar")+"&nbsp;"+versionInfo+"&nbsp;->&nbsp;"+versionInfo.replace("-SNAPSHOT",""));
         window.setSize(500, 150);
         window.setResizable(false);
-        window.setLayout(new CenterLayout());
+        window.setLayout(new FillLayout());
         window.setButtonAlign(Style.HorizontalAlignment.CENTER);
         window.setModal(true);
 
-        String versionInfo = JahiaGWTParameters.getSiteNode().get("j:versionInfo");
 
         final List<Integer> versionNumbers = JahiaGWTParameters.getSiteNode().get("j:versionNumbers");
-
+        final FormPanel formPanel = new FormPanel();
+        formPanel.setHeaderVisible(false);
         final TextField<String> vn = new TextField<String>();
         vn.setValue(generateVersionNumber(versionNumbers, 1));
         vn.setFieldLabel(Messages.get("label.nextVersion", "Next iteration version"));
+        formPanel.add(vn);
         Button b = new Button(Messages.get("label.minorVersion", "Minor version"));
 
         b.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -106,13 +112,12 @@ public class ReleaseModuleActionItem extends BaseActionItem {
 
         b = new Button(Messages.get("label.release", "Release"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
-                window.hide();
-                linker.loading("Releasing module...");
                 if (!vn.getValue().endsWith("-SNAPSHOT")) {
-                    vn.markInvalid(Messages.get("label.snapshotRequired","Working version number must be SNAPSHOT"));
+                    vn.markInvalid(Messages.get("label.snapshotRequired","Working version number must end with -SNAPSHOT"));
                     return;
                 }
-
+                window.hide();
+                linker.loading("Releasing module...");
                 HTML html = new HTML("Generating war, please wait ...");
                 window.getButtonBar().setEnabled(false);
                 window.add(html);
@@ -149,13 +154,7 @@ public class ReleaseModuleActionItem extends BaseActionItem {
             }
         });
         window.addButton(b);
-        b = new Button(Messages.get("label.close"), new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                window.hide();
-            }
-        });
-        window.addButton(b);
-        window.add(vn);
+        window.add(formPanel);
         window.show();
     }
 

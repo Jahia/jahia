@@ -147,8 +147,9 @@
                 <td>
                     <c:choose>
                         <c:when test="${not empty activeVersion.sourcesFolder}">
+                            <c:url var="urlToStudio" value="/cms/studio/${currentResource.locale}/modules/${activeVersion.rootFolder}.html"/>
                             <input class="btn" type="button"
-                                   onclick='window.parent.location.assign("/cms/studio/${currentResource.locale}/modules/${activeVersion.rootFolder}.html")'
+                                   onclick='window.parent.location.assign("${urlToStudio}")'
                                    value="<fmt:message key='serverSettings.manageModules.goToStudio' />"/>
                         </c:when>
                         <c:when test="${not empty activeVersion.scmURI}">
@@ -458,7 +459,8 @@
                             <td><span style="font: bold">${dependency.name}</span></td>
                             <td>
                                 <c:if test="${isStudio and not empty dependency.sourcesFolder}">
-                                    <input class="btn btn-info" type="button" onclick='window.location.assign("${url.base}/modules/${dependency.rootFolder}.html")' value="<fmt:message key='serverSettings.manageModules.details' />"/>
+                                    <c:set var="urlDependencyDetails" value="${url.base}/modules/${dependency.rootFolder}.html"/>
+                                    <input class="btn btn-info" type="button" onclick='window.location.assign("${urlDependencyDetails}")' value="<fmt:message key='serverSettings.manageModules.details' />"/>
                                 </c:if>
                                 <c:if test="${not isStudio}">
                                     <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
@@ -502,8 +504,9 @@
                                 <c:if test="${isStudio}">
                                     <c:choose>
                                         <c:when test="${not empty dependency.sourcesFolder}">
+                                            <c:url var="urlDependencyDetails" value="${url.base}/modules/${dependency.rootFolder}.html"/>
                                             <input class="btn btn-info" type="button"
-                                                   onclick='window.location.assign("${url.base}/modules/${dependency.rootFolder}.html")'
+                                                   onclick='window.location.assign("${urlDependencyDetails}")'
                                                    value="<fmt:message key='serverSettings.manageModules.details' />"/>
                                         </c:when>
                                         <c:otherwise>&nbsp;</c:otherwise>

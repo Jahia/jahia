@@ -83,8 +83,9 @@
                 <td>${entry.key}</td>
                 <td>
                     <c:if test="${isStudio}">
+                        <c:url var="urlDetails" value="${url.base}/modules/${currentModule.rootFolder}.html"/>
                         <input class="btn btn-info" type="button"
-                               onclick='window.location.assign("${url.base}/modules/${currentModule.rootFolder}.html")'
+                               onclick='window.location.assign("${urlDetails}")'
                                value="<fmt:message key='serverSettings.manageModules.details' />"/>
                     </c:if>
                     <c:if test="${not isStudio}">
@@ -221,8 +222,9 @@
                     <td>
                         <c:choose>
                             <c:when test="${not empty currentModule.sourcesFolder}">
+                                <c:url var="urlToStudio" value="/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.html"/>
                                 <input class="btn btn-block" type="button"
-                                       onclick='window.parent.location.assign("/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.html")'
+                                       onclick='window.parent.location.assign("${urlToStudio}")'
                                        value="<fmt:message key='serverSettings.manageModules.goToStudio' />"/>
                             </c:when>
                             <c:when test="${not empty currentModule.scmURI}">

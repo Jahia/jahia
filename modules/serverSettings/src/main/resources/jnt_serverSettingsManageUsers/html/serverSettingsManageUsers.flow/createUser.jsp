@@ -39,41 +39,41 @@
                         <p><fmt:message key="serverSettings.user.errors.username.note"/>:&nbsp;<fmt:message key="serverSettings.user.errors.username.syntax"/></p>
                     </div>
                     <div class="row-fluid">
-                        <div class="span6">
+                        <div class="span4">
                             <label for="username"><fmt:message key="label.username"/> <span class="text-error"><strong>*</strong></span></label>
-                            <input type="text" name="username" id="username" value="${userProperties.username}">
+                            <input type="text" name="username" class="span12" id="username" value="${userProperties.username}">
                         </div>
-                        <div class="span6">
+                        <div class="span4">
                             <label for="firstName"><fmt:message key="label.firstName"/></label>
-                            <input type="text" name="firstName" id="firstName" value="${userProperties.firstName}">
+                            <input type="text" name="firstName" class="span12" id="firstName" value="${userProperties.firstName}">
                         </div>
                     </div>
                     <div class="row-fluid">
-                        <div class="span6">
+                        <div class="span4">
                             <label for="lastName"><fmt:message key="label.lastName"/></label>
-                            <input type="text" name="lastName" id="lastName" value="${userProperties.lastName}">
+                            <input type="text" name="lastName" class="span12" id="lastName" value="${userProperties.lastName}">
                         </div>
-                        <div class="span6">
+                        <div class="span4">
                             <label for="email"><fmt:message key="label.email"/></label>
-                            <input type="text" name="email" id="email" value="${userProperties.email}">
+                            <input type="text" name="email" class="span12" id="email" value="${userProperties.email}">
                         </div>
                     </div>
                     <div class="row-fluid">
-                        <div class="span6">
+                        <div class="span4">
                             <label for="organization"><fmt:message key="label.organization"/></label>
-                            <input type="text" name="organization" id="organization" value="${userProperties.organization}">
+                            <input type="text" name="organization" class="span12" id="organization" value="${userProperties.organization}">
                         </div>
-                        <div class="span6">
+                        <div class="span4">
                         </div>
                     </div>
                     <div class="row-fluid">
-                        <div class="span6">
+                        <div class="span4">
                             <label for="password"><fmt:message key="label.password"/> <span class="text-error"><strong>*</strong></span></label>
-                            <input type="password" name="password" id="password" value="">
+                            <input type="password" name="password" class="span12" id="password" value="">
                         </div>
-                        <div class="span6">
+                        <div class="span4">
                             <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/> <span class="text-error"><strong>*</strong></span></label>
-                            <input type="password" name="passwordConfirm" id="passwordConfirm" value="">
+                            <input type="password" name="passwordConfirm" class="span12" id="passwordConfirm" value="">
                         </div>
                     </div>
 
@@ -83,7 +83,7 @@
             <fieldset title="<fmt:message key='label.options'/>">
                 <div class="container-fluid">
                     <div class="row-fluid">
-                        <div class="span6">
+                        <div class="span4">
                             <label for="emailNotificationsDisabled">
                                 <input type="checkbox" name="emailNotificationsDisabled" id="emailNotificationsDisabled" <c:if test="${userProperties.emailNotificationsDisabled}">checked="checked"</c:if>>
                                 <fmt:message key="serverSettings.user.emailNotifications"/>
@@ -93,7 +93,7 @@
                                 <fmt:message key="label.accountLocked"/>
                             </label>
                         </div>
-                        <div class="span6">
+                        <div class="span4">
                             <label for="preferredLanguage"><fmt:message key="serverSettings.user.preferredLanguage"/></label>
                             <select id="preferredLanguage" name="preferredLanguage" size="1">
                                 <c:forEach items="${functions:availableAdminBundleLocale(renderContext.UILocale)}" var="uiLanguage">

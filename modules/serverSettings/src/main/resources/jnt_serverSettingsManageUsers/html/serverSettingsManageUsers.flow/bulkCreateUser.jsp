@@ -48,7 +48,7 @@
             <label for="csvFile"><fmt:message key="label.csvFile"/></label>
             <input type="file" name="csvFile" id="csvFile"/><br/>
             <label for="csvSeparator"><fmt:message key="label.csvSeparator"/></label>
-            <input type="text" name="csvSeparator" value="${csvFile.csvSeparator}" id="csvSeparator"/>
+            <input class="span6" type="text" name="csvSeparator" value="${csvFile.csvSeparator}" id="csvSeparator"/>
         </fieldset>
         <fieldset>
             <input class="btn btn-primary" type="submit" name="_eventId_confirm" id="${currentNode.identifier}-confirm" value="<fmt:message key='label.ok'/>"/>

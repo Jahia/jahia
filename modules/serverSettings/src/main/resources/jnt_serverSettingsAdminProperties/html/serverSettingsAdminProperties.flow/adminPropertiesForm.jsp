@@ -27,28 +27,28 @@
         <h3><fmt:message key="label.username"/>:&nbsp;${adminUser.name}</h3>
         <div class="container-fluid">
             <div class="row-fluid">
-                <div class="span6">
+                <div class="span4">
                     <label for="firstName"><fmt:message key="label.firstName"/></label>
-                    <form:input type="text" id="firstName" path="firstName"/>
+                    <form:input class="span12" type="text" id="firstName" path="firstName"/>
                     <label for="email"><fmt:message key="label.email"/></label>
-                    <form:input type="text" id="email" path="email"/>
+                    <form:input class="span12" type="text" id="email" path="email"/>
                 </div>
-                <div class="span6">
+                <div class="span4">
                     <label for="lastName"><fmt:message key="label.lastName"/></label>
-                    <form:input type="text" id="lastName" path="lastName"/>
+                    <form:input class="span12" type="text" id="lastName" path="lastName"/>
                     <label for="organization"><fmt:message key="label.organization"/></label>
-                    <form:input type="text" id="organization" path="organization" autocomplete="off"/>
+                    <form:input type="text" class="span12" id="organization" path="organization" autocomplete="off"/>
                 </div>
             </div>
 
             <div class="row-fluid">
-                <div class="span6">
+                <div class="span4">
                     <label for="emailNotifications"><fmt:message key="serverSettings.user.emailNotifications"/></label>
                     <form:checkbox id="emailNotifications" path="emailNotificationsDisabled" />
                 </div>
-                <div class="span6">
+                <div class="span4">
                     <label for="preferredLanguage"><fmt:message key="serverSettings.user.preferredLanguage"/></label>
-                    <select id="preferredLanguage" name="preferredLanguage" size="1">
+                    <select class="span12" id="preferredLanguage" name="preferredLanguage" size="1">
                         <c:forEach items="${functions:availableAdminBundleLocale(renderContext.UILocale)}" var="uiLanguage">
                             <option value="${uiLanguage}" <c:if test="${uiLanguage eq adminProperties.preferredLanguage}">selected="selected" </c:if>>${functions:displayLocaleNameWith(uiLanguage, renderContext.UILocale)}</option>
                         </c:forEach>
@@ -57,19 +57,19 @@
             </div>
 
             <div class="row-fluid">
-                <div class="span6">
+                <div class="span4">
                     <label for="password"><fmt:message key="label.password"/></label>
-                    <form:input type="password" id="password" path="password" autocomplete="off"/>
+                    <form:input class="span12" type="password" id="password" path="password" autocomplete="off"/>
                     <span class="text-info">(<fmt:message key="serverSettings.user.edit.password.no.change"/>)</span>
                 </div>
-                <div class="span6">
+                <div class="span4">
                     <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
-                    <form:input type="password" id="passwordConfirm" path="passwordConfirm" autocomplete="off"/>
+                    <form:input type="password" class="span12" id="passwordConfirm" path="passwordConfirm" autocomplete="off"/>
                     <span class="text-info">(<fmt:message key="serverSettings.user.edit.password.no.change"/>)</span>
                 </div>
             </div>
             <div class="row-fluid">
-                <div class="span12">
+                <div class="span12" style="margin-top:15px;">
                     <input class="btn btn-primary" id="submit" type="submit" value="<fmt:message key='label.save'/>" name="_eventId_submit">
                 </div>
             </div>
@@ -79,7 +79,7 @@
 </div>
     <hr/>
     <h3><fmt:message key="serverSettings.user.groupList"/>:</h3>
-    <p>
+    <p style="line-height: 20px">
         <c:forEach items="${adminProperties.groups}" var="group">
             <span class="badge badge-info">${fn:escapeXml(group.groupname)}</span>
         </c:forEach>

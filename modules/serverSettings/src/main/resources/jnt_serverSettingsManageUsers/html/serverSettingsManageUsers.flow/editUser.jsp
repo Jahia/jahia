@@ -34,23 +34,23 @@
             <fieldset title="<fmt:message key='serverSettings.user.profile'/>">
                 <div class="container-fluid">
                     <div class="row-fluid">
-                        <div class="span6">
+                        <div class="span4">
                             <label for="firstName"><fmt:message key="label.firstName"/></label>
-                            <input type="text" name="firstName" id="firstName" value="${userProperties.firstName}">
+                            <input class="span12" type="text" name="firstName" id="firstName" value="${userProperties.firstName}">
                         </div>
-                        <div class="span6">
+                        <div class="span4">
                             <label for="lastName"><fmt:message key="label.lastName"/></label>
-                            <input type="text" name="lastName" id="lastName" value="${userProperties.lastName}">
+                            <input class="span12" type="text" name="lastName" id="lastName" value="${userProperties.lastName}">
                         </div>
                     </div>
                     <div class="row-fluid">
-                        <div class="span6">
+                        <div class="span4">
                             <label for="email"><fmt:message key="label.email"/></label>
-                            <input type="text" name="email" id="email" value="${userProperties.email}">
+                            <input class="span12" type="text" name="email" id="email" value="${userProperties.email}">
                         </div>
-                        <div class="span6">
+                        <div class="span4">
                             <label for="organization"><fmt:message key="label.organization"/></label>
-                            <input type="text" name="organization" id="organization" value="${userProperties.organization}">
+                            <input class="span12" type="text" name="organization" id="organization" value="${userProperties.organization}">
                         </div>
                     </div>
                 </div>
@@ -58,15 +58,15 @@
             <fieldset title="<fmt:message key='serverSettings.user.password'/>">
                 <div class="container-fluid">
                     <div class="row-fluid">
-                        <div class="span6">
+                        <div class="span4">
                             <label for="password"><fmt:message key="label.password"/></label>
-                            <input type="password" name="password" id="password" value="">
-                            <span class="text-info">&nbsp;(<fmt:message key="serverSettings.user.edit.password.no.change"/>)</span>
+                            <input class="span12" type="password" name="password" id="password" value="">
+                            <div style="margin-bottom:15px;" class="text-info">&nbsp;(<fmt:message key="serverSettings.user.edit.password.no.change"/>)</div>
                         </div>
-                        <div class="span6">
+                        <div class="span4">
                             <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
-                            <input type="password" name="passwordConfirm" id="passwordConfirm" value="">
-                            <span class="text-info">&nbsp;(<fmt:message key="serverSettings.user.edit.password.no.change"/>)</span>
+                            <input class="span12" type="password" name="passwordConfirm" id="passwordConfirm" value="">
+                            <div style="margin-bottom:15px;" class="text-info">&nbsp;(<fmt:message key="serverSettings.user.edit.password.no.change"/>)</div>
                         </div>
                     </div>
                 </div>
@@ -74,7 +74,7 @@
             <fieldset title="<fmt:message key='label.options'/>">
                 <div class="container-fluid">
                     <div class="row-fluid">
-                        <div class="span6">
+                        <div class="span4">
                             <label for="emailNotificationsDisabled">
                                 <input type="checkbox" name="emailNotificationsDisabled" id="emailNotificationsDisabled"
                                        <c:if test="${userProperties.emailNotificationsDisabled}">checked="checked"</c:if>>
@@ -89,7 +89,7 @@
                                 <input type="hidden" name="_accountLocked"/>
                             </label>
                         </div>
-                        <div class="span6">
+                        <div class="span4">
                             <label for="preferredLanguage"><fmt:message key="serverSettings.user.preferredLanguage"/></label>
                             <select id="preferredLanguage" name="preferredLanguage" size="1">
                                 <c:forEach items="${functions:availableAdminBundleLocale(renderContext.UILocale)}" var="uiLanguage">
@@ -107,7 +107,7 @@
                     <div class="row-fluid">
                         <div class="span12">
                             <label for="groupsFields"><fmt:message key="serverSettings.user.groups.list"/></label>
-                            <select class="span6 fontfix" name="selectMember" size="6" multiple>
+                            <select class="span12 fontfix" name="selectMember" size="6" multiple>
                                 <c:forEach items="${userProperties.groups}" var="group">
                                     <option value="${user:formatUserValueOption(group)}">${user:formatUserTextOption(group, 'Name, 20;SiteTitle, 15;Properties, 20')}</option>
                                 </c:forEach>

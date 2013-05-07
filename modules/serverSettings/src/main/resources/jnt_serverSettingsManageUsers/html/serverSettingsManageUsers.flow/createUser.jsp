@@ -108,8 +108,14 @@
                 <div class="container-fluid">
                     <div class="row-fluid">
                         <div class="span12">
-                            <input class="btn btn-primary" type="submit" name="_eventId_add" value="<fmt:message key='label.add'/>"/>
-                            <input class="btn"type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel'/>"/>
+                            <button class="btn btn-primary" type="submit" name="_eventId_add">
+                                <i class="icon-plus icon-white"></i>
+                                &nbsp;<fmt:message key='label.add'/>
+                            </button>
+                            <button class="btn" type="submit" name="_eventId_cancel">
+                                <i class="icon-ban-circle"></i>
+                                &nbsp;<fmt:message key='label.cancel'/>
+                            </button>
                         </div>
                     </div>
                 </div>

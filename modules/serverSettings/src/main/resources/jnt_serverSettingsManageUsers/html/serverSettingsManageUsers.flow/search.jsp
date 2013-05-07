@@ -44,7 +44,10 @@
                 <input class="span6" type="text" id="searchString" name="searchString"
                        value='${searchCriteria.searchString}'
                        onkeydown="if (event.keyCode == 13) submitForm('search');"/>
-                <input class="btn btn-primary" style="font-size: 12px;" type="submit" name="_eventId_search" value="<fmt:message key='label.search'/>"/>
+                <button class="btn btn-primary" type="submit"  name="_eventId_search">
+                    <i class="icon-search icon-white"></i>
+                    &nbsp;<fmt:message key='label.search'/>
+                </button>
             </div>
             <br/>
             <br/>
@@ -117,22 +120,30 @@
 <div>
     <div>
         <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
-            <input class="btn" type="submit" name="_eventId_addUser"
-                   value="<fmt:message key='serverSettings.user.create'/>"/>
+            <button class="btn" type="submit" name="_eventId_addUser" >
+                <i class="icon-plus"></i>
+                &nbsp;<fmt:message key='serverSettings.user.create'/>
+            </button>
         </form>
         <form action="${flowExecutionUrl}" method="POST" class="needUsersSelection" style="display: inline;">
             <input type="hidden" name="selectedUsers"/>
-            <input class="btn" type="submit" name="_eventId_editUser"
-                   value="<fmt:message key='serverSettings.user.edit'/>"/>
+            <button class="btn" type="submit" name="_eventId_editUser" >
+                <i class="icon-edit"></i>
+                &nbsp;<fmt:message key='serverSettings.user.edit'/>
+            </button>
         </form>
         <form action="${flowExecutionUrl}" method="POST" class="needUsersSelection" style="display: inline;">
             <input type="hidden" name="selectedUsers"/>
-            <input class="btn" type="submit" name="_eventId_removeUser"
-                   value="<fmt:message key='serverSettings.user.remove'/>"/>
+            <button class="btn" type="submit" name="_eventId_removeUser" >
+                <i class="icon-remove"></i>
+                &nbsp;<fmt:message key='serverSettings.user.remove'/>
+            </button>
         </form>
         <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
-            <input class="btn" type="submit" name="_eventId_bulkAddUser"
-                   value="<fmt:message key='serverSettings.users.bulk.create'/>"/>
+            <button class="btn" type="submit" name="_eventId_bulkAddUser" >
+                <i class="icon-cog"></i>
+                &nbsp;<fmt:message key='serverSettings.users.bulk.create'/>
+            </button>
         </form>
     </div>
     <p>

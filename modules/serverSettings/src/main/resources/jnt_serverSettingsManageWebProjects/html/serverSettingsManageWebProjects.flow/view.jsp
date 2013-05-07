@@ -81,26 +81,18 @@
         <input type="hidden" id="sitesFormAction" name="_eventId" value="" />
         <div class="btn-group">
             <a href="#create" id="createSite" class="btn sitesAction">
-                <img src="<c:url value='/css/images/andromeda/icons/environment_add.png'/>"
-                     title="<fmt:message key="serverSettings.manageWebProjects.add"/>"
-                     width="16" height="16" border="0" alt="<fmt:message key='serverSettings.manageWebProjects.add'/>"/>
+                <i class="icon-plus"></i>
                 <fmt:message key="serverSettings.manageWebProjects.add"/>
             </a>
             <a href="#export" id="exportSites" class="btn sitesAction-hide">
-                <img src="<c:url value='/css/images/andromeda/icons/export1.png'/>"
-                     title="<fmt:message key="label.export"/>"
-                     width="16" height="16" border="0" alt="<fmt:message key='label.export'/>"/>
+                <i class="icon-upload"></i>
                 <fmt:message key="label.export"/>
             </a>
             <a href="#exportStaging" id="exportStagingSites" class="btn sitesAction-hide">
-                <img src="<c:url value='/css/images/andromeda/icons/export2.png'/>"
-                     title="<fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)"
-                     width="16" height="16" border="0" alt="<fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)"/>
+                <i class=" icon-circle-arrow-up"></i>
                 <fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)</a>
             <a href="#delete" id="deleteSites" class="btn sitesAction">
-                <img src="<c:url value='/css/images/andromeda/icons/environment_delete.png'/>"
-                     title="<fmt:message key="label.delete"/>"
-                     width="16" height="16" border="0" alt="<fmt:message key='label.delete'/>"/>
+                <i class="icon-remove"></i>
                 <fmt:message key="label.delete"/>
             </a>
         </div>
@@ -150,7 +142,7 @@
                                 <c:if test="${site.identifier == defaultSite.string}">
                                     &nbsp;<img src="<c:url value='/css/images/andromeda/icons/accept.png'/>"
                                          title="<fmt:message key='serverSettings.manageWebProjects.webProject.isDefault'/>"
-                                         width="10" height="10" border="0" alt="+"/>
+                                         width="12" height="12" border="0" alt="+"/>
                                 </c:if>
                             </td>
                             <td><a href="#edit" onclick="submitSiteForm('editSite', '${site.name}'); return false;">${fn:escapeXml(site.title)}</a></td>
@@ -161,12 +153,12 @@
                                 <c:set var="i18nExportStaging"><fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)</c:set>
                                 <c:set var="i18nExportStaging" value="${fn:escapeXml(i18nExportStaging)}"/>
                                 <c:url var="editUrl" value="/cms/edit/default/${site.defaultLanguage}${site.home.path}.html"/>
-                                <a href="${editUrl}"><img
-                                        src="<c:url value='/css/images/andromeda/icons/arrow_right_green.png'/>"
-                                        alt="<fmt:message key='serverSettings.manageWebProjects.exitToEdit'/>" title="<fmt:message key='serverSettings.manageWebProjects.exitToEdit'/>" width="16" height="16" border="0"/></a>
-                                <a href="#edit" onclick="submitSiteForm('editSite', '${site.name}'); return false;"><img
-                                        src="<c:url value='/engines/images/icons/admin/adromeda/edit.png'/>"
-                                        alt="<fmt:message key='label.edit'/>" title="<fmt:message key='label.edit'/>" width="16" height="16" border="0"/></a>
+                                <a style="margin-bottom:0;" class="btn btn-small" href="${editUrl}" title="<fmt:message key='serverSettings.manageWebProjects.exitToEdit'/>">
+                                    <i class="icon-pencil"></i>
+                                </a>
+                                <a style="margin-bottom:0;" class="btn btn-small" href="#edit" title="<fmt:message key='label.edit'/>" onclick="submitSiteForm('editSite', '${site.name}'); return false;">
+                                    <i class=" icon-edit"></i>
+                                </a>
                                 <%--
                                 <a href="#edit" onclick="submitSiteForm('exportSites', '${site.name}'); return false;"><img
                                         src="<c:url value='/css/images/andromeda/icons/export1.png'/>"
@@ -175,9 +167,9 @@
                                         src="<c:url value='/css/images/andromeda/icons/export2.png'/>"
                                         alt="${i18nExportStaging}" title="${i18nExportStaging}" width="16" height="16" border="0"/></a>
                                  --%>
-                                <a href="#delete" onclick="submitSiteForm('deleteSites', '${site.name}'); return false;"><img
-                                        src="<c:url value='/engines/images/icons/admin/adromeda/delete.png'/>"
-                                        alt="<fmt:message key='label.delete'/>" title="<fmt:message key='label.delete'/>" width="16" height="16" border="0"/></a>
+                                <a style="margin-bottom:0;" class="btn btn-danger btn-small" title="<fmt:message key='label.delete'/>" href="#delete" onclick="submitSiteForm('deleteSites', '${site.name}'); return false;">
+                                    <i class="icon-remove icon-white"></i>
+                                </a>
                             </td>
                         </tr>
                     </c:if>
@@ -190,15 +182,11 @@
         <h2>System Site</h2>
         <div class="btn-group">
             <a class="btn" href="<c:url value='/cms/export/default/systemsite_export_${now}.zip?exportformat=site&live=true&sitebox=systemsite' />">
-                <img src="<c:url value='/css/images/andromeda/icons/export1.png'/>"
-                     title="<fmt:message key='label.export' />"
-                     width="16" height="16" border="0" alt="<fmt:message key='label.export' />"/>
+                <i class="icon-upload"></i>
                 <fmt:message key='label.export' />
             </a>
             <a class="btn" href="<c:url value='/cms/export/default/systemsite_staging_export_${now}.zip?exportformat=site&live=false&sitebox=systemsite' />">
-                <img src="<c:url value='/css/images/andromeda/icons/export2.png'/>"
-                     title="<fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)"
-                     width="16" height="16" border="0" alt="<fmt:message key='label.export' />"/>
+                <i class=" icon-circle-arrow-up"></i>
                 <fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)
             </a>
         </div>
@@ -206,16 +194,17 @@
 
     <fieldset>
         <h2><fmt:message key="serverSettings.manageWebProjects.importprepackaged"/></h2>
-            <select class="span6" name="selectedPrepackagedSite">
-                <c:forEach items="${webprojectHandler.prepackagedSites}" var="file">
-                    <fmt:message key="serverSettings.manageWebProjects.importprepackaged.${file.name}" var="label"/>
-                    <c:set var="label" value="${fn:contains(label, '???') ? file.name : label}"/>
-                    <option value="${file.absolutePath}"${file.name == defaultPrepackagedSite ? ' selected="selected"':''}>${fn:escapeXml(label)}</option>
-                </c:forEach>
-            </select>
-
-            <input class="btn btn-primary" type="submit" name="importPrepackaged"
-                   value="<fmt:message key='serverSettings.manageWebProjects.importprepackaged.proceed' />" onclick="submitSiteForm('importPrepackaged'); return false;"/>
+        <select class="span5" name="selectedPrepackagedSite">
+            <c:forEach items="${webprojectHandler.prepackagedSites}" var="file">
+                <fmt:message key="serverSettings.manageWebProjects.importprepackaged.${file.name}" var="label"/>
+                <c:set var="label" value="${fn:contains(label, '???') ? file.name : label}"/>
+                <option value="${file.absolutePath}"${file.name == defaultPrepackagedSite ? ' selected="selected"':''}>${fn:escapeXml(label)}</option>
+            </c:forEach>
+        </select>
+        <button class="btn btn-primary" type="submit" name="importPrepackaged" onclick="submitSiteForm('importPrepackaged'); return false;">
+            <i class="icon-ok icon-white"></i>
+            &nbsp;<fmt:message key='serverSettings.manageWebProjects.importprepackaged.proceed' />
+        </button>
     </fieldset>
 
 </form>
@@ -225,13 +214,20 @@
             <div class="alert alert-info">
                 <p><fmt:message key="serverSettings.manageWebProjects.multipleimport.fileselect"/></p>
                 <input type="file" name="importFile"/>
+                <button class="btn btn-primary" type="submit" name="_eventId_import" onclick="">
+                    <i class="icon-download icon-white"></i>
+                    &nbsp;<fmt:message key='serverSettings.manageWebProjects.fileImport'/>
+                </button>
             </div>
-            <div>
+            <div class="box-1">
                 <p><fmt:message key="serverSettings.manageWebProjects.multipleimport.fileinput"/></p>
-                <input class="span6" type="text"  name="importPath"/>
+                <input class="span5" type="text"  name="importPath"/>
+                <button class="btn btn-primary" type="submit" name="_eventId_import" onclick="">
+                    <i class="icon-download icon-white"></i>
+                    &nbsp;<fmt:message key='serverSettings.manageWebProjects.fileImport'/>
+                </button>
             </div>
 
-            <input class="btn btn-primary" type="submit" name="_eventId_import"
-                   value="<fmt:message key='serverSettings.manageWebProjects.fileImport'/>" onclick=""/>
+
         </form>
     </fieldset>

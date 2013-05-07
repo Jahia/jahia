@@ -24,7 +24,10 @@
     <div class="alert alert-info">
         <p><fmt:message key="serverSettings.user.definitivelyRemove"/><br/>
         <fmt:message key="serverSettings.user.definitivelyRemove.files"/></p>
-        <a class="btn" href="<c:url value='/cms/export/default${userProperties.localPath}.zip?cleanup=simple'/>" target="_blank"><fmt:message key="label.export"/></a>
+        <a class="btn btn-primary" href="<c:url value='/cms/export/default${userProperties.localPath}.zip?cleanup=simple'/>" target="_blank">
+            <i class="icon-upload icon-white"></i>
+            <fmt:message key="label.export"/>
+        </a>
     </div>
         <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
             <c:if test="${message.severity eq 'ERROR'}">
@@ -105,8 +108,14 @@
                 <div class="container-fluid">
                     <div class="row-fluid">
                         <div class="span12">
-                            <input class="btn btn-danger" type="submit" name="_eventId_confirm" value="<fmt:message key='label.remove.confirm'/>"/>
-                            <input class="btn" type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel'/>"/>
+                            <button class="btn btn-danger" type="submit" name="_eventId_confirm">
+                                <i class="icon-remove icon-white"></i>
+                                &nbsp;<fmt:message key='label.remove.confirm'/>
+                            </button>
+                            <button class="btn" type="submit" name="_eventId_cancel">
+                                <i class="icon-ban-circle"></i>
+                                &nbsp;<fmt:message key='label.cancel'/>
+                            </button>
                         </div>
                     </div>
                 </div>

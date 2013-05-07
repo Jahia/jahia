@@ -40,19 +40,6 @@
 
 package org.jahia.services.query;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.query.QueryResult;
-import javax.jcr.query.Row;
-import javax.jcr.query.RowIterator;
-
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.jackrabbit.JcrConstants;
@@ -68,6 +55,14 @@ import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.utils.LanguageCodeConverters;
+
+import javax.jcr.*;
+import javax.jcr.query.QueryResult;
+import javax.jcr.query.Row;
+import javax.jcr.query.RowIterator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation of the JCR {@link QueryResult}.
@@ -310,9 +305,9 @@ public class QueryResultWrapper implements QueryResult {
      * @return true is queryResultWrapper doesn't contains any facet results
      */
     public boolean isFacetResultsEmpty(){
-        return this.getFacetFields().isEmpty() &&
-        this.getFacetDates().isEmpty() &&
-        this.getFacetQuery().isEmpty();
+        return (this.getFacetFields() == null || this.getFacetFields().isEmpty()) &&
+                (this.getFacetDates() == null || this.getFacetDates().isEmpty()) &&
+                (this.getFacetQuery() == null || this.getFacetQuery().isEmpty());
     }
 
     JCRSessionWrapper getSession() {

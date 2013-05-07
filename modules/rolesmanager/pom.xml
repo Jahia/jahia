@@ -19,9 +19,9 @@
 
     <repositories>
         <repository>
-            <id>jahia-public</id>
-            <name>Jahia Public Repository</name>
-            <url>https://devtools.jahia.com/nexus/content/groups/public</url>
+            <id>jahia-enterprise</id>
+            <name>Jahia Enterprise Repository</name>
+            <url>https://devtools.jahia.com/nexus/content/groups/enterprise</url>
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>never</updatePolicy>

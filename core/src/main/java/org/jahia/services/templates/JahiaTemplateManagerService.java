@@ -254,9 +254,22 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     if (moduleName.equals(artifactId)) {
                         if (document.getRootElement().elementIterator("version").hasNext()) {
                             n = (Element) document.getRootElement().elementIterator("version").next();
-                        } else if (document.getRootElement().elementIterator("parent").hasNext()) {
-                            n = (Element) document.getRootElement().elementIterator("parent").next();
-                            n = (Element) n.elementIterator("version").next();
+                        }
+                        if (document.getRootElement().elementIterator("parent").hasNext()) {
+                            Element parent = (Element) document.getRootElement().elementIterator("parent").next();
+                            parent = (Element) parent.elementIterator("version").next();
+                            if(n == null) {
+                                n = parent;
+                            }
+                            ModuleVersion moduleVersion = new ModuleVersion(parent.getText());
+                            if (moduleVersion.compareTo(new ModuleVersion("6.7"))<0) {
+                                FileUtils.deleteDirectory(sources);
+                                String msg = "Module " + moduleName + "  " + StringUtils.defaultIfEmpty(version, "") +
+                                             " in " + scmURI + " " + StringUtils.defaultIfEmpty(branchOrTag, "") +
+                                             " is not compatible with Jahia 6.7 and later version";
+                                logger.error(msg);
+                                throw new IOException(msg);
+                            }
                         }
                         if (version != null) {
                             if (n != null && version.equals(n.getText())) {
@@ -278,11 +291,25 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 Document document = reader.read(pom);
                 Element n = (Element) document.getRootElement().elementIterator("artifactId").next();
                 moduleName = n.getText();
+                n=null;
                 if (document.getRootElement().elementIterator("version").hasNext()) {
                     n = (Element) document.getRootElement().elementIterator("version").next();
-                } else if (document.getRootElement().elementIterator("parent").hasNext()) {
-                    n = (Element) document.getRootElement().elementIterator("parent").next();
-                    n = (Element) n.elementIterator("version").next();
+                }
+                if (document.getRootElement().elementIterator("parent").hasNext()) {
+                    Element parent = (Element) document.getRootElement().elementIterator("parent").next();
+                    parent = (Element) parent.elementIterator("version").next();
+                    if(n == null) {
+                        n = parent;
+                    }
+                    ModuleVersion moduleVersion = new ModuleVersion(parent.getText());
+                    if (moduleVersion.compareTo(new ModuleVersion("6.7"))<0) {
+                        FileUtils.deleteDirectory(sources);
+                        String msg = "Module " + moduleName + "  " + StringUtils.defaultIfEmpty(version, "") +
+                                     " in " + scmURI + " " + StringUtils.defaultIfEmpty(branchOrTag, "") +
+                                     " is not compatible with Jahia 6.7 and later version";
+                        logger.error(msg);
+                        throw new IOException(msg);
+                    }
                 }
                 if (n != null) {
                     version = n.getText();

@@ -61,9 +61,11 @@ public class SourceControlDialog extends Dialog {
     private TextField<String> moduleName;
     private TextField<String> branchOrTag;
     private Map<String,Radio> radios;
+    private final FormPanel form;
+    private SourceControlDialog sourceControlDialog;
 
     public SourceControlDialog(boolean viewBranchOrTag) {
-        setHeading("Get sources from source control");
+        setHeading(Messages.get("label.sourceControlDialog.header","Get sources from source control"));
         setButtons(Dialog.OKCANCEL);
         setModal(true);
         setHideOnButtonClick(true);
@@ -72,11 +74,10 @@ public class SourceControlDialog extends Dialog {
 
         setLayout(new FitLayout());
 
-        final FormPanel form = new FormPanel();
+        form = new FormPanel();
         form.setHeaderVisible(false);
         form.setFrame(false);
-        form.setLabelWidth(125);
-
+        form.setLabelWidth(175);
         scmType = new RadioGroup("scmType");
         scmType.setFieldLabel(Messages.get("label.scmType", "SCM type"));
         radios = new HashMap<String, Radio>();
@@ -102,7 +103,8 @@ public class SourceControlDialog extends Dialog {
 
         moduleName = new TextField<String>();
         moduleName.setName("moduleName");
-        moduleName.setFieldLabel(Messages.get("label.moduleName", "Module name"));
+        moduleName.setFieldLabel(Messages.get("label.moduleName", "Module name ( must match artifactID of the pom.xml)"));
+        moduleName.setAllowBlank(false);
         form.add(moduleName);
 
         if (viewBranchOrTag) {
@@ -113,6 +115,7 @@ public class SourceControlDialog extends Dialog {
         }
 
         add(form);
+        sourceControlDialog = this;
     }
 
     public String getScmType() {
@@ -153,7 +156,11 @@ public class SourceControlDialog extends Dialog {
             @Override
             public void handleEvent(WindowEvent be) {
                 if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.OK)) {
-                    listener.handleEvent(be);
+                    if (form.isValid()) {
+                        listener.handleEvent(be);
+                    } else {
+                        sourceControlDialog.show();
+                    }
                 }
             }
         });

@@ -49,16 +49,14 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * This is an adapter to support JCR query result functionality for multiple providers.
  *
  * @author Thomas Draier
  */
-class MultipleQueryResultAdapter implements QueryResult {
+public class MultipleQueryResultAdapter implements QueryResult {
 
     private static MultipleQueryResultAdapter EMPTY = new MultipleQueryResultAdapter();
     
@@ -103,15 +101,11 @@ class MultipleQueryResultAdapter implements QueryResult {
     public RowIterator getRows() throws RepositoryException {
         RowIterator resultRowIterator = RowIteratorAdapter.EMPTY;
         if (!queryResults.isEmpty()) {
-            List<Row> rows = new LinkedList<Row>();
-            // TODO implement a real row iterator on top of the query results without reading all the rows.
+            List<RowIterator> rowIterators = new ArrayList<RowIterator>();
             for (final QueryResultWrapper queryResult : queryResults) {
-                RowIterator subIterator = queryResult.getRows();
-                while (subIterator.hasNext()) {
-                    rows.add(subIterator.nextRow());
-                }
+                rowIterators.add(queryResult.getRows());
             }
-            resultRowIterator = new RowIteratorAdapter(rows);
+            resultRowIterator = new MultipleRowIterator(rowIterators);
         }
         return resultRowIterator;
     }
@@ -120,20 +114,40 @@ class MultipleQueryResultAdapter implements QueryResult {
         NodeIterator nodeIterator = NodeIteratorAdapter.EMPTY;
 
         if (!queryResults.isEmpty()) {
-            List<Node> nodes = new LinkedList<Node>();
-            // TODO implement a real node iterator on top of the query results without reading all the nodes.
+            List<NodeIterator> nodeIterators = new ArrayList<NodeIterator>();
             for (QueryResult queryResult : queryResults) {
-                NodeIterator subIterator = queryResult.getNodes();
-                while (subIterator.hasNext()) {
-                    nodes.add(subIterator.nextNode());
-                }
+                nodeIterators.add(queryResult.getNodes());
             }
-            nodeIterator = new NodeIteratorAdapter(nodes);
+            nodeIterator = new MultipleNodeIterator(nodeIterators);
         }
         return nodeIterator;
     }
 
     public String[] getSelectorNames() throws RepositoryException {
         return !queryResults.isEmpty() ? queryResults.get(0).getSelectorNames() : ArrayUtils.EMPTY_STRING_ARRAY;
+    }
+
+    public class MultipleRowIterator extends MultipleIterator<RowIterator> implements RowIterator {
+
+        public MultipleRowIterator(List<RowIterator> iterators) {
+            super(iterators);
+        }
+
+        @Override
+        public Row nextRow() {
+            return (Row) next();
+        }
+    }
+
+    public class MultipleNodeIterator extends MultipleIterator<NodeIterator> implements NodeIterator {
+
+        public MultipleNodeIterator(List<NodeIterator> iterators) {
+            super(iterators);
+        }
+
+        @Override
+        public Node nextNode() {
+            return (Node) next();
+        }
     }
 }

@@ -52,5 +52,8 @@
             </tr>
         </c:forEach>
     </table>
-    <input class="btn btn-primary" type="submit" name="_eventId_submitPwdPolicy" value="<fmt:message key='label.save'/>"/>
+    <button class="btn btn-primary" type="submit" name="_eventId_submitPwdPolicy">
+        <i class="icon-ok icon-white"></i>
+        &nbsp;<fmt:message key='label.save'/>
+    </button>
 </form>

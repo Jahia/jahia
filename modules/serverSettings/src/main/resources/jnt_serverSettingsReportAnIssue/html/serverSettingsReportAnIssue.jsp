@@ -3,5 +3,8 @@
 
 <p>
     <fmt:message key="serverSettings.reportAnIssue.description"/>:&nbsp;
-    <a class="btn btn-primary" href="http://support.jahia.com" target="_blank"><fmt:message key="serverSettings.reportAnIssue.jira"/></a>
+    <a class="btn btn-primary" href="http://support.jahia.com" target="_blank">
+        <i class="icon-circle-arrow-right icon-white"></i>
+        <fmt:message key="serverSettings.reportAnIssue.jira"/>
+    </a>
 </p>

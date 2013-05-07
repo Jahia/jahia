@@ -46,9 +46,11 @@
         </c:forEach>
         <div class="alert alert-info">
             <label for="moduleFile"><fmt:message key="serverSettings.manageModules.upload.module"/></label>
-            <input type="file" id="moduleFile" name="moduleFile" accept=""/><input class="btn btn-primary" type="submit"
-                                                                                   name="_eventId_upload"
-                                                                                   value="<fmt:message key='label.upload'/>"/>
+            <input type="file" id="moduleFile" name="moduleFile" accept=""/>
+            <button class="btn btn-primary" type="submit" name="_eventId_upload">
+                <i class="icon-download-alt icon-white"></i>
+                &nbsp;<fmt:message key='label.upload'/>
+            </button>
         </div>
     </form:form>
 </c:if>
@@ -84,15 +86,18 @@
                 <td>
                     <c:if test="${isStudio}">
                         <c:url var="urlDetails" value="${url.base}/modules/${currentModule.rootFolder}.html"/>
-                        <input class="btn btn-info" type="button"
-                               onclick='window.location.assign("${urlDetails}")'
-                               value="<fmt:message key='serverSettings.manageModules.details' />"/>
+                        <button class="btn btn-info" type="button" onclick='window.location.assign("${urlDetails}")'>
+                            <i class="icon-zoom-in icon-white"></i>
+                            &nbsp;<fmt:message key='serverSettings.manageModules.details' />
+                        </button>
                     </c:if>
                     <c:if test="${not isStudio}">
                         <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                             <input type="hidden" name="selectedModule" value="${entry.key}"/>
-                            <input class="btn btn-info" type="submit" name="_eventId_viewDetails"
-                                   value="<fmt:message key='serverSettings.manageModules.details' />" onclick=""/>
+                            <button class="btn btn-info" type="submit" name="_eventId_viewDetails" onclick="">
+                                <i class="icon-zoom-in icon-white"></i>
+                                &nbsp;<fmt:message key='serverSettings.manageModules.details' />
+                            </button>
                         </form>
                     </c:if>
                 </td>
@@ -112,8 +117,8 @@
                                         <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                             <input type="hidden" name="module" value="${entry.key}"/>
                                             <fmt:message var="label" key='serverSettings.manageModules.startModule'/>
-                                            <input class="btn btn-success" type="submit" value="${label}"
-                                                   disabled="true"/>&nbsp; ${version.key} ( ${version.value.state.state} )
+                                            <button class="btn btn-success" type="submit" disabled="true"><i class=" icon-play icon-white"></i>&nbsp;${label}</button>
+                                            &nbsp; ${version.key} ( ${version.value.state.state} )
                                         </form>
                                     </div>
                                 </c:when>
@@ -167,9 +172,11 @@
                                                 </c:otherwise>
                                             </c:choose>
                                             <c:if test="${not(isSystemDependency eq 'true')}">
-                                            <input class="btn btn-danger" type="submit" name="_eventId_stopModule"
-                                                   value="${label}" onclick="return confirm('${functions:escapeJavaScript(labelUndeployModuleConfirm)}');"/></c:if>&nbsp; ${version.key} ( ${version.value.state.state} )
-
+                                            <button class="btn btn-danger" type="submit" name="_eventId_stopModule" onclick="return confirm('${functions:escapeJavaScript(labelUndeployModuleConfirm)}');">
+                                                <i class=" icon-stop icon-white"></i>&nbsp;${label}
+                                            </button>
+                                            </c:if>
+                                            &nbsp; ${version.key} ( ${version.value.state.state} )
                                         </form>
                                     </div>
                                 </c:when>
@@ -184,15 +191,18 @@
                                                          key='serverSettings.manageModules.undeployModule'/>
                                             <fmt:message var="labelUndeployModuleConfirm"
                                                          key="serverSettings.manageModules.undeployModule.confirm"/>
-                                                         
-                                            <input class="btn btn-success" type="submit" name="_eventId_startModule"
-                                                   value="${labelStart}" onclick="" />&nbsp;
 
+
+                                            <button class="btn btn-success" type="submit" name="_eventId_startModule" onclick=""><i class=" icon-play icon-white"></i>&nbsp;${labelStart}</button>
+                                            &nbsp;
                                             <c:set value="${not empty sitesDirect[entry.key] or not empty sitesTemplates[entry.key] or not empty sitesTransitive[entry.key]}" var="used"/>
-                                            <input class="btn" type="submit" name="_eventId_undeployModule"
-                                                   ${(fn:length(entry.value) == 1 and used) ? "disabled='true'" :""}
-                                                   value="${labelUndeployModule}"
-                                                   onclick="return confirm('${functions:escapeJavaScript(labelUndeployModuleConfirm)}');"/>&nbsp; ${version.key} ( ${version.value.state.state} )
+                                            <button class="btn" type="submit" name="_eventId_undeployModule"
+                                                    ${(fn:length(entry.value) == 1 and used) ? "disabled='true'" :""}
+                                                    onclick="return confirm('${functions:escapeJavaScript(labelUndeployModuleConfirm)}');">
+                                                    <i class="icon-ban-circle"></i>
+                                                    &nbsp;${labelUndeployModule}
+                                            </button>
+                                            &nbsp; ${version.key} ( ${version.value.state.state} )
                                         </form>
                                     </div>
                                 </c:otherwise>
@@ -205,7 +215,6 @@
                         </c:if>
                     </c:forEach>
                 </td>
-
 
                 <c:if test="${not isStudio}">
                     <td>
@@ -223,9 +232,10 @@
                         <c:choose>
                             <c:when test="${not empty currentModule.sourcesFolder}">
                                 <c:url var="urlToStudio" value="/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.html"/>
-                                <input class="btn btn-block" type="button"
-                                       onclick='window.parent.location.assign("${urlToStudio}")'
-                                       value="<fmt:message key='serverSettings.manageModules.goToStudio' />"/>
+                                <button class="btn btn-block" type="button" name="_eventId_startModule" onclick='window.parent.location.assign("${urlToStudio}")'>
+                                    <i class="icon-circle-arrow-right"></i>
+                                    &nbsp;<fmt:message key='serverSettings.manageModules.goToStudio' />
+                                </button>
                             </c:when>
                             <c:when test="${not empty currentModule.scmURI}">
                                 <c:if test="${functions:contains(sourceControls, fn:substringBefore(fn:substringAfter(currentModule.scmURI, ':'),':'))}">
@@ -233,8 +243,10 @@
                                         <input type="hidden" name="module" value="${entry.key}"/>
                                         <input type="hidden" name="scmUri" value="${currentModule.scmURI}"/>
                                         <fmt:message var="label" key='serverSettings.manageModules.downloadSources'/>
-                                        <input class="btn btn-block button-download" type="submit"
-                                               name="_eventId_downloadSources" value="${label}" onclick=""/>
+                                        <button class="btn btn-block button-download" type="submit" name="_eventId_downloadSources" onclick="">
+                                            <i class="icon-download"></i>
+                                            &nbsp;${label}
+                                        </button>
                                     </form>
                                 </c:if>
                             </c:when>
@@ -244,8 +256,10 @@
                                     <input type="hidden" name="module" value="${entry.key}"/>
                                     <input type="hidden" name="scmUri" value="scm:git:"/>
                                     <fmt:message var="label" key='serverSettings.manageModules.downloadSources'/>
-                                    <input class="btn btn-block" type="submit" name="_eventId_downloadSources"
-                                           value="${label}" onclick=""/>
+                                    <button class="btn btn-block" type="submit" name="_eventId_downloadSources" onclick="">
+                                        <i class="icon-download"></i>
+                                        &nbsp;${label}
+                                    </button>
                                 </form>
                             </c:otherwise>
                         </c:choose>

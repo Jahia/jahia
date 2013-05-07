@@ -99,12 +99,13 @@ public class SourceControlDialog extends Dialog {
         uri = new TextField<String>();
         uri.setName("uri");
         uri.setFieldLabel(Messages.get("label.uri", "URI"));
+        uri.setAllowBlank(false);
         form.add(uri);
 
         moduleName = new TextField<String>();
         moduleName.setName("moduleName");
-        moduleName.setFieldLabel(Messages.get("label.moduleName", "Module name ( must match artifactID of the pom.xml)"));
-        moduleName.setAllowBlank(false);
+        moduleName.setFieldLabel(Messages.get("label.moduleName", "Module name ( must match artifactID of the pom.xml )"));
+        moduleName.setAllowBlank(true);
         form.add(moduleName);
 
         if (viewBranchOrTag) {

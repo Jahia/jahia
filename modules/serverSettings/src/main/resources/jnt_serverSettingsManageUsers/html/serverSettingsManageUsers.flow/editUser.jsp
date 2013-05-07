@@ -120,11 +120,19 @@
                 <div class="container-fluid">
                     <div class="row-fluid">
                         <div class="span12">
-                            <input class="btn btn-primary" type="submit" name="_eventId_update" value="<fmt:message key='label.update'/>"/>
-                            <input class="btn btn" type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel'/>"/>
+                            <button class="btn btn-primary" type="submit" name="_eventId_update">
+                                <i class="icon-ok icon-white"></i>
+                                &nbsp;<fmt:message key='label.update'/>
+                            </button>
+                            <button class="btn" type="submit" name="_eventId_cancel">
+                                <i class="icon-ban-circle"></i>
+                                &nbsp;<fmt:message key='label.cancel'/>
+                            </button>
                             <input type="hidden" name="selectedUsers" value="${userProperties.userKey}"/>
-                            <input class="btn" type="submit" name="_eventId_removeUser"
-                                   value="<fmt:message key='serverSettings.user.remove'/>"/>
+                            <button class="btn" type="submit" name="_eventId_removeUser">
+                                <i class="icon-remove"></i>
+                                &nbsp;<fmt:message key='serverSettings.user.remove'/>
+                            </button>
                         </div>
                     </div>
                 </div>

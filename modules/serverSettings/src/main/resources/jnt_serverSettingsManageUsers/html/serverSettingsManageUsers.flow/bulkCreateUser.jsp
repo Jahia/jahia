@@ -55,8 +55,14 @@
             </fieldset>
 
         <fieldset>
-            <input class="btn btn-primary" type="submit" name="_eventId_confirm" id="${currentNode.identifier}-confirm" value="<fmt:message key='label.ok'/>"/>
-            <input class="btn" type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel'/>"/>
+            <button class="btn btn-primary" type="submit" name="_eventId_confirm" id="${currentNode.identifier}-confirm">
+                <i class="icon-ok icon-white"></i>
+                &nbsp;<fmt:message key='label.ok'/>
+            </button>
+            <button class="btn" type="submit" name="_eventId_cancel">
+                <i class="icon-ban-circle"></i>
+                &nbsp;<fmt:message key='label.cancel'/>
+            </button>
         </fieldset>
     </form>
     <p>

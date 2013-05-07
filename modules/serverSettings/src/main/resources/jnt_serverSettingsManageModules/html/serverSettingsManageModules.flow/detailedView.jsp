@@ -148,9 +148,10 @@
                     <c:choose>
                         <c:when test="${not empty activeVersion.sourcesFolder}">
                             <c:url var="urlToStudio" value="/cms/studio/${currentResource.locale}/modules/${activeVersion.rootFolder}.html"/>
-                            <input class="btn" type="button"
-                                   onclick='window.parent.location.assign("${urlToStudio}")'
-                                   value="<fmt:message key='serverSettings.manageModules.goToStudio' />"/>
+                            <button class="btn" type="button" onclick='window.parent.location.assign("${urlToStudio}")'>
+                                <i class="icon-circle-arrow-right"></i>
+                                &nbsp;<fmt:message key='serverSettings.manageModules.goToStudio' />
+                            </button>
                         </c:when>
                         <c:when test="${not empty activeVersion.scmURI}">
                             <c:if test="${functions:contains(sourceControls, fn:substringBefore(fn:substringAfter(activeVersion.scmURI, ':'),':'))}">
@@ -158,7 +159,10 @@
                                     <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
                                     <input type="hidden" name="scmUri" value="${activeVersion.scmURI}"/>
                                     <fmt:message var="label" key='serverSettings.manageModules.downloadSources'/>
-                                    <input class="btn button-download" type="submit" name="_eventId_downloadSources" value="${label}" onclick=""/>
+                                    <button class="btn button-download" type="submit" name="_eventId_downloadSources" onclick="">
+                                        <i class="icon-download"></i>
+                                        &nbsp;${label}
+                                    </button>
                                 </form>
                             </c:if>
                         </c:when>
@@ -168,7 +172,10 @@
                                 <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
                                 <input type="hidden" name="scmUri" value="scm:git:"/>
                                 <fmt:message var="label" key='serverSettings.manageModules.downloadSources'/>
-                                <input class="btn" type="submit" name="_eventId_viewDownloadForm" value="${label}" onclick=""/>
+                                <button class="btn" type="submit" name="_eventId_viewDownloadForm" onclick="">
+                                    <i class="icon-download"></i>
+                                    &nbsp;${label}
+                                </button>
                             </form>
                         </c:otherwise>
                     </c:choose>
@@ -276,9 +283,12 @@
                                                     </c:otherwise>
                                                 </c:choose>
                                                 <c:if test="${isSystemDependency != 'true'}">
-                                                <fmt:message var="label" key='serverSettings.manageModules.stopModule'/>
-                                                <input class="btn btn-danger" type="submit" name="_eventId_stopModule"
-                                                       value="${label}" onclick="return confirm('${functions:escapeJavaScript(labelUndeployModuleConfirm)}');"/></c:if>&nbsp; ${package.key} ( ${package.value.state.state} )
+                                                    <fmt:message var="label" key='serverSettings.manageModules.stopModule'/>
+                                                    <button class="btn btn-danger" type="submit" name="_eventId_stopModule" onclick="return confirm('${functions:escapeJavaScript(labelUndeployModuleConfirm)}');">
+                                                        <i class=" icon-stop icon-white"></i>&nbsp;${label}
+                                                    </button>
+                                                </c:if>
+                                                &nbsp; ${package.key} ( ${package.value.state.state} )
                                             </form>
                                         </div>
                                     </c:when>
@@ -289,8 +299,10 @@
                                                 <input type="hidden" name="version" value="${package.key}"/>
                                                 <fmt:message var="label"
                                                              key='serverSettings.manageModules.startModule'/>
-                                                <input class="btn btn-success" type="submit" name="_eventId_startModule"
-                                                       value="${label}" onclick=""/>&nbsp; ${package.key} ( ${package.value.state.state} )
+                                                <button class="btn btn-success" type="submit" name="_eventId_startModule" onclick="">
+                                                    <i class=" icon-play icon-white"></i>&nbsp;${label}
+                                                </button>
+                                                &nbsp; ${package.key} ( ${package.value.state.state} )
                                             </form>
                                         </div>
                                     </c:otherwise>
@@ -354,7 +366,9 @@
                                             <input type="hidden" name="_eventId_disable" value="true"/>
                                             <fmt:message var="label"
                                                          key='serverSettings.manageModules.module.disable'/>
-                                            <input class="btn btn-danger disable-button" type="button" value="${label}" onclick=""/>
+                                            <button class="btn btn-danger disable-button" type="button" onclick="">
+                                                <i class=" icon-stop icon-white"></i>&nbsp;${label}
+                                            </button>
                                             <c:set var="usedOnce" value="true"/>
                                         </form>
                                         <c:set var="cellEmpty" value="false"/>
@@ -367,8 +381,10 @@
                                             <input type="hidden" name="enableOn" value="/sites/${site}"/>
                                             <fmt:message var="label"
                                                          key='serverSettings.manageModules.module.enable'/>
-                                            <input class="btn btn-success" type="submit" name="_eventId_enable"
-                                                   value="${label}" onclick=""/>
+                                            <button class="btn btn-success" type="submit" name="_eventId_enable" onclick="">
+                                                <i class=" icon-play icon-white"></i>
+                                                &nbsp;${label}
+                                            </button>
                                         </form>
                                         <c:set var="cellEmpty" value="false"/>
                                     </c:otherwise>
@@ -387,7 +403,9 @@
                                 <input type="hidden" name="_eventId_disableAll" value="true"/>
                                 <fmt:message var="label"
                                              key='serverSettings.manageModules.module.disable.all'/>
-                                <input class="btn btn-danger disable-button" type="button" value="${label}" onclick=""/>
+                                <button class="btn btn-danger disable-button" type="button" onclick="">
+                                    <i class="icon-ban-circle icon-white"></i>&nbsp;${label}
+                                </button>
                             </form>
                         </td>
                     </tr>
@@ -460,14 +478,18 @@
                             <td>
                                 <c:if test="${isStudio and not empty dependency.sourcesFolder}">
                                     <c:set var="urlDependencyDetails" value="${url.base}/modules/${dependency.rootFolder}.html"/>
-                                    <input class="btn btn-info" type="button" onclick='window.location.assign("${urlDependencyDetails}")' value="<fmt:message key='serverSettings.manageModules.details' />"/>
+                                    <button class="btn btn-info" type="button" onclick='window.location.assign("${urlDependencyDetails}")'>
+                                        <i class="icon-zoom-in icon-white"></i>
+                                        &nbsp;<fmt:message key='serverSettings.manageModules.details' />
+                                    </button>
                                 </c:if>
                                 <c:if test="${not isStudio}">
                                     <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                         <input type="hidden" name="selectedModule" value="${dependency.rootFolder}"/>
-                                        <input class="btn btn-info" type="submit" name="_eventId_viewDetails"
-                                               value="<fmt:message key='serverSettings.manageModules.details' />"
-                                               onclick=""/>
+                                        <button class="btn btn-info" type="submit" name="_eventId_viewDetails" onclick="">
+                                            <i class="icon-zoom-in icon-white"></i>
+                                            &nbsp;<fmt:message key='serverSettings.manageModules.details' />
+                                        </button>
                                     </form>
                                 </c:if>
                             </td>
@@ -505,9 +527,10 @@
                                     <c:choose>
                                         <c:when test="${not empty dependency.sourcesFolder}">
                                             <c:url var="urlDependencyDetails" value="${url.base}/modules/${dependency.rootFolder}.html"/>
-                                            <input class="btn btn-info" type="button"
-                                                   onclick='window.location.assign("${urlDependencyDetails}")'
-                                                   value="<fmt:message key='serverSettings.manageModules.details' />"/>
+                                            <button class="btn btn-info" type="button" onclick='window.location.assign("${urlDependencyDetails}")'>
+                                                <i class="icon-zoom-in icon-white"></i>
+                                                &nbsp;<fmt:message key='serverSettings.manageModules.details' />
+                                            </button>
                                         </c:when>
                                         <c:otherwise>&nbsp;</c:otherwise>
                                     </c:choose>
@@ -515,9 +538,10 @@
                                 <c:if test="${not isStudio}">
                                     <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                         <input type="hidden" name="selectedModule" value="${dependency.rootFolder}"/>
-                                        <input class="btn btn-info" type="submit" name="_eventId_viewDetails"
-                                               value="<fmt:message key='serverSettings.manageModules.details' />"
-                                               onclick=""/>
+                                        <button class="btn btn-info" type="submit" name="_eventId_viewDetails" onclick="">
+                                            <i class="icon-zoom-in icon-white"></i>
+                                            &nbsp;<fmt:message key='serverSettings.manageModules.details' />
+                                        </button>
                                     </form>
                                 </c:if>
                             </td>

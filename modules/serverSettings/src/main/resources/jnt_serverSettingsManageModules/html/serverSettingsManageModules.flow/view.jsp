@@ -173,7 +173,7 @@
                                             </c:choose>
                                             <c:if test="${not(isSystemDependency eq 'true')}">
                                             <button class="btn btn-danger" type="submit" name="_eventId_stopModule" onclick="return confirm('${functions:escapeJavaScript(labelUndeployModuleConfirm)}');">
-                                                <i class=" icon-stop icon-white"></i>&nbsp;${label}
+                                                <i class="icon-stop icon-white"></i>&nbsp;${label}
                                             </button>
                                             </c:if>
                                             &nbsp; ${version.key} ( ${version.value.state.state} )
@@ -191,9 +191,10 @@
                                                          key='serverSettings.manageModules.undeployModule'/>
                                             <fmt:message var="labelUndeployModuleConfirm"
                                                          key="serverSettings.manageModules.undeployModule.confirm"/>
-
-
-                                            <button class="btn btn-success" type="submit" name="_eventId_startModule" onclick=""><i class=" icon-play icon-white"></i>&nbsp;${labelStart}</button>
+                                            <button class="btn btn-success" type="submit" name="_eventId_startModule" onclick="">
+                                                <i class=" icon-play icon-white"></i>
+                                                &nbsp;${labelStart}
+                                            </button>
                                             &nbsp;
                                             <c:set value="${not empty sitesDirect[entry.key] or not empty sitesTemplates[entry.key] or not empty sitesTransitive[entry.key]}" var="used"/>
                                             <button class="btn" type="submit" name="_eventId_undeployModule"

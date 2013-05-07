@@ -79,14 +79,29 @@
 
 
 <div>
-    <a class="btn" href="#refresh" onclick="go(); return false;" title="<fmt:message key='label.refresh'/>"><img src="<c:url value='${url.currentModule}/images/refresh.png'/>" height="16" width="16" alt=" " align="top"/>&nbsp;<fmt:message key="label.refresh"/></a>
-    <a class="btn" href="#flushOutputCaches" onclick="go('action', 'flushOutputCaches'); return false;" title="<fmt:message key="serverSettings.cache.flushOutputCaches.title"/>">${flushIcon}&nbsp;<fmt:message key="serverSettings.cache.flushOutputCaches"/></a>
+    <a class="btn" href="#refresh" onclick="go(); return false;" title="<fmt:message key='label.refresh'/>">
+        <i class="icon-refresh"></i>
+        &nbsp;<fmt:message key="label.refresh"/>
+    </a>
+    <a class="btn" href="#flushOutputCaches" onclick="go('action', 'flushOutputCaches'); return false;" title="<fmt:message key="serverSettings.cache.flushOutputCaches.title"/>">
+        <i class="icon-trash"></i>
+        &nbsp;<fmt:message key="serverSettings.cache.flushOutputCaches"/>
+    </a>
     <c:if test="${cacheManager.clusterActivated}">
-        <a class="btn" href="#flushOutputCaches" onclick="go('action', 'flushOutputCaches', 'propagate', 'true'); return false;" title="<fmt:message key="serverSettings.cache.flushOutputCaches.cluster.title"/>">${flushIcon}&nbsp;<fmt:message key="serverSettings.cache.flushOutputCaches.cluster"/></a>
+        <a class="btn" href="#flushOutputCaches" onclick="go('action', 'flushOutputCaches', 'propagate', 'true'); return false;" title="<fmt:message key="serverSettings.cache.flushOutputCaches.cluster.title"/>">
+            <i class="icon-trash"></i>
+            &nbsp;<fmt:message key="serverSettings.cache.flushOutputCaches.cluster"/>
+        </a>
     </c:if>
-    <a class="btn" href="#flushAllCaches" onclick="go('action', 'flushAllCaches'); return false;" title="<fmt:message key="serverSettings.cache.flushAllCaches.title"/>">${flushIcon}&nbsp;<fmt:message key="serverSettings.cache.flushAllCaches"/></a>
+    <a class="btn" href="#flushAllCaches" onclick="go('action', 'flushAllCaches'); return false;" title="<fmt:message key="serverSettings.cache.flushAllCaches.title"/>">
+        <i class="icon-trash"></i>
+        &nbsp;<fmt:message key="serverSettings.cache.flushAllCaches"/>
+    </a>
     <c:if test="${cacheManager.clusterActivated}">
-        <a class="btn" href="#flushAllCaches" onclick="go('action', 'flushAllCaches', 'propagate', 'true'); return false;" title="<fmt:message key="serverSettings.cache.flushAllCaches.cluster.title"/>">${flushIcon}&nbsp;<fmt:message key="serverSettings.cache.flushAllCaches.cluster"/></a>
+        <a class="btn" href="#flushAllCaches" onclick="go('action', 'flushAllCaches', 'propagate', 'true'); return false;" title="<fmt:message key="serverSettings.cache.flushAllCaches.cluster.title"/>">
+            <i class="icon-trash"></i>
+            &nbsp;<fmt:message key="serverSettings.cache.flushAllCaches.cluster"/>
+        </a>
     </c:if>
 </div>
 
@@ -95,7 +110,9 @@
     <h2>Cache Manager: ${manager}
         <c:if test="${cacheManagement.showConfig}">
             &nbsp;
-            <a class="configLink" title="<fmt:message key='serverSettings.cache.configLink.title'/>" href="#managerconfig-${managerStatus.index}"><img src="<c:url value='${url.currentModule}/images/help.png'/>" width="16" height="16" alt="?" title="<fmt:message key='serverSettings.cache.configLink.title'/>"/></a>
+            <a class="btn btn-info configLink" title="<fmt:message key='serverSettings.cache.configLink.title'/>" href="#managerconfig-${managerStatus.index}">
+                <i class="icon-info-sign icon-white"></i>
+            </a>
             <div style="display: none;">
                 <div id="managerconfig-${managerStatus.index}">
                     <h3>${fn:escapeXml(manager)}</h3>
@@ -106,14 +123,26 @@
     </h2>
     <c:if test="${cacheManagement.showActions}">
         <p>
-            <a class="btn" href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager}'); return false;" title="<fmt:message key="serverSettings.cache.flushCaches.title"/>">${flushIcon}&nbsp;<fmt:message key="serverSettings.cache.flushCaches"/>&nbsp;${manager}</a>
+            <a class="btn" href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager}'); return false;" title="<fmt:message key="serverSettings.cache.flushCaches.title"/>">
+                <i class="icon-trash"></i>
+                &nbsp;<fmt:message key="serverSettings.cache.flushCaches"/>
+                &nbsp;${manager}
+            </a>
             <c:if test="${cacheManager.clusterActivated}">
-                &nbsp;&nbsp;
-                <a class="btn" href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager}', 'propagate', 'true'); return false;" title="<fmt:message key="serverSettings.cache.flushCaches.cluster.title"/>">${flushIcon}&nbsp;<fmt:message key="serverSettings.cache.flushCaches.cluster"/>&nbsp;${manager}</a>
+                <a class="btn" href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager}', 'propagate', 'true'); return false;" title="<fmt:message key="serverSettings.cache.flushCaches.cluster.title"/>">
+                    <i class="icon-trash"></i>
+                    &nbsp;<fmt:message key="serverSettings.cache.flushCaches.cluster"/>
+                    &nbsp;${manager}
+                </a>
             </c:if>
-            &nbsp;&nbsp;
-            <a class="btn" href="#enableStats" onclick="go('action', 'enableStats', 'name', '${manager}'); return false;" title="<fmt:message key="serverSettings.cache.stats.enable.title"/>"><fmt:message key="serverSettings.cache.stats.enable"/></a>
-            <a class="btn" href="#disableStats" onclick="go('action', 'disableStats', 'name', '${manager}'); return false;" title="<fmt:message key="serverSettings.cache.stats.disable.title"/>"><fmt:message key="serverSettings.cache.stats.disable"/></a>
+            <a class="btn" href="#enableStats" onclick="go('action', 'enableStats', 'name', '${manager}'); return false;" title="<fmt:message key="serverSettings.cache.stats.enable.title"/>">
+                <i class="icon-play"></i>
+                <fmt:message key="serverSettings.cache.stats.enable"/>
+            </a>
+            <a class="btn" href="#disableStats" onclick="go('action', 'disableStats', 'name', '${manager}'); return false;" title="<fmt:message key="serverSettings.cache.stats.disable.title"/>">
+                <i class="icon-stop"></i>
+                <fmt:message key="serverSettings.cache.stats.disable"/>
+            </a>
         </p>
     </c:if>
     <table class="table table-bordered table-hover table-striped">
@@ -167,7 +196,9 @@
                 <td><strong>${status.index + 1}</strong></td>
                 <c:if test="${cacheManagement.showConfig}">
                     <td align="center">
-                        <a class="configLink" title="<fmt:message key='serverSettings.cache.showDetail'/>" href="#config-${managerStatus.index}-${status.index}"><img src="<c:url value='${url.currentModule}/images/help.png'/>" width="16" height="16" alt="?" title="<fmt:message key='serverSettings.cache.showDetail'/>"/></a>
+                        <a class="btn btn-info configLink" title="<fmt:message key='serverSettings.cache.showDetail'/>" href="#config-${managerStatus.index}-${status.index}">
+                            <i class="icon-info-sign icon-white"></i>
+                        </a>
                         <div style="display: none;">
                             <div id="config-${managerStatus.index}-${status.index}">
                                 <h3>${fn:escapeXml(cacheEntry.name)}</h3>
@@ -224,7 +255,11 @@
                     <td align="center">-</td>
                 </c:if>
                 <c:if test="${cacheManagement.showActions}">
-                    <td align="center"><a href="#flush" onclick="go('action', 'flush', 'name', '${cacheEntry.name}'); return false;" title="Remove all entries from the ${cacheEntry.name}">${flushIcon}</a></td>
+                    <td align="center">
+                        <a class="btn" href="#flush" onclick="go('action', 'flush', 'name', '${cacheEntry.name}'); return false;" title="Remove all entries from the ${cacheEntry.name}">
+                            <i class="icon-trash"></i>
+                        </a>
+                    </td>
                 </c:if>
             </tr>
         </c:forEach>

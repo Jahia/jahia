@@ -220,7 +220,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                     if (views.isEmpty()) {
                         views.addAll(viewsSet);
                     } else {
-                        Set<View> toBeRemoved = new LinkedHashSet<View>();
+                        Set<View> toBeAdded = new LinkedHashSet<View>();
                         for (View view : views) {
                             boolean found = false;
                             for (View view1 : viewsSet) {
@@ -231,10 +231,10 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                                 }
                             }
                             if (!found) {
-                                toBeRemoved.add(view);
+                                toBeAdded.add(view);
                             }
                         }
-                        views.removeAll(toBeRemoved);
+                        views.addAll(toBeAdded);
                     }
                 }
             }

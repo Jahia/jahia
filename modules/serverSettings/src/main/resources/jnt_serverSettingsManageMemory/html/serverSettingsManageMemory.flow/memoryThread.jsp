@@ -63,14 +63,18 @@
                     <tr>
                         <td>
                             <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
-                                <input class="btn" type="submit" name="_eventId_refresh"
-                                       value="<fmt:message key='label.refresh'/>"/>
+                                <button class="btn" type="submit" name="_eventId_refresh">
+                                    <i class="icon-refresh"></i>
+                                    &nbsp;<fmt:message key='label.refresh'/>
+                                </button>
                             </form>
                         </td>
                         <td>
                             <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
-                                <input class="btn" type="submit" name="_eventId_gc"
-                                       value="<fmt:message key='serverSettings.manageMemory.memory.gc'/>"/>
+                                <button class="btn" type="submit" name="_eventId_gc">
+                                    <i class="icon-cog"></i>
+                                    &nbsp;<fmt:message key='serverSettings.manageMemory.memory.gc'/>
+                                </button>
                             </form>
                         </td>
                     </tr>
@@ -89,22 +93,29 @@
                     <tr>
                         <td align="left">
                             <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
-                                <input class="btn" type="submit" name="_eventId_showTD"
-                                       value="<fmt:message key='serverSettings.manageMemory.threads.performThreadDump.page'/>"/>
+                                <button class="btn" type="submit" name="_eventId_showTD">
+                                    <i class="icon-cog"></i>
+                                    &nbsp;<fmt:message key='serverSettings.manageMemory.threads.performThreadDump.page'/>
+                                </button>
                             </form>
                         </td>
                     </tr>
                     <tr>
                         <td align="left">
-                            <a class="btn" href="<c:url value='/tools/threadDump.jsp?file=true'/>" target="_blank"><fmt:message key="serverSettings.manageMemory.threads.performThreadDump.file.download"/></a>
+                            <a class="btn" href="<c:url value='/tools/threadDump.jsp?file=true'/>" target="_blank">
+                                <i class="icon-cog"></i>
+                                <fmt:message key="serverSettings.manageMemory.threads.performThreadDump.file.download"/>
+                            </a>
                         </td>
                     </tr>
                     <tr>
                         <td align="left">
                             <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
                                 <input type="hidden" name="threadDump" value="sysout"/>
-                                <input class="btn" type="submit" name="_eventId_performTD"
-                                       value="<fmt:message key='serverSettings.manageMemory.threads.performThreadDump.system.out'/>"/>
+                                <button class="btn" type="submit" name="_eventId_performTD">
+                                    <i class="icon-cog"></i>
+                                    &nbsp;<fmt:message key='serverSettings.manageMemory.threads.performThreadDump.system.out'/>
+                                </button>
                             </form>
                         </td>
                     </tr>
@@ -112,8 +123,10 @@
                         <td align="left">
                             <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
                                 <input type="hidden" name="threadDump" value="file"/>
-                                <input class="btn" type="submit" name="_eventId_performTD"
-                                       value="<fmt:message key='serverSettings.manageMemory.threads.performThreadDump.file'/>"/>
+                                <button class="btn" type="submit" name="_eventId_performTD">
+                                    <i class="icon-cog"></i>
+                                    &nbsp;<fmt:message key='serverSettings.manageMemory.threads.performThreadDump.file'/>
+                                </button>
                             </form>
                         </td>
                     </tr>
@@ -121,9 +134,10 @@
                         <td align="left">
                             <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
                                 <input type="hidden" name="threadDump" value="file"/>
-                                <input class="btn" type="submit" name="_eventId_scheduleTD"
-                                       value="<fmt:message key='serverSettings.manageMemory.threads.performThreadDump.multiple'/>"/>
-                                &nbsp;&nbsp;
+                                <button class="btn" type="submit" name="_eventId_scheduleTD">
+                                    <i class="icon-cog"></i>
+                                    &nbsp;<fmt:message key='serverSettings.manageMemory.threads.performThreadDump.multiple'/>
+                                </button>
                                 <label for="threadDumpCount"><fmt:message key="column.count.label"/>:&nbsp;</label>
                                 <input type="text" id="threadDumpCount" name="threadDumpCount" size="2" value="10"/>
                                 &nbsp;&nbsp;
@@ -136,25 +150,54 @@
                     <tr>
                         <td align="left">
                             <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
-                                <input class="btn" type="submit" name="_eventId_toggleTD"
-                                       value="<c:choose><c:when test="${memoryInfo.threadMonitorActivated}"><fmt:message key="serverSettings.manageMemory.threads.monitor.stop"/></c:when><c:otherwise><fmt:message key="serverSettings.manageMemory.threads.monitor.start"/></c:otherwise></c:choose>"/>
+
+                                    <c:choose>
+                                        <c:when test="${memoryInfo.threadMonitorActivated}">
+                                        <button class="btn btn-danger" type="submit" name="_eventId_toggleTD">
+                                            <i class="icon-stop icon-white"></i>
+                                            &nbsp;
+                                            <fmt:message key="serverSettings.manageMemory.threads.monitor.stop"/>
+                                        </button>
+                                        </c:when>
+                                        <c:otherwise>
+                                        <button class="btn btn-success" type="submit" name="_eventId_toggleTD">
+                                            <i class="icon-play icon-white"></i>
+                                            <fmt:message key="serverSettings.manageMemory.threads.monitor.start"/>
+                                        </button>
+                                        </c:otherwise>
+                                    </c:choose>
                             </form>
                         </td>
                     </tr>
                     <tr>
                         <td align="left">
                             <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
-                                <input class="btn" type="submit" name="_eventId_toggleEFD"
-                                       value="<c:choose><c:when test="${memoryInfo.errorFileDumperActivated}"><fmt:message key="serverSettings.manageMemory.errors.dumper.stop"/></c:when><c:otherwise><fmt:message key="serverSettings.manageMemory.errors.dumper.start"/></c:otherwise></c:choose>"/>
+                                    <c:choose>
+                                        <c:when test="${memoryInfo.errorFileDumperActivated}">
+                                        <button class="btn btn-danger" type="submit" name="_eventId_toggleEFD">
+                                            <i class="icon-stop icon-white"></i>
+                                            &nbsp;
+                                            <fmt:message key="serverSettings.manageMemory.errors.dumper.stop"/>
+                                        </button>
+                                        </c:when>
+                                        <c:otherwise>
+                                        <button class="btn btn-success" type="submit" name="_eventId_toggleEFD">
+                                            <i class="icon-play icon-white"></i>
+                                            &nbsp;
+                                            <fmt:message key="serverSettings.manageMemory.errors.dumper.start"/>
+                                        </button>
+                                        </c:otherwise>
+                                    </c:choose>
+
                             </form>
                         </td>
                     </tr>
                     <tr>
                         <td align="left">
-                            <a class="btn" href="http://java.net/projects/tda/downloads/download/webstart/tda.jnlp"
-                               target="_blank"><img src="<c:url value='/icons/tda.gif'/>" height="16" width="16" alt=" "
-                                                    align="top"/>&nbsp;<fmt:message
-                                    key="serverSettings.manageMemory.launchTda"/></a>
+                            <a class="btn" href="http://java.net/projects/tda/downloads/download/webstart/tda.jnlp" target="_blank">
+                                <i class="icon-share"></i>
+                                &nbsp;<fmt:message key="serverSettings.manageMemory.launchTda"/>
+                            </a>
                         </td>
                     </tr>
                 </table>

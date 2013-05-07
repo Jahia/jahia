@@ -19,8 +19,11 @@
 <c:if test="${not empty threadDumpResult}">
 <div>
     <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
-        <input class="btn" type="submit" name="_eventId_back"
-               value="<fmt:message key='serverSettings.manageMemory.memory.back'/>"/>
+        <button class="btn" type="submit" name="_eventId_back">
+            <i class="icon-arrow-left"></i>
+            &nbsp;
+            <fmt:message key='serverSettings.manageMemory.memory.back'/>
+        </button>
     </form>
 
     <pre>

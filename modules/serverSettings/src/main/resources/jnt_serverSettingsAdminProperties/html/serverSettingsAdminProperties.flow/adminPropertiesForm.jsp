@@ -70,7 +70,7 @@
             </div>
             <div class="row-fluid">
                 <div class="span12" style="margin-top:15px;">
-                    <input class="btn btn-primary" id="submit" type="submit" value="<fmt:message key='label.save'/>" name="_eventId_submit">
+                    <button class="btn btn-primary" id="submit" type="submit" name="_eventId_submit"><i class="icon-ok icon-white"></i>&nbsp;<fmt:message key='label.save'/></button>
                 </div>
             </div>
         </div>

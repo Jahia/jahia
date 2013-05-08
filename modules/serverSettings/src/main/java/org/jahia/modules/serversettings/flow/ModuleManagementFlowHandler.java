@@ -78,7 +78,6 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
-import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.utils.i18n.Messages;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
@@ -328,8 +327,7 @@ public class ModuleManagementFlowHandler implements Serializable {
         if (transitiveSiteDep.containsKey(rootFolder)) {
             state.getUsedInSites().addAll(transitiveSiteDep.get(rootFolder));
         }
-        state.setSystemDependency(state.getUsedInSites().contains(JahiaSitesService.SYSTEM_SITE_KEY)
-                || systemSiteRequiredModules.contains(rootFolder));
+        state.setSystemDependency(systemSiteRequiredModules.contains(rootFolder));
 
         if (registeredModules.containsKey(rootFolder)
                 && registeredModules.get(rootFolder).getVersion().equals(moduleVersion)) {
@@ -369,50 +367,28 @@ public class ModuleManagementFlowHandler implements Serializable {
     private String getMessage(String key) {
         return Messages.get("resources.JahiaServerSettings", key, LocaleContextHolder.getLocale());
     }
-    
+
     private Set<String> getSystemSiteRequiredModules() {
         Set<String> modules = new TreeSet<String>();
-        List<String> installedModules;
         try {
-            installedModules = sitesService.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY).getInstalledModules();
+            JahiaTemplatesPackage pkg = templateManagerService.getTemplatePackage(sitesService.getSiteByKey(
+                    JahiaSitesService.SYSTEM_SITE_KEY).getTemplatePackageName());
+            modules.add(pkg.getRootFolder());
+            modules.addAll(pkg.getDepends());
+            for (String dep : pkg.getDepends()) {
+                JahiaTemplatesPackage depPkg = templateManagerService.getTemplatePackageByFileName(dep);
+                if (depPkg == null) {
+                    depPkg = templateManagerService.getTemplatePackage(dep);
+                }
+                if (depPkg != null) {
+                    modules.addAll(depPkg.getDepends());
+                }
+            }
         } catch (JahiaException e) {
             throw new JahiaRuntimeException(e);
         }
-        for (String direct : installedModules) {
-            JahiaTemplatesPackage pkg = lookupModule(direct);
-            if (pkg != null) {
-                modules.add(pkg.getRootFolder());
-                for (String dependency : pkg.getDepends()) {
-                    JahiaTemplatesPackage dependencyPkg = lookupModule(dependency);
-                    if (dependencyPkg != null) {
-                        modules.add(dependencyPkg.getRootFolder());
-                    }
-                }
-            }
-        }
 
         return modules;
-    }
-
-    private JahiaTemplatesPackage lookupModule(String module) {
-        JahiaTemplatesPackage pkg = null;
-        TemplatePackageRegistry registry = templateManagerService.getTemplatePackageRegistry();
-
-        pkg = registry.lookupByFileName(module);
-        if (pkg == null) {
-            pkg = registry.lookup(module);
-        }
-        if (pkg == null) {
-            Set<ModuleVersion> availableVersionsForModule = registry.getAvailableVersionsForModule(module);
-            if (!availableVersionsForModule.isEmpty()) {
-                pkg = registry.lookupByFileNameAndVersion(module, availableVersionsForModule.iterator().next());
-                if (pkg == null) {
-                    pkg = registry.lookupByNameAndVersion(module, availableVersionsForModule.iterator().next());
-                }
-            }
-        }
-
-        return pkg;
     }
 
     /**

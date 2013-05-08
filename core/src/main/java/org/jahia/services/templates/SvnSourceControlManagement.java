@@ -42,6 +42,7 @@ package org.jahia.services.templates;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
@@ -95,10 +96,20 @@ public class SvnSourceControlManagement extends SourceControlManagement {
         }
 
         String rootPath = rootFolder.getPath();
+
         List<String> args = new ArrayList<String>();
         args.add("add");
         args.add("--parents");
         for (File file : files) {
+            if(file.getName().equals(".gitignore")) {
+                List<String> ignoreCmd = new ArrayList<String>();
+                ignoreCmd.add("propset");
+                ignoreCmd.add("svn:ignore");
+                ignoreCmd.add("-F");
+                ignoreCmd.add(file.getAbsolutePath());
+                ignoreCmd.add(".");
+                executeCommand(executable, StringUtils.join(ignoreCmd, ' '));
+            }
             if (file.getPath().equals(rootPath)) {
                 args.add(".");
             } else {

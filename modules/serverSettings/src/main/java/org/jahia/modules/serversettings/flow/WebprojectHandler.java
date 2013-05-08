@@ -368,7 +368,7 @@ public class WebprojectHandler implements Serializable {
 
         SiteBean siteBean = new SiteBean();
         siteBean.setDefaultSite(site.isDefault());
-        siteBean.setDescription(site.getDescr());
+        siteBean.setDescription(site.getDescription());
         siteBean.setSiteKey(site.getSiteKey());
         siteBean.setServerName(site.getServerName());
         siteBean.setTitle(site.getTitle());
@@ -640,7 +640,6 @@ public class WebprojectHandler implements Serializable {
 
         boolean doImportServerPermissions = false;
         for (ImportInfo infos : importsInfos.values()) {
-            File file = infos.getImportFile();
             if (infos.isSelected() && infos.getImportFileName().equals("serverPermissions.xml")) {
                 doImportServerPermissions = true;
                 break;
@@ -842,7 +841,7 @@ public class WebprojectHandler implements Serializable {
             JahiaSite site = sitesService.getSiteByKey(getSites().get(0).getSiteKey(), session);
             if (!StringUtils.equals(site.getServerName(), bean.getServerName())
                     || !StringUtils.equals(site.getTitle(), bean.getTitle())
-                    || !StringUtils.equals(site.getDescr(), bean.getDescription())) {
+                    || !StringUtils.equals(site.getDescription(), bean.getDescription())) {
                 site.setServerName(bean.getServerName());
                 site.setTitle(bean.getTitle());
                 site.setDescription(bean.getDescription());
@@ -868,7 +867,6 @@ public class WebprojectHandler implements Serializable {
         context.getMessageContext();
 
         for (ImportInfo infos : importsInfos.values()) {
-            File file = (File) infos.getImportFile();
             if (infos.isSelected()) {
                 if (NON_SITE_IMPORTS.contains(infos.getImportFileName())) {
 

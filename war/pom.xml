@@ -948,6 +948,18 @@
                                     <version>${project.version}</version>
                                 </artifactItem>
 
+                                <artifactItem>
+                                    <groupId>org.jahia.configuration</groupId>
+                                    <artifactId>osgi-tools</artifactId>
+                                    <version>${jahia.plugin.version}</version>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>biz.aQute</groupId>
+                                    <artifactId>bndlib</artifactId>
+                                    <version>2.0.0.20130123-133441</version>
+                                </artifactItem>
+
                             </artifactItems>
                             <stripVersion>false</stripVersion>
                             <outputDirectory>

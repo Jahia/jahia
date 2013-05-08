@@ -42,7 +42,7 @@
                             org.jdom;resolution:=optional,
                             org.jdom.input;resolution:=optional
                         </Import-Package>
-                        <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
+                        <Embed-Dependency>*; scope=compile; type=!pom; inline=true;artifactId=!org.eclipse.osgi</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <_removeheaders>
                             Include-Resource,
@@ -110,6 +110,12 @@
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.compendium</artifactId>
             <version>${osgi.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.configuration</groupId>
+            <artifactId>osgi-tools</artifactId>
+            <version>${jahia.plugin.version}</version>
             <scope>provided</scope>
         </dependency>
 

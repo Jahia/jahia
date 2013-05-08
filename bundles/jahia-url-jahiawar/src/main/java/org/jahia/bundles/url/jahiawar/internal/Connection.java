@@ -40,6 +40,8 @@
 
 package org.jahia.bundles.url.jahiawar.internal;
 
+import org.jahia.utils.osgi.parsers.Parsers;
+import org.jahia.utils.osgi.parsers.ParsingContext;
 import org.jdom2.Document;
 import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
@@ -50,6 +52,8 @@ import org.ops4j.io.StreamUtils;
 import org.ops4j.lang.NullArgumentException;
 import org.ops4j.net.URLUtils;
 import org.ops4j.pax.swissbox.bnd.BndUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -66,6 +70,8 @@ import java.util.jar.Manifest;
  * Url connection for jahiawar protocol handler.
  */
 public class Connection extends URLConnection {
+
+    private static Logger logger = LoggerFactory.getLogger(Connection.class);
 
     private Parser parser;
     private final Configuration configuration;
@@ -116,6 +122,8 @@ public class Connection extends URLConnection {
         final Set<String> allNonEmptyDirectories = new HashSet<String>();
         final Set<String> directoryEntries = new HashSet<String>();
 
+        ParsingContext parsingContext = new ParsingContext();
+
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         JarOutputStream jos = null;
         try {
@@ -139,6 +147,19 @@ public class Connection extends URLConnection {
                 }
                 if (newName.startsWith("WEB-INF/classes/")) {
                     newName = jarEntry.getName().substring("WEB-INF/classes/".length());
+                    if (!jarEntry.isDirectory()) {
+                        String directoryName = "";
+                        if (newName.lastIndexOf('/') > -1) {
+                            directoryName = newName.substring(0, newName.lastIndexOf('/'));
+                        }
+                        String packageName = directoryName.replaceAll("\\/", "\\.");
+                        if (!directoryName.startsWith("META-INF") &&
+                            !directoryName.startsWith("OSGI-INF") &&
+                            !directoryName.startsWith("WEB-INF") &&
+                            !parsingContext.getProjectPackages().contains(packageName)) {
+                            parsingContext.getProjectPackages().add(packageName);
+                        }
+                    }
                 } else if (newName.startsWith("WEB-INF/lib/")) {
                     newName = jarEntry.getName().substring("WEB-INF/lib/".length());
                     classPathEntries.add(newName);
@@ -166,6 +187,17 @@ public class Connection extends URLConnection {
                             String remainingPath = embeddedJarNewName.substring("org/jahia/services/workflow/".length());
                             embeddedJarNewName = "org/jahia/modules/custom/workflow/" + remainingPath;
                         }
+                        if (!embeddedJarEntry.isDirectory()) {
+                            String packageName = directoryName.replaceAll("\\/", "\\.");
+                            if (!directoryName.startsWith("META-INF") &&
+                                !directoryName.startsWith("OSGI-INF") &&
+                                !directoryName.startsWith("WEB-INF") &&
+                                !parsingContext.getProjectPackages().contains(packageName)) {
+                                parsingContext.getProjectPackages().add(packageName);
+                            }
+                        }
+
+                        InputStream embeddedInputStream = parseFile(embeddedJarInputStream, embeddedJarNewName, parsingContext);
                         // create the new entry
                         JarEntry newEmbeddedJarEntry = new JarEntry(embeddedJarNewName);
                         if (embeddedJarEntry.getTime() > mostRecentTime) {
@@ -173,7 +205,7 @@ public class Connection extends URLConnection {
                         }
                         newEmbeddedJarEntry.setTime(embeddedJarEntry.getTime());
                         embeddedJarOutputStream.putNextEntry(newEmbeddedJarEntry);
-                        StreamUtils.copyStream(embeddedJarInputStream, embeddedJarOutputStream, false);
+                        StreamUtils.copyStream(embeddedInputStream, embeddedJarOutputStream, false);
                         embeddedJarOutputStream.closeEntry();
                     }
                     embeddedJarInputStream.close();
@@ -211,6 +243,9 @@ public class Connection extends URLConnection {
                     tempEntryInputStream = null;
                     entryInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());
                 }
+
+                entryInputStream = parseFile(entryInputStream, newName, parsingContext);
+
                 JarEntry newJarEntry = new JarEntry(newName);
                 if (jarEntry.getTime() > mostRecentTime) {
                     mostRecentTime = jarEntry.getTime();
@@ -237,6 +272,15 @@ public class Connection extends URLConnection {
                 }
             } catch (Exception ignore) {
                 //  ignore
+            }
+        }
+
+        parsingContext.postProcess();
+        if (parsingContext.getUnresolvedTaglibUris().size() > 0 ) {
+            for (Map.Entry<String,Set<String>> unresolvedUrisForJsp : parsingContext.getUnresolvedTaglibUris().entrySet()) {
+                for (String unresolvedUriForJsp : unresolvedUrisForJsp.getValue()) {
+                    logger.warn("JSP " + unresolvedUrisForJsp.getKey() + " has a reference to taglib " + unresolvedUriForJsp + " that is not in the project's dependencies !");
+                }
             }
         }
 
@@ -333,6 +377,13 @@ public class Connection extends URLConnection {
                     alreadyImportedPackages.add(curImportPackage);
                 }
             }
+            for (String importPackageFromParsing : parsingContext.getPackageImports()) {
+                if (!alreadyImportedPackages.contains(importPackageFromParsing)) {
+                    importPackage.append(",");
+                    importPackage.append(importPackageFromParsing);
+                    alreadyImportedPackages.add(importPackageFromParsing);
+                }
+            }
 
             bndProperties.put("Import-Package", importPackage.toString());
 
@@ -375,6 +426,20 @@ public class Connection extends URLConnection {
 
         ByteArrayInputStream resultInputStream = new ByteArrayInputStream(bndByteArrayOutputStream.toByteArray());
         return resultInputStream;
+    }
+
+    private InputStream parseFile(InputStream fileInputStream, String fileName, ParsingContext parsingContext) throws IOException {
+        // let's run all the parsers now.
+        ByteArrayOutputStream entryOutputStream = new ByteArrayOutputStream();
+        StreamUtils.copyStream(fileInputStream, entryOutputStream, false);
+        ByteArrayInputStream tempEntryInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());
+        Parsers.getInstance().parse(0, fileName, tempEntryInputStream, parsingContext, false, logger);
+        tempEntryInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());
+        Parsers.getInstance().parse(1, fileName, tempEntryInputStream, parsingContext, false, logger);
+        tempEntryInputStream.close();
+        tempEntryInputStream = null;
+        fileInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());
+        return fileInputStream;
     }
 
     private void convertJahiaManifestAttributes(Attributes attrs, Properties bndProperties, String depends) {

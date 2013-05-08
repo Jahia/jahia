@@ -46,7 +46,7 @@
         <junit.addons.version>1.4</junit.addons.version>
 
         <driver.derby.version>10.9.1.0</driver.derby.version>
-        <driver.mysql.version>5.1.24</driver.mysql.version>
+        <driver.mysql.version>5.1.25</driver.mysql.version>
         <driver.postgresql.version>9.2-1002.jdbc4</driver.postgresql.version>
 
         <!-- Meta information -->
@@ -73,7 +73,7 @@
         <eclipse.plugin.version>2.8</eclipse.plugin.version>
 
         <!-- OSGi versions -->
-        <felix.framework.version>4.2.0</felix.framework.version>
+        <felix.framework.version>4.2.1</felix.framework.version>
         <felix.http.version>2.2.0</felix.http.version>
         <felix.bundlerepository.version>1.6.6</felix.bundlerepository.version>
         <felix.webconsole.version>4.0.0</felix.webconsole.version>
@@ -81,7 +81,7 @@
         <felix.configadmin.version>1.6.0</felix.configadmin.version>
         <felix.fileinstall.version>3.2.6-patch1</felix.fileinstall.version>
         <felix.utils.version>1.2.0</felix.utils.version>
-        <felix.metatype.version>1.0.4</felix.metatype.version>
+        <felix.metatype.version>1.0.6</felix.metatype.version>
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
         <gogo.runtime.version>0.10.0</gogo.runtime.version>
         <gogo.shell.version>0.10.0</gogo.shell.version>

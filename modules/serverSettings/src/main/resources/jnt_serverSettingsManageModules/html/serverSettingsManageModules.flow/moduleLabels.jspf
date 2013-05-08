@@ -1,0 +1,10 @@
+<fmt:message key="serverSettings.manageModules.module.state.active" var="i18nModuleActive"/>
+<fmt:message key="serverSettings.manageModules.module.state.inactive" var="i18nModuleInactive"/>
+<fmt:message key="serverSettings.manageModules.details" var="i18nModuleDetails" />
+<fmt:message key="serverSettings.manageModules.startModule" var="i18nModuleStart"/>
+<fmt:message key="serverSettings.manageModules.stopModule" var="i18nModuleStop"/>
+<fmt:message key="serverSettings.manageModules.undeployModule" var="i18nModuleUndeploy"/>
+<fmt:message key="message.continue" var="i18nContinue"/>
+<fmt:message key="serverSettings.manageModules.mandatoryDependency" var="i18nMandatoryDependency"/>
+<c:set var="i18nMandatoryDependency" value="${fn:escapeXml(i18nMandatoryDependency)}"/>
+<fmt:message key="serverSettings.manageModules.downloadSources" var="i18nDownloadSources"/>

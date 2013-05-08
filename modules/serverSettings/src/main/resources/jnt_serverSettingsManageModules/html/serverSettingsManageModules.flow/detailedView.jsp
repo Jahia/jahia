@@ -141,7 +141,7 @@
                 ${activeVersion.moduleType}
             </td>
             <td>
-                ${bundleInfo['Implementation-Vendor']}
+                ${fn:escapeXml(activeVersion.provider)}
             </td>
             <c:if test="${not isStudio}">
                 <td>
@@ -194,6 +194,7 @@
     </div>
     <div id="collapseOne" class="accordion-body collapse" style="height: 0px; ">
         <div class="accordion-inner">
+            <%@include file="moduleLabels.jspf" %>
             <table class="table table-striped table-bordered table-hover">
                 <thead>
                 <tr>
@@ -205,108 +206,35 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${otherVersions}" var="package">
+                <c:forEach items="${otherVersions}" var="version">
                     <tr>
-                        <td>${package.key}</td>
+                        <td>${version.key}</td>
                         <td>
                             <c:choose>
-                                <c:when test="${package.value.bundle.state eq 32}">
+                                <c:when test="${version.value.bundle.state eq 32}">
                                     <fmt:message key="serverSettings.manageModules.module.state.active"/>
                                 </c:when>
-                                <c:when test="${package.value.bundle.state eq 16}">
+                                <c:when test="${version.value.bundle.state eq 16}">
                                     <fmt:message key="serverSettings.manageModules.module.state.stopping"/>
                                 </c:when>
-                                <c:when test="${package.value.bundle.state eq 8}">
+                                <c:when test="${version.value.bundle.state eq 8}">
                                     <fmt:message key="serverSettings.manageModules.module.state.starting"/>
                                 </c:when>
-                                <c:when test="${package.value.bundle.state eq 4}">
+                                <c:when test="${version.value.bundle.state eq 4}">
                                     <fmt:message key="serverSettings.manageModules.module.state.resolved"/>
                                 </c:when>
-                                <c:when test="${package.value.bundle.state eq 2}">
+                                <c:when test="${version.value.bundle.state eq 2}">
                                     <fmt:message key="serverSettings.manageModules.module.state.installed"/>
                                 </c:when>
-                                <c:when test="${package.value.bundle.state eq 1}">
+                                <c:when test="${version.value.bundle.state eq 1}">
                                     <fmt:message key="serverSettings.manageModules.module.state.uninstalled"/>
                                 </c:when>
                             </c:choose>
                         </td>
                         <c:if test="${not isStudio}">
                             <td>
-                                <c:choose>
-                                    <c:when test="${package.key eq activeVersion.version and package.value.activeVersion}">
-                                        <c:set var="usedSites" value=""/>
-                                        <c:set var="isSystemDependency" value="false"/>
-                                        <c:forEach items="${sitesTemplates[activeVersion.rootFolder]}" var="siteName">
-                                            <c:if test="${siteName eq 'systemsite'}">
-                                                <c:set var="isSystemDependency" value="true"/>
-                                            </c:if>
-                                            <c:set var="siteName"> ${siteName}</c:set>
-                                            <c:if test="${not fn:contains(usedSites,siteName)}">
-                                                <c:set var="usedSites" value="${usedSites} ${siteName}"/>
-                                            </c:if>
-                                        </c:forEach>
-                                        <c:forEach items="${sitesDirect[activeVersion.rootFolder]}" var="siteName">
-                                            <c:if test="${siteName eq 'systemsite'}">
-                                                <c:set var="isSystemDependency" value="true"/>
-                                            </c:if>
-                                            <c:set var="siteName"> ${siteName}</c:set>
-                                            <c:if test="${not fn:contains(usedSites,siteName)}">
-                                                <c:set var="usedSites" value="${usedSites} ${siteName}"/>
-                                            </c:if>
-                                        </c:forEach>
-                                        <c:forEach items="${sitesTransitive[activeVersion.rootFolder]}" var="siteName">
-                                            <c:if test="${siteName eq 'systemsite'}">
-                                                <c:set var="isSystemDependency" value="true"/>
-                                            </c:if>
-                                            <c:set var="siteName"> ${siteName}</c:set>
-                                            <c:if test="${not fn:contains(usedSites,siteName)}">
-                                                <c:set var="usedSites" value="${usedSites} ${siteName}"/>
-                                            </c:if>
-                                        </c:forEach>
-                                        <div class="active-version">
-                                            <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                                                <input type="hidden" name="module" value="${package.value.rootFolder}"/>
-                                                <fmt:message var="label" key='serverSettings.manageModules.stopModule'/>
-                                                <c:choose>
-                                                    <c:when test="${not empty sitesTemplates[activeVersion.rootFolder] or not empty sitesDirect[activeVersion.rootFolder] or not empty sitesTransitive[activeVersion.rootFolder]}">
-                                                        <fmt:message var="labelUndeployModuleConfirm"
-                                                                     key="serverSettings.manageModules.stopModules.confirm">
-                                                            <fmt:param value="${activeVersion.name}"/>
-                                                            <fmt:param value="${usedSites}"/>
-                                                        </fmt:message>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <fmt:message var="labelUndeployModuleConfirm"
-                                                                     key="serverSettings.manageModules.stopModule.confirm">
-                                                            <fmt:param value="${activeVersion.name}"/>
-                                                        </fmt:message>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                                <c:if test="${isSystemDependency != 'true'}">
-                                                    <fmt:message var="label" key='serverSettings.manageModules.stopModule'/>
-                                                    <button class="btn btn-danger" type="submit" name="_eventId_stopModule" onclick="return confirm('${functions:escapeJavaScript(labelUndeployModuleConfirm)}');">
-                                                        <i class=" icon-stop icon-white"></i>&nbsp;${label}
-                                                    </button>
-                                                </c:if>
-                                                &nbsp; ${package.key} ( ${package.value.state.state} )
-                                            </form>
-                                        </div>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <div class="inactive-version">
-                                            <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                                                <input type="hidden" name="module" value="${package.value.rootFolder}"/>
-                                                <input type="hidden" name="version" value="${package.key}"/>
-                                                <fmt:message var="label"
-                                                             key='serverSettings.manageModules.startModule'/>
-                                                <button class="btn btn-success" type="submit" name="_eventId_startModule" onclick="">
-                                                    <i class=" icon-play icon-white"></i>&nbsp;${label}
-                                                </button>
-                                                &nbsp; ${package.key} ( ${package.value.state.state} )
-                                            </form>
-                                        </div>
-                                    </c:otherwise>
-                                </c:choose>
+                             <c:set var="isActiveVersion" value="${version.key == activeVersion.version}"/>
+                             <%@include file="moduleVersionActions.jspf" %>
                             </td>
                         </c:if>
                     </tr>

@@ -39,11 +39,36 @@
  */
 package org.jahia.modules.serversettings.flow;
 
+import java.io.File;
+import java.io.Serializable;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NodeTypeIterator;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.modules.serversettings.moduleManagement.ModuleFile;
+import org.jahia.modules.serversettings.moduleManagement.ModuleVersionState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -53,6 +78,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
+import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.utils.i18n.Messages;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
@@ -63,16 +89,9 @@ import org.springframework.binding.message.MessageContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.webflow.execution.RequestContext;
 
-import javax.jcr.nodetype.NodeTypeIterator;
-import javax.jcr.RepositoryException;
-import java.io.File;
-import java.io.Serializable;
-import java.net.URL;
-import java.util.*;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
-
 /**
+ * WebFlow handler for managing modules.
+ * 
  * @author rincevent
  */
 public class ModuleManagementFlowHandler implements Serializable {
@@ -248,6 +267,88 @@ public class ModuleManagementFlowHandler implements Serializable {
         context.getRequestScope().put("sitesDirect",directSiteDep);
         context.getRequestScope().put("sitesTemplates",templateSiteDep);
         context.getRequestScope().put("sitesTransitive", transitiveSiteDep);
+        
+        if (!((RenderContext) context.getExternalContext().getRequestMap().get("renderContext"))
+                .getEditModeConfigName().startsWith("studio")) {
+            populateModuleVersionStateInfo(context, directSiteDep, templateSiteDep, transitiveSiteDep);
+        }
+    }
+
+    private void populateModuleVersionStateInfo(RequestContext context, Map<String, List<String>> directSiteDep,
+            Map<String, List<String>> templateSiteDep, Map<String, List<String>> transitiveSiteDep) {
+        Map<String, Map<ModuleVersion, ModuleVersionState>> states = new TreeMap<String, Map<ModuleVersion, ModuleVersionState>>();
+        Set<String> systemSiteRequiredModules = getSystemSiteRequiredModules();
+        context.getRequestScope().put("systemSiteRequiredModules", systemSiteRequiredModules);
+        for (Map.Entry<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> entry : templateManagerService
+                .getTemplatePackageRegistry().getAllModuleVersions().entrySet()) {
+            Map<ModuleVersion, ModuleVersionState> moduleVersions = states.get(entry.getKey());
+            if (moduleVersions == null) {
+                moduleVersions = new TreeMap<ModuleVersion, ModuleVersionState>();
+                states.put(entry.getKey(), moduleVersions);
+            }
+
+            for (Map.Entry<ModuleVersion, JahiaTemplatesPackage> moduleVersionEntry : entry.getValue().entrySet()) {
+                ModuleVersionState state = getModuleVersionState(moduleVersionEntry.getKey(),
+                        moduleVersionEntry.getValue(), entry.getValue().size() > 1, directSiteDep, templateSiteDep, transitiveSiteDep, systemSiteRequiredModules);
+                moduleVersions.put(moduleVersionEntry.getKey(), state);
+            }
+        }
+        context.getRequestScope().put("moduleStates", states);
+    }
+
+    private ModuleVersionState getModuleVersionState(ModuleVersion moduleVersion, JahiaTemplatesPackage pkg,
+            boolean multipleVersionsOfModuleInstalled, Map<String, List<String>> directSiteDep,
+            Map<String, List<String>> templateSiteDep, Map<String, List<String>> transitiveSiteDep, Set<String> systemSiteRequiredModules) {
+        ModuleVersionState state = new ModuleVersionState();
+        Map<String, JahiaTemplatesPackage> registeredModules = templateManagerService.getTemplatePackageRegistry()
+                .getRegisteredModules();
+        String rootFolder = pkg.getRootFolder();
+
+        // check for unresolved dependencies
+        if (!pkg.getDepends().isEmpty()) {
+            for (String dependency : pkg.getDepends()) {
+                if (!registeredModules.containsKey(dependency)) {
+                    state.getUnresolvedDependencies().add(dependency);
+                }
+            }
+        }
+        List<JahiaTemplatesPackage> dependantModules = templateManagerService.getTemplatePackageRegistry()
+                .getDependantModules(pkg);
+        for (JahiaTemplatesPackage dependant : dependantModules) {
+            state.getDependencies().add(dependant.getRootFolder());
+        }
+
+        // check site usage and system dependency
+        if (templateSiteDep.containsKey(rootFolder)) {
+            state.getUsedInSites().addAll(templateSiteDep.get(rootFolder));
+        }
+        if (directSiteDep.containsKey(rootFolder)) {
+            state.getUsedInSites().addAll(directSiteDep.get(rootFolder));
+        }
+        if (transitiveSiteDep.containsKey(rootFolder)) {
+            state.getUsedInSites().addAll(transitiveSiteDep.get(rootFolder));
+        }
+        state.setSystemDependency(state.getUsedInSites().contains(JahiaSitesService.SYSTEM_SITE_KEY)
+                || systemSiteRequiredModules.contains(rootFolder));
+
+        if (registeredModules.containsKey(rootFolder)
+                && registeredModules.get(rootFolder).getVersion().equals(moduleVersion)) {
+            // this is the currently active version of a module
+            state.setCanBeStopped(!state.isSystemDependency());
+        } else {
+            // not currently active version of a module
+            if (state.getUnresolvedDependencies().isEmpty()) {
+                // no unresolved dependencies -> can start module version
+                state.setCanBeStarted(true);
+
+                // if the module is not used in sites or this is not the only version of a module installed -> allow to uninstall it
+                state.setCanBeUninstalled(state.getUsedInSites().isEmpty() || multipleVersionsOfModuleInstalled);
+            } else {
+                state.setCanBeUninstalled(!state.isSystemDependency());
+            }
+        }
+
+        return state;
     }
 
     private void populateActiveVersion(RequestContext context, JahiaTemplatesPackage value) {
@@ -267,6 +368,51 @@ public class ModuleManagementFlowHandler implements Serializable {
 
     private String getMessage(String key) {
         return Messages.get("resources.JahiaServerSettings", key, LocaleContextHolder.getLocale());
+    }
+    
+    private Set<String> getSystemSiteRequiredModules() {
+        Set<String> modules = new TreeSet<String>();
+        List<String> installedModules;
+        try {
+            installedModules = sitesService.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY).getInstalledModules();
+        } catch (JahiaException e) {
+            throw new JahiaRuntimeException(e);
+        }
+        for (String direct : installedModules) {
+            JahiaTemplatesPackage pkg = lookupModule(direct);
+            if (pkg != null) {
+                modules.add(pkg.getRootFolder());
+                for (String dependency : pkg.getDepends()) {
+                    JahiaTemplatesPackage dependencyPkg = lookupModule(dependency);
+                    if (dependencyPkg != null) {
+                        modules.add(dependencyPkg.getRootFolder());
+                    }
+                }
+            }
+        }
+
+        return modules;
+    }
+
+    private JahiaTemplatesPackage lookupModule(String module) {
+        JahiaTemplatesPackage pkg = null;
+        TemplatePackageRegistry registry = templateManagerService.getTemplatePackageRegistry();
+
+        pkg = registry.lookupByFileName(module);
+        if (pkg == null) {
+            pkg = registry.lookup(module);
+        }
+        if (pkg == null) {
+            Set<ModuleVersion> availableVersionsForModule = registry.getAvailableVersionsForModule(module);
+            if (!availableVersionsForModule.isEmpty()) {
+                pkg = registry.lookupByFileNameAndVersion(module, availableVersionsForModule.iterator().next());
+                if (pkg == null) {
+                    pkg = registry.lookupByNameAndVersion(module, availableVersionsForModule.iterator().next());
+                }
+            }
+        }
+
+        return pkg;
     }
 
     /**

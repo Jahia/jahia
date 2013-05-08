@@ -54,14 +54,13 @@
         </div>
     </form:form>
 </c:if>
-<fmt:message key="serverSettings.manageModules.module.state.active" var="i18nModuleActive"/>
-<fmt:message key="serverSettings.manageModules.module.state.inactive" var="i18nModuleInactive"/>
+<%@include file="moduleLabels.jspf" %>
 <table class="table table-bordered table-striped table-hover">
     <thead>
     <tr>
         <th><fmt:message key='serverSettings.manageModules.moduleName'/></th>
         <th></th>
-        <th><fmt:message key='serverSettings.manageModules.details'/></th>
+        <th>${i18nModuleDetails}</th>
         <th><fmt:message key='serverSettings.manageModules.versions'/></th>
         <c:if test="${not isStudio}">
             <th><fmt:message key='serverSettings.manageModules.status'/></th>
@@ -81,14 +80,19 @@
         </c:if>
         <c:if test="${not isStudio or not empty currentModule.sourcesFolder}">
             <tr>
-                <td><strong>${currentModule != null ? currentModule.name : defaultVersion.name}</strong></td>
+                <td>
+                    <strong>${currentModule != null ? currentModule.name : defaultVersion.name}</strong>
+                    <c:if test="${not isStudio && functions:contains(systemSiteRequiredModules, currentModule != null ? currentModule.rootFolder : defaultVersion.rootFolder)}">
+                        <span class="text-error" title="${i18nMandatoryDependency}"><a href="#mandatory-dependency" class="text-error"><strong>*</strong></a></span>
+                    </c:if>
+                </td>
                 <td>${entry.key}</td>
                 <td>
                     <c:if test="${isStudio}">
                         <c:url var="urlDetails" value="${url.base}/modules/${currentModule.rootFolder}.html"/>
                         <button class="btn btn-info" type="button" onclick='window.location.assign("${urlDetails}")'>
                             <i class="icon-zoom-in icon-white"></i>
-                            &nbsp;<fmt:message key='serverSettings.manageModules.details' />
+                            &nbsp;${i18nModuleDetails}
                         </button>
                     </c:if>
                     <c:if test="${not isStudio}">
@@ -96,126 +100,26 @@
                             <input type="hidden" name="selectedModule" value="${entry.key}"/>
                             <button class="btn btn-info" type="submit" name="_eventId_viewDetails" onclick="">
                                 <i class="icon-zoom-in icon-white"></i>
-                                &nbsp;<fmt:message key='serverSettings.manageModules.details' />
+                                &nbsp;${i18nModuleDetails}
                             </button>
                         </form>
                     </c:if>
                 </td>
                 <td>
                     <c:forEach items="${entry.value}" var="version">
+                        <c:set var="isActiveVersion" value="${version.key == currentModule.version}"/>
+                        <c:set var="displayVersionAndState" value="true"/>
                         <c:if test="${not isStudio}">
-                            <c:set var="unresolvedDependencies" value=""/>
-                            <c:forEach items="${version.value.depends}" var="dep" varStatus="loopStatus">
-                                <c:if test="${empty registeredModules[dep]}">
-                                    <c:set var="unresolvedDependencies" value="${unresolvedDependencies}${fn:length(unresolvedDependencies) > 0 ? ', ' : ''}${dep}"/>
-                                </c:if>
-                            </c:forEach>
-                            <c:choose>
-                                <c:when test="${not empty unresolvedDependencies}">
-                                    <div class="active-version">
-                                        <fmt:message key='serverSettings.manageModules.module.depends'/>: ${unresolvedDependencies}
-                                        <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                                            <input type="hidden" name="module" value="${entry.key}"/>
-                                            <fmt:message var="label" key='serverSettings.manageModules.startModule'/>
-                                            <button class="btn btn-success" type="submit" disabled="true"><i class=" icon-play icon-white"></i>&nbsp;${label}</button>
-                                            &nbsp; ${version.key} ( ${version.value.state.state} )
-                                        </form>
-                                    </div>
-                                </c:when>
-                                <c:when test="${version.key eq currentModule.version}">
-                                    <c:set var="usedSites" value=""/>
-                                    <c:set var="isSystemDependency" value="false"/>
-                                    <c:forEach items="${sitesTemplates[entry.key]}" var="siteName">
-                                        <c:if test="${siteName eq 'systemsite'}">
-                                            <c:set var="isSystemDependency" value="true"/>
-                                        </c:if>
-                                        <c:set var="siteName"> ${siteName}</c:set>
-                                        <c:if test="${not fn:contains(usedSites,siteName)}">
-                                            <c:set var="usedSites" value="${usedSites} ${siteName}"/>
-                                        </c:if>
-                                    </c:forEach>
-                                    <c:forEach items="${sitesDirect[entry.key]}" var="siteName">
-                                        <c:if test="${siteName eq 'systemsite'}">
-                                            <c:set var="isSystemDependency" value="true"/>
-                                        </c:if>
-                                        <c:set var="siteName"> ${siteName}</c:set>
-                                        <c:if test="${not fn:contains(usedSites,siteName)}">
-                                            <c:set var="usedSites" value="${usedSites} ${siteName}"/>
-                                        </c:if>
-                                    </c:forEach>
-                                    <c:forEach items="${sitesTransitive[entry.key]}" var="siteName">
-                                        <c:if test="${siteName eq 'systemsite'}">
-                                            <c:set var="isSystemDependency" value="true"/>
-                                        </c:if>
-                                        <c:set var="siteName"> ${siteName}</c:set>
-                                        <c:if test="${not fn:contains(usedSites,siteName)}">
-                                            <c:set var="usedSites" value="${usedSites} ${siteName}"/>
-                                        </c:if>
-                                    </c:forEach>
-                                    <div class="active-version">
-                                        <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                                            <input type="hidden" name="module" value="${entry.key}"/>
-                                            <fmt:message var="label" key='serverSettings.manageModules.stopModule'/>
-                                            <c:choose>
-                                                <c:when test="${not empty sitesTemplates[entry.key] or not empty sitesDirect[entry.key] or not empty sitesTransitive[entry.key]}">
-                                                    <fmt:message var="labelUndeployModuleConfirm"
-                                                                 key="serverSettings.manageModules.stopModules.confirm">
-                                                                    <fmt:param value="${currentModule.name}"/>
-                                                                    <fmt:param value="${usedSites}"/>
-                                                                 </fmt:message>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <fmt:message var="labelUndeployModuleConfirm"
-                                                                 key="serverSettings.manageModules.stopModule.confirm">
-                                                        <fmt:param value="${currentModule.name}"/>
-                                                    </fmt:message>
-                                                </c:otherwise>
-                                            </c:choose>
-                                            <c:if test="${not(isSystemDependency eq 'true')}">
-                                            <button class="btn btn-danger" type="submit" name="_eventId_stopModule" onclick="return confirm('${functions:escapeJavaScript(labelUndeployModuleConfirm)}');">
-                                                <i class="icon-stop icon-white"></i>&nbsp;${label}
-                                            </button>
-                                            </c:if>
-                                            &nbsp; ${version.key} ( ${version.value.state.state} )
-                                        </form>
-                                    </div>
-                                </c:when>
-                                <c:otherwise>
-                                    <div class="inactive-version">
-                                        <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                                            <input type="hidden" name="module" value="${entry.key}"/>
-                                            <input type="hidden" name="version" value="${version.key}"/>
-                                            <fmt:message var="labelStart"
-                                                         key='serverSettings.manageModules.startModule'/>
-                                            <fmt:message var="labelUndeployModule"
-                                                         key='serverSettings.manageModules.undeployModule'/>
-                                            <fmt:message var="labelUndeployModuleConfirm"
-                                                         key="serverSettings.manageModules.undeployModule.confirm"/>
-                                            <button class="btn btn-success" type="submit" name="_eventId_startModule" onclick="">
-                                                <i class=" icon-play icon-white"></i>
-                                                &nbsp;${labelStart}
-                                            </button>
-                                            &nbsp;
-                                            <c:set value="${not empty sitesDirect[entry.key] or not empty sitesTemplates[entry.key] or not empty sitesTransitive[entry.key]}" var="used"/>
-                                            <button class="btn" type="submit" name="_eventId_undeployModule"
-                                                    ${(fn:length(entry.value) == 1 and used) ? "disabled='true'" :""}
-                                                    onclick="return confirm('${functions:escapeJavaScript(labelUndeployModuleConfirm)}');">
-                                                    <i class="icon-ban-circle"></i>
-                                                    &nbsp;${labelUndeployModule}
-                                            </button>
-                                            &nbsp; ${version.key} ( ${version.value.state.state} )
-                                        </form>
-                                    </div>
-                                </c:otherwise>
-                            </c:choose>
+                            <%@include file="moduleVersionActions.jspf" %>
                         </c:if>
-                        <c:if test="${isStudio and version.key eq currentModule.version}">
+                        <c:if test="${isStudio and isActiveVersion}">
                             <div class="active-version">
-                                    ${version.key}
+                            	${version.key}
                             </div>
                         </c:if>
                     </c:forEach>
                 </td>
+
 
                 <c:if test="${not isStudio}">
                     <td>
@@ -243,10 +147,9 @@
                                     <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                         <input type="hidden" name="module" value="${entry.key}"/>
                                         <input type="hidden" name="scmUri" value="${currentModule.scmURI}"/>
-                                        <fmt:message var="label" key='serverSettings.manageModules.downloadSources'/>
                                         <button class="btn btn-block button-download" type="submit" name="_eventId_downloadSources" onclick="">
                                             <i class="icon-download"></i>
-                                            &nbsp;${label}
+                                            &nbsp;${i18nDownloadSources}
                                         </button>
                                     </form>
                                 </c:if>
@@ -259,7 +162,7 @@
                                     <fmt:message var="label" key='serverSettings.manageModules.downloadSources'/>
                                     <button class="btn btn-block" type="submit" name="_eventId_downloadSources" onclick="">
                                         <i class="icon-download"></i>
-                                        &nbsp;${label}
+                                        &nbsp;${i18nDownloadSources}
                                     </button>
                                 </form>
                             </c:otherwise>
@@ -281,3 +184,6 @@
     </c:forEach>
     </tbody>
 </table>
+<c:if test="${not isStudio}">
+<p><a id="mandatory-dependency">&nbsp;</a><span class="text-error"><strong>*</strong></span>&nbsp;-&nbsp;${i18nMandatoryDependency}</p>
+</c:if>

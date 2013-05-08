@@ -1,0 +1,59 @@
+                            <c:set var="moduleState" value="${moduleStates[version.value.rootFolder][version.key]}"/>
+                            <div class="${!isActiveVersion ? 'inactive' : 'active'}-version">
+                            <c:if test="${not empty moduleState.unresolvedDependencies}">
+                                <c:set var="unresolvedDependencies" value="${functions:join(moduleState.unresolvedDependencies, ', ')}"/>
+                                <p><fmt:message key='serverSettings.manageModules.module.depends'/>: ${functions:join(moduleState.unresolvedDependencies, ', ')}</p>
+                            </c:if>
+                            <c:if test="${moduleState.canBeStarted || moduleState.canBeStopped || moduleState.canBeUninstalled}" var="actionsAllowed">
+                                <form style="margin: 0;" action="${flowExecutionUrl}" method="post">
+                                    <input type="hidden" name="module" value="${version.value.rootFolder}"/>
+                                    <input type="hidden" name="version" value="${version.key}"/>
+                                    <c:if test="${not empty moduleState.unresolvedDependencies}">
+                                        <fmt:message key="serverSettings.manageModules.module.unresolvedDependencies" var="i18nUnresolvedDependencies">
+                                            <fmt:param value="${unresolvedDependencies}"/>
+                                        </fmt:message>
+                                        <button class="btn btn-success" type="submit" disabled="true" title="${fn:escapeXml(i18nUnresolvedDependencies)}">
+                                            <i class=" icon-play icon-white"></i>&nbsp;${i18nModuleStart}
+                                        </button>
+                                    </c:if>
+                                    <c:if test="${moduleState.canBeStarted}">
+                                        <button class="btn btn-success" type="submit" name="_eventId_startModule" onclick="">
+                                            <i class=" icon-play icon-white"></i>&nbsp;${i18nModuleStart}
+                                        </button>
+                                    </c:if>
+                                    <c:if test="${moduleState.canBeStopped}">
+                                        <fmt:message key="serverSettings.manageModules.stopModule.confirm" var="i18nModuleStopConfirm">
+                                               <fmt:param value="${version.value.name} (${version.key})"/>
+                                        </fmt:message>
+                                        <c:if test="${not empty moduleState.usedInSites}">
+                                            <c:set var="i18nModuleStopConfirm">${i18nModuleStopConfirm}&nbsp;<fmt:message key="serverSettings.manageModules.stopModules.confirm.usedInSites">
+                                                <fmt:param value="${functions:join(moduleState.usedInSites, ', ')}"/>
+                                            </fmt:message></c:set>
+                                        </c:if>
+                                        <c:if test="${not empty moduleState.dependencies}">
+                                            <c:set var="i18nModuleStopConfirm">${i18nModuleStopConfirm}&nbsp;<fmt:message key="serverSettings.manageModules.stopModule.confirm.withDependencies">
+                                                <fmt:param value="${functions:join(moduleState.dependencies, ', ')}"/>
+                                            </fmt:message></c:set>
+                                        </c:if>
+                                    
+                                        <button class="btn btn-danger" type="submit" name="_eventId_stopModule"
+                                            onclick="return confirm('${functions:escapeJavaScript(i18nModuleStopConfirm)} ${functions:escapeJavaScript(i18nContinue)}');">
+                                            <i class=" icon-stop icon-white"></i>&nbsp;${i18nModuleStop}
+                                        </button>
+                                    </c:if>
+                                    <c:if test="${moduleState.canBeUninstalled}">
+                                        <fmt:message key="serverSettings.manageModules.undeployModule.confirm" var="i18nModuleUndeployConfirm">
+                                            <fmt:param value="${version.value.name} (${version.key})"/>
+                                        </fmt:message>
+                                        <button class="btn" type="submit" name="_eventId_undeployModule"
+                                            onclick="return confirm('${functions:escapeJavaScript(i18nModuleUndeployConfirm)} ${functions:escapeJavaScript(i18nContinue)}');">
+                                                <i class="icon-ban-circle"></i>&nbsp;${i18nModuleUndeploy}
+                                        </button>
+                                    </c:if>
+                                    <c:if test="${displayVersionAndState}">
+                                    &nbsp;${version.key} ( ${version.value.state.state} )
+                                    </c:if>
+                                </form>
+                            </c:if>
+                            <c:if test="${displayVersionAndState && !actionsAllowed}">${version.key} ( ${version.value.state.state} )<br/>&nbsp;</c:if>
+                            </div>

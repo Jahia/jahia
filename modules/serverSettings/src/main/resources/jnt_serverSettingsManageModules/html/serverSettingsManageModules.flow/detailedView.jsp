@@ -116,26 +116,7 @@
         <tbody>
         <tr>
             <td>
-                <c:choose>
-                    <c:when test="${activeVersion.bundle.state eq 32}">
-                        <fmt:message key="serverSettings.manageModules.module.state.active"/>
-                    </c:when>
-                    <c:when test="${activeVersion.bundle.state eq 16}">
-                        <fmt:message key="serverSettings.manageModules.module.state.stopping"/>
-                    </c:when>
-                    <c:when test="${activeVersion.bundle.state eq 8}">
-                        <fmt:message key="serverSettings.manageModules.module.state.starting"/>
-                    </c:when>
-                    <c:when test="${activeVersion.bundle.state eq 4}">
-                        <fmt:message key="serverSettings.manageModules.module.state.resolved"/>
-                    </c:when>
-                    <c:when test="${activeVersion.bundle.state eq 2}">
-                        <fmt:message key="serverSettings.manageModules.module.state.installed"/>
-                    </c:when>
-                    <c:when test="${activeVersion.bundle.state eq 1}">
-                        <fmt:message key="serverSettings.manageModules.module.state.uninstalled"/>
-                    </c:when>
-                </c:choose>
+                <fmt:message key="serverSettings.manageModules.module.state.${fn:toLowerCase(activeVersion.state.state)}"/>
             </td>
             <td>
                 ${activeVersion.moduleType}
@@ -210,26 +191,7 @@
                     <tr>
                         <td>${version.key}</td>
                         <td>
-                            <c:choose>
-                                <c:when test="${version.value.bundle.state eq 32}">
-                                    <fmt:message key="serverSettings.manageModules.module.state.active"/>
-                                </c:when>
-                                <c:when test="${version.value.bundle.state eq 16}">
-                                    <fmt:message key="serverSettings.manageModules.module.state.stopping"/>
-                                </c:when>
-                                <c:when test="${version.value.bundle.state eq 8}">
-                                    <fmt:message key="serverSettings.manageModules.module.state.starting"/>
-                                </c:when>
-                                <c:when test="${version.value.bundle.state eq 4}">
-                                    <fmt:message key="serverSettings.manageModules.module.state.resolved"/>
-                                </c:when>
-                                <c:when test="${version.value.bundle.state eq 2}">
-                                    <fmt:message key="serverSettings.manageModules.module.state.installed"/>
-                                </c:when>
-                                <c:when test="${version.value.bundle.state eq 1}">
-                                    <fmt:message key="serverSettings.manageModules.module.state.uninstalled"/>
-                                </c:when>
-                            </c:choose>
+                            <fmt:message key="serverSettings.manageModules.module.state.${fn:toLowerCase(version.value.state.state)}"/>
                         </td>
                         <c:if test="${not isStudio}">
                             <td>

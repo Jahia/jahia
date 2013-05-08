@@ -51,9 +51,9 @@
                                         </button>
                                     </c:if>
                                     <c:if test="${displayVersionAndState}">
-                                    &nbsp;${version.key} ( ${version.value.state.state} )
+                                    &nbsp;${version.key} (<fmt:message key="serverSettings.manageModules.module.state.${fn:toLowerCase(version.value.state.state)}"/>)
                                     </c:if>
                                 </form>
                             </c:if>
-                            <c:if test="${displayVersionAndState && !actionsAllowed}">${version.key} ( ${version.value.state.state} )<br/>&nbsp;</c:if>
+                            <c:if test="${displayVersionAndState && !actionsAllowed}">${version.key} (<fmt:message key="serverSettings.manageModules.module.state.${fn:toLowerCase(version.value.state.state)}"/>)<br/>&nbsp;</c:if>
                             </div>

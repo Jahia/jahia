@@ -320,8 +320,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
             if (modulePath == null) {
                 FileUtils.deleteDirectory(sources);
-                logger.error("Sources were not found for " + moduleName + "  " + version + " in " + scmURI + " " + branchOrTag);
-                throw new IOException("Sources were not found for " + moduleName + "  " + version + " in " + scmURI + " " + branchOrTag);
+                String msg = "Sources were not found for " + moduleName + "  " + StringUtils.defaultIfEmpty(version,
+                        "") + " in " + scmURI + " " + StringUtils.defaultIfEmpty(branchOrTag, "");
+                logger.error(msg);
+                throw new IOException(msg);
             }
 
             if (tempName != null) {

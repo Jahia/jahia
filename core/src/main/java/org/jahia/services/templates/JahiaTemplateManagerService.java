@@ -596,7 +596,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         FileUtils.copyDirectory(tempSources, sources, new FileFilter() {
             @Override
             public boolean accept(File pathname) {
-                if (pathname.getPath().startsWith(tempSources.getPath() + "/target") || pathname.getPath().startsWith(tempSources.getPath() + "/.git")) {
+                if (!".gitignore".equals(pathname.getName()) && (pathname.getPath().startsWith(tempSources.getPath() + "/target") || pathname.getPath().startsWith(tempSources.getPath() + "/.git"))) {
                     return false;
                 }
                 modifiedFiles.add(new File(pathname.getPath().replace(tempSources.getPath(), sources.getPath())));

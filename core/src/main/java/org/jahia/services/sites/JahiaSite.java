@@ -50,7 +50,6 @@
 
 package org.jahia.services.sites;
 
-import java.io.Serializable;
 import java.util.*;
 
 
@@ -64,9 +63,20 @@ public interface JahiaSite {
 
     public String getDefaultLanguage();
 
+    /**
+     * Returns the description, provided for this site.
+     * 
+     * @return the description, provided for this site
+     * @deprecated use {@link #getDescription()} instead
+     */
     @Deprecated
     public String getDescr();
 
+    /**
+     * Returns the description, provided for this site.
+     * 
+     * @return the description, provided for this site
+     */
     public String getDescription();
 
 

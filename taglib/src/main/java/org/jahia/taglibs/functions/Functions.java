@@ -43,6 +43,7 @@ package org.jahia.taglibs.functions;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.TextExtractor;
 
+import org.apache.commons.collections.EnumerationUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
@@ -217,6 +218,38 @@ public class Functions {
         }
 
         return isIt;
+    }
+
+    /**
+     * Joins the elements of the provided array/collection/iterator into a single String containing the provided elements with specified
+     * separator.
+     * 
+     * @param elements
+     *            the set of values to join together, may be null
+     * @param separator
+     *            the separator character to use, null treated as ""
+     * @return the joined String, <code>null</code> if null elements input
+     */
+    public static String join(Object elements, String separator) {
+        if (elements == null) {
+            return null;
+        }
+
+        if (elements instanceof Object[]) {
+            return StringUtils.join((Object[]) elements, separator);
+        } else if (elements instanceof Collection<?>) {
+            return StringUtils.join((Collection<?>) elements, separator);
+        } else if (elements instanceof Iterator<?>) {
+            return StringUtils.join((Iterator<?>) elements, separator);
+        } else if (elements instanceof Enumeration<?>) {
+            return StringUtils.join(EnumerationUtils.toList((Enumeration<?>) elements), separator);
+        } else if (elements instanceof Map<?, ?>) {
+            return StringUtils.join(((Map<?, ?>) elements).keySet(), separator);
+        } else if (elements instanceof String) {
+            return (String) elements;
+        }
+
+        throw new IllegalArgumentException("Cannot handle the elements of type " + elements.getClass().getName());
     }
 
     public static long length(Object obj) throws JspTagException {

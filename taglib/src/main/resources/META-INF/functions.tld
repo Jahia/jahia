@@ -501,4 +501,14 @@
         <function-signature>org.jahia.services.content.JCRNodeWrapper getParentWithAclInheritanceBroken(org.jahia.services.content.JCRNodeWrapper)</function-signature>
         <example>${functions:getParentWithAclInheritanceBroken(node)}</example>
     </function>
+    
+    <function>
+        <description>
+            Joins the provided elements using the specified separator.
+        </description>
+        <name>join</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.lang.String join(java.lang.Object, java.lang.String)</function-signature>
+        <example>${functions:join(dependentModuleList, ', ')}</example>
+    </function>
 </taglib>

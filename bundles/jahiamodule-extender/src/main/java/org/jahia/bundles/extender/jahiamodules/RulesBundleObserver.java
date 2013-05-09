@@ -115,6 +115,13 @@ public class RulesBundleObserver implements BundleObserver<URL> {
         JahiaTemplatesPackage module = templatePackageRegistry.lookupByBundle(bundle);
         for (RulesListener listener : RulesListener.getInstances()) {
             listener.removeRules(module.getName());
+            for (URL url : urls) {
+                if(url.toString().endsWith(".dsl")) {
+                    if(listener.removeRulesDescriptor(new BundleResource(url, bundle))){
+                        logger.info("Removing rule file descriptor " + url);
+                    }
+                }
+            }
         }
     }
 }

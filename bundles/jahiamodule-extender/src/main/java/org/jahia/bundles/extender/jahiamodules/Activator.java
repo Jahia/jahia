@@ -355,7 +355,9 @@ public class Activator implements BundleActivator {
                 && !"assets".equals(pkg.getRootFolder()) && !"default".equals(pkg.getRootFolder())) {
             dependsList.add("default");
         }
+        registeredBundles.put(bundle, pkg);
 
+        templatePackageRegistry.registerPackageVersion(pkg);
         for (String depend : dependsList) {
             Set<ModuleVersion> m = templatePackageRegistry.getAvailableVersionsForModule(depend);
             if (m.isEmpty()) {
@@ -366,18 +368,18 @@ public class Activator implements BundleActivator {
                         bundle.getSymbolicName(), depend);
                 setModuleState(bundle, ModuleState.State.WAITING_TO_BE_PARSED, depend);
                 toBeParsed.get(depend).add(bundle);
-                if (templatePackageRegistry.lookupByFileNameAndVersion(pkg.getName(), pkg.getVersion()) != null) {
+                /*if (templatePackageRegistry.lookupByFileNameAndVersion(pkg.getName(), pkg.getVersion()) != null) {
                     templatePackageRegistry.unregisterPackageVersion(pkg);
-                }
+                }*/
                 return;
             }
         }
 
         logger.info("--- Parsing Jahia OSGi bundle {} v{} --", pkg.getRootFolder(), pkg.getVersion());
 
-        registeredBundles.put(bundle, pkg);
+//        registeredBundles.put(bundle, pkg);
         boolean newModuleDeployment = templatePackageRegistry.getAvailableVersionsForModule(bundle.getSymbolicName()).isEmpty();
-        templatePackageRegistry.registerPackageVersion(pkg);
+//        templatePackageRegistry.registerPackageVersion(pkg);
 
         boolean latestDefinitions = NodeTypeRegistry.getInstance().isLatestDefinitions(bundle.getSymbolicName(), pkg.getVersion());
         if (latestDefinitions) {
@@ -423,8 +425,10 @@ public class Activator implements BundleActivator {
     private void parseDependantBundles(String key, boolean shouldAutoStart) {
         if (toBeParsed.get(key) != null) {
             for (Bundle bundle1 : toBeParsed.get(key)) {
-                logger.debug("Parsing module " + bundle1.getSymbolicName() + " since it is dependent on just parsed module " + key);
-                parseBundle(bundle1, shouldAutoStart);
+                if(bundle1.getState()!=Bundle.UNINSTALLED) {
+                    logger.debug("Parsing module " + bundle1.getSymbolicName() + " since it is dependent on just parsed module " + key);
+                    parseBundle(bundle1, shouldAutoStart);
+                }
             }
             toBeParsed.remove(key);
         }

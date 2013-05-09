@@ -89,22 +89,40 @@ public class ConfigurationImpl
 
     @Override
     public List<String> getImportedPackages() {
-        if( !contains( ServiceConstants.PROPERTY_IMPORTED_PACKAGED ) )
+        if( !contains( ServiceConstants.PROPERTY_IMPORTED_PACKAGES) )
         {
-            String importedPackagePropValue = propertyResolver.get(ServiceConstants.PROPERTY_IMPORTED_PACKAGED);
+            String importedPackagePropValue = propertyResolver.get(ServiceConstants.PROPERTY_IMPORTED_PACKAGES);
             if (importedPackagePropValue != null) {
                 String[] importPackagesArray = importedPackagePropValue.split(",");
                 List<String> importedPackages = new ArrayList<String>();
                 for (String importedPackage : importPackagesArray) {
                     importedPackages.add(importedPackage.trim());
                 }
-                return set(ServiceConstants.PROPERTY_IMPORTED_PACKAGED, importedPackages);
+                return set(ServiceConstants.PROPERTY_IMPORTED_PACKAGES, importedPackages);
             } else {
-                return set(ServiceConstants.PROPERTY_IMPORTED_PACKAGED, Collections.<String>emptyList());
+                return set(ServiceConstants.PROPERTY_IMPORTED_PACKAGES, Collections.<String>emptyList());
             }
-
         }
-        return get( ServiceConstants.PROPERTY_IMPORTED_PACKAGED );
+        return get( ServiceConstants.PROPERTY_IMPORTED_PACKAGES);
+    }
+
+    @Override
+    public List<String> getExcludedImportPackages() {
+        if( !contains( ServiceConstants.PROPERTY_EXCLUDED_IMPORT_PACKAGES) )
+        {
+            String excludedImportPackagesPropValue = propertyResolver.get(ServiceConstants.PROPERTY_EXCLUDED_IMPORT_PACKAGES);
+            if (excludedImportPackagesPropValue != null) {
+                String[] excludedImportPackageArray = excludedImportPackagesPropValue.split(",");
+                List<String> excludedImportPackages = new ArrayList<String>();
+                for (String excludedImportPackage : excludedImportPackageArray) {
+                    excludedImportPackages.add(excludedImportPackage.trim());
+                }
+                return set(ServiceConstants.PROPERTY_EXCLUDED_IMPORT_PACKAGES, excludedImportPackages);
+            } else {
+                return set(ServiceConstants.PROPERTY_EXCLUDED_IMPORT_PACKAGES, Collections.<String>emptyList());
+            }
+        }
+        return get( ServiceConstants.PROPERTY_EXCLUDED_IMPORT_PACKAGES);
     }
 
 }

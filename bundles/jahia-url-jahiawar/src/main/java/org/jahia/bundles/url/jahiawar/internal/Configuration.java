@@ -56,4 +56,6 @@ public interface Configuration {
 
     List<String> getImportedPackages();
 
+    List<String> getExcludedImportPackages();
+
 }

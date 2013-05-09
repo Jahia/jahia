@@ -60,5 +60,7 @@ public interface ServiceConstants {
      */
     static final String PROPERTY_CERTIFICATE_CHECK = PID + ".certificateCheck";
 
-    static final String PROPERTY_IMPORTED_PACKAGED = PID + ".importedPackages";
+    static final String PROPERTY_IMPORTED_PACKAGES = PID + ".importedPackages";
+
+    static final String PROPERTY_EXCLUDED_IMPORT_PACKAGES = PID + ".excludedImportPackages";
 }

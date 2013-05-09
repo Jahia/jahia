@@ -92,6 +92,7 @@ public class Connection extends URLConnection {
     public Set<String> extensionsToExport = new HashSet<String>();
 
     public Set<String> importPackages = new TreeSet<String>();
+    public Set<String> excludedImportPackages = new TreeSet<String>();
 
     public Connection(final URL url, final Configuration configuration)
             throws MalformedURLException {
@@ -102,6 +103,7 @@ public class Connection extends URLConnection {
 
         this.configuration = configuration;
         importPackages.addAll(configuration.getImportedPackages());
+        excludedImportPackages.addAll(configuration.getExcludedImportPackages());
         extensionsToExport.add(".class");
         extensionsToExport.add(".tld");
         parser = new Parser(url.getPath());
@@ -371,14 +373,16 @@ public class Connection extends URLConnection {
 
             List<String> alreadyImportedPackages = new ArrayList<String>(Arrays.asList(importPackage.toString().split(",")));
             for (String curImportPackage : importPackages) {
-                if (!alreadyImportedPackages.contains(curImportPackage)) {
+                if (!alreadyImportedPackages.contains(curImportPackage) &&
+                    !excludedImportPackages.contains(curImportPackage)) {
                     importPackage.append(",");
                     importPackage.append(curImportPackage);
                     alreadyImportedPackages.add(curImportPackage);
                 }
             }
             for (String importPackageFromParsing : parsingContext.getPackageImports()) {
-                if (!alreadyImportedPackages.contains(importPackageFromParsing)) {
+                if (!alreadyImportedPackages.contains(importPackageFromParsing) &&
+                    !excludedImportPackages.contains(importPackageFromParsing)) {
                     importPackage.append(",");
                     importPackage.append(importPackageFromParsing);
                     alreadyImportedPackages.add(importPackageFromParsing);

@@ -110,6 +110,10 @@
                     org.drools
                 ]]>
                 </prop>
+                <prop key="org.jahia.bundles.url.jahiawar.excludedImportPackages"><![CDATA[
+                    org.jahia.modules.docspace.rules
+                ]]>
+                </prop>
             </props>
         </property>
         <property name="locations">

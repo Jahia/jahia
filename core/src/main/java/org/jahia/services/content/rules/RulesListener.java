@@ -689,4 +689,8 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             ruleBase.removePackage(modulePackageNameMap.get(moduleName));
         }
     }
+
+    public boolean removeRulesDescriptor(Resource resource) {
+        return dslFiles.remove(resource);
+    }
 }

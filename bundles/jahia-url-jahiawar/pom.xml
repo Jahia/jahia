@@ -42,7 +42,7 @@
                             org.jdom;resolution:=optional,
                             org.jdom.input;resolution:=optional
                         </Import-Package>
-                        <Embed-Dependency>*; scope=compile; type=!pom; inline=true;artifactId=!org.eclipse.osgi</Embed-Dependency>
+                        <Embed-Dependency>*; scope=compile; type=!pom; inline=true;artifactId=!slf4j-api</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <_removeheaders>
                             Include-Resource,
@@ -66,7 +66,7 @@
         <dependency>
             <groupId>org.ops4j.pax.swissbox</groupId>
             <artifactId>pax-swissbox-bnd</artifactId>
-            <version>1.5.1</version>
+            <version>1.6.0</version>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.url</groupId>

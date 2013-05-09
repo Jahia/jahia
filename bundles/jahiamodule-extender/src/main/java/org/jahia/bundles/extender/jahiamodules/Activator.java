@@ -206,37 +206,37 @@ public class Activator implements BundleActivator {
                 try {
                     switch (bundleEvent.getType()) {
                         case BundleEvent.INSTALLED:
-                            setModuleState(bundle,ModuleState.State.INSTALLED);
+                            setModuleState(bundle,ModuleState.State.INSTALLED, null);
                             boolean fromFileInstall = bundleEvent.getOrigin().getSymbolicName().equals("org.apache.felix.fileinstall");
                             install(bundle, fromFileInstall);
                             break;
                         case BundleEvent.UPDATED:
                             BundleUtils.unregisterModule(bundle);
-                            setModuleState(bundle,ModuleState.State.UPDATED);
+                            setModuleState(bundle,ModuleState.State.UPDATED, null);
                             update(bundle);
                             break;
                         case BundleEvent.RESOLVED:
-                            setModuleState(bundle,ModuleState.State.RESOLVED);
+                            setModuleState(bundle,ModuleState.State.RESOLVED, null);
                             resolve(bundle);
                             break;
                         case BundleEvent.STARTING:
-                            setModuleState(bundle,ModuleState.State.STARTING);
+                            setModuleState(bundle,ModuleState.State.STARTING, null);
                             starting(bundle);
                             break;
                         case BundleEvent.STARTED:
-                            setModuleState(bundle,ModuleState.State.STARTED);
+                            setModuleState(bundle,ModuleState.State.STARTED, null);
                             start(bundle);
                             break;
                         case BundleEvent.STOPPING:
-                            setModuleState(bundle,ModuleState.State.STOPPING);
+                            setModuleState(bundle,ModuleState.State.STOPPING, null);
                             stopping(bundle);
                             break;
                         case BundleEvent.STOPPED:
-                            setModuleState(bundle,ModuleState.State.STOPPED);
+                            setModuleState(bundle,ModuleState.State.STOPPED, null);
                             stopped(bundle);
                             break;
                         case BundleEvent.UNRESOLVED:
-                            setModuleState(bundle,ModuleState.State.UNRESOLVED);
+                            setModuleState(bundle,ModuleState.State.UNRESOLVED, null);
                             unresolve(bundle);
                             break;
                         case BundleEvent.UNINSTALLED:
@@ -364,7 +364,7 @@ public class Activator implements BundleActivator {
                 }
                 logger.debug("Delaying module {} parsing because it depends on module {} that is not yet parsed.",
                         bundle.getSymbolicName(), depend);
-                setModuleState(bundle, ModuleState.State.WAITING_TO_BE_PARSED);
+                setModuleState(bundle, ModuleState.State.WAITING_TO_BE_PARSED, depend);
                 toBeParsed.get(depend).add(bundle);
                 if (templatePackageRegistry.lookupByFileNameAndVersion(pkg.getName(), pkg.getVersion()) != null) {
                     templatePackageRegistry.unregisterPackageVersion(pkg);
@@ -389,7 +389,7 @@ public class Activator implements BundleActivator {
 
         logger.info("--- Done parsing Jahia OSGi bundle {} v{} --", pkg.getRootFolder(), pkg.getVersion());
 
-        setModuleState(bundle, ModuleState.State.PARSED);
+        setModuleState(bundle, ModuleState.State.PARSED, null);
 
         if (installedBundles.contains(bundle)) {
             logger.info("--- Installing Jahia OSGi bundle {} v{} --", pkg.getRootFolder(), pkg.getVersion());
@@ -408,7 +408,7 @@ public class Activator implements BundleActivator {
                 logger.error("Error while initializing module content for module " + pkg, e);
             }
             logger.info("--- Done installing Jahia OSGi bundle {} v{} --", pkg.getRootFolder(), pkg.getVersion());
-            setModuleState(bundle, ModuleState.State.INSTALLED);
+            setModuleState(bundle, ModuleState.State.INSTALLED, null);
             if (shouldAutoStart && newModuleDeployment) {
                 bundleStarter.startBundle(bundle);
             }
@@ -482,7 +482,7 @@ public class Activator implements BundleActivator {
                 }
                 logger.debug("Delaying module {} startup because it depends on module {} that is not yet started.", bundle.getSymbolicName(), depend);
                 toBeStarted.get(depend).add(bundle);
-                setModuleState(bundle, ModuleState.State.WAITING_TO_BE_STARTED);
+                setModuleState(bundle, ModuleState.State.WAITING_TO_BE_STARTED, depend);
                 return;
             }
         }
@@ -506,7 +506,7 @@ public class Activator implements BundleActivator {
 
         long totalTime = System.currentTimeMillis() - startTime;
         logger.info("--- Finished starting Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
-        setModuleState(bundle, ModuleState.State.STARTED);
+        setModuleState(bundle, ModuleState.State.STARTED, null);
 
         startDependantBundles(jahiaTemplatesPackage.getRootFolder());
         startDependantBundles(jahiaTemplatesPackage.getName());
@@ -534,13 +534,13 @@ public class Activator implements BundleActivator {
             List<Bundle> startedBundles = new ArrayList<Bundle>();
             for (Bundle bundle : toBeStarted.get(key)) {
                 logger.debug("Starting module " + bundle.getSymbolicName() + " since it is dependent on just started module " + key);
-                setModuleState(bundle, ModuleState.State.STARTING);
+                setModuleState(bundle, ModuleState.State.STARTING, key);
                 try {
                     start(bundle);
                     startedBundles.add(bundle);
                 } catch (Throwable t) {
                     logger.error("Error during startup of dependent module " + bundle.getSymbolicName() + ", module is not started !", t);
-                    setModuleState(bundle, ModuleState.State.ERROR_DURING_START);
+                    setModuleState(bundle, ModuleState.State.ERROR_DURING_START, t);
                 }
             }
             toBeStarted.get(key).removeAll(startedBundles);
@@ -564,7 +564,7 @@ public class Activator implements BundleActivator {
                 toBeStarted.put(bundle.getSymbolicName(), new ArrayList<Bundle>());
             }
             toBeStarted.get(bundle.getSymbolicName()).add(dependant.getBundle());
-            setModuleState(dependant.getBundle(), ModuleState.State.WAITING_TO_BE_STARTED);
+            setModuleState(dependant.getBundle(), ModuleState.State.WAITING_TO_BE_STARTED, bundle.getSymbolicName());
             stopping(dependant.getBundle());
         }
 
@@ -721,8 +721,10 @@ public class Activator implements BundleActivator {
         return moduleStates.get(bundle);
     }
 
-    void setModuleState(Bundle bundle, ModuleState.State state) {
-        getModuleState(bundle).setState(state);
+    void setModuleState(Bundle bundle, ModuleState.State state, Object details) {
+        ModuleState moduleState = getModuleState(bundle);
+        moduleState.setState(state);
+        moduleState.setDetails(details);
     }
 
 }

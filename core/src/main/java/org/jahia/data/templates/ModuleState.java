@@ -48,6 +48,7 @@ public class ModuleState {
     }
 
     private State state;
+    private Object details;
 
     public State getState() {
         return state;
@@ -55,5 +56,13 @@ public class ModuleState {
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    public Object getDetails() {
+        return details;
+    }
+
+    public void setDetails(Object details) {
+        this.details = details;
     }
 }

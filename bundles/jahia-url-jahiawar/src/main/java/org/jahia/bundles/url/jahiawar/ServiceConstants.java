@@ -63,4 +63,6 @@ public interface ServiceConstants {
     static final String PROPERTY_IMPORTED_PACKAGES = PID + ".importedPackages";
 
     static final String PROPERTY_EXCLUDED_IMPORT_PACKAGES = PID + ".excludedImportPackages";
+
+    static final String PROPERTY_EXCLUDED_EXPORT_PACKAGES = PID + ".excludedExportPackages";
 }

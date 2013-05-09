@@ -91,8 +91,9 @@ public class Connection extends URLConnection {
 
     public Set<String> extensionsToExport = new HashSet<String>();
 
-    public Set<String> importPackages = new TreeSet<String>();
-    public Set<String> excludedImportPackages = new TreeSet<String>();
+    public Map<String,Set<String>> importPackages = null;
+    public Map<String,Set<String>> excludedImportPackages = null;
+    public Map<String,Set<String>> excludedExportPackages = null;
 
     public Connection(final URL url, final Configuration configuration)
             throws MalformedURLException {
@@ -102,8 +103,9 @@ public class Connection extends URLConnection {
         NullArgumentException.validateNotNull(configuration, "Service configuration");
 
         this.configuration = configuration;
-        importPackages.addAll(configuration.getImportedPackages());
-        excludedImportPackages.addAll(configuration.getExcludedImportPackages());
+        importPackages = configuration.getImportedPackages();
+        excludedImportPackages = configuration.getExcludedImportPackages();
+        excludedExportPackages = configuration.getExcludedExportPackages();
         extensionsToExport.add(".class");
         extensionsToExport.add(".tld");
         parser = new Parser(url.getPath());
@@ -321,8 +323,10 @@ public class Connection extends URLConnection {
             StringBuilder exportPackage = new StringBuilder(128);
             if (exportPackageIncludes.size() > 0) {
                 for (String exportPackageInclude : exportPackageIncludes) {
-                    exportPackage.append(exportPackageInclude);
-                    exportPackage.append(",");
+                    if (!getBundlePackages(rootFolder, excludedExportPackages).contains(exportPackageInclude)) {
+                        exportPackage.append(exportPackageInclude);
+                        exportPackage.append(",");
+                    }
                 }
             }
             /*
@@ -372,9 +376,9 @@ public class Connection extends URLConnection {
             */
 
             List<String> alreadyImportedPackages = new ArrayList<String>(Arrays.asList(importPackage.toString().split(",")));
-            for (String curImportPackage : importPackages) {
+            for (String curImportPackage : getBundlePackages(rootFolder, importPackages)) {
                 if (!alreadyImportedPackages.contains(curImportPackage) &&
-                    !excludedImportPackages.contains(curImportPackage)) {
+                    !getBundlePackages(rootFolder, excludedImportPackages).contains(curImportPackage)) {
                     importPackage.append(",");
                     importPackage.append(curImportPackage);
                     alreadyImportedPackages.add(curImportPackage);
@@ -382,7 +386,7 @@ public class Connection extends URLConnection {
             }
             for (String importPackageFromParsing : parsingContext.getPackageImports()) {
                 if (!alreadyImportedPackages.contains(importPackageFromParsing) &&
-                    !excludedImportPackages.contains(importPackageFromParsing)) {
+                    !getBundlePackages(rootFolder, excludedImportPackages).contains(importPackageFromParsing)) {
                     importPackage.append(",");
                     importPackage.append(importPackageFromParsing);
                     alreadyImportedPackages.add(importPackageFromParsing);
@@ -527,6 +531,21 @@ public class Connection extends URLConnection {
                 }
             }
         }
+    }
+
+    public Set<String> getBundlePackages(String bundleName, Map<String,Set<String>> bundlePackages) {
+        Set<String> packages = new TreeSet<String>();
+        if (bundlePackages.get("*") != null) {
+            packages.addAll(bundlePackages.get("*"));
+        }
+        if (bundlePackages.get(bundleName) != null) {
+            packages.addAll(bundlePackages.get(bundleName));
+        }
+        return packages;
+    }
+
+    public boolean isPackageInBundlePackages(String packageName, String bundleName, Map<String,Set<String>> bundlePackages) {
+        return getBundlePackages(bundleName, bundlePackages).contains(packageName);
     }
 
     @Override

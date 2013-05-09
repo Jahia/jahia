@@ -45,6 +45,8 @@ import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleUtils;
 import org.osgi.framework.Bundle;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.*;
 
 /**
@@ -68,12 +70,24 @@ public class ShellCommands {
             System.out.println("----------------------------------------");
             Set<Bundle> bundlesInState = modulesByState.get(moduleState);
             for (Bundle bundleInState : bundlesInState) {
+                ModuleState bundleModuleState = activator.getModuleState(bundleInState);
                 JahiaTemplatesPackage modulePackage = BundleUtils.getModule(bundleInState);
                 String dependsOn = "";
                 if (modulePackage != null) {
                     dependsOn = " depends on " + modulePackage.getDepends();
                 }
-                System.out.println(bundleInState.getBundleId() + " : " + bundleInState.getSymbolicName() + " v" + bundleInState.getHeaders().get("Implementation-Version") + dependsOn);
+                String details = "";
+                if (bundleModuleState.getDetails() != null) {
+                    if (bundleModuleState.getDetails() instanceof Throwable) {
+                        Throwable t = (Throwable) bundleModuleState.getDetails();
+                        StringWriter stringWriter = new StringWriter();
+                        t.printStackTrace(new PrintWriter(stringWriter));
+                        details = " details=" + stringWriter.getBuffer();
+                    } else {
+                        details = " details=" + bundleModuleState.getDetails();
+                    }
+                }
+                System.out.println(bundleInState.getBundleId() + " : " + bundleInState.getSymbolicName() + " v" + bundleInState.getHeaders().get("Implementation-Version") + dependsOn + details);
             }
         }
     }

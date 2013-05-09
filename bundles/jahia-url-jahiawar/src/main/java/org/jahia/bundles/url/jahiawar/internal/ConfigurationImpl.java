@@ -45,9 +45,7 @@ import org.ops4j.lang.NullArgumentException;
 import org.ops4j.util.property.PropertyResolver;
 import org.ops4j.util.property.PropertyStore;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Service configuration implementation
@@ -88,41 +86,65 @@ public class ConfigurationImpl
     }
 
     @Override
-    public List<String> getImportedPackages() {
+    public Map<String,Set<String>> getImportedPackages() {
         if( !contains( ServiceConstants.PROPERTY_IMPORTED_PACKAGES) )
         {
             String importedPackagePropValue = propertyResolver.get(ServiceConstants.PROPERTY_IMPORTED_PACKAGES);
             if (importedPackagePropValue != null) {
-                String[] importPackagesArray = importedPackagePropValue.split(",");
-                List<String> importedPackages = new ArrayList<String>();
-                for (String importedPackage : importPackagesArray) {
-                    importedPackages.add(importedPackage.trim());
-                }
+                Map<String,Set<String>> importedPackages = getBundlePackageMappings(importedPackagePropValue);
                 return set(ServiceConstants.PROPERTY_IMPORTED_PACKAGES, importedPackages);
             } else {
-                return set(ServiceConstants.PROPERTY_IMPORTED_PACKAGES, Collections.<String>emptyList());
+                return set(ServiceConstants.PROPERTY_IMPORTED_PACKAGES, Collections.<String,Set<String>>emptyMap());
             }
         }
         return get( ServiceConstants.PROPERTY_IMPORTED_PACKAGES);
     }
 
     @Override
-    public List<String> getExcludedImportPackages() {
+    public Map<String,Set<String>> getExcludedImportPackages() {
         if( !contains( ServiceConstants.PROPERTY_EXCLUDED_IMPORT_PACKAGES) )
         {
             String excludedImportPackagesPropValue = propertyResolver.get(ServiceConstants.PROPERTY_EXCLUDED_IMPORT_PACKAGES);
             if (excludedImportPackagesPropValue != null) {
-                String[] excludedImportPackageArray = excludedImportPackagesPropValue.split(",");
-                List<String> excludedImportPackages = new ArrayList<String>();
-                for (String excludedImportPackage : excludedImportPackageArray) {
-                    excludedImportPackages.add(excludedImportPackage.trim());
-                }
+                Map<String,Set<String>> excludedImportPackages = getBundlePackageMappings(excludedImportPackagesPropValue);
                 return set(ServiceConstants.PROPERTY_EXCLUDED_IMPORT_PACKAGES, excludedImportPackages);
             } else {
-                return set(ServiceConstants.PROPERTY_EXCLUDED_IMPORT_PACKAGES, Collections.<String>emptyList());
+                return set(ServiceConstants.PROPERTY_EXCLUDED_IMPORT_PACKAGES, Collections.<String,Set<String>>emptyMap());
             }
         }
         return get( ServiceConstants.PROPERTY_EXCLUDED_IMPORT_PACKAGES);
+    }
+
+    @Override
+    public Map<String, Set<String>> getExcludedExportPackages() {
+        if( !contains( ServiceConstants.PROPERTY_EXCLUDED_EXPORT_PACKAGES) )
+        {
+            String excludedExportPackagesPropValue = propertyResolver.get(ServiceConstants.PROPERTY_EXCLUDED_EXPORT_PACKAGES);
+            if (excludedExportPackagesPropValue != null) {
+                Map<String,Set<String>> excludedExportPackages = getBundlePackageMappings(excludedExportPackagesPropValue);
+                return set(ServiceConstants.PROPERTY_EXCLUDED_EXPORT_PACKAGES, excludedExportPackages);
+            } else {
+                return set(ServiceConstants.PROPERTY_EXCLUDED_EXPORT_PACKAGES, Collections.<String,Set<String>>emptyMap());
+            }
+        }
+        return get( ServiceConstants.PROPERTY_EXCLUDED_EXPORT_PACKAGES);
+    }
+
+    private Map<String,Set<String>> getBundlePackageMappings(String propertyValue) {
+        Map<String,Set<String>> excludedImportPackages = new TreeMap<String,Set<String>>();
+        String[] excludedImportPackageArray = propertyValue.split(",");
+        for (String excludedImportPackage : excludedImportPackageArray) {
+            String[] excludedImportPackageMapping = excludedImportPackage.split("=");
+            String bundleName = excludedImportPackageMapping[0].trim();
+            String bundleExcludedImportPackage = excludedImportPackageMapping[1].trim();
+            Set<String> bundleExcludedImportPackages = excludedImportPackages.get(bundleName);
+            if (bundleExcludedImportPackages == null) {
+                bundleExcludedImportPackages = new TreeSet<String>();
+            }
+            bundleExcludedImportPackages.add(bundleExcludedImportPackage);
+            excludedImportPackages.put(bundleName, bundleExcludedImportPackages);
+        }
+        return excludedImportPackages;
     }
 
 }

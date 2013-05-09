@@ -41,6 +41,8 @@
 package org.jahia.bundles.url.jahiawar.internal;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Handler configuration
@@ -54,8 +56,10 @@ public interface Configuration {
      */
     Boolean getCertificateCheck();
 
-    List<String> getImportedPackages();
+    Map<String,Set<String>> getImportedPackages();
 
-    List<String> getExcludedImportPackages();
+    Map<String,Set<String>> getExcludedImportPackages();
+
+    Map<String,Set<String>> getExcludedExportPackages();
 
 }

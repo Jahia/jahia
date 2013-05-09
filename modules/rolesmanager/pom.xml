@@ -49,6 +49,7 @@
                     <instructions>
                         <Jahia-Module-Type>system</Jahia-Module-Type>
                         <Jahia-Depends>assets</Jahia-Depends>
+                        <Jahia-Download-Sources-Available>false</Jahia-Download-Sources-Available>
                     </instructions>
                 </configuration>
             </plugin>

@@ -329,18 +329,14 @@ public class Connection extends URLConnection {
                     }
                 }
             }
-            /*
-            if (exportPackageExcludes.size() > 0) {
-                for (String exportPackageExclude : exportPackageExcludes) {
+
+            if (getBundlePackages(rootFolder, excludedExportPackages).size() > 0) {
+                for (String exportPackageExclude : getBundlePackages(rootFolder, excludedExportPackages)) {
                     exportPackage.append("!");
                     exportPackage.append(exportPackageExclude);
-                    exportPackage.append(".*,");
+                    exportPackage.append(",");
                 }
-                //exportPackage.append("*,");
-            } else {
-                //exportPackage.append("*,");
             }
-            */
             String titleAttribute = inputManifest.getMainAttributes().getValue("package-name");
             if (titleAttribute == null) {
                 titleAttribute = inputManifest.getMainAttributes().getValue("Implementation-Title");

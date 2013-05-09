@@ -114,7 +114,7 @@
                     templates-wise=org.jahia.modules.docspace.rules
                 ]]>
                 </prop>
-                <prop key="org.jahia.bundles.url.jahiawar.excludedExcludePackages"><![CDATA[
+                <prop key="org.jahia.bundles.url.jahiawar.excludedExportPackages"><![CDATA[
                     templates-wise=org.jahia.modules.social
                 ]]>
                 </prop>

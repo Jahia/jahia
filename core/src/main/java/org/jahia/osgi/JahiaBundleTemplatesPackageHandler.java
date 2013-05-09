@@ -94,6 +94,15 @@ class JahiaBundleTemplatesPackageHandler {
             pkg.setScmURI(scmUri);
         }
 
+        //Check if sources are downloadable for this package
+        Boolean isSourcesDownloadable = Boolean.TRUE;
+        String downloadSourcesHeader = getHeader(bundle, "Jahia-Download-Sources-Available");
+        if(downloadSourcesHeader!=null) {
+            isSourcesDownloadable = Boolean.valueOf(downloadSourcesHeader);
+        }
+        pkg.setSourcesDownloadable(isSourcesDownloadable);
+
+
         if (bundle.getEntry("/") != null) {
             pkg.setFilePath(bundle.getEntry("/").getPath());
         }

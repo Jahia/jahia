@@ -157,6 +157,7 @@ public class JahiaTemplatesPackage {
     private boolean isLastVersion = false;
     
     private boolean serviceInitialized;
+    private boolean sourcesDownloadable;
 
     public JahiaTemplatesPackage(Bundle bundle) {
         this.bundle = bundle;
@@ -605,5 +606,13 @@ public class JahiaTemplatesPackage {
      */
     public void setServiceInitialized(boolean serviceInitialized) {
         this.serviceInitialized = serviceInitialized;
+    }
+
+    public void setSourcesDownloadable(boolean sourcesDownloadable) {
+        this.sourcesDownloadable = sourcesDownloadable;
+    }
+
+    public boolean isSourcesDownloadable() {
+        return sourcesDownloadable;
     }
 }

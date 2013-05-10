@@ -178,8 +178,8 @@
     </c:if>
 </c:forEach>
 </table>
-<a href="jcrComponents.jsp?purgeAllNodes=true">Purge all missing components</a>
-<a href="jcrComponents.jsp?purgeAllComponents=true">Purge all nodes</a>
+<a href="jcrComponents.jsp?purgeAllNodes=true">Purge all nodes</a>
+<a href="jcrComponents.jsp?purgeAllComponents=true">Purge all missing components</a>
 <%@ include file="gotoIndex.jspf" %>
 </body>
 </html>

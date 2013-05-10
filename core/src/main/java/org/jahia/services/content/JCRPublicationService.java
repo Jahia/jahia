@@ -688,6 +688,10 @@ public class JCRPublicationService extends JahiaService {
                         checkpoint(sourceSession, n, sourceSession.getWorkspace().getVersionManager());
                     }
                 }
+                if (sourceNode.getDefinition().getDeclaringNodeType().isMixin() && !destinationParent.isNodeType(sourceNode.getDefinition().getDeclaringNodeType().getName())) {
+                    destinationParent.addMixin(sourceNode.getDefinition().getDeclaringNodeType().getName());
+                    destinationSession.save();
+                }
                 destinationSession.getWorkspace().clone(sourceSession.getWorkspace().getName(), sourceNodePath, destinationPath, false);
                 for (String s : included) {
                     JCRNodeWrapper n = destinationSession.getNodeByIdentifier(s);

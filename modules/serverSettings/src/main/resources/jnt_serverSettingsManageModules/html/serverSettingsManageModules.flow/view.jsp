@@ -74,6 +74,7 @@
     <tbody>
     <c:forEach items="${allModuleVersions}" var="entry">
         <c:set value="${registeredModules[entry.key]}" var="currentModule"/>
+        <c:remove var="defaultVersion"/>
         <c:if test="${empty currentModule}">
             <c:forEach var="v" items="${entry.value}" end="0"><c:set var="defaultVersion"
                                                                      value="${v.value}"/></c:forEach>
@@ -142,7 +143,14 @@
                                     &nbsp;<fmt:message key='serverSettings.manageModules.goToStudio' />
                                 </button>
                             </c:when>
-                            <c:when test="${not currentModule.sourcesDownloadable}">
+                            <c:when test="${not empty defaultVersion.sourcesFolder}">
+                                <c:url var="urlToStudio" value="/cms/studio/${currentResource.locale}/modules/${defaultVersion.rootFolder}.html"/>
+                                <button class="btn btn-block" disabled="disabled" type="button" name="_eventId_startModule">
+                                    <i class="icon-circle-arrow-right"></i>
+                                    &nbsp;<fmt:message key='serverSettings.manageModules.goToStudio' />
+                                </button>
+                            </c:when>
+                            <c:when test="${not (currentModule != null ? currentModule.sourcesDownloadable : defaultVersion.sourcesDownloadable)}">
                                 <fmt:message key="serverSettings.manageModules.notDownloadable"/>
                             </c:when>
                             <c:when test="${not empty currentModule.scmURI}">
@@ -150,6 +158,18 @@
                                     <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                         <input type="hidden" name="module" value="${entry.key}"/>
                                         <input type="hidden" name="scmUri" value="${currentModule.scmURI}"/>
+                                        <button class="btn btn-block button-download" type="submit" name="_eventId_downloadSources" onclick="">
+                                            <i class="icon-download"></i>
+                                            &nbsp;${i18nDownloadSources}
+                                        </button>
+                                    </form>
+                                </c:if>
+                            </c:when>
+                            <c:when test="${not empty defaultVersion.scmURI}">
+                                <c:if test="${functions:contains(sourceControls, fn:substringBefore(fn:substringAfter(defaultVersion.scmURI, ':'),':'))}">
+                                    <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
+                                        <input type="hidden" name="module" value="${entry.key}"/>
+                                        <input type="hidden" name="scmUri" value="${defaultVersion.scmURI}"/>
                                         <button class="btn btn-block button-download" type="submit" name="_eventId_downloadSources" onclick="">
                                             <i class="icon-download"></i>
                                             &nbsp;${i18nDownloadSources}

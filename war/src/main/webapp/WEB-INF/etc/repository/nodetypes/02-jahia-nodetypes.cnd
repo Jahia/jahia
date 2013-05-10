@@ -865,14 +865,12 @@ extends = jnt:content
  + * (jnt:childNodeDefinition) = jnt:childNodeDefinition
 
 [jnt:mixinNodeType] > jnt:nodeType
- - j:namespace (NAME,choicelist[namespace,resourceBundle]) mandatory
  - j:mixins (NAME,choicelist[nodetypes='MIXIN;fromDependencies',resourceBundle]) multiple
  - j:isQueryable (BOOLEAN) = true mandatory
  - j:itemsType (string,choicelist) < 'content','metadata','layout','options'
  - j:mixinExtends (string,choicelist[nodetypes='PRIMARY;fromDependencies']) multiple
 
 [jnt:primaryNodeType] > jnt:nodeType
- - j:namespace (NAME,choicelist[namespace,resourceBundle]) mandatory
  - j:supertype (NAME,choicelist[nodetypes='PRIMARY;fromDependencies',resourceBundle])
  - j:mixins (NAME,choicelist[nodetypes='MIXIN;fromDependencies',resourceBundle]) multiple
  - j:isAbstract (BOOLEAN) mandatory

@@ -16,7 +16,7 @@
             <evaluate expression="flowHandler.initModuleFile()" result="flowScope.moduleFile"/>
         </on-entry>
         <on-render>
-            <evaluate expression="JahiaTemplateManagerService.templatePackageRegistry.allModuleVersions"
+            <evaluate expression="flowHandler.allModuleVersions"
                       result="requestScope.allModuleVersions"/>
             <evaluate expression="JahiaTemplateManagerService.templatePackageRegistry.registeredModules"
                       result="requestScope.registeredModules"/>

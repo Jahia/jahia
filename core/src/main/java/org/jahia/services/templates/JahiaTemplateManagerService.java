@@ -67,6 +67,7 @@ import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.data.templates.ModuleState;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.osgi.FrameworkService;
@@ -492,7 +493,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         // No existing module found, deploy new one
         bundle = FrameworkService.getBundleContext().installBundle(moduleInfo.getFile().toURI().toString(), new FileInputStream(moduleInfo.getFile()));
         bundle.start();
-        return templatePackageRegistry.lookupByFileNameAndVersion(moduleInfo.getModuleName(), new ModuleVersion(moduleInfo.getVersion()));
+        return templatePackageRegistry.lookupByFileNameAndVersion(moduleInfo.getModuleName(), new ModuleVersion(
+                moduleInfo.getVersion()));
     }
 
     public Bundle findBundle(String moduleName, String version) throws BundleException {
@@ -1287,7 +1289,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         }
 
-        applicationEventPublisher.publishEvent(new ModuleDeployedOnSiteEvent(sitePath, JahiaTemplateManagerService.class.getName()));
+        applicationEventPublisher.publishEvent(new ModuleDeployedOnSiteEvent(sitePath,
+                JahiaTemplateManagerService.class.getName()));
     }
 
     private boolean addDependencyValue(JCRNodeWrapper originalNode, JCRNodeWrapper destinationNode, String propertyName) throws RepositoryException {
@@ -1523,7 +1526,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
         }
 
-        applicationEventPublisher.publishEvent(new ModuleDeployedOnSiteEvent(sitePath, JahiaTemplateManagerService.class.getName()));
+        applicationEventPublisher.publishEvent(new ModuleDeployedOnSiteEvent(sitePath,
+                JahiaTemplateManagerService.class.getName()));
     }
 
     public void uninstallModulesFromAllSites(final String module, final String username, final boolean purgeAllContent) throws RepositoryException {
@@ -1927,7 +1931,18 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return found;
     }
 
-// -------------------------- INNER CLASSES --------------------------
+
+    private Map<Bundle, ModuleState> moduleStates = new TreeMap<Bundle, ModuleState>();
+
+    public Map<Bundle, ModuleState> getModuleStates() {
+        return moduleStates;
+    }
+
+    public void setModuleStates(Map<Bundle, ModuleState> moduleStates) {
+        this.moduleStates = moduleStates;
+    }
+
+    // -------------------------- INNER CLASSES --------------------------
 
     /**
      * This event is fired when a template module is re-deployed (in runtime, not on the server startup).

@@ -55,5 +55,5 @@
                                     </c:if>
                                 </form>
                             </c:if>
-                            <c:if test="${displayVersionAndState && !actionsAllowed}">${version.key} (<fmt:message key="serverSettings.manageModules.module.state.${fn:toLowerCase(version.value.state.state)}"/>)<br/>&nbsp;</c:if>
+                            <c:if test="${displayVersionAndState && !actionsAllowed}">${version.key} (<fmt:message key="serverSettings.manageModules.module.state.${fn:toLowerCase(version.value.state.state)}"/>)<c:if test="${not empty currentModule.state.details}">&nbsp;(${currentModule.state.details})</c:if><c:if test="${not empty defaultVersion.state.details}">&nbsp;(${defaultVersion.state.details})</c:if><br/>&nbsp;</c:if>
                             </div>

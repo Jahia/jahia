@@ -176,7 +176,7 @@ public class Activator implements BundleActivator {
         }
 
         registerShellCommands(context);
-
+        templatesService.setModuleStates(moduleStates);
         logger.info("== Jahia Extender started in {}ms ============================================================== ", System.currentTimeMillis() - startTime);
 
     }
@@ -355,9 +355,7 @@ public class Activator implements BundleActivator {
                 && !"assets".equals(pkg.getRootFolder()) && !"default".equals(pkg.getRootFolder())) {
             dependsList.add("default");
         }
-//        registeredBundles.put(bundle, pkg);
 
-//        templatePackageRegistry.registerPackageVersion(pkg);
         for (String depend : dependsList) {
             Set<ModuleVersion> m = templatePackageRegistry.getAvailableVersionsForModule(depend);
             if (m.isEmpty()) {
@@ -575,10 +573,6 @@ public class Activator implements BundleActivator {
         templatePackageRegistry.unregister(jahiaTemplatesPackage);
         jahiaTemplatesPackage.setActiveVersion(false);
 
-        if (jahiaTemplatesPackage.getContext() != null) {
-            jahiaTemplatesPackage.setContext(null);
-        }
-
         // scan for resource and call observers
         for (Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver : extensionObservers.entrySet()) {
             List<URL> foundURLs = scannerAndObserver.getKey().scan(bundle);
@@ -596,7 +590,10 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void stopped(Bundle bundle) {
-        // do nothing
+        JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle);
+        if (jahiaTemplatesPackage.getContext() != null) {
+            jahiaTemplatesPackage.setContext(null);
+        }
     }
 
     private void registerHttpResources(final Bundle bundle) {

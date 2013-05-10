@@ -65,6 +65,7 @@ import javax.jcr.nodetype.NodeTypeIterator;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.data.templates.ModuleState;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.modules.serversettings.moduleManagement.ModuleFile;
@@ -271,6 +272,22 @@ public class ModuleManagementFlowHandler implements Serializable {
                 .getEditModeConfigName().startsWith("studio")) {
             populateModuleVersionStateInfo(context, directSiteDep, templateSiteDep, transitiveSiteDep);
         }
+    }
+
+    public Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> getAllModuleVersions() {
+        Map<Bundle,ModuleState> moduleStates = templateManagerService.getModuleStates();
+        Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> allModuleVersions = templateManagerService.getTemplatePackageRegistry().getAllModuleVersions();
+        Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> result = new TreeMap<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>>();
+        result.putAll(allModuleVersions);
+        for (Bundle bundle : moduleStates.keySet()) {
+            JahiaTemplatesPackage module = BundleUtils.getModule(bundle);
+            if(!allModuleVersions.containsKey(module.getRootFolder())) {
+                TreeMap<ModuleVersion, JahiaTemplatesPackage> map = new TreeMap<ModuleVersion, JahiaTemplatesPackage>();
+                map.put(module.getVersion(),module);
+                result.put(module.getRootFolder(),map);
+            }
+        }
+        return result;
     }
 
     private void populateModuleVersionStateInfo(RequestContext context, Map<String, List<String>> directSiteDep,

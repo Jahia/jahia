@@ -155,7 +155,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                 String nodeType = typeName != null ? typeName.getValues().get(0).getString() : null;
                 JahiaContentManagementService.App.getInstance().initializeCodeEditor(path, !engine.isExistingNode(), nodeType, stubType, new BaseAsyncCallback<RpcMap>() {
                     public void onSuccess(RpcMap result) {
-                        if (!result.isEmpty()) {
+                        if (!result.isEmpty() && result.get("snippets") != null) {
                             snippets = (Map<String, List<GWTJahiaValueDisplayBean>>) result.get("snippets");
                             for (String type : snippets.keySet()) {
                                 snippetType.getStore().add(new GWTJahiaValueDisplayBean(type, Messages.get("label.snippetType." + type, type)));
@@ -176,6 +176,11 @@ public class CodeEditorTabItem extends EditEngineTabItem {
             //Add code source
             if (engine.getProperties().containsKey(codePropertyName)) {
                 codeProperty = engine.getProperties().get(codePropertyName);
+                initEditor(tab);
+            }
+            // init editor in any cases (css/javascript .. etc)
+            if (codeField == null) {
+                codeProperty = new GWTJahiaNodeProperty(codePropertyName, "", GWTJahiaNodePropertyType.STRING);
                 initEditor(tab);
             }
         }

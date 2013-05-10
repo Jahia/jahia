@@ -134,6 +134,9 @@
                                 &nbsp;<fmt:message key='serverSettings.manageModules.goToStudio' />
                             </button>
                         </c:when>
+                            <c:when test="${not activeVersion.sourcesDownloadable}">
+                                <fmt:message key="serverSettings.manageModules.notDownloadable"/>
+                            </c:when>
                         <c:when test="${not empty activeVersion.scmURI}">
                             <c:if test="${functions:contains(sourceControls, fn:substringBefore(fn:substringAfter(activeVersion.scmURI, ':'),':'))}">
                                 <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">

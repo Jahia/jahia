@@ -272,7 +272,6 @@ public class RepositoryTab extends ContentPanel {
      * @param flag
      */
     public void refresh(int flag) {
-        getLinker().getTopRightObject().clearSelection();
         boolean refresh = true;
         if ((Linker.REFRESH_OPEN_FOLDER & flag) != 0) {
             refresh = isExpanded();

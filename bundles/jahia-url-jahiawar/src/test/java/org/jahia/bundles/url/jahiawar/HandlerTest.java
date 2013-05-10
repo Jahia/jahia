@@ -40,10 +40,14 @@
 
 package org.jahia.bundles.url.jahiawar;
 
+import org.jahia.utils.osgi.BundleUtils;
+import org.jahia.utils.osgi.ManifestValueClause;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -81,11 +85,14 @@ public class HandlerTest {
         for (Map.Entry<Object, Object> attribute : jarInputStream.getManifest().getMainAttributes().entrySet()) {
             mainAttributes.put(attribute.getKey().toString(), attribute.getValue().toString());
         }
-        dumpManifestEntries(mainAttributes);
+        dumpManifest(jarInputStream);
         Assert.assertEquals("Bundle-ClassPath header is not valid", ".,forum-1.3.jar", mainAttributes.get("Bundle-ClassPath"));
         Assert.assertEquals("Bundle-Version header is not valid", "1.3", mainAttributes.get("Bundle-Version"));
 
         dumpJarEntries(jarInputStream);
+
+        List<ManifestValueClause> headerClauses = BundleUtils.getHeaderClauses("Import-Package", mainAttributes.get("Import-Package"));
+
 //        String[] importPackages = mainAttributes.get("Import-Package").split(",");
 //        List<String> importPackageList = Arrays.asList(importPackages);
 //        Assert.assertTrue("'default' module missing from Import-Package header", importPackageList.contains("default"));
@@ -104,7 +111,7 @@ public class HandlerTest {
         for (Map.Entry<Object, Object> attribute : jarInputStream.getManifest().getMainAttributes().entrySet()) {
             mainAttributes.put(attribute.getKey().toString(), attribute.getValue().toString());
         }
-        dumpManifestEntries(mainAttributes);
+        dumpManifest(jarInputStream);
         dumpJarEntries(jarInputStream);
 
         URI firstModuleURI = new URI("jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/forum/1.3/forum-1.3.war");
@@ -119,8 +126,16 @@ public class HandlerTest {
         for (Map.Entry<Object, Object> attribute : jarInputStream.getManifest().getMainAttributes().entrySet()) {
             mainAttributes.put(attribute.getKey().toString(), attribute.getValue().toString());
         }
-        dumpManifestEntries(mainAttributes);
+        dumpManifest(jarInputStream);
         dumpJarEntries(jarInputStream);
+    }
+
+    private void dumpManifest(JarInputStream jarInputStream) throws IOException {
+        System.out.println("MANIFEST.MF:");
+        System.out.println("------------");
+        StringWriter stringWriter = new StringWriter();
+        BundleUtils.dumpManifestHeaders(jarInputStream, new PrintWriter(stringWriter));
+        System.out.println(stringWriter.toString());
     }
 
     private void dumpJarEntries(JarInputStream jarInputStream) throws IOException {
@@ -136,14 +151,6 @@ public class HandlerTest {
                     System.out.println("    " + embeddedJarEntry.getName());
                 }
             }
-        }
-    }
-
-    private void dumpManifestEntries(Map<String, String> mainAttributes) {
-        System.out.println("MANIFEST.MF:");
-        System.out.println("------------");
-        for (Map.Entry<String, String> attribute : mainAttributes.entrySet()) {
-            System.out.println(attribute.getKey() + ": " + attribute.getValue());
         }
     }
 

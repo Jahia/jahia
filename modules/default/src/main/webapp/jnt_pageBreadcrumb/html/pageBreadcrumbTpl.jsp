@@ -43,13 +43,22 @@
             </c:choose>
             <c:if test="${displayPage}">
                 <li>
-                    <c:if
-                            test="${renderContext.mainResource.node.path ne pageNode.path || displayLinkOnCurrentPage.boolean}">
-                    <a href="<c:url value='${url.base}${pageNode.path}.html'/>">
-                        </c:if> <c:out value="${pageNode.properties['jcr:title'].string}" /> <c:if
-                            test="${renderContext.mainResource.node.path ne pageNode.path || displayLinkOnCurrentPage.boolean}">
-                    </a>
-                    </c:if></li>
+                    <c:choose>
+                        <c:when test="${jcr:findDisplayableNode(pageNode, renderContext) ne pageNode}">
+                            <a href="#">
+                                <c:out value="${pageNode.properties['jcr:title'].string}" />
+                            </a>
+                        </c:when>
+                        <c:when test="${renderContext.mainResource.node.path ne pageNode.path || displayLinkOnCurrentPage.boolean}">
+                            <a href="<c:url value='${url.base}${pageNode.path}.html'/>">
+                                <c:out value="${pageNode.properties['jcr:title'].string}" />
+                            </a>
+                        </c:when>
+                        <c:otherwise>
+                            <c:out value="${pageNode.properties['jcr:title'].string}" />
+                        </c:otherwise>
+                    </c:choose>
+                </li>
             </c:if>
         </c:forEach>
         <c:if test="${not jcr:isNodeType(renderContext.mainResource.node, 'jnt:page')}">

@@ -135,8 +135,21 @@ public class ConfigurationImpl
         String[] excludedImportPackageArray = propertyValue.split(",");
         for (String excludedImportPackage : excludedImportPackageArray) {
             String[] excludedImportPackageMapping = excludedImportPackage.split("=");
-            String bundleName = excludedImportPackageMapping[0].trim();
-            String bundleExcludedImportPackage = excludedImportPackageMapping[1].trim();
+            String bundleName = "*";
+            String bundleExcludedImportPackage = "";
+            if (excludedImportPackageMapping.length == 2) {
+                bundleName = excludedImportPackageMapping[0].trim();
+                bundleExcludedImportPackage = excludedImportPackageMapping[1].trim();
+            } else if (excludedImportPackageMapping.length == 1) {
+                bundleExcludedImportPackage = excludedImportPackageMapping[0].trim();
+                if (bundleExcludedImportPackage.length() == 0) {
+                    // no value for the package name, we skip this entry.
+                    continue;
+                }
+            } else {
+                // no valid mapping, skip
+                continue;
+            }
             Set<String> bundleExcludedImportPackages = excludedImportPackages.get(bundleName);
             if (bundleExcludedImportPackages == null) {
                 bundleExcludedImportPackages = new TreeSet<String>();

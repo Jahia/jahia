@@ -68,7 +68,12 @@ public class HandlerTest {
     public void use()
             throws IOException, URISyntaxException {
         // System.setProperty( "java.protocol.handler.pkgs", "org.jahia.bundles.url.jahiawar" );
+        System.setProperty("org.jahia.bundles.url.jahiawar.importedPackages", "");
+        System.setProperty("org.jahia.bundles.url.jahiawar.excludedImportPackages", "templates-wise=org.jahia.modules.docspace.rules");
+        System.setProperty("org.jahia.bundles.url.jahiawar.excludedExportPackages", "templates-wise=org.jahia.modules.social");
+
         URL jahiaWarURL = new URL(null, "jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/forum/1.3/forum-1.3.war", new Handler());
+        System.out.println("Processing URL " + jahiaWarURL + "...");
         JarInputStream jarInputStream = new JarInputStream(jahiaWarURL.openStream());
         JarEntry jarEntry = null;
         // copy the attributes to sort them
@@ -91,6 +96,8 @@ public class HandlerTest {
 
         // now let's try with another module
         jahiaWarURL = new URL(null, "jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/translateworkflow/1.2/translateworkflow-1.2.war", new Handler());
+        System.out.println("");
+        System.out.println("Processing URL " + jahiaWarURL + "...");
         jarInputStream = new JarInputStream(jahiaWarURL.openStream());
         // copy the attributes to sort them
         mainAttributes.clear();
@@ -103,6 +110,17 @@ public class HandlerTest {
         URI firstModuleURI = new URI("jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/forum/1.3/forum-1.3.war");
         String modulePath = firstModuleURI.getPath();
 
+        jahiaWarURL = new URL(null, "jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/ldap/1.3/ldap-1.3.war", new Handler());
+        System.out.println("");
+        System.out.println("Processing URL " + jahiaWarURL + "...");
+        jarInputStream = new JarInputStream(jahiaWarURL.openStream());
+        // copy the attributes to sort them
+        mainAttributes.clear();
+        for (Map.Entry<Object, Object> attribute : jarInputStream.getManifest().getMainAttributes().entrySet()) {
+            mainAttributes.put(attribute.getKey().toString(), attribute.getValue().toString());
+        }
+        dumpManifestEntries(mainAttributes);
+        dumpJarEntries(jarInputStream);
     }
 
     private void dumpJarEntries(JarInputStream jarInputStream) throws IOException {

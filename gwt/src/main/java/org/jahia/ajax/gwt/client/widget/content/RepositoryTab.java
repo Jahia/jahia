@@ -273,7 +273,6 @@ public class RepositoryTab extends ContentPanel {
      * @param data
      */
     public void refresh(Map<String, Object> data) {
-        getLinker().getTopRightObject().clearSelection();
         boolean refresh = true;
         if (data != null && data.containsKey(Linker.REFRESH_ALL)) {
             refresh = isExpanded();

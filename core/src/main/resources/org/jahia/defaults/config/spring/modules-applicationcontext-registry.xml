@@ -75,4 +75,38 @@
         <webflow:flow-location-pattern value="**/*.flow/**/flow.xml" />
     </webflow:flow-registry>
 
+    <bean id="moduleSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean" depends-on="settingsBean" lazy-init="true">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="org.jahia.modules"/>
+        <property name="hibernateProperties">
+            <bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+                <property name="properties">
+                    <map>
+                        <entry key="hibernate.dialect"  value="${hibernate.dialect}"/>
+                        <entry key="hibernate.hbm2ddl.auto" value="none"/>
+                        <entry key="hibernate.show_sql" value="false"/>
+                        <entry key="hibernate.cache.provider_class" value="net.sf.ehcache.hibernate.SharingEhcacheProvider"/>
+                        <entry key="hibernate.cache.use_second_level_cache" value="false"/>
+                        <entry key="hibernate.cache.use_query_cache" value="false"/>
+                        <entry key="hibernate.jdbc.batch_size" value="16"/>
+                        <entry key="hibernate.default_batch_fetch_size" value="16"/>
+                        <entry key="hibernate.max_fetch_depth" value="3"/>
+                        <entry key="hibernate.query.substitutions" value="true 1, false 0"/>
+                        <entry key="hibernate.generate_statistics" value="false"/>
+                        <entry key="hibernate.cache.use_structured_entries" value="false"/>
+                        <entry key="org.jahia.hibernate.ehcache.existingCacheManagerName" value="org.jahia.hibernate.ehcachemanager"/>
+                    </map>
+                </property>
+            </bean>
+        </property>
+        <property name="eventListeners">
+            <map>
+                <entry key="merge">
+                    <bean class="org.springframework.orm.hibernate3.support.IdTransferringMergeEventListener"/>
+                </entry>
+            </map>
+        </property>
+        <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>
+    </bean>
+
 </beans>

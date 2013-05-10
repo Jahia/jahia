@@ -75,10 +75,6 @@ public class SpringFileTransformerTest {
         String prefix = "beans";
         List<Element> transformedProperties = getNodes(transformedDomDocument, "//beans:property[@ref='moduleSessionFactory']", prefix);
         assertTrue("Couldn't find transformed properties !", transformedProperties.size() > 0);
-
-        // let's now check that the attribute values with curly braces have the proper values
-        List<Element> hibernateDialectEntry = getNodes(transformedDomDocument, "//beans:entry[@value='${hibernate.dialect}']", prefix);
-        assertTrue("Couldn't find hibernate dialect entry !", hibernateDialectEntry.size() > 0);
     }
 
     public List<Element> getNodes(Document jdomDocument, String xPathExpression, String prefix) throws JDOMException {

@@ -99,11 +99,11 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     private static final FastHashMap RANK;
 
-    private static final Pattern URL_PATTERN_1 = Pattern.compile("url\\( ", Pattern.LITERAL);
+    private static final Pattern URL_PATTERN_1 = Pattern.compile("url\\( ");
 
-    private static final Pattern URL_PATTERN_2 = Pattern.compile("url\\(\"([^/])", Pattern.LITERAL);
+    private static final Pattern URL_PATTERN_2 = Pattern.compile("url\\(\"([^/])");
 
-    private static final Pattern URL_PATTERN_3 = Pattern.compile("url\\('([^/])", Pattern.LITERAL);
+    private static final Pattern URL_PATTERN_3 = Pattern.compile("url\\('([^/])");
 
     private static final Pattern URL_PATTERN_4 = Pattern.compile("url\\(([^'\"/])");
 

@@ -91,15 +91,10 @@ public class HandlerTest {
 
         dumpJarEntries(jarInputStream);
 
-        List<ManifestValueClause> headerClauses = BundleUtils.getHeaderClauses("Import-Package", mainAttributes.get("Import-Package"));
+        // @todo add validation on import and export package lists
+        List<ManifestValueClause> importPackageHeaderClauses = BundleUtils.getHeaderClauses("Import-Package", mainAttributes.get("Import-Package"));
+        List<ManifestValueClause> exportPackageHeaderClauses = BundleUtils.getHeaderClauses("Export-Package", mainAttributes.get("Export-Package"));
 
-//        String[] importPackages = mainAttributes.get("Import-Package").split(",");
-//        List<String> importPackageList = Arrays.asList(importPackages);
-//        Assert.assertTrue("'default' module missing from Import-Package header", importPackageList.contains("default"));
-
-//        String[] exportPackages = mainAttributes.get("Export-Package").split(",");
-//        List<String> exportPackageList = Arrays.asList(exportPackages);
-//        Assert.assertTrue("'JahiaForum' module missing from Export-Package header", exportPackageList.contains("JahiaForum"));
 
         // now let's try with another module
         jahiaWarURL = new URL(null, "jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/translateworkflow/1.2/translateworkflow-1.2.war", new Handler());

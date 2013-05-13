@@ -50,6 +50,15 @@
     <name>Jahia Modules</name>
     <packaging>pom</packaging>
     
+    <properties>
+        <jahia.modules.bundle.removeheaders>
+            Include-Resource,
+            Private-Package,
+            Embed-Dependency,
+            Embed-Transitive
+        </jahia.modules.bundle.removeheaders>
+    </properties>
+    
     <repositories>
         <repository>
             <id>jahia-public</id>

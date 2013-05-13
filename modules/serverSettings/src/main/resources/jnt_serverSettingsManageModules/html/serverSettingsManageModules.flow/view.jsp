@@ -16,12 +16,17 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
-<template:addResources type="javascript" resources="jquery.min.js,admin-bootstrap.js,jquery.blockUI.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,admin-bootstrap.js,jquery.blockUI.js,bootstrap-filestyle.min.js"/>
 <template:addResources type="css" resources="admin-bootstrap.css"/>
 
 <template:addResources>
 <script type="text/javascript">
-    $(document).ready(function() { $('.button-download').click(workInProgress) });
+    $(document).ready(function() {
+        $('.button-download').click(workInProgress)
+    });
+    $(document).ready(function () {
+        $(":file").filestyle({classButton: "btn",classIcon: "icon-folder-open"/*,buttonText:"Translation"*/});
+    });
 </script>
 </template:addResources>
 
@@ -48,7 +53,7 @@
             <label for="moduleFile"><fmt:message key="serverSettings.manageModules.upload.module"/></label>
             <input type="file" id="moduleFile" name="moduleFile" accept=""/>
             <button class="btn btn-primary" type="submit" name="_eventId_upload">
-                <i class="icon-download-alt icon-white"></i>
+                <i class="icon-download icon-white"></i>
                 &nbsp;<fmt:message key='label.upload'/>
             </button>
         </div>

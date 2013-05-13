@@ -20,30 +20,33 @@
 
 <form action="${flowExecutionUrl}" method="post">
     <table class="table table-bordered table-striped table-hover">
-        <tr>
-            <th>
-                <fmt:message key="label.name" />
-            </th>
-            <th>
-                <fmt:message key="serverSettings.manageWebProjects.webProject.siteKey" />
-            </th>
-            <th>
-                <fmt:message key="serverSettings.manageWebProjects.webProject.serverName" />
-            </th>
-            <th>
-                <fmt:message key="serverSettings.manageWebProjects.webProject.templateSet" />
-            </th>
-        </tr>
-
-        <input name="_sites" type="hidden"/>
-        <c:forEach items="${webprojectHandler.sites}" var="site">
+        <thead>
             <tr>
-                <td>${fn:escapeXml(site.title)}</td>
-                <td>${fn:escapeXml(site.siteKey)}</td>
-                <td>${fn:escapeXml(site.serverName)}</td>
-                <td title="${fn:escapeXml(site.templatePackageName)}">${fn:escapeXml(site.templateFolder)}</td>
+                <th>
+                    <fmt:message key="label.name" />
+                </th>
+                <th>
+                    <fmt:message key="serverSettings.manageWebProjects.webProject.siteKey" />
+                </th>
+                <th>
+                    <fmt:message key="serverSettings.manageWebProjects.webProject.serverName" />
+                </th>
+                <th>
+                    <fmt:message key="serverSettings.manageWebProjects.webProject.templateSet" />
+                </th>
             </tr>
-        </c:forEach>
+        </thead>
+        <tbody>
+            <input name="_sites" type="hidden"/>
+            <c:forEach items="${webprojectHandler.sites}" var="site">
+                <tr>
+                    <td><strong>${fn:escapeXml(site.title)}</strong></td>
+                    <td>${fn:escapeXml(site.siteKey)}</td>
+                    <td>${fn:escapeXml(site.serverName)}</td>
+                    <td title="${fn:escapeXml(site.templatePackageName)}">${fn:escapeXml(site.templateFolder)}</td>
+                </tr>
+            </c:forEach>
+        </tbody>
     </table>
     <button class="btn btn-danger" type="submit" name="_eventId_deleteSitesConfirmed" id="${currentNode.identifier}-deleteSitesConfirmed">
         <i class="icon-remove icon-white"></i>

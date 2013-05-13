@@ -330,7 +330,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         try {
             return session.getNode(getParent().getPath()+JCRSessionWrapper.DEREF_SEPARATOR+ref.getRealNode().getName());
         } catch (PathNotFoundException e) {
-            throw new ItemNotFoundException(e.getMessage());
+            throw new ItemNotFoundException(e.getMessage(), e);
         }
     }
 

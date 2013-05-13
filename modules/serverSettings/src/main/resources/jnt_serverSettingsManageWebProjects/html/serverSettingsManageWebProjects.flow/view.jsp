@@ -90,7 +90,8 @@
             </a>
             <a href="#exportStaging" id="exportStagingSites" class="btn sitesAction-hide">
                 <i class=" icon-circle-arrow-up"></i>
-                <fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)</a>
+                <fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)
+            </a>
             <a href="#delete" id="deleteSites" class="btn sitesAction">
                 <i class="icon-remove"></i>
                 <fmt:message key="label.delete"/>
@@ -140,9 +141,7 @@
                             <td>
                                 ${loopStatus.index + 1}
                                 <c:if test="${site.identifier == defaultSite.string}">
-                                    &nbsp;<img src="<c:url value='/css/images/andromeda/icons/accept.png'/>"
-                                         title="<fmt:message key='serverSettings.manageWebProjects.webProject.isDefault'/>"
-                                         width="12" height="12" border="0" alt="+"/>
+                                    &nbsp;<i class="icon-star"></i>
                                 </c:if>
                             </td>
                             <td><a href="#edit" onclick="submitSiteForm('editSite', '${site.name}'); return false;">${fn:escapeXml(site.title)}</a></td>

@@ -45,8 +45,14 @@
             </tr>
         </c:forEach>
     </table>
-    <input class="btn btn-danger" type="submit" name="_eventId_deleteSitesConfirmed" id="${currentNode.identifier}-deleteSitesConfirmed" value="<fmt:message key='label.delete' />"/>
-    <input class="btn" type="submit" name="_eventId_cancel" value="<fmt:message key='label.cancel' />"/>
+    <button class="btn btn-danger" type="submit" name="_eventId_deleteSitesConfirmed" id="${currentNode.identifier}-deleteSitesConfirmed">
+        <i class="icon-remove icon-white"></i>
+        &nbsp;<fmt:message key='label.delete' />
+    </button>
+    <button class="btn" type="submit" name="_eventId_cancel">
+        <i class="icon-ban-circle"></i>
+        &nbsp;<fmt:message key='label.cancel' />
+    </button>
 </form>
 
 

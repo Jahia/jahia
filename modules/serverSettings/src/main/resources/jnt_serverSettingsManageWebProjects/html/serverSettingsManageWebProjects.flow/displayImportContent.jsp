@@ -116,7 +116,10 @@
                         </div>
                     </c:if>
             </c:forEach>
-        <input class="btn btn-primary" type="submit" name="_eventId_processImport" id="${currentNode.identifier}-processImport" value="<fmt:message key='label.next'/>"/>
+            <button class="btn btn-primary" type="submit" name="_eventId_processImport" id="${currentNode.identifier}-processImport">
+                <i class="icon-chevron-right icon-white"></i>
+                &nbsp;<fmt:message key='label.next'/>
+            </button>
     </div>
 </form>
 

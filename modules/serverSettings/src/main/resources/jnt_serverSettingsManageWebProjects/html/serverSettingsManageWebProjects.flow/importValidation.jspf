@@ -41,11 +41,9 @@
                     </div>
                     <fmt:message key="label.detailed" var="i18nHelp"/><c:set var="i18nHelp"
                                                                              value="${fn:escapeXml(i18nHelp)}"/>
-                    <a class="btn" href="#details"
+                    <a class="btn btn-info" href="#details"
                        onclick="$('#validationErrorsDetailsModules${importInfoMap.value.siteKey}').toggle(); return false;"
-                       title="${i18nHelp}"><img
-                            src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16"
-                            height="16" alt="${i18nHelp}" title="${i18nHelp}">&nbsp;${i18nHelp}</a>
+                       title="${i18nHelp}"><i class="icon-info-sign icon-white"></i>&nbsp;${i18nHelp}</a>
                 </div>
                 <div id="validationErrorsDetailsModules${importInfoMap.value.siteKey}" style="display: none">
                     <ul>
@@ -69,11 +67,9 @@
                 </div>
                 <fmt:message key="label.detailed" var="i18nHelp"/><c:set var="i18nHelp"
                                                                          value="${fn:escapeXml(i18nHelp)}"/>
-                <a class="btn" href="#details"
+                <a class="btn btn-info" href="#details"
                    onclick="$('#validationErrorsDetailsNodetypes${importInfoMap.value.siteKey}').toggle(); return false;"
-                   title="${i18nHelp}"><img
-                        src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16"
-                        height="16" alt="${i18nHelp}" title="${i18nHelp}">&nbsp;${i18nHelp}</a>
+                   title="${i18nHelp}"><i class="icon-info-sign icon-white"></i>&nbsp;${i18nHelp}</a>
             </div>
             <div id="validationErrorsDetailsNodetypes${importInfoMap.value.siteKey}" style="display: none">
                 <c:if test="${not empty checks.missingNodetypes}">
@@ -138,11 +134,9 @@
                 </div>
                 <fmt:message key="label.detailed" var="i18nHelp"/><c:set var="i18nHelp"
                                                                          value="${fn:escapeXml(i18nHelp)}"/>
-                <a class="btn" href="#details"
+                <a class="btn btn-info" href="#details"
                    onclick="$('#validationErrorsDetailsTemplates${importInfoMap.value.siteKey}').toggle(); return false;"
-                   title="${i18nHelp}"><img
-                        src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16"
-                        height="16" alt="${i18nHelp}" title="${i18nHelp}">&nbsp;${i18nHelp}</a>
+                   title="${i18nHelp}"><i class="icon-info-sign icon-white"></i>&nbsp;${i18nHelp}</a>
             </div>
             <div id="validationErrorsDetailsTemplates${importInfoMap.value.siteKey}" style="display: none">
                 <ul>
@@ -180,11 +174,9 @@
 
                 <fmt:message key="label.detailed" var="i18nHelp"/><c:set var="i18nHelp"
                                                                          value="${fn:escapeXml(i18nHelp)}"/>
-                <a class="btn" href="#details"
+                <a class="btn btn-info" href="#details"
                    onclick="$('#validationErrorsDetailsTemplates${importInfoMap.value.siteKey}').toggle(); return false;"
-                   title="${i18nHelp}"><img
-                        src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16"
-                        height="16" alt="${i18nHelp}" title="${i18nHelp}"> &nbsp;${i18nHelp}</a>
+                   title="${i18nHelp}"><i class="icon-info-sign icon-white"></i>&nbsp;${i18nHelp}</a>
             </div>
             <div id="validationErrorsDetailsTemplates${importInfoMap.value.siteKey}" style="display: none">
                 <ul>

@@ -62,7 +62,13 @@
 
 
             </fieldset>
-        <input class="btn btn-primary" type="submit" name="_eventId_next" value="<fmt:message key='label.next'/>"/>
-        <input class="btn" type="submit" name="_eventId_previous" value="<fmt:message key='label.previous'/>"/>
+            <button class="btn" type="submit" name="_eventId_previous">
+                <i class="icon-chevron-left"></i>
+                &nbsp;<fmt:message key='label.previous'/>
+            </button>
+            <button class="btn btn-primary" type="submit" name="_eventId_next">
+                <i class="icon-chevron-right icon-white"></i>
+                &nbsp;<fmt:message key='label.next'/>
+            </button>
     </form>
 </div>

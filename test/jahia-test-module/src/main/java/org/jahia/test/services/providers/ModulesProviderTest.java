@@ -50,15 +50,12 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.osgi.framework.BundleException;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import javax.jcr.Value;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -95,7 +92,6 @@ public class ModulesProviderTest {
     @After
     public void tearDown() {
         try {
-            JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession();
             JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName("dummy1");
             if (pack != null) {
                 templateManagerService.undeployModule(pack);
@@ -172,7 +168,6 @@ public class ModulesProviderTest {
     @Test
     public void readNodeTypeDefinition() {
         try {
-            JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession();
             Node nodeType = root.getNode("META-INF/definitions.cnd/jnt:testComponent2");
             assertEquals("jnt:primaryNodeType", nodeType.getPrimaryNodeType().getName());
             assertEquals("jnt:content", nodeType.getProperty("j:supertype").getString());

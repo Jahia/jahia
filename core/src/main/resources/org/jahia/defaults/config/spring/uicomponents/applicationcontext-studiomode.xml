@@ -547,6 +547,7 @@
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
+                                    <ref bean="Toolbar.Item.AddToSourceControl"/>
                                 </list>
                             </property>
                         </bean>

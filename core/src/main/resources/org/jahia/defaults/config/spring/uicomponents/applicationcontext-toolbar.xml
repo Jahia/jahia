@@ -1349,4 +1349,13 @@
     </bean>
 
     <bean id="RemoteMenuVisibility" class="org.jahia.services.uicomponents.bean.contentmanager.RemoteMenuVisibility"/>
+
+    <bean id="Toolbar.Item.AddToSourceControl" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.AddToSourceControlActionItem" />
+        </property>
+        <property name="titleKey" value="label.sourceControl.add"/>
+        <property name="icon" value="scmAdd"/>
+    </bean>
+
 </beans>

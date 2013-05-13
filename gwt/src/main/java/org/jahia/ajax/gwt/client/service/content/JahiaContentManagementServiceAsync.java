@@ -61,6 +61,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 
 import java.util.*;
 
@@ -341,6 +342,8 @@ public interface JahiaContentManagementServiceAsync {
     void unzip(List<String> paths, AsyncCallback async);
 
     void updateModule(String moduleName, AsyncCallback asyncCallback);
+
+    void addToSourceControl(String moduleName, GWTJahiaNode node, AsyncCallback asyncCallback);
 
     void compileAndDeploy(String moduleName, AsyncCallback async);
 

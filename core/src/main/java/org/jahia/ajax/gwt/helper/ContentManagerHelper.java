@@ -1166,6 +1166,16 @@ public class ContentManagerHelper {
         }
     }
 
+    public void addToSourceControl(String moduleName, GWTJahiaNode node, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
+        JahiaTemplatesPackage templatePackage = templateManagerService.getTemplatePackage(moduleName);
+        SourceControlManagement sourceControl = templatePackage.getSourceControl();
+        if (sourceControl != null) {
+            String path = node.getPath();
+            File file = new File(templatePackage.getSourcesFolder().getAbsolutePath() + "/src/main/resources" + path.substring(path.indexOf("/sources/") + 8));
+            sourceControl.setModifiedFile(Arrays.asList(file));
+        }
+    }
+
     public GWTJahiaNode checkoutModule(String moduleName, String scmURI, String scmType, String branchOrTag, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
         GWTJahiaNode node = null;
 

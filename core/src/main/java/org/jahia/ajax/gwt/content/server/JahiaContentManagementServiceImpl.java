@@ -1507,6 +1507,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
+    public void addToSourceControl(String moduleName, GWTJahiaNode node) throws GWTJahiaServiceException {
+        try {
+            contentManager.addToSourceControl(moduleName, node, retrieveCurrentSession(null));
+        } catch (Exception e) {
+            logger.error("Cannot add to source control", e);
+            throw new GWTJahiaServiceException(e.toString());
+        }
+    }
+
     public void compileAndDeploy(String moduleName) throws GWTJahiaServiceException {
         try {
             contentManager.compileAndDeploy(moduleName, retrieveCurrentSession(null));

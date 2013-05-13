@@ -117,16 +117,19 @@ public class SvnSourceControlManagement extends SourceControlManagement {
             }
         }
         executeCommand(executable, StringUtils.join(args, ' '));
+        invalidateStatusCache();
     }
 
     @Override
     public void update() throws IOException {
         executeCommand(executable, "update");
+        invalidateStatusCache();
     }
 
     @Override
     public void commit(String message) throws IOException {
         executeCommand(executable, "commit -m \"" + message + "\"");
+        invalidateStatusCache();
     }
 
     @Override

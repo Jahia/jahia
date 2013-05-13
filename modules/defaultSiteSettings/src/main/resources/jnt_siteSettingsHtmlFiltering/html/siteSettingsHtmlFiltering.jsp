@@ -41,8 +41,7 @@ function htmlFilteringAddHtmlTag() {
 	}
 	if ($('#btnDeleteHtmlTag' + val).length == 0) {
     	$('#tblHtmlTags').find('tbody:last').append('<tr><td>'
-                + '<input type="image" title="${i18nDelete}" alt="${i18nDelete}" src="${iconDelete}" width="16" height="16" '
-                + ' onclick="$(this).parent().parent().remove(); return false;"/>'
+                + '<button style="margin-bottom:0px;" title="${i18nDelete}" onclick="$(this).parent().parent().remove(); return false;" class="btn btn-small btn-danger" type="button" id="addHtmlTag"><i class="icon-remove icon-white"></i></button> '
                 + '</td><td width="100%"><strong class="htmlTagToFilter">' + val + '</strong></td></tr>');
 	}
 	newTag.val('');
@@ -99,7 +98,9 @@ function updateSiteHtmlFiltering(btn) {
     <fmt:message key="label.add" var="i18nAdd"/>
     <div class="input-append">
         <input type="text" name="newHtmlTag" id="newHtmlTag" value="" size="10"/>
-        <input class="btn" type="image" id="addHtmlTag" title="${i18nAdd}" alt="${i18nAdd}" src="<c:url value='/css/images/andromeda/icons/add2.png'/>" width="16" height="16" />
+        <button title="${i18nAdd}" class="btn btn-primary" type="button" id="addHtmlTag">
+            <i class="icon-plus icon-white"></i>
+        </button>
     </div>
 
     <table id="tblHtmlTags" class="table table-bordered table-striped table-hover" >
@@ -107,11 +108,17 @@ function updateSiteHtmlFiltering(btn) {
             <c:forTokens var="tag" items="${filteredTags}" delims=", ">
                 <tr id="rowHtmlTag${tag}">
                     <fmt:message key="label.delete" var="i18nDelete"/><c:set var="i18nDelete" value="${fn:escapeXml(i18nDelete)}"/>
-                    <td><input type="image" title="${i18nDelete}" alt="${i18nDelete}" src="${iconDelete}" width="16" height="16" onclick="$(this).parent().parent().remove(); return false;" /></td>
+                    <td>
+                        <button style="margin-bottom:0px;" title="${i18nDelete}" class="btn btn-small btn-danger" type="button" onclick="$(this).parent().parent().remove(); return false;">
+                            <i class="icon-remove icon-white"></i>
+                        </button>
+                    </td>
                     <td width="100%"><strong class="htmlTagToFilter">${tag}</strong></td>
                 </tr>
             </c:forTokens>
         </tbody>
     </table>
-    <button class="btn btn-primary" type="button" name="save" onclick="updateSiteHtmlFiltering($(this)); return false;"><i class="icon-ok-sign icon-white"></i> <fmt:message key='label.save'/></button>
+    <button class="btn btn-primary" type="button" name="save" onclick="updateSiteHtmlFiltering($(this)); return false;">
+        <i class="icon-ok icon-white"></i> <fmt:message key='label.save'/>
+    </button>
 </form>

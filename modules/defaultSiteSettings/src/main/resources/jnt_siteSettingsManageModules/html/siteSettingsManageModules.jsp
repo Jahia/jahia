@@ -28,7 +28,7 @@ ${fn:escapeXml(templatePackageName)}&nbsp;(${templateSetPackage.lastVersion})
 <table class="table table-bordered table-striped table-hover" >
     <thead>
         <tr>
-            <th width="1%">#</th>
+            <th width="4%">#</th>
             <th><fmt:message key="siteSettings.label.modules.name"/></th>
             <th><fmt:message key="siteSettings.label.modules.id"/></th>
             <th><fmt:message key="siteSettings.label.modules.version"/></th>

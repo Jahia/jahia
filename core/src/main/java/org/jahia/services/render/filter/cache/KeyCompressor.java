@@ -69,14 +69,19 @@ public class KeyCompressor {
         }
         // Compress the bytes
         byte[] output = new byte[4096];
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(4096);
         Deflater compresser = new Deflater(Deflater.BEST_SPEED);
         try {
             compresser.setInput(inputString.getBytes("UTF-8"));
             compresser.finish();
-            int compressedDataLength = compresser.deflate(output);
-            byte[] copy = new byte[compressedDataLength];
-            System.arraycopy(output, 0, copy, 0, Math.min(output.length, compressedDataLength));
-            return Base64.encodeBase64URLSafeString(copy);
+            int compressedDataLength;
+            do {
+                compressedDataLength = compresser.deflate(output);
+                if (compressedDataLength > 0) {
+                    outputStream.write(output, 0, compressedDataLength);
+                }
+            } while (compressedDataLength > 0);
+            return Base64.encodeBase64URLSafeString(outputStream.toByteArray());
         } catch (UnsupportedEncodingException e) {
             logger.warn("Not able to encode dependency: " + inputString, e);
         } finally {

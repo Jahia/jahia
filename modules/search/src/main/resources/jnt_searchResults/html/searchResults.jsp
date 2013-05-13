@@ -29,7 +29,7 @@
         <s:results var="resultsHits" approxCountVar="listApproxSize">
             <c:set target="${moduleMap}" property="listTotalSize" value="${count}" />
             <c:set target="${moduleMap}" property="resultsHits" value="${resultsHits}" />
-            <c:set target="${moduleMap}" property="listApproxSize" value="${listApproxSize}" />
+             <c:set target="${moduleMap}" property="listApproxSize" value="${listApproxSize}" />
             <c:if test='${searchMap == null}'>
                 <jsp:useBean id="searchMap" class="java.util.HashMap" scope="request"/>
             </c:if>
@@ -80,7 +80,11 @@
         <h3><fmt:message key="search.results.sizeNotExact.found"><fmt:param value="${fn:escapeXml(param[termKey])}"/><fmt:param value="more"/></fmt:message></h3>
         </c:if>
         <c:if test="${searchMap['listApproxSize'] > 0 && searchMap['listApproxSize'] < 2147483647 || moduleMap['listTotalSize'] < 2147483647}">
-        <h3><fmt:message key="search.results.sizeNotExact.found"><fmt:param value="${fn:escapeXml(param[termKey])}"/><fmt:param value="${searchMap['listApproxSize'] > 0 ? searchMap['listApproxSize'] : moduleMap['listTotalSize']}"/></fmt:message></h3>
+        	<c:set var="messKey" value="search.results.found" />
+        	<c:if test="${searchMap['listApproxSize'] > 0}">
+        		<c:set var="messKey" value="search.results.sizeNotExact.found" />
+        	</c:if>	
+        <h3><fmt:message key="${messKey}"><fmt:param value="${fn:escapeXml(param[termKey])}"/><fmt:param value="${searchMap['listApproxSize'] > 0 ? searchMap['listApproxSize'] : moduleMap['listTotalSize']}"/></fmt:message></h3>
         </c:if>
         <c:set var="beginName" value="begin_${currentNode.identifier}"/>
         <c:set var="endName" value="end_${currentNode.identifier}"/>

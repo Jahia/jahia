@@ -204,6 +204,8 @@ public interface JahiaContentManagementService extends RemoteService {
     
     GWTJahiaFieldInitializer getFieldInitializerValues(String typeName, String propertyName, String parentPath, Map<String, List<GWTJahiaNodePropertyValue>> dependentValues) throws GWTJahiaServiceException;
 
+    List<String> getNamespaces();
+
     GWTJahiaToolbar getGWTToolbars(String toolbarGroup) throws GWTJahiaServiceException;
 
 

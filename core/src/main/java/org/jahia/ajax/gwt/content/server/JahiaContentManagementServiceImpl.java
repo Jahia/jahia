@@ -79,6 +79,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
 import org.jahia.services.htmlvalidator.Result;
 import org.jahia.services.htmlvalidator.ValidatorResults;
 import org.jahia.services.htmlvalidator.WAIValidator;
@@ -2031,7 +2032,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.cannot.get.node", getUILocale()));
         }
     }
-
+   public List<String> getNamespaces() {
+       List<String> listValues = new ArrayList<String>();
+       for (Map.Entry<String, String> entry : NodeTypeRegistry.getInstance().getNamespaces().entrySet()) {
+           listValues.add(entry.getKey());
+       }
+       return listValues;
+   }
     public List<GWTJahiaNode> getPortalNodes(String targetAreaName) {
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
         try {

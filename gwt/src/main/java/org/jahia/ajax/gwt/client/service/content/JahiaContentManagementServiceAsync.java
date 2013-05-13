@@ -378,4 +378,6 @@ public interface JahiaContentManagementServiceAsync {
     void initializeCodeEditor(String path, boolean isNew, String nodeType, String fileType, AsyncCallback<RpcMap> async);
 
     void getProviderFactoriesType(AsyncCallback<List<GWTJahiaNodeType>> async);
+
+    void getNamespaces(AsyncCallback<List<String>> async);
 }

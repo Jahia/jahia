@@ -16,7 +16,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
-<template:addResources type="javascript" resources="jquery.min.js,admin-bootstrap.js,jquery.blockUI.js,bootstrap-filestyle.min.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,admin-bootstrap.js,jquery.blockUI.js"/>
 <template:addResources type="css" resources="admin-bootstrap.css"/>
 
 <template:addResources>
@@ -24,9 +24,7 @@
     $(document).ready(function() {
         $('.button-download').click(workInProgress)
     });
-    $(document).ready(function () {
-        $(":file").filestyle({classButton: "btn",classIcon: "icon-folder-open"/*,buttonText:"Translation"*/});
-    });
+
 </script>
 </template:addResources>
 

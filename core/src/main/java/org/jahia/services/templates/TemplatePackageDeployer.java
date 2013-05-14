@@ -40,31 +40,11 @@
 
 package org.jahia.services.templates;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.GregorianCalendar;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.jcr.ImportUUIDBehavior;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.ProvisionActivator;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRObservationManager;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.usermanager.jcr.JCRUser;
@@ -74,6 +54,16 @@ import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
+
+import javax.jcr.ImportUUIDBehavior;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * Template package deployer service.
@@ -328,6 +318,32 @@ public class TemplatePackageDeployer {
         if (!tpls.hasProperty("j:rootTemplatePath") && JahiaTemplateManagerService.MODULE_TYPE_MODULE.equals(pack.getModuleType())) {
             tpls.setProperty("j:rootTemplatePath", "/base");
         }
+
+        List<String> langs = new ArrayList<String>();
+        Resource[] resources = pack.getResources("resources");
+        for (Resource resource : resources) {
+            try {
+                String key = resource.getURI().getPath().substring(1).replace("/",".");
+                if (key.startsWith(pack.getResourceBundleName())) {
+                    String langCode = StringUtils.substringBetween(key , pack.getResourceBundleName() + "_", ".properties");
+                    if (langCode != null) {
+                        langs.add(langCode);
+                    }
+                }
+            } catch (IOException e) {
+                logger.error("Cannot get resources",e);
+            }
+        }
+        JCRNodeWrapper moduleNode = m.getParent();
+        if (moduleNode.hasProperty("j:languages")) {
+            Value[] oldValues = m.getParent().getProperty("j:languages").getValues();
+            for (Value value : oldValues) {
+                if (!langs.contains(value.getString())) {
+                    langs.add(value.getString());
+                }
+            }
+        }
+        moduleNode.setProperty("j:languages", langs.toArray(new String[langs.size()]));
     }
 
     private String guessModuleType(JCRSessionWrapper session, JahiaTemplatesPackage pack) throws RepositoryException {

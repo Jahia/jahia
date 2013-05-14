@@ -79,11 +79,9 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
 import org.jahia.services.htmlvalidator.Result;
 import org.jahia.services.htmlvalidator.ValidatorResults;
 import org.jahia.services.htmlvalidator.WAIValidator;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
@@ -734,7 +732,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 node.setPath(nodeWrapper.getPath());
             }
         } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(e);
+            throw new GWTJahiaServiceException(e.getMessage());
         }
 
 //        setLock(Arrays.asList(node.getPath()), false);

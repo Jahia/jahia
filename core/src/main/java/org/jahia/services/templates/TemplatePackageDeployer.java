@@ -319,31 +319,33 @@ public class TemplatePackageDeployer {
             tpls.setProperty("j:rootTemplatePath", "/base");
         }
 
-        List<String> langs = new ArrayList<String>();
-        Resource[] resources = pack.getResources("resources");
-        for (Resource resource : resources) {
-            try {
-                String key = resource.getURI().getPath().substring(1).replace("/",".");
-                if (key.startsWith(pack.getResourceBundleName())) {
-                    String langCode = StringUtils.substringBetween(key , pack.getResourceBundleName() + "_", ".properties");
-                    if (langCode != null) {
-                        langs.add(langCode);
+        if (pack.getResourceBundleName() != null) {
+            List<String> langs = new ArrayList<String>();
+            Resource[] resources = pack.getResources("resources");
+            for (Resource resource : resources) {
+                try {
+                    String key = resource.getURI().getPath().substring(1).replace("/",".");
+                    if (key.startsWith(pack.getResourceBundleName())) {
+                        String langCode = StringUtils.substringBetween(key , pack.getResourceBundleName() + "_", ".properties");
+                        if (langCode != null) {
+                            langs.add(langCode);
+                        }
+                    }
+                } catch (IOException e) {
+                    logger.error("Cannot get resources",e);
+                }
+            }
+            JCRNodeWrapper moduleNode = m.getParent();
+            if (moduleNode.hasProperty("j:languages")) {
+                Value[] oldValues = m.getParent().getProperty("j:languages").getValues();
+                for (Value value : oldValues) {
+                    if (!langs.contains(value.getString())) {
+                        langs.add(value.getString());
                     }
                 }
-            } catch (IOException e) {
-                logger.error("Cannot get resources",e);
             }
+            moduleNode.setProperty("j:languages", langs.toArray(new String[langs.size()]));
         }
-        JCRNodeWrapper moduleNode = m.getParent();
-        if (moduleNode.hasProperty("j:languages")) {
-            Value[] oldValues = m.getParent().getProperty("j:languages").getValues();
-            for (Value value : oldValues) {
-                if (!langs.contains(value.getString())) {
-                    langs.add(value.getString());
-                }
-            }
-        }
-        moduleNode.setProperty("j:languages", langs.toArray(new String[langs.size()]));
     }
 
     private String guessModuleType(JCRSessionWrapper session, JahiaTemplatesPackage pack) throws RepositoryException {

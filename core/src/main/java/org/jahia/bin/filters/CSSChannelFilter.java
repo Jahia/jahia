@@ -45,6 +45,8 @@ import com.phloc.css.ECSSVersion;
 import com.phloc.css.decl.*;
 import com.phloc.css.handler.CSSHandler;
 import com.phloc.css.writer.CSSWriter;
+
+import org.apache.commons.io.Charsets;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.services.SpringContextSingleton;
@@ -57,13 +59,10 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- */
 public class CSSChannelFilter implements Filter {
     private static Logger logger = LoggerFactory.getLogger(CSSChannelFilter.class);
     private ServletContext servletContext;
@@ -90,7 +89,7 @@ public class CSSChannelFilter implements Filter {
                 public InputStream getInputStream() {
                     return stream;
                 }
-            }, Charset.forName("UTF-8"), ECSSVersion.CSS30);
+            }, Charsets.UTF_8, ECSSVersion.CSS30);
             if (css != null) {
                 List<CSSMediaRule> filteredOutRules = new ArrayList<CSSMediaRule>();
                 for (CSSMediaRule mediaRule : css.getAllMediaRules()) {

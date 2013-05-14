@@ -51,10 +51,9 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
+import java.text.MessageFormat;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -79,50 +78,91 @@ public class HandlerTest {
         URL jahiaWarURL = new URL(null, "jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/forum/1.3/forum-1.3.war", new Handler());
         System.out.println("Processing URL " + jahiaWarURL + "...");
         JarInputStream jarInputStream = new JarInputStream(jahiaWarURL.openStream());
-        JarEntry jarEntry = null;
-        // copy the attributes to sort them
-        Map<String, String> mainAttributes = new TreeMap<String, String>();
-        for (Map.Entry<Object, Object> attribute : jarInputStream.getManifest().getMainAttributes().entrySet()) {
-            mainAttributes.put(attribute.getKey().toString(), attribute.getValue().toString());
-        }
+        Attributes mainAttributes = jarInputStream.getManifest().getMainAttributes();
         dumpManifest(jarInputStream);
-        Assert.assertEquals("Bundle-ClassPath header is not valid", ".,forum-1.3.jar", mainAttributes.get("Bundle-ClassPath"));
-        Assert.assertEquals("Bundle-Version header is not valid", "1.3", mainAttributes.get("Bundle-Version"));
-
         dumpJarEntries(jarInputStream);
 
-        // @todo add validation on import and export package lists
-        List<ManifestValueClause> importPackageHeaderClauses = BundleUtils.getHeaderClauses("Import-Package", mainAttributes.get("Import-Package"));
-        List<ManifestValueClause> exportPackageHeaderClauses = BundleUtils.getHeaderClauses("Export-Package", mainAttributes.get("Export-Package"));
+        Assert.assertEquals("Bundle-SymbolicName", "forum", mainAttributes.getValue("Bundle-SymbolicName"));
+        Assert.assertEquals("Bundle-Name", "Jahia Forum", mainAttributes.getValue("Bundle-Name"));
+        Assert.assertEquals("Bundle-ClassPath header is not valid", ".,forum-1.3.jar", mainAttributes.getValue("Bundle-ClassPath"));
+        Assert.assertEquals("Bundle-Version header is not valid", "1.3", mainAttributes.getValue("Bundle-Version"));
 
+        List<ManifestValueClause> importPackageHeaderClauses = BundleUtils.getHeaderClauses("Import-Package", mainAttributes.getValue("Import-Package"));
+        assertPackagesPresent("Missing expected package {0} in Import-Package header clause", importPackageHeaderClauses, new String[]{
+                // check for imports coming from rules DRL file
+                "org.jahia.services.content",
+                "org.jahia.services.content.rules",
+                "org.jahia.services.render",
+                "org.jahia.services.search",
+                "org.apache.commons.lang.time",
+                "org.slf4j",
+                // check for imports coming from JSP files
+                "org.jahia.services.render.scripting"
+        });
+
+        List<ManifestValueClause> exportPackageHeaderClauses = BundleUtils.getHeaderClauses("Export-Package", mainAttributes.getValue("Export-Package"));
+        assertPackagesPresent("Missing expected package {0} in Export-Package header clauses", exportPackageHeaderClauses, new String[]{
+                "org.jahia.modules.forum.actions"
+        });
+
+        URI firstModuleURI = new URI("jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/forum/1.3/forum-1.3.war");
+        String modulePath = firstModuleURI.getPath();
 
         // now let's try with another module
         jahiaWarURL = new URL(null, "jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/translateworkflow/1.2/translateworkflow-1.2.war", new Handler());
         System.out.println("");
         System.out.println("Processing URL " + jahiaWarURL + "...");
         jarInputStream = new JarInputStream(jahiaWarURL.openStream());
-        // copy the attributes to sort them
-        mainAttributes.clear();
-        for (Map.Entry<Object, Object> attribute : jarInputStream.getManifest().getMainAttributes().entrySet()) {
-            mainAttributes.put(attribute.getKey().toString(), attribute.getValue().toString());
-        }
+        mainAttributes = jarInputStream.getManifest().getMainAttributes();
         dumpManifest(jarInputStream);
         dumpJarEntries(jarInputStream);
 
-        URI firstModuleURI = new URI("jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/forum/1.3/forum-1.3.war");
-        String modulePath = firstModuleURI.getPath();
+        importPackageHeaderClauses = BundleUtils.getHeaderClauses("Import-Package", mainAttributes.getValue("Import-Package"));
+        assertPackagesPresent("Missing expected package {0} in Import-Package header clause", importPackageHeaderClauses, new String[]{
+                // check for imports coming from jPDL workflow definition file
+                "org.jahia.services.workflow.jbpm"
+        });
+
+        exportPackageHeaderClauses = BundleUtils.getHeaderClauses("Export-Package", mainAttributes.getValue("Export-Package"));
+        assertPackagesPresent("Missing expected package {0} in Export-Package header clauses", exportPackageHeaderClauses, new String[]{
+                "org.jahia.modules.translation.initializers"
+        });
+
 
         jahiaWarURL = new URL(null, "jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/ldap/1.3/ldap-1.3.war", new Handler());
         System.out.println("");
         System.out.println("Processing URL " + jahiaWarURL + "...");
         jarInputStream = new JarInputStream(jahiaWarURL.openStream());
-        // copy the attributes to sort them
-        mainAttributes.clear();
-        for (Map.Entry<Object, Object> attribute : jarInputStream.getManifest().getMainAttributes().entrySet()) {
-            mainAttributes.put(attribute.getKey().toString(), attribute.getValue().toString());
-        }
+        mainAttributes = jarInputStream.getManifest().getMainAttributes();
         dumpManifest(jarInputStream);
         dumpJarEntries(jarInputStream);
+
+        exportPackageHeaderClauses = BundleUtils.getHeaderClauses("Export-Package", mainAttributes.getValue("Export-Package"));
+        assertPackagesPresent("Missing expected package {0} in Export-Package header clauses", exportPackageHeaderClauses, new String[]{
+                "org.jahia.params.valves",
+                "org.jahia.services.usermanager"
+        });
+
+        jahiaWarURL = new URL(null, "jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/social/1.5/social-1.5.war", new Handler());
+        System.out.println("");
+        System.out.println("Processing URL " + jahiaWarURL + "...");
+        jarInputStream = new JarInputStream(jahiaWarURL.openStream());
+        mainAttributes = jarInputStream.getManifest().getMainAttributes();
+        dumpManifest(jarInputStream);
+        dumpJarEntries(jarInputStream);
+
+        importPackageHeaderClauses = BundleUtils.getHeaderClauses("Import-Package", mainAttributes.getValue("Import-Package"));
+        assertPackagesPresent("Missing expected package {0} in Import-Package header clause", importPackageHeaderClauses, new String[]{
+                // check for imports coming from Spring module application context file.
+                "org.jahia.services.content.rules"
+        });
+
+        exportPackageHeaderClauses = BundleUtils.getHeaderClauses("Export-Package", mainAttributes.getValue("Export-Package"));
+        assertPackagesPresent("Missing expected package {0} in Export-Package header clauses", exportPackageHeaderClauses, new String[]{
+                "org.jahia.modules.social",
+                "org.jahia.modules.social.choicelist",
+                "org.jahia.modules.social.taglib",
+        });
     }
 
     private void dumpManifest(JarInputStream jarInputStream) throws IOException {
@@ -149,4 +189,30 @@ public class HandlerTest {
         }
     }
 
+    private boolean clauseListContainsPackage(List<ManifestValueClause> manifestValueClauses, String packageName) {
+        for (ManifestValueClause manifestValueClause : manifestValueClauses) {
+            if (manifestValueClause.getPaths().contains(packageName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean clauseListContainsPackageAndVersion(List<ManifestValueClause> manifestValueClauses, String packageName, String version) {
+        for (ManifestValueClause manifestValueClause : manifestValueClauses) {
+            if (manifestValueClause.getPaths().contains(packageName)) {
+                if (manifestValueClause.getAttributes().get("version").equals(version)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void assertPackagesPresent(String message, List<ManifestValueClause> manifestValueClauses, String[] packageNames) {
+        for (String packageName : packageNames) {
+            String assertionMessage = MessageFormat.format(message, packageName);
+            Assert.assertTrue(assertionMessage, clauseListContainsPackage(manifestValueClauses, packageName));
+        }
+    }
 }

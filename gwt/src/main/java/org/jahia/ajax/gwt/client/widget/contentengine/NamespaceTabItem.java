@@ -1,23 +1,15 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Definition Tab Item
@@ -27,7 +19,7 @@ import java.util.Set;
  * Date: 5/13/13
  * Time: 11:05 AM
  */
-public class DefinitionTabItem extends ContentTabItem {
+public class NamespaceTabItem extends ContentTabItem {
 
     @Override
     protected void setNameField(NodeHolder engine, AsyncTabItem tab) {
@@ -98,7 +90,7 @@ public class DefinitionTabItem extends ContentTabItem {
 
         @Override
         public String getValue() {
-            return namespaces.getSimpleValue() + ":" + name.getValue();
+            return namespaces.getSimpleValue() == null || namespaces.getSimpleValue().trim().equals("")?name.getValue():namespaces.getSimpleValue() + ":" + name.getValue();
         }
 
         @Override
@@ -110,9 +102,8 @@ public class DefinitionTabItem extends ContentTabItem {
                 namespaces.select(namespaces.getStore().findModel(s[0]));
                 name.setValue(s[1]);
             } else {
-                markInvalid(forceInvalidText);
+                name.setValue(value);
             }
-
         }
 
         public void setMaxLength(int maxLength) {

@@ -415,7 +415,7 @@
                                     <property name="id" value="baseProperties"/>
                                     <property name="titleKey" value="label.engineTab.definitions.baseAttributes"/>
                                     <property name="tabItem">
-                                        <bean class="org.jahia.ajax.gwt.client.widget.contentengine.DefinitionTabItem"/>
+                                        <bean class="org.jahia.ajax.gwt.client.widget.contentengine.NamespaceTabItem"/>
                                     </property>
                                 </bean>
                                 <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTab">

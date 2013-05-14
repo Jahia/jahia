@@ -98,6 +98,13 @@ public class CodeEditorTabItem extends EditEngineTabItem {
             if (typeName == null) {
                 typeName = engine.getPresetProperties().get("nodeTypeName");
             }
+
+            if (engine.getProperties().containsKey(codePropertyName)) {
+                codeProperty = engine.getProperties().get(codePropertyName);
+            } else {
+                codeProperty = new GWTJahiaNodeProperty(codePropertyName, "", GWTJahiaNodePropertyType.STRING);
+            }
+
             if (stubType != null) {
                 snippetType = new ComboBox<GWTJahiaValueDisplayBean>();
                 snippetType.setTypeAhead(true);
@@ -162,25 +169,19 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                             }
                             snippetType.setValue(snippetType.getStore().getAt(0));
 
-                            if (!engine.getProperties().containsKey(codePropertyName)) {
-                                codeProperty = new GWTJahiaNodeProperty(codePropertyName, (String) result.get("stub"), GWTJahiaNodePropertyType.STRING);
-                                initEditor(tab);
-                            }
                             horizontalPanel.show();
                         } else {
                             horizontalPanel.hide();
                         }
+
+                        if (!engine.getProperties().containsKey(codePropertyName)) {
+                            codeProperty = new GWTJahiaNodeProperty(codePropertyName, (String) result.get("stub"), GWTJahiaNodePropertyType.STRING);
+                        }
+
+                        initEditor(tab);
                     }
                 });
-            }
-            //Add code source
-            if (engine.getProperties().containsKey(codePropertyName)) {
-                codeProperty = engine.getProperties().get(codePropertyName);
-                initEditor(tab);
-            }
-            // init editor in any cases (css/javascript .. etc)
-            if (codeField == null) {
-                codeProperty = new GWTJahiaNodeProperty(codePropertyName, "", GWTJahiaNodePropertyType.STRING);
+            } else {
                 initEditor(tab);
             }
         }
@@ -199,6 +200,18 @@ public class CodeEditorTabItem extends EditEngineTabItem {
         tab.layout();
         tab.show();
         tab.setProcessed(true);
+    }
+
+    @Override
+    public void setProcessed(boolean processed) {
+        if (!processed) {
+            codeField = null;
+            codeProperty = null;
+            snippets = null;
+            snippetType = null;
+            mirrorTemplates = null;
+        }
+        super.setProcessed(processed);
     }
 
     @Override

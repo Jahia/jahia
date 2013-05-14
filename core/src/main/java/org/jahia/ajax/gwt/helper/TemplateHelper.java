@@ -289,15 +289,11 @@ public class TemplateHelper {
         packages.addAll(aPackage.getDependencies());
 
         for (JahiaTemplatesPackage pack : packages) {
-            String path = pack.getRootFolderPath() + "/" + pack.getVersion() +"/" + type + "/";
-
-            Set<String> paths = JahiaContextLoaderListener.getServletContext().getResourcePaths(path);
-            if (paths != null) {
-                for (String resourcePath : paths) {
-                    String resourceName = StringUtils.substringAfterLast(resourcePath, "/");
-                    if (resourceName.endsWith(ext)) {
-                        resources.add(resourceName);
-                    }
+            org.springframework.core.io.Resource[] rs = pack.getResources(type);
+            for (org.springframework.core.io.Resource r : rs) {
+                String resourceName = r.getFilename();
+                if (resourceName.endsWith(ext)) {
+                    resources.add(resourceName);
                 }
             }
         }

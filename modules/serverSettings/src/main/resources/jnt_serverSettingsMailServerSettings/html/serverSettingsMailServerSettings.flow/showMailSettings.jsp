@@ -15,8 +15,8 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="mailSettings" type="org.jahia.services.mail.MailSettings"--%>
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
-<template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js,bootstrapSwitch.js"/>
+<template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css,bootstrapSwitch.css"/>
 
 <script type="text/javascript">
     <!--
@@ -80,7 +80,10 @@
 <p>
     <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
         <c:if test="${message.severity eq 'ERROR'}">
-            <span style="color: red;">${message.text}</span><br/>
+            <div class="alert alert-error">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    ${message.text}
+            </div>
         </c:if>
     </c:forEach>
 </p>
@@ -90,8 +93,11 @@
         <div class="control-group">
             <div class="controls">
                 <label for="serviceActivated">
-                    <input type="checkbox" name="serviceActivated" id="serviceActivated"<c:if test='${mailSettings.serviceActivated}'> checked="checked"</c:if>/>
-                    <input type="hidden" name="_serviceActivated"/> <fmt:message key="serverSettings.mailServerSettings.serviceEnabled"/>
+                    <div class="switch" data-on="success" data-off="danger">
+                        <input type="checkbox" name="serviceActivated" id="serviceActivated"<c:if test='${mailSettings.serviceActivated}'> checked="checked"</c:if>/>
+                    </div>
+                    <input type="hidden" name="_serviceActivated"/>
+                    &nbsp;<fmt:message key="serverSettings.mailServerSettings.serviceEnabled"/>
                 </label>
             </div>
         </div>

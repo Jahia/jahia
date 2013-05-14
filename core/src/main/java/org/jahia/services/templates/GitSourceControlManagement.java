@@ -119,6 +119,50 @@ public class GitSourceControlManagement extends SourceControlManagement {
         invalidateStatusCache();
     }
 
+    @Override
+    public void setRemovedFile(File file) throws IOException {
+        if (file == null) {
+            return;
+        }
+
+        String rootPath = rootFolder.getPath();
+
+        List<String> args = new ArrayList<String>();
+        args.add("rm");
+        args.add("-f");
+        if (file.getPath().equals(rootPath)) {
+            args.add(".");
+        } else {
+            args.add(file.getPath().substring(rootPath.length() + 1));
+        }
+        executeCommand(executable, StringUtils.join(args, ' '));
+        invalidateStatusCache();
+    }
+
+    @Override
+    public void setMovedFile(File src, File dst) throws IOException {
+        if (src == null || dst == null) {
+            return;
+        }
+
+        String rootPath = rootFolder.getPath();
+
+        List<String> args = new ArrayList<String>();
+        args.add("mv");
+        if (src.getPath().equals(rootPath)) {
+            args.add(".");
+        } else {
+            args.add(src.getPath().substring(rootPath.length() + 1));
+        }
+        if (dst.getPath().equals(rootPath)) {
+            args.add(".");
+        } else {
+            args.add(dst.getPath().substring(rootPath.length() + 1));
+        }
+        executeCommand(executable, StringUtils.join(args, ' '));
+        invalidateStatusCache();
+    }
+
     public void update() throws IOException {
         executeCommand(executable, "stash");
         executeCommand(executable, "pull --rebase");

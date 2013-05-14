@@ -99,6 +99,10 @@ public abstract class SourceControlManagement {
 
     public abstract void setModifiedFile(List<File> files) throws IOException;
 
+    public abstract void setRemovedFile(File file) throws IOException;
+
+    public abstract void setMovedFile(File src, File dst) throws IOException;
+
     public abstract void update() throws IOException;
 
     public abstract void commit(String message) throws IOException;

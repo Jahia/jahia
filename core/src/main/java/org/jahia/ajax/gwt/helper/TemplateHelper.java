@@ -65,6 +65,7 @@ import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.util.*;
 
 /**
@@ -289,11 +290,23 @@ public class TemplateHelper {
         packages.addAll(aPackage.getDependencies());
 
         for (JahiaTemplatesPackage pack : packages) {
-            org.springframework.core.io.Resource[] rs = pack.getResources(type);
-            for (org.springframework.core.io.Resource r : rs) {
-                String resourceName = r.getFilename();
-                if (resourceName.endsWith(ext)) {
-                    resources.add(resourceName);
+            if (pack.getSourcesFolder() != null && new File(pack.getSourcesFolder(), "src/main/resources").exists()) {
+                File f = new File(pack.getSourcesFolder(), "src/main/resources/" + type);
+                if (f.exists() && f.isDirectory()) {
+                    for (File r : f.listFiles()) {
+                        String resourceName = r.getName();
+                        if (resourceName.endsWith(ext)) {
+                            resources.add(resourceName);
+                        }
+                    }
+                }
+            } else {
+                org.springframework.core.io.Resource[] rs = pack.getResources(type);
+                for (org.springframework.core.io.Resource r : rs) {
+                    String resourceName = r.getFilename();
+                    if (resourceName.endsWith(ext)) {
+                        resources.add(resourceName);
+                    }
                 }
             }
         }

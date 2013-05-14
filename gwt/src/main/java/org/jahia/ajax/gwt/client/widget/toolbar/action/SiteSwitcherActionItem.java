@@ -156,8 +156,9 @@ public class SiteSwitcherActionItem extends BaseActionItem {
                     editLinker = ((SidePanelTabItem.SidePanelLinker) linker).getEditLinker();
                 }
                 final GWTJahiaNode jahiaNode = event.getSelection().get(0);
-                if (jahiaNode.get("j:languages") != null &&
-                    !((List<String>) jahiaNode.get("j:languages")).contains(JahiaGWTParameters.getLanguage())) {
+                if (jahiaNode.get("j:languages") != null && ((List<String>)jahiaNode.get("j:languages")).size()>0 &&
+                        !((List<String>) jahiaNode.get("j:languages")).contains(JahiaGWTParameters.getLanguage()) &&
+                        jahiaNode.get(GWTJahiaNode.DEFAULT_LANGUAGE) != null) {
                     editLinker.setLocale((GWTJahiaLanguage) jahiaNode.get(GWTJahiaNode.DEFAULT_LANGUAGE));
                 }
                 JahiaGWTParameters.setSiteFromNode(jahiaNode, linker);

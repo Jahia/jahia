@@ -286,6 +286,18 @@ public class QueryResultWrapper implements QueryResult {
                 : null;
     }    
 
+    public boolean isFacetFieldsEmpty(List<FacetField> facetFields) {
+    if (facetFields.isEmpty()){
+        return true;
+    }else{
+        for (FacetField facetField: facetFields) {
+            if (facetField.getValueCount() != 0)
+                return false;
+        }
+    }
+    return true;
+    }
+
     public Map<String, Long> getFacetQuery() {
         return result instanceof FacetedQueryResult ? ((FacetedQueryResult) result).getFacetQuery()
                 : null;
@@ -305,8 +317,8 @@ public class QueryResultWrapper implements QueryResult {
      * @return true is queryResultWrapper doesn't contains any facet results
      */
     public boolean isFacetResultsEmpty(){
-        return (this.getFacetFields() == null || this.getFacetFields().isEmpty()) &&
-                (this.getFacetDates() == null || this.getFacetDates().isEmpty()) &&
+        return (this.getFacetFields() == null || isFacetFieldsEmpty(this.getFacetFields())) &&
+                (this.getFacetDates() == null || isFacetFieldsEmpty(this.getFacetFields())) &&
                 (this.getFacetQuery() == null || this.getFacetQuery().isEmpty());
     }
 

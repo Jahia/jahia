@@ -44,7 +44,7 @@
     <parent>
         <artifactId>jahia-modules</artifactId>
         <groupId>org.jahia.modules</groupId>
-        <version>6.6.1.6</version>
+        <version>6.6.1.7-SNAPSHOT</version>
     </parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>default-skins</artifactId>

@@ -1171,7 +1171,12 @@ public class ContentManagerHelper {
         SourceControlManagement sourceControl = templatePackage.getSourceControl();
         if (sourceControl != null) {
             String path = node.getPath();
-            File file = new File(templatePackage.getSourcesFolder().getAbsolutePath() + "/src/main/resources" + path.substring(path.indexOf("/sources/") + 8));
+            path = path.substring(path.indexOf("/sources/") + 8);
+            String sourcesFolderPath = templatePackage.getSourcesFolder().getAbsolutePath();
+            File file = new File(sourcesFolderPath + "/src/main/resources" + path);
+            if (!file.exists()) {
+                file = new File(sourcesFolderPath + "/src/main/webapp" + path);
+            }
             sourceControl.setModifiedFile(Arrays.asList(file));
         }
     }

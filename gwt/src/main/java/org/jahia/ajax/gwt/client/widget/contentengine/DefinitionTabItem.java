@@ -40,10 +40,10 @@ public class DefinitionTabItem extends ContentTabItem {
             final LayoutContainer panel = new LayoutContainer(hBoxLayout);
             if (nameText == null) {
                 nameFieldSet = new FieldSet();
-                nameFieldSet.setHeading(Messages.get("label.systemName", "System name"));
+                nameFieldSet.setHeading(Messages.get("label.type.name", "Type name"));
                 nameFieldSet.setLayout(fl);
                 nameText = new NameField();
-                nameText.setId("JahiaGxtField_systemName");
+                nameText.addStyleName("JahiaGxtField_systemName");
                 nameText.setWidth("250");
                 ((NameField) nameText).setMaxLength(maxNameSize);
                 ((NameField) nameText).setAllowBlank(false);
@@ -52,7 +52,7 @@ public class DefinitionTabItem extends ContentTabItem {
                 panel.add(this.nameText, new HBoxLayoutData(0, 5, 0, 5));
 
                 name = new AdapterField(panel);
-                name.setFieldLabel(Messages.get("label.systemName", "System name"));
+                name.setFieldLabel(Messages.get("label.type.name", "Type name"));
 
                 FormData fd = new FormData("98%");
                 fd.setMargins(new Margins(0));

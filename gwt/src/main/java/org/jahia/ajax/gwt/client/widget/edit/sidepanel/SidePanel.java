@@ -174,7 +174,7 @@ public class SidePanel extends ContentPanel {
         for (SidePanelTabItem tab : tabs) {
             tab.handleNewModuleSelection(selectedModule);
         }
-        ((ToolbarHeader)head).handleNewModuleSelection(selectedModule);
+        ((ToolbarHeader)head).handleNewLinkerSelection();
     }
 
     public void handleNewMainNodeLoaded(GWTJahiaNode node) {
@@ -189,6 +189,7 @@ public class SidePanel extends ContentPanel {
         for (SidePanelTabItem tab : tabs) {
             tab.handleNewMainSelection(path);
         }
+        ((ToolbarHeader)head).handleNewLinkerSelection();
     }
 
     public void markForManualRefresh(Map<String, Object> data) {

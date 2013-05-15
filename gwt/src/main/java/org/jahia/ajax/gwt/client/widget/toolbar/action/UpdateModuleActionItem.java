@@ -79,14 +79,17 @@ public class UpdateModuleActionItem extends BaseActionItem {
                     }
                 });
             } else {
-                final SourceControlDialog dialog = new SourceControlDialog(false);
+                final SourceControlDialog dialog = new SourceControlDialog(Messages.get("label.sendToSourceControl", "Send to source control"), false, false);
                 dialog.addCallback(new Listener<WindowEvent>() {
                     @Override
                     public void handleEvent(WindowEvent be) {
                         linker.loading("Sending sources...");
-                        JahiaContentManagementService.App.getInstance().sendToSourceControl(JahiaGWTParameters.getSiteKey(), dialog.getUri(), dialog.getScmType(), new BaseAsyncCallback() {
+                        JahiaContentManagementService.App.getInstance().sendToSourceControl(JahiaGWTParameters.getSiteKey(), dialog.getUri(), dialog.getScmType(), new BaseAsyncCallback<GWTJahiaNode>() {
                             @Override
-                            public void onSuccess(Object result) {
+                            public void onSuccess(GWTJahiaNode result) {
+                                JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
+                                JahiaGWTParameters.setSiteNode(result);
+                                ((EditLinker) linker).handleNewMainSelection();
                                 linker.loaded();
                             }
 
@@ -100,7 +103,7 @@ public class UpdateModuleActionItem extends BaseActionItem {
                 dialog.show();
             }
         } else {
-            final SourceControlDialog dialog = new SourceControlDialog(true);
+            final SourceControlDialog dialog = new SourceControlDialog(Messages.get("label.sourceControlDialog.header", "Get sources from source control"), false, true);
 
             if (siteNode.get("j:scmURI") != null) {
                 String value = (String) siteNode.get("j:scmURI");

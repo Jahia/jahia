@@ -666,7 +666,7 @@ public class MainModule extends Module {
             l.show();
         }
         if (head != null) {
-            ((ToolbarHeader) head).handleNewModuleSelection(selectedModule);
+            ((ToolbarHeader) head).handleNewLinkerSelection();
         }
 
         l.layout();
@@ -701,6 +701,11 @@ public class MainModule extends Module {
 //        if (!frame.getCurrentFrameUrl().endsWith(url)) {
 //            goToUrl(url, false);
 //        }
+
+        if (head != null) {
+            ((ToolbarHeader) head).handleNewLinkerSelection();
+        }
+
     }
 
     public void setInfoLayer(String key, boolean value) {

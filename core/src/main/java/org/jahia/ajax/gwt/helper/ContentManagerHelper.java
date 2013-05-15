@@ -1192,12 +1192,14 @@ public class ContentManagerHelper {
         return node;
     }
 
-    public void sendToSourceControl(String moduleName, String scmURI, String scmType, JCRSessionWrapper session) throws RepositoryException {
+    public GWTJahiaNode sendToSourceControl(String moduleName, String scmURI, String scmType, JCRSessionWrapper session) throws RepositoryException {
         try {
             templateManagerService.sendToSourceControl(moduleName, scmURI, scmType, session);
+            return navigation.getGWTJahiaNode(session.getNode("/modules/"+moduleName), GWTJahiaNode.DEFAULT_SITE_FIELDS);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
+        return null;
     }
 
     public void compileAndDeploy(String moduleName, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {

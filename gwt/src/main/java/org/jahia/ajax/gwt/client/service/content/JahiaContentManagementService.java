@@ -354,7 +354,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void rotateImage(String path, String target, boolean clockwise, boolean forceReplace) throws GWTJahiaServiceException;
 
-    void sendToSourceControl(String moduleName, String scmURI, String scmType) throws GWTJahiaServiceException;
+    GWTJahiaNode sendToSourceControl(String moduleName, String scmURI, String scmType) throws GWTJahiaServiceException;
 
     void saveModule(String moduleName, String message) throws GWTJahiaServiceException;
 

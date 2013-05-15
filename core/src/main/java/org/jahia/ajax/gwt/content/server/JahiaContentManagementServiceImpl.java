@@ -1478,9 +1478,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public void sendToSourceControl(String moduleName, String scmURI, String scmType) throws GWTJahiaServiceException {
+    public GWTJahiaNode sendToSourceControl(String moduleName, String scmURI, String scmType) throws GWTJahiaServiceException {
         try {
-            contentManager.sendToSourceControl(moduleName, scmURI, scmType, retrieveCurrentSession());
+            return contentManager.sendToSourceControl(moduleName, scmURI, scmType, retrieveCurrentSession());
         } catch (Exception e) {
             logger.error("", e);
             throw new GWTJahiaServiceException(e.toString());

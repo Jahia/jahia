@@ -298,7 +298,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void rotateImage(String path, String target, boolean clockwise, boolean forceReplace, AsyncCallback async);
 
-    void sendToSourceControl(String moduleName, String scmURI, String scmType, AsyncCallback asyncCallback);
+    void sendToSourceControl(String moduleName, String scmURI, String scmType, AsyncCallback<GWTJahiaNode> asyncCallback);
 
     void saveModule(String moduleName, String message, AsyncCallback asyncCallback);
 

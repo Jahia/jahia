@@ -62,7 +62,7 @@ public class FetchModuleActionItem extends BaseActionItem {
 
     @Override public void onComponentSelection() {
 
-        final SourceControlDialog dialog = new SourceControlDialog(true);
+        final SourceControlDialog dialog = new SourceControlDialog(Messages.get("label.sourceControlDialog.header", "Get sources from source control"), true, true);
         dialog.addCallback(new Listener<WindowEvent>() {
             @Override
             public void handleEvent(WindowEvent be) {

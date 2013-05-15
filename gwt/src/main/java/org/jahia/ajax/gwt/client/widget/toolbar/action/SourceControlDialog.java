@@ -64,8 +64,8 @@ public class SourceControlDialog extends Dialog {
     private final FormPanel form;
     private SourceControlDialog sourceControlDialog;
 
-    public SourceControlDialog(boolean viewBranchOrTag) {
-        setHeading(Messages.get("label.sourceControlDialog.header","Get sources from source control"));
+    public SourceControlDialog(String heading, boolean viewModuleName, boolean viewBranchOrTag) {
+        setHeading(heading);
         setButtons(Dialog.OKCANCEL);
         setModal(true);
         setHideOnButtonClick(true);
@@ -102,11 +102,13 @@ public class SourceControlDialog extends Dialog {
         uri.setAllowBlank(false);
         form.add(uri);
 
-        moduleName = new TextField<String>();
-        moduleName.setName("moduleName");
-        moduleName.setFieldLabel(Messages.get("label.moduleName", "Module name ( must match artifactID of the pom.xml )"));
-        moduleName.setAllowBlank(true);
-        form.add(moduleName);
+        if (viewModuleName) {
+            moduleName = new TextField<String>();
+            moduleName.setName("moduleName");
+            moduleName.setFieldLabel(Messages.get("label.moduleName", "Module name ( must match artifactID of the pom.xml )"));
+            moduleName.setAllowBlank(true);
+            form.add(moduleName);
+        }
 
         if (viewBranchOrTag) {
             branchOrTag = new TextField<String>();

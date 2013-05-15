@@ -136,7 +136,7 @@ public class ToolbarHeader extends Header {
         }
     }
 
-    public void handleNewModuleSelection(Module selectedModule) {
+    public void handleNewLinkerSelection() {
         for (ActionItem item : actionItems) {
             try {
                 item.handleNewLinkerSelection();

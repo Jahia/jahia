@@ -40,13 +40,10 @@
 
 package org.jahia.services.query;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.query.JahiaQueryObjectModelImpl;
 import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
-import org.apache.jackrabbit.core.query.lucene.join.QueryEngine;
-import org.apache.jackrabbit.spi.Name;
-import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
@@ -60,7 +57,6 @@ import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
-import javax.jcr.query.qom.Column;
 import javax.jcr.query.qom.QueryObjectModel;
 import javax.jcr.version.VersionException;
 import java.util.*;
@@ -73,10 +69,6 @@ import java.util.*;
 public class QueryWrapper implements Query {
 
     public static final Logger logger = LoggerFactory.getLogger(QueryWrapper.class);
-
-    private static final String FACET_FUNC_LPAR = "facet(";
-    private static final Name REP_FACET_LPAR = NameFactoryImpl.getInstance().create(
-            Name.NS_REP_URI, FACET_FUNC_LPAR);
 
     private String statement;
     private String language;
@@ -116,7 +108,7 @@ public class QueryWrapper implements Query {
         for (JCRStoreProvider jcrStoreProvider : providers) {
             QueryManager qm = jcrStoreProvider.getQueryManager(session);
             if (qm != null) {
-                if (Arrays.asList(qm.getSupportedQueryLanguages()).contains(language)) {
+                if (ArrayUtils.contains(qm.getSupportedQueryLanguages(), language)) {
                     Query query = qm.createQuery(statement, language);
                     if (jcrStoreProvider.isDefault()) {
                         if (Query.JCR_SQL2.equals(language)) {

@@ -1,0 +1,10 @@
+<c:set value="${registeredModules[entry.key]}" var="currentModule"/>
+<c:remove var="defaultVersion"/>
+<c:if test="${empty currentModule}">
+    <c:forEach var="v" items="${entry.value}" end="0">
+        <c:set var="defaultVersion" value="${v.value}"/>
+    </c:forEach>
+</c:if>
+<c:set value="${not isStudio && functions:contains(systemSiteRequiredModules, currentModule != null ? currentModule.rootFolder : defaultVersion.rootFolder)}" var="isMandatoryDependency"/>
+<c:set value="${currentModule != null ? currentModule.sourcesDownloadable : defaultVersion.sourcesDownloadable}" var="sourcesDownloadable"/>
+<c:set value="${empty currentModule.sourcesFolder and empty defaultVersion.sourcesFolder and sourcesDownloadable and (not empty currentModule.scmURI or not empty defaultVersion.scmURI)}" var="canDownload"/>

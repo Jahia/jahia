@@ -323,7 +323,7 @@ public class ModuleManagementFlowHandler implements Serializable {
         // check for unresolved dependencies
         if (!pkg.getDepends().isEmpty()) {
             for (String dependency : pkg.getDepends()) {
-                if (!registeredModules.containsKey(dependency)) {
+                if (templateManagerService.getTemplatePackageRegistry().getAvailableVersionsForModule(dependency).isEmpty()) {
                     state.getUnresolvedDependencies().add(dependency);
                 }
             }

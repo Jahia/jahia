@@ -40,22 +40,21 @@
 
 package org.jahia.services.cache;
 
-import java.lang.management.ManagementFactory;
-import java.util.Iterator;
-
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.management.ManagementService;
-
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.management.ManagementFactory;
+import java.util.Iterator;
+
 /**
  * Cache manager utility.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public final class CacheHelper {
@@ -73,9 +72,8 @@ public final class CacheHelper {
     /**
      * Flushes all back-end and front-end Jahia caches, including Hibernate second level cache, Ehcaches etc. If
      * <code>propagateInCluster</code> is set to true also propagates the flush to other cluster nodes.
-     * 
-     * @param propagateInCluster
-     *            if set to true the flush is propagated to other cluster nodes
+     *
+     * @param propagateInCluster if set to true the flush is propagated to other cluster nodes
      */
     public static void flushAllCaches(boolean propagateInCluster) {
         logger.info("Flushing all caches{}",
@@ -101,8 +99,6 @@ public final class CacheHelper {
                 if (cache != null) {
                     // flush
                     cache.removeAll(!propagateInCluster);
-                    // reset statistics
-                    cache.clearStatistics();
                 }
             }
         }
@@ -112,9 +108,8 @@ public final class CacheHelper {
 
     /**
      * Flushes the specified Ehcache on the current cluster node only.
-     * 
-     * @param cacheName
-     *            the name of the cache to flush
+     *
+     * @param cacheName the name of the cache to flush
      */
     public static void flushEhcacheByName(String cacheName) {
         flushEhcacheByName(cacheName, false);
@@ -122,11 +117,9 @@ public final class CacheHelper {
 
     /**
      * Flushes the specified Ehcache. If <code>propagateInCluster</code> is set to true also propagates the flush to other cluster nodes.
-     * 
-     * @param cacheName
-     *            the name of the cache to flush
-     * @param propagateInCluster
-     *            if set to true the flush is propagated to other cluster nodes
+     *
+     * @param cacheName          the name of the cache to flush
+     * @param propagateInCluster if set to true the flush is propagated to other cluster nodes
      */
     public static void flushEhcacheByName(String cacheName, boolean propagateInCluster) {
         logger.info("Flushing {}", cacheName);
@@ -135,8 +128,6 @@ public final class CacheHelper {
         if (cache != null) {
             // flush
             cache.removeAll(!propagateInCluster);
-            // reset statistics
-            cache.clearStatistics();
             logger.info("...done flushing {}", cacheName);
         } else {
             logger.warn("Cache with the name {} not found. Skip flushing.", cacheName);
@@ -152,9 +143,8 @@ public final class CacheHelper {
 
     /**
      * Flushes Hibernate second level cache and propagates the flush to all cluster nodes.
-     * 
-     * @param propagateInCluster
-     *            if set to true the flush is propagated to other cluster nodes
+     *
+     * @param propagateInCluster if set to true the flush is propagated to other cluster nodes
      */
     public static void flushHibernateCaches(boolean propagateInCluster) {
         logger.info("Flushing Hibernate second level caches{}",
@@ -168,8 +158,6 @@ public final class CacheHelper {
             if (cache != null) {
                 // flush
                 cache.removeAll(!propagateInCluster);
-                // reset statistics
-                cache.clearStatistics();
             }
         }
         logger.info("...done flushing Hibernate caches");
@@ -177,10 +165,9 @@ public final class CacheHelper {
 
     /**
      * Flushes the caches of the specified cache manager.
-     * 
-     * @param cacheManagerName the cache manager name to flush caches for
-     * @param propagateInCluster
-     *            if set to true the flush is propagated to other cluster nodes
+     *
+     * @param cacheManagerName   the cache manager name to flush caches for
+     * @param propagateInCluster if set to true the flush is propagated to other cluster nodes
      */
     public static void flushCachesForManager(String cacheManagerName, boolean propagateInCluster) {
         logger.info("Flushing caches for the cache manager '{}' {}", cacheManagerName, propagateInCluster ? " also propagating it to all cluster members" : "");
@@ -193,8 +180,6 @@ public final class CacheHelper {
             if (cache != null) {
                 // flush
                 cache.removeAll(!propagateInCluster);
-                // reset statistics
-                cache.clearStatistics();
             }
         }
         logger.info("...done flushing caches for manager {}", cacheManagerName);
@@ -210,9 +195,8 @@ public final class CacheHelper {
     /**
      * Flushes front-end Jahia caches (module HTML output caches). If <code>propagateInCluster</code> is set to true also propagates the
      * flush to other cluster nodes.
-     * 
-     * @param propagateInCluster
-     *            if set to true the flush is propagated to other cluster nodes
+     *
+     * @param propagateInCluster if set to true the flush is propagated to other cluster nodes
      */
     public static void flushOutputCaches(boolean propagateInCluster) {
         logger.info("Flushing HTML output caches{}",
@@ -226,8 +210,6 @@ public final class CacheHelper {
             if (cache != null) {
                 // flush
                 cache.removeAll(!propagateInCluster);
-                // reset statistics
-                cache.clearStatistics();
                 logger.info("...done flushing {}", cacheName);
             }
         }

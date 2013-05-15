@@ -2,12 +2,10 @@
 <%@ page import="net.sf.ehcache.Ehcache" %>
 <%@ page import="net.sf.ehcache.Element" %>
 <%@ page import="org.jahia.services.cache.CacheEntry" %>
-<%@ page import="org.jahia.services.render.filter.cache.DefaultCacheKeyGenerator" %>
+<%@ page import="org.jahia.services.render.filter.cache.AclCacheKeyPartGenerator" %>
 <%@ page import="org.jahia.services.render.filter.cache.ModuleCacheProvider" %>
-<%@ page import="java.util.Collections" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Set" %>
-<%@ page import="org.jahia.services.render.filter.cache.AclCacheKeyPartGenerator" %>
 <%--
   Output cache monitoring JSP.
   User: rincevent
@@ -43,26 +41,26 @@
         <script type="text/javascript">
             var myTable = $(document).ready(function () {
                 $('#cacheTable').dataTable({
-                    "bLengthChange":true,
-                    "bFilter":true,
-                    "bSort":true,
-                    "bInfo":false,
-                    "bAutoWidth":true,
-                    "bStateSave":true,
-                    "sPaginationType":"full_numbers",
-                    "bJQueryUI":true,
-                    "aLengthMenu":[
+                    "bLengthChange": true,
+                    "bFilter": true,
+                    "bSort": true,
+                    "bInfo": false,
+                    "bAutoWidth": true,
+                    "bStateSave": true,
+                    "sPaginationType": "full_numbers",
+                    "bJQueryUI": true,
+                    "aLengthMenu": [
                         [50, 100, 200, -1],
                         [50, 100, 200, "All"]
                     ],
-                    "sDom":'<"H"Tlfr>t<"F"p>',
-                    "oTableTools":{
-                        "sSwfPath":"../resources/swf/copy_cvs_xls.swf",
-                        "aButtons":[
+                    "sDom": '<"H"Tlfr>t<"F"p>',
+                    "oTableTools": {
+                        "sSwfPath": "../resources/swf/copy_cvs_xls.swf",
+                        "aButtons": [
                             "copy", "csv", "xls", {
-                                "sExtends":"collection",
-                                "sButtonText":"Save",
-                                "aButtons":[ "csv", "xls" ]
+                                "sExtends": "collection",
+                                "sButtonText": "Save",
+                                "aButtons": [ "csv", "xls" ]
                             }
                         ]
                     }
@@ -77,10 +75,8 @@
         if (pageContext.getRequest().getParameter("flush") != null) {
             System.out.println("Flushing cache content");
             cache.flush();
-            cache.clearStatistics();
             cache.removeAll();
             depCache.flush();
-            depCache.clearStatistics();
             depCache.removeAll();
             ((AclCacheKeyPartGenerator) cacheProvider.getKeyGenerator().getPartGenerator("acls")).flushUsersGroupsKey();
         }
@@ -112,8 +108,8 @@
                     <td>${key}</td>
                     <td><%
                         Set<String> deps = (Set<String>) element.getValue();
-                        if(deps.size()>10) {
-                        out.print("Number of dependencies : "+deps.size());
+                        if (deps.size() > 10) {
+                            out.print("Number of dependencies : " + deps.size());
                         } else {
                             for (String dep : deps) {
                                 out.print(dep + "<br/>");

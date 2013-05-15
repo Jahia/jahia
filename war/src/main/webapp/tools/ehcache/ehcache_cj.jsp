@@ -3,15 +3,14 @@
 <%@ page import="net.sf.ehcache.Element" %>
 <%@ page import="org.apache.commons.io.FileUtils" %>
 <%@ page import="org.jahia.services.cache.CacheEntry" %>
-<%@ page import="org.jahia.services.render.filter.cache.DefaultCacheKeyGenerator" %>
+<%@ page import="org.jahia.services.cache.ehcache.EhCacheStatisticsWrapper" %>
+<%@ page import="org.jahia.services.render.filter.cache.AclCacheKeyPartGenerator" %>
+<%@ page import="org.jahia.services.render.filter.cache.AggregateCacheFilter" %>
 <%@ page import="org.jahia.services.render.filter.cache.ModuleCacheProvider" %>
 <%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.Collections" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.List" %>
-<%@ page import="org.jahia.services.render.filter.cache.AggregateCacheFilter" %>
-<%@ page import="org.jahia.services.render.filter.cache.AclCacheKeyPartGenerator" %>
 <%--
   Output cache monitoring JSP.
   User: rincevent
@@ -52,33 +51,33 @@
         <script type="text/javascript" src="../resources/TableTools.js"></script>
         <title>Display content of module output cache</title>
         <script type="text/javascript">
-            var myTable = $(document).ready(function() {
+            var myTable = $(document).ready(function () {
                 $('#cacheTable').dataTable({
-                            "bLengthChange": true,
-                            "bFilter": true,
-                            "bSort": true,
-                            "bInfo": false,
-                            "bAutoWidth": true,
-                            "bStateSave" : true,
-                            "bJQueryUI" : true,
-                            "sPaginationType": "full_numbers",
-                            "aLengthMenu": [
-                                [50, 100, 200, -1],
-                                [50, 100, 200, "All"]
-                            ],
-                            "sDom": '<"H"Tlfr>t<"F"p>',
-                            "oTableTools": {
-                                "sSwfPath": "../resources/swf/copy_cvs_xls.swf",
-                                "aButtons": [
-                                    "copy", "csv", "xls",
-                                    {
-                                        "sExtends":    "collection",
-                                        "sButtonText": "Save",
-                                        "aButtons":    [ "csv", "xls" ]
-                                    }
-                                ]
+                    "bLengthChange": true,
+                    "bFilter": true,
+                    "bSort": true,
+                    "bInfo": false,
+                    "bAutoWidth": true,
+                    "bStateSave": true,
+                    "bJQueryUI": true,
+                    "sPaginationType": "full_numbers",
+                    "aLengthMenu": [
+                        [50, 100, 200, -1],
+                        [50, 100, 200, "All"]
+                    ],
+                    "sDom": '<"H"Tlfr>t<"F"p>',
+                    "oTableTools": {
+                        "sSwfPath": "../resources/swf/copy_cvs_xls.swf",
+                        "aButtons": [
+                            "copy", "csv", "xls",
+                            {
+                                "sExtends": "collection",
+                                "sButtonText": "Save",
+                                "aButtons": [ "csv", "xls" ]
                             }
-                        });
+                        ]
+                    }
+                });
             });
         </script>
     </head>
@@ -89,10 +88,8 @@
         if (pageContext.getRequest().getParameter("flush") != null) {
             System.out.println("Flushing cache content");
             cache.flush();
-            cache.clearStatistics();
             cache.removeAll();
             depCache.flush();
-            depCache.clearStatistics();
             depCache.removeAll();
             ((AclCacheKeyPartGenerator) cacheProvider.getKeyGenerator().getPartGenerator("acls")).flushUsersGroupsKey();
             AggregateCacheFilter.flushNotCacheableFragment();
@@ -100,7 +97,7 @@
         List keys = cache.getKeys();
         pageContext.setAttribute("keys", keys);
         pageContext.setAttribute("cache", cache);
-        pageContext.setAttribute("stats", cache.getStatistics());
+        pageContext.setAttribute("stats", new EhCacheStatisticsWrapper(cache.getStatistics()));
     %>
     <body id="dt_example">
     <a href="../index.jsp" title="back to the overview of caches">overview</a>&nbsp;
@@ -113,9 +110,9 @@
         <p>Key (${requestScope.flushkey}) has been flushed</p>
     </c:if>
     <div id="statistics">
-        <span>Cache Hits: ${stats.cacheHits} (Cache hits in memory : ${stats.inMemoryHits}; Cache hits on disk : ${stats.onDiskHits})</span><br/>
-        <span>Cache Miss: ${stats.cacheMisses}</span><br/>
-        <span>Object counts: ${stats.objectCount}</span><br/>
+        <span>Cache Hits: ${stats.cacheHitCount} (Cache hits in memory : ${stats.localHeapHitCount}; Cache hits on disk : ${stats.localDiskHitCount})</span><br/>
+        <span>Cache Miss: ${stats.cacheMissCount}</span><br/>
+        <span>Object counts: ${stats.size}</span><br/>
         <span>Memory size: ${cache.memoryStoreSize}</span><br/>
         <span>Disk size: ${cache.diskStoreSize}</span><br/>
         <span>Cache entries size = <span id="cacheSize"></span></span><br/>
@@ -139,7 +136,7 @@
                     <td>${key}</td>
                     <% String attribute = (String) pageContext.getAttribute("key");
                         final Element element1 = cache.getQuiet(attribute);
-                        if (element1 != null && element1.getValue()!=null) {
+                        if (element1 != null && element1.getValue() != null) {
                     %>
 
                     <td><%=SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(new Date(
@@ -167,13 +164,13 @@
                         </c:if>
                     </td>
                     <%} else { %>
-                      <td>empty</td>
-                        <td>empty</td>
+                    <td>empty</td>
+                    <td>empty</td>
                     <%}%>
                 </tr>
             </c:forEach>
             <script type="text/javascript">
-                $(document).ready(function() {
+                $(document).ready(function () {
                     $("#cacheSize").before("<%= FileUtils.byteCountToDisplaySize(cacheSize) %>");
                     $("#depsCacheSize").before("<%= FileUtils.byteCountToDisplaySize(globalDepsCacheSize) %>");
                 });

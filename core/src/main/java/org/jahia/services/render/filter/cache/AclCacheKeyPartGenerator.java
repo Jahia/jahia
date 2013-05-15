@@ -125,14 +125,12 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             cacheManager.addCache(CACHE_NAME);
             cache = cacheManager.getCache(CACHE_NAME);
         }
-        cache.setStatisticsEnabled(cacheProvider.isStatisticsEnabled());
 
         permissionCache = cacheManager.getCache(PROPERTY_CACHE_NAME);
         if (permissionCache == null) {
             cacheManager.addCache(PROPERTY_CACHE_NAME);
             permissionCache = cacheManager.getCache(PROPERTY_CACHE_NAME);
         }
-        permissionCache.setStatisticsEnabled(cacheProvider.isStatisticsEnabled());
     }
 
 
@@ -174,16 +172,16 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             JCRNodeWrapper node = resource.getNode();
             boolean checkRootPath = true;
             Element element = permissionCache.get(node.getPath());
-            if(element!=null && Boolean.TRUE==((Boolean)element.getValue())) {
+            if (element != null && Boolean.TRUE == ((Boolean) element.getValue())) {
                 node = renderContext.getMainResource().getNode();
                 checkRootPath = false;
-            } else if(element==null) {
+            } else if (element == null) {
                 if (node.hasProperty("j:requiredPermissions")) {
-                    permissionCache.put(new Element(node.getPath(),Boolean.TRUE));
+                    permissionCache.put(new Element(node.getPath(), Boolean.TRUE));
                     node = renderContext.getMainResource().getNode();
                     checkRootPath = false;
                 } else {
-                    permissionCache.put(new Element(node.getPath(),Boolean.FALSE));
+                    permissionCache.put(new Element(node.getPath(), Boolean.FALSE));
                 }
             }
             String nodePath = node.getPath();
@@ -196,7 +194,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             } else {
                 for (final String dependency : dependencies) {
                     if (!dependency.equals(nodePath)) {
-                        try{
+                        try {
                             if (!dependency.contains("/")) {
                                 final boolean finalCheckRootPath = checkRootPath;
                                 JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Object>() {
@@ -210,19 +208,19 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                             } else {
                                 aclsKeys.add(getAclsKeyPart(renderContext, checkRootPath, dependency, true, null));
                             }
-                        } catch(ItemNotFoundException ex) {
+                        } catch (ItemNotFoundException ex) {
                             logger.warn("ItemNotFound: " + dependency + "  it could be an invalid reference, check jcr integrity");
                         } catch (PathNotFoundException ex) {
                             logger.warn("PathNotFound: "
                                     + dependency
                                     + "  it could be an invalid reference, check jcr integrity");
-                        }                                               
+                        }
                     }
                 }
             }
             StringBuilder stringBuilder = new StringBuilder();
             for (String aclsKey : aclsKeys) {
-                if(stringBuilder.length()>0) {
+                if (stringBuilder.length() > 0) {
                     stringBuilder.append("_depacl_");
                 }
                 stringBuilder.append(aclsKey);
@@ -257,7 +255,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                         stringBuilder.append(getAclKeyPartForNode(renderContext, checkRootPath, path, true, principal,
                                 userName));
                     }
-                }else if ("mraclmr".equals(aclKey)) {
+                } else if ("mraclmr".equals(aclKey)) {
                     if (stringBuilder.length() > 0) {
                         stringBuilder.append("_depacl_");
                     }
@@ -314,7 +312,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                 fakePath = "/";
             }
             final Set<JahiaGroup> jahiaGroups = allAclsGroups.get(fakePath);
-            if(jahiaGroups==null) {
+            if (jahiaGroups == null) {
                 // Should never be null here so relaunch the call.
                 return getAclKeyPartForNode(renderContext, checkRootPath, nodePath, appendNodePath, principal, userName);
             }
@@ -322,7 +320,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             fakePath = StringUtils.substringBeforeLast(fakePath, "/");
             if (fakePath.equals("")) {
                 final Set<JahiaGroup> jahiaGroups1 = allAclsGroups.get("/");
-                if(jahiaGroups1==null){
+                if (jahiaGroups1 == null) {
                     return getAclKeyPartForNode(renderContext, checkRootPath, nodePath, appendNodePath, principal, userName);
                 }
                 aclGroups.addAll(jahiaGroups1);
@@ -349,20 +347,20 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         if ("".equals(userKey.trim())) {
             throw new RepositoryException(
                     "Userkey is empty while generating cache key for path " + path + " and nodepath = " + nodePath +
-                    " checkrootpath = " + checkRootPath);
+                            " checkrootpath = " + checkRootPath);
         }
         Resource mainResource = renderContext.getMainResource();
         Set<String> roles;
         if (mainResource != null) {
             AccessControlManager accessControlManager = ((JCRNodeWrapper) mainResource.getNode()).getAccessControlManager();
-            if(accessControlManager instanceof JahiaAccessManager)
+            if (accessControlManager instanceof JahiaAccessManager)
                 roles = ((JahiaAccessManager) accessControlManager).getRoles(path);
             else
                 roles = Collections.emptySet();
         } else {
             JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path);
             AccessControlManager accessControlManager = ((JCRNodeWrapper) node).getAccessControlManager();
-            if(accessControlManager instanceof JahiaAccessManager)
+            if (accessControlManager instanceof JahiaAccessManager)
                 roles = ((JahiaAccessManager) accessControlManager).getRoles(path);
             else
                 roles = Collections.emptySet();

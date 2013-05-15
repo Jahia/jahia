@@ -41,8 +41,7 @@
 package org.jahia.bin.errors;
 
 import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Statistics;
-
+import net.sf.ehcache.statistics.StatisticsGateway;
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -57,7 +56,10 @@ import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.RequestLoadAverage;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.*;
@@ -73,9 +75,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ErrorFileDumper {
 
     public static final FastDateFormat DATE_FORMAT_DIRECTORY = FastDateFormat.getInstance("yyyy_MM_dd");
-    
+
     public static final FastDateFormat DATE_FORMAT_FILE = FastDateFormat.getInstance("yyyy_MM_dd-HH_mm_ss_SSS");
-    
+
     private static Throwable lastFileDumpedException = null;
     private static int lastFileDumpedExceptionOccurences = 0;
     private static long exceptionCount = 0L;
@@ -235,7 +237,7 @@ public class ErrorFileDumper {
         if (tasksSubmitted.get() < maximumTasksAllowed) {
             HttpRequestData requestData = null;
             if (request != null) {
-               requestData = new HttpRequestData(request);
+                requestData = new HttpRequestData(request);
             }
             Future<?> dumperFuture = executorService.submit(new FileDumperRunnable(t, requestData));
             tasksSubmitted.incrementAndGet();
@@ -255,6 +257,7 @@ public class ErrorFileDumper {
 
     /**
      * Sets the maximum number of parallel dumping tasks allowed to be queued. Default value is 10.
+     *
      * @param maximumTasksAllowed
      */
     public static void setMaximumTasksAllowed(int maximumTasksAllowed) {
@@ -263,6 +266,7 @@ public class ErrorFileDumper {
 
     /**
      * Retrieves the number of queued tasks for generating error dumps.
+     *
      * @return
      */
     public static int getTasksSubmitted() {
@@ -393,6 +397,7 @@ public class ErrorFileDumper {
 
     /**
      * Sets the boundary load value above which all reporting will automatically deactivate. The default value is 10.0
+     *
      * @param highLoadBoundary
      */
     public static void setHighLoadBoundary(double highLoadBoundary) {
@@ -421,7 +426,7 @@ public class ErrorFileDumper {
     public static void outputSystemInfo(PrintWriter strOut, boolean systemProperties, boolean jahiaSettings, boolean memory, boolean caches, boolean threads, boolean deadlocks, boolean loadAverage) {
         outputSystemInfo(strOut, systemProperties, false, jahiaSettings, memory, caches, threads, deadlocks, loadAverage);
     }
-    
+
     public static void outputSystemInfo(PrintWriter strOut, boolean systemProperties, boolean environmentVariables, boolean jahiaSettings, boolean memory, boolean caches, boolean threads, boolean deadlocks, boolean loadAverage) {
         if (systemProperties) {
             // now let's output the system properties.
@@ -437,7 +442,7 @@ public class ErrorFileDumper {
                 strOut.println("   " + curPropertyName + " : " + curPropertyValue);
             }
         }
-        
+
         if (environmentVariables) {
             // now let's output the environment variables.
             strOut.println();
@@ -452,10 +457,10 @@ public class ErrorFileDumper {
                 strOut.println("   " + curPropertyName + " : " + curPropertyValue);
             }
         }
-        
+
         if (jahiaSettings) {
             strOut.println();
-    
+
             if (SettingsBean.getInstance() != null) {
                 strOut.append("Server configuration (").append(Jahia.getFullProductVersion()).append("):");
                 strOut.println();
@@ -476,14 +481,14 @@ public class ErrorFileDumper {
                     }
                     if (curPropertyName.toLowerCase().indexOf("password") == -1
                             && (!"mail_server".equals(curPropertyName)
-                                    || !StringUtils.contains(curPropertyValue, "&password=") && !StringUtils
-                                        .contains(curPropertyValue, "?password="))) {
+                            || !StringUtils.contains(curPropertyValue, "&password=") && !StringUtils
+                            .contains(curPropertyValue, "?password="))) {
                         strOut.println("   " + curPropertyName + " = " + curPropertyValue);
                     }
                 }
             }
         }
-        
+
         if (memory) {
             long free = Runtime.getRuntime().freeMemory();
             long total = Runtime.getRuntime().totalMemory();
@@ -509,7 +514,7 @@ public class ErrorFileDumper {
             if (SpringContextSingleton.getInstance().isInitialized() && (ServicesRegistry.getInstance().getCacheService() != null)) {
                 strOut.println("Cache status:");
                 strOut.println("--------------");
-    
+
                 // non Ehcaches
                 SortedSet sortedCacheNames = new TreeSet(ServicesRegistry.getInstance().getCacheService().getNames());
                 Iterator cacheNameIte = sortedCacheNames.iterator();
@@ -527,7 +532,7 @@ public class ErrorFileDumper {
                     }
                 }
             }
-    
+
             // Ehcaches
             List<CacheManager> cacheManagers = CacheManager.ALL_CACHE_MANAGERS;
             for (CacheManager ehcacheManager : cacheManagers) {
@@ -536,20 +541,16 @@ public class ErrorFileDumper {
                 for (String ehcacheName : ehcacheNames) {
                     net.sf.ehcache.Cache ehcache = ehcacheManager.getCache(ehcacheName);
                     strOut.append(ehcacheName).append(": ");
-                    if (ehcache.isStatisticsEnabled()) {
-                        Statistics ehcacheStats = ehcache.getStatistics();
-                        String efficiencyStr = "0";
-                        if (ehcacheStats.getCacheHits() + ehcacheStats.getCacheMisses() > 0) {
-                            efficiencyStr = percentFormat.format(ehcacheStats.getCacheHits() * 100f / (ehcacheStats.getCacheHits() + ehcacheStats.getCacheMisses()));
-                        }
-                        strOut.append("size=" + ehcacheStats.getObjectCount()
-                                + ", successful hits=" + ehcacheStats.getCacheHits()
-                                + ", total hits="
-                                + (ehcacheStats.getCacheHits() + ehcacheStats.getCacheMisses())
-                                + ", efficiency=" + efficiencyStr + "%");
-                    } else {
-                        strOut.append("statistics disabled");
+                    StatisticsGateway ehcacheStats = ehcache.getStatistics();
+                    String efficiencyStr = "0";
+                    if (ehcacheStats.cacheHitCount() + ehcacheStats.cacheMissCount() > 0) {
+                        efficiencyStr = percentFormat.format(ehcacheStats.cacheHitCount() * 100f / (ehcacheStats.cacheHitCount() + ehcacheStats.cacheMissCount()));
                     }
+                    strOut.append("size=" + ehcacheStats.getSize()
+                            + ", successful hits=" + ehcacheStats.cacheHitCount()
+                            + ", total hits="
+                            + (ehcacheStats.cacheHitCount() + ehcacheStats.cacheMissCount())
+                            + ", efficiency=" + efficiencyStr + "%");
                     strOut.println();
                 }
             }
@@ -567,7 +568,8 @@ public class ErrorFileDumper {
         if (deadlocks) {
             strOut.println();
             strOut.println("Deadlock status:");
-            threadMonitor = threadMonitor != null ? threadMonitor : ThreadMonitor.getInstance();;
+            threadMonitor = threadMonitor != null ? threadMonitor : ThreadMonitor.getInstance();
+            ;
             String deadlock = threadMonitor.findDeadlock();
             strOut.println(deadlock != null ? deadlock : "none");
         }
@@ -586,10 +588,10 @@ public class ErrorFileDumper {
             }
             strOut.println();
         }
-        
+
         strOut.flush();
     }
-    
+
     /**
      * Converts an exception stack trace to a string, going doing into all
      * the embedded exceptions too to detail as much as possible the real

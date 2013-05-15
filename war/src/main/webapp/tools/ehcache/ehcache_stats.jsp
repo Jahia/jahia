@@ -2,11 +2,9 @@
 <%@ page import="net.sf.ehcache.Ehcache" %>
 <%@ page import="net.sf.ehcache.Element" %>
 <%@ page import="org.jahia.services.cache.CacheEntry" %>
-<%@ page import="org.jahia.services.render.filter.cache.DefaultCacheKeyGenerator" %>
-<%@ page import="org.jahia.services.render.filter.cache.ModuleCacheProvider" %>
-<%@ page import="java.util.Collections" %>
-<%@ page import="java.util.List" %>
+<%@ page import="org.jahia.services.cache.ehcache.EhCacheStatisticsWrapper" %>
 <%@ page import="org.jahia.services.render.filter.cache.AclCacheKeyPartGenerator" %>
+<%@ page import="org.jahia.services.render.filter.cache.ModuleCacheProvider" %>
 <%--
   Output cache monitoring JSP.
   User: rincevent
@@ -51,16 +49,14 @@
         if (pageContext.getRequest().getParameter("flush") != null) {
             System.out.println("Flushing cache content");
             cache.flush();
-            cache.clearStatistics();
             cache.removeAll();
             depCache.flush();
-            depCache.clearStatistics();
             depCache.removeAll();
             ((AclCacheKeyPartGenerator) cacheProvider.getKeyGenerator().getPartGenerator("acls")).flushUsersGroupsKey();
         }
         pageContext.setAttribute("cache", cache);
-        pageContext.setAttribute("stats", cache.getStatistics());
-        pageContext.setAttribute("depstats", depCache.getStatistics());
+        pageContext.setAttribute("stats", new EhCacheStatisticsWrapper(cache.getStatistics()));
+        pageContext.setAttribute("depstats", new EhCacheStatisticsWrapper(depCache.getStatistics()));
     %>
     <body id="dt_example">
     <a href="../index.jsp" title="back to the overview of caches">overview</a>&nbsp;
@@ -74,16 +70,16 @@
     </c:if>
     <div id="statistics">
         <p>Module statistics</p>
-        <span>Cache Hits: ${stats.cacheHits} (Cache hits in memory : ${stats.inMemoryHits}; Cache hits on disk : ${stats.onDiskHits})</span><br/>
-        <span>Cache Miss: ${stats.cacheMisses}</span><br/>
-        <span>Object counts: ${stats.objectCount}</span><br/>
+        <span>Cache Hits: ${stats.cacheHitCount} (Cache hits in memory : ${stats.localHeapHitCount}; Cache hits on disk : ${stats.localDiskHitCount})</span><br/>
+        <span>Cache Miss: ${stats.cacheMissCount}</span><br/>
+        <span>Object counts: ${stats.size}</span><br/>
         <span>Memory size: ${cache.memoryStoreSize}</span><br/>
         <span>Disk size: ${cache.diskStoreSize}</span><br/>
 
         <p>Dependencies statistics</p>
-        <span>Cache Hits: ${depstats.cacheHits} (Cache hits in memory : ${depstats.inMemoryHits}; Cache hits on disk : ${depstats.onDiskHits})</span><br/>
-        <span>Cache Miss: ${depstats.cacheMisses}</span><br/>
-        <span>Object counts: ${depstats.objectCount}</span><br/>
+        <span>Cache Hits: ${depstats.cacheHitCount} (Cache hits in memory : ${depstats.localHeapHitCount}; Cache hits on disk : ${depstats.localDiskHitCount})</span><br/>
+        <span>Cache Miss: ${depstats.cacheMissCount}</span><br/>
+        <span>Object counts: ${depstats.size}</span><br/>
     </div>
     </body>
     </html>

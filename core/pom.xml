@@ -38,7 +38,8 @@
     If you are unsure which license is appropriate for your use,
     please contact the sales department at sales@jahia.com.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
@@ -71,7 +72,7 @@
             <artifactId>jahia-commons</artifactId>
             <version>${jahia.commons.version}</version>
         </dependency>
-                
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -142,10 +143,10 @@
             <artifactId>commons-jexl</artifactId>
             <version>1.1</version>
             <exclusions>
-            	<exclusion>
-            		<artifactId>junit</artifactId>
-            		<groupId>junit</groupId>
-            	</exclusion>
+                <exclusion>
+                    <artifactId>junit</artifactId>
+                    <groupId>junit</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -162,7 +163,7 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math</artifactId>
             <version>2.2</version>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>commons-pool</groupId>
             <artifactId>commons-pool</artifactId>
@@ -231,10 +232,10 @@
             <artifactId>drools-compiler</artifactId>
             <version>4.0.7</version>
             <exclusions>
-            	<exclusion>
-            		<artifactId>xml-apis</artifactId>
-            		<groupId>xml-apis</groupId>
-            	</exclusion>
+                <exclusion>
+                    <artifactId>xml-apis</artifactId>
+                    <groupId>xml-apis</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <!--Lucene dependencies-->
@@ -268,25 +269,25 @@
             <artifactId>solr-core</artifactId>
             <version>3.1.0</version>
             <exclusions>
-            	<exclusion>
+                <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-jdk14</artifactId>
-            	</exclusion>
-            	<exclusion>
-            	    <artifactId>junit</artifactId>
-            	    <groupId>junit</groupId>
-            	</exclusion>
-            </exclusions>            
-        </dependency>        
+                </exclusion>
+                <exclusion>
+                    <artifactId>junit</artifactId>
+                    <groupId>junit</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>1.6.1</version>
             <exclusions>
-            	<exclusion>
-            		<artifactId>xml-apis</artifactId>
-            		<groupId>xml-apis</groupId>
-            	</exclusion>
+                <exclusion>
+                    <artifactId>xml-apis</artifactId>
+                    <groupId>xml-apis</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -312,7 +313,7 @@
             <version>3.6.0</version>
             <classifier>jdk5</classifier>
         </dependency>
-        
+
         <!--Hibernate dependencies-->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -324,11 +325,11 @@
             <artifactId>hibernate-validator</artifactId>
             <version>4.3.0.Final</version>
         </dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>3.4.0.GA</version>
-		</dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>3.4.0.GA</version>
+        </dependency>
 
         <!-- Jackrabbit dependencies -->
         <dependency>
@@ -381,10 +382,10 @@
             <artifactId>jackrabbit-webapp</artifactId>
             <version>${jackrabbit.version}</version>
             <exclusions>
-            	<exclusion>
-            		<groupId>ch.qos.logback</groupId>
-            		<artifactId>logback-classic</artifactId>
-            	</exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>log4j-over-slf4j</artifactId>
@@ -427,8 +428,8 @@
                     <artifactId>jdom</artifactId>
                 </exclusion>
                 <exclusion>
-                	<artifactId>xml-apis</artifactId>
-                	<groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                    <groupId>xml-apis</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -454,8 +455,8 @@
                     <artifactId>gnujaxp</artifactId>
                 </exclusion>
                 <exclusion>
-                	<artifactId>junit</artifactId>
-                	<groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                    <groupId>junit</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -491,7 +492,7 @@
             <artifactId>quartz</artifactId>
             <version>1.8.6</version>
         </dependency>
-        
+
         <dependency>
             <groupId>jsptags</groupId>
             <artifactId>pager-taglib</artifactId>
@@ -580,21 +581,21 @@
             <artifactId>bsf-utils</artifactId>
             <version>3.1</version>
             <exclusions>
-            	<exclusion>
-            		<groupId>org.apache.bsf</groupId>
-                    <artifactId>bsf-engines</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>xmlbeans</groupId>
-            		<artifactId>xbean</artifactId>
-            	</exclusion>
                 <exclusion>
-                  <groupId>xml-apis</groupId>
-                  <artifactId>xml-apis</artifactId>
+                    <groupId>org.apache.bsf</groupId>
+                    <artifactId>bsf-engines</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xmlbeans</groupId>
+                    <artifactId>xbean</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
-        
+
         <!-- Embedded Maven and dependencies -->
         <dependency>
             <groupId>org.apache.maven</groupId>
@@ -622,13 +623,13 @@
             </exclusions>
         </dependency>
         <!-- end of Embedded Maven and dependencies -->
-        
+
         <dependency>
             <groupId>com.googlecode.java-diff-utils</groupId>
             <artifactId>diffutils</artifactId>
             <version>1.3.0-20120702</version>
         </dependency>
-        
+
         <!-- Scripting engines  -->
         <dependency>
             <groupId>com.sun.script.freemarker</groupId>
@@ -671,10 +672,10 @@
             <artifactId>xalan</artifactId>
             <version>2.7.1</version>
             <exclusions>
-            	<exclusion>
-            		<artifactId>xml-apis</artifactId>
-            		<groupId>xml-apis</groupId>
-            	</exclusion>
+                <exclusion>
+                    <artifactId>xml-apis</artifactId>
+                    <groupId>xml-apis</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -753,11 +754,11 @@
             </exclusions>
         </dependency>
 
-		<dependency>
-			<groupId>asm</groupId>
-			<artifactId>asm</artifactId>
-			<version>3.2</version>
-		</dependency>
+        <dependency>
+            <groupId>asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>3.2</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.tika</groupId>
@@ -770,18 +771,18 @@
             <artifactId>tika-parsers</artifactId>
             <version>${apache.tika.version}</version>
             <exclusions>
-            	<exclusion>
-		            <groupId>asm</groupId>
-		            <artifactId>asm</artifactId>
-            	</exclusion>
-            	<exclusion>
-		            <groupId>log4j</groupId>
-		            <artifactId>log4j</artifactId>
-            	</exclusion>
-            	<exclusion>
-            	    <artifactId>pdfbox</artifactId>
-            	    <groupId>org.apache.pdfbox</groupId>
-            	</exclusion>
+                <exclusion>
+                    <groupId>asm</groupId>
+                    <artifactId>asm</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>pdfbox</artifactId>
+                    <groupId>org.apache.pdfbox</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <!-- Override the pdfbox dependency from tika-parsers to use a newer one -->
@@ -793,8 +794,8 @@
 
         <dependency>
             <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache-core</artifactId>
-            <version>2.5.2</version>
+            <artifactId>ehcache</artifactId>
+            <version>2.7.0</version>
         </dependency>
 
         <dependency>
@@ -844,10 +845,10 @@
             <artifactId>rome-fetcher</artifactId>
             <version>1.0</version>
             <exclusions>
-            	<exclusion>
+                <exclusion>
                     <groupId>jdom</groupId>
-            		<artifactId>jdom</artifactId>
-            	</exclusion>
+                    <artifactId>jdom</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -901,22 +902,22 @@
             <artifactId>velocity-tools</artifactId>
             <version>2.0</version>
             <exclusions>
-            	<exclusion>
-            		<groupId>org.apache.struts</groupId>
+                <exclusion>
+                    <groupId>org.apache.struts</groupId>
                     <artifactId>struts-taglib</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>org.apache.struts</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.struts</groupId>
                     <artifactId>struts-core</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>org.apache.struts</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.struts</groupId>
                     <artifactId>struts-tiles</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>sslext</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>sslext</groupId>
                     <artifactId>sslext</artifactId>
-            	</exclusion>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -933,10 +934,10 @@
             <artifactId>jbpm-api</artifactId>
             <version>${jbpm.version}</version>
             <exclusions>
-            	<exclusion>
-            		<groupId>jboss</groupId>
-					<artifactId>jboss-j2ee</artifactId>
-            	</exclusion>
+                <exclusion>
+                    <groupId>jboss</groupId>
+                    <artifactId>jboss-j2ee</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -970,7 +971,7 @@
                 </exclusion>
                 <exclusion>
                     <groupId>org.hibernate</groupId>
-                	<artifactId>hibernate-core</artifactId>
+                    <artifactId>hibernate-core</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -979,14 +980,14 @@
             <artifactId>jbpm-db</artifactId>
             <version>${jbpm.version}</version>
             <exclusions>
-            	<exclusion>
-            		<groupId>hsqldb</groupId>
+                <exclusion>
+                    <groupId>hsqldb</groupId>
                     <artifactId>hsqldb</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<artifactId>jbpm-jpdl</artifactId>
-            		<groupId>org.jbpm.jbpm4</groupId>
-            	</exclusion>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jbpm-jpdl</artifactId>
+                    <groupId>org.jbpm.jbpm4</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -994,50 +995,50 @@
             <artifactId>jbpm-jpdl</artifactId>
             <version>${jbpm.version}</version>
             <exclusions>
-            	<exclusion>
-            		<artifactId>junit</artifactId>
-            		<groupId>junit</groupId>
-            	</exclusion>
+                <exclusion>
+                    <artifactId>junit</artifactId>
+                    <groupId>junit</groupId>
+                </exclusion>
             </exclusions>
-        </dependency>        
-        
+        </dependency>
+
         <dependency>
             <groupId>jboss</groupId>
             <artifactId>jboss-j2ee</artifactId>
             <version>4.2.3.GA</version>
         </dependency>
-        
+
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>1.0.0.GA</version>
         </dependency>
-                
+
         <dependency>
             <groupId>org.outerj.daisy</groupId>
             <artifactId>daisydiff</artifactId>
             <classifier>nodeps</classifier>
             <version>1.1</version>
-        </dependency>        
+        </dependency>
         <dependency>
             <!-- daisydiff dependency -->
             <groupId>org.eclipse.core.runtime</groupId>
             <artifactId>eclipse-core-runtime</artifactId>
             <version>20070801</version>
         </dependency>
-                
+
         <dependency>
             <groupId>com.google.code.kaptcha</groupId>
             <artifactId>kaptcha</artifactId>
             <version>2.3</version>
         </dependency>
-        
+
         <dependency>
-        	<groupId>org.artofsolving.jodconverter</groupId>
-        	<artifactId>jodconverter-core</artifactId>
-        	<version>3.0-beta-4-jahia3</version>
+            <groupId>org.artofsolving.jodconverter</groupId>
+            <artifactId>jodconverter-core</artifactId>
+            <version>3.0-beta-4-jahia3</version>
         </dependency>
-        
+
         <!-- Apache Shiro -->
         <dependency>
             <groupId>org.apache.shiro</groupId>
@@ -1049,19 +1050,19 @@
                     <artifactId>commons-beanutils</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-spring</artifactId>
             <version>1.1.0</version>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-web</artifactId>
             <version>1.1.0</version>
-        </dependency>        
+        </dependency>
         <!-- end of Apache Shiro -->
-        
+
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
@@ -1078,11 +1079,11 @@
             <version>2.2.1</version>
         </dependency>
         <dependency>
-           <groupId>net.sf.opencsv</groupId>
-           <artifactId>opencsv</artifactId>
-           <version>2.3</version>
+            <groupId>net.sf.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>2.3</version>
         </dependency>
-        
+
         <!-- Apache Camel dependencies -->
         <dependency>
             <groupId>org.apache.camel</groupId>
@@ -1099,14 +1100,14 @@
             <artifactId>camel-rss</artifactId>
             <version>${camel.version}</version>
             <exclusions>
-            	<exclusion>
+                <exclusion>
                     <groupId>org.apache.geronimo.specs</groupId>
-            		<artifactId>geronimo-activation_1.0.2_spec</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<artifactId>xml-apis</artifactId>
-            		<groupId>xml-apis</groupId>
-            	</exclusion>
+                    <artifactId>geronimo-activation_1.0.2_spec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>xml-apis</artifactId>
+                    <groupId>xml-apis</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -1125,10 +1126,10 @@
             <artifactId>camel-script</artifactId>
             <version>${camel.version}</version>
             <exclusions>
-            	<exclusion>
-            		<groupId>javax.script</groupId>
-            		<artifactId>script-api</artifactId>
-            	</exclusion>
+                <exclusion>
+                    <groupId>javax.script</groupId>
+                    <artifactId>script-api</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <!-- End Apache Camel dependencies -->
@@ -1150,15 +1151,15 @@
             <version>${felix.framework.version}</version>
         </dependency>
         <!-- End of OSGi dependencies -->
-        
+
         <dependency>
-        	<!-- We use it for bi-derectional encryption of passwords for remote publication -->
-        	<groupId>org.jasypt</groupId>
-        	<artifactId>jasypt</artifactId>
-        	<version>1.9.0</version>
-        	<classifier>lite</classifier>
+            <!-- We use it for bi-derectional encryption of passwords for remote publication -->
+            <groupId>org.jasypt</groupId>
+            <artifactId>jasypt</artifactId>
+            <version>1.9.0</version>
+            <classifier>lite</classifier>
         </dependency>
-        
+
         <dependency>
             <groupId>org.tuckey</groupId>
             <artifactId>urlrewritefilter</artifactId>
@@ -1257,7 +1258,8 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <echo message="${buildNumber}" file="${project.build.directory}/classes/META-INF/jahia-impl-marker.txt" />
+                                <echo message="${buildNumber}"
+                                      file="${project.build.directory}/classes/META-INF/jahia-impl-marker.txt"/>
                             </tasks>
                         </configuration>
                     </execution>
@@ -1308,21 +1310,21 @@
             </plugin>
         </plugins>
     </reporting>
-    
+
     <profiles>
-    	<profile>
+        <profile>
             <id>unit-tests</id>
             <build>
                 <plugins>
                     <plugin>
-		                <groupId>org.apache.maven.plugins</groupId>
-		                <artifactId>maven-surefire-plugin</artifactId>
-		                <version>${surefire.plugin.version}</version>
-		                <configuration>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${surefire.plugin.version}</version>
+                        <configuration>
                             <argLine>-Xmx1024m</argLine>
-		                    <skipTests>false</skipTests>
-		                </configuration>
-            		</plugin>
+                            <skipTests>false</skipTests>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
         </profile>

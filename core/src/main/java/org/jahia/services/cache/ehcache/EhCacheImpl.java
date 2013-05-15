@@ -40,30 +40,25 @@
 
 package org.jahia.services.cache.ehcache;
 
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
 import org.jahia.services.cache.CacheImplementation;
 import org.jahia.services.cache.CacheListener;
 import org.jahia.services.cache.GroupCacheKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * Ehcache based caching implementation.
- * 
+ *
  * @author Serge Huber
  */
 public class EhCacheImpl implements CacheImplementation {
 
-    final private static Logger logger = LoggerFactory.getLogger (EhCacheImpl.class);
+    final private static Logger logger = LoggerFactory.getLogger(EhCacheImpl.class);
 
     private String name;
     private Cache ehCache;
@@ -71,22 +66,20 @@ public class EhCacheImpl implements CacheImplementation {
     private int groupsSizeLimit;
 
     protected EhCacheImpl(String name, CacheManager ehCacheManager, EhCacheProvider provider) {
-    	super();
+        super();
         this.name = name;
         this.groupsSizeLimit = provider.getGroupsSizeLimit();
-        
+
         if (ehCacheManager.getCache(name) == null) {
             ehCacheManager.addCache(name);
         }
         ehCache = ehCacheManager.getCache(name);
-        ehCache.setStatisticsEnabled(provider.isStatisticsEnabled());
-        
+
         if (groupsSizeLimit > 0) {
-	        if (ehCacheManager.getCache(name + "Groups") == null) {
-	            ehCacheManager.addCache(name + "Groups");
-	        }
-	        ehCacheGroups = ehCacheManager.getCache(name + "Groups");
-	        ehCacheGroups.setStatisticsEnabled(provider.isStatisticsEnabled());
+            if (ehCacheManager.getCache(name + "Groups") == null) {
+                ehCacheManager.addCache(name + "Groups");
+            }
+            ehCacheGroups = ehCacheManager.getCache(name + "Groups");
         }
     }
 
@@ -98,7 +91,7 @@ public class EhCacheImpl implements CacheImplementation {
 
     public Object get(Object key) {
         Element element = ehCache.get(key);
-        if (element != null) {    
+        if (element != null) {
             return element.getValue();
         } else {
             return null;
@@ -124,9 +117,9 @@ public class EhCacheImpl implements CacheImplementation {
     }
 
     public long getGroupsKeysTotal() {
-    	if (ehCacheGroups == null) {
-    		return 0;
-    	}
+        if (ehCacheGroups == null) {
+            return 0;
+        }
         long totalSize = 0;
         Iterator groupIterator = ehCacheGroups.getKeysWithExpiryCheck().iterator();
         while (groupIterator.hasNext()) {
@@ -134,7 +127,7 @@ public class EhCacheImpl implements CacheImplementation {
             Element keySetElement = ehCacheGroups.get(key);
             if (keySetElement == null) continue;
             Set keySet = (Set) keySetElement.getValue();
-            totalSize += keySet.size(); 
+            totalSize += keySet.size();
         }
         return totalSize;
     }
@@ -142,7 +135,7 @@ public class EhCacheImpl implements CacheImplementation {
     public void flushAll(boolean propagate) {
         ehCache.removeAll();
         if (ehCacheGroups != null) {
-        	ehCacheGroups.removeAll();
+            ehCacheGroups.removeAll();
         }
     }
 
@@ -165,11 +158,11 @@ public class EhCacheImpl implements CacheImplementation {
     }
 
     public void flushGroup(String groupName) {
-    	if (ehCacheGroups == null) {
-    		return;
-    	}
-        
-    	Set keysToFlush = null;
+        if (ehCacheGroups == null) {
+            return;
+        }
+
+        Set keysToFlush = null;
         Element element = ehCacheGroups.get(groupName);
         if (element == null) {
             return;
@@ -186,9 +179,9 @@ public class EhCacheImpl implements CacheImplementation {
     }
 
     public Set getGroupKeys(String groupName) {
-    	if (ehCacheGroups == null) {
-    		return Collections.emptySet();
-    	}
+        if (ehCacheGroups == null) {
+            return Collections.emptySet();
+        }
         Set keysToFlush = null;
         Element element = ehCacheGroups.get(groupName);
         if (element == null) {
@@ -205,9 +198,9 @@ public class EhCacheImpl implements CacheImplementation {
     }
 
     protected void flushKeys(Set keysToFlush) {
-        if(keysToFlush.contains("ALL")) {
+        if (keysToFlush.contains("ALL")) {
             flushAll(true);
-            logger.warn("Due to presence of big groups we are flushing the whole cache "+ehCache.getName());
+            logger.warn("Due to presence of big groups we are flushing the whole cache " + ehCache.getName());
         } else {
             Iterator keyToFlushIter = keysToFlush.iterator();
             while (keyToFlushIter.hasNext()) {
@@ -232,10 +225,10 @@ public class EhCacheImpl implements CacheImplementation {
     }
 
     private void addToGroup(String groupName, Object key) {
-    	if (ehCacheGroups == null) {
-    		return;
-    	}
-        Element element =  ehCacheGroups.get(groupName);
+        if (ehCacheGroups == null) {
+            return;
+        }
+        Element element = ehCacheGroups.get(groupName);
         Set currentKeys = null;
         if (element == null) {
             currentKeys = new HashSet();
@@ -246,13 +239,13 @@ public class EhCacheImpl implements CacheImplementation {
             currentKeys = new HashSet();
         }
 
-        if(!currentKeys.contains("ALL") && currentKeys.size()<= groupsSizeLimit)
-        currentKeys.add(key);
-        if(currentKeys.size()> groupsSizeLimit) {
+        if (!currentKeys.contains("ALL") && currentKeys.size() <= groupsSizeLimit)
+            currentKeys.add(key);
+        if (currentKeys.size() > groupsSizeLimit) {
             currentKeys = new HashSet();
             currentKeys.add("ALL");
-            logger.warn("Number of keys for group "+groupName+"inside cache "+ehCache.getName()+" is exceeding "+
-                        groupsSizeLimit +" entries so we are putting only one entries to tell jahia to flush all this cache when needed");
+            logger.warn("Number of keys for group " + groupName + "inside cache " + ehCache.getName() + " is exceeding " +
+                    groupsSizeLimit + " entries so we are putting only one entries to tell jahia to flush all this cache when needed");
         }
         element = new Element(groupName, currentKeys);
         ehCacheGroups.put(element);
@@ -262,7 +255,7 @@ public class EhCacheImpl implements CacheImplementation {
         Element element = ehCacheGroups.get(groupName);
         Set currentKeys = null;
         if (element != null) {
-            currentKeys = (Set) element.getValue();            
+            currentKeys = (Set) element.getValue();
         }
         if (currentKeys == null) {
             return;
@@ -273,7 +266,7 @@ public class EhCacheImpl implements CacheImplementation {
     private void removeFromAllGroups(Object key) {
         if (key.getClass() == GroupCacheKey.class) {
             GroupCacheKey curGroupCacheKey = (GroupCacheKey) key;
-            synchronized(curGroupCacheKey) {
+            synchronized (curGroupCacheKey) {
                 Iterator groupIter = curGroupCacheKey.getGroups().iterator();
                 while (groupIter.hasNext()) {
                     String curGroup = (String) groupIter.next();
@@ -294,7 +287,7 @@ public class EhCacheImpl implements CacheImplementation {
                 return true;
             }
         } catch (Exception e) {
-            logger.warn("Cannot remove cache entry " + key + " from cache " + toString() , e);
+            logger.warn("Cannot remove cache entry " + key + " from cache " + toString(), e);
         }
         return false;
     }
@@ -302,7 +295,7 @@ public class EhCacheImpl implements CacheImplementation {
     public boolean isEmpty() {
         return ehCache.getSize() == 0;
     }
-    
+
     public Collection<Object> getKeys() {
         return ehCache.getKeys();
     }

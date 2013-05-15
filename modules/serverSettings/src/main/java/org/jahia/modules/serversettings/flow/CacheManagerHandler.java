@@ -42,7 +42,7 @@ package org.jahia.modules.serversettings.flow;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Statistics;
+import net.sf.ehcache.statistics.StatisticsGateway;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.modules.serversettings.cache.CacheManagement;
 import org.jahia.services.cache.CacheHelper;
@@ -53,6 +53,7 @@ import java.util.*;
 
 /**
  * Init class for cache management
+ *
  * @author david
  */
 public class CacheManagerHandler implements Serializable {
@@ -75,6 +76,7 @@ public class CacheManagerHandler implements Serializable {
 
     /**
      * Method called when the form is submitted
+     *
      * @return must return a string to process the form
      */
     public String performAction() {
@@ -106,8 +108,6 @@ public class CacheManagerHandler implements Serializable {
                 if (cache == null) {
                     continue;
                 }
-                cache.setStatisticsEnabled(enable);
-                cache.clearStatistics();
             }
         }
         computeCacheMap(cacheManagement.isShowBytes());
@@ -144,21 +144,21 @@ public class CacheManagerHandler implements Serializable {
 
             for (String name : names) {
                 Cache cache = manager.getCache(name);
-                Statistics stats = cache.getStatistics();
+                StatisticsGateway stats = cache.getStatistics();
                 SerializedCacheManager serializedCacheManager = new SerializedCacheManager();
                 serializedCacheManager.setConfig(manager.getActiveConfigurationText(name));
                 serializedCacheManager.setName(name);
-                serializedCacheManager.setCacheHits(stats.getCacheHits());
-                serializedCacheManager.setCacheMisses(stats.getCacheMisses());
+                serializedCacheManager.setCacheHits(stats.cacheHitCount());
+                serializedCacheManager.setCacheMisses(stats.cacheMissCount());
                 if (doDiskSize) {
                     serializedCacheManager.setCalculateInMemorySize(cache.getMemoryStoreSize());
                     serializedCacheManager.setCalculateOnDiskSize(cache.calculateOnDiskSize());
                 }
-                serializedCacheManager.setMemoryStoreObjectCount(stats.getMemoryStoreObjectCount());
-                serializedCacheManager.setObjectCount(stats.getObjectCount());
-                serializedCacheManager.setDiskStoreObjectCount(stats.getDiskStoreObjectCount());
+                serializedCacheManager.setMemoryStoreObjectCount(stats.getLocalHeapSize());
+                serializedCacheManager.setObjectCount(stats.getSize());
+                serializedCacheManager.setDiskStoreObjectCount(stats.getLocalDiskSize());
                 serializedCacheManager.setOverflowToDisk(cache.getCacheConfiguration().isOverflowToDisk());
-                serializedCacheManager.setStatisticsEnabled(cache.isStatisticsEnabled());
+                serializedCacheManager.setStatisticsEnabled(true);
                 cacheList.add(serializedCacheManager);
                 sizeDisk += manager.getCache(name).calculateOnDiskSize();
                 sizeMemory += manager.getCache(name).calculateInMemorySize();

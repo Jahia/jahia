@@ -54,6 +54,10 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Action item to create a new templates set
@@ -88,6 +92,9 @@ public class CommitModuleActionItem extends BaseActionItem {
                     public void onSuccess(Object result) {
                         linker.loaded();
                         Info.display(Messages.get("label.information", "Information"), Messages.get("message.moduleSave", "Module saved"));
+                        Map<String, Object> data = new HashMap<String, Object>();
+                        data.put("event","commit");
+                        linker.refresh(data);
                     }
 
                     public void onApplicationFailure(Throwable caught) {

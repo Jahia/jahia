@@ -167,6 +167,9 @@ public class ModulesTabItem extends BrowseTabItem {
                 return true;
             }
         }
+        if (data.containsKey("event") && "commit".equals(data.get("event"))) {
+            return true;
+        }
         return super.needRefresh(data);
     }
 

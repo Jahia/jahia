@@ -1021,7 +1021,7 @@
                                  jcr:mixinTypes="mix:title"
                                  jcr:primaryType="jnt:translation"
                                  jcr:title="baseEmpty"/>
-                        <viewContent j:applyOn="jnt:file"
+                        <viewContent j:applyOn="jnt:file jnt:nodeType"
                             j:defaultTemplate="true"
                             j:hiddenTemplate="true"
                             j:invertCondition="false"

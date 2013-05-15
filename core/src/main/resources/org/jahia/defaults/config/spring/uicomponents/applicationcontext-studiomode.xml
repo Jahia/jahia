@@ -36,6 +36,7 @@
                 <value>jnt:modules</value>
                 <value>jnt:virtualsite</value>
                 <value>jnt:file</value>
+                <value>jnt:nodeType</value>
             </set>
         </property>
 

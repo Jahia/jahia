@@ -1,7 +1,5 @@
-<%@page language="java" contentType="text/html; charset=UTF-8"
-%><?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%@page language="java" contentType="text/html; charset=UTF-8"%>
+<!DOCTYPE html>
 <%@page import="java.io.PrintWriter,java.util.Date,org.jahia.bin.errors.ErrorFileDumper"%>
 <%@ page import="org.jahia.settings.SettingsBean" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal"%>
@@ -10,35 +8,53 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <utility:setBundle basename="JahiaInternalResources"/>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <% pageContext.setAttribute("devMode", Boolean.valueOf(SettingsBean.getInstance().isDevelopmentMode())); %>
 <head>
+    <meta charset="utf-8">
     <meta name="robots" content="noindex, nofollow"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-1.1.css" type="text/css"/>
     <title><fmt:message key="label.error"/></title>
 </head>
 <body class="login" onLoad="if (history.length > 1) { document.getElementById('backLink').style.display=''; }">
-    <div id="adminLogin">
-    <h2 class="loginlogo"></h2>
-            <br class="clearFloat" />
-            <h3 class="loginIcon"><fmt:message key="label.error"/></h3>
-        <p><fmt:message key="label.error.500.description"/></p>
-        <p id="backLink" style="display:none"><fmt:message key="label.error.backLink.1"/>&nbsp;<a href="javascript:history.back()"><fmt:message key="label.error.backLink.2"/></a>&nbsp;<fmt:message key="label.error.backLink.3"/></p>
-        <p><fmt:message key="label.error.homeLink"/>:&nbsp;<a href="<c:url value='/'/>"><fmt:message key="label.homepage"/></a></p>
-            <br class="clearFloat" />
+<div class="row-fluid login-wrapper">
+    <img class="logo" alt="jahia" src="${pageContext.request.contextPath}/css/images/jahia-logo-white.png">
+    <div class="span4 box error-box">
+        <div class="content-wrap">
+            <h1 class="message-big"><fmt:message key="label.error"/></h1>
+            <p><fmt:message key="label.error.500.description"/></p>
+            <p id="backLink" style="display:none">
+                <a class="btn btn-block" href="javascript:history.back()">
+                    <i class="icon-chevron-left"></i>
+                    &nbsp;<fmt:message key="label.error.backLink.1"/>
+                    &nbsp;<fmt:message key="label.error.backLink.2"/>
+                    &nbsp;<fmt:message key="label.error.backLink.3"/>
+                </a>
+            </p>
+            <p><fmt:message key="label.error.homeLink"/></p>
+            <a class="btn btn-block btn-primary" href="<c:url value='/'/>">
+                <i class="icon-home icon-white"></i>
+                &nbsp;<fmt:message key="label.homepage"/>
+            </a>
+        </div>
     </div>
-<c:if test="${devMode && (not empty requestScope['org.jahia.exception'] || not empty requestScope['javax.servlet.error.exception'])}">
-<div style="display:none">
-<pre>
-Error: <c:out value="${not empty requestScope['org.jahia.exception'] ? requestScope['org.jahia.exception'].message : requestScope['javax.servlet.error.exception'].message}"/>
-
-<c:out value="${not empty requestScope['org.jahia.exception.trace'] ? requestScope['org.jahia.exception.trace'] : requestScope['javax.servlet.error.exception']}"/>
-</pre>
-<strong>System Status Information at <%= new Date() %></strong>
-<pre>
-    <% ErrorFileDumper.outputSystemInfo(new PrintWriter(pageContext.getOut())); %>
-</pre>
 </div>
+
+<c:if test="${devMode && (not empty requestScope['org.jahia.exception'] || not empty requestScope['javax.servlet.error.exception'])}">
+    <div class="row-fluid dev-mode">
+        <div class="span10 offset1">
+            <div style="display:none">
+                <pre class="pre-dev">Error: <c:out value="${not empty requestScope['org.jahia.exception'] ? requestScope['org.jahia.exception'].message : requestScope['javax.servlet.error.exception'].message}"/>
+
+                <c:out value="${not empty requestScope['org.jahia.exception.trace'] ? requestScope['org.jahia.exception.trace'] : requestScope['javax.servlet.error.exception']}"/>
+                </pre>
+                <strong>System Status Information at <%= new Date() %></strong>
+                <pre class="pre-dev">
+                    <% ErrorFileDumper.outputSystemInfo(new PrintWriter(pageContext.getOut())); %>
+                </pre>
+            </div>
+        </div>
+    </div>
 </c:if>
 </body>
 </html>

@@ -1,28 +1,39 @@
-<%@page language="java" contentType="text/html; charset=UTF-8"
-%><?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%@page language="java" contentType="text/html; charset=UTF-8"%>
+<!DOCTYPE html>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal"%>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <utility:setBundle basename="JahiaInternalResources"/>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
+    <meta charset="utf-8">
     <meta name="robots" content="noindex, nofollow"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-1.1.css" type="text/css"/>
     <title><fmt:message key="label.error.404.title"/></title>
 </head>
 <body class="login" onLoad="if (history.length > 1) { document.getElementById('backLink').style.display=''; }">
-    <div id="adminLogin">
-    <h2 class="loginlogo"></h2>
-            <br class="clearFloat" />
-            <h3 class="loginIcon"><fmt:message key="label.error.404.title"/></h3>
-        <p><fmt:message key="label.error.404.description"/></p>
-        <p id="backLink" style="display:none"><fmt:message key="label.error.backLink.1"/>&nbsp;<a href="javascript:history.back()"><fmt:message key="label.error.backLink.2"/></a>&nbsp;<fmt:message key="label.error.backLink.3"/></p>
-        <p><fmt:message key="label.error.homeLink"/>:&nbsp;<a href="<c:url value='/'/>"><fmt:message key="label.homepage"/></a></p>
-            <br class="clearFloat" />
+    <div class="row-fluid login-wrapper">
+        <img class="logo" alt="jahia" src="${pageContext.request.contextPath}/css/images/jahia-logo-white.png">
+        <div class="span4 box error-box">
+            <div class="content-wrap">
+                <h1 class="message-big"><fmt:message key="label.error.404.title"/></h1>
+                <p><fmt:message key="label.error.404.description"/></p>
+                <p id="backLink" style="display:none">
+                    <a class="btn btn-block" href="javascript:history.back()">
+                        <i class="icon-chevron-left"></i>
+                        &nbsp;<fmt:message key="label.error.backLink.1"/>
+                        &nbsp;<fmt:message key="label.error.backLink.2"/>
+                        &nbsp;<fmt:message key="label.error.backLink.3"/>
+                    </a>
+                </p>
+                <p><fmt:message key="label.error.homeLink"/></p>
+                <a class="btn btn-block btn-primary" href="<c:url value='/'/>">
+                    <i class="icon-home icon-white"></i>
+                    &nbsp;<fmt:message key="label.homepage"/>
+                </a>
+            </div>
+        </div>
     </div>
 </body>
-</html>

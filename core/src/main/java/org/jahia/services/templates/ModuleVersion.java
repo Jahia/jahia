@@ -95,7 +95,9 @@ public class ModuleVersion implements Comparable<ModuleVersion> {
             int c = orderedVersionNumbers.get(i).compareTo(o.getOrderedVersionNumbers().get(i));
             if (c != 0) return c;
         }
-        return new Integer(orderedVersionNumbers.size()).compareTo(o.orderedVersionNumbers.size());
+        int c = new Integer(orderedVersionNumbers.size()).compareTo(o.orderedVersionNumbers.size());
+        if (c != 0) return c;
+        return versionString.compareTo(o.versionString);
     }
 
     @Override

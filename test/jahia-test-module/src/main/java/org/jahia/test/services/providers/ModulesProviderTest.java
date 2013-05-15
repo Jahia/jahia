@@ -69,7 +69,7 @@ import static org.junit.Assert.*;
  */
 public class ModulesProviderTest {
     private static transient Logger logger = Logger.getLogger(ModulesProviderTest.class);
-    
+
     private Node root;
     private JahiaTemplatesPackage dummyPackage;
     private JahiaTemplateManagerService templateManagerService;
@@ -306,11 +306,11 @@ public class ModulesProviderTest {
                 String line = null;
                 int n = 1;
                 while ((line = input.readLine()) != null){
-                    if (n == 30) {
+                    if (n == 27) {
                         assertEquals("[jnt:testComponent4] > jnt:content, jmix:tagged, jmix:structuredContent orderable noquery", line);
-                    } else if (n == 31) {
+                    } else if (n == 28) {
                         assertEquals(" - property1 (string) mandatory", line);
-                    } else if (n == 32) {
+                    } else if (n == 29) {
                         assertEquals(" - property2 (long) protected", line);
                     }
                     n++;
@@ -347,9 +347,9 @@ public class ModulesProviderTest {
                 String line = null;
                 int n = 1;
                 while ((line = input.readLine()) != null){
-                    if (n == 31) {
+                    if (n == 28) {
                         assertEquals(" - property2 (long) protected", line);
-                    } else if (n == 32) {
+                    } else if (n == 29) {
                         assertEquals(" - property1 (string) mandatory", line);
                     }
                     n++;
@@ -357,6 +357,12 @@ public class ModulesProviderTest {
             } finally {
                 input.close();
             }
+
+            /**
+             * move
+             */
+
+            s = JCRSessionFactory.getInstance().getCurrentUserSession();
 
             s.move("/modules/" + dummyPackage.getRootFolderWithVersion() + "/sources/META-INF/definitions.cnd/jnt:testComponent4",
                    "/modules/" + dummyPackage.getRootFolderWithVersion() + "/sources/META-INF/definitions.cnd/jnt:testRenamedComponent");
@@ -367,7 +373,7 @@ public class ModulesProviderTest {
                 String line = null;
                 int n = 1;
                 while ((line = input.readLine()) != null){
-                    if (n == 30) {
+                    if (n == 27) {
                         assertEquals("[jnt:testRenamedComponent] > jnt:content, jmix:tagged, jmix:structuredContent orderable noquery", line);
                     }
                     n++;
@@ -377,6 +383,38 @@ public class ModulesProviderTest {
             }
             root = s.getNode("/modules/" + dummyPackage.getRootFolderWithVersion() + "/sources");
             assertTrue(root.hasNode("META-INF/definitions.cnd/jnt:testRenamedComponent"));
+            s.save();
+            s.logout();
+
+            /**
+             * ordering
+             */
+
+            s = JCRSessionFactory.getInstance().getCurrentUserSession();
+            root = s.getNode("/modules/" + dummyPackage.getRootFolderWithVersion() + "/sources/META-INF/definitions.cnd/jnt:testRenamedComponent");
+            root.orderBefore("property2","property1");
+            s.save();
+            s.logout();
+            input =  new BufferedReader(new FileReader(cndPath));
+            try {
+                String line = null;
+                int n = 1;
+                while ((line = input.readLine()) != null){
+                    if (n == 28) {
+                        assertEquals(" - property2 (long) protected", line);
+                    } else if (n == 29) {
+                        assertEquals(" - property1 (string) mandatory", line);
+                    }
+                    n++;
+                }
+            } finally {
+                input.close();
+            }
+
+
+            /**
+             * cleanup
+             */
 
             s = JCRSessionFactory.getInstance().getCurrentUserSession();
             root = s.getNode("/modules/" + dummyPackage.getRootFolderWithVersion() + "/sources");

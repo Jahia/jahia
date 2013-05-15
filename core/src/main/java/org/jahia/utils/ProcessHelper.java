@@ -174,7 +174,7 @@ public final class ProcessHelper {
             if (resultOut != null) {
                 resultOut.append(out.toString());
             }
-            if (err.getLength() > 0) {
+            if (exitValue > 0) {
                 logger.error("External process finished with error. Cause: {}", err.toString());
             }
             if (logger.isDebugEnabled()) {

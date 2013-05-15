@@ -77,7 +77,10 @@ public class GitSourceControlManagement extends SourceControlManagement {
 
     protected void initFromURI(File workingDirectory, String uri, String branchOrTag) throws IOException {
         this.rootFolder = workingDirectory.getParentFile();
-        executeCommand(executable, "clone " + uri + " " + workingDirectory.getName());
+        ExecutionResult r = executeCommand(executable, "clone " + uri + " " + workingDirectory.getName());
+        if (r.exitValue > 0) {
+            throw new IOException(r.err);
+        }
         this.rootFolder = workingDirectory;
         if (!StringUtils.isEmpty(branchOrTag)) {
             executeCommand(executable, "checkout " + branchOrTag);

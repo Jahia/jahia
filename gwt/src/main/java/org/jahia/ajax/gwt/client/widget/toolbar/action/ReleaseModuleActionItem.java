@@ -148,7 +148,7 @@ public class ReleaseModuleActionItem extends BaseActionItem {
 
                     public void onApplicationFailure(Throwable caught) {
                         linker.loaded();
-                        Info.display("War creation failed", "War creation failed");
+                        Info.display("Module release failed", caught.getMessage());
                     }
                 });
             }
@@ -161,8 +161,8 @@ public class ReleaseModuleActionItem extends BaseActionItem {
     private String generateVersionNumber(List<Integer> orderedVersionNumbers, int index) {
         List<Integer> newOrderedVersionNumbers = new ArrayList<Integer>(orderedVersionNumbers);
         newOrderedVersionNumbers.set(index, orderedVersionNumbers.get(index) + 1);
-        for (int i = index+1; i < orderedVersionNumbers.size(); i++) {
-            orderedVersionNumbers.set(i, Integer.valueOf(0));
+        for (int i = index+1; i < newOrderedVersionNumbers.size(); i++) {
+            newOrderedVersionNumbers.set(i, Integer.valueOf(0));
         }
         String s = "";
         for (Integer n : newOrderedVersionNumbers) {

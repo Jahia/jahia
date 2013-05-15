@@ -75,7 +75,7 @@ public class GenerateWarActionItem extends BaseActionItem {
 
             public void onApplicationFailure(Throwable caught) {
                 linker.loaded();
-                Info.display("War creation failed","War creation failed");
+                Info.display("War creation failed",caught.getMessage());
             }
         });
     }

@@ -587,7 +587,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return null;
     }
 
-    public void sendToSourceControl(String moduleName, String scmURI, String scmType, JCRSessionWrapper session) throws Exception {
+    public void sendToSourceControl(String moduleName, String scmURI, String scmType, JCRSessionWrapper session) throws RepositoryException, IOException {
         JahiaTemplatesPackage pack = getTemplatePackageByFileName(moduleName);
         String fullUri = "scm:" + scmType + ":" + scmURI;
         final File sources = getSources(pack, session);
@@ -595,7 +595,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         String tempName = UUID.randomUUID().toString();
         final File tempSources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources", tempName);
         FileUtils.moveDirectory(sources, tempSources);
-        SourceControlManagement scm = sourceControlFactory.checkoutRepository(sources, fullUri, null);
+        SourceControlManagement scm = null;
+        try {
+            scm = sourceControlFactory.checkoutRepository(sources, fullUri, null);
+        } catch (IOException e) {
+            FileUtils.moveDirectory(tempSources, sources);
+            throw e;
+        }
         final List<File> modifiedFiles = new ArrayList<File>();
         FileUtils.copyDirectory(tempSources, sources, new FileFilter() {
             @Override
@@ -647,7 +653,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return false;
     }
 
-    public File releaseModule(String moduleName, String nextVersion, JCRSessionWrapper session) throws RepositoryException, IOException {
+    public File releaseModule(String moduleName, String nextVersion, JCRSessionWrapper session) throws RepositoryException, IOException, BundleException {
         JahiaTemplatesPackage pack = templatePackageRegistry.lookupByFileName(moduleName);
         if (pack.getVersion().isSnapshot() && nextVersion != null) {
             File sources = getSources(pack, session);
@@ -657,15 +663,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
                 if (vi.hasProperty("j:scmURI")) {
                     SourceControlManagement scm = null;
-                    try {
-                        scm = sourceControlFactory.getSourceControlManagement(sources);
-                        if (scm != null) {
-                            scm.commit("Release");
-                            return releaseModule(pack, nextVersion, sources, vi.getProperty("j:scmURI").getString(), session);
-                        }
-
-                    } catch (Exception e) {
-                        logger.error("Cannot get SCM", e);
+                    scm = sourceControlFactory.getSourceControlManagement(sources);
+                    if (scm != null) {
+                        scm.commit("Release");
+                        return releaseModule(pack, nextVersion, sources, vi.getProperty("j:scmURI").getString(), session);
                     }
                 }
                 return releaseModule(pack, nextVersion, sources, null, session);
@@ -674,7 +675,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return null;
     }
 
-    public File releaseModule(final JahiaTemplatesPackage module, String nextVersion, File sources, String scmUrl, JCRSessionWrapper session) {
+    public File releaseModule(final JahiaTemplatesPackage module, String nextVersion, File sources, String scmUrl, JCRSessionWrapper session) throws RepositoryException, IOException, BundleException {
         try {
             SAXReader reader = new SAXReader();
             File pom = new File(sources, "pom.xml");
@@ -691,10 +692,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     String tag = module.getRootFolder() + "-" + releaseVersion;
 
                     int ret;
-//                    String MAVEN_HOME = System.getenv().get("MAVEN_HOME") != null ? System.getenv().get("MAVEN_HOME") : "/usr/share/maven";
-
+                    String M2_HOME = System.getenv().get("M2_HOME") != null ? System.getenv().get("M2_HOME") : "/usr/share/maven";
+                    if (!new File(M2_HOME).exists()) {
+                        throw new IOException("Maven home not found, please set your M2_HOME property");
+                    }
                     String[] installParams = {"release:prepare", "release:perform",
-//                            "-Dmaven.home=" + MAVEN_HOME,
+                            "-Dmaven.home=" + M2_HOME,
                             "-Dtag=" + tag,
                             "-DreleaseVersion=" + releaseVersion,
                             "-DdevelopmentVersion=" + nextVersion,
@@ -705,7 +708,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
                     if (ret > 0) {
                         cli.doMain(new String[]{"release:rollback"}, sources.getPath(), System.out, System.err);
-                        return null;
+                        throw new IOException("Maven invokation failed");
                     }
 
                     File oldWar = new File(settingsBean.getJahiaModulesDiskPath(), module + "-" + lastVersion + ".war");
@@ -776,11 +779,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 }
 
                 return generatedWar;
+            } else {
+                throw new IOException("Cannot release a SNAPSHOT version");
             }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+        } catch (DocumentException e) {
+            throw new IOException(e);
+        } catch (PatchFailedException e) {
+            throw new IOException(e);
         }
-        return null;
     }
 
     public List<File> regenerateImportFile(String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException {

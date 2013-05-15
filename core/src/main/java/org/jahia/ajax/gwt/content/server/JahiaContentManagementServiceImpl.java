@@ -746,7 +746,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     removedTypes.remove(mixin.getName());
                 }
             } catch (RepositoryException e) {
-                logger.error(e.toString(), e);
+                logger.error(e.getMessage(), e);
                 throw new GWTJahiaServiceException(new StringBuilder(node.getDisplayName()).append(Messages.getInternal("could.not.be.accessed", getUILocale())).append(e.toString()).toString());
             }
         }
@@ -1465,7 +1465,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             return contentManager.createModule(key, baseSet, siteType, sources, retrieveCurrentSession());
         } catch (Exception e) {
             logger.error("", e);
-            throw new GWTJahiaServiceException(e.toString());
+            throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
@@ -1482,8 +1482,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         try {
             return contentManager.sendToSourceControl(moduleName, scmURI, scmType, retrieveCurrentSession());
         } catch (Exception e) {
-            logger.error("", e);
-            throw new GWTJahiaServiceException(e.toString());
+            logger.error("Cannot init remote repository", e);
+            throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
@@ -1492,7 +1492,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             contentManager.saveAndCommitModule(moduleName, message, retrieveCurrentSession(null));
         } catch (Exception e) {
             logger.error("Cannot synchronize module into sources", e);
-            throw new GWTJahiaServiceException(e.toString());
+            throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
@@ -1501,7 +1501,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             contentManager.updateModule(moduleName, retrieveCurrentSession(null));
         } catch (Exception e) {
             logger.error("Cannot update module", e);
-            throw new GWTJahiaServiceException(e.toString());
+            throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
@@ -1510,7 +1510,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             contentManager.addToSourceControl(moduleName, node, retrieveCurrentSession(null));
         } catch (Exception e) {
             logger.error("Cannot add to source control", e);
-            throw new GWTJahiaServiceException(e.toString());
+            throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
@@ -1519,7 +1519,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             contentManager.compileAndDeploy(moduleName, retrieveCurrentSession(null));
         } catch (Exception e) {
             logger.error("Cannot update module", e);
-            throw new GWTJahiaServiceException(e.toString());
+            throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
@@ -1532,7 +1532,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException if something bad happened (like impossible to compile the module)
      */
     public GWTJahiaNode generateWar(String moduleName) throws GWTJahiaServiceException {
-        return contentManager.releaseModule(moduleName, null, retrieveCurrentSession(null));
+        try {
+            return contentManager.releaseModule(moduleName, null, retrieveCurrentSession(null));
+        } catch (Exception e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
     }
 
     /**
@@ -1556,7 +1560,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             return r;
         } catch (Exception e) {
             logger.error("Error during releasing version " + nextVersion + " of module "+moduleName, e);
-            throw new GWTJahiaServiceException(e.toString());
+            throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 

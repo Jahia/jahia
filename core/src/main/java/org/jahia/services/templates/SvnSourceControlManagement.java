@@ -70,7 +70,10 @@ public class SvnSourceControlManagement extends SourceControlManagement {
     @Override
     protected void initFromURI(File workingDirectory, String uri, String branchOrTag) throws IOException {
         this.rootFolder = workingDirectory.getParentFile();
-        executeCommand(executable, "checkout " + uri + " " + workingDirectory.getName());
+        ExecutionResult r = executeCommand(executable, "checkout " + uri + " " + workingDirectory.getName());
+        if (r.exitValue > 0) {
+            throw new IOException(r.err);
+        }
         this.rootFolder = workingDirectory;
     }
 

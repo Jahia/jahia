@@ -362,8 +362,8 @@ public class ContentManagerHelper {
     }
 
     public List<GWTJahiaNode> copy(final List<String> pathsToCopy, final String destinationPath, final String newName,
-            final boolean moveOnTop, final boolean cut, final boolean reference, boolean allLanguages,
-            JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+                                   final boolean moveOnTop, final boolean cut, final boolean reference, boolean allLanguages,
+                                   JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         return copy(pathsToCopy, destinationPath, newName, moveOnTop, cut, reference, allLanguages, currentUserSession,
                 currentUserSession.getLocale());
     }
@@ -373,9 +373,9 @@ public class ContentManagerHelper {
                                    JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         final List<String> missedPaths = new ArrayList<String>();
         final List<GWTJahiaNode> res = new ArrayList<GWTJahiaNode>();
-        
+
         // perform a check to prevent pasting content to itself or its children
-        for (Iterator<String> iterator = pathsToCopy.iterator(); iterator.hasNext();) {
+        for (Iterator<String> iterator = pathsToCopy.iterator(); iterator.hasNext(); ) {
             String toCopy = iterator.next();
             if (destinationPath.equals(toCopy) || destinationPath.startsWith(toCopy + "/")) {
                 missedPaths.add(Messages.format(Messages.getInternal("failure.paste.cannot.paste", uiLocale,
@@ -1192,14 +1192,9 @@ public class ContentManagerHelper {
         return node;
     }
 
-    public GWTJahiaNode sendToSourceControl(String moduleName, String scmURI, String scmType, JCRSessionWrapper session) throws RepositoryException {
-        try {
-            templateManagerService.sendToSourceControl(moduleName, scmURI, scmType, session);
-            return navigation.getGWTJahiaNode(session.getNode("/modules/"+moduleName), GWTJahiaNode.DEFAULT_SITE_FIELDS);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return null;
+    public GWTJahiaNode sendToSourceControl(String moduleName, String scmURI, String scmType, JCRSessionWrapper session) throws IOException, RepositoryException {
+        templateManagerService.sendToSourceControl(moduleName, scmURI, scmType, session);
+        return navigation.getGWTJahiaNode(session.getNode("/modules/" + moduleName), GWTJahiaNode.DEFAULT_SITE_FIELDS);
     }
 
     public void compileAndDeploy(String moduleName, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
@@ -1228,55 +1223,45 @@ public class ContentManagerHelper {
 
     }
 
-    public GWTJahiaNode releaseModule(String moduleName, String nextVersion, JCRSessionWrapper session) {
-        try {
-            JahiaTemplatesPackage previous = templateManagerService.getTemplatePackageByFileName(moduleName);
+    public GWTJahiaNode releaseModule(String moduleName, String nextVersion, JCRSessionWrapper session) throws RepositoryException, IOException, BundleException {
+        JahiaTemplatesPackage previous = templateManagerService.getTemplatePackageByFileName(moduleName);
 
-            File f;
-            if (nextVersion != null) {
-                f = templateManagerService.releaseModule(moduleName, nextVersion, session);
-            } else {
-                f = templateManagerService.compileModule(moduleName, previous.getSourcesFolder()).getFile();
-            }
-            if (f == null) {
-                return null;
-            }
-
-            if (nextVersion != null) {
-                templateManagerService.activateModuleVersion(moduleName, nextVersion);
-            }
-
-            JCRNodeWrapper privateFolder = session.getNode(session.getUser().getLocalPath() + "/files/private");
-
-            if (!privateFolder.hasNode("modules")) {
-                if (!privateFolder.isCheckedOut()) {
-                    session.getWorkspace().getVersionManager().checkout(privateFolder.getPath());
-                }
-                privateFolder.addNode("modules", Constants.JAHIANT_FOLDER);
-            }
-            JCRNodeWrapper parent = privateFolder.getNode("modules");
-            if (!parent.isCheckedOut()) {
-                session.getWorkspace().getVersionManager().checkout(parent.getPath());
-            }
-            InputStream is = new BufferedInputStream(new FileInputStream(f));
-            try {
-                JCRNodeWrapper res = parent.uploadFile(f.getName(), is, "application/x-zip");
-                session.save();
-
-                return navigation.getGWTJahiaNode(res);
-            } finally {
-                IOUtils.closeQuietly(is);
-                FileUtils.deleteQuietly(f);
-            }
-        } catch (BundleException e) {
-            logger.error(e.getMessage(), e);
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+        File f;
+        if (nextVersion != null) {
+            f = templateManagerService.releaseModule(moduleName, nextVersion, session);
+        } else {
+            f = templateManagerService.compileModule(moduleName, previous.getSourcesFolder()).getFile();
+        }
+        if (f == null) {
+            return null;
         }
 
-        return null;
+        if (nextVersion != null) {
+            templateManagerService.activateModuleVersion(moduleName, nextVersion);
+        }
+
+        JCRNodeWrapper privateFolder = session.getNode(session.getUser().getLocalPath() + "/files/private");
+
+        if (!privateFolder.hasNode("modules")) {
+            if (!privateFolder.isCheckedOut()) {
+                session.getWorkspace().getVersionManager().checkout(privateFolder.getPath());
+            }
+            privateFolder.addNode("modules", Constants.JAHIANT_FOLDER);
+        }
+        JCRNodeWrapper parent = privateFolder.getNode("modules");
+        if (!parent.isCheckedOut()) {
+            session.getWorkspace().getVersionManager().checkout(parent.getPath());
+        }
+        InputStream is = new BufferedInputStream(new FileInputStream(f));
+        try {
+            JCRNodeWrapper res = parent.uploadFile(f.getName(), is, "application/x-zip");
+            session.save();
+
+            return navigation.getGWTJahiaNode(res);
+        } finally {
+            IOUtils.closeQuietly(is);
+            FileUtils.deleteQuietly(f);
+        }
     }
 
     public List<GWTJahiaContentHistoryEntry> getContentHistory(JCRSessionWrapper session, String nodeIdentifier, int offset, int limit) throws RepositoryException {

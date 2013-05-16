@@ -10,7 +10,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="robots" content="noindex, nofollow"/>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-1.1.css" type="text/css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-front.css" type="text/css"/>
     <title><fmt:message key="label.error.400.title"/></title>
 </head>
 <body class="login" onLoad="if (history.length > 1) { document.getElementById('backLink').style.display=''; }">

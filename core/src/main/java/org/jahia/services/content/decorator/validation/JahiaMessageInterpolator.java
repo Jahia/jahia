@@ -41,7 +41,6 @@
 package org.jahia.services.content.decorator.validation;
 
 import org.apache.log4j.Logger;
-import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.Messages;
@@ -62,6 +61,11 @@ import java.util.regex.Pattern;
  */
 public class JahiaMessageInterpolator implements MessageInterpolator {
     private transient static Logger logger = Logger.getLogger(JahiaMessageInterpolator.class);
+
+    /**
+     * The name of the default message bundle.
+     */
+    private static final String DEFAULT_VALIDATION_MESSAGES = "org.hibernate.validator.ValidationMessages";
 
     /**
      * Regular expression used to do message interpolation.
@@ -91,7 +95,7 @@ public class JahiaMessageInterpolator implements MessageInterpolator {
      * @return Interpolated error message.
      */
     public String interpolate(String messageTemplate, Context context, Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundles.get(ResourceBundleMessageInterpolator.DEFAULT_VALIDATION_MESSAGES, locale);
+        ResourceBundle resourceBundle = ResourceBundles.get(DEFAULT_VALIDATION_MESSAGES, locale);
         String key = messageTemplate.substring(1, messageTemplate.length() - 1);
         if (resourceBundle != null && resourceBundle.containsKey(key)) {
             return replaceAnnotationAttributes(resourceBundle.getString(key), context.getConstraintDescriptor().getAttributes());

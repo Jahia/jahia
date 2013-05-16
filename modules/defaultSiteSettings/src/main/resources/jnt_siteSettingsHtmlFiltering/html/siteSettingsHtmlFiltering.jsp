@@ -8,7 +8,6 @@
 <fmt:message key="label.delete" var="i18nDelete"/><c:set var="i18nDelete" value="${functions:escapeJavaScript(i18nDelete)}"/>
 <fmt:message key="label.htmlFiltering.invalidTag" var="i18nInvalidTag"/><c:set var="i18nInvalidTag" value="${functions:escapeJavaScript(i18nInvalidTag)}"/>
 <fmt:message key="label.changeSaved" var="i18nSaved"/><c:set var="i18nSaved" value="${functions:escapeJavaScript(i18nSaved)}"/>
-<c:url value="/css/images/andromeda/icons/delete.png" var="iconDelete"/>
 
 <template:addResources type="javascript" resources="jquery.min.js,jquery.form.min.js"/>
 <template:addResources>

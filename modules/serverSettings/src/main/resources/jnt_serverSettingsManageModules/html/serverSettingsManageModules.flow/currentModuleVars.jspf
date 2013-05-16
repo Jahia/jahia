@@ -7,4 +7,3 @@
 </c:if>
 <c:set value="${not isStudio && functions:contains(systemSiteRequiredModules, currentModule != null ? currentModule.rootFolder : defaultVersion.rootFolder)}" var="isMandatoryDependency"/>
 <c:set value="${currentModule != null ? currentModule.sourcesDownloadable : defaultVersion.sourcesDownloadable}" var="sourcesDownloadable"/>
-<c:set value="${empty currentModule.sourcesFolder and empty defaultVersion.sourcesFolder and sourcesDownloadable and (not empty currentModule.scmURI or not empty defaultVersion.scmURI)}" var="canDownload"/>

@@ -87,13 +87,13 @@
         <c:otherwise>
             <c:forEach items="${allModuleVersions}" var="entry">
                 <%@include file="currentModuleVars.jspf" %>
-                <c:if test="${!isMandatoryDependency && canDownload}">
+                <c:if test="${!isMandatoryDependency && sourcesDownloadable}">
                     <%@include file="modulesTableRow.jspf" %>
                 </c:if>
             </c:forEach>
             <c:forEach items="${allModuleVersions}" var="entry">
                 <%@include file="currentModuleVars.jspf" %>
-                <c:if test="${!isMandatoryDependency && !canDownload}">
+                <c:if test="${!isMandatoryDependency && !sourcesDownloadable}">
                     <%@include file="modulesTableRow.jspf" %>
                 </c:if>
             </c:forEach>

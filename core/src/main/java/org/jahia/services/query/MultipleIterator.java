@@ -50,9 +50,11 @@ public class MultipleIterator<T extends RangeIterator> implements RangeIterator 
     private int iteratorIndex = 0;
     private long position = 0;
     private long size = -1;
+    private long limit;
 
-    public MultipleIterator(List<T> iterators) {
+    public MultipleIterator(List<T> iterators, long limit) {
         this.iterators = iterators;
+        this.limit = limit;
     }
 
     @Override
@@ -69,6 +71,9 @@ public class MultipleIterator<T extends RangeIterator> implements RangeIterator 
             for (T it : iterators) {
                 size += it.getSize();
             }
+            if (limit >= 0 && size > limit) {
+                size = limit;
+            }
         }
         return size;
     }
@@ -80,6 +85,9 @@ public class MultipleIterator<T extends RangeIterator> implements RangeIterator 
 
     @Override
     public boolean hasNext() {
+        if (limit >= 0 && position == limit) {
+            return false;
+        }
         if (!iterators.isEmpty()) {
             return iterators.get(getIteratorIndex()).hasNext();
         }
@@ -88,6 +96,9 @@ public class MultipleIterator<T extends RangeIterator> implements RangeIterator 
 
     @Override
     public Object next() {
+        if (limit >= 0 && position == limit) {
+            throw new NoSuchElementException();
+        }
         if (!iterators.isEmpty()) {
             Object next = iterators.get(getIteratorIndex()).next();
             position++;

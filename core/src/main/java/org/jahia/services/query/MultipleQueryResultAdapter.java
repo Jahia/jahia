@@ -61,19 +61,18 @@ public class MultipleQueryResultAdapter implements QueryResult {
     private static MultipleQueryResultAdapter EMPTY = new MultipleQueryResultAdapter();
     
     private List<QueryResultWrapper> queryResults;
-    
+    private long limit;
+
     /**
      * Decorates the provided list of query results, if needed.
      * @param queryResults the query results to be wrapped
      * @return decorated list of query results 
      */
-    public static QueryResult decorate(List<QueryResultWrapper> queryResults) {
+    public static QueryResult decorate(List<QueryResultWrapper> queryResults, long limit) {
         if (queryResults == null || queryResults.isEmpty()) {
             return EMPTY;
-        } else if (queryResults.size() == 1) { 
-            return queryResults.get(0); 
         } else {
-            return new MultipleQueryResultAdapter(queryResults);
+            return new MultipleQueryResultAdapter(queryResults, limit);
         }
     }
     
@@ -90,8 +89,9 @@ public class MultipleQueryResultAdapter implements QueryResult {
      *
      * @param queryResults
      */
-    private MultipleQueryResultAdapter(List<QueryResultWrapper> queryResults) {
+    private MultipleQueryResultAdapter(List<QueryResultWrapper> queryResults, long limit) {
         this.queryResults = queryResults;
+        this.limit = limit;
     }
 
     public String[] getColumnNames() throws RepositoryException {
@@ -105,7 +105,7 @@ public class MultipleQueryResultAdapter implements QueryResult {
             for (final QueryResultWrapper queryResult : queryResults) {
                 rowIterators.add(queryResult.getRows());
             }
-            resultRowIterator = new MultipleRowIterator(rowIterators);
+            resultRowIterator = new MultipleRowIterator(rowIterators, limit);
         }
         return resultRowIterator;
     }
@@ -118,7 +118,7 @@ public class MultipleQueryResultAdapter implements QueryResult {
             for (QueryResult queryResult : queryResults) {
                 nodeIterators.add(queryResult.getNodes());
             }
-            nodeIterator = new MultipleNodeIterator(nodeIterators);
+            nodeIterator = new MultipleNodeIterator(nodeIterators, limit);
         }
         return nodeIterator;
     }
@@ -129,8 +129,8 @@ public class MultipleQueryResultAdapter implements QueryResult {
 
     public class MultipleRowIterator extends MultipleIterator<RowIterator> implements RowIterator {
 
-        public MultipleRowIterator(List<RowIterator> iterators) {
-            super(iterators);
+        public MultipleRowIterator(List<RowIterator> iterators, long limit) {
+            super(iterators, limit);
         }
 
         @Override
@@ -141,8 +141,8 @@ public class MultipleQueryResultAdapter implements QueryResult {
 
     public class MultipleNodeIterator extends MultipleIterator<NodeIterator> implements NodeIterator {
 
-        public MultipleNodeIterator(List<NodeIterator> iterators) {
-            super(iterators);
+        public MultipleNodeIterator(List<NodeIterator> iterators, long limit) {
+            super(iterators, limit);
         }
 
         @Override

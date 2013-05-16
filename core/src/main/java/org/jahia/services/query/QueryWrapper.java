@@ -106,88 +106,81 @@ public class QueryWrapper implements Query {
             }
         }
         for (JCRStoreProvider jcrStoreProvider : providers) {
-            QueryManager qm = jcrStoreProvider.getQueryManager(session);
-            if (qm != null) {
-                if (ArrayUtils.contains(qm.getSupportedQueryLanguages(), language)) {
-                    Query query = qm.createQuery(statement, language);
-                    if (jcrStoreProvider.isDefault()) {
-                        if (Query.JCR_SQL2.equals(language)) {
-                            query = QueryServiceImpl.getInstance().modifyAndOptimizeQuery(
-                                    (QueryObjectModel) query, qm.getQOMFactory(), session);
-                        }
-                        if (query instanceof JahiaQueryObjectModelImpl) {
-                            JahiaLuceneQueryFactoryImpl lqf = (JahiaLuceneQueryFactoryImpl) ((JahiaQueryObjectModelImpl) query)
-                                    .getLuceneQueryFactory();
-                        
-                            lqf.setProvider(jcrStoreProvider);
-                            lqf.setJcrSession(session);
-                        }
-                    }
-                    queries.put(jcrStoreProvider, query);
+            Query query = getQuery(jcrStoreProvider);
+            if (query != null) {
+                queries.put(jcrStoreProvider, query);
+            }
+        }
+    }
+
+    protected Query getQuery(JCRStoreProvider jcrStoreProvider) throws RepositoryException {
+        Query query = null;
+        QueryManager qm = jcrStoreProvider.getQueryManager(session);
+        if (qm != null && ArrayUtils.contains(qm.getSupportedQueryLanguages(), language)) {
+            query = qm.createQuery(statement, language);
+            if (jcrStoreProvider.isDefault()) {
+                if (Query.JCR_SQL2.equals(language)) {
+                    query = QueryServiceImpl.getInstance().modifyAndOptimizeQuery(
+                            (QueryObjectModel) query, qm.getQOMFactory(), session);
+                }
+                if (query instanceof JahiaQueryObjectModelImpl) {
+                    JahiaLuceneQueryFactoryImpl lqf = (JahiaLuceneQueryFactoryImpl) ((JahiaQueryObjectModelImpl) query)
+                            .getLuceneQueryFactory();
+
+                    lqf.setProvider(jcrStoreProvider);
+                    lqf.setJcrSession(session);
                 }
             }
         }
+        return query;
     }
-
-    /*
-    // @todo This is an ugly copy & paste from JahiaMultiColumnQueryResult, we should put these methods in a utility class somewhere and avoid code duplication.
-    private boolean isFacetFunction(String columnName, SessionImpl sessionImpl) {
-        try {
-            return columnName.trim().startsWith(sessionImpl.getJCRName(REP_FACET_LPAR));
-        } catch (NamespaceException e) {
-            // will never happen
-            return false;
-        }
-    }
-
-    public void setImplicitLimit(QueryObjectModel qom, SessionImpl sessionImpl) {
-        // first let's check if faceted search is being used, because we cannot set an implicit limit if faceting
-        // is active.
-        boolean hasFacetRequest = false;
-        for (Column column : qom.getColumns()) {
-            if ((column.getColumnName() != null) && isFacetFunction(column.getColumnName(), sessionImpl)) {
-                hasFacetRequest = true;
-                break;
-            }
-        }
-        // We only set the limit if the limit has not been set and offset neither. Setting the limit to -2 for example
-        // will avoid this behavior.
-        if ((!hasFacetRequest) && (limit == -1) && (offset == 0)) {
-            qom.setLimit(100);
-            logger.warn("No limit set, will limit to 100 query results by default !");
-        }
-    }
-    */
 
     public QueryResult execute() throws RepositoryException {
+        long queryOffset = offset;
+        long queryLimit = limit;
         List<QueryResultWrapper> results = new LinkedList<QueryResultWrapper>();
-        for (Map.Entry<JCRStoreProvider, Query> entry : queries.entrySet()) {
-            // should gather results
-            final Query query = entry.getValue();
-            if (limit > 0) {
-                query.setLimit(limit);
+        Iterator<Map.Entry<JCRStoreProvider, Query>> it = queries.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<JCRStoreProvider, Query> entry = it.next();
+            Query query = entry.getValue();
+            if (queryLimit >= 0) {
+                query.setLimit(queryLimit);
             }
-            if (offset > 0) {
-                query.setOffset(offset);
+            if (queryOffset >= 0) {
+                query.setOffset(queryOffset);
             }
-            QueryResultWrapper subResults = null;
-            /*
-            if (query instanceof QueryObjectModel) {
-                QueryObjectModel qom = (QueryObjectModel) query;
-                Session providerSession = session.getProviderSession(entry.getKey());
-                if (providerSession instanceof SessionImpl) {
-                    setImplicitLimit(qom, (SessionImpl) providerSession);
+            QueryResultWrapper queryResult = new QueryResultWrapper(query.execute(), entry.getKey(), session);
+            results.add(queryResult);
+            long resultCount = getResultCount(queryResult);
+            if (queryLimit >= 0) {
+                if (resultCount >= queryLimit) {
+                    break;
                 }
-                subResults = new QueryResultWrapper(query.execute(), entry.getKey(), session);
+                queryLimit -= resultCount;
+                if (resultCount == 0 && queryOffset > 0) {
+                    Query noLimitQuery = getQuery(entry.getKey());
+                    queryOffset -= getResultCount(new QueryResultWrapper(noLimitQuery.execute(), entry.getKey(), session));
+                } else {
+                    queryOffset = 0;
+                }
             } else {
-            */
-                subResults = new QueryResultWrapper(query.execute(), entry.getKey(), session);
-            /*
+                queryOffset = 0;
             }
-            */
-            results.add(subResults);
         }
-        return MultipleQueryResultAdapter.decorate(results);
+        return MultipleQueryResultAdapter.decorate(results, limit);
+    }
+
+    protected long getResultCount(QueryResult queryResult) throws RepositoryException {
+        NodeIterator nodes = queryResult.getNodes();
+        long size = nodes.getSize();
+        if (size < 0) {
+            size = 0;
+            while (nodes.hasNext()) {
+                size++;
+                nodes.next();
+            }
+        }
+        return size;
     }
 
     public String getStatement() {

@@ -159,13 +159,13 @@
                                     <i class=" icon-edit"></i>
                                 </a>
                                 <%--
-                                <a href="#edit" onclick="submitSiteForm('exportSites', '${site.name}'); return false;"><img
-                                        src="<c:url value='/css/images/andromeda/icons/export1.png'/>"
-                                        alt="<fmt:message key='label.export'/>" title="<fmt:message key='label.export'/>" width="16" height="16" border="0"/></a>
-                                <a href="#edit" onclick="submitSiteForm('exportStagingSites', '${site.name}'); return false;"><img
-                                        src="<c:url value='/css/images/andromeda/icons/export2.png'/>"
-                                        alt="${i18nExportStaging}" title="${i18nExportStaging}" width="16" height="16" border="0"/></a>
-                                 --%>
+                                    <a style="margin-bottom:0;" class="btn btn-small" href="#edit" title="<fmt:message key='label.export'/>" href="#edit" onclick="submitSiteForm('exportSites', '${site.name}'); return false;">
+                                        <i class="icon-upload"></i>
+                                    </a>
+                                    <a style="margin-bottom:0;" class="btn btn-small" href="#edit" title="${i18nExportStaging}" href="#edit" onclick="submitSiteForm('exportStagingSites', '${site.name}'); return false;">
+                                        <i class="icon-circle-arrow-up"></i>
+                                    </a>
+                                --%>
                                 <a style="margin-bottom:0;" class="btn btn-danger btn-small" title="<fmt:message key='label.delete'/>" href="#delete" onclick="submitSiteForm('deleteSites', '${site.name}'); return false;">
                                     <i class="icon-remove icon-white"></i>
                                 </a>

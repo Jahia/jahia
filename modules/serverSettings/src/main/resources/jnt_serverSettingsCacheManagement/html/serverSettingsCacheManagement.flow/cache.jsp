@@ -16,8 +16,6 @@
 <%--@elvariable id="manager" type="java.lang.String"--%>
 <%--@elvariable id="cacheEntry" type="org.jahia.modules.serversettings.flow.CacheManagerHandler.SerializedCacheManager"--%>
 
-<c:set var="flushIcon"><img src="<c:url value='${url.currentModule}/images/showTrashboard.png'/>" height="16" width="16" alt=" " align="top"/></c:set>
-
 <c:if test="${cacheManagement.showConfig}">
     <template:addResources type="css" resources="jquery.fancybox.css"/>
     <template:addResources type="javascript" resources="jquery.js,jquery.fancybox.pack.js"/>

@@ -19,6 +19,7 @@
     <ul>
         <li><a href="systemInfo.jsp">System information</a></li>
         <li><a href="threadDumpMgmt.jsp">Thread state information</a></li>
+        <li><a href="jcrSessions.jsp">JCR sessions Information</a></li>
         <li><a href="memoryInfo.jsp">Memory information</a></li>
         <li><a href="maintenance.jsp">System maintenance</a></li>
         <li><a href="precompileServlet">JSP pre-compilation</a></li>

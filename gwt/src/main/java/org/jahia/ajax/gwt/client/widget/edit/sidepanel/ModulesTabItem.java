@@ -60,6 +60,8 @@ import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbar;
+
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
 
@@ -167,7 +169,7 @@ public class ModulesTabItem extends BrowseTabItem {
                 return true;
             }
         }
-        if (data.containsKey("event") && "commit".equals(data.get("event"))) {
+        if (data.containsKey("event") && ("commit".equals(data.get("event")) ||"update".equals(data.get("event")))) {
             return true;
         }
         return super.needRefresh(data);

@@ -57,7 +57,7 @@ import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
-import javax.jcr.query.qom.QueryObjectModel;
+import javax.jcr.query.qom.*;
 import javax.jcr.version.VersionException;
 import java.util.*;
 
@@ -118,10 +118,20 @@ public class QueryWrapper implements Query {
         QueryManager qm = jcrStoreProvider.getQueryManager(session);
         if (qm != null && ArrayUtils.contains(qm.getSupportedQueryLanguages(), language)) {
             query = qm.createQuery(statement, language);
+            QueryObjectModelFactory factory = qm.getQOMFactory();
+            if (!jcrStoreProvider.getMountPoint().equals("/") && query instanceof QueryObjectModel) {
+                try {
+                    QueryObjectModel qom = (QueryObjectModel) query;
+                    query = factory.createQuery(qom.getSource(), convertPath(qom.getConstraint(), jcrStoreProvider.getMountPoint(), factory), qom.getOrderings(), qom.getColumns());
+                } catch (ConstraintViolationException e) {
+                    // Provider path incompatible with constraints, skip query
+                    return null;
+                }
+            }
             if (jcrStoreProvider.isDefault()) {
                 if (Query.JCR_SQL2.equals(language)) {
                     query = QueryServiceImpl.getInstance().modifyAndOptimizeQuery(
-                            (QueryObjectModel) query, qm.getQOMFactory(), session);
+                            (QueryObjectModel) query, factory, session);
                 }
                 if (query instanceof JahiaQueryObjectModelImpl) {
                     JahiaLuceneQueryFactoryImpl lqf = (JahiaLuceneQueryFactoryImpl) ((JahiaQueryObjectModelImpl) query)
@@ -134,6 +144,75 @@ public class QueryWrapper implements Query {
         }
         return query;
     }
+
+
+    private Constraint convertPath(Constraint constraint, String mountPoint, QueryObjectModelFactory f) throws RepositoryException {
+        if (constraint instanceof ChildNode) {
+            String root = ((ChildNode)constraint).getParentPath();
+            if (mountPoint.startsWith(root)) {
+                // Mount point in under path constraint -> remove constraint
+                return null;
+            }
+            if (root.startsWith(mountPoint)) {
+                // Path constraint is under mount point -> create new constraint with local path
+                return f.childNode(((ChildNode)constraint).getSelectorName(), root.substring(mountPoint.length()));
+            }
+            // Path constraint incompatible with mount point
+            throw new ConstraintViolationException();
+        } else if (constraint instanceof DescendantNode) {
+            String root = ((DescendantNode)constraint).getAncestorPath();
+            if (mountPoint.startsWith(root)) {
+                // Mount point in under path constraint -> remove constraint
+                return null;
+            }
+            if (root.startsWith(mountPoint)) {
+                // Path constraint is under mount point -> create new constraint with local path
+                return f.descendantNode(((DescendantNode) constraint).getSelectorName(), root.substring(mountPoint.length()));
+            }
+            // Path constraint incompatible with mount point
+            throw new ConstraintViolationException();
+        } else if (constraint instanceof And) {
+            Constraint c1 = convertPath(((And) constraint).getConstraint1(), mountPoint, f);
+            Constraint c2 = convertPath(((And) constraint).getConstraint2(), mountPoint, f);
+            if (c1 == null) {
+                return c2;
+            }
+            if (c2 == null) {
+                return c1;
+            }
+            return f.and(c1,c2);
+        } else if (constraint instanceof Or) {
+            Constraint c1 = null;
+            try {
+                c1 = convertPath(((Or) constraint).getConstraint1(), mountPoint, f);
+            } catch (ConstraintViolationException e) {
+                return convertPath(((Or) constraint).getConstraint2(), mountPoint, f);
+            }
+            Constraint c2 = null;
+            try {
+                c2 = convertPath(((Or) constraint).getConstraint2(), mountPoint, f);
+            } catch (ConstraintViolationException e) {
+                return convertPath(((Or) constraint).getConstraint1(), mountPoint, f);
+            }
+            if (c1 == null || c2 == null) {
+                return null;
+            }
+            return f.or(c1, c2);
+        } else if (constraint instanceof Not) {
+            Constraint notConstraint = null;
+            try {
+                notConstraint = convertPath(((Not) constraint).getConstraint(), mountPoint, f);
+            } catch (ConstraintViolationException e) {
+                return null;
+            }
+            if (notConstraint == null) {
+                throw new ConstraintViolationException();
+            }
+            return f.not(notConstraint);
+        }
+        return constraint;
+    }
+
 
     public QueryResult execute() throws RepositoryException {
         long queryOffset = offset;

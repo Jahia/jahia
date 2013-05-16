@@ -544,12 +544,12 @@
 [jmix:userProfileComponents] > jmix:droppableContent mixin
 
 // @since Jahia 6.6
-[jnt:componentFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, mix:title, jmix:list, jmix:publication
+[jnt:componentFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:nolive, mix:title, jmix:list
  + * (jnt:component)
  + * (jnt:componentFolder)
 
 // @since Jahia 6.6
-[jnt:component] > nt:base, jmix:nodenameInfo, jmix:nolive, mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:i18n, jmix:originWS, jmix:description, mix:title, jmix:lastPublished
+[jnt:component] > nt:base, jmix:nodenameInfo, jmix:nolive, mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:i18n, jmix:originWS, jmix:description, mix:title
  - j:moduleName (string) hidden nofulltext
 
 // @since Jahia 6.6

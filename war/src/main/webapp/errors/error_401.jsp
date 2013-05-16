@@ -11,7 +11,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="robots" content="noindex, nofollow"/>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-front.css" type="text/css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/errors.css" type="text/css"/>
     <title><fmt:message key="label.login"/></title>
     <script type="text/javascript">
         document.onkeydown = function (e) { if ((e || window.event).keyCode == 13) document.loginForm.submit(); };

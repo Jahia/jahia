@@ -163,7 +163,10 @@ JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSes
     <%
        try {
            Query q = jcrSession.getWorkspace().getQueryManager().createQuery(request.getParameter("query"), (String) pageContext.getAttribute("lang"));
-           q.setLimit(Long.valueOf((String) pageContext.getAttribute("limit")));
+           long limit = Long.valueOf((String) pageContext.getAttribute("limit"));
+           if (limit > 0) {
+               q.setLimit(limit);
+           }
            q.setOffset(Long.valueOf((String) pageContext.getAttribute("offset")));
            QueryResult result = q.execute();
            int count = 0;
@@ -190,7 +193,10 @@ JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSes
        out.flush();
        long actionTime = System.currentTimeMillis();
        Query q = jcrSession.getWorkspace().getQueryManager().createQuery(request.getParameter("query"), (String) pageContext.getAttribute("lang"));
-       q.setLimit(Long.valueOf((String) pageContext.getAttribute("limit")));
+       long limit = Long.valueOf((String) pageContext.getAttribute("limit"));
+       if (limit > 0) {
+           q.setLimit(limit);
+       }
        q.setOffset(Long.valueOf((String) pageContext.getAttribute("offset")));
        pageContext.setAttribute("purgeStatus", NodeVersionHistoryHelper.purgeVersionHistoryForNodes(q.execute().getNodes(), out));
        pageContext.setAttribute("took", Long.valueOf(System.currentTimeMillis() - actionTime));
@@ -204,7 +210,10 @@ try {
     if (StringUtils.isNotEmpty(query)) {
         long actionTime = System.currentTimeMillis();
         Query q = jcrSession.getWorkspace().getQueryManager().createQuery(query, (String) pageContext.getAttribute("lang"));
-        q.setLimit(Long.valueOf((String) pageContext.getAttribute("limit")));
+        long limit = Long.valueOf((String) pageContext.getAttribute("limit"));
+        if (limit > 0) {
+            q.setLimit(limit);
+        }
         q.setOffset(Long.valueOf((String) pageContext.getAttribute("offset")));
         QueryResult result = q.execute();
         pageContext.setAttribute("count", JCRContentUtils.size(result.getNodes()));

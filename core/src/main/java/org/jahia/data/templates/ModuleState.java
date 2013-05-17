@@ -44,25 +44,67 @@ package org.jahia.data.templates;
  */
 public class ModuleState {
     public static enum State {
-        UNINSTALLED, UNRESOLVED, RESOLVED, WAITING_TO_BE_PARSED, PARSED, INSTALLED, UPDATED, STOPPED, STOPPING, STARTING, WAITING_TO_BE_STARTED, ERROR_DURING_START, STARTED;
+        ERROR_DURING_START, INSTALLED, PARSED, RESOLVED, STARTED, STARTING, STOPPED, STOPPING, UNINSTALLED, UNRESOLVED, UPDATED, WAITING_TO_BE_PARSED, WAITING_TO_BE_STARTED;
+
+        @Override
+        public String toString() {
+            switch (this) {
+                case UNINSTALLED:
+                    return "Uninstalled";
+                case UNRESOLVED:
+                    return "Unresolved";
+                case RESOLVED:
+                    return "Resolved";
+                case WAITING_TO_BE_PARSED:
+                    return "Waiting to be parsed";
+                case PARSED:
+                    return "Parsed";
+                case INSTALLED:
+                    return "Installed";
+                case UPDATED:
+                    return "Updated";
+                case STOPPED:
+                    return "Stopped";
+                case STOPPING:
+                    return "Stopping";
+                case STARTING:
+                    return "Starting";
+                case WAITING_TO_BE_STARTED:
+                    return "Waiting to be started";
+                case ERROR_DURING_START:
+                    return "Error during start";
+                case STARTED:
+                    return "Started";
+                default:
+                    break;
+            }
+            return super.toString();
+        }
     }
 
-    private State state;
     private Object details;
+
+    private State state;
+
+    public Object getDetails() {
+        return details;
+    }
 
     public State getState() {
         return state;
+    }
+
+    public void setDetails(Object details) {
+        this.details = details;
     }
 
     public void setState(State state) {
         this.state = state;
     }
 
-    public Object getDetails() {
-        return details;
-    }
-
-    public void setDetails(Object details) {
-        this.details = details;
+    @Override
+    public String toString() {
+        return details != null ? new StringBuilder(256).append("state: ").append(state).append("; details: ")
+                .append(details).toString() : state.toString();
     }
 }

@@ -41,13 +41,19 @@
 package org.jahia.bin;
 
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.data.templates.ModuleState;
+import org.jahia.data.templates.ModuleState.State;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
+import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * This servlet is used to catch the end of the initialization of the web application, as the order of
@@ -86,11 +92,25 @@ public class EndInit extends HttpServlet {
             out.append("\n--------------------------------------------------------------------------------------------------" + 
             "\n  P R O D U C T I O N   M O D E   A C T I V E");
         }
+        out.append("\n--------------------------------------------------------------------------------------------------\n");
+        appendModulesInfo(out);
         out.append("\n--------------------------------------------------------------------------------------------------"+
         "\n  Jahia is now ready. Initialization completed in ").append((initializationTime/1000)).append(" seconds");
         out.append("\n--------------------------------------------------------------------------------------------------");
         logger.info(out.toString());
         initialized = true;
+    }
+
+    private void appendModulesInfo(StringBuilder out) {
+        JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+        out.append("  Modules:");
+        for (State state : ModuleState.State.values()) {
+            List<Bundle> modules = templateService.getModulesByState(state);
+            if (modules.isEmpty()) {
+                continue;
+            }
+            out.append("\n      ").append(state).append(": ").append(modules.size());
+        }
     }
 
     @Override

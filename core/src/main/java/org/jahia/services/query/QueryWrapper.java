@@ -251,12 +251,10 @@ public class QueryWrapper implements Query {
                     break;
                 }
                 queryLimit -= resultCount;
-                if (resultCount == 0 && queryOffset > 0) {
-                    Query noLimitQuery = getQuery(entry.getKey());
-                    queryOffset -= getResultCount(new QueryResultAdapter(noLimitQuery.execute(), entry.getKey(), session));
-                } else {
-                    queryOffset = 0;
-                }
+            }
+            if (resultCount == 0 && queryOffset > 0) {
+                Query noLimitQuery = getQuery(entry.getKey());
+                queryOffset -= getResultCount(new QueryResultAdapter(noLimitQuery.execute(), entry.getKey(), session));
             } else {
                 queryOffset = 0;
             }

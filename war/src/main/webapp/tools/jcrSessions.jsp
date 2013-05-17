@@ -30,7 +30,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="tools.css" type="text/css"/>
-    <title>JCR Integrity Tool</title>
+    <title>JCR Sessions</title>
 </head>
 <body>
 <h1>JCR Sessions</h1>

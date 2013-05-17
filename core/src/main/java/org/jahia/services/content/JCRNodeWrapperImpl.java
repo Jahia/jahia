@@ -71,7 +71,6 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.importexport.ReferencesHelper;
-import org.jahia.services.query.QueryManagerImpl;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
@@ -3128,7 +3127,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public PropertyIterator getReferences() throws RepositoryException {
-        return new PropertyIteratorImpl(objectNode.getReferences(), this);
+        return new PropertyIteratorImpl(objectNode.getReferences(), getSession(), getProvider());
     }
 
     /**
@@ -3546,43 +3545,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public PropertyIterator getReferences(String name) throws RepositoryException {
-        return new PropertyIteratorImpl(objectNode.getReferences(name), this);
+        return new PropertyIteratorImpl(objectNode.getReferences(name), getSession(), getProvider());
     }
 
     /**
      * {@inheritDoc}
      */
     public PropertyIterator getWeakReferences() throws RepositoryException {
-        if (provider.getKey().equals("default")) {
-
-            // shortcut if node isn't referenceable
-            if (!isNodeType(Constants.MIX_REFERENCEABLE)) {
-                return new PropertyIteratorImpl(PropertyIteratorAdapter.EMPTY, this);
-            }
-
-            Value ref = getRealNode().getSession().getValueFactory().createValue(this, true);
-            List<Property> props = new ArrayList<Property>();
-            QueryManagerImpl qm = (QueryManagerImpl) getSession().getWorkspace().getQueryManager();
-            for (Node n : qm.getWeaklyReferringNodes(this)) {
-                for (PropertyIterator it = n.getProperties(); it.hasNext(); ) {
-                    Property p = it.nextProperty();
-                    if (p.getType() == PropertyType.WEAKREFERENCE) {
-                        Collection<Value> refs;
-                        if (p.isMultiple()) {
-                            refs = Arrays.asList(p.getValues());
-                        } else {
-                            refs = Collections.singleton(p.getValue());
-                        }
-                        if (refs.contains(ref)) {
-                            props.add(p);
-                        }
-                    }
-                }
-            }
-            return new PropertyIteratorImpl(new PropertyIteratorAdapter(props), this);            
-        } else {
-            return getExternalWeakReferences(null);
-        }
+        return getWeakReferences(null);
     }
 
     /**
@@ -3592,50 +3562,18 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      *          as long as Jahia doesn't support it
      */
     public PropertyIterator getWeakReferences(String name) throws RepositoryException {
-        if (provider.getKey().equals("default")) {
-            if (name == null) {
-                return getWeakReferences();
-            }
-
-            // shortcut if node isn't referenceable
-            if (!isNodeType(Constants.MIX_REFERENCEABLE)) {
-                return new PropertyIteratorImpl(PropertyIteratorAdapter.EMPTY, this);
-            }
-
-            try {
-                StringBuilder stmt = new StringBuilder();
-                stmt.append("//*[@").append(ISO9075.encode(name));
-                stmt.append(" = '").append(getIdentifier()).append("'");
-                if (getSession().getLocale() != null) {
-                    stmt.append(" and (@jcr:language = '")
-                            .append(getSession().getLocale().toString())
-                            .append("' or not(@jcr:language))");
-                }
-                stmt.append("]");
-                Query q = getSession().getWorkspace().getQueryManager().createQuery(
-                        stmt.toString(), Query.XPATH);
-                QueryResult result = q.execute();
-                List<Property> l = new ArrayList<Property>();
-                Set<Node> uniqueResults = new HashSet<Node>();
-                for (NodeIterator nit = result.getNodes(); nit.hasNext();) {
-                    Node n = nit.nextNode();
-                    if (uniqueResults.add(n) && n.hasProperty(name)) {
-                        l.add(n.getProperty(name));
-                    }
-                }
-                if (l.isEmpty()) {
-                    return new PropertyIteratorImpl(PropertyIteratorAdapter.EMPTY, this);
-                } else {
-                    return new PropertyIteratorImpl(new PropertyIteratorAdapter(l), this);
-                }
-            } catch (RepositoryException e) {
-                String msg = "Unable to retrieve WEAKREFERENCE properties that refer to " + getIdentifier();
-                logger.debug(msg);
-                throw new RepositoryException(msg, e);
-            }            
-        } else {
+        try {
+            UUID.fromString(getIdentifier());
+        } catch (IllegalArgumentException iae) {
             return getExternalWeakReferences(name);
         }
+
+        // shortcut if node isn't referenceable
+        if (!isNodeType(Constants.MIX_REFERENCEABLE)) {
+            return new PropertyIteratorImpl(PropertyIteratorAdapter.EMPTY, getSession(), getProvider());
+        }
+
+        return getSession().getWeakReferences(this, name);
     }
 
     /**

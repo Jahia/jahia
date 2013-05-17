@@ -47,24 +47,29 @@
 package org.jahia.services.content.impl.jackrabbit;
 
 import org.apache.jackrabbit.api.JackrabbitWorkspace;
+import org.apache.jackrabbit.commons.iterator.PropertyIteratorAdapter;
 import org.apache.jackrabbit.spi.Name;
+import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
+import org.jahia.services.content.PropertyIteratorImpl;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 import javax.jcr.version.VersionManager;
 import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.NodeTypeDefinition;
 import java.io.IOException;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * @author hollis
@@ -168,4 +173,69 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
         return true;
     }
 
+    public PropertyIterator getWeakReferences(JCRNodeWrapper node, String propertyName, Session session) throws RepositoryException {
+        if (propertyName == null) {
+            Iterable<Node> referringNodes = ((org.apache.jackrabbit.core.query.QueryManagerImpl)session.getWorkspace().getQueryManager())
+                    .getWeaklyReferringNodes(node);
+            if (node.getSession().getLocale() != null) {
+                String currentLanguage = node.getSession().getLocale().toString();
+                List<Node> filteredNodes = new ArrayList<Node>();
+                for (Node referringNode : referringNodes) {
+                    if (!referringNode.isNodeType(Constants.JAHIANT_TRANSLATION)
+                            || currentLanguage.equals(referringNode.getProperty(
+                            Constants.JCR_LANGUAGE).getString())) {
+                        filteredNodes.add(referringNode);
+                    }
+                }
+                referringNodes = filteredNodes;
+            }
+
+            Value ref = session.getValueFactory().createValue(node, true);
+
+            List<Property> props = new ArrayList<Property>();
+            for (Node n : referringNodes) {
+                for (PropertyIterator it = n.getProperties(); it.hasNext(); ) {
+                    Property p = it.nextProperty();
+                    if (p.getType() == PropertyType.WEAKREFERENCE) {
+                        Collection<Value> refs;
+                        if (p.isMultiple()) {
+                            refs = Arrays.asList(p.getValues());
+                        } else {
+                            refs = Collections.singleton(p.getValue());
+                        }
+                        if (refs.contains(ref)) {
+                            props.add(p);
+                        }
+                    }
+                }
+            }
+
+            return new PropertyIteratorAdapter(props);
+        } else {
+            StringBuilder stmt = new StringBuilder();
+            stmt.append("//*[@").append(ISO9075.encode(propertyName));
+            stmt.append(" = '").append(node.getIdentifier()).append("'");
+            if (node.getSession().getLocale() != null) {
+                stmt.append(" and (@jcr:language = '")
+                        .append(node.getSession().getLocale().toString())
+                        .append("' or not(@jcr:language))");
+            }
+            stmt.append("]");
+            Query q = session.getWorkspace().getQueryManager().createQuery(stmt.toString(), Query.XPATH);
+            QueryResult result = q.execute();
+            List<Property> l = new ArrayList<Property>();
+            Set<Node> uniqueResults = new HashSet<Node>();
+            for (NodeIterator nit = result.getNodes(); nit.hasNext();) {
+                Node n = nit.nextNode();
+                if (uniqueResults.add(n) && n.hasProperty(propertyName)) {
+                    l.add(n.getProperty(propertyName));
+                }
+            }
+            if (l.isEmpty()) {
+                return PropertyIteratorAdapter.EMPTY;
+            } else {
+                return new PropertyIteratorAdapter(l);
+            }
+        }
+    }
 }

@@ -55,17 +55,19 @@ import javax.jcr.RepositoryException;
  */
 public class PropertyIteratorImpl implements PropertyIterator {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(PropertyIteratorImpl.class);
-    private JCRNodeWrapper node;
     private PropertyIterator iterator;
+    private JCRSessionWrapper session;
+    private JCRStoreProvider jcrStoreProvider;
 
-    public PropertyIteratorImpl(PropertyIterator iterator, JCRNodeWrapper node) {
+    public PropertyIteratorImpl(PropertyIterator iterator, JCRSessionWrapper session, JCRStoreProvider jcrStoreProvider) {
         this.iterator = iterator;
-        this.node = node;
+        this.session = session;
+        this.jcrStoreProvider = jcrStoreProvider;
     }
 
     public Property nextProperty() {
         try {
-            return node.getProvider().getPropertyWrapper(iterator.nextProperty(), node.getSession());
+            return jcrStoreProvider.getPropertyWrapper(iterator.nextProperty(), session);
         } catch (RepositoryException e) {
             logger.error("",e);
         }

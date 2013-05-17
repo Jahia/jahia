@@ -43,13 +43,14 @@ package org.jahia.services.query;
 
 import junit.framework.Assert;
 import org.apache.jackrabbit.rmi.iterator.ArrayIterator;
+import org.jahia.services.content.MultipleIterator;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Test of {@link MultipleIterator}
+ * Test of {@link org.jahia.services.content.MultipleIterator}
  */
 public class MultipleIteratorTest {
 

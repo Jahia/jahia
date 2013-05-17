@@ -45,9 +45,10 @@ import org.apache.jackrabbit.commons.iterator.NodeIteratorAdapter;
 import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.RangeFacet;
+import org.jahia.services.content.MultipleIterator;
+import org.jahia.services.content.MultipleNodeIterator;
 
 import javax.jcr.*;
-import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
 
@@ -138,18 +139,6 @@ public class QueryResultWrapperImpl implements QueryResultWrapper {
         @Override
         public Row nextRow() {
             return (Row) next();
-        }
-    }
-
-    public class MultipleNodeIterator extends MultipleIterator<NodeIterator> implements NodeIterator {
-
-        public MultipleNodeIterator(List<NodeIterator> iterators, long limit) {
-            super(iterators, limit);
-        }
-
-        @Override
-        public Node nextNode() {
-            return (Node) next();
         }
     }
 

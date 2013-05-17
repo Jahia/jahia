@@ -38,12 +38,15 @@
  * please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.query;
+package org.jahia.services.content;
 
 import javax.jcr.RangeIterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * Aggregate multiple iterators
+ */
 public class MultipleIterator<T extends RangeIterator> implements RangeIterator {
 
     private List<T> iterators;

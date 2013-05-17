@@ -47,7 +47,6 @@ import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRNodeDecorator;
-import org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.importexport.DocumentViewExporter;
@@ -1195,4 +1194,18 @@ public class JCRSessionWrapper implements Session {
     public Exception getSessionTrace() {
         return thisSessionTrace;
     }
+
+    public PropertyIterator getWeakReferences(JCRNodeWrapper node, String propertyName) throws RepositoryException {
+        List<PropertyIterator> propertyIterators = new ArrayList<PropertyIterator>();
+        for (JCRStoreProvider provider : sessionFactory.getProviderList()) {
+            Session providerSession = getProviderSession(provider);
+            PropertyIterator pi = provider.getWeakReferences(node, propertyName, providerSession);
+            if (pi != null) {
+                propertyIterators.add(new PropertyIteratorImpl(pi, this, provider));
+            }
+        }
+        return new MultiplePropertyIterator(propertyIterators, -1);
+    }
+
+
 }

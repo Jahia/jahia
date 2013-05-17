@@ -53,7 +53,6 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.content.decorator.JCRMountPointNode;
-import org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.sites.JahiaSitesService;
@@ -1059,5 +1058,10 @@ public class JCRStoreProvider {
         }
         return updateMixinAvailable;
     }
+
+    public PropertyIterator getWeakReferences(JCRNodeWrapper node, String propertyName, Session session) throws RepositoryException {
+        return null;
+    }
+
 
 }

@@ -43,6 +43,8 @@ package org.jahia.services.query;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.jackrabbit.commons.iterator.NodeIteratorAdapter;
 import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
+import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.RangeFacet;
 
 import javax.jcr.*;
 import javax.jcr.query.QueryResult;
@@ -56,11 +58,11 @@ import java.util.*;
  *
  * @author Thomas Draier
  */
-public class MultipleQueryResultAdapter implements QueryResult {
+public class QueryResultWrapperImpl implements QueryResultWrapper {
 
-    private static MultipleQueryResultAdapter EMPTY = new MultipleQueryResultAdapter();
+    private static QueryResultWrapperImpl EMPTY = new QueryResultWrapperImpl();
     
-    private List<QueryResultWrapper> queryResults;
+    private List<QueryResultAdapter> queryResults;
     private long limit;
 
     /**
@@ -68,18 +70,18 @@ public class MultipleQueryResultAdapter implements QueryResult {
      * @param queryResults the query results to be wrapped
      * @return decorated list of query results 
      */
-    public static QueryResult decorate(List<QueryResultWrapper> queryResults, long limit) {
+    public static QueryResultWrapper wrap(List<QueryResultAdapter> queryResults, long limit) {
         if (queryResults == null || queryResults.isEmpty()) {
             return EMPTY;
         } else {
-            return new MultipleQueryResultAdapter(queryResults, limit);
+            return new QueryResultWrapperImpl(queryResults, limit);
         }
     }
     
     /**
      * Wrapped query results that comes from different store
      */
-    private MultipleQueryResultAdapter() {
+    private QueryResultWrapperImpl() {
         super();
         queryResults = Collections.emptyList();
     }
@@ -89,7 +91,7 @@ public class MultipleQueryResultAdapter implements QueryResult {
      *
      * @param queryResults
      */
-    private MultipleQueryResultAdapter(List<QueryResultWrapper> queryResults, long limit) {
+    private QueryResultWrapperImpl(List<QueryResultAdapter> queryResults, long limit) {
         this.queryResults = queryResults;
         this.limit = limit;
     }
@@ -102,7 +104,7 @@ public class MultipleQueryResultAdapter implements QueryResult {
         RowIterator resultRowIterator = RowIteratorAdapter.EMPTY;
         if (!queryResults.isEmpty()) {
             List<RowIterator> rowIterators = new ArrayList<RowIterator>();
-            for (final QueryResultWrapper queryResult : queryResults) {
+            for (final QueryResultAdapter queryResult : queryResults) {
                 rowIterators.add(queryResult.getRows());
             }
             resultRowIterator = new MultipleRowIterator(rowIterators, limit);
@@ -115,7 +117,7 @@ public class MultipleQueryResultAdapter implements QueryResult {
 
         if (!queryResults.isEmpty()) {
             List<NodeIterator> nodeIterators = new ArrayList<NodeIterator>();
-            for (QueryResult queryResult : queryResults) {
+            for (QueryResultAdapter queryResult : queryResults) {
                 nodeIterators.add(queryResult.getNodes());
             }
             nodeIterator = new MultipleNodeIterator(nodeIterators, limit);
@@ -149,5 +151,114 @@ public class MultipleQueryResultAdapter implements QueryResult {
         public Node nextNode() {
             return (Node) next();
         }
+    }
+
+    @Override
+    public List<FacetField> getFacetFields() {
+        for (QueryResultAdapter queryResult : queryResults) {
+            if (queryResult.getFacetFields() != null) {
+                return queryResult.getFacetFields();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<FacetField> getFacetDates() {
+        for (QueryResultAdapter queryResult : queryResults) {
+            if (queryResult.getFacetDates() != null) {
+                return queryResult.getFacetDates();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<RangeFacet> getRangeFacets() {
+        for (QueryResultAdapter queryResult : queryResults) {
+            if (queryResult.getRangeFacets() != null) {
+                return queryResult.getRangeFacets();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public FacetField getFacetField(String name) {
+        for (QueryResultAdapter queryResult : queryResults) {
+            if (queryResult.getFacetField(name) != null) {
+                return queryResult.getFacetField(name);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public FacetField getFacetDate(String name) {
+        for (QueryResultAdapter queryResult : queryResults) {
+            if (queryResult.getFacetDate(name) != null) {
+                return queryResult.getFacetDate(name);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public RangeFacet getRangeFacet(String name) {
+        for (QueryResultAdapter queryResult : queryResults) {
+            if (queryResult.getRangeFacet(name) != null) {
+                return queryResult.getRangeFacet(name);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Map<String, Long> getFacetQuery() {
+        for (QueryResultAdapter queryResult : queryResults) {
+            if (queryResult.getFacetQuery() != null) {
+                return queryResult.getFacetQuery();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<FacetField> getLimitingFacets() {
+        for (QueryResultAdapter queryResult : queryResults) {
+            if (queryResult.getLimitingFacets() != null) {
+                return queryResult.getLimitingFacets();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isFacetFieldsEmpty(List<FacetField> facetFields) {
+        if (facetFields.isEmpty()){
+            return true;
+        }else{
+            for (FacetField facetField: facetFields) {
+                if (facetField.getValueCount() != 0)
+                    return false;
+            }
+        }
+        return true;
+    }
+
+
+    public boolean isFacetResultsEmpty(){
+        return (this.getFacetFields() == null || isFacetFieldsEmpty(this.getFacetFields())) &&
+                (this.getFacetDates() == null || isFacetFieldsEmpty(this.getFacetFields())) &&
+                (this.getFacetQuery() == null || this.getFacetQuery().isEmpty());
+    }
+
+    @Override
+    public long getApproxCount() {
+        int result = 0;
+        for (QueryResultAdapter queryResult : queryResults) {
+            result += queryResult.getApproxCount();
+        }
+        return result;
     }
 }

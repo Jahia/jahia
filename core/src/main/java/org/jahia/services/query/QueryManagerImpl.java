@@ -85,13 +85,11 @@ public class QueryManagerImpl implements QueryManager {
      * @author Sergiy Shyrkov
      */
     private class QOMFactoryInvocationHandler implements InvocationHandler {
-        private final JCRStoreProvider provider;
         private final QueryObjectModelFactory underlying;
 
-        QOMFactoryInvocationHandler(QueryObjectModelFactory underlying, JCRStoreProvider provider) {
+        QOMFactoryInvocationHandler(QueryObjectModelFactory underlying, QueryManagerImpl queryManagerImpl) {
             super();
             this.underlying = underlying;
-            this.provider = provider;
         }
 
         public Object invoke(Object proxy, Method method, Object[] args) throws Exception {
@@ -99,15 +97,15 @@ public class QueryManagerImpl implements QueryManager {
                 final QueryObjectModel qom = ServicesRegistry.getInstance().getQueryService().modifyAndOptimizeQuery(
                         (Source) args[0], (Constraint) args[1], (Ordering[]) args[2], (Column[]) args[3],
                         underlying, session);
-                if (provider.isDefault() && qom instanceof JahiaQueryObjectModelImpl) {
-                    JahiaLuceneQueryFactoryImpl lqf = (JahiaLuceneQueryFactoryImpl) ((JahiaQueryObjectModelImpl) qom)
-                            .getLuceneQueryFactory();
-                    
-                    lqf.setProvider(provider);
-                    lqf.setJcrSession(session);
-                }                
+//                if (provider.isDefault() && qom instanceof JahiaQueryObjectModelImpl) {
+//                    JahiaLuceneQueryFactoryImpl lqf = (JahiaLuceneQueryFactoryImpl) ((JahiaQueryObjectModelImpl) qom)
+//                            .getLuceneQueryFactory();
+//
+//                    lqf.setProvider(provider);
+//                    lqf.setJcrSession(session);
+//                }
                 return Proxy.newProxyInstance(qom.getClass().getClassLoader(), new Class[] { QueryObjectModel.class },
-                        new QOMInvocationHandler(qom, provider));
+                        new QOMInvocationHandler(qom));
             } else {
                 try {
                     return method.invoke(underlying, args);
@@ -133,22 +131,20 @@ public class QueryManagerImpl implements QueryManager {
      * @author Sergiy Shyrkov
      */
     private class QOMInvocationHandler implements InvocationHandler {
-        private final JCRStoreProvider provider;
         private final QueryObjectModel underlying;
 
-        QOMInvocationHandler(QueryObjectModel underlying, JCRStoreProvider provider) {
+        QOMInvocationHandler(QueryObjectModel underlying) {
             super();
             this.underlying = underlying;
-            this.provider = provider;
         }
 
         public Object invoke(Object proxy, Method method, Object[] args) throws Exception {
             try {
-                Object result = method.invoke(underlying, args);
                 if ("execute".equals(method.getName())) {
-                    result = new QueryResultWrapper((QueryResult) result, provider, session);
+                    QueryWrapper queryWrapper = new QueryWrapper(underlying, session, sessionFactory);
+                    return queryWrapper.execute();
                 }
-                return result;
+                return method.invoke(underlying, args);
             } catch (InvocationTargetException e) {
                 // lets unwrap the exception
                 Throwable throwable = e.getCause();
@@ -172,7 +168,7 @@ public class QueryManagerImpl implements QueryManager {
         this.sessionFactory = sessionFactory;
     }
 
-    public Query createQuery(String statement, String language) throws InvalidQueryException, RepositoryException {
+    public QueryWrapper createQuery(String statement, String language) throws InvalidQueryException, RepositoryException {
         QueryWrapper queryWrapper = new QueryWrapper(statement, language, session, sessionFactory);
         if (queryWrapper.getQueries().isEmpty()) {
             throw new InvalidQueryException(sessionFactory.getProviders().isEmpty() ? "Query could not be created. Store provider is not initialized yet" : "No query could be created for the unknown query language '" + language + "'");
@@ -187,7 +183,7 @@ public class QueryManagerImpl implements QueryManager {
 
             return (QueryObjectModelFactory) Proxy.newProxyInstance(qomFactory.getClass().getClassLoader(),
                     new Class[] { QueryObjectModelFactory.class },
-                    new QOMFactoryInvocationHandler(qomFactory, provider));
+                    new QOMFactoryInvocationHandler(qomFactory, this));
         } catch (RepositoryException e) {
             throw new RuntimeException(e);
         }

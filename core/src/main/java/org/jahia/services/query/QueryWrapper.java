@@ -71,6 +71,7 @@ public class QueryWrapper implements Query {
     public static final Logger logger = LoggerFactory.getLogger(QueryWrapper.class);
 
     private String statement;
+    private QueryObjectModel jrQOM;
     private String language;
     private long limit = -1;
     private long offset = 0;
@@ -83,6 +84,16 @@ public class QueryWrapper implements Query {
     public QueryWrapper(String statement, String language, JCRSessionWrapper session, JCRSessionFactory service) throws InvalidQueryException, RepositoryException {
         this.statement = statement;
         this.language = language;
+        this.vars = new HashMap<String, Value>();
+        this.session = session;
+        this.service = service;
+        init();
+    }
+
+    public QueryWrapper(QueryObjectModel qom, JCRSessionWrapper session, JCRSessionFactory service) throws InvalidQueryException, RepositoryException {
+        this.jrQOM = qom;
+        this.statement = qom.getStatement();
+        this.language = Query.JCR_SQL2;
         this.vars = new HashMap<String, Value>();
         this.session = session;
         this.service = service;
@@ -117,7 +128,11 @@ public class QueryWrapper implements Query {
         Query query = null;
         QueryManager qm = jcrStoreProvider.getQueryManager(session);
         if (qm != null && ArrayUtils.contains(qm.getSupportedQueryLanguages(), language)) {
-            query = qm.createQuery(statement, language);
+            if (jcrStoreProvider.isDefault() && jrQOM != null) {
+                query = jrQOM;
+            } else {
+                query = qm.createQuery(statement, language);
+            }
             QueryObjectModelFactory factory = qm.getQOMFactory();
             if (!jcrStoreProvider.getMountPoint().equals("/") && query instanceof QueryObjectModel) {
                 try {
@@ -217,7 +232,7 @@ public class QueryWrapper implements Query {
     public QueryResult execute() throws RepositoryException {
         long queryOffset = offset;
         long queryLimit = limit;
-        List<QueryResultWrapper> results = new LinkedList<QueryResultWrapper>();
+        List<QueryResultAdapter> results = new LinkedList<QueryResultAdapter>();
         Iterator<Map.Entry<JCRStoreProvider, Query>> it = queries.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<JCRStoreProvider, Query> entry = it.next();
@@ -228,7 +243,7 @@ public class QueryWrapper implements Query {
             if (queryOffset >= 0) {
                 query.setOffset(queryOffset);
             }
-            QueryResultWrapper queryResult = new QueryResultWrapper(query.execute(), entry.getKey(), session);
+            QueryResultAdapter queryResult = new QueryResultAdapter(query.execute(), entry.getKey(), session);
             results.add(queryResult);
             long resultCount = getResultCount(queryResult);
             if (queryLimit >= 0) {
@@ -238,7 +253,7 @@ public class QueryWrapper implements Query {
                 queryLimit -= resultCount;
                 if (resultCount == 0 && queryOffset > 0) {
                     Query noLimitQuery = getQuery(entry.getKey());
-                    queryOffset -= getResultCount(new QueryResultWrapper(noLimitQuery.execute(), entry.getKey(), session));
+                    queryOffset -= getResultCount(new QueryResultAdapter(noLimitQuery.execute(), entry.getKey(), session));
                 } else {
                     queryOffset = 0;
                 }
@@ -246,10 +261,10 @@ public class QueryWrapper implements Query {
                 queryOffset = 0;
             }
         }
-        return MultipleQueryResultAdapter.decorate(results, limit);
+        return QueryResultWrapperImpl.wrap(results, limit);
     }
 
-    protected long getResultCount(QueryResult queryResult) throws RepositoryException {
+    protected long getResultCount(QueryResultAdapter queryResult) throws RepositoryException {
         NodeIterator nodes = queryResult.getNodes();
         long size = nodes.getSize();
         if (size < 0) {

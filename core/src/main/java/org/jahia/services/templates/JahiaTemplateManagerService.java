@@ -671,6 +671,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     SourceControlManagement scm = null;
                     scm = sourceControlFactory.getSourceControlManagement(sources);
                     if (scm != null) {
+                        scm.update();
                         scm.commit("Release");
                         return releaseModule(pack, nextVersion, sources, vi.getProperty("j:scmURI").getString(), session);
                     }

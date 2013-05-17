@@ -1181,6 +1181,21 @@ public class ContentManagerHelper {
         }
     }
 
+    public void markConflictAsResolved(String moduleName, GWTJahiaNode node, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
+        JahiaTemplatesPackage templatePackage = templateManagerService.getTemplatePackage(moduleName);
+        SourceControlManagement sourceControl = templatePackage.getSourceControl();
+        if (sourceControl != null) {
+            String path = node.getPath();
+            path = path.substring(path.indexOf("/sources/") + 8);
+            String sourcesFolderPath = templatePackage.getSourcesFolder().getAbsolutePath();
+            File file = new File(sourcesFolderPath + "/src/main/resources" + path);
+            if (!file.exists()) {
+                file = new File(sourcesFolderPath + "/src/main/webapp" + path);
+            }
+            sourceControl.markConflictAsResolved(file);
+        }
+    }
+
     public GWTJahiaNode checkoutModule(String moduleName, String scmURI, String scmType, String branchOrTag, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
         GWTJahiaNode node = null;
 

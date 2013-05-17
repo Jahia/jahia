@@ -40,6 +40,7 @@
 
 package org.jahia.services.templates;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.utils.ProcessHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,6 +108,8 @@ public abstract class SourceControlManagement {
 
     public abstract void commit(String message) throws IOException;
 
+    public abstract void markConflictAsResolved(File file) throws IOException;
+
     public Status getStatus(String path) throws IOException {
         if (getStatusMap().containsKey(path)) {
             return getStatusMap().get(path);
@@ -131,5 +134,15 @@ public abstract class SourceControlManagement {
 
     public void invalidateStatusCache() {
         statusMap = null;
+    }
+
+    protected void checkExecutionResult(ExecutionResult result) throws IOException {
+        if (result.exitValue != 0 || result.out.contains("conflicts")) {
+            String message = result.err;
+            if (StringUtils.isBlank(message)) {
+                message = result.out;
+            }
+            throw new IOException(message);
+        }
     }
 }

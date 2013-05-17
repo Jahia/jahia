@@ -44,10 +44,7 @@ import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: toto
@@ -167,16 +164,24 @@ public class GitSourceControlManagement extends SourceControlManagement {
     }
 
     public void update() throws IOException {
+        executeCommand(executable, "stash clear");
         executeCommand(executable, "stash");
-        executeCommand(executable, "pull --rebase");
-        executeCommand(executable, "stash pop");
+        ExecutionResult pullResult = executeCommand(executable, "pull --rebase");
+        ExecutionResult stashPopResult = executeCommand(executable, "stash pop");
         invalidateStatusCache();
+        checkExecutionResult(pullResult);
+        checkExecutionResult(stashPopResult);
     }
 
     public void commit(String message) throws IOException {
-        executeCommand(executable, "commit -a -m \"" + message + "\"");
-        executeCommand(executable, "push -u origin master");
         invalidateStatusCache();
+        checkExecutionResult(executeCommand(executable, "commit -a -m \"" + message + "\""));
+        checkExecutionResult(executeCommand(executable, "push -u origin master"));
+    }
+
+    @Override
+    public void markConflictAsResolved(File file) throws IOException {
+        setModifiedFile(Arrays.asList(file));
     }
 
     protected Map<String, Status> getStatusMap() throws IOException {

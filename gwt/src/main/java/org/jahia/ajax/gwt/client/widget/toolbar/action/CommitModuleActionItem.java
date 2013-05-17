@@ -99,7 +99,7 @@ public class CommitModuleActionItem extends BaseActionItem {
 
                     public void onApplicationFailure(Throwable caught) {
                         linker.loaded();
-                        Info.display(Messages.get("label.error", "Error"), Messages.get("message.moduleSaveFailed", "Module save failed"));
+                        Info.display(Messages.get("label.error", "Error"), caught.getMessage());
                     }
                 });
             }

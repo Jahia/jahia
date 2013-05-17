@@ -345,6 +345,8 @@ public interface JahiaContentManagementServiceAsync {
 
     void addToSourceControl(String moduleName, GWTJahiaNode node, AsyncCallback asyncCallback);
 
+    void markConflictAsResolved(String moduleName, GWTJahiaNode node, AsyncCallback asyncCallback);
+
     void compileAndDeploy(String moduleName, AsyncCallback async);
 
     void uploadedFile(List<String[]> uploadeds, AsyncCallback async);

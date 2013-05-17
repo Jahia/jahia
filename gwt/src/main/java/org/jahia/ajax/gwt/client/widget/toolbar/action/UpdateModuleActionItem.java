@@ -78,7 +78,10 @@ public class UpdateModuleActionItem extends BaseActionItem {
 
                     public void onApplicationFailure(Throwable caught) {
                         linker.loaded();
-                        Info.display(Messages.get("label.error", "Error"), "Module update failed");
+                        Info.display(Messages.get("label.error", "Error"), caught.getMessage());
+                        Map<String, Object> data = new HashMap<String, Object>();
+                        data.put("event","update");
+                        linker.refresh(data);
                     }
                 });
             } else {

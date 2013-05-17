@@ -1358,4 +1358,12 @@
         <property name="icon" value="scmAdd"/>
     </bean>
 
+    <bean id="Toolbar.Item.MarkConflictAsResolved" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.MarkConflictAsResolvedActionItem" />
+        </property>
+        <property name="titleKey" value="label.sourceControl.resolve"/>
+        <property name="icon" value="scmResolve"/>
+    </bean>
+
 </beans>

@@ -400,6 +400,8 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void addToSourceControl(String moduleName, GWTJahiaNode node) throws GWTJahiaServiceException;
 
+    void markConflictAsResolved(String moduleName, GWTJahiaNode node) throws GWTJahiaServiceException;
+
     void compileAndDeploy(String moduleName) throws GWTJahiaServiceException;
 
     void uploadedFile(List<String[]> uploadeds) throws GWTJahiaServiceException;

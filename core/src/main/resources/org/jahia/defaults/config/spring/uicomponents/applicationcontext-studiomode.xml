@@ -549,6 +549,7 @@
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
                                     <ref bean="Toolbar.Item.AddToSourceControl"/>
+                                    <ref bean="Toolbar.Item.MarkConflictAsResolved"/>
                                 </list>
                             </property>
                         </bean>

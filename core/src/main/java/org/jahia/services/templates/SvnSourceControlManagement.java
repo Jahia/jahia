@@ -169,13 +169,33 @@ public class SvnSourceControlManagement extends SourceControlManagement {
 
     @Override
     public void update() throws IOException {
-        executeCommand(executable, "update");
         invalidateStatusCache();
+        checkExecutionResult(executeCommand(executable, "update --non-interactive"));
     }
 
     @Override
     public void commit(String message) throws IOException {
-        executeCommand(executable, "commit -m \"" + message + "\"");
+        invalidateStatusCache();
+        checkExecutionResult(executeCommand(executable, "commit -m \"" + message + "\""));
+    }
+
+    @Override
+    public void markConflictAsResolved(File file) throws IOException {
+        if (file == null) {
+            return;
+        }
+
+        String rootPath = rootFolder.getPath();
+
+        List<String> args = new ArrayList<String>();
+        args.add("resolve");
+        args.add("--accept=working");
+        if (file.getPath().equals(rootPath)) {
+            args.add(".");
+        } else {
+            args.add(file.getPath().substring(rootPath.length() + 1));
+        }
+        executeCommand(executable, StringUtils.join(args, ' '));
         invalidateStatusCache();
     }
 

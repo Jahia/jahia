@@ -139,8 +139,12 @@ class ContentBrowseTabItem extends BrowseTabItem {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
                 boolean displayGrid = false;
                 if (event.getSelectedItem() != null) {
-                    for (String type : event.getSelectedItem().getNodeTypes()) {
-                        displayGrid |= displayGridForTypes.contains(type);
+                    if (displayGridForTypes != null) {
+                        for (String type : event.getSelectedItem().getNodeTypes()) {
+                            displayGrid |= displayGridForTypes.contains(type);
+                        }
+                    } else {
+                        displayGrid = true;
                     }
                     if (displayGrid) {
                         listLoader.load(event.getSelectedItem());

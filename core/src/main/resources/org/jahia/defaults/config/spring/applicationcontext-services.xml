@@ -141,6 +141,7 @@
         <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
         <property name="sourceControlFactory" ref="SourceControlFactory"/>
         <property name="xmlIndentation" value="4"/>
+        <property name="mavenArchetypeCatalog" value="${jahia.mavenArchetypeCatalog:https://devtools.jahia.com/nexus/content/repositories/jahia-snapshots/archetype-catalog.xml}"/>
     </bean>
 
     <bean id="SourceControlFactory" class="org.jahia.services.templates.SourceControlFactory">

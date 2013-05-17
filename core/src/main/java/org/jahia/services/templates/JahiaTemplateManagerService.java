@@ -143,6 +143,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     private static Pattern UNICODE_PATTERN = Pattern.compile("\\\\u([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})");
 
+    private String mavenArchetypeCatalog;
+
+    private Map<Bundle, ModuleState> moduleStates = new TreeMap<Bundle, ModuleState>();
+
     private OutputFormat prettyPrint = OutputFormat.createPrettyPrint();
 
     private TemplatePackageDeployer templatePackageDeployer;
@@ -398,7 +402,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
 
         String[] archetypeParams = {"archetype:generate",
-                "-DarchetypeCatalog=https://devtools.jahia.com/nexus/content/repositories/jahia-snapshots/archetype-catalog.xml,local",
+                "-DarchetypeCatalog="
+                        + mavenArchetypeCatalog
+                        + ",local",
                 "-DarchetypeGroupId=org.jahia.archetypes",
                 "-DarchetypeArtifactId=jahia-" + moduleType + "-archetype",
                 "-DmoduleName=" + moduleName,
@@ -1632,10 +1638,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
 
-    /*****************************************************************************************************************
-     * Registry access
-     *****************************************************************************************************************/
-
     /**
      * Returns a list of all available template packages.
      *
@@ -1938,17 +1940,35 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
 
-    private Map<Bundle, ModuleState> moduleStates = new TreeMap<Bundle, ModuleState>();
-
     public Map<Bundle, ModuleState> getModuleStates() {
         return moduleStates;
+    }
+    
+    /**
+     * Returns list of module bundles in the specified state.
+     * 
+     * @param state
+     *            the state of the module to be considered
+     * @return list of module bundles in the specified state or an empty list if there no modules in that state
+     */
+    public List<Bundle> getModulesByState(ModuleState.State state) {
+        List<Bundle> modules = new LinkedList<Bundle>();
+        for (Map.Entry<Bundle, ModuleState> entry : moduleStates.entrySet()) {
+            if (entry.getValue().getState().equals(state)) {
+                modules.add(entry.getKey());
+            }
+        }
+
+        return !modules.isEmpty() ? modules : Collections.<Bundle> emptyList();
     }
 
     public void setModuleStates(Map<Bundle, ModuleState> moduleStates) {
         this.moduleStates = moduleStates;
     }
 
-    // -------------------------- INNER CLASSES --------------------------
+    public void setMavenArchetypeCatalog(String mavenArchetypeCatalog) {
+        this.mavenArchetypeCatalog = mavenArchetypeCatalog;
+    }
 
     /**
      * This event is fired when a template module is re-deployed (in runtime, not on the server startup).

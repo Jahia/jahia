@@ -165,12 +165,24 @@ public class GitSourceControlManagement extends SourceControlManagement {
 
     public void update() throws IOException {
         executeCommand(executable, "stash clear");
-        executeCommand(executable, "stash");
+
+        Map<String, Status> statusMap = getStatusMap(false);
+        boolean stashRequired = statusMap.values().contains(Status.MODIFIED) || statusMap.values().contains(Status.ADDED)
+                || statusMap.values().contains(Status.DELETED) || statusMap.values().contains(Status.RENAMED)
+                || statusMap.values().contains(Status.COPIED) || statusMap.values().contains(Status.UNMERGED);
+        if (stashRequired) {
+            executeCommand(executable, "stash");
+        }
         ExecutionResult pullResult = executeCommand(executable, "pull --rebase");
-        ExecutionResult stashPopResult = executeCommand(executable, "stash pop");
+        ExecutionResult stashPopResult = null;
+        if (stashRequired) {
+            stashPopResult = executeCommand(executable, "stash pop");
+        }
         invalidateStatusCache();
         checkExecutionResult(pullResult);
-        checkExecutionResult(stashPopResult);
+        if (stashPopResult != null) {
+            checkExecutionResult(stashPopResult);
+        }
     }
 
     public void commit(String message) throws IOException {
@@ -188,64 +200,70 @@ public class GitSourceControlManagement extends SourceControlManagement {
         if (statusMap == null) {
             synchronized (GitSourceControlManagement.class) {
                 if (statusMap == null) {
-                    Map<String, Status> newMap = new HashMap<String, Status>();
-                    ExecutionResult result = executeCommand(executable, "status --porcelain");
-                    for (String line : result.out.split("\n")) {
-                        if (StringUtils.isBlank(line)) {
-                            continue;
-                        }
-                        String path = line.substring(3);
-                        if (path.contains(" -> ")) {
-                            path = StringUtils.substringAfter(path, " -> ");
-                        }
-                        path = StringUtils.removeEnd(path, "/");
-                        String combinedStatus = line.substring(0, 2);
-                        char indexStatus = combinedStatus.charAt(0);
-                        char workTreeStatus = combinedStatus.charAt(1);
-                        Status status = null;
-                        if (workTreeStatus == ' ') {
-                            if (indexStatus == 'M') {
-                                status = Status.MODIFIED;
-                            } else if (indexStatus == 'A') {
-                                status = Status.ADDED;
-                            } else if (indexStatus == 'D') {
-                                status = Status.DELETED;
-                            } else if (indexStatus == 'R') {
-                                status = Status.RENAMED;
-                            } else if (indexStatus == 'C') {
-                                status = Status.COPIED;
-                            }
-                        } else if (workTreeStatus == 'M') {
-                            status = Status.MODIFIED;
-                        } else if (workTreeStatus == 'D') {
-                            if (indexStatus == 'D' || indexStatus == 'U') {
-                                status = Status.UNMERGED;
-                            } else {
-                                status = Status.DELETED;
-                            }
-                        } else if (workTreeStatus == 'A' || workTreeStatus == 'U') {
-                            status = Status.UNMERGED;
-                        } else if (workTreeStatus == '?') {
-                            status = Status.UNTRACKED;
-                        }
-                        if (status != null) {
-                            newMap.put(path, status);
-                            String[] pathSegments = path.split("/");
-                            String subPath = "";
-                            for (String segment : pathSegments) {
-                                newMap.put(subPath, Status.MODIFIED);
-                                if (subPath.isEmpty()) {
-                                    subPath = segment;
-                                } else {
-                                    subPath += "/" + segment;
-                                }
-                            }
-                        }
-                    }
-                    statusMap = newMap;
+                    statusMap = getStatusMap(true);
                 }
             }
         }
         return statusMap;
+    }
+
+    private Map<String, Status> getStatusMap(boolean folder) throws IOException {
+        Map<String, Status> newMap = new HashMap<String, Status>();
+        ExecutionResult result = executeCommand(executable, "status --porcelain");
+        for (String line : result.out.split("\n")) {
+            if (StringUtils.isBlank(line)) {
+                continue;
+            }
+            String path = line.substring(3);
+            if (path.contains(" -> ")) {
+                path = StringUtils.substringAfter(path, " -> ");
+            }
+            path = StringUtils.removeEnd(path, "/");
+            String combinedStatus = line.substring(0, 2);
+            char indexStatus = combinedStatus.charAt(0);
+            char workTreeStatus = combinedStatus.charAt(1);
+            Status status = null;
+            if (workTreeStatus == ' ') {
+                if (indexStatus == 'M') {
+                    status = Status.MODIFIED;
+                } else if (indexStatus == 'A') {
+                    status = Status.ADDED;
+                } else if (indexStatus == 'D') {
+                    status = Status.DELETED;
+                } else if (indexStatus == 'R') {
+                    status = Status.RENAMED;
+                } else if (indexStatus == 'C') {
+                    status = Status.COPIED;
+                }
+            } else if (workTreeStatus == 'M') {
+                status = Status.MODIFIED;
+            } else if (workTreeStatus == 'D') {
+                if (indexStatus == 'D' || indexStatus == 'U') {
+                    status = Status.UNMERGED;
+                } else {
+                    status = Status.DELETED;
+                }
+            } else if (workTreeStatus == 'A' || workTreeStatus == 'U') {
+                status = Status.UNMERGED;
+            } else if (workTreeStatus == '?') {
+                status = Status.UNTRACKED;
+            }
+            if (status != null) {
+                newMap.put(path, status);
+                if (folder) {
+                    String[] pathSegments = path.split("/");
+                    String subPath = "";
+                    for (String segment : pathSegments) {
+                        newMap.put(subPath, Status.MODIFIED);
+                        if (subPath.isEmpty()) {
+                            subPath = segment;
+                        } else {
+                            subPath += "/" + segment;
+                        }
+                    }
+                }
+            }
+        }
+        return newMap;
     }
 }

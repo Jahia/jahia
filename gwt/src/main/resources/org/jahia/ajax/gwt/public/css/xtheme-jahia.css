@@ -25,7 +25,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 * Delete page
 ******************************************************************************/
 .x-window-dlg .ext-mb-delete-page {
-    background-image:url(../images/xtheme-jahia-andromeda/default/window/icon-delete-page.png);
+    background-image:url(../images/xtheme-jahia/icon-delete-page.png);
     background-position: left top;
     background-repeat: no-repeat;
 }
@@ -40,7 +40,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 .x-viewport-adminmode .x-toolbar-first{
     background:none !important;
     background-color : #333333 !important;
-    background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/adminMode.png) no-repeat top right !important;
+    background : #333333 url(../images/xtheme-jahia/adminMode.png) no-repeat top right !important;
     border-top:4px solid #6666CC !important;
     padding: 6px;
 }
@@ -48,22 +48,22 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     color:#fff !important;
 }
 .x-viewport-adminmode .x-toolbar-first .x-btn-menu-active .x-btn-arrow,.x-viewport-adminmode .x-toolbar-first .x-btn-over .x-btn-arrow,.x-viewport-adminmode .x-toolbar-first .x-btn-active .x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow2.gif) !important;
+    background-image:url(../images/xtheme-jahia/arrow2.gif) !important;
 }
 .x-viewport-adminmode .x-toolbar-first .x-btn-menu-active .x-btn-text  {
     color:#3399ff !important;
 }
 .x-viewport-adminmode .x-toolbar-first .x-btn-tl, .x-viewport-adminmode .x-toolbar-first .x-btn-tr, .x-viewport-adminmode .x-toolbar-first .x-btn-tc, .x-viewport-adminmode .x-toolbar-first .x-btn-ml, .x-viewport-adminmode .x-toolbar-first .x-btn-mr, .x-viewport-adminmode .x-toolbar-first .x-btn-mc, .x-viewport-adminmode .x-toolbar-first .x-btn-bl, .x-viewport-adminmode .x-toolbar-first .x-btn-br, .x-viewport-adminmode .x-toolbar-first .x-btn-bc{
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+    background-image:url(../images/xtheme-jahia/btn.png)!important;
 }
 .x-viewport-adminmode .x-toolbar-first .xtb-sep {
-    background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+    background-image:url(../images/xtheme-jahia/grid-split.gif) !important;
 }
 .x-viewport-adminmode .x-toolbar-first .x-btn-over button {
     color:#3399ff !important;
 }
 .x-viewport-adminmode .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
+    background-image:url(../images/xtheme-jahia/arrow.gif);
 }
 .x-viewport-adminmode .x-toolbar-first .x-menu-sep{
     height:1px;
@@ -75,7 +75,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 .x-viewport-studiomode .x-toolbar-first{
     background:none !important;
     background-color : #333333 !important;
-    background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/studioMode-bg.png) no-repeat top right !important;
+    background : #333333 url(../images/xtheme-jahia/studioMode-bg.png) no-repeat top right !important;
     border-top:4px solid #A6D90F !important;
     padding: 6px;
 
@@ -84,22 +84,22 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     color:#fff !important;
 }
 .x-viewport-studiomode .x-toolbar-first .x-btn-menu-active .x-btn-arrow,.x-viewport-studiomode .x-toolbar-first .x-btn-over .x-btn-arrow,.x-viewport-studiomode .x-toolbar-first .x-btn-active .x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow2.gif) !important;
+    background-image:url(../images/xtheme-jahia/arrow2.gif) !important;
 }
 .x-viewport-studiomode .x-toolbar-first .x-btn-menu-active .x-btn-text  {
     color:#3399ff !important;
 }
 .x-viewport-studiomode .x-toolbar-first .x-btn-tl, .x-viewport-studiomode .x-toolbar-first .x-btn-tr, .x-viewport-studiomode .x-toolbar-first .x-btn-tc, .x-viewport-studiomode .x-toolbar-first .x-btn-ml, .x-viewport-studiomode .x-toolbar-first .x-btn-mr, .x-viewport-studiomode .x-toolbar-first .x-btn-mc, .x-viewport-studiomode .x-toolbar-first .x-btn-bl, .x-viewport-studiomode .x-toolbar-first .x-btn-br, .x-viewport-studiomode .x-toolbar-first .x-btn-bc{
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+    background-image:url(../images/xtheme-jahia/btn.png)!important;
 }
 .x-viewport-studiomode .x-toolbar-first .xtb-sep {
-    background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+    background-image:url(../images/xtheme-jahia/grid-split.gif) !important;
 }
 .x-viewport-studiomode .x-toolbar-first .x-btn-over button {
     color:#3399ff !important;
 }
 .x-viewport-studiomode .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
+    background-image:url(../images/xtheme-jahia/arrow.gif);
 }
 .x-viewport-studiomode .x-toolbar-first .x-menu-sep{
     height:1px;
@@ -110,7 +110,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 .x-viewport-studiovisualmode .x-toolbar-first {
     background:none !important;
     background-color : #333333 !important;
-    background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/studiovisualMode-bg.png) no-repeat top right !important;
+    background : #333333 url(../images/xtheme-jahia/studioLayoutMode-bg.png) no-repeat top right !important;
     border-top:4px solid #669900 !important;
     padding: 6px;
 
@@ -119,22 +119,22 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     color:#fff !important;
 }
 .x-viewport-studiovisualmode .x-toolbar-first .x-btn-menu-active .x-btn-arrow,.x-viewport-studiovisualmode .x-toolbar-first .x-btn-over .x-btn-arrow,.x-viewport-studiovisualmode .x-toolbar-first .x-btn-active .x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow2.gif) !important;
+    background-image:url(../images/xtheme-jahia/arrow2.gif) !important;
 }
 .x-viewport-studiovisualmode .x-toolbar-first .x-btn-menu-active .x-btn-text  {
     color:#3399ff !important;
 }
 .x-viewport-studiovisualmode .x-toolbar-first .x-btn-tl, .x-viewport-studiovisualmode .x-toolbar-first .x-btn-tr, .x-viewport-studiovisualmode .x-toolbar-first .x-btn-tc, .x-viewport-studiovisualmode .x-toolbar-first .x-btn-ml, .x-viewport-studiovisualmode .x-toolbar-first .x-btn-mr, .x-viewport-studiovisualmode .x-toolbar-first .x-btn-mc, .x-viewport-studiovisualmode .x-toolbar-first .x-btn-bl, .x-viewport-studiovisualmode .x-toolbar-first .x-btn-br, .x-viewport-studiovisualmode .x-toolbar-first .x-btn-bc{
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+    background-image:url(../images/xtheme-jahia/btn.png)!important;
 }
 .x-viewport-studiovisualmode .x-toolbar-first .xtb-sep {
-    background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+    background-image:url(../images/xtheme-jahia/grid-split.gif) !important;
 }
 .x-viewport-studiovisualmode .x-toolbar-first .x-btn-over button {
     color:#3399ff !important;
 }
 .x-viewport-studiovisualmode .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
+    background-image:url(../images/xtheme-jahia/arrow.gif);
 }
 .x-viewport-studiovisualmode .x-toolbar-first .x-menu-sep{
     height:1px;
@@ -144,7 +144,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 /*Edit Mode*/
 .x-viewport-editmode .x-toolbar-first{
     background:none !important;
-    background : #333 url(../images/xtheme-jahia-andromeda/header/toolbar/editMode-bg.png) no-repeat top right !important;
+    background : #333 url(../images/xtheme-jahia/editMode-bg.png) no-repeat top right !important;
     border-color:#333 !important;
     border-top:4px solid #3399ff !important;
     padding: 6px;
@@ -153,22 +153,22 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     color:#fff !important;
 }
 .x-viewport-editmode .x-toolbar-first .x-btn-menu-active .x-btn-arrow,.x-viewport-editmode .x-toolbar-first .x-btn-over .x-btn-arrow,.x-viewport-editmode .x-toolbar-first .x-btn-active .x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow2.gif) !important;
+    background-image:url(../images/xtheme-jahia/arrow2.gif) !important;
 }
 .x-viewport-editmode .x-toolbar-first .x-btn-menu-active .x-btn-text  {
     color:#3399ff !important;
 }
 .x-viewport-editmode .x-toolbar-first .x-btn-tl, .x-viewport-editmode .x-toolbar-first .x-btn-tr, .x-viewport-editmode .x-toolbar-first .x-btn-tc, .x-viewport-editmode .x-toolbar-first .x-btn-ml, .x-viewport-editmode .x-toolbar-first .x-btn-mr, .x-viewport-editmode .x-toolbar-first .x-btn-mc, .x-viewport-editmode .x-toolbar-first .x-btn-bl, .x-viewport-editmode .x-toolbar-first .x-btn-br, .x-viewport-editmode .x-toolbar-first .x-btn-bc{
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+    background-image:url(../images/xtheme-jahia/btn.png)!important;
 }
 .x-viewport-editmode .x-toolbar-first .xtb-sep {
-    background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+    background-image:url(../images/xtheme-jahia/grid-split.gif) !important;
 }
 .x-viewport-editmode .x-toolbar-first .x-btn-over button {
     color:#3399ff !important;
 }
 .x-viewport-editmode .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
+    background-image:url(../images/xtheme-jahia/arrow.gif);
 }
 .x-viewport-editmode .x-toolbar-first .x-menu-sep{
     height:1px;
@@ -179,7 +179,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 /*Light Edit Mode*/
 .x-viewport-contributemode .x-toolbar-first {
     background:none !important;
-    background : #333 url(../images/xtheme-jahia-andromeda/header/toolbar/contributeMode-bg.png) no-repeat top right !important;
+    background : #333 url(../images/xtheme-jahia/contributeMode-bg.png) no-repeat top right !important;
     border-color:#333 !important;
     border-top:4px solid #99ccff !important;
     padding: 6px;
@@ -188,22 +188,22 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     color:#fff !important;
 }
 .x-viewport-contributemode .x-toolbar-first .x-btn-menu-active .x-btn-arrow,.x-viewport-contributemode .x-toolbar-first .x-btn-over .x-btn-arrow,.x-viewport-contributemode .x-toolbar-first .x-btn-active .x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow2.gif) !important;
+    background-image:url(../images/xtheme-jahia/arrow2.gif) !important;
 }
 .x-viewport-contributemode .x-toolbar-first .x-btn-menu-active .x-btn-text  {
     color:#3399ff !important;
 }
 .x-viewport-contributemode .x-toolbar-first .x-btn-tl, .x-viewport-contributemode .x-toolbar-first .x-btn-tr, .x-viewport-contributemode .x-toolbar-first .x-btn-tc, .x-viewport-contributemode .x-toolbar-first .x-btn-ml, .x-viewport-contributemode .x-toolbar-first .x-btn-mr, .x-viewport-contributemode .x-toolbar-first .x-btn-mc, .x-viewport-contributemode .x-toolbar-first .x-btn-bl, .x-viewport-contributemode .x-toolbar-first .x-btn-br, .x-viewport-contributemode .x-toolbar-first .x-btn-bc{
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+    background-image:url(../images/xtheme-jahia/btn.png)!important;
 }
 .x-viewport-contributemode .x-toolbar-first .xtb-sep {
-    background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+    background-image:url(../images/xtheme-jahia/grid-split.gif) !important;
 }
 .x-viewport-contributemode .x-toolbar-first .x-btn-over button {
     color:#3399ff !important;
 }
 .x-viewport-contributemode .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
+    background-image:url(../images/xtheme-jahia/arrow.gif);
 }
 .x-viewport-contributemode .x-toolbar-first .x-menu-sep{
     height:1px;
@@ -213,7 +213,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 /*United Content Manager*/
 .x-viewport-contentmanager .x-toolbar-first {
     background:none !important;
-    background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/unitedContentManagerMode-bg.png) no-repeat top right !important;
+    background : #333333 url(../images/xtheme-jahia/unitedContentManagerMode-bg.png) no-repeat top right !important;
     border-color:#333 !important;
     border-top:4px solid #999 !important;
     padding: 6px;
@@ -222,22 +222,22 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     color:#fff !important;
 }
 .x-viewport-contentmanager .x-toolbar-first .x-btn-menu-active .x-btn-arrow,.x-viewport-contentmanager .x-toolbar-first .x-btn-over .x-btn-arrow,.x-viewport-contentmanager .x-toolbar-first .x-btn-active .x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow2.gif) !important;
+    background-image:url(../images/xtheme-jahia/arrow2.gif) !important;
 }
 .x-viewport-contentmanager .x-toolbar-first .x-btn-menu-active .x-btn-text  {
     color:#3399ff !important;
 }
 .x-viewport-contentmanager .x-toolbar-first .x-btn-tl, .x-viewport-contentmanager .x-toolbar-first .x-btn-tr, .x-viewport-contentmanager .x-toolbar-first .x-btn-tc, .x-viewport-contentmanager .x-toolbar-first .x-btn-ml, .x-viewport-contentmanager .x-toolbar-first .x-btn-mr, .x-viewport-contentmanager .x-toolbar-first .x-btn-mc, .x-viewport-contentmanager .x-toolbar-first .x-btn-bl, .x-viewport-contentmanager .x-toolbar-first .x-btn-br, .x-viewport-contentmanager .x-toolbar-first .x-btn-bc{
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+    background-image:url(../images/xtheme-jahia/btn.png)!important;
 }
 .x-viewport-contentmanager .x-toolbar-first .xtb-sep {
-    background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+    background-image:url(../images/xtheme-jahia/grid-split.gif) !important;
 }
 .x-viewport-contentmanager .x-toolbar-first .x-btn-over button {
     color:#3399ff !important;
 }
 .x-viewport-contentmanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
+    background-image:url(../images/xtheme-jahia/arrow.gif);
 }
 .x-viewport-contentmanager .x-toolbar-first .x-menu-sep{
     height:1px;
@@ -247,7 +247,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 /*editorial Content Manager*/
 .x-viewport-editorialcontentmanager .x-toolbar-first {
     background:none !important;
-    background : #333 url(../images/xtheme-jahia-andromeda/header/toolbar/editorialContentManager-bg.png) no-repeat top right !important;
+    background : #333 url(../images/xtheme-jahia/editorialContentManager-bg.png) no-repeat top right !important;
     border-color:#333 !important;
     border-top:4px solid #0066cc !important;
     padding: 6px;
@@ -256,22 +256,22 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     color:#fff !important;
 }
 .x-viewport-editorialcontentmanager .x-toolbar-first .x-btn-menu-active .x-btn-arrow,.x-viewport-editorialcontentmanager .x-toolbar-first .x-btn-over .x-btn-arrow,.x-viewport-editorialcontentmanager .x-toolbar-first .x-btn-active .x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow2.gif) !important;
+    background-image:url(../images/xtheme-jahia/arrow2.gif) !important;
 }
 .x-viewport-editorialcontentmanager .x-toolbar-first .x-btn-menu-active .x-btn-text  {
     color:#3399ff !important;
 }
 .x-viewport-editorialcontentmanager .x-toolbar-first .x-btn-tl, .x-viewport-editorialcontentmanager .x-toolbar-first .x-btn-tr, .x-viewport-editorialcontentmanager .x-toolbar-first .x-btn-tc, .x-viewport-editorialcontentmanager .x-toolbar-first .x-btn-ml, .x-viewport-editorialcontentmanager .x-toolbar-first .x-btn-mr, .x-viewport-editorialcontentmanager .x-toolbar-first .x-btn-mc, .x-viewport-editorialcontentmanager .x-toolbar-first .x-btn-bl, .x-viewport-editorialcontentmanager .x-toolbar-first .x-btn-br, .x-viewport-editorialcontentmanager .x-toolbar-first .x-btn-bc{
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+    background-image:url(../images/xtheme-jahia/btn.png)!important;
 }
 .x-viewport-editorialcontentmanager .x-toolbar-first .xtb-sep {
-    background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+    background-image:url(../images/xtheme-jahia/grid-split.gif) !important;
 }
 .x-viewport-editorialcontentmanager .x-toolbar-first .x-btn-over button {
     color:#3399ff !important;
 }
 .x-viewport-editorialcontentmanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
+    background-image:url(../images/xtheme-jahia/arrow.gif);
 }
 .x-viewport-editorialcontentmanager .x-toolbar-first .x-menu-sep{
     height:1px;
@@ -281,7 +281,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 /*Repository Explorer*/
 .x-viewport-repositoryexplorer .x-toolbar-first {
     background:none !important;
-    background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/repositoryExplorer-bg.png) no-repeat top right !important;
+    background : #333333 url(../images/xtheme-jahia/repositoryExplorer-bg.png) no-repeat top right !important;
     border-color:#333 !important;
     border-top:4px solid #999 !important;
     padding: 6px;
@@ -290,22 +290,22 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     color:#fff !important;
 }
 .x-viewport-repositoryexplorer .x-toolbar-first .x-btn-menu-active .x-btn-arrow,.x-viewport-repositoryexplorer .x-toolbar-first .x-btn-over .x-btn-arrow,.x-viewport-repositoryexplorer .x-toolbar-first .x-btn-active .x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow2.gif) !important;
+    background-image:url(../images/xtheme-jahia/arrow2.gif) !important;
 }
 .x-viewport-repositoryexplorer .x-toolbar-first .x-btn-menu-active .x-btn-text  {
     color:#3399ff !important;
 }
 .x-viewport-repositoryexplorer .x-toolbar-first .x-btn-tl, .x-viewport-repositoryexplorer .x-toolbar-first .x-btn-tr, .x-viewport-repositoryexplorer .x-toolbar-first .x-btn-tc, .x-viewport-repositoryexplorer .x-toolbar-first .x-btn-ml, .x-viewport-repositoryexplorer .x-toolbar-first .x-btn-mr, .x-viewport-repositoryexplorer .x-toolbar-first .x-btn-mc, .x-viewport-repositoryexplorer .x-toolbar-first .x-btn-bl, .x-viewport-repositoryexplorer .x-toolbar-first .x-btn-br, .x-viewport-repositoryexplorer .x-toolbar-first .x-btn-bc{
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+    background-image:url(../images/xtheme-jahia/btn.png)!important;
 }
 .x-viewport-repositoryexplorer .x-toolbar-first .xtb-sep {
-    background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+    background-image:url(../images/xtheme-jahia/grid-split.gif) !important;
 }
 .x-viewport-repositoryexplorer .x-toolbar-first .x-btn-over button {
     color:#3399ff !important;
 }
 .x-viewport-repositoryexplorer .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
+    background-image:url(../images/xtheme-jahia/arrow.gif);
 }
 .x-viewport-repositoryexplorer .x-toolbar-first .x-menu-sep{
     height:1px;
@@ -315,7 +315,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 /*Document Manager*/
 .x-viewport-filemanager .x-toolbar-first {
     background:none !important;
-    background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/documentManagerMode-bg.png) no-repeat top right !important;
+    background : #333333 url(../images/xtheme-jahia/documentManagerMode-bg.png) no-repeat top right !important;
     border-color:#333 !important;
     border-top:4px solid #999 !important;
     padding: 6px;
@@ -324,22 +324,22 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     color:#fff !important;
 }
 .x-viewport-filemanager .x-toolbar-first .x-btn-menu-active .x-btn-arrow,.x-viewport-filemanager .x-toolbar-first .x-btn-over .x-btn-arrow,.x-viewport-filemanager .x-toolbar-first .x-btn-active .x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow2.gif) !important;
+    background-image:url(../images/xtheme-jahia/arrow2.gif) !important;
 }
 .x-viewport-filemanager .x-toolbar-first .x-btn-menu-active .x-btn-text  {
     color:#3399ff !important;
 }
 .x-viewport-filemanager .x-toolbar-first .x-btn-tl, .x-viewport-filemanager .x-toolbar-first .x-btn-tr, .x-viewport-filemanager .x-toolbar-first .x-btn-tc, .x-viewport-filemanager .x-toolbar-first .x-btn-ml, .x-viewport-filemanager .x-toolbar-first .x-btn-mr, .x-viewport-filemanager .x-toolbar-first .x-btn-mc, .x-viewport-filemanager .x-toolbar-first .x-btn-bl, .x-viewport-filemanager .x-toolbar-first .x-btn-br, .x-viewport-filemanager .x-toolbar-first .x-btn-bc{
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+    background-image:url(../images/xtheme-jahia/btn.png)!important;
 }
 .x-viewport-filemanager .x-toolbar-first .xtb-sep {
-    background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+    background-image:url(../images/xtheme-jahia/grid-split.gif) !important;
 }
 .x-viewport-filemanager .x-toolbar-first .x-btn-over button {
     color:#3399ff !important;
 }
 .x-viewport-filemanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
+    background-image:url(../images/xtheme-jahia/arrow.gif);
 }
 .x-viewport-filemanager .x-toolbar-first .x-menu-sep{
     height:1px;
@@ -349,7 +349,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 /*Portlet Manager */
 .x-viewport-portletmanager .x-toolbar-first {
     background:none !important;
-    background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/portletManagerMode-bg.png) no-repeat top right !important;;
+    background : #333333 url(../images/xtheme-jahia/portletManagerMode-bg.png) no-repeat top right !important;;
     border-color:#333 !important;
     border-top:4px solid #999 !important;
     padding: 6px;
@@ -358,22 +358,22 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     color:#fff !important;
 }
 .x-viewport-portletmanager .x-toolbar-first .x-btn-menu-active .x-btn-arrow,.x-viewport-portletmanager .x-toolbar-first .x-btn-over .x-btn-arrow,.x-viewport-portletmanager .x-toolbar-first .x-btn-active .x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow2.gif) !important;
+    background-image:url(../images/xtheme-jahia/arrow2.gif) !important;
 }
 .x-viewport-portletmanager .x-toolbar-first .x-btn-menu-active .x-btn-text  {
     color:#3399ff !important;
 }
 .x-viewport-portletmanager .x-toolbar-first .x-btn-tl, .x-viewport-portletmanager .x-toolbar-first .x-btn-tr, .x-viewport-portletmanager .x-toolbar-first .x-btn-tc, .x-viewport-portletmanager .x-toolbar-first .x-btn-ml, .x-viewport-portletmanager .x-toolbar-first .x-btn-mr, .x-viewport-portletmanager .x-toolbar-first .x-btn-mc, .x-viewport-portletmanager .x-toolbar-first .x-btn-bl, .x-viewport-portletmanager .x-toolbar-first .x-btn-br, .x-viewport-portletmanager .x-toolbar-first .x-btn-bc{
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+    background-image:url(../images/xtheme-jahia/btn.png)!important;
 }
 .x-viewport-portletmanager .x-toolbar-first .xtb-sep {
-    background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+    background-image:url(../images/xtheme-jahia/grid-split.gif) !important;
 }
 .x-viewport-portletmanager .x-toolbar-first .x-btn-over button {
     color:#3399ff !important;
 }
 .x-viewport-portletmanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
+    background-image:url(../images/xtheme-jahia/arrow.gif);
 }
 .x-viewport-portletmanager .x-toolbar-first .x-menu-sep{
     height:1px;
@@ -384,7 +384,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 /*Category Manager */
 .x-viewport-categorymanager .x-toolbar-first {
     background:none !important;
-    background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/categoryManagerMode-bg.png) no-repeat top right !important;
+    background : #333333 url(../images/xtheme-jahia/categoryManagerMode-bg.png) no-repeat top right !important;
     border-color:#333 !important;
     border-top:4px solid #999 !important;
     padding: 6px;
@@ -393,22 +393,22 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     color:#fff !important;
 }
 .x-viewport-categorymanager .x-toolbar-first .x-btn-menu-active .x-btn-arrow,.x-viewport-categorymanager .x-toolbar-first .x-btn-over .x-btn-arrow,.x-viewport-categorymanager .x-toolbar-first .x-btn-active .x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow2.gif) !important;
+    background-image:url(../images/xtheme-jahia/arrow2.gif) !important;
 }
 .x-viewport-categorymanager .x-toolbar-first .x-btn-menu-active .x-btn-text  {
     color:#3399ff !important;
 }
 .x-viewport-categorymanager .x-toolbar-first .x-btn-tl, .x-viewport-categorymanager .x-toolbar-first .x-btn-tr, .x-viewport-categorymanager .x-toolbar-first .x-btn-tc, .x-viewport-categorymanager .x-toolbar-first .x-btn-ml, .x-viewport-categorymanager .x-toolbar-first .x-btn-mr, .x-viewport-categorymanager .x-toolbar-first .x-btn-mc, .x-viewport-categorymanager .x-toolbar-first .x-btn-bl, .x-viewport-categorymanager .x-toolbar-first .x-btn-br, .x-viewport-categorymanager .x-toolbar-first .x-btn-bc{
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+    background-image:url(../images/xtheme-jahia/btn.png)!important;
 }
 .x-viewport-categorymanager .x-toolbar-first .xtb-sep {
-    background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+    background-image:url(../images/xtheme-jahia/grid-split.gif) !important;
 }
 .x-viewport-categorymanager .x-toolbar-first .x-btn-over button {
     color:#3399ff !important;
 }
 .x-viewport-categorymanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
+    background-image:url(../images/xtheme-jahia/arrow.gif);
 }
 .x-viewport-categorymanager .x-toolbar-first .x-menu-sep{
     height:1px;
@@ -418,7 +418,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 /*Tag Manager */
 .x-viewport-tagmanager .x-toolbar-first {
     background:none !important;
-    background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/tagManagerMode-bg.png) no-repeat top right !important;
+    background : #333333 url(../images/xtheme-jahia/tagManagerMode-bg.png) no-repeat top right !important;
     border-color:#333 !important;
     border-top:4px solid #999 !important;
     padding: 6px;
@@ -427,22 +427,22 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     color:#fff !important;
 }
 .x-viewport-tagmanager .x-toolbar-first .x-btn-menu-active .x-btn-arrow,.x-viewport-tagmanager .x-toolbar-first .x-btn-over .x-btn-arrow,.x-viewport-tagmanager .x-toolbar-first .x-btn-active .x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow2.gif) !important;
+    background-image:url(../images/xtheme-jahia/arrow2.gif) !important;
 }
 .x-viewport-tagmanager .x-toolbar-first .x-btn-menu-active .x-btn-text  {
     color:#3399ff !important;
 }
 .x-viewport-tagmanager .x-toolbar-first .x-btn-tl, .x-viewport-tagmanager .x-toolbar-first .x-btn-tr, .x-viewport-tagmanager .x-toolbar-first .x-btn-tc, .x-viewport-tagmanager .x-toolbar-first .x-btn-ml, .x-viewport-tagmanager .x-toolbar-first .x-btn-mr, .x-viewport-tagmanager .x-toolbar-first .x-btn-mc, .x-viewport-tagmanager .x-toolbar-first .x-btn-bl, .x-viewport-tagmanager .x-toolbar-first .x-btn-br, .x-viewport-tagmanager .x-toolbar-first .x-btn-bc{
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+    background-image:url(../images/xtheme-jahia/btn.png)!important;
 }
 .x-viewport-tagmanager .x-toolbar-first .xtb-sep {
-    background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+    background-image:url(../images/xtheme-jahia/grid-split.gif) !important;
 }
 .x-viewport-tagmanager .x-toolbar-first .x-btn-over button {
     color:#3399ff !important;
 }
 .x-viewport-tagmanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
+    background-image:url(../images/xtheme-jahia/arrow.gif);
 }
 .x-viewport-tagmanager .x-toolbar-first .x-menu-sep{
     height:1px;
@@ -453,7 +453,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 /*Remote Publication Manager */
 .x-viewport-remotepublicationmanager .x-toolbar-first {
     background:none !important;
-    background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/remotePublicationManagerMode-bg.png) no-repeat top right !important;
+    background : #333333 url(../images/xtheme-jahia/remotePublicationManagerMode-bg.png) no-repeat top right !important;
     border-color:#333 !important;
     border-top:4px solid #999 !important;
     padding: 6px;
@@ -462,22 +462,22 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     color:#fff !important;
 }
 .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-menu-active .x-btn-arrow,.x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-over .x-btn-arrow,.x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-active .x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow2.gif) !important;
+    background-image:url(../images/xtheme-jahia/arrow2.gif) !important;
 }
 .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-menu-active .x-btn-text  {
     color:#3399ff !important;
 }
 .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-tl, .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-tr, .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-tc, .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-ml, .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-mr, .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-mc, .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-bl, .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-br, .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-bc{
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+    background-image:url(../images/xtheme-jahia/btn.png)!important;
 }
 .x-viewport-remotepublicationmanager .x-toolbar-first .xtb-sep {
-    background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+    background-image:url(../images/xtheme-jahia/grid-split.gif) !important;
 }
 .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-over button {
     color:#3399ff !important;
 }
 .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
+    background-image:url(../images/xtheme-jahia/arrow.gif);
 }
 .x-viewport-remotepublicationmanager .x-toolbar-first .x-menu-sep{
     height:1px;
@@ -488,7 +488,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 /*Site Manager */
 .x-viewport-sitemanager .x-toolbar-first {
     background:none !important;
-    background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/siteManagerMode-bg.png) no-repeat top right !important;
+    background : #333333 url(../images/xtheme-jahia/siteManagerMode-bg.png) no-repeat top right !important;
     border-color:#333 !important;
     border-top:4px solid #999 !important;
     padding: 6px;
@@ -497,22 +497,22 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     color:#fff !important;
 }
 .x-viewport-sitemanager .x-toolbar-first .x-btn-menu-active .x-btn-arrow,.x-viewport-sitemanager .x-toolbar-first .x-btn-over .x-btn-arrow,.x-viewport-sitemanager .x-toolbar-first .x-btn-active .x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow2.gif) !important;
+    background-image:url(../images/xtheme-jahia/arrow2.gif) !important;
 }
 .x-viewport-sitemanager .x-toolbar-first .x-btn-menu-active .x-btn-text  {
     color:#3399ff !important;
 }
 .x-viewport-sitemanager .x-toolbar-first .x-btn-tl, .x-viewport-sitemanager .x-toolbar-first .x-btn-tr, .x-viewport-sitemanager .x-toolbar-first .x-btn-tc, .x-viewport-sitemanager .x-toolbar-first .x-btn-ml, .x-viewport-sitemanager .x-toolbar-first .x-btn-mr, .x-viewport-sitemanager .x-toolbar-first .x-btn-mc, .x-viewport-sitemanager .x-toolbar-first .x-btn-bl, .x-viewport-sitemanager .x-toolbar-first .x-btn-br, .x-viewport-sitemanager .x-toolbar-first .x-btn-bc{
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+    background-image:url(../images/xtheme-jahia/btn.png)!important;
 }
 .x-viewport-sitemanager .x-toolbar-first .xtb-sep {
-    background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+    background-image:url(../images/xtheme-jahia/grid-split.gif) !important;
 }
 .x-viewport-sitemanager .x-toolbar-first .x-btn-over button {
     color:#3399ff !important;
 }
 .x-viewport-sitemanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
+    background-image:url(../images/xtheme-jahia/arrow.gif);
 }
 .x-viewport-sitemanager .x-toolbar-first .x-menu-sep{
     height:1px;
@@ -523,7 +523,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 /*Component Manager */
 .x-viewport-sitecomponentmanager .x-toolbar-first {
     background:none !important;
-    background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/componentManager-bg.png) no-repeat top right !important;
+    background : #333333 url(../images/xtheme-jahia/componentManager-bg.png) no-repeat top right !important;
     border-color:#333 !important;
     border-top:4px solid #999 !important;
     padding: 6px;
@@ -532,22 +532,22 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     color:#fff !important;
 }
 .x-viewport-sitemanager .x-toolbar-first .x-btn-menu-active .x-btn-arrow,.x-viewport-sitemanager .x-toolbar-first .x-btn-over .x-btn-arrow,.x-viewport-sitemanager .x-toolbar-first .x-btn-active .x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow2.gif) !important;
+    background-image:url(../images/xtheme-jahia/arrow2.gif) !important;
 }
 .x-viewport-sitemanager .x-toolbar-first .x-btn-menu-active .x-btn-text  {
     color:#3399ff !important;
 }
 .x-viewport-sitemanager .x-toolbar-first .x-btn-tl, .x-viewport-sitemanager .x-toolbar-first .x-btn-tr, .x-viewport-sitemanager .x-toolbar-first .x-btn-tc, .x-viewport-sitemanager .x-toolbar-first .x-btn-ml, .x-viewport-sitemanager .x-toolbar-first .x-btn-mr, .x-viewport-sitemanager .x-toolbar-first .x-btn-mc, .x-viewport-sitemanager .x-toolbar-first .x-btn-bl, .x-viewport-sitemanager .x-toolbar-first .x-btn-br, .x-viewport-sitemanager .x-toolbar-first .x-btn-bc{
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+    background-image:url(../images/xtheme-jahia/btn.png)!important;
 }
 .x-viewport-sitemanager .x-toolbar-first .xtb-sep {
-    background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+    background-image:url(../images/xtheme-jahia/grid-split.gif) !important;
 }
 .x-viewport-sitemanager .x-toolbar-first .x-btn-over button {
     color:#3399ff !important;
 }
 .x-viewport-sitemanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-    background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
+    background-image:url(../images/xtheme-jahia/arrow.gif);
 }
 .x-viewport-sitemanager .x-toolbar-first .x-menu-sep{
     height:1px;
@@ -1061,9 +1061,9 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 
 /* menu */
 .x-menu{border:1px solid #fff;background:none;background-color:#fff;}
-.x-menu-item-active{background:#eaeaea url(../images/xtheme-jahia-andromeda/default/menu/item-over.gif) repeat-x left bottom;border:none;color:#3399ff;}
-.x-menu-item-checked .x-menu-group-item .x-menu-item-icon{background:transparent url(../images/xtheme-jahia-andromeda/default/menu/group-checked.gif) no-repeat center;}
-.x-menu-item-arrow{background:transparent url(../images/xtheme-jahia-andromeda/default/menu/menu-parent.gif) no-repeat right;}
+.x-menu-item-active{background:#eaeaea url(../images/xtheme-jahia/item-over.gif) repeat-x left bottom;border:none;color:#3399ff;}
+.x-menu-item-checked .x-menu-group-item .x-menu-item-icon{background:transparent url(../images/xtheme-jahia/group-checked.gif) no-repeat center;}
+.x-menu-item-arrow{background:transparent url(../images/xtheme-jahia/menu-parent.gif) no-repeat right;}
 .x-menu-item-active a.x-menu-item {
     background-color: #eaeaea;
     color:#3399ff;

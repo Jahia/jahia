@@ -262,7 +262,7 @@ public class SimpleModule extends Module {
                     s = "";
                 }
                 mainModule.getInnerElement().getStyle().setProperty("cursor",
-                        "url('" + s + "/gwt/resources/images/xtheme-jahia-andromeda/panel/link.cur'), pointer");
+                        "url('" + s + "/gwt/resources/images/xtheme-jahia/link.cur'), pointer");
 
                 mainModule.getEditLinker().setSelectionListener(new ModuleSelectionListener() {
                     public void onModuleSelection(Module selection) {

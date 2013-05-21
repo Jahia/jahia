@@ -44,9 +44,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -54,7 +53,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
 import javax.jcr.query.qom.Column;
 import javax.jcr.query.qom.Constraint;
 import javax.jcr.query.qom.Ordering;
@@ -62,11 +60,7 @@ import javax.jcr.query.qom.QueryObjectModel;
 import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Source;
 
-import org.apache.jackrabbit.core.query.JahiaQueryObjectModelImpl;
-import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
-import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
@@ -198,11 +192,13 @@ public class QueryManagerImpl implements QueryManager {
     }
 
     public String[] getSupportedQueryLanguages() throws RepositoryException {
-        List<String> res = new ArrayList<String>();
+        Set<String> res = new HashSet<String>();
         for (JCRStoreProvider jcrStoreProvider : sessionFactory.getProviders().values()) {
             QueryManager qm = jcrStoreProvider.getQueryManager(session);
             if (qm != null) {
-                res.addAll(Arrays.asList(qm.getSupportedQueryLanguages()));
+                for (String lang : qm.getSupportedQueryLanguages()) {
+                    res.add(lang);
+                }
             }
         }
         return res.toArray(new String[res.size()]);

@@ -341,6 +341,7 @@
                                         break;
                                     }
                                 }
+                                property.setValue(newValues);
                             } else {
                                 property.setValue((Value) null);
                             }

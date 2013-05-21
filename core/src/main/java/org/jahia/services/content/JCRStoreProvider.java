@@ -96,7 +96,7 @@ import java.util.*;
  *
  * @author toto
  */
-public class JCRStoreProvider {
+public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     private static Logger logger = LoggerFactory.getLogger(JCRStoreProvider.class);
 
@@ -318,7 +318,7 @@ public class JCRStoreProvider {
             String tmpAuthenticationType = authenticationType;
             authenticationType = "shared";
 
-            getSessionFactory().addProvider(getKey(), getMountPoint(), this);
+            getSessionFactory().addProvider(this);
 
             if (SettingsBean.getInstance().isProcessingServer()) {
                 initNodeTypes();
@@ -1063,5 +1063,16 @@ public class JCRStoreProvider {
         return null;
     }
 
-
+    @Override
+    public int compareTo(JCRStoreProvider o) {
+        if (this == o) {
+            return 0;
+        }
+        
+        if (o == null) {
+            return 1;
+        }
+        
+        return StringUtils.defaultString(getMountPoint()).compareTo(StringUtils.defaultString(o.getMountPoint()));
+    }
 }

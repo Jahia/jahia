@@ -40,9 +40,8 @@
 
 package org.jahia.services.content;
 
-import org.apache.jackrabbit.core.JahiaSessionImpl;
+import org.apache.commons.collections.map.UnmodifiableMap;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
-import org.jahia.api.Constants;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -78,8 +77,8 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private NamespaceRegistryWrapper namespaceRegistry;
     private Map<String, String> descriptors = new HashMap<String, String>();
     private JahiaUserManagerService userService;
-    private Map<String, JCRStoreProvider> providers = new HashMap<String, JCRStoreProvider>();
-    private List<JCRStoreProvider> providerList = new ArrayList<JCRStoreProvider>();
+    private Map<String, JCRStoreProvider> providers;
+    private List<JCRStoreProvider> providerList = new LinkedList<JCRStoreProvider>();
     private Set<String> allMountPoints = new HashSet<String>();
     private SortedMap<String, JCRStoreProvider> mountPoints = new TreeMap<String, JCRStoreProvider>();
     private SortedMap<String, JCRStoreProvider> dynamicMountPoints = new TreeMap<String, JCRStoreProvider>();
@@ -347,17 +346,35 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         return dynamicMountPoints;
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String, JCRStoreProvider> getProviders() {
-        return new HashMap<String, JCRStoreProvider>(providers);
+        if (providers == null) {
+            Map<String, JCRStoreProvider> providerMap = new LinkedHashMap<String, JCRStoreProvider>(providerList.size());
+            for (JCRStoreProvider p : providerList) {
+                providerMap.put(p.getKey(), p);
+            }
+            providers = UnmodifiableMap.decorate(providerMap);
+        }
+        return providers;
     }
 
     public JCRStoreProvider getDefaultProvider() {
-        return providers.get(DEFAULT_PROVIDER_KEY);
+        return getProviders().get(DEFAULT_PROVIDER_KEY);
     }
 
-    public void addProvider(String key, String mountPoint, JCRStoreProvider p) {
-        providers.put(key, p);
+    /**
+     * Registers the JCR store provider.
+     * 
+     * @param p
+     *            the provider instance
+     */
+    public void addProvider(JCRStoreProvider p) {
+        String key = p.getKey();
+        String mountPoint = p.getMountPoint();
+
         providerList.add(p);
+        providers = null;
+        Collections.sort(providerList);
 
         if (mountPoint != null) {
             if (p.isDynamicallyMounted()) {
@@ -367,12 +384,33 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
             }
             allMountPoints.add(mountPoint);
         }
-        logger.info("Added provider " + key + " at mount point " + mountPoint + " using implementation " + p.getClass().getName());
+        logger.info("Added provider " + key + " at mount point " + mountPoint + " using implementation "
+                + p.getClass().getName());
+    }
+
+    /**
+     * Registers the JCR store provider.
+     * 
+     * @param key
+     *            the key of the provider
+     * @param mountPoint
+     *            provider's mount point
+     * @param p
+     *            the provider instance
+     * @deprecated use {@link #addProvider(JCRStoreProvider)} instead
+     */
+    @Deprecated
+    public void addProvider(String key, String mountPoint, JCRStoreProvider p) {
+        addProvider(p);
     }
 
     public void removeProvider(String key) {
-        JCRStoreProvider p = providers.remove(key);
+        JCRStoreProvider p = getProviders().get(key);
+        if (p == null) {
+            return;
+        }
         providerList.remove(p);
+        providers = null;
         if (p != null && p.getMountPoint() != null) {
             mountPoints.remove(p.getMountPoint());
             dynamicMountPoints.remove(p.getMountPoint());

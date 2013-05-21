@@ -189,7 +189,7 @@ pageContext.setAttribute("limitReached", limitCount > 1000);
         <tr style="${'executing' == state ? 'color: green; font-weight: bold;' : ''}">
             <td><strong>${status.index + 1}</strong></td>
             <td>
-                <a class="dataLink" title="Job data" href="#jobData${status.index}"><img src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16" height="16" alt="?" title="Job data"/></a>
+                <a class="dataLink" title="Job data" href="#jobData${status.index}"><img src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="?" title="Job data"/></a>
                 <div style="display: none;">
                     <div id="jobData${status.index}">
                         <h3>${fn:escapeXml(job.fullName)}</h3>
@@ -245,16 +245,16 @@ pageContext.setAttribute("limitReached", limitCount > 1000);
             <td>
                 <c:if test="${not empty trigger}">
                     <c:if test="${triggerState == 0}">
-                        <a title="Pause job" href="#pause" onclick="if (confirm('You are about to temporary pause the job ${job.fullName}. Continue?')) { go('action', 'pause', 'name', '${functions:escapeJavaScript(job.name)}', 'group', '${job.group}'); } return false;"><img src="<c:url value='/css/images/andromeda/icons/media_pause.png'/>" width="16" height="16" alt="cancel" title="Pause job"/></a>
+                        <a title="Pause job" href="#pause" onclick="if (confirm('You are about to temporary pause the job ${job.fullName}. Continue?')) { go('action', 'pause', 'name', '${functions:escapeJavaScript(job.name)}', 'group', '${job.group}'); } return false;"><img src="<c:url value='/icons/media_pause.png'/>" width="16" height="16" alt="cancel" title="Pause job"/></a>
                     </c:if>
                     <c:if test="${triggerState == 1}">
-                        <a title="Resume job" href="#resume" onclick="if (confirm('You are about to resume suspended job ${job.fullName}. If its trigger missed the fire time it will fire immediately. Continue?')) { go('action', 'resume', 'name', '${functions:escapeJavaScript(job.name)}', 'group', '${job.group}'); } return false;"><img src="<c:url value='/css/images/andromeda/icons/media_play_green.png'/>" width="16" height="16" alt="cancel" title="Resume job"/></a>
+                        <a title="Resume job" href="#resume" onclick="if (confirm('You are about to resume suspended job ${job.fullName}. If its trigger missed the fire time it will fire immediately. Continue?')) { go('action', 'resume', 'name', '${functions:escapeJavaScript(job.name)}', 'group', '${job.group}'); } return false;"><img src="<c:url value='/icons/media_play_green.png'/>" width="16" height="16" alt="cancel" title="Resume job"/></a>
                     </c:if>
                     <c:if test="${job.durable}">
-                        <a title="Cancel job (unschedule)" href="#cancel" onclick="if (confirm('You are about to cancel (unschedule) the job ${job.fullName}. Continue?')) { go('action', 'cancel', 'name', '${trigger.name}', 'group', '${trigger.group}'); } return false;"><img src="<c:url value='/css/images/andromeda/icons/cancel.png'/>" width="16" height="16" alt="cancel" title="Cancel job (unschedule)"/></a>
+                        <a title="Cancel job (unschedule)" href="#cancel" onclick="if (confirm('You are about to cancel (unschedule) the job ${job.fullName}. Continue?')) { go('action', 'cancel', 'name', '${trigger.name}', 'group', '${trigger.group}'); } return false;"><img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt="cancel" title="Cancel job (unschedule)"/></a>
                     </c:if>
                     <c:if test="${not job.durable}">
-                        <a title="Cancel job (unschedule) and delete its data" href="#cancelAndRemove" onclick="if (confirm('You are about to cancel (unschedule) and permanently remove the job data for job ${job.fullName}. Continue?')) { go('action', 'cancel', 'name', '${trigger.name}', 'group', '${trigger.group}'); } return false;"><img src="<c:url value='/css/images/andromeda/icons/delete.png'/>" width="16" height="16" alt="cancel" title="Cancel job (unschedule) and delete its data"/></a>
+                        <a title="Cancel job (unschedule) and delete its data" href="#cancelAndRemove" onclick="if (confirm('You are about to cancel (unschedule) and permanently remove the job data for job ${job.fullName}. Continue?')) { go('action', 'cancel', 'name', '${trigger.name}', 'group', '${trigger.group}'); } return false;"><img src="<c:url value='/icons/delete.png'/>" width="16" height="16" alt="cancel" title="Cancel job (unschedule) and delete its data"/></a>
                     </c:if>
                 </c:if>
                 <c:if test="${empty trigger}">

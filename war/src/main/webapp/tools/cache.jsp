@@ -133,7 +133,7 @@
         <c:if test="${showConfig}">
             &nbsp;
             <a class="configLink" title="Cache configuration details" href="#managerconfig-${managerStatus.index}"><img
-                    src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16" height="16" alt="?"
+                    src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="?"
                     title="Cache configuration details"/></a>
 
             <div style="display: none;">
@@ -225,7 +225,7 @@
                     <td align="center">
                         <a class="configLink" title="Cache configuration details"
                            href="#config-${managerStatus.index}-${status.index}"><img
-                                src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16" height="16"
+                                src="<c:url value='/icons/help.png'/>" width="16" height="16"
                                 alt="?" title="Cache configuration details"/></a>
 
                         <div style="display: none;">

@@ -35,7 +35,7 @@ int hash = indexRoot.getPath().hashCode();
         </span>
         </td>
         <td>
-        <a class="detailsLink" title="Show details" href="#details-<%=hash%>-<%=count%>"><img src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16" height="16" alt="?" title="Show details"/></a>
+        <a class="detailsLink" title="Show details" href="#details-<%=hash%>-<%=count%>"><img src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="?" title="Show details"/></a>
         <div style="display: none;">
             <div id="details-<%=hash%>-<%=count%>">
                 <h3>Index <%= folder.getPath() %></h3>

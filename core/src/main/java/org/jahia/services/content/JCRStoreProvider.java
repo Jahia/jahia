@@ -894,9 +894,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             if (q instanceof JahiaQueryObjectModelImpl) {
                 JahiaLuceneQueryFactoryImpl lqf = (JahiaLuceneQueryFactoryImpl) ((JahiaQueryObjectModelImpl) q)
                         .getLuceneQueryFactory();
-
-                lqf.setProvider(this);
-                lqf.setJcrSession(session);
+                lqf.setLocale(session.getLocale());
             }
             QueryResult qr = q.execute();
             NodeIterator ni = qr.getNodes();

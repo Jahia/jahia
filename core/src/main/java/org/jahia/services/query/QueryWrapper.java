@@ -151,9 +151,7 @@ public class QueryWrapper implements Query {
                 if (query instanceof JahiaQueryObjectModelImpl) {
                     JahiaLuceneQueryFactoryImpl lqf = (JahiaLuceneQueryFactoryImpl) ((JahiaQueryObjectModelImpl) query)
                             .getLuceneQueryFactory();
-
-                    lqf.setProvider(jcrStoreProvider);
-                    lqf.setJcrSession(session);
+                    lqf.setLocale(session.getLocale());
                 }
             }
         }

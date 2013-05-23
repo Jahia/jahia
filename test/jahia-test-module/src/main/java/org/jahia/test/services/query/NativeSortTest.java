@@ -468,6 +468,6 @@ public class NativeSortTest {
     }
     
     private static void setNativeSort(boolean enabled) {
-        JahiaQueryEngine.NATIVE_SORT = enabled;
+        JahiaQueryEngine.nativeSort = enabled;
     }
 }

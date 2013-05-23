@@ -61,11 +61,11 @@
 <c:set var="offset" value="${functions:default(fn:escapeXml(param.offset), '0')}"/>
 <c:set var="displayLimit" value="${functions:default(fn:escapeXml(param.displayLimit), '100')}"/>
 <c:set var="showActions" value="${functions:default(fn:escapeXml(param.showActions), 'false')}"/>
-<c:set var="useNativeSort" value="<%= JahiaQueryEngine.NATIVE_SORT %>"/>
+<c:set var="useNativeSort" value="<%= JahiaQueryEngine.nativeSort %>"/>
 <c:set var="allowChangingNativeSort" value="false"/>
 <c:if test="${allowChangingNativeSort && not empty param.useNativeSort}">
     <c:set var="useNativeSort" value="${fn:escapeXml(param.useNativeSort)}"/>
-    <% JahiaQueryEngine.NATIVE_SORT = Boolean.valueOf(request.getParameter("useNativeSort")); %>
+    <% JahiaQueryEngine.nativeSort = Boolean.valueOf(request.getParameter("useNativeSort")); %>
 </c:if>
 <%
 Locale currentLocale = LanguageCodeConverters.languageCodeToLocale((String) pageContext.getAttribute("locale"));

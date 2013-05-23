@@ -92,8 +92,7 @@ import static org.apache.lucene.search.BooleanClause.Occur.MUST;
 public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
     private static Logger logger = LoggerFactory.getLogger(LazySelectorRow.class);   // <-- Added by jahia
 
-    private JCRStoreProvider provider;
-    private JCRSessionWrapper jcrSession;
+    private Locale locale;
 
     public JahiaLuceneQueryFactoryImpl(SessionImpl session, SearchIndex index, Map<String, Value> bindVariables) throws RepositoryException {
         super(session, index, bindVariables);
@@ -218,8 +217,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                                     columns,
                                                     evaluator,
                                                     selector.getSelectorName(),
-                                                    provider.getNodeWrapper(
-                                                            objectNode, jcrSession),
+                                                    objectNode,
                                                     node.getScore());
                                             }
                                         } else {
@@ -267,8 +265,8 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                     } else {
                                         Row row = new SelectorRow(columns, evaluator,
                                                 selector.getSelectorName(),
-                                                provider.getNodeWrapper(objectNode,
-                                                        jcrSession), node.getScore());
+                                                objectNode,
+                                                node.getScore());
                                         if (filter.evaluate(row)) {
                                             if ((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) {
                                                 if (externalSort) {
@@ -488,20 +486,12 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         return super.mapConstraintToQueryAndFilter(query,constraint, selectorMap, searcher, reader);
     }
 
-    public JCRStoreProvider getProvider() {
-        return provider;
+    public void setLocale(Locale locale) {
+        this.locale = locale;
     }
 
-    public void setProvider(JCRStoreProvider provider) {
-        this.provider = provider;
-    }
-
-    public JCRSessionWrapper getJcrSession() {
-        return jcrSession;
-    }
-
-    public void setJcrSession(JCRSessionWrapper jcrSession) {
-        this.jcrSession = jcrSession;
+    public Locale getLocale() {
+        return locale;
     }
 
     @Override
@@ -590,7 +580,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                         originalNode = originalNode.getParent();
                     }
                     if (originalNode != null) {
-                        node = provider.getNodeWrapper(originalNode, jcrSession); 
+                        node = originalNode;
                     }
                 }
             } catch (ItemNotFoundException e) {

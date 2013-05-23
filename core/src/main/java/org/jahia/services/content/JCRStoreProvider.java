@@ -718,6 +718,16 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         }
         final JCRNodeWrapper w = createWrapper(objectNode, path, parent, session);
         if (objectNode.isNew() || w.checkValidity()) {
+            if (isDefault()) {
+                for (Map.Entry<String, JCRStoreProvider> entry : sessionFactory.getMountPoints().entrySet()) {
+                    if (path.startsWith(entry.getKey())) {
+                        if (entry.getValue() != this) {
+                            throw new PathNotFoundException(objectNode.getPath());
+                        }
+                        break;
+                    }
+                }
+            }
             return service.decorate(w);
         } else {
             throw new PathNotFoundException("This node doesn't exist in this language " + objectNode.getPath());

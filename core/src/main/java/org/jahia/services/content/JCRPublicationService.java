@@ -274,9 +274,13 @@ public class JCRPublicationService extends JahiaService {
 
         List<JCRNodeWrapper> toPublish = new ArrayList<JCRNodeWrapper>();
         for (String uuid : uuidsToPublish) {
-            JCRNodeWrapper node = sourceSession.getNodeByUUID(uuid);
-            if (!node.isNodeType("jmix:nolive")) {
-                toPublish.add(node);
+            try {
+                JCRNodeWrapper node = sourceSession.getNodeByUUID(uuid);
+                if (!node.isNodeType("jmix:nolive")) {
+                    toPublish.add(node);
+                }
+            } catch (javax.jcr.ItemNotFoundException e) {
+                logger.error("Impossible to publish missing node", e);
             }
         }
 

@@ -755,6 +755,11 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 if (!w.hasNode(Constants.JCR_CONTENT) || !w.getNode(Constants.JCR_CONTENT).hasProperty(Constants.JCR_DATA)) {
                     logger.warn("Cannot find the file content for the node " + w.getPath()
                             + ". Skipping importing it.");
+                    final NodeIterator iterator = w.getNodes();
+                    while (iterator.hasNext()) {
+                        final Node node = iterator.nextNode();
+                        uuids.remove(node.getIdentifier());
+                    }
                     uuids.remove(w.getIdentifier());
                     w.remove();
                 }

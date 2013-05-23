@@ -106,7 +106,7 @@ public class QueryWrapper implements Query {
     }
 
     private void init() throws InvalidQueryException, RepositoryException {
-        queries = new HashMap<JCRStoreProvider, Query>();
+        queries = new LinkedHashMap<JCRStoreProvider, Query>();
 
         Collection<JCRStoreProvider> providers = service.getProviders().values();
 

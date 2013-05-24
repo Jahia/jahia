@@ -42,7 +42,7 @@
             </c:forEach>
         </ul>
     </div>
-    <c:if test="${not empty displayList}">
+    <c:if test="${not empty displayList && !jcr:isNodeType(displayList, 'jnt:acl')}">
         <div class="tabContainer"><!--start tabContainer-->
             <template:module path="${displayList.path}" view="default"/>
             <div class="clear"></div>

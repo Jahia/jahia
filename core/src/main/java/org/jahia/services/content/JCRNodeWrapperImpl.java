@@ -3709,6 +3709,19 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         } catch (RepositoryException e) {
             return false;
         }
+
+        if (getProvider().isDefault()) {
+            String path = getPath();
+            for (Map.Entry<String, JCRStoreProvider> entry : getProvider().getSessionFactory().getMountPoints().entrySet()) {
+                if (path.startsWith(entry.getKey())) {
+                    if (entry.getValue() != getProvider()) {
+                        return false;
+                    }
+                    break;
+                }
+            }
+        }
+
         return true;
     }
 

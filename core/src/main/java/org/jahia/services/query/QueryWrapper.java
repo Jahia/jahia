@@ -145,8 +145,25 @@ public class QueryWrapper implements Query {
             }
             if (jcrStoreProvider.isDefault()) {
                 if (Query.JCR_SQL2.equals(language)) {
-                    query = QueryServiceImpl.getInstance().modifyAndOptimizeQuery(
+                    QueryObjectModel qom = QueryServiceImpl.getInstance().modifyAndOptimizeQuery(
                             (QueryObjectModel) query, factory, session);
+
+                    Set<String> pathToFilter = new HashSet<String>();
+                    for (String s : JCRSessionFactory.getInstance().getAllMountPoints()) {
+                        if (!s.equals("/")) {
+                            if (session.getProviderSession(jcrStoreProvider).itemExists(s)) {
+                                /** constraint does not work if node has no subnodes **/
+                                if (session.getProviderSession(jcrStoreProvider).getNode(s).hasNodes()) {
+                                    pathToFilter.add(s);
+                                }
+                            }
+                        }
+                    }
+                    if (pathToFilter.isEmpty()) {
+                        query = qom;
+                    } else {
+                        query = factory.createQuery(qom.getSource(), filterMountPoints(qom.getConstraint(), qom.getSource(), pathToFilter, factory), qom.getOrderings(), qom.getColumns());
+                    }
                 }
                 if (query instanceof JahiaQueryObjectModelImpl) {
                     JahiaLuceneQueryFactoryImpl lqf = (JahiaLuceneQueryFactoryImpl) ((JahiaQueryObjectModelImpl) query)
@@ -158,6 +175,22 @@ public class QueryWrapper implements Query {
         return query;
     }
 
+    private Constraint filterMountPoints(Constraint constraint, Source source, Set<String> pathsToFilter, QueryObjectModelFactory f) throws RepositoryException {
+        if (source instanceof Selector) {
+            for (String s : pathsToFilter) {
+                Constraint c = f.not(f.descendantNode(((Selector) source).getSelectorName(), s));
+                if (constraint == null) {
+                    constraint = c;
+                } else {
+                    constraint = f.and(c,constraint);
+                }
+            }
+        } else if (source instanceof Join) {
+            constraint = filterMountPoints(constraint, ((Join) source).getLeft(), pathsToFilter, f);
+            constraint = filterMountPoints(constraint, ((Join) source).getRight(), pathsToFilter, f);
+        }
+        return constraint;
+    }
 
     private Constraint convertPath(Constraint constraint, String mountPoint, QueryObjectModelFactory f) throws RepositoryException {
         if (constraint instanceof ChildNode) {

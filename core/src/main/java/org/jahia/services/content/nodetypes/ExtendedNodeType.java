@@ -504,7 +504,7 @@ public class ExtendedNodeType implements NodeType {
 
     public Map<String,ExtendedNodeDefinition> getUnstructuredChildNodeDefinitions() {
         if (allUnstructuredNodes == null) {
-            allUnstructuredNodes = new ConcurrentHashMap<String,ExtendedNodeDefinition>();
+            allUnstructuredNodes = new LinkedHashMap<String, ExtendedNodeDefinition>();
             allUnstructuredNodes.putAll(unstructuredNodes);
 
             ExtendedNodeType[] supertypes = getSupertypes();

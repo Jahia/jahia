@@ -118,19 +118,19 @@ pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(L
             <option value="100"${limit == '100' ? 'selected="selected"' : ''}>100</option>
             <option value="1000"${limit == '1000' ? 'selected="selected"' : ''}>1000</option>
             <option value="10000"${limit == '10000' ? 'selected="selected"' : ''}>10000</option>
-            <option value="0"${limit == '0' ? 'selected="selected"' : ''}>all</option>
+            <option value="-1"${limit == '-1' ? 'selected="selected"' : ''}>all</option>
         </select>
         &nbsp;Offset:
         <input type="text" size="2" name="offset" id="offset" value="${offset}"/>
         Display limit:
         <select name="displayLimit" id="displayLimit">
-            <option value="-1"${displayLimit == '-1' ? 'selected="selected"' : ''}>none</option>
+            <option value="0"${displayLimit == '0' ? 'selected="selected"' : ''}>none</option>
             <option value="100"${displayLimit == '100' ? 'selected="selected"' : ''}>100</option>
             <option value="200"${displayLimit == '200' ? 'selected="selected"' : ''}>200</option>
             <option value="500"${displayLimit == '500' ? 'selected="selected"' : ''}>500</option>
             <option value="1000"${displayLimit == '1000' ? 'selected="selected"' : ''}>1000</option>
             <option value="10000"${displayLimit == '10000' ? 'selected="selected"' : ''}>10000</option>
-            <option value="0"${displayLimit == '0' ? 'selected="selected"' : ''}>all</option>
+            <option value="-1"${displayLimit == '-1' ? 'selected="selected"' : ''}>all</option>
         </select>
         <input type="submit" value="Execute query ([Ctrl+Enter])" />
         </span>
@@ -164,7 +164,7 @@ JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSes
        try {
            Query q = jcrSession.getWorkspace().getQueryManager().createQuery(request.getParameter("query"), (String) pageContext.getAttribute("lang"));
            long limit = Long.valueOf((String) pageContext.getAttribute("limit"));
-           if (limit > 0) {
+           if (limit >= 0) {
                q.setLimit(limit);
            }
            q.setOffset(Long.valueOf((String) pageContext.getAttribute("offset")));
@@ -194,7 +194,7 @@ JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSes
        long actionTime = System.currentTimeMillis();
        Query q = jcrSession.getWorkspace().getQueryManager().createQuery(request.getParameter("query"), (String) pageContext.getAttribute("lang"));
        long limit = Long.valueOf((String) pageContext.getAttribute("limit"));
-       if (limit > 0) {
+       if (limit >= 0) {
            q.setLimit(limit);
        }
        q.setOffset(Long.valueOf((String) pageContext.getAttribute("offset")));
@@ -211,7 +211,7 @@ try {
         long actionTime = System.currentTimeMillis();
         Query q = jcrSession.getWorkspace().getQueryManager().createQuery(query, (String) pageContext.getAttribute("lang"));
         long limit = Long.valueOf((String) pageContext.getAttribute("limit"));
-        if (limit > 0) {
+        if (limit >= 0) {
             q.setLimit(limit);
         }
         q.setOffset(Long.valueOf((String) pageContext.getAttribute("offset")));
@@ -243,14 +243,14 @@ try {
 %>
 <c:if test="${not empty param.query}">
 <fieldset>
-    <legend>Found ${count} results. Displaying ${displayLimit == -1 ? 'none' : (displayLimit == 0 || displayLimit > count ? 'all' : displayLimit)}. Query took ${took} ms.</legend>
+    <legend>Found ${count} results. Displaying ${displayLimit == 0 ? 'none' : (displayLimit == -1 || displayLimit > count ? 'all' : displayLimit)}. Query took ${took} ms.</legend>
     <c:if test="${showActions}">
         <div style="position: absolute; right: 20px;">
             <a href="#delete" onclick='if (!confirm("You are about to permanently delete all the nodes this query is matching (considering limit and offset). Continue?")) return false; go("action", "deleteAll"); return false;' title="Permanently delete all the nodes this query is matching (considering limit and offset)"><img src="<c:url value='/icons/delete.png'/>" height="16" width="16" title="Permanently delete all the nodes this query is matching (considering limit and offset)" border="0"/> Delete all found</a><br/>
             <a href="#history" onclick='if (!confirm("You are about to purge unused versions for all nodes this query is matching (considering limit and offset). Continue?")) return false; go("action", "purgeHistory"); return false;' title="Purge unused versions for all nodes (considering limit and offset)"><img src="<c:url value='/icons/tab-templates.png'/>" height="16" width="16" title="Purge unused versions for all nodes (considering limit and offset)" border="0"/> Purge unused versions for all found nodes</a>
         </div>
     </c:if>
-<c:if test="${displayLimit != -1}">
+<c:if test="${displayLimit != 0}">
 <% pageContext.setAttribute("maxIntValue", Integer.MAX_VALUE); %>
 <c:if test="${hasFacets}">
     <div class="facets">Facets:
@@ -287,7 +287,7 @@ try {
     <li><strong>${countColumnName}: </strong>${countResult}</li>
 </c:when>
 <c:when test="${empty rows}">
-<c:forEach var="node" items="${nodes}" varStatus="status" end="${displayLimit != 0 ? displayLimit - 1 : maxIntValue}">
+<c:forEach var="node" items="${nodes}" varStatus="status" end="${displayLimit != -1 ? displayLimit - 1 : maxIntValue}">
     <li>
         <a title="Open in JCR Browser" href="<c:url value='/tools/jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true'/>" target="_blank"><strong>${fn:escapeXml(not empty node.displayableName ? node.name : '<root>')}</strong></a> (${fn:escapeXml(node.nodeTypes)})
         <a title="Open in Repository Explorer" href="<c:url value='/engines/manager.jsp?selectedPaths=${node.path}&workspace=${workspace}'/>" target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16" height="16" alt="open" title="Open in Repository Explorer"></a>
@@ -311,7 +311,7 @@ try {
 </c:forEach>
 </c:when>
 <c:otherwise>
-<c:forEach var="row" items="${rows}" varStatus="status" end="${displayLimit != 0 ? displayLimit - 1 : maxIntValue}">
+<c:forEach var="row" items="${rows}" varStatus="status" end="${displayLimit != -1 ? displayLimit - 1 : maxIntValue}">
     <li>
       <c:forEach var="selectorName" items="${selectorNames}" varStatus="nodestatus">
         <c:set var="node" value="${row.nodes[selectorName]}"/>
@@ -343,7 +343,7 @@ try {
 </c:choose>
 </ol>
 </c:if>
-<c:if test="${displayLimit == -1}">
+<c:if test="${displayLimit == 0}">
 <br/><br/>
 </c:if>
 </fieldset>

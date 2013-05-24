@@ -45,10 +45,7 @@ import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
+import javax.jcr.*;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import java.util.*;
@@ -139,6 +136,8 @@ public class LastModifiedListener extends DefaultEventListener {
                                 JCRNodeWrapper n = session.getNode(node);
                                 sessions.add(n.getRealNode().getSession());
                                 updateProperty(n, c, finalUserId, autoPublishedIds, type);
+                            } catch (UnsupportedRepositoryOperationException e) {
+                                // Cannot write property
                             } catch (PathNotFoundException e) {
                                 // node has been removed
                             }
@@ -151,6 +150,8 @@ public class LastModifiedListener extends DefaultEventListener {
                                     n.setProperty("j:originWS", workspace);
                                 }
                                 updateProperty(n, c, finalUserId, autoPublishedIds, type);
+                            } catch (UnsupportedRepositoryOperationException e) {
+                                // Cannot write property
                             } catch (PathNotFoundException e) {
                                 // node has been removed
                             }

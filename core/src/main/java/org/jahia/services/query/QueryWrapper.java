@@ -149,12 +149,15 @@ public class QueryWrapper implements Query {
                             (QueryObjectModel) query, factory, session);
 
                     Set<String> pathToFilter = new HashSet<String>();
+                    Set<String> pathsWithoutSubNodesToFilter = new HashSet<String>();
                     for (String s : JCRSessionFactory.getInstance().getAllMountPoints()) {
                         if (!s.equals("/")) {
                             if (session.getProviderSession(jcrStoreProvider).itemExists(s)) {
-                                /** constraint does not work if node has no subnodes **/
+                                /** isdescendantnode constraint does not work if node has no subnodes **/
                                 if (session.getProviderSession(jcrStoreProvider).getNode(s).hasNodes()) {
                                     pathToFilter.add(s);
+                                } else {
+                                    pathsWithoutSubNodesToFilter.add(s);
                                 }
                             }
                         }
@@ -162,7 +165,7 @@ public class QueryWrapper implements Query {
                     if (pathToFilter.isEmpty()) {
                         query = qom;
                     } else {
-                        query = factory.createQuery(qom.getSource(), filterMountPoints(qom.getConstraint(), qom.getSource(), pathToFilter, factory), qom.getOrderings(), qom.getColumns());
+                        query = factory.createQuery(qom.getSource(), filterMountPoints(qom.getConstraint(), qom.getSource(), pathToFilter, pathsWithoutSubNodesToFilter, factory), qom.getOrderings(), qom.getColumns());
                     }
                 }
                 if (query instanceof JahiaQueryObjectModelImpl) {
@@ -175,10 +178,18 @@ public class QueryWrapper implements Query {
         return query;
     }
 
-    private Constraint filterMountPoints(Constraint constraint, Source source, Set<String> pathsToFilter, QueryObjectModelFactory f) throws RepositoryException {
+    private Constraint filterMountPoints(Constraint constraint, Source source, Set<String> pathsToFilter, Set<String> pathsWithoutSubNodesToFilter, QueryObjectModelFactory f) throws RepositoryException {
         if (source instanceof Selector) {
             for (String s : pathsToFilter) {
-                Constraint c = f.not(f.descendantNode(((Selector) source).getSelectorName(), s));
+                Constraint c = f.not(f.or(f.descendantNode(((Selector) source).getSelectorName(), s),f.sameNode(((Selector) source).getSelectorName(), s)));
+                if (constraint == null) {
+                    constraint = c;
+                } else {
+                    constraint = f.and(c,constraint);
+                }
+            }
+            for (String s : pathsWithoutSubNodesToFilter) {
+                Constraint c = f.not(f.sameNode(((Selector) source).getSelectorName(), s));
                 if (constraint == null) {
                     constraint = c;
                 } else {
@@ -186,8 +197,8 @@ public class QueryWrapper implements Query {
                 }
             }
         } else if (source instanceof Join) {
-            constraint = filterMountPoints(constraint, ((Join) source).getLeft(), pathsToFilter, f);
-            constraint = filterMountPoints(constraint, ((Join) source).getRight(), pathsToFilter, f);
+            constraint = filterMountPoints(constraint, ((Join) source).getLeft(), pathsToFilter, pathsWithoutSubNodesToFilter, f);
+            constraint = filterMountPoints(constraint, ((Join) source).getRight(), pathsToFilter, pathsWithoutSubNodesToFilter, f);
         }
         return constraint;
     }

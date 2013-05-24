@@ -510,7 +510,7 @@ public class JCRSessionWrapper implements Session {
                     }
                 }
             } catch (InvalidItemStateException e) {
-                logger.warn("A new node can no longer be accessed to run validation checks", e);
+                logger.debug("A new node can no longer be accessed to run validation checks", e);
             }
 
             if (node instanceof JCRNodeDecorator) {

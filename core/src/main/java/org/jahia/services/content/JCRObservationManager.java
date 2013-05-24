@@ -221,7 +221,7 @@ public class JCRObservationManager implements ObservationManager {
     }
 
     public static EventWrapper getEventWrapper(Event event, JCRSessionWrapper session) {
-        return new EventWrapper(event, event.getType() != Event.NODE_REMOVED ? null : Collections.<String>emptyList());
+        return new EventWrapper(event, event.getType() != Event.NODE_REMOVED ? null : Collections.<String>emptyList(), session);
     }
 
     private static void consume(JCRSessionWrapper session, int operationType) throws RepositoryException {
@@ -394,10 +394,13 @@ public class JCRObservationManager implements ObservationManager {
     static class EventWrapper implements Event {
         private Event event;
         private List<String> nodeTypes;
+        private String identifier;
+        private JCRSessionWrapper session;
 
-        EventWrapper(Event event, List<String> nodeTypes) {
+        EventWrapper(Event event, List<String> nodeTypes, JCRSessionWrapper session) {
             this.event = event;
             this.nodeTypes = nodeTypes;
+            this.session = session;
         }
 
         public int getType() {
@@ -413,7 +416,26 @@ public class JCRObservationManager implements ObservationManager {
         }
 
         public String getIdentifier() throws RepositoryException {
-            return event.getIdentifier();
+            if (identifier == null) {
+                String path = event.getPath();
+                if (event.getType() == PROPERTY_ADDED || event.getType() == PROPERTY_REMOVED || event.getType() == PROPERTY_CHANGED) {
+                    path = StringUtils.substringBeforeLast(path,"/");
+                }
+                for (Map.Entry<String, JCRStoreProvider> entry : JCRSessionFactory.getInstance().getMountPoints().entrySet()) {
+                    // Handle extension nodes, return visible uuid
+                    if (path.startsWith(entry.getKey()) && !entry.getKey().equals("/")) {
+                        try {
+                            identifier = session.getNode(path).getIdentifier();
+                        } catch (RepositoryException e) {
+                            identifier = null;
+                        }
+                        return identifier;
+                    }
+                }
+                identifier = event.getIdentifier();
+            }
+            return identifier;
+
         }
 
         @SuppressWarnings("rawtypes")
@@ -451,7 +473,7 @@ public class JCRObservationManager implements ObservationManager {
          * instances are intended for the same <code>Session</code> that registerd
          * the <code>EventListener</code>.
          *
-         * @param obj the reference object with which to compare.
+         * @param o the reference object with which to compare.
          * @return <code>true</code> if this <code>Event</code> is equal to another
          *         object.
          */

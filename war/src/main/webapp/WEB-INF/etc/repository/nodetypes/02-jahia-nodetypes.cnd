@@ -521,6 +521,10 @@
 [jnt:mounts] > nt:base, jmix:nodenameInfo, jmix:systemNode
  + * (jnt:mountPoint)
 
+// Mixin for extension nodes.
+
+[jmix:externalProviderExtension] mixin
+
 //---------------------------------------------------------
 // Definition Content
 //---------------------------------------------------------

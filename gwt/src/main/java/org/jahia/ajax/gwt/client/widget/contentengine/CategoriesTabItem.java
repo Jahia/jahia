@@ -111,6 +111,7 @@ public class CategoriesTabItem extends EditEngineTabItem {
                 new GWTJahiaNodeTreeFactory(Arrays.asList("$systemsite/categories"), Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.CHILDREN_INFO,GWTJahiaNode.NAME,GWTJahiaNode.DISPLAY_NAME));
         treeGridFactory.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
         ColumnConfig name = new ColumnConfig("displayName", Messages.get("label.title"), 500);
+        name.setSortable(false);
         name.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>() {
             public String getId(TreeGrid<GWTJahiaNode> grid, GWTJahiaNode model, String property, int rowIndex, int colIndex) {
                 return "JahiaGxtCategory_"+model.getName().replace(":","_");
@@ -119,6 +120,7 @@ public class CategoriesTabItem extends EditEngineTabItem {
         name.setFixed(true);
         ColumnConfig action = new ColumnConfig("action", "Action", 100);
         action.setAlignment(Style.HorizontalAlignment.RIGHT);
+        action.setSortable(false);
         action.setRenderer(new GridCellRenderer() {
             public Object render(ModelData modelData, String s, ColumnData columnData, int i, int i1,
                                  ListStore listStore, Grid grid) {

@@ -30,7 +30,7 @@
 <div id="tabs${currentNode.name}">
     <div class="idTabsContainer"><!--start idTabsContainer-->
         <ul class="idTabs">
-            <c:forEach items="${currentNode.nodes}" var="subList" varStatus="status">
+             <c:forEach items="${jcr:getChildrenOfType(currentNode, jcr:getConstraints(currentNode))}" var="subList" varStatus="status">
                 <c:if test="${status.first || displayTab eq subList.name}">
                     <c:set var="displayList" value="${subList}"/>
                 </c:if>
@@ -42,7 +42,7 @@
             </c:forEach>
         </ul>
     </div>
-    <c:if test="${not empty displayList && !jcr:isNodeType(displayList, 'jnt:acl')}">
+    <c:if test="${not empty displayList}">
         <div class="tabContainer"><!--start tabContainer-->
             <template:module path="${displayList.path}" view="default"/>
             <div class="clear"></div>

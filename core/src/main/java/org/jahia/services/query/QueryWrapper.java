@@ -162,14 +162,14 @@ public class QueryWrapper implements Query {
 
     private Constraint filterMountPoints(Constraint constraint, Source source, QueryObjectModelFactory f) throws RepositoryException {
         if (source instanceof Selector) {
-            Constraint c = Operator.NE.comparison(f,f.propertyValue(((Selector) source).getSelectorName(),"jcr:mixinTypes"),f.literal(JCRValueFactoryImpl.getInstance().createValue("jmix:externalProviderExtension")));
-            Constraint e = f.not(f.propertyExistence(((Selector) source).getSelectorName(),"jcr:mixinTypes"));
-            c = f.or(e,c);
-            if (constraint == null) {
-                return c;
-            } else {
-                return f.and(c,constraint);
-            }
+//            Constraint c = Operator.NE.comparison(f,f.propertyValue(((Selector) source).getSelectorName(),"jcr:mixinTypes"),f.literal(JCRValueFactoryImpl.getInstance().createValue("jmix:externalProviderExtension")));
+//            Constraint e = f.not(f.propertyExistence(((Selector) source).getSelectorName(),"jcr:mixinTypes"));
+//            c = f.or(e,c);
+//            if (constraint == null) {
+//                return c;
+//            } else {
+//                return f.and(c,constraint);
+//            }
         } else if (source instanceof Join) {
             constraint = filterMountPoints(constraint, ((Join) source).getLeft(), f);
             constraint = filterMountPoints(constraint, ((Join) source).getRight(), f);

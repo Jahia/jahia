@@ -1,5 +1,9 @@
 <c:choose>
+
     <c:when test="${value.type == jcrPropertyTypes.BINARY}"> <%-- binary --%>
+        <%
+            if (pageContext.getAttribute("child") instanceof JCRNodeWrapper) {
+        %>
         <c:if test="${property.name == 'jcr:data'}" var="jcrData">
             <c:if test="${currentNode.file}">
                 <c:url value="${currentNode.parent.url}" var="binaryUrl"/>
@@ -12,23 +16,36 @@
             <a href="${binaryUrl}" target="_blank">&lt;binary&gt;</a>
         </c:if>
         <c:if test="${not jcrData}">
-                &lt;binary&gt;
+            &lt;binary&gt;
         </c:if>
+        <%
+            }
+        %>
     </c:when>
     <c:when test="${value.type == jcrPropertyTypes.DATE && not empty value.date}"> <%-- date --%>
         <fmt:formatDate value="${value.date.time}" pattern="yyyy-MM-dd HH:mm:ss"/>
     </c:when>
     <c:when test="${value.type == jcrPropertyTypes.REFERENCE || value.type == jcrPropertyTypes.WEAKREFERENCE}">
-        <c:if test="${not empty value.node}" var="valuePresent">
+        <%
+            /*        try {
+                            Node reference = jcrSession.getNodeByIdentifier(((Value) pageContext.getAttribute("value")).getString());
+        
+                            pageContext.setAttribute("reference",reference);
+                    } catch (Exception e) {
+        
+                    }*/
+        %>
+        <%=((Value) pageContext.getAttribute("value")).getString()%>
+        <c:if test="${not empty reference}" var="valuePresent">
             <c:url var="urlValue" value="?">
-                <c:param name="uuid" value="${value.node.identifier}"/>
+                <c:param name="uuid" value="${reference.identifier}"/>
                 <c:param name="showProperties" value="${showProperties}"/>
                 <c:param name="showReferences" value="${showReferences}"/>
                 <c:param name="showNodes" value="${showNodes}"/>
                 <c:param name="showActions" value="${showActions}"/>
                 <c:param name="workspace" value="${workspace}"/>
             </c:url>
-            <a href="${urlValue}">${fn:escapeXml(value.node.name)} (${fn:escapeXml(value.string)})</a>        
+            <a href="${urlValue}">${fn:escapeXml(reference.name)} (${fn:escapeXml(value.string)})</a>
         </c:if>
         <c:if test="${not valuePresent}">${value.string}</c:if>
     </c:when>

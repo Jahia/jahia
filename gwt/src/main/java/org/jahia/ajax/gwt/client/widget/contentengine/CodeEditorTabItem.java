@@ -53,6 +53,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.LayoutData;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -92,6 +93,11 @@ public class CodeEditorTabItem extends EditEngineTabItem {
     public void init(final NodeHolder engine, final AsyncTabItem tab, String locale) {
         tab.setLayout(new BorderLayout());
         tab.setScrollMode(Style.Scroll.AUTO);
+        final HorizontalPanel horizontalPanel = new HorizontalPanel();
+        horizontalPanel.setSpacing(10);
+        horizontalPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
+        tab.add(horizontalPanel, new BorderLayoutData(Style.LayoutRegion.NORTH, 40));
+
         if (!tab.isProcessed()) {
             // Add list of properties
             GWTJahiaNodeProperty typeName = engine.getProperties().get("nodeTypeName");
@@ -104,6 +110,16 @@ public class CodeEditorTabItem extends EditEngineTabItem {
             } else {
                 codeProperty = new GWTJahiaNodeProperty(codePropertyName, "", GWTJahiaNodePropertyType.STRING);
             }
+
+            Button indentButton = new Button(Messages.get("label.indentAll"));
+            indentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent buttonEvent) {
+                    if (codeField != null) {
+                        codeField.indent();
+                    }
+                }
+            });
 
             if (stubType != null) {
                 snippetType = new ComboBox<GWTJahiaValueDisplayBean>();
@@ -136,27 +152,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                 mirrorTemplates.getStore().sort("display", Style.SortDir.ASC);
                 mirrorTemplates.setAllowBlank(false);
                 mirrorTemplates.setDisplayField("display");
-                Button button = new Button(Messages.get("label.add"));
-                button.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                    @Override
-                    public void componentSelected(ButtonEvent buttonEvent) {
-                        codeField.insertProperty(mirrorTemplates.getValue().getValue());
-                    }
-                });
-                final HorizontalPanel horizontalPanel = new HorizontalPanel();
-                horizontalPanel.setSpacing(10);
-                horizontalPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
-                Label label = new Label(Messages.get("label.snippetType", "Snippet Type"));
-                label.setStyleAttribute(FONT_SIZE, FONT_SIZE_VALUE);
-                horizontalPanel.add(label);
-                horizontalPanel.add(snippetType);
-                label = new Label(Messages.get("label.codeMirrorTemplates","Code Template"));
-                label.setStyleAttribute(FONT_SIZE, FONT_SIZE_VALUE);
-                horizontalPanel.add(label);
-                horizontalPanel.add(mirrorTemplates);
-                horizontalPanel.add(button);
-                horizontalPanel.hide();
-                tab.add(horizontalPanel, new BorderLayoutData(Style.LayoutRegion.NORTH, 40));
+
 
                 String path = engine.isExistingNode() ? engine.getNode().getPath() : engine.getTargetNode().getPath();
                 String nodeType = typeName != null ? typeName.getValues().get(0).getString() : null;
@@ -168,10 +164,22 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                                 snippetType.getStore().add(new GWTJahiaValueDisplayBean(type, Messages.get("label.snippetType." + type, type)));
                             }
                             snippetType.setValue(snippetType.getStore().getAt(0));
-
-                            horizontalPanel.show();
-                        } else {
-                            horizontalPanel.hide();
+                            Button button = new Button(Messages.get("label.add"));
+                            button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                                @Override
+                                public void componentSelected(ButtonEvent buttonEvent) {
+                                    codeField.insertProperty(mirrorTemplates.getValue().getValue());
+                                }
+                            });
+                            Label label = new Label(Messages.get("label.snippetType", "Snippet Type"));
+                            label.setStyleAttribute(FONT_SIZE, FONT_SIZE_VALUE);
+                            horizontalPanel.add(label);
+                            horizontalPanel.add(snippetType);
+                            label = new Label(Messages.get("label.codeMirrorTemplates","Code Template"));
+                            label.setStyleAttribute(FONT_SIZE, FONT_SIZE_VALUE);
+                            horizontalPanel.add(label);
+                            horizontalPanel.add(mirrorTemplates);
+                            horizontalPanel.add(button);
                         }
 
                         if (!engine.getProperties().containsKey(codePropertyName)) {
@@ -184,6 +192,8 @@ public class CodeEditorTabItem extends EditEngineTabItem {
             } else {
                 initEditor(tab);
             }
+            horizontalPanel.add(indentButton);
+            horizontalPanel.show();
         }
     }
 

@@ -64,7 +64,9 @@ CodeMirror.defineMode("htmlmixed", function(config) {
     },
 
     indent: function(state, textAfter) {
-      if (state.token == html || /^\s*<\//.test(textAfter))
+      if (/^\s*<%@/.test(textAfter) || /^\s*<%/.test(textAfter)) {
+          // do nothing
+      } else if (state.token == html || /^\s*<\//.test(textAfter))
         return htmlMode.indent(state.htmlState, textAfter);
       else if (state.token == javascript)
         return jsMode.indent(state.localState, textAfter);

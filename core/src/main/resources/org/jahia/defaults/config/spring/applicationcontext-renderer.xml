@@ -275,6 +275,9 @@
             <list>
                 <value>/modules/assets/javascript/ckeditor/ckeditor.js</value>
                 <value>/modules/assets/javascript/codemirror/lib/codemirror.js</value>
+                <value>/modules/assets/javascript/codemirror/addon/format/formatting.js</value>
+                <value>/modules/assets/javascript/codemirror/addon/edit/matchbrackets.js</value>
+                <value>/modules/assets/javascript/codemirror/addon/edit/closetag.js</value>
                 <value>/modules/assets/javascript/codemirror/mode/xml/xml.js</value>
                 <value>/modules/assets/javascript/codemirror/mode/javascript/javascript.js</value>
                 <value>/modules/assets/javascript/codemirror/mode/css/css.js</value>

@@ -109,4 +109,12 @@ public class CodeMirrorField extends TextArea {
         var myCodeMirror = this.@org.jahia.ajax.gwt.client.widget.form.CodeMirrorField::codeMirror;
         return myCodeMirror.replaceSelection(value);
     }-*/;
+
+    public native void indent() /*-{
+        var myCodeMirror = this.@org.jahia.ajax.gwt.client.widget.form.CodeMirrorField::codeMirror;
+        var last = myCodeMirror.lineCount();
+        myCodeMirror.operation(function() {
+            for (var i = 0; i < last; ++i) myCodeMirror.indentLine(i);
+        });
+    }-*/;
 }

@@ -133,7 +133,7 @@
 
 [jnt:role] > nt:base, mix:title, jmix:autoPublish, jmix:observable
  - jcr:description (string,textarea) i18n itemtype = content
- - j:nodeTypes (string,choicelist[nodetypes=nt:base,resourceBundle]) multiple
+ - j:nodeTypes (string,choicelist[nodetypes=nt:base]) multiple
  - j:permissions (weakreference) protected hidden multiple < jnt:permission
  - j:dependencies (weakreference) protected hidden multiple < jnt:role
  - j:privilegedAccess (boolean)
@@ -406,7 +406,7 @@
 [jnt:pageTemplate] > jnt:template
 
 [jnt:contentTemplate] > jnt:template
- - j:applyOn (string, choicelist[subnodetypes = 'nt:base',resourceBundle]) multiple
+ - j:applyOn (string, choicelist[subnodetypes = 'nt:base']) multiple
  - j:defaultTemplate (boolean) = false
  - j:priority (long)
 
@@ -870,14 +870,14 @@ extends = jnt:content
  + * (jnt:childNodeDefinition) = jnt:childNodeDefinition
 
 [jnt:mixinNodeType] > jnt:nodeType
- - j:mixins (NAME,choicelist[nodetypes='MIXIN;fromDependencies',resourceBundle]) multiple
+ - j:mixins (NAME,choicelist[nodetypes='MIXIN;fromDependencies']) multiple
  - j:isQueryable (BOOLEAN) = true mandatory
  - j:itemsType (string,choicelist) < 'content','metadata','layout','options'
  - j:mixinExtends (string,choicelist[nodetypes='PRIMARY;fromDependencies']) multiple
 
 [jnt:primaryNodeType] > jnt:nodeType
- - j:supertype (NAME,choicelist[nodetypes='PRIMARY;fromDependencies',resourceBundle])
- - j:mixins (NAME,choicelist[nodetypes='MIXIN;fromDependencies',resourceBundle]) multiple
+ - j:supertype (NAME,choicelist[nodetypes='PRIMARY;fromDependencies'])
+ - j:mixins (NAME,choicelist[nodetypes='MIXIN;fromDependencies']) multiple
  - j:isAbstract (BOOLEAN) mandatory
  - j:isQueryable (BOOLEAN) = true mandatory
  - j:hasOrderableChildNodes (BOOLEAN) mandatory
@@ -928,8 +928,8 @@ extends = jnt:content
  - j:multiple (BOOLEAN) hidden
 
 [jnt:childNodeDefinition] > jnt:itemDefinition
- - j:requiredPrimaryTypes (NAME, choicelist[nodetypes='ALL;fromDependencies',resourceBundle]) = 'nt:base' mandatory multiple
- - j:defaultPrimaryType (NAME, choicelist[nodetypes='ALL;fromDependencies',resourceBundle])
+ - j:requiredPrimaryTypes (NAME, choicelist[nodetypes='ALL;fromDependencies']) = 'nt:base' mandatory multiple
+ - j:defaultPrimaryType (NAME, choicelist[nodetypes='ALL;fromDependencies'])
  - j:autoCreated (BOOLEAN)
  - j:mandatory (BOOLEAN)
  - j:onParentVersion (STRING,choicelist) = 'VERSION' nofulltext
@@ -937,7 +937,7 @@ extends = jnt:content
  - j:protected (BOOLEAN)
 
 [jnt:unstructuredChildNodeDefinition] > jnt:childNodeDefinition
- - j:requiredPrimaryTypes (NAME,choicelist[nodetypes='ALL;fromDependencies',resourceBundle]) = 'nt:base' mandatory multiple hidden
+ - j:requiredPrimaryTypes (NAME,choicelist[nodetypes='ALL;fromDependencies']) = 'nt:base' mandatory multiple hidden
 
 [jnt:resourceBundleFolder] > jnt:folder
 

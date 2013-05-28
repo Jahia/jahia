@@ -201,6 +201,9 @@ public class JCRObservationManager implements ObservationManager {
     public static void addEvent(Event event) {
         try {
             if (!event.getPath().startsWith("/jcr:system")) {
+                if (event.getType() == Event.NODE_ADDED && isExtensionNode(event.getPath()) && hasMatchingUuidBeenSet(event.getPath())) {
+                    return;
+                }
                 Map<JCRSessionWrapper, List<EventWrapper>> map = events.get();
                 if (map == null) {
                     events.set(new HashMap<JCRSessionWrapper, List<EventWrapper>>());
@@ -347,6 +350,29 @@ public class JCRObservationManager implements ObservationManager {
         return lastOp.get();
     }
 
+    public static boolean isExtensionNode(String path) throws RepositoryException {
+        for (Map.Entry<String, JCRStoreProvider> entry : JCRSessionFactory.getInstance().getMountPoints().entrySet()) {
+            // Handle extension nodes, return visible uuid
+            if (path.startsWith(entry.getKey()) && !entry.getKey().equals("/")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean hasMatchingUuidBeenSet(String path) throws RepositoryException {
+        if (events.get() != null && currentSession.get() != null) {
+            List<EventWrapper> currentEvents = events.get().get(currentSession.get());
+            for (EventWrapper previousEvent : currentEvents) {
+                if (previousEvent.getPath().equals(path + "/j:isExternalProviderRoot")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
     class EventConsumer {
         private JCRSessionWrapper session;
         private EventListener listener;
@@ -421,16 +447,13 @@ public class JCRObservationManager implements ObservationManager {
                 if (event.getType() == PROPERTY_ADDED || event.getType() == PROPERTY_REMOVED || event.getType() == PROPERTY_CHANGED) {
                     path = StringUtils.substringBeforeLast(path,"/");
                 }
-                for (Map.Entry<String, JCRStoreProvider> entry : JCRSessionFactory.getInstance().getMountPoints().entrySet()) {
-                    // Handle extension nodes, return visible uuid
-                    if (path.startsWith(entry.getKey()) && !entry.getKey().equals("/")) {
-                        try {
-                            identifier = session.getNode(path).getIdentifier();
-                        } catch (RepositoryException e) {
-                            identifier = null;
-                        }
-                        return identifier;
+                if (isExtensionNode(event.getPath())) {
+                    try {
+                        identifier = session.getNode(path).getIdentifier();
+                    } catch (RepositoryException e) {
+                        identifier = null;
                     }
+                    return identifier;
                 }
                 identifier = event.getIdentifier();
             }

@@ -47,6 +47,7 @@ import static org.jahia.api.Constants.*;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import java.util.HashSet;
@@ -110,14 +111,18 @@ public class NodenameListener extends DefaultEventListener {
         if (node.isNodeType(JAHIAMIX_NODENAMEINFO)
                 && (!node.hasProperty(NODENAME) || !StringUtils.equals(node.getProperty(NODENAME).getString(),
                         node.getName()))) {
-            if (!node.isCheckedOut()) {
-                node.checkout();
-            }
-            node.setProperty(NODENAME, node.getName());
-            updated = true;
-            if (logger.isDebugEnabled() && !node.isNew()) {
-                logger.debug("Node has been added, we are updating its name " + node.getName() + ")");
+            try {
+                if (!node.isCheckedOut()) {
+                    node.checkout();
+                }
+                node.setProperty(NODENAME, node.getName());
+                updated = true;
+                if (logger.isDebugEnabled() && !node.isNew()) {
+                    logger.debug("Node has been added, we are updating its name " + node.getName() + ")");
 
+                }
+            } catch (UnsupportedRepositoryOperationException e) {
+                // Ignore
             }
         }
 

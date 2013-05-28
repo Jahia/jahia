@@ -51,6 +51,8 @@ import javax.jcr.Binary;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.jahia.services.content.nodetypes.initializers.I15dValueInitializer;
 import org.jahia.services.content.nodetypes.initializers.ValueInitializer;
 
 /**
@@ -62,19 +64,17 @@ import org.jahia.services.content.nodetypes.initializers.ValueInitializer;
  */
 public class DynamicValueImpl implements Value {
     
-    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(DynamicValueImpl.class);
+    private static final transient Logger logger = LoggerFactory.getLogger(DynamicValueImpl.class);
     
     private List<String> params;
     protected ExtendedPropertyDefinition declaringPropertyDefinition;
     private String fn;
     protected int type;
-    private boolean isConstraint;
 
     public DynamicValueImpl(String fn, List<String> params, int type, boolean isConstraint, ExtendedPropertyDefinition declaringPropertyDefinition) {
         this.type = type;
         this.fn = fn;
         this.params = params;
-        this.isConstraint = isConstraint;
         this.declaringPropertyDefinition = declaringPropertyDefinition;
     }
 
@@ -83,7 +83,7 @@ public class DynamicValueImpl implements Value {
     }
 
     public InputStream getStream() throws IllegalStateException, RepositoryException {
-        return getExpandedValue().getStream();
+        return getExpandedValue().getBinary().getStream();
     }
 
     public long getLong() throws IllegalStateException, RepositoryException {
@@ -123,6 +123,10 @@ public class DynamicValueImpl implements Value {
     }
 
     public Value[] expand() {
+        return expand(null);
+    }
+    
+    public Value[] expand(Locale locale) {
         Value[] v = null;
         String classname;
         if (fn.equals("useClass")) {
@@ -132,7 +136,11 @@ public class DynamicValueImpl implements Value {
         }
         try {
             ValueInitializer init = (ValueInitializer) Class.forName(classname).newInstance();
-            v = init.getValues(declaringPropertyDefinition, getParams());
+            if (init instanceof I15dValueInitializer) {
+                v = ((I15dValueInitializer) init).getValues(declaringPropertyDefinition, getParams(), locale);
+            } else {
+                v = init.getValues(declaringPropertyDefinition, getParams());
+            }
         } catch (InstantiationException e) {
             logger.error(e.getMessage(), e);
         } catch (IllegalAccessException e) {
@@ -145,7 +153,7 @@ public class DynamicValueImpl implements Value {
             for (int i = 0; i < v.length; i++) {
                 Value value = v[i];
                 if (value instanceof DynamicValueImpl) {
-                    res.addAll(Arrays.asList(((DynamicValueImpl)value).expand()));
+                    res.addAll(Arrays.asList(((DynamicValueImpl)value).expand(locale)));
                 } else {
                     res.add(value);
                 }
@@ -155,7 +163,7 @@ public class DynamicValueImpl implements Value {
     }
 
     private Value getExpandedValue() throws ValueFormatException {
-        Value[] v = expand();
+        Value[] v = expand(null);
         if (v.length == 1) {
             return v[0];
         } else {

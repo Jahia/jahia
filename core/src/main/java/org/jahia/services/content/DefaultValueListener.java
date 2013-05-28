@@ -40,28 +40,45 @@
 
 package org.jahia.services.content;
 
-import org.apache.jackrabbit.core.security.JahiaLoginModule;
-import org.jahia.api.Constants;
-import org.jahia.services.content.nodetypes.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
-import javax.jcr.*;
+import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
+import javax.jcr.ValueFormatException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
-import java.util.*;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
+import org.jahia.api.Constants;
+import org.jahia.services.content.nodetypes.DynamicValueImpl;
+import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * User: toto
- * Date: Apr 30, 2008
- * Time: 11:56:02 AM
+ * JCR listener that automatically populates node properties with default values (in case of dynamic values or i18n properties) and creates
+ * mandatory sub-nodes.
+ * 
+ * @author Thomas Draier
  */
 public class DefaultValueListener extends DefaultEventListener {
-    private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DefaultValueListener.class);
-
-    public DefaultValueListener() {
-    }
-
+    private static Logger logger = LoggerFactory.getLogger(DefaultValueListener.class);
 
     public int getEventTypes() {
         return Event.NODE_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED;
@@ -70,13 +87,15 @@ public class DefaultValueListener extends DefaultEventListener {
     public void onEvent(final EventIterator eventIterator) {
         try {
             // todo : may need to move the dynamic default values generation to JahiaNodeTypeInstanceHandler
-            String userId = ((JCREventIterator)eventIterator).getSession().getUserID();
+            JCRSessionWrapper eventSession = ((JCREventIterator)eventIterator).getSession();
+            final Locale sessionLocale = eventSession.getLocale();
+            String userId = eventSession.getUserID();
             if (userId.startsWith(JahiaLoginModule.SYSTEM)) {
                 userId = userId.substring(JahiaLoginModule.SYSTEM.length());
             }
             JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
-                    final Set<Session> sessions = new HashSet<Session>();
+                    Set<Session> sessions = null;
                     while (eventIterator.hasNext()) {
                         Event event = eventIterator.nextEvent();
                         if (isExternal(event)) {
@@ -97,7 +116,7 @@ public class DefaultValueListener extends DefaultEventListener {
                                 n = (JCRNodeWrapper) s.getItem(path.length() == 0 ? "/" : path);
                             }
                             if (n != null) {
-                                sessions.add(n.getRealNode().getSession());
+                                boolean anythingChanged = false;
                                 List<NodeType> l = new ArrayList<NodeType>();
                                 NodeType nt = n.getPrimaryNodeType();
                                 l.add(nt);
@@ -110,33 +129,39 @@ public class DefaultValueListener extends DefaultEventListener {
                                         ExtendedPropertyDefinition[] pds = ent.getPropertyDefinitions();
                                         for (int i = 0; i < pds.length; i++) {
                                             ExtendedPropertyDefinition pd = pds[i];
-                                            Value[] v = pd.getDefaultValues();
-                                            for (int j = 0; j < v.length; j++) {
-                                                Value value = v[j];
-                                                if (value instanceof DynamicValueImpl) {
-                                                    if (!n.hasProperty(pd.getName())) {
-                                                        n.setProperty(pd.getName(), value.getString());
-                                                    }
-                                                }
+                                            Value[] defValues = pd.getDefaultValues(sessionLocale);
+                                            if (defValues.length > 0) {
+                                                boolean handled = handlePropertyDefaultValues(n, pd, defValues, sessionLocale);
+                                                anythingChanged = anythingChanged || handled;
                                             }
                                         }
                                         ExtendedNodeDefinition[] nodes = ent.getChildNodeDefinitions();
                                         for (ExtendedNodeDefinition definition : nodes) {
                                             if (definition.isAutoCreated() && !n.hasNode(definition.getName())) {
                                                 n.addNode(definition.getName(), definition.getDefaultPrimaryTypeName());
+                                                anythingChanged = true;
                                             }
                                         }
                                     }
                                 }
-                                n.getRealNode().getSession().save();
+                                if (anythingChanged) {
+                                    n.getRealNode().getSession().save();
+                                    if (sessions == null) {
+                                        sessions = new HashSet<Session>();
+                                    }
+                                    sessions.add(n.getRealNode().getSession());
+                                }
                             }
                         } catch (NoSuchNodeTypeException e) {
+                            // ignore
                         } catch (Exception e) {
                             logger.error("Error when executing event", e);
                         }
                     }
-                    for (Session jcrsession : sessions) {
-                        jcrsession.save();
+                    if (sessions != null && !sessions.isEmpty()) {
+                        for (Session jcrsession : sessions) {
+                            jcrsession.save();
+                        }
                     }
                     return null;
                 }
@@ -149,5 +174,79 @@ public class DefaultValueListener extends DefaultEventListener {
             logger.error("Error when executing event", e);
         }
 
+    }
+
+    protected boolean handlePropertyDefaultValues(JCRNodeWrapper n, ExtendedPropertyDefinition pd, Value[] values,
+            Locale sessionLocale) throws RepositoryException {
+        boolean isDynamicValue = values[0] instanceof DynamicValueImpl;
+        boolean doCreateI10n = sessionLocale != null && pd.isAutoCreated() && pd.isInternationalized();
+        if (!isDynamicValue && !doCreateI10n) {
+            // no handling needed
+            return false;
+        }
+
+        Node targetNode = doCreateI10n ? n.getOrCreateI18N(sessionLocale) : n;
+
+        String propertyName = pd.getName();
+
+        if (targetNode.hasProperty(propertyName)) {
+            // node already has the property -> return
+            return false;
+        }
+
+        boolean valuesSet = false;
+
+        Value[] expandedValues = expandValues(values, sessionLocale);
+        if (expandedValues.length > 0) {
+            if (pd.isMultiple()) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Setting default values for property [{}].[{}]: {}", new String[] {
+                            pd.getDeclaringNodeType().getName(), propertyName, asString(expandedValues) });
+                }
+                targetNode.setProperty(propertyName, expandedValues);
+            } else {
+                if (expandedValues.length == 1) {
+                    targetNode.setProperty(propertyName, expandedValues[0]);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Setting default value for property [{}].[{}]: {}", new String[] {
+                                pd.getDeclaringNodeType().getName(), propertyName, expandedValues[0].getString() });
+                    }
+                } else {
+                    throw new ValueFormatException("Property [" + pd.getDeclaringNodeType().getName() + "].["
+                            + propertyName + "] cannot accept multiple values");
+                }
+            }
+            valuesSet = true;
+        }
+
+        return valuesSet;
+    }
+
+    private String asString(Value[] expandedValues) throws ValueFormatException, IllegalStateException,
+            RepositoryException {
+        List<String> values = new LinkedList<String>();
+        for (Value v : expandedValues) {
+            values.add(v.getString());
+        }
+
+        return StringUtils.join(values, ", ");
+    }
+
+    private Value[] expandValues(Value[] values, Locale sessionLocale) {
+        List<Value> expanded = new LinkedList<Value>();
+        for (Value v : values) {
+            if (v instanceof DynamicValueImpl) {
+                Value[] expandedValues = ((DynamicValueImpl) v).expand(sessionLocale);
+                if (expandedValues != null && expandedValues.length > 0) {
+                    for (Value ev : expandedValues) {
+                        expanded.add(ev);
+                    }
+                }
+            } else {
+                expanded.add(v);
+            }
+        }
+
+        return expanded.toArray(new Value[] {});
     }
 }

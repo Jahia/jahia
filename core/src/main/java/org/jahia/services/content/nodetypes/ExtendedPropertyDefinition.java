@@ -174,10 +174,14 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
     }
 
     public Value[] getDefaultValues() {
+        return getDefaultValues(null);
+    }
+
+    public Value[] getDefaultValues(Locale locale) {
         List<Value> res = new ArrayList<Value>();
         for (int i = 0; i < defaultValues.length; i++) {
             if (defaultValues[i] instanceof DynamicValueImpl) {
-                Value[] v = ((DynamicValueImpl)defaultValues[i]).expand();
+                Value[] v = ((DynamicValueImpl)defaultValues[i]).expand(locale);
                 for (Value value : v) {
                     res.add(value);
                 }

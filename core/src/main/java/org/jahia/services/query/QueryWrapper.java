@@ -42,13 +42,11 @@ package org.jahia.services.query;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.commons.query.qom.Operator;
 import org.apache.jackrabbit.core.query.JahiaQueryObjectModelImpl;
 import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
-import org.jahia.services.content.JCRValueFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -145,16 +143,20 @@ public class QueryWrapper implements Query {
                     return null;
                 }
             }
-            if (jcrStoreProvider.isDefault()) {
-                if (Query.JCR_SQL2.equals(language)) {
-                    QueryObjectModel qom = QueryServiceImpl.getInstance().modifyAndOptimizeQuery((QueryObjectModel) query, factory, session);
-                    query = factory.createQuery(qom.getSource(), filterMountPoints(qom.getConstraint(), qom.getSource(), factory), qom.getOrderings(), qom.getColumns());
+            if (Query.JCR_SQL2.equals(language)) {
+                QueryObjectModel qom = QueryServiceImpl.getInstance().modifyAndOptimizeQuery((QueryObjectModel) query, factory, session);
+                Constraint constraint;
+                if (jcrStoreProvider.isDefault()) {
+                    constraint = filterMountPoints(qom.getConstraint(), qom.getSource(), factory);
+                } else {
+                    constraint = qom.getConstraint();
                 }
-                if (query instanceof JahiaQueryObjectModelImpl) {
-                    JahiaLuceneQueryFactoryImpl lqf = (JahiaLuceneQueryFactoryImpl) ((JahiaQueryObjectModelImpl) query)
-                            .getLuceneQueryFactory();
-                    lqf.setLocale(session.getLocale());
-                }
+                query = factory.createQuery(qom.getSource(), constraint, qom.getOrderings(), qom.getColumns());
+            }
+            if (query instanceof JahiaQueryObjectModelImpl) {
+                JahiaLuceneQueryFactoryImpl lqf = (JahiaLuceneQueryFactoryImpl) ((JahiaQueryObjectModelImpl) query)
+                        .getLuceneQueryFactory();
+                lqf.setLocale(session.getLocale());
             }
         }
         return query;

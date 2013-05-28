@@ -57,8 +57,16 @@ public class NamespaceTabItem extends ContentTabItem {
                 }
             }
 
+            String nodeName = engine.getNodeName();
+            if (nodeName != null) {
+                if (nodeName.equals("primary-nodetype")) {
+                    nodeName = "jnt:newNodeType";
+                } else if (nodeName.equals("mixin-nodetype")) {
+                    nodeName = "jmix:newMixin";
+                }
+            }
 
-            nameText.setValue(engine.getNodeName());
+            nameText.setValue(nodeName);
         }
     }
 

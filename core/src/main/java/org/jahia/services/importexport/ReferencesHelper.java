@@ -42,6 +42,7 @@ package org.jahia.services.importexport;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
+import org.jahia.services.content.JCRContentUtils;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -118,7 +119,7 @@ public class ReferencesHelper {
                                 uuid = mapping.getValue() + StringUtils.substringAfter(uuid, mapping.getKey());
                             }
                         }
-
+                        uuid = JCRContentUtils.escapeNodePath(uuid);
                         JCRNodeWrapper node = session.getNode(uuid);
                         update(paths, session, node.getIdentifier());
                     } else {

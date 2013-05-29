@@ -862,6 +862,8 @@ extends = jnt:content
 [jnt:viewFile] > jnt:editableFile, jmix:viewProperties
  - nodeTypeName (string)
 
+[jnt:metaInfFolder] > jnt:folder
+
 [jnt:definitionFile] > jnt:editableFile
  + * (jnt:nodeType)
 

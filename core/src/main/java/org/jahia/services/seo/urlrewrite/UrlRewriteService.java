@@ -301,7 +301,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                 }
             }
         }catch(Exception ex) {
-            logger.warn("Unable to load the SimpleUrlHandlerMapping", ex);
+            logger.warn("Unable to load the handler mappings", ex);
         }
         String targetSiteKey = ServerNameToSiteMapper.getSiteKeyByServerName(request);
         request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG, StringUtils.EMPTY);

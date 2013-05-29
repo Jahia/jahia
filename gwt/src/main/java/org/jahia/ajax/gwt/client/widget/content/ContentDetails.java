@@ -395,6 +395,11 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                 }
                 r.firstErrorTab.layout();
             } else {
+
+                // we temporarily deactivate the button to prevent double clicks while saving...
+                final boolean okEnabled = ok.isEnabled();
+                ok.setEnabled(false);
+
                 // Ajax call to update values
                 AsyncCallback callback = new BaseAsyncCallback() {
                     public void onApplicationFailure(Throwable throwable) {
@@ -405,9 +410,11 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                         com.google.gwt.user.client.Window.alert(Messages.get("failure.properties.save", "Properties save failed") + "\n\n"
                                 + message);
                         Log.error("failed", throwable);
+                        ok.setEnabled(okEnabled);
                     }
 
                     public void onSuccess(Object o) {
+                        ok.setEnabled(okEnabled);
                         Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
                         if (getNodes().contains(linker.getSelectionContext().getMainNode())) {
                             Map<String, Object> data = new HashMap<String, Object>();

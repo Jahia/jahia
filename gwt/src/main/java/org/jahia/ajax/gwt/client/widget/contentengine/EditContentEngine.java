@@ -303,6 +303,58 @@ public class EditContentEngine extends AbstractContentEngine {
         for (Button button : saveButtons) {
             button.setEnabled(enabled);
         }
+<<<<<<< .working
+=======
+
+        node.getNodeTypes().removeAll(removedTypes);
+        node.getNodeTypes().addAll(addedTypes);
+
+        // we temporarily deactivate the button to prevent double clicks while saving...
+        final boolean okEnabled = ok.isEnabled();
+        ok.setEnabled(false);
+
+        contentService.saveNode(node,
+                orderedChildrenNodes, acl, changedI18NProperties, changedProperties,
+                removedTypes, new BaseAsyncCallback<Object>() {
+                    public void onApplicationFailure(Throwable throwable) {
+                        String message = throwable.getMessage();
+                        if (message.contains("Invalid link")) {
+                            message = Messages.get("label.error.invalidlink", "Invalid link") + " : " + message.substring(message.indexOf(":")+1);
+                        }
+                        com.google.gwt.user.client.Window.alert(Messages.get("label.error.invalidlink", "Properties save failed") + "\n\n"
+                                + message);
+                        Log.error("failed", throwable);
+                        unmask();
+                        ok.setEnabled(true);
+                    }
+
+                    public void onSuccess(Object o) {
+                        // we restore the save button since the remote call completed successfully.
+                        ok.setEnabled(okEnabled);
+                        Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
+                        int refresh = Linker.REFRESH_MAIN + Linker.REFRESH_MAIN_IMAGES;
+                        EditLinker l = null;
+                        if (linker instanceof SidePanelTabItem.SidePanelLinker) {
+                            l = ((SidePanelTabItem.SidePanelLinker) linker).getEditLinker();
+                        } else if (linker instanceof EditLinker) {
+                            l = (EditLinker) linker;
+                        }
+                        if (l != null && node.equals(l.getMainModule().getNode()) && !node.getName().equals(l.getMainModule().getNode().getName())) {
+                            l.getMainModule().handleNewMainSelection(node.getPath().substring(0, node.getPath().lastIndexOf("/")+1)+node.getName(), l.getMainModule().getTemplate(), null);
+                            refresh += Linker.REFRESH_PAGES;
+                        }
+                        if (node.isPage() || node.getNodeTypes().contains("jnt:externalLink")
+                            || node.getNodeTypes().contains("jnt:nodeLink")
+                            || node.getNodeTypes().contains("jnt:template") || node.getInheritedNodeTypes().contains("jnt:template")
+                            || node.getInheritedNodeTypes().contains("jmix:visibleInPagesTree")) {
+                            refresh += Linker.REFRESH_PAGES;
+                        }
+                        closeEngine();
+                        linker.refresh(refresh);
+                    }
+                });
+        
+>>>>>>> .merge-right.r46077
     }
 
     @Override

@@ -96,6 +96,9 @@ public class PermissionsUtils {
         if (permissions == null) {
             return false;
         }
+        if(JahiaGWTParameters.getCurrentUser().equalsIgnoreCase("root")) {
+            return true;
+        }
         int i = grantedPermissions.indexOf(permissionName);
 
         if (i == -1) {

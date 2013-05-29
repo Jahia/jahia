@@ -192,6 +192,10 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
         return res.toArray(new Value[res.size()]);
     }
 
+    public Value[] getDefaultValuesAsUnexpandedValue() {
+       return defaultValues;
+    }
+
     public void setDefaultValues(Value[] defaultValues) {
         this.defaultValues = defaultValues;
     }

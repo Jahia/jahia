@@ -211,19 +211,21 @@
             <% Node target = jcrSession.getNodeByIdentifier(request.getParameter("target"));
                 pageContext.setAttribute("target", target);
                 jcrSession.getWorkspace().getVersionManager().checkout(target.getParent().getPath());
+                pageContext.setAttribute("deletedTargetPath",target.getPath());
                 target.remove();
                 jcrSession.save();
             %>
-            <p style="color: blue">Node <strong>${fn:escapeXml(target.path)}</strong> deleted successfully</p>
+            <p style="color: blue">Node <strong>${fn:escapeXml(deletedTargetPath)}</strong> deleted successfully</p>
         </c:when>
         <c:when test="${param.action == 'rename' && not empty param.target && not empty param.value}">
             <% Node target = jcrSession.getNodeByIdentifier(request.getParameter("target"));
                 pageContext.setAttribute("target", target);
                 jcrSession.getWorkspace().getVersionManager().checkout(target.getParent().getPath());
+                pageContext.setAttribute("deletedTargetPath",target.getPath());
                 jcrSession.move(target.getPath(), target.getParent().getPath() + "/" + JCRContentUtils.findAvailableNodeName(target.getParent(), request.getParameter("value")));
                 jcrSession.save();
             %>
-            <p style="color: blue">Node <strong>${fn:escapeXml(target.path)}</strong> renamed successfully</p>
+            <p style="color: blue">Node <strong>${fn:escapeXml(deletedTargetPath)}</strong> renamed successfully</p>
         </c:when>
         <c:when test="${param.action == 'removeMixin' && not empty param.value}">
             <%

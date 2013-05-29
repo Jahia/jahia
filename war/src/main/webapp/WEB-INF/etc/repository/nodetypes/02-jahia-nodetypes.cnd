@@ -631,7 +631,6 @@
  - j:node (weakreference,picker[type='editoriallink']) < jmix:droppableContent, jnt:page, jnt:contentFolder, jnt:folder
 
 [jnt:externalLink] > jnt:content, jmix:link, jmix:navMenuItem
- - protocol (string)
  - j:url (string)
 
 [jnt:referenceInField] > nt:base

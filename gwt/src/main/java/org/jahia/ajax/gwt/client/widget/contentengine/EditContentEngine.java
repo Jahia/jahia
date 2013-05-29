@@ -41,7 +41,9 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -62,7 +64,10 @@ import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Content editing widget.
@@ -102,7 +107,7 @@ public class EditContentEngine extends AbstractContentEngine {
     }
 
     public void close() {
-        JahiaContentManagementService.App.getInstance().closeEditEngine(contentPath,new BaseAsyncCallback<Object>() {
+        JahiaContentManagementService.App.getInstance().closeEditEngine(contentPath, new BaseAsyncCallback<Object>() {
             public void onSuccess(Object result) {
             }
         });
@@ -121,7 +126,7 @@ public class EditContentEngine extends AbstractContentEngine {
      * Creates and initializes all window tabs.
      */
     protected void initTabs() {
-    	// container ID, concatenated to each tab's ID
+        // container ID, concatenated to each tab's ID
         tabs.setId("JahiaGxtEditEngineTabs");
         for (GWTEngineTab tabConfig : config.getEngineTabs()) {
             EditEngineTabItem tabItem = tabConfig.getTabItem();
@@ -183,7 +188,7 @@ public class EditContentEngine extends AbstractContentEngine {
      */
     private void loadEngine() {
 
-        JahiaContentManagementService.App.getInstance().initializeEditEngine(contentPath , true, new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
+        JahiaContentManagementService.App.getInstance().initializeEditEngine(contentPath, true, new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
             public void onSuccess(GWTJahiaEditEngineInitBean result) {
                 node = result.getNode();
                 nodeTypes = result.getNodeTypes();
@@ -193,10 +198,10 @@ public class EditContentEngine extends AbstractContentEngine {
                 langCodeGWTJahiaGetPropertiesResultMap.put(currentLanguageBean.getLanguage(), result);
                 acl = result.getAcl();
                 referencesWarnings = result.getReferencesWarnings();
-                if(!PermissionsUtils.isPermitted("jcr:modifyProperties", node)) {
-                    heading = Messages.getWithArgs("label.edit.engine.heading.read.only","Read {0} ({1})",new String[]{nodeName, nodeTypes.get(0).getLabel()});
+                if (!PermissionsUtils.isPermitted("jcr:modifyProperties", node)) {
+                    heading = Messages.getWithArgs("label.edit.engine.heading.read.only", "Read {0} ({1})", new String[]{nodeName, nodeTypes.get(0).getLabel()});
                 } else {
-                    heading = Messages.getWithArgs("label.edit.engine.heading.edit","Edit {0} ({1})",new String[]{nodeName, nodeTypes.get(0).getLabel()});
+                    heading = Messages.getWithArgs("label.edit.engine.heading.edit", "Edit {0} ({1})", new String[]{nodeName, nodeTypes.get(0).getLabel()});
                 }
                 container.getPanel().setHeading(heading);
                 if (node.isLocked()) {
@@ -223,13 +228,13 @@ public class EditContentEngine extends AbstractContentEngine {
                             }
                         }
                     }
-                    heading = heading + "&nbsp;" + Messages.getWithArgs("label.edit.engine.heading.locked.by","[ locked by {0} ]",new String[]{infos});
+                    heading = heading + "&nbsp;" + Messages.getWithArgs("label.edit.engine.heading.locked.by", "[ locked by {0} ]", new String[]{infos});
                     container.getPanel().setHeading(heading);
                 } else if (node.getLockInfos() != null) {
-                    heading = heading + "&nbsp;" + Messages.get("label.edit.engine.heading.locked.by.you","[ locked by you ]");
-                    container.getPanel().setHeading(heading);                    
+                    heading = heading + "&nbsp;" + Messages.get("label.edit.engine.heading.locked.by.you", "[ locked by you ]");
+                    container.getPanel().setHeading(heading);
                 }
-                
+
                 setAvailableLanguages(result.getAvailabledLanguages());
 
                 // set selectedNode as processed
@@ -249,7 +254,7 @@ public class EditContentEngine extends AbstractContentEngine {
 
                 fillCurrentTab();
 
-                if (PermissionsUtils.isPermitted("jcr:modifyProperties",node) && !node.isLocked()) {
+                if (PermissionsUtils.isPermitted("jcr:modifyProperties", node) && !node.isLocked()) {
                     setButtonsEnabled(true);
                 }
                 loaded();
@@ -257,7 +262,7 @@ public class EditContentEngine extends AbstractContentEngine {
 
             public void onApplicationFailure(Throwable throwable) {
                 Log.debug("Cannot get properties", throwable);
-                Info.display(Messages.get("label.error", "Error"),throwable.getLocalizedMessage());
+                Info.display(Messages.get("label.error", "Error"), throwable.getLocalizedMessage());
                 closeEngine();
             }
 
@@ -271,6 +276,7 @@ public class EditContentEngine extends AbstractContentEngine {
 
     /**
      * on language chnage, reload the node
+     *
      * @param previous
      */
     protected void onLanguageChange(GWTJahiaLanguage previous) {
@@ -282,7 +288,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 }
                 Object itemData = item.getData("item");
                 if (itemData instanceof EditEngineTabItem) {
-                    ((EditEngineTabItem)itemData).onLanguageChange(getSelectedLanguage(), item);
+                    ((EditEngineTabItem) itemData).onLanguageChange(getSelectedLanguage(), item);
                 }
             }
         }
@@ -298,63 +304,11 @@ public class EditContentEngine extends AbstractContentEngine {
         }
     }
 
-    
+
     public void setButtonsEnabled(final boolean enabled) {
         for (Button button : saveButtons) {
             button.setEnabled(enabled);
         }
-<<<<<<< .working
-=======
-
-        node.getNodeTypes().removeAll(removedTypes);
-        node.getNodeTypes().addAll(addedTypes);
-
-        // we temporarily deactivate the button to prevent double clicks while saving...
-        final boolean okEnabled = ok.isEnabled();
-        ok.setEnabled(false);
-
-        contentService.saveNode(node,
-                orderedChildrenNodes, acl, changedI18NProperties, changedProperties,
-                removedTypes, new BaseAsyncCallback<Object>() {
-                    public void onApplicationFailure(Throwable throwable) {
-                        String message = throwable.getMessage();
-                        if (message.contains("Invalid link")) {
-                            message = Messages.get("label.error.invalidlink", "Invalid link") + " : " + message.substring(message.indexOf(":")+1);
-                        }
-                        com.google.gwt.user.client.Window.alert(Messages.get("label.error.invalidlink", "Properties save failed") + "\n\n"
-                                + message);
-                        Log.error("failed", throwable);
-                        unmask();
-                        ok.setEnabled(true);
-                    }
-
-                    public void onSuccess(Object o) {
-                        // we restore the save button since the remote call completed successfully.
-                        ok.setEnabled(okEnabled);
-                        Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
-                        int refresh = Linker.REFRESH_MAIN + Linker.REFRESH_MAIN_IMAGES;
-                        EditLinker l = null;
-                        if (linker instanceof SidePanelTabItem.SidePanelLinker) {
-                            l = ((SidePanelTabItem.SidePanelLinker) linker).getEditLinker();
-                        } else if (linker instanceof EditLinker) {
-                            l = (EditLinker) linker;
-                        }
-                        if (l != null && node.equals(l.getMainModule().getNode()) && !node.getName().equals(l.getMainModule().getNode().getName())) {
-                            l.getMainModule().handleNewMainSelection(node.getPath().substring(0, node.getPath().lastIndexOf("/")+1)+node.getName(), l.getMainModule().getTemplate(), null);
-                            refresh += Linker.REFRESH_PAGES;
-                        }
-                        if (node.isPage() || node.getNodeTypes().contains("jnt:externalLink")
-                            || node.getNodeTypes().contains("jnt:nodeLink")
-                            || node.getNodeTypes().contains("jnt:template") || node.getInheritedNodeTypes().contains("jnt:template")
-                            || node.getInheritedNodeTypes().contains("jmix:visibleInPagesTree")) {
-                            refresh += Linker.REFRESH_PAGES;
-                        }
-                        closeEngine();
-                        linker.refresh(refresh);
-                    }
-                });
-        
->>>>>>> .merge-right.r46077
     }
 
     @Override

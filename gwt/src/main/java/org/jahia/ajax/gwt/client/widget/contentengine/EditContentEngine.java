@@ -377,6 +377,10 @@ public class EditContentEngine extends AbstractContentEngine {
         node.getNodeTypes().removeAll(removedTypes);
         node.getNodeTypes().addAll(addedTypes);
 
+        // we temporarily deactivate the button to prevent double clicks while saving...
+        final boolean okEnabled = ok.isEnabled();
+        ok.setEnabled(false);
+
         contentService.saveNode(node,
                 orderedChildrenNodes, acl, changedI18NProperties, changedProperties,
                 removedTypes, new BaseAsyncCallback<Object>() {
@@ -393,6 +397,8 @@ public class EditContentEngine extends AbstractContentEngine {
                     }
 
                     public void onSuccess(Object o) {
+                        // we restore the save button since the remote call completed successfully.
+                        ok.setEnabled(okEnabled);
                         Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
                         int refresh = Linker.REFRESH_MAIN + Linker.REFRESH_MAIN_IMAGES;
                         EditLinker l = null;

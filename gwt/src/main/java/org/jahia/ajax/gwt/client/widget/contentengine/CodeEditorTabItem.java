@@ -180,6 +180,19 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                             horizontalPanel.add(label);
                             horizontalPanel.add(mirrorTemplates);
                             horizontalPanel.add(button);
+                            Button addAllButton = new Button(Messages.get("label.addAll"));
+                            addAllButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                                @Override
+                                public void componentSelected(ButtonEvent ce) {
+                                    StringBuilder s = new StringBuilder();
+                                    for (GWTJahiaValueDisplayBean value  : mirrorTemplates.getStore().getModels()) {
+                                        s.append(value.getValue()).append("\n");
+                                    }
+                                    codeField.insertProperty(s.toString());
+                                }
+                            });
+                            horizontalPanel.add(addAllButton);
+
                         }
 
                         if (!engine.getProperties().containsKey(codePropertyName)) {

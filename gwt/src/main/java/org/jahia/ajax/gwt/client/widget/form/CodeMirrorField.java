@@ -47,7 +47,7 @@ import com.google.gwt.user.client.Element;
 public class CodeMirrorField extends TextArea {
 
     private Object codeMirror;
-    private String mode = "htmlmixed";
+    private String mode = "application/x-ejs";
 
     public void setMode(String mode) {
         this.mode = mode;

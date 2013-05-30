@@ -241,7 +241,7 @@ public class JahiaCndWriter {
             }
         }
         out.write(")");
-        writeDefaultValues(pd.getDefaultValues());
+        writeDefaultValues(pd.getDefaultValuesAsUnexpandedValue());
         out.write(ntd.getPrimaryItemName() != null && ntd.getPrimaryItemName().equals(pd.getName()) ? " primary" : "");
         if (pd.isMandatory()) {
             out.write(" mandatory");
@@ -337,8 +337,8 @@ public class JahiaCndWriter {
      */
     private void writeDefaultValues(Value[] dva) throws IOException {
         if (dva != null && dva.length > 0) {
-            String delim = " = ";
-            writeValueList(dva, delim);
+            out.write(" = ");
+            out.write(StringUtils.join(getValuesAsString(dva), ", "));
         }
     }
 
@@ -348,38 +348,42 @@ public class JahiaCndWriter {
      */
     private void writeValueConstraints(Value[] vca) throws IOException {
         if (vca != null && vca.length > 0) {
-            String delim = " < ";
-            writeValueList(vca, delim);
+            out.write(" < ");
+            out.write(StringUtils.join(getValuesAsString(vca), ", "));
         }
     }
-
-    private void writeValueList(Value[] dva, String delim) throws IOException {
-        for (int i = 0; i < dva.length; i++) {
+    public static List<String> getValuesAsString(Value[] values) throws IOException {
+        List<String> valuesAsString = new ArrayList<String>();
+        for (int i = 0; i < values.length; i++) {
+            StringBuilder sb = new StringBuilder();
             try {
-                if (dva[i] instanceof DynamicValueImpl) {
-                    out.write(delim);
-                    out.write(escape(((DynamicValueImpl)dva[i]).getFn()));
-                    out.write("( ");
-                    List<String> p = ((DynamicValueImpl)dva[i]).getParams();
-                    for (String s : p) {
-                        out.write(s);
-                        out.write(" ");
+                if (values[i] instanceof DynamicValueImpl) {
+                    DynamicValueImpl dynamicValue = (DynamicValueImpl) values[i];
+                    sb.append(escape(dynamicValue.getFn()));
+                    sb.append("(");
+                    List<String> p = dynamicValue.getParams();
+                    Iterator<String> it = p.iterator();
+                    while (it.hasNext()) {
+                        sb.append("'");
+                        sb.append(escape(it.next()));
+                        sb.append("'");
+                        if (it.hasNext()) {
+                            sb.append(" ");
+                        }
                     }
-                    out.write(")");
-                    delim = ", ";
-                } else if (dva[i].getString() != null) {
-                    out.write(delim);
-                    out.write("'");
-                    out.write(escape(dva[i].getString()));
-                    out.write("'");
-                    delim = ", ";
+                    sb.append(")");
+                } else if (values[i].getString() != null) {
+                    sb.append("'");
+                    sb.append(escape(values[i].getString()));
+                    sb.append("'");
                 }
             } catch (RepositoryException e) {
                 throw new IOException(e.getMessage());
             }
+            valuesAsString.add(sb.toString());
         }
+        return valuesAsString;
     }
-
 
 
     /**
@@ -444,14 +448,11 @@ public class JahiaCndWriter {
      * @param s
      * @return the escaped string
      */
-    private String escape(String s) {
+    private static String escape(String s) {
         StringBuffer sb = new StringBuffer(s);
         for (int i = 0; i < sb.length(); i++) {
-            if (sb.charAt(i) == '\\') {
+            if (sb.charAt(i) == '\\' || sb.charAt(i) == '\'') {
                 sb.insert(i, '\\');
-                i++;
-            } else if (sb.charAt(i) == '\'') {
-                sb.insert(i, '\'');
                 i++;
             }
         }

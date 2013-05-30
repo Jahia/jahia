@@ -953,6 +953,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         return originalAction.doExecute(req, renderContext, resource, systemSession, parameters, urlResolver);
                     }
                 };
+            } else {
+                throw new AccessDeniedException("Invalid token.");
             }
         }
 

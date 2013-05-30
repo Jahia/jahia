@@ -19,7 +19,7 @@
     <div class="${currentNode.properties['class'].string}">
 </c:if>
 
-<template:tokenizedForm>
+<template:tokenizedForm  allowsMultipleSubmits="true" >
 <form class="webProjectCreation" id="webProjectCreationForm" method="post" action="<c:url value='${url.base}/sites.adminCreateSite.do'/>" >
     <c:if test="${currentNode.properties.stayOnPage.boolean}">
         <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>

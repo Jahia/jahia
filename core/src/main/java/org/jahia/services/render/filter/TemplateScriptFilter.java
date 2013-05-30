@@ -91,7 +91,7 @@ public class TemplateScriptFilter extends AbstractFilter {
             }
             long start = 0;
             if (SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("moduleinfo")) && !resource.getNode().isNodeType("jnt:pageTemplate")) {
-                output.append("\n<fieldset> ");
+                output.append("\n<fieldset class=\"moduleinfo\"> ");
                 start = System.currentTimeMillis();
             }
             output.append(script.execute(resource, renderContext));

@@ -446,6 +446,14 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 }
             }
 
+            // Administrators are always granted
+            if (jahiaPrincipal != null) {
+                if (isAdmin(jahiaPrincipal.getName(), 0)) {
+                    pathPermissionCache.put(cacheKey, true);
+                    return true;
+                }
+            }
+
             int depth = 1;
             if (itemExists == null) {
                 itemExists = getSecuritySession().itemExists(jcrPath);
@@ -454,14 +462,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             if (!itemExists) {
                 pathPermissionCache.put(cacheKey, true);
                 return true;
-            }
-
-            // Administrators are always granted
-            if (jahiaPrincipal != null) {
-                if (isAdmin(jahiaPrincipal.getName(), 0)) {
-                    pathPermissionCache.put(cacheKey, true);
-                    return true;
-                }
             }
 
             while (!itemExists.booleanValue()) {

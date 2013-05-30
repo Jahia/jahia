@@ -40,14 +40,17 @@
 
 package org.apache.jackrabbit.core.security;
 
+import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.security.authorization.PrivilegeManager;
-import org.apache.commons.collections.map.LRUMap;
 import org.apache.jackrabbit.core.HierarchyManager;
 import org.apache.jackrabbit.core.RepositoryContext;
 import org.apache.jackrabbit.core.config.WorkspaceConfig;
 import org.apache.jackrabbit.core.id.ItemId;
-import org.apache.jackrabbit.core.security.authorization.*;
+import org.apache.jackrabbit.core.security.authorization.AccessControlProvider;
+import org.apache.jackrabbit.core.security.authorization.Permission;
+import org.apache.jackrabbit.core.security.authorization.PrivilegeRegistry;
+import org.apache.jackrabbit.core.security.authorization.WorkspaceAccessManager;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.Path;
 import org.apache.jackrabbit.spi.commons.conversion.DefaultNamePathResolver;
@@ -56,20 +59,23 @@ import org.apache.jackrabbit.spi.commons.conversion.PathResolver;
 import org.apache.jackrabbit.spi.commons.name.PathFactoryImpl;
 import org.apache.jackrabbit.spi.commons.namespace.NamespaceResolver;
 import org.apache.jackrabbit.spi.commons.namespace.SessionNamespaceResolver;
-import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.settings.SettingsBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.settings.SettingsBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
-import javax.jcr.security.*;
+import javax.jcr.security.AccessControlException;
+import javax.jcr.security.AccessControlManager;
+import javax.jcr.security.AccessControlPolicy;
+import javax.jcr.security.Privilege;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.security.auth.Subject;
@@ -94,7 +100,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class JahiaAccessManager extends AbstractAccessControlManager implements AccessManager, AccessControlManager {
     private static final Logger logger = LoggerFactory.getLogger(JahiaAccessManager.class);
 
-    private static final Map<String, Map<String, String>> PRIVILEGE_NAMES = new ConcurrentHashMap<String, Map<String,String>>(2);
+    private static final Map<String, Map<String, String>> PRIVILEGE_NAMES = new ConcurrentHashMap<String, Map<String, String>>(2);
 
     /**
      * Subject whose access rights this AccessManager should reflect
@@ -131,7 +137,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private boolean globalGroupMembershipCheckActivated = false;
 
     public static String getPrivilegeName(String privilegeName, String workspace) {
-        if (workspace ==  null) {
+        if (workspace == null) {
             return privilegeName;
         }
 
@@ -357,9 +363,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         }
         if ((actions & WRITE) == WRITE) {
             if (id.denotesNode()) {
-                // TODO: check again if correct
                 perm.add(getPrivilegeName(Privilege.JCR_ADD_CHILD_NODES, workspaceName));
-                perm.add(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName));
             } else {
                 perm.add(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName));
             }
@@ -378,6 +382,10 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
         Set<String> privs = new HashSet<String>();
 
+        if (permissions == Permission.ADD_NODE || permissions == Permission.SET_PROPERTY || permissions == Permission.REMOVE_PROPERTY) {
+            absPath = absPath.getAncestor(1);
+        }
+
         for (Privilege privilege : privilegeRegistry.getPrivileges(permissions, workspaceName)) {
             privs.add(privilege.getName());
         }
@@ -392,7 +400,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
         String absPathStr = absPath.toString();
 
-        if (permissions.size() == 1 && absPathStr.equals("{}") && permissions.contains(getPrivilegeName(Privilege.JCR_READ,  workspaceName))) {
+        if (permissions.size() == 1 && absPathStr.equals("{}") && permissions.contains(getPrivilegeName(Privilege.JCR_READ, workspaceName))) {
             return true;
         }
 
@@ -427,7 +435,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                     permissions.contains(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName)) ||
                     permissions.contains(getPrivilegeName(Privilege.JCR_REMOVE_NODE, workspaceName))) {
                 itemExists = getSecuritySession().itemExists(jcrPath);
-                if (itemExists.booleanValue()) {
+                if (itemExists) {
                     i = getSecuritySession().getItem(jcrPath);
                     if (i.isNode()) {
                         if (((Node) i).isNodeType(Constants.JAHIAMIX_SYSTEMNODE)) {
@@ -438,16 +446,14 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 }
             }
 
-            if (permissions.size() != 1 || !permissions.contains(getPrivilegeName(Privilege.JCR_ADD_CHILD_NODES, workspaceName))) {
-                if (itemExists == null) {
-                    itemExists = getSecuritySession().itemExists(jcrPath);
-                }
-                boolean newItem = !itemExists.booleanValue(); // Jackrabbit checks the ADD_NODE permission on non-existing nodes
-                if (newItem) {
-                    // If node is new (local to the session), always grant permission
-                    pathPermissionCache.put(cacheKey, true);
-                    return true;
-                }
+            int depth = 1;
+            if (itemExists == null) {
+                itemExists = getSecuritySession().itemExists(jcrPath);
+            }
+
+            if (!itemExists) {
+                pathPermissionCache.put(cacheKey, true);
+                return true;
             }
 
             // Administrators are always granted
@@ -458,10 +464,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 }
             }
 
-            int depth = 1;
-            if (itemExists == null) {
-                itemExists = getSecuritySession().itemExists(jcrPath);
-            }
             while (!itemExists.booleanValue()) {
                 jcrPath = pr.getJCRPath(absPath.getAncestor(depth++));
                 itemExists = getSecuritySession().itemExists(jcrPath);
@@ -549,9 +551,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     public boolean isGranted(Path parentPath, Name childName, int permissions) throws RepositoryException {
-//        Path p = PathFactoryImpl.getInstance().create(parentPath, childName, true);
-        // check on parent
-        return isGranted(parentPath, permissions);
+        Path p = PathFactoryImpl.getInstance().create(parentPath, childName, true);
+        return isGranted(p, permissions);
     }
 
     public boolean canRead(Path path, ItemId itemId) throws RepositoryException {
@@ -764,7 +765,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             try {
                 node = securitySession.getNode("/roles/" + role);
             } catch (PathNotFoundException pnfe) {
-                logger.warn("Role " + role + " is missing despite still being in use in path "+absPath+ " (or parent). Please re-create it in the administration, remove all uses and then you can delete it !");
+                logger.warn("Role " + role + " is missing despite still being in use in path " + absPath + " (or parent). Please re-create it in the administration, remove all uses and then you can delete it !");
                 continue;
             }
             if (node.hasProperty("j:permissions")) {
@@ -858,7 +859,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
                                 String roleSuffix = "";
                                 if (ace.isNodeType("jnt:externalAce")) {
-                                    roleSuffix = "/"+ace.getProperty("j:externalPermissionsName").getString();
+                                    roleSuffix = "/" + ace.getProperty("j:externalPermissionsName").getString();
                                 }
 
                                 Value[] roles = ace.getProperty(Constants.J_ROLES).getValues();

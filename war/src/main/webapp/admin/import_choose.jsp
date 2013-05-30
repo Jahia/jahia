@@ -94,7 +94,7 @@
 
                 </tr>
                 </thead>
-                <form name="main" method="post action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=processimport")%>'">
+                <form name="main" method="post" action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=processimport")%>'>
                     <input type="hidden" name="do" value="sites"/>
                     <input type="hidden" name="sub" value="processimport"/>
                     <tbody>

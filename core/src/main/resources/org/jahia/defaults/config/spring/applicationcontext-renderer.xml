@@ -179,9 +179,6 @@
 				<bean class="org.jahia.services.render.filter.ContextPlaceholdersReplacer">
             <property name="urlRewriteService" ref="UrlRewriteService" />
 				</bean>
-                <bean class="org.jahia.services.render.filter.cache.CacheUrlDependenciesParserFilter">
-                    <property name="urlResolverFactory" ref="urlResolverFactory" />
-				</bean>
 				<bean class="org.jahia.services.seo.filter.VanityUrlSetter">
 					<property name="vanityUrlService"
 						ref="org.jahia.services.seo.jcr.VanityUrlService" />

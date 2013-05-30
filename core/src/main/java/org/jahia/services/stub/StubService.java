@@ -48,6 +48,7 @@ import org.slf4j.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -63,6 +64,9 @@ public class StubService {
      * @param snippetType type of the snippet
      * @return Map of snippets fpr file type
      */
+
+    private Map<String,String> nodeTypeView;
+
     public Map<String,String> getCodeSnippets(String fileType, String snippetType) {
         Map<String,String> stub = new LinkedHashMap<String, String>();
         InputStream is = null;
@@ -70,8 +74,11 @@ public class StubService {
             Set<String> resources = JahiaContextLoaderListener.getServletContext().getResourcePaths("/WEB-INF/etc/snippets/"+fileType+"/"+snippetType+"/");
             if (resources != null) {
                 for (String resource : resources) {
+                    String r = StringUtils.substringAfterLast(resource,"/");
+                    String v = StringUtils.substringBeforeLast(StringUtils.substring(r,StringUtils.indexOf(r,".") + 1),".");
+                    String view = nodeTypeView.get(v) != null ? "/" + nodeTypeView.get(v) : "";
                     is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(resource);
-                    stub.put(StringUtils.substringAfterLast(resource,"/"), StringUtils.join(IOUtils.readLines(is), "\n"));
+                    stub.put(r + view, StringUtils.join(IOUtils.readLines(is), "\n"));
                 }
             }
         } catch (IOException e) {
@@ -84,4 +91,7 @@ public class StubService {
         return stub;
     }
 
+    public void setNodeTypeView(Map<String, String> nodeTypeView) {
+        this.nodeTypeView = nodeTypeView;
+    }
 }

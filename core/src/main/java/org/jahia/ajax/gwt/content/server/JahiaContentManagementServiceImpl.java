@@ -93,6 +93,7 @@ import org.jahia.utils.i18n.ResourceBundles;
 import org.slf4j.Logger;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.security.Privilege;
@@ -341,7 +342,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public List<GWTJahiaNode> getNodes(List<String> paths, List<String> fields) {
         long timer = System.currentTimeMillis();
-        
+
         List<GWTJahiaNode> list = getNodesInternal(paths, fields);
 
         if (logger.isDebugEnabled()) {
@@ -379,10 +380,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         return list;
     }
-    
+
     public Map<String,List<? extends ModelData>> getNodesAndTypes(List<ModelData> getNodesParams, List<String> types) throws GWTJahiaServiceException {
         long timer = System.currentTimeMillis();
-        
+
         Map<String,List<? extends ModelData>> m = new HashMap<String,List<? extends ModelData>>();
 
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
@@ -412,7 +413,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                         StringUtils.join(paths, ", "));
             }
         }
-        
+
         return m;
     }
 
@@ -826,12 +827,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             workflow.updateWorkflowRules(node,
                     (Set<GWTJahiaWorkflowDefinition>) node.get("activeWorkflows"), jcrSessionWrapper);
         }
-        
+
         GWTResourceBundle rb = node.get(GWTJahiaNode.RESOURCE_BUNDLE);
         if (rb != null) {
             GWTResourceBundleUtils.store(node, rb, jcrSessionWrapper);
         }
-        
+
         try {
             jcrSessionWrapper.save();
         }
@@ -2052,13 +2053,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.cannot.get.node", getUILocale()));
         }
     }
-   public List<String> getNamespaces() {
-       List<String> listValues = new ArrayList<String>();
-       for (Map.Entry<String, String> entry : NodeTypeRegistry.getInstance().getNamespaces().entrySet()) {
-           listValues.add(entry.getKey());
-       }
-       return listValues;
-   }
+    public List<String> getNamespaces() {
+        List<String> listValues = new ArrayList<String>();
+        for (Map.Entry<String, String> entry : NodeTypeRegistry.getInstance().getNamespaces().entrySet()) {
+            listValues.add(entry.getKey());
+        }
+        return listValues;
+    }
     public List<GWTJahiaNode> getPortalNodes(String targetAreaName) {
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
         try {
@@ -2437,11 +2438,31 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             logger.error("Error while trying to find the node type associated with this path "+path, e);
         }
 
-        if (isNew) {
-            Map<String, String> stubs = stubHelper.getCodeSnippets(fileType, "stub");
-            r.put("stub", stubs.isEmpty() ? "" : stubs.values().iterator().next());
-        }
+        Map<String, String> stubs = stubHelper.getCodeSnippets(fileType, "stub");
 
+        // Remove stubs not defined for the current nodetype
+        if (nodeTypeName != null ) {
+            Map<String, String> st = new HashMap<String, String>(stubs);
+            for (String key : stubs.keySet()) {
+                // the key mask is stubfilename/nodetype
+                if (StringUtils.contains(key,"/")) {
+                    String[] s = key.split("/");
+                    if (s.length >0) {
+                        try {
+                            ExtendedNodeType n = NodeTypeRegistry.getInstance().getNodeType(nodeTypeName);
+                            if (!n.isNodeType(s[s.length -1])) {
+                                st.remove(key);
+                            }
+                        } catch (NoSuchNodeTypeException e) {
+                            // node type not found, do nothing
+                        }
+                    }
+
+                }
+            }
+            stubs = st;
+        }
+        r.put("stubs", stubs);
         List<GWTJahiaValueDisplayBean> snippetsByType;
         Map<String, List<GWTJahiaValueDisplayBean>> snippets = new LinkedHashMap<String, List<GWTJahiaValueDisplayBean>>();
 

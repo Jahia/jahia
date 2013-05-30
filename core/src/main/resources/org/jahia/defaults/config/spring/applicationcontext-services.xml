@@ -259,6 +259,12 @@
         <property name="translationService" ref="TranslationService" />
     </bean>
 
-    <bean id="StubService" class="org.jahia.services.stub.StubService" />
+    <bean id="StubService" class="org.jahia.services.stub.StubService">
+        <property name="nodeTypeView">
+            <map>
+                <entry key="hidden.load" value="jmix:list"/>
+            </map>
+        </property>
+    </bean>
 
 </beans>

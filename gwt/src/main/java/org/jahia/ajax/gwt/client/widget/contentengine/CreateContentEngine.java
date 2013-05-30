@@ -205,6 +205,10 @@ public class CreateContentEngine extends AbstractContentEngine {
         return targetName;
     }
 
+    public void setTargetName(String targetName) {
+        this.targetName = targetName;
+    }
+
     public boolean isCreateInParentAndMoveBefore() {
         return createInParentAndMoveBefore;
     }

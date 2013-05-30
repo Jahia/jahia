@@ -49,11 +49,13 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.LayoutData;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -96,8 +98,13 @@ public class CodeEditorTabItem extends EditEngineTabItem {
         final HorizontalPanel horizontalPanel = new HorizontalPanel();
         horizontalPanel.setSpacing(10);
         horizontalPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
-        tab.add(horizontalPanel, new BorderLayoutData(Style.LayoutRegion.NORTH, 40));
-
+        tab.add(horizontalPanel, new BorderLayoutData(Style.LayoutRegion.NORTH,40));
+        final HorizontalPanel actionStubs = new HorizontalPanel();
+        actionStubs.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
+        final HorizontalPanel actions = new HorizontalPanel();
+        actions.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
+        horizontalPanel.add(actions);
+        horizontalPanel.add(actionStubs);
         if (!tab.isProcessed()) {
             // Add list of properties
             GWTJahiaNodeProperty typeName = engine.getProperties().get("nodeTypeName");
@@ -173,13 +180,13 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                             });
                             Label label = new Label(Messages.get("label.snippetType", "Snippet Type"));
                             label.setStyleAttribute(FONT_SIZE, FONT_SIZE_VALUE);
-                            horizontalPanel.add(label);
-                            horizontalPanel.add(snippetType);
+                            actions.add(label);
+                            actions.add(snippetType);
                             label = new Label(Messages.get("label.codeMirrorTemplates","Code Template"));
                             label.setStyleAttribute(FONT_SIZE, FONT_SIZE_VALUE);
-                            horizontalPanel.add(label);
-                            horizontalPanel.add(mirrorTemplates);
-                            horizontalPanel.add(button);
+                            actions.add(label);
+                            actions.add(mirrorTemplates);
+                            actions.add(button);
                             Button addAllButton = new Button(Messages.get("label.addAll"));
                             addAllButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 @Override
@@ -191,22 +198,63 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                                     codeField.insertProperty(s.toString());
                                 }
                             });
-                            horizontalPanel.add(addAllButton);
+                            actions.add(addAllButton);
 
                         }
 
                         if (!engine.getProperties().containsKey(codePropertyName)) {
-                            codeProperty = new GWTJahiaNodeProperty(codePropertyName, (String) result.get("stub"), GWTJahiaNodePropertyType.STRING);
-                        }
+                            Map<String,String> stubs = (Map<String,String>) result.get("stubs");
+                            if (stubs.size() == 1) {
+                                codeProperty = new GWTJahiaNodeProperty(codePropertyName, stubs.values().iterator().next(), GWTJahiaNodePropertyType.STRING);
+                            } else if (stubs.size() > 1) {
+                                actions.hide();
 
+                                final ComboBox<GWTJahiaValueDisplayBean> stubsCombo = new ComboBox<GWTJahiaValueDisplayBean>();
+                                stubsCombo.setStore(new ListStore<GWTJahiaValueDisplayBean>());
+                                stubsCombo.setDisplayField("display");
+                                stubsCombo.setEmptyText(Messages.get("label.selectStub"));
+                                for (String stub : stubs.keySet()) {
+                                    String display;
+                                    String viewName = "";
+                                    if (stub.contains("/")) {
+                                        String s = stub.split("/")[0];
+                                        viewName = s.substring(s.indexOf(".") ,s.lastIndexOf("."));
+                                        display =  Messages.get("label.stub" + viewName);
+                                    } else {
+                                        display = Messages.get("label.stub.default");
+                                        viewName = "";
+                                    }
+                                    GWTJahiaValueDisplayBean value = new GWTJahiaValueDisplayBean(stubs.get(stub), display);
+                                    value.set("viewName",viewName);
+                                    stubsCombo.getStore().add(value);
+                                }
+                                Button button = new Button(Messages.get("label.add"));
+                                button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                                    @Override
+                                    public void componentSelected(ButtonEvent buttonEvent) {
+                                        codeField.insertProperty(stubsCombo.getValue().getValue());
+                                        if (engine instanceof CreateContentEngine) {
+                                            ((CreateContentEngine) engine).setTargetName(((CreateContentEngine) engine).getTargetName() + stubsCombo.getValue().get("viewName"));
+                                        }
+                                        actionStubs.hide();
+                                        actions.show();
+                                        codeField.show();
+                                    }
+                                });
+                                actionStubs.add(stubsCombo);
+                                actionStubs.add(button);
+                                actionStubs.show();
+                            }
+
+                        }
                         initEditor(tab);
                     }
                 });
             } else {
                 initEditor(tab);
             }
-            horizontalPanel.add(indentButton);
-            horizontalPanel.show();
+            actions.add(indentButton);
+            actions.show();
         }
     }
 

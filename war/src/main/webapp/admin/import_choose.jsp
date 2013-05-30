@@ -8,6 +8,7 @@
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
+<%@ page import="org.jahia.bin.JahiaAdministration" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -93,7 +94,7 @@
 
                 </tr>
                 </thead>
-                <form name="main">
+                <form name="main" method="post action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=processimport")%>'">
                     <input type="hidden" name="do" value="sites"/>
                     <input type="hidden" name="sub" value="processimport"/>
                     <tbody>

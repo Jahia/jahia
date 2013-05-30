@@ -210,9 +210,13 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                                 actions.hide();
 
                                 final ComboBox<GWTJahiaValueDisplayBean> stubsCombo = new ComboBox<GWTJahiaValueDisplayBean>();
+                                stubsCombo.setTypeAhead(true);
+                                stubsCombo.getListView().setStyleAttribute(FONT_SIZE, FONT_SIZE_VALUE);
+                                stubsCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
+                                stubsCombo.setForceSelection(true);
                                 stubsCombo.setStore(new ListStore<GWTJahiaValueDisplayBean>());
                                 stubsCombo.setDisplayField("display");
-                                stubsCombo.setEmptyText(Messages.get("label.selectStub"));
+                                stubsCombo.setEmptyText(Messages.get("label.stub.select"));
                                 for (String stub : stubs.keySet()) {
                                     String display;
                                     String viewName = "";

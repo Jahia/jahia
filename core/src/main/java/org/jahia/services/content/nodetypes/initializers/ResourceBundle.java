@@ -92,7 +92,7 @@ public class ResourceBundle implements I15dValueInitializer {
                 pkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("default");
             }
             if (pkg == null) {
-                label = key;
+                label = DEFAULT_VALUE;
             } else {
                 label = Messages.get(pkg, key, locale, key);
             }

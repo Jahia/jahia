@@ -53,6 +53,8 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
  */
 public interface I15dValueInitializer extends ValueInitializer {
 
+    public static final String DEFAULT_VALUE = "__I15D_DEFAULT_VALUE__";
+
     /**
      * Returns an array of default values for the specified property, considering parameters and the locale.
      * 

@@ -68,6 +68,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.initializers.I15dValueInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -188,6 +189,12 @@ public class DefaultValueListener extends DefaultEventListener {
         Node targetNode = doCreateI10n ? n.getOrCreateI18N(sessionLocale) : n;
 
         String propertyName = pd.getName();
+
+        if (targetNode.hasProperty(propertyName)
+                && !I15dValueInitializer.DEFAULT_VALUE.equals(targetNode.getProperty(propertyName).getString())) {
+            // node already has the property -> return
+            return false;
+        }
 
         boolean valuesSet = false;
 

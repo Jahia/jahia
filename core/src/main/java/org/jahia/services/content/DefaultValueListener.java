@@ -129,7 +129,7 @@ public class DefaultValueListener extends DefaultEventListener {
                                         ExtendedPropertyDefinition[] pds = ent.getPropertyDefinitions();
                                         for (int i = 0; i < pds.length; i++) {
                                             ExtendedPropertyDefinition pd = pds[i];
-                                            Value[] defValues = pd.getDefaultValues(sessionLocale);
+                                            Value[] defValues = pd.getDefaultValuesAsUnexpandedValue();
                                             if (defValues.length > 0) {
                                                 boolean handled = handlePropertyDefaultValues(n, pd, defValues, sessionLocale);
                                                 anythingChanged = anythingChanged || handled;
@@ -188,11 +188,6 @@ public class DefaultValueListener extends DefaultEventListener {
         Node targetNode = doCreateI10n ? n.getOrCreateI18N(sessionLocale) : n;
 
         String propertyName = pd.getName();
-
-        if (targetNode.hasProperty(propertyName)) {
-            // node already has the property -> return
-            return false;
-        }
 
         boolean valuesSet = false;
 

@@ -40,6 +40,8 @@
 
 package org.jahia.taglibs.template;
 
+import org.apache.taglibs.standard.tag.common.core.Util;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -68,7 +70,7 @@ public class UrlTag extends org.apache.taglibs.standard.tag.el.core.UrlTag {
     private Pattern paramIncludePattern;
     
     private boolean useRequestParams = false;
-    
+
     /**
      * Initializes an instance of this class.
      */
@@ -103,7 +105,8 @@ public class UrlTag extends org.apache.taglibs.standard.tag.el.core.UrlTag {
                         && (paramIncludePattern == null || paramIncludePattern
                                 .matcher(requestParameter.getKey()).matches())) {
                     for (String value : requestParameter.getValue()) {
-                        super.addParameter(requestParameter.getKey(), value);
+                        String enc = pageContext.getResponse().getCharacterEncoding();
+                        super.addParameter(Util.URLEncode(requestParameter.getKey(), enc), Util.URLEncode(value, enc));
                     }
                 }
             }

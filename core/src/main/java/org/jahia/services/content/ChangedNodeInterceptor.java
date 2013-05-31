@@ -40,7 +40,6 @@
 
 package org.jahia.services.content;
 
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.interceptor.BaseInterceptor;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
@@ -58,7 +57,9 @@ public class ChangedNodeInterceptor extends BaseInterceptor {
                                 Value originalValue) throws ValueFormatException, VersionException, LockException,
             ConstraintViolationException, RepositoryException {
         JCRSessionWrapper session = node.getSession();
-        session.registerChangedNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
+        if (!node.isNew()) {
+            session.registerChangedNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
+        }
         return super.beforeSetValue(node, name, definition, originalValue);
     }
 
@@ -66,16 +67,20 @@ public class ChangedNodeInterceptor extends BaseInterceptor {
     public Value[] beforeSetValues(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition,
                                    Value[] originalValues) throws ValueFormatException, VersionException, LockException,
             ConstraintViolationException, RepositoryException {
-        JCRSessionWrapper session = node.getSession();
-        session.registerChangedNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
+        if (!node.isNew()) {
+            JCRSessionWrapper session = node.getSession();
+            session.registerChangedNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
+        }
         return super.beforeSetValues(node, name, definition, originalValues);
     }
 
     @Override
     public void beforeRemove(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition)
             throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        JCRSessionWrapper session = node.getSession();
-        session.registerChangedNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
+        if (!node.isNew()) {
+            JCRSessionWrapper session = node.getSession();
+            session.registerChangedNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
+        }
         super.beforeRemove(node, name, definition);
     }
 }

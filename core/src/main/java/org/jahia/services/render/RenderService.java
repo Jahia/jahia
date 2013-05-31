@@ -60,6 +60,7 @@ import org.jahia.services.render.scripting.Script;
 import org.jahia.services.render.scripting.ScriptResolver;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -72,6 +73,7 @@ import javax.jcr.Value;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.*;
 
 /**
@@ -171,8 +173,10 @@ public class RenderService {
      */
     public String render(Resource resource, RenderContext context) throws RenderException {
         if (context.getResourcesStack().contains(resource)) {
-            logger.warn("Loop detected while rendering resource " + resource.getPath() + ". Please check your content structure and references.");
-            return "Loop detected while displaying resource " + resource.getPath() + ". Please check your content structure and references.";
+            String resourceMessage = JahiaResourceBundle.getJahiaInternalResource("label.render.loop", context.getUILocale());
+            String formattedMessage = MessageFormat.format(resourceMessage, resource.getPath());
+            logger.warn("Loop detected while rendering resource {}. Please check your content structure and references.", resource.getPath());
+            return formattedMessage;
         }
 
         String output = getRenderChainInstance().doFilter(context, resource);

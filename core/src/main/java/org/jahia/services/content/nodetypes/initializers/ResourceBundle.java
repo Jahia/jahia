@@ -88,8 +88,14 @@ public class ResourceBundle implements I15dValueInitializer {
         } else {
             // no resource bundle specified -> detect the declaring mode for the node type and use its resource bundle
             JahiaTemplatesPackage pkg = declaringPropertyDefinition.getDeclaringNodeType().getTemplatePackage();
-            label = Messages.get(pkg != null ? pkg : ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                    .getTemplatePackageByFileName("default"), key, locale, key);
+            if (pkg == null) {
+                pkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("default");
+            }
+            if (pkg == null) {
+                label = key;
+            } else {
+                label = Messages.get(pkg, key, locale, key);
+            }
         }
 
         if (logger.isDebugEnabled()) {

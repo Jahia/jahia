@@ -48,20 +48,19 @@ package org.jahia.services.sites;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.*;
@@ -206,11 +205,11 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
     }
 
     private JCRSessionWrapper getUserSession() throws RepositoryException {
-        if(JahiaUserManagerService.isGuest(sessionFactory.getCurrentUser())){
-            return sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE);
-        } else {
-            return sessionFactory.getCurrentUserSession();
-        }
+//        if(JahiaUserManagerService.isGuest(sessionFactory.getCurrentUser())){
+        return sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE);
+//        } else {
+//            return sessionFactory.getCurrentUserSession();
+//        }
     }
 
     public JCRSiteNode getSiteByKey(String siteKey, JCRSessionWrapper session) throws RepositoryException {

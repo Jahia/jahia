@@ -51,7 +51,6 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import java.io.IOException;
 import java.net.URLClassLoader;
 import java.util.Locale;
@@ -127,6 +126,12 @@ public class JspServletWrapper implements Servlet {
             public void setLocale(HttpServletRequest request, HttpServletResponse response, Locale locale) {
             }
         });
+
+        // Prepare attributes for subsequent includes
+        String p = (String)req.getAttribute("javax.servlet.include.servlet_path") + (String)req.getAttribute("javax.servlet.include.path_info");
+        req.setAttribute("javax.servlet.include.path_info", null);
+        req.setAttribute("javax.servlet.include.servlet_path", p);
+
         try {
             ContextClassLoaderUtils.doWithClassLoader(urlClassLoader,
                     new Callable<Void>() {

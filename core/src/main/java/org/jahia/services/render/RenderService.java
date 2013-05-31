@@ -171,7 +171,8 @@ public class RenderService {
      */
     public String render(Resource resource, RenderContext context) throws RenderException {
         if (context.getResourcesStack().contains(resource)) {
-            return "loop";
+            logger.warn("Loop detected while rendering resource " + resource.getPath() + ". Please check your content structure and references.");
+            return "Loop detected while displaying resource " + resource.getPath() + ". Please check your content structure and references.";
         }
 
         String output = getRenderChainInstance().doFilter(context, resource);

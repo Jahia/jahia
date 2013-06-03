@@ -143,20 +143,22 @@ public class QueryWrapper implements Query {
                     return null;
                 }
             }
-            if (Query.JCR_SQL2.equals(language)) {
-                QueryObjectModel qom = QueryServiceImpl.getInstance().modifyAndOptimizeQuery((QueryObjectModel) query, factory, session);
-                Constraint constraint;
-                if (jcrStoreProvider.isDefault()) {
-                    constraint = filterMountPoints(qom.getConstraint(), qom.getSource(), factory);
-                } else {
-                    constraint = qom.getConstraint();
+            if (query != null) {
+                if (Query.JCR_SQL2.equals(language)) {
+                    QueryObjectModel qom = QueryServiceImpl.getInstance().modifyAndOptimizeQuery((QueryObjectModel) query, factory, session);
+                    Constraint constraint;
+                    if (jcrStoreProvider.isDefault()) {
+                        constraint = filterMountPoints(qom.getConstraint(), qom.getSource(), factory);
+                    } else {
+                        constraint = qom.getConstraint();
+                    }
+                    query = factory.createQuery(qom.getSource(), constraint, qom.getOrderings(), qom.getColumns());
                 }
-                query = factory.createQuery(qom.getSource(), constraint, qom.getOrderings(), qom.getColumns());
-            }
-            if (query instanceof JahiaQueryObjectModelImpl) {
-                JahiaLuceneQueryFactoryImpl lqf = (JahiaLuceneQueryFactoryImpl) ((JahiaQueryObjectModelImpl) query)
-                        .getLuceneQueryFactory();
-                lqf.setLocale(session.getLocale());
+                if (query instanceof JahiaQueryObjectModelImpl) {
+                    JahiaLuceneQueryFactoryImpl lqf = (JahiaLuceneQueryFactoryImpl) ((JahiaQueryObjectModelImpl) query)
+                            .getLuceneQueryFactory();
+                    lqf.setLocale(session.getLocale());
+                }
             }
         }
         return query;

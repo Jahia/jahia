@@ -502,13 +502,14 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
             groupService.deleteGroup(groupService.lookupGroup(JCR_KEY_PATTERN.matcher(group).replaceAll("")));
         }
         try {
+            final String siteKey = site.getSiteKey();
             JCRCallback<Boolean> deleteCallback = new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper sites = session.getNode(SITES_JCR_PATH);
                     if (!sites.isCheckedOut()) {
                         session.checkout(sites);
                     }
-                    JCRNodeWrapper site1 = sites.getNode(site.getSiteKey());
+                    JCRNodeWrapper site1 = sites.getNode(siteKey);
                     if (sites.hasProperty("j:defaultSite")) {
                         final JCRPropertyWrapper defaultSite = sites.getProperty("j:defaultSite");
                         if (defaultSite.getValue().getString().equals(site1.getIdentifier())) {

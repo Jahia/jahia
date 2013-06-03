@@ -46,15 +46,15 @@
         <groupId>org.jahia.modules</groupId>
         <version>6.7.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>defaultSiteSettings</artifactId>
-    <name>Jahia Default Site Settings</name>
+    <artifactId>siteSettings</artifactId>
+    <name>Jahia Site Settings</name>
     <packaging>bundle</packaging>
-    <description>Default settings (groups,tools, etc) for site.</description>
+    <description>Settings (groups,tools, etc) for site.</description>
 
     <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/defaultSiteSettings</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/defaultSiteSettings</developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/trunk/modules/defaultSiteSettings</url>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/siteSettings</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/siteSettings</developerConnection>
+        <url>https://devtools.jahia.com/svn/jahia/trunk/modules/siteSettings</url>
     </scm>
 
     <repositories>

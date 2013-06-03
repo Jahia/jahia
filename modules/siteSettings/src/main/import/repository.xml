@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
   <modules jcr:primaryType="jnt:modules">
-    <defaultSiteSettings j:dependencies="default" j:installedModules="defaultSiteSettings" j:siteType="module" j:title="Jahia Default Site Settings" j:wcagCompliance="true" jcr:primaryType="jnt:virtualsite">
+    <siteSettings j:dependencies="default" j:installedModules="siteSettings" j:siteType="module" j:title="Jahia Site Settings" j:wcagCompliance="true" jcr:primaryType="jnt:virtualsite">
       <portlets jcr:primaryType="jnt:portletFolder" />
       <contents jcr:primaryType="jnt:contentFolder" />
       <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
@@ -69,7 +69,7 @@
           </files>
           <siteSettingsBase j:view="siteSettings" jcr:mixinTypes="jmix:useUILocale" jcr:primaryType="jnt:template">
               <manageLanguages j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true"
-                               j:icon="/modules/defaultSiteSettings/templates/files/signpost.png" j:priority="100"
+                               j:icon="/modules/siteSettings/templates/files/signpost.png" j:priority="100"
                                j:requiredPermissions="#/permissions/admin/adminSiteLanguages"
                                j:titleKey="siteSettings.label.manageLanguages" jcr:mixinTypes="jmix:rbTitle"
                                jcr:primaryType="jnt:contentTemplate">
@@ -78,7 +78,7 @@
                   </pagecontent>
               </manageLanguages>
               <wcagCompliance j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true"
-                              j:icon="/modules/defaultSiteSettings/templates/files/text_rich_colored.png"
+                              j:icon="/modules/siteSettings/templates/files/text_rich_colored.png"
                               j:priority="100"
                               j:requiredPermissions="#/permissions/admin/adminWcagCompliance"
                               j:titleKey="siteSettings.label.wcagCompliance"
@@ -88,7 +88,7 @@
                   </pagecontent>
               </wcagCompliance>
               <htmlFiltering j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true"
-                             j:icon="/modules/defaultSiteSettings/templates/files/text_rich_colored.png"
+                             j:icon="/modules/siteSettings/templates/files/text_rich_colored.png"
                              j:priority="100"
                              j:requiredPermissions="#/permissions/admin/adminHtmlSettings"
                              j:titleKey="siteSettings.label.htmlFiltering"
@@ -98,14 +98,14 @@
                   </pagecontent>
               </htmlFiltering>
               <vanityURLSetting j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true"
-                                j:icon="/modules/defaultSiteSettings/templates/files/urlmapping.png" j:priority="100"
+                                j:icon="/modules/siteSettings/templates/files/urlmapping.png" j:priority="100"
                                 j:requiredPermissions="#/permissions/admin/adminUrlmapping"
                                 j:titleKey="siteSettings.label.vanityURLSettings" jcr:mixinTypes="jmix:rbTitle"
                                 jcr:primaryType="jnt:contentTemplate">
                   <pagecontent jcr:primaryType="jnt:contentList">
                       <pager displayNbOfItemsPerPage="true" displayNbOfItemsPerPageValues="5,10,25,50,100"
                              displayPager="true"
-                             j:bindedComponent="/modules/defaultSiteSettings/templates/siteSettingsBase/vanityURLSetting/pagecontent/vanityurlslist"
+                             j:bindedComponent="/modules/siteSettings/templates/siteSettingsBase/vanityURLSetting/pagecontent/vanityurlslist"
                              jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:pager" nbOfPages="10"
                              pageSize="10">
                           <j:acl jcr:primaryType="jnt:acl"/>
@@ -116,7 +116,7 @@
                       </vanityurlslist>
                       <pager-1 displayNbOfItemsPerPage="true" displayNbOfItemsPerPageValues="5,10,25,50,100"
                                displayPager="true"
-                               j:bindedComponent="/modules/defaultSiteSettings/templates/siteSettingsBase/vanityURLSetting/pagecontent/vanityurlslist"
+                               j:bindedComponent="/modules/siteSettings/templates/siteSettingsBase/vanityURLSetting/pagecontent/vanityurlslist"
                                jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:pager" nbOfPages="10"
                                pageSize="10">
                           <j:acl jcr:primaryType="jnt:acl"/>
@@ -124,7 +124,7 @@
                   </pagecontent>
               </vanityURLSetting>
               <manageModules j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true"
-                             j:icon="/modules/defaultSiteSettings/templates/files/briefcase_document.png"
+                             j:icon="/modules/siteSettings/templates/files/briefcase_document.png"
                              j:priority="100"
                              j:requiredPermissions="#/permissions/admin/adminSiteTemplates"
                              j:titleKey="siteSettings.label.manageModules"
@@ -135,6 +135,6 @@
               </manageModules>
         </siteSettingsBase>
       </templates>
-    </defaultSiteSettings>
+    </siteSettings>
   </modules>
 </content>

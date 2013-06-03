@@ -364,7 +364,7 @@ public class JCRObservationManager implements ObservationManager {
         if (events.get() != null && currentSession.get() != null) {
             List<EventWrapper> currentEvents = events.get().get(currentSession.get());
             for (EventWrapper previousEvent : currentEvents) {
-                if (previousEvent.getPath().equals(path + "/j:isExternalProviderRoot")) {
+                if (previousEvent.getPath().equals(path + "/j:externalNodeIdentifier")) {
                     return true;
                 }
             }

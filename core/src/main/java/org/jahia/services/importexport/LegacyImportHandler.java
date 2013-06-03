@@ -60,6 +60,7 @@ import org.jahia.services.importexport.DefinitionsMapping.AddNode;
 import org.jahia.services.importexport.DefinitionsMapping.SetProperties;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.ResourceBundleMarker;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
@@ -192,7 +193,8 @@ public class LegacyImportHandler extends DefaultHandler {
                 // logger.info("create page" + attributes.getValue("jahia:title"));
                 createPage(attributes.getValue(Name.NS_JCR_URI, "primaryType"), attributes.getValue("jahia:title"),
                         attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"),
-                        uuid, getMetadataForNodeCreation(attributes), attributes.getValue("jahia:pid"));
+                        uuid, getMetadataForNodeCreation(attributes), attributes.getValue("jahia:pid"),
+                        attributes.getValue("jcr:mixinTypes"), getAdditionalProperties(attributes.getValue("jcr:additionalProperties")));
                 setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
                 return;
             }
@@ -335,7 +337,9 @@ public class LegacyImportHandler extends DefaultHandler {
                         }
                         Map<String, String> props = currentCtx.peek().properties.peek();
                         createPage(attributes.getValue(Name.NS_JCR_URI, "primaryType"), title,
-                                attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"), uuid, getMetadataForNodeCreation(attributes), attributes.getValue("jahia:pid"));
+                                attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"),
+                                uuid, getMetadataForNodeCreation(attributes), attributes.getValue("jahia:pid"),
+                                attributes.getValue("jcr:mixinTypes"), getAdditionalProperties(attributes.getValue("jcr:additionalProperties")));
                         setMetadata(props);
                         setAcl(acl);
                         // todo : add a link here ??
@@ -363,6 +367,21 @@ public class LegacyImportHandler extends DefaultHandler {
             throw new SAXException(e);
         }
 
+    }
+
+    private JSONObject getAdditionalProperties(String value) {
+        if (StringUtils.isBlank(value)) return null;
+
+        try {
+            return new JSONObject(value);
+        } catch (Exception e) {
+            if (logger.isDebugEnabled()) {
+                logger.error("Impossible to read additional properties", e);
+            } else {
+                logger.error("Impossible to read additional properties: {}", e.getMessage());
+            }
+        }
+        return null;
     }
 
     private Map<String, String> convertToProperties(Attributes attributes) {
@@ -420,7 +439,9 @@ public class LegacyImportHandler extends DefaultHandler {
         }
     }
 
-    private void createPage(String primaryType, String title, String template, String pageKey, String uuid, Map<String, String> creationMetadata, String pageId)
+    private void createPage(String primaryType, String title, String template, String pageKey, String uuid,
+                            Map<String, String> creationMetadata, String pageId,
+                            String mixinsToAdd, JSONObject propertiesToSet)
             throws RepositoryException {
         JCRNodeWrapper subPage;
         ExtendedNodeType t = null;
@@ -470,6 +491,39 @@ public class LegacyImportHandler extends DefaultHandler {
                 session.checkout(translation);
             }
             translation.setProperty("jcr:title", title);
+        }
+
+        if (StringUtils.isNotBlank(mixinsToAdd)) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(MessageFormat.format("Adding mixins [{0}] to the page {1} in language {2}",
+                        mixinsToAdd, subPage.getPath(), this.locale.toString()));
+            }
+            for (String mixin : Arrays.asList(StringUtils.split(mixinsToAdd, " "))) {
+                try {
+                    if (StringUtils.isNotBlank(mixin) && !subPage.isNodeType(mixin)) subPage.addMixin(mixin);
+                } catch (RepositoryException re) {
+                    logger.error("Imposible to apply mixin " + mixin + " to page " + subPage.getPath(), re);
+                }
+            }
+        }
+
+        if (propertiesToSet != null) {
+            final Iterator<String> properties = propertiesToSet.keys();
+            while (properties.hasNext()) {
+                final String propName = properties.next();
+                try {
+                    final String propValue = String.valueOf(propertiesToSet.get(propName));
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(MessageFormat.format("Setting the property {0} with value [{1}] on the page {2} in language {3}",
+                                propName, propValue, subPage.getPath(), this.locale.toString()));
+                    }
+                    setPropertyField(null, null, subPage, propName, propValue);
+                } catch (Exception e) {
+                    logger.error(MessageFormat.format("Error while setting additional property {0} on page {1} for locale {2}",
+                            propName, subPage.getPath(), this.locale.toString()), e);
+
+                }
+            }
         }
 
         if (legacyPidMappingTool != null) {
@@ -897,7 +951,9 @@ public class LegacyImportHandler extends DefaultHandler {
 
         if (HTTP_WWW_JAHIA_ORG.equals(uri) && PAGE.equals(localName)) {
             createPage(attributes.getValue(Name.NS_JCR_URI, "primaryType"), title,
-                    attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"), uuid, getMetadataForNodeCreation(attributes), attributes.getValue("jahia:pid"));
+                    attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"),
+                    uuid, getMetadataForNodeCreation(attributes), attributes.getValue("jahia:pid"),
+                    attributes.getValue("jcr:mixinTypes"), getAdditionalProperties(attributes.getValue("jcr:additionalProperties")));
             setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
 
             // todo : add a link here ??

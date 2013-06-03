@@ -278,7 +278,7 @@
  - j:from (string) indexed=no
  - j:to (string) indexed=no
  - j:notificationLevel (string,choicelist[resourceBundle]) = 'Disabled' indexed=no < 'Disabled','Standard','Wary','Paranoid'
- 
+
 //---------------------------------------------------------
 // Users and groups
 //---------------------------------------------------------
@@ -650,17 +650,17 @@
 - j:sharedRefPropertyNames (string) multiple nofulltext
 
 [jnt:fileI18nReference] > jnt:fileReference
- - j:node (weakreference,picker[type='file']) i18n < jnt:file 
+ - j:node (weakreference,picker[type='file']) i18n < jnt:file
 
 [jnt:imageI18nReference] > jnt:imageReference
- - j:node (weakreference,picker[type='image']) i18n < jmix:image 
+ - j:node (weakreference,picker[type='image']) i18n < jmix:image
 
 [jnt:nodeLinkI18nImageReference] > jnt:nodeLinkImageReference
- - j:node (weakreference,picker[type='image']) i18n < jmix:image 
- - j:linknode (weakreference) i18n < jmix:droppableContent, jnt:page 
+ - j:node (weakreference,picker[type='image']) i18n < jmix:image
+ - j:linknode (weakreference) i18n < jmix:droppableContent, jnt:page
 
 [jnt:externalLinkI18nImageReference] > jnt:externalLinkImageReference
- - j:node (weakreference,picker[type='image']) i18n < jmix:image 
+ - j:node (weakreference,picker[type='image']) i18n < jmix:image
  - j:url (string) i18n
 
 //---------------------------------------------------------
@@ -822,6 +822,7 @@ extends = jnt:content
 
 [jnt:containerList] > nt:base,  jmix:basemetadata orderable
  + * (jnt:container) version
+<<<<<<< .working
 
 //---------------------------------------------------------
 // Modules filesystem nodes
@@ -950,3 +951,8 @@ extends = jnt:content
 [jnt:namespaceDefinition] > nt:base
  - j:prefix (string) = 'jnt' mandatory
  - j:uri (string) = 'http://www.jahia.org/jahia/nt/1.0' mandatory
+=======
+
+[jmix:legacyPage] mixin
+    - jmix:legacyPid (string) hidden nofulltext
+    - jmix:legacyPageKey (string) hidden nofulltext>>>>>>> .merge-right.r46120

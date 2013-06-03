@@ -822,7 +822,10 @@ extends = jnt:content
 
 [jnt:containerList] > nt:base,  jmix:basemetadata orderable
  + * (jnt:container) version
-<<<<<<< .working
+
+[jmix:legacyPage] mixin
+    - jmix:legacyPid (string) hidden nofulltext
+    - jmix:legacyPageKey (string) hidden nofulltext
 
 //---------------------------------------------------------
 // Modules filesystem nodes
@@ -951,8 +954,3 @@ extends = jnt:content
 [jnt:namespaceDefinition] > nt:base
  - j:prefix (string) = 'jnt' mandatory
  - j:uri (string) = 'http://www.jahia.org/jahia/nt/1.0' mandatory
-=======
-
-[jmix:legacyPage] mixin
-    - jmix:legacyPid (string) hidden nofulltext
-    - jmix:legacyPageKey (string) hidden nofulltext>>>>>>> .merge-right.r46120

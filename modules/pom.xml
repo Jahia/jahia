@@ -170,7 +170,7 @@
                 <!--<module>atmosphere</module>-->
                 <module>channels</module>
                 <module>default</module>
-                <module>defaultSiteSettings</module>
+                <module>siteSettings</module>
                 <module>facets</module>
                 <module>grid</module>
                 <module>macros</module>
@@ -196,7 +196,7 @@
                 <module>contentRetrieval</module>
                 <module>default</module>
                 <module>default-skins</module>
-                <module>defaultSiteSettings</module>
+                <module>siteSettings</module>
                 <module>facets</module>
                 <module>grid</module>
                 <module>macros</module>

@@ -180,6 +180,7 @@ public class TestHelper {
             site = service.addSite(admin, name, serverName, name, name, SettingsBean.getInstance().getDefaultLocale(),
                     templateSet, modulesToDeploy, siteZIPFile == null ? "noImport" : "fileImport", siteZIPFile != null ? new FileSystemResource(siteZIPFile) : null,
                     null, false, false, null);
+            site = service.getSiteByKey(name);
         } finally {
             if (sharedZIPFile != null) {
                 sharedZIPFile.delete();

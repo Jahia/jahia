@@ -199,7 +199,7 @@ public class TemplateHelper {
             String res = renderService.render(r, renderContext);
             Map<String, Map<String,Map<String,String>>> map = (Map<String, Map<String,Map<String,String>>>) renderContext.getRequest().getAttribute("staticAssets");
 
-            if (renderContext.getRequest().getContextPath().length() > 0) {
+            if (map != null && renderContext.getRequest().getContextPath().length() > 0) {
                 prefixAssetsWithContext(map, renderContext.getRequest().getContextPath());
             }
             

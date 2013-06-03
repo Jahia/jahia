@@ -9,4 +9,4 @@
 <c:if test="${not omitFormatting && not empty param.cssClass}"><c:set var="cssClass">${param.cssClass}</c:set></c:if>
 <c:url var="urlValue" value="${url.base}${currentNode.path}.default.html"/>
 <c:url var="urlValue" value="${jcr:isNodeType(currentNode, 'nt:file') ? currentNode.url : urlValue}" context="/"/>
-<c:if test="${not omitFormatting}"><span class="icon ${cssClass}"></span></c:if><a href="${urlValue}"${linkTitle}>${fn:escapeXml(not param.useNodeNameAsTitle && not empty title.string ? title.string : currentNode.name)}</a>
+<c:if test="${not omitFormatting}"><span class="icon ${cssClass}"></span></c:if><a target="${param.target}" href="${urlValue}"${linkTitle}>${fn:escapeXml(not param.useNodeNameAsTitle && not empty title.string ? title.string : currentNode.name)}</a>

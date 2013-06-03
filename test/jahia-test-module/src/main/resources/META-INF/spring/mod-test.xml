@@ -36,6 +36,7 @@
                 <value>org.jahia.test.services.content.interceptor.HtmlFilteringInterceptorTest</value>
                 <value>org.jahia.test.services.content.interceptor.URLInterceptorTest</value>
                 <value>org.jahia.test.services.content.impl.vfs.VFSContentStoreProviderTest</value>
+                <value>org.jahia.test.services.content.nodetypes.NodePropertyDefaultValueTest</value>
                 <value>org.jahia.test.services.htmlvalidator.WAIValidatorTest</value>
                 <value>org.jahia.test.services.i18n.ResourceBundleTest</value>                
                 <value>org.jahia.test.services.importexport.ImportExportTest</value>

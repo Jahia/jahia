@@ -132,3 +132,31 @@
 - test:futureDate (date)
 - test:greaterThan2 (long)
 
+//---------------------------------------------------------
+// Dynamic value tests (default value initializers with autocreated)
+//---------------------------------------------------------
+[test:dynamicValuesTest] > jnt:content, jmix:droppableContent
+ - propertyText (string) = 'Text plain' autocreated
+ - propertyTextI18n (string) = 'Text i18n' autocreated i18n
+ - propertyLong (long) = 12 autocreated
+ - propertyDouble (double) = 12.28 autocreated
+ - propertyDate (date) = '1979-05-09T06:30:00.000Z' autocreated
+ - propertyNow (date) = now() autocreated
+ - propertyTomorrow (date) = now('1000*60*60*24') autocreated
+ - propertyCurrentUser (string) = currentUser() autocreated
+ - propertyResourceBundleShared (string) = resourceBundle('test_dynamicValuesTest.rb.i18n.1') autocreated
+ - propertyResourceBundleI18n (string) = resourceBundle('test_dynamicValuesTest.rb.i18n.2') autocreated i18n
+ 
+
+[test:dynamicValuesTestMixin] mixin
+ - propertyTextMixin (string) = 'Text plain' autocreated
+ - propertyTextI18nMixin (string) = 'Text i18n' autocreated i18n
+ - propertyLongMixin (long) = 12 autocreated
+ - propertyDoubleMixin (double) = 12.28 autocreated
+ - propertyDateMixin (date) = '1979-05-09T06:30:00.000Z' autocreated
+ - propertyNowMixin (date) = now() autocreated
+ - propertyTomorrowMixin (date) = now('1000*60*60*24') autocreated
+ - propertyCurrentUserMixin (string) = currentUser() autocreated
+ - propertyResourceBundleSharedMixin (string) = resourceBundle('test_dynamicValuesTest.rb.i18n.1') autocreated
+ - propertyResourceBundleI18nMixin (string) = resourceBundle('test_dynamicValuesTest.rb.i18n.2') autocreated i18n
+//---------------------------------------------------------

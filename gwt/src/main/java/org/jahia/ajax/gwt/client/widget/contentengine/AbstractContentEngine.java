@@ -56,7 +56,7 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
+import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -88,8 +88,8 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected Linker linker = null;
     protected List<GWTJahiaNodeType> nodeTypes;
     protected List<GWTJahiaNodeType> mixin;
-    protected Map<String, GWTJahiaFieldInitializer> initializersValues;
-    protected Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> dynamicDefaultValues;
+    protected Map<String, GWTChoiceListInitializer> choiceListInitializersValues;
+    protected Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> defaultValues;
     protected Map<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>();
     protected Map<String, GWTJahiaNodeProperty> presetProperties = new HashMap<String, GWTJahiaNodeProperty>();
     protected TabPanel tabs;
@@ -259,7 +259,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
                     engineTabItem.init(this, (AsyncTabItem) currentTab, getSelectedLanguage());
                     if (isNewPropertiesEditor) {
-                        initDynamicListInitializers(engineTabItem);
+                        initChoiceListInitializers(engineTabItem);
                     }
                 }
                 focusFirstField();
@@ -280,17 +280,17 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         }
     }
 
-    protected void initDynamicListInitializers(EditEngineTabItem tabItem) {
-        if (initializersValues != null && tabItem instanceof PropertiesTabItem) {
+    protected void initChoiceListInitializers(EditEngineTabItem tabItem) {
+        if (choiceListInitializersValues != null && tabItem instanceof PropertiesTabItem) {
             PropertiesEditor pe = ((PropertiesTabItem) tabItem).getPropertiesEditor();
-            for (Map.Entry<String, GWTJahiaFieldInitializer> initializer : initializersValues
+            for (Map.Entry<String, GWTChoiceListInitializer> initializer : choiceListInitializersValues
                     .entrySet()) {
                 if (initializer.getValue().getDependentProperties() != null) {
                     for (String dependentProperty : initializer.getValue().getDependentProperties()) {
                         if (pe.getFieldsMap().containsKey(dependentProperty)) {
                             final Field<?> dependentField = pe.getFieldsMap().get(dependentProperty).getField();
                             if (dependentField != null) {
-                                initDynamicInitializer(dependentField, initializer.getKey(), pe, initializer.getValue().getDependentProperties());
+                                initChoiceListInitializer(dependentField, initializer.getKey(), pe, initializer.getValue().getDependentProperties());
                             }
                         }
                     }
@@ -299,8 +299,8 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         }
     }
     
-    protected void initDynamicInitializer(final Field<?> dependentField, final String propertyId,
-            final PropertiesEditor pe, final List<String> dependentProperties) {
+    protected void initChoiceListInitializer(final Field<?> dependentField, final String propertyId,
+                                             final PropertiesEditor pe, final List<String> dependentProperties) {
         if (dependentField instanceof DualListField<?>) {
             ((DualListField<GWTJahiaValueDisplayBean>) dependentField).getToList().getStore()
                     .addStoreListener(new StoreListener<GWTJahiaValueDisplayBean>() {
@@ -341,9 +341,9 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         }
 
         JahiaContentManagementService.App.getInstance().getFieldInitializerValues(nodeTypeName, propertyName, parentPath,
-                dependentValues, new BaseAsyncCallback<GWTJahiaFieldInitializer>() {
-                    public void onSuccess(GWTJahiaFieldInitializer result) {
-                        initializersValues.put(propertyId, result);
+                dependentValues, new BaseAsyncCallback<GWTChoiceListInitializer>() {
+                    public void onSuccess(GWTChoiceListInitializer result) {
+                        choiceListInitializersValues.put(propertyId, result);
                         if (result.getDisplayValues() != null) {
                             for (TabItem tab : tabs.getItems()) {
                                 EditEngineTabItem item = tab.getData("item");
@@ -418,8 +418,8 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         return mixin;
     }
 
-    public Map<String, GWTJahiaFieldInitializer> getInitializersValues() {
-        return initializersValues;
+    public Map<String, GWTChoiceListInitializer> getChoiceListInitializersValues() {
+        return choiceListInitializersValues;
     }
 
     public Map<String, GWTJahiaNodeProperty> getProperties() {
@@ -509,7 +509,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         return parentPath;
     }
 
-    public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getDynamicDefaultValues() {
-        return dynamicDefaultValues;
+    public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getDefaultValues() {
+        return defaultValues;
     }
 }

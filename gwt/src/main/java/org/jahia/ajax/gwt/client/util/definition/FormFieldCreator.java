@@ -56,7 +56,7 @@ import com.google.gwt.user.client.Timer;
 
 import com.google.gwt.user.client.ui.Accessibility;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
+import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
@@ -100,8 +100,8 @@ public class FormFieldCreator {
      * @return
      */
     public static Field<?> createField(GWTJahiaItemDefinition definition, GWTJahiaNodeProperty property,
-                                       GWTJahiaFieldInitializer initializer, boolean displayHiddenProperty,
-                                       GWTBitSet permissions, List<GWTJahiaNodePropertyValue> dynamicDefaultValues) {
+                                       GWTChoiceListInitializer initializer, boolean displayHiddenProperty,
+                                       GWTBitSet permissions, List<GWTJahiaNodePropertyValue> defaultValues) {
         Field<?> field = null;
         if (definition.isHidden() && !displayHiddenProperty) {
             return null;
@@ -304,7 +304,7 @@ public class FormFieldCreator {
             field.setLabelSeparator(field.getLabelSeparator() + " :");
         }
         if (property != null) {
-            fillValue(field, definition, property, initializer, dynamicDefaultValues);
+            fillValue(field, definition, property, initializer, defaultValues);
         }
         //field.setId("JahiaGxtField"+ "_" + field.getName().replace(":","_")+"_"+locale);
         return field;
@@ -443,10 +443,10 @@ public class FormFieldCreator {
      * @param property
      */
     public static void fillValue(final Field field, GWTJahiaItemDefinition definition, GWTJahiaNodeProperty property,
-                                 GWTJahiaFieldInitializer initializer, List<GWTJahiaNodePropertyValue> dynamicDefaultValues) {
+                                 GWTChoiceListInitializer initializer, List<GWTJahiaNodePropertyValue> defaultValues) {
         List<GWTJahiaNodePropertyValue> values = property.getValues();
-        if (dynamicDefaultValues != null && values.size() == 0) {
-            values = dynamicDefaultValues;
+        if (defaultValues != null && values.size() == 0) {
+            values = defaultValues;
         }
         if (initializer != null && values.size() == 0) {
             for (GWTJahiaValueDisplayBean v : initializer.getDisplayValues()) {

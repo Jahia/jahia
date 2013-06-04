@@ -298,7 +298,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
                                     node.getPath(), null, new BaseAsyncCallback<GWTJahiaCreateEngineInitBean>() {
                                 public void onSuccess(GWTJahiaCreateEngineInitBean result) {
                                     PropertiesEditor pe = new PropertiesEditor(Arrays.asList(type), new HashMap<String, GWTJahiaNodeProperty>(), Arrays.asList("content"));
-                                    pe.setInitializersValues(result.getInitializersValues());
+                                    pe.setChoiceListInitializersValues(result.getChoiceListInitializersValues());
                                     pe.renderNewFormPanel();
                                     propertiesEditorMap.put(conditionNode.getPath(), pe);
                                     form.add(pe);
@@ -310,7 +310,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
                             JahiaContentManagementService.App.getInstance().initializeEditEngine(conditionNode.getPath(), false, new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
                                 public void onSuccess(GWTJahiaEditEngineInitBean result) {
                                     PropertiesEditor pe = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), Arrays.asList("content"));
-                                    pe.setInitializersValues(result.getInitializersValues());
+                                    pe.setChoiceListInitializersValues(result.getInitializersValues());
                                     pe.renderNewFormPanel();
                                     propertiesEditorMap.put(conditionNode.getPath(), pe);
                                     form.add(pe);

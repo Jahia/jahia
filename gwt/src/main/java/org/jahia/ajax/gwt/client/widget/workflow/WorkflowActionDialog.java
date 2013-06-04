@@ -211,7 +211,7 @@ public class WorkflowActionDialog extends LayoutContainer {
                                 public void onSuccess(GWTJahiaCreateEngineInitBean result2) {
                                     propertiesEditor = new PropertiesEditor(Arrays.asList(result), variables,
                                             Arrays.asList(GWTJahiaItemDefinition.CONTENT));
-                                    propertiesEditor.setInitializersValues(result2.getInitializersValues());
+                                    propertiesEditor.setChoiceListInitializersValues(result2.getChoiceListInitializersValues());
                                     propertiesEditor.setViewInheritedItems(true);
                                     propertiesEditor.renderNewFormPanel();
                                     propertiesEditor.setFrame(true);

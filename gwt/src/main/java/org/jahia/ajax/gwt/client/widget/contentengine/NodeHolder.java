@@ -40,7 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
+import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
@@ -64,9 +64,9 @@ public interface NodeHolder {
 
     List<GWTJahiaNodeType> getMixin();
 
-    Map<String, GWTJahiaFieldInitializer> getInitializersValues();
+    Map<String, GWTChoiceListInitializer> getChoiceListInitializersValues();
 
-    Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getDynamicDefaultValues();
+    Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getDefaultValues();
 
     GWTJahiaNode getNode();
 

@@ -41,9 +41,7 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.ComponentHelper;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.Field;
@@ -54,6 +52,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Element;
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.ArrayList;
@@ -75,6 +74,7 @@ public class MultipleTextField<T> extends MultiField<List<T>> {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 addField(null);
+                MultipleTextField.this.fireEvent(Events.Change, ce);
             }
         });
         if (!readOnly) {
@@ -112,6 +112,11 @@ public class MultipleTextField<T> extends MultiField<List<T>> {
         field.setReadOnly(readOnly);
         fields.add(field);
 
+        field.addListener(Events.Change, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent be) {
+                MultipleTextField.this.fireEvent(Events.Change, be);
+            }
+        });
         if (afterRender) {
             TableData data = (TableData) ComponentHelper.getLayoutData(field);
             if (data == null) {
@@ -188,6 +193,8 @@ public class MultipleTextField<T> extends MultiField<List<T>> {
         @Override
         protected void onTriggerClick(ComponentEvent ce) {
             fields.remove(this);
+            this.removeAllListeners();
+            MultipleTextField.this.fireEvent(Events.Change, ce);
             removeFromParent();
         }
 

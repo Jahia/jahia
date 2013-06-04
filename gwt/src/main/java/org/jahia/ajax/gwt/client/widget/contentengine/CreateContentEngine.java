@@ -166,8 +166,8 @@ public class CreateContentEngine extends AbstractContentEngine {
         JahiaContentManagementService.App.getInstance().initializeCreateEngine(nodeTypes.iterator().next().getName(), parentPath, targetName, new BaseAsyncCallback<GWTJahiaCreateEngineInitBean>() {
             public void onSuccess(GWTJahiaCreateEngineInitBean result) {
                 mixin = result.getMixin();
-                initializersValues = result.getInitializersValues();
-                dynamicDefaultValues = result.getDynamicDefaultValues();
+                choiceListInitializersValues = result.getChoiceListInitializersValues();
+                defaultValues = result.getDefaultValues();
                 currentLanguageBean = result.getCurrentLocale();
                 defaultLanguageCode = result.getDefaultLanguageCode();
                 acl = result.getAcl();

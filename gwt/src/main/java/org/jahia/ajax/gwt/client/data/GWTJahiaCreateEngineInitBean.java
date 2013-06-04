@@ -60,8 +60,8 @@ public class GWTJahiaCreateEngineInitBean implements Serializable {
     private static final long serialVersionUID = 2401975272536722966L;
     private List<GWTJahiaLanguage> languages;
     private List<GWTJahiaNodeType> mixin;
-    private Map<String, GWTJahiaFieldInitializer> initializers;
-    private Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> dynamicDefaultValues;
+    private Map<String, GWTChoiceListInitializer> choiceListInitializersValues;
+    private Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> defaultValues;
     private GWTJahiaLanguage currentLocale;
     private GWTJahiaNodeACL acl;
     private String defaultName;
@@ -86,12 +86,12 @@ public class GWTJahiaCreateEngineInitBean implements Serializable {
         this.mixin = mixin;
     }
 
-    public Map<String, GWTJahiaFieldInitializer> getInitializersValues() {
-        return initializers;
+    public Map<String, GWTChoiceListInitializer> getChoiceListInitializersValues() {
+        return choiceListInitializersValues;
     }
 
-    public void setInitializersValues(Map<String, GWTJahiaFieldInitializer> initializers) {
-        this.initializers = initializers;
+    public void setChoiceListInitializersValues(Map<String, GWTChoiceListInitializer> initializers) {
+        this.choiceListInitializersValues = initializers;
     }
 
     public GWTJahiaLanguage getCurrentLocale() {
@@ -126,11 +126,11 @@ public class GWTJahiaCreateEngineInitBean implements Serializable {
         this.defaultLanguageCode = defaultLanguageCode;
     }
 
-    public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getDynamicDefaultValues() {
-        return dynamicDefaultValues;
+    public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getDefaultValues() {
+        return defaultValues;
     }
 
-    public void setDynamicDefaultValues(Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> dynamicDefaultValues) {
-        this.dynamicDefaultValues = dynamicDefaultValues;
+    public void setDefaultValues(Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> defaultValues) {
+        this.defaultValues = defaultValues;
     }
 }

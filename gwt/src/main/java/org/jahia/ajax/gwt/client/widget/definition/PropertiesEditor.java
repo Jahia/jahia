@@ -55,7 +55,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
+import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
@@ -75,8 +75,8 @@ import java.util.*;
 public class PropertiesEditor extends FormPanel {
     private List<GWTJahiaNodeType> nodeTypes = null;
     private List<GWTJahiaNodeType> mixin = null;
-    private Map<String, GWTJahiaFieldInitializer> initializersValues;
-    private Map<String, List<GWTJahiaNodePropertyValue>> dynamicDefaultValues;
+    private Map<String, GWTChoiceListInitializer> choiceListInitializersValues;
+    private Map<String, List<GWTJahiaNodePropertyValue>> defaultValues;
     private Map<String, GWTJahiaNodeProperty> currentProperties = null;
     private Map<String, GWTJahiaNodeProperty> originalProperties = null;
     private Map<String, PropertyAdapterField> fields;
@@ -137,12 +137,12 @@ public class PropertiesEditor extends FormPanel {
         this.mixin = mixin;
     }
 
-    public void setInitializersValues(Map<String, GWTJahiaFieldInitializer> initializersValues) {
-        this.initializersValues = initializersValues;
+    public void setChoiceListInitializersValues(Map<String, GWTChoiceListInitializer> initializersValues) {
+        this.choiceListInitializersValues = initializersValues;
     }
 
-    public void setDynamicDefaultValues(Map<String, List<GWTJahiaNodePropertyValue>> dynamicDefaultValues) {
-        this.dynamicDefaultValues = dynamicDefaultValues;
+    public void setDefaultValues(Map<String, List<GWTJahiaNodePropertyValue>> defaultValues) {
+        this.defaultValues = defaultValues;
     }
 
     public void setMultipleEdit(boolean multipleEdit) {
@@ -255,23 +255,18 @@ public class PropertiesEditor extends FormPanel {
                 if (!definition.isNode()) {
                     property.setMultiple(((GWTJahiaPropertyDefinition) definition).isMultiple());
                 }
-                if (!definition.isNode() && ((GWTJahiaPropertyDefinition) definition).getDefaultValues() != null) {
-                    property.setValues(((GWTJahiaPropertyDefinition) definition).getDefaultValues());
-                    defaultedProperties.add(definition.getName());
-                }
                 currentProperties.put(definition.getName(), property);
-            } else {
-                if (!definition.isNode() && ((GWTJahiaPropertyDefinition) definition).getDefaultValues() != null && ((GWTJahiaPropertyDefinition) definition).getDefaultValues().size() > 0) {
-                    defaultedProperties.add(definition.getName());
-                }
             }
 
 
             final GWTJahiaNodeProperty gwtJahiaNodeProperty = currentProperties.get(definition.getName());
             String key = definition.getOverrideDeclaringNodeType() + "." + definition.getName();
-            GWTJahiaFieldInitializer fieldInitializer = initializersValues != null ? initializersValues.get(key) : null;
-            List<GWTJahiaNodePropertyValue> defaultValues = dynamicDefaultValues != null ? dynamicDefaultValues.get(key) : null;
-            Field<?> field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, fieldInitializer, displayHiddenProperties, permissions, defaultValues);
+            GWTChoiceListInitializer choiceListInitializer = choiceListInitializersValues != null ? choiceListInitializersValues.get(key) : null;
+            List<GWTJahiaNodePropertyValue> propertyDefaultValues = this.defaultValues != null ? this.defaultValues.get(key) : null;
+            if (propertyDefaultValues != null && gwtJahiaNodeProperty.getValues().size() == 0) {
+                defaultedProperties.add(definition.getName());
+            }
+            Field<?> field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, choiceListInitializer, displayHiddenProperties, permissions, propertyDefaultValues);
             propertyDefinitions.put(gwtJahiaNodeProperty.getName(), definition);
             if (field != null) {
                 if (fieldSet == null || fieldSetGrouping &&

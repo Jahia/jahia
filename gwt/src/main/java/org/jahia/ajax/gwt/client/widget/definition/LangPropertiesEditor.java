@@ -51,8 +51,8 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
-import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
@@ -83,7 +83,7 @@ public class LangPropertiesEditor extends LayoutContainer {
     private List<String> dataType;
     private List<GWTJahiaNodeType> nodeTypes;
     private List<GWTJahiaNodeType> mixin;
-    private Map<String, GWTJahiaFieldInitializer> initializersValues;
+    private Map<String, GWTChoiceListInitializer> initializersValues;
     private Map<String, GWTJahiaNodeProperty> properties;
     private GWTJahiaNode node;
     private ComboBox<GWTJahiaLanguage> languageSwitcher;
@@ -192,7 +192,7 @@ public class LangPropertiesEditor extends LayoutContainer {
                 langPropertiesEditor = new PropertiesEditor(nodeTypes, properties, dataType);
                 langPropertiesEditor.setLocale(locale);
                 langPropertiesEditor.setMixin(mixin);
-                langPropertiesEditor.setInitializersValues(initializersValues);
+                langPropertiesEditor.setChoiceListInitializersValues(initializersValues);
                 langPropertiesEditor.setNonI18NWriteable(false);
                 langPropertiesEditor.setWriteable(editable);
                 langPropertiesEditor.setFieldSetGrouping(true);

@@ -49,8 +49,8 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
-import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -85,8 +85,8 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
     private TabPanel tabs;
     private List<GWTJahiaNodeType> types;
     private List<GWTJahiaNodeType> mixin;
-    private Map<String, GWTJahiaFieldInitializer> initializersValues;
-    protected Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> dynamicDefaultValues;
+    private Map<String, GWTChoiceListInitializer> initializersValues;
+    protected Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> defaultValues;
     private Map<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>();
     private GWTJahiaLanguage language;
     private GWTJahiaNodeACL acl;
@@ -218,7 +218,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
                                 mixin = result.getMixin();
                                 initializersValues = result.getInitializersValues();
-                                dynamicDefaultValues = result.getDynamicDefaultValues();
+                                defaultValues = result.getDefaultValues();
                                 ok.setEnabled(true);
                                 acl = result.getAcl();
                                 referencesWarnings = result.getReferencesWarnings();
@@ -251,7 +251,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
                         mixin = result.getMixin();
                         initializersValues = result.getInitializersValues();
-                        dynamicDefaultValues = result.getDynamicDefaultValues();
+                        defaultValues = result.getDefaultValues();
                         ok.setEnabled(true);
                         for (TabItem item : tabs.getItems()) {
                             EditEngineTabItem editItem = (EditEngineTabItem) item.getData("item");
@@ -296,7 +296,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
         return mixin;
     }
 
-    public Map<String, GWTJahiaFieldInitializer> getInitializersValues() {
+    public Map<String, GWTChoiceListInitializer> getChoiceListInitializersValues() {
         return initializersValues;
     }
 
@@ -349,8 +349,8 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
         return new HashMap<String, GWTJahiaNodeProperty>();
     }
 
-    public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getDynamicDefaultValues() {
-        return dynamicDefaultValues;
+    public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getDefaultValues() {
+        return defaultValues;
     }
 
     /**

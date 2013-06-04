@@ -1654,9 +1654,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             allTypes.add(nodeType);
             allTypes.addAll(availableMixins);
 
-            result.setInitializersValues(contentDefinition.getAllInitializersValues(allTypes,
+            result.setChoiceListInitializersValues(contentDefinition.getAllChoiceListInitializersValues(allTypes,
                     nodeType, null, parent, getUILocale()));
-            result.setDynamicDefaultValues(contentDefinition.getAllDynamicDefaultValues(allTypes, getSite().getLanguagesAsLocales()));
+            result.setDefaultValues(contentDefinition.getAllDefaultValues(allTypes, getSite().getLanguagesAsLocales()));
 
             result.setAcl(contentManager.getACL(parentpath, true, sessionWrapper, getUILocale()));
             result.setDefaultName(jcrContentUtils.generateNodeName(parent, defaultLanguage, nodeType, targetName));
@@ -1672,7 +1672,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         GWTJahiaCreateEngineInitBean result = initializeCreateEngine(typename, parentpath, null);
         GWTJahiaCreatePortletInitBean portletInitBean = new GWTJahiaCreatePortletInitBean();
-        portletInitBean.setInitializersValues(result.getInitializersValues());
+        portletInitBean.setChoiceListInitializersValues(result.getChoiceListInitializersValues());
         portletInitBean.setLanguages(result.getLanguages());
         portletInitBean.setMixin(result.getMixin());
         portletInitBean.setNodeType(contentDefinition.getNodeType(typename, getUILocale()));
@@ -1735,9 +1735,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             }
             result.setInitializersValues(
-                    contentDefinition.getAllInitializersValues(allTypes, nodeWrapper.getPrimaryNodeType(), nodeWrapper,
+                    contentDefinition.getAllChoiceListInitializersValues(allTypes, nodeWrapper.getPrimaryNodeType(), nodeWrapper,
                             parent, getUILocale()));
-            result.setDynamicDefaultValues(contentDefinition.getAllDynamicDefaultValues(allTypes, getSite().getLanguagesAsLocales()));
+            result.setDefaultValues(contentDefinition.getAllDefaultValues(allTypes, getSite().getLanguagesAsLocales()));
             final GWTJahiaNodeACL gwtJahiaNodeACL = contentManager.getACL(nodepath, false, sessionWrapper, getUILocale());
             result.setAcl(gwtJahiaNodeACL);
             Map<String,Set<String>> referencesWarnings = new HashMap<String, Set<String>>();
@@ -1889,10 +1889,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             result.setAvailabledLanguages(languages.getLanguages(getSite(), getRemoteJahiaUser(), getLocale()));
             result.setCurrentLocale(languages.getCurrentLang(getLocale()));
             result.setMixin(gwtMixin);
-            result.setInitializersValues(contentDefinition.getAllInitializersValues(allTypes,
+            result.setInitializersValues(contentDefinition.getAllChoiceListInitializersValues(allTypes,
                     NodeTypeRegistry.getInstance().getNodeType("nt:base"), nodeWrapper, nodeWrapper.getParent(),
                     getUILocale()));
-            result.setDynamicDefaultValues(contentDefinition.getAllDynamicDefaultValues(allTypes, getSite().getLanguagesAsLocales()));
+            result.setDefaultValues(contentDefinition.getAllDefaultValues(allTypes, getSite().getLanguagesAsLocales()));
             return result;
         } catch (PathNotFoundException e) {
             // the node no longer exists
@@ -2039,7 +2039,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentManager.deleteReferences(path, getUser(), retrieveCurrentSession(), getUILocale());
     }
 
-    public GWTJahiaFieldInitializer getFieldInitializerValues(String typeName, String propertyName, String parentPath, Map<String, List<GWTJahiaNodePropertyValue>> dependentValues)
+    public GWTChoiceListInitializer getFieldInitializerValues(String typeName, String propertyName, String parentPath, Map<String, List<GWTJahiaNodePropertyValue>> dependentValues)
             throws GWTJahiaServiceException {
         try {
             JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
@@ -2047,7 +2047,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(typeName);
 
-            GWTJahiaFieldInitializer initializer = contentDefinition.getInitializerValues(nodeType.getPropertyDefinition(propertyName),
+            GWTChoiceListInitializer initializer = contentDefinition.getInitializerValues(nodeType.getPropertyDefinition(propertyName),
                     nodeType, null, parent, dependentValues, getUILocale());
 
             return initializer;

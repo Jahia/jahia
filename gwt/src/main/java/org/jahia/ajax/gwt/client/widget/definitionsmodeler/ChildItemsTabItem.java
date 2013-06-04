@@ -62,7 +62,7 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
+import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.*;
@@ -94,7 +94,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
     private transient Grid<GWTJahiaNode> grid;
     private transient List<String> columnsKeys;
     private transient GWTJahiaNodeType nodeType;
-    private transient Map<String, GWTJahiaFieldInitializer> initializerMap = new HashMap<String, GWTJahiaFieldInitializer>();
+    private transient Map<String, GWTChoiceListInitializer> initializerMap = new HashMap<String, GWTChoiceListInitializer>();
 
     private transient String currentLanguage;
     private transient GWTJahiaNode engineNode;
@@ -133,9 +133,9 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         currentLanguage = language;
         children = new ArrayList<GWTJahiaNode>();
         removedChildren = new ArrayList<GWTJahiaNode>();
-        JahiaContentManagementService.App.getInstance().getFieldInitializerValues("jnt:childNodeDefinition", "j:defaultPrimaryType", engine.getNode() != null ? engine.getNode().getPath() : engine.getTargetNode().getPath(), new HashMap<String, List<GWTJahiaNodePropertyValue>>(), new BaseAsyncCallback<GWTJahiaFieldInitializer>() {
+        JahiaContentManagementService.App.getInstance().getFieldInitializerValues("jnt:childNodeDefinition", "j:defaultPrimaryType", engine.getNode() != null ? engine.getNode().getPath() : engine.getTargetNode().getPath(), new HashMap<String, List<GWTJahiaNodePropertyValue>>(), new BaseAsyncCallback<GWTChoiceListInitializer>() {
             @Override
-            public void onSuccess(GWTJahiaFieldInitializer result) {
+            public void onSuccess(GWTChoiceListInitializer result) {
                 initializerMap.put("jnt:childNodeDefinition.j:defaultPrimaryType", result);
                 initializerMap.put("jnt:childNodeDefinition.j:requiredPrimaryTypes", result);
                 initializerMap.put("jnt:unstructuredChildNodeDefinition.j:requiredPrimaryTypes", result);
@@ -518,7 +518,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             }
         }
         propertiesEditor = new PropertiesEditor(nodeTypes, properties, null);
-        propertiesEditor.setInitializersValues(initializerMap);
+        propertiesEditor.setChoiceListInitializersValues(initializerMap);
         if (!propertiesEditorsByLang.containsKey(item)) {
             propertiesEditorsByLang.put(item, new HashMap<String, PropertiesEditor>());
         }

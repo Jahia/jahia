@@ -106,7 +106,7 @@ public class PortletFormCard extends PortletWizardCard {
                 pe.setMixin(result.getMixin());
                 pe.setExcludedTypes(Arrays.asList("jnt:portlet", "mix:lastModified", "mix:created", "jmix:lastPublished"));
                 pe.renderNewFormPanel();
-                pe.setInitializersValues(result.getInitializersValues());
+                pe.setChoiceListInitializersValues(result.getChoiceListInitializersValues());
                 setFormPanel(pe);
                 layout();
             }

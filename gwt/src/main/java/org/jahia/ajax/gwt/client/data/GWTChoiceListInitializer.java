@@ -48,17 +48,17 @@ import java.util.List;
  *
  * @author Benjamin Papez
  */
-public class GWTJahiaFieldInitializer implements Serializable {
+public class GWTChoiceListInitializer implements Serializable {
     private static final long serialVersionUID = -8594607579678260363L;
     
     private List<String> dependentProperties;
     private List<GWTJahiaValueDisplayBean> displayValues;
 
-    public GWTJahiaFieldInitializer() {
+    public GWTChoiceListInitializer() {
         super();
     }
 
-    public GWTJahiaFieldInitializer(List<GWTJahiaValueDisplayBean> displayValues, List<String> dependentProperties) {
+    public GWTChoiceListInitializer(List<GWTJahiaValueDisplayBean> displayValues, List<String> dependentProperties) {
         super();
         this.displayValues = displayValues;
         this.dependentProperties = dependentProperties;

@@ -46,13 +46,13 @@ import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.*;
 import org.apache.jackrabbit.value.StringValue;
+import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.slf4j.Logger;
-import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.services.content.nodetypes.*;
@@ -184,19 +184,17 @@ public class ContentDefinitionHelper {
                         }
                     }
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>();
-                    if (!isDynamicallyInitialized(epd)) {
-                        for (Value value : epd.getDefaultValues()) {
-                            try {
-                                GWTJahiaNodePropertyValue convertedValue = convertValue(value, epd);
-                                if (convertedValue != null) {
-                                    gwtValues.add(convertedValue);
-                                }
-                            } catch (RepositoryException e) {
-                                logger.warn(e.getMessage(), e);
+                    for (Value value : epd.getDefaultValues()) {
+                        try {
+                            GWTJahiaNodePropertyValue convertedValue = convertValue(value, epd);
+                            if (convertedValue != null) {
+                                gwtValues.add(convertedValue);
                             }
+                        } catch (RepositoryException e) {
+                            logger.warn(e.getMessage(), e);
                         }
-                        prop.setDefaultValues(gwtValues);
                     }
+                    prop.setDefaultValues(gwtValues);
                     item = prop;
                 }
                 item.setAutoCreated(overrideDef.isAutoCreated());
@@ -693,11 +691,11 @@ public class ContentDefinitionHelper {
         return value;
     }
 
-    public Map<String, GWTJahiaFieldInitializer> getAllInitializersValues(List<ExtendedNodeType> items,
-                                                                             ExtendedNodeType contextType, JCRNodeWrapper contextNode,
-                                                                             JCRNodeWrapper contextParent,
-                                                                             Locale uiLocale) throws RepositoryException {
-        Map<String, GWTJahiaFieldInitializer> results = new HashMap<String, GWTJahiaFieldInitializer>();
+    public Map<String, GWTChoiceListInitializer> getAllChoiceListInitializersValues(List<ExtendedNodeType> items,
+                                                                                    ExtendedNodeType contextType, JCRNodeWrapper contextNode,
+                                                                                    JCRNodeWrapper contextParent,
+                                                                                    Locale uiLocale) throws RepositoryException {
+        Map<String, GWTChoiceListInitializer> results = new HashMap<String, GWTChoiceListInitializer>();
 
         Map<String, Object> context = new HashMap<String, Object>();
         context.put("contextType", contextType);
@@ -706,7 +704,7 @@ public class ContentDefinitionHelper {
 
 
         for (Map.Entry<String, ExtendedPropertyDefinition> item : getChoiceListItems(items).entrySet()) {
-            GWTJahiaFieldInitializer initializer = getInitializerValues(item.getValue(), context, uiLocale);
+            GWTChoiceListInitializer initializer = getChoiceListInitializerValues(item.getValue(), context, uiLocale);
             if (initializer != null) {
                 results.put(item.getKey(), initializer);
             }
@@ -714,7 +712,7 @@ public class ContentDefinitionHelper {
         return results;
     }
     
-    public GWTJahiaFieldInitializer getInitializerValues(ExtendedPropertyDefinition epd,
+    public GWTChoiceListInitializer getInitializerValues(ExtendedPropertyDefinition epd,
             ExtendedNodeType contextType, JCRNodeWrapper contextNode, JCRNodeWrapper contextParent,
             Map<String, List<GWTJahiaNodePropertyValue>> dependentValues, Locale uiLocale) throws RepositoryException {
         Map<String, Object> context = new HashMap<String, Object>();
@@ -729,11 +727,11 @@ public class ContentDefinitionHelper {
             }));            
         }
 
-        return getInitializerValues(epd, context, uiLocale);
+        return getChoiceListInitializerValues(epd, context, uiLocale);
     }
     
-    private GWTJahiaFieldInitializer getInitializerValues(ExtendedPropertyDefinition epd, Map<String, Object> context, Locale uiLocale) {
-        GWTJahiaFieldInitializer initializer = null;
+    private GWTChoiceListInitializer getChoiceListInitializerValues(ExtendedPropertyDefinition epd, Map<String, Object> context, Locale uiLocale) {
+        GWTChoiceListInitializer initializer = null;
         Map<String, String> map = epd.getSelectorOptions();
         if (map.size() > 0) {
             final List<GWTJahiaValueDisplayBean> displayBeans = new ArrayList<GWTJahiaValueDisplayBean>(32);
@@ -773,7 +771,7 @@ public class ContentDefinitionHelper {
                     }
                 }
             }
-            initializer = new GWTJahiaFieldInitializer(displayBeans, dependentProperties);
+            initializer = new GWTChoiceListInitializer(displayBeans, dependentProperties);
         }
         return initializer;
     }
@@ -792,42 +790,33 @@ public class ContentDefinitionHelper {
         return items;
     }
 
-    public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getAllDynamicDefaultValues(List<ExtendedNodeType> items, List<Locale> locales) throws RepositoryException {
-        Set<Map.Entry<String, ExtendedPropertyDefinition>> entries = getDynamicallyInitializedItems(items).entrySet();
+    public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getAllDefaultValues(List<ExtendedNodeType> items, List<Locale> locales) throws RepositoryException {
+        Set<Map.Entry<String, ExtendedPropertyDefinition>> entries = getInitializedItems(items).entrySet();
         Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> results = new HashMap<String, Map<String, List<GWTJahiaNodePropertyValue>>>();
         for (Locale locale : locales) {
-            Map<String, List<GWTJahiaNodePropertyValue>> dynamicDefaultValues = new HashMap<String, List<GWTJahiaNodePropertyValue>>();
+            Map<String, List<GWTJahiaNodePropertyValue>> defaultValues = new HashMap<String, List<GWTJahiaNodePropertyValue>>();
             for (Map.Entry<String, ExtendedPropertyDefinition> entry : entries) {
-                List<GWTJahiaNodePropertyValue> defaultValues = new ArrayList<GWTJahiaNodePropertyValue>();
+                List<GWTJahiaNodePropertyValue> propertyDefaultValues = new ArrayList<GWTJahiaNodePropertyValue>();
                 for (Value value : entry.getValue().getDefaultValues(locale)) {
-                    defaultValues.add(new GWTJahiaNodePropertyValue(value.getString()));
+                    propertyDefaultValues.add(convertValue(value, entry.getValue()));
                 }
-                dynamicDefaultValues.put(entry.getKey(), defaultValues);
+                defaultValues.put(entry.getKey(), propertyDefaultValues);
             }
-            results.put(locale.getLanguage(), dynamicDefaultValues);
+            results.put(locale.getLanguage(), defaultValues);
         }
         return results;
     }
 
-    private Map<String, ExtendedPropertyDefinition> getDynamicallyInitializedItems(List<ExtendedNodeType> allTypes) {
+    private Map<String, ExtendedPropertyDefinition> getInitializedItems(List<ExtendedNodeType> allTypes) {
         Map<String, ExtendedPropertyDefinition> items = new HashMap<String, ExtendedPropertyDefinition>();
         for (ExtendedNodeType nodeType : allTypes) {
             for (ExtendedPropertyDefinition definition : nodeType.getPropertyDefinitionsAsMap().values()) {
-                if (isDynamicallyInitialized(definition)) {
+                if (definition.getDefaultValues().length > 0) {
                     items.put(definition.getDeclaringNodeType().getName() + "." + definition.getName(), definition);
                 }
             }
         }
         return items;
-    }
-
-    private boolean isDynamicallyInitialized(ExtendedPropertyDefinition epd) {
-        for (Value v : epd.getDefaultValuesAsUnexpandedValue()) {
-            if (v instanceof DynamicValueImpl) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public List<GWTJahiaNodeType> getContentTypesAsTree(final List<String> nodeTypes, final List<String> excludedNodeTypes, final boolean includeSubTypes, final JCRSiteNode site,

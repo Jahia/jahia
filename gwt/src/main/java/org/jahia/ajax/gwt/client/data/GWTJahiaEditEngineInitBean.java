@@ -61,8 +61,8 @@ public class GWTJahiaEditEngineInitBean extends GWTJahiaGetPropertiesResult {
     /** The serialVersionUID. */
     private static final long serialVersionUID = 8831509358274880097L;
     private List<GWTJahiaNodeType> mixin;
-    private Map<String, GWTJahiaFieldInitializer> initializersValues;
-    private Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> dynamicDefaultValues;
+    private Map<String, GWTChoiceListInitializer> initializersValues;
+    private Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> defaultValues;
     private GWTJahiaNodeACL acl;
     private Map<String, Set<String>> referencesWarnings;
     private String defaultLanguageCode;
@@ -83,11 +83,11 @@ public class GWTJahiaEditEngineInitBean extends GWTJahiaGetPropertiesResult {
         this.mixin = mixin;
     }
 
-    public Map<String, GWTJahiaFieldInitializer> getInitializersValues() {
+    public Map<String, GWTChoiceListInitializer> getInitializersValues() {
         return initializersValues;
     }
 
-    public void setInitializersValues(Map<String, GWTJahiaFieldInitializer> initializersValues) {
+    public void setInitializersValues(Map<String, GWTChoiceListInitializer> initializersValues) {
         this.initializersValues = initializersValues;
     }
 
@@ -123,11 +123,11 @@ public class GWTJahiaEditEngineInitBean extends GWTJahiaGetPropertiesResult {
         this.translationEnabled = translationEnabled;
     }
 
-    public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getDynamicDefaultValues() {
-        return dynamicDefaultValues;
+    public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getDefaultValues() {
+        return defaultValues;
     }
 
-    public void setDynamicDefaultValues(Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> dynamicDefaultValues) {
-        this.dynamicDefaultValues = dynamicDefaultValues;
+    public void setDefaultValues(Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> defaultValues) {
+        this.defaultValues = defaultValues;
     }
 }

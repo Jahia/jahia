@@ -202,7 +202,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     String getExportUrl(String path) throws GWTJahiaServiceException;
     
-    GWTJahiaFieldInitializer getFieldInitializerValues(String typeName, String propertyName, String parentPath, Map<String, List<GWTJahiaNodePropertyValue>> dependentValues) throws GWTJahiaServiceException;
+    GWTChoiceListInitializer getFieldInitializerValues(String typeName, String propertyName, String parentPath, Map<String, List<GWTJahiaNodePropertyValue>> dependentValues) throws GWTJahiaServiceException;
 
     List<String> getNamespaces();
 

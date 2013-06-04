@@ -205,8 +205,8 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 };
                 propertiesEditor.setLocale(language);
                 propertiesEditor.setMixin(engine.getMixin());
-                propertiesEditor.setInitializersValues(engine.getInitializersValues());
-                propertiesEditor.setDynamicDefaultValues(engine.getDynamicDefaultValues().get(language));
+                propertiesEditor.setChoiceListInitializersValues(engine.getChoiceListInitializersValues());
+                propertiesEditor.setDefaultValues(engine.getDefaultValues().get(language));
                 // todo : handle translation permission for i18n fields ?
                 propertiesEditor.setWriteable(!engine.isExistingNode() || (PermissionsUtils.isPermitted("jcr:modifyProperties", engine.getNode()) && !engine.getNode().isLocked()));
                 propertiesEditor.setFieldSetGrouping(true);

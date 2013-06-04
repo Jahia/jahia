@@ -61,7 +61,6 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 
 import java.util.*;
 
@@ -158,7 +157,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void getExportUrl(String path, AsyncCallback<String> async);
 
-    void getFieldInitializerValues(String typeName, String propertyName, String parentPath, Map<String, List<GWTJahiaNodePropertyValue>> dependentValues, AsyncCallback<GWTJahiaFieldInitializer> async);
+    void getFieldInitializerValues(String typeName, String propertyName, String parentPath, Map<String, List<GWTJahiaNodePropertyValue>> dependentValues, AsyncCallback<GWTChoiceListInitializer> async);
 
     void getGWTToolbars(String toolbarGroup, AsyncCallback<GWTJahiaToolbar> async);
 

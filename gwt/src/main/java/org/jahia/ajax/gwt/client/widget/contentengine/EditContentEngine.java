@@ -243,8 +243,8 @@ public class EditContentEngine extends AbstractContentEngine {
                 }
 
                 mixin = result.getMixin();
-                initializersValues = result.getInitializersValues();
-                dynamicDefaultValues = result.getDynamicDefaultValues();
+                choiceListInitializersValues = result.getInitializersValues();
+                defaultValues = result.getDefaultValues();
                 initTabs();
 
                 tabs.addListener(Events.Select, new Listener<ComponentEvent>() {

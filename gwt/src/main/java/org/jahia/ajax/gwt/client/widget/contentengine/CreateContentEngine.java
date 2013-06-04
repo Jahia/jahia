@@ -167,6 +167,7 @@ public class CreateContentEngine extends AbstractContentEngine {
             public void onSuccess(GWTJahiaCreateEngineInitBean result) {
                 mixin = result.getMixin();
                 initializersValues = result.getInitializersValues();
+                dynamicDefaultValues = result.getDynamicDefaultValues();
                 currentLanguageBean = result.getCurrentLocale();
                 defaultLanguageCode = result.getDefaultLanguageCode();
                 acl = result.getAcl();

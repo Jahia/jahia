@@ -741,7 +741,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                 Map<String, PropertiesEditor.PropertyAdapterField> fieldsMap = propertiesEditor.getFieldsMap();
                 for (GWTJahiaNodeProperty property : previousNon18nProperties) {
                     if (fieldsMap.containsKey(property.getName()))  {
-                        FormFieldCreator.fillValue(fieldsMap.get(property.getName()).getField(), propertiesEditor.getGWTJahiaItemDefinition(property), property, null);
+                        FormFieldCreator.fillValue(fieldsMap.get(property.getName()).getField(), propertiesEditor.getGWTJahiaItemDefinition(property), property, null, null);
                     }
                 }
             }

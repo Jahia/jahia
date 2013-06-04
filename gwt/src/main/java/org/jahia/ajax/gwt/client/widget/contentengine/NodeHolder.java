@@ -43,6 +43,7 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -64,6 +65,8 @@ public interface NodeHolder {
     List<GWTJahiaNodeType> getMixin();
 
     Map<String, GWTJahiaFieldInitializer> getInitializersValues();
+
+    Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getDynamicDefaultValues();
 
     GWTJahiaNode getNode();
 

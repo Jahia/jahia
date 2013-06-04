@@ -42,6 +42,7 @@ package org.jahia.ajax.gwt.client.data;
 
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 
@@ -61,6 +62,7 @@ public class GWTJahiaEditEngineInitBean extends GWTJahiaGetPropertiesResult {
     private static final long serialVersionUID = 8831509358274880097L;
     private List<GWTJahiaNodeType> mixin;
     private Map<String, GWTJahiaFieldInitializer> initializersValues;
+    private Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> dynamicDefaultValues;
     private GWTJahiaNodeACL acl;
     private Map<String, Set<String>> referencesWarnings;
     private String defaultLanguageCode;
@@ -119,5 +121,13 @@ public class GWTJahiaEditEngineInitBean extends GWTJahiaGetPropertiesResult {
 
     public void setTranslationEnabled(boolean translationEnabled) {
         this.translationEnabled = translationEnabled;
+    }
+
+    public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getDynamicDefaultValues() {
+        return dynamicDefaultValues;
+    }
+
+    public void setDynamicDefaultValues(Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> dynamicDefaultValues) {
+        this.dynamicDefaultValues = dynamicDefaultValues;
     }
 }

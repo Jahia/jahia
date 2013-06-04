@@ -206,6 +206,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 propertiesEditor.setLocale(language);
                 propertiesEditor.setMixin(engine.getMixin());
                 propertiesEditor.setInitializersValues(engine.getInitializersValues());
+                propertiesEditor.setDynamicDefaultValues(engine.getDynamicDefaultValues().get(language));
                 // todo : handle translation permission for i18n fields ?
                 propertiesEditor.setWriteable(!engine.isExistingNode() || (PermissionsUtils.isPermitted("jcr:modifyProperties", engine.getNode()) && !engine.getNode().isLocked()));
                 propertiesEditor.setFieldSetGrouping(true);
@@ -285,7 +286,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 Map<String, PropertiesEditor.PropertyAdapterField> fieldsMap = propertiesEditor.getFieldsMap();
                 for (GWTJahiaNodeProperty property : previousNon18nProperties) {
                     if (fieldsMap.containsKey(property.getName()))  {
-                        FormFieldCreator.fillValue(fieldsMap.get(property.getName()).getField(), propertiesEditor.getGWTJahiaItemDefinition(property), property, null);
+                        FormFieldCreator.fillValue(fieldsMap.get(property.getName()).getField(), propertiesEditor.getGWTJahiaItemDefinition(property), property, null, null);
                     }
                 }
             }

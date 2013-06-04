@@ -201,7 +201,7 @@ public class TableView extends AbstractView {
                                     break;
                                 case GWTJahiaNodeSelectorType.CHOICELIST:
                             }
-                            Field f = FormFieldCreator.createField(definition, null, null, false, root.getPermissions(), JahiaGWTParameters.getUILanguage());
+                            Field f = FormFieldCreator.createField(definition, null, null, false, root.getPermissions(), null);
                             if (f != null) {
                                 e.setEditor(new CellEditor(f));
                                 columnModel.getColumns().add(e);

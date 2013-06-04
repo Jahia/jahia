@@ -89,6 +89,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected List<GWTJahiaNodeType> nodeTypes;
     protected List<GWTJahiaNodeType> mixin;
     protected Map<String, GWTJahiaFieldInitializer> initializersValues;
+    protected Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> dynamicDefaultValues;
     protected Map<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>();
     protected Map<String, GWTJahiaNodeProperty> presetProperties = new HashMap<String, GWTJahiaNodeProperty>();
     protected TabPanel tabs;
@@ -508,4 +509,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         return parentPath;
     }
 
+    public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getDynamicDefaultValues() {
+        return dynamicDefaultValues;
+    }
 }

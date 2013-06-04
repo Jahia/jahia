@@ -76,6 +76,7 @@ public class PropertiesEditor extends FormPanel {
     private List<GWTJahiaNodeType> nodeTypes = null;
     private List<GWTJahiaNodeType> mixin = null;
     private Map<String, GWTJahiaFieldInitializer> initializersValues;
+    private Map<String, List<GWTJahiaNodePropertyValue>> dynamicDefaultValues;
     private Map<String, GWTJahiaNodeProperty> currentProperties = null;
     private Map<String, GWTJahiaNodeProperty> originalProperties = null;
     private Map<String, PropertyAdapterField> fields;
@@ -138,6 +139,10 @@ public class PropertiesEditor extends FormPanel {
 
     public void setInitializersValues(Map<String, GWTJahiaFieldInitializer> initializersValues) {
         this.initializersValues = initializersValues;
+    }
+
+    public void setDynamicDefaultValues(Map<String, List<GWTJahiaNodePropertyValue>> dynamicDefaultValues) {
+        this.dynamicDefaultValues = dynamicDefaultValues;
     }
 
     public void setMultipleEdit(boolean multipleEdit) {
@@ -263,9 +268,10 @@ public class PropertiesEditor extends FormPanel {
 
 
             final GWTJahiaNodeProperty gwtJahiaNodeProperty = currentProperties.get(definition.getName());
-            GWTJahiaFieldInitializer fieldInitializer = initializersValues != null ?
-                    initializersValues.get(definition.getOverrideDeclaringNodeType() + "." + definition.getName()) : null;
-            Field<?> field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, fieldInitializer, displayHiddenProperties, permissions, locale);
+            String key = definition.getOverrideDeclaringNodeType() + "." + definition.getName();
+            GWTJahiaFieldInitializer fieldInitializer = initializersValues != null ? initializersValues.get(key) : null;
+            List<GWTJahiaNodePropertyValue> defaultValues = dynamicDefaultValues != null ? dynamicDefaultValues.get(key) : null;
+            Field<?> field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, fieldInitializer, displayHiddenProperties, permissions, defaultValues);
             propertyDefinitions.put(gwtJahiaNodeProperty.getName(), definition);
             if (field != null) {
                 if (fieldSet == null || fieldSetGrouping &&

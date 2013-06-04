@@ -184,17 +184,19 @@ public class ContentDefinitionHelper {
                         }
                     }
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>();
-                    for (Value value : epd.getDefaultValues()) {
-                        try {
-                            GWTJahiaNodePropertyValue convertedValue = convertValue(value, epd);
-                            if (convertedValue != null) {
-                                gwtValues.add(convertedValue);
+                    if (!isDynamicallyInitialized(epd)) {
+                        for (Value value : epd.getDefaultValues()) {
+                            try {
+                                GWTJahiaNodePropertyValue convertedValue = convertValue(value, epd);
+                                if (convertedValue != null) {
+                                    gwtValues.add(convertedValue);
+                                }
+                            } catch (RepositoryException e) {
+                                logger.warn(e.getMessage(), e);
                             }
-                        } catch (RepositoryException e) {
-                            logger.warn(e.getMessage(), e);
                         }
+                        prop.setDefaultValues(gwtValues);
                     }
-                    prop.setDefaultValues(gwtValues);
                     item = prop;
                 }
                 item.setAutoCreated(overrideDef.isAutoCreated());
@@ -790,6 +792,43 @@ public class ContentDefinitionHelper {
         return items;
     }
 
+    public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getAllDynamicDefaultValues(List<ExtendedNodeType> items, List<Locale> locales) throws RepositoryException {
+        Set<Map.Entry<String, ExtendedPropertyDefinition>> entries = getDynamicallyInitializedItems(items).entrySet();
+        Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> results = new HashMap<String, Map<String, List<GWTJahiaNodePropertyValue>>>();
+        for (Locale locale : locales) {
+            Map<String, List<GWTJahiaNodePropertyValue>> dynamicDefaultValues = new HashMap<String, List<GWTJahiaNodePropertyValue>>();
+            for (Map.Entry<String, ExtendedPropertyDefinition> entry : entries) {
+                List<GWTJahiaNodePropertyValue> defaultValues = new ArrayList<GWTJahiaNodePropertyValue>();
+                for (Value value : entry.getValue().getDefaultValues(locale)) {
+                    defaultValues.add(new GWTJahiaNodePropertyValue(value.getString()));
+                }
+                dynamicDefaultValues.put(entry.getKey(), defaultValues);
+            }
+            results.put(locale.getLanguage(), dynamicDefaultValues);
+        }
+        return results;
+    }
+
+    private Map<String, ExtendedPropertyDefinition> getDynamicallyInitializedItems(List<ExtendedNodeType> allTypes) {
+        Map<String, ExtendedPropertyDefinition> items = new HashMap<String, ExtendedPropertyDefinition>();
+        for (ExtendedNodeType nodeType : allTypes) {
+            for (ExtendedPropertyDefinition definition : nodeType.getPropertyDefinitionsAsMap().values()) {
+                if (isDynamicallyInitialized(definition)) {
+                    items.put(definition.getDeclaringNodeType().getName() + "." + definition.getName(), definition);
+                }
+            }
+        }
+        return items;
+    }
+
+    private boolean isDynamicallyInitialized(ExtendedPropertyDefinition epd) {
+        for (Value v : epd.getDefaultValuesAsUnexpandedValue()) {
+            if (v instanceof DynamicValueImpl) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public List<GWTJahiaNodeType> getContentTypesAsTree(final List<String> nodeTypes, final List<String> excludedNodeTypes, final boolean includeSubTypes, final JCRSiteNode site,
                                                         final Locale uiLocale, final JCRSessionWrapper session)

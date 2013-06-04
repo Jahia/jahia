@@ -54,6 +54,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
@@ -85,6 +86,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
     private List<GWTJahiaNodeType> types;
     private List<GWTJahiaNodeType> mixin;
     private Map<String, GWTJahiaFieldInitializer> initializersValues;
+    protected Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> dynamicDefaultValues;
     private Map<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>();
     private GWTJahiaLanguage language;
     private GWTJahiaNodeACL acl;
@@ -216,6 +218,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
                                 mixin = result.getMixin();
                                 initializersValues = result.getInitializersValues();
+                                dynamicDefaultValues = result.getDynamicDefaultValues();
                                 ok.setEnabled(true);
                                 acl = result.getAcl();
                                 referencesWarnings = result.getReferencesWarnings();
@@ -248,6 +251,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
                         mixin = result.getMixin();
                         initializersValues = result.getInitializersValues();
+                        dynamicDefaultValues = result.getDynamicDefaultValues();
                         ok.setEnabled(true);
                         for (TabItem item : tabs.getItems()) {
                             EditEngineTabItem editItem = (EditEngineTabItem) item.getData("item");
@@ -343,6 +347,10 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
     public Map<String, GWTJahiaNodeProperty> getPresetProperties() {
         return new HashMap<String, GWTJahiaNodeProperty>();
+    }
+
+    public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getDynamicDefaultValues() {
+        return dynamicDefaultValues;
     }
 
     /**

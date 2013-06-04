@@ -41,6 +41,7 @@
 package org.jahia.ajax.gwt.client.data;
 
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 
 import java.io.Serializable;
@@ -60,6 +61,7 @@ public class GWTJahiaCreateEngineInitBean implements Serializable {
     private List<GWTJahiaLanguage> languages;
     private List<GWTJahiaNodeType> mixin;
     private Map<String, GWTJahiaFieldInitializer> initializers;
+    private Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> dynamicDefaultValues;
     private GWTJahiaLanguage currentLocale;
     private GWTJahiaNodeACL acl;
     private String defaultName;
@@ -122,5 +124,13 @@ public class GWTJahiaCreateEngineInitBean implements Serializable {
 
     public void setDefaultLanguageCode(String defaultLanguageCode) {
         this.defaultLanguageCode = defaultLanguageCode;
+    }
+
+    public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getDynamicDefaultValues() {
+        return dynamicDefaultValues;
+    }
+
+    public void setDynamicDefaultValues(Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> dynamicDefaultValues) {
+        this.dynamicDefaultValues = dynamicDefaultValues;
     }
 }

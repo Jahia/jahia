@@ -100,7 +100,8 @@ public class FormFieldCreator {
      * @return
      */
     public static Field<?> createField(GWTJahiaItemDefinition definition, GWTJahiaNodeProperty property,
-                                       GWTJahiaFieldInitializer initializer, boolean displayHiddenProperty, GWTBitSet permissions, String locale) {
+                                       GWTJahiaFieldInitializer initializer, boolean displayHiddenProperty,
+                                       GWTBitSet permissions, List<GWTJahiaNodePropertyValue> dynamicDefaultValues) {
         Field<?> field = null;
         if (definition.isHidden() && !displayHiddenProperty) {
             return null;
@@ -303,7 +304,7 @@ public class FormFieldCreator {
             field.setLabelSeparator(field.getLabelSeparator() + " :");
         }
         if (property != null) {
-            fillValue(field, definition, property, initializer);
+            fillValue(field, definition, property, initializer, dynamicDefaultValues);
         }
         //field.setId("JahiaGxtField"+ "_" + field.getName().replace(":","_")+"_"+locale);
         return field;
@@ -441,8 +442,12 @@ public class FormFieldCreator {
      * @param definition
      * @param property
      */
-    public static void fillValue(final Field field, GWTJahiaItemDefinition definition, GWTJahiaNodeProperty property, GWTJahiaFieldInitializer initializer) {
+    public static void fillValue(final Field field, GWTJahiaItemDefinition definition, GWTJahiaNodeProperty property,
+                                 GWTJahiaFieldInitializer initializer, List<GWTJahiaNodePropertyValue> dynamicDefaultValues) {
         List<GWTJahiaNodePropertyValue> values = property.getValues();
+        if (dynamicDefaultValues != null && values.size() == 0) {
+            values = dynamicDefaultValues;
+        }
         if (initializer != null && values.size() == 0) {
             for (GWTJahiaValueDisplayBean v : initializer.getDisplayValues()) {
                 if (v.get("defaultProperty") != null && (Boolean) v.get("defaultProperty")) {

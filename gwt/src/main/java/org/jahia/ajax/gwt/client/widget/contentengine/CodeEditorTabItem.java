@@ -83,7 +83,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
     public static final String FONT_SIZE_VALUE = "11px";
     private String codePropertyName;
     private String stubType;
-    private String codeMirrorMode = "application/x-ejs";
+    private String codeMirrorMode = "jsp";
 
     private transient CodeMirrorField codeField;
     private transient GWTJahiaNodeProperty codeProperty;

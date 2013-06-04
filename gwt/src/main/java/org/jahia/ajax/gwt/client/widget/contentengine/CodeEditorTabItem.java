@@ -54,19 +54,23 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.LayoutData;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
+import com.google.gwt.core.client.Scheduler;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
-import org.jahia.ajax.gwt.client.data.definition.*;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.form.CodeMirrorField;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *  Engine Tab Item that contains a Code Editor (CodeMirror)
@@ -99,12 +103,12 @@ public class CodeEditorTabItem extends EditEngineTabItem {
         horizontalPanel.setSpacing(10);
         horizontalPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
         tab.add(horizontalPanel, new BorderLayoutData(Style.LayoutRegion.NORTH,40));
-        final HorizontalPanel actionStubs = new HorizontalPanel();
-        actionStubs.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
+//        final HorizontalPanel actionStubs = new HorizontalPanel();
+//        actionStubs.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
         final HorizontalPanel actions = new HorizontalPanel();
         actions.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
         horizontalPanel.add(actions);
-        horizontalPanel.add(actionStubs);
+//        horizontalPanel.add(actionStubs);
         if (!tab.isProcessed()) {
             // Add list of properties
             GWTJahiaNodeProperty typeName = engine.getProperties().get("nodeTypeName");
@@ -206,10 +210,12 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                             Map<String,String> stubs = (Map<String,String>) result.get("stubs");
                             if (stubs.size() == 1) {
                                 codeProperty = new GWTJahiaNodeProperty(codePropertyName, stubs.values().iterator().next(), GWTJahiaNodePropertyType.STRING);
+                                initEditor(tab);
                             } else if (stubs.size() > 1) {
                                 actions.hide();
-
+                                final LayoutContainer w = new LayoutContainer(new CenterLayout());
                                 final ComboBox<GWTJahiaValueDisplayBean> stubsCombo = new ComboBox<GWTJahiaValueDisplayBean>();
+                                stubsCombo.setWidth(300);
                                 stubsCombo.setTypeAhead(true);
                                 stubsCombo.getListView().setStyleAttribute(FONT_SIZE, FONT_SIZE_VALUE);
                                 stubsCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
@@ -232,26 +238,30 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                                     value.set("viewName",viewName);
                                     stubsCombo.getStore().add(value);
                                 }
-                                Button button = new Button(Messages.get("label.add"));
-                                button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                                stubsCombo.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaValueDisplayBean>() {
                                     @Override
-                                    public void componentSelected(ButtonEvent buttonEvent) {
-                                        codeField.insertProperty(stubsCombo.getValue().getValue());
+                                    public void selectionChanged(SelectionChangedEvent<GWTJahiaValueDisplayBean> se) {
+                                        w.removeFromParent();
+                                        initEditor(tab);
+                                        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+                                            public void execute() {
+                                                codeField.insertProperty(stubsCombo.getValue().getValue());
+                                            }
+                                        });
                                         if (engine instanceof CreateContentEngine) {
                                             ((CreateContentEngine) engine).setTargetName(((CreateContentEngine) engine).getTargetName() + stubsCombo.getValue().get("viewName"));
                                         }
-                                        actionStubs.hide();
                                         actions.show();
                                         codeField.show();
                                     }
                                 });
-                                actionStubs.add(stubsCombo);
-                                actionStubs.add(button);
-                                actionStubs.show();
+                                w.add(stubsCombo);
+                                tab.add(w, new BorderLayoutData(Style.LayoutRegion.CENTER));
+                                tab.layout();
                             }
-
+                        } else {
+                            initEditor(tab);
                         }
-                        initEditor(tab);
                     }
                 });
             } else {
@@ -259,6 +269,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
             }
             actions.add(indentButton);
             actions.show();
+            tab.setProcessed(true);
         }
     }
 
@@ -274,7 +285,6 @@ public class CodeEditorTabItem extends EditEngineTabItem {
         tab.add(codeField, new BorderLayoutData(Style.LayoutRegion.CENTER));
         tab.layout();
         tab.show();
-        tab.setProcessed(true);
     }
 
     @Override
@@ -293,8 +303,10 @@ public class CodeEditorTabItem extends EditEngineTabItem {
     public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties,
                        Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes,
                        Set<String> removedTypes, List<GWTJahiaNode> chidren, GWTJahiaNodeACL acl) {
-        codeProperty.setValue(new GWTJahiaNodePropertyValue(codeField.getValue()));
-        changedProperties.add(codeProperty);
+        if (codeField != null) {
+            codeProperty.setValue(new GWTJahiaNodePropertyValue(codeField.getValue()));
+            changedProperties.add(codeProperty);
+        }
     }
 
     public void setCodePropertyName(String codePropertyName) {

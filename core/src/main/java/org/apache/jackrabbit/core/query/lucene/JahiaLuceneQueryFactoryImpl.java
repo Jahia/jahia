@@ -253,34 +253,6 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                             }
                                         }
                                     }
-<<<<<<< .working
-=======
-                                    if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
-                                        //Added by Jahia
-                                        //should not added to bitset when in live mode and not visible
-                                        if (!Constants.LIVE_WORKSPACE.equals(session.getWorkspace().getName()) ||
-                                                !"1".equals(infos.getCheckVisibility())) { 
-                                           bitset.set(infos.getDocNumber()); 
-                                        } else { //try to load objectNode to check the visibility rules
-                                            NodeImpl objectNode = session.getNodeById(node.getNodeId());
-                                            if (objectNode.isNodeType("jnt:translation")) {
-                                                objectNode = (NodeImpl) objectNode.getParent();
-                                            }
-                                            Row row = new LazySelectorRow(
-                                                    columns,
-                                                    evaluator,
-                                                    selector.getSelectorName(),
-                                                    provider.getNodeWrapper(
-                                                            objectNode, jcrSession),
-                                                    node.getScore());
-                                            
-                                            if(row != null) { 
-                                              bitset.set(infos.getDocNumber());
-                                            }
-                                        }
-                                      //!Added by Jahia
-                                    }
->>>>>>> .merge-right.r46135
                                 } else {
                                     NodeImpl objectNode = session.getNodeById(node
                                             .getNodeId());

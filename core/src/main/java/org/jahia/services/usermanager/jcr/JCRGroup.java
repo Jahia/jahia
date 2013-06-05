@@ -224,7 +224,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
      */
     public boolean addMember(final Principal principal) {
         try {
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            boolean memberAdded = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     if (isMember(principal)) {
                         return false;
@@ -253,8 +253,8 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                             members.checkout();
                             Node member = members.addNode(name, Constants.JAHIANT_MEMBER);
                             member.setProperty("j:member", jcrUser.getIdentifier());
-                            JCRGroupManagerProvider.getInstance().updateMembershipCache(jcrUser.getIdentifier());
                             session.save();
+                            JCRGroupManagerProvider.getInstance().updateMembershipCache(jcrUser.getIdentifier());
                         }
                         mMembers.add(principal);
 
@@ -263,9 +263,12 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                     return false;
                 }
             });
+            JCRGroupManagerProvider.getInstance().updateCache(this);
+            return memberAdded;
         } catch (RepositoryException e) {
             logger.error("Error while adding group member", e);
         }
+        
         return false;
     }
 

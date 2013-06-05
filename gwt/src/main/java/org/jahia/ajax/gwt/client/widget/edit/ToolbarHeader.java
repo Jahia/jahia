@@ -79,11 +79,13 @@ public class ToolbarHeader extends Header {
     @Override
     public void addTool(Component tool) {
         horizontalPanel.add(tool);
+        horizontalPanel.layout();
     }
 
     @Override
     public void removeTool(Component tool) {
         horizontalPanel.remove(tool);
+        horizontalPanel.layout();
     }
 
     public void addItem(Linker linker, GWTJahiaToolbarItem gwtToolbarItem) {

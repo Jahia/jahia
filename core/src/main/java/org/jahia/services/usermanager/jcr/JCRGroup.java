@@ -434,6 +434,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
             mMembers = null;
             mMembers = getMembersMap();
             JCRGroupManagerProvider.getInstance().updateMembershipCache(memberIdentifier);
+            JCRGroupManagerProvider.getInstance().updateCache(this);
             return true;
         }
         return false;
@@ -564,6 +565,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                     return null;
                 }
             });
+            JCRGroupManagerProvider.getInstance().updateCache(this);
         } catch (RepositoryException e) {
             logger.error("Error while adding group member", e);
         }

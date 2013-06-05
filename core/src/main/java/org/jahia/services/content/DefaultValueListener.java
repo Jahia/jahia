@@ -179,9 +179,8 @@ public class DefaultValueListener extends DefaultEventListener {
 
     protected boolean handlePropertyDefaultValues(JCRNodeWrapper n, ExtendedPropertyDefinition pd, Value[] values,
             Locale sessionLocale) throws RepositoryException {
-        boolean isDynamicValue = values[0] instanceof DynamicValueImpl;
-        boolean doCreateI10n = sessionLocale != null && pd.isAutoCreated() && pd.isInternationalized();
-        if (!isDynamicValue && !doCreateI10n) {
+        boolean doCreateI10n = sessionLocale != null && pd.isInternationalized();
+        if (!pd.isAutoCreated() || (!doCreateI10n && !pd.hasDynamicDefaultValues())) {
             // no handling needed
             return false;
         }

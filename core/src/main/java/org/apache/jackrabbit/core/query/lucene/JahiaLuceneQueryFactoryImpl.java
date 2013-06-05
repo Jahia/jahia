@@ -236,7 +236,6 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                             continue;
                                         }
 
-<<<<<<< .working
                                         if (externalSort) {
                                             rowList.add(row);
                                         } else {
@@ -246,30 +245,11 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                                 rows.put(node.getNodeId()
                                                         .toString(), row);
                                                 addedNodes++;
-=======
-                                        rows.add(row);
-                                    }
-                                    if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
-                                        //Added by Jahia
-                                        //should not added to bitset when in live mode and not visible
-                                        if (!Constants.LIVE_WORKSPACE.equals(session.getWorkspace().getName()) ||
-                                                !"1".equals(infos.getCheckVisibility())) { 
-                                           bitset.set(infos.getDocNumber()); 
-                                        } else { //try to load nodeWrapper to check the visibility rules
-                                            NodeImpl objectNode = session.getNodeById(node.getNodeId());
-                                            if (objectNode.isNodeType("jnt:translation")) {
-                                                objectNode = (NodeImpl) objectNode.getParent();
->>>>>>> .merge-right.r46140
                                             }
-<<<<<<< .working
                                             currentNode++;
                                             // end the loop when going over the limit
                                             if (addedNodes == limit) {
                                                 break;
-=======
-                                            if(provider.getNodeWrapper(objectNode, jcrSession) != null) { 
-                                              bitset.set(infos.getDocNumber());
->>>>>>> .merge-right.r46140
                                             }
                                         }
                                     }

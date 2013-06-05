@@ -82,9 +82,8 @@ import java.util.*;
 public class CategoriesTabItem extends EditEngineTabItem {
     private transient List<GWTJahiaNode> catStore;
     private transient GWTJahiaNodeProperty categoryProperty;
-    private final transient  HorizontalPanel topPanel = new HorizontalPanel();
-    private transient final GWTJahiaNodeTreeFactory treeGridFactory =
-            new GWTJahiaNodeTreeFactory(Arrays.asList("$systemsite/categories/*"), Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.CHILDREN_INFO,GWTJahiaNode.NAME,GWTJahiaNode.DISPLAY_NAME));
+    private transient HorizontalPanel topPanel;
+    private transient GWTJahiaNodeTreeFactory treeGridFactory;
 
 
 
@@ -96,9 +95,12 @@ public class CategoriesTabItem extends EditEngineTabItem {
 
             HorizontalPanel header = new HorizontalPanel();
             header.add(new Html(Messages.get("label.selected.categories")));
+            topPanel = new HorizontalPanel();
             topPanel.setWidth(200);
             topPanel.removeAll();
             catStore = new ArrayList<GWTJahiaNode>();
+            treeGridFactory = new GWTJahiaNodeTreeFactory(Arrays.asList("$systemsite/categories/*"),
+                    Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.CHILDREN_INFO,GWTJahiaNode.NAME,GWTJahiaNode.DISPLAY_NAME));
             final GWTJahiaNode node = engine.getNode();
             if (node != null) {
                 categoryProperty = engine.getProperties().get("j:defaultCategory");

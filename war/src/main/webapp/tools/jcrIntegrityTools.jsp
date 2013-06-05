@@ -16,6 +16,7 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Calendar" %>
 <%@ page import="java.util.HashMap" %>
+<%@ page import="java.util.LinkedList" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -313,19 +314,13 @@
                             }
                             if (property.isMultiple()) {
                                 Value[] oldValues = property.getValues();
-                                Value[] newValues = new Value[oldValues.length-1];
-                                int i=0;
+                                List<Value> newValues = new LinkedList<Value>();
                                 for (Value oldValue : oldValues) {
                                     if (!oldValue.getString().equals(uuid)) {
-                                        newValues[i] = oldValue;
-                                    }
-                                    if (i < (oldValues.length - 2)) {
-                                        i++;
-                                    } else {
-                                        break;
+                                        newValues.add(oldValue);
                                     }
                                 }
-                                property.setValue(newValues);
+                                property.setValue(newValues.toArray(new Value[] {}));
                             } else {
                                 property.setValue((Value) null);
                             }

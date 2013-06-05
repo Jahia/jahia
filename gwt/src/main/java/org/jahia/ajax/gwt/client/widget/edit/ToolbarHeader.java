@@ -91,11 +91,13 @@ public class ToolbarHeader extends Header {
 
         }
         horizontalPanel.add(tool);
+        horizontalPanel.layout();
     }
 
     @Override
     public void removeTool(Component tool) {
         horizontalPanel.remove(tool);
+        horizontalPanel.layout();
     }
 
     public void attachTools() {

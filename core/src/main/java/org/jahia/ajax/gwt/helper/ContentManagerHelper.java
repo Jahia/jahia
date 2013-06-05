@@ -1025,21 +1025,9 @@ public class ContentManagerHelper {
                                         .add(new StringBuilder(node.getName()).append(": repository exception").toString());
                             }
                         } else {
-                            // already unlocked
+                            node.unlock();
                         }
                     }
-<<<<<<< .working
-=======
-                } else {
-                    if (toLock) {
-                        if (!node.lockAndStoreToken("user")) {
-                            missedPaths
-                                    .add(new StringBuilder(node.getName()).append(": repository exception").toString());
-                        }
-                    } else {
-                        node.unlock();
-                    }
->>>>>>> .merge-right.r46145
                 }
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);

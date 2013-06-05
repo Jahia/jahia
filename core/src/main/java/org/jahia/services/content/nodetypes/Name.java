@@ -42,6 +42,7 @@ package org.jahia.services.content.nodetypes;
 
 import java.util.Map;
 
+import org.apache.commons.collections.BidiMap;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -57,27 +58,48 @@ public class Name {
     private String preComputedToString;
     private int preComputedHashCode;
 
+    private static String getPrefix(String uri, Map<String, String> namespaceMapping) {
+        if (uri == null || uri.length() == 0) {
+            return null;
+        }
+        String p = null;
+        if (namespaceMapping instanceof BidiMap) {
+            p = (String) ((BidiMap) namespaceMapping).getKey(uri);
+        } else {
+            for (Map.Entry<String, String> entry : namespaceMapping.entrySet()) {
+                if (entry.getValue().equals(uri)) {
+                    p = entry.getKey();
+                    break;
+                }
+            }
+        }
+        
+        return p;
+    }
+
     public Name(String localName, String prefix, String uri) {
         this.localName = localName;
         this.prefix = prefix;
         this.uri = uri;
     }
 
+    public Name(String localName, String uri) {
+        this(localName, getPrefix(uri, NodeTypeRegistry.getInstance().getNamespaces()), uri);
+    }
+    
+    public Name(String localName, String uri, Map<String,String> namespaceMapping) {
+        this(localName, getPrefix(uri, namespaceMapping), uri);
+    }
+    
     public Name(String qualifiedName, Map<String,String> namespaceMapping) {
         if (qualifiedName.startsWith("{")) {
             int endUri = qualifiedName.indexOf("}");
             if (endUri != -1 && qualifiedName.length() > endUri) {
                 uri = StringUtils.substringBetween(qualifiedName, "{", "}");
-                for (Map.Entry<String, String> entry : namespaceMapping.entrySet()) {
-                    if (entry.getValue().equals(uri)) {
-                        prefix = entry.getKey();
-                        break;
-                    }
-                }
+                prefix = getPrefix(uri, namespaceMapping);
                 localName = qualifiedName.substring(endUri + 1);
             } else {
                 localName = qualifiedName;
-                prefix = "";
                 uri = namespaceMapping.get("");
             }
         }
@@ -88,7 +110,6 @@ public class Name {
                 localName = s[1];
                 uri = namespaceMapping.get(prefix);
             } else {
-                prefix = "";
                 localName = s[0];
                 uri = namespaceMapping.get("");
             }
@@ -111,7 +132,7 @@ public class Name {
         if (preComputedToString != null) {
             return preComputedToString;
         }
-        if (prefix.equals("")) {
+        if (prefix == null || prefix.length() == 0) {
             preComputedToString = localName;
             return preComputedToString;
         } else {

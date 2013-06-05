@@ -2057,11 +2057,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
     public List<String> getNamespaces() {
-        List<String> listValues = new ArrayList<String>();
-        for (Map.Entry<String, String> entry : NodeTypeRegistry.getInstance().getNamespaces().entrySet()) {
-            listValues.add(entry.getKey());
-        }
-        return listValues;
+        return new ArrayList<String>(NodeTypeRegistry.getInstance().getNamespaces().keySet());
     }
     public List<GWTJahiaNode> getPortalNodes(String targetAreaName) {
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();

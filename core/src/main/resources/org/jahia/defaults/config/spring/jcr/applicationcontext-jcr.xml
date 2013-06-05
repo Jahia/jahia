@@ -132,8 +132,8 @@
             <map>
                 <entry key="default">
                     <list>
-                        <bean class="org.jahia.services.content.NodenameListener"/>
                         <bean class="org.jahia.services.content.DefaultValueListener"/>
+                        <bean class="org.jahia.services.content.NodenameListener"/>
                         <bean class="org.jahia.services.content.LastModifiedListener">
                             <property name="publicationService" ref="jcrPublicationService"/>
                         </bean>
@@ -197,10 +197,10 @@
                 </entry>
                 <entry key="live">
                     <list>
+                        <bean class="org.jahia.services.content.DefaultValueListener"/>
                         <bean class="org.jahia.services.content.NodenameListener">
                             <property name="availableDuringPublish" value="true"/>
                         </bean>
-                        <bean class="org.jahia.services.content.DefaultValueListener"/>
                         <bean class="org.jahia.services.content.LastModifiedListener">
                             <property name="publicationService" ref="jcrPublicationService"/>
                         </bean>

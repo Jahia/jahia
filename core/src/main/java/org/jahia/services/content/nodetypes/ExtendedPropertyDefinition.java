@@ -195,6 +195,10 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
     public Value[] getDefaultValuesAsUnexpandedValue() {
        return defaultValues;
     }
+    
+    public boolean hasDynamicDefaultValues() {
+        return defaultValues.length > 0 && (defaultValues[0] instanceof DynamicValueImpl);
+    }
 
     public void setDefaultValues(Value[] defaultValues) {
         this.defaultValues = defaultValues;
@@ -313,5 +317,10 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
 
     public void remove() {
         declaringNodeType.removePropertyDefinition(this);
+    }
+    
+    @Override
+    public String toString() {
+        return getName();
     }
 }

@@ -40,6 +40,8 @@
 
 package org.jahia.services.content.nodetypes;
 
+import org.apache.commons.collections.BidiMap;
+import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.plexus.util.StringUtils;
@@ -47,6 +49,7 @@ import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -64,12 +67,12 @@ import java.util.*;
  */
 public class NodeTypeRegistry implements NodeTypeManager {
     public static final String SYSTEM = "system";
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(NodeTypeRegistry.class);
+    private static Logger logger = LoggerFactory.getLogger(NodeTypeRegistry.class);
 
     private List<ExtendedNodeType> nodeTypesList = new ArrayList<ExtendedNodeType>();
     private Map<Name, ExtendedNodeType> nodetypes = new HashMap<Name, ExtendedNodeType>();
 
-    private Map<String,String> namespaces = new HashMap<String,String>();
+    private BidiMap namespaces = new DualHashBidiMap();
 
     @SuppressWarnings("unchecked")
     private Map<String,List<Resource>> files = new ListOrderedMap();
@@ -266,6 +269,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
         return new JahiaNodeTypeIterator(l.iterator(),l.size());
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String, String> getNamespaces() {
         return namespaces;
     }

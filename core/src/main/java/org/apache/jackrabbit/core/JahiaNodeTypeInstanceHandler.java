@@ -6,7 +6,7 @@
  *
  * For more information, please visit http://www.jahia.com.
  *
- * Copyright (C) 2002-2012 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2013 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -43,22 +43,32 @@ package org.apache.jackrabbit.core;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.jackrabbit.core.state.NodeState;
+import org.apache.jackrabbit.core.state.PropertyState;
 import org.apache.jackrabbit.core.value.InternalValue;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.QPropertyDefinition;
+import org.apache.jackrabbit.spi.QValue;
 import org.apache.jackrabbit.spi.commons.name.NameConstants;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+
 /**
- * 
  * User: toto
  * Date: Dec 31, 2009
  * Time: 11:46:21 AM
- * 
  */
 public class JahiaNodeTypeInstanceHandler extends NodeTypeInstanceHandler {
+    private static final Logger logger = LoggerFactory.getLogger(JahiaNodeTypeInstanceHandler.class);
+    
     private Calendar created = null;
     private Calendar lastModified = null;
     private String createdBy = null;
@@ -131,5 +141,39 @@ public class JahiaNodeTypeInstanceHandler extends NodeTypeInstanceHandler {
             genValues = super.computeSystemGeneratedPropertyValues(parent, def);
         }
         return genValues;
+    }
+
+    @Override
+    public void setDefaultValues(PropertyState property, NodeState parent, QPropertyDefinition def)
+            throws RepositoryException {
+        InternalValue[] values = computeSystemGeneratedPropertyValues(parent, def);
+        QValue[] defaultValues = null;
+        if (values == null && (defaultValues = def.getDefaultValues()) != null && defaultValues.length > 0) {
+            // retrieve property definition and check if it has dynamic default values
+            Name name = def.getName();
+            NodeTypeRegistry ntRegistry = NodeTypeRegistry.getInstance();
+            String propName = name.getNamespaceURI().length() > 0 ? new org.jahia.services.content.nodetypes.Name(
+                    name.toString(), ntRegistry.getNamespaces()).toString() : name.getLocalName();
+            Name declaringNT = def.getDeclaringNodeType();
+            String nodeTypeName = declaringNT.getNamespaceURI().length() > 0 ? new org.jahia.services.content.nodetypes.Name(
+                    declaringNT.toString(), ntRegistry.getNamespaces()).toString() : declaringNT.getLocalName();
+            ExtendedNodeType nodeType = ntRegistry.getNodeType(nodeTypeName);
+            ExtendedPropertyDefinition propertyDefinition = nodeType.getPropertyDefinition(propName);
+            if (propertyDefinition != null && propertyDefinition.hasDynamicDefaultValues()) {
+                // expand dynamic values
+                Value[] expandedDefValues = propertyDefinition.getDefaultValues();
+                values = new InternalValue[expandedDefValues.length];
+                int i = 0;
+                for (Value v : expandedDefValues) {
+                    values[i] = InternalValue.create(v, null);
+                }
+                logger.info("Dynamic values for property {}: {}", name, values[0].getString());
+            } else {
+                values = InternalValue.create(def.getDefaultValues());
+            }
+        }
+        if (values != null) {
+            property.setValues(values);
+        }
     }
 }

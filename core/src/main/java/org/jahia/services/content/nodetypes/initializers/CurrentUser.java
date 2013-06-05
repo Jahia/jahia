@@ -43,6 +43,7 @@ package org.jahia.services.content.nodetypes.initializers;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.Value;
 import javax.jcr.PropertyType;
@@ -56,6 +57,8 @@ import java.util.List;
  */
 public class CurrentUser implements ValueInitializer {
     public Value[] getValues(ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
-        return new Value[] { new ValueImpl(JCRSessionFactory.getInstance().getCurrentUser().getUsername(), PropertyType.STRING, false) };
+        JahiaUser currentUser = JCRSessionFactory.getInstance().getCurrentUser();
+        return new Value[] { new ValueImpl(currentUser != null ? currentUser.getUsername() : "system",
+                PropertyType.STRING, false) };
     }
 }

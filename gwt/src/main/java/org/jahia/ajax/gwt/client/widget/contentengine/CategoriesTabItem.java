@@ -43,18 +43,14 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.google.gwt.user.client.ui.Widget;
@@ -68,6 +64,7 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
+import org.jahia.ajax.gwt.client.widget.content.wizard.ContentDefinitionCard;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
 import java.util.*;
@@ -82,7 +79,7 @@ import java.util.*;
 public class CategoriesTabItem extends EditEngineTabItem {
     private transient List<GWTJahiaNode> catStore;
     private transient GWTJahiaNodeProperty categoryProperty;
-    private transient HorizontalPanel topPanel;
+    private transient ContentPanel topPanel = new ContentPanel(new ColumnLayout());
     private transient GWTJahiaNodeTreeFactory treeGridFactory;
 
 
@@ -92,12 +89,9 @@ public class CategoriesTabItem extends EditEngineTabItem {
         if (!engine.isExistingNode() || (engine.getNode() != null)) {
             tab.setProcessed(true);
             tab.setLayout(new BorderLayout());
-
-            HorizontalPanel header = new HorizontalPanel();
-            header.add(new Html(Messages.get("label.selected.categories")));
-            topPanel = new HorizontalPanel();
-            topPanel.setWidth(200);
             topPanel.removeAll();
+            topPanel.setScrollMode(Style.Scroll.AUTOY);
+            topPanel.setHeading(Messages.get("label.selected.categories"));
             catStore = new ArrayList<GWTJahiaNode>();
             treeGridFactory = new GWTJahiaNodeTreeFactory(Arrays.asList("$systemsite/categories/*"),
                     Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.CHILDREN_INFO,GWTJahiaNode.NAME,GWTJahiaNode.DISPLAY_NAME));
@@ -111,7 +105,7 @@ public class CategoriesTabItem extends EditEngineTabItem {
                         topPanel.add(getOrCreateButton(propertyValue.getNode()));
                     }
                 }
-                tab.add(topPanel, new BorderLayoutData(Style.LayoutRegion.NORTH,50));
+                tab.add(topPanel, new BorderLayoutData(Style.LayoutRegion.NORTH,75));
                 if (!engine.isExistingNode() || (PermissionsUtils.isPermitted("jcr:modifyProperties",node) && !node.isLocked())) {
                     tab.add(createCategoriedPickerPanel(), new BorderLayoutData(Style.LayoutRegion.CENTER, 250));
                 }

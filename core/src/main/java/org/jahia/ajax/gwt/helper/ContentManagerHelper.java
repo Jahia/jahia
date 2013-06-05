@@ -1073,7 +1073,7 @@ public class ContentManagerHelper {
                                     .add(new StringBuilder(node.getName()).append(": repository exception").toString());
                         }
                     } else {
-                        // already unlocked
+                        node.unlock();
                     }
                 }
             } catch (RepositoryException e) {

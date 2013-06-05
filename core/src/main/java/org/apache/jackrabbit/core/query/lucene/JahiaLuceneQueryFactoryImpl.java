@@ -234,20 +234,12 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                         if (!Constants.LIVE_WORKSPACE.equals(session.getWorkspace().getName()) ||
                                                 !"1".equals(infos.getCheckVisibility())) { 
                                            bitset.set(infos.getDocNumber()); 
-                                        } else { //try to load objectNode to check the visibility rules
+                                        } else { //try to load nodeWrapper to check the visibility rules
                                             NodeImpl objectNode = session.getNodeById(node.getNodeId());
                                             if (objectNode.isNodeType("jnt:translation")) {
                                                 objectNode = (NodeImpl) objectNode.getParent();
                                             }
-                                            Row row = new LazySelectorRow(
-                                                    columns,
-                                                    evaluator,
-                                                    selector.getSelectorName(),
-                                                    provider.getNodeWrapper(
-                                                            objectNode, jcrSession),
-                                                    node.getScore());
-                                            
-                                            if(row != null) { 
+                                            if(provider.getNodeWrapper(objectNode, jcrSession) != null) { 
                                               bitset.set(infos.getDocNumber());
                                             }
                                         }

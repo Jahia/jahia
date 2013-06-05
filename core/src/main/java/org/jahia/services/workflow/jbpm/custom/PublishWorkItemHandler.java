@@ -40,48 +40,48 @@
 
 package org.jahia.services.workflow.jbpm.custom;
 
-import org.jahia.services.workflow.HistoryWorkflowTask;
-import org.jahia.services.workflow.WorkflowDefinition;
-import org.jahia.services.workflow.WorkflowService;
-import org.jbpm.pvm.internal.model.ExecutionImpl;
-import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.PublicationJob;
 import org.jahia.services.scheduler.BackgroundJob;
-import org.jahia.services.workflow.WorkflowVariable;
-import org.jbpm.api.activity.ActivityExecution;
-import org.jbpm.api.activity.ExternalActivityBehaviour;
+import org.jahia.services.workflow.HistoryWorkflowTask;
+import org.jahia.services.workflow.WorkflowDefinition;
+import org.jahia.services.workflow.WorkflowService;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
+import org.quartz.SchedulerException;
+import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Publish custom activity for jBPM workflow
  * <p/>
  * Publish the current node
  */
-public class Publish implements ExternalActivityBehaviour {
+public class PublishWorkItemHandler implements WorkItemHandler {
     private static final long serialVersionUID = 1L;
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(Publish.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(PublishWorkItemHandler.class);
 
-    public void execute(ActivityExecution execution) throws Exception {
-        List<String> uuids = (List<String>) execution.getVariable("nodeIds");
-        String workspace = (String) execution.getVariable("workspace");
-        String userKey = (String) execution.getVariable("user");
+    @Override
+    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+        List<String> uuids = (List<String>) workItem.getParameter("nodeIds");
+        String workspace = (String) workItem.getParameter("workspace");
+        String userKey = (String) workItem.getParameter("user");
 
         // try to get some user who did an action on the workflow for the last time
         try {
-            WorkflowDefinition def = (WorkflowDefinition) execution.getVariable("workflow");
-            List<HistoryWorkflowTask> list = WorkflowService.getInstance().getHistoryWorkflowTasks(((ExecutionImpl) execution).getProcessInstance().getId(), def.getProvider(), Locale.getDefault());
+            WorkflowDefinition def = (WorkflowDefinition) workItem.getParameter("workflow");
+            List<HistoryWorkflowTask> list = WorkflowService.getInstance().getHistoryWorkflowTasks(Long.toString(workItem.getProcessInstanceId()), def.getProvider(), Locale.getDefault());
             if (list.size() > 0) {
-                userKey = list.get(list.size()-1).getUser();
+                userKey = list.get(list.size() - 1).getUser();
             }
         } catch (Exception e) {
-            logger.error("Cannot get last user on the workflow",e);
+            logger.error("Cannot get last user on the workflow", e);
         }
 
         JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);
@@ -90,14 +90,17 @@ public class Publish implements ExternalActivityBehaviour {
         jobDataMap.put(PublicationJob.PUBLICATION_UUIDS, uuids);
         jobDataMap.put(PublicationJob.SOURCE, workspace);
         jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);
-        jobDataMap.put(PublicationJob.LOCK, "publication-process-" + execution.getProcessInstance().getId());
+        jobDataMap.put(PublicationJob.LOCK, "publication-process-" + workItem.getProcessInstanceId());
         jobDataMap.put(PublicationJob.CHECK_PERMISSIONS, false);
 
-        ServicesRegistry.getInstance().getSchedulerService().scheduleJobAtEndOfRequest(jobDetail);
-        execution.takeDefaultTransition();
+        try {
+            ServicesRegistry.getInstance().getSchedulerService().scheduleJobAtEndOfRequest(jobDetail);
+        } catch (SchedulerException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void signal(ActivityExecution execution, String signalName, Map<String, ?> parameters) throws Exception {
+    @Override
+    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
     }
-
 }

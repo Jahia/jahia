@@ -40,9 +40,6 @@
 
 package org.jahia.services.content.rules;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -50,8 +47,14 @@ import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.kie.api.runtime.KieSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.jcr.*;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.PropertyIterator;
+import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeType;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +77,7 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
         super(node);
     }
 
-    public AddedNodeFact(AddedNodeFact parentNodeWrapper, String name, String type, KnowledgeHelper drools) throws RepositoryException {
+    public AddedNodeFact(AddedNodeFact parentNodeWrapper, String name, String type, KieSession drools) throws RepositoryException {
         super(null);
         this.parentNode = parentNodeWrapper;
         workspace = parentNode.getNode().getSession().getWorkspace().getName();
@@ -83,7 +86,7 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
         parentNodePath = node.getPath();
         this.name = name;
         if (type == null) {
-            ExtendedNodeDefinition end = ((ExtendedNodeType)node.getPrimaryNodeType()).getChildNodeDefinitionsAsMap().get(name);
+            ExtendedNodeDefinition end = ((ExtendedNodeType) node.getPrimaryNodeType()).getChildNodeDefinitionsAsMap().get(name);
             NodeType nodetype = end.getRequiredPrimaryTypes()[0];
             type = nodetype.getName();
         }
@@ -93,10 +96,10 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
         if (node.isLocked()) {
             logger.debug("Node is locked, delay property update to later");
             @SuppressWarnings("unchecked")
-            List<Updateable> list = (List<Updateable>) drools.getWorkingMemory().getGlobal("delayedUpdates");
+            List<Updateable> list = (List<Updateable>) drools.getGlobal("delayedUpdates");
             list.add(this);
         } else {
-            if(node.isVersioned()) {
+            if (node.isVersioned()) {
                 node.checkout();
             }
             this.node = node.addNode(JCRContentUtils.findAvailableNodeName(node, name), type);
@@ -114,7 +117,7 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
                 node.addNode(name, type);
             }
         } catch (PathNotFoundException e) {
-            logger.warn("Node does not exist "+parentNodePath);
+            logger.warn("Node does not exist " + parentNodePath);
         }
     }
 
@@ -141,20 +144,20 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
         PropertyIterator it = node.getProperties();
         while (it.hasNext()) {
             JCRPropertyWrapper p = (JCRPropertyWrapper) it.nextProperty();
-            results.add(new ChangedPropertyFact(this,p));
+            results.add(new ChangedPropertyFact(this, p));
         }
         return results;
     }
 
     public ChangedPropertyFact getProperty(String propertyName) throws RepositoryException {
-        return new ChangedPropertyFact(this,node.getProperty(propertyName));
+        return new ChangedPropertyFact(this, node.getProperty(propertyName));
     }
 
     public long getNumberOfChildren() throws RepositoryException {
         return node.getNodes().getSize();
     }
 
-    public void addType(String type, KnowledgeHelper drools) throws RepositoryException {
+    public void addType(String type, KieSession drools) throws RepositoryException {
         if (node.isNodeType(type)) {
             return;
         }
@@ -165,14 +168,14 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
         //        drools.update(this);
     }
 
-    public void removeType(String type, KnowledgeHelper drools) throws RepositoryException {
+    public void removeType(String type, KieSession drools) throws RepositoryException {
         node.checkout();
         node.removeMixin(type);
         try {
             JCRPropertyWrapper property = node.getProperty(Constants.JCR_MIXINTYPES);
             drools.insert(new ChangedPropertyFact(this, property));
         } catch (PathNotFoundException e) {
-            drools.insert(new DeletedNodeFact(this,Constants.JCR_MIXINTYPES));
+            drools.insert(new DeletedNodeFact(this, Constants.JCR_MIXINTYPES));
         }
         node.getSession().save();
         //        drools.update(this);
@@ -197,7 +200,9 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
 
     @Override
     public boolean equals(Object o) {
-        if (logger.isDebugEnabled()) { logger.debug("Checking if " + this.toString() + " is equal to " + o.toString()); }
+        if (logger.isDebugEnabled()) {
+            logger.debug("Checking if " + this.toString() + " is equal to " + o.toString());
+        }
         if (this == o) return true;
         if (!(o instanceof AddedNodeFact)) return false;
 
@@ -215,7 +220,9 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
 
     @Override
     public int hashCode() {
-        if (logger.isDebugEnabled()) { logger.debug("Requesting hashcode for AddedNodeFact " + this.toString() ); }
+        if (logger.isDebugEnabled()) {
+            logger.debug("Requesting hashcode for AddedNodeFact " + this.toString());
+        }
         int result = parentNode != null ? parentNode.hashCode() : 0;
         result = 31 * result + (parentNodePath != null ? parentNodePath.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);

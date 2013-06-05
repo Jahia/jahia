@@ -40,11 +40,14 @@
 
 package org.jahia.services.workflow.jbpm;
 
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.workflow.WorkflowObservationManager;
 import org.jbpm.api.Execution;
-import org.jbpm.api.listener.EventListener;
 import org.jbpm.api.listener.EventListenerExecution;
+import org.kie.api.runtime.process.EventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,14 +56,14 @@ import javax.jcr.RepositoryException;
 import java.util.List;
 
 /**
- *
  * User: toto
  * Date: Feb 4, 2010
  * Time: 8:04:51 PM
- *
  */
 public class JBPMListener implements EventListener {
-    /** The serialVersionUID. */
+    /**
+     * The serialVersionUID.
+     */
     private static final long serialVersionUID = 665473577321892992L;
 
     private static final Logger logger = LoggerFactory.getLogger(JBPMListener.class);
@@ -91,7 +94,7 @@ public class JBPMListener implements EventListener {
                             for (String id : ids) {
                                 JCRNodeWrapper node = null;
                                 ItemNotFoundException previousException = null;
-                                try{
+                                try {
                                     node = session.getNodeByUUID(id);
                                 } catch (ItemNotFoundException e) {
                                     previousException = e;
@@ -127,5 +130,15 @@ public class JBPMListener implements EventListener {
             }
         }
 
+    }
+
+    @Override
+    public void signalEvent(String type, Object event) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String[] getEventTypes() {
+        return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

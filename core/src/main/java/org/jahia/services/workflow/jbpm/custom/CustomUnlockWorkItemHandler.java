@@ -40,15 +40,20 @@
 
 package org.jahia.services.workflow.jbpm.custom;
 
-import org.jahia.services.content.*;
-import org.jbpm.api.activity.ActivityExecution;
-import org.jbpm.api.activity.ExternalActivityBehaviour;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.lock.LockException;
 import java.util.List;
-import java.util.Map;
 
-public class CustomLockActivity implements ExternalActivityBehaviour {
+public class CustomUnlockWorkItemHandler implements WorkItemHandler {
     private static final long serialVersionUID = 1L;
     private String type;
 
@@ -56,32 +61,44 @@ public class CustomLockActivity implements ExternalActivityBehaviour {
         this.type = type;
     }
 
-    public void execute(final ActivityExecution execution) throws Exception {
-        final List<String> uuids = (List<String>) execution.getVariable("nodeIds");
-        String workspace = (String) execution.getVariable("workspace");
-        String userKey = (String) execution.getVariable("user");
-
-        JCRTemplate.getInstance().doExecuteWithSystemSession(userKey,
-                workspace, null, new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                for (String id : uuids) {
-                    doLock(id, session, "process-" + execution.getProcessInstance().getId());
-                }
-                return null;
-            }
-        });
-        execution.takeDefaultTransition();
-    }
-
-    private void doLock(String id, JCRSessionWrapper session, String key)
+    private void doUnlock(String id, JCRSessionWrapper session, String key)
             throws RepositoryException {
-        JCRNodeWrapper node = session.getNodeByUUID(id);
-        if (node.isLockable()) {
-            node.lockAndStoreToken(type," " +key+" ");
+        try {
+            JCRNodeWrapper node = session.getNodeByUUID(id);
+            if (node.isLocked()) {
+                try {
+                    node.unlock(type, " " + key + " ");
+                } catch (LockException e) {
+                }
+            }
+        } catch (ItemNotFoundException nfe) {
+            // Item has been deleted, ignore
         }
     }
 
-    public void signal(ActivityExecution execution, String signalName, Map<String, ?> parameters) throws Exception {
+    @Override
+    public void executeWorkItem(final WorkItem workItem, WorkItemManager manager) {
+        final List<String> uuids = (List<String>) workItem.getParameter("nodeIds");
+        String workspace = (String) workItem.getParameter("workspace");
+        String userKey = (String) workItem.getParameter("user");
+
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(userKey,
+                    workspace, null, new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    for (String id : uuids) {
+                        doUnlock(id, session, "process-" + workItem.getProcessInstanceId());
+                    }
+                    return null;
+                }
+            });
+        } catch (RepositoryException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    @Override
+    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

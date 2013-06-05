@@ -40,51 +40,34 @@
 
 package org.jahia.services.workflow.jbpm.custom;
 
-import org.slf4j.Logger;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jbpm.api.activity.ActivityExecution;
-import org.jbpm.api.activity.ExternalActivityBehaviour;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
 
-import java.util.*;
+import javax.jcr.RepositoryException;
+import java.util.List;
 
 /**
- * Publish custom activity for jBPM workflow
- *
- * Publish the current node
- *
+ * Lock custom activity for jBPM workflow
+ * <p/>
+ * Lock the current node
  */
-public class Unpublish implements ExternalActivityBehaviour {
+public class UnlockWorkItemHandler implements WorkItemHandler {
     private static final long serialVersionUID = 1L;
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(Unpublish.class);
 
-    public void execute(ActivityExecution execution) throws Exception {
-        List<String> ids = (List<String>) execution.getVariable("nodeIds");
-        String workspace = (String) execution.getVariable("workspace");
-        Locale locale = (Locale) execution.getVariable("locale");
-
-        String userKey = (String) execution.getVariable("user");
-        JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
-        final JahiaUserManagerService userMgr = ServicesRegistry.getInstance().getJahiaUserManagerService();
-        JahiaUser user = userMgr.lookupUserByKey(userKey);
-        JahiaUser currentUser = sessionFactory.getCurrentUser();
-        sessionFactory.setCurrentUser(user);
-        if(logger.isDebugEnabled()) {
-            for (String id : ids) {
-                JCRNodeWrapper node = sessionFactory.getCurrentUserSession().getNodeByUUID(id);
-                logger.debug("Launching unpublication of node " + node.getPath() + " at " + (new Date()).toString());
-            }
+    @Override
+    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+        List<String> info = (List<String>) workItem.getParameter("nodeIds");
+        String workspace = (String) workItem.getParameter("workspace");
+        try {
+            JCRPublicationService.getInstance().unlockForPublication(info, workspace, "publication-process-" + workItem.getProcessInstanceId());
+        } catch (RepositoryException e) {
+            throw new RuntimeException(e);
         }
-        JCRPublicationService.getInstance().unpublish(ids, false);
-        sessionFactory.setCurrentUser(currentUser);
-        execution.takeDefaultTransition();
     }
 
-    public void signal(ActivityExecution execution, String signalName, Map<String, ?> parameters) throws Exception {
+    @Override
+    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
     }
-
 }

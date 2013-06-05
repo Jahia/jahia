@@ -40,39 +40,35 @@
 
 package org.jahia.services.workflow.jbpm.custom;
 
-import org.jahia.ajax.gwt.helper.VersioningHelper;
-import org.jahia.services.content.*;
-import org.jbpm.api.activity.ActivityExecution;
-import org.jbpm.api.activity.ExternalActivityBehaviour;
+import org.jahia.services.content.JCRPublicationService;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
 
 import javax.jcr.RepositoryException;
 import java.util.List;
-import java.util.Map;
 
-public class AddLabelActivity implements ExternalActivityBehaviour {
+/**
+ * Lock custom activity for jBPM workflow
+ * <p/>
+ * Lock the current node
+ */
+public class LockWorkItemHandler implements WorkItemHandler {
+    private static final long serialVersionUID = 1L;
 
-    private String label;
-
-    public void setLabel(String label) {
-        this.label = label;
+    @Override
+    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+        List<String> info = (List<String>) workItem.getParameter("nodeIds");
+        String workspace = (String) workItem.getParameter("workspace");
+        try {
+            JCRPublicationService.getInstance().lockForPublication(info, workspace, "publication-process-" + workItem.getProcessInstanceId());
+        } catch (RepositoryException e) {
+            throw new RuntimeException("Error while executing lock work item " + workItem, e);
+        }
     }
 
-    public void execute(ActivityExecution execution) throws Exception {
-        final List<String> nodeIds = (List<String>) execution.getVariable("nodeIds");
-        String workspace = (String) execution.getVariable("workspace");
-        JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                for (String id : nodeIds) {
-                    JCRNodeWrapper node = session.getNodeByIdentifier(id);
-                    JCRVersionService.getInstance().addVersionLabel(node, label + "_at_" + VersioningHelper.formatForLabel(System.currentTimeMillis()));
-                }
-                return null;
-            }
-        });
-
+    @Override
+    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
-
-    public void signal(ActivityExecution execution, String signalName, Map<String, ?> parameters) throws Exception {
-    }
-
 }

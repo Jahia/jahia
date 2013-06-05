@@ -42,26 +42,25 @@ package org.jahia.services.content.rules;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.ClassLoaderObjectInputStream;
 import org.apache.commons.lang.StringUtils;
+import org.drools.RuleBaseConfiguration;
+import org.drools.RuleBaseFactory;
 import org.drools.common.DroolsObjectInputStream;
+import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.settings.SettingsBean;
+import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message;
+import org.kie.api.runtime.StatelessKieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
-import org.drools.StatelessSession;
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.compiler.PackageBuilderErrors;
-import org.drools.rule.Package;
-import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.jahia.api.Constants;
-import org.jahia.services.content.*;
-import org.jahia.settings.SettingsBean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -85,7 +84,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     private Timer rulesTimer = new Timer("rules-timer", true);
 
-    private RuleBase ruleBase;
+    private KieBase ruleBase;
     private long lastRead = 0;
 
     private static final int UPDATE_DELAY_FOR_LOCKED_NODE = 2000;
@@ -98,7 +97,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     private Map<String, Object> globalObjects;
 
     private List<String> filesAccepted;
-    private Map<String,String> modulePackageNameMap;
+    private Map<String, String> modulePackageNameMap;
 
     public RulesListener() {
         instances.add(this);
@@ -122,8 +121,8 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                 Event.PROPERTY_REMOVED + Event.NODE_MOVED;
     }
 
-    private StatelessSession getStatelessSession(Map<String, Object> globals) {
-        StatelessSession session = ruleBase.newStatelessSession();
+    private StatelessKieSession getStatelessSession(Map<String, Object> globals) {
+        StatelessKieSession session = ruleBase.newStatelessKieSession();
         for (Map.Entry<String, Object> entry : globals.entrySet()) {
             session.setGlobal(entry.getKey(), entry.getValue());
         }
@@ -159,6 +158,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     }
 
     private void initRules() throws Exception {
+        KieServices kieServices = KieServices.Factory.get();
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         //conf.setAssertBehaviour( AssertBehaviour.IDENTITY );
         //conf.setRemoveIdentities( true );
@@ -206,7 +206,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                 compiledRulesDir.mkdirs();
             }
             // first let's test if the file exists in the same location, if it was pre-packaged as a compiled rule
-            File pkgFile = new File(compiledRulesDir, StringUtils.substringAfterLast(dsrlFile.getURL().getPath(),"/") + ".pkg");
+            File pkgFile = new File(compiledRulesDir, StringUtils.substringAfterLast(dsrlFile.getURL().getPath(), "/") + ".pkg");
             if (pkgFile.exists() && pkgFile.lastModified() > dsrlFile.lastModified()) {
                 ObjectInputStream ois = null;
                 try {
@@ -217,12 +217,12 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                     }
 
                     Package pkg = (Package) ois.readObject();
-                    if (ruleBase.getPackage(pkg.getName()) != null) {
-                        ruleBase.removePackage(pkg.getName());
+                    if (ruleBase.getKiePackage(pkg.getName()) != null) {
+                        ruleBase.removeKiePackage(pkg.getName());
                     }
                     ruleBase.addPackage(pkg);
-                    if(aPackage!=null) {
-                        modulePackageNameMap.put(aPackage.getName(),pkg.getName());
+                    if (aPackage != null) {
+                        modulePackageNameMap.put(aPackage.getName(), pkg.getName());
                     }
                 } finally {
                     IOUtils.closeQuietly(ois);
@@ -240,16 +240,16 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                     cfg.setClassLoader(aPackage.getChainedClassLoader());
                 }
 
-                PackageBuilder builder = new PackageBuilder(cfg);
+                KieBuilder builder = new KieBuilder(cfg);
 
                 builder.addPackageFromDrl(drl, new StringReader(getDslFiles()));
 
-                PackageBuilderErrors errors = builder.getErrors();
+                List<Message> errors = builder.getResults().getMessages(Message.Level.ERROR);
 
-                if (errors.getErrors().length == 0) {
+                if (errors.size() == 0) {
                     Package pkg = builder.getPackage();
 
-                    ObjectOutputStream oos = null; 
+                    ObjectOutputStream oos = null;
                     try {
                         pkgFile.getParentFile().mkdirs();
                         oos = new ObjectOutputStream(new FileOutputStream(pkgFile));
@@ -257,15 +257,15 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                     } catch (IOException e) {
                         logger.error("Error writing rule package to file " + pkgFile, e);
                     } finally {
-                    	IOUtils.closeQuietly(oos);
+                        IOUtils.closeQuietly(oos);
                     }
 
-                    if (ruleBase.getPackage(pkg.getName()) != null) {
-                        ruleBase.removePackage(pkg.getName());
+                    if (ruleBase.getKiePackage(pkg.getName()) != null) {
+                        ruleBase.removeKiePackage(pkg.getName());
                     }
                     ruleBase.addPackage(pkg);
-                    if(aPackage!=null) {
-                        modulePackageNameMap.put(aPackage.getName(),pkg.getName());
+                    if (aPackage != null) {
+                        modulePackageNameMap.put(aPackage.getName(), pkg.getName());
                     }
                     logger.info("Rules for " + pkg.getName() + " updated in " + (System.currentTimeMillis() - start) + "ms.");
                 } else {
@@ -309,7 +309,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             try {
                 initRules();
             } catch (Exception e) {
-                logger.error("Cannot compile rules",e);
+                logger.error("Cannot compile rules", e);
             }
             if (ruleBase == null) {
                 return;
@@ -326,17 +326,17 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         if (events.isEmpty()) {
             return;
         }
-        
+
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, locale, new JCRCallback<Object>() {
-                
+
                 Map<String, String> copies = null;
-                
+
                 public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
                     Iterator<Event> it = events.iterator();
 
                     final List<Object> list = new ArrayList<Object>();
-                    
+
                     String nodeFactOperationType = getNodeFactOperationType(operationType);
                     while (it.hasNext()) {
                         Event event = it.next();
@@ -354,7 +354,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                             rn = getFact(n, session);
                                             rn.setOperationType(nodeFactOperationType);
                                             final JCRSiteNode resolveSite = n.getResolveSite();
-                                            if (resolveSite!=null) {
+                                            if (resolveSite != null) {
                                                 rn.setInstalledModules(resolveSite.getAllInstalledModules());
                                             } else {
                                                 rn.setInstalledModules(new ArrayList<String>());
@@ -394,7 +394,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                                         rn = type == Event.PROPERTY_ADDED ? getFact(parent, session) : new AddedNodeFact(parent);
                                                         rn.setOperationType(nodeFactOperationType);
                                                         final JCRSiteNode resolveSite = parent.getResolveSite();
-                                                        if (resolveSite!=null) {
+                                                        if (resolveSite != null) {
                                                             rn.setInstalledModules(resolveSite.getAllInstalledModules());
                                                         } else {
                                                             rn.setInstalledModules(new ArrayList<String>());
@@ -405,7 +405,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                                     rn = new AddedNodeFact(parent);
                                                     rn.setOperationType(nodeFactOperationType);
                                                     final JCRSiteNode resolveSite = parent.getResolveSite();
-                                                    if (resolveSite!=null) {
+                                                    if (resolveSite != null) {
                                                         rn.setInstalledModules(resolveSite.getAllInstalledModules());
                                                     } else {
                                                         rn.setInstalledModules(new ArrayList<String>());
@@ -425,7 +425,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                             final PublishedNodeFact e = new PublishedNodeFact(n);
                                             e.setOperationType(nodeFactOperationType);
                                             final JCRSiteNode resolveSite = n.getResolveSite();
-                                            if (resolveSite!=null) {
+                                            if (resolveSite != null) {
                                                 e.setInstalledModules(resolveSite.getAllInstalledModules());
                                             } else {
                                                 e.setInstalledModules(new ArrayList<String>());
@@ -444,7 +444,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                             w = new AddedNodeFact(parent);
                                             w.setOperationType(nodeFactOperationType);
                                             final JCRSiteNode resolveSite = parent.getResolveSite();
-                                            if (resolveSite!=null) {
+                                            if (resolveSite != null) {
                                                 w.setInstalledModules(resolveSite.getAllInstalledModules());
                                             } else {
                                                 w.setInstalledModules(new ArrayList<String>());
@@ -473,7 +473,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                                 rn = new AddedNodeFact(n);
                                                 rn.setOperationType(nodeFactOperationType);
                                                 final JCRSiteNode resolveSite = n.getResolveSite();
-                                                if (resolveSite!=null) {
+                                                if (resolveSite != null) {
                                                     rn.setInstalledModules(resolveSite.getAllInstalledModules());
                                                 } else {
                                                     rn.setInstalledModules(new ArrayList<String>());
@@ -488,10 +488,10 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                 } else if (type == Event.NODE_MOVED) {
                                     JCRNodeWrapper n = eventUuid != null ? s.getNodeByIdentifier(eventUuid) : s.getNode(path);
                                     if (n.isNodeType("jmix:observable") && !n.isNodeType("jnt:translation")) {
-                                        final MovedNodeFact e = new MovedNodeFact(n,(String) event.getInfo().get("srcAbsPath"));
+                                        final MovedNodeFact e = new MovedNodeFact(n, (String) event.getInfo().get("srcAbsPath"));
                                         e.setOperationType(nodeFactOperationType);
                                         final JCRSiteNode resolveSite = n.getResolveSite();
-                                        if (resolveSite!=null) {
+                                        if (resolveSite != null) {
                                             e.setInstalledModules(resolveSite.getAllInstalledModules());
                                         } else {
                                             e.setInstalledModules(new ArrayList<String>());
@@ -558,9 +558,9 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                         copies = session.getUuidMapping().isEmpty() ? Collections.<String, String>emptyMap() : MapUtils.invertMap(session.getUuidMapping());
                     }
                     String sourceUuid = !copies.isEmpty() ? copies.get(node.getIdentifier()) : null;
-                            return sourceUuid != null ? new CopiedNodeFact(node, sourceUuid,
-                                    session.getUuidMapping().containsKey("top-" + sourceUuid))
-                                    : new AddedNodeFact(node);
+                    return sourceUuid != null ? new CopiedNodeFact(node, sourceUuid,
+                            session.getUuidMapping().containsKey("top-" + sourceUuid))
+                            : new AddedNodeFact(node);
                 }
             });
         } catch (Exception e) {
@@ -663,12 +663,12 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     }
 
     String getNodeFactOperationType(int operationType) {
-        if(operationType==JCRObservationManager.IMPORT) {
-            return("import");
-        } else if(operationType==JCRObservationManager.SESSION_SAVE) {
-            return("session");
-        } else if(operationType==JCRObservationManager.WORKSPACE_CLONE) {
-            return("clone");
+        if (operationType == JCRObservationManager.IMPORT) {
+            return ("import");
+        } else if (operationType == JCRObservationManager.SESSION_SAVE) {
+            return ("session");
+        } else if (operationType == JCRObservationManager.WORKSPACE_CLONE) {
+            return ("clone");
         }
         return null;
     }
@@ -685,8 +685,8 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     }
 
     public void removeRules(String moduleName) {
-        if(modulePackageNameMap.containsKey(moduleName) && ruleBase.getPackage(modulePackageNameMap.get(moduleName))!=null) {
-            ruleBase.removePackage(modulePackageNameMap.get(moduleName));
+        if (modulePackageNameMap.containsKey(moduleName) && ruleBase.getKiePackage(modulePackageNameMap.get(moduleName)) != null) {
+            ruleBase.removeKiePackage(modulePackageNameMap.get(moduleName));
         }
     }
 

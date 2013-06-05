@@ -40,61 +40,58 @@
 
 package org.jahia.services.workflow.jbpm.custom;
 
-import org.jahia.services.content.JCRCallback;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
-import org.jbpm.api.activity.ActivityExecution;
-import org.jbpm.api.activity.ExternalActivityBehaviour;
+import org.jahia.services.content.JCRPublicationService;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
+import org.slf4j.Logger;
 
-import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
-import javax.jcr.lock.LockException;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.Locale;
 
-public class CustomUnlockActivity implements ExternalActivityBehaviour {
+/**
+ * Publish custom activity for jBPM workflow
+ * <p/>
+ * Publish the current node
+ */
+public class UnpublishWorkItemHandler implements WorkItemHandler {
     private static final long serialVersionUID = 1L;
-    private String type;
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(UnpublishWorkItemHandler.class);
 
-    public void setType(String type) {
-        this.type = type;
-    }
+    @Override
+    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+        List<String> ids = (List<String>) workItem.getParameter("nodeIds");
+        String workspace = (String) workItem.getParameter("workspace");
+        Locale locale = (Locale) workItem.getParameter("locale");
 
-    public void execute(final ActivityExecution execution) throws Exception {
-        final List<String> uuids = (List<String>) execution.getVariable("nodeIds");
-        String workspace = (String) execution.getVariable("workspace");
-        String userKey = (String) execution.getVariable("user");
-
-        JCRTemplate.getInstance().doExecuteWithSystemSession(userKey,
-                workspace, null, new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                for (String id : uuids) {
-                    doUnlock(id, session, "process-" + execution.getProcessInstance().getId());
-                }
-                return null;
-            }
-        });
-        execution.takeDefaultTransition();
-    }
-
-
-    private void doUnlock(String id, JCRSessionWrapper session, String key)
-            throws RepositoryException {
+        String userKey = (String) workItem.getParameter("user");
+        JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
+        final JahiaUserManagerService userMgr = ServicesRegistry.getInstance().getJahiaUserManagerService();
+        JahiaUser user = userMgr.lookupUserByKey(userKey);
+        JahiaUser currentUser = sessionFactory.getCurrentUser();
+        sessionFactory.setCurrentUser(user);
         try {
-            JCRNodeWrapper node = session.getNodeByUUID(id);
-            if (node.isLocked()) {
-                try {
-                    node.unlock(type," " +key+" ");
-                } catch (LockException e) {
+            if (logger.isDebugEnabled()) {
+                for (String id : ids) {
+                    JCRNodeWrapper node = sessionFactory.getCurrentUserSession().getNodeByUUID(id);
+                    logger.debug("Launching unpublication of node " + node.getPath() + " at " + (new Date()).toString());
                 }
             }
-        } catch (ItemNotFoundException nfe) {
-            // Item has been deleted, ignore
+            JCRPublicationService.getInstance().unpublish(ids, false);
+        } catch (RepositoryException e) {
+            throw new RuntimeException(e);
         }
+        sessionFactory.setCurrentUser(currentUser);
     }
 
-    public void signal(ActivityExecution execution, String signalName, Map<String, ?> parameters) throws Exception {
+    @Override
+    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
     }
-
 }

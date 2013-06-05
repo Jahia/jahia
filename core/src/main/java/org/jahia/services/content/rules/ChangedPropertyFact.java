@@ -40,13 +40,13 @@
 
 package org.jahia.services.content.rules;
 
-import org.drools.spi.KnowledgeHelper;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.SelectorType;
+import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +55,10 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
 import java.io.File;
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class describe a property change event for the drools engine.
@@ -82,10 +85,11 @@ public class ChangedPropertyFact implements Updateable {
         operationType = nodeWrapper.getOperationType();
     }
 
-    public ChangedPropertyFact(AddedNodeFact nodeWrapper, final String name, final Object o, KnowledgeHelper drools) throws RepositoryException {
+    public ChangedPropertyFact(AddedNodeFact nodeWrapper, final String name, final Object o, KieSession drools) throws RepositoryException {
         this(nodeWrapper, name, o, drools, true);
     }
-    public ChangedPropertyFact(AddedNodeFact nodeWrapper, final String name, final Object o, KnowledgeHelper drools,
+
+    public ChangedPropertyFact(AddedNodeFact nodeWrapper, final String name, final Object o, KieSession drools,
                                final boolean overrideIfExisting) throws RepositoryException {
         if (nodeWrapper == null) {
             return;
@@ -100,10 +104,10 @@ public class ChangedPropertyFact implements Updateable {
 
         if (node == null || node.isLocked()) {
             logger.debug("Node is locked, delay property update to later");
-            List<Updateable> list = (List<Updateable>) drools.getWorkingMemory().getGlobal("delayedUpdates");
+            List<Updateable> list = (List<Updateable>) drools.getGlobal("delayedUpdates");
             list.add(this);
         } else {
-            setProperty(node, name, o,overrideIfExisting);
+            setProperty(node, name, o, overrideIfExisting);
         }
         operationType = nodeWrapper.getOperationType();
     }
@@ -120,7 +124,7 @@ public class ChangedPropertyFact implements Updateable {
                     node.checkout();
                 }
 
-                setProperty(node, name, value,true);
+                setProperty(node, name, value, true);
             }
         } catch (PathNotFoundException e) {
             logger.warn("Node does not exist " + nodePath);
@@ -151,17 +155,17 @@ public class ChangedPropertyFact implements Updateable {
 
     }
 
-    protected void setProperty(JCRNodeWrapper node, String name, Object objectValue,final boolean overrideIfExisting)
+    protected void setProperty(JCRNodeWrapper node, String name, Object objectValue, final boolean overrideIfExisting)
             throws RepositoryException {
 
         try {
-            if(!overrideIfExisting){
+            if (!overrideIfExisting) {
                 try {
                     node.getProperty(name);
                     return;
                 } catch (RepositoryException e) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Create new property "+name+" on node "+node.getPath());
+                        logger.debug("Create new property " + name + " on node " + node.getPath());
                     }
                 }
             }
@@ -186,8 +190,8 @@ public class ChangedPropertyFact implements Updateable {
                             factory);
                 }
             } else {
-                values = new Value[] { createValue(objectValue, propDef,
-                        factory) };
+                values = new Value[]{createValue(objectValue, propDef,
+                        factory)};
             }
 
             if (values.length > 0) {
@@ -227,12 +231,12 @@ public class ChangedPropertyFact implements Updateable {
 
     private Value createValue(Object objectValue, ExtendedPropertyDefinition propDef, ValueFactory factory) {
         if (objectValue instanceof String && propDef.getSelector() == SelectorType.CATEGORY) {
-                try {
-                    return factory.createValue(Category.getCategoryPath((String) objectValue));
-                } catch (Exception e) {
-                    logger.warn("Can't get category " + objectValue + ", cause " + e.getMessage());
-                    return null;
-                }
+            try {
+                return factory.createValue(Category.getCategoryPath((String) objectValue));
+            } catch (Exception e) {
+                logger.warn("Can't get category " + objectValue + ", cause " + e.getMessage());
+                return null;
+            }
         } else {
             return JCRContentUtils.createValue(objectValue, factory);
         }
@@ -253,7 +257,7 @@ public class ChangedPropertyFact implements Updateable {
             JCRValueWrapper v = (JCRValueWrapper) property.getValue();
             if (v.getType() == PropertyType.WEAKREFERENCE || v.getType() == PropertyType.REFERENCE) {
                 JCRNodeWrapper node = ((JCRValueWrapper) v).getNode();
-                if (node != null ) {
+                if (node != null) {
                     return node.getPath();
                 }
             } else {
@@ -270,7 +274,7 @@ public class ChangedPropertyFact implements Updateable {
             for (Value v : vs) {
                 if (v.getType() == PropertyType.WEAKREFERENCE || v.getType() == PropertyType.REFERENCE) {
                     JCRNodeWrapper node = ((JCRValueWrapper) v).getNode();
-                    if (node != null ) {
+                    if (node != null) {
                         r.add(node.getPath());
                     }
                 } else {
@@ -291,7 +295,7 @@ public class ChangedPropertyFact implements Updateable {
             JCRValueWrapper v = (JCRValueWrapper) property.getValue();
             if (v.getType() == PropertyType.WEAKREFERENCE || v.getType() == PropertyType.REFERENCE) {
                 JCRNodeWrapper node = ((JCRValueWrapper) v).getNode();
-                if (node != null ) {
+                if (node != null) {
                     return new AddedNodeFact(node);
                 }
             } else {

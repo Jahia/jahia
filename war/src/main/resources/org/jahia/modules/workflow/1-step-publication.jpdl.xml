@@ -5,7 +5,7 @@
         <transition to="lock"/>
     </start>
 
-    <custom class="org.jahia.services.workflow.jbpm.custom.Lock" g="85,53,80,40" name="lock">
+    <custom class="org.jahia.services.workflow.jbpm.custom.LockWorkItemHandler" g="85,53,80,40" name="lock">
         <transition g="-29,8" name="to review" to="sendStartMail"/>
     </custom>
 
@@ -37,11 +37,11 @@
         <transition to="publish"/>
     </mail>
 
-    <custom class="org.jahia.services.workflow.jbpm.custom.Unlock" g="564,95,80,40" name="unlock">
+    <custom class="org.jahia.services.workflow.jbpm.custom.UnlockWorkItemHandler" g="564,95,80,40" name="unlock">
         <transition to="end"/>
     </custom>
 
-    <custom class="org.jahia.services.workflow.jbpm.custom.Publish" g="562,19,80,40" name="publish">
+    <custom class="org.jahia.services.workflow.jbpm.custom.PublishWorkItemHandler" g="562,19,80,40" name="publish">
         <transition g="-2,-22" name="to end" to="end"/>
     </custom>
 

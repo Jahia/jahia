@@ -9,7 +9,8 @@
         <transition g="-43,-10" name="accept" to="unpublication"/>
         <transition g="-35,-18" name="reject" to="end"/>
     </task>
-    <custom class="org.jahia.services.workflow.jbpm.custom.Unpublish" g="184,10,101,40" name="unpublication">
+    <custom class="org.jahia.services.workflow.jbpm.custom.UnpublishWorkItemHandler" g="184,10,101,40"
+            name="unpublication">
         <transition to="end"/>
     </custom>
     <end g="327,89,80,40" name="end"/>

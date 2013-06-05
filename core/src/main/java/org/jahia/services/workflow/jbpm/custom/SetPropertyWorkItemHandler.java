@@ -40,30 +40,58 @@
 
 package org.jahia.services.workflow.jbpm.custom;
 
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.PublicationInfo;
-import org.jbpm.api.activity.ActivityExecution;
-import org.jbpm.api.activity.ExternalActivityBehaviour;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
+import org.slf4j.Logger;
 
-import java.util.*;
+import javax.jcr.RepositoryException;
+import java.util.List;
 
 /**
- * Lock custom activity for jBPM workflow
- *
- * Lock the current node
- *
+ * Sets a property on a node
  */
-public class Lock implements ExternalActivityBehaviour {
+public class SetPropertyWorkItemHandler implements WorkItemHandler {
     private static final long serialVersionUID = 1L;
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(PublishWorkItemHandler.class);
 
-    public void execute(ActivityExecution execution) throws Exception {
-        List<String> info = (List<String>) execution.getVariable("nodeIds");
-        String workspace = (String) execution.getVariable("workspace");
-        JCRPublicationService.getInstance().lockForPublication(info, workspace, "publication-process-"+execution.getProcessInstance().getId());
-        execution.takeDefaultTransition();
+    private String propertyName;
+    private String value;
+
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
     }
 
-    public void signal(ActivityExecution execution, String signalName, Map<String, ?> parameters) throws Exception {
+    public void setValue(String value) {
+        this.value = value;
     }
 
+    @Override
+    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+        final List<String> uuids = (List<String>) workItem.getParameter("nodeIds");
+        final String workspace = (String) workItem.getParameter("workspace");
+        final String userKey = (String) workItem.getParameter("user");
+
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    for (String uuid : uuids) {
+                        session.getNodeByUUID(uuid).setProperty(propertyName, value);
+                    }
+                    session.save();
+                    return null;
+                }
+            });
+        } catch (RepositoryException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Override
+    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+    }
 }

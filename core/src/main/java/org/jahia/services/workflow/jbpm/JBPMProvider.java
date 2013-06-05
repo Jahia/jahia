@@ -45,7 +45,10 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -78,6 +81,7 @@ import org.jbpm.pvm.internal.model.EventListenerReference;
 import org.jbpm.pvm.internal.svc.HistoryServiceImpl;
 import org.jbpm.pvm.internal.task.TaskDefinitionImpl;
 import org.jbpm.pvm.internal.wire.usercode.UserCodeActivityBehaviour;
+import org.kie.api.task.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -631,7 +635,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
         }
         try {
             loop.set(Boolean.TRUE);
-            Map<String, Object> vars = taskService.getVariables(taskId,taskService.getVariableNames(taskId));
+            Map<String, Object> vars = taskService.getVariables(taskId, taskService.getVariableNames(taskId));
             Task task = taskService.getTask(taskId);
             if (user == null) {
                 taskService.assignTask(task.getId(), null);
@@ -641,18 +645,18 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                 }
 
                 if (!checkParticipation(task, user)) {
-                    logger.error("Cannot assign task "+task.getId()+" to user "+user.getName() + ", user is not candidate");
+                    logger.error("Cannot assign task " + task.getId() + " to user " + user.getName() + ", user is not candidate");
                     return;
                 }
 
                 taskService.takeTask(task.getId(), user.getUserKey());
             }
             if (user != null) {
-                vars.put("currentUser",user.getUserKey());
-                taskService.setVariables(taskId,vars);
+                vars.put("currentUser", user.getUserKey());
+                taskService.setVariables(taskId, vars);
             }
 
-            final String uuid = (String) vars.get("task-"+taskId);
+            final String uuid = (String) vars.get("task-" + taskId);
             if (uuid != null) {
                 try {
                     JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
@@ -706,12 +710,12 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
             if (uuid != null) {
                 String workspace = (String) taskService.getVariable(taskId, "workspace");
                 try {
-                    JCRTemplate.getInstance().doExecuteWithSystemSession(null,workspace,new  JCRCallback<Object>() {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             if (!session.getNodeByUUID(uuid).hasProperty("state") ||
                                     !session.getNodeByUUID(uuid).getProperty("state").getString().equals("finished")) {
-                                session.getNodeByUUID(uuid).setProperty("finalOutcome",outcome);
-                                session.getNodeByUUID(uuid).setProperty("state","finished");
+                                session.getNodeByUUID(uuid).setProperty("finalOutcome", outcome);
+                                session.getNodeByUUID(uuid).setProperty("state", "finished");
                                 session.save();
                             }
                             return null;
@@ -1030,7 +1034,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
             if (outcome != null) {
                 String key = Patterns.SPACE.matcher(task.getName()).replaceAll(".").trim().toLowerCase() + "." +
                         Patterns.SPACE.matcher(outcome).replaceAll(".").trim().toLowerCase();
-                key = task.isCompleted()?key + ".completed":key;
+                key = task.isCompleted() ? key + ".completed" : key;
                 if (locale != null) {
                     String displayOutcome;
                     try {

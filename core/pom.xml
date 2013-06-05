@@ -225,12 +225,12 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-core</artifactId>
-            <version>4.0.7</version>
+            <version>${drools.version}</version>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-compiler</artifactId>
-            <version>4.0.7</version>
+            <version>${drools.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>xml-apis</artifactId>
@@ -323,17 +323,17 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>5.0.1.Final</version>
+            <version>${hibernate.validator.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator-annotation-processor</artifactId>
-            <version>5.0.1.Final</version>
+            <version>${hibernate.validator.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>3.4.0.GA</version>
+            <version>${hibernate.version}</version>
         </dependency>
 
         <!-- Jackrabbit dependencies -->
@@ -935,76 +935,19 @@
 
         <!-- jBPM dependencies -->
         <dependency>
-            <groupId>org.jbpm.jbpm4</groupId>
-            <artifactId>jbpm-api</artifactId>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-bpmn2</artifactId>
             <version>${jbpm.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>jboss</groupId>
-                    <artifactId>jboss-j2ee</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.jbpm.jbpm4</groupId>
-            <artifactId>jbpm-pvm</artifactId>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-flow</artifactId>
             <version>${jbpm.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.livetribe</groupId>
-                    <artifactId>livetribe-jsr223</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>juel</groupId>
-                    <artifactId>juel</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>juel</groupId>
-                    <artifactId>juel-impl</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>juel</groupId>
-                    <artifactId>juel-engine</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>cglib</groupId>
-                    <artifactId>cglib-full</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-jdk14</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.hibernate</groupId>
-                    <artifactId>hibernate-core</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.jbpm.jbpm4</groupId>
-            <artifactId>jbpm-db</artifactId>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-flow-builder</artifactId>
             <version>${jbpm.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>hsqldb</groupId>
-                    <artifactId>hsqldb</artifactId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jbpm-jpdl</artifactId>
-                    <groupId>org.jbpm.jbpm4</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.jbpm.jbpm4</groupId>
-            <artifactId>jbpm-jpdl</artifactId>
-            <version>${jbpm.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>junit</artifactId>
-                    <groupId>junit</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>

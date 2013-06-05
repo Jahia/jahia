@@ -40,63 +40,44 @@
 
 package org.jahia.services.workflow.jbpm.custom;
 
+import org.jahia.ajax.gwt.helper.VersioningHelper;
 import org.jahia.services.content.*;
-import org.jahia.services.workflow.HistoryWorkflowTask;
-import org.jahia.services.workflow.WorkflowDefinition;
-import org.jahia.services.workflow.WorkflowService;
-import org.jbpm.pvm.internal.model.ExecutionImpl;
-import org.slf4j.Logger;
-import org.jahia.api.Constants;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.scheduler.BackgroundJob;
-import org.jahia.services.workflow.WorkflowVariable;
-import org.jbpm.api.activity.ActivityExecution;
-import org.jbpm.api.activity.ExternalActivityBehaviour;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
 
 import javax.jcr.RepositoryException;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
-/**
- * Sets a property on a node
- */
-public class SetPropertyActivity implements ExternalActivityBehaviour {
-    private static final long serialVersionUID = 1L;
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(Publish.class);
+public class AddLabelWorkItemHandler implements WorkItemHandler {
 
-    private String propertyName;
-    private String value;
+    private String label;
 
-    public void setPropertyName(String propertyName) {
-        this.propertyName = propertyName;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public void execute(ActivityExecution execution) throws Exception {
-        final List<String> uuids = (List<String>) execution.getVariable("nodeIds");
-        final String workspace = (String) execution.getVariable("workspace");
-        final String userKey = (String) execution.getVariable("user");
-
-        JCRTemplate.getInstance().doExecuteWithSystemSession(null,workspace,new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                for (String uuid : uuids) {
-                    session.getNodeByUUID(uuid).setProperty(propertyName, value);
+    @Override
+    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+        final List<String> nodeIds = (List<String>) workItem.getParameter("nodeIds");
+        String workspace = (String) workItem.getParameter("workspace");
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    for (String id : nodeIds) {
+                        JCRNodeWrapper node = session.getNodeByIdentifier(id);
+                        JCRVersionService.getInstance().addVersionLabel(node, label + "_at_" + VersioningHelper.formatForLabel(System.currentTimeMillis()));
+                    }
+                    return null;
                 }
-                session.save();
-                return null;
-            }
-        });
-
-        execution.takeDefaultTransition();
+            });
+        } catch (RepositoryException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void signal(ActivityExecution execution, String signalName, Map<String, ?> parameters) throws Exception {
+    @Override
+    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
-
 }

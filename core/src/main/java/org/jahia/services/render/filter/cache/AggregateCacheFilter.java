@@ -980,6 +980,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     /**
+     * @deprecated
+     */
+    public static String removeEsiTags(String content) {
+        return removeCacheTags(content);
+    }
+
+    /**
      * Remove the surrounding cache:include tags - only used for the main resource, as the content won't be included
      * into another fragment but returned to the user
      *

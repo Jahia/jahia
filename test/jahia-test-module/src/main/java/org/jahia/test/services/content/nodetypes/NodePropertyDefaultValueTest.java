@@ -53,14 +53,11 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.test.JahiaTestCase;
-import org.jahia.test.TestHelper;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.google.common.collect.ImmutableSet;
 
 /**
  * Integration test for the default values of node properties.
@@ -92,33 +89,22 @@ public class NodePropertyDefaultValueTest extends JahiaTestCase {
     private JCRSessionWrapper frenchSession;
     private JCRSessionWrapper germanSession;
 
-    private void reopenSessions() throws RepositoryException {
-        JCRSessionFactory.getInstance().closeAllSessions();
+    @Before
+    public void setUp() throws RepositoryException {
         englishSession = JCRSessionFactory.getInstance()
                 .getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
         frenchSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.FRENCH);
         germanSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
                 new Locale("de", "AT"));
-    }
-
-    @Before
-    public void setUp() throws RepositoryException {
-        englishSession = JCRSessionFactory.getInstance()
-                .getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
-        //reopenSessions();
         if (englishSession.nodeExists(NODE_PATH)) {
             englishSession.getNode(NODE_PATH).remove();
             englishSession.save();
         }
-        //reopenSessions();
     }
 
     @After
     public void tearDown() throws RepositoryException {
-        if (englishSession.nodeExists(NODE_PATH)) {
-            englishSession.getNode(NODE_PATH).remove();
-            englishSession.save();
-        }
+        JCRSessionFactory.getInstance().closeAllSessions();
     }
 
     @Test
@@ -128,61 +114,104 @@ public class NodePropertyDefaultValueTest extends JahiaTestCase {
         tomorrow.add(Calendar.DAY_OF_MONTH, 1);
         englishSession.getNode(FOLDER_PATH).addNode(NODE_NAME, "test:dynamicValuesTest");
         englishSession.save();
-        //reopenSessions();
         englishSession.logout();
         englishSession = JCRSessionFactory.getInstance()
                 .getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
-        
+
+        checkPropertyValues(now, tomorrow, "");
+    }
+
+    @Test
+    public void testMixinDefaultValues() throws Exception {
+        Calendar now = Calendar.getInstance();
+        Calendar tomorrow = Calendar.getInstance();
+        tomorrow.add(Calendar.DAY_OF_MONTH, 1);
+        JCRNodeWrapper node = englishSession.getNode(FOLDER_PATH).addNode(NODE_NAME, "test:emptyContent");
+        node.addMixin("test:dynamicValuesTestMixin");
+        englishSession.save();
+        englishSession.logout();
+        englishSession = JCRSessionFactory.getInstance()
+                .getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+
+        checkPropertyValues(now, tomorrow, "Mixin");
+    }
+
+    private void checkPropertyValues(Calendar now, Calendar tomorrow, String propNameSuffix) throws RepositoryException {
         JCRNodeWrapper node = englishSession.getNode(NODE_PATH);
-        
+
         // check if the properties were created
-        assertTrue(node.hasProperty("propertyText"));
-        assertTrue(node.hasProperty("propertyTextI18n"));
-        assertTrue(node.hasProperty("propertyLong"));
-        assertTrue(node.hasProperty("propertyDouble"));
-        assertTrue(node.hasProperty("propertyDate"));
-        assertTrue(node.hasProperty("propertyNow"));
-        assertTrue(node.hasProperty("propertyTomorrow"));
-        assertTrue(node.hasProperty("propertyCurrentUser"));
-        assertTrue(node.hasProperty("propertyResourceBundleShared"));
-        assertTrue(node.hasProperty("propertyResourceBundleI18n"));
+        assertTrue(node.hasProperty("propertyText" + propNameSuffix));
+        assertTrue(node.hasProperty("propertyTextI18n" + propNameSuffix));
+        assertTrue(node.hasProperty("propertyLong" + propNameSuffix));
+        assertTrue(node.hasProperty("propertyDouble" + propNameSuffix));
+        assertTrue(node.hasProperty("propertyDate" + propNameSuffix));
+        assertTrue(node.hasProperty("propertyNow" + propNameSuffix));
+        assertTrue(node.hasProperty("propertyTomorrow" + propNameSuffix));
+        assertTrue(node.hasProperty("propertyCurrentUser" + propNameSuffix));
+        assertTrue(node.hasProperty("propertyResourceBundleShared" + propNameSuffix));
+        assertTrue(node.hasProperty("propertyResourceBundleI18n" + propNameSuffix));
 
         // check values for node properties
-        assertEquals("Text plain", node.getProperty("propertyText").getString());
-        
-        assertEquals("Text i18n", node.getProperty("propertyTextI18n").getString());
-        
-        assertEquals(12, node.getProperty("propertyLong").getLong());
-        
-        assertEquals(12.28, node.getProperty("propertyDouble").getDouble(), 0.01);
-        
-        Calendar date = node.getProperty("propertyDate").getDate();
+        assertEquals("Text plain", node.getProperty("propertyText" + propNameSuffix).getString());
+
+        assertEquals("Text i18n", node.getProperty("propertyTextI18n" + propNameSuffix).getString());
+
+        assertEquals(12, node.getProperty("propertyLong" + propNameSuffix).getLong());
+
+        assertEquals(12.28, node.getProperty("propertyDouble" + propNameSuffix).getDouble(), 0.01);
+
+        Calendar date = node.getProperty("propertyDate" + propNameSuffix).getDate();
         assertNotNull(date);
         assertEquals(1979, date.get(Calendar.YEAR));
         assertEquals(Calendar.MAY, date.get(Calendar.MONTH));
         assertEquals(9, date.get(Calendar.DAY_OF_MONTH));
-        
-        Calendar dateNow = node.getProperty("propertyNow").getDate();
+
+        Calendar dateNow = node.getProperty("propertyNow" + propNameSuffix).getDate();
         assertNotNull(dateNow);
         assertEquals(now.get(Calendar.YEAR), dateNow.get(Calendar.YEAR));
         assertEquals(now.get(Calendar.MONTH), dateNow.get(Calendar.MONTH));
         assertEquals(now.get(Calendar.DAY_OF_MONTH), dateNow.get(Calendar.DAY_OF_MONTH));
         assertEquals(now.get(Calendar.HOUR_OF_DAY), dateNow.get(Calendar.HOUR_OF_DAY));
         assertEquals(now.get(Calendar.MINUTE), dateNow.get(Calendar.MINUTE));
-        
-        Calendar dateTomorrow = node.getProperty("propertyTomorrow").getDate();
+
+        Calendar dateTomorrow = node.getProperty("propertyTomorrow" + propNameSuffix).getDate();
         assertNotNull(dateTomorrow);
         assertEquals(tomorrow.get(Calendar.YEAR), dateTomorrow.get(Calendar.YEAR));
         assertEquals(tomorrow.get(Calendar.MONTH), dateTomorrow.get(Calendar.MONTH));
         assertEquals(tomorrow.get(Calendar.DAY_OF_MONTH), dateTomorrow.get(Calendar.DAY_OF_MONTH));
         assertEquals(tomorrow.get(Calendar.HOUR_OF_DAY), dateTomorrow.get(Calendar.HOUR_OF_DAY));
         assertEquals(tomorrow.get(Calendar.MINUTE), dateTomorrow.get(Calendar.MINUTE));
-        
-        assertEquals(englishSession.getUserID(), node.getProperty("propertyCurrentUser").getString());
-        
-        assertEquals("Test value 1", node.getProperty("propertyResourceBundleShared").getString());
-        
+
+        assertEquals(englishSession.getUserID(), node.getProperty("propertyCurrentUser" + propNameSuffix).getString());
+
+        assertEquals("Test value 1", node.getProperty("propertyResourceBundleShared" + propNameSuffix).getString());
+
+        assertEquals("Test value 2", node.getProperty("propertyResourceBundleI18n" + propNameSuffix).getString());
+    }
+
+    @Test
+    public void testEnglishDefaultValues() throws Exception {
+        createNode(englishSession);
+        JCRNodeWrapper node = englishSession.getNode(NODE_PATH);
         assertEquals("Test value 2", node.getProperty("propertyResourceBundleI18n").getString());
     }
-    
+
+    @Test
+    public void testFrenchDefaultValues() throws Exception {
+        createNode(frenchSession);
+        JCRNodeWrapper node = frenchSession.getNode(NODE_PATH);
+        assertEquals("Valeur de test 2", node.getProperty("propertyResourceBundleI18n").getString());
+    }
+
+    @Test
+    public void testGermanDefaultValues() throws Exception {
+        createNode(germanSession);
+        JCRNodeWrapper node = germanSession.getNode(NODE_PATH);
+        assertEquals("Testwert 2", node.getProperty("propertyResourceBundleI18n").getString());
+    }
+
+    private void createNode(JCRSessionWrapper session) throws Exception {
+        session.getNode(FOLDER_PATH).addNode(NODE_NAME, "test:dynamicValuesTest");
+        session.save();
+    }
 }

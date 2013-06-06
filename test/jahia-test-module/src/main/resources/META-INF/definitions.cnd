@@ -135,6 +135,8 @@
 //---------------------------------------------------------
 // Dynamic value tests (default value initializers with autocreated)
 //---------------------------------------------------------
+[test:emptyContent] > jnt:content, jmix:droppableContent
+
 [test:dynamicValuesTest] > jnt:content, jmix:droppableContent
  - propertyText (string) = 'Text plain' autocreated
  - propertyTextI18n (string) = 'Text i18n' autocreated i18n

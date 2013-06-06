@@ -81,6 +81,9 @@ public class ToolbarHeader extends Header {
             super.removeTool(horizontalPanel);
             horizontalPanel = null;
         }
+        if (actionItems != null) {
+            actionItems.clear();
+        }
     }
 
     @Override

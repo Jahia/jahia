@@ -99,8 +99,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     // We use ConcurrentHashMap instead of Set since we absolutely need the thread safety of this implementation but we don't want reads to lock.
     // @todo when migrating to JDK 1.6 we can replacing this with Collections.newSetFromMap(Map m) calls.
     protected static final Map<String,Boolean> notCacheableFragment = new ConcurrentHashMap<String,Boolean>(512);
-    protected static final Map<String,Boolean> guestMainResourceRequestParameters = new ConcurrentHashMap<String,Boolean>();
-    protected static final Map<String,Boolean> guestnotCacheablePages = new ConcurrentHashMap<String,Boolean>(512);
     static protected ThreadLocal<Set<CountDownLatch>> processingLatches = new ThreadLocal<Set<CountDownLatch>>();
     static protected ThreadLocal<String> acquiredSemaphore = new ThreadLocal<String>();
     static protected ThreadLocal<LinkedList<String>> userKeys = new ThreadLocal<LinkedList<String>>();
@@ -557,34 +555,34 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         if (script != null) {
             properties.putAll(script.getView().getDefaultProperties());
             properties.putAll(script.getView().getProperties());
+        }
 
-            if (resource.getNode().hasProperty("j:perUser")) {
-                properties.put("cache.perUser",resource.getNode().getProperty("j:perUser").getString());
-            }
-            if (isBound) {
-                properties.put("cache.mainResource", "true");
-            }
-            String requestParameters = properties.getProperty("cache.requestParameters");
+        if (resource.getNode().hasProperty("j:perUser")) {
+            properties.put("cache.perUser",resource.getNode().getProperty("j:perUser").getString());
+        }
+        if (isBound) {
+            properties.put("cache.mainResource", "true");
+        }
+        String requestParameters = properties.getProperty("cache.requestParameters");
 
-            StringBuilder stringBuilder = new StringBuilder(requestParameters != null ? requestParameters : "");
-            if (stringBuilder.length() == 0) {
-                stringBuilder.append("ec,v");
-            } else {
-                stringBuilder.append(",ec,v");
-            }
-            if (SettingsBean.getInstance().isDevelopmentMode()) {
-                stringBuilder.append(",cacheinfo,moduleinfo");
-            }
-            requestParameters = stringBuilder.toString();
-            properties.put("cache.requestParameters", requestParameters);
+        StringBuilder stringBuilder = new StringBuilder(requestParameters != null ? requestParameters : "");
+        if (stringBuilder.length() == 0) {
+            stringBuilder.append("ec,v");
+        } else {
+            stringBuilder.append(",ec,v");
+        }
+        if (SettingsBean.getInstance().isDevelopmentMode()) {
+            stringBuilder.append(",cacheinfo,moduleinfo");
+        }
+        requestParameters = stringBuilder.toString();
+        properties.put("cache.requestParameters", requestParameters);
 
-            if (renderContext.getRequest().getAttribute("expiration") != null) {
-                properties.put("cache.expiration", renderContext.getRequest().getAttribute("expiration"));
-            } else if (resource.getNode().hasProperty("j:expiration")) {
-                properties.put("cache.expiration", resource.getNode().getProperty("j:expiration").getString());
-            } else {
-                properties.put("cache.expiration", "-1");
-            }
+        if (renderContext.getRequest().getAttribute("expiration") != null) {
+            properties.put("cache.expiration", renderContext.getRequest().getAttribute("expiration"));
+        } else if (resource.getNode().hasProperty("j:expiration")) {
+            properties.put("cache.expiration", resource.getNode().getProperty("j:expiration").getString());
+        } else {
+            properties.put("cache.expiration", "-1");
         }
         return properties;
     }

@@ -66,8 +66,13 @@ public class BundleView extends BaseView {
      *            the display name for this view
      */
     public BundleView(String resource, String key, JahiaTemplatesPackage module, String displayName) {
-        super(module.getRootFolderPath() + resource, key, module, displayName);
+        super(resource, key, module, displayName);
         this.resource = resource;
+    }
+
+    @Override
+    public String getPath() {
+        return getModule().getRootFolderPath() + resource;
     }
 
     @Override
@@ -110,6 +115,8 @@ public class BundleView extends BaseView {
         URL url = getResource(resource);
         return url != null ? getModule().getRootFolderPath() + resource : null;
     }
+
+
 
     @Override
     public int hashCode() {

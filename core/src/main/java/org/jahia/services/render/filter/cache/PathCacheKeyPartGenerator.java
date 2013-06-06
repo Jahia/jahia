@@ -57,9 +57,8 @@ public class PathCacheKeyPartGenerator implements CacheKeyPartGenerator {
 
     @Override
     public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
-        HttpServletRequest request = renderContext.getRequest();
         StringBuilder s = new StringBuilder(resource.getNode().getPath());
-        if ("true".equals(request.getAttribute("cache.mainResource"))) {
+        if ("true".equals(properties.getProperty("cache.mainResource"))) {
             s.append(MAIN_RESOURCE_KEY);
         }
         return s.toString();

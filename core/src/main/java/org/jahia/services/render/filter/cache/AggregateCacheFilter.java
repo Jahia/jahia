@@ -327,11 +327,25 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      */
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
+
+        Properties properties = getAttributesForKey(renderContext, resource, chain);
+
         // Add self path as dependency for this fragment (for cache flush - will not impact the key)
         resource.getDependencies().add(resource.getNode().getCanonicalPath());
 
+        // Add main resource if cache.mainResource is set
+        if ("true".equals(properties.getProperty("cache.mainResource"))) {
+            resource.getDependencies().add(renderContext.getMainResource().getNode().getCanonicalPath());
+            // todo: may be done directly in navmenu .. ?
+            if (Boolean.valueOf(properties.getProperty("cache.mainResource.flushParent", "false"))) {
+                try {
+                    resource.getDependencies().add(renderContext.getMainResource().getNode().getParent().getCanonicalPath());
+                } catch (ItemNotFoundException e) {
+                }
+            }
+        }
+
         // Generates the cache key
-        Properties properties = getAttributesForKey(renderContext, resource, chain);
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
 
         // If this content has been served from cache, no need to cache it again
@@ -339,17 +353,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         Set<String> servedFromCache = (Set<String>) renderContext.getRequest().getAttribute("servedFromCache");
         if (servedFromCache != null && servedFromCache.contains(key)) {
             return previousOut;
-        }
-
-        // todo: may be done directly in PathCacheKeyPartGenerator .. ?
-        if (key.contains(PathCacheKeyPartGenerator.MAIN_RESOURCE_KEY)) {
-            resource.getDependencies().add(renderContext.getMainResource().getNode().getCanonicalPath());
-            if (Boolean.valueOf(properties.getProperty("cache.mainResource.flushParent", "false"))) {
-                try {
-                    resource.getDependencies().add(renderContext.getMainResource().getNode().getParent().getCanonicalPath());
-                } catch (ItemNotFoundException e) {
-                }
-            }
         }
 
         // Check if the fragment is still cacheable, based on the key and cache properties

@@ -58,7 +58,7 @@
                     if ($("#updateSiteForm #language_list").fieldValue().length == 0) {
                         hideLoading();
                     } else {
-                        window.location.reload();
+                        top.location.reload();
                     }
                 }
             },

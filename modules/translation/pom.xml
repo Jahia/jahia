@@ -81,7 +81,7 @@
                 <configuration>
                     <instructions>
                         <Jahia-Module-Type>system</Jahia-Module-Type>
-            <Jahia-Depends>default,defaultSiteSettings</Jahia-Depends> 
+            <Jahia-Depends>default,siteSettings</Jahia-Depends>
                     </instructions>
                 </configuration>
             </plugin>

@@ -4,7 +4,7 @@
          xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
          xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
     <modules jcr:primaryType="jnt:modules">
-        <translation j:dependencies="default defaultSiteSettings"
+        <translation j:dependencies="default siteSettings"
                    j:installedModules="translation"
                    j:moduleType="system"
                    j:title="Jahia Translation Providers"

@@ -79,7 +79,7 @@ import java.util.*;
 public class CategoriesTabItem extends EditEngineTabItem {
     private transient List<GWTJahiaNode> catStore;
     private transient GWTJahiaNodeProperty categoryProperty;
-    private transient ContentPanel topPanel = new ContentPanel(new ColumnLayout());
+    private transient ContentPanel topPanel;
     private transient GWTJahiaNodeTreeFactory treeGridFactory;
 
 
@@ -89,6 +89,7 @@ public class CategoriesTabItem extends EditEngineTabItem {
         if (!engine.isExistingNode() || (engine.getNode() != null)) {
             tab.setProcessed(true);
             tab.setLayout(new BorderLayout());
+            topPanel = new ContentPanel(new ColumnLayout());
             topPanel.removeAll();
             topPanel.setScrollMode(Style.Scroll.AUTOY);
             topPanel.setHeading(Messages.get("label.selected.categories"));

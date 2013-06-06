@@ -45,6 +45,7 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Properties;
 
 public class SiteCacheKeyPartGenerator implements CacheKeyPartGenerator {
     @Override
@@ -53,7 +54,7 @@ public class SiteCacheKeyPartGenerator implements CacheKeyPartGenerator {
     }
 
     @Override
-    public String getValue(Resource resource, RenderContext renderContext) {
+    public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
         HttpServletRequest request = renderContext.getRequest();
         URLResolver urlResolver = (URLResolver) renderContext.getRequest().getAttribute("urlResolver");
         return (urlResolver == null ||

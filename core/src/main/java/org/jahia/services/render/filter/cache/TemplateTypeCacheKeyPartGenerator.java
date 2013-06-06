@@ -43,6 +43,8 @@ package org.jahia.services.render.filter.cache;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
+import java.util.Properties;
+
 public class TemplateTypeCacheKeyPartGenerator implements CacheKeyPartGenerator {
     @Override
     public String getKey() {
@@ -50,7 +52,7 @@ public class TemplateTypeCacheKeyPartGenerator implements CacheKeyPartGenerator 
     }
 
     @Override
-    public String getValue(Resource resource, RenderContext renderContext) {
+    public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
         String templateType = resource.getTemplateType();
         if (renderContext.isAjaxRequest()) {
             templateType += ".ajax";

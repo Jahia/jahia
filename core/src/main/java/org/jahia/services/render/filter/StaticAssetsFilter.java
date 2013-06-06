@@ -340,7 +340,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
                     if (StringUtils.isNotBlank(staticsAsset)) {
                         outputDocument.replace(headEndTag.getBegin(), headEndTag.getBegin() + 1,
-                                "\n" + AggregateCacheFilter.removeEsiTags(staticsAsset) + "\n<");
+                                "\n" + AggregateCacheFilter.removeCacheTags(staticsAsset) + "\n<");
                     }
                 }
                 String header = renderContext.getRequest().getHeader("user-agent");

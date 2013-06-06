@@ -43,6 +43,8 @@ package org.jahia.services.render.filter.cache;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
+import java.util.Properties;
+
 /**
  * User: toto
  * Date: 11/20/12
@@ -52,7 +54,7 @@ public interface CacheKeyPartGenerator {
 
     public String getKey();
 
-    public String getValue(Resource resource, RenderContext renderContext);
+    public String getValue(Resource resource, RenderContext renderContext, Properties properties);
 
     public String replacePlaceholders(RenderContext renderContext, String keyPart);
 

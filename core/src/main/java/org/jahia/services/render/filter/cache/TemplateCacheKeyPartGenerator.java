@@ -43,6 +43,8 @@ package org.jahia.services.render.filter.cache;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
+import java.util.Properties;
+
 public class TemplateCacheKeyPartGenerator implements CacheKeyPartGenerator {
     @Override
     public String getKey() {
@@ -50,7 +52,7 @@ public class TemplateCacheKeyPartGenerator implements CacheKeyPartGenerator {
     }
 
     @Override
-    public String getValue(Resource resource, RenderContext renderContext) {
+    public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
         if (resource.getContextConfiguration().equals("page") && resource.getNode().getPath().equals(
                 renderContext.getMainResource().getNode().getPath())) {
             return renderContext.getMainResource().getResolvedTemplate();

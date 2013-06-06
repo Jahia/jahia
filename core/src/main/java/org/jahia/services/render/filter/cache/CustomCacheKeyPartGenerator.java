@@ -44,6 +44,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Properties;
 
 public class CustomCacheKeyPartGenerator implements CacheKeyPartGenerator {
     @Override
@@ -52,7 +53,7 @@ public class CustomCacheKeyPartGenerator implements CacheKeyPartGenerator {
     }
 
     @Override
-    public String getValue(Resource resource, RenderContext renderContext) {
+    public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
         HttpServletRequest request = renderContext.getRequest();
 
         return (String) resource.getModuleParams().get("module.cache.additional.key") +

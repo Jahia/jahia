@@ -45,6 +45,7 @@ import org.jahia.services.render.Resource;
 import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
+import java.util.Properties;
 
 public class ResourceIDCacheKeyPartGenerator implements CacheKeyPartGenerator {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ResourceIDCacheKeyPartGenerator.class);
@@ -55,7 +56,7 @@ public class ResourceIDCacheKeyPartGenerator implements CacheKeyPartGenerator {
     }
 
     @Override
-    public String getValue(Resource resource, RenderContext renderContext) {
+    public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
         try {
             return resource.getNode().getIdentifier();
         } catch (RepositoryException e) {

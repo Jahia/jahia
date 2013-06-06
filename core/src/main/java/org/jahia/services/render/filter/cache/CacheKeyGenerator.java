@@ -42,6 +42,7 @@ package org.jahia.services.render.filter.cache;
 
 import java.text.ParseException;
 import java.util.Map;
+import java.util.Properties;
 
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -56,11 +57,13 @@ public interface CacheKeyGenerator {
     /**
      * Generates the output cache key based on the provided data.
      * 
+     *
      * @param resource the current resource being rendered
      * @param renderContext the current rendering context
+     * @param properties
      * @return the output cache key based on the provided data
      */
-    String generate(Resource resource, RenderContext renderContext);
+    String generate(Resource resource, RenderContext renderContext, Properties properties);
 
     /**
      * Parses the resource path from the provided key.

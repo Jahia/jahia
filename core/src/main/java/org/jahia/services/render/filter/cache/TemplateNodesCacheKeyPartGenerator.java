@@ -45,6 +45,7 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.Template;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Properties;
 
 public class TemplateNodesCacheKeyPartGenerator implements CacheKeyPartGenerator {
     @Override
@@ -53,7 +54,7 @@ public class TemplateNodesCacheKeyPartGenerator implements CacheKeyPartGenerator
     }
 
     @Override
-    public String getValue(Resource resource, RenderContext renderContext) {
+    public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
         HttpServletRequest request = renderContext.getRequest();
         final Template t = (Template) request.getAttribute("previousTemplate");
         return t != null ? t.serialize() : "";

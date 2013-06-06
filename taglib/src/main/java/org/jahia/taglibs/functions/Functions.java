@@ -264,7 +264,7 @@ public class Functions {
     }
 
     public static String removeCacheTags(String txt) {
-        return AggregateCacheFilter.removeEsiTags(txt);
+        return AggregateCacheFilter.removeCacheTags(txt);
     }
 
     public static String removeDuplicates(String initString, String separator) {

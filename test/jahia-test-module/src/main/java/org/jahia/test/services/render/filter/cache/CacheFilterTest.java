@@ -163,8 +163,9 @@ public class CacheFilterTest extends JahiaTestCase {
 
         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
         CacheKeyGenerator generator = moduleCacheProvider.getKeyGenerator();
-        context.getRequest().setAttribute("cache.requestParameters", Patterns.COMMA.split("cacheinfo,moduleinfo"));
-        String key = generator.generate(resource, context);
+        Properties properties = new Properties();
+        properties.put("cache.requestParameters", "cacheinfo,moduleinfo");
+        String key = generator.generate(resource, context, properties);
         moduleCacheProvider.getCache().removeAll();
         
         RenderChain chain = new RenderChain(attributesFilter, cacheFilter, outFilter);

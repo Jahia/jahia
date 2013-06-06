@@ -69,14 +69,14 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         }
     }
 
-    public String generate(Resource resource, RenderContext renderContext) {
-        return StringUtils.join(getArguments(resource, renderContext), "@@");
+    public String generate(Resource resource, RenderContext renderContext, Properties properties) {
+        return StringUtils.join(getArguments(resource, renderContext, properties), "@@");
     }
 
-    private Object[] getArguments(Resource resource, RenderContext renderContext) {
+    private Object[] getArguments(Resource resource, RenderContext renderContext, Properties properties) {
         List<String> args = new LinkedList<String>();
         for (CacheKeyPartGenerator generator : partGenerators) {
-            args.add(generator.getValue(resource, renderContext));
+            args.add(generator.getValue(resource, renderContext, properties));
         }
         return args.toArray(new String[args.size()]);
     }

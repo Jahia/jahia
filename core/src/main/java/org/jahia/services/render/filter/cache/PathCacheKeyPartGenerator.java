@@ -45,6 +45,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Properties;
 
 public class PathCacheKeyPartGenerator implements CacheKeyPartGenerator {
     public static final String MAIN_RESOURCE_KEY = "_mr_";
@@ -55,10 +56,10 @@ public class PathCacheKeyPartGenerator implements CacheKeyPartGenerator {
     }
 
     @Override
-    public String getValue(Resource resource, RenderContext renderContext) {
+    public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
         HttpServletRequest request = renderContext.getRequest();
         StringBuilder s = new StringBuilder(resource.getNode().getPath());
-        if (Boolean.TRUE.equals(request.getAttribute("cache.mainResource"))) {
+        if ("true".equals(request.getAttribute("cache.mainResource"))) {
             s.append(MAIN_RESOURCE_KEY);
         }
         return s.toString();

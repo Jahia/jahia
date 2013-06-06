@@ -64,33 +64,11 @@ public class ExpiringCacheFilter extends AggregateCacheFilter {
     protected boolean isCacheable(RenderContext renderContext,
             Resource resource, String key, Properties properties,
             boolean isInPrepare) throws RepositoryException {
-        return !isInPrepare ? getExpiration(renderContext, resource, properties) > 0
-                : getExpiration(resource, properties) > 0;
+        return Long.parseLong(properties.getProperty("cache.expiration")) > 0;
     }
 
     @Override
     protected boolean useDependencies() {
         return false;
     }
-    
-    
-    /**
-     * Try to retrieve the j:expiration property of the node if we are in prepare phase, as the info is
-     * normally only available in execute phase, because TemplateAttributesFilter reads it.
-     */
-    private Long getExpiration(Resource resource, Properties properties) {
-        JCRNodeWrapper node = resource.getNode();
-        String cacheAttribute = null;
-        try {
-            if (node.hasProperty(J_EXPIRATION)) {
-                cacheAttribute = node.getProperty(J_EXPIRATION).getString();
-            }
-        } catch (RepositoryException e) {
-            logger.warn("Error retrieving j:expiration property, ignoring it!",
-                    e);
-        }
-        return cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long
-                .valueOf(properties.getProperty("cache.expiration", "-1"));
-    }
-
 }

@@ -40,15 +40,13 @@
 
 package org.jahia.services.render.filter.cache;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.utils.Patterns;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,10 +60,10 @@ public class QueryStringCacheKeyPartGenerator implements CacheKeyPartGenerator {
     }
 
     @Override
-    public String getValue(Resource resource, RenderContext renderContext) {
-        HttpServletRequest request = renderContext.getRequest();
-        String[] params = (String[]) request.getAttribute("cache.requestParameters");
-        if (params != null && params.length > 0) {
+    public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
+        String property = properties.getProperty("cache.requestParameters");
+        if (!StringUtils.isEmpty(property)) {
+            String[] params = Patterns.COMMA.split(property);
             return "_qs" + Arrays.toString(params) + "_";
         } else {
             return "";

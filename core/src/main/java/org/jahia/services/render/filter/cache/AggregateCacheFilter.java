@@ -57,7 +57,6 @@ import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageR
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationEvent;
@@ -111,61 +110,114 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     protected Map<String, String> moduleParamsProperties;
     protected int dependenciesLimit = 1000;
 
+
+
+    /**
+     * Invoked by a BeanFactory after it has set all bean properties supplied
+     * (and satisfied BeanFactoryAware and ApplicationContextAware).
+     * <p>This method allows the bean instance to perform initialization only
+     * possible when all bean properties have been set and to throw an
+     * exception in the event of misconfiguration.
+     *
+     * @throws Exception in the event of misconfiguration (such
+     *                   as failure to set an essential property) or if initialization fails.
+     */
+    public void afterPropertiesSet() throws Exception {
+        Config.LoggerProvider = LoggerProvider.DISABLED;
+    }
+
+    public void setDependenciesLimit(int dependenciesLimit) {
+        this.dependenciesLimit = dependenciesLimit;
+    }
+
+    public void setCacheProvider(ModuleCacheProvider cacheProvider) {
+        this.cacheProvider = cacheProvider;
+    }
+
+    public void setGeneratorQueue(ModuleGeneratorQueue generatorQueue) {
+        this.generatorQueue = generatorQueue;
+    }
+
+    public void setModuleParamsProperties(Map<String, String> moduleParamsProperties) {
+        this.moduleParamsProperties = moduleParamsProperties;
+    }
+
+    /**
+     * The prepare method is the first entry point in the cache. Its purpose is to check if a content is inside the
+     * cache, and returns cached content for the fragment matching the requested resource if it is found. If other
+     * fragment (module tags) are embedded inside this fragment, it will get them from the cache or by calling the
+     * render service and aggregate them.
+     *
+     * @param renderContext The render context
+     * @param resource The resource to render
+     * @param chain The render chain
+     * @return The content (with sub content aggregated) if found in the cache, null otherwise.
+     * @throws Exception
+     */
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         boolean debugEnabled = logger.isDebugEnabled();
-        boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
         @SuppressWarnings("unchecked")
-        Set<String> servedFromCache = (Set<String>) renderContext.getRequest().getAttribute("servedFromCache");
-        if (servedFromCache == null) {
-            servedFromCache = new HashSet<String>();
-            renderContext.getRequest().setAttribute("servedFromCache", servedFromCache);
-        }
 
-        Properties properties = setAttributesForKey(renderContext, resource, chain);
-        String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
+        // Generates the key of the requested fragment. The KeyGenerator will create a key based on the request
+        // (resource and context) and the cache properties. The generated key will contains temporary placeholders
+        // that will be replaced to have the final key.
+        Properties properties = getAttributesForKey(renderContext, resource, chain);
+        String key = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
 
         if (debugEnabled) {
-            logger.debug("Cache filter for key {}", key);
+            logger.debug("Cache filter for key with placeholders : {}", key);
         }
-        Element element = null;
-        final Cache cache = cacheProvider.getCache();
+
+        // First check if the key is in the list of non-cacheable keys. The cache can also be skipped by specifying the
+        // ec parameter with the uuid of the current node.
         boolean cacheable = isCacheable(renderContext, resource, key, properties, true);
         if(!cacheable) {
             return null;
         }
-        String perUserKey = replacePlaceholdersInCacheKey(renderContext, key);
+
+        // Replace the placeholders to have the final key that is used in the cache.
+        String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
+
+        // Keeps a list of keys being generated to avoid infinite loops.
         LinkedList<String> userKeysLinkedList = userKeys.get();
         if (userKeysLinkedList == null) {
             userKeysLinkedList = new LinkedList<String>();
             userKeys.set(userKeysLinkedList);
         }
-        if (userKeysLinkedList.contains(perUserKey)) {
+        if (userKeysLinkedList.contains(finalKey)) {
             return null;
         }
-        userKeysLinkedList.add(0, perUserKey);
+        userKeysLinkedList.add(0, finalKey);
+
+
+        Element element = null;
+        final Cache cache = cacheProvider.getCache();
 
         try {
             if (debugEnabled) {
-                logger.debug("Try to get content from cache for node with key: {}", perUserKey);
+                logger.debug("Try to get content from cache for node with final key: {}", finalKey);
             }
-            element = cache.get(perUserKey);
+            element = cache.get(finalKey);
         } catch (LockTimeoutException e) {
             logger.warn("Error while rendering " + renderContext.getMainResource() + e.getMessage(), e);
         }
 
         if (element != null && element.getValue() != null) {
-            return returnFromCache(renderContext, resource, debugEnabled, displayCacheInfo, servedFromCache, key,
-                    element, cache, perUserKey);
+            // The element is found in the cache. Need to
+            return returnFromCache(renderContext, resource, key, finalKey, element, cache);
         } else {
-            // Use CountLatch as not found in cache
-            CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(perUserKey,
+            // The element is not found in the cache with that key. Use CountLatch to avoid parallel processing of the
+            // module - if somebody else is generating this fragment, wait for the entry to be generated and
+            // return the content from the cache. Otherwise, return null to continue the render chain.
+            // Note that the fragment MIGHT be in cache, but the key may not be correct - some parameters impacting the
+            // key like dependencies can only be calculated when the fragment has been generated.
+            CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(finalKey,
                     resource.getContextConfiguration(), renderContext.getRequest());
             if (countDownLatch == null) {
-                element = cache.get(perUserKey);
+                element = cache.get(finalKey);
                 if (element != null && element.getValue() != null) {
-                    return returnFromCache(renderContext, resource, debugEnabled, displayCacheInfo, servedFromCache,
-                            key, element, cache, perUserKey);
+                    return returnFromCache(renderContext, resource, key, finalKey, element, cache);
                 }
             } else {
                 Set<CountDownLatch> latches = processingLatches.get();
@@ -178,10 +230,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             return null;
         }
     }
-    
+
     /**
-     * Is the current fragment cacheable or not
-     * 
+     * Is the current fragment cacheable or not. Based on the notCacheableFragment list and the ec or v parameter.
+     *
      * @param renderContext render context
      * @param resource current resource
      * @param key calculated cache key
@@ -199,35 +251,63 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 "ec").equals(resource.getNode().getIdentifier())) {
             cacheable = false;
         }
-        
+
         return cacheable;
     }
-    
+
     /**
-     * Sets whether dependencies should be stored per cache object for this filter, which is useful for dependent flushes.
+     * Sets whether dependencies should be stored per cache object for this filter, which is useful for dependent
+     * flushes.
+     *
      * @return true if filter uses dependencies, false if not
      */
     protected boolean useDependencies() {
         return true;
     }
 
+    /**
+     * This method is called if the entry is found in the cache. It will get the fragment entry, and regenerates the
+     * full content by aggregating all included fragments.
+     *
+     * @param renderContext The render context
+     * @param resource The resource being rendered
+     * @param key The key with placeholders
+     * @param finalKey The final key with placeholders replaced
+     * @param element The cached element
+     * @param cache The cache
+     * @return
+     */
     @SuppressWarnings("unchecked")
-    protected String returnFromCache(RenderContext renderContext, Resource resource, boolean debugEnabled,
-                                     boolean displayCacheInfo, Set<String> servedFromCache, String key, Element element,
-                                     Cache cache, String perUserKey) {
-        if (debugEnabled) {
-            logger.debug("Content retrieved from cache for node with key: {}", perUserKey);
+    protected String returnFromCache(RenderContext renderContext, Resource resource,
+                                     String key, String finalKey, Element element,
+                                     Cache cache) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Content retrieved from cache for node with key: {}", finalKey);
         }
         CacheEntry<?> cacheEntry = (CacheEntry<?>) element.getValue();
         String cachedContent = (String) cacheEntry.getObject();
+
+        // Calls aggregation on the fragment content
         cachedContent = aggregateContent(cache, cachedContent, renderContext,
                 (Map<String, Serializable>) cacheEntry.getProperty("moduleParams"), (String) cacheEntry.getProperty("areaResource"), new Stack<String>());
-        setResources(renderContext, cacheEntry);
+
+        // Restore request attribute that were sets in the fragment execution
+        restoreRequestAttributes(renderContext, cacheEntry);
 
         if (renderContext.getMainResource() == resource) {
-            cachedContent = removeEsiTags(cachedContent);
+            cachedContent = removeCacheTags(cachedContent);
+        }
+
+        // Add this key to the list of fragments already served from the cache to avoid to re-store it.
+        Set<String> servedFromCache = (Set<String>) renderContext.getRequest().getAttribute("servedFromCache");
+        if (servedFromCache == null) {
+            servedFromCache = new HashSet<String>();
+            renderContext.getRequest().setAttribute("servedFromCache", servedFromCache);
         }
         servedFromCache.add(key);
+
+        boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
+
         if (displayCacheInfo && !cachedContent.contains("<body") && cachedContent.trim().length() > 0) {
             return appendDebugInformation(renderContext, key, cachedContent, element);
         } else {
@@ -235,17 +315,35 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
+    /**
+     * If the entry was not found in the cache, the execute method is called once all normal render processing has been
+     * done. The fragment key is computed again, taking all dependencies into account. The content is cleared from all
+     * sub-content to get only the fragment content, which is finally stored in the cache.
+     *
+     * @param previousOut Result from the previous filter
+     * @param renderContext The render context
+     * @param resource The resource to render
+     * @param chain The render chain
+     * @return
+     * @throws Exception
+     */
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
+        // Add self path as dependency for this fragment (for cache flush - will not impact the key)
         resource.getDependencies().add(resource.getNode().getCanonicalPath());
 
-        Properties properties = setAttributesForKey(renderContext, resource, chain);
-        String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
+        // Generates the cache key
+        Properties properties = getAttributesForKey(renderContext, resource, chain);
+        String key = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
+
+        // If this content has been served from cache, no need to cache it again
         @SuppressWarnings("unchecked")
         Set<String> servedFromCache = (Set<String>) renderContext.getRequest().getAttribute("servedFromCache");
-        if (servedFromCache.contains(key)) {
+        if (servedFromCache != null && servedFromCache.contains(key)) {
             return previousOut;
         }
+
+        // todo: may be done directly in PathCacheKeyPartGenerator .. ?
         if (key.contains(PathCacheKeyPartGenerator.MAIN_RESOURCE_KEY)) {
             resource.getDependencies().add(renderContext.getMainResource().getNode().getCanonicalPath());
             if (Boolean.valueOf(properties.getProperty("cache.mainResource.flushParent", "false"))) {
@@ -255,42 +353,44 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 }
             }
         }
+
+        // Check if the fragment is still cacheable, based on the key and cache properties
         boolean cacheable = isCacheable(renderContext, resource, key, properties, false);
-        final Cache cache = cacheProvider.getCache();
         boolean debugEnabled = logger.isDebugEnabled();
         boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
-        String perUserKey = replacePlaceholdersInCacheKey(renderContext, key);
 
-        if (debugEnabled) {
-            logger.debug("Generating content for node: {}", perUserKey);
-        }
+        String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
+
         try {
             if (cacheable) {
+                final Cache cache = cacheProvider.getCache();
+
+                // Add reference dependencies for jmix:referencesInField ( todo : move this to a specific filter before going in this filter.execute)
                 int nbOfDependencies = resource.getDependencies().size();
                 addReferencesToDependencies(resource);
                 if (resource.getDependencies().size() > nbOfDependencies) {
-                    key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
-                    perUserKey = replacePlaceholdersInCacheKey(renderContext, key);
-                }
-                String perUser = (String) renderContext.getRequest().getAttribute("perUser");
-                if (perUser != null && "true".equals(perUser.toLowerCase())) {
-                    // This content must be cached by user as it is defined in the options panel
-                    // The value of the node property from the mixin jmix:cache are only checked in the TemplatesAttributesFilter
-                    // So we need to recalculate the key as we were not aware that this content needed to be cached by user
-                    // We need to store content with the previously calculated cache to avoid lock up.
-                    key = cacheProvider.getKeyGenerator().replaceField(key, "acls", AclCacheKeyPartGenerator.PER_USER);
-                    perUserKey = replacePlaceholdersInCacheKey(renderContext, key);
+                    // If new dependencies have been added based on references, regenerate the effective cache key
+                    key = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
+                    finalKey = replacePlaceholdersInCacheKey(renderContext, key);
                 }
 
-                doCache(previousOut, renderContext, resource, properties, cache, key, perUserKey);
+                if (debugEnabled) {
+                    logger.debug("Caching content for final key : {}", finalKey);
+                }
+                doCache(previousOut, renderContext, resource, properties, cache, key, finalKey);
             }
+
+            // Append debug information
             if (displayCacheInfo && !previousOut.contains("<body") && previousOut.trim().length() > 0) {
                 return appendDebugInformation(renderContext, key, surroundWithCacheTag(key, previousOut), null);
             }
+
+            // todo : document why dependencies clear ?
             resource.getDependencies().clear();
             resource.getRegexpDependencies().clear();
+
             if (renderContext.getMainResource() == resource) {
-                return removeEsiTags(previousOut);
+                return removeCacheTags(previousOut);
             } else {
                 return surroundWithCacheTag(key, previousOut);
             }
@@ -299,50 +399,80 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
-    protected void doCache(String previousOut, RenderContext renderContext, Resource resource, Properties properties, Cache cache, String key, String perUserKey) throws RepositoryException, ParseException {
-        Long expiration = getExpiration(renderContext, resource, properties);
-        Set<String> depNodeWrappers = Collections.emptySet();
-        // append cache:include tag
-        CacheEntry<String> cacheEntry = getCacheEntry(previousOut, renderContext, resource, key);
-        addPropertiesToCacheEntry(resource, cacheEntry);
-        Element cachedElement = new Element(perUserKey, cacheEntry);
-        if (expiration > 0) {
-            addExpirationToCacheElements(cache, perUserKey, expiration, cachedElement);
-        }
+    /**
+     * Create the fragment and store it into the cache.
+     *
+     * @param previousOut
+     * @param renderContext
+     * @param resource
+     * @param properties
+     * @param cache
+     * @param key
+     * @param finalKey
+     * @throws RepositoryException
+     * @throws ParseException
+     */
+    protected void doCache(String previousOut, RenderContext renderContext, Resource resource, Properties properties, Cache cache, String key, String finalKey) throws RepositoryException, ParseException {
+        Long expiration = properties.getProperty("cache.expiration") != null ? Long.parseLong(properties.getProperty("cache.expiration")) : -1;
         if (expiration != 0) {
-            depNodeWrappers = manageDependencies(renderContext, resource, perUserKey, depNodeWrappers);
-            cache.put(cachedElement);
-        } else {
-            notCacheableFragment.put(key, Boolean.TRUE);
-        }
-        if (logger.isDebugEnabled()) {
-            logger.debug("Store in cache content of node with key: {}", perUserKey);
-            StringBuilder stringBuilder = new StringBuilder();
-            for (String path : depNodeWrappers) {
-                stringBuilder.append(path).append("\n");
+            Set<String> depNodeWrappers = Collections.emptySet();
+
+            // Create the fragment entry based on the rendered content
+            CacheEntry<String> cacheEntry = createCacheEntry(previousOut, renderContext, resource, key);
+
+            // Store some properties that may have been set during fragment execution (todo : handle this another way)
+            addPropertiesToCacheEntry(resource, cacheEntry);
+
+            Element cachedElement = new Element(finalKey, cacheEntry);
+
+            if (expiration > 0) {
+                addExpirationToCacheElements(cache, finalKey, expiration, cachedElement);
             }
-            logger.debug("Dependencies of {}:\n", perUserKey, stringBuilder.toString());
+            storeDependencies(renderContext, resource, finalKey, depNodeWrappers);
+            cache.put(cachedElement);
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("Store in cache content of node with key: {}", finalKey);
+                StringBuilder stringBuilder = new StringBuilder();
+                for (String path : depNodeWrappers) {
+                    stringBuilder.append(path).append("\n");
+                }
+                logger.debug("Dependencies of {}:\n", finalKey, stringBuilder.toString());
+            }
+        } else {
+            // todo : why this is not tested in the isCacheable method  ( which is done in ExpiringCacheFilter )
+            // todo : Note If this is done in isCacheable , the key in notCacheableFragment won't be the same - won't include additional dependencies (but that may be better)
+            // Fragment is not cacheable, store the key in the list of non-cacheable keys
+            notCacheableFragment.put(key, Boolean.TRUE);
         }
     }
 
-    private void addExpirationToCacheElements(Cache cache, String perUserKey, Long expiration, Element cachedElement)
+    /**
+     * Add the specified expiration time to the cache entry
+     * @param cache
+     * @param finalKey
+     * @param expiration
+     * @param cachedElement
+     * @throws ParseException
+     */
+    private void addExpirationToCacheElements(Cache cache, String finalKey, Long expiration, Element cachedElement)
             throws ParseException {
         cachedElement.setTimeToLive(expiration.intValue());
-        String hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template",
+        String hiddenKey = cacheProvider.getKeyGenerator().replaceField(finalKey, "template",
                 "hidden.load");
         Element hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
         if (hiddenElement != null) {
             hiddenElement.setTimeToLive(expiration.intValue());
             cache.put(hiddenElement);
         }
-        hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template",
+        hiddenKey = cacheProvider.getKeyGenerator().replaceField(finalKey, "template",
                 "hidden.footer");
         hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
         if (hiddenElement != null) {
             hiddenElement.setTimeToLive(expiration.intValue());
             cache.put(hiddenElement);
         }
-        hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template",
+        hiddenKey = cacheProvider.getKeyGenerator().replaceField(finalKey, "template",
                 "hidden.header");
         hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
         if (hiddenElement != null) {
@@ -351,8 +481,18 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
-    private Set<String> manageDependencies(RenderContext renderContext, Resource resource, String perUserKey,
-                                           Set<String> depNodeWrappers) {
+    /**
+     * Store the dependencies in the dependency cache. For each dependency, an entry in the dependencies cache is
+     * created, containing the list of keys which depends on it. The current fragment key is added to that list.
+     *
+     * @param renderContext
+     * @param resource The current resource
+     * @param finalKey
+     * @param depNodeWrappers The list of dependencies
+     * @return
+     */
+    private void storeDependencies(RenderContext renderContext, Resource resource, String finalKey,
+                                   Set<String> depNodeWrappers) {
         if (useDependencies()) {
             final Cache dependenciesCache = cacheProvider.getDependenciesCache();
             depNodeWrappers = resource.getDependencies();
@@ -367,7 +507,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         newDependencies.add("ALL");
                         dependenciesCache.put(new Element(path, newDependencies));
                     } else {
-                        addDependencies(renderContext, perUserKey, dependenciesCache, path, newDependencies);
+                        addDependencies(renderContext, finalKey, dependenciesCache, path, newDependencies);
                     }
                 }
             }
@@ -378,15 +518,37 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 Set<String> dependencies = element1 != null ? (Set<String>) element1.getValue() : Collections.<String>emptySet();
                 Set<String> newDependencies = new LinkedHashSet<String>(dependencies.size() + 1);
                 newDependencies.addAll(dependencies);
-                addDependencies(renderContext, perUserKey, regexpDependenciesCache, regexp, newDependencies);
+                addDependencies(renderContext, finalKey, regexpDependenciesCache, regexp, newDependencies);
             }
         }
         resource.getDependencies().clear();
         resource.getRegexpDependencies().clear();
-        return depNodeWrappers;
     }
 
-    protected Properties setAttributesForKey(RenderContext renderContext, Resource resource, RenderChain chain) throws RepositoryException {
+    /**
+     * Get all cache attributes that need to be applied on this fragment and that will impact key generation. The
+     * cache properties may come from the script properties file, or from the jmix:cache mixin (for the cache.perUser
+     * only).
+     *
+     * cache.perUser : is the cache entry specific for each user. Is set by j:perUser node property or cache.perUser
+     * property in script properties
+     *
+     * cache.mainResource : is the cache entry dependant on the main resource. Is set by cache.mainResource property
+     * in script properties, or automatically set if the component is bound.
+     *
+     * cache.requestParameters : list of request parameter that will impact the rendering of the resource. Is set
+     * by cache.requestParameters property in script properties. ec,v,cacheinfo and moduleinfo are automatically added.
+     *
+     * cache.expiration : the expiration time of the cache entry. Can be set by the "expiration" request attribute,
+     * j:expiration node property or the cache.expiration property in script properties.
+     *
+     * @param renderContext
+     * @param resource
+     * @param chain
+     * @return
+     * @throws RepositoryException
+     */
+    protected Properties getAttributesForKey(RenderContext renderContext, Resource resource, RenderChain chain) throws RepositoryException {
         final Script script = (Script) renderContext.getRequest().getAttribute("script");
         boolean isBound = resource.getNode().isNodeType("jmix:bindedComponent");
 
@@ -395,11 +557,12 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         if (script != null) {
             properties.putAll(script.getView().getDefaultProperties());
             properties.putAll(script.getView().getProperties());
-            chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(properties.getProperty("cache.perUser", "false")));
+
+            if (resource.getNode().hasProperty("j:perUser")) {
+                properties.put("cache.perUser",resource.getNode().getProperty("j:perUser").getString());
+            }
             if (isBound) {
-                chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.TRUE);
-            } else {
-                chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(properties.getProperty("cache.mainResource", "false")));
+                properties.put("cache.mainResource", "true");
             }
             String requestParameters = properties.getProperty("cache.requestParameters");
 
@@ -413,32 +576,46 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 stringBuilder.append(",cacheinfo,moduleinfo");
             }
             requestParameters = stringBuilder.toString();
+            properties.put("cache.requestParameters", requestParameters);
 
-            if (requestParameters != null && !"".equals(requestParameters.trim())) {
-                chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", Patterns.COMMA.split(
-                        requestParameters));
+            if (renderContext.getRequest().getAttribute("expiration") != null) {
+                properties.put("cache.expiration", renderContext.getRequest().getAttribute("expiration"));
+            } else if (resource.getNode().hasProperty("j:expiration")) {
+                properties.put("cache.expiration", resource.getNode().getProperty("j:expiration").getString());
             } else {
-                chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", null);
+                properties.put("cache.expiration", "-1");
             }
         }
         return properties;
     }
 
-    protected CacheEntry<String> getCacheEntry(String previousOut, RenderContext renderContext, Resource resource, String key) throws RepositoryException {
+    /**
+     * Create the cache entry based on the rendered content. All sub-content (which should be surrounded by
+     * &lt;!-- cache:include --&gt; tags) are removed and replaced by &lt;esi:include&gt; tags, keeping only the
+     * cache key (without placeholder replacements).
+     *
+     * @param previousOut The full rendered content, coming from the render chain
+     * @param renderContext The render context
+     * @param resource The resource that is being rendered
+     * @param key The key of the fragment
+     * @return An entry that can be stored in the cache
+     * @throws RepositoryException
+     */
+    protected CacheEntry<String> createCacheEntry(String previousOut, RenderContext renderContext, Resource resource, String key) throws RepositoryException {
+        // Replace <!-- cache:include --> tags of sub fragments by HTML tags that can be parsed by jericho
         String cachedRenderContent = ESI_INCLUDE_STOPTAG_REGEXP.matcher(previousOut).replaceAll("</esi:include>");
         cachedRenderContent = ESI_INCLUDE_STARTTAG_REGEXP.matcher(cachedRenderContent).replaceAll("<esi:include src=\"$1\">");
 
-        logger.debug("Storing for key: {}", key);
-
         Source source = new Source(cachedRenderContent);
-        // This will remove all blank line and drastically reduce data in memory
-//                source = new Source((new SourceFormatter(source)).toString());
+
+        //// This will remove all blank line and drastically reduce data in memory
+        // source = new Source((new SourceFormatter(source)).toString());
+
+        // We will remove module:tag content here has we do not want to store them twice in memory
         List<StartTag> esiIncludeTags = source.getAllStartTags("esi:include");
-        /*if (debugEnabled) {
-    displaySegments(esiIncludeTags);
-}*/
-        // We will remove container content here has we do not want to store them twice in memory
         OutputDocument outputDocument = emptyEsiIncludeTagContainer(esiIncludeTags, source);
+
+        // Finally, add the  <!-- cache:include --> around the content and create cache entry.
         String output = outputDocument.toString();
         cachedRenderContent = surroundWithCacheTag(key, output);
         CacheEntry<String> cacheEntry = new CacheEntry<String>(cachedRenderContent);
@@ -446,7 +623,15 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         return cacheEntry;
     }
 
+    /**
+     * Store some properties that may have been set during fragment execution
+     *
+     * @param resource
+     * @param cacheEntry
+     * @throws RepositoryException
+     */
     private void addPropertiesToCacheEntry(Resource resource, CacheEntry<String> cacheEntry) throws RepositoryException {
+        // todo : why not handle form token like resources, with simple html tags instead of having custom code here ?
         if (resource.getFormInputs() != null) {
             cacheEntry.setProperty(FORM_TOKEN, resource.getFormInputs());
         }
@@ -469,23 +654,36 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
-    protected void addDependencies(RenderContext renderContext, String perUserKey, Cache regexpDependenciesCache, String regexp, Set<String> newDependencies) {
-        if (newDependencies.add(KeyCompressor.encodeKey(perUserKey))) {
+    /**
+     * Add key to the list of dependencies
+     *
+     * @param renderContext
+     * @param finalKey
+     * @param regexpDependenciesCache
+     * @param regexp
+     * @param newDependencies
+     */
+    protected void addDependencies(RenderContext renderContext, String finalKey, Cache regexpDependenciesCache, String regexp, Set<String> newDependencies) {
+        if (newDependencies.add(KeyCompressor.encodeKey(finalKey))) {
             regexpDependenciesCache.put(new Element(regexp, newDependencies));
         }
     }
 
-    protected Long getExpiration(RenderContext renderContext, Resource resource, Properties properties) {
-        String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
-        return cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long.valueOf(properties.getProperty("cache.expiration", "-1"));
-    }
-
+    /**
+     * Replace all placeholders in the cache key to get a final key.
+     * @param renderContext RenderContext
+     * @param key Key with placeholders
+     * @return The final key with placehodlers replaced
+     */
     protected String replacePlaceholdersInCacheKey(RenderContext renderContext, String key) {
         return cacheProvider.getKeyGenerator().replacePlaceholdersInCacheKey(renderContext, key);
     }
 
     /**
-     * Checks if the node properties has references to other content items (links in rich text fields) and adds those as dependencies.
+     * Checks if the node is a jmix:referencesInField and add references to other content items (links in rich text
+     * fields) as dependencies.
+     *
+     * todo : move this to a specific filter
      *
      * @param resource the resource to update dependencies on
      * @throws RepositoryException in case of a repository error
@@ -517,9 +715,23 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
+    /**
+     * Aggregate the content that are inside the cached fragment to get a full HTML content with all sub modules
+     * embedded.
+     *
+     * @param cache The cache
+     * @param cachedContent The fragment, as it is stored in the cache
+     * @param renderContext The render context
+     * @param moduleParams Module params todo : what is it ?
+     * @param areaIdentifier
+     * @param cacheKeyStack
+     * @return
+     */
     protected String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, Map<String, Serializable> moduleParams, String areaIdentifier, Stack<String> cacheKeyStack) {
         // aggregate content
         Source htmlContent = new Source(cachedContent);
+
+        // Get all embedded esi:include tags that should be replaced with proper content
         List<? extends Tag> esiIncludeTags = htmlContent.getAllStartTags("esi:include");
         if (esiIncludeTags.size() > 0) {
             OutputDocument outputDocument = new OutputDocument(htmlContent);
@@ -528,15 +740,21 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 if (logger.isDebugEnabled()) {
                     logger.debug(segment.toString());
                 }
+                // Get the sub-fragment cache key
                 String cacheKey = segment.getAttributeValue("src");
 
+                // Replace placeholder to have a full contextual cache key
                 String replacedCacheKey = replacePlaceholdersInCacheKey(renderContext, cacheKey);
+
+                // todo : document or remove that. cacheKey becomes some partially replaced key
                 cacheKey = StringUtils.replace(cacheKey, AclCacheKeyPartGenerator.PER_USER, renderContext.getUser().getUsername());
 
                 if (logger.isDebugEnabled()) {
                     logger.debug("Check if {} is in cache", replacedCacheKey);
                 }
+
                 if (cache.isKeyInCache(replacedCacheKey)) {
+                    // If fragment is in cache, get it from there and aggregate recusrively
                     final Element element = cache.get(replacedCacheKey);
                     if (element != null && element.getValue() != null) {
                         if (logger.isDebugEnabled()) {
@@ -550,6 +768,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                                          segment.getElement().getEndTag().getEndTagType() + " with " + content);
                         }*/
 
+                        // Avoid loops
                         if (cacheKeyStack.contains(cacheKey)) {
                             continue;
                         }
@@ -563,7 +782,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
                                     content);
                         }
-                        setResources(renderContext, cacheEntry);
+                        // Restore request attributes for this fragment
+                        restoreRequestAttributes(renderContext, cacheEntry);
 
                         cacheKeyStack.pop();
                     } else {
@@ -571,12 +791,14 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         if (logger.isDebugEnabled()) {
                             logger.debug("Missing content: {}", replacedCacheKey);
                         }
+                        // The fragment is not in the cache, generate it
                         generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams, areaIdentifier);
                     }
                 } else {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Missing content: {}", replacedCacheKey);
                     }
+                    // The fragment is not in the cache, generate it
                     generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams, areaIdentifier);
                 }
             }
@@ -585,8 +807,14 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         return cachedContent;
     }
 
+    /**
+     * Restore attribute that were store by addPropertiesToCacheEntry
+     *
+     * @param renderContext The render context
+     * @param cacheEntry The cache entry
+     */
     @SuppressWarnings("unchecked")
-    protected void setResources(RenderContext renderContext, CacheEntry<?> cacheEntry) {
+    protected void restoreRequestAttributes(RenderContext renderContext, CacheEntry<?> cacheEntry) {
         Object property = cacheEntry.getProperty(FORM_TOKEN);
         if (property != null) {
             Map<String, Map<String, String>> forms = (Map<String, Map<String, String>>) renderContext.getRequest().getAttribute(
@@ -599,22 +827,33 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
+    /**
+     * Generates content for a sub fragment.
+     * @param renderContext The render context
+     * @param outputDocument The full output document
+     * @param segment The segment to replace in the output document
+     * @param cacheKey The cache key of the fragment to generate
+     * @param moduleParams The module params of that fragment
+     * @param areaIdentifier
+     */
     protected void generateContent(RenderContext renderContext, OutputDocument outputDocument, StartTag segment,
                                    String cacheKey, Map<String, Serializable> moduleParams, String areaIdentifier) {
-        // if missing data call RenderService after creating the right resource
         final CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
         try {
+            // Parse the key to get all separate key attributes like node path and template
             Map<String, String> keyAttrbs = cacheKeyGenerator.parse(cacheKey);
             JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession(renderContext.getWorkspace(), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get("language")),
                     renderContext.getFallbackLocale());
             JCRNodeWrapper node = null;
             try {
+                // Get the node associated to the fragment to generate
                 node = currentUserSession.getNode(StringUtils.replace(keyAttrbs.get("path"), PathCacheKeyPartGenerator.MAIN_RESOURCE_KEY,""));
             } catch (PathNotFoundException e) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Node {} is no longer available." + " Replacing output with empty content.",
                             keyAttrbs.get("path"));
                 }
+                // Node is not found, return empty content
                 outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
                         StringUtils.EMPTY);
                 return;
@@ -625,6 +864,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         ToStringBuilder.reflectionToString(moduleParams, ToStringStyle.MULTI_LINE_STYLE) +
                         " areaIdentifier " + areaIdentifier);
             }
+
+            // Prepare to dispatch to the render service - restore all area/templates atributes
             renderContext.getRequest().removeAttribute(
                     "areaNodeTypesRestriction" + renderContext.getRequest().getAttribute("org.jahia.modules.level"));
             Template oldOne = (Template) renderContext.getRequest().getAttribute("previousTemplate");
@@ -656,6 +897,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     resource.getModuleParams().put(entry.getKey(), entry.getValue());
                 }
             }
+
+            // Dispatch to the render service to generate the content
             String content = RenderService.getInstance().render(resource, renderContext);
             if (content == null || "".equals(content.trim())) {
                 logger.error("Empty generated content for key " + cacheKey + " with attributes : " +
@@ -663,6 +906,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         ToStringBuilder.reflectionToString(moduleParams, ToStringStyle.MULTI_LINE_STYLE) +
                         " areaIdentifier " + areaIdentifier);
             }
+
+            // And replace the content in the document
             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), content);
             if (oldInArea != null) {
                 renderContext.getRequest().setAttribute("inArea", oldInArea);
@@ -681,6 +926,12 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
+    /**
+     * Add &lt;!-- cache include --&gt; tags around the content, with the cache key as an attribute.
+     * @param key The key of the fragment
+     * @param output The content
+     * @return The content surrounded by the tag
+     */
     protected String surroundWithCacheTag(String key, String output) {
         String cachedRenderContent;
         StringBuilder builder = new StringBuilder();
@@ -691,14 +942,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         builder.append("\n<!-- /cache:include -->");
         cachedRenderContent = builder.toString();
         return cachedRenderContent;
-    }
-
-    public void setCacheProvider(ModuleCacheProvider cacheProvider) {
-        this.cacheProvider = cacheProvider;
-    }
-
-    public void setGeneratorQueue(ModuleGeneratorQueue generatorQueue) {
-        this.generatorQueue = generatorQueue;
     }
 
     protected String appendDebugInformation(RenderContext renderContext, String key, String renderContent,
@@ -738,7 +981,14 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         return outputDocument;
     }
 
-    public static String removeEsiTags(String content) {
+    /**
+     * Remove the surrounding cache:include tags - only used for the main resource, as the content won't be included
+     * into another fragment but returned to the user
+     *
+     * @param content
+     * @return
+     */
+    public static String removeCacheTags(String content) {
         if (StringUtils.isNotEmpty(content)) {
             String s = CLEANUP_REGEXP.matcher(content).replaceAll("");
             return s;
@@ -752,10 +1002,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         super.handleError(renderContext, resource, chain, e);
         LinkedList<String> userKeysLinkedList = userKeys.get();
         if (userKeysLinkedList != null && userKeysLinkedList.size() > 0) {
-            String perUserKey = userKeysLinkedList.get(0);
+            String finalKey = userKeysLinkedList.get(0);
 
             final Cache cache = cacheProvider.getCache();
-            cache.put(new Element(perUserKey, null));
+            cache.put(new Element(finalKey, null));
         }
     }
 
@@ -764,19 +1014,19 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         LinkedList<String> userKeysLinkedList = userKeys.get();
         if (userKeysLinkedList != null && userKeysLinkedList.size() > 0) {
 
-            String perUserKey = userKeysLinkedList.remove(0);
-            if (perUserKey.equals(acquiredSemaphore.get())) {
+            String finalKey = userKeysLinkedList.remove(0);
+            if (finalKey.equals(acquiredSemaphore.get())) {
                 generatorQueue.getAvailableProcessings().release();
                 acquiredSemaphore.set(null);
             }
 
             Set<CountDownLatch> latches = processingLatches.get();
             Map<String, CountDownLatch> countDownLatchMap = generatorQueue.getGeneratingModules();
-            CountDownLatch latch = countDownLatchMap.get(perUserKey);
+            CountDownLatch latch = countDownLatchMap.get(finalKey);
             if (latches != null && latches.contains(latch)) {
                 latch.countDown();
                 synchronized (countDownLatchMap) {
-                    latches.remove(countDownLatchMap.remove(perUserKey));
+                    latches.remove(countDownLatchMap.remove(finalKey));
                 }
             }
         }
@@ -814,7 +1064,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
         if (mustWait) {
             if (semaphoreAcquired) {
-                // another thread wanted the same module and got the latch first, so release the semaphore immediately as we must wait 
+                // another thread wanted the same module and got the latch first, so release the semaphore immediately as we must wait
                 generatorQueue.getAvailableProcessings().release();
                 acquiredSemaphore.set(null);
             }
@@ -859,29 +1109,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         if (event instanceof TemplatePackageRedeployedEvent) {
             notCacheableFragment.clear();
         }
-    }
-
-    public void setModuleParamsProperties(Map<String, String> moduleParamsProperties) {
-        this.moduleParamsProperties = moduleParamsProperties;
-    }
-
-
-    /**
-     * Invoked by a BeanFactory after it has set all bean properties supplied
-     * (and satisfied BeanFactoryAware and ApplicationContextAware).
-     * <p>This method allows the bean instance to perform initialization only
-     * possible when all bean properties have been set and to throw an
-     * exception in the event of misconfiguration.
-     *
-     * @throws Exception in the event of misconfiguration (such
-     *                   as failure to set an essential property) or if initialization fails.
-     */
-    public void afterPropertiesSet() throws Exception {
-        Config.LoggerProvider = LoggerProvider.DISABLED;
-    }
-
-    public void setDependenciesLimit(int dependenciesLimit) {
-        this.dependenciesLimit = dependenciesLimit;
     }
 
     public void removeNotCacheableFragment(String key) {

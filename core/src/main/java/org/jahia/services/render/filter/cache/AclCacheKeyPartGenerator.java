@@ -140,8 +140,8 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     }
 
     @Override
-    public String getValue(Resource resource, RenderContext renderContext) {
-        return appendAcls(resource, renderContext, true);
+    public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
+        return appendAcls(resource, renderContext, properties, true);
     }
 
     @Override
@@ -163,9 +163,9 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         return keyPart;
     }
 
-    public String appendAcls(final Resource resource, final RenderContext renderContext, boolean appendNodePath) {
+    public String appendAcls(final Resource resource, final RenderContext renderContext, Properties properties, boolean appendNodePath) {
         try {
-            if (renderContext.getRequest() != null && Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.perUser"))) {
+            if ("true".equals(properties.get("cache.perUser"))) {
                 return PER_USER;
             }
 
@@ -189,7 +189,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             aclsKeys.add(getAclsKeyPart(renderContext, checkRootPath, nodePath, appendNodePath, null));
             final Set<String> dependencies = resource.getDependencies();
 
-            if (renderContext.getRequest() != null && Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.mainResource"))) {
+            if ("true".equals(properties.get("cache.mainResource"))) {
                 aclsKeys.add("mraclmr");
             } else {
                 for (final String dependency : dependencies) {

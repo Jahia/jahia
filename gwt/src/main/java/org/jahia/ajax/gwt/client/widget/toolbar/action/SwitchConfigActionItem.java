@@ -46,6 +46,7 @@ import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -54,7 +55,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
-public class SwitchConfigActionItem extends BaseActionItem {
+public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
     private String configurationName;
     private boolean updateSidePanel =true;
     private boolean updateToolbar =true;
@@ -87,6 +88,11 @@ public class SwitchConfigActionItem extends BaseActionItem {
 
     public void setUpdateToolbar(boolean updateToolbar) {
         this.updateToolbar = updateToolbar;
+    }
+
+    @Override
+    public void handleNewMainNodeLoaded(GWTJahiaNode node) {
+        setEnabled(isNodeTypeAllowed(node));
     }
 
     @Override

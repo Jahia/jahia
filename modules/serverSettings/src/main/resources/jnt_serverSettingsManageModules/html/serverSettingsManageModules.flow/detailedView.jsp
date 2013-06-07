@@ -29,7 +29,7 @@
 </script>
 </template:addResources>
 
-<c:set value="${renderContext.editModeConfigName eq 'studiomode' or renderContext.editModeConfigName eq 'studiolayoutmode'}" var="isStudio"/>
+<c:set value="${renderContext.editModeConfigName eq 'studiomode' or renderContext.editModeConfigName eq 'studiovisualmode'}" var="isStudio"/>
 
 <template:addResources>
 <script type="text/javascript">

@@ -270,6 +270,12 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
                 <property name="configurationName" value="studiovisualmode"/>
                 <property name="updateSidePanel" value="false"/>
+                <property name="allowedNodeTypes">
+                    <list>
+                        <value>jnt:page</value>
+                        <value>jnt:template</value>
+                    </list>
+                </property>
             </bean>
         </property>
     </bean>
@@ -280,6 +286,12 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
                 <property name="configurationName" value="studiomode"/>
                 <property name="updateSidePanel" value="false"/>
+                <property name="allowedNodeTypes">
+                    <list>
+                        <value>jnt:page</value>
+                        <value>jnt:template</value>
+                    </list>
+                </property>
             </bean>
         </property>
     </bean>

@@ -409,8 +409,9 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                 NodeIterator rowIterator = queryResult.getNodes();
                 while (rowIterator.hasNext()) {
                     Node node = (Node) rowIterator.next();
-                    String userPath = userManagerService.getUserSplittingRule().getPathForUsername(userName);
-                    if (!node.getPath().startsWith(userPath + "/j:acl")) {
+// todo: this check breaks the key, as cache is incorrectly initialized and the acl key returned is not always the same
+//                    String userPath = userManagerService.getUserSplittingRule().getPathForUsername(userName);
+//                    if (!node.getPath().startsWith(userPath + "/j:acl")) {
                         Map<String, String> map;
                         if (!cache.isKeyInCache(userName)) {
                             map = new LinkedHashMap<String, String>();
@@ -442,7 +443,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                             element.setEternal(true);
                             cache.put(element);
                         }
-                    }
+//                    }
                 }
                 return null;
             }

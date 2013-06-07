@@ -116,11 +116,11 @@ public class NewModuleActionItem extends BaseActionItem {
             @Override
             public void handleEvent(WindowEvent be) {
                 if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.OK)) {
-                    linker.loading(Messages.get("statusbar.creatingModule.label"));
+                    linker.loading(Messages.get("statusbar.creatingModule.label", "Creating module..."));
                     JahiaContentManagementService.App.getInstance().createModule(name.getValue(), null, siteType != null ? siteType : moduleTypeCombo.getSimpleValue() , sources.getValue(), new BaseAsyncCallback<GWTJahiaNode>() {
                         public void onSuccess(GWTJahiaNode result) {
                             linker.loaded();
-                            Info.display(Messages.get("label.information", "Information"), Messages.get("message.templateSetCreated", "Templates set successfully created"));
+                            Info.display(Messages.get("label.information", "Information"), Messages.get("message.moduleCreated", "Module successfully created"));
                             JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
                             JahiaGWTParameters.setSiteFromNode(result, linker);
                             if (((EditLinker) linker).getSidePanel() != null) {
@@ -134,7 +134,7 @@ public class NewModuleActionItem extends BaseActionItem {
 
                         public void onApplicationFailure(Throwable caught) {
                             linker.loaded();
-                            Info.display(Messages.get("label.error", "Error"), Messages.get("message.templateSetCreationFailed", "Templates set creation failed"));
+                            Info.display(Messages.get("label.error", "Error"), Messages.get("message.moduleCreationFailed", "Module creation failed"));
                         }
                     });
                 }

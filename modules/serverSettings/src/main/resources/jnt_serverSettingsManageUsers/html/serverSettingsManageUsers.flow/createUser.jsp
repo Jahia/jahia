@@ -36,7 +36,7 @@
             <fieldset title="<fmt:message key="serverSettings.user.profile"/>">
                 <div class="container-fluid">
                     <div class="row-fluid">
-                        <p><fmt:message key="serverSettings.user.errors.username.note"/>:&nbsp;<fmt:message key="serverSettings.user.errors.username.syntax"/></p>
+                        <p><fmt:message key="label.noteThat"/>:&nbsp;<fmt:message key="serverSettings.user.errors.username.syntax"/></p>
                     </div>
                     <div class="row-fluid">
                         <div class="span4">

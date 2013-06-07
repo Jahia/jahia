@@ -22,12 +22,14 @@
 <template:addResources type="css" resources="admin-bootstrap.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 
+<template:addResources>
 <script type="text/javascript">
     $(document).ready(function () {
         $(".needUsersSelection").submit(function () {
             var selected = $("input[name='userSelected']:checked").val();
             if(undefined==selected) {
-                alert('<fmt:message key="serverSettings.user.select.one"/>');
+            	<fmt:message key="serverSettings.user.select.one" var="i18nSelectUser"/>
+                alert('${functions:escapeJavaScript(i18nSelectUser)}');
                 return false;
             }
             $("input[name='selectedUsers']").val(selected);
@@ -35,6 +37,8 @@
         })
     });
 </script>
+</template:addResources>
+
 <div class="box-1">
     <form class="form-inline " action="${flowExecutionUrl}" id="searchForm" method="post">
         <fieldset>
@@ -55,7 +59,7 @@
             <input type="radio" id="searchIn" name="searchIn" value="allProps"
                    <c:if test="${empty searchCriteria.searchIn or searchCriteria.searchIn eq 'allProps'}">checked</c:if>
                    onclick="$('.propCheck').attr('disabled',true);">&nbsp;<fmt:message
-                key="serverSettings.user.properties.all"/>
+                key="label.allProperties"/>
             <input type="radio" name="searchIn" value="properties"
                    <c:if test="${searchCriteria.searchIn eq 'properties'}">checked</c:if>
                    onclick="$('.propCheck').removeAttr('disabled');">&nbsp;<fmt:message

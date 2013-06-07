@@ -86,7 +86,7 @@ public class UserProperties implements Serializable {
             messages.addMessage(new MessageBuilder()
                     .error()
                     .source("username")
-                    .defaultText(
+                    .defaultText(username + " " + 
                             Messages.get("resources.JahiaServerSettings", "serverSettings.user.errors.username.exist",
                                     LocaleContextHolder.getLocale())).build());
         }

@@ -116,7 +116,7 @@ public class NewModuleActionItem extends BaseActionItem {
             @Override
             public void handleEvent(WindowEvent be) {
                 if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.OK)) {
-                    linker.loading(Messages.get("statusbar.creatingTemplateSet.label"));
+                    linker.loading(Messages.get("statusbar.creatingModule.label"));
                     JahiaContentManagementService.App.getInstance().createModule(name.getValue(), null, siteType != null ? siteType : moduleTypeCombo.getSimpleValue() , sources.getValue(), new BaseAsyncCallback<GWTJahiaNode>() {
                         public void onSuccess(GWTJahiaNode result) {
                             linker.loaded();

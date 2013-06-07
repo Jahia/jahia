@@ -147,7 +147,7 @@ class BundleHttpResourcesTracker extends ServiceTracker {
         Map<String, String> cfg = new HashMap<String, String>(jspConfig.size() + 2);
         cfg.putAll(jspConfig);
         File scratchDirFile = new File(new File(System.getProperty("java.io.tmpdir"), "jahia-jsps"),
-                bundle.getSymbolicName());
+                bundle.getSymbolicName()+"-"+bundle.getBundleId());
         if (!scratchDirFile.exists()) {
             scratchDirFile.mkdirs();
         }

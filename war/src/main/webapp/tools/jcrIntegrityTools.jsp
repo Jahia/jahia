@@ -393,11 +393,16 @@
                     Property property = propertyIterator.nextProperty();
                     int propertyType = property.getType();
                     if (property.isMultiple()) {
-                        Value[] values = property.getValues();
-                        for (int i = 0; i < values.length; i++) {
-                            if (!processPropertyValue(out, node, property, values[i], results, fix, referencesCheck, binaryCheck)) {
-                                return;
-                            }
+                        try {
+                        	Value[] values = property.getValues();
+                        	for (int i = 0; i < values.length; i++) {
+                            	if (!processPropertyValue(out, node, property, values[i], results, fix, referencesCheck, binaryCheck)) {
+                                	return;
+                            	}
+                        	}
+                        }catch(javax.jcr.nodetype.ConstraintViolationException x) {
+                             //Definition was changed, property is missing
+                             System.out.println("Warning: Property definition is missing:" + x.getMessage());
                         }
                     } else {
                         if (!processPropertyValue(out, node, property, property.getValue(), results, fix, referencesCheck, binaryCheck)) {

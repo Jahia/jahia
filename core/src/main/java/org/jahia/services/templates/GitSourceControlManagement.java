@@ -187,8 +187,14 @@ public class GitSourceControlManagement extends SourceControlManagement {
 
     public void commit(String message) throws IOException {
         invalidateStatusCache();
-        checkExecutionResult(executeCommand(executable, "commit -a -m \"" + message + "\""));
-        checkExecutionResult(executeCommand(executable, "push -u origin master"));
+        Map<String, Status> statusMap = getStatusMap(false);
+        boolean commitRequired = statusMap.values().contains(Status.MODIFIED) || statusMap.values().contains(Status.ADDED)
+                || statusMap.values().contains(Status.DELETED) || statusMap.values().contains(Status.RENAMED)
+                || statusMap.values().contains(Status.COPIED) || statusMap.values().contains(Status.UNMERGED);
+        if (commitRequired) {
+            checkExecutionResult(executeCommand(executable, "commit -a -m \"" + message + "\""));
+            checkExecutionResult(executeCommand(executable, "push -u origin master"));
+        }
     }
 
     @Override

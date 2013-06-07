@@ -66,7 +66,7 @@ public class FetchModuleActionItem extends BaseActionItem {
         dialog.addCallback(new Listener<WindowEvent>() {
             @Override
             public void handleEvent(WindowEvent be) {
-                linker.loading("Creating module...");
+                linker.loading(Messages.get("statusbar.creatingModule.label", "Creating module..."));
                 JahiaContentManagementService.App.getInstance().checkoutModule(dialog.getModuleName(), dialog.getUri(), dialog.getScmType(), dialog.getBranchOrTag(), new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode result) {
                         linker.loaded();

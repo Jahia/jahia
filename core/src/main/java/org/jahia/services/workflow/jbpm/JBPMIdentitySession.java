@@ -50,8 +50,8 @@ import org.jbpm.api.identity.Group;
 import org.jbpm.api.identity.User;
 import org.jbpm.pvm.internal.env.EnvironmentImpl;
 import org.jbpm.pvm.internal.env.ExecutionContext;
-import org.jbpm.pvm.internal.identity.spi.IdentitySession;
 import org.jbpm.pvm.internal.model.ExecutionImpl;
+import org.kie.internal.task.api.TaskIdentityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +62,7 @@ import java.util.*;
 /**
  * Identity Manager for connecting jBPM to Jahia Users
  */
-public class JBPMIdentitySession implements IdentitySession {
+public class JBPMIdentitySession implements TaskIdentityService {
     private static transient Logger logger = LoggerFactory.getLogger(JBPMIdentitySession.class);
     protected JahiaGroupManagerService groupService;
     protected JahiaUserManagerService userService;
@@ -90,7 +90,7 @@ public class JBPMIdentitySession implements IdentitySession {
     public List<User> findUsersById(String... strings) {
         SortedSet<User> emails = new TreeSet<User>();
         try {
-            ExecutionImpl execution = ((ExecutionContext)EnvironmentImpl.getCurrent().getContext("execution")).getExecution();
+            ExecutionImpl execution = ((ExecutionContext) EnvironmentImpl.getCurrent().getContext("execution")).getExecution();
             WorkflowDefinition def = (WorkflowDefinition) execution.getVariable("workflow");
             String id = (String) execution.getVariable("nodeId");
             for (String userId : strings) {
@@ -203,7 +203,7 @@ public class JBPMIdentitySession implements IdentitySession {
         throw new UnsupportedOperationException();
     }
 
-    class UserImpl implements User,Comparable<User> {
+    class UserImpl implements User, Comparable<User> {
         private String id;
         private String givenName;
         private String familyName;
@@ -270,7 +270,7 @@ public class JBPMIdentitySession implements IdentitySession {
          *                            from being compared to this object.
          */
         public int compareTo(User o) {
-            return (getFamilyName()+getGivenName()).compareTo(o.getFamilyName()+o.getGivenName());
+            return (getFamilyName() + getGivenName()).compareTo(o.getFamilyName() + o.getGivenName());
         }
 
         @Override
@@ -317,5 +317,6 @@ public class JBPMIdentitySession implements IdentitySession {
             return type;
         }
     }
+
 }
 

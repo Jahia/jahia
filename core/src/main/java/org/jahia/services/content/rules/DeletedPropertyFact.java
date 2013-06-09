@@ -40,7 +40,7 @@
 
 package org.jahia.services.content.rules;
 
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.spi.KnowledgeHelper;
 
 import javax.jcr.RepositoryException;
 
@@ -49,7 +49,6 @@ import javax.jcr.RepositoryException;
  * User: toto
  * Date: 17 janv. 2008
  * Time: 15:20:31
- * 
  */
 public class DeletedPropertyFact {
     private String nodePath;
@@ -79,7 +78,7 @@ public class DeletedPropertyFact {
     }
 
     public String toString() {
-        return "deleted "+nodePath+"/"+name;
+        return "deleted " + nodePath + "/" + name;
     }
 
     /**

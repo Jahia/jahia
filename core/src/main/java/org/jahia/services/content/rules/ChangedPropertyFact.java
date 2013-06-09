@@ -40,13 +40,13 @@
 
 package org.jahia.services.content.rules;
 
+import org.drools.core.spi.KnowledgeHelper;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.SelectorType;
-import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,11 +85,11 @@ public class ChangedPropertyFact implements Updateable {
         operationType = nodeWrapper.getOperationType();
     }
 
-    public ChangedPropertyFact(AddedNodeFact nodeWrapper, final String name, final Object o, KieSession drools) throws RepositoryException {
+    public ChangedPropertyFact(AddedNodeFact nodeWrapper, final String name, final Object o, KnowledgeHelper drools) throws RepositoryException {
         this(nodeWrapper, name, o, drools, true);
     }
 
-    public ChangedPropertyFact(AddedNodeFact nodeWrapper, final String name, final Object o, KieSession drools,
+    public ChangedPropertyFact(AddedNodeFact nodeWrapper, final String name, final Object o, KnowledgeHelper drools,
                                final boolean overrideIfExisting) throws RepositoryException {
         if (nodeWrapper == null) {
             return;
@@ -104,7 +104,7 @@ public class ChangedPropertyFact implements Updateable {
 
         if (node == null || node.isLocked()) {
             logger.debug("Node is locked, delay property update to later");
-            List<Updateable> list = (List<Updateable>) drools.getGlobal("delayedUpdates");
+            List<Updateable> list = (List<Updateable>) drools.getWorkingMemory().getGlobal("delayedUpdates");
             list.add(this);
         } else {
             setProperty(node, name, o, overrideIfExisting);

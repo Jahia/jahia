@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <bean class="org.jahia.services.workflow.jbpm.JBPMSpringHelper" id="springHelper">
         <property name="jbpmCfg" value="jbpm.cfg.xml"/>
         <property name="sessionFactoryName" value="sessionFactory"/>
     </bean>
-    <bean id="processEngine" factory-bean="springHelper" factory-method="createProcessEngine" />
+    <bean id="processEngine" factory-bean="springHelper" factory-method="createProcessEngine"/>
 
-    <bean id="jBPMProvider" class="org.jahia.services.workflow.jbpm.JBPMProvider" factory-method="getInstance" init-method="start">
+    <bean id="jBPMProvider" class="org.jahia.services.workflow.jbpm.JBPM6WorkflowProviderProvider"
+          factory-method="getInstance" init-method="start">
         <property name="key" value="jBPM"/>
         <property name="workflowService" ref="workflowService"/>
         <property name="processEngine" ref="processEngine"/>

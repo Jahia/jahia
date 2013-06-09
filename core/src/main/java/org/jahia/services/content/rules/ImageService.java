@@ -42,6 +42,7 @@ package org.jahia.services.content.rules;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.drools.core.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -50,7 +51,6 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.image.Image;
 import org.jahia.services.image.JahiaImageService;
 import org.jahia.settings.SettingsBean;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,7 +98,7 @@ public class ImageService {
     }
 
 
-    private Image getImageWrapper(final AddedNodeFact imageNode, KieSession drools) throws Exception {
+    private Image getImageWrapper(final AddedNodeFact imageNode, KnowledgeHelper drools) throws Exception {
         Iterator<?> it = drools.getWorkingMemory().iterateObjects(new ObjectFilter() {
             public boolean accept(Object o) {
                 if (o instanceof Image) {
@@ -122,11 +122,11 @@ public class ImageService {
         return iw;
     }
 
-    public void addThumbnail(AddedNodeFact imageNode, String name, int size, KieSession drools) throws Exception {
+    public void addThumbnail(AddedNodeFact imageNode, String name, int size, KnowledgeHelper drools) throws Exception {
         addThumbnail(imageNode, name, size, false, drools);
     }
 
-    public void addThumbnail(AddedNodeFact imageNode, String name, int size, boolean square, KieSession drools) throws Exception {
+    public void addThumbnail(AddedNodeFact imageNode, String name, int size, boolean square, KnowledgeHelper drools) throws Exception {
         long timer = System.currentTimeMillis();
         if (imageNode.getNode().hasNode(name)) {
             JCRNodeWrapper node = imageNode.getNode().getNode(name);
@@ -161,14 +161,14 @@ public class ImageService {
         }
     }
 
-    public void addThumbnail(ChangedPropertyFact propertyWrapper, String name, int size, KieSession drools) throws Exception {
+    public void addThumbnail(ChangedPropertyFact propertyWrapper, String name, int size, KnowledgeHelper drools) throws Exception {
         final JCRPropertyWrapper property = propertyWrapper.getProperty();
         final JCRSessionWrapper session = property.getSession();
         JCRNodeWrapper node = session.getNodeByIdentifier(property.getString());
         addThumbnail(new AddedNodeFact(node), name, size, drools);
     }
 
-    public void addSquareThumbnail(ChangedPropertyFact propertyWrapper, String name, int size, KieSession drools) throws Exception {
+    public void addSquareThumbnail(ChangedPropertyFact propertyWrapper, String name, int size, KnowledgeHelper drools) throws Exception {
         final JCRPropertyWrapper property = propertyWrapper.getProperty();
         final JCRSessionWrapper session = property.getSession();
         JCRNodeWrapper node = session.getNodeByIdentifier(property.getString());
@@ -197,7 +197,7 @@ public class ImageService {
         return width > 0 && height > 0 && width <= size && height <= size;
     }
 
-    protected File getThumbFile(AddedNodeFact imageNode, int size, boolean square, KieSession drools) throws Exception {
+    protected File getThumbFile(AddedNodeFact imageNode, int size, boolean square, KnowledgeHelper drools) throws Exception {
         String fileExtension = FilenameUtils.getExtension(imageNode.getName());
 
         if (!square && isSmallerThan(imageNode.getNode(), size)) {
@@ -225,7 +225,7 @@ public class ImageService {
         }
     }
 
-    public void setHeight(AddedNodeFact imageNode, String propertyName, KieSession drools) throws Exception {
+    public void setHeight(AddedNodeFact imageNode, String propertyName, KnowledgeHelper drools) throws Exception {
         Image iw = getImageWrapper(imageNode, drools);
         if (iw == null) {
             return;
@@ -237,7 +237,7 @@ public class ImageService {
         drools.insert(new ChangedPropertyFact(imageNode, propertyName, height, drools));
     }
 
-    public void setWidth(AddedNodeFact imageNode, String propertyName, KieSession drools) throws Exception {
+    public void setWidth(AddedNodeFact imageNode, String propertyName, KnowledgeHelper drools) throws Exception {
         Image iw = getImageWrapper(imageNode, drools);
         if (iw == null) {
             return;
@@ -249,8 +249,8 @@ public class ImageService {
         drools.insert(new ChangedPropertyFact(imageNode, propertyName, width, drools));
     }
 
-    public void disposeImageForNode(final AddedNodeFact imageNode, KieSession drools) throws Exception {
-        Iterator<?> it = drools.iterateObjects(new ObjectFilter() {
+    public void disposeImageForNode(final AddedNodeFact imageNode, KnowledgeHelper drools) throws Exception {
+        Iterator<?> it = drools.getWorkingMemory().iterateObjects(new ObjectFilter() {
             public boolean accept(Object o) {
                 if (o instanceof Image) {
                     try {

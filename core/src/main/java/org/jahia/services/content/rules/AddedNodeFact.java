@@ -40,6 +40,7 @@
 
 package org.jahia.services.content.rules;
 
+import org.drools.core.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -47,7 +48,6 @@ import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +77,7 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
         super(node);
     }
 
-    public AddedNodeFact(AddedNodeFact parentNodeWrapper, String name, String type, KieSession drools) throws RepositoryException {
+    public AddedNodeFact(AddedNodeFact parentNodeWrapper, String name, String type, KnowledgeHelper drools) throws RepositoryException {
         super(null);
         this.parentNode = parentNodeWrapper;
         workspace = parentNode.getNode().getSession().getWorkspace().getName();
@@ -96,7 +96,7 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
         if (node.isLocked()) {
             logger.debug("Node is locked, delay property update to later");
             @SuppressWarnings("unchecked")
-            List<Updateable> list = (List<Updateable>) drools.getGlobal("delayedUpdates");
+            List<Updateable> list = (List<Updateable>) drools.getWorkingMemory().getGlobal("delayedUpdates");
             list.add(this);
         } else {
             if (node.isVersioned()) {
@@ -157,7 +157,7 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
         return node.getNodes().getSize();
     }
 
-    public void addType(String type, KieSession drools) throws RepositoryException {
+    public void addType(String type, KnowledgeHelper drools) throws RepositoryException {
         if (node.isNodeType(type)) {
             return;
         }
@@ -168,7 +168,7 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
         //        drools.update(this);
     }
 
-    public void removeType(String type, KieSession drools) throws RepositoryException {
+    public void removeType(String type, KnowledgeHelper drools) throws RepositoryException {
         node.checkout();
         node.removeMixin(type);
         try {

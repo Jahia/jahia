@@ -106,7 +106,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     private CacheService cacheService;
     private WorkflowService workflowService;
     private WorkflowObservationManager observationManager;
-    private RepositoryService repositoryService;
+    private KieRepository kieRepository;
     private ExecutionService executionService;
     private HistoryService historyService;
     private ManagementService managementService;
@@ -163,7 +163,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     }
 
     public void setProcessEngine(ProcessEngine processEngine) {
-        repositoryService = processEngine.getRepositoryService();
+        kieRepository = processEngine.getKieRepository();
         executionService = processEngine.getExecutionService();
         taskService = processEngine.getTaskService();
         historyService = processEngine.getHistoryService();
@@ -201,7 +201,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     private void deployDeclaredProcesses() throws IOException {
         if (processes != null && processes.length > 0) {
             logger.info("Found " + processes.length + " workflow processes to be deployed.");
-            List<Deployment> deploymentList = repositoryService.createDeploymentQuery().list();
+            List<Deployment> deploymentList = kieRepository.createDeploymentQuery().list();
             for (Resource process : processes) {
                 long lastModified = FileUtils.getLastModified(process);
 
@@ -223,7 +223,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                     } else {
                         logger.info("Found new workflow process " + fileName + ". Deploying...");
                     }
-                    NewDeployment newDeployment = repositoryService.createDeployment();
+                    NewDeployment newDeployment = kieRepository.createDeployment();
                     newDeployment.addResourceFromInputStream(process.getFilename(), process.getInputStream());
                     newDeployment.setTimestamp(lastModified);
                     newDeployment.setName(fileName);
@@ -338,9 +338,9 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     public List<WorkflowDefinition> getAvailableWorkflows(Locale locale) {
         if (logger.isDebugEnabled()) {
             logger.debug("List of all available process ({}):",
-                    repositoryService.createProcessDefinitionQuery().count());
+                    kieRepository.createProcessDefinitionQuery().count());
         }
-        final List<ProcessDefinition> definitionList = repositoryService.createProcessDefinitionQuery().list();
+        final List<ProcessDefinition> definitionList = kieRepository.createProcessDefinitionQuery().list();
 
         Map<String, Integer> versions = new HashMap<String, Integer>();
         Map<String, WorkflowDefinition> workflows = new HashMap<String, WorkflowDefinition>();
@@ -380,10 +380,10 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     private ProcessDefinition getProcessDefinitionByKey(String key) {
         if (logger.isDebugEnabled()) {
             logger.debug("List of all available process ({}): ",
-                    repositoryService.createProcessDefinitionQuery().count());
+                    kieRepository.createProcessDefinitionQuery().count());
         }
         final List<ProcessDefinition> definitionList =
-                repositoryService.createProcessDefinitionQuery().processDefinitionKey(key).list();
+                kieRepository.createProcessDefinitionQuery().processDefinitionKey(key).list();
 
         ProcessDefinition value = null;
 
@@ -399,10 +399,10 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     private ProcessDefinition getProcessDefinitionById(String id) {
         if (logger.isDebugEnabled()) {
             logger.debug("List of all available process ({}): ",
-                    repositoryService.createProcessDefinitionQuery().count());
+                    kieRepository.createProcessDefinitionQuery().count());
         }
         final List<ProcessDefinition> definitionList =
-                repositoryService.createProcessDefinitionQuery().processDefinitionId(id).list();
+                kieRepository.createProcessDefinitionQuery().processDefinitionId(id).list();
 
         ProcessDefinition value = null;
 
@@ -538,8 +538,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
 
     private WorkflowDefinition convertToWorkflowDefinition(ProcessDefinition value, Locale locale) {
         WorkflowDefinition wf = new WorkflowDefinition(value.getName(), value.getKey(), this.key);
-        wf.setFormResourceName(repositoryService.getStartFormResourceName(value.getId(),
-                repositoryService.getStartActivityNames(value.getId()).get(0)));
+        wf.setFormResourceName(kieRepository.getStartFormResourceName(value.getId(),
+                kieRepository.getStartActivityNames(value.getId()).get(0)));
         if (value instanceof JpdlProcessDefinition) {
             JpdlProcessDefinition definition = (JpdlProcessDefinition) value;
             final Map<String, TaskDefinitionImpl> taskDefinitions = definition.getTaskDefinitions();
@@ -731,7 +731,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
             ClassLoader l = null;
 
             String processDefinitionId = executionService.findProcessInstanceById(taskService.getTask(taskId).getExecutionId()).getProcessDefinitionId();
-            String processKey = repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionId).uniqueResult().getKey();
+            String processKey = kieRepository.createProcessDefinitionQuery().processDefinitionId(processDefinitionId).uniqueResult().getKey();
 
             try {
                 String module = workflowService.getModuleForWorkflow(processKey);
@@ -812,7 +812,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     }
 
     private void registerProcessListeners() {
-        final List<ProcessDefinition> definitionList = repositoryService.createProcessDefinitionQuery().list();
+        final List<ProcessDefinition> definitionList = kieRepository.createProcessDefinitionQuery().list();
 
         for (ProcessDefinition definition : definitionList) {
             if (definition instanceof JpdlProcessDefinition) {
@@ -932,7 +932,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     }
 
     private HistoryWorkflow convertToHistoryWorkflow(HistoryProcessInstance jbpmHistoryItem, Locale locale) {
-        ProcessDefinition def = repositoryService.createProcessDefinitionQuery()
+        ProcessDefinition def = kieRepository.createProcessDefinitionQuery()
                 .processDefinitionId(jbpmHistoryItem.getProcessDefinitionId()).uniqueResult();
         Set<String> variableNames = historyService.getVariableNames(jbpmHistoryItem.getProcessInstanceId());
         final String startUser = variableNames.contains("user") ?
@@ -1152,8 +1152,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
         return managementService;
     }
 
-    public RepositoryService getRepositoryService() {
-        return repositoryService;
+    public KieRepository getKieRepository() {
+        return kieRepository;
     }
 
     public TaskService getTaskService() {

@@ -104,8 +104,9 @@ public class UsersFlowHandler implements Serializable {
         JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().createUser(
                 userProperties.getUsername(), userProperties.getPassword(), transformUserProperties(userProperties));
         if (user != null) {
-            context.addMessage(new MessageBuilder().info().defaultText(Messages.get("resources.JahiaServerSettings",
-                    "serverSettings.user.create.successful", LocaleContextHolder.getLocale())).build());
+            Locale locale = LocaleContextHolder.getLocale();
+            context.addMessage(new MessageBuilder().info().defaultText(Messages.getInternal("label.user", locale) + " '" + user.getUsername() + "' "  + Messages.getInternal(
+                    "message.successfully.created", locale)).build());
             return true;
         } else {
             context.addMessage(new MessageBuilder().error().defaultText(Messages.get("resources.JahiaServerSettings",

@@ -16,7 +16,4 @@
         <object class="org.jahia.services.workflow.jbpm.JBPMIdentitySession"/>
         <object class="org.jahia.services.workflow.jbpm.JBPMMailSession"/>
     </transaction-context>
-    <process-engine-context>
-        <object class="org.jahia.services.workflow.jbpm.JahiaBusinessCalendar"/>
-    </process-engine-context>
 </jbpm-configuration>

@@ -45,9 +45,10 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.workflow.WorkflowObservationManager;
-import org.jbpm.api.Execution;
-import org.jbpm.api.listener.EventListenerExecution;
-import org.kie.api.runtime.process.EventListener;
+import org.kie.api.event.process.DefaultProcessEventListener;
+import org.kie.api.event.process.ProcessCompletedEvent;
+import org.kie.api.event.process.ProcessStartedEvent;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,11 +57,12 @@ import javax.jcr.RepositoryException;
 import java.util.List;
 
 /**
- * User: toto
+ * An process event listener to synchronize the JCR nodes process ID storage with the current state of a process
+ * instance (started, ended).
  * Date: Feb 4, 2010
  * Time: 8:04:51 PM
  */
-public class JBPMListener implements EventListener {
+public class JBPMListener extends DefaultProcessEventListener {
     /**
      * The serialVersionUID.
      */
@@ -68,10 +70,10 @@ public class JBPMListener implements EventListener {
 
     private static final Logger logger = LoggerFactory.getLogger(JBPMListener.class);
 
-    private JBPMProvider provider;
+    private JBPM6WorkflowProvider provider;
     private WorkflowObservationManager observationManager;
 
-    public JBPMListener(JBPMProvider provider) {
+    public JBPMListener(JBPM6WorkflowProvider provider) {
         this.provider = provider;
     }
 
@@ -79,37 +81,71 @@ public class JBPMListener implements EventListener {
         this.observationManager = observationManager;
     }
 
-    public void notify(EventListenerExecution execution) throws Exception {
-        @SuppressWarnings("unchecked")
-        final List<String> ids = (List<String>) execution.getVariable("nodeIds");
-        String workspace = (String) execution.getVariable("workspace");
+    @Override
+    public void afterProcessStarted(ProcessStartedEvent event) {
+        super.afterProcessStarted(event);    // call any default behavior first
+        WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) event.getProcessInstance();
+        final List<String> ids = (List<String>) workflowProcessInstance.getVariable("nodeIds");
+        String workspace = (String) workflowProcessInstance.getVariable("workspace");
+        final long executionId = workflowProcessInstance.getId();
 
-        final String executionState = execution.getState();
-        final String executionId = execution.getId();
-
-        JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, null,
-                new JCRCallback<Boolean>() {
-                    public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        if (ids != null) {
-                            for (String id : ids) {
-                                JCRNodeWrapper node = null;
-                                ItemNotFoundException previousException = null;
-                                try {
-                                    node = session.getNodeByUUID(id);
-                                } catch (ItemNotFoundException e) {
-                                    previousException = e;
-                                }
-                                if (Execution.STATE_ACTIVE_ROOT.equals(executionState)) {
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, null,
+                    new JCRCallback<Boolean>() {
+                        public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            if (ids != null) {
+                                for (String id : ids) {
+                                    JCRNodeWrapper node = null;
+                                    ItemNotFoundException previousException = null;
+                                    try {
+                                        node = session.getNodeByUUID(id);
+                                    } catch (ItemNotFoundException e) {
+                                        previousException = e;
+                                    }
                                     if (previousException != null) {
                                         throw previousException;
                                     }
                                     provider.getWorkflowService().addProcessId(node,
-                                            provider.getKey(), executionId);
+                                            provider.getKey(), Long.toString(executionId));
 
-                                } else if (Execution.STATE_ENDED.equals(executionState)) {
+                                }
+                            }
+                            return true;
+                        }
+                    });
+        } catch (RepositoryException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (observationManager != null) {
+            observationManager.notifyWorkflowStarted(provider.getKey(), Long.toString(executionId));
+        }
+
+    }
+
+    @Override
+    public void afterProcessCompleted(ProcessCompletedEvent event) {
+        WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) event.getProcessInstance();
+        final List<String> ids = (List<String>) workflowProcessInstance.getVariable("nodeIds");
+        String workspace = (String) workflowProcessInstance.getVariable("workspace");
+        final long executionId = workflowProcessInstance.getId();
+
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, null,
+                    new JCRCallback<Boolean>() {
+                        public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            if (ids != null) {
+                                for (String id : ids) {
+                                    JCRNodeWrapper node = null;
+                                    ItemNotFoundException previousException = null;
+                                    try {
+                                        node = session.getNodeByUUID(id);
+                                    } catch (ItemNotFoundException e) {
+                                        previousException = e;
+                                    }
                                     if (node != null) {
                                         provider.getWorkflowService().removeProcessId(node,
-                                                provider.getKey(), executionId);
+                                                provider.getKey(), Long.toString(executionId));
                                     } else {
                                         logger.warn(
                                                 "A workflow process may have been partially ended because this node cannot be found: {}",
@@ -117,28 +153,18 @@ public class JBPMListener implements EventListener {
                                     }
                                 }
                             }
+                            return true;
                         }
-                        return true;
-                    }
-                });
-
-        if (observationManager != null) {
-            if (Execution.STATE_ACTIVE_ROOT.equals(executionState)) {
-                observationManager.notifyWorkflowStarted(provider.getKey(), executionId);
-            } else if (Execution.STATE_ENDED.equals(executionState)) {
-                observationManager.notifyWorkflowEnded(provider.getKey(), executionId);
-            }
+                    });
+        } catch (RepositoryException e) {
+            throw new RuntimeException(e);
         }
 
+        if (observationManager != null) {
+            observationManager.notifyWorkflowEnded(provider.getKey(), Long.toString(executionId));
+        }
+
+        super.afterProcessCompleted(event);    //call default behavior last
     }
 
-    @Override
-    public void signalEvent(String type, Object event) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public String[] getEventTypes() {
-        return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
-    }
 }

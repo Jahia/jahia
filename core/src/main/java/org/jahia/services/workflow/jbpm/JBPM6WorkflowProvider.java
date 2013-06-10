@@ -5,12 +5,14 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
+import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieRepository;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.springframework.beans.factory.InitializingBean;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * jBPM 6 Workflow Provider implementation
@@ -25,6 +27,9 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     private static JBPM6WorkflowProvider instance;
     private JahiaUserManagerService userManager;
     private JahiaGroupManagerService groupManager;
+    private KieRepository kieRepository;
+    private KieServices kieServices;
+    private KieSession kieSession;
     private JBPMListener listener = new JBPMListener(this);
 
     public void setKey(String key) {
@@ -60,16 +65,20 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public String getKey() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return key;
     }
 
     @Override
     public List<WorkflowDefinition> getAvailableWorkflows(Locale locale) {
+        KieBase kieBase = kieSession.getKieBase();
+        Collection<org.kie.api.definition.process.Process> processes = kieBase.getProcesses();
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public WorkflowDefinition getWorkflowDefinitionByKey(String key, Locale locale) {
+        KieBase kieBase = kieSession.getKieBase();
+        org.kie.api.definition.process.Process process = kieBase.getProcess(key);
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -80,12 +89,14 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public String startProcess(String processKey, Map<String, Object> args) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        ProcessInstance processInstance = kieSession.startProcess(processKey, args);
+        return Long.toString(processInstance.getId());
     }
 
     @Override
     public void signalProcess(String processId, String transitionName, Map<String, Object> args) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        ProcessInstance processInstance = kieSession.getProcessInstance(Long.getLong(processId));
+
     }
 
     @Override
@@ -95,11 +106,16 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public void abortProcess(String processId) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        kieSession.abortProcessInstance(Long.getLong(processId));
     }
 
     @Override
     public Workflow getWorkflow(String processId, Locale locale) {
+        ProcessInstance processInstance = kieSession.getProcessInstance(Long.getLong(processId));
+        String processDefinitionId = processInstance.getProcessId();
+        KieBase kieBase = kieSession.getKieBase();
+        org.kie.api.definition.process.Process process = kieBase.getProcess(processDefinitionId);
+
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

@@ -41,7 +41,6 @@
 package org.jahia.test.services.workflow;
 
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.workflow.jbpm.JBPMProvider;
 import org.jbpm.api.Execution;
 import org.jbpm.api.ExecutionService;
 import org.jbpm.api.ProcessInstance;
@@ -50,7 +49,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+
 /**
  * @author Tom Baeyens
  */

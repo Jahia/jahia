@@ -4,17 +4,10 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean class="org.jahia.services.workflow.jbpm.JBPMSpringHelper" id="springHelper">
-        <property name="jbpmCfg" value="jbpm.cfg.xml"/>
-        <property name="sessionFactoryName" value="sessionFactory"/>
-    </bean>
-    <bean id="processEngine" factory-bean="springHelper" factory-method="createProcessEngine"/>
-
-    <bean id="jBPMProvider" class="org.jahia.services.workflow.jbpm.JBPM6WorkflowProviderProvider"
+    <bean id="jBPMProvider" class="org.jahia.services.workflow.jbpm.JBPM6WorkflowProvider"
           factory-method="getInstance" init-method="start">
         <property name="key" value="jBPM"/>
         <property name="workflowService" ref="workflowService"/>
-        <property name="processEngine" ref="processEngine"/>
         <property name="processes">
             <list>
                 <value>classpath*:org/jahia/modules/workflow/*.jpdl.xml</value>
@@ -27,6 +20,5 @@
         </property>
         <property name="userManager" ref="JahiaUserManagerService"/>
         <property name="groupManager" ref="JahiaGroupManagerService"/>
-        <property name="cacheService" ref="JahiaCacheService"/>
     </bean>
 </beans>

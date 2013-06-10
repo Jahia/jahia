@@ -949,6 +949,11 @@
             <artifactId>jbpm-flow-builder</artifactId>
             <version>${jbpm.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-workitems</artifactId>
+            <version>${jbpm.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>jboss</groupId>

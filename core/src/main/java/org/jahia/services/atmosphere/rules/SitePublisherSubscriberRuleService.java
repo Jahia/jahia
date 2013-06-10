@@ -40,7 +40,7 @@
 
 package org.jahia.services.atmosphere.rules;
 
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.spi.KnowledgeHelper;
 import org.jahia.services.atmosphere.service.PublisherSubscriberService;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;

@@ -1093,7 +1093,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     public List<GWTJahiaNodeProperty> translate(List<GWTJahiaNodeProperty> properties, List<GWTJahiaItemDefinition> definitions, String srcLanguage, String destLanguage, String siteUUID) throws GWTJahiaServiceException {
         try {
-            return translationHelper.translate(properties, definitions, srcLanguage, destLanguage, (JCRSiteNode) retrieveCurrentSession().getNodeByIdentifier(siteUUID));
+            return translationHelper.translate(properties, definitions, srcLanguage, destLanguage, (JCRSiteNode) retrieveCurrentSession().getNodeByIdentifier(siteUUID),  getUILocale());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -1113,7 +1113,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     public GWTJahiaNodeProperty translate(GWTJahiaNodeProperty property, GWTJahiaItemDefinition definition, String srcLanguage, String destLanguage, String siteUUID) throws GWTJahiaServiceException {
         try {
-            return translationHelper.translate(property, definition, srcLanguage, destLanguage, (JCRSiteNode) retrieveCurrentSession().getNodeByIdentifier(siteUUID));
+            return translationHelper.translate(property, definition, srcLanguage, destLanguage, (JCRSiteNode) retrieveCurrentSession().getNodeByIdentifier(siteUUID), getUILocale());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());

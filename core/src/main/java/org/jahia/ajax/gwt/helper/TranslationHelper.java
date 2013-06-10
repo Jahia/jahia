@@ -50,6 +50,7 @@ import org.jahia.services.translation.TranslationService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Utility class used to delegate calls to the TranslationService
@@ -63,15 +64,17 @@ public class TranslationHelper {
      * The number of calls is minimized : maximum two, one for html values, one for plain texts.
      * Properties definitions are used to determine if the values are html or plain texts.
      *
+     *
      * @param properties a list of properties
      * @param definitions the corresponding list of property definitions
      * @param srcLanguage the source language code
      * @param destLanguage the destination language code
      * @param site the site
+     * @param uiLocale
      * @return the properties with their values translated
      * @throws TranslationException
      */
-    public List<GWTJahiaNodeProperty> translate(List<GWTJahiaNodeProperty> properties, List<GWTJahiaItemDefinition> definitions, String srcLanguage, String destLanguage, JCRSiteNode site) throws TranslationException {
+    public List<GWTJahiaNodeProperty> translate(List<GWTJahiaNodeProperty> properties, List<GWTJahiaItemDefinition> definitions, String srcLanguage, String destLanguage, JCRSiteNode site, Locale uiLocale) throws TranslationException {
         List<String> plainTextValues = new ArrayList<String>();
         List<String> htmlValues = new ArrayList<String>();
         for (int i = 0; i < properties.size(); i++) {
@@ -82,10 +85,10 @@ public class TranslationHelper {
             }
         }
         if (!plainTextValues.isEmpty()) {
-            plainTextValues = translationService.translate(plainTextValues, srcLanguage, destLanguage, false , site);
+            plainTextValues = translationService.translate(plainTextValues, srcLanguage, destLanguage, false , site, uiLocale);
         }
         if (!htmlValues.isEmpty()) {
-            htmlValues = translationService.translate(htmlValues, srcLanguage, destLanguage, true , site);
+            htmlValues = translationService.translate(htmlValues, srcLanguage, destLanguage, true , site, uiLocale);
         }
         List<GWTJahiaNodeProperty> translatedProperties = new ArrayList<GWTJahiaNodeProperty>();
         for (int i = 0; i < properties.size(); i++) {
@@ -106,20 +109,22 @@ public class TranslationHelper {
      * Calls {@link TranslationService} to translate values of a property.
      * Property definition is used to determine if the values are html or plain texts.
      *
+     *
      * @param property a property
      * @param definition the corresponding property definition
      * @param srcLanguage the source language code
      * @param destLanguage the destination language code
      * @param site the site
+     * @param uiLocale
      * @return the property with its values translated
      * @throws TranslationException
      */
-    public GWTJahiaNodeProperty translate(GWTJahiaNodeProperty property, GWTJahiaItemDefinition definition, String srcLanguage, String destLanguage, JCRSiteNode site) throws TranslationException {
+    public GWTJahiaNodeProperty translate(GWTJahiaNodeProperty property, GWTJahiaItemDefinition definition, String srcLanguage, String destLanguage, JCRSiteNode site, Locale uiLocale) throws TranslationException {
         List<String> stringValues = new ArrayList<String>();
         for (GWTJahiaNodePropertyValue value : property.getValues()) {
             stringValues.add(value.getString());
         }
-        stringValues = translationService.translate(stringValues, srcLanguage, destLanguage, definition.getSelector() == GWTJahiaNodeSelectorType.RICHTEXT, site);
+        stringValues = translationService.translate(stringValues, srcLanguage, destLanguage, definition.getSelector() == GWTJahiaNodeSelectorType.RICHTEXT, site, uiLocale);
         List<GWTJahiaNodePropertyValue> translatedValues = new ArrayList<GWTJahiaNodePropertyValue>();
         for (String stringValue : stringValues) {
             translatedValues.add(new GWTJahiaNodePropertyValue(stringValue));

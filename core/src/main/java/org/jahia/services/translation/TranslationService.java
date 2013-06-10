@@ -44,10 +44,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.slf4j.Logger;
 import org.tuckey.web.filters.urlrewrite.utils.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Service to translate text using an online translation service.
@@ -63,15 +60,17 @@ public class TranslationService {
      * Calls the translate method from the first enabled {@link TranslationProvider} with a single text to translate.
      * If the text is blank, it's just returned without calling the {@link TranslationProvider}.
      *
+     *
      * @param text a text to translate
      * @param srcLanguage the source language code
      * @param destLanguage the destination language code
      * @param isHtml is the text html or plain text
      * @param site the site
+     * @param uiLocale
      * @return the translated text
      * @throws TranslationException
      */
-    public String translate(String text, String srcLanguage, String destLanguage, boolean isHtml, JCRSiteNode site) throws TranslationException {
+    public String translate(String text, String srcLanguage, String destLanguage, boolean isHtml, JCRSiteNode site, Locale uiLocale) throws TranslationException {
         if (StringUtils.isBlank(text)) {
             return text;
         }
@@ -79,7 +78,7 @@ public class TranslationService {
         if (provider == null) {
             return text;
         }
-        return provider.translate(text, srcLanguage, destLanguage, isHtml, site);
+        return provider.translate(text, srcLanguage, destLanguage, isHtml, site, uiLocale);
     }
 
     /**
@@ -87,15 +86,17 @@ public class TranslationService {
      * If the list contains only one text, the single text method is called.
      * Blank texts are not passed to the {@link TranslationProvider}.
      *
+     *
      * @param texts a list of texts to translate
      * @param srcLanguage the source language code
      * @param destLanguage the destination language code
      * @param isHtml are the texts html or plain texts
      * @param site the site
+     * @param uiLocale
      * @return the translated texts
      * @throws TranslationException
      */
-    public List<String> translate(List<String> texts, String srcLanguage, String destLanguage, boolean isHtml, JCRSiteNode site) throws TranslationException {
+    public List<String> translate(List<String> texts, String srcLanguage, String destLanguage, boolean isHtml, JCRSiteNode site, Locale uiLocale) throws TranslationException {
         TranslationProvider provider = getFirstEnabledProvider(site);
         if (provider == null) {
             return texts;
@@ -111,9 +112,9 @@ public class TranslationService {
         if (!texts.isEmpty()) {
             if (texts.size() == 1) {
                 translatedTexts = new ArrayList<String>();
-                translatedTexts.add(provider.translate(texts.get(0), srcLanguage, destLanguage, isHtml, site));
+                translatedTexts.add(provider.translate(texts.get(0), srcLanguage, destLanguage, isHtml, site, uiLocale));
             } else {
-                translatedTexts = provider.translate(texts, srcLanguage, destLanguage, isHtml, site);
+                translatedTexts = provider.translate(texts, srcLanguage, destLanguage, isHtml, site, uiLocale);
             }
         } else {
             translatedTexts = new ArrayList<String>();

@@ -133,6 +133,16 @@
                       <manage-modules jcr:primaryType="jnt:siteSettingsManageModules"/>
                   </pagecontent>
               </manageModules>
+              <manageGroups j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true"
+                             j:icon="/modules/siteSettings/templates/files/users_into.png"
+                             j:priority="100"
+                             j:requiredPermissions="#/permissions/admin/adminGroups"
+                             j:titleKey="label.manageGroups"
+                             jcr:mixinTypes="jmix:rbTitle" jcr:primaryType="jnt:contentTemplate">
+                  <pagecontent jcr:primaryType="jnt:contentList">
+                      <manage-groups jcr:primaryType="jnt:siteSettingsManageGroups"/>
+                  </pagecontent>
+              </manageGroups>
         </siteSettingsBase>
       </templates>
     </siteSettings>

@@ -2,6 +2,8 @@
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 <mix = 'http://www.jcp.org/jcr/mix/1.0'>
 
+[jnt:siteSettingsManageGroups] > jnt:content, mix:title, jmix:studioOnly, jmix:siteComponent
+
 [jnt:siteSettingsManageLanguages] > jnt:content, mix:title, jmix:studioOnly, jmix:siteComponent
 
 [jnt:siteSettingsWcagCompliance] > jnt:content, mix:title, jmix:studioOnly, jmix:siteComponent
@@ -11,5 +13,4 @@
 [jnt:siteSettingsVanityUrlsList] > jnt:content, mix:title, jmix:studioOnly, jmix:siteComponent, jmix:list
 
 [jnt:siteSettingsManageModules] > jnt:content, mix:title, jmix:studioOnly, jmix:siteComponent
-
 

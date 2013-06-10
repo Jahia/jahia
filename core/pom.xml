@@ -1039,15 +1039,9 @@
         </dependency>
 
         <dependency>
-<<<<<<< .working
             <groupId>org.artofsolving.jodconverter</groupId>
             <artifactId>jodconverter-core</artifactId>
-            <version>3.0-beta-4-jahia3</version>
-=======
-        	<groupId>org.artofsolving.jodconverter</groupId>
-        	<artifactId>jodconverter-core</artifactId>
-        	<version>3.0-beta-4-jahia4</version>
->>>>>>> .merge-right.r46205
+            <version>3.0-beta-4-jahia4</version>
         </dependency>
 
         <!-- Apache Shiro -->

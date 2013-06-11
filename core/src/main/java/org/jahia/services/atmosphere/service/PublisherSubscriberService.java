@@ -72,6 +72,7 @@ public class PublisherSubscriberService {
     private transient static Logger logger = LoggerFactory.getLogger(PublisherSubscriberService.class);
 
     /**
+     * Broadcast a message to a site.
      * @param node Node of the site
      * @param message Message to broadcast
      */
@@ -108,6 +109,7 @@ public class PublisherSubscriberService {
     }
 
     /**
+     * Broadcast a message to a channel.
      * @param node Node of the channel
      * @param message Message to broadcast
      */
@@ -144,7 +146,7 @@ public class PublisherSubscriberService {
     }
 
     /**
-     * broadcast to a specific channel
+     * broadcast to a specific channel.
      * @param absoluteChannelName Name of the channel
      * @param message Message to broadcast
      */

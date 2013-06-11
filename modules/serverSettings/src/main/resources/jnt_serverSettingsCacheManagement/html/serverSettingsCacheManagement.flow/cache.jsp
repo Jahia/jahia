@@ -15,10 +15,9 @@
 <%--@elvariable id="cacheManager" type="org.jahia.modules.serversettings.flow.CacheManagerHandler"--%>
 <%--@elvariable id="manager" type="java.lang.String"--%>
 <%--@elvariable id="cacheEntry" type="org.jahia.modules.serversettings.flow.CacheManagerHandler.SerializedCacheManager"--%>
-
+<template:addResources type="javascript" resources="jquery.js,jquery.fancybox.pack.js,admin-bootstrap.js,jquery.metadata.js,jquery.tablesorter.js,jquery.tablecloth.js"/>
+<template:addResources type="css" resources="jquery.fancybox.css,tablecloth.css"/>
 <c:if test="${cacheManagement.showConfig}">
-    <template:addResources type="css" resources="jquery.fancybox.css"/>
-    <template:addResources type="javascript" resources="jquery.js,jquery.fancybox.pack.js"/>
     <template:addResources type="inline">
         <script type="text/javascript">
             $(document).ready(function() {
@@ -34,6 +33,16 @@
         </script>
     </template:addResources>
 </c:if>
+<template:addResources>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+            $("table").tablecloth({
+                theme: "default",
+                sortable: true
+            });
+        });
+    </script>
+</template:addResources>
 <template:addResources type="inline">
     <script type="text/javascript">
         function go(id1, value1, id2, value2, id3, value3) {

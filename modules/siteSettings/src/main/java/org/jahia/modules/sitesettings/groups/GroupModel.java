@@ -71,6 +71,26 @@ public class GroupModel implements Serializable {
         return Messages.get("resources.JahiaSiteSettings", label, LocaleContextHolder.getLocale());
     }
 
+    @SuppressWarnings("deprecation")
+    static boolean validateGroupName(String name, int siteId, MessageContext context) {
+        boolean valid = false;
+        if (StringUtils.isBlank(name)) {
+            addErrorI18n(context, "siteSettings.groups.errors.groupname.mandatory");
+        } else if (!ServicesRegistry.getInstance().getJahiaGroupManagerService().isGroupNameSyntaxCorrect(name)) {
+            addErrorI18n(context, "siteSettings.groups.errors.groupname.syntax");
+        } else if (ServicesRegistry.getInstance().getJahiaGroupManagerService().groupExists(siteId, name)) {
+            Locale locale = LocaleContextHolder.getLocale();
+            addError(
+                    context,
+                    i18n("siteSettings.groups.errors.groupname.unique") + " "
+                            + Messages.getInternal("label.group", locale) + " '" + name + "' "
+                            + i18n("siteSettings.groups.errors.groupname.exists"));
+        } else {
+            valid = true;
+        }
+        return valid;
+    }
+
     private String groupname;
 
     private int siteId;
@@ -106,28 +126,18 @@ public class GroupModel implements Serializable {
      * @param context
      *            the current validation context object
      */
-    public void validateCreateGroup(ValidationContext context) {
+    public void validateCopyGroup(ValidationContext context) {
         validateGroupName(groupname, siteId, context.getMessageContext());
     }
 
-    @SuppressWarnings("deprecation")
-    private boolean validateGroupName(String name, int siteId, MessageContext context) {
-        boolean valid = false;
-        if (StringUtils.isBlank(name)) {
-            addErrorI18n(context, "siteSettings.groups.errors.groupname.mandatory");
-        } else if (!ServicesRegistry.getInstance().getJahiaGroupManagerService().isGroupNameSyntaxCorrect(name)) {
-            addErrorI18n(context, "siteSettings.groups.errors.groupname.syntax");
-        } else if (ServicesRegistry.getInstance().getJahiaGroupManagerService().groupExists(siteId, name)) {
-            Locale locale = LocaleContextHolder.getLocale();
-            addError(
-                    context,
-                    i18n("siteSettings.groups.errors.groupname.unique") + " "
-                            + Messages.getInternal("label.group", locale) + " '" + name + "' "
-                            + i18n("siteSettings.groups.errors.groupname.exists"));
-        } else {
-            valid = true;
-        }
-        return valid;
+    /**
+     * Performs validation of the group name for syntax and also the group for existence.
+     * 
+     * @param context
+     *            the current validation context object
+     */
+    public void validateCreateGroup(ValidationContext context) {
+        validateGroupName(groupname, siteId, context.getMessageContext());
     }
 
 }

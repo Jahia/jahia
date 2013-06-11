@@ -20,7 +20,7 @@
             </c:if>
         </c:forEach>
     </p>
-    <h2><fmt:message key="siteSettings.groups.create"/></h2>
+    <h2><fmt:message key="${copyMode ? 'siteSettings.groups.copy' : 'siteSettings.groups.create'}"/></h2>
     <div class="box-1">
         <form action="${flowExecutionUrl}" method="post" autocomplete="off">
             <fieldset title="<fmt:message key="serverSettings.user.profile"/>">
@@ -36,8 +36,12 @@
                     </div>
                     <div class="row-fluid">
                         <div class="span4">
+                            <c:choose>
+                                <c:when test="${copyMode && empty group.groupname}"><c:set var="groupnameValue" value="${groupToCopy.groupname}-2"/></c:when>
+                                <c:otherwise><c:set var="groupnameValue" value="${group.groupname}"/></c:otherwise>
+                            </c:choose>
                             <label for="groupname"><fmt:message key="label.name"/> <span class="text-error"><strong>*</strong></span></label>
-                            <input type="text" name="groupname" class="span12" id="groupname" value="${fn:escapeXml(group.groupname)}"/>
+                            <input type="text" name="groupname" class="span12" id="groupname" value="${fn:escapeXml(groupnameValue)}"/>
                         </div>
                     </div>
                 </div>
@@ -47,9 +51,9 @@
                 <div class="container-fluid">
                     <div class="row-fluid">
                         <div class="span12">
-                            <button class="btn btn-primary" type="submit" name="_eventId_add">
-                                <i class="icon-plus icon-white"></i>
-                                &nbsp;<fmt:message key="label.add"/>
+                            <button class="btn btn-primary" type="submit" name="_eventId_${copyMode ? 'copy' : 'add'}">
+                                <i class="icon-${copyMode ? 'share' : 'plus'} icon-white"></i>
+                                &nbsp;<fmt:message key="label.${copyMode ? 'copy' : 'add'}"/>
                             </button>
                             <button class="btn" type="submit" name="_eventId_cancel">
                                 <i class="icon-ban-circle"></i>

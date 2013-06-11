@@ -41,6 +41,7 @@ package org.jahia.modules.sitesettings.groups;
 
 import java.io.Serializable;
 import java.security.Principal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -106,6 +107,43 @@ public class ManageGroupsFlowHandler implements Serializable {
     }
 
     /**
+     * Duplicates the selected group.
+     * 
+     * @param selectedGroup
+     *            a group to be copied
+     * @param newGroup
+     *            the new group model
+     * @param context
+     *            the message context object
+     * @return <code>true</code> if the group was successfully copied; <code>false</code> otherwise
+     */
+    public void copyGroup(JahiaGroup selectedGroup, GroupModel newGroup, MessageContext context) {
+        Locale locale = LocaleContextHolder.getLocale();
+        // create new group
+        @SuppressWarnings("deprecation")
+        JahiaGroup grp = groupManagerService.createGroup(newGroup.getSiteId(), newGroup.getGroupname(), null, false);
+        if (grp == null) {
+            context.addMessage(new MessageBuilder()
+                    .error()
+                    .defaultText(
+                            Messages.format(Messages.get("resources.JahiaSiteSettings",
+                                    "siteSettings.groups.errors.create.failed", locale), newGroup.getGroupname()))
+                    .build());
+        } else {
+            context.addMessage(new MessageBuilder()
+                    .info()
+                    .defaultText(
+                            Messages.getInternal("label.group", locale) + " '" + newGroup.getGroupname() + "' "
+                                    + Messages.getInternal("message.successfully.created", locale)).build());
+            // copy membership
+            Collection<Principal> members = selectedGroup.getMembers();
+            if (members.size() > 0) {
+                grp.addMembers(members);
+            }
+        }
+    }
+
+    /**
      * Returns a list of all group providers currently registered.
      * 
      * @return a list of all group providers currently registered
@@ -152,16 +190,27 @@ public class ManageGroupsFlowHandler implements Serializable {
     }
 
     /**
+     * Looks up the specified group by key.
+     * 
+     * @param selectedGroup
+     *            the group key
+     * @return up the specified group by key
+     */
+    public JahiaGroup lookupGroup(String selectedGroup) {
+        return groupManagerService.lookupGroup(selectedGroup);
+    }
+
+    /**
      * Performs the removal of the specified groups for the site.
      * 
      * @param selectedGroup
      *            a key of the group to be removed
      * @param context
      *            the message context object
-     * @return <code>true</code> if the groups were successfully removed; <code>false</code> otherwise
+     * @return <code>true</code> if the group was successfully removed; <code>false</code> otherwise
      */
     public void removeGroup(String selectedGroup, MessageContext context) {
-        JahiaGroup grp = groupManagerService.lookupGroup(selectedGroup);
+        JahiaGroup grp = lookupGroup(selectedGroup);
         if (isReadOnly(grp)) {
             context.addMessage(new MessageBuilder()
                     .error()
@@ -207,5 +256,4 @@ public class ManageGroupsFlowHandler implements Serializable {
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
         this.groupManagerService = groupManagerService;
     }
-
 }

@@ -20,14 +20,22 @@
         <transition on="createGroup" to="createGroup" bind="false" validate="false">
             <evaluate expression="flowHandler.initGroup(flowRequestContext)" result="flowScope.group"/>
         </transition>
+        <transition on="copyGroup" to="createGroup" bind="false" validate="false">
+            <evaluate expression="flowHandler.lookupGroup(requestParameters.selectedGroup)" result="flowScope.groupToCopy"/>
+            <evaluate expression="flowHandler.initGroup(flowRequestContext)" result="flowScope.group"/>
+            <set name="flashScope.copyMode" value="true" type="boolean" />
+        </transition>
         <transition on="removeGroup" to="search" validate="false">
-            <evaluate expression="flowHandler.removeGroup(requestParameters.selectedGroups, messageContext)"/>
+            <evaluate expression="flowHandler.removeGroup(requestParameters.selectedGroup, messageContext)"/>
         </transition>
     </view-state>
 
     <view-state id="createGroup" model="group">
         <transition on="add" to="search">
             <evaluate expression="flowHandler.addGroup(group, messageContext)"/>
+        </transition>
+        <transition on="copy" to="search">
+            <evaluate expression="flowHandler.copyGroup(flowScope.groupToCopy, group, messageContext)"/>
         </transition>
         <transition on="cancel" to="search" bind="false" validate="false"/>
     </view-state>

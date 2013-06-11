@@ -34,9 +34,9 @@
                 alert('${functions:escapeJavaScript(i18nSelectGroup)}');
                 return false;
             }
-            $("input[name='selectedGroups']").val(selected);
+            $("input[name='selectedGroup']").val(selected);
             return true;
-        })
+        });
     });
 </script>
 </template:addResources>
@@ -96,14 +96,21 @@
             </button>
         </form>
         <form action="${flowExecutionUrl}" method="POST" class="needGroupSelection" style="display: inline;">
-            <input type="hidden" name="selectedGroups"/>
+            <input type="hidden" name="selectedGroup"/>
+            <button class="btn" type="submit" name="_eventId_copyGroup">
+                <i class="icon-share"></i>
+                &nbsp;<fmt:message key="siteSettings.groups.copy"/>
+            </button>
+        </form>
+        <form action="${flowExecutionUrl}" method="POST" class="needGroupSelection" style="display: inline;">
+            <input type="hidden" name="selectedGroup"/>
             <button class="btn" type="submit" name="_eventId_editGroup">
                 <i class="icon-edit"></i>
                 &nbsp;<fmt:message key="siteSettings.groups.edit"/>
             </button>
         </form>
         <form action="${flowExecutionUrl}" method="POST" class="needGroupSelection" style="display: inline;">
-            <input type="hidden" name="selectedGroups"/>
+            <input type="hidden" name="selectedGroup"/>
             <fmt:message var="i18nRemoveConfirm" key="siteSettings.groups.remove.confirm"/>
             <fmt:message var="i18nContinue" key="label.confirmContinue"/>
             <button class="btn" type="submit" name="_eventId_removeGroup" onclick="return $('input[name=\'groupSelected\']:checked').length == 0 || confirm('${functions:escapeJavaScript(i18nRemoveConfirm)} ${functions:escapeJavaScript(i18nContinue)}');">
@@ -150,7 +157,7 @@
                 <c:otherwise>
                     <c:forEach items="${groups}" var="grp">
                         <tr class="sortable-row">
-                            <td><input type="radio" name="groupSelected" value="${fn:escapeXml(grp.groupKey)}"></td>
+                            <td><input type="radio" name="groupSelected" value="${fn:escapeXml(grp.groupKey)}" alt="${fn:escapeXml(grp.groupname)}"></td>
                             <td>${user:displayName(grp)}</td>
                             <td>???</td>
                         </tr>

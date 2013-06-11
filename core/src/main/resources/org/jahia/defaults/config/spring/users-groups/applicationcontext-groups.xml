@@ -16,7 +16,7 @@
                 <value>site-privileged</value>
             </list>
         </property>
-        <property name="jahiaJcrEnforcedGroupsProviderKey" value="jahia_jcr"/>
+        <property name="jahiaJcrEnforcedGroupsProviderKey" value="jcr"/>
     </bean>
 
 	<bean id="JahiaGroupManagerProvider" class="org.jahia.services.usermanager.JahiaGroupManagerProvider" parent="jahiaServiceTemplate" abstract="true">
@@ -24,7 +24,7 @@
 	</bean>
 	
     <bean id="JCRGroupManagerProvider" class="org.jahia.services.usermanager.jcr.JCRGroupManagerProvider" parent="jahiaServiceTemplate" factory-method="getInstance">
-        <property name="key" value="jahia_jcr"/>
+        <property name="key" value="jcr"/>
         <property name="jcrTemplate" ref="jcrTemplate"/>
         <property name="sitesService" ref="JahiaSitesService"/>
         <property name="cacheService" ref="JahiaCacheService"/>

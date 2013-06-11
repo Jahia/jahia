@@ -238,7 +238,7 @@ public class JCRCategoryProvider {
     public List<Category> findCategoryByKey(String categoryKey) {
         final List<Category> result = new ArrayList<Category>();
         try {
-            Session session = sessionFactory.getCurrentUserSession();
+            Session session = sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE);
             if (session.getWorkspace().getQueryManager() != null) {
 				StringBuilder query = new StringBuilder("SELECT * FROM ["
 				        + Constants.JAHIANT_CATEGORY + "] as cat WHERE localname(cat) = '");
@@ -437,8 +437,7 @@ public class JCRCategoryProvider {
             if (categoryBean.getId() == null) {
                 List<Category> categories = findCategoryByKey(categoryBean.getKey());
                 if (categories.size() == 1) {
-                    node = ((JCRCategory) categories.get(0).getJahiaCategory())
-                            .getCategoryNode();
+                    node = jcrSessionWrapper.getNodeByUUID(categories.get(0).getID());
                 } else {
                     String msg = "Category "
                             + categoryBean.getKey()

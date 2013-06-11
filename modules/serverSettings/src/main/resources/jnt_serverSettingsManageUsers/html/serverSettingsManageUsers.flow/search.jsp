@@ -18,9 +18,9 @@
 <%--@elvariable id="mailSettings" type="org.jahia.services.mail.MailSettings"--%>
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
 <%--@elvariable id="flowExecutionUrl" type="java.lang.String"--%>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js,,jquery.metadata.js,jquery.tablesorter.js,jquery.tablecloth.js"/>
 <template:addResources type="css" resources="admin-bootstrap.css"/>
-<template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
+<template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css,tablecloth.css"/>
 
 <template:addResources>
 <script type="text/javascript">
@@ -35,6 +35,14 @@
             $("input[name='selectedUsers']").val(selected);
             return true;
         })
+    });
+</script>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+        $("table").tablecloth({
+            theme: "default",
+            sortable: true
+        });
     });
 </script>
 </template:addResources>
@@ -172,7 +180,7 @@
         <table class="table table-bordered table-striped table-hover">
             <thead>
             <tr>
-                <th width="5%">&nbsp;</th>
+                <th class="{sorter: false}" width="5%">&nbsp;</th>
                 <th width="50%" class="sortable"><fmt:message key="label.name"/></th>
                 <th width="45%" class="sortable"><fmt:message key="label.properties"/></th>
             </tr>

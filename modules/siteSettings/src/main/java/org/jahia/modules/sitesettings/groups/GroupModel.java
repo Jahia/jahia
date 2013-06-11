@@ -57,6 +57,8 @@ import org.springframework.context.i18n.LocaleContextHolder;
  */
 public class GroupModel implements Serializable {
 
+    private static final long serialVersionUID = 4835608458510366337L;
+
     private static void addError(MessageContext context, String errorText) {
         context.addMessage(new MessageBuilder().error().source("groupname").defaultText(errorText).build());
     }

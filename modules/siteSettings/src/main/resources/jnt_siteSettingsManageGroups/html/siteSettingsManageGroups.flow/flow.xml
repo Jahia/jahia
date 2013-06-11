@@ -20,6 +20,9 @@
         <transition on="createGroup" to="createGroup" bind="false" validate="false">
             <evaluate expression="flowHandler.initGroup(flowRequestContext)" result="flowScope.group"/>
         </transition>
+        <transition on="removeGroup" to="search" validate="false">
+            <evaluate expression="flowHandler.removeGroup(requestParameters.selectedGroups, messageContext)"/>
+        </transition>
     </view-state>
 
     <view-state id="createGroup" model="group">

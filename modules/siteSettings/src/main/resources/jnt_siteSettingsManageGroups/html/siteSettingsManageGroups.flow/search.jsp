@@ -55,7 +55,7 @@
                 <input class="span6" type="text" id="searchString" name="searchString"
                        value='${searchCriteria.searchString}'
                        onkeydown="if (event.keyCode == 13) submitForm('search');"/>
-                <button class="btn btn-primary" type="submit"  name="_eventId_search">
+                <button class="btn btn-primary" type="submit" name="_eventId_search">
                     <i class="icon-search icon-white"></i>
                     &nbsp;<fmt:message key='label.search'/>
                 </button>
@@ -90,21 +90,23 @@
 <div>
     <div>
         <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
-            <button class="btn" type="submit" name="_eventId_createGroup" >
+            <button class="btn" type="submit" name="_eventId_createGroup">
                 <i class="icon-plus"></i>
                 &nbsp;<fmt:message key="siteSettings.groups.create"/>
             </button>
         </form>
         <form action="${flowExecutionUrl}" method="POST" class="needGroupSelection" style="display: inline;">
             <input type="hidden" name="selectedGroups"/>
-            <button class="btn" type="submit" name="_eventId_editGroup" >
+            <button class="btn" type="submit" name="_eventId_editGroup">
                 <i class="icon-edit"></i>
                 &nbsp;<fmt:message key="siteSettings.groups.edit"/>
             </button>
         </form>
         <form action="${flowExecutionUrl}" method="POST" class="needGroupSelection" style="display: inline;">
-            <input type="hidden" name="selectedUsers"/>
-            <button class="btn" type="submit" name="_eventId_removeGroup" >
+            <input type="hidden" name="selectedGroups"/>
+            <fmt:message var="i18nRemoveConfirm" key="siteSettings.groups.remove.confirm"/>
+            <fmt:message var="i18nContinue" key="label.confirmContinue"/>
+            <button class="btn" type="submit" name="_eventId_removeGroup" onclick="return $('input[name=\'groupSelected\']:checked').length == 0 || confirm('${functions:escapeJavaScript(i18nRemoveConfirm)} ${functions:escapeJavaScript(i18nContinue)}');">
                 <i class="icon-remove"></i>
                 &nbsp;<fmt:message key="siteSettings.groups.remove"/>
             </button>

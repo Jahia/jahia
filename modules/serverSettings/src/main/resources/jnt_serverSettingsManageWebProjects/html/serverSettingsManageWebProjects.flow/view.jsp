@@ -8,8 +8,8 @@
 <jcr:node var="sites" path="/sites"/>
 <jcr:nodeProperty name="j:defaultSite" node="${sites}" var="defaultSite"/>
 <c:set var="defaultPrepackagedSite" value="acmespace.zip"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js,bootstrap-filestyle.min.js"/>
-<template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js,bootstrap-filestyle.min.js,jquery.metadata.js,jquery.tablesorter.js,jquery.tablecloth.js"/>
+<template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css,tablecloth.css"/>
 <jsp:useBean id="nowDate" class="java.util.Date" />
 <fmt:formatDate value="${nowDate}" pattern="yyyy-MM-dd-HH-mm" var="now"/>
 <script type="text/javascript">
@@ -75,6 +75,14 @@
         $(":file").filestyle({classButton: "btn",classIcon: "icon-folder-open"/*,buttonText:"Translation"*/});
     })
 </script>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+        $("table").tablecloth({
+            theme: "default",
+            sortable: true
+        });
+    });
+</script>
 <form id="sitesForm" action="${flowExecutionUrl}" method="post">
     <fieldset>
         <h2><fmt:message key="label.virtualSitesManagement"/></h2>
@@ -112,7 +120,7 @@
         <table class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
-                    <th>&nbsp;</th>
+                    <th class="{sorter: false}">&nbsp;</th>
                     <th>#</th>
                     <th>
                         <fmt:message key="label.name"/>
@@ -126,7 +134,7 @@
                     <th>
                         <fmt:message key="serverSettings.manageWebProjects.webProject.templateSet"/>
                     </th>
-                    <th>
+                    <th class="{sorter: false}">
                         <fmt:message key="label.action"/>
                     </th>
                 </tr>

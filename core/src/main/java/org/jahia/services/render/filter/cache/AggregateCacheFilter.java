@@ -210,8 +210,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             // return the content from the cache. Otherwise, return null to continue the render chain.
             // Note that the fragment MIGHT be in cache, but the key may not be correct - some parameters impacting the
             // key like dependencies can only be calculated when the fragment has been generated.
-            CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(finalKey,
+            CountDownLatch countDownLatch = null;
+            if ( renderContext.getResourcesStack().size() > 1 ) {
+                countDownLatch = avoidParallelProcessingOfSameModule(finalKey,
                     resource.getContextConfiguration(), renderContext.getRequest());
+            }
             if (countDownLatch == null) {
                 element = cache.get(finalKey);
                 if (element != null && element.getValue() != null) {

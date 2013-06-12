@@ -158,19 +158,19 @@
 
    <label for="mixLanguages" class="checkbox">
  <input type="checkbox" name="mixLanguage" id="mixLanguages" value="true"${site.mixLanguagesActive ? ' checked="checked"' : ''} onchange="updateBoxes()"/> &nbsp;<fmt:message
-            key="org.jahia.admin.languages.ManageSiteLanguages.mixLanguages.label"/>
+            key="siteSettings.locale.mixLanguages"/>
 </label>
 
 
     <label class="checkbox" for="allowsUnlistedLanguages">
 <input type="checkbox" name="allowsUnlistedLanguages" id="allowsUnlistedLanguages" value="true"${site.allowsUnlistedLanguages ? ' checked="checked"' : ''} />&nbsp;<fmt:message
-            key="org.jahia.admin.languages.ManageSiteLanguages.allowsUnlistedLanguages.label"/>
+            key="siteSettings.locale.allowsUnlistedLanguages"/>
 </label>
       <hr/>
 
-       <h2><fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.addLanguages.label"/></h2>
+       <h2><fmt:message key="siteSettings.locale.addLanguages"/></h2>
 
-        <h3><fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.availableLanguages.label"/></h3>
+        <h3><fmt:message key="siteSettings.locale.availableLanguages"/></h3>
         <select name="language_list" id="language_list" multiple="multiple" size="10">
             <c:forEach var="locale" items="${availableLocales}">
                 <c:set var="langAsString">${locale}</c:set>

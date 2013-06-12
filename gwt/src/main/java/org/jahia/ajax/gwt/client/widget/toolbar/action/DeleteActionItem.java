@@ -46,6 +46,7 @@ import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.MessageBox.MessageBoxType;
+import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 
@@ -309,6 +310,14 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
         }
 
         return super.isNodeTypeAllowed(selectedNode);
+    }
+
+    private class myBox extends MessageBox {
+
+        @Override
+        public TextArea getTextArea() {
+            return super.getTextArea();    //To change body of overridden methods use File | Settings | File Templates.
+        }
     }
 
 }

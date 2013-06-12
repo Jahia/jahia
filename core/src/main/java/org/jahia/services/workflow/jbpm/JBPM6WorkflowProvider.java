@@ -173,11 +173,6 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     @Override
-    public List<String> getConfigurableRoles(String processKey) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public void addComment(String processId, String comment, String user) {
         //To change body of implemented methods use File | Settings | File Templates.
     }

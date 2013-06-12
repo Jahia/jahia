@@ -64,7 +64,7 @@ public interface WorkflowProvider {
 
     List<Workflow> getActiveWorkflowsInformations(List<String> processIds, Locale locale);
 
-    String startProcess(String processKey, Map<String,Object> args);
+    String startProcess(String processKey, Map<String, Object> args);
 
     void signalProcess(String processId, String transitionName, Map<String, Object> args);
 
@@ -90,8 +90,6 @@ public interface WorkflowProvider {
 
     void deleteTask(String taskId, String reason);
 
-    List<String> getConfigurableRoles(String processKey);
-
     void addComment(String processId, String comment, String user);
 
     WorkflowTask getWorkflowTask(String taskId, Locale locale);
@@ -104,7 +102,7 @@ public interface WorkflowProvider {
      * Returns a list of process instance history records for the specified
      * process IDs. This method also returns "active" (i.e. not completed)
      * workflow process instance.
-     * 
+     *
      * @param processIds list of process IDs to retrieve history records for
      * @param locale
      * @return a list of process instance history records for the specified
@@ -115,7 +113,7 @@ public interface WorkflowProvider {
     /**
      * Returns a list of history records for workflow tasks.
      * This method also returns not completed tasks.
-     * 
+     *
      * @param processId the process instance ID
      * @param locale
      * @return a list of history records for workflow tasks

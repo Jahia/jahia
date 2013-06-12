@@ -954,6 +954,16 @@
             <artifactId>jbpm-workitems</artifactId>
             <version>${jbpm.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-human-task-core</artifactId>
+            <version>${jbpm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-human-task-workitems</artifactId>
+            <version>${jbpm.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>jboss</groupId>

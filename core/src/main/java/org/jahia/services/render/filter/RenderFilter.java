@@ -68,6 +68,11 @@ public interface RenderFilter extends RenderServiceAware, Comparable<RenderFilte
 
     String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception;
 
+    String getContentForError(RenderContext renderContext, Resource resource, RenderChain renderChain, Exception e);
+
+    /**
+     * @deprecated Use getContentForError instead
+     */
     void handleError(RenderContext renderContext, Resource resource, RenderChain renderChain, Exception e);
 
     void finalize(RenderContext renderContext, Resource resource, RenderChain renderChain);

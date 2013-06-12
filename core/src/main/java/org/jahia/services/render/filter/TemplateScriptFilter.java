@@ -120,8 +120,6 @@ public class TemplateScriptFilter extends AbstractFilter {
                 output.append("</fieldset> ");
             }
 
-        } catch (RenderException e) {
-            output.append(handleError(script.getView().getInfo(), e, renderContext, resource));
         } finally {
             renderContext.getResourcesStack().pop();
         }
@@ -129,33 +127,6 @@ public class TemplateScriptFilter extends AbstractFilter {
     }
 
 
-    private static String handleError(String template, RenderException ex, RenderContext ctx, Resource resource)
-            throws RenderException {
-
-        String content = null;
-
-        String onError = SettingsBean.getInstance().lookupString("templates.modules.onError");
-
-        Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-
-        if ("propagate".equals(onError)) {
-            throw ex;
-        } else if ("hide".equals(onError)) {
-            logger.warn("Error including the content of the template '" + template + "'. Cause: " + cause.getMessage(),
-                        cause);
-            content = "";
-        } else {
-            logger.warn("Error including the content of the template '" + template + "'. Cause: " + cause.getMessage(),
-                        cause);
-            StringBuilder out = new StringBuilder(256);
-            out.append("<div class=\"page-fragment-error\">").append(getErrorMessage(ctx, resource)).append(
-                    !"compact".equals(onError) ? ": " + getExceptionDetails(cause) : "").append("</div>");
-
-            content = out.toString();
-        }
-
-        return content;
-    }
 
     private static String getErrorMessage(RenderContext ctx, Resource resource) {
         return "Module error";

@@ -160,7 +160,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         // Generates the key of the requested fragment. The KeyGenerator will create a key based on the request
         // (resource and context) and the cache properties. The generated key will contains temporary placeholders
         // that will be replaced to have the final key.
-        Properties properties = getAttributesForKey(renderContext, resource, chain);
+        Properties properties = getAttributesForKey(renderContext, resource);
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
 
         if (debugEnabled) {
@@ -328,7 +328,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
 
-        Properties properties = getAttributesForKey(renderContext, resource, chain);
+        Properties properties = getAttributesForKey(renderContext, resource);
 
         // Add self path as dependency for this fragment (for cache flush - will not impact the key)
         resource.getDependencies().add(resource.getNode().getCanonicalPath());
@@ -543,13 +543,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * cache.expiration : the expiration time of the cache entry. Can be set by the "expiration" request attribute,
      * j:expiration node property or the cache.expiration property in script properties.
      *
+     *
      * @param renderContext
      * @param resource
-     * @param chain
      * @return
      * @throws RepositoryException
      */
-    protected Properties getAttributesForKey(RenderContext renderContext, Resource resource, RenderChain chain) throws RepositoryException {
+    protected Properties getAttributesForKey(RenderContext renderContext, Resource resource) throws RepositoryException {
         final Script script = (Script) renderContext.getRequest().getAttribute("script");
         boolean isBound = resource.getNode().isNodeType("jmix:bindedComponent");
 
@@ -602,7 +602,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @return An entry that can be stored in the cache
      * @throws RepositoryException
      */
-    protected CacheEntry<String> createCacheEntry(String previousOut, RenderContext renderContext, Resource resource, String key) throws RepositoryException {
+    protected CacheEntry<String> createCacheEntry(String previousOut, RenderContext renderContext, Resource resource, String key) {
         // Replace <!-- cache:include --> tags of sub fragments by HTML tags that can be parsed by jericho
         String cachedRenderContent = ESI_INCLUDE_STOPTAG_REGEXP.matcher(previousOut).replaceAll("</esi:include>");
         cachedRenderContent = ESI_INCLUDE_STARTTAG_REGEXP.matcher(cachedRenderContent).replaceAll("<esi:include src=\"$1\">");
@@ -1006,15 +1006,25 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     @Override
-    public void handleError(RenderContext renderContext, Resource resource, RenderChain chain, Exception e) {
-        super.handleError(renderContext, resource, chain, e);
-        LinkedList<String> userKeysLinkedList = userKeys.get();
-        if (userKeysLinkedList != null && userKeysLinkedList.size() > 0) {
-            String finalKey = userKeysLinkedList.get(0);
-
-            final Cache cache = cacheProvider.getCache();
-            cache.put(new Element(finalKey, null));
+    public String getContentForError(RenderContext renderContext, Resource resource, RenderChain chain, Exception e) {
+        super.getContentForError(renderContext, resource, chain, e);
+        try {
+            renderContext.getRequest().setAttribute("expiration", "5");
+            // Returns a fragment with an error comment
+            return execute("<!-- Module error : "+e.getMessage()+"-->", renderContext, resource, chain);
+        } catch (Exception e1) {
+            return null;
         }
+//        LinkedList<String> userKeysLinkedList = userKeys.get();
+//        if (userKeysLinkedList != null && userKeysLinkedList.size() > 0) {
+//            String finalKey = userKeysLinkedList.get(0);
+//
+//            final Cache cache = cacheProvider.getCache();
+//            CacheEntry<String> entry = createCacheEntry("##moduleerrorcache##", renderContext, resource, finalKey);
+//            Element cachedElement = new Element(finalKey, entry);
+//            cachedElement.setTimeToLive(5);
+//            cache.put(cachedElement);
+//        }
     }
 
     @Override

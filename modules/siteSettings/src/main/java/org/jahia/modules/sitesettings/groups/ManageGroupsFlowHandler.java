@@ -42,18 +42,21 @@ package org.jahia.modules.sitesettings.groups;
 import java.io.Serializable;
 import java.security.Principal;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerProvider;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRGroup;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
@@ -76,6 +79,8 @@ public class ManageGroupsFlowHandler implements Serializable {
     private static final long serialVersionUID = -425326961938017713L;
 
     private transient JahiaGroupManagerService groupManagerService;
+
+    private transient JahiaUserManagerService userManagerService;
 
     /**
      * Performs the creation of a new group for the site.
@@ -104,6 +109,47 @@ public class ManageGroupsFlowHandler implements Serializable {
                                     "siteSettings.groups.errors.create.failed", locale), group.getGroupname())).build());
             return false;
         }
+    }
+
+    /**
+     * Adds the specified members to the group.
+     * 
+     * @param group
+     *            the group to add member to
+     * @param members
+     *            the member keys to be added into the group
+     * @param context
+     *            the message context object
+     */
+    public void addMembers(JahiaGroup group, String[] members, MessageContext context) {
+        logger.info("Adding members {} to group {}", members, group.getGroupKey());
+        long timer = System.currentTimeMillis();
+        List<Principal> candidates = new LinkedList<Principal>();
+        for (String member : members) {
+            Principal principal = lookupMember(member);
+            if (principal == null) {
+                logger.warn("Unable to lookup principal for key {}", member);
+                continue;
+            }
+
+            // do not add group to itself and check if the principal is not yet a member of the group
+            if (!group.equals(principal) && !group.isMember(principal)) {
+                candidates.add(principal);
+            }
+        }
+
+        if (candidates.size() > 0) {
+            group.addMembers(candidates);
+            logger.info("Added {} member(s) to group {} in {} ms",
+                    new Object[] { candidates.size(), group.getGroupKey(), System.currentTimeMillis() - timer });
+        }
+
+        Locale locale = LocaleContextHolder.getLocale();
+        context.addMessage(new MessageBuilder()
+                .info()
+                .defaultText(
+                        Messages.getInternal("label.group", locale) + " '" + group.getGroupname() + "' "
+                                + Messages.getInternal("message.successfully.updated", locale)).build());
     }
 
     /**
@@ -201,13 +247,32 @@ public class ManageGroupsFlowHandler implements Serializable {
     }
 
     /**
+     * Returns the principal object for the specified key.
+     * 
+     * @param memberKey
+     *            the principal key
+     * @return the principal object for the specified key
+     */
+    private Principal lookupMember(String memberKey) {
+        Principal p = null;
+        if (memberKey.startsWith("u:")) {
+            p = userManagerService.lookupUserByKey(StringUtils.substringAfter(memberKey, ":"));
+        } else if (memberKey.startsWith("g:")) {
+            p = groupManagerService.lookupGroup(StringUtils.substringAfter(memberKey, ":"));
+        } else {
+            throw new IllegalArgumentException("Unsupported member type for member: " + memberKey);
+        }
+
+        return p;
+    }
+
+    /**
      * Performs the removal of the specified groups for the site.
      * 
      * @param selectedGroup
      *            a key of the group to be removed
      * @param context
      *            the message context object
-     * @return <code>true</code> if the group was successfully removed; <code>false</code> otherwise
      */
     public void removeGroup(String selectedGroup, MessageContext context) {
         JahiaGroup grp = lookupGroup(selectedGroup);
@@ -239,6 +304,45 @@ public class ManageGroupsFlowHandler implements Serializable {
     }
 
     /**
+     * Performs the removal of the specified members from the group.
+     * 
+     * @param group
+     *            the group to remove members from
+     * @param members
+     *            the member keys to remove from the group
+     * @param context
+     *            the message context object
+     */
+    public void removeMembers(JahiaGroup group, String[] members, MessageContext context) {
+        logger.info("Removing members {} from group {}", members, group.getGroupKey());
+        long timer = System.currentTimeMillis();
+        int countRemoved = 0;
+        for (String member : members) {
+            Principal principal = lookupMember(member);
+            if (principal == null) {
+                logger.warn("Unable to lookup principal for key {}", member);
+                continue;
+            }
+
+            // check if the principal is already a member of the group
+            if (group.isMember(principal)) {
+                group.removeMember(principal);
+                countRemoved++;
+            }
+        }
+
+        logger.info("Removed {} member(s) from group {} in {} ms", new Object[] { countRemoved, group.getGroupKey(),
+                System.currentTimeMillis() - timer });
+
+        Locale locale = LocaleContextHolder.getLocale();
+        context.addMessage(new MessageBuilder()
+                .info()
+                .defaultText(
+                        Messages.getInternal("label.group", locale) + " '" + group.getGroupname() + "' "
+                                + Messages.getInternal("message.successfully.updated", locale)).build());
+    }
+
+    /**
      * Performs the group search with the specified search criteria and returns the list of matching groups.
      * 
      * @param searchCriteria
@@ -255,5 +359,10 @@ public class ManageGroupsFlowHandler implements Serializable {
     @Autowired
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
         this.groupManagerService = groupManagerService;
+    }
+
+    @Autowired
+    public void setUserManagerService(JahiaUserManagerService userManagerService) {
+        this.userManagerService = userManagerService;
     }
 }

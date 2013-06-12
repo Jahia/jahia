@@ -23,27 +23,22 @@
 <template:addResources type="css" resources="admin-bootstrap.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 
-
 <template:addResources>
 <script type="text/javascript">
-    $(document).ready(function () {
-        $(".needGroupSelection").submit(function () {
-            var selected = $("input[name='groupSelected']:checked").val();
-            if(undefined==selected) {
-                <fmt:message key="siteSettings.groups.selectGroup" var="i18nSelectGroup"/>
-                alert('${functions:escapeJavaScript(i18nSelectGroup)}');
-                return false;
-            }
-            $("input[name='selectedGroup']").val(selected);
-            return true;
-        });
-    });
+function submitGroupForm(act, group) {
+	$('#groupFormAction').val(act);
+	$('#groupFormSelected').val(group);
+	$('#groupForm').submit();
+}
 </script>
 </template:addResources>
 
 <c:set var="site" value="${renderContext.mainResource.node.resolveSite}"/>
 
 <h2><fmt:message key="label.manageGroups"/> - ${fn:escapeXml(site.displayableName)}</h2>
+
+<span style="color: red">!!!CHANGE THIS TO > 1</span>
+<c:set var="multipleProvidersAvailable" value="${fn:length(providers) > 0}"/>
 
 <div class="box-1">
     <form class="form-inline " action="${flowExecutionUrl}" id="searchForm" method="post">
@@ -60,9 +55,9 @@
                     &nbsp;<fmt:message key='label.search'/>
                 </button>
             </div>
-            <br/>
-            <br/>
-            <c:if test="${fn:length(providers) > 0}"><span style="color: red">!!!CHANGE THIS TO > 1</span>
+            <c:if test="${multipleProvidersAvailable}">
+                <br/>
+                <br/>
                 <label for="storedOn"><span class="badge badge-info"><fmt:message key="label.on"/></span></label>
                 <input type="radio" name="storedOn" value="everywhere" 
                     ${empty searchCriteria.storedOn || searchCriteria.storedOn == 'everywhere' ? ' checked="checked" ' : ''}   
@@ -95,29 +90,6 @@
                 &nbsp;<fmt:message key="siteSettings.groups.create"/>
             </button>
         </form>
-        <form action="${flowExecutionUrl}" method="POST" class="needGroupSelection" style="display: inline;">
-            <input type="hidden" name="selectedGroup"/>
-            <button class="btn" type="submit" name="_eventId_copyGroup">
-                <i class="icon-share"></i>
-                &nbsp;<fmt:message key="siteSettings.groups.copy"/>
-            </button>
-        </form>
-        <form action="${flowExecutionUrl}" method="POST" class="needGroupSelection" style="display: inline;">
-            <input type="hidden" name="selectedGroup"/>
-            <button class="btn" type="submit" name="_eventId_editGroup">
-                <i class="icon-edit"></i>
-                &nbsp;<fmt:message key="siteSettings.groups.edit"/>
-            </button>
-        </form>
-        <form action="${flowExecutionUrl}" method="POST" class="needGroupSelection" style="display: inline;">
-            <input type="hidden" name="selectedGroup"/>
-            <fmt:message var="i18nRemoveConfirm" key="siteSettings.groups.remove.confirm"/>
-            <fmt:message var="i18nContinue" key="label.confirmContinue"/>
-            <button class="btn" type="submit" name="_eventId_removeGroup" onclick="return $('input[name=\'groupSelected\']:checked').length == 0 || confirm('${functions:escapeJavaScript(i18nRemoveConfirm)} ${functions:escapeJavaScript(i18nContinue)}');">
-                <i class="icon-remove"></i>
-                &nbsp;<fmt:message key="siteSettings.groups.remove"/>
-            </button>
-        </form>
     </div>
     
     <p>
@@ -138,28 +110,60 @@
     </p>
 
     <div>
+        <c:set var="groupsFound" value="${fn:length(groups) > 0}"/>
+        <c:if test="${groupsFound}">
+            <form action="${flowExecutionUrl}" method="post" style="display: inline;" id="groupForm">
+                <input type="hidden" name="selectedGroup" id="groupFormSelected"/>
+                <input type="hidden" id="groupFormAction" name="_eventId" value="" />
+            </form>
+        </c:if>
         <table class="table table-bordered table-striped table-hover">
             <thead>
             <tr>
-                <th width="5%">&nbsp;</th>
-                <th width="50%" class="sortable"><fmt:message key="label.name"/></th>
-                <th width="45%" class="sortable"><fmt:message key="label.properties"/></th>
+                <th width="3%">#</th>
+                <th><fmt:message key="label.name"/></th>
+                <c:if test="${multipleProvidersAvailable}">
+                    <th width="10%"><fmt:message key="column.provider.label"/></th>
+                </c:if>
+                <th width="20%"><fmt:message key="label.actions"/></th>
             </tr>
             </thead>
             <tbody>
             <c:choose>
                 <%--@elvariable id="groups" type="java.util.List"--%>
-                <c:when test="${fn:length(groups) == 0}">
+                <c:when test="${!groupsFound}">
                     <tr>
-                        <td colspan="3"><fmt:message key="label.noResults"/></td>
+                        <td colspan="${multipleProvidersAvailable ? '4' : '3'}"><fmt:message key="label.noItemFound"/></td>
                     </tr>
                 </c:when>
                 <c:otherwise>
-                    <c:forEach items="${groups}" var="grp">
-                        <tr class="sortable-row">
-                            <td><input type="radio" name="groupSelected" value="${fn:escapeXml(grp.groupKey)}" alt="${fn:escapeXml(grp.groupname)}"></td>
-                            <td>${user:displayName(grp)}</td>
-                            <td>???</td>
+                    <fmt:message var="i18nEdit" key="label.edit"/><c:set var="i18nEdit" value="${fn:escapeXml(i18nEdit)}"/>
+                    <fmt:message var="i18nCopy" key="label.copy"/><c:set var="i18nCopy" value="${fn:escapeXml(i18nCopy)}"/>
+                    <fmt:message var="i18nRemove" key="label.remove"/><c:set var="i18nRemove" value="${fn:escapeXml(i18nRemove)}"/>
+                    <fmt:message var="i18nRemoveNote" key="siteSettings.groups.remove.confirm"/>
+                    <fmt:message var="i18nContinue" key="label.confirmContinue"/>
+                    <c:set var="i18nRemoveConfirm" value="${functions:escapeJavaScript(i18nRemoveNote)} ${functions:escapeJavaScript(i18nContinue)}"/>
+                    <c:forEach items="${groups}" var="grp" varStatus="loopStatus">
+                        <tr>
+                            <td>${loopStatus.count}</td>
+                            <td>
+                                <a title="${i18nEdit}" href="#edit" onclick="submitGroupForm('editGroup', '${grp.groupKey}'); return false;">${fn:escapeXml(user:displayName(grp))}</a>
+                            </td>
+                            <c:if test="${multipleProvidersAvailable}">
+                                <fmt:message var="i18nProviderLabel" key="providers.${grp.providerName}.label"/>
+                                <td>${fn:escapeXml(fn:contains(i18nProviderLabel, '???') ? grp.providerName : i18nProviderLabel)}</td>
+                            </c:if>
+                            <td>
+                                <a style="margin-bottom:0;" class="btn btn-small" title="${i18nEdit}" href="#edit" onclick="submitGroupForm('editGroup', '${grp.groupKey}'); return false;">
+                                    <i class="icon-edit"></i>
+                                </a>
+                                <a style="margin-bottom:0;" class="btn btn-small" title="${i18nCopy}" href="#copy" onclick="submitGroupForm('copyGroup', '${grp.groupKey}'); return false;">
+                                    <i class="icon-share"></i>
+                                </a>
+                                <a style="margin-bottom:0;" class="btn btn-danger btn-small" title="${i18nRemove}" href="#delete" onclick="if (confirm('${i18nRemoveConfirm}')) { submitGroupForm('removeGroup', '${grp.groupKey}');} return false;">
+                                    <i class="icon-remove icon-white"></i>
+                                </a>
+                            </td>
                         </tr>
                     </c:forEach>
                 </c:otherwise>

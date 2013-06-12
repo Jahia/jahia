@@ -9,6 +9,13 @@
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
+<template:addResources>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#groupname').focus();
+})
+</script>
+</template:addResources>
 <div>
     <p>
         <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
@@ -51,7 +58,7 @@
                 <div class="container-fluid">
                     <div class="row-fluid">
                         <div class="span12">
-                            <button class="btn btn-primary" type="submit" name="_eventId_${copyMode ? 'copy' : 'add'}">
+                            <button class="btn btn-primary" type="submit" name="_eventId_${copyMode ? 'copy' : 'add'}" onclick="workInProgress(); return true;">
                                 <i class="icon-${copyMode ? 'share' : 'plus'} icon-white"></i>
                                 &nbsp;<fmt:message key="label.${copyMode ? 'copy' : 'add'}"/>
                             </button>

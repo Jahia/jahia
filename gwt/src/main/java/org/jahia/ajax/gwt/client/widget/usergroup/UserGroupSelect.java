@@ -107,13 +107,13 @@ public class UserGroupSelect extends Window {
             case VIEW_TABS:
                 ContentPanel userPanel = getUserPanel(target, service);
 
-                TabItem userTab = new TabItem("users");
+                TabItem userTab = new TabItem(Messages.get("label.users", "Users"));
                 userTab.setLayout(new FitLayout());
                 userTab.add(userPanel);
 
                 ContentPanel groupsPanel = getGroupsPanel(target, service);
 
-                TabItem groupsTab = new TabItem("groups");
+                TabItem groupsTab = new TabItem(Messages.get("label.groups", "Groups"));
                 groupsTab.setLayout(new FitLayout());
                 groupsTab.add(groupsPanel);
 
@@ -224,7 +224,7 @@ public class UserGroupSelect extends Window {
 
         ContentPanel userPanel = new ContentPanel();
         userPanel.setButtonAlign(Style.HorizontalAlignment.CENTER);
-        userPanel.setHeading(Messages.get("label.userSelect", "Select a user"));
+        userPanel.setHeading(Messages.get("label.userSelect", "Select users"));
         userPanel.setLayout(new FitLayout());
         userPanel.add(userGrid);
         userPanel.setSize(480, 350);
@@ -303,7 +303,7 @@ public class UserGroupSelect extends Window {
 
         ContentPanel groupsPanel = new ContentPanel();
         groupsPanel.setButtonAlign(Style.HorizontalAlignment.CENTER);
-        groupsPanel.setHeading("Select a group");
+        groupsPanel.setHeading(Messages.get("label.groupSelect", "Select groups"));
         groupsPanel.setLayout(new FitLayout());
         groupsPanel.add(groupGrid);
         groupsPanel.setSize(480, 350);

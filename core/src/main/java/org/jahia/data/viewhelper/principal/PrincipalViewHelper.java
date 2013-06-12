@@ -164,7 +164,7 @@ public class PrincipalViewHelper implements Serializable {
      * @return The principal formated
      */
     public String getPrincipalTextOption(Principal p) {
-        final StringBuffer authUserText = new StringBuffer();
+        final StringBuilder authUserText = new StringBuilder();
         for (int i = 0; i < selectBoxFieldsMethod.size(); i++) {
             final Method m = (Method) selectBoxFieldsMethod.get(i);
             final Integer size = (Integer) selectBoxFieldsSize.get(i);
@@ -194,7 +194,7 @@ public class PrincipalViewHelper implements Serializable {
      * @return The user/group key depending from principal type.
      */
     public String getPrincipalValueOption(Principal p) {
-        final StringBuffer buff = new StringBuffer();
+        final StringBuilder buff = new StringBuilder();
         if (p == null) {
             return "null";
         }
@@ -423,13 +423,24 @@ public class PrincipalViewHelper implements Serializable {
      * @return The principal type
      */
     public static String getPrincipal(Principal p, Integer size) {
-        if (p instanceof JahiaUser) {
-            return "u";
-        } else {
-            return "g";
-        }
+        return getPrincipalType(p) == 'u' ? "u" : "g";
     }
 
+    /**
+     * Get the kind of principal given by one char u = user, g = group
+     *
+     * @param p    The principal object
+     * @return The principal type
+     * @since 6.7
+     */
+    public static char getPrincipalType(Principal p) {
+        if (p instanceof JahiaUser) {
+            return 'u';
+        } else {
+            return 'g';
+        }
+    }
+    
     /**
      * Get a principal displayable properties. A user displays its
      * first name and a last name or e-mail to display.
@@ -440,7 +451,7 @@ public class PrincipalViewHelper implements Serializable {
      * @return The displayable properties.
      */
     public static String getProperties(Principal p, Integer size) {
-        final StringBuffer properties = new StringBuffer();
+        final StringBuilder properties = new StringBuilder();
         if (p instanceof JahiaUser) {
             final JahiaUser user = (JahiaUser) p;
             // Find a displayable user property
@@ -452,7 +463,7 @@ public class PrincipalViewHelper implements Serializable {
                 final String lastname = user.getProperty("j:lastName");
                 if (lastname != null && !"".equals(lastname.trim())) {
                     properties.append(lastname);
-                    if (lastname.length() < size) {
+                    if (size == -1 || lastname.length() < size) {
                         properties.append(" ");
                     }
                 }
@@ -477,12 +488,12 @@ public class PrincipalViewHelper implements Serializable {
             final JahiaGroup group = (JahiaGroup) p;
             // Find some group members for properties
             final Iterator<?> grpMembers = group.isPreloadedGroups() ? new EnumerationIterator(group.members()) : null;
-            final StringBuffer members = new StringBuffer().append("(");
+            final StringBuilder members = new StringBuilder().append("(");
             if (grpMembers != null) {
                 while (grpMembers.hasNext()) {
                     final Object obj = grpMembers.next();
                     members.append(getDisplayName((Principal)obj));
-                    if (members.length() > size.intValue()) {
+                    if (size != -1 && members.length() > size.intValue()) {
                         break;
                     }
                     if (grpMembers.hasNext()) {
@@ -509,7 +520,7 @@ public class PrincipalViewHelper implements Serializable {
         }
         final Integer permissions = ((Integer[]) perms.get(p))[0];
 
-        final StringBuffer permStr = new StringBuffer();
+        final StringBuilder permStr = new StringBuilder();
 
         final boolean inherited = (permissions.intValue() >> 3 & 1) != 0;
         final boolean linked = (permissions.intValue() >> 4 & 1) != 0;
@@ -735,12 +746,13 @@ public class PrincipalViewHelper implements Serializable {
     }
 
     private static String adjustStringSize(String str, int size) {
-        if (str == null) // FIXNE : Don't like this null return.
-            return null;
+        if (size == -1 || str == null) {
+            return str;
+        }
         if (str.length() > size) {
             return str.substring(0, size - 2) + "..";
         } else {
-            StringBuffer emtpyStr = new StringBuffer();
+            StringBuilder emtpyStr = new StringBuilder();
             for (int i = 0; i < size - str.length(); i++) {
                 emtpyStr.append(" ");
             }

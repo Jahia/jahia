@@ -140,7 +140,7 @@
         <function-signature>java.lang.String formatUserValueOption(java.security.Principal)
         </function-signature>
         <example>
-            &lt;c:if test="${user:formatUserValueOption(principal}"/&gt;
+            &lt;c:if test="${user:formatUserValueOption(principal)}"/&gt;
         </example>
     </function>
 
@@ -154,6 +154,19 @@
         </function-signature>
         <example>
             &lt;c:if test="${user:formatUserTextOption(principal,'Name,30;Properties,30'}"/&gt;
+        </example>
+    </function>
+    <function>
+        <description>
+            Returns the type of the principal for provided principal object: 'u' (user) or 'g' (group).
+        </description>
+        <name>principalType</name>
+        <function-class>org.jahia.data.viewhelper.principal.PrincipalViewHelper</function-class>
+        <function-signature>char getPrincipalType(java.security.Principal)</function-signature>
+        <example>
+            &lt;c:if test="${user:principalType(principal) == 'u'}"/&gt;
+                this is a user
+            &lt;/c:if/&gt;
         </example>
     </function>
 </taglib>

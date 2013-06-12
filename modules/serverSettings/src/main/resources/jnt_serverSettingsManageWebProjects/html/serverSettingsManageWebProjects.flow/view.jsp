@@ -135,7 +135,7 @@
                         <fmt:message key="serverSettings.manageWebProjects.webProject.templateSet"/>
                     </th>
                     <th class="{sorter: false}">
-                        <fmt:message key="label.action"/>
+                        <fmt:message key="label.actions"/>
                     </th>
                 </tr>
             </thead>

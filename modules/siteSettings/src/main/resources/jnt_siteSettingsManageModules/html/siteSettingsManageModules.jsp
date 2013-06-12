@@ -22,7 +22,7 @@
 %>
 <h2>${fn:escapeXml(currentNode.displayableName)} - ${fn:escapeXml(site.displayableName)}</h2>
 <p>
-<strong><fmt:message key="serverSettings.manageWebProjects.webProject.templateSet"/>:&nbsp;</strong>
+<strong><fmt:message key="siteSettings.manageWebProjects.webProject.templateSet"/>:&nbsp;</strong>
 ${fn:escapeXml(templatePackageName)}&nbsp;(${templateSetPackage.lastVersion})
 </p>
 <table class="table table-bordered table-striped table-hover" >

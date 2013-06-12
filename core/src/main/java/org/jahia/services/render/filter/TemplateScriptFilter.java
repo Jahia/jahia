@@ -126,18 +126,19 @@ public class TemplateScriptFilter extends AbstractFilter {
         return output.toString().trim();
     }
 
-
-
-    private static String getErrorMessage(RenderContext ctx, Resource resource) {
-        return "Module error";
+    @Override
+    public String getContentForError(RenderContext renderContext, Resource resource, RenderChain renderChain, Exception e) {
+        if (renderContext.isEditMode() && SettingsBean.getInstance().isDevelopmentMode()) {
+            return "<pre>"+getExceptionDetails(e)+"</pre>";
+        }
+        return super.getContentForError(renderContext, resource, renderChain, e);
     }
 
-    private static Object getExceptionDetails(Throwable ex) {
+    private String getExceptionDetails(Throwable ex) {
         StringWriter out = new StringWriter();
-        out.append(ex.getMessage()).append("\n<!--\n");
+        out.append(ex.getMessage()).append("\n");
         ex.printStackTrace(new PrintWriter(out));
-        out.append("\n-->\n");
-
+        out.append("\n");
         return out.toString();
     }
 

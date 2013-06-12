@@ -372,7 +372,8 @@ public class WebprojectHandler implements Serializable {
         siteBean.setSiteKey(site.getSiteKey());
         siteBean.setServerName(site.getServerName());
         siteBean.setTitle(site.getTitle());
-
+        siteBean.setTemplatePackageName(site.getTemplatePackageName());
+        siteBean.setTemplateFolder(site.getTemplateFolder());
         List<String> installedModules = site.getInstalledModules();
         siteBean.setModules(installedModules.size() > 1 ? new LinkedList<String>(installedModules.subList(1,
                 installedModules.size())) : new LinkedList<String>());

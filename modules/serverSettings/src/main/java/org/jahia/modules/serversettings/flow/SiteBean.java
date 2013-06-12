@@ -80,6 +80,9 @@ public class SiteBean implements Serializable {
 
     private String title = "My Site";
 
+    private String templatePackageName;
+    private String templateFolder;
+
     public AdminProperties getAdminProperties() {
         if (adminProperties == null) {
             adminProperties = new AdminProperties();
@@ -132,6 +135,14 @@ public class SiteBean implements Serializable {
         return title;
     }
 
+    public String getTemplatePackageName() {
+        return templatePackageName;
+    }
+
+    public String getTemplateFolder() {
+        return templateFolder;
+    }
+
     public boolean isCreateAdmin() {
         return createAdmin;
     }
@@ -182,6 +193,14 @@ public class SiteBean implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public void setTemplatePackageName(String templatePackageName) {
+        this.templatePackageName = templatePackageName;
+    }
+
+    public void setTemplateFolder(String templateFolder) {
+        this.templateFolder = templateFolder;
     }
 
     public void validateCreateSite(ValidationContext context) {

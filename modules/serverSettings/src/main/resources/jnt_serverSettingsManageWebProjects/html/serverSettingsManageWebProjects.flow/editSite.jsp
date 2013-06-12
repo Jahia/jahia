@@ -3,6 +3,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+
+
+<%--@elvariable id="siteBean" type="org.jahia.modules.serversettings.flow.SiteBean"--%>
 <template:addResources>
     <script type="text/javascript">
         $(document).ready(function() {
@@ -48,7 +51,7 @@
             <div class="container-fluid">
                 <div class="row-fluid">
                     <div class="span12">
-                        <p><fmt:message key="serverSettings.manageWebProjects.webProject.templateSet"/>: ${fn:escapeXml(selectedSite.templatePackageName)}&nbsp;(${fn:escapeXml(selectedSite.templateFolder)})</p>
+                        <p><fmt:message key="serverSettings.manageWebProjects.webProject.templateSet"/>: ${fn:escapeXml(siteBean.templatePackageName)}&nbsp;(${fn:escapeXml(siteBean.templateFolder)})</p>
 
                         <p><fmt:message key="label.modules"/>:</p>
                         <p style="line-height: 2em">

@@ -160,7 +160,7 @@ function submitGroupForm(act, group) {
                                 <a style="margin-bottom:0;" class="btn btn-small" title="${i18nCopy}" href="#copy" onclick="submitGroupForm('copyGroup', '${grp.groupKey}'); return false;">
                                     <i class="icon-share"></i>
                                 </a>
-                                <a style="margin-bottom:0;" class="btn btn-danger btn-small" title="${i18nRemove}" href="#delete" onclick="if (confirm('${i18nRemoveConfirm}')) { submitGroupForm('removeGroup', '${grp.groupKey}');} return false;">
+                                <a style="margin-bottom:0;" class="btn btn-danger btn-small" title="${i18nRemove}" href="#delete" onclick="if (confirm('${i18nRemoveConfirm}')) { workInProgress(); submitGroupForm('removeGroup', '${grp.groupKey}');} return false;">
                                     <i class="icon-remove icon-white"></i>
                                 </a>
                             </td>

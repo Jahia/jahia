@@ -1,11 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"
-%><?xml version="1.0" encoding="UTF-8" ?>
+        %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@page import="org.apache.jackrabbit.core.id.NodeId"%>
-<%@page import="org.jahia.services.content.JCRNodeWrapper"%>
-<%@ page import="org.jahia.services.content.JCRSessionFactory" %>
-<%@ page import="org.jahia.services.content.JCRSessionWrapper" %>
-<%@ page import="org.jahia.services.content.JCRWorkspaceWrapper" %>
 <%@ page import="org.jahia.services.usermanager.jcr.JCRUserManagerProvider" %>
 <%@ page import="javax.jcr.*" %>
 <%@ page import="javax.sql.DataSource" %>
@@ -18,6 +14,7 @@
 <%@ page import="org.jahia.services.SpringContextSingleton" %>
 <%@ page import="org.hibernate.*" %>
 <%@ page import="javax.jcr.Session" %>
+<%@ page import="org.jahia.services.content.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
@@ -135,7 +132,7 @@
                     nodeId = new NodeId(rst.getLong("NODE_ID_HI"), rst.getLong("NODE_ID_LO"));
                 } else {
                     byte[] byteId = rst.getBytes("NODE_ID");
-                	nodeId = new NodeId(byteId);
+                    nodeId = new NodeId(byteId);
                 }
                 idCollection.add(nodeId);
                 bytesRead += readBlob(rst, keyTypeLongLong ? 3 : 2);
@@ -240,7 +237,7 @@
         printTestName(out, "File system");
         long testFileSize = 100 * 1024 * 1024;
         int nbFileReadLoops = 10;
-        File tempFile = File.createTempFile("benchmark", "tmp");
+        File tempFile = File.createTempFile("benchmark", "tmp" + System.getProperty("cluster.node.serverId", ""));
 
         BufferedOutputStream fileOut = null;
         Random randomValue = new Random(System.currentTimeMillis());
@@ -319,6 +316,98 @@
 
         } catch (Throwable t) {
             println(out, "Error reading JCR ", t, false);
+        }
+    }
+
+    private void runJCRWriteTest(final JspWriter out, HttpServletRequest request, JspContext pageContext) throws IOException {
+        long startTime;
+        long bytesRead;
+        long totalTime;
+        printTestName(out, "Java Content Repository Write");
+        try {
+            JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
+            JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"));
+
+            JCRWorkspaceWrapper workspaceWrapper = sessionWrapper.getWorkspace();
+            Locale locale = sessionWrapper.getLocale();
+            println(out, "Creating nodes in " + workspaceWrapper.getName() + " workspace with 100 threads...");
+            JCRNodeWrapper rootNode = sessionWrapper.getRootNode();
+            String tmpName = "tmp" + System.getProperty("cluster.node.serverId", "");
+            if (rootNode.hasNode(tmpName)) {
+                rootNode.getNode(tmpName).remove();
+                sessionWrapper.save();
+            }
+            final JCRNodeWrapper tmp = rootNode.addNode(tmpName, "nt:unstructured");
+            sessionWrapper.save();
+
+            startTime = System.currentTimeMillis();
+            final Map<String, Long> results = new HashMap<String, Long>();
+            results.put("nodesWrite", 0L);
+
+            try {
+                List<Thread> l = new ArrayList<Thread>();
+                for (int i = 0; i < 100; i++) {
+                    final int threadId = i;
+                    Thread t = new Thread(new Runnable() {
+                        public void run() {
+                            try {
+                                String path = "/tmp" + System.getProperty("cluster.node.serverId", "");
+                                for (int j = 0; j < 100; j++) {
+                                    final int iterationId = j;
+                                    final String fPath = path;
+                                    String nodePath = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
+
+                                        public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                            JCRNodeWrapper n = session.getNode(fPath).addNode("benchmark"+threadId+"_"+iterationId);
+                                            synchronized (results) {
+                                                long nodesWrite = results.get("nodesWrite");
+                                                nodesWrite++;
+                                                if (nodesWrite % 1000 == 0) {
+                                                    try {
+                                                        println(out, "Processed " + nodesWrite + " nodes...");
+                                                    } catch (IOException e) {
+                                                    }
+                                                }
+                                                results.put("nodesWrite", nodesWrite);
+                                            }
+                                            session.save();
+                                            return n.getPath();
+                                        }
+                                    });
+                                    if (j % 50 == 0) {
+                                        path = nodePath;
+                                    }
+                                }
+                            } catch (RepositoryException e) {
+                                e.printStackTrace();
+                            }
+                            try {
+                                println(out, "  ..  benchmark thread "+threadId + " ended.");
+                            } catch (IOException e) {
+                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                            }
+                        }
+
+                    }, "benchmark"+i);
+                    l.add(t);
+                    t.start();
+                }
+
+                for (Thread thread : l) {
+                    thread.join();
+                }
+
+                long nodesWrite = results.get("nodesWrite");
+                totalTime = System.currentTimeMillis() - startTime;
+                println(out, "Total time to write JCR " + nodesWrite + " : " + totalTime + "ms");
+
+            } finally {
+                tmp.remove();
+                sessionWrapper.save();
+            }
+
+        } catch (Throwable t) {
+            println(out, "Error writing JCR ", t, false);
         }
     }
 
@@ -515,12 +604,17 @@
             runJCRTest(out, request, pageContext);
         }
 
+        if (isParameterActive(request, "runJCRWriteTest")) {
+            runJCRWriteTest(out, request, pageContext);
+        }
+
         out.println("<h2>Benchmark completed.</h2>");
     } else {
         out.println("<form>");
         renderCheckbox(out, "runDBTest", "Run database benchmark", true);
         renderCheckbox(out, "runFileSystemTest", "Run file system benchmark", true);
-        renderCheckbox(out, "runJCRTest", "Run Java Content Repository benchmark", true);
+        renderCheckbox(out, "runJCRTest", "Run Java Content Repository read benchmark", true);
+        renderCheckbox(out, "runJCRWriteTest", "Run Java Content Repository write benchmark", true);
         out.println("<input type=\"submit\" name=\"submit\" value=\"Submit\">");
         out.println("</form>");
     }

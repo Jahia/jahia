@@ -77,7 +77,6 @@ when we flush this entry we will flush the whole cache
         <property name="minimumIntervalAfterLastAutoThreadDump" value="${minimumIntervalAfterLastAutoThreadDump}"/>
         <property name="threadDumpToSystemOut" value="${moduleGenerationThreadDumpToSystemOut}"/>
         <property name="threadDumpToFile" value="${moduleGenerationTthreadDumpToFile}"/>
-        <property name="useLatchOnlyForPages" value="false"/>
     </bean>
 
     <bean id="cacheFilter" class="org.jahia.services.render.filter.cache.AggregateCacheFilter">

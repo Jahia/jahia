@@ -123,14 +123,6 @@ public class ModuleGeneratorQueue implements InitializingBean {
         return minimumIntervalAfterLastAutoThreadDump;
     }
 
-    public boolean isUseLatchOnlyForPages() {
-        return useLatchOnlyForPages;
-    }
-
-    public void setUseLatchOnlyForPages(boolean useLatchOnlyForPages) {
-        this.useLatchOnlyForPages = useLatchOnlyForPages;
-    }
-
     public boolean isThreadDumpToSystemOut() {
         return threadDumpToSystemOut;
     }

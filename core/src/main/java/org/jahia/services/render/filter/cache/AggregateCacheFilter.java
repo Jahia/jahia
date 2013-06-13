@@ -213,7 +213,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             // Note that the fragment MIGHT be in cache, but the key may not be correct - some parameters impacting the
             // key like dependencies can only be calculated when the fragment has been generated.
             CountDownLatch countDownLatch = null;
-            if ( renderContext.getResourcesStack().size() > 1 ) {
+            if ( Boolean.valueOf(StringUtils.defaultIfEmpty(properties.getProperty("cache.latch"),"true") )) {
                 countDownLatch = avoidParallelProcessingOfSameModule(finalKey,
                     resource.getContextConfiguration(), renderContext.getRequest());
             }
@@ -370,16 +370,18 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         try {
             if (cacheable) {
                 final Cache cache = cacheProvider.getCache();
+                // we add those references only if not in configuration page as this key need to be exactly the same as in prepare phase
+                if (!Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration())) {
+                    // Add reference dependencies for jmix:referencesInField ( todo : move this to a specific filter before going in this filter.execute)
+                    int nbOfDependencies = resource.getDependencies().size();
 
-                // Add reference dependencies for jmix:referencesInField ( todo : move this to a specific filter before going in this filter.execute)
-                int nbOfDependencies = resource.getDependencies().size();
-                addReferencesToDependencies(resource);
-                if (resource.getDependencies().size() > nbOfDependencies) {
-                    // If new dependencies have been added based on references, regenerate the effective cache key
-                    key = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
-                    finalKey = replacePlaceholdersInCacheKey(renderContext, key);
+                    addReferencesToDependencies(resource);
+                    if (resource.getDependencies().size() > nbOfDependencies) {
+                        // If new dependencies have been added based on references, regenerate the effective cache key
+                        key = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
+                        finalKey = replacePlaceholdersInCacheKey(renderContext, key);
+                    }
                 }
-
                 if (debugEnabled) {
                     logger.debug("Caching content for final key : {}", finalKey);
                 }
@@ -707,7 +709,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @param cache The cache
      * @param cachedContent The fragment, as it is stored in the cache
      * @param renderContext The render context
-     * @param moduleParams Module params todo : what is it ?
+     * @param moduleParams Module params the key/value of the params that where on when this fragment was generated in case we need to regenerate it
      * @param areaIdentifier
      * @param cacheKeyStack
      * @return
@@ -722,9 +724,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             OutputDocument outputDocument = new OutputDocument(htmlContent);
             for (Tag esiIncludeTag : esiIncludeTags) {
                 StartTag segment = (StartTag) esiIncludeTag;
-                if (logger.isDebugEnabled()) {
+                /*if (logger.isDebugEnabled()) {
                     logger.debug(segment.toString());
-                }
+                }*/
                 // Get the sub-fragment cache key
                 String cacheKey = segment.getAttributeValue("src");
 
@@ -739,11 +741,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 }
 
                 if (cache.isKeyInCache(replacedCacheKey)) {
-                    // If fragment is in cache, get it from there and aggregate recusrively
+                    // If fragment is in cache, get it from there and aggregate recursively
                     final Element element = cache.get(replacedCacheKey);
                     if (element != null && element.getValue() != null) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("{} has been found in cache", replacedCacheKey);
+                            logger.debug("It has been found in cache", replacedCacheKey);
                         }
                         @SuppressWarnings("unchecked")
                         final CacheEntry<String> cacheEntry = (CacheEntry<String>) element.getValue();
@@ -774,14 +776,14 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     } else {
                         cache.put(new Element(replacedCacheKey, null));
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Missing content: {}", replacedCacheKey);
+                            logger.debug("Content is expired", replacedCacheKey);
                         }
                         // The fragment is not in the cache, generate it
                         generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams, areaIdentifier);
                     }
                 } else {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Missing content: {}", replacedCacheKey);
+                        logger.debug("Content is missing from cache", replacedCacheKey);
                     }
                     // The fragment is not in the cache, generate it
                     generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams, areaIdentifier);
@@ -936,23 +938,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Key: </span><span>");
         stringBuilder.append(key);
         stringBuilder.append("</span><br/>");
-        /*if (cachedElement != null && cachedElement.getValue() != null) {
-            stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Fragment has been created at: </span><span>");
-            stringBuilder.append(SimpleDateFormat.getDateTimeInstance().format(new Date(
-                    cachedElement.getCreationTime())));
-            stringBuilder.append("</span><br/>");
-            stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Fragment will expire at: </span><span>");
-            stringBuilder.append(SimpleDateFormat.getDateTimeInstance().format(new Date(
-                    cachedElement.getExpirationTime())));
-            stringBuilder.append("</span>");
-            stringBuilder.append("<form action=\"").append(renderContext.getURLGenerator().getContext()).append(
-                    "/tools/ehcache/flushKey.jsp\" method=\"post\"");
-            stringBuilder.append("<input type=\"hidden\" name=\"keyToFlush\" value=\"").append(key).append("\"");
-            stringBuilder.append("<button type=\"submit\"title=\"Flush it\">Flush It</button>");
-            stringBuilder.append("</form>");
-        } else {
-            stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Fragment Not Cacheable</span><br/>");
-        }*/
         stringBuilder.append("</div>");
         stringBuilder.append(renderContent);
         return stringBuilder.toString();
@@ -1052,17 +1037,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 semaphoreAcquired = true;
             }
         }
-        if (!generatorQueue.isUseLatchOnlyForPages() || "page".equals(contextConfiguration)) {
-            synchronized (generatingModules) {
-                latch = (CountDownLatch) generatingModules.get(key);
-                if (latch == null) {
-                    latch = new CountDownLatch(1);
-                    generatingModules.put(key, latch);
-                    mustWait = false;
-                }
+        synchronized (generatingModules) {
+            latch = (CountDownLatch) generatingModules.get(key);
+            if (latch == null) {
+                latch = new CountDownLatch(1);
+                generatingModules.put(key, latch);
+                mustWait = false;
             }
-        } else {
-            mustWait = false;
         }
         if (mustWait) {
             if (semaphoreAcquired) {

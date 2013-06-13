@@ -370,9 +370,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         try {
             if (cacheable) {
                 final Cache cache = cacheProvider.getCache();
-                // we add those references only if not in configuration page as this key need to be exactly the same as in prepare phase
+                /*// we add those references only if not in configuration page as this key need to be exactly the same as in prepare phase
                 if (!Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration())) {
-                    // Add reference dependencies for jmix:referencesInField ( todo : move this to a specific filter before going in this filter.execute)
+                    // Add reference dependencies for jmix:referencesInField (
                     int nbOfDependencies = resource.getDependencies().size();
 
                     addReferencesToDependencies(resource);
@@ -381,7 +381,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         key = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
                         finalKey = replacePlaceholdersInCacheKey(renderContext, key);
                     }
-                }
+                }*/
                 if (debugEnabled) {
                     logger.debug("Caching content for final key : {}", finalKey);
                 }
@@ -664,42 +664,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      */
     protected String replacePlaceholdersInCacheKey(RenderContext renderContext, String key) {
         return cacheProvider.getKeyGenerator().replacePlaceholdersInCacheKey(renderContext, key);
-    }
-
-    /**
-     * Checks if the node is a jmix:referencesInField and add references to other content items (links in rich text
-     * fields) as dependencies.
-     *
-     * todo : move this to a specific filter
-     *
-     * @param resource the resource to update dependencies on
-     * @throws RepositoryException in case of a repository error
-     */
-    protected void addReferencesToDependencies(final Resource resource) throws RepositoryException {
-        if (resource.getNode().isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null, resource.getNode().getSession().getWorkspace().getName(), null, new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    NodeIterator ni = session.getNodeByIdentifier(resource.getNode().getIdentifier()).getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
-                    while (ni.hasNext()) {
-                        JCRNodeWrapper ref = (JCRNodeWrapper) ni.nextNode();
-                        try {
-                            resource.getDependencies().add(ref.getProperty("j:reference").getNode().getPath());
-                        } catch (PathNotFoundException e) {
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("j:reference property is not found on node {}", ref.getCanonicalPath());
-                            }
-                        } catch (RepositoryException e) {
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("referenced node does not exist anymore {}", ref.getCanonicalPath());
-                            }
-                        } catch (Exception e) {
-                            logger.warn("Error adding dependency to node " + resource.getNode().getCanonicalPath(), e);
-                        }
-                    }
-                    return null;
-                }
-            });
-        }
     }
 
     /**

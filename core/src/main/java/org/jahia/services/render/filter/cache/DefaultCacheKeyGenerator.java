@@ -45,6 +45,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Base64;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.settings.SettingsBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -57,7 +60,7 @@ import java.util.*;
  * @author Sergiy Shyrkov
  */
 public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
-
+    private static Logger logger = LoggerFactory.getLogger(DefaultCacheKeyGenerator.class);
     private List<CacheKeyPartGenerator> partGenerators;
     private List<String> fields;
 
@@ -113,14 +116,15 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
             newArgs[i] = partGenerators.get(i).replacePlaceholders(renderContext,value);
         }
         String s = StringUtils.join(newArgs,"@@");
-
-        try {
-            byte[] b = DigestUtils.getSha512Digest().digest(s.getBytes("UTF-8"));
-            StringWriter sw = new StringWriter();
-            Base64.encode(b,0,b.length,sw);
-            return sw.toString();
-        } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        if (SettingsBean.getInstance().isProductionMode()) {
+            try {
+                byte[] b = DigestUtils.getSha512Digest().digest(s.getBytes("UTF-8"));
+                StringWriter sw = new StringWriter();
+                Base64.encode(b, 0, b.length, sw);
+                return sw.toString();
+            } catch (Exception e) {
+                logger.warn("Issue while digesting key",e);
+            }
         }
         return s;
     }

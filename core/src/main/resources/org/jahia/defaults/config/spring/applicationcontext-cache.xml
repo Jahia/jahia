@@ -109,4 +109,13 @@ when we flush this entry we will flush the whole cache
         </property>
     </bean>
 
+    <bean id="cacheReferencesFilter" class="org.jahia.services.render.filter.cache.ReferencesToDependenciesFilter">
+        <property name="disabled" value="${disableOutputCache:false}"/>
+        <property name="priority" value="25" />
+        <property name="description" value="Convert references inside jmix:referencesInField to dependencies of the resource" />
+        <property name="skipOnTemplateTypes" value="json"/>
+        <property name="skipOnConfigurations" value="page"/>
+        <property name="applyOnModes" value="live"/>
+    </bean>
+
 </beans>

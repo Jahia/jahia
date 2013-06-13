@@ -67,26 +67,26 @@ public class KeyCompressor {
         if (StringUtils.isEmpty(inputString)) {
             return inputString;
         }
-        // Compress the bytes
-        byte[] output = new byte[4096];
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(4096);
-        Deflater compresser = new Deflater(Deflater.BEST_SPEED);
-        try {
-            compresser.setInput(inputString.getBytes("UTF-8"));
-            compresser.finish();
-            int compressedDataLength;
-            do {
-                compressedDataLength = compresser.deflate(output);
-                if (compressedDataLength > 0) {
-                    outputStream.write(output, 0, compressedDataLength);
-                }
-            } while (compressedDataLength > 0);
-            return Base64.encodeBase64URLSafeString(outputStream.toByteArray());
-        } catch (UnsupportedEncodingException e) {
-            logger.warn("Not able to encode dependency: " + inputString, e);
-        } finally {
-            compresser.end();
-        }
+//        // Compress the bytes
+//        byte[] output = new byte[4096];
+//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(4096);
+//        Deflater compresser = new Deflater(Deflater.BEST_SPEED);
+//        try {
+//            compresser.setInput(inputString.getBytes("UTF-8"));
+//            compresser.finish();
+//            int compressedDataLength;
+//            do {
+//                compressedDataLength = compresser.deflate(output);
+//                if (compressedDataLength > 0) {
+//                    outputStream.write(output, 0, compressedDataLength);
+//                }
+//            } while (compressedDataLength > 0);
+//            return Base64.encodeBase64URLSafeString(outputStream.toByteArray());
+//        } catch (UnsupportedEncodingException e) {
+//            logger.warn("Not able to encode dependency: " + inputString, e);
+//        } finally {
+//            compresser.end();
+//        }
 
         return inputString;
     }
@@ -98,22 +98,22 @@ public class KeyCompressor {
      * @return decoded key
      */
     public static String decodeKey(String inputString) {
-        if (StringUtils.isEmpty(inputString)) {
+//        if (StringUtils.isEmpty(inputString)) {
             return inputString;
-        }
-        byte[] input = Base64.decodeBase64(inputString);
-        // Decompress the bytes
-        StringBuilder outputString = new StringBuilder();
-        try {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream(2048);
-            InflaterOutputStream inflaterOutputStream = new InflaterOutputStream(outputStream);
-            inflaterOutputStream.write(input, 0, input.length);
-            outputString.append(outputStream.toString("UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            logger.warn("Not able to decode dependency: " + inputString, e);
-        } catch (IOException e) {
-            logger.warn("Not able to encode dependency: " + inputString, e);
-        }
-        return outputString.toString();
+//        }
+//        byte[] input = Base64.decodeBase64(inputString);
+//        // Decompress the bytes
+//        StringBuilder outputString = new StringBuilder();
+//        try {
+//            ByteArrayOutputStream outputStream = new ByteArrayOutputStream(2048);
+//            InflaterOutputStream inflaterOutputStream = new InflaterOutputStream(outputStream);
+//            inflaterOutputStream.write(input, 0, input.length);
+//            outputString.append(outputStream.toString("UTF-8"));
+//        } catch (UnsupportedEncodingException e) {
+//            logger.warn("Not able to decode dependency: " + inputString, e);
+//        } catch (IOException e) {
+//            logger.warn("Not able to encode dependency: " + inputString, e);
+//        }
+//        return outputString.toString();
     }
 }

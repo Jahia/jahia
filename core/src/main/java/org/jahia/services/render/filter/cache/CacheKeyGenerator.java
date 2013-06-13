@@ -66,15 +66,6 @@ public interface CacheKeyGenerator {
     String generate(Resource resource, RenderContext renderContext, Properties properties);
 
     /**
-     * Parses the resource path from the provided key.
-     * 
-     * @param key the cache key to be decomposed
-     * @return the resource path, parsed from the provided key
-     * @throws ParseException in case of a malformed key
-     */
-    String getPath(String key);
-
-    /**
      * Parses the specified key into separate fields.
      * 
      * @param key the cache key to be decomposed

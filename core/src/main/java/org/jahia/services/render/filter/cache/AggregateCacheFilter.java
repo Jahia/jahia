@@ -44,6 +44,8 @@ import net.htmlparser.jericho.*;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.digester.Digester;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -462,27 +464,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     private void addExpirationToCacheElements(Cache cache, String finalKey, Long expiration, Element cachedElement)
             throws ParseException {
         cachedElement.setTimeToLive(expiration.intValue());
-        String hiddenKey = cacheProvider.getKeyGenerator().replaceField(finalKey, "template",
-                "hidden.load");
-        Element hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
-        if (hiddenElement != null) {
-            hiddenElement.setTimeToLive(expiration.intValue());
-            cache.put(hiddenElement);
-        }
-        hiddenKey = cacheProvider.getKeyGenerator().replaceField(finalKey, "template",
-                "hidden.footer");
-        hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
-        if (hiddenElement != null) {
-            hiddenElement.setTimeToLive(expiration.intValue());
-            cache.put(hiddenElement);
-        }
-        hiddenKey = cacheProvider.getKeyGenerator().replaceField(finalKey, "template",
-                "hidden.header");
-        hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
-        if (hiddenElement != null) {
-            hiddenElement.setTimeToLive(expiration.intValue());
-            cache.put(hiddenElement);
-        }
     }
 
     /**

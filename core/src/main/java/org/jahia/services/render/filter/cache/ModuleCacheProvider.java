@@ -155,15 +155,6 @@ public class ModuleCacheProvider implements InitializingBean {
                 if (logger.isDebugEnabled() && !removed) {
                     logger.debug("Failed to remove " + key + " from cache");
                 }
-                blockingCache.remove(keyGenerator.replaceField(key, "template", "hidden.load"),
-                        !propageToOtherClusterNodes);
-                blockingCache.remove(keyGenerator.replaceField(key, "template", "hidden.header"),
-                        !propageToOtherClusterNodes);
-                blockingCache.remove(keyGenerator.replaceField(key, "template", "hidden.footer"),
-                        !propageToOtherClusterNodes);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Removing entry from module output cache: " + key);
-                }
             }
         }
     }

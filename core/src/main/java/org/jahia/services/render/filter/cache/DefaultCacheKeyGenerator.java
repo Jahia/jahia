@@ -40,10 +40,14 @@
 
 package org.jahia.services.render.filter.cache;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.util.Base64;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -81,15 +85,6 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         return args.toArray(new String[args.size()]);
     }
 
-    public String getPath(String key) {
-        PathCacheKeyPartGenerator pathCacheKeyPartGenerator = (PathCacheKeyPartGenerator) getPartGenerator("path");
-        if (pathCacheKeyPartGenerator != null) {
-            String[] args = key.split("@@");
-            return pathCacheKeyPartGenerator.getPath(args[fields.indexOf("path")]);
-        }
-        return "";
-    }
-
     public Map<String, String> parse(String key) {
         String[] values = key.split("@@");
         Map<String, String> result = new LinkedHashMap<String, String>(fields.size());
@@ -117,7 +112,17 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
             String value = args[i];
             newArgs[i] = partGenerators.get(i).replacePlaceholders(renderContext,value);
         }
-        return StringUtils.join(newArgs,"@@");
+        String s = StringUtils.join(newArgs,"@@");
+
+        try {
+            byte[] b = DigestUtils.getSha512Digest().digest(s.getBytes("UTF-8"));
+            StringWriter sw = new StringWriter();
+            Base64.encode(b,0,b.length,sw);
+            return sw.toString();
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return s;
     }
 
 }
